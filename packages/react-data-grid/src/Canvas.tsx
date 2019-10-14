@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, useEffect, useMemo } from 'react';
+import React, { Fragment, useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { isElement } from 'react-is';
 
 import Row from './Row';
@@ -88,6 +88,7 @@ export default function Canvas<R>({
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
+  const scrollBar = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
   const [rows] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
@@ -108,9 +109,25 @@ export default function Canvas<R>({
     });
   }, [columnMetrics, scrollLeft]);
 
+  const scrollToColumn = useCallback((idx: number, columns: CalculatedColumn<R>[]) => {
+    const { current } = canvas;
+    if (!current) return;
+
+    const { scrollLeft, clientWidth } = current;
+    const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
+    if (newScrollLeft !== 0) {
+      current.scrollLeft = scrollLeft + newScrollLeft;
+      onScroll({ scrollLeft: current.scrollLeft, scrollTop });
+
+      if (scrollBar.current) {
+        scrollBar.current.scrollLeft = current.scrollLeft;
+      }
+    }
+  }, [onScroll, scrollTop]);
+
   useEffect(() => {
     return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
-  }, [columnMetrics.columns, eventBus]);
+  }, [columnMetrics.columns, eventBus, scrollToColumn]);
 
   useEffect(() => {
     if (prevScrollToRowIndex.current === scrollToRowIndex) return;
@@ -122,19 +139,26 @@ export default function Canvas<R>({
   }, [rowHeight, scrollToRowIndex]);
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
-    const { scrollLeft: newScrollLeft, scrollTop: newScrollTop } = e.currentTarget;
+    const { scrollTop: newScrollTop } = e.currentTarget;
+    setScrollTop(newScrollTop);
+    // keep it for ReactDataGrid.onScroll
+    onScroll({ scrollLeft, scrollTop: newScrollTop });
+  }
+
+  function handleHorizontalScroll(e: React.UIEvent<HTMLDivElement>) {
+    const { scrollLeft: newScrollLeft } = e.currentTarget;
+    canvas.current!.scrollLeft = newScrollLeft;
     // Freeze columns on legacy browsers
     setComponentsScrollLeft(newScrollLeft);
 
     setScrollLeft(newScrollLeft);
-    setScrollTop(newScrollTop);
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
+    onScroll({ scrollLeft: newScrollLeft, scrollTop });
   }
 
   function getClientHeight() {
     if (canvas.current) return canvas.current.clientHeight;
     const scrollbarSize = columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0;
-    return height - scrollbarSize;
+    return height - scrollbarSize - 1;
   }
 
   function onHitBottomCanvas({ rowIdx }: Position) {
@@ -154,17 +178,6 @@ export default function Canvas<R>({
 
   function handleHitColummBoundary({ idx }: Position) {
     scrollToColumn(idx, columnMetrics.columns);
-  }
-
-  function scrollToColumn(idx: number, columns: CalculatedColumn<R>[]) {
-    const { current } = canvas;
-    if (!current) return;
-
-    const { scrollLeft, clientWidth } = current;
-    const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
-    if (newScrollLeft !== 0) {
-      current.scrollLeft = scrollLeft + newScrollLeft;
-    }
   }
 
   function getRows() {
@@ -279,43 +292,48 @@ export default function Canvas<R>({
   const paddingBottom = (rowsCount - 1 - rowOverscanEndIdx) * rowHeight;
 
   return (
-    <div
-      className="react-grid-Canvas"
-      style={{ height }}
-      ref={canvas}
-      onScroll={handleScroll}
-      onKeyDown={onCanvasKeydown}
-      onKeyUp={onCanvasKeyup}
-    >
-      <InteractionMasks<R>
-        ref={interactionMasks}
-        rowGetter={rowGetter}
-        rowsCount={rowsCount}
-        rowHeight={rowHeight}
-        columns={columnMetrics.columns}
-        height={clientHeight}
-        colVisibleStartIdx={colVisibleStartIdx}
-        colVisibleEndIdx={colVisibleEndIdx}
-        enableCellSelect={enableCellSelect}
-        enableCellAutoFocus={enableCellAutoFocus}
-        cellNavigationMode={cellNavigationMode}
-        eventBus={eventBus}
-        contextMenu={contextMenu}
-        onHitBottomBoundary={onHitBottomCanvas}
-        onHitTopBoundary={onHitTopCanvas}
-        onHitLeftBoundary={handleHitColummBoundary}
-        onHitRightBoundary={handleHitColummBoundary}
-        scrollLeft={scrollLeft}
-        scrollTop={scrollTop}
-        getRowColumns={getRowColumns}
-        editorPortalTarget={editorPortalTarget}
-        {...interactionMasksMetaData}
-      />
-      <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-        <div className="rdg-rows-container" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
-          {getRows()}
-        </div>
-      </RowsContainer>
-    </div>
+    <>
+      <div
+        className="react-grid-Canvas"
+        style={{ height: clientHeight }}
+        ref={canvas}
+        onScroll={handleScroll}
+        onKeyDown={onCanvasKeydown}
+        onKeyUp={onCanvasKeyup}
+      >
+        <InteractionMasks<R>
+          ref={interactionMasks}
+          rowGetter={rowGetter}
+          rowsCount={rowsCount}
+          rowHeight={rowHeight}
+          columns={columnMetrics.columns}
+          height={clientHeight}
+          colVisibleStartIdx={colVisibleStartIdx}
+          colVisibleEndIdx={colVisibleEndIdx}
+          enableCellSelect={enableCellSelect}
+          enableCellAutoFocus={enableCellAutoFocus}
+          cellNavigationMode={cellNavigationMode}
+          eventBus={eventBus}
+          contextMenu={contextMenu}
+          onHitBottomBoundary={onHitBottomCanvas}
+          onHitTopBoundary={onHitTopCanvas}
+          onHitLeftBoundary={handleHitColummBoundary}
+          onHitRightBoundary={handleHitColummBoundary}
+          scrollLeft={scrollLeft}
+          scrollTop={scrollTop}
+          getRowColumns={getRowColumns}
+          editorPortalTarget={editorPortalTarget}
+          {...interactionMasksMetaData}
+        />
+        <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
+          <div className="rdg-rows-container" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
+            {getRows()}
+          </div>
+        </RowsContainer>
+      </div>
+      <div ref={scrollBar} onScroll={handleHorizontalScroll} style={{ width: `calc(100% - ${getScrollbarSize()}px)`, overflowX: 'auto' }}>
+        <div style={{ width: columnMetrics.totalColumnWidth, height: 1 }} />
+      </div>
+    </>
   );
 }
