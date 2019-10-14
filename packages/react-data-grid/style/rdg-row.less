@@ -70,14 +70,19 @@
   border: 1px solid #ddd;
 }
 
-.rdg-summary-rows {
-  .react-grid-Row {
-    overflow: hidden;
+.rdg-summary-container {
+  display: flex;
+  flex-wrap: nowrap;
 
-    &:last-child {
-      .react-grid-Cell {
-        border-bottom: none;
-      }
-    }
+  & > div:first-child {
+    overflow: hidden;
+  }
+
+  & > div:last-child {
+    background-color: #f9f9f9;
+  }
+
+  .react-grid-Row:last-child .react-grid-Cell {
+    border-bottom: none;
   }
 }

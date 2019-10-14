@@ -91,6 +91,7 @@ export default function Canvas<R>({
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
+  const summary = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
   // https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
@@ -135,12 +136,7 @@ export default function Canvas<R>({
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
     onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
-
-    summaryRowRefs.forEach(row => {
-      if (row.setScrollLeft) {
-        row.setScrollLeft(newScrollLeft);
-      }
-    });
+    summary.current!.scrollLeft = newScrollLeft;
   }
 
   function getClientHeight() {
@@ -264,6 +260,12 @@ export default function Canvas<R>({
     return selectedRows !== undefined && selectedRows.has(row[rowKey]);
   }
 
+  function scrollRows(row: RowRenderer & React.Component<RowRendererProps<R>>) {
+    if (row.setScrollLeft) {
+      row.setScrollLeft(scrollLeft);
+    }
+  }
+
   function setComponentsScrollLeft(scrollLeft: number) {
     if (isPositionStickySupported()) return;
 
@@ -272,11 +274,8 @@ export default function Canvas<R>({
       current.setScrollLeft(scrollLeft);
     }
 
-    rowRefs.forEach(row => {
-      if (row.setScrollLeft) {
-        row.setScrollLeft(scrollLeft);
-      }
-    });
+    rowRefs.forEach(scrollRows);
+    summaryRowRefs.forEach(scrollRows);
   }
 
   function getRowColumns(rowIdx: number) {
@@ -317,16 +316,11 @@ export default function Canvas<R>({
     );
   }
 
-  const scrollBarSize = getScrollbarSize();
   const scrollableRowsWrapperStyle: React.CSSProperties = {
     width: columnMetrics.totalColumnWidth,
     paddingTop: rowOverscanStartIdx * rowHeight,
     paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
   };
-  const summaryRowsWrapperStyle: React.CSSProperties | undefined = scrollBarSize > 0 ? {
-    marginRight: scrollBarSize - 1,
-    borderRight: '1px solid #d3d3d3'
-  } : undefined;
 
   return (
     <>
@@ -369,8 +363,13 @@ export default function Canvas<R>({
         </RowsContainer>
       </div>
       {summaryRows && summaryRows.length && (
-        <div className="rdg-summary-rows" style={summaryRowsWrapperStyle}>
-          {summaryRows.map(renderSummaryRow)}
+        <div className="rdg-summary-container">
+          <div ref={summary} style={{ width: `calc(100% - ${getScrollbarSize()}px)` }}>
+            <div style={{ width: columnMetrics.totalColumnWidth }}>
+              {summaryRows.map(renderSummaryRow)}
+            </div>
+          </div>
+          <div style={{ width: getScrollbarSize() }} />
         </div>
       )}
     </>
