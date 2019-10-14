@@ -15,26 +15,26 @@
 .rdg-cell-frozen {
   /* Should have a higher value than 1 to show in front of cell masks */
   z-index: 2;
-}
-.rdg-last--frozen {
-  border-right: 1px solid @borderColor;
-  box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3) !important;
+
+  &.has-tooltip:hover {
+    z-index: 3
+  }
+
+  &:last-child {
+    box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
+  }
+
+  @supports (position: sticky) or (position: -webkit-sticky) {
+    & {
+      position: -webkit-sticky;
+      position: sticky;
+    }
+  }
 }
 
 /* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
 .rdg-cell.has-tooltip:hover {
   z-index: 1;
-}
-
-.rdg-cell.rdg-cell-frozen.has-tooltip:hover  {
-  z-index: 3
-}
-
-@supports (position: sticky) or (position: -webkit-sticky) {
-  .rdg-cell-frozen {
-    position: -webkit-sticky;
-    position: sticky;
-  }
 }
 
 .react-contextmenu--visible {

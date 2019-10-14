@@ -45,7 +45,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer!;
-    const { idx, cellMetaData, row, lastFrozenColumnIndex, scrollLeft, isRowSelected, onRowSelectionChange } = this.props;
+    const { idx, cellMetaData, row, scrollLeft, isRowSelected, onRowSelectionChange } = this.props;
     const { key } = column;
 
     const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
@@ -59,7 +59,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       rowData: row,
       expandableOptions: this.getExpandableOptions(key),
       scrollLeft,
-      lastFrozenColumnIndex,
       isRowSelected,
       onRowSelectionChange
     };

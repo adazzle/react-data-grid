@@ -94,13 +94,12 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   }
 
   getCellClass() {
-    const { idx, column, lastFrozenColumnIndex, tooltip, expandableOptions } = this.props;
+    const { column, tooltip, expandableOptions } = this.props;
     return classNames(
       column.cellClass,
       'rdg-cell',
       this.props.className, {
         'rdg-cell-frozen': isFrozen(column),
-        'rdg-last--frozen': lastFrozenColumnIndex === idx,
         'has-tooltip': !!tooltip,
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
