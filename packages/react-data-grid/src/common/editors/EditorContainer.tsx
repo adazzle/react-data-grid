@@ -1,6 +1,7 @@
 import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
+import { Clear } from '@material-ui/icons';
 
 import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -247,7 +248,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
 
   renderStatusIcon() {
     return this.state.isInvalid
-      && <span className="glyphicon glyphicon-remove form-control-feedback" />;
+      && <Clear className="form-control-feedback" />;
   }
 
   render() {
