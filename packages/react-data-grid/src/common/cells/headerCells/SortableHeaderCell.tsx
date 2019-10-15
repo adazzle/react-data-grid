@@ -51,9 +51,9 @@ export default function SortableHeaderCell<R>(props: Props<R>) {
       });
 
   return (
-    <div className="rdg-sortable-header-cell" onClick={onClick}>
-      {content}
-      <span className="rdg-header-sort">{SORT_TEXT[sortDirection]}</span>
-    </div>
+    <span className="rdg-header-sort-cell" onClick={onClick}>
+      <span className="rdg-header-sort-name">{content}</span>
+      <span>{SORT_TEXT[sortDirection]}</span>
+    </span>
   );
 }

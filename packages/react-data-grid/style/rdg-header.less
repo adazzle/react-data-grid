@@ -105,10 +105,13 @@
     color: #555555;
 }
 
-.rdg-sortable-header-cell {
+.rdg-header-sort-cell {
   cursor: pointer;
+  display: flex;
 }
 
-.rdg-header-sort {
-  float: right;
+.rdg-header-sort-name {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
