@@ -121,17 +121,7 @@ describe('Header Unit Tests', () => {
       const headerDiv = wrapper.find('div');
       expect(headerDiv.hasClass('rdg-header'));
     });
-    it('passes style property', () => {
-      const wrapper = renderComponent(testAllProps);
-      const headerDiv = wrapper.find('div');
-      expect(headerDiv.props().style).toBeDefined();
-    });
 
-    it('should account for scrollbar size in header', () => {
-      const wrapper = renderComponent(testAllProps);
-      const headerDiv = wrapper.find('div');
-      expect(headerDiv.props().style!.paddingRight).toBe(SCROLL_BAR_SIZE);
-    });
     it('does not pass onScroll properties if it is not available from props', () => {
       const wrapper = renderComponent(testRequiredProps);
       const headerDiv = wrapper.find('div');
