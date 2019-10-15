@@ -20,6 +20,7 @@ type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 >;
 
 export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
+  width: number;
   height: number;
   columns: CalculatedColumn<R>[];
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
@@ -33,7 +34,6 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
 export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
-  private readonly headerRow = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, HeaderCell<R>>();
 
   getHeaderCellType(column: CalculatedColumn<R>): HeaderCellType {
@@ -130,8 +130,6 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   setScrollLeft(scrollLeft: number): void {
-    this.headerRow.current!.scrollLeft = scrollLeft;
-    if (isPositionStickySupported()) return;
     this.props.columns.forEach(column => {
       const { key } = column;
       if (!this.cells.has(key)) return;
@@ -147,9 +145,8 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   render() {
     return (
       <div
-        ref={this.headerRow}
         className="rdg-header-row"
-        style={{ height: this.props.height }}
+        style={{ width: this.props.width, height: this.props.height }}
       >
         {this.getCells()}
       </div>
