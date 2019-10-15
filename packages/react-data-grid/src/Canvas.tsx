@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 
 import RowRenderer from './RowRenderer';
 import InteractionMasks from './masks/InteractionMasks';
+import Row from './Row';
 import { getColumnScrollPosition, isPositionStickySupported, getScrollbarSize } from './utils';
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, Position, ScrollPosition, IRowRenderer, IRowRendererProps, ColumnMetrics, CellMetaData, InteractionMasksMetaData } from './common/types';
+import { CalculatedColumn, Position, ScrollPosition, ColumnMetrics, CellMetaData, InteractionMasksMetaData } from './common/types';
 import { ReactDataGridProps } from './ReactDataGrid';
 import EventBus from './EventBus';
 import { getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
@@ -73,7 +74,7 @@ export default function Canvas<R>({
   const canvas = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-  const [rowRefs] = useState(() => new Map<number, IRowRenderer & React.Component<IRowRendererProps<R>>>());
+  const [rowRefs] = useState(() => new Map<number, Row<R>>());
   const clientHeight = getClientHeight();
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
@@ -150,6 +151,14 @@ export default function Canvas<R>({
     }
   }
 
+  const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
+    if (row) {
+      rowRefs.set(idx, row);
+    } else {
+      rowRefs.delete(idx);
+    }
+  }, [rowRefs]);
+
   function getRows() {
     const rowElements = [];
 
@@ -160,7 +169,7 @@ export default function Canvas<R>({
           key={idx}
           idx={idx}
           rowData={rowData}
-          rowRefs={rowRefs}
+          setRowRef={setRowRef}
           cellMetaData={cellMetaData}
           colOverscanEndIdx={colOverscanEndIdx}
           colOverscanStartIdx={colOverscanStartIdx}

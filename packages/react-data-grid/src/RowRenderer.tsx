@@ -5,7 +5,7 @@ import shallowEqual from 'shallowequal';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
-import { IRowRenderer, IRowRendererProps, CalculatedColumn, SubRowDetails, RowData } from './common/types';
+import { IRowRendererProps, CalculatedColumn, SubRowDetails, RowData } from './common/types';
 
 type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 | 'cellMetaData'
@@ -26,7 +26,7 @@ interface RowRendererProps<R> extends SharedCanvasProps<R> {
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   scrollLeft: number;
-  rowRefs: Map<number, IRowRenderer & React.Component<IRowRendererProps<R>>>;
+  setRowRef(row: Row<R> | null, idx: number): void;
 }
 
 type SharedActualRowRendererProps<R> = Pick<RowRendererProps<R>,
@@ -39,7 +39,7 @@ type SharedActualRowRendererProps<R> = Pick<RowRendererProps<R>,
 >;
 
 interface RendererProps<R> extends SharedActualRowRendererProps<R> {
-  ref(row: (IRowRenderer & React.Component<IRowRendererProps<R>>) | null): void;
+  ref: React.Ref<Row<R>>;
   row: R;
   columns: CalculatedColumn<R>[];
   lastFrozenColumnIndex: number;
@@ -61,19 +61,15 @@ function RowRenderer<R>({
   rowGroupRenderer,
   rowHeight,
   rowKey,
-  rowRefs,
   rowRenderer,
   scrollLeft,
-  selectedRows
+  selectedRows,
+  setRowRef
 }: RowRendererProps<R>) {
   const { __metaData } = rowData as RowData;
   const rendererProps: RendererProps<R> = {
     ref(row) {
-      if (row) {
-        rowRefs.set(idx, row);
-      } else {
-        rowRefs.delete(idx);
-      }
+      setRowRef(row, idx);
     },
     idx,
     row: rowData,
