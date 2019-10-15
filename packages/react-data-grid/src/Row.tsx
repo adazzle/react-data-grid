@@ -14,7 +14,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
     height: 35
   };
 
-  private readonly row = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, CellRenderer>();
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -108,7 +107,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
 
     return (
       <div
-        ref={this.row}
         className={className}
         style={{ height: this.props.height }}
         onDragEnter={this.handleDragEnter}
