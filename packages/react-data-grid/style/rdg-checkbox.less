@@ -1,58 +1,34 @@
-.react-grid-checkbox {
-    opacity: 0;
-    position: absolute;
+.rdg-checkbox-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
-.react-grid-checkbox, .react-grid-checkbox-label {
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
+.rdg-checkbox-input {
+  all: unset;
+  width: 0;
+  margin: 0;
 }
 
-.react-grid-checkbox-label {
-    position: relative;
-}
+.rdg-checkbox {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  background: #fff;
 
-.react-grid-checkbox + .react-grid-checkbox-label:before {
-    content: '';
-    background: #fff;
-    border: 2px solid #ddd;
-    display: inline-block;
-    vertical-align: middle;
-    width: 20px;
-    height: 20px;
-    text-align: center;
-}
-
-.react-grid-checkbox:checked + .react-grid-checkbox-label:before {
+  .rdg-checkbox-input:checked + & {
     background: #005295;
     box-shadow: inset 0px 0px 0px 4px #fff;
-}
+  }
 
-.react-grid-checkbox:focus + .react-grid-checkbox-label {
-  outline: 1px solid #ddd; /* focus style */
-}
-
-.react-grid-HeaderCell input[type='checkbox'] {
-  z-index: 99999;
-}
-
-.react-grid-checkbox-container {
-    display: block;
-    margin: 0;
-}
-.react-grid-HeaderCell > .react-grid-checkbox-container {
-    height: 100%
-}
-
-
-.react-grid-HeaderCell > .react-grid-checkbox-container > .react-grid-checkbox-label {
-   margin : 0;
-   position: relative;
-   top: 50%;
-   transform: translateY(-50%);
-}
-
-.checkbox-align {
-    text-align: center;
+  .rdg-checkbox-input:focus + & {
+    border-color: lighten(#005295, 40%);
+  }
 }

@@ -398,12 +398,11 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 
   const headerRows = getHeaderRows();
   const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
-  const style = width ? { width } : undefined;
 
   return (
     <div
       className="rdg-root"
-      style={style}
+      style={{ width, lineHeight: `${rowHeight}px` }}
       ref={gridRef}
     >
       {columnMetrics && (
@@ -416,7 +415,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
             columnMetrics={columnMetrics}
             onColumnResize={handleColumnResize}
             headerRows={headerRows}
-            rowOffsetHeight={rowOffsetHeight}
             sortColumn={props.sortColumn}
             sortDirection={props.sortDirection}
             draggableHeaderCell={props.draggableHeaderCell}
@@ -427,11 +425,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
             getValidFilterValues={props.getValidFilterValues}
             cellMetaData={cellMetaData}
           />
-          {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? (
-            <div className="react-grid-Empty">
-              {createElement(props.emptyRowsView)}
-            </div>
-          ) : (
+          {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R>
               rowKey={rowKey}
               rowHeight={rowHeight}

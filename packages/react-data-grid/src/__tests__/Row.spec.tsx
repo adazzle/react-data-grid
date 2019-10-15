@@ -55,7 +55,7 @@ describe('Row', () => {
   it('passes classname property', () => {
     const { wrapper } = setup(requiredProperties);
     const draggableDiv = wrapper.find('div').at(0);
-    expect(draggableDiv.hasClass('react-grid-Row'));
+    expect(draggableDiv.hasClass('rdg-row'));
   });
   it('passes style property', () => {
     const { wrapper } = setup(requiredProperties);

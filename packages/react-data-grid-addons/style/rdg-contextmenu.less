@@ -1,0 +1,39 @@
+.react-contextmenu {
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.24);
+
+  font-size: 14px;
+  line-height: 2;
+  white-space: nowrap;
+
+  > .react-contextmenu-item:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .react-contextmenu-submenu > & {
+    margin-top: -1px;
+  }
+}
+
+.react-contextmenu-item:not(.react-contextmenu-submenu) {
+  padding: 0 12px;
+}
+
+.react-contextmenu-item--selected {
+  background-color: darken(#fff, 4%);
+}
+
+.react-contextmenu-submenu > .react-contextmenu-item {
+  &::after {
+    content: "▶";
+    margin-left: 12px;
+    margin-right: -6px;
+  }
+
+  &:not(.react-contextmenu-item--active) + .react-contextmenu {
+    display: none;
+  }
+}

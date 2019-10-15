@@ -1,68 +1,51 @@
-.react-grid-Cell {
+.rdg-cell {
+  display: inline-block;
   position: absolute;
-  background-color: #ffffff;
-  padding-left: 8px;
-  padding-right: 8px;
-  border-right: 1px solid #eee;
-  border-bottom: 1px solid #dddddd;
+  height: inherit;
+  padding: 0 8px;
+  border-right: 1px solid @borderColor;
+  border-bottom: 1px solid @borderColor;
+  background-color: inherit;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.rdg-selected {
-  border: 2px solid #66afe9;
-}
-
-.rdg-selected-range {
-  border: 1px solid #66afe9;
-  background-color: #66afe930;
-}
-
-.react-grid-Cell--frozen {
+.rdg-cell-frozen {
   /* Should have a higher value than 1 to show in front of cell masks */
   z-index: 2;
-}
-.rdg-last--frozen {
-  border-right: 1px solid #dddddd;
-  box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3) !important;
+
+  &.has-tooltip:hover {
+    z-index: 3
+  }
+
+  &:last-child {
+    box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
+  }
+
+  @supports (position: sticky) or (position: -webkit-sticky) {
+    & {
+      position: -webkit-sticky;
+      position: sticky;
+    }
+  }
 }
 
 /* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
-.react-grid-Cell.has-tooltip:hover {
+.rdg-cell.has-tooltip:hover {
   z-index: 1;
-}
-
-.react-grid-Cell.react-grid-Cell--frozen.has-tooltip:hover  {
-  z-index: 3
-}
-
-@supports (position: sticky) or (position: -webkit-sticky) {
-  .react-grid-Cell--frozen {
-    display: inline-block;
-    position: -webkit-sticky;
-    position: sticky;
-  }
 }
 
 .react-contextmenu--visible {
   z-index: 1000;
 }
 
-.react-grid-Cell:not(.editing) .react-grid-Cell__value {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  height: inherit;
-}
-
-.react-grid-Cell.readonly {
+.rdg-cell.readonly {
   background-color : black;
 }
 
-
-.react-grid-Cell:hover {
-  background: #eee;
-}
-
-.react-grid-cell .form-control-feedback {
+.rdg-cell .form-control-feedback {
   color: #a94442;
   position: absolute;
   top: 0px;
@@ -73,37 +56,27 @@
   height: 34px;
 }
 
-.react-grid-Row.row-selected .react-grid-Cell{
- background-color: #DBECFA;
-}
-
-.react-grid-Cell.editing {
+.rdg-cell.editing {
   padding: 0;
   overflow: visible !important;
 }
 
-.react-grid-Cell.editing .has-error input {
+.rdg-cell.editing .has-error input {
   border: 2px red solid !important;
   border-radius: 2px !important;
 }
 
-.react-grid-Cell__value ul {
+.rdg-cell-value ul {
   margin-top: 0;
   margin-bottom: 0;
   display: inline-block;
 }
 
-.react-grid-Cell__value .btn-sm {
+.rdg-cell-value .btn-sm {
   padding: 0;
 }
 
-.react-grid-Cell__container {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.cell-tooltip .cell-tooltip-text {
+.rdg-cell-tooltip .rdg-cell-tooltip-text {
     white-space: normal;
     visibility: hidden;
     width: 150px;
@@ -120,12 +93,12 @@
     margin-left: -75px
 }
 
-.cell-tooltip:hover .cell-tooltip-text {
+.rdg-cell-tooltip:hover .rdg-cell-tooltip-text {
     visibility: visible;
     opacity: 0.8;
 }
 
-.cell-tooltip .cell-tooltip-text::after {
+.rdg-cell-tooltip .rdg-cell-tooltip-text::after {
     content: " ";
     position: absolute;
     bottom: 100%;  /* At the top of the tooltip */
@@ -185,23 +158,18 @@
    background: white;
 }
 
-.rdg-child-row-btn div {
-  font-size: 12px;
-  text-align:center;
-  line-height:19px;
+.rdg-child-row-btn .MuiSvgIcon-root {
+  font-size: 16px;
   color: grey;
-  height:20px;
-  width:20px;
-  position:absolute;
-  top:60%;
-  left:53%;
-  margin-top:-10px;
-  margin-left:-10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -8px;
+  margin-left: -8px;
 
-}
-
-.rdg-child-row-btn .glyphicon-remove-sign:hover {
-  color: red;
+  &:hover {
+    color: red;
+  }
 }
 
 .rdg-cell-action {
@@ -267,4 +235,21 @@
   position: absolute;
   pointer-events: none;
   outline: none;
+}
+
+.rdg-filter-container {
+  display: flex;
+  height: inherit;
+  align-items: center;
+}
+
+.rdg-filter {
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+}
+
+.rdg-filter-badge {
+  cursor: help;
+  padding-left: 4px;
 }

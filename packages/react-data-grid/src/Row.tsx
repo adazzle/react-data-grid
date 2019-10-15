@@ -45,7 +45,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   getCell(column: CalculatedColumn<R>) {
     const Renderer = this.props.cellRenderer!;
-    const { idx, cellMetaData, row, lastFrozenColumnIndex, scrollLeft, isRowSelected, onRowSelectionChange } = this.props;
+    const { idx, cellMetaData, row, scrollLeft, isRowSelected, onRowSelectionChange } = this.props;
     const { key } = column;
 
     const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
@@ -59,7 +59,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
       rowData: row,
       expandableOptions: this.getExpandableOptions(key),
       scrollLeft,
-      lastFrozenColumnIndex,
       isRowSelected,
       onRowSelectionChange
     };
@@ -109,9 +108,9 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
   render() {
     const className = classNames(
-      'react-grid-Row',
-      `react-grid-Row--${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
-      { 'row-selected': this.props.isRowSelected },
+      'rdg-row',
+      `rdg-row-${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
+      { 'rdg-row-selected': this.props.isRowSelected },
       this.props.extraClasses
     );
 

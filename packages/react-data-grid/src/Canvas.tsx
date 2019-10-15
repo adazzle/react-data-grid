@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { isElement } from 'react-is';
 
 import Row from './Row';
@@ -80,7 +80,7 @@ export default function Canvas<R>({
   rowHeight,
   rowKey,
   rowRenderer,
-  RowsContainer = Fragment,
+  RowsContainer,
   rowsCount,
   scrollToRowIndex,
   selectedRows
@@ -275,12 +275,26 @@ export default function Canvas<R>({
     );
   }
 
-  const paddingTop = rowOverscanStartIdx * rowHeight;
-  const paddingBottom = (rowsCount - 1 - rowOverscanEndIdx) * rowHeight;
+  let grid = (
+    <div
+      className="rdg-grid"
+      style={{
+        width: columnMetrics.totalColumnWidth,
+        paddingTop: rowOverscanStartIdx * rowHeight,
+        paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
+      }}
+    >
+      {getRows()}
+    </div>
+  );
+
+  if (RowsContainer !== undefined) {
+    grid = <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>{grid}</RowsContainer>;
+  }
 
   return (
     <div
-      className="react-grid-Canvas"
+      className="rdg-viewport"
       style={{ height }}
       ref={canvas}
       onScroll={handleScroll}
@@ -311,11 +325,7 @@ export default function Canvas<R>({
         editorPortalTarget={editorPortalTarget}
         {...interactionMasksMetaData}
       />
-      <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-        <div className="rdg-rows-container" style={{ width: columnMetrics.totalColumnWidth, paddingTop, paddingBottom }}>
-          {getRows()}
-        </div>
-      </RowsContainer>
+      {grid}
     </div>
   );
 }

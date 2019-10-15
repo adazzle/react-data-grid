@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { Data, Formatters } from 'react-data-grid-addons';
+import { Clear, Link, FileCopy } from '@material-ui/icons';
 import faker from 'faker';
 import Wrapper from './Wrapper';
 
@@ -133,18 +134,18 @@ export default class extends React.Component {
     if (column.key === 'county' && row.id === 'id_0') {
       return [
         {
-          icon: <span className="glyphicon glyphicon-remove" />,
+          icon: <Clear />,
           callback() { alert('Deleting'); }
         },
         {
-          icon: <span className="glyphicon glyphicon-link" />,
+          icon: <Link />,
           actions: [
             {
               text: 'Edit Cell',
               callback() { alert('Edit Cell'); }
             },
             {
-              text: <><span className="fa fa-copy" /> Copy Cell</>,
+              text: <><FileCopy /> Copy Cell</>,
               callback() { alert('Copied'); }
             }
           ]

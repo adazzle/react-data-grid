@@ -1,6 +1,7 @@
 import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
+import { Clear } from '@material-ui/icons';
 
 import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -39,10 +40,6 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
     const inputNode = this.getInputNode();
     if (inputNode instanceof HTMLElement) {
       inputNode.focus();
-      if (!this.getEditor().disableContainerStyles) {
-        inputNode.className += ' editor-main';
-        inputNode.style.height = `${this.props.height - 1}px`;
-      }
     }
     if (inputNode instanceof HTMLInputElement) {
       inputNode.select();
@@ -251,13 +248,13 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
 
   renderStatusIcon() {
     return this.state.isInvalid
-      && <span className="glyphicon glyphicon-remove form-control-feedback" />;
+      && <Clear className="form-control-feedback" />;
   }
 
   render() {
     const { width, height, left, top } = this.props;
     const className = classNames('rdg-editor-container', {
-      'has-error': this.state.isInvalid === true
+      'has-error': this.state.isInvalid
     });
 
     return (
