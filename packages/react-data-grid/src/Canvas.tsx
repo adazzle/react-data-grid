@@ -332,39 +332,41 @@ export default function Canvas<R>({
   }
 
   return (
-    <div
-      className="rdg-viewport"
-      style={{ height }}
-      ref={canvas}
-      onScroll={handleScroll}
-      onKeyDown={onCanvasKeydown}
-      onKeyUp={onCanvasKeyup}
-    >
-      <InteractionMasks<R>
-        ref={interactionMasks}
-        rowGetter={rowGetter}
-        rowsCount={rowsCount}
-        rowHeight={rowHeight}
-        columns={columnMetrics.columns}
-        height={clientHeight}
-        colVisibleStartIdx={colVisibleStartIdx}
-        colVisibleEndIdx={colVisibleEndIdx}
-        enableCellSelect={enableCellSelect}
-        enableCellAutoFocus={enableCellAutoFocus}
-        cellNavigationMode={cellNavigationMode}
-        eventBus={eventBus}
-        contextMenu={contextMenu}
-        onHitBottomBoundary={onHitBottomCanvas}
-        onHitTopBoundary={onHitTopCanvas}
-        onHitLeftBoundary={handleHitColummBoundary}
-        onHitRightBoundary={handleHitColummBoundary}
-        scrollLeft={scrollLeft}
-        scrollTop={scrollTop}
-        getRowColumns={getRowColumns}
-        editorPortalTarget={editorPortalTarget}
-        {...interactionMasksMetaData}
-      />
-      {grid}
+    <>
+      <div
+        className="rdg-viewport"
+        style={{ height: summaryRows ? height - summaryRows.length * rowHeight : height }}
+        ref={canvas}
+        onScroll={handleScroll}
+        onKeyDown={onCanvasKeydown}
+        onKeyUp={onCanvasKeyup}
+      >
+        <InteractionMasks<R>
+          ref={interactionMasks}
+          rowGetter={rowGetter}
+          rowsCount={rowsCount}
+          rowHeight={rowHeight}
+          columns={columnMetrics.columns}
+          height={clientHeight}
+          colVisibleStartIdx={colVisibleStartIdx}
+          colVisibleEndIdx={colVisibleEndIdx}
+          enableCellSelect={enableCellSelect}
+          enableCellAutoFocus={enableCellAutoFocus}
+          cellNavigationMode={cellNavigationMode}
+          eventBus={eventBus}
+          contextMenu={contextMenu}
+          onHitBottomBoundary={onHitBottomCanvas}
+          onHitTopBoundary={onHitTopCanvas}
+          onHitLeftBoundary={handleHitColummBoundary}
+          onHitRightBoundary={handleHitColummBoundary}
+          scrollLeft={scrollLeft}
+          scrollTop={scrollTop}
+          getRowColumns={getRowColumns}
+          editorPortalTarget={editorPortalTarget}
+          {...interactionMasksMetaData}
+        />
+        {grid}
+      </div>
       {summaryRows && summaryRows.length && (
         <div className="rdg-summary">
           <div ref={summary} style={boundaryStyle}>
@@ -374,6 +376,6 @@ export default function Canvas<R>({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
