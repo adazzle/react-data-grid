@@ -34,7 +34,7 @@ import {
   SelectedRange,
   SubRowDetails,
   SubRowOptions,
-  RowRendererProps,
+  IRowRendererProps,
   ScrollPosition
 } from './common/types';
 
@@ -89,7 +89,7 @@ export interface ReactDataGridProps<R extends {}> {
   rowKey?: keyof R;
   /** The height of each row in pixels */
   rowHeight?: number;
-  rowRenderer?: React.ReactElement | React.ComponentType<RowRendererProps<R>>;
+  rowRenderer?: React.ReactElement | React.ComponentType<IRowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
   rowGetter: RowGetter<R>;

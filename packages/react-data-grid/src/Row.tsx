@@ -1,12 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
-import shallowEqual from 'shallowequal';
 
 import Cell from './Cell';
 import { isFrozen } from './utils/columnUtils';
-import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
+import { IRowRenderer, IRowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
-export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer {
+export default class Row<R> extends React.Component<IRowRendererProps<R>> implements IRowRenderer {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -15,15 +14,7 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
     height: 35
   };
 
-  private readonly row = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, CellRenderer>();
-
-  shouldComponentUpdate(nextProps: RowRendererProps<R>) {
-    const { scrollLeft, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
-
-    return !shallowEqual(rest, nextRest);
-  }
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     // Prevent default to allow drop
@@ -116,7 +107,6 @@ export default class Row<R> extends React.Component<RowRendererProps<R>> impleme
 
     return (
       <div
-        ref={this.row}
         className={className}
         style={{ height: this.props.height }}
         onDragEnter={this.handleDragEnter}

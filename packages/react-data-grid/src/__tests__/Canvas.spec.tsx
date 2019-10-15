@@ -1,11 +1,12 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
 import Canvas, { CanvasProps } from '../Canvas';
 import EventBus from '../EventBus';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
+import RowComponent from '../Row';
 
 interface Row {
   id?: number;
@@ -14,7 +15,6 @@ interface Row {
 }
 
 const noop = () => null;
-const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find('.rdg-grid').props().children as JSX.Element[];
 
 const testProps: CanvasProps<Row> = {
   rowKey: 'row',
@@ -57,7 +57,7 @@ const testProps: CanvasProps<Row> = {
 };
 
 function renderComponent(extraProps?: Partial<CanvasProps<Row>>) {
-  return shallow(<Canvas<Row> {...testProps} {...extraProps} />);
+  return mount(<Canvas<Row> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas Tests', () => {
@@ -82,9 +82,8 @@ describe('Canvas Tests', () => {
         rowKey: 'id',
         selectedRows: new Set([1])
       });
-      const rows = getRows(wrapper);
 
-      expect(rows[0].props.isRowSelected).toBe(true);
+      expect(wrapper.find(RowComponent).props().isRowSelected).toBe(true);
     });
   });
 
@@ -131,8 +130,7 @@ describe('Canvas Tests', () => {
       };
 
       const wrapper = renderComponent(props);
-      const rows = getRows(wrapper);
-      expect(rows[0].props.className).toBe('test-row-renderer');
+      expect(wrapper.find('.test-row-renderer')).toHaveLength(1);
     });
   });
 });
