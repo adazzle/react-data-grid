@@ -1,14 +1,13 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 import shallowEqual from 'shallowequal';
 
-import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
+import CellContent from './Cell/CellContent';
 import CellExpand from './Cell/CellExpander';
-import { isFrozen } from './utils/columnUtils';
+import { CellRenderer, CellRendererProps, ColumnEventInfo, SubRowOptions } from './common/types';
 import { isPositionStickySupported } from './utils';
-import CellValue from './Cell/CellValue';
-import ChildRowDeleteButton from './ChildRowDeleteButton';
+import { isFrozen } from './utils/columnUtils';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
@@ -163,73 +162,56 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     return allEvents;
   }
 
-  handleDeleteSubRow = (): void => {
-    const { cellMetaData: { onDeleteSubRow } } = this.props;
-
-    if (onDeleteSubRow) {
-      const { idx, rowIdx, expandableOptions, rowData } = this.props;
-      onDeleteSubRow({
-        idx,
-        rowIdx,
-        rowData,
-        expandArgs: expandableOptions
-      });
-    }
-  };
-
   render() {
-    const { rowIdx, column, value, tooltip, rowData, isSummaryRow } = this.props;
-
+    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isSummaryRow } = this.props;
     if (column.hidden) {
       return null;
     }
 
     const style = this.getStyle();
-    const cellClassName = this.getCellClass();
-    const cellValueClassName = classNames('react-grid-Cell__value', { 'cell-tooltip': !!tooltip });
-
-    const cellValue = (
-      <CellValue<R>
-        rowIdx={rowIdx}
-        rowData={rowData}
-        column={column}
-        value={value}
-        isRowSelected={this.props.isRowSelected}
-        onRowSelectionChange={this.props.onRowSelectionChange}
-        isSummaryRow={isSummaryRow}
-      />
-    );
+    const className = this.getCellClass();
 
     if (isSummaryRow) {
       return (
         <div
           ref={this.cell}
-          className={cellClassName}
+          className={className}
           style={style}
         >
-          <div className={cellValueClassName}>
-            <div className="react-grid-Cell__container">
-              {cellValue}
-            </div>
-          </div>
+          <CellContent<R>
+            idx={idx}
+            rowIdx={rowIdx}
+            column={column}
+            rowData={rowData}
+            value={value}
+            expandableOptions={expandableOptions}
+            height={height}
+            isRowSelected={false}
+            onRowSelectionChange={this.props.onRowSelectionChange}
+            isSummaryRow
+          />
         </div>
       );
     }
 
-    const { children, height, cellControls, expandableOptions, cellMetaData } = this.props;
-    const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
-    const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
-    const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
-    const { onDeleteSubRow, getCellActions } = cellMetaData;
-
-    const cellActions = (
-      <CellActions<R>
+    const cellContent = children || (
+      <CellContent<R>
+        idx={idx}
+        rowIdx={rowIdx}
         column={column}
         rowData={rowData}
-        getCellActions={getCellActions}
+        value={value}
+        tooltip={tooltip}
+        expandableOptions={expandableOptions}
+        height={height}
+        onDeleteSubRow={cellMetaData.onDeleteSubRow}
+        cellControls={cellControls}
+        isRowSelected={this.props.isRowSelected}
+        onRowSelectionChange={this.props.onRowSelectionChange}
+        isSummaryRow={isSummaryRow}
       />
     );
-
+    const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand
         expanded={expandableOptions.expanded}
@@ -237,34 +219,18 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
       />
     );
 
-    const cellContent = children || (
-      <div className={cellValueClassName}>
-        {expandableOptions && treeDepth > 0 && isExpandCell && (
-          <ChildRowDeleteButton
-            treeDepth={treeDepth}
-            cellHeight={height}
-            onDeleteSubRow={this.handleDeleteSubRow}
-            isDeleteSubRowEnabled={!!onDeleteSubRow}
-          />
-        )}
-        <div className="react-grid-Cell__container" style={{ marginLeft }}>
-          <span>{cellValue}</span>
-          {cellControls}
-        </div>
-        {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
-      </div>
-    );
-
-    const events = this.getEvents();
-
     return (
       <div
         ref={this.cell}
-        className={cellClassName}
+        className={className}
         style={style}
         {...events}
       >
-        {cellActions}
+        <CellActions<R>
+          column={column}
+          rowData={rowData}
+          getCellActions={cellMetaData.getCellActions}
+        />
         {cellExpander}
         {cellContent}
       </div>
