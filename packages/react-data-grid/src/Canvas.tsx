@@ -316,11 +316,13 @@ export default function Canvas<R>({
     );
   }
 
-  const scrollableRowsWrapperStyle: React.CSSProperties = {
-    width: columnMetrics.totalColumnWidth,
+  const rowsContainerStyle: React.CSSProperties = { width: columnMetrics.totalColumnWidth };
+  const canvasRowsContainerStyle: React.CSSProperties = {
+    ...rowsContainerStyle,
     paddingTop: rowOverscanStartIdx * rowHeight,
     paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
   };
+  const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
 
   return (
     <>
@@ -357,19 +359,18 @@ export default function Canvas<R>({
           {...interactionMasksMetaData}
         />
         <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          <div className="rdg-rows-container" style={scrollableRowsWrapperStyle}>
+          <div className="rdg-rows-container" style={canvasRowsContainerStyle}>
             {getRows()}
           </div>
         </RowsContainer>
       </div>
       {summaryRows && summaryRows.length && (
-        <div className="rdg-summary-container">
-          <div ref={summary} style={{ width: `calc(100% - ${getScrollbarSize()}px)` }}>
-            <div style={{ width: columnMetrics.totalColumnWidth }}>
+        <div className="rdg-summary">
+          <div ref={summary} style={boundaryStyle}>
+            <div style={rowsContainerStyle}>
               {summaryRows.map(renderSummaryRow)}
             </div>
           </div>
-          <div style={{ width: getScrollbarSize() }} />
         </div>
       )}
     </>
