@@ -16,6 +16,7 @@ describe('Header Row Unit Tests', () => {
     onColumnResizeEnd() { },
     onSort: jest.fn(),
     sortDirection: DEFINE_SORT.NONE,
+    width: 1000,
     height: 35,
     allRowsSelected: false,
     onAllRowsSelectionChange() {},
@@ -130,6 +131,7 @@ describe('Header Row Unit Tests', () => {
     };
 
     const requiredProps: HeaderRowProps<Row> = {
+      width: 1000,
       height: 35,
       columns: helpers.columns,
       onSort: jest.fn(),
@@ -146,7 +148,7 @@ describe('Header Row Unit Tests', () => {
     it('passes classname property', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.hasClass('react-grid-HeaderRow'));
+      expect(headerRowDiv.hasClass('rdg-header-row'));
     });
     it('does not pass width if not available from props', () => {
       const wrapper = renderComponent(requiredProps);
@@ -156,7 +158,7 @@ describe('Header Row Unit Tests', () => {
     it('does pass the height if available from props', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toEqual({ height: 35 });
+      expect(headerRowDiv.props().style).toEqual({ height: 35, width: 1000 });
     });
   });
 });

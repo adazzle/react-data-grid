@@ -63,7 +63,7 @@ export default class DropDownEditor extends React.Component {
     return (
       <select
         ref={this.setSelectRef}
-        style={{ width: '100%' }}
+        className="rdg-select-editor"
         defaultValue={this.props.value}
         onBlur={this.props.onBlur}
       >

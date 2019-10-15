@@ -7,7 +7,7 @@ import { CalculatedColumn, HeaderRowProps } from './common/types';
 
 function SimpleCellRenderer<R>({ column, rowType }: HeaderRowProps<R>) {
   const headerText = rowType === HeaderRowType.HEADER ? column.name : '';
-  return <div>{headerText}</div>;
+  return <>{headerText}</>;
 }
 
 interface Props<R> {
@@ -132,24 +132,21 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
   }
 
   render() {
-    const { column, rowType, height } = this.props;
+    const { column, rowType } = this.props;
 
-    const className = classNames('react-grid-HeaderCell', {
+    const className = classNames('rdg-cell', {
       'rdg-header-cell-resizable': column.resizable,
-      'react-grid-HeaderCell--frozen': isFrozen(column)
+      'rdg-cell-frozen': isFrozen(column)
     }, this.props.className, column.cellClass);
-
-    const style: React.CSSProperties = {
-      width: column.width,
-      left: column.left,
-      height
-    };
 
     const cell = (
       <div
-        className={className}
-        style={style}
         ref={this.cell}
+        className={className}
+        style={{
+          width: column.width,
+          left: column.left
+        }}
         onMouseDown={column.resizable ? this.onMouseDown : undefined}
         onTouchStart={column.resizable ? this.onTouchStart : undefined}
       >

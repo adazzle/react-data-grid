@@ -46,8 +46,7 @@ const testProps: CellProps<Row> = {
   height: 40,
   isRowSelected: false,
   onRowSelectionChange() {},
-  scrollLeft: 0,
-  lastFrozenColumnIndex: -1
+  scrollLeft: 0
 };
 
 const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>) => {
@@ -95,14 +94,13 @@ describe('Cell Tests', () => {
       expandableOptions,
       isRowSelected: false,
       onRowSelectionChange() {},
-      scrollLeft: 0,
-      lastFrozenColumnIndex: -1
+      scrollLeft: 0
     };
 
     it('passes classname property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.hasClass('react-grid-Cell'));
+      expect(cellDiv.hasClass('rdg-cell'));
     });
     it('passes style property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
@@ -130,7 +128,6 @@ describe('Cell Tests', () => {
         isRowSelected: false,
         onRowSelectionChange() {},
         scrollLeft: 0,
-        lastFrozenColumnIndex: -1,
         ...propsOverride
       };
 

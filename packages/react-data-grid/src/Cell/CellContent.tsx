@@ -38,7 +38,7 @@ export default function CellContent<R>({
 }: CellContentProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
-  const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
+  const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
 
   function handleDeleteSubRow() {
     if (onDeleteSubRow) {
@@ -60,27 +60,25 @@ export default function CellContent<R>({
     />
   );
 
-  const classes = classNames('react-grid-Cell__value',
-    { 'cell-tooltip': !!tooltip }
+  const classes = classNames('rdg-cell-value',
+    { 'rdg-cell-tooltip': !!tooltip }
   );
 
   return (
     <div className={classes}>
       {cellDeleter}
-      <div className="react-grid-Cell__container" style={{ marginLeft }}>
-        <span>
-          <CellValue<R>
-            rowIdx={rowIdx}
-            rowData={rowData}
-            column={column}
-            value={value}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
-          />
-        </span>
+      <div style={style}>
+        <CellValue<R>
+          rowIdx={rowIdx}
+          rowData={rowData}
+          column={column}
+          value={value}
+          isRowSelected={isRowSelected}
+          onRowSelectionChange={onRowSelectionChange}
+        />
         {cellControls}
       </div>
-      {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
+      {tooltip && <span className="rdg-cell-tooltip-text">{tooltip}</span>}
     </div>
   );
 }

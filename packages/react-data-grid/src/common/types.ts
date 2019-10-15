@@ -157,7 +157,6 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   cellMetaData: CellMetaData<TRow>;
   scrollLeft: number;
   expandableOptions?: ExpandableOptions;
-  lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }

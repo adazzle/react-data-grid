@@ -45,31 +45,19 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
   }
 
   const inputKey = `header-filter-${column.key as keyof R}`;
-  const columnStyle: React.CSSProperties = {
-    float: 'left',
-    marginRight: 5,
-    maxWidth: '80%'
-  };
-  const badgeStyle: React.CSSProperties = {
-    cursor: 'help'
-  };
 
   const tooltipText = 'Input Methods: Range (x-y), Greater Then (>x), Less Then (<y)';
 
   return (
-    <div>
-      <div style={columnStyle}>
-        <input
-          key={inputKey}
-          placeholder="e.g. 3,10-15,>20"
-          className="form-control input-sm"
-          onChange={handleChange}
-          onKeyPress={handleKeyPress}
-        />
-      </div>
-      <div className="input-sm">
-        <span className="badge" style={badgeStyle} title={tooltipText}>?</span>
-      </div>
+    <div className="rdg-filter-container">
+      <input
+        key={inputKey}
+        className="rdg-filter"
+        placeholder="e.g. 3,10-15,>20"
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+      />
+      <span className="rdg-filter-badge" title={tooltipText}>?</span>
     </div>
   );
 }

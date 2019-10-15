@@ -33,8 +33,7 @@ describe('Header Unit Tests', () => {
       onColumnResize: jest.fn(),
       onSort: () => null,
       onHeaderDrop() { },
-      draggableHeaderCell: () => null,
-      rowOffsetHeight: 30
+      draggableHeaderCell: () => null
     };
   }
 
@@ -88,8 +87,7 @@ describe('Header Unit Tests', () => {
       onHeaderDrop() { },
       cellMetaData: fakeCellMetaData,
       draggableHeaderCell: () => null,
-      onColumnResize() { },
-      rowOffsetHeight: 30
+      onColumnResize() { }
     };
     const testAllProps: HeaderProps<Row> = {
       rowKey: 'id',
@@ -116,25 +114,14 @@ describe('Header Unit Tests', () => {
       draggableHeaderCell: jest.fn(),
       getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
-      onHeaderDrop() { },
-      rowOffsetHeight: 30
+      onHeaderDrop() { }
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
-      expect(headerDiv.hasClass('react-grid-Header'));
-    });
-    it('passes style property', () => {
-      const wrapper = renderComponent(testAllProps);
-      const headerDiv = wrapper.find('div');
-      expect(headerDiv.props().style).toBeDefined();
+      expect(headerDiv.hasClass('rdg-header'));
     });
 
-    it('should account for scrollbar size in header', () => {
-      const wrapper = renderComponent(testAllProps);
-      const headerDiv = wrapper.find('div');
-      expect(headerDiv.props().style!.paddingRight).toBe(SCROLL_BAR_SIZE);
-    });
     it('does not pass onScroll properties if it is not available from props', () => {
       const wrapper = renderComponent(testRequiredProps);
       const headerDiv = wrapper.find('div');

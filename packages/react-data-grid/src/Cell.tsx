@@ -79,24 +79,27 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
   };
 
   getStyle(): React.CSSProperties {
-    const { column, height, scrollLeft } = this.props;
+    const { column } = this.props;
 
-    return {
-      height,
+    const style: React.CSSProperties = {
       width: column.width,
-      left: column.left,
-      transform: !isPositionStickySupported() && isFrozen(column) ? `translateX(${scrollLeft}px)` : 'none'
+      left: column.left
     };
+
+    if (!isPositionStickySupported() && isFrozen(column)) {
+      style.transform = `translateX(${this.props.scrollLeft}px)`;
+    }
+
+    return style;
   }
 
   getCellClass() {
-    const { idx, column, lastFrozenColumnIndex, tooltip, expandableOptions } = this.props;
+    const { column, tooltip, expandableOptions } = this.props;
     return classNames(
       column.cellClass,
-      'react-grid-Cell',
+      'rdg-cell',
       this.props.className, {
-        'react-grid-Cell--frozen': isFrozen(column),
-        'rdg-last--frozen': lastFrozenColumnIndex === idx,
+        'rdg-cell-frozen': isFrozen(column),
         'has-tooltip': !!tooltip,
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }

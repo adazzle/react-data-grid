@@ -1,0 +1,26 @@
+.rdg-editor-container {
+  position: absolute;
+}
+
+.rdg-text-editor,
+.rdg-select-editor {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+
+  box-sizing: border-box;
+  width: calc(100% + 1px);
+  height: calc(100% + 1px);
+  padding: 1px 7px 0 7px;
+  margin: -1px 0 0 -1px;
+  border: 2px solid #ccc;
+  background-color: #fff;
+
+  font-size: 14px;
+  line-height: 1.2;
+  .placeholder-color(#999);
+
+  &:focus {
+    border-color: #66afe9;
+  }
+}
