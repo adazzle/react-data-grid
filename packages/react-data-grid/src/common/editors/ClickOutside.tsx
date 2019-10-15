@@ -12,20 +12,20 @@ import React, { useRef, useEffect } from 'react';
  *
  *
  * SimpleEditor for example Texbox (No Portals)
- *   <div react-data-grid>..<div>
+ *   <div react-data-grid>..</div>
  *   <div portal-created-by-the-grid-for-editors>
  *      <div editor-container>
  *        <div simple-editor>..</div>
  *      </div>
- *   <div>
+ *   </div>
  *
  * ComplexEditor for example Modals (using Portals)
- *   <div react-data-grid>..<div>
+ *   <div react-data-grid>..</div>
  *   <div portal-created-by-the-grid-for-editors>
  *      <div editor-container>
  *        // Nothing here
  *      </div>
- *   <div>
+ *   </div>
  *   <div portal-created-by-the-editor>
  *     <div complex-editor>..</div>
  *   </div>

@@ -1,9 +1,8 @@
 import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } from 'react';
-import classNames from 'classnames';
 
 import HeaderRow from './HeaderRow';
 import { getColumnMetrics } from './utils/columnUtils';
-import { getScrollbarSize } from './utils';
+import { getScrollbarSize, isPositionStickySupported } from './utils';
 import { CalculatedColumn, HeaderRowData, ColumnMetrics, CellMetaData } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { ReactDataGridProps } from './ReactDataGrid';
@@ -26,7 +25,6 @@ export interface HeaderProps<R> extends SharedDataGridProps<R> {
   columnMetrics: ColumnMetrics<R>;
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
   cellMetaData: CellMetaData<R>;
-  rowOffsetHeight: number;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   onColumnResize(idx: number, width: number): void;
 }
@@ -36,6 +34,7 @@ export interface HeaderHandle {
 }
 
 export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.Ref<HeaderHandle>) {
+  const headerRef = useRef<HTMLDivElement>(null);
   const rowRef = useRef<HeaderRow<R>>(null);
   const filterRowRef = useRef<HeaderRow<R>>(null);
 
@@ -55,6 +54,8 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
 
   useImperativeHandle(ref, () => ({
     setScrollLeft(scrollLeft: number): void {
+      headerRef.current!.scrollLeft = scrollLeft;
+      if (isPositionStickySupported()) return;
       rowRef.current!.setScrollLeft(scrollLeft);
       if (filterRowRef.current) {
         filterRowRef.current.setScrollLeft(scrollLeft);
@@ -85,7 +86,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     props.onSelectedRowsChange(newSelectedRows);
   }
 
-  function getHeaderRow(row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) {
+  function getHeaderRow(row: HeaderRowData<R>, ref?: React.RefObject<HeaderRow<R>>) {
     return (
       <HeaderRow<R>
         key={row.rowType}
@@ -93,6 +94,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
         rowType={row.rowType}
         onColumnResize={onColumnResize}
         onColumnResizeEnd={onColumnResizeEnd}
+        width={columnMetrics.totalColumnWidth + getScrollbarSize()}
         height={row.height}
         columns={columnMetrics.columns}
         draggableHeaderCell={props.draggableHeaderCell}
@@ -110,10 +112,11 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   }
 
   function getHeaderRows() {
+    const setRef = !isPositionStickySupported();
     const { headerRows } = props;
-    const rows = [getHeaderRow(headerRows[0], rowRef)];
+    const rows = [getHeaderRow(headerRows[0], setRef ? rowRef : undefined)];
     if (headerRows[1]) {
-      rows.push(getHeaderRow(headerRows[1], filterRowRef));
+      rows.push(getHeaderRow(headerRows[1], setRef ? filterRowRef : undefined));
     }
 
     return rows;
@@ -124,17 +127,10 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
   }
 
-  const className = classNames('react-grid-Header', {
-    'react-grid-Header--resizing': resizing !== null
-  });
-
   return (
     <div
-      style={{
-        height: props.rowOffsetHeight,
-        paddingRight: getScrollbarSize()
-      }}
-      className={className}
+      ref={headerRef}
+      className="rdg-header"
       onClick={onHeaderClick}
     >
       {getHeaderRows()}

@@ -11,14 +11,14 @@ export default function SelectCellFormatter({ value, onChange }: SelectCellForma
   }
 
   return (
-    <label className="react-grid-checkbox-container checkbox-align">
+    <label className="rdg-checkbox-label">
       <input
         type="checkbox"
-        className="react-grid-checkbox"
+        className="rdg-checkbox-input"
         onChange={handleChange}
         checked={value}
       />
-      <span className="react-grid-checkbox-label" />
+      <div className="rdg-checkbox" />
     </label>
   );
 }

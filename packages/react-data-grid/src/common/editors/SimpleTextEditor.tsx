@@ -19,7 +19,7 @@ export default class SimpleTextEditor extends React.Component<Props> implements 
   render() {
     return (
       <input
-        className="form-control"
+        className="rdg-text-editor"
         ref={this.input}
         defaultValue={this.props.value}
         onBlur={this.props.onBlur}

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd';
 
 class DraggableHeaderCell extends React.Component {
@@ -21,18 +22,13 @@ class DraggableHeaderCell extends React.Component {
       canDrop
     } = this.props;
 
-    let opacity = 1;
-    if (isDragging) {
-      opacity = 0.2;
-    }
-
     // set drag source and drop target on header cell
     // width: 0 - otherwise drag clone was wrongly positioned
     return connectDragSource(
       connectDropTarget(
         <div
-          style={{ width: 0, cursor: 'move', opacity }}
-          className={isOver && canDrop ? 'rdg-can-drop' : ''}
+          className={classNames('rdg-draggable-header-cell', { 'rdg-can-drop': isOver && canDrop })}
+          style={{ opacity: isDragging ? 0.2 : 1 }}
         >
           {this.props.children}
         </div>

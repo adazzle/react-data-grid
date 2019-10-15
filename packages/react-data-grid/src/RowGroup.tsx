@@ -45,12 +45,10 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
     props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: props.idx, idx: 0 });
   }
 
-  const lastColumn = props.columns[props.columns.length - 1];
-  const style = { width: lastColumn!.left + lastColumn!.width };
   const Renderer = props.renderer || DefaultBase;
 
   return (
-    <div className="react-grid-row-group" style={style} onClick={onClick}>
+    <div onClick={onClick}>
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
@@ -80,14 +78,14 @@ const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function Defaul
 
   return (
     <div
-      className="rdg-row-group-default"
+      className="rdg-row-group"
       style={{ height }}
       onKeyDown={onKeyDown}
       tabIndex={0}
       ref={ref}
     >
       <span
-        className="row-expand-icon"
+        className="rdg-row-expand-icon"
         style={{ marginLeft }}
         onClick={onRowExpandClick}
       >

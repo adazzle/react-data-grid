@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { isElement } from 'react-is';
 
 import { EventTypes } from './common/enums';
@@ -82,7 +82,7 @@ export default function Canvas<R>({
   rowHeight,
   rowKey,
   rowRenderer,
-  RowsContainer = Fragment,
+  RowsContainer,
   rowsCount,
   scrollToRowIndex,
   selectedRows,
@@ -321,46 +321,50 @@ export default function Canvas<R>({
   };
   const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
 
+  let grid = (
+    <div className="rdg-grid" style={canvasRowsContainerStyle}>
+      {getRows()}
+    </div>
+  );
+
+  if (RowsContainer !== undefined) {
+    grid = <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>{grid}</RowsContainer>;
+  }
+
   return (
-    <>
-      <div
-        className="react-grid-Canvas"
-        style={{ height }}
-        ref={canvas}
-        onScroll={handleScroll}
-        onKeyDown={onCanvasKeydown}
-        onKeyUp={onCanvasKeyup}
-      >
-        <InteractionMasks<R>
-          ref={interactionMasks}
-          rowGetter={rowGetter}
-          rowsCount={rowsCount}
-          rowHeight={rowHeight}
-          columns={columnMetrics.columns}
-          height={clientHeight}
-          colVisibleStartIdx={colVisibleStartIdx}
-          colVisibleEndIdx={colVisibleEndIdx}
-          enableCellSelect={enableCellSelect}
-          enableCellAutoFocus={enableCellAutoFocus}
-          cellNavigationMode={cellNavigationMode}
-          eventBus={eventBus}
-          contextMenu={contextMenu}
-          onHitBottomBoundary={onHitBottomCanvas}
-          onHitTopBoundary={onHitTopCanvas}
-          onHitLeftBoundary={handleHitColummBoundary}
-          onHitRightBoundary={handleHitColummBoundary}
-          scrollLeft={scrollLeft}
-          scrollTop={scrollTop}
-          getRowColumns={getRowColumns}
-          editorPortalTarget={editorPortalTarget}
-          {...interactionMasksMetaData}
-        />
-        <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>
-          <div className="rdg-rows-container" style={canvasRowsContainerStyle}>
-            {getRows()}
-          </div>
-        </RowsContainer>
-      </div>
+    <div
+      className="rdg-viewport"
+      style={{ height }}
+      ref={canvas}
+      onScroll={handleScroll}
+      onKeyDown={onCanvasKeydown}
+      onKeyUp={onCanvasKeyup}
+    >
+      <InteractionMasks<R>
+        ref={interactionMasks}
+        rowGetter={rowGetter}
+        rowsCount={rowsCount}
+        rowHeight={rowHeight}
+        columns={columnMetrics.columns}
+        height={clientHeight}
+        colVisibleStartIdx={colVisibleStartIdx}
+        colVisibleEndIdx={colVisibleEndIdx}
+        enableCellSelect={enableCellSelect}
+        enableCellAutoFocus={enableCellAutoFocus}
+        cellNavigationMode={cellNavigationMode}
+        eventBus={eventBus}
+        contextMenu={contextMenu}
+        onHitBottomBoundary={onHitBottomCanvas}
+        onHitTopBoundary={onHitTopCanvas}
+        onHitLeftBoundary={handleHitColummBoundary}
+        onHitRightBoundary={handleHitColummBoundary}
+        scrollLeft={scrollLeft}
+        scrollTop={scrollTop}
+        getRowColumns={getRowColumns}
+        editorPortalTarget={editorPortalTarget}
+        {...interactionMasksMetaData}
+      />
+      {grid}
       {summaryRows && summaryRows.length && (
         <div className="rdg-summary">
           <div ref={summary} style={boundaryStyle}>
@@ -370,6 +374,6 @@ export default function Canvas<R>({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
