@@ -135,8 +135,8 @@ export default function Canvas<R>({
 
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
     summary.current!.scrollLeft = newScrollLeft;
+    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
   }
 
   function getClientHeight() {
@@ -260,12 +260,6 @@ export default function Canvas<R>({
     return selectedRows !== undefined && selectedRows.has(row[rowKey]);
   }
 
-  function scrollRows(row: RowRenderer & React.Component<RowRendererProps<R>>) {
-    if (row.setScrollLeft) {
-      row.setScrollLeft(scrollLeft);
-    }
-  }
-
   function setComponentsScrollLeft(scrollLeft: number) {
     if (isPositionStickySupported()) return;
 
@@ -274,8 +268,11 @@ export default function Canvas<R>({
       current.setScrollLeft(scrollLeft);
     }
 
-    rowRefs.forEach(scrollRows);
-    summaryRowRefs.forEach(scrollRows);
+    [...rowRefs.values(), ...summaryRowRefs.values()].forEach(row => {
+      if (row.setScrollLeft) {
+        row.setScrollLeft(scrollLeft);
+      }
+    });
   }
 
   function getRowColumns(rowIdx: number) {
