@@ -3,9 +3,9 @@ import classNames from 'classnames';
 
 import Cell from './Cell';
 import { isFrozen } from './utils/columnUtils';
-import { RowRenderer, RowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
+import { IRowRenderer, IRowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
 
-export default class Row<R> extends React.Component<RowRendererProps<R>> implements RowRenderer {
+export default class Row<R> extends React.Component<IRowRendererProps<R>> implements IRowRenderer {
   static displayName = 'Row';
 
   static defaultProps = {

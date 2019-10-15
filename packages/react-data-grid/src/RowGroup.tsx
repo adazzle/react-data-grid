@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { forwardRef } from 'react';
 import { EventTypes } from './common/enums';
-import { CellMetaData, RowRendererProps, CalculatedColumn } from './common/types';
+import { CellMetaData, IRowRendererProps, CalculatedColumn } from './common/types';
 import EventBus from './EventBus';
 
 interface Props<R> {
@@ -25,7 +25,7 @@ interface Props<R> {
   name: string;
   renderer?: React.ComponentType;
   eventBus: EventBus;
-  renderBaseRow(p: RowRendererProps<R>): React.ReactElement;
+  renderBaseRow(p: IRowRendererProps<R>): React.ReactElement;
 }
 
 export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {

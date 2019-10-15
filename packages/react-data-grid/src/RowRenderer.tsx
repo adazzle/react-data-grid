@@ -5,7 +5,7 @@ import shallowEqual from 'shallowequal';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
-import { RowRenderer, RowRendererProps, CalculatedColumn, SubRowDetails, RowData } from './common/types';
+import { IRowRenderer, IRowRendererProps, CalculatedColumn, SubRowDetails, RowData } from './common/types';
 
 type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 | 'cellMetaData'
@@ -20,16 +20,16 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 | 'selectedRows'
 >;
 
-interface ActualRowRendererProps<R> extends SharedCanvasProps<R> {
+interface RowRendererProps<R> extends SharedCanvasProps<R> {
   idx: number;
   rowData: R;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   scrollLeft: number;
-  rowRefs: Map<number, RowRenderer & React.Component<RowRendererProps<R>>>;
+  rowRefs: Map<number, IRowRenderer & React.Component<IRowRendererProps<R>>>;
 }
 
-type SharedActualRowRendererProps<R> = Pick<ActualRowRendererProps<R>,
+type SharedActualRowRendererProps<R> = Pick<RowRendererProps<R>,
 | 'idx'
 | 'cellMetaData'
 | 'onRowSelectionChange'
@@ -39,7 +39,7 @@ type SharedActualRowRendererProps<R> = Pick<ActualRowRendererProps<R>,
 >;
 
 interface RendererProps<R> extends SharedActualRowRendererProps<R> {
-  ref(row: (RowRenderer & React.Component<RowRendererProps<R>>) | null): void;
+  ref(row: (IRowRenderer & React.Component<IRowRendererProps<R>>) | null): void;
   row: R;
   columns: CalculatedColumn<R>[];
   lastFrozenColumnIndex: number;
@@ -48,7 +48,7 @@ interface RendererProps<R> extends SharedActualRowRendererProps<R> {
   isRowSelected: boolean;
 }
 
-function ActualRowRenderer<R>({
+function RowRenderer<R>({
   cellMetaData,
   colOverscanEndIdx,
   colOverscanStartIdx,
@@ -65,7 +65,7 @@ function ActualRowRenderer<R>({
   rowRenderer,
   scrollLeft,
   selectedRows
-}: ActualRowRendererProps<R>) {
+}: RowRendererProps<R>) {
   const { __metaData } = rowData as RowData;
   const rendererProps: RendererProps<R> = {
     ref(row) {
@@ -92,7 +92,7 @@ function ActualRowRenderer<R>({
   function renderCustomRowRenderer() {
     const { ref, ...otherProps } = rendererProps;
     const CustomRowRenderer = rowRenderer!;
-    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps<R>) => <Row ref={ref} {...p} /> };
+    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: IRowRendererProps<R>) => <Row ref={ref} {...p} /> };
 
     if (isElement(CustomRowRenderer)) {
       if (CustomRowRenderer.type === Row) {
@@ -116,7 +116,7 @@ function ActualRowRenderer<R>({
         name={(rowData as RowData).name!}
         eventBus={eventBus}
         renderer={rowGroupRenderer}
-        renderBaseRow={(p: RowRendererProps<R>) => <Row ref={ref} {...p} />}
+        renderBaseRow={(p: IRowRendererProps<R>) => <Row ref={ref} {...p} />}
       />
     );
   }
@@ -137,11 +137,11 @@ function ActualRowRenderer<R>({
   return <Row<R> {...rendererProps} />;
 }
 
-function propsAreEqual<R>(prevProps: ActualRowRendererProps<R>, nextProps: ActualRowRendererProps<R>) {
+function propsAreEqual<R>(prevProps: RowRendererProps<R>, nextProps: RowRendererProps<R>) {
   const { scrollLeft, ...rest } = prevProps;
   const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
 
   return shallowEqual(rest, nextRest);
 }
 
-export default memo(ActualRowRenderer, propsAreEqual) as <R>(props: ActualRowRendererProps<R>) => JSX.Element;
+export default memo(RowRenderer, propsAreEqual) as <R>(props: RowRendererProps<R>) => JSX.Element;
