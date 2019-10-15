@@ -186,7 +186,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
 
     const style = this.getStyle();
     const cellClassName = this.getCellClass();
-    const cellValueClassName = classNames('rdg-cell-value', { 'rdg-cell-tooltip': !!tooltip });
+    const cellValueClassName = classNames('react-grid-Cell__value', { 'cell-tooltip': !!tooltip });
 
     const cellValue = (
       <CellValue<R>
@@ -251,7 +251,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
           <span>{cellValue}</span>
           {cellControls}
         </div>
-        {tooltip && <span className="rdg-cell-tooltip-text">{tooltip}</span>}
+        {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
       </div>
     );
 
