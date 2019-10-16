@@ -77,9 +77,7 @@ export default function Canvas<R, K extends keyof R>({
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const scrollBar = useRef<HTMLDivElement>(null);
-  const interactionMasks = useRef<InteractionMasks<R, K>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
   const [summaryRowRefs] = useState(() => new Map<number, Row<R>>());
 
@@ -146,26 +144,8 @@ export default function Canvas<R, K extends keyof R>({
     onScroll({ scrollLeft, scrollTop: newScrollTop });
   }
 
-  function setComponentsScrollLeft(scrollLeft: number) {
-    if (isPositionStickySupported()) return;
-
-    const { current } = interactionMasks;
-    if (current) {
-      current.setScrollLeft(scrollLeft);
-    }
-
-    [...rowRefs.values(), ...summaryRowRefs.values()].forEach(row => {
-      if (row.setScrollLeft) {
-        row.setScrollLeft(scrollLeft);
-      }
-    });
-  }
-
   function handleHorizontalScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft: newScrollLeft } = e.currentTarget;
-    // Freeze columns on legacy browsers
-    setComponentsScrollLeft(newScrollLeft);
-
     setScrollLeft(newScrollLeft);
     syncScroll(newScrollLeft, true);
   }
@@ -201,10 +181,10 @@ export default function Canvas<R, K extends keyof R>({
   }
 
   const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
-    if (row) {
-      rowRefs.set(idx, row);
-    } else {
+    if (row === null) {
       rowRefs.delete(idx);
+    } else {
+      rowRefs.set(idx, row);
     }
   }, [rowRefs]);
 
@@ -217,6 +197,7 @@ export default function Canvas<R, K extends keyof R>({
   }, [summaryRowRefs]);
 
   function getViewportRows() {
+    const left = isPositionStickySupported() ? undefined : scrollLeft;
     const rowElements = [];
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
       const rowData = rowGetter(idx);
@@ -237,7 +218,7 @@ export default function Canvas<R, K extends keyof R>({
           rowHeight={rowHeight}
           rowKey={rowKey}
           rowRenderer={rowRenderer}
-          scrollLeft={scrollLeft}
+          scrollLeft={left}
           selectedRows={selectedRows}
         />
       );
@@ -294,14 +275,13 @@ export default function Canvas<R, K extends keyof R>({
     <>
       <div
         className="rdg-viewport"
-        style={{ height: clientHeight }}
+        style={{ height }}
         ref={canvas}
         onScroll={handleScroll}
         onKeyDown={onCanvasKeydown}
         onKeyUp={onCanvasKeyup}
       >
         <InteractionMasks<R, K>
-          ref={interactionMasks}
           rowGetter={rowGetter}
           rowsCount={rowsCount}
           rowHeight={rowHeight}

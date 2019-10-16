@@ -1,11 +1,10 @@
 import classNames from 'classnames';
 import React from 'react';
-import shallowEqual from 'shallowequal';
 
 import CellActions from './Cell/CellActions';
 import CellContent from './Cell/CellContent';
 import CellExpand from './Cell/CellExpander';
-import { CellRenderer, CellRendererProps, ColumnEventInfo, SubRowOptions } from './common/types';
+import { CellRendererProps, ColumnEventInfo, SubRowOptions } from './common/types';
 import { isPositionStickySupported } from './utils';
 import { isFrozen } from './utils/columnUtils';
 
@@ -20,22 +19,10 @@ export interface CellProps<R> extends CellRendererProps<R> {
   cellControls?: unknown;
 }
 
-export default class Cell<R> extends React.Component<CellProps<R>> implements CellRenderer {
+export default class Cell<R> extends React.PureComponent<CellProps<R>> {
   static defaultProps = {
     value: ''
   };
-
-  private readonly cell = React.createRef<HTMLDivElement>();
-
-  shouldComponentUpdate(nextProps: CellProps<R>) {
-    // TODO: optimize cellMetatData as it is recreated whenever `ReactDataGrid` renders
-    // On the modern browsers we are using position sticky so scrollLeft/setScrollLeft is not required
-    // On the legacy browsers scrollLeft sets the initial position so it can be safely ignored in the subsequent renders. Scrolling is handled by the setScrollLeft method
-    const { scrollLeft, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
-
-    return !shallowEqual(rest, nextRest);
-  }
 
   handleCellClick = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
@@ -106,20 +93,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
     );
   }
 
-  setScrollLeft(scrollLeft: number) {
-    const node = this.cell.current;
-    if (node) {
-      node.style.transform = `translateX(${scrollLeft}px)`;
-    }
-  }
-
-  removeScroll() {
-    const node = this.cell.current;
-    if (node) {
-      node.style.transform = 'none';
-    }
-  }
-
   getEvents() {
     const { column, cellMetaData, idx, rowIdx, rowData } = this.props;
     const columnEvents = column.events;
@@ -173,11 +146,7 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
 
     if (isSummaryRow) {
       return (
-        <div
-          ref={this.cell}
-          className={className}
-          style={style}
-        >
+        <div className={className} style={style}>
           <CellContent<R>
             idx={idx}
             rowIdx={rowIdx}
@@ -221,7 +190,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
 
     return (
       <div
-        ref={this.cell}
         className={className}
         style={style}
         {...events}

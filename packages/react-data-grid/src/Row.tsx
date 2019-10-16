@@ -2,10 +2,11 @@ import classNames from 'classnames';
 import React from 'react';
 
 import Cell from './Cell';
-import { CalculatedColumn, CellRenderer, CellRendererProps, IRowRenderer, IRowRendererProps } from './common/types';
+import { IRowRendererProps } from './common/types';
+import { isPositionStickySupported } from './utils';
 import { isFrozen } from './utils/columnUtils';
 
-export default class Row<R> extends React.Component<IRowRendererProps<R>> implements IRowRenderer {
+export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -13,8 +14,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
     isSelected: false,
     height: 35
   };
-
-  private readonly cells = new Map<keyof R, CellRenderer>();
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     // Prevent default to allow drop
@@ -34,38 +33,46 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
     e.preventDefault();
   };
 
-  getCell(column: CalculatedColumn<R>) {
-    const Renderer = this.props.cellRenderer!;
-    const { idx, cellMetaData, row, scrollLeft, isRowSelected, onRowSelectionChange, isSummaryRow } = this.props;
-    const { key } = column;
-
-    const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
-      ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
-      idx: column.idx,
-      rowIdx: idx,
-      height: this.props.height,
-      column,
+  getCells() {
+    const {
       cellMetaData,
-      value: this.getCellValue(key || String(column.idx) as keyof R) as R[keyof R], // FIXME: fix types
-      rowData: row,
-      scrollLeft,
+      columns,
+      height,
+      idx,
       isRowSelected,
       onRowSelectionChange,
+      row,
+      scrollLeft,
       isSummaryRow
-    };
+    } = this.props;
+    const Renderer = this.props.cellRenderer!;
+    const canSticky = isPositionStickySupported();
 
-    if (!isSummaryRow) {
-      cellProps.expandableOptions = this.getExpandableOptions(key);
-    }
+    // FIXME: do we need this, considering columnsMetrics should have these columns sorted already?
+    const frozenColumns = columns.slice(0, this.props.lastFrozenColumnIndex + 1);
+    const nonFrozenColumn = columns.slice(this.props.colOverscanStartIdx, this.props.colOverscanEndIdx + 1).filter(c => !isFrozen(c));
 
-    return <Renderer key={`${key as keyof R}-${idx}`} {...cellProps} />; // FIXME: fix key type
-  }
+    return nonFrozenColumn.concat(frozenColumns).map(column => {
+      const { key } = column;
 
-  getCells() {
-    const { colOverscanStartIdx, colOverscanEndIdx, columns, lastFrozenColumnIndex } = this.props;
-    const frozenColumns = columns.slice(0, lastFrozenColumnIndex + 1);
-    const nonFrozenColumn = columns.slice(colOverscanStartIdx, colOverscanEndIdx + 1).filter(c => !isFrozen(c));
-    return nonFrozenColumn.concat(frozenColumns).map(c => this.getCell(c));
+      return (
+        <Renderer
+          key={`${key as keyof R}-${idx}`} // FIXME: fix key type
+          idx={column.idx}
+          rowIdx={idx}
+          height={height}
+          column={column}
+          cellMetaData={cellMetaData}
+          value={this.getCellValue(key || String(column.idx) as keyof R) as R[keyof R]} // FIXME: fix types
+          rowData={row}
+          expandableOptions={this.getExpandableOptions(key)}
+          scrollLeft={!canSticky && isFrozen(column) ? scrollLeft : undefined}
+          isRowSelected={isRowSelected}
+          onRowSelectionChange={onRowSelectionChange}
+          isSummaryRow={isSummaryRow}
+        />
+      );
+    });
   }
 
   getCellValue(key: keyof R) {
@@ -90,15 +97,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
       treeDepth,
       subRowDetails
     };
-  }
-
-  setScrollLeft(scrollLeft: number) {
-    for (const column of this.props.columns) {
-      const { key } = column;
-      if (isFrozen(column) && this.cells.has(key)) {
-        this.cells.get(key)!.setScrollLeft(scrollLeft);
-      }
-    }
   }
 
   render() {
