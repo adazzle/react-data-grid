@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { isElement } from 'react-is';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, RowData, RowRenderer, RowRendererProps, ScrollPosition, SubRowDetails } from './common/types';
+import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, IRowRendererProps, ScrollPosition } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { ReactDataGridProps } from './ReactDataGrid';
 import Row from './Row';
-import RowGroup from './RowGroup';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported } from './utils';
 import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
 
@@ -44,22 +42,6 @@ export interface CanvasProps<R> extends SharedDataGridProps<R> {
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
-interface RendererProps<R> extends Pick<CanvasProps<R>, 'cellMetaData' | 'onRowSelectionChange'> {
-  ref(row: (RowRenderer & React.Component<RowRendererProps<R>>) | null): void;
-  key: number;
-  idx: number;
-  columns: CalculatedColumn<R>[];
-  lastFrozenColumnIndex: number;
-  row: R;
-  subRowDetails?: SubRowDetails;
-  height: number;
-  isRowSelected: boolean;
-  scrollLeft: number;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
-  isSummaryRow: boolean;
-}
-
 export default function Canvas<R>({
   cellMetaData,
   cellNavigationMode,
@@ -94,10 +76,10 @@ export default function Canvas<R>({
   const summary = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
-  // https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
-  // The reason that we didn't choose to use useRef was due to the lazy initialization was only supported by useState() at the moment.
-  const [rowRefs] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
-  const [summaryRowRefs] = useState(() => new Map<number, RowRenderer & React.Component<RowRendererProps<R>>>());
+
+  const [rowRefs] = useState(() => new Map<number, Row<R>>());
+  const [summaryRowRefs] = useState(() => new Map<number, Row<R>>());
+
   const clientHeight = getClientHeight();
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
@@ -175,18 +157,45 @@ export default function Canvas<R>({
     }
   }
 
-  function getRows() {
-    const rows = [];
+  const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
+    if (row) {
+      rowRefs.set(idx, row);
+    } else {
+      rowRefs.delete(idx);
+    }
+  }, [rowRefs]);
 
+  function getRows() {
+    const rowElements = [];
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
-      const row = rowGetter(idx);
-      rows.push(renderRow(row, idx));
+      const rowData = rowGetter(idx);
+      rowElements.push(
+        <RowRenderer<R>
+          key={idx}
+          idx={idx}
+          rowData={rowData}
+          setRowRef={setRowRef}
+          cellMetaData={cellMetaData}
+          colOverscanEndIdx={colOverscanEndIdx}
+          colOverscanStartIdx={colOverscanStartIdx}
+          columnMetrics={columnMetrics}
+          eventBus={eventBus}
+          getSubRowDetails={getSubRowDetails}
+          onRowSelectionChange={onRowSelectionChange}
+          rowGroupRenderer={rowGroupRenderer}
+          rowHeight={rowHeight}
+          rowKey={rowKey}
+          rowRenderer={rowRenderer}
+          scrollLeft={scrollLeft}
+          selectedRows={selectedRows}
+        />
+      );
     }
 
-    return rows;
+    return rowElements;
   }
 
-  function getBaseRendererProps(row: R, idx: number): Omit<RendererProps<R>, 'ref'> {
+  function getBaseRendererProps(row: R, idx: number): Omit<IRowRendererProps<R>, 'ref'> {
     const { columns, lastFrozenColumnIndex } = columnMetrics;
     return {
       key: idx,
@@ -206,7 +215,7 @@ export default function Canvas<R>({
   }
 
   function renderSummaryRow(row: R, idx: number) {
-    const rendererProps: RendererProps<R> = {
+    const rendererProps: IRowRendererProps<R> = {
       ...getBaseRendererProps(row, idx),
       ref(rowRef) {
         if (rowRef) {
@@ -218,46 +227,7 @@ export default function Canvas<R>({
       isSummaryRow: true
     };
 
-    if (rowRenderer) {
-      return renderCustomRowRenderer(rendererProps);
-    }
-
     return <Row<R> {...rendererProps} />;
-  }
-
-  function renderRow(row: R, idx: number) {
-    const rendererProps: RendererProps<R> = {
-      ...getBaseRendererProps(row, idx),
-      ref(rowRef) {
-        if (rowRef) {
-          rowRefs.set(idx, rowRef);
-        } else {
-          rowRefs.delete(idx);
-        }
-      },
-      isRowSelected: isRowSelected(row),
-      subRowDetails: getSubRowDetails ? getSubRowDetails(row) : undefined
-    };
-    const { __metaData } = row as RowData;
-
-    if (__metaData) {
-      if (__metaData.getRowRenderer) {
-        return __metaData.getRowRenderer(rendererProps, idx);
-      }
-      if (__metaData.isGroup) {
-        return renderGroupRow(rendererProps);
-      }
-    }
-
-    if (rowRenderer) {
-      return renderCustomRowRenderer(rendererProps);
-    }
-
-    return <Row<R> {...rendererProps} />;
-  }
-
-  function isRowSelected(row: R): boolean {
-    return selectedRows !== undefined && selectedRows.has(row[rowKey]);
   }
 
   function setComponentsScrollLeft(scrollLeft: number) {
@@ -273,44 +243,6 @@ export default function Canvas<R>({
         row.setScrollLeft(scrollLeft);
       }
     });
-  }
-
-  function getRowColumns(rowIdx: number) {
-    const row = rowRefs.get(rowIdx);
-    return row && row.props ? row.props.columns : columnMetrics.columns;
-  }
-
-  function renderCustomRowRenderer(rowProps: RendererProps<R>) {
-    const { ref, ...otherProps } = rowProps;
-    const CustomRowRenderer = rowRenderer!;
-    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: RowRendererProps<R>) => <Row ref={ref} {...p} /> };
-
-    if (isElement(CustomRowRenderer)) {
-      if (CustomRowRenderer.type === Row) {
-        // In the case where Row is specified as the custom render, ensure the correct ref is passed
-        return <Row<R> {...rowProps} />;
-      }
-      return React.cloneElement(CustomRowRenderer, customRowRendererProps);
-    }
-
-    return <CustomRowRenderer {...customRowRendererProps} />;
-  }
-
-  function renderGroupRow(groupRowProps: RendererProps<R>) {
-    const { ref, columns, ...rowGroupProps } = groupRowProps;
-    const row = groupRowProps.row as RowData;
-
-    return (
-      <RowGroup
-        {...rowGroupProps}
-        {...row.__metaData!}
-        columns={columns as CalculatedColumn<unknown>[]}
-        name={row.name!}
-        eventBus={eventBus}
-        renderer={rowGroupRenderer}
-        renderBaseRow={(p: RowRendererProps<R>) => <Row ref={ref} {...p} />}
-      />
-    );
   }
 
   const rowsContainerStyle: React.CSSProperties = { width: columnMetrics.totalColumnWidth };

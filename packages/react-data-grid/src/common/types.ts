@@ -168,7 +168,7 @@ export interface RowsContainerProps {
   children: React.ReactElement;
 }
 
-export interface RowRendererProps<TRow> {
+export interface IRowRendererProps<TRow> {
   height: number;
   columns: CalculatedColumn<TRow>[];
   row: TRow;
@@ -240,7 +240,7 @@ export interface CellRenderer {
   setScrollLeft(scrollLeft: number): void;
 }
 
-export interface RowRenderer {
+export interface IRowRenderer {
   setScrollLeft(scrollLeft: number): void;
 }
 

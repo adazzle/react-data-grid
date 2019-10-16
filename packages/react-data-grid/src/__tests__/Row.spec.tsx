@@ -5,14 +5,14 @@ import { shallow } from 'enzyme';
 import Row from '../Row';
 import Cell from '../Cell';
 import { createColumns } from './utils';
-import { RowRendererProps, CellMetaData } from '../common/types';
+import { IRowRendererProps, CellMetaData } from '../common/types';
 
 type RowType = any;
 
 describe('Row', () => {
   const COLUMN_COUNT = 50;
 
-  function setup(props: RowRendererProps<RowType>) {
+  function setup(props: IRowRendererProps<RowType>) {
     const wrapper = shallow<Row<RowType>>(<Row {...props} />);
     const cells = wrapper.find(Cell);
     return { wrapper, cells };
@@ -28,7 +28,7 @@ describe('Row', () => {
     onRowExpandToggle() { }
   };
 
-  const requiredProperties: RowRendererProps<RowType> = {
+  const requiredProperties: IRowRendererProps<RowType> = {
     height: 30,
     columns: createColumns(COLUMN_COUNT),
     row: { key: 'value' },
