@@ -72,7 +72,6 @@ export default function Canvas<R, K extends keyof R>({
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
-  const interactionMasks = useRef<InteractionMasks<R, K>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
   const clientHeight = getClientHeight();
@@ -107,9 +106,6 @@ export default function Canvas<R, K extends keyof R>({
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft: newScrollLeft, scrollTop: newScrollTop } = e.currentTarget;
-    // Freeze columns on legacy browsers
-    setComponentsScrollLeft(newScrollLeft);
-
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
     onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
@@ -152,14 +148,15 @@ export default function Canvas<R, K extends keyof R>({
   }
 
   const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
-    if (row) {
-      rowRefs.set(idx, row);
-    } else {
+    if (row === null) {
       rowRefs.delete(idx);
+    } else {
+      rowRefs.set(idx, row);
     }
   }, [rowRefs]);
 
   function getRows() {
+    const left = isPositionStickySupported() ? undefined : scrollLeft;
     const rowElements = [];
 
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
@@ -181,27 +178,13 @@ export default function Canvas<R, K extends keyof R>({
           rowHeight={rowHeight}
           rowKey={rowKey}
           rowRenderer={rowRenderer}
-          scrollLeft={scrollLeft}
+          scrollLeft={left}
           selectedRows={selectedRows}
         />
       );
     }
 
     return rowElements;
-  }
-
-  function setComponentsScrollLeft(scrollLeft: number) {
-    if (isPositionStickySupported()) return;
-    const { current } = interactionMasks;
-    if (current) {
-      current.setScrollLeft(scrollLeft);
-    }
-
-    rowRefs.forEach(row => {
-      if (row && row.setScrollLeft) {
-        row.setScrollLeft(scrollLeft);
-      }
-    });
   }
 
   function getRowColumns(rowIdx: number) {
@@ -236,7 +219,6 @@ export default function Canvas<R, K extends keyof R>({
       onKeyUp={onCanvasKeyup}
     >
       <InteractionMasks<R, K>
-        ref={interactionMasks}
         rowGetter={rowGetter}
         rowsCount={rowsCount}
         rowHeight={rowHeight}

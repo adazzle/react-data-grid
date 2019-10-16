@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { isElement } from 'react-is';
-import shallowEqual from 'shallowequal';
 
 import Row from './Row';
 import RowGroup from './RowGroup';
@@ -25,7 +24,7 @@ interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K>
   rowData: R;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  scrollLeft: number;
+  scrollLeft: number | undefined;
   setRowRef(row: Row<R> | null, idx: number): void;
 }
 
@@ -133,11 +132,4 @@ function RowRenderer<R, K extends keyof R>({
   return <Row<R> {...rendererProps} />;
 }
 
-function propsAreEqual<R, K extends keyof R>(prevProps: RowRendererProps<R, K>, nextProps: RowRendererProps<R, K>) {
-  const { scrollLeft, ...rest } = prevProps;
-  const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
-
-  return shallowEqual(rest, nextRest);
-}
-
-export default memo(RowRenderer, propsAreEqual as () => boolean) as <R, K extends keyof R>(props: RowRendererProps<R, K>) => JSX.Element;
+export default memo(RowRenderer) as <R, K extends keyof R>(props: RowRendererProps<R, K>) => JSX.Element;

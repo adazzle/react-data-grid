@@ -155,7 +155,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   column: CalculatedColumn<TRow>;
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
-  scrollLeft: number;
+  scrollLeft: number | undefined;
   expandableOptions?: ExpandableOptions;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
@@ -177,7 +177,7 @@ export interface IRowRendererProps<TRow> {
   subRowDetails?: SubRowDetails;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
-  scrollLeft: number;
+  scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
@@ -231,14 +231,6 @@ export interface CellActionButton {
 export interface ColumnEventInfo<TRow> extends Position {
   rowId: unknown;
   column: CalculatedColumn<TRow>;
-}
-
-export interface CellRenderer {
-  setScrollLeft(scrollLeft: number): void;
-}
-
-export interface IRowRenderer {
-  setScrollLeft(scrollLeft: number): void;
 }
 
 export interface ScrollPosition {

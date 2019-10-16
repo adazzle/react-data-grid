@@ -1,8 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import shallowEqual from 'shallowequal';
 
-import { SubRowOptions, ColumnEventInfo, CellRenderer, CellRendererProps } from './common/types';
+import { SubRowOptions, ColumnEventInfo, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
 import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
@@ -20,22 +19,10 @@ export interface CellProps<R> extends CellRendererProps<R> {
   cellControls?: unknown;
 }
 
-export default class Cell<R> extends React.Component<CellProps<R>> implements CellRenderer {
+export default class Cell<R> extends React.PureComponent<CellProps<R>> {
   static defaultProps = {
     value: ''
   };
-
-  private readonly cell = React.createRef<HTMLDivElement>();
-
-  shouldComponentUpdate(nextProps: CellProps<R>) {
-    // TODO: optimize cellMetatData as it is recreated whenever `ReactDataGrid` renders
-    // On the modern browsers we are using position sticky so scrollLeft/setScrollLeft is not required
-    // On the legacy browsers scrollLeft sets the initial position so it can be safely ignored in the subsequent renders. Scrolling is handled by the setScrollLeft method
-    const { scrollLeft, ...rest } = this.props;
-    const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
-
-    return !shallowEqual(rest, nextRest);
-  }
 
   handleCellClick = () => {
     const { idx, rowIdx, cellMetaData } = this.props;
@@ -104,20 +91,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
     );
-  }
-
-  setScrollLeft(scrollLeft: number) {
-    const node = this.cell.current;
-    if (node) {
-      node.style.transform = `translateX(${scrollLeft}px)`;
-    }
-  }
-
-  removeScroll() {
-    const node = this.cell.current;
-    if (node) {
-      node.style.transform = 'none';
-    }
   }
 
   getEvents() {
@@ -196,7 +169,6 @@ export default class Cell<R> extends React.Component<CellProps<R>> implements Ce
 
     return (
       <div
-        ref={this.cell}
         className={className}
         style={style}
         {...events}
