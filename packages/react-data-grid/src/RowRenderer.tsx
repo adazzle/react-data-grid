@@ -20,7 +20,7 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 | 'selectedRows'
 >;
 
-interface RowRendererProps<R> extends SharedCanvasProps<R> {
+export interface RowRendererPropsBase<R> {
   idx: number;
   rowData: R;
   colOverscanStartIdx: number;
@@ -28,6 +28,8 @@ interface RowRendererProps<R> extends SharedCanvasProps<R> {
   scrollLeft: number;
   setRowRef(row: Row<R> | null, idx: number): void;
 }
+
+export type RowRendererProps<R> = SharedCanvasProps<R> & RowRendererPropsBase<R>;
 
 type SharedActualRowRendererProps<R> = Pick<RowRendererProps<R>,
 | 'idx'
@@ -38,7 +40,7 @@ type SharedActualRowRendererProps<R> = Pick<RowRendererProps<R>,
 | 'scrollLeft'
 >;
 
-interface RendererProps<R> extends SharedActualRowRendererProps<R> {
+export interface RendererProps<R> extends SharedActualRowRendererProps<R> {
   ref: React.Ref<Row<R>>;
   row: R;
   columns: CalculatedColumn<R>[];
@@ -46,6 +48,7 @@ interface RendererProps<R> extends SharedActualRowRendererProps<R> {
   subRowDetails?: SubRowDetails;
   height: number;
   isRowSelected: boolean;
+  isSummaryRow: boolean;
 }
 
 function RowRenderer<R>({
@@ -82,7 +85,8 @@ function RowRenderer<R>({
     colOverscanStartIdx,
     colOverscanEndIdx,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-    scrollLeft
+    scrollLeft,
+    isSummaryRow: false
   };
 
   function renderCustomRowRenderer() {
@@ -133,7 +137,7 @@ function RowRenderer<R>({
   return <Row<R> {...rendererProps} />;
 }
 
-function propsAreEqual<R>(prevProps: RowRendererProps<R>, nextProps: RowRendererProps<R>) {
+export function propsAreEqual<R, T extends RowRendererPropsBase<R>>(prevProps: T, nextProps: T) {
   const { scrollLeft, ...rest } = prevProps;
   const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
 

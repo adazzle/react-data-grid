@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, IRowRendererProps, ScrollPosition } from './common/types';
+import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, ScrollPosition } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { ReactDataGridProps } from './ReactDataGrid';
 import Row from './Row';
+import RowRenderer from './RowRenderer';
+import SummaryRowRenderer from './SummaryRowRenderer';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported } from './utils';
 import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
 
@@ -73,7 +75,7 @@ export default function Canvas<R>({
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
-  const summary = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
 
@@ -117,8 +119,11 @@ export default function Canvas<R>({
 
     setScrollLeft(newScrollLeft);
     setScrollTop(newScrollTop);
-    summary.current!.scrollLeft = newScrollLeft;
+    // to scroll headers
     onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
+    if (summaryRef.current) {
+      summaryRef.current.scrollLeft = newScrollLeft;
+    }
   }
 
   function getClientHeight() {
@@ -165,7 +170,15 @@ export default function Canvas<R>({
     }
   }, [rowRefs]);
 
-  function getRows() {
+  const setSummaryRowRef = useCallback((row: Row<R> | null, idx: number) => {
+    if (row) {
+      summaryRowRefs.set(idx, row);
+    } else {
+      summaryRowRefs.delete(idx);
+    }
+  }, [summaryRowRefs]);
+
+  function getViewportRows() {
     const rowElements = [];
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
       const rowData = rowGetter(idx);
@@ -195,41 +208,6 @@ export default function Canvas<R>({
     return rowElements;
   }
 
-  function getBaseRendererProps(row: R, idx: number): Omit<IRowRendererProps<R>, 'ref'> {
-    const { columns, lastFrozenColumnIndex } = columnMetrics;
-    return {
-      key: idx,
-      idx,
-      row,
-      height: rowHeight,
-      columns,
-      isRowSelected: false,
-      onRowSelectionChange,
-      cellMetaData,
-      colOverscanStartIdx,
-      colOverscanEndIdx,
-      lastFrozenColumnIndex,
-      scrollLeft,
-      isSummaryRow: false
-    };
-  }
-
-  function renderSummaryRow(row: R, idx: number) {
-    const rendererProps: IRowRendererProps<R> = {
-      ...getBaseRendererProps(row, idx),
-      ref(rowRef) {
-        if (rowRef) {
-          summaryRowRefs.set(idx, rowRef);
-        } else {
-          summaryRowRefs.delete(idx);
-        }
-      },
-      isSummaryRow: true
-    };
-
-    return <Row<R> {...rendererProps} />;
-  }
-
   function setComponentsScrollLeft(scrollLeft: number) {
     if (isPositionStickySupported()) return;
 
@@ -245,22 +223,54 @@ export default function Canvas<R>({
     });
   }
 
+  function getRowColumns(rowIdx: number) {
+    const row = rowRefs.get(rowIdx);
+    return row && row.props ? row.props.columns : columnMetrics.columns;
+  }
+
   const rowsContainerStyle: React.CSSProperties = { width: columnMetrics.totalColumnWidth };
   const canvasRowsContainerStyle: React.CSSProperties = {
     ...rowsContainerStyle,
     paddingTop: rowOverscanStartIdx * rowHeight,
     paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
   };
-  const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
 
   let grid = (
     <div className="rdg-grid" style={canvasRowsContainerStyle}>
-      {getRows()}
+      {getViewportRows()}
     </div>
   );
 
   if (RowsContainer !== undefined) {
     grid = <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>{grid}</RowsContainer>;
+  }
+
+  let summary: JSX.Element | null = null;
+  if (summaryRows && summaryRows.length) {
+    const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
+
+    summary = (
+      <div className="rdg-summary">
+        <div ref={summaryRef} style={boundaryStyle}>
+          <div style={rowsContainerStyle}>
+            {summaryRows.map((rowData: R, idx: number) => (
+              <SummaryRowRenderer<R>
+                key={idx}
+                idx={idx}
+                rowData={rowData}
+                setRowRef={setSummaryRowRef}
+                cellMetaData={cellMetaData}
+                colOverscanEndIdx={colOverscanEndIdx}
+                colOverscanStartIdx={colOverscanStartIdx}
+                columnMetrics={columnMetrics}
+                rowHeight={rowHeight}
+                scrollLeft={scrollLeft}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -299,15 +309,7 @@ export default function Canvas<R>({
         />
         {grid}
       </div>
-      {summaryRows && summaryRows.length && (
-        <div className="rdg-summary">
-          <div ref={summary} style={boundaryStyle}>
-            <div style={rowsContainerStyle}>
-              {summaryRows.map(renderSummaryRow)}
-            </div>
-          </div>
-        </div>
-      )}
+      {summary}
     </>
   );
 }
