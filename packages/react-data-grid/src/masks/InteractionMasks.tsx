@@ -23,7 +23,6 @@ import {
   selectedRangeIsSingleCell,
   NextSelectedCellPosition
 } from '../utils/selectedCellUtils';
-import { isFrozen } from '../utils/columnUtils';
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
@@ -108,7 +107,6 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   private readonly selectionMask = React.createRef<HTMLDivElement>();
-  private readonly copyMask = React.createRef<HTMLDivElement>();
 
   private unsubscribeEventHandlers: Array<() => void> = [];
 
@@ -174,32 +172,6 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
       left: selectionMaskLeft - portalTargetLeft + scrollLeft,
       top: selectionMaskTop - portalTargetTop + scrollTop
     };
-  }
-
-  setMaskScollLeft(mask: HTMLDivElement | null, position: Position | null, scrollLeft: number): void {
-    if (!mask || !position) return;
-
-    const { idx, rowIdx } = position;
-    if (!(idx >= 0 && rowIdx >= 0)) return;
-
-    const column = this.props.columns[idx];
-    if (!isFrozen(column)) return;
-
-    const top = this.getRowTop(rowIdx);
-    const left = scrollLeft + column.left;
-    const transform = `translate(${left}px, ${top}px)`;
-    if (mask.style.transform !== transform) {
-      mask.style.transform = transform;
-    }
-  }
-
-  /**
-   * Sets the position of SelectionMask and CopyMask components when the canvas is scrolled
-   * This is only required on the frozen columns
-   */
-  setScrollLeft(scrollLeft: number): void {
-    this.setMaskScollLeft(this.selectionMask.current, this.state.selectedPosition, scrollLeft);
-    this.setMaskScollLeft(this.copyMask.current, this.state.copiedPosition, scrollLeft);
   }
 
   onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -692,12 +664,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
         onKeyDown={this.onKeyDown}
         onFocus={this.onFocus}
       >
-        {copiedPosition && (
-          <CopyMask
-            {...this.getSelectedDimensions(copiedPosition)}
-            ref={this.copyMask}
-          />
-        )}
+        {copiedPosition && <CopyMask {...this.getSelectedDimensions(copiedPosition)} />}
         {draggedPosition && (
           <DragMask
             draggedPosition={draggedPosition}

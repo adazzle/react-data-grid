@@ -3,9 +3,9 @@ import classNames from 'classnames';
 
 import Cell from './Cell';
 import { isFrozen } from './utils/columnUtils';
-import { IRowRenderer, IRowRendererProps, CellRenderer, CellRendererProps, CalculatedColumn } from './common/types';
+import { IRowRendererProps, CellRendererProps, CalculatedColumn } from './common/types';
 
-export default class Row<R> extends React.Component<IRowRendererProps<R>> implements IRowRenderer {
+export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
 
   static defaultProps = {
@@ -13,8 +13,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
     isSelected: false,
     height: 35
   };
-
-  private readonly cells = new Map<keyof R, CellRenderer>();
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     // Prevent default to allow drop
@@ -39,8 +37,7 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
     const { idx, cellMetaData, row, scrollLeft, isRowSelected, onRowSelectionChange } = this.props;
     const { key } = column;
 
-    const cellProps: CellRendererProps<R> & { ref: (cell: CellRenderer | null) => void } = {
-      ref: (cell) => cell ? this.cells.set(key, cell) : this.cells.delete(key),
+    const cellProps: CellRendererProps<R> = {
       idx: column.idx,
       rowIdx: idx,
       height: this.props.height,
@@ -86,15 +83,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> implem
       treeDepth,
       subRowDetails
     };
-  }
-
-  setScrollLeft(scrollLeft: number) {
-    for (const column of this.props.columns) {
-      const { key } = column;
-      if (isFrozen(column) && this.cells.has(key)) {
-        this.cells.get(key)!.setScrollLeft(scrollLeft);
-      }
-    }
   }
 
   render() {

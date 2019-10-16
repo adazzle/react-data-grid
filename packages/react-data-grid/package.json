@@ -31,7 +31,6 @@
     "@material-ui/icons": "^4.5.1",
     "classnames": "^2.2.6",
     "react-is": "^16.10.2",
-    "shallowequal": "^1.1.0",
     "tslib": "^1.10.0"
   },
   "peerDependencies": {
@@ -39,7 +38,6 @@
     "@types/react": "^16.8",
     "@types/react-dom": "^16.8",
     "@types/react-is": "^16.7",
-    "@types/shallowequal": "^1.1",
     "react": "^16.8",
     "react-dom": "^16.8"
   }
