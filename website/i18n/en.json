@@ -29,12 +29,6 @@
       "contributing": {
         "title": "Contributing"
       },
-      "doc4": {
-        "title": "Other Document"
-      },
-      "doc5": {
-        "title": "Fifth Document"
-      },
       "examples/advanced-filtering": {
         "title": "Advanced Filtering"
       },
@@ -151,14 +145,14 @@
       "Docs": "Docs",
       "Examples": "Examples",
       "Blog": "Blog",
-      "V5.0.4": "V5.0.4"
+      "V7.0.0-alpha.20": "V7.0.0-alpha.20"
     },
     "categories": {
       "Getting Started": "Getting Started",
       "API": "API",
       "Contributing": "Contributing",
-      "Changelog": "Changelog",
       "Migrations": "Migrations",
+      "Changelog": "Changelog",
       "Examples": "Examples"
     }
   },

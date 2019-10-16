@@ -294,11 +294,13 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
 
   onClipboardCopy = (event: Event): void => {
     const e = event as ClipboardEvent;
+
     if (e.clipboardData) {
       e.preventDefault();
       const lines: string[] = [];
       const { columns, rowGetter } = this.props;
       const { selectedRange: { topLeft, bottomRight } } = this.state;
+
       for (let rowIdx = topLeft.rowIdx; rowIdx <= bottomRight.rowIdx; rowIdx++) {
         const items: string[] = [];
         for (let idx = topLeft.idx; idx <= bottomRight.idx; idx++) {
@@ -315,7 +317,42 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
 
   onClipboardPaste = (event: Event): void => {
     const e = event as ClipboardEvent;
-    console.log('XXX', 'paste', e);
+    const { columns, onCellCopyPaste, onGridRowsUpdated } = this.props;
+
+    if (e.clipboardData && e.clipboardData.items[0]) {
+      const item = e.clipboardData.items[0];
+      if (item) {
+        item.getAsString(value => {
+          const { selectedRange: { topLeft } } = this.state;
+          const lines = value.split('\n');
+
+          let rowOffset = 0;
+          for (const line of lines) {
+            let columnOffset = 0;
+            const items = line.split('\t');
+            for (const item of items) {
+              const toRow = topLeft.rowIdx + rowOffset;
+              const column = columns[topLeft.idx + columnOffset];
+              const cellKey = column ? column.key : null;
+              if (cellKey) {
+                if (onCellCopyPaste) {
+                  onCellCopyPaste({
+                    cellKey,
+                    rowIdx: toRow,
+                    fromRow: toRow,
+                    toRow,
+                    value: item
+                  });
+                }
+                onGridRowsUpdated(cellKey, toRow, toRow, { [cellKey]: item }, UpdateActions.CELL_UPDATE, toRow);
+              }
+              columnOffset++;
+            }
+            rowOffset++;
+          }
+        });
+      }
+    }
   };
 
   copyPasteEnabled(): boolean {
