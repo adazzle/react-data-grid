@@ -7,7 +7,7 @@ import { CalculatedColumn, HeaderRowData, ColumnMetrics, CellMetaData } from './
 import { DEFINE_SORT } from './common/enums';
 import { ReactDataGridProps } from './ReactDataGrid';
 
-type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
 | 'draggableHeaderCell'
 | 'getValidFilterValues'
 | 'rowGetter'
@@ -16,11 +16,11 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'onSelectedRowsChange'
 | 'sortColumn'
 | 'sortDirection'
-> & Required<Pick<ReactDataGridProps<R>,
+> & Required<Pick<ReactDataGridProps<R, K>,
 | 'rowKey'
 >>;
 
-export interface HeaderProps<R> extends SharedDataGridProps<R> {
+export interface HeaderProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   allRowsSelected: boolean;
   columnMetrics: ColumnMetrics<R>;
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
@@ -33,10 +33,10 @@ export interface HeaderHandle {
   setScrollLeft(scrollLeft: number): void;
 }
 
-export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.Ref<HeaderHandle>) {
+export default forwardRef(function Header<R, K extends keyof R>(props: HeaderProps<R, K>, ref: React.Ref<HeaderHandle>) {
   const headerRef = useRef<HTMLDivElement>(null);
-  const rowRef = useRef<HeaderRow<R>>(null);
-  const filterRowRef = useRef<HeaderRow<R>>(null);
+  const rowRef = useRef<HeaderRow<R, K>>(null);
+  const filterRowRef = useRef<HeaderRow<R, K>>(null);
 
   const [resizing, setResizing] = useState<null | { column: CalculatedColumn<R>; width: number }>(null);
 
@@ -76,7 +76,7 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   function handleAllRowsSelectionChange(checked: boolean) {
     if (!props.onSelectedRowsChange) return;
 
-    const newSelectedRows = new Set<R[keyof R]>();
+    const newSelectedRows = new Set<R[K]>();
     if (checked) {
       for (let i = 0; i < props.rowsCount; i++) {
         newSelectedRows.add(props.rowGetter(i)[props.rowKey]);
@@ -86,9 +86,9 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     props.onSelectedRowsChange(newSelectedRows);
   }
 
-  function getHeaderRow(row: HeaderRowData<R>, ref?: React.RefObject<HeaderRow<R>>) {
+  function getHeaderRow(row: HeaderRowData<R>, ref?: React.RefObject<HeaderRow<R, K>>) {
     return (
-      <HeaderRow<R>
+      <HeaderRow<R, K>
         key={row.rowType}
         ref={ref}
         rowType={row.rowType}
@@ -136,4 +136,4 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
       {getHeaderRows()}
     </div>
   );
-}) as <R>(props: HeaderProps<R> & { ref?: React.Ref<HeaderHandle> }) => JSX.Element;
+} as React.RefForwardingComponent<HeaderHandle, HeaderProps<{ [key: string]: unknown }, string>>) as <R, K extends keyof R>(props: HeaderProps<R, K> & { ref?: React.Ref<HeaderHandle> }) => JSX.Element;

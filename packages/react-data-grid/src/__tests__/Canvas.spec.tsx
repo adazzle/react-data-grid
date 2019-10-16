@@ -16,7 +16,7 @@ interface Row {
 
 const noop = () => null;
 
-const testProps: CanvasProps<Row> = {
+const testProps: CanvasProps<Row, 'row'> = {
   rowKey: 'row',
   rowHeight: 25,
   height: 200,
@@ -56,8 +56,8 @@ const testProps: CanvasProps<Row> = {
   onCanvasKeyup() {}
 };
 
-function renderComponent(extraProps?: Partial<CanvasProps<Row>>) {
-  return mount(<Canvas<Row> {...testProps} {...extraProps} />);
+function renderComponent(extraProps?: Partial<CanvasProps<Row, 'row'>>) {
+  return mount(<Canvas<Row, 'row'> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas Tests', () => {
@@ -74,13 +74,11 @@ describe('Canvas Tests', () => {
 
   describe('Row Selection', () => {
     it('renders row selected', () => {
-      const rowGetter = () => ({ id: 1 });
-
       const wrapper = renderComponent({
-        rowGetter,
+        rowGetter() { return { row: 'one' }; },
         rowsCount: 1,
-        rowKey: 'id',
-        selectedRows: new Set([1])
+        rowKey: 'row',
+        selectedRows: new Set(['one'])
       });
 
       expect(wrapper.find(RowComponent).props().isRowSelected).toBe(true);

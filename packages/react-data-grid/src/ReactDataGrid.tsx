@@ -38,7 +38,7 @@ import {
   ScrollPosition
 } from './common/types';
 
-export interface ReactDataGridProps<R extends {}> {
+export interface ReactDataGridProps<R, K extends keyof R> {
   /** An array of objects representing each column on the grid */
   columns: Column<R>[];
   /** The minimum width of the grid in pixels */
@@ -68,9 +68,9 @@ export interface ReactDataGridProps<R extends {}> {
   /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
 
-  selectedRows?: Set<R[keyof R]>;
+  selectedRows?: Set<R[K]>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?(selectedRows: Set<R[keyof R]>): void;
+  onSelectedRowsChange?(selectedRows: Set<R[K]>): void;
 
   /**
    * Callback called whenever row data is updated
@@ -86,7 +86,7 @@ export interface ReactDataGridProps<R extends {}> {
 
   /** Grid Props */
   /** The primary key property of each row */
-  rowKey?: keyof R;
+  rowKey?: K;
   /** The height of each row in pixels */
   rowHeight?: number;
   rowRenderer?: React.ReactElement | React.ComponentType<IRowRendererProps<R>>;
@@ -158,8 +158,8 @@ export interface ReactDataGridHandle {
  *
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
-  rowKey = 'id' as keyof R,
+const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends keyof R>({
+  rowKey = 'id' as K,
   rowHeight = 35,
   headerFiltersHeight = 45,
   minColumnWidth = 80,
@@ -177,7 +177,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   selectedRows,
   onSelectedRowsChange,
   ...props
-}: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
+}: ReactDataGridProps<R, K>, ref: React.Ref<ReactDataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
@@ -407,7 +407,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     >
       {columnMetrics && (
         <>
-          <Header<R>
+          <Header<R, K>
             ref={headerRef}
             rowKey={rowKey}
             rowsCount={rowsCount}
@@ -426,7 +426,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
             cellMetaData={cellMetaData}
           />
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
-            <Canvas<R>
+            <Canvas<R, K>
               rowKey={rowKey}
               rowHeight={rowHeight}
               rowRenderer={props.rowRenderer}
@@ -458,10 +458,10 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       )}
     </div>
   );
-});
+} as React.RefForwardingComponent<ReactDataGridHandle, ReactDataGridProps<{ [key: string]: unknown }, string>>);
 
 // This is a temporary class to expose instance methods as ForwardRef does work well with generics
-export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps<R>> implements ReactDataGridHandle {
+export default class ReactDataGrid<R, K extends keyof R> extends React.Component<ReactDataGridProps<R, K>> implements ReactDataGridHandle {
   private readonly gridRef = React.createRef<ReactDataGridHandle>();
 
   selectCell(position: Position, openEditor?: boolean | undefined): void {
@@ -479,7 +479,7 @@ export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps
   render() {
     return (
       <ReactDataGridBase
-        {...this.props as unknown as ReactDataGridProps<{}>}
+        {...this.props as unknown as ReactDataGridProps<{ [key: string]: unknown }, string>}
         ref={this.gridRef}
       />
     );

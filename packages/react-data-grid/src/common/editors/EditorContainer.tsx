@@ -8,12 +8,12 @@ import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
 
-type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
 
 type ValueType<R> = R[keyof R];
 
-export interface Props<R> extends SharedInteractionMasksProps<R>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
+export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
   value: ValueType<R>;
@@ -27,7 +27,7 @@ interface State {
   isInvalid: boolean;
 }
 
-export default class EditorContainer<R> extends React.Component<Props<R>, State> {
+export default class EditorContainer<R, K extends keyof R> extends React.Component<Props<R, K>, State> {
   static displayName = 'EditorContainer';
 
   changeCommitted = false;
@@ -46,7 +46,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
     }
   }
 
-  componentDidUpdate(prevProps: Props<R>) {
+  componentDidUpdate(prevProps: Props<R, K>) {
     if (prevProps.scrollLeft !== this.props.scrollLeft || prevProps.scrollTop !== this.props.scrollTop) {
       this.commitCancel();
     }

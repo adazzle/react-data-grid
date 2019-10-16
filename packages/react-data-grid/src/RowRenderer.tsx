@@ -7,7 +7,7 @@ import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
 import { IRowRendererProps, CalculatedColumn, SubRowDetails, RowData } from './common/types';
 
-type SharedCanvasProps<R> = Pick<CanvasProps<R>,
+type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'cellMetaData'
 | 'columnMetrics'
 | 'eventBus'
@@ -20,7 +20,7 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 | 'selectedRows'
 >;
 
-interface RowRendererProps<R> extends SharedCanvasProps<R> {
+interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   idx: number;
   rowData: R;
   colOverscanStartIdx: number;
@@ -29,7 +29,7 @@ interface RowRendererProps<R> extends SharedCanvasProps<R> {
   setRowRef(row: Row<R> | null, idx: number): void;
 }
 
-type SharedActualRowRendererProps<R> = Pick<RowRendererProps<R>,
+type SharedActualRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>,
 | 'idx'
 | 'cellMetaData'
 | 'onRowSelectionChange'
@@ -38,7 +38,7 @@ type SharedActualRowRendererProps<R> = Pick<RowRendererProps<R>,
 | 'scrollLeft'
 >;
 
-interface RendererProps<R> extends SharedActualRowRendererProps<R> {
+interface RendererProps<R, K extends keyof R> extends SharedActualRowRendererProps<R, K> {
   ref: React.Ref<Row<R>>;
   row: R;
   columns: CalculatedColumn<R>[];
@@ -48,7 +48,7 @@ interface RendererProps<R> extends SharedActualRowRendererProps<R> {
   isRowSelected: boolean;
 }
 
-function RowRenderer<R>({
+function RowRenderer<R, K extends keyof R>({
   cellMetaData,
   colOverscanEndIdx,
   colOverscanStartIdx,
@@ -65,9 +65,9 @@ function RowRenderer<R>({
   scrollLeft,
   selectedRows,
   setRowRef
-}: RowRendererProps<R>) {
+}: RowRendererProps<R, K>) {
   const { __metaData } = rowData as RowData;
-  const rendererProps: RendererProps<R> = {
+  const rendererProps: RendererProps<R, K> = {
     ref(row) {
       setRowRef(row, idx);
     },
@@ -133,11 +133,11 @@ function RowRenderer<R>({
   return <Row<R> {...rendererProps} />;
 }
 
-function propsAreEqual<R>(prevProps: RowRendererProps<R>, nextProps: RowRendererProps<R>) {
+function propsAreEqual<R, K extends keyof R>(prevProps: RowRendererProps<R, K>, nextProps: RowRendererProps<R, K>) {
   const { scrollLeft, ...rest } = prevProps;
   const { scrollLeft: nextScrollLeft, ...nextRest } = nextProps;
 
   return shallowEqual(rest, nextRest);
 }
 
-export default memo(RowRenderer, propsAreEqual) as <R>(props: RowRendererProps<R>) => JSX.Element;
+export default memo(RowRenderer, propsAreEqual as () => boolean) as <R, K extends keyof R>(props: RowRendererProps<R, K>) => JSX.Element;

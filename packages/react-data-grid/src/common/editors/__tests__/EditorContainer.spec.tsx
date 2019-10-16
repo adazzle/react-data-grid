@@ -7,9 +7,10 @@ import SimpleTextEditor from '../SimpleTextEditor';
 import { CalculatedColumn, EditorProps } from '../../types';
 
 interface Row {
-  col1?: string;
-  col2?: string;
-  col3?: string;
+  id: string;
+  col1: string;
+  col2: string;
+  col3: string;
 }
 
 function DefaultEditor() {
@@ -41,10 +42,11 @@ const fakeColumn: CalculatedColumn<Row> = {
   left: 0
 };
 
-const setup = (extraProps?: Partial<Props<Row>>, opts?: MountRendererProps) => {
-  const props: Props<Row> = {
+const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps) => {
+  const props: Props<Row, 'id'> = {
     rowIdx: 0,
     rowData: {
+      id: '1',
       col1: 'I',
       col2: 'love',
       col3: 'Testing'
@@ -62,7 +64,7 @@ const setup = (extraProps?: Partial<Props<Row>>, opts?: MountRendererProps) => {
     scrollTop: 0,
     ...extraProps
   };
-  const wrapper = mount<EditorContainer<Row>>(<EditorContainer {...props} />, opts);
+  const wrapper = mount<EditorContainer<Row, 'id'>>(<EditorContainer {...props} />, opts);
 
   return { wrapper, props };
 };
