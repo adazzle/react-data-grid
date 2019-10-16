@@ -25,8 +25,8 @@ describe('Header Row Unit Tests', () => {
     draggableHeaderCell: () => <div />
   };
 
-  const setup = (testProps?: Partial<HeaderRowProps<Row>>) => {
-    const props: HeaderRowProps<Row> = { ...defaultProps, ...testProps };
+  const setup = (testProps?: Partial<HeaderRowProps<Row, 'id'>>) => {
+    const props: HeaderRowProps<Row, 'id'> = { ...defaultProps, ...testProps };
     const wrapper = shallow(<HeaderRow {...props} />);
     const headerCells = wrapper.find(HeaderCell);
     return { wrapper, headerCells, props };
@@ -126,11 +126,11 @@ describe('Header Row Unit Tests', () => {
   });
 
   describe('Rendering HeaderRow component', () => {
-    const renderComponent = (props: HeaderRowProps<Row>) => {
+    const renderComponent = (props: HeaderRowProps<Row, 'id'>) => {
       return shallow(<HeaderRow {...props} />);
     };
 
-    const requiredProps: HeaderRowProps<Row> = {
+    const requiredProps: HeaderRowProps<Row, 'id'> = {
       width: 1000,
       height: 35,
       columns: helpers.columns,

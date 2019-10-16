@@ -10,7 +10,7 @@ import { ReactDataGridProps } from './ReactDataGrid';
 import EventBus from './EventBus';
 import { getVerticalRangeToRender, getHorizontalRangeToRender } from './utils/viewportUtils';
 
-type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
 | 'rowGetter'
 | 'rowsCount'
 | 'rowRenderer'
@@ -20,7 +20,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'RowsContainer'
 | 'getSubRowDetails'
 | 'selectedRows'
-> & Required<Pick<ReactDataGridProps<R>,
+> & Required<Pick<ReactDataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellSelect'
 | 'rowHeight'
@@ -30,7 +30,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'renderBatchSize'
 >>;
 
-export interface CanvasProps<R> extends SharedDataGridProps<R> {
+export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
   cellMetaData: CellMetaData<R>;
   height: number;
@@ -42,7 +42,7 @@ export interface CanvasProps<R> extends SharedDataGridProps<R> {
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
-export default function Canvas<R>({
+export default function Canvas<R, K extends keyof R>({
   cellMetaData,
   cellNavigationMode,
   columnMetrics,
@@ -68,11 +68,11 @@ export default function Canvas<R>({
   rowsCount,
   scrollToRowIndex,
   selectedRows
-}: CanvasProps<R>) {
+}: CanvasProps<R, K>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
-  const interactionMasks = useRef<InteractionMasks<R>>(null);
+  const interactionMasks = useRef<InteractionMasks<R, K>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
   const clientHeight = getClientHeight();
@@ -165,7 +165,7 @@ export default function Canvas<R>({
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
       const rowData = rowGetter(idx);
       rowElements.push(
-        <RowRenderer<R>
+        <RowRenderer<R, K>
           key={idx}
           idx={idx}
           rowData={rowData}
@@ -235,7 +235,7 @@ export default function Canvas<R>({
       onKeyDown={onCanvasKeydown}
       onKeyUp={onCanvasKeyup}
     >
-      <InteractionMasks<R>
+      <InteractionMasks<R, K>
         ref={interactionMasks}
         rowGetter={rowGetter}
         rowsCount={rowsCount}

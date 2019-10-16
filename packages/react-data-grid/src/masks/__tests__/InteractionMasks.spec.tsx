@@ -24,9 +24,9 @@ interface Row {
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
-  function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<Row>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
+  function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
     const onCellSelected = jest.fn();
-    const props: InteractionMasksProps<Row> = {
+    const props: InteractionMasksProps<Row, 'id'> = {
       height: 100,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 10,
@@ -58,13 +58,13 @@ describe('<InteractionMasks/>', () => {
     };
 
     if (isMount) {
-      const wrapper = mount<InteractionMasks<Row>>(<InteractionMasks {...props} />);
+      const wrapper = mount<InteractionMasks<Row, 'id'>>(<InteractionMasks {...props} />);
       initialState && wrapper.setState(initialState);
       onCellSelected.mockReset();
       return { wrapper, props };
     }
 
-    const wrapper = shallow<InteractionMasks<Row>>(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
+    const wrapper = shallow<InteractionMasks<Row, 'id'>>(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
     initialState && wrapper.setState(initialState);
     onCellSelected.mockReset();
     return { wrapper, props };
@@ -562,20 +562,20 @@ describe('<InteractionMasks/>', () => {
         expect(wrapper.state().selectedPosition).toEqual({ idx: -1, rowIdx: -1 });
       };
 
-      const tabCell = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<{}>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
+      const tabCell = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
         const { wrapper } = setup(props, state);
         const preventDefaultSpy = jest.fn();
         simulateTab(wrapper, shiftKey, preventDefaultSpy);
         return { wrapper, preventDefaultSpy };
       };
 
-      const assertExitGridOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<{}>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
+      const assertExitGridOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
         const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
         assertGridWasExited(wrapper);
       };
 
-      const assertSelectedCellOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<{}>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
+      const assertSelectedCellOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
         const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).toHaveBeenCalled();
         return expect(wrapper.state().selectedPosition);
