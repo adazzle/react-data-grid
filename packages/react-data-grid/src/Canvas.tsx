@@ -76,6 +76,7 @@ export default function Canvas<R, K extends keyof R>({
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
+  const scrollBar = useRef<HTMLDivElement>(null);
   const interactionMasks = useRef<InteractionMasks<R, K>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
 
@@ -99,9 +100,35 @@ export default function Canvas<R, K extends keyof R>({
     });
   }, [columnMetrics, scrollLeft]);
 
+  const syncScroll = useCallback((newScrollLeft: number, isFromScrollBar = false) => {
+    // scroll header rows
+    onScroll({ scrollLeft: newScrollLeft, scrollTop });
+
+    if (canvas.current) {
+      canvas.current.scrollLeft = newScrollLeft;
+    }
+    if (summaryRef.current) {
+      summaryRef.current.scrollLeft = newScrollLeft;
+    }
+    if (!isFromScrollBar && scrollBar.current) {
+      scrollBar.current.scrollLeft = newScrollLeft;
+    }
+  }, [onScroll, scrollTop]);
+
+  const scrollToColumn = useCallback((idx: number, columns: CalculatedColumn<R>[]) => {
+    const { current } = canvas;
+    if (!current) return;
+
+    const { scrollLeft, clientWidth } = current;
+    const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
+    if (newScrollLeft !== 0) {
+      syncScroll(scrollLeft + newScrollLeft);
+    }
+  }, [syncScroll]);
+
   useEffect(() => {
     return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
-  }, [columnMetrics.columns, eventBus]);
+  }, [columnMetrics.columns, eventBus, scrollToColumn]);
 
   useEffect(() => {
     if (prevScrollToRowIndex.current === scrollToRowIndex) return;
@@ -113,23 +140,40 @@ export default function Canvas<R, K extends keyof R>({
   }, [rowHeight, scrollToRowIndex]);
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
-    const { scrollLeft: newScrollLeft, scrollTop: newScrollTop } = e.currentTarget;
+    const { scrollTop: newScrollTop } = e.currentTarget;
+    setScrollTop(newScrollTop);
+    // to scroll headers
+    onScroll({ scrollLeft, scrollTop: newScrollTop });
+  }
+
+  function setComponentsScrollLeft(scrollLeft: number) {
+    if (isPositionStickySupported()) return;
+
+    const { current } = interactionMasks;
+    if (current) {
+      current.setScrollLeft(scrollLeft);
+    }
+
+    [...rowRefs.values(), ...summaryRowRefs.values()].forEach(row => {
+      if (row.setScrollLeft) {
+        row.setScrollLeft(scrollLeft);
+      }
+    });
+  }
+
+  function handleHorizontalScroll(e: React.UIEvent<HTMLDivElement>) {
+    const { scrollLeft: newScrollLeft } = e.currentTarget;
     // Freeze columns on legacy browsers
     setComponentsScrollLeft(newScrollLeft);
 
     setScrollLeft(newScrollLeft);
-    setScrollTop(newScrollTop);
-    // to scroll headers
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop });
-    if (summaryRef.current) {
-      summaryRef.current.scrollLeft = newScrollLeft;
-    }
+    syncScroll(newScrollLeft, true);
   }
 
   function getClientHeight() {
-    if (canvas.current) return canvas.current.clientHeight;
     const scrollbarSize = columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0;
-    return height - scrollbarSize;
+    const canvasHeight = summaryRows ? height - summaryRows.length * rowHeight - 2 : height;
+    return canvasHeight - scrollbarSize - 1;
   }
 
   function onHitBottomCanvas({ rowIdx }: Position) {
@@ -149,32 +193,6 @@ export default function Canvas<R, K extends keyof R>({
 
   function handleHitColummBoundary({ idx }: Position) {
     scrollToColumn(idx, columnMetrics.columns);
-  }
-
-  function scrollToColumn(idx: number, columns: CalculatedColumn<R>[]) {
-    const { current } = canvas;
-    if (!current) return;
-
-    const { scrollLeft, clientWidth } = current;
-    const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
-    if (newScrollLeft !== 0) {
-      current.scrollLeft = scrollLeft + newScrollLeft;
-    }
-  }
-
-  function setComponentsScrollLeft(scrollLeft: number) {
-    if (isPositionStickySupported()) return;
-
-    const { current } = interactionMasks;
-    if (current) {
-      current.setScrollLeft(scrollLeft);
-    }
-
-    [...rowRefs.values(), ...summaryRowRefs.values()].forEach(row => {
-      if (row.setScrollLeft) {
-        row.setScrollLeft(scrollLeft);
-      }
-    });
   }
 
   function getRowColumns(rowIdx: number) {
@@ -234,6 +252,7 @@ export default function Canvas<R, K extends keyof R>({
     paddingTop: rowOverscanStartIdx * rowHeight,
     paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
   };
+  const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
 
   let grid = (
     <div className="rdg-grid" style={canvasRowsContainerStyle}>
@@ -247,8 +266,6 @@ export default function Canvas<R, K extends keyof R>({
 
   let summary: JSX.Element | null = null;
   if (summaryRows && summaryRows.length) {
-    const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
-
     summary = (
       <div className="rdg-summary">
         <div ref={summaryRef} style={boundaryStyle}>
@@ -277,7 +294,7 @@ export default function Canvas<R, K extends keyof R>({
     <>
       <div
         className="rdg-viewport"
-        style={{ height: summaryRows ? height - summaryRows.length * rowHeight : height }}
+        style={{ height: clientHeight }}
         ref={canvas}
         onScroll={handleScroll}
         onKeyDown={onCanvasKeydown}
@@ -310,6 +327,9 @@ export default function Canvas<R, K extends keyof R>({
         {grid}
       </div>
       {summary}
+      <div ref={scrollBar} className="rdg-horizontal-scroll-bar" onScroll={handleHorizontalScroll} style={boundaryStyle}>
+        <div style={{ width: columnMetrics.totalColumnWidth }} />
+      </div>
     </>
   );
 }
