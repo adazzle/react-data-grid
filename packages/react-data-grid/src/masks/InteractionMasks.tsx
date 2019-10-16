@@ -145,9 +145,15 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
     if (enableCellAutoFocus && this.isFocusedOnBody()) {
       this.selectFirstCell();
     }
+
+    window.addEventListener('copy', this.onClipboardCopy);
+    window.addEventListener('paste', this.onClipboardPaste);
   }
 
   componentWillUnmount() {
+    window.removeEventListener('copy', this.onClipboardCopy);
+    window.removeEventListener('paste', this.onClipboardPaste);
+
     this.unsubscribeEventHandlers.forEach(h => h());
   }
 
@@ -285,6 +291,32 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
       this.closeEditor();
     }
   }
+
+  onClipboardCopy = (event: Event): void => {
+    const e = event as ClipboardEvent;
+    if (e.clipboardData) {
+      e.preventDefault();
+      const lines: string[] = [];
+      const { columns, rowGetter } = this.props;
+      const { selectedRange: { topLeft, bottomRight } } = this.state;
+      for (let rowIdx = topLeft.rowIdx; rowIdx <= bottomRight.rowIdx; rowIdx++) {
+        const items: string[] = [];
+        for (let idx = topLeft.idx; idx <= bottomRight.idx; idx++) {
+          const selectedPosition: Position = { rowIdx, idx };
+          const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
+          items.push(String(value));
+        }
+        lines.push(items.join('\t'));
+      }
+
+      e.clipboardData.setData('text/plain', lines.join('\n'));
+    }
+  };
+
+  onClipboardPaste = (event: Event): void => {
+    const e = event as ClipboardEvent;
+    console.log('XXX', 'paste', e);
+  };
 
   copyPasteEnabled(): boolean {
     return this.props.onCellCopyPaste !== null && this.isSelectedCellEditable();
