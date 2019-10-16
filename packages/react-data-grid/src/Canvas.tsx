@@ -11,7 +11,7 @@ import SummaryRowRenderer from './SummaryRowRenderer';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported } from './utils';
 import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
 
-type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
 | 'rowGetter'
 | 'rowsCount'
 | 'rowRenderer'
@@ -21,7 +21,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'RowsContainer'
 | 'getSubRowDetails'
 | 'selectedRows'
-> & Required<Pick<ReactDataGridProps<R>,
+> & Required<Pick<ReactDataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellSelect'
 | 'rowHeight'
@@ -31,7 +31,7 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'renderBatchSize'
 >>;
 
-export interface CanvasProps<R> extends SharedDataGridProps<R> {
+export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
   cellMetaData: CellMetaData<R>;
   height: number;
@@ -44,7 +44,7 @@ export interface CanvasProps<R> extends SharedDataGridProps<R> {
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
-export default function Canvas<R>({
+export default function Canvas<R, K extends keyof R>({
   cellMetaData,
   cellNavigationMode,
   columnMetrics,
@@ -71,7 +71,7 @@ export default function Canvas<R>({
   scrollToRowIndex,
   selectedRows,
   summaryRows
-}: CanvasProps<R>) {
+}: CanvasProps<R, K>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
@@ -203,7 +203,7 @@ export default function Canvas<R>({
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
       const rowData = rowGetter(idx);
       rowElements.push(
-        <RowRenderer<R>
+        <RowRenderer<R, K>
           key={idx}
           idx={idx}
           rowData={rowData}
@@ -254,7 +254,7 @@ export default function Canvas<R>({
         <div ref={summaryRef} style={boundaryStyle}>
           <div style={rowsContainerStyle}>
             {summaryRows.map((rowData: R, idx: number) => (
-              <SummaryRowRenderer<R>
+              <SummaryRowRenderer<R, K>
                 key={idx}
                 idx={idx}
                 rowData={rowData}

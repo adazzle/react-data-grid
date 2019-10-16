@@ -46,7 +46,7 @@ interface NavAction {
   onHitBoundary(next: Position): void;
 }
 
-type SharedCanvasProps<R> = Pick<CanvasProps<R>,
+type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'rowGetter'
 | 'rowsCount'
 | 'rowHeight'
@@ -58,7 +58,7 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R>,
 | 'editorPortalTarget'
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
-export interface InteractionMasksProps<R> extends SharedCanvasProps<R>, InteractionMasksMetaData<R> {
+export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K>, InteractionMasksMetaData<R> {
   onHitTopBoundary(position: Position): void;
   onHitBottomBoundary(position: Position): void;
   onHitLeftBoundary(position: Position): void;
@@ -81,7 +81,7 @@ export interface InteractionMasksState {
   firstEditorKeyPress: string | null;
 }
 
-export default class InteractionMasks<R> extends React.Component<InteractionMasksProps<R>, InteractionMasksState> {
+export default class InteractionMasks<R, K extends keyof R> extends React.Component<InteractionMasksProps<R, K>, InteractionMasksState> {
   static displayName = 'InteractionMasks';
 
   readonly state: Readonly<InteractionMasksState> = {
@@ -112,7 +112,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
 
   private unsubscribeEventHandlers: Array<() => void> = [];
 
-  componentDidUpdate(prevProps: InteractionMasksProps<R>, prevState: InteractionMasksState) {
+  componentDidUpdate(prevProps: InteractionMasksProps<R, K>, prevState: InteractionMasksState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
     const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx);
@@ -709,7 +709,7 @@ export default class InteractionMasks<R> extends React.Component<InteractionMask
           : this.renderCellRangeSelectView()}
         {isEditorEnabled && (
           <EditorPortal target={editorPortalTarget}>
-            <EditorContainer<R>
+            <EditorContainer<R, K>
               firstEditorKeyPress={firstEditorKeyPress}
               onCommit={this.onCommit}
               onCommitCancel={this.onCommitCancel}

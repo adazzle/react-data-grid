@@ -1,10 +1,11 @@
 import React, { memo } from 'react';
+
 import Row from './Row';
 import { propsAreEqual, RendererProps, RowRendererProps } from './RowRenderer';
 
 const emptyFunc = () => {};
 
-type SummaryRowRendererProps<R> = Pick<RowRendererProps<R>,
+type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>,
 | 'idx'
 | 'rowData'
 | 'setRowRef'
@@ -16,7 +17,7 @@ type SummaryRowRendererProps<R> = Pick<RowRendererProps<R>,
 | 'scrollLeft'
 >;
 
-function RowRenderer<R>({
+function RowRenderer<R, K extends keyof R>({
   cellMetaData,
   colOverscanEndIdx,
   colOverscanStartIdx,
@@ -26,8 +27,8 @@ function RowRenderer<R>({
   rowHeight,
   scrollLeft,
   setRowRef
-}: SummaryRowRendererProps<R>) {
-  const rendererProps: RendererProps<R> = {
+}: SummaryRowRendererProps<R, K>) {
+  const rendererProps: RendererProps<R, K> = {
     ref(row) {
       setRowRef(row, idx);
     },
@@ -48,4 +49,4 @@ function RowRenderer<R>({
   return <Row<R> {...rendererProps} />;
 }
 
-export default memo(RowRenderer, propsAreEqual) as <R>(props: SummaryRowRendererProps<R>) => JSX.Element;
+export default memo(RowRenderer, propsAreEqual as () => boolean) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;

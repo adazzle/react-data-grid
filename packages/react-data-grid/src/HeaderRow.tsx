@@ -9,7 +9,7 @@ import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
 import { HeaderProps } from './Header';
 
-type SharedHeaderProps<R> = Pick<HeaderProps<R>,
+type SharedHeaderProps<R, K extends keyof R> = Pick<HeaderProps<R, K>,
 | 'draggableHeaderCell'
 | 'onHeaderDrop'
 | 'allRowsSelected'
@@ -19,7 +19,7 @@ type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 | 'getValidFilterValues'
 >;
 
-export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
+export interface HeaderRowProps<R, K extends keyof R> extends SharedHeaderProps<R, K> {
   width: number;
   height: number;
   columns: CalculatedColumn<R>[];
@@ -31,7 +31,7 @@ export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
   rowType: HeaderRowType;
 }
 
-export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
+export default class HeaderRow<R, K extends keyof R> extends React.Component<HeaderRowProps<R, K>> {
   static displayName = 'HeaderRow';
 
   private readonly cells = new Map<keyof R, HeaderCell<R>>();

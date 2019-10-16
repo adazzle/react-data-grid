@@ -3,11 +3,12 @@ import { render } from '@testing-library/react';
 import ReactDataGrid, { ReactDataGridProps } from '../packages/react-data-grid/src';
 
 interface RowType {
+  id: number;
   col1: string;
   col2: string;
 }
 
-export function getProps(extraProps?: Partial<ReactDataGridProps<RowType>>): ReactDataGridProps<RowType> {
+export function getProps(extraProps?: Partial<ReactDataGridProps<RowType, 'id'>>): ReactDataGridProps<RowType, 'id'> {
   const rows: RowType[] = [];
 
   return {
@@ -26,7 +27,7 @@ export function getProps(extraProps?: Partial<ReactDataGridProps<RowType>>): Rea
   };
 }
 
-export function setup(props: ReactDataGridProps<RowType> = getProps()) {
+export function setup(props: ReactDataGridProps<RowType, 'id'> = getProps()) {
   return {
     props,
     ...render(
