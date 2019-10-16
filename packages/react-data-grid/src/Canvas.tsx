@@ -76,7 +76,7 @@ export default function Canvas<R, K extends keyof R>({
   const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
-  const interactionMasks = useRef<InteractionMasks<R>>(null);
+  const interactionMasks = useRef<InteractionMasks<R, K>>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
 
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
@@ -283,7 +283,7 @@ export default function Canvas<R, K extends keyof R>({
         onKeyDown={onCanvasKeydown}
         onKeyUp={onCanvasKeyup}
       >
-        <InteractionMasks<R>
+        <InteractionMasks<R, K>
           ref={interactionMasks}
           rowGetter={rowGetter}
           rowsCount={rowsCount}
