@@ -94,7 +94,9 @@ class Example extends React.Component {
 
 const exampleDescription = (
   <p>
-    TODO
+    This example shows that copying and pasting a range of cells works as you would expect.
+    To implement this behavior, make your columns editable per the <a href="#/examples/editable">Editable Example</a>
+    {' '} and add the <code>cellRangeSelection</code> property to the component.
   </p>
 );
 
