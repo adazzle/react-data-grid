@@ -162,6 +162,26 @@ export default function Canvas<R>({
     }
   }
 
+  function setComponentsScrollLeft(scrollLeft: number) {
+    if (isPositionStickySupported()) return;
+
+    const { current } = interactionMasks;
+    if (current) {
+      current.setScrollLeft(scrollLeft);
+    }
+
+    [...rowRefs.values(), ...summaryRowRefs.values()].forEach(row => {
+      if (row.setScrollLeft) {
+        row.setScrollLeft(scrollLeft);
+      }
+    });
+  }
+
+  function getRowColumns(rowIdx: number) {
+    const row = rowRefs.get(rowIdx);
+    return row && row.props ? row.props.columns : columnMetrics.columns;
+  }
+
   const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
     if (row) {
       rowRefs.set(idx, row);
@@ -206,26 +226,6 @@ export default function Canvas<R>({
     }
 
     return rowElements;
-  }
-
-  function setComponentsScrollLeft(scrollLeft: number) {
-    if (isPositionStickySupported()) return;
-
-    const { current } = interactionMasks;
-    if (current) {
-      current.setScrollLeft(scrollLeft);
-    }
-
-    [...rowRefs.values(), ...summaryRowRefs.values()].forEach(row => {
-      if (row.setScrollLeft) {
-        row.setScrollLeft(scrollLeft);
-      }
-    });
-  }
-
-  function getRowColumns(rowIdx: number) {
-    const row = rowRefs.get(rowIdx);
-    return row && row.props ? row.props.columns : columnMetrics.columns;
   }
 
   const rowsContainerStyle: React.CSSProperties = { width: columnMetrics.totalColumnWidth };
