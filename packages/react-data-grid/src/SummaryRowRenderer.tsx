@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import Row from './Row';
-import { propsAreEqual, RendererProps, RowRendererProps } from './RowRenderer';
+import { RendererProps, RowRendererProps } from './RowRenderer';
 
 const emptyFunc = () => {};
 
@@ -49,4 +49,4 @@ function RowRenderer<R, K extends keyof R>({
   return <Row<R> {...rendererProps} />;
 }
 
-export default memo(RowRenderer, propsAreEqual as () => boolean) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;
+export default memo(RowRenderer) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;

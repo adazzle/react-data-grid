@@ -82,6 +82,7 @@ export default function Canvas<R, K extends keyof R>({
   const [summaryRowRefs] = useState(() => new Map<number, Row<R>>());
 
   const clientHeight = getClientHeight();
+  const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -197,7 +198,6 @@ export default function Canvas<R, K extends keyof R>({
   }, [summaryRowRefs]);
 
   function getViewportRows() {
-    const left = isPositionStickySupported() ? undefined : scrollLeft;
     const rowElements = [];
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
       const rowData = rowGetter(idx);
@@ -218,7 +218,7 @@ export default function Canvas<R, K extends keyof R>({
           rowHeight={rowHeight}
           rowKey={rowKey}
           rowRenderer={rowRenderer}
-          scrollLeft={left}
+          scrollLeft={nonStickyScrollLeft}
           selectedRows={selectedRows}
         />
       );
@@ -262,7 +262,7 @@ export default function Canvas<R, K extends keyof R>({
                 colOverscanStartIdx={colOverscanStartIdx}
                 columnMetrics={columnMetrics}
                 rowHeight={rowHeight}
-                scrollLeft={scrollLeft}
+                scrollLeft={nonStickyScrollLeft}
               />
             ))}
           </div>
@@ -275,7 +275,7 @@ export default function Canvas<R, K extends keyof R>({
     <>
       <div
         className="rdg-viewport"
-        style={{ height }}
+        style={{ height: clientHeight }}
         ref={canvas}
         onScroll={handleScroll}
         onKeyDown={onCanvasKeydown}
