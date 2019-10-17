@@ -30,16 +30,11 @@
 }
 
 .rdg-summary {
-  background-color: @borderColor;
   border-top: 2px solid darken(@borderColor, 20%);
+  position: relative;
+  overflow: hidden;
 
-  & > div {
-    position: relative;
-    overflow: hidden;
-    border-right: 1px solid #ddd;
-  }
-
-  .react-grid-Row:last-child .react-grid-Cell {
-    border-bottom: none;
+  .rdg-row:last-child .rdg-cell {
+    border-bottom-color: transparent;
   }
 }

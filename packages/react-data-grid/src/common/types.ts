@@ -170,6 +170,7 @@ export interface RowsContainerProps {
 
 export interface IRowRendererProps<TRow> {
   height: number;
+  width: number;
   columns: CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;

@@ -117,7 +117,7 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
     return (
       <div
         className={className}
-        style={{ height: this.props.height }}
+        style={{ width: this.props.width, height: this.props.height }}
         {...events}
       >
         {this.getCells()}

@@ -21,6 +21,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
 | 'RowsContainer'
 | 'getSubRowDetails'
 | 'selectedRows'
+| 'summaryRows'
 > & Required<Pick<ReactDataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellSelect'
@@ -38,7 +39,6 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
   onScroll(position: ScrollPosition): void;
-  summaryRows?: R[];
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
@@ -78,7 +78,6 @@ export default function Canvas<R, K extends keyof R>({
   const summaryRef = useRef<HTMLDivElement>(null);
   const prevScrollToRowIndex = useRef<number | undefined>();
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
-  const [summaryRowRefs] = useState(() => new Map<number, Row<R>>());
 
   const clientHeight = getClientHeight();
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
@@ -98,33 +97,9 @@ export default function Canvas<R, K extends keyof R>({
     });
   }, [columnMetrics, scrollLeft]);
 
-  const syncScroll = useCallback((newScrollLeft: number, newScrollTop?: number, isFromScrollBar = false) => {
-    // scroll header rows
-    onScroll({ scrollLeft: newScrollLeft, scrollTop: newScrollTop == null ? scrollTop : newScrollTop });
-
-    if (!isFromScrollBar && canvas.current) {
-      canvas.current.scrollLeft = newScrollLeft;
-    }
-
-    if (summaryRef.current) {
-      summaryRef.current.scrollLeft = newScrollLeft;
-    }
-  }, [onScroll, scrollTop]);
-
-  const scrollToColumn = useCallback((idx: number, columns: CalculatedColumn<R>[]) => {
-    const { current } = canvas;
-    if (!current) return;
-
-    const { scrollLeft, clientWidth } = current;
-    const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
-    if (newScrollLeft !== 0) {
-      syncScroll(scrollLeft + newScrollLeft);
-    }
-  }, [syncScroll]);
-
   useEffect(() => {
     return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
-  }, [columnMetrics.columns, eventBus, scrollToColumn]);
+  }, [columnMetrics.columns, eventBus]);
 
   useEffect(() => {
     if (prevScrollToRowIndex.current === scrollToRowIndex) return;
@@ -136,10 +111,13 @@ export default function Canvas<R, K extends keyof R>({
   }, [rowHeight, scrollToRowIndex]);
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
-    const { scrollTop: newScrollTop, scrollLeft: newScrollLeft } = e.currentTarget;
-    setScrollLeft(newScrollLeft);
-    setScrollTop(newScrollTop);
-    syncScroll(newScrollLeft, newScrollTop, true);
+    const { scrollLeft, scrollTop } = e.currentTarget;
+    setScrollLeft(scrollLeft);
+    setScrollTop(scrollTop);
+    onScroll({ scrollLeft, scrollTop });
+    if (summaryRef.current) {
+      summaryRef.current.scrollLeft = scrollLeft;
+    }
   }
 
   function getClientHeight() {
@@ -172,6 +150,17 @@ export default function Canvas<R, K extends keyof R>({
     return row && row.props ? row.props.columns : columnMetrics.columns;
   }
 
+  function scrollToColumn(idx: number, columns: CalculatedColumn<R>[]) {
+    const { current } = canvas;
+    if (!current) return;
+
+    const { scrollLeft, clientWidth } = current;
+    const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
+    if (newScrollLeft !== 0) {
+      current.scrollLeft = scrollLeft + newScrollLeft;
+    }
+  }
+
   const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
     if (row === null) {
       rowRefs.delete(idx);
@@ -179,14 +168,6 @@ export default function Canvas<R, K extends keyof R>({
       rowRefs.set(idx, row);
     }
   }, [rowRefs]);
-
-  const setSummaryRowRef = useCallback((row: Row<R> | null, idx: number) => {
-    if (row === null) {
-      summaryRowRefs.delete(idx);
-    } else {
-      summaryRowRefs.set(idx, row);
-    }
-  }, [summaryRowRefs]);
 
   function getViewportRows() {
     const rowElements = [];
@@ -235,33 +216,23 @@ export default function Canvas<R, K extends keyof R>({
     grid = <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>{grid}</RowsContainer>;
   }
 
-  let summary: JSX.Element | null = null;
-  if (summaryRows && summaryRows.length) {
-    const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
-
-    summary = (
-      <div className="rdg-summary">
-        <div ref={summaryRef} style={boundaryStyle}>
-          <div style={rowsContainerStyle}>
-            {summaryRows.map((rowData: R, idx: number) => (
-              <SummaryRowRenderer<R, K>
-                key={idx}
-                idx={idx}
-                rowData={rowData}
-                setRowRef={setSummaryRowRef}
-                cellMetaData={cellMetaData}
-                colOverscanEndIdx={colOverscanEndIdx}
-                colOverscanStartIdx={colOverscanStartIdx}
-                columnMetrics={columnMetrics}
-                rowHeight={rowHeight}
-                scrollLeft={nonStickyScrollLeft}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const summary = summaryRows && summaryRows.length > 0 && (
+    <div ref={summaryRef} className="rdg-summary">
+      {summaryRows.map((rowData, idx) => (
+        <SummaryRowRenderer<R, K>
+          key={idx}
+          idx={idx}
+          rowData={rowData}
+          cellMetaData={cellMetaData}
+          colOverscanEndIdx={colOverscanEndIdx}
+          colOverscanStartIdx={colOverscanStartIdx}
+          columnMetrics={columnMetrics}
+          rowHeight={rowHeight}
+          scrollLeft={nonStickyScrollLeft}
+        />
+      ))}
+    </div>
+  );
 
   const canvasHeight = summaryRows ? height - summaryRows.length * rowHeight : height;
 

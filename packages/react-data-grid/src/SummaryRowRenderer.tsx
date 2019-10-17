@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 
 import Row from './Row';
-import { RendererProps, RowRendererProps } from './RowRenderer';
+import { RowRendererProps } from './RowRenderer';
+import { getScrollbarSize } from './utils';
 
 const emptyFunc = () => {};
 
 type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>,
 | 'idx'
 | 'rowData'
-| 'setRowRef'
 | 'columnMetrics'
 | 'cellMetaData'
 | 'colOverscanEndIdx'
@@ -25,28 +25,25 @@ function RowRenderer<R, K extends keyof R>({
   idx,
   rowData,
   rowHeight,
-  scrollLeft,
-  setRowRef
+  scrollLeft
 }: SummaryRowRendererProps<R, K>) {
-  const rendererProps: RendererProps<R, K> = {
-    ref(row) {
-      setRowRef(row, idx);
-    },
-    idx,
-    row: rowData,
-    height: rowHeight,
-    columns: columnMetrics.columns,
-    isRowSelected: false,
-    onRowSelectionChange: emptyFunc,
-    cellMetaData,
-    colOverscanStartIdx,
-    colOverscanEndIdx,
-    lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-    scrollLeft,
-    isSummaryRow: true
-  };
-
-  return <Row<R> {...rendererProps} />;
+  return (
+    <Row<R>
+      idx={idx}
+      row={rowData}
+      width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+      height={rowHeight}
+      columns={columnMetrics.columns}
+      isRowSelected={false}
+      onRowSelectionChange={emptyFunc}
+      cellMetaData={cellMetaData}
+      colOverscanStartIdx={colOverscanStartIdx}
+      colOverscanEndIdx={colOverscanEndIdx}
+      lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+      scrollLeft={scrollLeft}
+      isSummaryRow
+    />
+  );
 }
 
 export default memo(RowRenderer) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;

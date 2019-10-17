@@ -43,6 +43,7 @@ export interface RendererProps<R, K extends keyof R> extends SharedActualRowRend
   columns: CalculatedColumn<R>[];
   lastFrozenColumnIndex: number;
   subRowDetails?: SubRowDetails;
+  width: number;
   height: number;
   isRowSelected: boolean;
   isSummaryRow: boolean;
@@ -73,6 +74,7 @@ function RowRenderer<R, K extends keyof R>({
     },
     idx,
     row: rowData,
+    width: columnMetrics.totalColumnWidth,
     height: rowHeight,
     columns: columnMetrics.columns,
     isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),

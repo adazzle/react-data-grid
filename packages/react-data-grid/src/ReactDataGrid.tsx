@@ -181,7 +181,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends key
   cellRangeSelection,
   selectedRows,
   onSelectedRowsChange,
-  summaryRows,
   ...props
 }: ReactDataGridProps<R, K>, ref: React.Ref<ReactDataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -458,7 +457,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends key
               onCanvasKeydown={props.onGridKeyDown}
               onCanvasKeyup={props.onGridKeyUp}
               renderBatchSize={renderBatchSize}
-              summaryRows={summaryRows}
+              summaryRows={props.summaryRows}
             />
           )}
         </>
