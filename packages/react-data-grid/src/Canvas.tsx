@@ -199,15 +199,15 @@ export default function Canvas<R, K extends keyof R>({
     return rowElements;
   }
 
-  const rowsContainerStyle: React.CSSProperties = { width: columnMetrics.totalColumnWidth };
-  const canvasRowsContainerStyle: React.CSSProperties = {
-    ...rowsContainerStyle,
-    paddingTop: rowOverscanStartIdx * rowHeight,
-    paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
-  };
-
   let grid = (
-    <div className="rdg-grid" style={canvasRowsContainerStyle}>
+    <div
+      className="rdg-grid"
+      style={{
+        width: columnMetrics.totalColumnWidth,
+        paddingTop: rowOverscanStartIdx * rowHeight,
+        paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
+      }}
+    >
       {getViewportRows()}
     </div>
   );
@@ -234,13 +234,11 @@ export default function Canvas<R, K extends keyof R>({
     </div>
   );
 
-  const canvasHeight = summaryRows ? height - summaryRows.length * rowHeight : height;
-
   return (
     <>
       <div
         className="rdg-viewport"
-        style={{ height: canvasHeight }}
+        style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
         ref={canvas}
         onScroll={handleScroll}
         onKeyDown={onCanvasKeydown}
@@ -251,7 +249,7 @@ export default function Canvas<R, K extends keyof R>({
           rowsCount={rowsCount}
           rowHeight={rowHeight}
           columns={columnMetrics.columns}
-          height={canvasHeight}
+          height={clientHeight}
           colVisibleStartIdx={colVisibleStartIdx}
           colVisibleEndIdx={colVisibleEndIdx}
           enableCellSelect={enableCellSelect}

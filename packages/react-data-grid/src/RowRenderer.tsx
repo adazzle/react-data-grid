@@ -37,7 +37,7 @@ type SharedActualRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<
 | 'scrollLeft'
 >;
 
-export interface RendererProps<R, K extends keyof R> extends SharedActualRowRendererProps<R, K> {
+interface RendererProps<R, K extends keyof R> extends SharedActualRowRendererProps<R, K> {
   ref: React.Ref<Row<R>>;
   row: R;
   columns: CalculatedColumn<R>[];

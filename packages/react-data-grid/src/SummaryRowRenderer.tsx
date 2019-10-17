@@ -4,7 +4,7 @@ import Row from './Row';
 import { RowRendererProps } from './RowRenderer';
 import { getScrollbarSize } from './utils';
 
-const emptyFunc = () => {};
+const noop = () => {};
 
 type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>,
 | 'idx'
@@ -35,7 +35,7 @@ function RowRenderer<R, K extends keyof R>({
       height={rowHeight}
       columns={columnMetrics.columns}
       isRowSelected={false}
-      onRowSelectionChange={emptyFunc}
+      onRowSelectionChange={noop}
       cellMetaData={cellMetaData}
       colOverscanStartIdx={colOverscanStartIdx}
       colOverscanEndIdx={colOverscanEndIdx}
