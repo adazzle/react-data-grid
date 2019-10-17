@@ -126,6 +126,7 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   dependentValues?: TDependentValue;
+  isSummaryRow: boolean;
 }
 
 export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
@@ -157,6 +158,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   cellMetaData: CellMetaData<TRow>;
   scrollLeft: number | undefined;
   expandableOptions?: ExpandableOptions;
+  isSummaryRow: boolean;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }
@@ -168,6 +170,7 @@ export interface RowsContainerProps {
 
 export interface IRowRendererProps<TRow> {
   height: number;
+  width: number;
   columns: CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
@@ -179,6 +182,7 @@ export interface IRowRendererProps<TRow> {
   colOverscanEndIdx: number;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
+  isSummaryRow: boolean;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }

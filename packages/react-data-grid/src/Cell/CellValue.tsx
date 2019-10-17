@@ -1,19 +1,20 @@
-import React from 'react';
+import React, { cloneElement, createElement } from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
+import { CellProps } from '../Cell';
 import { SimpleCellFormatter } from '../formatters';
-import { CellContentProps } from './CellContent';
 
-type CellValueProps<R> = Pick<CellContentProps<R>,
+type CellValueProps<R> = Pick<CellProps<R>,
 | 'rowIdx'
 | 'rowData'
 | 'column'
 | 'value'
 | 'isRowSelected'
 | 'onRowSelectionChange'
+| 'isSummaryRow'
 >;
 
-export default function CellValue<R>({ rowIdx, rowData, column, value, isRowSelected, onRowSelectionChange }: CellValueProps<R>) {
+export default function CellValue<R>({ rowIdx, rowData, column, value, isRowSelected, onRowSelectionChange, isSummaryRow }: CellValueProps<R>) {
   function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
@@ -34,18 +35,19 @@ export default function CellValue<R>({ rowIdx, rowData, column, value, isRowSele
       row: rowData,
       isRowSelected,
       onRowSelectionChange,
-      dependentValues: getFormatterDependencies(rowData)
+      dependentValues: getFormatterDependencies(rowData),
+      isSummaryRow
     };
   }
 
   const { formatter } = column;
 
   if (isElement(formatter)) {
-    return React.cloneElement(formatter, getFormatterProps());
+    return cloneElement(formatter, getFormatterProps());
   }
 
   if (isValidElementType(formatter)) {
-    return React.createElement(formatter, getFormatterProps());
+    return createElement(formatter, getFormatterProps());
   }
 
   return <SimpleCellFormatter value={value as string} />;

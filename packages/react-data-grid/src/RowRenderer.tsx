@@ -19,7 +19,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'selectedRows'
 >;
 
-interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
+export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   idx: number;
   rowData: R;
   colOverscanStartIdx: number;
@@ -43,8 +43,10 @@ interface RendererProps<R, K extends keyof R> extends SharedActualRowRendererPro
   columns: CalculatedColumn<R>[];
   lastFrozenColumnIndex: number;
   subRowDetails?: SubRowDetails;
+  width: number;
   height: number;
   isRowSelected: boolean;
+  isSummaryRow: boolean;
 }
 
 function RowRenderer<R, K extends keyof R>({
@@ -72,6 +74,7 @@ function RowRenderer<R, K extends keyof R>({
     },
     idx,
     row: rowData,
+    width: columnMetrics.totalColumnWidth,
     height: rowHeight,
     columns: columnMetrics.columns,
     isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),
@@ -81,7 +84,8 @@ function RowRenderer<R, K extends keyof R>({
     colOverscanStartIdx,
     colOverscanEndIdx,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-    scrollLeft
+    scrollLeft,
+    isSummaryRow: false
   };
 
   function renderCustomRowRenderer() {

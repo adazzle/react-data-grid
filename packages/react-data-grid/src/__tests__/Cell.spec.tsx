@@ -46,7 +46,8 @@ const testProps: CellProps<Row> = {
   height: 40,
   isRowSelected: false,
   onRowSelectionChange() {},
-  scrollLeft: 0
+  scrollLeft: 0,
+  isSummaryRow: false
 };
 
 const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>) => {
@@ -94,7 +95,8 @@ describe('Cell Tests', () => {
       expandableOptions,
       isRowSelected: false,
       onRowSelectionChange() {},
-      scrollLeft: 0
+      scrollLeft: 0,
+      isSummaryRow: false
     };
 
     it('passes classname property', () => {
@@ -128,6 +130,7 @@ describe('Cell Tests', () => {
         isRowSelected: false,
         onRowSelectionChange() {},
         scrollLeft: 0,
+        isSummaryRow: false,
         ...propsOverride
       };
 

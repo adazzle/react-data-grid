@@ -1,10 +1,10 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 
 import Cell from './Cell';
-import { isFrozen } from './utils/columnUtils';
-import { isPositionStickySupported } from './utils';
 import { IRowRendererProps } from './common/types';
+import { isPositionStickySupported } from './utils';
+import { isFrozen } from './utils/columnUtils';
 
 export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
@@ -42,7 +42,8 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       isRowSelected,
       onRowSelectionChange,
       row,
-      scrollLeft
+      scrollLeft,
+      isSummaryRow
     } = this.props;
     const Renderer = this.props.cellRenderer!;
     const canSticky = isPositionStickySupported();
@@ -68,6 +69,7 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
           scrollLeft={!canSticky && isFrozen(column) ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
+          isSummaryRow={isSummaryRow}
         />
       );
     });
@@ -98,20 +100,25 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   }
 
   render() {
+    const { idx, isRowSelected, extraClasses, isSummaryRow } = this.props;
     const className = classNames(
       'rdg-row',
-      `rdg-row-${this.props.idx % 2 === 0 ? 'even' : 'odd'}`,
-      { 'rdg-row-selected': this.props.isRowSelected },
-      this.props.extraClasses
+      `rdg-row-${idx % 2 === 0 ? 'even' : 'odd'}`,
+      { 'rdg-row-selected': isRowSelected },
+      extraClasses
     );
+
+    const events = !isSummaryRow && {
+      onDragEnter: this.handleDragEnter,
+      onDragOver: this.handleDragOver,
+      onDrop: this.handleDrop
+    };
 
     return (
       <div
         className={className}
-        style={{ height: this.props.height }}
-        onDragEnter={this.handleDragEnter}
-        onDragOver={this.handleDragOver}
-        onDrop={this.handleDrop}
+        style={{ width: this.props.width, height: this.props.height }}
+        {...events}
       >
         {this.getCells()}
       </div>

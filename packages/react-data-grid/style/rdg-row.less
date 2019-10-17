@@ -28,3 +28,13 @@
   padding: 0 8px;
   border-bottom: 1px solid @borderColor;
 }
+
+.rdg-summary {
+  border-top: 2px solid darken(@borderColor, 20%);
+  position: relative;
+  overflow: hidden;
+
+  .rdg-row:last-child .rdg-cell {
+    border-bottom-color: transparent;
+  }
+}

@@ -1,12 +1,12 @@
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 
-import { SubRowOptions, ColumnEventInfo, CellRendererProps } from './common/types';
 import CellActions from './Cell/CellActions';
-import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
-import { isFrozen } from './utils/columnUtils';
+import CellExpand from './Cell/CellExpander';
+import { CellRendererProps, ColumnEventInfo, SubRowOptions } from './common/types';
 import { isPositionStickySupported } from './utils';
+import { isFrozen } from './utils/columnUtils';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
   return { rowIdx, idx, rowData, expandArgs };
@@ -136,13 +136,33 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
   }
 
   render() {
-    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData } = this.props;
+    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isSummaryRow } = this.props;
     if (column.hidden) {
       return null;
     }
 
     const style = this.getStyle();
     const className = this.getCellClass();
+
+    if (isSummaryRow) {
+      return (
+        <div className={className} style={style}>
+          <CellContent<R>
+            idx={idx}
+            rowIdx={rowIdx}
+            column={column}
+            rowData={rowData}
+            value={value}
+            expandableOptions={expandableOptions}
+            height={height}
+            isRowSelected={false}
+            onRowSelectionChange={this.props.onRowSelectionChange}
+            isSummaryRow
+          />
+        </div>
+      );
+    }
+
     const cellContent = children || (
       <CellContent<R>
         idx={idx}
@@ -157,6 +177,7 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
         cellControls={cellControls}
         isRowSelected={this.props.isRowSelected}
         onRowSelectionChange={this.props.onRowSelectionChange}
+        isSummaryRow={isSummaryRow}
       />
     );
     const events = this.getEvents();

@@ -20,7 +20,7 @@ export const SelectColumn: Column<any> = {
       onChange={props.onAllRowsSelectionChange}
     />
   ),
-  formatter: (props: FormatterProps<boolean>) => (
+  formatter: (props: FormatterProps<boolean>) => props.isSummaryRow ? null : (
     <SelectCellFormatter
       value={props.isRowSelected}
       onChange={(value, isShiftClick) => props.onRowSelectionChange(props.rowIdx, props.row, value, isShiftClick)}

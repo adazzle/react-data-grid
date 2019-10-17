@@ -30,6 +30,7 @@ describe('Row', () => {
 
   const requiredProperties: IRowRendererProps<RowType> = {
     height: 30,
+    width: 1000,
     columns: createColumns(COLUMN_COUNT),
     row: { key: 'value' },
     cellRenderer: Cell,
@@ -49,7 +50,8 @@ describe('Row', () => {
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
-    onRowSelectionChange() {}
+    onRowSelectionChange() {},
+    isSummaryRow: false
   };
 
   it('passes classname property', () => {
