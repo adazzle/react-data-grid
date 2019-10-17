@@ -141,6 +141,11 @@ export interface ReactDataGridProps<R, K extends keyof R> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
+  /**
+   * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
+   * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
+   */
+  summaryRows?: R[];
   /** Control how big render row batches will be. */
   renderBatchSize?: number;
 }
@@ -452,6 +457,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends key
               onCanvasKeydown={props.onGridKeyDown}
               onCanvasKeyup={props.onGridKeyUp}
               renderBatchSize={renderBatchSize}
+              summaryRows={props.summaryRows}
             />
           )}
         </>

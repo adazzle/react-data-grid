@@ -35,6 +35,7 @@ import ScrollToRowIndex from './demos/example28-scroll-to-row-index';
 import DescendingFirstSortable from './demos/example29-descendingFirstSortable';
 import SelectionRangeEvents from './demos/example30-selection-range-events';
 import IsScrolling from './demos/example31-isScrolling';
+import SummaryRows from './demos/example32-summary-rows';
 
 ReactDOM.render((
   <StrictMode>
@@ -72,6 +73,7 @@ ReactDOM.render((
         <li><NavLink to="/examples/descendingFirstSortable">Descending First Sortable Example</NavLink></li>
         <li><NavLink to="/examples/selection-range-events">Selection Range Events Example</NavLink></li>
         <li><NavLink to="/examples/isScrolling">IsScrolling Example</NavLink></li>
+        <li><NavLink to="/examples/summary-rows">Summary Rows Example</NavLink></li>
       </ul>
       <Route path="/examples/basic" component={Basic} />
       <Route path="/examples/resizable-cols" component={ResizableCols} />
@@ -106,6 +108,7 @@ ReactDOM.render((
       <Route path="/examples/descendingFirstSortable" component={DescendingFirstSortable} />
       <Route path="/examples/selection-range-events" component={SelectionRangeEvents} />
       <Route path="/examples/isScrolling" component={IsScrolling} />
+      <Route path="/examples/summary-rows" component={SummaryRows} />
     </HashRouter>
   </StrictMode>
 ), document.getElementById('root'));

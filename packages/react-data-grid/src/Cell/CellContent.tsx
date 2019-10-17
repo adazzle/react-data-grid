@@ -17,6 +17,7 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 | 'cellControls'
 | 'isRowSelected'
 | 'onRowSelectionChange'
+| 'isSummaryRow'
 > & Pick<CellMetaData<R>,
 'onDeleteSubRow'
 >;
@@ -32,6 +33,7 @@ export default function CellContent<R>({
   onDeleteSubRow,
   cellControls,
   isRowSelected,
+  isSummaryRow,
   onRowSelectionChange
 }: CellContentProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
@@ -72,6 +74,7 @@ export default function CellContent<R>({
           value={value}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
+          isSummaryRow={isSummaryRow}
         />
         {cellControls}
       </div>
