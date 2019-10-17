@@ -137,7 +137,7 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
   }
 
   render() {
-    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData } = this.props;
+    const { idx, rowIdx, column, value, tooltip, children, cellControls, expandableOptions, cellMetaData, rowData } = this.props;
     if (column.hidden) {
       return null;
     }
@@ -153,7 +153,6 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
         value={value}
         tooltip={tooltip}
         expandableOptions={expandableOptions}
-        height={height}
         onDeleteSubRow={cellMetaData.onDeleteSubRow}
         cellControls={cellControls}
         isRowSelected={this.props.isRowSelected}

@@ -9,9 +9,7 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
 
   static defaultProps = {
-    cellRenderer: Cell,
-    isSelected: false,
-    height: 35
+    cellRenderer: Cell
   };
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -38,7 +36,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       colOverscanEndIdx,
       colOverscanStartIdx,
       columns,
-      height,
       idx,
       isRowSelected,
       lastFrozenColumnIndex,
@@ -62,7 +59,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
           key={key as string} // FIXME: fix key type
           idx={colIdx}
           rowIdx={idx}
-          height={height}
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           cellMetaData={cellMetaData}

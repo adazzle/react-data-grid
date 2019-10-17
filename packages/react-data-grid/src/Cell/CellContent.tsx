@@ -14,7 +14,6 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 | 'value'
 | 'expandableOptions'
 | 'tooltip'
-| 'height'
 | 'cellControls'
 | 'isRowSelected'
 | 'onRowSelectionChange'
@@ -30,7 +29,6 @@ export default function CellContent<R>({
   value,
   tooltip,
   expandableOptions,
-  height,
   onDeleteSubRow,
   cellControls,
   isRowSelected,
@@ -54,7 +52,6 @@ export default function CellContent<R>({
   const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
     <ChildRowDeleteButton
       treeDepth={treeDepth}
-      cellHeight={height}
       onDeleteSubRow={handleDeleteSubRow}
       isDeleteSubRowEnabled={!!onDeleteSubRow}
     />
