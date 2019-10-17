@@ -153,6 +153,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   height: number;
   value: TValue;
   column: CalculatedColumn<TRow>;
+  lastFrozenColumnIndex: number;
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
   scrollLeft: number | undefined;

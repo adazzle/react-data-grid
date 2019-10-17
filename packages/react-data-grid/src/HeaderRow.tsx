@@ -23,6 +23,7 @@ export interface HeaderRowProps<R, K extends keyof R> extends SharedHeaderProps<
   width: number;
   height: number;
   columns: CalculatedColumn<R>[];
+  lastFrozenColumnIndex: number;
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
   onColumnResizeEnd(): void;
   onAllRowsSelectionChange(checked: boolean): void;
@@ -91,22 +92,22 @@ export default class HeaderRow<R, K extends keyof R> extends React.Component<Hea
   }
 
   getCells() {
-    const cells = [];
-    const frozenCells = [];
-    const { columns, rowType } = this.props;
+    const cellElements = [];
+    const { columns, lastFrozenColumnIndex, rowType } = this.props;
     const setRef = !isPositionStickySupported();
 
     for (const column of columns) {
       const { key } = column;
       const renderer = key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
-      const cell = (
+      cellElements.push(
         <HeaderCell<R>
           key={key as string}
           ref={setRef
             ? node => node ? this.cells.set(key, node) : this.cells.delete(key)
             : undefined}
           column={column}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
           rowType={rowType}
           height={this.props.height}
           renderer={renderer}
@@ -118,15 +119,9 @@ export default class HeaderRow<R, K extends keyof R> extends React.Component<Hea
           draggableHeaderCell={this.props.draggableHeaderCell}
         />
       );
-
-      if (isFrozen(column)) {
-        frozenCells.push(cell);
-      } else {
-        cells.push(cell);
-      }
     }
 
-    return cells.concat(frozenCells);
+    return cellElements;
   }
 
   setScrollLeft(scrollLeft: number): void {

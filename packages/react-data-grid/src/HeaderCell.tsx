@@ -13,6 +13,7 @@ function SimpleCellRenderer<R>({ column, rowType }: HeaderRowProps<R>) {
 interface Props<R> {
   renderer?: React.ReactElement | React.ComponentType<HeaderRowProps<R>>;
   column: CalculatedColumn<R>;
+  lastFrozenColumnIndex: number;
   rowType: HeaderRowType;
   height: number;
   onResize(column: CalculatedColumn<R>, width: number): void;
@@ -133,10 +134,12 @@ export default class HeaderCell<R> extends React.Component<Props<R>> {
 
   render() {
     const { column, rowType } = this.props;
+    const colIsFrozen = isFrozen(column);
 
     const className = classNames('rdg-cell', {
-      'rdg-header-cell-resizable': column.resizable,
-      'rdg-cell-frozen': isFrozen(column)
+      'rdg-cell-frozen': colIsFrozen,
+      'rdg-cell-frozen-last': colIsFrozen && column.idx === this.props.lastFrozenColumnIndex,
+      'rdg-header-cell-resizable': column.resizable
     }, this.props.className, column.cellClass);
 
     const cell = (

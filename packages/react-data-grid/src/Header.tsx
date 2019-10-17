@@ -97,6 +97,7 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
         width={columnMetrics.totalColumnWidth + getScrollbarSize()}
         height={row.height}
         columns={columnMetrics.columns}
+        lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
         draggableHeaderCell={props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
