@@ -5,7 +5,6 @@ import CellActions from './Cell/CellActions';
 import CellContent from './Cell/CellContent';
 import CellExpand from './Cell/CellExpander';
 import { CellRendererProps, ColumnEventInfo, SubRowOptions } from './common/types';
-import { isPositionStickySupported } from './utils';
 import { isFrozen } from './utils/columnUtils';
 
 function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
@@ -66,15 +65,15 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
   };
 
   getStyle(): React.CSSProperties {
-    const { column } = this.props;
+    const { column, scrollLeft } = this.props;
 
     const style: React.CSSProperties = {
       width: column.width,
       left: column.left
     };
 
-    if (!isPositionStickySupported() && isFrozen(column)) {
-      style.transform = `translateX(${this.props.scrollLeft}px)`;
+    if (scrollLeft !== undefined) {
+      style.transform = `translateX(${scrollLeft}px)`;
     }
 
     return style;
@@ -82,11 +81,13 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
 
   getCellClass() {
     const { column, tooltip, expandableOptions } = this.props;
+    const colIsFrozen = isFrozen(column);
     return classNames(
       column.cellClass,
       'rdg-cell',
       this.props.className, {
-        'rdg-cell-frozen': isFrozen(column),
+        'rdg-cell-frozen': colIsFrozen,
+        'rdg-cell-frozen-last': colIsFrozen && column.idx === this.props.lastFrozenColumnIndex,
         'has-tooltip': !!tooltip,
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
@@ -136,7 +137,7 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
   }
 
   render() {
-    const { idx, rowIdx, column, value, tooltip, children, height, cellControls, expandableOptions, cellMetaData, rowData, isSummaryRow } = this.props;
+    const { idx, rowIdx, column, value, tooltip, children, cellControls, expandableOptions, cellMetaData, rowData, isSummaryRow } = this.props;
     if (column.hidden) {
       return null;
     }
@@ -154,7 +155,6 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
             rowData={rowData}
             value={value}
             expandableOptions={expandableOptions}
-            height={height}
             isRowSelected={false}
             onRowSelectionChange={this.props.onRowSelectionChange}
             isSummaryRow
@@ -172,7 +172,6 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
         value={value}
         tooltip={tooltip}
         expandableOptions={expandableOptions}
-        height={height}
         onDeleteSubRow={cellMetaData.onDeleteSubRow}
         cellControls={cellControls}
         isRowSelected={this.props.isRowSelected}

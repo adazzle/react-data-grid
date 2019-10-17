@@ -12,6 +12,7 @@ describe('Header Row Unit Tests', () => {
   const defaultProps = {
     rowType: HeaderRowType.HEADER,
     columns: helpers.columns,
+    lastFrozenColumnIndex: -1,
     onColumnResize() { },
     onColumnResizeEnd() { },
     onSort: jest.fn(),
@@ -134,6 +135,7 @@ describe('Header Row Unit Tests', () => {
       width: 1000,
       height: 35,
       columns: helpers.columns,
+      lastFrozenColumnIndex: 1,
       onSort: jest.fn(),
       rowType: HeaderRowType.HEADER,
       allRowsSelected: false,

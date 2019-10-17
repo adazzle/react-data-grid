@@ -77,9 +77,9 @@ export function getHorizontalRangeToRender<R>({
   viewportWidth = viewportWidth > 0 ? viewportWidth + firstVisibleColumnHiddenWidth : totalColumnWidth;
   const availableWidth = viewportWidth - totalFrozenColumnWidth;
   const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
-  const colVisibleEndIdx = Math.min(columns.length, colVisibleStartIdx + nonFrozenRenderedColumnCount);
+  const colVisibleEndIdx = Math.min(columns.length - 1, colVisibleStartIdx + nonFrozenRenderedColumnCount);
   const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - 1);
-  const colOverscanEndIdx = Math.min(columns.length, colVisibleEndIdx + 1);
+  const colOverscanEndIdx = Math.min(columns.length - 1, colVisibleEndIdx + 1);
 
   return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
 }

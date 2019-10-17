@@ -151,9 +151,9 @@ export interface HeaderRowProps<TRow> {
 export interface CellRendererProps<TRow, TValue = unknown> {
   idx: number;
   rowIdx: number;
-  height: number;
   value: TValue;
   column: CalculatedColumn<TRow>;
+  lastFrozenColumnIndex: number;
   rowData: TRow;
   cellMetaData: CellMetaData<TRow>;
   scrollLeft: number | undefined;

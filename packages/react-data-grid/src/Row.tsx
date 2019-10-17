@@ -3,16 +3,13 @@ import React from 'react';
 
 import Cell from './Cell';
 import { IRowRendererProps } from './common/types';
-import { isPositionStickySupported } from './utils';
 import { isFrozen } from './utils/columnUtils';
 
 export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
 
   static defaultProps = {
-    cellRenderer: Cell,
-    isSelected: false,
-    height: 35
+    cellRenderer: Cell
   };
 
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -36,43 +33,48 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   getCells() {
     const {
       cellMetaData,
+      colOverscanEndIdx,
+      colOverscanStartIdx,
       columns,
-      height,
       idx,
       isRowSelected,
+      lastFrozenColumnIndex,
       onRowSelectionChange,
       row,
       scrollLeft,
       isSummaryRow
     } = this.props;
     const Renderer = this.props.cellRenderer!;
-    const canSticky = isPositionStickySupported();
+    const cellElements = [];
 
-    // FIXME: do we need this, considering columnsMetrics should have these columns sorted already?
-    const frozenColumns = columns.slice(0, this.props.lastFrozenColumnIndex + 1);
-    const nonFrozenColumn = columns.slice(this.props.colOverscanStartIdx, this.props.colOverscanEndIdx + 1).filter(c => !isFrozen(c));
+    for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
+      const column = columns[colIdx];
+      const colIsFrozen = isFrozen(column);
 
-    return nonFrozenColumn.concat(frozenColumns).map(column => {
+      if (colIdx < colOverscanStartIdx && !colIsFrozen) continue;
+
       const { key } = column;
 
-      return (
+      cellElements.push(
         <Renderer
-          key={`${key as keyof R}-${idx}`} // FIXME: fix key type
-          idx={column.idx}
+          key={key as string} // FIXME: fix key type
+          idx={colIdx}
           rowIdx={idx}
-          height={height}
           column={column}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
           cellMetaData={cellMetaData}
-          value={this.getCellValue(key || String(column.idx) as keyof R) as R[keyof R]} // FIXME: fix types
+          value={this.getCellValue(key || String(colIdx) as keyof R) as R[keyof R]} // FIXME: fix types
           rowData={row}
           expandableOptions={this.getExpandableOptions(key)}
-          scrollLeft={!canSticky && isFrozen(column) ? scrollLeft : undefined}
+          scrollLeft={colIsFrozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
           isSummaryRow={isSummaryRow}
         />
       );
-    });
+    }
+
+    return cellElements;
   }
 
   getCellValue(key: keyof R) {

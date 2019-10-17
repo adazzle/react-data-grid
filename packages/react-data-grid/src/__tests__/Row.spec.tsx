@@ -82,13 +82,6 @@ describe('Row', () => {
         const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
         expect(cells.length).toBe(renderedRange);
       });
-
-      it('first frozen cell should be rendered after the unfrozen cells', () => {
-        const columns = lockColumns();
-        const { cells } = setup({ ...requiredProperties, columns, lastFrozenColumnIndex: LAST_LOCKED_CELL_IDX });
-        const firstFrozenColumn = columns.filter(c => c.frozen === true)[0];
-        expect(cells.at(cells.length - LAST_LOCKED_CELL_IDX - 1).props().column).toBe(firstFrozenColumn);
-      });
     });
 
     describe('When not using frozen columns', () => {

@@ -68,7 +68,7 @@ describe('Canvas Tests', () => {
       rowHeight: 25,
       rowsCount: 1,
       colVisibleStartIdx: 0,
-      colVisibleEndIdx: 1
+      colVisibleEndIdx: 0
     });
   });
 

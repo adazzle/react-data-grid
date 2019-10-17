@@ -20,16 +20,16 @@
     z-index: 3
   }
 
-  &:last-child {
-    box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
-  }
-
   @supports (position: sticky) or (position: -webkit-sticky) {
     & {
       position: -webkit-sticky;
       position: sticky;
     }
   }
+}
+
+.rdg-cell-frozen-last {
+  box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
 }
 
 /* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
@@ -148,24 +148,21 @@
     background: red;
 }
 .rdg-child-row-btn {
-   position: absolute;
-   cursor: pointer;
-   height: 12px;
-   width: 12px;
-   border:1px solid grey;
-   border-radius:14px;
-   z-index: 2;
-   background: white;
+  cursor: pointer;
+  position: absolute;
+  top: calc(50% - 6px);
+  height: 12px;
+  width: 12px;
+  z-index: 2;
+  background: white;
 }
 
 .rdg-child-row-btn .MuiSvgIcon-root {
   font-size: 16px;
   color: grey;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -8px;
-  margin-left: -8px;
+  top: calc(50% - 8px);
+  left: calc(50% - 8px);
 
   &:hover {
     color: red;

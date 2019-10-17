@@ -23,6 +23,7 @@ describe('Header Cell Tests', () => {
         left: 300,
         ...columnProps
       },
+      lastFrozenColumnIndex: -1,
       rowType: HeaderRowType.HEADER,
       onResize: jest.fn(),
       onResizeEnd: jest.fn(),
