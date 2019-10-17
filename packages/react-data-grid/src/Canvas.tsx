@@ -224,7 +224,6 @@ export default function Canvas<R, K extends keyof R>({
     paddingTop: rowOverscanStartIdx * rowHeight,
     paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
   };
-  const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
 
   let grid = (
     <div className="rdg-grid" style={canvasRowsContainerStyle}>
@@ -238,6 +237,8 @@ export default function Canvas<R, K extends keyof R>({
 
   let summary: JSX.Element | null = null;
   if (summaryRows && summaryRows.length) {
+    const boundaryStyle: React.CSSProperties = { width: `calc(100% - ${getScrollbarSize() - 1}px)` };// 1 stands for 1px for border right
+
     summary = (
       <div className="rdg-summary">
         <div ref={summaryRef} style={boundaryStyle}>
