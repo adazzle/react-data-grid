@@ -163,7 +163,7 @@ export interface ReactDataGridHandle {
  *
  * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends keyof R>({
+function ReactDataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
   rowHeight = 35,
   headerFiltersHeight = 45,
@@ -464,30 +464,8 @@ const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends key
       )}
     </div>
   );
-} as React.RefForwardingComponent<ReactDataGridHandle, ReactDataGridProps<{ [key: string]: unknown }, string>>);
-
-// This is a temporary class to expose instance methods as ForwardRef does work well with generics
-export default class ReactDataGrid<R, K extends keyof R> extends React.Component<ReactDataGridProps<R, K>> implements ReactDataGridHandle {
-  private readonly gridRef = React.createRef<ReactDataGridHandle>();
-
-  selectCell(position: Position, openEditor?: boolean | undefined): void {
-    this.gridRef.current!.selectCell(position, openEditor);
-  }
-
-  openCellEditor(rowIdx: number, colIdx: number): void {
-    this.gridRef.current!.openCellEditor(rowIdx, colIdx);
-  }
-
-  scrollToColumn(colIdx: number): void {
-    this.gridRef.current!.scrollToColumn(colIdx);
-  }
-
-  render() {
-    return (
-      <ReactDataGridBase
-        {...this.props as unknown as ReactDataGridProps<{ [key: string]: unknown }, string>}
-        ref={this.gridRef}
-      />
-    );
-  }
 }
+
+export default forwardRef(
+  ReactDataGrid as React.RefForwardingComponent<ReactDataGridHandle, ReactDataGridProps<{ [key: string]: unknown }, string>>
+) as <R, K extends keyof R>(props: ReactDataGridProps<R, K> & { ref?: React.Ref<ReactDataGridHandle> }) => JSX.Element;
