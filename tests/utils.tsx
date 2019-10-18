@@ -1,6 +1,6 @@
 import React, { StrictMode } from 'react';
 import { render } from '@testing-library/react';
-import ReactDataGrid, { ReactDataGridProps } from '../packages/react-data-grid/src';
+import DataGrid, { DataGridProps } from '../packages/react-data-grid/src';
 
 interface RowType {
   id: number;
@@ -8,7 +8,7 @@ interface RowType {
   col2: string;
 }
 
-export function getProps(extraProps?: Partial<ReactDataGridProps<RowType, 'id'>>): ReactDataGridProps<RowType, 'id'> {
+export function getProps(extraProps?: Partial<DataGridProps<RowType, 'id'>>): DataGridProps<RowType, 'id'> {
   const rows: RowType[] = [];
 
   return {
@@ -27,12 +27,12 @@ export function getProps(extraProps?: Partial<ReactDataGridProps<RowType, 'id'>>
   };
 }
 
-export function setup(props: ReactDataGridProps<RowType, 'id'> = getProps()) {
+export function setup(props: DataGridProps<RowType, 'id'> = getProps()) {
   return {
     props,
     ...render(
       <StrictMode>
-        <ReactDataGrid {...props} />
+        <DataGrid {...props} />
       </StrictMode>
     )
   };

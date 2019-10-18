@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid, { SelectColumn } from 'react-data-grid';
+import DataGrid, { SelectColumn } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -48,7 +48,7 @@ export default class extends React.Component {
     return (
       <Wrapper title="Row Selection">
         <span>{this.state.selectedRows.size} {rowText} selected</span>
-        <ReactDataGrid
+        <DataGrid
           rowKey="id"
           columns={this._columns}
           rowGetter={this.rowGetter}

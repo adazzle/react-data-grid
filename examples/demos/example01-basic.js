@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 const columns = [
@@ -13,7 +13,7 @@ const rows = [{ id: 0, title: 'row1', count: 20 }, { id: 1, title: 'row1', count
 export default function() {
   return (
     <Wrapper title="Basic Example">
-      <ReactDataGrid
+      <DataGrid
         columns={columns}
         rowGetter={i => rows[i]}
         rowsCount={3}

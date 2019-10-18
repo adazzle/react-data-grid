@@ -38,7 +38,7 @@ import {
   ScrollPosition
 } from './common/types';
 
-export interface ReactDataGridProps<R, K extends keyof R> {
+export interface DataGridProps<R, K extends keyof R> {
   /** An array of objects representing each column on the grid */
   columns: Column<R>[];
   /** The minimum width of the grid in pixels */
@@ -150,7 +150,7 @@ export interface ReactDataGridProps<R, K extends keyof R> {
   renderBatchSize?: number;
 }
 
-export interface ReactDataGridHandle {
+export interface DataGridHandle {
   scrollToColumn(colIdx: number): void;
   selectCell(position: Position, openEditor?: boolean): void;
   openCellEditor(rowIdx: number, colIdx: number): void;
@@ -161,9 +161,9 @@ export interface ReactDataGridHandle {
  *
  * @example
  *
- * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
+ * <DataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-function ReactDataGrid<R, K extends keyof R>({
+function DataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
   rowHeight = 35,
   headerFiltersHeight = 45,
@@ -182,7 +182,7 @@ function ReactDataGrid<R, K extends keyof R>({
   selectedRows,
   onSelectedRowsChange,
   ...props
-}: ReactDataGridProps<R, K>, ref: React.Ref<ReactDataGridHandle>) {
+}: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
@@ -467,5 +467,5 @@ function ReactDataGrid<R, K extends keyof R>({
 }
 
 export default forwardRef(
-  ReactDataGrid as React.RefForwardingComponent<ReactDataGridHandle, ReactDataGridProps<{ [key: string]: unknown }, string>>
-) as <R, K extends keyof R>(props: ReactDataGridProps<R, K> & { ref?: React.Ref<ReactDataGridHandle> }) => JSX.Element;
+  DataGrid as React.RefForwardingComponent<DataGridHandle, DataGridProps<{ [key: string]: unknown }, string>>
+) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

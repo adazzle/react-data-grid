@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import update from 'immutability-helper';
 import Wrapper from './Wrapper';
 
@@ -86,7 +86,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Editable Example">
-        <ReactDataGrid
+        <DataGrid
           enableCellSelect
           columns={this._columns}
           rowGetter={this.rowGetter}

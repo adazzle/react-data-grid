@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import { Data, Formatters } from 'react-data-grid-addons';
 import { Clear, Link, FileCopy } from '@material-ui/icons';
 import faker from 'faker';
@@ -157,7 +157,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Cell Actions Example">
-        <ReactDataGrid
+        <DataGrid
           ref={node => this.grid = node}
           enableCellSelect
           columns={columns}

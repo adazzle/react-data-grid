@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import ReactDataGrid, { SelectColumn } from 'react-data-grid';
+import DataGrid, { SelectColumn } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 function DecimalFormatter({ value, isSummaryRow, maximumFractionDigits }) {
@@ -140,7 +140,7 @@ export default function Example() {
 
   return (
     <Wrapper title="Summary rows">
-      <ReactDataGrid
+      <DataGrid
         rowKey="id"
         columns={columns}
         rowGetter={rowGetter}

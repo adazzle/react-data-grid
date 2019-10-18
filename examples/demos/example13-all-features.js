@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid, { SelectColumn } from 'react-data-grid';
+import DataGrid, { SelectColumn } from 'react-data-grid';
 import { Editors, Toolbar, Formatters } from 'react-data-grid-addons';
 import update from 'immutability-helper';
 import faker from 'faker';
@@ -193,7 +193,7 @@ export default class extends React.Component {
     return (
       <Wrapper title="All the features grid">
         <Toolbar onAddRow={this.handleAddRow} />
-        <ReactDataGrid
+        <DataGrid
           ref={node => this.grid = node}
           enableCellSelect
           columns={this.columns}

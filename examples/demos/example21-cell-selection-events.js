@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -44,7 +44,7 @@ export default class extends React.Component {
       <Wrapper title="Cell selection/delesection events">
         <span>{this.state.selectedRows.length} {rowText} selected</span>
         {this.state.alert && <div className="alert alert-info" role="alert">{this.state.alert}</div>}
-        <ReactDataGrid
+        <DataGrid
           ref={node => this.grid = node}
           rowKey="id"
           columns={this._columns}

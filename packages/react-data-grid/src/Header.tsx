@@ -5,9 +5,9 @@ import { getColumnMetrics } from './utils/columnUtils';
 import { getScrollbarSize, isPositionStickySupported } from './utils';
 import { CalculatedColumn, HeaderRowData, ColumnMetrics, CellMetaData } from './common/types';
 import { DEFINE_SORT } from './common/enums';
-import { ReactDataGridProps } from './ReactDataGrid';
+import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'draggableHeaderCell'
 | 'getValidFilterValues'
 | 'rowGetter'
@@ -16,7 +16,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
 | 'onSelectedRowsChange'
 | 'sortColumn'
 | 'sortDirection'
-> & Required<Pick<ReactDataGridProps<R, K>,
+> & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 >>;
 

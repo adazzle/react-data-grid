@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import { ToolsPanel, Data, Draggable, Formatters } from 'react-data-grid-addons';
 import faker from 'faker';
 import Wrapper from './Wrapper';
@@ -198,7 +198,7 @@ export default class extends React.Component {
           />
         </DraggableContainer>
         <DraggableContainer>
-          <ReactDataGrid
+          <DataGrid
             ref={node => this.grid = node}
             enableCellSelect
             columns={columns}
