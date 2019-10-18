@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -68,7 +68,7 @@ export default class extends React.Component {
           style={{ width: '100%', marginBottom: '1em', padding: '0.5em', border: '1px solid black' }}
           rows={5}
         />
-        <ReactDataGrid
+        <DataGrid
           rowKey="id"
           columns={this._columns}
           rowGetter={this.rowGetter}

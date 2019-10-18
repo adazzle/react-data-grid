@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import { Toolbar, Data } from 'react-data-grid-addons';
 import Wrapper from './Wrapper';
 
@@ -125,7 +125,7 @@ export default class extends React.Component {
           enableFilter
           onToggleFilter={this.onToggleFilter}
         />
-        <ReactDataGrid
+        <DataGrid
           onGridSort={this.handleGridSort}
           sortDirection={this.state.sortDirection}
           sortColumn={this.state.sortColumn}

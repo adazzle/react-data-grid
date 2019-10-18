@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { mount } from 'enzyme';
 
 import Grid from 'react-data-grid';
@@ -124,8 +123,7 @@ describe('Grid', () => {
       it('should set the width of the table', () => {
         const { wrapper } = setup();
         wrapper.setProps({ minWidth: 900 });
-        const tableElement = ReactDOM.findDOMNode(wrapper.instance());
-        expect(tableElement.style.width).toEqual('900px');
+        expect(wrapper.find('.rdg-root').props().style.width).toEqual(900);
       });
     });
   });

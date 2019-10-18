@@ -38,7 +38,7 @@ import {
   ScrollPosition
 } from './common/types';
 
-export interface ReactDataGridProps<R, K extends keyof R> {
+export interface DataGridProps<R, K extends keyof R> {
   /** An array of objects representing each column on the grid */
   columns: Column<R>[];
   /** The minimum width of the grid in pixels */
@@ -150,7 +150,7 @@ export interface ReactDataGridProps<R, K extends keyof R> {
   renderBatchSize?: number;
 }
 
-export interface ReactDataGridHandle {
+export interface DataGridHandle {
   scrollToColumn(colIdx: number): void;
   selectCell(position: Position, openEditor?: boolean): void;
   openCellEditor(rowIdx: number, colIdx: number): void;
@@ -161,9 +161,9 @@ export interface ReactDataGridHandle {
  *
  * @example
  *
- * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
+ * <DataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends keyof R>({
+function DataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
   rowHeight = 35,
   headerFiltersHeight = 45,
@@ -182,7 +182,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends key
   selectedRows,
   onSelectedRowsChange,
   ...props
-}: ReactDataGridProps<R, K>, ref: React.Ref<ReactDataGridHandle>) {
+}: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
@@ -464,30 +464,8 @@ const ReactDataGridBase = forwardRef(function ReactDataGridBase<R, K extends key
       )}
     </div>
   );
-} as React.RefForwardingComponent<ReactDataGridHandle, ReactDataGridProps<{ [key: string]: unknown }, string>>);
-
-// This is a temporary class to expose instance methods as ForwardRef does work well with generics
-export default class ReactDataGrid<R, K extends keyof R> extends React.Component<ReactDataGridProps<R, K>> implements ReactDataGridHandle {
-  private readonly gridRef = React.createRef<ReactDataGridHandle>();
-
-  selectCell(position: Position, openEditor?: boolean | undefined): void {
-    this.gridRef.current!.selectCell(position, openEditor);
-  }
-
-  openCellEditor(rowIdx: number, colIdx: number): void {
-    this.gridRef.current!.openCellEditor(rowIdx, colIdx);
-  }
-
-  scrollToColumn(colIdx: number): void {
-    this.gridRef.current!.scrollToColumn(colIdx);
-  }
-
-  render() {
-    return (
-      <ReactDataGridBase
-        {...this.props as unknown as ReactDataGridProps<{ [key: string]: unknown }, string>}
-        ref={this.gridRef}
-      />
-    );
-  }
 }
+
+export default forwardRef(
+  DataGrid as React.RefForwardingComponent<DataGridHandle, DataGridProps<{ [key: string]: unknown }, string>>
+) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

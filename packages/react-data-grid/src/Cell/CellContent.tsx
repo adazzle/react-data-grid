@@ -46,7 +46,7 @@ export default function CellContent<R>({
     const { getRowMetaData } = column;
     if (getRowMetaData) {
       if (process.env.NODE_ENV === 'development') {
-        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of ReactDataGrid. Instead access row prop of formatter');
+        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of react-data-grid. Instead access row prop of formatter');
       }
       return getRowMetaData(row, column);
     }

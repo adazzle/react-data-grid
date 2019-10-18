@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 class RowRenderer extends React.Component {
@@ -101,7 +101,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Overriding the row renderer">
-        <ReactDataGrid
+        <DataGrid
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}

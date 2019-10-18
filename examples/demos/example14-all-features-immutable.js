@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import { Editors, Toolbar, Menu, Formatters } from 'react-data-grid-addons';
 import faker from 'faker';
 import Wrapper from './Wrapper';
@@ -180,9 +180,8 @@ export default class extends React.Component {
     return (
       <Wrapper title="All the features grid with immutable data">
         <Toolbar onAddRow={this.handleAddRow} onToggleFilter={() => { }} numberOfRows={this.getSize()} />
-        <ReactDataGrid
+        <DataGrid
           contextMenu={<MyContextMenu />}
-          ref={(node) => this.reactDataGrid = node}
           enableCellSelect
           columns={columns}
           rowGetter={this.getRowAt}

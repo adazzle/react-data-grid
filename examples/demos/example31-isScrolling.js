@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import { AreaChart, Area } from 'Recharts';
 import Wrapper from './Wrapper';
 
@@ -76,7 +76,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Efficient windowing demonstration">
-        <ReactDataGrid
+        <DataGrid
           columns={this.state.columns}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}

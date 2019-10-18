@@ -4,14 +4,14 @@ import { EventTypes } from './common/enums';
 import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, ScrollPosition } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
-import { ReactDataGridProps } from './ReactDataGrid';
+import { DataGridProps } from './DataGrid';
 import Row from './Row';
 import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported } from './utils';
 import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowGetter'
 | 'rowsCount'
 | 'rowRenderer'
@@ -22,7 +22,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<ReactDataGridProps<R, K>,
 | 'getSubRowDetails'
 | 'selectedRows'
 | 'summaryRows'
-> & Required<Pick<ReactDataGridProps<R, K>,
+> & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellSelect'
 | 'rowHeight'

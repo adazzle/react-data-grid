@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import { DraggableHeader } from 'react-data-grid-addons';
 import Wrapper from './Wrapper';
 
@@ -63,7 +63,7 @@ export default class extends React.Component {
         <DraggableContainer
           onHeaderDrop={this.onHeaderDrop}
         >
-          <ReactDataGrid
+          <DataGrid
             columns={this.state.columns}
             rowGetter={this.rowGetter}
             rowsCount={this.state.rows.length}
