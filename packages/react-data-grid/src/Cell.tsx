@@ -1,72 +1,74 @@
+import React, { memo } from 'react';
 import classNames from 'classnames';
-import React from 'react';
 
 import CellActions from './Cell/CellActions';
 import CellContent from './Cell/CellContent';
 import CellExpand from './Cell/CellExpander';
-import { CellRendererProps, ColumnEventInfo, SubRowOptions } from './common/types';
+import { CellRendererProps, ColumnEventInfo } from './common/types';
 import { isFrozen } from './utils/columnUtils';
 
-function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: CellProps<R>): SubRowOptions<R> {
-  return { rowIdx, idx, rowData, expandArgs };
-}
-
 export interface CellProps<R> extends CellRendererProps<R> {
+  children?: React.ReactNode;
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
   tooltip?: string | null;
   cellControls?: unknown;
 }
 
-export default class Cell<R> extends React.PureComponent<CellProps<R>> {
-  static defaultProps = {
-    value: ''
-  };
-
-  handleCellClick = () => {
-    const { idx, rowIdx, cellMetaData } = this.props;
+function Cell<R>({
+  cellControls,
+  cellMetaData,
+  children,
+  className,
+  column,
+  expandableOptions,
+  idx,
+  isRowSelected,
+  isSummaryRow,
+  lastFrozenColumnIndex,
+  onRowSelectionChange,
+  rowData,
+  rowIdx,
+  scrollLeft,
+  tooltip,
+  value = ''
+}: CellProps<R>) {
+  function handleCellClick() {
     cellMetaData.onCellClick({ idx, rowIdx });
-  };
+  }
 
-  handleCellMouseDown = () => {
-    const { idx, rowIdx, cellMetaData } = this.props;
+  function handleCellMouseDown() {
     if (cellMetaData.onCellMouseDown) {
       cellMetaData.onCellMouseDown({ idx, rowIdx });
     }
-  };
+  }
 
-  handleCellMouseEnter = () => {
-    const { idx, rowIdx, cellMetaData } = this.props;
+  function handleCellMouseEnter() {
     if (cellMetaData.onCellMouseEnter) {
       cellMetaData.onCellMouseEnter({ idx, rowIdx });
     }
-  };
+  }
 
-  handleCellContextMenu = () => {
-    const { idx, rowIdx, cellMetaData } = this.props;
+  function handleCellContextMenu() {
     cellMetaData.onCellContextMenu({ idx, rowIdx });
-  };
+  }
 
-  handleCellDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
-    const { idx, rowIdx, cellMetaData } = this.props;
     cellMetaData.onCellDoubleClick({ idx, rowIdx });
-  };
+  }
 
-  handleCellExpand = () => {
-    const { onCellExpand } = this.props.cellMetaData;
-    if (onCellExpand) {
-      onCellExpand(getSubRowOptions(this.props));
+  function handleCellExpand() {
+    if (cellMetaData.onCellExpand) {
+      cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
     }
-  };
+  }
 
-  handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
-  };
+  }
 
-  getStyle(): React.CSSProperties {
-    const { column, scrollLeft } = this.props;
-
+  function getStyle(): React.CSSProperties {
     const style: React.CSSProperties = {
       width: column.width,
       left: column.left
@@ -79,46 +81,45 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
     return style;
   }
 
-  getCellClass() {
-    const { column, tooltip, expandableOptions } = this.props;
+  function getCellClass() {
     const colIsFrozen = isFrozen(column);
     return classNames(
       column.cellClass,
       'rdg-cell',
-      this.props.className, {
+      className, {
         'rdg-cell-frozen': colIsFrozen,
-        'rdg-cell-frozen-last': colIsFrozen && column.idx === this.props.lastFrozenColumnIndex,
+        'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex,
         'has-tooltip': !!tooltip,
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
     );
   }
 
-  getEvents() {
-    const { column, cellMetaData, idx, rowIdx, rowData } = this.props;
+  function getEvents() {
     const columnEvents = column.events;
     const allEvents: { [key: string]: Function } = {
-      onClick: this.handleCellClick,
-      onMouseDown: this.handleCellMouseDown,
-      onMouseEnter: this.handleCellMouseEnter,
-      onDoubleClick: this.handleCellDoubleClick,
-      onContextMenu: this.handleCellContextMenu,
-      onDragOver: this.handleDragOver
+      onClick: handleCellClick,
+      onMouseDown: handleCellMouseDown,
+      onMouseEnter: handleCellMouseEnter,
+      onDoubleClick: handleCellDoubleClick,
+      onContextMenu: handleCellContextMenu,
+      onDragOver: handleDragOver
     };
 
     if (!columnEvents) {
       return allEvents;
     }
 
+    const eventInfo: ColumnEventInfo<R> = {
+      idx,
+      rowIdx,
+      column,
+      rowId: rowData[cellMetaData.rowKey]
+    };
+
     for (const event in columnEvents) {
       const columnEventHandler = columnEvents[event];
       if (columnEventHandler) {
-        const eventInfo: ColumnEventInfo<R> = {
-          idx,
-          rowIdx,
-          column,
-          rowId: rowData[cellMetaData.rowKey]
-        };
         if (allEvents.hasOwnProperty(event)) {
           const existingEvent = allEvents[event];
           allEvents[event] = (e: Event) => {
@@ -136,71 +137,72 @@ export default class Cell<R> extends React.PureComponent<CellProps<R>> {
     return allEvents;
   }
 
-  render() {
-    const { idx, rowIdx, column, value, tooltip, children, cellControls, expandableOptions, cellMetaData, rowData, isSummaryRow } = this.props;
-    if (column.hidden) {
-      return null;
-    }
+  if (column.hidden) {
+    return null;
+  }
 
-    const style = this.getStyle();
-    const className = this.getCellClass();
-
-    if (isSummaryRow) {
-      return (
-        <div className={className} style={style}>
-          <CellContent<R>
-            idx={idx}
-            rowIdx={rowIdx}
-            column={column}
-            rowData={rowData}
-            value={value}
-            expandableOptions={expandableOptions}
-            isRowSelected={false}
-            onRowSelectionChange={this.props.onRowSelectionChange}
-            isSummaryRow
-          />
-        </div>
-      );
-    }
-
-    const cellContent = children || (
-      <CellContent<R>
-        idx={idx}
-        rowIdx={rowIdx}
-        column={column}
-        rowData={rowData}
-        value={value}
-        tooltip={tooltip}
-        expandableOptions={expandableOptions}
-        onDeleteSubRow={cellMetaData.onDeleteSubRow}
-        cellControls={cellControls}
-        isRowSelected={this.props.isRowSelected}
-        onRowSelectionChange={this.props.onRowSelectionChange}
-        isSummaryRow={isSummaryRow}
-      />
-    );
-    const events = this.getEvents();
-    const cellExpander = expandableOptions && expandableOptions.canExpand && (
-      <CellExpand
-        expanded={expandableOptions.expanded}
-        onCellExpand={this.handleCellExpand}
-      />
-    );
-
+  if (isSummaryRow) {
     return (
       <div
-        className={className}
-        style={style}
-        {...events}
+        className={getCellClass()}
+        style={getStyle()}
       >
+        <CellContent<R>
+          idx={idx}
+          rowIdx={rowIdx}
+          column={column}
+          rowData={rowData}
+          value={value}
+          expandableOptions={expandableOptions}
+          isRowSelected={false}
+          onRowSelectionChange={onRowSelectionChange}
+          isSummaryRow
+        />
+      </div>
+    );
+  }
+
+  const cellContent = children || (
+    <CellContent<R>
+      idx={idx}
+      rowIdx={rowIdx}
+      column={column}
+      rowData={rowData}
+      value={value}
+      tooltip={tooltip}
+      expandableOptions={expandableOptions}
+      onDeleteSubRow={cellMetaData.onDeleteSubRow}
+      cellControls={cellControls}
+      isRowSelected={isRowSelected}
+      onRowSelectionChange={onRowSelectionChange}
+      isSummaryRow={isSummaryRow}
+    />
+  );
+
+  const cellExpander = expandableOptions && expandableOptions.canExpand && (
+    <CellExpand
+      expanded={expandableOptions.expanded}
+      onCellExpand={handleCellExpand}
+    />
+  );
+
+  return (
+    <div
+      className={getCellClass()}
+      style={getStyle()}
+      {...getEvents()}
+    >
+      {cellMetaData.getCellActions && (
         <CellActions<R>
           column={column}
           rowData={rowData}
           getCellActions={cellMetaData.getCellActions}
         />
-        {cellExpander}
-        {cellContent}
-      </div>
-    );
-  }
+      )}
+      {cellExpander}
+      {cellContent}
+    </div>
+  );
 }
+
+export default memo(Cell) as <R>(props: CellProps<R>) => JSX.Element;
