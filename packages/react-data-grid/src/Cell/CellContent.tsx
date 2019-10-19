@@ -1,10 +1,10 @@
 import React, { createElement, cloneElement } from 'react';
 import { isElement, isValidElementType } from 'react-is';
-import classNames from 'classnames';
 
+import CellActions from './CellActions';
+import CellExpand from './CellExpander';
 import { SimpleCellFormatter } from '../formatters';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
-import { CellMetaData } from '../common/types';
 import { CellProps } from '../Cell';
 
 export type CellContentProps<R> = Pick<CellProps<R>,
@@ -13,14 +13,11 @@ export type CellContentProps<R> = Pick<CellProps<R>,
 | 'rowData'
 | 'column'
 | 'value'
+| 'cellMetaData'
 | 'expandableOptions'
-| 'tooltip'
-| 'cellControls'
 | 'isRowSelected'
 | 'onRowSelectionChange'
 | 'isSummaryRow'
-> & Pick<CellMetaData<R>,
-'onDeleteSubRow'
 >;
 
 export default function CellContent<R>({
@@ -29,10 +26,8 @@ export default function CellContent<R>({
   column,
   rowData,
   value,
-  tooltip,
+  cellMetaData,
   expandableOptions,
-  onDeleteSubRow,
-  cellControls,
   isRowSelected,
   isSummaryRow,
   onRowSelectionChange
@@ -67,8 +62,8 @@ export default function CellContent<R>({
   }
 
   function handleDeleteSubRow() {
-    if (onDeleteSubRow) {
-      onDeleteSubRow({
+    if (cellMetaData.onDeleteSubRow) {
+      cellMetaData.onDeleteSubRow({
         idx,
         rowIdx,
         rowData,
@@ -77,34 +72,47 @@ export default function CellContent<R>({
     }
   }
 
-  const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
-    <ChildRowDeleteButton
-      treeDepth={treeDepth}
-      onDeleteSubRow={handleDeleteSubRow}
-      isDeleteSubRowEnabled={!!onDeleteSubRow}
-    />
-  );
-
-  const classes = classNames('rdg-cell-value',
-    { 'rdg-cell-tooltip': !!tooltip }
-  );
+  function handleCellExpand() {
+    if (cellMetaData.onCellExpand) {
+      cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
+    }
+  }
 
   const { formatter } = column;
 
   return (
-    <div className={classes}>
-      {cellDeleter}
-      <div style={style}>
-        {formatter === undefined
-          ? <SimpleCellFormatter value={value as string} />
-          : isValidElementType(formatter)
-            ? createElement(formatter, getFormatterProps())
-            : isElement(formatter)
-              ? cloneElement(formatter, getFormatterProps())
-              : null}
-        {cellControls}
+    <>
+      {cellMetaData.getCellActions && (
+        <CellActions<R>
+          column={column}
+          rowData={rowData}
+          getCellActions={cellMetaData.getCellActions}
+        />
+      )}
+      {expandableOptions && expandableOptions.canExpand && (
+        <CellExpand
+          expanded={expandableOptions.expanded}
+          onCellExpand={handleCellExpand}
+        />
+      )}
+      <div className="rdg-cell-value">
+        {expandableOptions && treeDepth > 0 && isExpandCell && (
+          <ChildRowDeleteButton
+            treeDepth={treeDepth}
+            onDeleteSubRow={handleDeleteSubRow}
+            isDeleteSubRowEnabled={!!cellMetaData.onDeleteSubRow}
+          />
+        )}
+        <div style={style}>
+          {formatter === undefined
+            ? <SimpleCellFormatter value={value as string} />
+            : isValidElementType(formatter)
+              ? createElement(formatter, getFormatterProps())
+              : isElement(formatter)
+                ? cloneElement(formatter, getFormatterProps())
+                : null}
+        </div>
       </div>
-      {tooltip && <span className="rdg-cell-tooltip-text">{tooltip}</span>}
-    </div>
+    </>
   );
 }

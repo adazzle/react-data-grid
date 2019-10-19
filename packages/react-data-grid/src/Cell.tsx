@@ -1,9 +1,7 @@
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
-import CellActions from './Cell/CellActions';
 import CellContent from './Cell/CellContent';
-import CellExpand from './Cell/CellExpander';
 import { CellRendererProps, ColumnEventInfo } from './common/types';
 import { isFrozen } from './utils/columnUtils';
 
@@ -11,12 +9,9 @@ export interface CellProps<R> extends CellRendererProps<R> {
   children?: React.ReactNode;
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
-  tooltip?: string | null;
-  cellControls?: unknown;
 }
 
 function Cell<R>({
-  cellControls,
   cellMetaData,
   children,
   className,
@@ -30,7 +25,6 @@ function Cell<R>({
   rowData,
   rowIdx,
   scrollLeft,
-  tooltip,
   value = ''
 }: CellProps<R>) {
   function handleCellClick() {
@@ -58,12 +52,6 @@ function Cell<R>({
     cellMetaData.onCellDoubleClick({ idx, rowIdx });
   }
 
-  function handleCellExpand() {
-    if (cellMetaData.onCellExpand) {
-      cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
-    }
-  }
-
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
   }
@@ -89,7 +77,6 @@ function Cell<R>({
       className, {
         'rdg-cell-frozen': colIsFrozen,
         'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex,
-        'has-tooltip': !!tooltip,
         'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
       }
     );
@@ -137,6 +124,7 @@ function Cell<R>({
     return allEvents;
   }
 
+  // FIXME: is this property used?
   if (column.hidden) {
     return null;
   }
@@ -151,6 +139,7 @@ function Cell<R>({
           idx={idx}
           rowIdx={rowIdx}
           column={column}
+          cellMetaData={cellMetaData}
           rowData={rowData}
           value={value}
           expandableOptions={expandableOptions}
@@ -162,45 +151,26 @@ function Cell<R>({
     );
   }
 
-  const cellContent = children || (
-    <CellContent<R>
-      idx={idx}
-      rowIdx={rowIdx}
-      column={column}
-      rowData={rowData}
-      value={value}
-      tooltip={tooltip}
-      expandableOptions={expandableOptions}
-      onDeleteSubRow={cellMetaData.onDeleteSubRow}
-      cellControls={cellControls}
-      isRowSelected={isRowSelected}
-      onRowSelectionChange={onRowSelectionChange}
-      isSummaryRow={isSummaryRow}
-    />
-  );
-
-  const cellExpander = expandableOptions && expandableOptions.canExpand && (
-    <CellExpand
-      expanded={expandableOptions.expanded}
-      onCellExpand={handleCellExpand}
-    />
-  );
-
   return (
     <div
       className={getCellClass()}
       style={getStyle()}
       {...getEvents()}
     >
-      {cellMetaData.getCellActions && (
-        <CellActions<R>
+      {children || (
+        <CellContent<R>
+          idx={idx}
+          rowIdx={rowIdx}
           column={column}
           rowData={rowData}
-          getCellActions={cellMetaData.getCellActions}
+          value={value}
+          cellMetaData={cellMetaData}
+          expandableOptions={expandableOptions}
+          isRowSelected={isRowSelected}
+          onRowSelectionChange={onRowSelectionChange}
+          isSummaryRow={isSummaryRow}
         />
       )}
-      {cellExpander}
-      {cellContent}
     </div>
   );
 }
