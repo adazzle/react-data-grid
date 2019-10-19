@@ -54,7 +54,7 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
     cursor: 'help'
   };
 
-  const tooltipText = 'Input Methods: Range (x-y), Greater Then (>x), Less Then (<y)';
+  const tooltipText = 'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
 
   return (
     <div>
