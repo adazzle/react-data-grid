@@ -165,7 +165,7 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }
 
-export type CellContentRenderer<TRow> = (props: CellContentRendererProps<TRow>) => React.ReactChild;
+export type CellContentRenderer<TRow> = (props: CellContentRendererProps<TRow>) => React.ReactNode;
 
 export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
 | 'idx'
