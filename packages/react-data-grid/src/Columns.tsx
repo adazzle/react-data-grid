@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
 import SelectCellFormatter from './formatters/SelectCellFormatter';
 import {
   Column,
@@ -14,6 +15,7 @@ export const SelectColumn: Column<any> = {
   width: 60,
   filterable: false,
   frozen: true,
+  cellContentRenderer: legacyCellContentRenderer,
   headerRenderer: (props: HeaderRowProps<any>) => (
     <SelectCellFormatter
       value={props.allRowsSelected}
