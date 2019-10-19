@@ -17,6 +17,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   events?: {
     [key: string]: undefined | ((e: Event, info: ColumnEventInfo<TRow>) => void);
   };
+  cellContentRenderer?: CellContentRenderer<TRow>;
   /** Formatter to be used to render the cell content */
   formatter?: React.ReactElement | React.ComponentType<FormatterProps<TRow[TField], TDependentValue, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
@@ -52,6 +53,7 @@ export type CalculatedColumn<TRow, TDependentValue = unknown, TField extends key
     idx: number;
     width: number;
     left: number;
+    cellContentRenderer: CellContentRenderer<TRow>;
   };
 
 export interface ColumnMetrics<TRow> {
@@ -162,6 +164,21 @@ export interface CellRendererProps<TRow, TValue = unknown> {
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
 }
+
+export type CellContentRenderer<TRow> = (props: CellContentRendererProps<TRow>) => React.ReactChild;
+
+export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
+| 'idx'
+| 'rowIdx'
+| 'rowData'
+| 'column'
+| 'value'
+| 'cellMetaData'
+| 'expandableOptions'
+| 'isRowSelected'
+| 'onRowSelectionChange'
+| 'isSummaryRow'
+>;
 
 export interface RowsContainerProps {
   id: string;

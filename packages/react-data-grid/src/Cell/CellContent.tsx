@@ -5,20 +5,7 @@ import CellActions from './CellActions';
 import CellExpand from './CellExpander';
 import { SimpleCellFormatter } from '../formatters';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
-import { CellProps } from '../Cell';
-
-export type CellContentProps<R> = Pick<CellProps<R>,
-| 'idx'
-| 'rowIdx'
-| 'rowData'
-| 'column'
-| 'value'
-| 'cellMetaData'
-| 'expandableOptions'
-| 'isRowSelected'
-| 'onRowSelectionChange'
-| 'isSummaryRow'
->;
+import { CellContentRendererProps } from '../common/types';
 
 export default function CellContent<R>({
   idx,
@@ -31,7 +18,7 @@ export default function CellContent<R>({
   isRowSelected,
   isSummaryRow,
   onRowSelectionChange
-}: CellContentProps<R>) {
+}: CellContentRendererProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
   const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;

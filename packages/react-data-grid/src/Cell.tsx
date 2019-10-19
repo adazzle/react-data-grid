@@ -1,13 +1,12 @@
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
-import CellContent from './Cell/CellContent';
 import { CellRendererProps, ColumnEventInfo } from './common/types';
 import { isFrozen } from './utils/columnUtils';
 
 export interface CellProps<R> extends CellRendererProps<R> {
-  children?: React.ReactNode;
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -83,6 +82,8 @@ function Cell<R>({
   }
 
   function getEvents() {
+    if (isSummaryRow) return null;
+
     const columnEvents = column.events;
     const allEvents: { [key: string]: Function } = {
       onClick: handleCellClick,
@@ -129,48 +130,24 @@ function Cell<R>({
     return null;
   }
 
-  if (isSummaryRow) {
-    return (
-      <div
-        className={getCellClass()}
-        style={getStyle()}
-      >
-        <CellContent<R>
-          idx={idx}
-          rowIdx={rowIdx}
-          column={column}
-          cellMetaData={cellMetaData}
-          rowData={rowData}
-          value={value}
-          expandableOptions={expandableOptions}
-          isRowSelected={false}
-          onRowSelectionChange={onRowSelectionChange}
-          isSummaryRow
-        />
-      </div>
-    );
-  }
-
   return (
     <div
       className={getCellClass()}
       style={getStyle()}
       {...getEvents()}
     >
-      {children || (
-        <CellContent<R>
-          idx={idx}
-          rowIdx={rowIdx}
-          column={column}
-          rowData={rowData}
-          value={value}
-          cellMetaData={cellMetaData}
-          expandableOptions={expandableOptions}
-          isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
-          isSummaryRow={isSummaryRow}
-        />
-      )}
+      {children || column.cellContentRenderer({
+        idx,
+        rowIdx,
+        rowData,
+        column,
+        value,
+        cellMetaData,
+        expandableOptions,
+        isRowSelected,
+        onRowSelectionChange,
+        isSummaryRow
+      })}
     </div>
   );
 }
