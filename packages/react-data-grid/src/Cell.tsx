@@ -23,8 +23,7 @@ function Cell<R>({
   onRowSelectionChange,
   rowData,
   rowIdx,
-  scrollLeft,
-  value = ''
+  scrollLeft
 }: CellProps<R>) {
   function handleCellClick() {
     cellMetaData.onCellClick({ idx, rowIdx });
@@ -141,7 +140,6 @@ function Cell<R>({
         rowIdx,
         rowData,
         column,
-        value,
         cellMetaData,
         expandableOptions,
         isRowSelected,

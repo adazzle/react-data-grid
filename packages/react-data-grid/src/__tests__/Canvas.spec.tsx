@@ -7,21 +7,21 @@ import EventBus from '../EventBus';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
 import RowComponent from '../Row';
+import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
 
 interface Row {
-  id?: number;
-  row?: string;
-  __metaData?: unknown;
+  id: number;
+  row: string;
 }
 
 const noop = () => null;
 
-const testProps: CanvasProps<Row, 'row'> = {
-  rowKey: 'row',
+const testProps: CanvasProps<Row, 'id'> = {
+  rowKey: 'id',
   rowHeight: 25,
   height: 200,
   rowsCount: 1,
-  rowGetter() { return {}; },
+  rowGetter(id) { return { id, row: String(id) }; },
   cellMetaData: {
     rowKey: 'row',
     onCellClick() { },
@@ -44,7 +44,14 @@ const testProps: CanvasProps<Row, 'row'> = {
   editorPortalTarget: document.body,
   onScroll() {},
   columnMetrics: {
-    columns: [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }],
+    columns: [{
+      key: 'row',
+      name: 'ID',
+      idx: 0,
+      width: 100,
+      left: 100,
+      cellContentRenderer: valueCellContentRenderer
+    }],
     columnWidths: new Map(),
     lastFrozenColumnIndex: -1,
     minColumnWidth: 80,
@@ -56,8 +63,8 @@ const testProps: CanvasProps<Row, 'row'> = {
   onCanvasKeyup() {}
 };
 
-function renderComponent(extraProps?: Partial<CanvasProps<Row, 'row'>>) {
-  return mount(<Canvas<Row, 'row'> {...testProps} {...extraProps} />);
+function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {
+  return mount(<Canvas<Row, 'id'> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas Tests', () => {
@@ -75,10 +82,10 @@ describe('Canvas Tests', () => {
   describe('Row Selection', () => {
     it('renders row selected', () => {
       const wrapper = renderComponent({
-        rowGetter() { return { row: 'one' }; },
+        rowGetter(id) { return { id, row: 'one' }; },
         rowsCount: 1,
-        rowKey: 'row',
-        selectedRows: new Set(['one'])
+        rowKey: 'id',
+        selectedRows: new Set([0])
       });
 
       expect(wrapper.find(RowComponent).props().isRowSelected).toBe(true);
@@ -86,15 +93,23 @@ describe('Canvas Tests', () => {
   });
 
   describe('Tree View', () => {
-    const COLUMNS: CalculatedColumn<Row>[] = [{ idx: 0, key: 'id', name: 'ID', width: 100, left: 100 }];
+    const COLUMNS: CalculatedColumn<Row>[] = [{
+      idx: 0,
+      key: 'id',
+      name: 'ID',
+      width: 100,
+      left: 100,
+      cellContentRenderer: valueCellContentRenderer
+    }];
 
     it('can render a custom renderer if __metadata property exists', () => {
       const EmptyChildRow = (props: unknown, rowIdx: number) => {
         return <div key={rowIdx} className="test-row-renderer" />;
       };
 
-      const rowGetter = () => ({
-        id: 0,
+      const rowGetter = (id: number) => ({
+        id,
+        row: String(id),
         __metaData: {
           isGroup: false,
           treeDepth: 0,

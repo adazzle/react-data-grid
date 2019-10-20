@@ -1,4 +1,5 @@
 import { canEdit } from '../columnUtils';
+import { valueCellContentRenderer } from '../../Cell/cellContentRenderers';
 import { CalculatedColumn, Omit } from '../../common/types';
 
 interface Row {
@@ -16,7 +17,8 @@ describe('ColumnUtils tests', () => {
       left: 460,
       name: 'Adserver Placement Type',
       resizable: true,
-      width: 150
+      width: 150,
+      cellContentRenderer: valueCellContentRenderer
     };
 
     return {

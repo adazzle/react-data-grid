@@ -4,6 +4,7 @@ import { mount } from 'enzyme';
 import Cell, { CellProps } from '../Cell';
 import helpers, { Row } from './GridPropHelpers';
 import CellAction from '../Cell/CellAction';
+import { legacyCellContentRenderer } from '../Cell/cellContentRenderers';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn, CellMetaData } from '../common/types';
 
@@ -34,14 +35,20 @@ const expandableOptions = {
   }
 };
 
-const defaultColumn: CalculatedColumn<Row> = { idx: 0, key: 'description', name: 'Desciption', width: 100, left: 0 };
+const defaultColumn: CalculatedColumn<Row> = {
+  idx: 0,
+  key: 'description',
+  name: 'Desciption',
+  width: 100,
+  left: 0,
+  cellContentRenderer: legacyCellContentRenderer
+};
 
 const testProps: CellProps<Row> = {
   rowIdx: 0,
   idx: 1,
   column: defaultColumn,
   lastFrozenColumnIndex: -1,
-  value: 'Wicklow',
   cellMetaData: testCellMetaData,
   rowData: { id: 1, description: 'Wicklow' },
   isRowSelected: false,
@@ -89,7 +96,6 @@ describe('Cell Tests', () => {
       idx: 19,
       column: helpers.columns[0],
       lastFrozenColumnIndex: -1,
-      value: 'requiredValue',
       cellMetaData: testCellMetaData,
       rowData: helpers.rowGetter(11),
       expandableOptions,
@@ -123,7 +129,6 @@ describe('Cell Tests', () => {
         idx: 19,
         column: helpers.columns[0],
         lastFrozenColumnIndex: -1,
-        value: 'requiredValue',
         cellMetaData: testCellMetaData,
         rowData: helpers.rowGetter(11),
         expandableOptions,
@@ -153,7 +158,7 @@ describe('Cell Tests', () => {
 
         const renderedCellActions = wrapper.find(CellAction);
 
-        expect(renderedCellActions.length).toBe(1);
+        expect(renderedCellActions).toHaveLength(1);
         expect(renderedCellActions.props()).toEqual({
           ...action,
           isFirst: true
@@ -164,10 +169,7 @@ describe('Cell Tests', () => {
     describe('when getCellActions is not in cellMetadata', () => {
       it('should not render any CellActions', () => {
         const { wrapper } = setup();
-
-        const renderedCellActions = wrapper.find(CellAction);
-
-        expect(renderedCellActions.length).toBe(0);
+        expect(wrapper.find(CellAction)).toHaveLength(0);
       });
     });
   });

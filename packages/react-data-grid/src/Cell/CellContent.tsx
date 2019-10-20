@@ -12,7 +12,6 @@ export default function CellContent<R>({
   rowIdx,
   column,
   rowData,
-  value,
   cellMetaData,
   expandableOptions,
   isRowSelected,
@@ -36,8 +35,7 @@ export default function CellContent<R>({
 
   function getFormatterProps() {
     return {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      value: value as any, //FIXME: fix value type
+      value: rowData[column.key],
       column,
       rowIdx,
       row: rowData,
@@ -46,6 +44,22 @@ export default function CellContent<R>({
       dependentValues: getFormatterDependencies(rowData),
       isSummaryRow
     };
+  }
+
+  function getFormattedValue(formatter: typeof column['formatter']) {
+    if (formatter === undefined) {
+      return <SimpleCellFormatter value={rowData[column.key] as unknown as string} />;
+    }
+
+    if (isValidElementType(formatter)) {
+      return createElement<ReturnType<typeof getFormatterProps>>(formatter, getFormatterProps());
+    }
+
+    if (isElement(formatter)) {
+      return cloneElement(formatter, getFormatterProps());
+    }
+
+    return null;
   }
 
   function handleDeleteSubRow() {
@@ -64,8 +78,6 @@ export default function CellContent<R>({
       cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
     }
   }
-
-  const { formatter } = column;
 
   return (
     <>
@@ -91,13 +103,7 @@ export default function CellContent<R>({
           />
         )}
         <div style={style}>
-          {formatter === undefined
-            ? <SimpleCellFormatter value={value as string} />
-            : isValidElementType(formatter)
-              ? createElement(formatter, getFormatterProps())
-              : isElement(formatter)
-                ? cloneElement(formatter, getFormatterProps())
-                : null}
+          {getFormattedValue(column.formatter)}
         </div>
       </div>
     </>

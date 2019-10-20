@@ -7,5 +7,5 @@ export function legacyCellContentRenderer<R>(props: CellContentRendererProps<R>)
 }
 
 export function valueCellContentRenderer<R>(props: CellContentRendererProps<R>) {
-  return props.value;
+  return props.rowData[props.column.key];
 }

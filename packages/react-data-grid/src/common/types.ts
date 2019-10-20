@@ -150,10 +150,9 @@ export interface HeaderRowProps<TRow> {
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export interface CellRendererProps<TRow, TValue = unknown> {
+export interface CellRendererProps<TRow> {
   idx: number;
   rowIdx: number;
-  value: TValue;
   column: CalculatedColumn<TRow>;
   lastFrozenColumnIndex: number;
   rowData: TRow;
@@ -172,7 +171,6 @@ export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
 | 'rowIdx'
 | 'rowData'
 | 'column'
-| 'value'
 | 'cellMetaData'
 | 'expandableOptions'
 | 'isRowSelected'
