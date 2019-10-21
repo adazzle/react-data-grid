@@ -54,32 +54,6 @@ function Cell<R>({
     e.preventDefault();
   }
 
-  function getStyle(): React.CSSProperties {
-    const style: React.CSSProperties = {
-      width: column.width,
-      left: column.left
-    };
-
-    if (scrollLeft !== undefined) {
-      style.transform = `translateX(${scrollLeft}px)`;
-    }
-
-    return style;
-  }
-
-  function getCellClass() {
-    const colIsFrozen = isFrozen(column);
-    return classNames(
-      column.cellClass,
-      'rdg-cell',
-      className, {
-        'rdg-cell-frozen': colIsFrozen,
-        'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex,
-        'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
-      }
-    );
-  }
-
   function getEvents() {
     if (isSummaryRow) return null;
 
@@ -124,10 +98,30 @@ function Cell<R>({
     return allEvents;
   }
 
+  const colIsFrozen = isFrozen(column);
+  className = classNames(
+    column.cellClass,
+    'rdg-cell',
+    className, {
+      'rdg-cell-frozen': colIsFrozen,
+      'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex,
+      'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
+    }
+  );
+
+  const style: React.CSSProperties = {
+    width: column.width,
+    left: column.left
+  };
+
+  if (scrollLeft !== undefined) {
+    style.transform = `translateX(${scrollLeft}px)`;
+  }
+
   return (
     <div
-      className={getCellClass()}
-      style={getStyle()}
+      className={className}
+      style={style}
       {...getEvents()}
     >
       {children || column.cellContentRenderer({
