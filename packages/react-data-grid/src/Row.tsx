@@ -63,7 +63,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           cellMetaData={cellMetaData}
-          value={this.getCellValue(key || String(colIdx) as keyof R) as R[keyof R]} // FIXME: fix types
           rowData={row}
           expandableOptions={this.getExpandableOptions(key)}
           scrollLeft={colIsFrozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
@@ -75,15 +74,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
     }
 
     return cellElements;
-  }
-
-  getCellValue(key: keyof R) {
-    const { isRowSelected, row } = this.props;
-    if (key === 'select-row') {
-      return isRowSelected;
-    }
-
-    return row[key];
   }
 
   getExpandableOptions(columnKey: keyof R) {

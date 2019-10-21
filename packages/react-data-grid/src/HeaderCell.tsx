@@ -10,7 +10,7 @@ function SimpleCellRenderer<R>({ column, rowType }: HeaderRowProps<R>) {
   return <>{headerText}</>;
 }
 
-interface Props<R> {
+export interface HeaderCellProps<R> {
   renderer?: React.ReactElement | React.ComponentType<HeaderRowProps<R>>;
   column: CalculatedColumn<R>;
   lastFrozenColumnIndex: number;
@@ -25,7 +25,7 @@ interface Props<R> {
   className?: string;
 }
 
-export default class HeaderCell<R> extends React.Component<Props<R>> {
+export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
   private readonly cell = React.createRef<HTMLDivElement>();
 
   private onMouseDown = (event: React.MouseEvent) => {

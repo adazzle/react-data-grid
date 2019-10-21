@@ -18,6 +18,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'sortDirection'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
+| 'defaultCellContentRenderer'
 >>;
 
 export interface HeaderProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
@@ -45,12 +46,13 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
 
     return getColumnMetrics({
       ...props.columnMetrics,
+      defaultCellContentRenderer: props.defaultCellContentRenderer,
       columnWidths: new Map([
         ...props.columnMetrics.columnWidths,
         [resizing.column.key, resizing.width]
       ])
     });
-  }, [props.columnMetrics, resizing]);
+  }, [props.columnMetrics, props.defaultCellContentRenderer, resizing]);
 
   useImperativeHandle(ref, () => ({
     setScrollLeft(scrollLeft: number): void {

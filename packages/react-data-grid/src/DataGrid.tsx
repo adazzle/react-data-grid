@@ -12,6 +12,7 @@ import { isValidElementType } from 'react-is';
 
 import Header, { HeaderHandle } from './Header';
 import Canvas from './Canvas';
+import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
 import { getColumnMetrics } from './utils/columnUtils';
 import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
@@ -23,6 +24,7 @@ import {
   CellMetaData,
   CheckCellIsEditableEvent,
   Column,
+  CellContentRenderer,
   CommitEvent,
   GridRowsUpdatedEvent,
   HeaderRowData,
@@ -89,6 +91,7 @@ export interface DataGridProps<R, K extends keyof R> {
   rowKey?: K;
   /** The height of each row in pixels */
   rowHeight?: number;
+  defaultCellContentRenderer?: CellContentRenderer<R>;
   rowRenderer?: React.ReactElement | React.ComponentType<IRowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
@@ -175,6 +178,7 @@ function DataGrid<R, K extends keyof R>({
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
   renderBatchSize = 8,
+  defaultCellContentRenderer = legacyCellContentRenderer,
   columns,
   rowsCount,
   rowGetter,
@@ -199,9 +203,10 @@ function DataGrid<R, K extends keyof R>({
       columns,
       minColumnWidth,
       viewportWidth,
-      columnWidths
+      columnWidths,
+      defaultCellContentRenderer
     });
-  }, [columnWidths, columns, minColumnWidth, viewportWidth]);
+  }, [columnWidths, columns, defaultCellContentRenderer, minColumnWidth, viewportWidth]);
 
   useLayoutEffect(() => {
     // Do not calculate the width if minWidth is provided
@@ -418,6 +423,7 @@ function DataGrid<R, K extends keyof R>({
             rowsCount={rowsCount}
             rowGetter={rowGetter}
             columnMetrics={columnMetrics}
+            defaultCellContentRenderer={defaultCellContentRenderer}
             onColumnResize={handleColumnResize}
             headerRows={headerRows}
             sortColumn={props.sortColumn}

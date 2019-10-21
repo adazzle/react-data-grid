@@ -16,10 +16,6 @@
   /* Should have a higher value than 1 to show in front of cell masks */
   z-index: 2;
 
-  &.has-tooltip:hover {
-    z-index: 3
-  }
-
   @supports (position: sticky) or (position: -webkit-sticky) {
     & {
       position: -webkit-sticky;
@@ -30,11 +26,6 @@
 
 .rdg-cell-frozen-last {
   box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
-}
-
-/* cell which have tooltips need to have a higher z-index on hover so that the tooltip appears above the other cells*/
-.rdg-cell.has-tooltip:hover {
-  z-index: 1;
 }
 
 .react-contextmenu--visible {
@@ -74,39 +65,6 @@
 
 .rdg-cell-value .btn-sm {
   padding: 0;
-}
-
-.rdg-cell-tooltip .rdg-cell-tooltip-text {
-    white-space: normal;
-    visibility: hidden;
-    width: 150px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    top: 50%;
-    bottom: initial;
-    left: 50%;
-    margin-top: 15px;
-    margin-left: -75px
-}
-
-.rdg-cell-tooltip:hover .rdg-cell-tooltip-text {
-    visibility: visible;
-    opacity: 0.8;
-}
-
-.rdg-cell-tooltip .rdg-cell-tooltip-text::after {
-    content: " ";
-    position: absolute;
-    bottom: 100%;  /* At the top of the tooltip */
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent black transparent;
 }
 
 .rdg-cell-expand {

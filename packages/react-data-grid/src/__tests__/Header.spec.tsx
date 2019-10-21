@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 
 import Header, { HeaderProps } from '../Header';
 import HeaderRow from '../HeaderRow';
+import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
 import helpers, { fakeCellMetaData, Row } from './GridPropHelpers';
 import * as utils from '../utils';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
@@ -33,7 +34,8 @@ describe('Header Unit Tests', () => {
       onColumnResize: jest.fn(),
       onSort: () => null,
       onHeaderDrop() { },
-      draggableHeaderCell: () => null
+      draggableHeaderCell: () => null,
+      defaultCellContentRenderer: valueCellContentRenderer
     };
   }
 
@@ -87,7 +89,8 @@ describe('Header Unit Tests', () => {
       onHeaderDrop() { },
       cellMetaData: fakeCellMetaData,
       draggableHeaderCell: () => null,
-      onColumnResize() { }
+      onColumnResize() { },
+      defaultCellContentRenderer: valueCellContentRenderer
     };
     const testAllProps: HeaderProps<Row, 'id'> = {
       rowKey: 'id',
@@ -114,7 +117,8 @@ describe('Header Unit Tests', () => {
       draggableHeaderCell: jest.fn(),
       getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
-      onHeaderDrop() { }
+      onHeaderDrop() { },
+      defaultCellContentRenderer: valueCellContentRenderer
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);

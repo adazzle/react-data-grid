@@ -18,7 +18,7 @@ const ROWS_COUNT = 5;
 const columns = createColumns(NUMBER_OF_COLUMNS);
 
 interface Row {
-  [key: string]: unknown;
+  [key: string]: React.ReactNode;
 }
 
 describe('<InteractionMasks/>', () => {
