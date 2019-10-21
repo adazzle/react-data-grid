@@ -1,29 +1,39 @@
-import React from 'react';
-import { Editor, EditorProps } from '../types';
+import React, { useEffect, useRef } from 'react';
+import { EditorProps } from '../types';
 
-type Props = Pick<EditorProps<string>, 'value' | 'column' | 'onCommit'>;
+type Props = Pick<EditorProps<string>, 'value' | 'onChange' | 'onCommit'>;
 
-export default class SimpleTextEditor extends React.Component<Props> implements Editor<{ [key: string]: string }> {
-  private readonly input = React.createRef<HTMLInputElement>();
+export default function SimpleTextEditor({
+  value,
+  onChange,
+  onCommit
+}: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  getInputNode() {
-    return this.input.current;
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [inputRef]);
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (
+      (e.key === 'ArrowLeft' && e.currentTarget.selectionEnd !== 0)
+      || (e.key === 'ArrowRight' && e.currentTarget.selectionStart !== e.currentTarget.value.length)
+    ) {
+      e.stopPropagation();
+    }
   }
 
-  getValue() {
-    return {
-      [this.props.column.key]: this.input.current!.value
-    };
-  }
-
-  render() {
-    return (
-      <input
-        className="form-control"
-        ref={this.input}
-        defaultValue={this.props.value}
-        onBlur={() => this.props.onCommit()}
-      />
-    );
-  }
+  return (
+    <input
+      ref={inputRef}
+      className="form-control editor-main"
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      onKeyDown={onKeyDown}
+      onBlur={() => onCommit()}
+    />
+  );
 }

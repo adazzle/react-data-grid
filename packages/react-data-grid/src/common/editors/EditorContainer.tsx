@@ -22,18 +22,33 @@ export interface Props<R> extends SharedInteractionMasksProps<R>, SharedInteract
   onCommitCancel(): void;
 }
 
-interface State {
+interface State<R> {
   isInvalid: boolean;
+  value: ValueType<R> | string;
 }
 
-export default class EditorContainer<R> extends React.Component<Props<R>, State> {
+function getInitialValue<R>({ firstEditorKeyPress: key, value }: Props<R>): ValueType<R> | string {
+  if (key === 'Delete' || key === 'Backspace') {
+    return '';
+  }
+  if (key === 'Enter') {
+    return value;
+  }
+
+  return key || value;
+}
+
+export default class EditorContainer<R> extends React.Component<Props<R>, State<R>> {
   static displayName = 'EditorContainer';
 
   changeCommitted = false;
   changeCanceled = false;
 
   private readonly editor = React.createRef<Editor>();
-  readonly state: Readonly<State> = { isInvalid: false };
+  readonly state: Readonly<State<R>> = {
+    isInvalid: false,
+    value: getInitialValue(this.props)
+  };
 
   componentDidMount() {
     const inputNode = this.getInputNode();
@@ -57,33 +72,35 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
 
   componentWillUnmount() {
     if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit({ key: 'Enter' });
+      this.commit();
     }
   }
 
+  preventDefaultNavigation = (e: KeyboardEvent<HTMLElement>): boolean => {
+    if (
+      // prevent event from bubbling if editor has results to select
+      (e.key === 'Escape' && this.editorIsSelectOpen())
+      // dont want to propogate as that then moves us round the grid
+      || ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && this.editorHasResults())
+      // prevent event propogation. this disables left cell navigation
+      || (e.key === 'ArrowLeft' && !this.isCaretAtBeginningOfInput())
+      // prevent event propogation. this disables right cell navigation
+      || (e.key === 'ArrowRight' && !this.isCaretAtEndOfInput())
+    ) {
+      e.stopPropagation();
+      return true;
+    }
+
+    return false;
+  };
+
   onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    switch (e.key) {
-      case 'Enter':
-        this.onPressEnter();
-        break;
-      case 'Tab':
-        this.onPressTab();
-        break;
-      case 'Escape':
-        this.onPressEscape(e);
-        break;
-      case 'ArrowUp':
-      case 'ArrowDown':
-        this.onPressArrowUpOrDown(e);
-        break;
-      case 'ArrowLeft':
-        this.onPressArrowLeft(e);
-        break;
-      case 'ArrowRight':
-        this.onPressArrowRight(e);
-        break;
-      default:
-        break;
+    if (this.props.column.enableNewEditor || !this.preventDefaultNavigation(e)) {
+      if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        this.commit();
+      } else if (e.key === 'Escape') {
+        this.commitCancel();
+      }
     }
 
     if (this.props.onGridKeyDown) {
@@ -91,13 +108,17 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
     }
   };
 
+  onChange = (value: ValueType<R>) => {
+    this.setState({ value });
+  };
+
   createEditor() {
     type P = EditorProps<ValueType<R> | string, unknown, R>;
     const editorProps: P & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
       column: this.props.column,
-      value: this.getInitialValue(),
-      onChange: () => undefined,
+      value: this.state.value,
+      onChange: this.onChange,
       rowMetaData: this.getRowMetaData(),
       rowData: this.props.rowData,
       height: this.props.height,
@@ -117,57 +138,12 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
 
     return (
       <SimpleTextEditor
-        ref={this.editor as unknown as React.RefObject<SimpleTextEditor>}
-        column={this.props.column as CalculatedColumn<unknown>}
-        value={this.getInitialValue() as string}
+        value={this.state.value as string}
+        onChange={this.onChange as unknown as (value: string) => void}
         onCommit={this.commit}
       />
     );
   }
-
-  onPressEnter = () => {
-    this.commit({ key: 'Enter' });
-  };
-
-  onPressTab = () => {
-    this.commit({ key: 'Tab' });
-  };
-
-  onPressEscape = (e: KeyboardEvent) => {
-    if (!this.editorIsSelectOpen()) {
-      this.commitCancel();
-    } else {
-      // prevent event from bubbling if editor has results to select
-      e.stopPropagation();
-    }
-  };
-
-  onPressArrowUpOrDown = (e: KeyboardEvent) => {
-    if (this.editorHasResults()) {
-      // dont want to propogate as that then moves us round the grid
-      e.stopPropagation();
-    } else {
-      this.commit(e);
-    }
-  };
-
-  onPressArrowLeft = (e: KeyboardEvent) => {
-    // prevent event propogation. this disables left cell navigation
-    if (!this.isCaretAtBeginningOfInput()) {
-      e.stopPropagation();
-    } else {
-      this.commit(e);
-    }
-  };
-
-  onPressArrowRight = (e: KeyboardEvent) => {
-    // prevent event propogation. this disables right cell navigation
-    if (!this.isCaretAtEndOfInput()) {
-      e.stopPropagation();
-    } else {
-      this.commit(e);
-    }
-  };
 
   editorHasResults = () => {
     const { hasResults } = this.getEditor();
@@ -175,7 +151,6 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   };
 
   editorIsSelectOpen = () => {
-    console.log('editorIsSelectOpen');
     const { isSelectOpen } = this.getEditor();
     return isSelectOpen ? isSelectOpen() : false;
   };
@@ -193,28 +168,19 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
   };
 
   getInputNode = () => {
-    return this.getEditor().getInputNode();
+    return this.getEditor() && this.getEditor().getInputNode();
   };
 
-  getInitialValue(): ValueType<R> | string {
-    const { firstEditorKeyPress: key, value } = this.props;
-    if (key === 'Delete' || key === 'Backspace') {
-      return '';
-    }
-    if (key === 'Enter') {
-      return value;
-    }
+  commit = () => {
+    const { onCommit, column } = this.props;
+    const updated: never = column.enableNewEditor
+      ? this.getEditor().getValue()
+      : { [column.key]: this.state.value } as never;
 
-    return key || value;
-  }
-
-  commit = (args: { key?: string } = {}) => {
-    const { onCommit } = this.props;
-    const updated = this.getEditor().getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       const cellKey = this.props.column.key;
-      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated, key: args.key });
+      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated });
     }
   };
 
@@ -225,7 +191,7 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State>
 
   isNewValueValid = (value: unknown) => {
     const editor = this.getEditor();
-    if (editor.validate) {
+    if (editor && editor.validate) {
       const isValid = editor.validate(value);
       this.setState({ isInvalid: !isValid });
       return isValid;

@@ -138,9 +138,8 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   height: number;
   onCommit(args?: { key?: string }): void;
   onCommitCancel(): void;
-  onOverrideKeyDown(e: KeyboardEvent): void;
-
   onChange(value: TValue): void;
+  onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
 export interface HeaderRowProps<TRow> {
@@ -295,7 +294,6 @@ export interface CommitEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;
   rowIdx: number;
   updated: TUpdatedValue;
-  key?: string;
 }
 
 export interface RowExpandToggleEvent {
