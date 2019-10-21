@@ -2,21 +2,23 @@ import React, { useCallback, useMemo, useState } from 'react';
 import DataGrid, { SelectColumn, valueCellContentRenderer } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
-function formatDecimal({ value, isSummaryRow, maximumFractionDigits = 2 }) {
+function formatDecimal({ column, rowData, isSummaryRow, maximumFractionDigits = 2 }) {
+  const value = rowData[column.key];
   const text = value.toLocaleString('en-US', { maximumFractionDigits });
-  return isSummaryRow ? <strong>{text}</strong> : <div>{text}</div>;
+  return isSummaryRow ? <strong>{text}</strong> : text;
 }
 
 function formatInteger(props) {
   return formatDecimal({ ...props, maximumFractionDigits: 0 });
 }
 
-function formatTitle({ value, rowData: { selectedRowsCount }, isSummaryRow }) {
+function formatTitle({ column, rowData, isSummaryRow }) {
   if (isSummaryRow) {
+    const { selectedRowsCount } = rowData;
     return <strong>{ selectedRowsCount >= 0 ? `${selectedRowsCount} row${selectedRowsCount > 1 ? 's' : ''} selected` : 'Total'}</strong>;
   }
 
-  return value;
+  return rowData[column.key];
 }
 
 const columns = [

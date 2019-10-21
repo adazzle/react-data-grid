@@ -28,9 +28,10 @@ export default class extends React.Component {
         key: 'complete',
         name: '% Complete',
         cellContentRenderer(props) {
+          const value = props.rowData.complete;
           return (
             <>
-              <progress max={100} value={props.value} /> {props.value}%
+              <progress max={100} value={value} /> {value}%
             </>
           );
         }
