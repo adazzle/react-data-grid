@@ -245,14 +245,14 @@ function DataGrid<R, K extends keyof R>({
     return columnMetrics!.columns[idx];
   }
 
-  function handleColumnResize(idx: number, width: number) {
+  function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
-    const columnKey = getColumn(idx).key;
-    newColumnWidths.set(columnKey, width);
+    width = Math.max(width, minColumnWidth);
+    newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
     if (props.onColumnResize) {
-      props.onColumnResize(idx, width);
+      props.onColumnResize(column.idx, width);
     }
   }
 
@@ -423,7 +423,6 @@ function DataGrid<R, K extends keyof R>({
             rowsCount={rowsCount}
             rowGetter={rowGetter}
             columnMetrics={columnMetrics}
-            defaultCellContentRenderer={defaultCellContentRenderer}
             onColumnResize={handleColumnResize}
             headerRows={headerRows}
             sortColumn={props.sortColumn}

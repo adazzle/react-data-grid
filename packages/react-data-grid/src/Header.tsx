@@ -1,7 +1,6 @@
-import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } from 'react';
+import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 
 import HeaderRow from './HeaderRow';
-import { getColumnMetrics } from './utils/columnUtils';
 import { getScrollbarSize, isPositionStickySupported } from './utils';
 import { CalculatedColumn, HeaderRowData, ColumnMetrics, CellMetaData } from './common/types';
 import { DEFINE_SORT } from './common/enums';
@@ -18,7 +17,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'sortDirection'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
-| 'defaultCellContentRenderer'
 >>;
 
 export interface HeaderProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
@@ -27,7 +25,7 @@ export interface HeaderProps<R, K extends keyof R> extends SharedDataGridProps<R
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
   cellMetaData: CellMetaData<R>;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
-  onColumnResize(idx: number, width: number): void;
+  onColumnResize(column: CalculatedColumn<R>, width: number): void;
 }
 
 export interface HeaderHandle {
@@ -39,21 +37,6 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
   const rowRef = useRef<HeaderRow<R, K>>(null);
   const filterRowRef = useRef<HeaderRow<R, K>>(null);
 
-  const [resizing, setResizing] = useState<null | { column: CalculatedColumn<R>; width: number }>(null);
-
-  const columnMetrics = useMemo(() => {
-    if (resizing === null) return props.columnMetrics;
-
-    return getColumnMetrics({
-      ...props.columnMetrics,
-      defaultCellContentRenderer: props.defaultCellContentRenderer,
-      columnWidths: new Map([
-        ...props.columnMetrics.columnWidths,
-        [resizing.column.key, resizing.width]
-      ])
-    });
-  }, [props.columnMetrics, props.defaultCellContentRenderer, resizing]);
-
   useImperativeHandle(ref, () => ({
     setScrollLeft(scrollLeft: number): void {
       headerRef.current!.scrollLeft = scrollLeft;
@@ -64,16 +47,6 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
       }
     }
   }), []);
-
-  function onColumnResize(column: CalculatedColumn<R>, width: number): void {
-    setResizing({ column, width: Math.max(width, columnMetrics.minColumnWidth) });
-  }
-
-  function onColumnResizeEnd(): void {
-    if (resizing === null) return;
-    props.onColumnResize(resizing.column.idx, resizing.width);
-    setResizing(null);
-  }
 
   function handleAllRowsSelectionChange(checked: boolean) {
     if (!props.onSelectedRowsChange) return;
@@ -94,12 +67,11 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
         key={row.rowType}
         ref={ref}
         rowType={row.rowType}
-        onColumnResize={onColumnResize}
-        onColumnResizeEnd={onColumnResizeEnd}
-        width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+        onColumnResize={props.onColumnResize}
+        width={props.columnMetrics.totalColumnWidth + getScrollbarSize()}
         height={row.height}
-        columns={columnMetrics.columns}
-        lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+        columns={props.columnMetrics.columns}
+        lastFrozenColumnIndex={props.columnMetrics.lastFrozenColumnIndex}
         draggableHeaderCell={props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}

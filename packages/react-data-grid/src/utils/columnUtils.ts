@@ -1,8 +1,9 @@
 import { Column, CalculatedColumn, ColumnMetrics, CellContentRenderer } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
-type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'columnWidths'> & {
+type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'columnWidths'> & {
   columns: Column<R>[];
+  minColumnWidth: number;
   defaultCellContentRenderer: CellContentRenderer<R>;
 };
 
@@ -41,7 +42,6 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
     columns: calculatedColumns,
     lastFrozenColumnIndex: frozenColumns.length - 1,
     totalColumnWidth: totalWidth,
-    minColumnWidth: metrics.minColumnWidth,
     columnWidths: metrics.columnWidths,
     viewportWidth: metrics.viewportWidth
   };
