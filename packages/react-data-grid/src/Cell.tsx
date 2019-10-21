@@ -124,11 +124,6 @@ function Cell<R>({
     return allEvents;
   }
 
-  // FIXME: is this property used?
-  if (column.hidden) {
-    return null;
-  }
-
   return (
     <div
       className={getCellClass()}
