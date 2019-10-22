@@ -2,8 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import Header, { HeaderProps } from '../Header';
-import HeaderRow from '../HeaderRow';
-import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
+import HeaderRow, { HeaderRowProps } from '../HeaderRow';
 import helpers, { fakeCellMetaData, Row } from './GridPropHelpers';
 import * as utils from '../utils';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
@@ -19,11 +18,9 @@ describe('Header Unit Tests', () => {
       allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
-        minColumnWidth: 80,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       cellMetaData: fakeCellMetaData,
       headerRows: [{
@@ -34,8 +31,7 @@ describe('Header Unit Tests', () => {
       onColumnResize: jest.fn(),
       onSort: () => null,
       onHeaderDrop() { },
-      draggableHeaderCell: () => null,
-      defaultCellContentRenderer: valueCellContentRenderer
+      draggableHeaderCell: () => null
     };
   }
 
@@ -56,11 +52,11 @@ describe('Header Unit Tests', () => {
   it('header row drag end should trigger onColumnResize callback', () => {
     const resizeColIdx = 1;
     const testProps = getProps();
-    const wrapper = shallow(<Header {...testProps} />);
-    wrapper.find(HeaderRow).props().onColumnResize(helpers.columns[resizeColIdx] as never, 200);
-    wrapper.find(HeaderRow).props().onColumnResizeEnd();
+    const wrapper = shallow(<Header<Row, 'id'> {...testProps} />);
+    const col = helpers.columns[resizeColIdx];
+    wrapper.find<HeaderRowProps<Row, 'id'>>(HeaderRow).props().onColumnResize(col, 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
-    expect(testProps.onColumnResize).toHaveBeenCalledWith(resizeColIdx, 200);
+    expect(testProps.onColumnResize).toHaveBeenCalledWith(col, 200);
   });
 
   describe('Rendering Header component', () => {
@@ -74,11 +70,9 @@ describe('Header Unit Tests', () => {
       allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
-        minColumnWidth: 81,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       headerRows: [{
         height: 51,
@@ -89,8 +83,7 @@ describe('Header Unit Tests', () => {
       onHeaderDrop() { },
       cellMetaData: fakeCellMetaData,
       draggableHeaderCell: () => null,
-      onColumnResize() { },
-      defaultCellContentRenderer: valueCellContentRenderer
+      onColumnResize() { }
     };
     const testAllProps: HeaderProps<Row, 'id'> = {
       rowKey: 'id',
@@ -99,11 +92,9 @@ describe('Header Unit Tests', () => {
       allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
-        minColumnWidth: 80,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       headerRows: [{
         height: 50,
@@ -117,8 +108,7 @@ describe('Header Unit Tests', () => {
       draggableHeaderCell: jest.fn(),
       getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
-      onHeaderDrop() { },
-      defaultCellContentRenderer: valueCellContentRenderer
+      onHeaderDrop() { }
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);

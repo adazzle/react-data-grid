@@ -17,7 +17,6 @@ export interface HeaderCellProps<R> {
   rowType: HeaderRowType;
   height: number;
   onResize(column: CalculatedColumn<R>, width: number): void;
-  onResizeEnd(): void;
   onHeaderDrop?(): void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange(checked: boolean): void;
@@ -47,7 +46,6 @@ export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
     const onMouseUp = () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
-      this.props.onResizeEnd();
     };
 
     event.preventDefault();
@@ -84,7 +82,6 @@ export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
       if (!touch) return;
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
-      this.props.onResizeEnd();
     };
 
     window.addEventListener('touchmove', onTouchMove);
@@ -92,12 +89,9 @@ export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
   };
 
   private onResize(x: number) {
-    const { onResize } = this.props;
-    if (onResize) {
-      const width = this.getWidthFromMouseEvent(x);
-      if (width > 0) {
-        onResize(this.props.column, width);
-      }
+    const width = this.getWidthFromMouseEvent(x);
+    if (width > 0) {
+      this.props.onResize(this.props.column, width);
     }
   }
 

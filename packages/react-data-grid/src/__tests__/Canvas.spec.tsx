@@ -52,9 +52,7 @@ const testProps: CanvasProps<Row, 'id'> = {
       left: 100,
       cellContentRenderer: valueCellContentRenderer
     }],
-    columnWidths: new Map(),
     lastFrozenColumnIndex: -1,
-    minColumnWidth: 80,
     totalColumnWidth: 0,
     viewportWidth: 1000
   },

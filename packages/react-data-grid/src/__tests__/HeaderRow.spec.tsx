@@ -141,7 +141,6 @@ describe('Header Row Unit Tests', () => {
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       onColumnResize: jest.fn(),
-      onColumnResizeEnd: jest.fn(),
       onFilterChange() { },
       onHeaderDrop() { },
       draggableHeaderCell: () => <div />
