@@ -16,6 +16,7 @@
 
     #root {
       display: flex;
+      height: 100vh;
     }
 
     .nav {
@@ -23,6 +24,7 @@
       padding: 8px 16px;
       list-style: none;
       white-space: nowrap;
+      overflow-y: auto;
     }
 
     .nav a {
@@ -47,10 +49,17 @@
       overflow: auto;
       flex-grow: 1;
       margin: 0 8px;
+      display: flex;
+      flex-direction: column;
     }
 
     h1 {
       color: #555;
+      cursor: pointer;
+    }
+
+    .grid-autosizer-wrapper {
+      flex: 1 1 auto;
     }
   </style>
   <script defer src="https://unpkg.com/core-js-bundle/minified.js"></script>
