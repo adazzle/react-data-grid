@@ -1,3 +1,4 @@
+import { valueCellContentRenderer, legacyCellContentRenderer } from '../Cell/cellContentRenderers';
 import { CalculatedColumn, CellMetaData } from '../common/types';
 
 export interface Row {
@@ -12,19 +13,22 @@ const columns: CalculatedColumn<Row>[] = [{
   key: 'id',
   name: 'ID',
   width: 100,
-  left: 0
+  left: 0,
+  cellContentRenderer: legacyCellContentRenderer
 }, {
   idx: 1,
   key: 'title',
   name: 'Title',
   width: 100,
-  left: 100
+  left: 100,
+  cellContentRenderer: valueCellContentRenderer
 }, {
   idx: 2,
   key: 'count',
   name: 'Count',
   width: 100,
-  left: 200
+  left: 200,
+  cellContentRenderer: valueCellContentRenderer
 }];
 
 const _rows: Row[] = [];

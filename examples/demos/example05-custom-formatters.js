@@ -1,25 +1,6 @@
 import React from 'react';
-import DataGrid from 'react-data-grid';
-import PropTypes from 'prop-types';
+import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
 import Wrapper from './Wrapper';
-
-// Custom Formatter component
-class PercentCompleteFormatter extends React.Component {
-  static propTypes = {
-    value: PropTypes.number.isRequired
-  };
-
-  render() {
-    const percentComplete = `${this.props.value}%`;
-    return (
-      <div className="progress">
-        <div className="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{ width: percentComplete }}>
-          {percentComplete}
-        </div>
-      </div>
-    );
-  }
-}
 
 export default class extends React.Component {
   constructor(props, context) {
@@ -46,7 +27,14 @@ export default class extends React.Component {
       {
         key: 'complete',
         name: '% Complete',
-        formatter: PercentCompleteFormatter
+        cellContentRenderer(props) {
+          const value = props.rowData.complete;
+          return (
+            <>
+              <progress max={100} value={value} /> {value}%
+            </>
+          );
+        }
       },
       {
         key: 'startDate',
@@ -94,6 +82,7 @@ export default class extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}
           minHeight={500}
+          defaultCellContentRenderer={valueCellContentRenderer}
         />
       </Wrapper>
     );

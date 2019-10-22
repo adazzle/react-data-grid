@@ -1,4 +1,5 @@
 import { getColumnMetrics } from '../columnUtils';
+import { valueCellContentRenderer } from '../../Cell/cellContentRenderers';
 import { Column } from '../../common/types';
 
 interface Row {
@@ -28,7 +29,13 @@ describe('Column Metrics Tests', () => {
 
       it('should set the unset column widths based on the total width', () => {
         const columns = getInitialColumns();
-        const metrics = getColumnMetrics({ columns, viewportWidth, minColumnWidth: 50, columnWidths: new Map() });
+        const metrics = getColumnMetrics({
+          columns,
+          viewportWidth,
+          minColumnWidth: 50,
+          columnWidths: new Map(),
+          defaultCellContentRenderer: valueCellContentRenderer
+        });
 
         expect(metrics.columns[0].width).toEqual(60);
         expect(metrics.columns[1].width).toEqual(120);
@@ -37,7 +44,13 @@ describe('Column Metrics Tests', () => {
 
       it('should set the column left based on the column widths', () => {
         const columns = getInitialColumns();
-        const metrics = getColumnMetrics({ columns, viewportWidth, minColumnWidth: 50, columnWidths: new Map() });
+        const metrics = getColumnMetrics({
+          columns,
+          viewportWidth,
+          minColumnWidth: 50,
+          columnWidths: new Map(),
+          defaultCellContentRenderer: valueCellContentRenderer
+        });
 
         expect(metrics.columns[0].left).toEqual(0);
         expect(metrics.columns[1].left).toEqual(columns[0].width);
@@ -50,7 +63,13 @@ describe('Column Metrics Tests', () => {
         const thirdFrozenColumn: Column<Row> = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
         const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
         columns.splice(2, 0, firstFrozenColumn);
-        const metrics = getColumnMetrics({ columns, viewportWidth, minColumnWidth: 50, columnWidths: new Map() });
+        const metrics = getColumnMetrics({
+          columns,
+          viewportWidth,
+          minColumnWidth: 50,
+          columnWidths: new Map(),
+          defaultCellContentRenderer: valueCellContentRenderer
+        });
         expect(metrics.columns[0]).toMatchObject(firstFrozenColumn);
         expect(metrics.columns[1]).toMatchObject(secondFrozenColumn);
         expect(metrics.columns[2]).toMatchObject(thirdFrozenColumn);

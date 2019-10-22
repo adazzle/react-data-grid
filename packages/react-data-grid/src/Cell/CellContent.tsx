@@ -1,42 +1,23 @@
 import React, { createElement, cloneElement } from 'react';
 import { isElement, isValidElementType } from 'react-is';
-import classNames from 'classnames';
 
+import CellActions from './CellActions';
+import CellExpand from './CellExpander';
 import { SimpleCellFormatter } from '../formatters';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
-import { CellMetaData } from '../common/types';
-import { CellProps } from '../Cell';
-
-export type CellContentProps<R> = Pick<CellProps<R>,
-| 'idx'
-| 'rowIdx'
-| 'rowData'
-| 'column'
-| 'value'
-| 'expandableOptions'
-| 'tooltip'
-| 'cellControls'
-| 'isRowSelected'
-| 'onRowSelectionChange'
-| 'isSummaryRow'
-> & Pick<CellMetaData<R>,
-'onDeleteSubRow'
->;
+import { CellContentRendererProps } from '../common/types';
 
 export default function CellContent<R>({
   idx,
   rowIdx,
   column,
   rowData,
-  value,
-  tooltip,
+  cellMetaData,
   expandableOptions,
-  onDeleteSubRow,
-  cellControls,
   isRowSelected,
   isSummaryRow,
   onRowSelectionChange
-}: CellContentProps<R>) {
+}: CellContentRendererProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
   const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
@@ -54,8 +35,7 @@ export default function CellContent<R>({
 
   function getFormatterProps() {
     return {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      value: value as any, //FIXME: fix value type
+      value: rowData[column.key],
       column,
       rowIdx,
       row: rowData,
@@ -66,9 +46,25 @@ export default function CellContent<R>({
     };
   }
 
+  function getFormattedValue(formatter: typeof column['formatter']) {
+    if (formatter === undefined) {
+      return <SimpleCellFormatter value={rowData[column.key] as unknown as string} />;
+    }
+
+    if (isValidElementType(formatter)) {
+      return createElement<ReturnType<typeof getFormatterProps>>(formatter, getFormatterProps());
+    }
+
+    if (isElement(formatter)) {
+      return cloneElement(formatter, getFormatterProps());
+    }
+
+    return null;
+  }
+
   function handleDeleteSubRow() {
-    if (onDeleteSubRow) {
-      onDeleteSubRow({
+    if (cellMetaData.onDeleteSubRow) {
+      cellMetaData.onDeleteSubRow({
         idx,
         rowIdx,
         rowData,
@@ -77,34 +73,39 @@ export default function CellContent<R>({
     }
   }
 
-  const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
-    <ChildRowDeleteButton
-      treeDepth={treeDepth}
-      onDeleteSubRow={handleDeleteSubRow}
-      isDeleteSubRowEnabled={!!onDeleteSubRow}
-    />
-  );
-
-  const classes = classNames('rdg-cell-value',
-    { 'rdg-cell-tooltip': !!tooltip }
-  );
-
-  const { formatter } = column;
+  function handleCellExpand() {
+    if (cellMetaData.onCellExpand) {
+      cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
+    }
+  }
 
   return (
-    <div className={classes}>
-      {cellDeleter}
-      <div style={style}>
-        {formatter === undefined
-          ? <SimpleCellFormatter value={value as string} />
-          : isValidElementType(formatter)
-            ? createElement(formatter, getFormatterProps())
-            : isElement(formatter)
-              ? cloneElement(formatter, getFormatterProps())
-              : null}
-        {cellControls}
+    <>
+      {cellMetaData.getCellActions && (
+        <CellActions<R>
+          column={column}
+          rowData={rowData}
+          getCellActions={cellMetaData.getCellActions}
+        />
+      )}
+      {expandableOptions && expandableOptions.canExpand && (
+        <CellExpand
+          expanded={expandableOptions.expanded}
+          onCellExpand={handleCellExpand}
+        />
+      )}
+      <div className="rdg-cell-value">
+        {expandableOptions && treeDepth > 0 && isExpandCell && (
+          <ChildRowDeleteButton
+            treeDepth={treeDepth}
+            onDeleteSubRow={handleDeleteSubRow}
+            isDeleteSubRowEnabled={!!cellMetaData.onDeleteSubRow}
+          />
+        )}
+        <div style={style}>
+          {getFormattedValue(column.formatter)}
+        </div>
       </div>
-      {tooltip && <span className="rdg-cell-tooltip-text">{tooltip}</span>}
-    </div>
+    </>
   );
 }

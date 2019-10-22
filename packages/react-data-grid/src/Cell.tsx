@@ -1,22 +1,16 @@
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
-import CellActions from './Cell/CellActions';
-import CellContent from './Cell/CellContent';
-import CellExpand from './Cell/CellExpander';
 import { CellRendererProps, ColumnEventInfo } from './common/types';
 import { isFrozen } from './utils/columnUtils';
 
 export interface CellProps<R> extends CellRendererProps<R> {
-  children?: React.ReactNode;
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
+  children?: React.ReactNode;
   className?: string;
-  tooltip?: string | null;
-  cellControls?: unknown;
 }
 
 function Cell<R>({
-  cellControls,
   cellMetaData,
   children,
   className,
@@ -29,9 +23,7 @@ function Cell<R>({
   onRowSelectionChange,
   rowData,
   rowIdx,
-  scrollLeft,
-  tooltip,
-  value = ''
+  scrollLeft
 }: CellProps<R>) {
   function handleCellClick() {
     cellMetaData.onCellClick({ idx, rowIdx });
@@ -58,44 +50,13 @@ function Cell<R>({
     cellMetaData.onCellDoubleClick({ idx, rowIdx });
   }
 
-  function handleCellExpand() {
-    if (cellMetaData.onCellExpand) {
-      cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
-    }
-  }
-
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
   }
 
-  function getStyle(): React.CSSProperties {
-    const style: React.CSSProperties = {
-      width: column.width,
-      left: column.left
-    };
-
-    if (scrollLeft !== undefined) {
-      style.transform = `translateX(${scrollLeft}px)`;
-    }
-
-    return style;
-  }
-
-  function getCellClass() {
-    const colIsFrozen = isFrozen(column);
-    return classNames(
-      column.cellClass,
-      'rdg-cell',
-      className, {
-        'rdg-cell-frozen': colIsFrozen,
-        'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex,
-        'has-tooltip': !!tooltip,
-        'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
-      }
-    );
-  }
-
   function getEvents() {
+    if (isSummaryRow) return null;
+
     const columnEvents = column.events;
     const allEvents: { [key: string]: Function } = {
       onClick: handleCellClick,
@@ -137,70 +98,43 @@ function Cell<R>({
     return allEvents;
   }
 
-  if (column.hidden) {
-    return null;
-  }
-
-  if (isSummaryRow) {
-    return (
-      <div
-        className={getCellClass()}
-        style={getStyle()}
-      >
-        <CellContent<R>
-          idx={idx}
-          rowIdx={rowIdx}
-          column={column}
-          rowData={rowData}
-          value={value}
-          expandableOptions={expandableOptions}
-          isRowSelected={false}
-          onRowSelectionChange={onRowSelectionChange}
-          isSummaryRow
-        />
-      </div>
-    );
-  }
-
-  const cellContent = children || (
-    <CellContent<R>
-      idx={idx}
-      rowIdx={rowIdx}
-      column={column}
-      rowData={rowData}
-      value={value}
-      tooltip={tooltip}
-      expandableOptions={expandableOptions}
-      onDeleteSubRow={cellMetaData.onDeleteSubRow}
-      cellControls={cellControls}
-      isRowSelected={isRowSelected}
-      onRowSelectionChange={onRowSelectionChange}
-      isSummaryRow={isSummaryRow}
-    />
+  const colIsFrozen = isFrozen(column);
+  className = classNames(
+    column.cellClass,
+    'rdg-cell',
+    className, {
+      'rdg-cell-frozen': colIsFrozen,
+      'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex,
+      'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
+    }
   );
 
-  const cellExpander = expandableOptions && expandableOptions.canExpand && (
-    <CellExpand
-      expanded={expandableOptions.expanded}
-      onCellExpand={handleCellExpand}
-    />
-  );
+  const style: React.CSSProperties = {
+    width: column.width,
+    left: column.left
+  };
+
+  if (scrollLeft !== undefined) {
+    style.transform = `translateX(${scrollLeft}px)`;
+  }
 
   return (
     <div
-      className={getCellClass()}
-      style={getStyle()}
+      className={className}
+      style={style}
       {...getEvents()}
     >
-      {cellMetaData.getCellActions && (
-        <CellActions<R>
-          column={column}
-          rowData={rowData}
-          getCellActions={cellMetaData.getCellActions}
-        />
-      )}
-      {cellExpander}
-      {cellContent}
+      {children || column.cellContentRenderer({
+        idx,
+        rowIdx,
+        rowData,
+        column,
+        cellMetaData,
+        expandableOptions,
+        isRowSelected,
+        onRowSelectionChange,
+        isSummaryRow
+      })}
     </div>
   );
 }

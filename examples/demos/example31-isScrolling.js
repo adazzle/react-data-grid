@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DataGrid from 'react-data-grid';
+import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
 import { AreaChart, Area } from 'Recharts';
 import Wrapper from './Wrapper';
 
@@ -53,7 +53,7 @@ const createColumns = (numberCols) => [...Array(numberCols).keys()].map(i => {
     name: `col${i}`
   };
   if (i === 3) {
-    column.formatter = ExpensiveFormatter;
+    column.cellContentRenderer = () => <ExpensiveFormatter />;
     column.width = 500;
   }
   return column;
@@ -81,6 +81,7 @@ export default class extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={800}
+          defaultCellContentRenderer={valueCellContentRenderer}
         />
       </Wrapper>
     );

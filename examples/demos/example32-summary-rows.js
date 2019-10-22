@@ -1,22 +1,24 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import DataGrid, { SelectColumn } from 'react-data-grid';
+import DataGrid, { SelectColumn, valueCellContentRenderer } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
-function DecimalFormatter({ value, isSummaryRow, maximumFractionDigits }) {
-  const text = value.toLocaleString('en-US', maximumFractionDigits == null ? { maximumFractionDigits: 2 } : { maximumFractionDigits: 0 });
-  return isSummaryRow ? <strong>{text}</strong> : <div>{text}</div>;
+function formatDecimal({ column, rowData, isSummaryRow, maximumFractionDigits = 2 }) {
+  const value = rowData[column.key];
+  const text = value.toLocaleString('en-US', { maximumFractionDigits });
+  return isSummaryRow ? <strong>{text}</strong> : text;
 }
 
-function IntegerFormatter(props) {
-  return <DecimalFormatter {...props} maximumFractionDigits={0} />;
+function formatInteger(props) {
+  return formatDecimal({ ...props, maximumFractionDigits: 0 });
 }
 
-function TitleFormatter({ value, row: { selectedRowsCount }, isSummaryRow }) {
+function formatTitle({ column, rowData, isSummaryRow }) {
   if (isSummaryRow) {
+    const { selectedRowsCount } = rowData;
     return <strong>{ selectedRowsCount >= 0 ? `${selectedRowsCount} row${selectedRowsCount > 1 ? 's' : ''} selected` : 'Total'}</strong>;
   }
 
-  return <div>{value}</div>;
+  return rowData[column.key];
 }
 
 const columns = [
@@ -31,7 +33,7 @@ const columns = [
     name: 'Title',
     width: 200,
     frozen: true,
-    formatter: TitleFormatter
+    cellContentRenderer: formatTitle
   },
   {
     key: 'priority',
@@ -62,19 +64,19 @@ const columns = [
     key: 'cost',
     name: 'Resource cost (USD)',
     width: 200,
-    formatter: DecimalFormatter
+    cellContentRenderer: formatDecimal
   },
   {
     key: 'hours',
     name: '# of working hours',
     width: 200,
-    formatter: IntegerFormatter
+    cellContentRenderer: formatInteger
   },
   {
     key: 'issueCount',
     name: '# of issues',
     width: 200,
-    formatter: IntegerFormatter
+    cellContentRenderer: formatInteger
   }
 ];
 
@@ -149,6 +151,7 @@ export default function Example() {
         minHeight={700}
         selectedRows={selectedRowIndexes}
         onSelectedRowsChange={setSelectedRowIndexes}
+        defaultCellContentRenderer={valueCellContentRenderer}
       />
       <div
         style={{
