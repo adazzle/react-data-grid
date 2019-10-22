@@ -40,7 +40,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
 
   const calculatedColumns: CalculatedColumn<R>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
-    const width = column.width || unallocatedColumnWidth;
+    const width = column.width === undefined ? unallocatedColumnWidth : column.width;
     const newColumn: CalculatedColumn<R> = {
       ...column,
       idx,
