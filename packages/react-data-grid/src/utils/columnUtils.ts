@@ -9,20 +9,20 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let left = 0;
   let totalWidth = 0;
 
-  const frozenColumns: Column<R>[] = [];
-  const nonFrozenColumns: Column<R>[] = [];
+  let lastFrozenColumnIndex = -1;
+  const columns: Column<R>[] = [];
 
   for (const metricsColumn of metrics.columns) {
     const column = { ...metricsColumn };
 
     if (isFrozen(column)) {
-      frozenColumns.push(column);
+      lastFrozenColumnIndex++;
+      columns.splice(lastFrozenColumnIndex, 0, column);
     } else {
-      nonFrozenColumns.push(column);
+      columns.push(column);
     }
   }
 
-  const columns = [...frozenColumns, ...nonFrozenColumns];
   setSpecifiedWidths(columns, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
 
   const allocatedWidths = columns.reduce((acc, c) => acc + (c.width || 0), 0);
@@ -46,7 +46,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
 
   return {
     columns: calculatedColumns,
-    lastFrozenColumnIndex: frozenColumns.length - 1,
+    lastFrozenColumnIndex,
     totalColumnWidth: totalWidth,
     minColumnWidth: metrics.minColumnWidth,
     columnWidths: metrics.columnWidths,
