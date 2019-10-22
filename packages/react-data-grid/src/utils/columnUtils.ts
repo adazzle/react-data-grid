@@ -18,9 +18,9 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
     allocatedWidths += column.width || 0;
 
     if (isFrozen(column)) {
-      frozenColumns.push({ ...column });
+      frozenColumns.push(column);
     } else {
-      nonFrozenColumns.push({ ...column });
+      nonFrozenColumns.push(column);
     }
   }
 
