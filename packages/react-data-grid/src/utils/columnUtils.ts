@@ -8,14 +8,12 @@ type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'c
 export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let left = 0;
   let totalWidth = 0;
-  let allocatedWidths = 0;
 
   const frozenColumns: Column<R>[] = [];
   const nonFrozenColumns: Column<R>[] = [];
 
   for (const metricsColumn of metrics.columns) {
     const column = { ...metricsColumn };
-    allocatedWidths += column.width || 0;
 
     if (isFrozen(column)) {
       frozenColumns.push(column);
@@ -27,6 +25,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   const columns = [...frozenColumns, ...nonFrozenColumns];
   setSpecifiedWidths(columns, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
 
+  const allocatedWidths = columns.reduce((acc, c) => acc + (c.width || 0), 0);
   const unallocatedWidth = metrics.viewportWidth - allocatedWidths - getScrollbarSize();
 
   setRemainingWidths(columns, unallocatedWidth, metrics.minColumnWidth);
