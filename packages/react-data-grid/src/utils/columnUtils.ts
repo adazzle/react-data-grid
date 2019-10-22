@@ -9,13 +9,19 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let left = 0;
   let totalWidth = 0;
   let allocatedWidths = 0;
+  let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
   const columns: Column<R>[] = [];
 
   for (const metricsColumn of metrics.columns) {
     const column = { ...metricsColumn };
     setSpecifiedWidth(column, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
-    allocatedWidths += column.width || 0;
+
+    if (column.width === undefined) {
+      unassignedColumnsCount++;
+    } else {
+      allocatedWidths += column.width;
+    }
 
     if (isFrozen(column)) {
       lastFrozenColumnIndex++;
@@ -26,12 +32,14 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   }
 
   const unallocatedWidth = metrics.viewportWidth - allocatedWidths - getScrollbarSize();
-
-  setRemainingWidths(columns, unallocatedWidth, metrics.minColumnWidth);
+  const unallocatedColumnWidth = Math.max(
+    Math.floor(unallocatedWidth / unassignedColumnsCount),
+    metrics.minColumnWidth
+  );
 
   const calculatedColumns: CalculatedColumn<R>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
-    const width = column.width as number;
+    const width = column.width || unallocatedColumnWidth;
     const newColumn: CalculatedColumn<R> = {
       ...column,
       idx,
@@ -67,22 +75,6 @@ function setSpecifiedWidth<R>(
     column.width = Math.max(column.width, minColumnWidth);
   } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
     column.width = Math.max(Math.floor(viewportWidth * column.width / 100), minColumnWidth);
-  }
-}
-
-function setRemainingWidths<R>(
-  columns: Column<R>[],
-  unallocatedWidth: number,
-  minColumnWidth: number
-) {
-  const unassignedColumns = columns.filter(c => c.width === undefined);
-  const columnWidth = Math.max(
-    Math.floor(unallocatedWidth / unassignedColumns.length),
-    minColumnWidth
-  );
-
-  for (const column of unassignedColumns) {
-    column.width = columnWidth;
   }
 }
 
