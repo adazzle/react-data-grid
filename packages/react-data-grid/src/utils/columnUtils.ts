@@ -8,12 +8,14 @@ type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'c
 export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let left = 0;
   let totalWidth = 0;
-
+  let allocatedWidths = 0;
   let lastFrozenColumnIndex = -1;
   const columns: Column<R>[] = [];
 
   for (const metricsColumn of metrics.columns) {
     const column = { ...metricsColumn };
+    setSpecifiedWidth(column, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
+    allocatedWidths += column.width || 0;
 
     if (isFrozen(column)) {
       lastFrozenColumnIndex++;
@@ -23,9 +25,6 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
     }
   }
 
-  setSpecifiedWidths(columns, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
-
-  const allocatedWidths = columns.reduce((acc, c) => acc + (c.width || 0), 0);
   const unallocatedWidth = metrics.viewportWidth - allocatedWidths - getScrollbarSize();
 
   setRemainingWidths(columns, unallocatedWidth, metrics.minColumnWidth);
@@ -54,22 +53,20 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   };
 }
 
-function setSpecifiedWidths<R>(
-  columns: Column<R>[],
+function setSpecifiedWidth<R>(
+  column: Column<R>,
   columnWidths: Map<keyof R, number>,
   viewportWidth: number,
   minColumnWidth: number
 ): void {
-  for (const column of columns) {
-    if (columnWidths.has(column.key)) {
-      // Use the resized width if available
-      column.width = columnWidths.get(column.key);
-    } else if (typeof column.width === 'number') {
-      // TODO: allow width to be less than minWidth?
-      column.width = Math.max(column.width, minColumnWidth);
-    } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-      column.width = Math.max(Math.floor(viewportWidth * column.width / 100), minColumnWidth);
-    }
+  if (columnWidths.has(column.key)) {
+    // Use the resized width if available
+    column.width = columnWidths.get(column.key);
+  } else if (typeof column.width === 'number') {
+    // TODO: allow width to be less than minWidth?
+    column.width = Math.max(column.width, minColumnWidth);
+  } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
+    column.width = Math.max(Math.floor(viewportWidth * column.width / 100), minColumnWidth);
   }
 }
 
