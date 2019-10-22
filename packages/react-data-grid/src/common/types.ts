@@ -60,7 +60,6 @@ export interface ColumnMetrics<TRow> {
   lastFrozenColumnIndex: number;
   viewportWidth: number;
   totalColumnWidth: number;
-  columnWidths: Map<keyof TRow, number>;
 }
 
 export interface RowData {

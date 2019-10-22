@@ -20,8 +20,7 @@ describe('Header Unit Tests', () => {
         columns: helpers.columns,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       cellMetaData: fakeCellMetaData,
       headerRows: [{
@@ -73,8 +72,7 @@ describe('Header Unit Tests', () => {
         columns: helpers.columns,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       headerRows: [{
         height: 51,
@@ -96,8 +94,7 @@ describe('Header Unit Tests', () => {
         columns: helpers.columns,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       headerRows: [{
         height: 50,
