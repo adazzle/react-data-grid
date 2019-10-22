@@ -21,7 +21,8 @@ export default class extends React.Component {
         key: 'id',
         name: 'ID',
         width: 80,
-        resizable: true
+        resizable: true,
+        frozen: true
       },
       {
         key: 'avatar',
@@ -48,14 +49,16 @@ export default class extends React.Component {
         name: 'First Name',
         editable: true,
         width: 200,
-        resizable: true
+        resizable: true,
+        frozen: true
       },
       {
         key: 'lastName',
         name: 'Last Name',
         editable: true,
         width: 200,
-        resizable: true
+        resizable: true,
+        frozen: true
       },
       {
         key: 'email',
