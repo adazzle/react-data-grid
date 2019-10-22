@@ -8,21 +8,35 @@ type Metrics<R> = Pick<ColumnMetrics<R>, 'viewportWidth' | 'minColumnWidth' | 'c
 export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let left = 0;
   let totalWidth = 0;
+  let allocatedWidths = 0;
 
-  const columns = metrics.columns.map(c => ({ ...c }));
+  const frozenColumns: Column<R>[] = [];
+  const nonFrozenColumns: Column<R>[] = [];
+
+  for (const metricsColumn of metrics.columns) {
+    const column = { ...metricsColumn };
+    allocatedWidths += column.width || 0;
+
+    if (isFrozen(column)) {
+      frozenColumns.push({ ...column });
+    } else {
+      nonFrozenColumns.push({ ...column });
+    }
+  }
+
+  const columns = [...frozenColumns, ...nonFrozenColumns];
   setSpecifiedWidths(columns, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
 
-  const allocatedWidths = columns.map(c => c.width || 0).reduce((acc, w) => acc + w, 0);
   const unallocatedWidth = metrics.viewportWidth - allocatedWidths - getScrollbarSize();
 
   setRemainingWidths(columns, unallocatedWidth, metrics.minColumnWidth);
 
-  let calculatedColumns: CalculatedColumn<R>[] = columns.map(column => {
+  const calculatedColumns: CalculatedColumn<R>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
     const width = column.width as number;
     const newColumn: CalculatedColumn<R> = {
       ...column,
-      idx: 0,
+      idx,
       width,
       left
     };
@@ -31,10 +45,6 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
     return newColumn;
   });
 
-  const frozenColumns = calculatedColumns.filter(c => isFrozen(c));
-  const nonFrozenColumns = calculatedColumns.filter(c => !isFrozen(c));
-  calculatedColumns = frozenColumns.concat(nonFrozenColumns);
-  calculatedColumns.forEach((c, i) => c.idx = i);
   return {
     columns: calculatedColumns,
     lastFrozenColumnIndex: frozenColumns.length - 1,
