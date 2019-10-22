@@ -82,8 +82,6 @@ describe('viewportUtils', () => {
         columns,
         viewportWidth: 1000,
         totalColumnWidth: 200,
-        columnWidths: new Map(),
-        minColumnWidth: 80,
         lastFrozenColumnIndex: -1
       };
     }
