@@ -4,6 +4,7 @@ import { Editors, Toolbar, Formatters } from 'react-data-grid-addons';
 import update from 'immutability-helper';
 import faker from 'faker';
 import Wrapper from './Wrapper';
+import { AutoSizer } from 'react-virtualized';
 
 const { DropDownEditor } = Editors;
 const { ImageFormatter } = Formatters;
@@ -196,18 +197,25 @@ export default class extends React.Component {
     return (
       <Wrapper title="All the features grid">
         <Toolbar onAddRow={this.handleAddRow} />
-        <DataGrid
-          ref={node => this.grid = node}
-          enableCellSelect
-          columns={this.columns}
-          rowGetter={this.getRowAt}
-          rowsCount={this.getSize()}
-          onGridRowsUpdated={this.handleGridRowsUpdated}
-          rowHeight={50}
-          minHeight={600}
-          selectedRows={this.state.selectedRows}
-          onSelectedRowsChange={this.onSelectedRowsChange}
-        />
+        <div className="grid-autosizer-wrapper">
+          <AutoSizer>
+            {({ height, width }) => (
+              <DataGrid
+                ref={node => this.grid = node}
+                enableCellSelect
+                columns={this.columns}
+                rowGetter={this.getRowAt}
+                rowsCount={this.getSize()}
+                onGridRowsUpdated={this.handleGridRowsUpdated}
+                rowHeight={30}
+                minWidth={width}
+                minHeight={height}
+                selectedRows={this.state.selectedRows}
+                onSelectedRowsChange={this.onSelectedRowsChange}
+              />
+            )}
+          </AutoSizer>
+        </div>
       </Wrapper>
     );
   }
