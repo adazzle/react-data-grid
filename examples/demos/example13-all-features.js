@@ -208,8 +208,8 @@ export default class extends React.Component {
                 rowsCount={this.getSize()}
                 onGridRowsUpdated={this.handleGridRowsUpdated}
                 rowHeight={30}
-                minWidth={width - 2}
-                minHeight={height - 16}
+                minWidth={width}
+                minHeight={height}
                 selectedRows={this.state.selectedRows}
                 onSelectedRowsChange={this.onSelectedRowsChange}
               />
