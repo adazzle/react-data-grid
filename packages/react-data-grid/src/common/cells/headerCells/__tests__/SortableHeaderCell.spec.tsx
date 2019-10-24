@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import SortableHeaderCell, { Props } from '../SortableHeaderCell';
 import { HeaderRowType, DEFINE_SORT } from '../../../enums';
 import { Column } from '../../../types';
+import { valueCellContentRenderer } from '../../../../Cell/cellContentRenderers';
 
 interface Row { col1: string }
 
@@ -15,6 +16,7 @@ describe('<SortableHeaderCell/>', () => {
         key: 'col1',
         width: 100,
         left: 0,
+        cellContentRenderer: valueCellContentRenderer,
         ...overrideColumn
       },
       rowType: HeaderRowType.HEADER,

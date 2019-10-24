@@ -12,6 +12,7 @@ import { isValidElementType } from 'react-is';
 
 import Header, { HeaderHandle } from './Header';
 import Canvas from './Canvas';
+import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
 import { getColumnMetrics } from './utils/columnUtils';
 import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
@@ -23,6 +24,7 @@ import {
   CellMetaData,
   CheckCellIsEditableEvent,
   Column,
+  CellContentRenderer,
   CommitEvent,
   GridRowsUpdatedEvent,
   HeaderRowData,
@@ -34,11 +36,11 @@ import {
   SelectedRange,
   SubRowDetails,
   SubRowOptions,
-  RowRendererProps,
+  IRowRendererProps,
   ScrollPosition
 } from './common/types';
 
-export interface ReactDataGridProps<R extends {}> {
+export interface DataGridProps<R, K extends keyof R> {
   /** An array of objects representing each column on the grid */
   columns: Column<R>[];
   /** The minimum width of the grid in pixels */
@@ -68,9 +70,9 @@ export interface ReactDataGridProps<R extends {}> {
   /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
 
-  selectedRows?: Set<R[keyof R]>;
+  selectedRows?: Set<R[K]>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?(selectedRows: Set<R[keyof R]>): void;
+  onSelectedRowsChange?(selectedRows: Set<R[K]>): void;
 
   /**
    * Callback called whenever row data is updated
@@ -86,10 +88,11 @@ export interface ReactDataGridProps<R extends {}> {
 
   /** Grid Props */
   /** The primary key property of each row */
-  rowKey?: keyof R;
+  rowKey?: K;
   /** The height of each row in pixels */
   rowHeight?: number;
-  rowRenderer?: React.ReactElement | React.ComponentType<RowRendererProps<R>>;
+  defaultCellContentRenderer?: CellContentRenderer<R>;
+  rowRenderer?: React.ReactElement | React.ComponentType<IRowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
   rowGetter: RowGetter<R>;
@@ -141,11 +144,16 @@ export interface ReactDataGridProps<R extends {}> {
   onCellDeSelected?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
+  /**
+   * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
+   * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
+   */
+  summaryRows?: R[];
   /** Control how big render row batches will be. */
   renderBatchSize?: number;
 }
 
-export interface ReactDataGridHandle {
+export interface DataGridHandle {
   scrollToColumn(colIdx: number): void;
   selectCell(position: Position, openEditor?: boolean): void;
   openCellEditor(rowIdx: number, colIdx: number): void;
@@ -156,10 +164,10 @@ export interface ReactDataGridHandle {
  *
  * @example
  *
- * <ReactDataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
+ * <DataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
 */
-const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
-  rowKey = 'id' as keyof R,
+function DataGrid<R, K extends keyof R>({
+  rowKey = 'id' as K,
   rowHeight = 35,
   headerFiltersHeight = 45,
   minColumnWidth = 80,
@@ -170,6 +178,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
   renderBatchSize = 8,
+  defaultCellContentRenderer = legacyCellContentRenderer,
   columns,
   rowsCount,
   rowGetter,
@@ -177,7 +186,7 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
   selectedRows,
   onSelectedRowsChange,
   ...props
-}: ReactDataGridProps<R>, ref: React.Ref<ReactDataGridHandle>) {
+}: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
@@ -194,9 +203,10 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
       columns,
       minColumnWidth,
       viewportWidth,
-      columnWidths
+      columnWidths,
+      defaultCellContentRenderer
     });
-  }, [columnWidths, columns, minColumnWidth, viewportWidth]);
+  }, [columnWidths, columns, defaultCellContentRenderer, minColumnWidth, viewportWidth]);
 
   useLayoutEffect(() => {
     // Do not calculate the width if minWidth is provided
@@ -235,14 +245,14 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
     return columnMetrics!.columns[idx];
   }
 
-  function handleColumnResize(idx: number, width: number) {
+  function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
-    const columnKey = getColumn(idx).key;
-    newColumnWidths.set(columnKey, width);
+    width = Math.max(width, minColumnWidth);
+    newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
     if (props.onColumnResize) {
-      props.onColumnResize(idx, width);
+      props.onColumnResize(column.idx, width);
     }
   }
 
@@ -398,17 +408,16 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
 
   const headerRows = getHeaderRows();
   const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
-  const style = width ? { width } : undefined;
 
   return (
     <div
       className="rdg-root"
-      style={style}
+      style={{ width, lineHeight: `${rowHeight}px` }}
       ref={gridRef}
     >
       {columnMetrics && (
         <>
-          <Header<R>
+          <Header<R, K>
             ref={headerRef}
             rowKey={rowKey}
             rowsCount={rowsCount}
@@ -416,7 +425,6 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
             columnMetrics={columnMetrics}
             onColumnResize={handleColumnResize}
             headerRows={headerRows}
-            rowOffsetHeight={rowOffsetHeight}
             sortColumn={props.sortColumn}
             sortDirection={props.sortDirection}
             draggableHeaderCell={props.draggableHeaderCell}
@@ -427,12 +435,8 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
             getValidFilterValues={props.getValidFilterValues}
             cellMetaData={cellMetaData}
           />
-          {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? (
-            <div className="react-grid-Empty">
-              {createElement(props.emptyRowsView)}
-            </div>
-          ) : (
-            <Canvas<R>
+          {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
+            <Canvas<R, K>
               rowKey={rowKey}
               rowHeight={rowHeight}
               rowRenderer={props.rowRenderer}
@@ -458,36 +462,15 @@ const ReactDataGridBase = forwardRef(function ReactDataGrid<R extends {}>({
               onCanvasKeydown={props.onGridKeyDown}
               onCanvasKeyup={props.onGridKeyUp}
               renderBatchSize={renderBatchSize}
+              summaryRows={props.summaryRows}
             />
           )}
         </>
       )}
     </div>
   );
-});
-
-// This is a temporary class to expose instance methods as ForwardRef does work well with generics
-export default class ReactDataGrid<R> extends React.Component<ReactDataGridProps<R>> implements ReactDataGridHandle {
-  private readonly gridRef = React.createRef<ReactDataGridHandle>();
-
-  selectCell(position: Position, openEditor?: boolean | undefined): void {
-    this.gridRef.current!.selectCell(position, openEditor);
-  }
-
-  openCellEditor(rowIdx: number, colIdx: number): void {
-    this.gridRef.current!.openCellEditor(rowIdx, colIdx);
-  }
-
-  scrollToColumn(colIdx: number): void {
-    this.gridRef.current!.scrollToColumn(colIdx);
-  }
-
-  render() {
-    return (
-      <ReactDataGridBase
-        {...this.props as unknown as ReactDataGridProps<{}>}
-        ref={this.gridRef}
-      />
-    );
-  }
 }
+
+export default forwardRef(
+  DataGrid as React.RefForwardingComponent<DataGridHandle, DataGridProps<{ [key: string]: unknown }, string>>
+) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

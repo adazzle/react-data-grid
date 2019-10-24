@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import Header, { HeaderProps } from '../Header';
-import HeaderRow from '../HeaderRow';
+import HeaderRow, { HeaderRowProps } from '../HeaderRow';
 import helpers, { fakeCellMetaData, Row } from './GridPropHelpers';
 import * as utils from '../utils';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
@@ -10,7 +10,7 @@ import { HeaderRowType, DEFINE_SORT } from '../common/enums';
 const SCROLL_BAR_SIZE = 17;
 
 describe('Header Unit Tests', () => {
-  function getProps(): HeaderProps<Row> {
+  function getProps(): HeaderProps<Row, 'id'> {
     return {
       rowKey: 'id',
       rowsCount: 1,
@@ -18,11 +18,9 @@ describe('Header Unit Tests', () => {
       allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
-        minColumnWidth: 80,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       cellMetaData: fakeCellMetaData,
       headerRows: [{
@@ -33,8 +31,7 @@ describe('Header Unit Tests', () => {
       onColumnResize: jest.fn(),
       onSort: () => null,
       onHeaderDrop() { },
-      draggableHeaderCell: () => null,
-      rowOffsetHeight: 30
+      draggableHeaderCell: () => null
     };
   }
 
@@ -43,41 +40,39 @@ describe('Header Unit Tests', () => {
   });
 
   it('should render a default header row', () => {
-    const wrapper = shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, getProps()));
+    const wrapper = shallow(<Header {...getProps()} />);
     expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
   it('should render a default header row', () => {
-    const wrapper = shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, getProps()));
+    const wrapper = shallow(<Header {...getProps()} />);
     expect(wrapper.find(HeaderRow).length).toBe(1);
   });
 
   it('header row drag end should trigger onColumnResize callback', () => {
     const resizeColIdx = 1;
     const testProps = getProps();
-    const wrapper = shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, testProps));
-    wrapper.find(HeaderRow).props().onColumnResize(helpers.columns[resizeColIdx] as never, 200);
-    wrapper.find(HeaderRow).props().onColumnResizeEnd();
+    const wrapper = shallow(<Header<Row, 'id'> {...testProps} />);
+    const col = helpers.columns[resizeColIdx];
+    wrapper.find<HeaderRowProps<Row, 'id'>>(HeaderRow).props().onColumnResize(col, 200);
     expect(testProps.onColumnResize).toHaveBeenCalled();
-    expect(testProps.onColumnResize).toHaveBeenCalledWith(resizeColIdx, 200);
+    expect(testProps.onColumnResize).toHaveBeenCalledWith(col, 200);
   });
 
   describe('Rendering Header component', () => {
-    function renderComponent(props: HeaderProps<Row>) {
-      return shallow(React.createElement(Header as React.FunctionComponent<HeaderProps<Row>>, props));
+    function renderComponent(props: HeaderProps<Row, 'id'>) {
+      return shallow(<Header {...props} />);
     }
-    const testRequiredProps: HeaderProps<Row> = {
+    const testRequiredProps: HeaderProps<Row, 'id'> = {
       rowKey: 'id',
       rowsCount: 1,
       rowGetter() { return {}; },
       allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
-        minColumnWidth: 81,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       headerRows: [{
         height: 51,
@@ -88,21 +83,18 @@ describe('Header Unit Tests', () => {
       onHeaderDrop() { },
       cellMetaData: fakeCellMetaData,
       draggableHeaderCell: () => null,
-      onColumnResize() { },
-      rowOffsetHeight: 30
+      onColumnResize() { }
     };
-    const testAllProps: HeaderProps<Row> = {
+    const testAllProps: HeaderProps<Row, 'id'> = {
       rowKey: 'id',
       rowsCount: 1,
       rowGetter() { return {}; },
       allRowsSelected: false,
       columnMetrics: {
         columns: helpers.columns,
-        minColumnWidth: 80,
         totalColumnWidth: 2600,
         viewportWidth: 2600,
-        lastFrozenColumnIndex: 0,
-        columnWidths: new Map()
+        lastFrozenColumnIndex: 0
       },
       headerRows: [{
         height: 50,
@@ -116,25 +108,14 @@ describe('Header Unit Tests', () => {
       draggableHeaderCell: jest.fn(),
       getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
-      onHeaderDrop() { },
-      rowOffsetHeight: 30
+      onHeaderDrop() { }
     };
     it('passes classname property', () => {
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
-      expect(headerDiv.hasClass('react-grid-Header'));
-    });
-    it('passes style property', () => {
-      const wrapper = renderComponent(testAllProps);
-      const headerDiv = wrapper.find('div');
-      expect(headerDiv.props().style).toBeDefined();
+      expect(headerDiv.hasClass('rdg-header'));
     });
 
-    it('should account for scrollbar size in header', () => {
-      const wrapper = renderComponent(testAllProps);
-      const headerDiv = wrapper.find('div');
-      expect(headerDiv.props().style!.paddingRight).toBe(SCROLL_BAR_SIZE);
-    });
     it('does not pass onScroll properties if it is not available from props', () => {
       const wrapper = renderComponent(testRequiredProps);
       const headerDiv = wrapper.find('div');

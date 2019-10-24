@@ -3,10 +3,11 @@ import {
   getHorizontalRangeToRender,
   HorizontalRangeToRenderParams
 } from '../viewportUtils';
+import { valueCellContentRenderer } from '../../Cell/cellContentRenderers';
 import { ColumnMetrics } from '../../common/types';
 
 interface Row {
-  [key: string]: unknown;
+  [key: string]: React.ReactNode;
 }
 
 interface VerticalRangeToRenderParams {
@@ -69,13 +70,18 @@ describe('viewportUtils', () => {
 
   describe('getHorizontalRangeToRender', () => {
     function getColumnMetrics(): ColumnMetrics<Row> {
-      const columns = [...Array(500).keys()].map(i => ({ idx: i, key: `col${i}`, name: `col${i}`, width: 100, left: i * 100 }));
+      const columns = [...Array(500).keys()].map(i => ({
+        idx: i,
+        key: `col${i}`,
+        name: `col${i}`,
+        width: 100,
+        left: i * 100,
+        cellContentRenderer: valueCellContentRenderer
+      }));
       return {
         columns,
         viewportWidth: 1000,
         totalColumnWidth: 200,
-        columnWidths: new Map(),
-        minColumnWidth: 80,
         lastFrozenColumnIndex: -1
       };
     }

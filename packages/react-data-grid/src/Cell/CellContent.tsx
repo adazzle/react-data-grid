@@ -1,48 +1,70 @@
-import React from 'react';
-import classNames from 'classnames';
+import React, { createElement, cloneElement } from 'react';
+import { isElement, isValidElementType } from 'react-is';
 
-import { CellMetaData } from '../common/types';
+import CellActions from './CellActions';
+import CellExpand from './CellExpander';
+import { SimpleCellFormatter } from '../formatters';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
-import { CellProps } from '../Cell';
-import CellValue from './CellValue';
-
-export type CellContentProps<R> = Pick<CellProps<R>,
-| 'idx'
-| 'rowIdx'
-| 'rowData'
-| 'column'
-| 'value'
-| 'expandableOptions'
-| 'tooltip'
-| 'height'
-| 'cellControls'
-| 'isRowSelected'
-| 'onRowSelectionChange'
-> & Pick<CellMetaData<R>,
-'onDeleteSubRow'
->;
+import { CellContentRendererProps } from '../common/types';
 
 export default function CellContent<R>({
   idx,
   rowIdx,
   column,
   rowData,
-  value,
-  tooltip,
+  cellMetaData,
   expandableOptions,
-  height,
-  onDeleteSubRow,
-  cellControls,
   isRowSelected,
+  isSummaryRow,
   onRowSelectionChange
-}: CellContentProps<R>) {
+}: CellContentRendererProps<R>) {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
-  const marginLeft = expandableOptions && isExpandCell ? expandableOptions.treeDepth * 30 : 0;
+  const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
+
+  function getFormatterDependencies(row: R) {
+    // convention based method to get corresponding Id or Name of any Name or Id property
+    const { getRowMetaData } = column;
+    if (getRowMetaData) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of react-data-grid. Instead access row prop of formatter');
+      }
+      return getRowMetaData(row, column);
+    }
+  }
+
+  function getFormatterProps() {
+    return {
+      value: rowData[column.key],
+      column,
+      rowIdx,
+      row: rowData,
+      isRowSelected,
+      onRowSelectionChange,
+      dependentValues: getFormatterDependencies(rowData),
+      isSummaryRow
+    };
+  }
+
+  function getFormattedValue(formatter: typeof column['formatter']) {
+    if (formatter === undefined) {
+      return <SimpleCellFormatter value={rowData[column.key] as unknown as string} />;
+    }
+
+    if (isValidElementType(formatter)) {
+      return createElement<ReturnType<typeof getFormatterProps>>(formatter, getFormatterProps());
+    }
+
+    if (isElement(formatter)) {
+      return cloneElement(formatter, getFormatterProps());
+    }
+
+    return null;
+  }
 
   function handleDeleteSubRow() {
-    if (onDeleteSubRow) {
-      onDeleteSubRow({
+    if (cellMetaData.onDeleteSubRow) {
+      cellMetaData.onDeleteSubRow({
         idx,
         rowIdx,
         rowData,
@@ -51,36 +73,39 @@ export default function CellContent<R>({
     }
   }
 
-  const cellDeleter = expandableOptions && treeDepth > 0 && isExpandCell && (
-    <ChildRowDeleteButton
-      treeDepth={treeDepth}
-      cellHeight={height}
-      onDeleteSubRow={handleDeleteSubRow}
-      isDeleteSubRowEnabled={!!onDeleteSubRow}
-    />
-  );
-
-  const classes = classNames('react-grid-Cell__value',
-    { 'cell-tooltip': !!tooltip }
-  );
+  function handleCellExpand() {
+    if (cellMetaData.onCellExpand) {
+      cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
+    }
+  }
 
   return (
-    <div className={classes}>
-      {cellDeleter}
-      <div className="react-grid-Cell__container" style={{ marginLeft }}>
-        <span>
-          <CellValue<R>
-            rowIdx={rowIdx}
-            rowData={rowData}
-            column={column}
-            value={value}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
+    <>
+      {cellMetaData.getCellActions && (
+        <CellActions<R>
+          column={column}
+          rowData={rowData}
+          getCellActions={cellMetaData.getCellActions}
+        />
+      )}
+      {expandableOptions && expandableOptions.canExpand && (
+        <CellExpand
+          expanded={expandableOptions.expanded}
+          onCellExpand={handleCellExpand}
+        />
+      )}
+      <div className="rdg-cell-value">
+        {expandableOptions && treeDepth > 0 && isExpandCell && (
+          <ChildRowDeleteButton
+            treeDepth={treeDepth}
+            onDeleteSubRow={handleDeleteSubRow}
+            isDeleteSubRowEnabled={!!cellMetaData.onDeleteSubRow}
           />
-        </span>
-        {cellControls}
+        )}
+        <div style={style}>
+          {getFormattedValue(column.formatter)}
+        </div>
       </div>
-      {tooltip && <span className="cell-tooltip-text">{tooltip}</span>}
-    </div>
+    </>
   );
 }

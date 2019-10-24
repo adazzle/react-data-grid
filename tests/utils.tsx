@@ -1,13 +1,14 @@
 import React, { StrictMode } from 'react';
 import { render } from '@testing-library/react';
-import ReactDataGrid, { ReactDataGridProps } from '../packages/react-data-grid/src';
+import DataGrid, { DataGridProps } from '../packages/react-data-grid/src';
 
 interface RowType {
+  id: number;
   col1: string;
   col2: string;
 }
 
-export function getProps(extraProps?: Partial<ReactDataGridProps<RowType>>): ReactDataGridProps<RowType> {
+export function getProps(extraProps?: Partial<DataGridProps<RowType, 'id'>>): DataGridProps<RowType, 'id'> {
   const rows: RowType[] = [];
 
   return {
@@ -26,12 +27,12 @@ export function getProps(extraProps?: Partial<ReactDataGridProps<RowType>>): Rea
   };
 }
 
-export function setup(props: ReactDataGridProps<RowType> = getProps()) {
+export function setup(props: DataGridProps<RowType, 'id'> = getProps()) {
   return {
     props,
     ...render(
       <StrictMode>
-        <ReactDataGrid {...props} />
+        <DataGrid {...props} />
       </StrictMode>
     )
   };

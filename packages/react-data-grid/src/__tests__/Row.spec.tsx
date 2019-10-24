@@ -5,14 +5,14 @@ import { shallow } from 'enzyme';
 import Row from '../Row';
 import Cell from '../Cell';
 import { createColumns } from './utils';
-import { RowRendererProps, CellMetaData } from '../common/types';
+import { IRowRendererProps, CellMetaData } from '../common/types';
 
 type RowType = any;
 
 describe('Row', () => {
   const COLUMN_COUNT = 50;
 
-  function setup(props: RowRendererProps<RowType>) {
+  function setup(props: IRowRendererProps<RowType>) {
     const wrapper = shallow<Row<RowType>>(<Row {...props} />);
     const cells = wrapper.find(Cell);
     return { wrapper, cells };
@@ -28,8 +28,9 @@ describe('Row', () => {
     onRowExpandToggle() { }
   };
 
-  const requiredProperties: RowRendererProps<RowType> = {
+  const requiredProperties: IRowRendererProps<RowType> = {
     height: 30,
+    width: 1000,
     columns: createColumns(COLUMN_COUNT),
     row: { key: 'value' },
     cellRenderer: Cell,
@@ -49,13 +50,14 @@ describe('Row', () => {
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
-    onRowSelectionChange() {}
+    onRowSelectionChange() {},
+    isSummaryRow: false
   };
 
   it('passes classname property', () => {
     const { wrapper } = setup(requiredProperties);
     const draggableDiv = wrapper.find('div').at(0);
-    expect(draggableDiv.hasClass('react-grid-Row'));
+    expect(draggableDiv.hasClass('rdg-row'));
   });
   it('passes style property', () => {
     const { wrapper } = setup(requiredProperties);
@@ -79,13 +81,6 @@ describe('Row', () => {
         const { colOverscanStartIdx, colOverscanEndIdx } = requiredProperties;
         const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
         expect(cells.length).toBe(renderedRange);
-      });
-
-      it('first frozen cell should be rendered after the unfrozen cells', () => {
-        const columns = lockColumns();
-        const { cells } = setup({ ...requiredProperties, columns, lastFrozenColumnIndex: LAST_LOCKED_CELL_IDX });
-        const firstFrozenColumn = columns.filter(c => c.frozen === true)[0];
-        expect(cells.at(cells.length - LAST_LOCKED_CELL_IDX - 1).props().column).toBe(firstFrozenColumn);
       });
     });
 

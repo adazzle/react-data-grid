@@ -29,7 +29,7 @@ export default function SimpleTextEditor({
   return (
     <input
       ref={inputRef}
-      className="form-control editor-main"
+      className="rdg-text-editor"
       value={value}
       onChange={e => onChange(e.target.value)}
       onKeyDown={onKeyDown}

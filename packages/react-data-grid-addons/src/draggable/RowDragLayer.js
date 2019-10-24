@@ -69,9 +69,9 @@ class CustomDragLayer extends Component {
           if (c.formatter) {
             const Formatter = c.formatter;
             const dependentValues = typeof c.getRowMetaData === 'function' ? c.getRowMetaData(item, c) : {};
-            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{ padding: '5px' }}><Formatter dependentValues={dependentValues} value={item[c.key]} /></td>);
+            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="rdg-cell" style={{ padding: '5px' }}><Formatter dependentValues={dependentValues} value={item[c.key]} /></td>);
           } else {
-            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="react-grid-Cell" style={{ padding: '5px' }}>{item[c.key]}</td>);
+            cells.push(<td key={`dragged-cell-${rowIdx}-${c.key}`} className="rdg-cell" style={{ padding: '5px' }}>{item[c.key]}</td>);
           }
         }
       });

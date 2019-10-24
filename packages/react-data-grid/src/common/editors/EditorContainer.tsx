@@ -1,18 +1,19 @@
 import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
+import { Clear } from '@material-ui/icons';
 
 import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
 
-type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
 
 type ValueType<R> = R[keyof R];
 
-export interface Props<R> extends SharedInteractionMasksProps<R>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
+export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
   value: ValueType<R>;
@@ -27,7 +28,7 @@ interface State<R> {
   value: ValueType<R> | string;
 }
 
-function getInitialValue<R>({ firstEditorKeyPress: key, value }: Props<R>): ValueType<R> | string {
+function getInitialValue<R, K extends keyof R>({ firstEditorKeyPress: key, value }: Props<R, K>): ValueType<R> | string {
   if (key === 'Delete' || key === 'Backspace') {
     return '';
   }
@@ -38,7 +39,7 @@ function getInitialValue<R>({ firstEditorKeyPress: key, value }: Props<R>): Valu
   return key || value;
 }
 
-export default class EditorContainer<R> extends React.Component<Props<R>, State<R>> {
+export default class EditorContainer<R, K extends keyof R> extends React.Component<Props<R, K>, State<R>> {
   static displayName = 'EditorContainer';
 
   changeCommitted = false;
@@ -54,17 +55,13 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State<
     const inputNode = this.getInputNode();
     if (inputNode instanceof HTMLElement) {
       inputNode.focus();
-      if (!this.getEditor().disableContainerStyles) {
-        inputNode.className += ' editor-main';
-        inputNode.style.height = `${this.props.height - 1}px`;
-      }
     }
     if (inputNode instanceof HTMLInputElement) {
       inputNode.select();
     }
   }
 
-  componentDidUpdate(prevProps: Props<R>) {
+  componentDidUpdate(prevProps: Props<R, K>) {
     if (prevProps.scrollLeft !== this.props.scrollLeft || prevProps.scrollTop !== this.props.scrollTop) {
       this.commitCancel();
     }
@@ -218,13 +215,13 @@ export default class EditorContainer<R> extends React.Component<Props<R>, State<
 
   renderStatusIcon() {
     return this.state.isInvalid
-      && <span className="glyphicon glyphicon-remove form-control-feedback" />;
+      && <Clear className="form-control-feedback" />;
   }
 
   render() {
     const { width, height, left, top } = this.props;
     const className = classNames('rdg-editor-container', {
-      'has-error': this.state.isInvalid === true
+      'has-error': this.state.isInvalid
     });
 
     return (

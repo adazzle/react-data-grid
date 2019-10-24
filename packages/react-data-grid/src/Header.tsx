@@ -1,14 +1,12 @@
-import React, { forwardRef, useRef, useState, useMemo, useImperativeHandle } from 'react';
-import classNames from 'classnames';
+import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 
 import HeaderRow from './HeaderRow';
-import { getColumnMetrics } from './utils/columnUtils';
-import { getScrollbarSize } from './utils';
+import { getScrollbarSize, isPositionStickySupported } from './utils';
 import { CalculatedColumn, HeaderRowData, ColumnMetrics, CellMetaData } from './common/types';
 import { DEFINE_SORT } from './common/enums';
-import { ReactDataGridProps } from './ReactDataGrid';
+import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'draggableHeaderCell'
 | 'getValidFilterValues'
 | 'rowGetter'
@@ -17,44 +15,32 @@ type SharedDataGridProps<R> = Pick<ReactDataGridProps<R>,
 | 'onSelectedRowsChange'
 | 'sortColumn'
 | 'sortDirection'
-> & Required<Pick<ReactDataGridProps<R>,
+> & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 >>;
 
-export interface HeaderProps<R> extends SharedDataGridProps<R> {
+export interface HeaderProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   allRowsSelected: boolean;
   columnMetrics: ColumnMetrics<R>;
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
   cellMetaData: CellMetaData<R>;
-  rowOffsetHeight: number;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
-  onColumnResize(idx: number, width: number): void;
+  onColumnResize(column: CalculatedColumn<R>, width: number): void;
 }
 
 export interface HeaderHandle {
   setScrollLeft(scrollLeft: number): void;
 }
 
-export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.Ref<HeaderHandle>) {
-  const rowRef = useRef<HeaderRow<R>>(null);
-  const filterRowRef = useRef<HeaderRow<R>>(null);
-
-  const [resizing, setResizing] = useState<null | { column: CalculatedColumn<R>; width: number }>(null);
-
-  const columnMetrics = useMemo(() => {
-    if (resizing === null) return props.columnMetrics;
-
-    return getColumnMetrics({
-      ...props.columnMetrics,
-      columnWidths: new Map([
-        ...props.columnMetrics.columnWidths,
-        [resizing.column.key, resizing.width]
-      ])
-    });
-  }, [props.columnMetrics, resizing]);
+export default forwardRef(function Header<R, K extends keyof R>(props: HeaderProps<R, K>, ref: React.Ref<HeaderHandle>) {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HeaderRow<R, K>>(null);
+  const filterRowRef = useRef<HeaderRow<R, K>>(null);
 
   useImperativeHandle(ref, () => ({
     setScrollLeft(scrollLeft: number): void {
+      headerRef.current!.scrollLeft = scrollLeft;
+      if (isPositionStickySupported()) return;
       rowRef.current!.setScrollLeft(scrollLeft);
       if (filterRowRef.current) {
         filterRowRef.current.setScrollLeft(scrollLeft);
@@ -62,20 +48,10 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     }
   }), []);
 
-  function onColumnResize(column: CalculatedColumn<R>, width: number): void {
-    setResizing({ column, width: Math.max(width, columnMetrics.minColumnWidth) });
-  }
-
-  function onColumnResizeEnd(): void {
-    if (resizing === null) return;
-    props.onColumnResize(resizing.column.idx, resizing.width);
-    setResizing(null);
-  }
-
   function handleAllRowsSelectionChange(checked: boolean) {
     if (!props.onSelectedRowsChange) return;
 
-    const newSelectedRows = new Set<R[keyof R]>();
+    const newSelectedRows = new Set<R[K]>();
     if (checked) {
       for (let i = 0; i < props.rowsCount; i++) {
         newSelectedRows.add(props.rowGetter(i)[props.rowKey]);
@@ -85,16 +61,17 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     props.onSelectedRowsChange(newSelectedRows);
   }
 
-  function getHeaderRow(row: HeaderRowData<R>, ref: React.RefObject<HeaderRow<R>>) {
+  function getHeaderRow(row: HeaderRowData<R>, ref?: React.RefObject<HeaderRow<R, K>>) {
     return (
-      <HeaderRow<R>
+      <HeaderRow<R, K>
         key={row.rowType}
         ref={ref}
         rowType={row.rowType}
-        onColumnResize={onColumnResize}
-        onColumnResizeEnd={onColumnResizeEnd}
+        onColumnResize={props.onColumnResize}
+        width={props.columnMetrics.totalColumnWidth + getScrollbarSize()}
         height={row.height}
-        columns={columnMetrics.columns}
+        columns={props.columnMetrics.columns}
+        lastFrozenColumnIndex={props.columnMetrics.lastFrozenColumnIndex}
         draggableHeaderCell={props.draggableHeaderCell}
         filterable={row.filterable}
         onFilterChange={row.onFilterChange}
@@ -110,10 +87,11 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
   }
 
   function getHeaderRows() {
+    const setRef = !isPositionStickySupported();
     const { headerRows } = props;
-    const rows = [getHeaderRow(headerRows[0], rowRef)];
+    const rows = [getHeaderRow(headerRows[0], setRef ? rowRef : undefined)];
     if (headerRows[1]) {
-      rows.push(getHeaderRow(headerRows[1], filterRowRef));
+      rows.push(getHeaderRow(headerRows[1], setRef ? filterRowRef : undefined));
     }
 
     return rows;
@@ -124,20 +102,13 @@ export default forwardRef(function Header<R>(props: HeaderProps<R>, ref: React.R
     props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
   }
 
-  const className = classNames('react-grid-Header', {
-    'react-grid-Header--resizing': resizing !== null
-  });
-
   return (
     <div
-      style={{
-        height: props.rowOffsetHeight,
-        paddingRight: getScrollbarSize()
-      }}
-      className={className}
+      ref={headerRef}
+      className="rdg-header"
       onClick={onHeaderClick}
     >
       {getHeaderRows()}
     </div>
   );
-}) as <R>(props: HeaderProps<R> & { ref?: React.Ref<HeaderHandle> }) => JSX.Element;
+} as React.RefForwardingComponent<HeaderHandle, HeaderProps<{ [key: string]: unknown }, string>>) as <R, K extends keyof R>(props: HeaderProps<R, K> & { ref?: React.Ref<HeaderHandle> }) => JSX.Element;

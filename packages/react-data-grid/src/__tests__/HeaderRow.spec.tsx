@@ -12,10 +12,12 @@ describe('Header Row Unit Tests', () => {
   const defaultProps = {
     rowType: HeaderRowType.HEADER,
     columns: helpers.columns,
+    lastFrozenColumnIndex: -1,
     onColumnResize() { },
     onColumnResizeEnd() { },
     onSort: jest.fn(),
     sortDirection: DEFINE_SORT.NONE,
+    width: 1000,
     height: 35,
     allRowsSelected: false,
     onAllRowsSelectionChange() {},
@@ -24,8 +26,8 @@ describe('Header Row Unit Tests', () => {
     draggableHeaderCell: () => <div />
   };
 
-  const setup = (testProps?: Partial<HeaderRowProps<Row>>) => {
-    const props: HeaderRowProps<Row> = { ...defaultProps, ...testProps };
+  const setup = (testProps?: Partial<HeaderRowProps<Row, 'id'>>) => {
+    const props: HeaderRowProps<Row, 'id'> = { ...defaultProps, ...testProps };
     const wrapper = shallow(<HeaderRow {...props} />);
     const headerCells = wrapper.find(HeaderCell);
     return { wrapper, headerCells, props };
@@ -125,19 +127,20 @@ describe('Header Row Unit Tests', () => {
   });
 
   describe('Rendering HeaderRow component', () => {
-    const renderComponent = (props: HeaderRowProps<Row>) => {
+    const renderComponent = (props: HeaderRowProps<Row, 'id'>) => {
       return shallow(<HeaderRow {...props} />);
     };
 
-    const requiredProps: HeaderRowProps<Row> = {
+    const requiredProps: HeaderRowProps<Row, 'id'> = {
+      width: 1000,
       height: 35,
       columns: helpers.columns,
+      lastFrozenColumnIndex: 1,
       onSort: jest.fn(),
       rowType: HeaderRowType.HEADER,
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       onColumnResize: jest.fn(),
-      onColumnResizeEnd: jest.fn(),
       onFilterChange() { },
       onHeaderDrop() { },
       draggableHeaderCell: () => <div />
@@ -146,7 +149,7 @@ describe('Header Row Unit Tests', () => {
     it('passes classname property', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.hasClass('react-grid-HeaderRow'));
+      expect(headerRowDiv.hasClass('rdg-header-row'));
     });
     it('does not pass width if not available from props', () => {
       const wrapper = renderComponent(requiredProps);
@@ -156,7 +159,7 @@ describe('Header Row Unit Tests', () => {
     it('does pass the height if available from props', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toEqual({ height: 35 });
+      expect(headerRowDiv.props().style).toEqual({ height: 35, width: 1000 });
     });
   });
 });

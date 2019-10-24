@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -39,7 +39,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="One Million Rows Example">
-        <ReactDataGrid
+        <DataGrid
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}

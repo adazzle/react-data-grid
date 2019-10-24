@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -76,12 +76,13 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Resizable Columns Example">
-        <ReactDataGrid
+        <DataGrid
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}
           minHeight={500}
           minColumnWidth={120}
+          defaultCellContentRenderer={valueCellContentRenderer}
         />
       </Wrapper>
     );

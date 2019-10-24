@@ -4,11 +4,12 @@ import HeaderCell from './HeaderCell';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
 import { isFrozen } from './utils/columnUtils';
+import { isPositionStickySupported } from './utils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
 import { HeaderProps } from './Header';
 
-type SharedHeaderProps<R> = Pick<HeaderProps<R>,
+type SharedHeaderProps<R, K extends keyof R> = Pick<HeaderProps<R, K>,
 | 'draggableHeaderCell'
 | 'onHeaderDrop'
 | 'allRowsSelected'
@@ -18,21 +19,21 @@ type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 | 'getValidFilterValues'
 >;
 
-export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
+export interface HeaderRowProps<R, K extends keyof R> extends SharedHeaderProps<R, K> {
+  width: number;
   height: number;
   columns: CalculatedColumn<R>[];
+  lastFrozenColumnIndex: number;
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
-  onColumnResizeEnd(): void;
   onAllRowsSelectionChange(checked: boolean): void;
   filterable?: boolean;
   onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;
 }
 
-export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
+export default class HeaderRow<R, K extends keyof R> extends React.Component<HeaderRowProps<R, K>> {
   static displayName = 'HeaderRow';
 
-  private readonly headerRow = React.createRef<HTMLDivElement>();
   private readonly cells = new Map<keyof R, HeaderCell<R>>();
 
   getHeaderCellType(column: CalculatedColumn<R>): HeaderCellType {
@@ -90,43 +91,38 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   getCells() {
-    const cells = [];
-    const frozenCells = [];
-    const { columns, rowType } = this.props;
+    const cellElements = [];
+    const { columns, lastFrozenColumnIndex, rowType } = this.props;
+    const setRef = !isPositionStickySupported();
 
     for (const column of columns) {
       const { key } = column;
       const renderer = key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
-      const cell = (
+      cellElements.push(
         <HeaderCell<R>
           key={key as string}
-          ref={node => node ? this.cells.set(key, node) : this.cells.delete(key)}
+          ref={setRef
+            ? node => node ? this.cells.set(key, node) : this.cells.delete(key)
+            : undefined}
           column={column}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
           rowType={rowType}
           height={this.props.height}
           renderer={renderer}
           onResize={this.props.onColumnResize}
-          onResizeEnd={this.props.onColumnResizeEnd}
           onHeaderDrop={this.props.onHeaderDrop}
           allRowsSelected={this.props.allRowsSelected}
           onAllRowsSelectionChange={this.props.onAllRowsSelectionChange}
           draggableHeaderCell={this.props.draggableHeaderCell}
         />
       );
-
-      if (isFrozen(column)) {
-        frozenCells.push(cell);
-      } else {
-        cells.push(cell);
-      }
     }
 
-    return cells.concat(frozenCells);
+    return cellElements;
   }
 
   setScrollLeft(scrollLeft: number): void {
-    this.headerRow.current!.scrollLeft = scrollLeft;
     this.props.columns.forEach(column => {
       const { key } = column;
       if (!this.cells.has(key)) return;
@@ -140,15 +136,10 @@ export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   }
 
   render() {
-    const { height, rowType } = this.props;
-
     return (
       <div
-        ref={this.headerRow}
-        style={{
-          height: rowType === HeaderRowType.FILTER ? 500 : height
-        }}
-        className="react-grid-HeaderRow"
+        className="rdg-header-row"
+        style={{ width: this.props.width, height: this.props.height }}
       >
         {this.getCells()}
       </div>

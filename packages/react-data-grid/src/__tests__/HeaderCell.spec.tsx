@@ -1,7 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import HeaderCell from '../HeaderCell';
+import HeaderCell, { HeaderCellProps } from '../HeaderCell';
+import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
 import { HeaderRowType } from '../common/enums';
 
 interface Row {
@@ -14,27 +15,27 @@ describe('Header Cell Tests', () => {
   }
 
   function setup(overrideProps = {}, columnProps = {}) {
-    const props = {
+    const props: HeaderCellProps<Row> = {
       column: {
         idx: 0,
         key: 'bla',
         name: 'bla',
         width: 150,
         left: 300,
+        cellContentRenderer: valueCellContentRenderer,
         ...columnProps
       },
+      lastFrozenColumnIndex: -1,
       rowType: HeaderRowType.HEADER,
       onResize: jest.fn(),
-      onResizeEnd: jest.fn(),
       height: 50,
-      name: 'bla',
       onHeaderDrop() { },
       draggableHeaderCell: DraggableHeaderCell,
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       ...overrideProps
     };
-    const wrapper = mount<HeaderCell<Row>>(<HeaderCell {...props} />);
+    const wrapper = mount<HeaderCell<Row>>(<HeaderCell<Row> {...props} />);
     return { wrapper, props };
   }
 
@@ -52,13 +53,6 @@ describe('Header Cell Tests', () => {
       wrapper.simulate('mousedown', { button: 0, clientX: 0 });
       window.dispatchEvent(new MouseEvent('mousemove', { clientX: 200 }));
       expect(props.onResize).toHaveBeenCalledWith(props.column, 200);
-    });
-
-    it('finish dragging should call onResizeEnd with no params', () => {
-      const { wrapper, props } = setup({}, { resizable: true });
-      wrapper.simulate('mousedown', { button: 0, clientX: 0 });
-      window.dispatchEvent(new MouseEvent('mouseup', { clientX: 250 }));
-      expect(props.onResizeEnd).toHaveBeenCalledWith();
     });
   });
 

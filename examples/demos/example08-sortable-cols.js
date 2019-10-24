@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -14,37 +14,31 @@ export default class extends React.Component {
       {
         key: 'task',
         name: 'Title',
-        width: 200,
         sortable: true
       },
       {
         key: 'priority',
         name: 'Priority',
-        width: 200,
         sortable: true
       },
       {
         key: 'issueType',
         name: 'Issue Type',
-        width: 200,
         sortable: true
       },
       {
         key: 'complete',
         name: '% Complete',
-        width: 200,
         sortable: true
       },
       {
         key: 'startDate',
         name: 'Start Date',
-        width: 200,
         sortable: true
       },
       {
         key: 'completeDate',
         name: 'Expected Complete',
-        width: 200,
         sortable: true
       }
     ];
@@ -96,7 +90,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Sortable Columns Example">
-        <ReactDataGrid
+        <DataGrid
           onGridSort={this.handleGridSort}
           columns={this._columns}
           rowGetter={this.rowGetter}

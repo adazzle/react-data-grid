@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import { Menu } from 'react-data-grid-addons';
 import Wrapper from './Wrapper';
 
@@ -60,7 +60,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Context Menu Example">
-        <ReactDataGrid
+        <DataGrid
           contextMenu={<MyContextMenu id="customizedContextMenu" onRowDelete={this.deleteRow} onRowInsertAbove={this.insertRowAbove} onRowInsertBelow={this.insertRowBelow} />}
           columns={this._columns}
           rowGetter={this.rowGetter}

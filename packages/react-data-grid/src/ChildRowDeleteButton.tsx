@@ -1,21 +1,19 @@
 import React from 'react';
+import { RemoveCircle } from '@material-ui/icons';
 
 export interface ChildRowDeleteButtonProps {
   treeDepth: number;
-  cellHeight: number;
   onDeleteSubRow(): void;
   isDeleteSubRowEnabled: boolean;
 }
 
-export default function ChildRowDeleteButton({ treeDepth, cellHeight, onDeleteSubRow, isDeleteSubRowEnabled }: ChildRowDeleteButtonProps) {
-  const left = treeDepth * 15;
-  const top = (cellHeight - 12) / 2;
+export default function ChildRowDeleteButton({ treeDepth, onDeleteSubRow, isDeleteSubRowEnabled }: ChildRowDeleteButtonProps) {
   return (
     <>
       <div className="rdg-child-row-action-cross" />
       {isDeleteSubRowEnabled && (
-        <div style={{ left, top }} className="rdg-child-row-btn" onClick={onDeleteSubRow}>
-          <div className="glyphicon glyphicon-remove-sign" />
+        <div className="rdg-child-row-btn" style={{ left: treeDepth * 15 }} onClick={onDeleteSubRow}>
+          <RemoveCircle />
         </div>
       )}
     </>

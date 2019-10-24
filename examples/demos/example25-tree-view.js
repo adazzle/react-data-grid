@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 function createRows() {
@@ -127,7 +127,7 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Tree View">
-        <ReactDataGrid
+        <DataGrid
           enableCellSelect
           columns={columns}
           rowGetter={this.getRows}

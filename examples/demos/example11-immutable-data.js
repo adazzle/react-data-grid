@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDataGrid from 'react-data-grid';
+import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -41,12 +41,13 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Immutable Data Example">
-        <ReactDataGrid
+        <DataGrid
           enableCellSelect
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={1200}
+          defaultCellContentRenderer={valueCellContentRenderer}
         />
       </Wrapper>
     );

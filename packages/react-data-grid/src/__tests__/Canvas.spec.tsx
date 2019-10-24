@@ -1,27 +1,27 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
 import Canvas, { CanvasProps } from '../Canvas';
 import EventBus from '../EventBus';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
+import RowComponent from '../Row';
+import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
 
 interface Row {
-  id?: number;
-  row?: string;
-  __metaData?: unknown;
+  id: number;
+  row: string;
 }
 
 const noop = () => null;
-const getRows = (wrp: ReturnType<typeof renderComponent>) => wrp.find('.rdg-rows-container').props().children as JSX.Element[];
 
-const testProps: CanvasProps<Row> = {
-  rowKey: 'row',
+const testProps: CanvasProps<Row, 'id'> = {
+  rowKey: 'id',
   rowHeight: 25,
   height: 200,
   rowsCount: 1,
-  rowGetter() { return {}; },
+  rowGetter(id) { return { id, row: String(id) }; },
   cellMetaData: {
     rowKey: 'row',
     onCellClick() { },
@@ -44,10 +44,15 @@ const testProps: CanvasProps<Row> = {
   editorPortalTarget: document.body,
   onScroll() {},
   columnMetrics: {
-    columns: [{ key: 'id', name: 'ID', idx: 0, width: 100, left: 100 }],
-    columnWidths: new Map(),
+    columns: [{
+      key: 'row',
+      name: 'ID',
+      idx: 0,
+      width: 100,
+      left: 100,
+      cellContentRenderer: valueCellContentRenderer
+    }],
     lastFrozenColumnIndex: -1,
-    minColumnWidth: 80,
     totalColumnWidth: 0,
     viewportWidth: 1000
   },
@@ -56,8 +61,8 @@ const testProps: CanvasProps<Row> = {
   onCanvasKeyup() {}
 };
 
-function renderComponent(extraProps?: Partial<CanvasProps<Row>>) {
-  return shallow(<Canvas<Row> {...testProps} {...extraProps} />);
+function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {
+  return mount(<Canvas<Row, 'id'> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas Tests', () => {
@@ -68,36 +73,41 @@ describe('Canvas Tests', () => {
       rowHeight: 25,
       rowsCount: 1,
       colVisibleStartIdx: 0,
-      colVisibleEndIdx: 1
+      colVisibleEndIdx: 0
     });
   });
 
   describe('Row Selection', () => {
     it('renders row selected', () => {
-      const rowGetter = () => ({ id: 1 });
-
       const wrapper = renderComponent({
-        rowGetter,
+        rowGetter(id) { return { id, row: 'one' }; },
         rowsCount: 1,
         rowKey: 'id',
-        selectedRows: new Set([1])
+        selectedRows: new Set([0])
       });
-      const rows = getRows(wrapper);
 
-      expect(rows[0].props.isRowSelected).toBe(true);
+      expect(wrapper.find(RowComponent).props().isRowSelected).toBe(true);
     });
   });
 
   describe('Tree View', () => {
-    const COLUMNS: CalculatedColumn<Row>[] = [{ idx: 0, key: 'id', name: 'ID', width: 100, left: 100 }];
+    const COLUMNS: CalculatedColumn<Row>[] = [{
+      idx: 0,
+      key: 'id',
+      name: 'ID',
+      width: 100,
+      left: 100,
+      cellContentRenderer: valueCellContentRenderer
+    }];
 
     it('can render a custom renderer if __metadata property exists', () => {
       const EmptyChildRow = (props: unknown, rowIdx: number) => {
         return <div key={rowIdx} className="test-row-renderer" />;
       };
 
-      const rowGetter = () => ({
-        id: 0,
+      const rowGetter = (id: number) => ({
+        id,
+        row: String(id),
         __metaData: {
           isGroup: false,
           treeDepth: 0,
@@ -131,8 +141,7 @@ describe('Canvas Tests', () => {
       };
 
       const wrapper = renderComponent(props);
-      const rows = getRows(wrapper);
-      expect(rows[0].props.className).toBe('test-row-renderer');
+      expect(wrapper.find('.test-row-renderer')).toHaveLength(1);
     });
   });
 });

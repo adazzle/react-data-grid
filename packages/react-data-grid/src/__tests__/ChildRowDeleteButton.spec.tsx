@@ -8,7 +8,6 @@ describe('ChildRowDeleteButton', () => {
     const onDeleteSubRow = jest.fn();
     return {
       treeDepth: 2,
-      cellHeight: 50,
       onDeleteSubRow,
       isDeleteSubRowEnabled: true
     };
