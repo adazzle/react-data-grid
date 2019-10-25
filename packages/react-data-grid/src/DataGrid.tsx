@@ -412,7 +412,7 @@ function DataGrid<R, K extends keyof R>({
   return (
     <div
       className="rdg-root"
-      style={{ width: width === undefined ? undefined : width - 2, lineHeight: `${rowHeight}px` }}
+      style={{ width, lineHeight: `${rowHeight}px` }}
       ref={gridRef}
     >
       {columnMetrics && (
