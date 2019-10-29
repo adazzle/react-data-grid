@@ -2,7 +2,7 @@
 A few sentences describing the overall goals of the pull request's commits.
 
 **Please check if the PR fulfills these requirements**
-- [ ] The commit message follows our guidelines: https://github.com/adazzle/react-data-grid/blob/master/CONTRIBUTING.md
+- [ ] The commit message follows our guidelines: https://github.com/adazzle/react-data-grid/blob/master/docs/CONTRIBUTING.md
 - [ ] Tests for the changes have been added (for bug fixes / features)
 - [ ] Docs have been added / updated (for bug fixes / features)
 
