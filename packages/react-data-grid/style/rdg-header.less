@@ -12,8 +12,9 @@
   .user-select();
 }
 
-.rdg-header-cell-resizable::after {
-  content: "";
+// TODO: replace this with a pseudo-element once we drop support for IE11/Edge,
+// as `cursor` doesn't work on pseudo-elements on those browsers.
+.rdg-header-cell-resizer {
   cursor: col-resize;
   position: absolute;
   top: 0;

@@ -132,8 +132,7 @@ export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
 
     const className = classNames('rdg-cell', {
       'rdg-cell-frozen': colIsFrozen,
-      'rdg-cell-frozen-last': colIsFrozen && column.idx === this.props.lastFrozenColumnIndex,
-      'rdg-header-cell-resizable': column.resizable
+      'rdg-cell-frozen-last': colIsFrozen && column.idx === this.props.lastFrozenColumnIndex
     }, this.props.className, column.cellClass);
 
     const cell = (
@@ -148,6 +147,7 @@ export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
         onTouchStart={column.resizable ? this.onTouchStart : undefined}
       >
         {this.getCell()}
+        {column.resizable && <div className="rdg-header-cell-resizer" />}
       </div>
     );
 
