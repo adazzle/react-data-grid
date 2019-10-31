@@ -15,16 +15,16 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Column<R>[] = [];
+  const columns: Array<Column<R> & { width: number | void }> = [];
 
   for (const metricsColumn of metrics.columns) {
-    const column = { ...metricsColumn };
-    setSpecifiedWidth(column, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
+    const width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
+    const column = { ...metricsColumn, width };
 
-    if (column.width === undefined) {
+    if (width === undefined) {
       unassignedColumnsCount++;
     } else {
-      allocatedWidths += column.width;
+      allocatedWidths += width;
     }
 
     if (isFrozen(column)) {
@@ -64,20 +64,22 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   };
 }
 
-function setSpecifiedWidth<R>(
+function getSpecifiedWidth<R>(
   column: Column<R>,
   columnWidths: Map<keyof R, number>,
   viewportWidth: number,
   minColumnWidth: number
-): void {
+): number | void {
   if (columnWidths.has(column.key)) {
     // Use the resized width if available
-    column.width = columnWidths.get(column.key);
-  } else if (typeof column.width === 'number') {
+    return columnWidths.get(column.key);
+  }
+  if (typeof column.width === 'number') {
     // TODO: allow width to be less than minWidth?
-    column.width = Math.max(column.width, minColumnWidth);
-  } else if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-    column.width = Math.max(Math.floor(viewportWidth * column.width / 100), minColumnWidth);
+    return Math.max(column.width, minColumnWidth);
+  }
+  if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
+    return Math.max(Math.floor(viewportWidth * parseInt(column.width, 10) / 100), minColumnWidth);
   }
 }
 

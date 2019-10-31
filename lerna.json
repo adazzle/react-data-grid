@@ -1,5 +1,5 @@
 {
-  "version": "7.0.0-canary.3",
+  "version": "7.0.0-canary.4",
   "ignoreChanges": [
     "*.spec.*",
     "*.md"
