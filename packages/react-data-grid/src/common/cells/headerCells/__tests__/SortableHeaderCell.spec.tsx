@@ -2,13 +2,12 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import SortableHeaderCell, { Props } from '../SortableHeaderCell';
 import { HeaderRowType, DEFINE_SORT } from '../../../enums';
-import { Column } from '../../../types';
 import { valueCellContentRenderer } from '../../../../Cell/cellContentRenderers';
 
 interface Row { col1: string }
 
 describe('<SortableHeaderCell/>', () => {
-  const setup = (overrideProps?: Partial<Props<Row>>, overrideColumn?: Partial<Column<Row>>) => {
+  const setup = (overrideProps?: Partial<Props<Row>>, overrideColumn = {}) => {
     const props: Props<Row> = {
       column: {
         idx: 0,

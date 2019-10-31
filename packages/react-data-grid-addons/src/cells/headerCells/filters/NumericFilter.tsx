@@ -46,7 +46,7 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
 
   const inputKey = `header-filter-${column.key as keyof R}`;
 
-  const tooltipText = 'Input Methods: Range (x-y), Greater Then (>x), Less Then (<y)';
+  const tooltipText = 'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
 
   return (
     <div className="rdg-filter-container">
