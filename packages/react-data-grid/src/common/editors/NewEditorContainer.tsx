@@ -1,11 +1,10 @@
-import React, { KeyboardEvent } from 'react';
-import { isValidElementType } from 'react-is';
+import React, { KeyboardEvent, useState, useEffect, useCallback, useRef, cloneElement } from 'react';
+import { isValidElementType, isElement } from 'react-is';
 
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
 import { CalculatedColumn, CommitEvent, Dimension, Omit } from '../types';
 import ClickOutside from './ClickOutside';
 import NewSimpleTextEditor from './NewSimpleTextEditor';
-
 
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
@@ -20,10 +19,6 @@ export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent<R>): void;
   onCommitCancel(): void;
-}
-
-interface State<R> {
-  value: ValueType<R> | string;
 }
 
 function getInitialValue<R, K extends keyof R>({ firstEditorKeyPress: key, value }: Props<R, K>): ValueType<R> | string {
@@ -46,99 +41,89 @@ export interface EditorContext {
 
 export const DataGridEditorContext = React.createContext<Partial<EditorContext>>({});
 
-export default class EditorContainer<R, K extends keyof R> extends React.Component<Props<R, K>, State<R>> {
-  static displayName = 'EditorContainer';
+let changeCommitted = false;
+let changeCanceled = false;
 
-  changeCommitted = false;
-  changeCanceled = false;
+export default function EditorContainer<R, K extends keyof R>(props: Props<R, K>): JSX.Element {
+  const [value, setValue] = useState<ValueType<R> | string>(() => getInitialValue(props));
 
-  readonly state: Readonly<State<R>> = {
-    value: getInitialValue(this.props)
-  };
+  const { width, height, left, top, scrollLeft, scrollTop, onCommit, column, rowIdx, onCommitCancel, rowData } = props;
+  const { key, getRowMetaData } = column;
 
-  componentDidUpdate(prevProps: Props<R, K>) {
-    if (prevProps.scrollLeft !== this.props.scrollLeft || prevProps.scrollTop !== this.props.scrollTop) {
-      this.commitCancel();
+  const prevScrollLeft = useRef<number>(scrollLeft);
+  const prevScrollTop = useRef<number>(scrollTop);
+
+  const commit = useCallback(() => {
+    const updated: never = { [key]: value } as never;
+    changeCommitted = true;
+    const cellKey = key;
+    onCommit({ cellKey, rowIdx, updated });
+  }, [key, onCommit, rowIdx, value]);
+
+  const commitCancel = useCallback(() => {
+    changeCanceled = true;
+    onCommitCancel();
+  }, [onCommitCancel]);
+
+  useEffect(() => {
+    if (prevScrollLeft.current !== scrollLeft || prevScrollTop.current !== scrollTop) {
+      commitCancel();
+      return;
     }
-  }
 
-  componentWillUnmount() {
-    if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit();
-    }
-  }
+    prevScrollLeft.current = scrollLeft;
+    prevScrollTop.current = scrollTop;
+  }, [commitCancel, scrollLeft, scrollTop]);
 
-  onChange = (value: ValueType<R>) => {
-    this.setState({ value });
-  };
-
-  createEditor() {
-    // FIX ME
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const editorProps: any = {
-      value: this.state.value,
-      column: this.props.column,
-      onChange: this.onChange,
-      rowMetaData: this.getRowMetaData(),
-      rowData: this.props.rowData,
-      onCommit: this.commit,
-      onCommitCancel: this.commitCancel
+  useEffect(() => {
+    return () => {
+      if (!changeCommitted && !changeCanceled) {
+        commit();
+      }
     };
+  }, [commit]);
 
-    const CustomEditor = this.props.column.editor as React.ComponentType<{}>;
+  const handleRightClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  }, []);
 
-    return (
-      <DataGridEditorContext.Provider
-        value={{
-          firstEditorKeyPress: this.props.firstEditorKeyPress,
-          commit: this.commit,
-          commitCancel: this.commitCancel,
-          onGridKeyDown: this.props.onGridKeyDown
-        }}
-      >
-        {isValidElementType(CustomEditor) ? <CustomEditor {...editorProps} /> : <NewSimpleTextEditor {...editorProps} />}
-      </DataGridEditorContext.Provider>
-    );
-  }
-
-  getRowMetaData() {
+  // FIX ME
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const editorProps: any = {
+    value,
+    column,
+    onChange: setValue,
     // clone row data so editor cannot actually change this
     // convention based method to get corresponding Id or Name of any Name or Id property
-    if (this.props.column.getRowMetaData) {
-      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
-    }
-  }
-
-  commit = () => {
-    const { onCommit, column } = this.props;
-    const updated: never = { [column.key]: this.state.value } as never;
-    this.changeCommitted = true;
-    const cellKey = this.props.column.key;
-    onCommit({ cellKey, rowIdx: this.props.rowIdx, updated });
+    rowMetaData: getRowMetaData && getRowMetaData(rowData, column),
+    rowData,
+    onCommit: commit,
+    onCommitCancel: commitCancel
   };
 
-  commitCancel = () => {
-    this.changeCanceled = true;
-    this.props.onCommitCancel();
-  };
-
-  handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
-  render() {
-    const { width, height, left, top } = this.props;
-
-    return (
-      <ClickOutside onClickOutside={this.commit}>
-        <div
-          className="rdg-editor-container"
-          style={{ height, width, left, top }}
-          onContextMenu={this.handleRightClick}
+  const CustomEditor = column.editor as React.ComponentType<{}>;
+  return (
+    <ClickOutside onClickOutside={commit}>
+      <div
+        className="rdg-editor-container"
+        style={{ height, width, left, top }}
+        onContextMenu={handleRightClick}
+      >
+        <DataGridEditorContext.Provider
+          value={{
+            firstEditorKeyPress: props.firstEditorKeyPress,
+            commit,
+            commitCancel,
+            onGridKeyDown: props.onGridKeyDown
+          }}
         >
-          {this.createEditor()}
-        </div>
-      </ClickOutside>
-    );
-  }
+          {isElement(CustomEditor)
+            ? cloneElement(CustomEditor, editorProps)
+            : isValidElementType(CustomEditor)
+              ? <CustomEditor {...editorProps} />
+              : <NewSimpleTextEditor {...editorProps} />}
+        </DataGridEditorContext.Provider>
+      </div>
+    </ClickOutside>
+  );
 }
