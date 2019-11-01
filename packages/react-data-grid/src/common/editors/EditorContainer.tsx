@@ -1,12 +1,12 @@
-import React, { KeyboardEvent } from 'react';
-import classNames from 'classnames';
-import { isElement, isValidElementType } from 'react-is';
 import { Clear } from '@material-ui/icons';
+import classNames from 'classnames';
+import React, { KeyboardEvent } from 'react';
+import { isElement, isValidElementType } from 'react-is';
 
-import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
-import SimpleTextEditor from './SimpleTextEditor';
-import ClickOutside from './ClickOutside';
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
+import { CalculatedColumn, CommitEvent, Dimension, Editor, EditorProps, Omit } from '../types';
+import ClickOutside from './ClickOutside';
+import SimpleTextEditor, { EditorHandle } from './SimpleTextEditor';
 
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
@@ -92,7 +92,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
   };
 
   onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    if (this.props.column.enableNewEditor || !this.preventDefaultNavigation(e)) {
+    if (!this.preventDefaultNavigation(e)) {
       if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         this.commit();
       } else if (e.key === 'Escape') {
@@ -111,9 +111,10 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
 
   createEditor() {
     type P = EditorProps<ValueType<R> | string, unknown, R>;
+    const column = this.props.column as P['column'];
     const editorProps: P & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
-      column: this.props.column,
+      column,
       value: this.state.value,
       onChange: this.onChange,
       rowMetaData: this.getRowMetaData(),
@@ -124,7 +125,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
       onOverrideKeyDown: this.onKeyDown
     };
 
-    const CustomEditor = this.props.column.editor as React.ComponentType<P>;
+    const CustomEditor = column.editor as React.ComponentType<P>;
     // return custom column editor or SimpleEditor if none specified
     if (isElement(CustomEditor)) {
       return React.cloneElement(CustomEditor, editorProps);
@@ -135,7 +136,9 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
 
     return (
       <SimpleTextEditor
+        ref={this.editor as React.RefObject<EditorHandle>}
         value={this.state.value as string}
+        column={column as never}
         onChange={this.onChange as unknown as (value: string) => void}
         onCommit={this.commit}
       />
@@ -169,10 +172,8 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
   };
 
   commit = () => {
-    const { onCommit, column } = this.props;
-    const updated: never = column.enableNewEditor
-      ? this.getEditor().getValue()
-      : { [column.key]: this.state.value } as never;
+    const { onCommit } = this.props;
+    const updated: never = this.getEditor().getValue();
 
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;

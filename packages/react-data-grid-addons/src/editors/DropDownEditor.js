@@ -15,8 +15,12 @@ export default class DropDownEditor extends React.Component {
   };
 
   static propTypes = {
-    value: PropTypes.any.isRequired,
-    onCommit: PropTypes.func.isRequired
+    value: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+      PropTypes.bool
+    ]),
+    onCommit: PropTypes.func
   };
 
   getInputNode() {

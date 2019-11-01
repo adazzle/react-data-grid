@@ -10,6 +10,7 @@ import DragMask, { DraggedPosition } from './DragMask';
 import DragHandle from './DragHandle';
 import EditorContainer from '../common/editors/EditorContainer';
 import EditorPortal from '../common/editors/EditorPortal';
+import NewEditorContainer from '../common/editors/NewEditorContainer';
 
 // Utils
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
@@ -659,6 +660,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = rowGetter(selectedPosition.rowIdx);
     const columns = getRowColumns(selectedPosition.rowIdx);
+    const column = columns[selectedPosition.idx];
     return (
       <div
         onKeyDown={this.onKeyDown}
@@ -676,19 +678,35 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
           : this.renderCellRangeSelectView()}
         {isEditorEnabled && (
           <EditorPortal target={editorPortalTarget}>
-            <EditorContainer<R, K>
-              firstEditorKeyPress={firstEditorKeyPress}
-              onCommit={this.onCommit}
-              onCommitCancel={this.onCommitCancel}
-              rowIdx={selectedPosition.rowIdx}
-              value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
-              rowData={rowData}
-              column={columns[selectedPosition.idx]}
-              scrollLeft={scrollLeft}
-              scrollTop={scrollTop}
-              {...this.getSelectedDimensions(selectedPosition)}
-              {...this.state.editorPosition}
-            />
+            {column.enableNewEditor ? (
+              <NewEditorContainer
+                firstEditorKeyPress={firstEditorKeyPress}
+                onCommit={this.onCommit}
+                onCommitCancel={this.onCommitCancel}
+                rowIdx={selectedPosition.rowIdx}
+                value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
+                rowData={rowData}
+                column={column}
+                scrollLeft={scrollLeft}
+                scrollTop={scrollTop}
+                {...this.getSelectedDimensions(selectedPosition)}
+                {...this.state.editorPosition}
+              />
+            ) : (
+              <EditorContainer<R, K>
+                firstEditorKeyPress={firstEditorKeyPress}
+                onCommit={this.onCommit}
+                onCommitCancel={this.onCommitCancel}
+                rowIdx={selectedPosition.rowIdx}
+                value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
+                rowData={rowData}
+                column={column}
+                scrollLeft={scrollLeft}
+                scrollTop={scrollTop}
+                {...this.getSelectedDimensions(selectedPosition)}
+                {...this.state.editorPosition}
+              />
+            )}
           </EditorPortal>
         )}
         {isElement(contextMenu) && createPortal(
