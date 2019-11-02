@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
 
 import EditorContainer, { Props } from '../EditorContainer';
-import SimpleTextEditor from '../SimpleTextEditor';
+import SimpleTextEditor from '../LegacyTextEditor';
 import { valueCellContentRenderer } from '../../../Cell/cellContentRenderers';
 import { CalculatedColumn, EditorProps } from '../../types';
 

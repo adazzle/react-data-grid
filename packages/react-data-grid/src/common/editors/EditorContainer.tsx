@@ -1,10 +1,12 @@
-import React, { KeyboardEvent } from 'react';
+import React, { KeyboardEvent, useRef, useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 import { Clear } from '@material-ui/icons';
 
 import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
-import SimpleTextEditor from './SimpleTextEditor';
+import { KeyCodes } from '../enums';
+import TextEditor from './TextEditor';
+import LegacyTextEditor from './LegacyTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
 
@@ -23,12 +25,7 @@ export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps
   onCommitCancel(): void;
 }
 
-interface State<R> {
-  isInvalid: boolean;
-  value: ValueType<R> | string;
-}
-
-function getInitialValue<R, K extends keyof R>({ firstEditorKeyPress: key, value }: Props<R, K>): ValueType<R> | string {
+function getInitialValue<R>({ key, value }: { key: string | null; value: ValueType<R> }): ValueType<R> | string {
   if (key === 'Delete' || key === 'Backspace') {
     return '';
   }
@@ -39,203 +36,235 @@ function getInitialValue<R, K extends keyof R>({ firstEditorKeyPress: key, value
   return key || value;
 }
 
-export default class EditorContainer<R, K extends keyof R> extends React.Component<Props<R, K>, State<R>> {
-  static displayName = 'EditorContainer';
+export default function EditorContainer<R, K extends keyof R>({
+  rowIdx,
+  column,
+  rowData,
+  width,
+  height,
+  left,
+  top,
+  onCommit,
+  onCommitCancel,
+  onGridKeyDown,
+  scrollLeft,
+  scrollTop,
+  firstEditorKeyPress,
+  ...props
+}: Props<R, K>) {
+  const editor = useRef<Editor>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isInvalid, setIsInvalid] = useState(false);
+  const [value, setValue] = useState(() => getInitialValue({ key: firstEditorKeyPress, value: props.value }));
+  const prevScrollLeft = useRef(scrollLeft);
+  const prevScrollTop = useRef(scrollTop);
 
-  changeCommitted = false;
-  changeCanceled = false;
+  const getInputNode = useCallback(() => {
+    return column.enableNewEditor
+      ? inputRef.current
+      : editor.current && editor.current.getInputNode();
+  }, [column.enableNewEditor]);
 
-  private readonly editor = React.createRef<Editor>();
-  readonly state: Readonly<State<R>> = {
-    isInvalid: false,
-    value: getInitialValue(this.props)
-  };
+  useEffect(() => {
+    const inputNode = getInputNode();
 
-  componentDidMount() {
-    const inputNode = this.getInputNode();
     if (inputNode instanceof HTMLElement) {
       inputNode.focus();
     }
     if (inputNode instanceof HTMLInputElement) {
       inputNode.select();
     }
+  }, [getInputNode]);
+
+  // Cancel changes on scroll
+  if (prevScrollLeft.current !== scrollLeft || prevScrollTop.current !== scrollTop) {
+    onCommitCancel();
   }
 
-  componentDidUpdate(prevProps: Props<R, K>) {
-    if (prevProps.scrollLeft !== this.props.scrollLeft || prevProps.scrollTop !== this.props.scrollTop) {
-      this.commitCancel();
+  function isCaretAtBeginningOfInput(): boolean {
+    const inputNode = getInputNode();
+    return inputNode instanceof HTMLInputElement
+      && inputNode.selectionEnd === 0;
+  }
+
+  function isCaretAtEndOfInput(): boolean {
+    const inputNode = getInputNode();
+    return inputNode instanceof HTMLInputElement
+      && inputNode.selectionStart === inputNode.value.length;
+  }
+
+  function legacy_editorHasResults(): boolean {
+    return editor.current && editor.current.hasResults
+      ? editor.current.hasResults()
+      : false;
+  }
+
+  function legacy_editorIsSelectOpen(): boolean {
+    return editor.current && editor.current.isSelectOpen
+      ? editor.current.isSelectOpen()
+      : false;
+  }
+
+  function legacy_isNewValueValid(value: unknown): boolean {
+    if (editor.current && editor.current.validate) {
+      const isValid = editor.current.validate(value);
+      setIsInvalid(!isValid);
+      return isValid;
     }
+
+    return true;
   }
 
-  componentWillUnmount() {
-    if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit();
-    }
+  function legacy_preventDefaultNavigation(keyCode: number): boolean {
+    return (keyCode === KeyCodes.Escape && legacy_editorIsSelectOpen())
+      || ([KeyCodes.ArrowUp, KeyCodes.ArrowDown].includes(keyCode) && legacy_editorHasResults());
   }
 
-  preventDefaultNavigation = (e: KeyboardEvent<HTMLElement>): boolean => {
+  function preventDefaultNavigation(keyCode: number): boolean {
     if (
-      // prevent event from bubbling if editor has results to select
-      (e.key === 'Escape' && this.editorIsSelectOpen())
-      // dont want to propogate as that then moves us round the grid
-      || ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && this.editorHasResults())
-      // prevent event propogation. this disables left cell navigation
-      || (e.key === 'ArrowLeft' && !this.isCaretAtBeginningOfInput())
-      // prevent event propogation. this disables right cell navigation
-      || (e.key === 'ArrowRight' && !this.isCaretAtEndOfInput())
+      (keyCode === KeyCodes.ArrowLeft && !isCaretAtBeginningOfInput())
+      || (keyCode === KeyCodes.ArrowRight && !isCaretAtEndOfInput())
     ) {
-      e.stopPropagation();
       return true;
     }
 
-    return false;
-  };
+    return column.enableNewEditor
+      ? false
+      : legacy_preventDefaultNavigation(keyCode);
+  }
 
-  onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    if (this.props.column.enableNewEditor || !this.preventDefaultNavigation(e)) {
-      if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        this.commit();
-      } else if (e.key === 'Escape') {
-        this.commitCancel();
-      }
+  function legacy_commit(): void {
+    const updated = editor.current!.getValue();
+    if (legacy_isNewValueValid(updated)) {
+      const cellKey = column.key;
+      onCommit({ cellKey, rowIdx, updated });
+    }
+  }
+
+  function commit(): void {
+    const cellKey = column.key;
+    if (column.enableNewEditor) {
+      const updated = { [cellKey]: value } as never;
+      onCommit({ cellKey, rowIdx, updated });
+      return;
     }
 
-    if (this.props.onGridKeyDown) {
-      this.props.onGridKeyDown(e);
+    legacy_commit();
+  }
+
+  function onKeyDown(e: KeyboardEvent<HTMLElement>) {
+    if (preventDefaultNavigation(e.keyCode)) {
+      e.stopPropagation();
+    } else if ([KeyCodes.Enter, KeyCodes.Tab, KeyCodes.ArrowUp, KeyCodes.ArrowDown, KeyCodes.ArrowLeft, KeyCodes.ArrowRight].includes(e.keyCode)) {
+      commit();
+    } else if (e.keyCode === KeyCodes.Escape) {
+      onCommitCancel();
     }
-  };
 
-  onChange = (value: ValueType<R>) => {
-    this.setState({ value });
-  };
+    // TODO: is onGridKeyDown needed?
+    if (onGridKeyDown) {
+      onGridKeyDown(e);
+    }
+  }
 
-  createEditor() {
-    type P = EditorProps<ValueType<R> | string, unknown, R>;
+  function getRowMetaData() {
+    // clone row data so editor cannot actually change this
+    // convention based method to get corresponding Id or Name of any Name or Id property
+    if (column.getRowMetaData) {
+      return column.getRowMetaData(rowData, column);
+    }
+  }
+
+  type P = EditorProps<ValueType<R> | string, unknown, R>;
+
+  function legacy_createEditor() {
     const editorProps: P & { ref: React.RefObject<Editor> } = {
-      ref: this.editor,
-      column: this.props.column,
-      value: this.state.value,
-      onChange: this.onChange,
-      rowMetaData: this.getRowMetaData(),
-      rowData: this.props.rowData,
-      height: this.props.height,
-      onCommit: this.commit,
-      onCommitCancel: this.commitCancel,
-      onOverrideKeyDown: this.onKeyDown
+      ref: editor,
+      column,
+      value,
+      onChange: setValue,
+      rowMetaData: getRowMetaData(),
+      rowData,
+      height,
+      onCommit: commit,
+      onCommitCancel,
+      onOverrideKeyDown: onKeyDown
     };
 
-    const CustomEditor = this.props.column.editor as React.ComponentType<P>;
-    // return custom column editor or SimpleEditor if none specified
+    const CustomEditor = column.editor as React.ComponentType<P>;
+
     if (isElement(CustomEditor)) {
       return React.cloneElement(CustomEditor, editorProps);
     }
+
     if (isValidElementType(CustomEditor)) {
       return <CustomEditor {...editorProps} />;
     }
 
     return (
-      <SimpleTextEditor
-        value={this.state.value as string}
-        onChange={this.onChange as unknown as (value: string) => void}
-        onCommit={this.commit}
+      <LegacyTextEditor
+        ref={editor as unknown as React.RefObject<LegacyTextEditor>}
+        column={column as CalculatedColumn<unknown>}
+        value={value as string}
+        onCommit={commit}
       />
     );
   }
 
-  editorHasResults = () => {
-    const { hasResults } = this.getEditor();
-    return hasResults ? hasResults() : false;
-  };
+  function createEditor() {
+    const editorProps: P & { ref: React.RefObject<HTMLInputElement> } = {
+      ref: inputRef,
+      column,
+      value,
+      onChange: setValue,
+      rowMetaData: getRowMetaData(),
+      rowData,
+      height,
+      onCommit: commit,
+      onCommitCancel
+    };
 
-  editorIsSelectOpen = () => {
-    const { isSelectOpen } = this.getEditor();
-    return isSelectOpen ? isSelectOpen() : false;
-  };
+    const editor = column.editor as React.ComponentType<P>;
 
-  getRowMetaData() {
-    // clone row data so editor cannot actually change this
-    // convention based method to get corresponding Id or Name of any Name or Id property
-    if (this.props.column.getRowMetaData) {
-      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
-    }
-  }
-
-  getEditor = () => {
-    return this.editor.current!;
-  };
-
-  getInputNode = () => {
-    return this.getEditor() && this.getEditor().getInputNode();
-  };
-
-  commit = () => {
-    const { onCommit, column } = this.props;
-    const updated: never = column.enableNewEditor
-      ? this.getEditor().getValue()
-      : { [column.key]: this.state.value } as never;
-
-    if (this.isNewValueValid(updated)) {
-      this.changeCommitted = true;
-      const cellKey = this.props.column.key;
-      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated });
-    }
-  };
-
-  commitCancel = () => {
-    this.changeCanceled = true;
-    this.props.onCommitCancel();
-  };
-
-  isNewValueValid = (value: unknown) => {
-    const editor = this.getEditor();
-    if (editor && editor.validate) {
-      const isValid = editor.validate(value);
-      this.setState({ isInvalid: !isValid });
-      return isValid;
+    if (isElement(editor)) {
+      throw new Error('React element is not supported in the new editor API. Please use a Component.');
     }
 
-    return true;
-  };
-
-  isCaretAtBeginningOfInput = () => {
-    const inputNode = this.getInputNode();
-    return inputNode instanceof HTMLInputElement
-      && inputNode.selectionEnd === 0;
-  };
-
-  isCaretAtEndOfInput = () => {
-    const inputNode = this.getInputNode();
-    return inputNode instanceof HTMLInputElement
-      && inputNode.selectionStart === inputNode.value.length;
-  };
-
-  handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
-  renderStatusIcon() {
-    return this.state.isInvalid
-      && <Clear className="form-control-feedback" />;
-  }
-
-  render() {
-    const { width, height, left, top } = this.props;
-    const className = classNames('rdg-editor-container', {
-      'has-error': this.state.isInvalid
-    });
+    if (isValidElementType(editor)) {
+      return React.createElement(editor, editorProps);
+    }
 
     return (
-      <ClickOutside onClickOutside={this.commit}>
-        <div
-          className={className}
-          style={{ height, width, left, top }}
-          onKeyDown={this.onKeyDown}
-          onContextMenu={this.handleRightClick}
-        >
-          {this.createEditor()}
-          {this.renderStatusIcon()}
-        </div>
-      </ClickOutside>
+      <TextEditor
+        ref={inputRef}
+        value={value as string}
+        onChange={setValue as unknown as (value: string) => void}
+        onCommit={commit}
+      />
     );
   }
+
+  const className = classNames('rdg-editor-container', { 'has-error': isInvalid });
+
+  return (
+    <ClickOutside onClickOutside={commit}>
+      <div
+        className={className}
+        style={{ height, width, left, top }}
+        onKeyDown={onKeyDown}
+        onContextMenu={e => e.preventDefault()}
+      >
+        {
+          column.enableNewEditor
+            ? createEditor()
+            : (
+              <>
+                {legacy_createEditor()}
+                {isInvalid && <Clear className="form-control-feedback" />}
+              </>
+            )
+        }
+      </div>
+    </ClickOutside>
+  );
 }

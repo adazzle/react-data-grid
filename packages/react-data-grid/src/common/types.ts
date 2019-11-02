@@ -139,7 +139,7 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   onCommit(args?: { key?: string }): void;
   onCommitCancel(): void;
   onChange(value: TValue): void;
-  onOverrideKeyDown(e: KeyboardEvent): void;
+  onOverrideKeyDown?(e: KeyboardEvent): void;
 }
 
 export interface HeaderRowProps<TRow> {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import SimpleTextEditor from '../SimpleTextEditor';
+import SimpleTextEditor from '../LegacyTextEditor';
 import { valueCellContentRenderer } from '../../../Cell/cellContentRenderers';
 import { CalculatedColumn } from '../../types';
 

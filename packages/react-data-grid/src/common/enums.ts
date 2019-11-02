@@ -62,3 +62,17 @@ export enum Z_INDEXES {
   /** Frozen cells have a z-index value of 2 so FROZEN_CELL_MASK should have a greater z-index. */
   FROZEN_CELL_MASK = 3
 }
+
+export enum KeyCodes {
+  Backspace = 8,
+  Tab = 9,
+  Enter = 13,
+  Escape = 27,
+  Delete = 46,
+  ArrowUp = 38,
+  ArrowDown = 40,
+  ArrowLeft = 37,
+  ArrowRight = 39,
+  c = 67,
+  v = 86
+}
