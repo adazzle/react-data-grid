@@ -136,7 +136,7 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   rowMetaData?: TDependentValue;
   rowData: TRow;
   height: number;
-  onCommit(args?: { key?: string }): void;
+  onCommit(): void;
   onCommitCancel(): void;
   onChange(value: TValue): void;
   onOverrideKeyDown?(e: KeyboardEvent): void;

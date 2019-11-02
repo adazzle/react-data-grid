@@ -52,7 +52,7 @@ export default function EditorContainer<R, K extends keyof R>({
   firstEditorKeyPress,
   ...props
 }: Props<R, K>) {
-  const editor = useRef<Editor>(null);
+  const editorRef = useRef<Editor>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isInvalid, setIsInvalid] = useState(false);
   const [value, setValue] = useState(() => getInitialValue({ key: firstEditorKeyPress, value: props.value }));
@@ -62,7 +62,7 @@ export default function EditorContainer<R, K extends keyof R>({
   const getInputNode = useCallback(() => {
     return column.enableNewEditor
       ? inputRef.current
-      : editor.current && editor.current.getInputNode();
+      : editorRef.current && editorRef.current.getInputNode();
   }, [column.enableNewEditor]);
 
   useEffect(() => {
@@ -94,20 +94,20 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   function legacy_editorHasResults(): boolean {
-    return editor.current && editor.current.hasResults
-      ? editor.current.hasResults()
+    return editorRef.current && editorRef.current.hasResults
+      ? editorRef.current.hasResults()
       : false;
   }
 
   function legacy_editorIsSelectOpen(): boolean {
-    return editor.current && editor.current.isSelectOpen
-      ? editor.current.isSelectOpen()
+    return editorRef.current && editorRef.current.isSelectOpen
+      ? editorRef.current.isSelectOpen()
       : false;
   }
 
   function legacy_isNewValueValid(value: unknown): boolean {
-    if (editor.current && editor.current.validate) {
-      const isValid = editor.current.validate(value);
+    if (editorRef.current && editorRef.current.validate) {
+      const isValid = editorRef.current.validate(value);
       setIsInvalid(!isValid);
       return isValid;
     }
@@ -134,7 +134,7 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   function legacy_commit(): void {
-    const updated = editor.current!.getValue();
+    const updated = editorRef.current!.getValue();
     if (legacy_isNewValueValid(updated)) {
       const cellKey = column.key;
       onCommit({ cellKey, rowIdx, updated });
@@ -179,7 +179,7 @@ export default function EditorContainer<R, K extends keyof R>({
 
   function legacy_createEditor() {
     const editorProps: P & { ref: React.RefObject<Editor> } = {
-      ref: editor,
+      ref: editorRef,
       column,
       value,
       onChange: setValue,
@@ -191,19 +191,19 @@ export default function EditorContainer<R, K extends keyof R>({
       onOverrideKeyDown: onKeyDown
     };
 
-    const CustomEditor = column.editor as React.ComponentType<P>;
+    const editor = column.editor as React.ComponentType<P>;
 
-    if (isElement(CustomEditor)) {
-      return React.cloneElement(CustomEditor, editorProps);
+    if (isElement(editor)) {
+      return React.cloneElement(editor, editorProps);
     }
 
-    if (isValidElementType(CustomEditor)) {
-      return <CustomEditor {...editorProps} />;
+    if (isValidElementType(editor)) {
+      return React.createElement(editor, editorProps);
     }
 
     return (
       <LegacyTextEditor
-        ref={editor as unknown as React.RefObject<LegacyTextEditor>}
+        ref={editorRef as unknown as React.RefObject<LegacyTextEditor>}
         column={column as CalculatedColumn<unknown>}
         value={value as string}
         onCommit={commit}
@@ -224,6 +224,7 @@ export default function EditorContainer<R, K extends keyof R>({
       onCommitCancel
     };
 
+    // TODO: fix editor types
     const editor = column.editor as React.ComponentType<P>;
 
     if (isElement(editor)) {
