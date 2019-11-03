@@ -25,9 +25,19 @@ import {
 } from '../utils/selectedCellUtils';
 
 // Types
-import { UpdateActions, CellNavigationMode, EventTypes, KeyCodes } from '../common/enums';
+import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
 import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
+
+export enum KeyCodes {
+  Backspace = 8,
+  Tab = 9,
+  Enter = 13,
+  Escape = 27,
+  Delete = 46,
+  c = 67,
+  v = 86
+}
 
 interface NavAction {
   getNext(current: Position): Position;

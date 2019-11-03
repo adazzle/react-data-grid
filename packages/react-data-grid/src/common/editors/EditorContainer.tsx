@@ -4,7 +4,6 @@ import { isElement, isValidElementType } from 'react-is';
 import { Clear } from '@material-ui/icons';
 
 import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
-import { KeyCodes } from '../enums';
 import TextEditor from './TextEditor';
 import LegacyTextEditor from './LegacyTextEditor';
 import ClickOutside from './ClickOutside';
@@ -20,7 +19,6 @@ export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps
   rowData: R;
   value: ValueType<R>;
   column: CalculatedColumn<R>;
-  onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent<R>): void;
   onCommitCancel(): void;
 }
@@ -46,7 +44,6 @@ export default function EditorContainer<R, K extends keyof R>({
   top,
   onCommit,
   onCommitCancel,
-  onGridKeyDown,
   scrollLeft,
   scrollTop,
   firstEditorKeyPress,
@@ -115,22 +112,23 @@ export default function EditorContainer<R, K extends keyof R>({
     return true;
   }
 
-  function legacy_preventDefaultNavigation(keyCode: number): boolean {
-    return (keyCode === KeyCodes.Escape && legacy_editorIsSelectOpen())
-      || ([KeyCodes.ArrowUp, KeyCodes.ArrowDown].includes(keyCode) && legacy_editorHasResults());
+  function legacy_preventDefaultNavigation(key: string): boolean {
+    return (key === 'Escape' && legacy_editorIsSelectOpen())
+      || (['ArrowUp', 'ArrowDown'].includes(key) && legacy_editorHasResults());
   }
 
-  function preventDefaultNavigation(keyCode: number): boolean {
+  function preventDefaultNavigation(key: string): boolean {
+    console.log(key);
     if (
-      (keyCode === KeyCodes.ArrowLeft && !isCaretAtBeginningOfInput())
-      || (keyCode === KeyCodes.ArrowRight && !isCaretAtEndOfInput())
+      (key === 'ArrowLeft' && !isCaretAtBeginningOfInput())
+      || (key === 'ArrowRight' && !isCaretAtEndOfInput())
     ) {
       return true;
     }
 
     return column.enableNewEditor
       ? false
-      : legacy_preventDefaultNavigation(keyCode);
+      : legacy_preventDefaultNavigation(key);
   }
 
   function legacy_commit(): void {
@@ -153,17 +151,15 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLElement>) {
-    if (preventDefaultNavigation(e.keyCode)) {
+    if (preventDefaultNavigation(e.key)) {
       e.stopPropagation();
-    } else if ([KeyCodes.Enter, KeyCodes.Tab, KeyCodes.ArrowUp, KeyCodes.ArrowDown, KeyCodes.ArrowLeft, KeyCodes.ArrowRight].includes(e.keyCode)) {
-      commit();
-    } else if (e.keyCode === KeyCodes.Escape) {
-      onCommitCancel();
+      return;
     }
 
-    // TODO: is onGridKeyDown needed?
-    if (onGridKeyDown) {
-      onGridKeyDown(e);
+    if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+      commit();
+    } else if (e.key === 'Escape') {
+      onCommitCancel();
     }
   }
 
