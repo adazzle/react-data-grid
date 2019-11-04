@@ -1,21 +1,22 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 
 import { EditorProps } from '../types';
 
-type SimpleTextEditorProps = Pick<EditorProps<string>, 'value' | 'onChange' | 'onCommit'>;
+type TextEditorProps = Pick<EditorProps<string>, 'value' | 'onChange' | 'onCommit' | 'inputRef'>;
 
-export default forwardRef<HTMLInputElement, SimpleTextEditorProps>(function TextEditor({
+export default function TextEditor({
   value,
   onChange,
-  onCommit
-}, ref) {
+  onCommit,
+  inputRef
+}: TextEditorProps) {
   return (
     <input
-      ref={ref}
+      ref={inputRef}
       className="rdg-text-editor"
       value={value}
       onChange={e => onChange(e.target.value)}
       onBlur={() => onCommit()}
     />
   );
-});
+}

@@ -176,6 +176,7 @@ export default function EditorContainer<R, K extends keyof R>({
   function legacy_createEditor() {
     const editorProps: P & { ref: React.RefObject<Editor> } = {
       ref: editorRef,
+      inputRef,
       column,
       value,
       onChange: setValue,
@@ -208,8 +209,8 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   function createEditor() {
-    const editorProps: P & { ref: React.RefObject<HTMLInputElement> } = {
-      ref: inputRef,
+    const editorProps: P = {
+      inputRef,
       column,
       value,
       onChange: setValue,
@@ -233,7 +234,7 @@ export default function EditorContainer<R, K extends keyof R>({
 
     return (
       <TextEditor
-        ref={inputRef}
+        inputRef={inputRef}
         value={value as string}
         onChange={setValue as unknown as (value: string) => void}
         onCommit={commit}

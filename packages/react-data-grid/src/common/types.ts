@@ -136,6 +136,7 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   rowMetaData?: TDependentValue;
   rowData: TRow;
   height: number;
+  inputRef: React.RefObject<HTMLInputElement>;
   onCommit(): void;
   onCommitCancel(): void;
   onChange(value: TValue): void;
