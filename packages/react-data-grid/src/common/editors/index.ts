@@ -1,2 +1,2 @@
 export { default as SimpleTextEditor } from './SimpleTextEditor';
-export { useDataGridEditor } from './useDataGridEditor';
+export { DataGridEditor, useDataGridEditor, withDataGridEditor } from './useDataGridEditor';

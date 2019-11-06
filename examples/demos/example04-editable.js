@@ -1,7 +1,58 @@
 import React from 'react';
-import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
+import DataGrid, { valueCellContentRenderer, DataGridEditor, withDataGridEditor } from 'react-data-grid';
 import update from 'immutability-helper';
 import Wrapper from './Wrapper';
+
+const box = { boxShadow: '0 0 5px 5px #ddd', padding: 8, background: '#fff', width: 400 };
+const inputWrapper = { marginTop: 8, marginBottom: 8 };
+const input = { height: 34, width: 380 };
+
+class TextEditorWithDataGridEditor extends React.Component {
+  inputRef = React.createRef();
+
+  render() {
+    return (
+      <DataGridEditor inputRef={this.inputRef}>
+        {({ onKeyDown }) => (
+          <div style={box}>
+            <label>TextEditorWithDataGridEditor</label>
+            <div style={inputWrapper}>
+              <input
+                ref={this.inputRef}
+                className="rdg-text-editor"
+                style={input}
+                value={this.props.value}
+                onChange={e => this.props.onChange(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
+            </div>
+          </div>
+        )}
+      </DataGridEditor>
+    );
+  }
+}
+
+class TextEditor extends React.Component {
+  render() {
+    return (
+      <div style={box}>
+        <label>Wrapped TextEditor</label>
+        <div style={inputWrapper}>
+          <input
+            ref={this.props.inputRef}
+            type="number"
+            className="rdg-text-editor"
+            style={input}
+            value={this.props.value}
+            onChange={e => this.props.onChange(e.target.value)}
+            onKeyDown={this.props.onKeyDown}
+          />
+        </div>
+      </div>
+    );
+  }
+}
 
 export default class extends React.Component {
   constructor(props, context) {
@@ -14,23 +65,27 @@ export default class extends React.Component {
       },
       {
         key: 'task',
-        name: 'Title',
+        name: 'Title - new editor',
         editable: true,
         enableNewEditor: true
       },
       {
         key: 'priority',
-        name: 'Priority',
-        editable: true
+        name: 'Priority - render props editor',
+        editable: true,
+        enableNewEditor: true,
+        editor: TextEditorWithDataGridEditor
+      },
+      {
+        key: 'complete',
+        name: '% Complete - HOC editor',
+        editable: true,
+        enableNewEditor: true,
+        editor: withDataGridEditor(TextEditor)
       },
       {
         key: 'issueType',
         name: 'Issue Type',
-        editable: true
-      },
-      {
-        key: 'complete',
-        name: '% Complete',
         editable: true
       },
       {
