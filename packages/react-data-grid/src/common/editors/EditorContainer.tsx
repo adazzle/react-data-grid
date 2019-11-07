@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useRef, useState, useEffect, useCallback } from 'react';
+import React, { KeyboardEvent, useRef, useState, useEffect, useCallback, createElement, cloneElement } from 'react';
 import classNames from 'classnames';
 import { isElement, isValidElementType } from 'react-is';
 import { Clear } from '@material-ui/icons';
@@ -12,18 +12,18 @@ import { InteractionMasksProps, InteractionMasksState } from '../../masks/Intera
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
 
-type ValueType<R> = R[keyof R];
-
-export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
+export interface Props<R, RK extends keyof R, CK extends keyof R> extends SharedInteractionMasksProps<R, RK>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
-  value: ValueType<R>;
-  column: CalculatedColumn<R>;
-  onCommit(e: CommitEvent<R>): void;
+  value: R[CK];
+  column: CalculatedColumn<R, unknown, CK>;
+  onCommit(e: CommitEvent<R, { [k: string]: R[CK] }>): void;
   onCommitCancel(): void;
 }
 
-function getInitialValue<R>({ key, value }: { key: string | null; value: ValueType<R> }): ValueType<R> | string {
+function getInitialValue<R, CK extends keyof R>({ key, value }: { key: string | null; value: R[CK] }): R[CK] | string {
+  // TODO: Do we need to activate editor when Delete, Backspace or other keys are pressed?
+  // These keys only make sense for a textbox editor. Activating a complex editor like a date-picker or a modal would not be intuitive
   if (key === 'Delete' || key === 'Backspace') {
     return '';
   }
@@ -34,7 +34,7 @@ function getInitialValue<R>({ key, value }: { key: string | null; value: ValueTy
   return key || value;
 }
 
-export default function EditorContainer<R, K extends keyof R>({
+export default function EditorContainer<R, RK extends keyof R, CK extends keyof R = keyof R>({
   rowIdx,
   column,
   rowData,
@@ -48,19 +48,20 @@ export default function EditorContainer<R, K extends keyof R>({
   scrollTop,
   firstEditorKeyPress,
   ...props
-}: Props<R, K>) {
-  const editorRef = useRef<Editor>(null);
+}: Props<R, RK, CK>) {
+  const editorRef = useRef<Editor<{ [k: string]: R[CK] }>>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isInvalid, setIsInvalid] = useState(false);
   const [value, setValue] = useState(() => getInitialValue({ key: firstEditorKeyPress, value: props.value }));
   const prevScrollLeft = useRef(scrollLeft);
   const prevScrollTop = useRef(scrollTop);
+  const { enableNewEditor, getRowMetaData, editor } = column;
 
   const getInputNode = useCallback(() => {
-    return column.enableNewEditor
+    return enableNewEditor
       ? inputRef.current
       : editorRef.current && editorRef.current.getInputNode();
-  }, [column.enableNewEditor]);
+  }, [enableNewEditor]);
 
   useEffect(() => {
     const inputNode = getInputNode();
@@ -73,7 +74,7 @@ export default function EditorContainer<R, K extends keyof R>({
     }
   }, [getInputNode]);
 
-  // Cancel changes on scroll
+  // Cancel changes and close editor on scroll
   if (prevScrollLeft.current !== scrollLeft || prevScrollTop.current !== scrollTop) {
     onCommitCancel();
   }
@@ -118,7 +119,6 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   function preventDefaultNavigation(key: string): boolean {
-    console.log(key);
     if (
       (key === 'ArrowLeft' && !isCaretAtBeginningOfInput())
       || (key === 'ArrowRight' && !isCaretAtEndOfInput())
@@ -126,7 +126,7 @@ export default function EditorContainer<R, K extends keyof R>({
       return true;
     }
 
-    return column.enableNewEditor
+    return enableNewEditor
       ? false
       : legacy_preventDefaultNavigation(key);
   }
@@ -141,8 +141,9 @@ export default function EditorContainer<R, K extends keyof R>({
 
   function commit(): void {
     const cellKey = column.key;
-    if (column.enableNewEditor) {
-      const updated = { [cellKey]: value } as never;
+    if (enableNewEditor) {
+      // TODO: Allow users to tweak updated value. This can be useful for editors that update multiple related fields
+      const updated = { [cellKey]: value as R[CK] };
       onCommit({ cellKey, rowIdx, updated });
       return;
     }
@@ -163,45 +164,37 @@ export default function EditorContainer<R, K extends keyof R>({
     }
   }
 
-  function getRowMetaData() {
-    // clone row data so editor cannot actually change this
-    // convention based method to get corresponding Id or Name of any Name or Id property
-    if (column.getRowMetaData) {
-      return column.getRowMetaData(rowData, column);
-    }
-  }
-
-  type P = EditorProps<ValueType<R> | string, unknown, R>;
+  const editorProps: EditorProps<R[CK], unknown, R, CK> = {
+    inputRef,
+    column,
+    value: value as R[CK],
+    onChange: setValue,
+    rowMetaData: getRowMetaData && getRowMetaData(rowData, column),
+    rowData,
+    height,
+    onCommit: commit,
+    onCommitCancel,
+    onOverrideKeyDown: onKeyDown
+  };
 
   function legacy_createEditor() {
-    const editorProps: P & { ref: React.RefObject<Editor> } = {
+    const legacyEditorProps = {
       ref: editorRef,
-      inputRef,
-      column,
-      value,
-      onChange: setValue,
-      rowMetaData: getRowMetaData(),
-      rowData,
-      height,
-      onCommit: commit,
-      onCommitCancel,
-      onOverrideKeyDown: onKeyDown
+      ...editorProps
     };
 
-    const editor = column.editor as React.ComponentType<P>;
-
     if (isElement(editor)) {
-      return React.cloneElement(editor, editorProps);
+      return cloneElement(editor, legacyEditorProps);
     }
 
     if (isValidElementType(editor)) {
-      return React.createElement(editor, editorProps);
+      return createElement(editor, legacyEditorProps);
     }
 
     return (
       <LegacyTextEditor
         ref={editorRef as unknown as React.RefObject<LegacyTextEditor>}
-        column={column as CalculatedColumn<unknown>}
+        column={column}
         value={value as string}
         onCommit={commit}
       />
@@ -209,40 +202,25 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   function createEditor() {
-    const editorProps: P = {
-      inputRef,
-      column,
-      value,
-      onChange: setValue,
-      rowMetaData: getRowMetaData(),
-      rowData,
-      height,
-      onCommit: commit,
-      onCommitCancel
-    };
-
-    // TODO: fix editor types
-    const editor = column.editor as React.ComponentType<P>;
-
     if (isElement(editor)) {
       throw new Error('React element is not supported in the new editor API. Please use a Component.');
     }
 
     if (isValidElementType(editor)) {
-      return React.createElement(editor, editorProps);
+      return createElement(editor, editorProps);
     }
 
     return (
       <TextEditor
         inputRef={inputRef}
         value={value as string}
-        onChange={setValue as unknown as (value: string) => void}
+        onChange={setValue}
         onCommit={commit}
       />
     );
   }
 
-  const className = classNames('rdg-editor-container', { 'has-error': isInvalid });
+  const className = classNames('rdg-editor-container', { 'has-error': !enableNewEditor && isInvalid });
 
   return (
     <ClickOutside onClickOutside={commit}>
@@ -253,7 +231,7 @@ export default function EditorContainer<R, K extends keyof R>({
         onContextMenu={e => e.preventDefault()}
       >
         {
-          column.enableNewEditor
+          enableNewEditor
             ? createEditor()
             : (
               <>

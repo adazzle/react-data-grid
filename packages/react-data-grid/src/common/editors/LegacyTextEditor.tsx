@@ -1,9 +1,9 @@
 import React from 'react';
 import { Editor, EditorProps } from '../types';
 
-type Props = Pick<EditorProps<string>, 'value' | 'column' | 'onCommit'>;
+type LegacyTextEditorProps = Pick<EditorProps<string>, 'value' | 'column' | 'onCommit'>;
 
-export default class LegacyTextEditor extends React.Component<Props> implements Editor<{ [key: string]: string }> {
+export default class LegacyTextEditor extends React.Component<LegacyTextEditorProps> implements Editor<{ [key: string]: string }> {
   private readonly input = React.createRef<HTMLInputElement>();
 
   getInputNode() {

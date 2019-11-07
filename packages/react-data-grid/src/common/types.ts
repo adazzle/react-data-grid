@@ -41,7 +41,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
 
-  getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
+  getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue, TField>): TDependentValue;
 
   enableNewEditor?: boolean;
 }
@@ -50,7 +50,7 @@ export type Column<TRow, TDependentValue = unknown, TField extends keyof TRow = 
   TField extends keyof TRow ? ColumnValue<TRow, TDependentValue, TField> : never;
 
 export type CalculatedColumn<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
-  Column<TRow, TDependentValue, TField> & {
+  ColumnValue<TRow, TDependentValue, TField> & {
     idx: number;
     width: number;
     left: number;
@@ -110,7 +110,7 @@ export interface Dimension {
 
 export type RowGetter<TRow> = (rowIdx: number) => TRow;
 
-export interface Editor<TValue = never> extends React.Component {
+export interface Editor<TValue = unknown> {
   getInputNode(): Element | Text | undefined | null;
   getValue(): TValue;
   hasResults?(): boolean;
@@ -119,10 +119,10 @@ export interface Editor<TValue = never> extends React.Component {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
+export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any, TField extends keyof TRow = keyof TRow> {
   rowIdx: number;
   value: TValue;
-  column: CalculatedColumn<TRow, TDependentValue>;
+  column: CalculatedColumn<TRow, TDependentValue, TField>;
   row: TRow;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
@@ -130,8 +130,8 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
   isSummaryRow: boolean;
 }
 
-export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
-  column: CalculatedColumn<TRow, TDependentValue>;
+export interface EditorProps<TValue, TDependentValue = unknown, TRow = any, TField extends keyof TRow = keyof TRow> {
+  column: CalculatedColumn<TRow, TDependentValue, TField>;
   value: TValue;
   rowMetaData?: TDependentValue;
   rowData: TRow;
@@ -295,7 +295,7 @@ export interface HeaderRowData<TRow> {
 
 export interface AddFilterEvent<TRow> {
   filterTerm: string;
-  column: Column<TRow>;
+  column: CalculatedColumn<TRow>;
 }
 
 export interface CommitEvent<TRow, TUpdatedValue = never> {
