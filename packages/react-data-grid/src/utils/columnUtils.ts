@@ -1,5 +1,6 @@
 import { Column, CalculatedColumn, ColumnMetrics, CellContentRenderer } from '../common/types';
 import { getScrollbarSize } from './domUtils';
+import { SelectColumn } from '../Columns';
 
 interface Metrics<R> {
   columns: Column<R>[];
@@ -64,22 +65,77 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   };
 }
 
+function getMinWidthFromViewportWidth(
+  minWidth: string,
+  viewportWidth: number
+): number {
+  return Math.floor((viewportWidth * parseInt(minWidth, 10)) / 100);
+}
+
+function getSpecifiedMinColumnWidth(
+  viewportWidth: number,
+  minColumnWidth: number,
+  width?: number | string
+): number {
+  switch (typeof width) {
+    case 'string':
+      return /^\d+%$/.test(width)
+        ? getMinWidthFromViewportWidth(width, viewportWidth)
+        : minColumnWidth;
+    case 'number':
+      return width;
+    default:
+      return minColumnWidth;
+  }
+}
+
+function getMinColumnWidthSpecified<R>(
+  column: Column<R>,
+  viewportWidth: number,
+  minColumnWidth: number
+): number {
+  // don't evaluate if minWidth is lower than width for SelectColumn
+  if (column.key === SelectColumn.key) {
+    return getSpecifiedMinColumnWidth(
+      viewportWidth,
+      minColumnWidth,
+      column.width // based on column width
+    );
+  }
+  const minColumnWidthSpecified = getSpecifiedMinColumnWidth(
+    viewportWidth,
+    minColumnWidth,
+    column.minWidth // based on column minWidth, instead of using grid minColumnWidth
+  );
+  return Math.min(minColumnWidthSpecified, minColumnWidth);
+}
+
 function getSpecifiedWidth<R>(
   column: Column<R>,
   columnWidths: Map<keyof R, number>,
   viewportWidth: number,
   minColumnWidth: number
 ): number | void {
+  // get minColumnWidth from column prop or grid prop
+  const minColumnWidthSpecified: number = getMinColumnWidthSpecified(
+    column,
+    viewportWidth,
+    minColumnWidth
+  );
+
   if (columnWidths.has(column.key)) {
     // Use the resized width if available
     return columnWidths.get(column.key);
   }
   if (typeof column.width === 'number') {
     // TODO: allow width to be less than minWidth?
-    return Math.max(column.width, minColumnWidth);
+    return Math.max(column.width, minColumnWidthSpecified);
   }
   if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-    return Math.max(Math.floor(viewportWidth * parseInt(column.width, 10) / 100), minColumnWidth);
+    return Math.max(
+      getMinWidthFromViewportWidth(column.width, viewportWidth),
+      minColumnWidthSpecified
+    );
   }
 }
 
