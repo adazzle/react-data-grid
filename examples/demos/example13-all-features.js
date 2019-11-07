@@ -17,7 +17,7 @@ export default class extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.columns = [
-      SelectColumn,
+      { ...SelectColumn, width: 40 },
       {
         key: 'id',
         name: 'ID',
@@ -125,7 +125,7 @@ export default class extends React.Component {
     };
   }
 
-  createRows = (numberOfRows) => {
+  createRows = numberOfRows => {
     const rows = [];
     for (let i = 0; i < numberOfRows; i++) {
       rows[i] = this.createFakeRowObjectData(i);
@@ -133,7 +133,7 @@ export default class extends React.Component {
     return rows;
   };
 
-  createFakeRowObjectData = (index) => {
+  createFakeRowObjectData = index => {
     return {
       id: `id_${index}`,
       avatar: faker.image.avatar(),
@@ -177,7 +177,7 @@ export default class extends React.Component {
     this.setState({ rows });
   };
 
-  getRowAt = (index) => {
+  getRowAt = index => {
     if (index < 0 || index > this.getSize()) {
       return undefined;
     }
@@ -189,7 +189,7 @@ export default class extends React.Component {
     return this.state.rows.length;
   };
 
-  onSelectedRowsChange = (selectedRows) => {
+  onSelectedRowsChange = selectedRows => {
     this.setState({ selectedRows });
   };
 
@@ -208,6 +208,7 @@ export default class extends React.Component {
                 rowsCount={this.getSize()}
                 onGridRowsUpdated={this.handleGridRowsUpdated}
                 rowHeight={30}
+                minColumnWidth={150}
                 minWidth={width}
                 minHeight={height}
                 selectedRows={this.state.selectedRows}
