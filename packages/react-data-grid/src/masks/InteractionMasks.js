@@ -605,8 +605,8 @@ class InteractionMasks extends React.Component {
         const column = getSelectedColumn({ selectedPosition: draggedPosition, columns });
         const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
         const cellKey = column.key;
-        const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
-        const toRow = rowIdx > overRowIdx ? rowIdx : overRowIdx;
+        const fromRow = rowIdx;
+        const toRow = overRowIdx;
 
         if (isFunction(onCellsDragged)) {
           onCellsDragged({ cellKey, fromRow, toRow, value });
