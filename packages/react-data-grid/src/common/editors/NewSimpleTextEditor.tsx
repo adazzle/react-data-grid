@@ -6,7 +6,7 @@ type Props = Pick<EditorProps<string>, 'value' | 'onChange' | 'onCommit'>;
 
 export default function SimpleTextEditor({ value, onChange, onCommit }: Props): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [onKeyDown] = useDataGridEditor(inputRef, {});
+  const [onKeyDown] = useDataGridEditor(inputRef);
 
   return (
     <input

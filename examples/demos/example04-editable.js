@@ -34,6 +34,14 @@ class TextEditorWithDataGridEditor extends React.Component {
 }
 
 class TextEditor extends React.Component {
+  preventUpDown = (e) => {
+    return e.key === 'ArrowUp' || e.key === 'ArrowDown';
+  };
+
+  onKeyDown = (e) => {
+    this.props.onKeyDown(e, this.preventUpDown);
+  };
+
   render() {
     return (
       <div style={box}>
@@ -46,7 +54,7 @@ class TextEditor extends React.Component {
             style={input}
             value={this.props.value}
             onChange={e => this.props.onChange(e.target.value)}
-            onKeyDown={this.props.onKeyDown}
+            onKeyDown={this.onKeyDown}
           />
         </div>
       </div>
