@@ -1,7 +1,8 @@
 import { valueCellContentRenderer } from '../../Cell/cellContentRenderers';
 import { CalculatedColumn } from '../../common/types';
 
-function createColumn(index: number): CalculatedColumn<{ [key: string]: React.ReactNode }> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createColumn(index: number): CalculatedColumn<{ [key: string]: any }> {
   const key = `Column${index}`;
   return {
     key,
@@ -14,7 +15,8 @@ function createColumn(index: number): CalculatedColumn<{ [key: string]: React.Re
   };
 }
 
-export const createColumns = (count: number): CalculatedColumn<{ [key: string]: React.ReactNode }>[] =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createColumns = (count: number): CalculatedColumn<{ [key: string]: any }>[] =>
   Array(count).fill(null).map((_, i) => createColumn(i));
 
 export const sel = (id: string): string => `[data-test="${id}"]`;
