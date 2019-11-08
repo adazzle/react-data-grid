@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useState, useEffect, useCallback, useRef, cloneElement } from 'react';
+import React, { KeyboardEvent, useState, useEffect, useCallback, useRef, cloneElement, useContext } from 'react';
 import { isValidElementType, isElement } from 'react-is';
 
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
@@ -40,6 +40,10 @@ export interface EditorContext {
 }
 
 export const DataGridEditorContext = React.createContext<Partial<EditorContext>>({});
+
+export function useDataGridEditorContext(): Required<EditorContext> {
+  return useContext(DataGridEditorContext) as Required<EditorContext>;
+}
 
 let changeCommitted = false;
 let changeCanceled = false;

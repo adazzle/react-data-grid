@@ -1,6 +1,6 @@
-import React, { RefObject, useContext, useEffect } from 'react';
-import { DataGridEditorContext, EditorContext } from './NewEditorContainer';
+import React, { RefObject, useEffect, useCallback } from 'react';
 import { EditorProps } from '../..';
+import { useDataGridEditorContext } from './NewEditorContainer';
 
 const navKeys = new Set(['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']);
 
@@ -10,22 +10,32 @@ type DataGridEditorReturnType = [
   OnKeyDown
 ];
 
-export function useDataGridEditor(ref: RefObject<Element | Text | null | undefined> | undefined): DataGridEditorReturnType {
-  const { firstEditorKeyPress, commit, commitCancel, onGridKeyDown } = useContext(DataGridEditorContext) as Required<EditorContext>;
+export function useNodeFocus(ref: RefObject<Element | Text | null | undefined> | undefined): void {
+  useEffect(() => {
+    if (ref && ref.current && ref.current instanceof HTMLElement) {
+      ref.current.focus();
+    }
+  }, [ref]);
+}
+
+export function useInputNodeSelect(ref: RefObject<Element | Text | null | undefined> | undefined): void {
+  const { firstEditorKeyPress } = useDataGridEditorContext();
 
   useEffect(() => {
-    if (ref && ref.current) {
-      if (ref.current instanceof HTMLElement) {
-        ref.current.focus();
-      }
+    if (!ref || !ref.current) {
+      return;
+    }
 
-      if ((firstEditorKeyPress === 'Enter' || firstEditorKeyPress === null) && ref.current instanceof HTMLInputElement) {
-        ref.current.select();
-      }
+    if ((firstEditorKeyPress === 'Enter' || firstEditorKeyPress === null) && ref.current instanceof HTMLInputElement) {
+      ref.current.select();
     }
   }, [firstEditorKeyPress, ref]);
+}
 
-  function preventDefaultNavigation(e: React.KeyboardEvent<HTMLInputElement>, preventNavigation?: (e: React.KeyboardEvent<HTMLInputElement>) => boolean): boolean {
+export function useKeyDownPrevention(ref: RefObject<Element | Text | null | undefined> | undefined): [OnKeyDown] {
+  const { commit, commitCancel, onGridKeyDown } = useDataGridEditorContext();
+
+  const preventDefaultNavigation = useCallback((e: React.KeyboardEvent<HTMLInputElement>, preventNavigation?: (e: React.KeyboardEvent<HTMLInputElement>) => boolean): boolean => {
     if (!ref) {
       return (preventNavigation && preventNavigation(e)) || false;
     }
@@ -51,9 +61,9 @@ export function useDataGridEditor(ref: RefObject<Element | Text | null | undefin
     }
 
     return false;
-  }
+  }, [ref]);
 
-  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>, preventNavigation?: (e: React.KeyboardEvent<HTMLInputElement>) => boolean): void {
+  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>, preventNavigation?: (e: React.KeyboardEvent<HTMLInputElement>) => boolean): void => {
     if (!preventDefaultNavigation(e, preventNavigation)) {
       if (navKeys.has(e.key)) {
         commit();
@@ -63,14 +73,21 @@ export function useDataGridEditor(ref: RefObject<Element | Text | null | undefin
     }
 
     onGridKeyDown && onGridKeyDown(e);
-  }
+  }, [commit, commitCancel, onGridKeyDown, preventDefaultNavigation]);
 
+  return [onKeyDown];
+}
+
+export function useDataGridEditor(ref: RefObject<Element | Text | null | undefined> | undefined): DataGridEditorReturnType {
+  useNodeFocus(ref);
+  useInputNodeSelect(ref);
+  const [onKeyDown] = useKeyDownPrevention(ref);
   return [onKeyDown];
 }
 
 export interface DataGridEditorProps {
   inputRef: React.RefObject<HTMLInputElement | HTMLSelectElement>;
-  children({ onKeyDown }: { onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void }): JSX.Element;
+  children({ onKeyDown }: { onKeyDown: OnKeyDown }): JSX.Element;
 }
 
 export function DataGridEditor({ children, inputRef }: DataGridEditorProps) {
@@ -80,7 +97,7 @@ export function DataGridEditor({ children, inputRef }: DataGridEditorProps) {
 
 export interface WrappedEditorProps<TValue, TDependentValue = unknown, TRow = object> extends EditorProps<TValue, TDependentValue, TRow> {
   inputRef: React.RefObject<HTMLInputElement | HTMLSelectElement>;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown: OnKeyDown;
 }
 
 export function withDataGridEditor<TValue, TDependentValue = unknown, TRow = object>(WrappedComponent: React.ComponentType<WrappedEditorProps<TValue, TDependentValue, TRow>>) {
