@@ -49,8 +49,9 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   firstEditorKeyPress,
   ...props
 }: EditorContainerProps<R, RK, CK>) {
-  const editorRef = useRef<Editor<{ [k: string]: R[CK] }>>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const legacyEditorRef = useRef<Editor<{ [k: string]: R[CK] }>>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const editorRef = useRef<any>(null);
   const [isInvalid, setIsInvalid] = useState(false);
   const [value, setValue] = useState(() => getInitialValue({ key: firstEditorKeyPress, value: props.value }));
   const prevScrollLeft = useRef(scrollLeft);
@@ -59,8 +60,8 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
 
   const getInputNode = useCallback(() => {
     return enableNewEditor
-      ? inputRef.current
-      : editorRef.current && editorRef.current.getInputNode();
+      ? editorRef.current
+      : legacyEditorRef.current && legacyEditorRef.current.getInputNode();
   }, [enableNewEditor]);
 
   useEffect(() => {
@@ -92,20 +93,20 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   function legacy_editorHasResults(): boolean {
-    return editorRef.current && editorRef.current.hasResults
-      ? editorRef.current.hasResults()
+    return legacyEditorRef.current && legacyEditorRef.current.hasResults
+      ? legacyEditorRef.current.hasResults()
       : false;
   }
 
   function legacy_editorIsSelectOpen(): boolean {
-    return editorRef.current && editorRef.current.isSelectOpen
-      ? editorRef.current.isSelectOpen()
+    return legacyEditorRef.current && legacyEditorRef.current.isSelectOpen
+      ? legacyEditorRef.current.isSelectOpen()
       : false;
   }
 
   function legacy_isNewValueValid(value: unknown): boolean {
-    if (editorRef.current && editorRef.current.validate) {
-      const isValid = editorRef.current.validate(value);
+    if (legacyEditorRef.current && legacyEditorRef.current.validate) {
+      const isValid = legacyEditorRef.current.validate(value);
       setIsInvalid(!isValid);
       return isValid;
     }
@@ -132,7 +133,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   function legacy_commit(): void {
-    const updated = editorRef.current!.getValue();
+    const updated = legacyEditorRef.current!.getValue();
     if (legacy_isNewValueValid(updated)) {
       const cellKey = column.key;
       onCommit({ cellKey, rowIdx, updated });
@@ -165,7 +166,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   const editorProps: EditorProps<R[CK], unknown, R, CK> = {
-    inputRef,
+    editorRef,
     column,
     value: value as R[CK],
     onChange: setValue,
@@ -179,7 +180,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
 
   function legacy_createEditor() {
     const legacyEditorProps = {
-      ref: editorRef,
+      ref: legacyEditorRef,
       ...editorProps
     };
 
@@ -193,7 +194,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
 
     return (
       <LegacyTextEditor
-        ref={editorRef as unknown as React.RefObject<LegacyTextEditor>}
+        ref={legacyEditorRef as unknown as React.RefObject<LegacyTextEditor>}
         column={column}
         value={value as string}
         onCommit={commit}
@@ -212,7 +213,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
 
     return (
       <TextEditor
-        inputRef={inputRef}
+        editorRef={editorRef}
         value={value as string}
         onChange={setValue}
         onCommit={commit}

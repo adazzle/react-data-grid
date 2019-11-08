@@ -2,17 +2,17 @@ import React from 'react';
 
 import { EditorProps } from '../types';
 
-type TextEditorProps = Pick<EditorProps<string>, 'value' | 'onChange' | 'onCommit' | 'inputRef'>;
+type TextEditorProps = Pick<EditorProps<string>, 'value' | 'onChange' | 'onCommit' | 'editorRef'>;
 
 export default function TextEditor({
   value,
   onChange,
   onCommit,
-  inputRef
+  editorRef
 }: TextEditorProps) {
   return (
     <input
-      ref={inputRef}
+      ref={editorRef}
       className="rdg-text-editor"
       value={value}
       onChange={e => onChange(e.target.value)}
