@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
 
-import EditorContainer, { Props } from '../EditorContainer';
+import EditorContainer, { EditorContainerProps } from '../EditorContainer';
 import SimpleTextEditor from '../LegacyTextEditor';
 import { valueCellContentRenderer } from '../../../Cell/cellContentRenderers';
 import { CalculatedColumn, EditorProps } from '../../types';
@@ -35,7 +35,7 @@ function DefaultEditor() {
   );
 }
 
-const fakeColumn: CalculatedColumn<Row> = {
+const fakeColumn: CalculatedColumn<Row, unknown, 'col1'> = {
   idx: 0,
   name: 'col1',
   key: 'col1',
@@ -44,8 +44,8 @@ const fakeColumn: CalculatedColumn<Row> = {
   cellContentRenderer: valueCellContentRenderer
 };
 
-const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps) => {
-  const props: Props<Row, 'id'> = {
+const setup = (extraProps?: Partial<EditorContainerProps<Row, 'id', 'col1'>>, opts?: MountRendererProps) => {
+  const props: EditorContainerProps<Row, 'id', 'col1'> = {
     rowIdx: 0,
     rowData: {
       id: '1',
@@ -66,7 +66,7 @@ const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps
     scrollTop: 0,
     ...extraProps
   };
-  const wrapper = mount<EditorContainer<Row, 'id'>>(<EditorContainer {...props} />, opts);
+  const wrapper = mount(<EditorContainer<Row, 'id', 'col1'> {...props} />, opts);
 
   return { wrapper, props };
 };
@@ -75,7 +75,7 @@ describe('Editor Container Tests', () => {
   describe('Basic render tests', () => {
     it('should select the text of the default input when the editor is rendered', () => {
       const { wrapper } = setup();
-      const input = wrapper.instance().getInputNode() as HTMLInputElement;
+      const input = wrapper.find('input').getDOMNode<HTMLInputElement>();
       expect(input.selectionStart === 0 && input.selectionEnd === input.value.length).toBe(true);
     });
 
@@ -99,7 +99,7 @@ describe('Editor Container Tests', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps<Row[keyof Row]>> {
+    class TestEditor extends React.Component<EditorProps<Row['col1']>> {
       getValue() {
         return undefined;
       }

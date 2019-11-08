@@ -16,8 +16,8 @@ describe('SimpleTextEditor', () => {
       left: 0,
       cellContentRenderer: valueCellContentRenderer
     };
-    function fakeBlurCb() { return true; }
 
+    const fakeBlurCb = jest.fn();
     function setup() {
       return mount<SimpleTextEditor>(
         <SimpleTextEditor
@@ -29,7 +29,8 @@ describe('SimpleTextEditor', () => {
     }
 
     it('should pass the onBlur fuction down to the input as a prop', () => {
-      expect(setup().prop('onBlur')).toBe(fakeBlurCb);
+      setup().find('input').simulate('blur');
+      expect(fakeBlurCb).toHaveBeenCalled();
     });
 
     it('should return the value when getValue is called', () => {

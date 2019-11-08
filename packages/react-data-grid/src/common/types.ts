@@ -18,7 +18,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   };
   cellContentRenderer?: CellContentRenderer<TRow>;
   /** Formatter to be used to render the cell content */
-  formatter?: React.ReactElement | React.ComponentType<FormatterProps<TRow[TField], TDependentValue, TRow>>;
+  formatter?: React.ReactElement | React.ComponentType<FormatterProps<TRow[TField], TDependentValue, TRow, TField>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: TRow) => boolean);
   /** Enable dragging of a column */
@@ -34,7 +34,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow>>;
+  editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow, TField>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
@@ -119,7 +119,7 @@ export interface Editor<TValue = unknown> {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any, TField extends keyof TRow = keyof TRow> {
+export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any, TField extends keyof TRow = any> {
   rowIdx: number;
   value: TValue;
   column: CalculatedColumn<TRow, TDependentValue, TField>;
@@ -130,7 +130,7 @@ export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any, T
   isSummaryRow: boolean;
 }
 
-export interface EditorProps<TValue, TDependentValue = unknown, TRow = any, TField extends keyof TRow = keyof TRow> {
+export interface EditorProps<TValue, TDependentValue = unknown, TRow = any, TField extends keyof TRow = any> {
   column: CalculatedColumn<TRow, TDependentValue, TField>;
   value: TValue;
   rowMetaData?: TDependentValue;

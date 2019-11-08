@@ -10,7 +10,7 @@ export default class LegacyTextEditor extends React.Component<LegacyTextEditorPr
     return this.input.current;
   }
 
-  getValue() {
+  getValue(): { [key: string]: string } {
     return {
       [this.props.column.key]: this.input.current!.value
     };

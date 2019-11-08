@@ -12,7 +12,7 @@ import { InteractionMasksProps, InteractionMasksState } from '../../masks/Intera
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
 
-export interface Props<R, RK extends keyof R, CK extends keyof R> extends SharedInteractionMasksProps<R, RK>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R, RK extends keyof R, CK extends keyof R> extends SharedInteractionMasksProps<R, RK>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
   value: R[CK];
@@ -48,7 +48,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   scrollTop,
   firstEditorKeyPress,
   ...props
-}: Props<R, RK, CK>) {
+}: EditorContainerProps<R, RK, CK>) {
   const editorRef = useRef<Editor<{ [k: string]: R[CK] }>>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isInvalid, setIsInvalid] = useState(false);
