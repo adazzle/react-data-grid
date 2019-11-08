@@ -116,7 +116,6 @@ export interface Editor<TValue = unknown> {
   hasResults?(): boolean;
   isSelectOpen?(): boolean;
   validate?(value: unknown): boolean;
-  readonly disableContainerStyles?: boolean;
 }
 
 export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any, TField extends keyof TRow = any> {
