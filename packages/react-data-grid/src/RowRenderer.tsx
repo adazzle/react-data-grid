@@ -111,7 +111,8 @@ function RowRenderer<R, K extends keyof R>({
       <RowGroup
         {...rowGroupProps}
         {...__metaData!}
-        columns={columns as CalculatedColumn<unknown>[]}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        columns={columns as CalculatedColumn<any>[]}
         name={(rowData as RowData).name!}
         eventBus={eventBus}
         renderer={rowGroupRenderer}
