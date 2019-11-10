@@ -13,7 +13,7 @@ import { isValidElementType } from 'react-is';
 import Header, { HeaderHandle } from './Header';
 import Canvas from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
-import { getColumnMetrics, getWidth } from './utils/columnUtils';
+import { getColumnMetrics } from './utils/columnUtils';
 import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import {
@@ -247,7 +247,7 @@ function DataGrid<R, K extends keyof R>({
 
   function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
-    const minWidth = getWidth(viewportWidth, column.minWidth, minColumnWidth) as number;
+    const minWidth = typeof column.minWidth === 'number' ? column.minWidth : minColumnWidth;
     width = Math.max(width, minWidth);
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
