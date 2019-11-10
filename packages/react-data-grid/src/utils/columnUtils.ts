@@ -65,77 +65,52 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   };
 }
 
-function getMinWidthFromViewportWidth(
+function getWidthFromViewport(
   minWidth: string,
   viewportWidth: number
 ): number {
   return Math.floor((viewportWidth * parseInt(minWidth, 10)) / 100);
 }
 
-function getSpecifiedMinColumnWidth(
+// get column width, fallback on defaultWidth when width is undefined
+export function getWidth(
   viewportWidth: number,
-  minColumnWidth: number,
-  width?: number | string
-): number {
-  switch (typeof width) {
+  minWidth?: number | string,
+  defaultWidth?: number
+): number | void {
+  switch (typeof minWidth) {
     case 'string':
-      return /^\d+%$/.test(width)
-        ? getMinWidthFromViewportWidth(width, viewportWidth)
-        : minColumnWidth;
+      return /^\d+%$/.test(minWidth)
+        ? getWidthFromViewport(minWidth, viewportWidth)
+        : defaultWidth;
     case 'number':
-      return width;
+      return minWidth;
     default:
-      return minColumnWidth;
+      return defaultWidth;
   }
-}
-
-function getMinColumnWidthSpecified<R>(
-  column: Column<R>,
-  viewportWidth: number,
-  minColumnWidth: number
-): number {
-  // don't evaluate if minWidth is lower than width for SelectColumn
-  if (column.key === SelectColumn.key) {
-    return getSpecifiedMinColumnWidth(
-      viewportWidth,
-      minColumnWidth,
-      column.width // based on column width
-    );
-  }
-  const minColumnWidthSpecified = getSpecifiedMinColumnWidth(
-    viewportWidth,
-    minColumnWidth,
-    column.minWidth // based on column minWidth, instead of using grid minColumnWidth
-  );
-  return Math.min(minColumnWidthSpecified, minColumnWidth);
 }
 
 function getSpecifiedWidth<R>(
   column: Column<R>,
   columnWidths: Map<keyof R, number>,
   viewportWidth: number,
-  minColumnWidth: number
+  defaultMinColumnWidth: number
 ): number | void {
-  // get minColumnWidth from column prop or grid prop
-  const minColumnWidthSpecified: number = getMinColumnWidthSpecified(
-    column,
-    viewportWidth,
-    minColumnWidth
-  );
+  // get column min width from grid or column prop, fallback on defaultMinColumnWidth if undefined
+  const minWidth = getWidth(viewportWidth, column.minWidth, defaultMinColumnWidth) as number;
+  const width = getWidth(viewportWidth, column.width);
+
+  // SelectColumn must always use width prop when defined
+  if (column.key === SelectColumn.key) {
+    return width || minWidth;
+  }
 
   if (columnWidths.has(column.key)) {
     // Use the resized width if available
     return columnWidths.get(column.key);
   }
-  if (typeof column.width === 'number') {
-    // TODO: allow width to be less than minWidth?
-    return Math.max(column.width, minColumnWidthSpecified);
-  }
-  if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-    return Math.max(
-      getMinWidthFromViewportWidth(column.width, viewportWidth),
-      minColumnWidthSpecified
-    );
+  if (width !== undefined) {
+    return Math.max(width, minWidth);
   }
 }
 

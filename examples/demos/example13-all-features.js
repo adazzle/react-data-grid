@@ -22,6 +22,7 @@ export default class extends React.Component {
         key: 'id',
         name: 'ID',
         width: 80,
+        minWidth: 60,
         resizable: true,
         frozen: true
       },
@@ -29,6 +30,7 @@ export default class extends React.Component {
         key: 'avatar',
         name: 'Avatar',
         width: 60,
+        minWidth: 60,
         formatter: ImageFormatter,
         resizable: true,
         headerRenderer: <ImageFormatter value={faker.image.cats()} />
@@ -38,6 +40,7 @@ export default class extends React.Component {
         name: 'Title',
         editor: <DropDownEditor options={titles} />,
         width: 200,
+        minWidth: 50,
         resizable: true,
         events: {
           onClick: (ev, { idx, rowIdx }) => {
@@ -65,28 +68,28 @@ export default class extends React.Component {
         key: 'email',
         name: 'Email',
         editable: true,
-        width: 200,
+        minWidth: 250,
         resizable: true
       },
       {
         key: 'street',
         name: 'Street',
         editable: true,
-        width: 200,
+        minWidth: 200,
         resizable: true
       },
       {
         key: 'zipCode',
         name: 'ZipCode',
         editable: true,
-        width: 200,
+        minWidth: 80,
         resizable: true
       },
       {
         key: 'date',
         name: 'Date',
         editable: true,
-        width: 200,
+        minWidth: 100,
         resizable: true
       },
       {
@@ -125,7 +128,7 @@ export default class extends React.Component {
     };
   }
 
-  createRows = numberOfRows => {
+  createRows = (numberOfRows) => {
     const rows = [];
     for (let i = 0; i < numberOfRows; i++) {
       rows[i] = this.createFakeRowObjectData(i);
@@ -133,7 +136,7 @@ export default class extends React.Component {
     return rows;
   };
 
-  createFakeRowObjectData = index => {
+  createFakeRowObjectData = (index) => {
     return {
       id: `id_${index}`,
       avatar: faker.image.avatar(),
@@ -177,7 +180,7 @@ export default class extends React.Component {
     this.setState({ rows });
   };
 
-  getRowAt = index => {
+  getRowAt = (index) => {
     if (index < 0 || index > this.getSize()) {
       return undefined;
     }
@@ -189,7 +192,7 @@ export default class extends React.Component {
     return this.state.rows.length;
   };
 
-  onSelectedRowsChange = selectedRows => {
+  onSelectedRowsChange = (selectedRows) => {
     this.setState({ selectedRows });
   };
 

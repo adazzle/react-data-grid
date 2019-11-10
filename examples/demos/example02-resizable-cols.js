@@ -11,12 +11,13 @@ export default class extends React.Component {
         key: 'id',
         name: 'ID',
         resizable: true,
-        width: 40
+        minWidth: 40
       },
       {
         key: 'task',
         name: 'Title',
-        resizable: true
+        resizable: true,
+        minWidth: 80
       },
       {
         key: 'priority',
@@ -26,7 +27,8 @@ export default class extends React.Component {
       {
         key: 'issueType',
         name: 'Issue Type',
-        resizable: true
+        resizable: true,
+        width: 150
       },
       {
         key: 'complete',
