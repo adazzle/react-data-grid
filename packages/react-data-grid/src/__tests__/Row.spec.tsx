@@ -1,20 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { shallow } from 'enzyme';
 
 import Row from '../Row';
-import Cell from '../Cell';
+import Cell, { CellProps } from '../Cell';
 import { createColumns } from './utils';
 import { IRowRendererProps, CellMetaData } from '../common/types';
 
-type RowType = any;
+interface RowType { [key: string]: string | number }
 
 describe('Row', () => {
   const COLUMN_COUNT = 50;
 
   function setup(props: IRowRendererProps<RowType>) {
     const wrapper = shallow<Row<RowType>>(<Row {...props} />);
-    const cells = wrapper.find(Cell);
+    const cells = wrapper.find<CellProps<RowType>>(Cell);
     return { wrapper, cells };
   }
 
@@ -50,7 +49,7 @@ describe('Row', () => {
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
-    onRowSelectionChange() {},
+    onRowSelectionChange() { },
     isSummaryRow: false
   };
 
