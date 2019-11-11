@@ -738,8 +738,8 @@ describe('<InteractionMasks/>', () => {
   });
 
   describe('Drag functionality', () => {
-    const setupDrag = (overrideProps?: any) => {
-      const selectedPosition = { idx: 1, rowIdx: 2, ...overrideProps };
+    const setupDrag = (rowIdx: number = 2) => {
+      const selectedPosition = { idx: 1, rowIdx };
       const rows = [
         { Column1: '1' },
         { Column1: '2' },
@@ -784,7 +784,7 @@ describe('<InteractionMasks/>', () => {
     });
 
     it('should update the dragged over cells on upwards drag end', () => {
-      const { wrapper, props } = setupDrag({ rowIdx: 4 });
+      const { wrapper, props } = setupDrag(4);
       const setData = jest.fn();
       wrapper.find(DragHandle).simulate('dragstart', {
         target: { className: 'test' },
