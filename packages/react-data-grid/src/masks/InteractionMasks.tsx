@@ -580,10 +580,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     const column = columns[draggedPosition.idx];
     const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
     const cellKey = column.key;
-    const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
-    const toRow = rowIdx > overRowIdx ? rowIdx : overRowIdx;
 
-    onGridRowsUpdated(cellKey, fromRow, toRow, { [cellKey]: value }, UpdateActions.CELL_DRAG);
+    onGridRowsUpdated(cellKey, rowIdx, overRowIdx, { [cellKey]: value }, UpdateActions.CELL_DRAG);
 
     this.setState({
       draggedPosition: null
