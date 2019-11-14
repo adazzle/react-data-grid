@@ -390,14 +390,11 @@ export default class ReactDataGrid<R extends {}> extends React.Component<DataGri
     }
 
     const rowIds = [];
-    if (fromRow >= toRow) {
-      for (let i = fromRow; i <= toRow; i++) {
-        rowIds.push(rowGetter(i)[rowKey]);
-      }
-    } else {
-      for (let i = fromRow; i >= toRow; i--) {
-        rowIds.push(rowGetter(i)[rowKey]);
-      }
+    const start = Math.min(fromRow, toRow);
+    const end = Math.max(fromRow, toRow);
+
+    for (let i = start; i <= end; i++) {
+      rowIds.push(rowGetter(i)[rowKey]);
     }
 
     const fromRowData = rowGetter(action === UpdateActions.COPY_PASTE ? originRow! : fromRow);
