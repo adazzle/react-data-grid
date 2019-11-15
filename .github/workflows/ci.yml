@@ -1,0 +1,19 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: npm install
+      run: npm i
+    - name: ESLint
+      run: npm run eslint
+    - name: Build
+      run: npm run build
+    - name: Test
+      run: npm t
