@@ -37,7 +37,7 @@ import {
   SubRowDetails,
   SubRowOptions,
   IRowRendererProps,
-  ScrollPosition
+  ScrollOption
 } from './common/types';
 
 export interface DataGridProps<R, K extends keyof R> {
@@ -116,7 +116,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
   /** Called when the grid is scrolled */
-  onScroll?(scrollPosition: ScrollPosition): void;
+  onScroll?(scrollOption: ScrollOption): void;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   getValidFilterValues?(columnKey: keyof R): unknown;
@@ -256,7 +256,7 @@ function DataGrid<R, K extends keyof R>({
     }
   }
 
-  function handleScroll(scrollPosition: ScrollPosition) {
+  function handleScroll(scrollPosition: ScrollOption) {
     if (headerRef.current && scrollLeft.current !== scrollPosition.scrollLeft) {
       scrollLeft.current = scrollPosition.scrollLeft;
       headerRef.current.setScrollLeft(scrollPosition.scrollLeft);

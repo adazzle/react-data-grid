@@ -212,6 +212,17 @@ export default class extends React.Component {
                 minHeight={height}
                 selectedRows={this.state.selectedRows}
                 onSelectedRowsChange={this.onSelectedRowsChange}
+                onScroll={(scrollOption) => {
+                  if (scrollOption.reachedBottom) {
+                    this.setState(({ rows }) => {
+                      const newRows = [];
+                      for (let i = 0; i < 50; i++) {
+                        newRows[i] = { ...this.createFakeRowObjectData(i), id: i + rows.length };
+                      }
+                      return { rows: [...rows, ...newRows] };
+                    });
+                  }
+                }}
               />
             )}
           </AutoSizer>

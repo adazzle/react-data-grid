@@ -254,6 +254,10 @@ export interface ScrollPosition {
   scrollTop: number;
 }
 
+export interface ScrollOption extends ScrollPosition {
+  reachedBottom?: boolean;
+}
+
 export interface InteractionMasksMetaData<TRow> {
   onCheckCellIsEditable?(e: CheckCellIsEditableEvent<TRow>): boolean;
   onCellCopyPaste?(e: CellCopyPasteEvent<TRow>): void;

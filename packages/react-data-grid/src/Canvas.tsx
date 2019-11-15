@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, ScrollPosition } from './common/types';
+import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, ScrollOption } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
@@ -38,7 +38,7 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   height: number;
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
-  onScroll(position: ScrollPosition): void;
+  onScroll(position: ScrollOption): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
@@ -109,6 +109,12 @@ export default function Canvas<R, K extends keyof R>({
       current.scrollTop = scrollToRowIndex * rowHeight;
     }
   }, [rowHeight, scrollToRowIndex]);
+
+  useEffect(() => {
+    if (scrollTop + clientHeight - rowHeight * rowsCount === 8) {
+      onScroll({ scrollLeft, scrollTop, reachedBottom: true });
+    }
+  }, [scrollTop, rowHeight, rowsCount, rowOverscanEndIdx, clientHeight, onScroll, scrollLeft]);
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft, scrollTop } = e.currentTarget;
