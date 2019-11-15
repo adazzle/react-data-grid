@@ -311,7 +311,10 @@ function DataGrid<R, K extends keyof R>({
     }
 
     const rowIds = [];
-    for (let i = fromRow; i <= toRow; i++) {
+    const start = Math.min(fromRow, toRow);
+    const end = Math.max(fromRow, toRow);
+
+    for (let i = start; i <= end; i++) {
       rowIds.push(rowGetter(i)[rowKey]);
     }
 
