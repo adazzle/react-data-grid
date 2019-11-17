@@ -26,7 +26,7 @@ import {
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, ColumnMetrics } from '../common/types';
+import { CalculatedColumn, Position, SelectedRange, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 export enum KeyCodes {
@@ -55,9 +55,19 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'eventBus'
 | 'contextMenu'
 | 'editorPortalTarget'
+| 'onCheckCellIsEditable'
+| 'onCellCopyPaste'
+| 'onCellSelected'
+| 'onCellDeSelected'
+| 'onDragHandleDoubleClick'
+| 'onCellRangeSelectionStarted'
+| 'onCellRangeSelectionUpdated'
+| 'onCellRangeSelectionCompleted'
+| 'onCommit'
+| 'onGridRowsUpdated'
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
-export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K>, InteractionMasksMetaData<R> {
+export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   onHitTopBoundary(position: Position): void;
   onHitBottomBoundary(position: Position): void;
   onHitLeftBoundary(position: Position): void;

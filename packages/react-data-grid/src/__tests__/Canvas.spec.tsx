@@ -31,11 +31,9 @@ const testProps: CanvasProps<Row, 'id'> = {
     onCellExpand() { },
     onRowExpandToggle() { }
   },
-  interactionMasksMetaData: {
-    onCommit() { },
-    onGridRowsUpdated: noop,
-    onDragHandleDoubleClick: noop
-  },
+  onCommit() { },
+  onGridRowsUpdated: noop,
+  onDragHandleDoubleClick: noop,
   onRowSelectionChange() {},
   enableCellSelect: true,
   enableCellAutoFocus: false,

@@ -28,7 +28,6 @@ import {
   CommitEvent,
   GridRowsUpdatedEvent,
   HeaderRowData,
-  InteractionMasksMetaData,
   Position,
   RowsContainerProps,
   RowExpandToggleEvent,
@@ -135,7 +134,6 @@ export interface DataGridProps<R, K extends keyof R> {
   onCellExpand?(options: SubRowOptions<R>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
 
-  /** InteractionMasksMetaData */
   /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
   onCellCopyPaste?(event: CellCopyPasteEvent<R>): void;
   /** Function called whenever a cell is selected */
@@ -237,8 +235,8 @@ function DataGrid<R, K extends keyof R>({
     };
   }, [eventBus, cellRangeSelection]);
 
-  function selectCell({ idx, rowIdx }: Position, openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
+  function selectCell(position: Position, openEditor?: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
   }
 
   function getColumn(idx: number) {
@@ -299,12 +297,12 @@ function DataGrid<R, K extends keyof R>({
     openCellEditor(rowIdx, idx);
   }
 
-  const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
+  function handleDragHandleDoubleClick(e: Position & { rowData: R }) {
     const cellKey = getColumn(e.idx).key;
     handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
-  };
+  }
 
-  const handleGridRowsUpdated: InteractionMasksMetaData<R>['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
+  function handleGridRowsUpdated(cellKey: keyof R, fromRow: number, toRow: number, updated: { [key: string]: unknown }, action: UpdateActions, originRow?: number) {
     const { onGridRowsUpdated } = props;
     if (!onGridRowsUpdated) {
       return;
@@ -322,7 +320,7 @@ function DataGrid<R, K extends keyof R>({
     const fromRowId = fromRowData[rowKey];
     const toRowId = rowGetter(toRow)[rowKey];
     onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated: updated as never, action, fromRowData });
-  };
+  }
 
   function handleCommit(commit: CommitEvent<R>) {
     const targetRow = commit.rowIdx;
@@ -396,19 +394,6 @@ function DataGrid<R, K extends keyof R>({
     cellMetaData.onCellMouseEnter = handleCellMouseEnter;
   }
 
-  const interactionMasksMetaData: InteractionMasksMetaData<R> = {
-    onCheckCellIsEditable: props.onCheckCellIsEditable,
-    onCellCopyPaste: props.onCellCopyPaste,
-    onGridRowsUpdated: handleGridRowsUpdated,
-    onDragHandleDoubleClick: handleDragHandleDoubleClick,
-    onCellSelected: props.onCellSelected,
-    onCellDeSelected: props.onCellDeSelected,
-    onCellRangeSelectionStarted: cellRangeSelection && cellRangeSelection.onStart,
-    onCellRangeSelectionUpdated: cellRangeSelection && cellRangeSelection.onUpdate,
-    onCellRangeSelectionCompleted: cellRangeSelection && cellRangeSelection.onComplete,
-    onCommit: handleCommit
-  };
-
   const headerRows = getHeaderRows();
   const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
 
@@ -459,13 +444,22 @@ function DataGrid<R, K extends keyof R>({
               enableCellAutoFocus={enableCellAutoFocus}
               cellNavigationMode={cellNavigationMode}
               eventBus={eventBus}
-              interactionMasksMetaData={interactionMasksMetaData}
               RowsContainer={props.RowsContainer}
               editorPortalTarget={editorPortalTarget}
               onCanvasKeydown={props.onGridKeyDown}
               onCanvasKeyup={props.onGridKeyUp}
               renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
+              onCheckCellIsEditable={props.onCheckCellIsEditable}
+              onCellCopyPaste={props.onCellCopyPaste}
+              onGridRowsUpdated={handleGridRowsUpdated}
+              onDragHandleDoubleClick={handleDragHandleDoubleClick}
+              onCellSelected={props.onCellSelected}
+              onCellDeSelected={props.onCellDeSelected}
+              onCellRangeSelectionStarted={cellRangeSelection && cellRangeSelection.onStart}
+              onCellRangeSelectionUpdated={cellRangeSelection && cellRangeSelection.onUpdate}
+              onCellRangeSelectionCompleted={cellRangeSelection && cellRangeSelection.onComplete}
+              onCommit={handleCommit}
             />
           )}
         </>

@@ -254,26 +254,6 @@ export interface ScrollPosition {
   scrollTop: number;
 }
 
-export interface InteractionMasksMetaData<TRow> {
-  onCheckCellIsEditable?(e: CheckCellIsEditableEvent<TRow>): boolean;
-  onCellCopyPaste?(e: CellCopyPasteEvent<TRow>): void;
-  onGridRowsUpdated(
-    cellKey: keyof TRow,
-    toRow1: number,
-    toRow2: number,
-    data: { [key: string]: unknown }, // FIX ME: Use Pick<R, K>
-    updateAction: UpdateActions,
-    fromRow?: number
-  ): void;
-  onDragHandleDoubleClick(data: Position & { rowData: TRow }): void;
-  onCellSelected?(position: Position): void;
-  onCellDeSelected?(position: Position): void;
-  onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
-  onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
-  onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onCommit(e: CommitEvent<TRow>): void;
-}
-
 export interface RowGroupMetaData {
   isGroup: boolean;
   treeDepth: number;
