@@ -136,10 +136,8 @@ export interface DataGridProps<R, K extends keyof R> {
 
   /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
   onCellCopyPaste?(event: CellCopyPasteEvent<R>): void;
-  /** Function called whenever a cell is selected */
-  onCellSelected?(position: Position): void;
-  /** Function called whenever a cell is deselected */
-  onCellDeSelected?(position: Position): void;
+  /** Function called whenever selected cell is changed */
+  onSelectedCellChange?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
   /**
@@ -454,8 +452,7 @@ function DataGrid<R, K extends keyof R>({
               onCellCopyPaste={props.onCellCopyPaste}
               onGridRowsUpdated={handleGridRowsUpdated}
               onDragHandleDoubleClick={handleDragHandleDoubleClick}
-              onCellSelected={props.onCellSelected}
-              onCellDeSelected={props.onCellDeSelected}
+              onSelectedCellChange={props.onSelectedCellChange}
               onCellRangeSelectionStarted={cellRangeSelection && cellRangeSelection.onStart}
               onCellRangeSelectionUpdated={cellRangeSelection && cellRangeSelection.onUpdate}
               onCellRangeSelectionCompleted={cellRangeSelection && cellRangeSelection.onComplete}

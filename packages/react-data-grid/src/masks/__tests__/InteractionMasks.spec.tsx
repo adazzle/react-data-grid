@@ -25,7 +25,7 @@ describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
   function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
-    const onCellSelected = jest.fn();
+    const onSelectedCellChange = jest.fn();
     const props: InteractionMasksProps<Row, 'id'> = {
       height: 100,
       colVisibleStartIdx: 0,
@@ -37,8 +37,7 @@ describe('<InteractionMasks/>', () => {
       onHitTopBoundary: jest.fn(),
       onHitRightBoundary: jest.fn(),
       onHitLeftBoundary: jest.fn(),
-      onCellSelected,
-      onCellDeSelected: jest.fn(),
+      onSelectedCellChange,
       onCellRangeSelectionStarted: jest.fn(),
       onCellRangeSelectionUpdated: jest.fn(),
       onCellRangeSelectionCompleted: jest.fn(),
@@ -60,13 +59,13 @@ describe('<InteractionMasks/>', () => {
     if (isMount) {
       const wrapper = mount<InteractionMasks<Row, 'id'>>(<InteractionMasks {...props} />);
       initialState && wrapper.setState(initialState);
-      onCellSelected.mockReset();
+      onSelectedCellChange.mockReset();
       return { wrapper, props };
     }
 
     const wrapper = shallow<InteractionMasks<Row, 'id'>>(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
     initialState && wrapper.setState(initialState);
-    onCellSelected.mockReset();
+    onSelectedCellChange.mockReset();
     return { wrapper, props };
   }
 
@@ -512,42 +511,26 @@ describe('<InteractionMasks/>', () => {
 
         describe('when cell selection/deselection handlers are passed', () => {
           describe('cell in the middle of the grid is selected', () => {
-            it('deselection handler should have been called when moving to the next cell when press Tab', () => {
-              const { wrapper, props, initialCell } = setupCellSelectionTest();
-              simulateTab(wrapper);
-              expect(props.onCellDeSelected).toHaveBeenCalledWith(initialCell);
-            });
             it('selection handler should have been called when moving to the next cell', () => {
               const { wrapper, props } = setupCellSelectionTest();
               simulateTab(wrapper);
-              expect(props.onCellSelected).toHaveBeenCalledWith(expect.objectContaining({ rowIdx: 2, idx: 3 }));
+              expect(props.onSelectedCellChange).toHaveBeenCalledWith(expect.objectContaining({ rowIdx: 2, idx: 3 }));
             });
           });
 
           describe('user is able to exit the grid to the left', () => {
-            it('triggers the deselection handler on press Shift+Tab', () => {
-              const { wrapper, props, initialCell } = setupCellSelectionTest({ rowIdx: 0, idx: 0 });
-              simulateTab(wrapper, true);
-              expect(props.onCellDeSelected).toHaveBeenCalledWith(initialCell);
-            });
             it('does not trigger the selection handler on press Shift+Tab', () => {
               const { wrapper, props } = setupCellSelectionTest({ rowIdx: 0, idx: 0 });
               simulateTab(wrapper, true);
-              expect(props.onCellSelected).not.toHaveBeenCalled();
+              expect(props.onSelectedCellChange).not.toHaveBeenCalled();
             });
           });
 
           describe('user is able to exit the grid to the right', () => {
-            it('triggers the deselection handler on press Tab', () => {
-              const { wrapper, props, initialCell } = setupCellSelectionTest();
-              simulateTab(wrapper);
-              expect(props.onCellDeSelected).toHaveBeenCalledWith(initialCell);
-            });
-
             it('does not trigger the selection handler on press Tab', () => {
               const { wrapper, props } = setupCellSelectionTest({ rowIdx: ROWS_COUNT - 1, idx: 9 });
               simulateTab(wrapper);
-              expect(props.onCellSelected).not.toHaveBeenCalled();
+              expect(props.onSelectedCellChange).not.toHaveBeenCalled();
             });
           });
         });
@@ -734,7 +717,7 @@ describe('<InteractionMasks/>', () => {
   });
 
   describe('Drag functionality', () => {
-    const setupDrag = (rowIdx: number = 2) => {
+    const setupDrag = (rowIdx = 2) => {
       const selectedPosition = { idx: 1, rowIdx };
       const rows = [
         { Column1: '1' },

@@ -57,8 +57,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'editorPortalTarget'
 | 'onCheckCellIsEditable'
 | 'onCellCopyPaste'
-| 'onCellSelected'
-| 'onCellDeSelected'
+| 'onSelectedCellChange'
 | 'onDragHandleDoubleClick'
 | 'onCellRangeSelectionStarted'
 | 'onCellRangeSelectionUpdated'
@@ -123,22 +122,16 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   componentDidUpdate(prevProps: InteractionMasksProps<R, K>, prevState: InteractionMasksState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
-    const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx);
+    const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition
+      && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx)
+      && this.isCellWithinBounds(selectedPosition);
     const isEditorClosed = isEditorEnabled !== prevIsEditorEnabled && !isEditorEnabled;
 
-    if (isSelectedPositionChanged) {
-      // Call event handlers if selected cell has changed
-      const { onCellSelected, onCellDeSelected } = this.props;
-      if (onCellDeSelected && this.isCellWithinBounds(prevSelectedPosition)) {
-        onCellDeSelected({ ...prevSelectedPosition });
-      }
-
-      if (onCellSelected && this.isCellWithinBounds(selectedPosition)) {
-        onCellSelected({ ...selectedPosition });
-      }
+    if (isSelectedPositionChanged && this.props.onSelectedCellChange) {
+      this.props.onSelectedCellChange({ ...selectedPosition });
     }
 
-    if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
+    if (isSelectedPositionChanged || isEditorClosed) {
       this.focus();
     }
   }

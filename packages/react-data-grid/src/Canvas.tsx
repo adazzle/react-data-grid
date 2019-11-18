@@ -24,8 +24,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'summaryRows'
 | 'onCheckCellIsEditable'
 | 'onCellCopyPaste'
-| 'onCellSelected'
-| 'onCellDeSelected'
+| 'onSelectedCellChange'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellSelect'
@@ -285,8 +284,7 @@ export default function Canvas<R, K extends keyof R>({
           onCellCopyPaste={props.onCellCopyPaste}
           onGridRowsUpdated={props.onGridRowsUpdated}
           onDragHandleDoubleClick={props.onDragHandleDoubleClick}
-          onCellSelected={props.onCellSelected}
-          onCellDeSelected={props.onCellDeSelected}
+          onSelectedCellChange={props.onSelectedCellChange}
           onCellRangeSelectionStarted={props.onCellRangeSelectionStarted}
           onCellRangeSelectionUpdated={props.onCellRangeSelectionUpdated}
           onCellRangeSelectionCompleted={props.onCellRangeSelectionCompleted}

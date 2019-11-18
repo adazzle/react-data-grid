@@ -30,12 +30,8 @@ export default class extends React.Component {
     return this._rows[index];
   };
 
-  onCellSelected = ({ rowIdx, idx }) => {
+  onSelectedCellChange = ({ rowIdx, idx }) => {
     this.grid.openCellEditor(rowIdx, idx);
-  };
-
-  onCellDeSelected = ({ rowIdx, idx }) => {
-    this.setState({ alert: `The editor for cell ${idx}, ${rowIdx} should have just closed` });
   };
 
   render() {
@@ -43,7 +39,6 @@ export default class extends React.Component {
     return (
       <Wrapper title="Cell selection/delesection events">
         <span>{this.state.selectedRows.length} {rowText} selected</span>
-        {this.state.alert && <div className="alert alert-info" role="alert">{this.state.alert}</div>}
         <DataGrid
           ref={node => this.grid = node}
           rowKey="id"
@@ -52,8 +47,7 @@ export default class extends React.Component {
           rowsCount={this._rows.length}
           minHeight={500}
           enableCellSelect
-          onCellSelected={this.onCellSelected}
-          onCellDeSelected={this.onCellDeSelected}
+          onSelectedCellChange={this.onSelectedCellChange}
         />
       </Wrapper>
     );
