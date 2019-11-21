@@ -16,7 +16,6 @@ type SharedHeaderProps<R, K extends keyof R> = Pick<HeaderProps<R, K>,
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
-| 'getValidFilterValues'
 >;
 
 export interface HeaderRowProps<R, K extends keyof R> extends SharedHeaderProps<R, K> {
@@ -54,7 +53,6 @@ export default class HeaderRow<R, K extends keyof R> extends React.Component<Hea
       <FilterRenderer<R>
         column={column}
         onChange={this.props.onFilterChange}
-        getValidFilterValues={this.props.getValidFilterValues}
       />
     );
   }

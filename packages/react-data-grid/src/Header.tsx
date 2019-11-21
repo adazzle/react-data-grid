@@ -8,7 +8,6 @@ import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'draggableHeaderCell'
-| 'getValidFilterValues'
 | 'rowGetter'
 | 'rowsCount'
 | 'onHeaderDrop'
@@ -81,7 +80,6 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
         sortColumn={props.sortColumn}
         sortDirection={props.sortDirection}
         onSort={props.onSort}
-        getValidFilterValues={props.getValidFilterValues}
       />
     );
   }

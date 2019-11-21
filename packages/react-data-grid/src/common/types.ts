@@ -202,8 +202,6 @@ export interface IRowRendererProps<TRow> {
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
   column: CalculatedColumn<TRow>;
   onChange?(event: AddFilterEvent<TRow>): void;
-  /** TODO: remove */
-  getValidFilterValues?(columnKey: keyof TRow): TFilterValue;
 }
 
 export interface SubRowDetails<TChildRow = unknown> {

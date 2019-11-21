@@ -7,7 +7,6 @@ import { isEmptyArray } from '../../../utils';
 export default class AutoCompleteFilter extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
-    // column: PropTypes.shape(shapes.Column),
     getValidFilterValues: PropTypes.func,
     multiSelection: PropTypes.bool
   };

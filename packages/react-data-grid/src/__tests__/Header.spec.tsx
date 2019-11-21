@@ -106,7 +106,6 @@ describe('Header Unit Tests', () => {
       onSort: jest.fn(),
       onColumnResize: jest.fn(),
       draggableHeaderCell: jest.fn(),
-      getValidFilterValues: jest.fn(),
       cellMetaData: fakeCellMetaData,
       onHeaderDrop() { }
     };
