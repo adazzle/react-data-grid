@@ -124,7 +124,8 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   function legacy_commit(): void {
-    const updated = editorRef.current!.getValue();
+    if (!editorRef.current) return;
+    const updated = editorRef.current.getValue();
     if (legacy_isNewValueValid(updated)) {
       const cellKey = column.key;
       onCommit({ cellKey, rowIdx, updated });
