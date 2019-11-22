@@ -49,9 +49,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   firstEditorKeyPress,
   ...props
 }: EditorContainerProps<R, RK, CK>) {
-  const legacyEditorRef = useRef<Editor<{ [k: string]: R[CK] }>>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Editor<{ [k: string]: R[CK] }>>(null);
   const [isInvalid, setIsInvalid] = useState(false);
   const [value, setValue] = useState(() => getInitialValue({ key: firstEditorKeyPress, value: props.value }));
   const prevScrollLeft = useRef(scrollLeft);
@@ -59,12 +57,11 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   const { enableNewEditor, getRowMetaData, editor } = column;
 
   const getInputNode = useCallback(() => {
-    return enableNewEditor
-      ? editorRef.current
-      : legacyEditorRef.current && legacyEditorRef.current.getInputNode();
-  }, [enableNewEditor]);
+    return editorRef.current && editorRef.current.getInputNode();
+  }, []);
 
   useEffect(() => {
+    if (enableNewEditor) return;
     const inputNode = getInputNode();
 
     if (inputNode instanceof HTMLElement) {
@@ -73,40 +70,40 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
     if (inputNode instanceof HTMLInputElement) {
       inputNode.select();
     }
-  }, [getInputNode]);
+  }, [enableNewEditor, getInputNode]);
 
   // Cancel changes and close editor on scroll
   if (prevScrollLeft.current !== scrollLeft || prevScrollTop.current !== scrollTop) {
     onCommitCancel();
   }
 
-  function isCaretAtBeginningOfInput(): boolean {
+  function legacy_isCaretAtBeginningOfInput(): boolean {
     const inputNode = getInputNode();
     return inputNode instanceof HTMLInputElement
       && inputNode.selectionEnd === 0;
   }
 
-  function isCaretAtEndOfInput(): boolean {
+  function legacy_isCaretAtEndOfInput(): boolean {
     const inputNode = getInputNode();
     return inputNode instanceof HTMLInputElement
       && inputNode.selectionStart === inputNode.value.length;
   }
 
   function legacy_editorHasResults(): boolean {
-    return legacyEditorRef.current && legacyEditorRef.current.hasResults
-      ? legacyEditorRef.current.hasResults()
+    return editorRef.current && editorRef.current.hasResults
+      ? editorRef.current.hasResults()
       : false;
   }
 
   function legacy_editorIsSelectOpen(): boolean {
-    return legacyEditorRef.current && legacyEditorRef.current.isSelectOpen
-      ? legacyEditorRef.current.isSelectOpen()
+    return editorRef.current && editorRef.current.isSelectOpen
+      ? editorRef.current.isSelectOpen()
       : false;
   }
 
   function legacy_isNewValueValid(value: unknown): boolean {
-    if (legacyEditorRef.current && legacyEditorRef.current.validate) {
-      const isValid = legacyEditorRef.current.validate(value);
+    if (editorRef.current && editorRef.current.validate) {
+      const isValid = editorRef.current.validate(value);
       setIsInvalid(!isValid);
       return isValid;
     }
@@ -115,25 +112,19 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   function legacy_preventDefaultNavigation(key: string): boolean {
-    return (key === 'Escape' && legacy_editorIsSelectOpen())
+    if (enableNewEditor) {
+      // Each editor should prevent event propagation to cancel the default navigation
+      return false;
+    }
+
+    return (key === 'ArrowLeft' && !legacy_isCaretAtBeginningOfInput())
+      || (key === 'ArrowRight' && !legacy_isCaretAtEndOfInput())
+      || (key === 'Escape' && legacy_editorIsSelectOpen())
       || (['ArrowUp', 'ArrowDown'].includes(key) && legacy_editorHasResults());
   }
 
-  function preventDefaultNavigation(key: string): boolean {
-    if (
-      (key === 'ArrowLeft' && !isCaretAtBeginningOfInput())
-      || (key === 'ArrowRight' && !isCaretAtEndOfInput())
-    ) {
-      return true;
-    }
-
-    return enableNewEditor
-      ? false
-      : legacy_preventDefaultNavigation(key);
-  }
-
   function legacy_commit(): void {
-    const updated = legacyEditorRef.current!.getValue();
+    const updated = editorRef.current!.getValue();
     if (legacy_isNewValueValid(updated)) {
       const cellKey = column.key;
       onCommit({ cellKey, rowIdx, updated });
@@ -153,7 +144,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLElement>) {
-    if (preventDefaultNavigation(e.key)) {
+    if (legacy_preventDefaultNavigation(e.key)) {
       e.stopPropagation();
       return;
     }
@@ -166,7 +157,6 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   const editorProps: EditorProps<R[CK], unknown, R, CK> = {
-    editorRef,
     column,
     value: value as R[CK],
     onChange: setValue,
@@ -174,13 +164,13 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
     rowData,
     height,
     onCommit: commit,
-    onCommitCancel,
-    onOverrideKeyDown: onKeyDown
+    onCommitCancel
   };
 
   function legacy_createEditor() {
     const legacyEditorProps = {
-      ref: legacyEditorRef,
+      ref: editorRef,
+      onOverrideKeyDown: onKeyDown,
       ...editorProps
     };
 
@@ -194,7 +184,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
 
     return (
       <LegacyTextEditor
-        ref={legacyEditorRef as unknown as React.RefObject<LegacyTextEditor>}
+        ref={editorRef as unknown as React.RefObject<LegacyTextEditor>}
         column={column}
         value={value as string}
         onCommit={commit}
@@ -213,7 +203,6 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
 
     return (
       <TextEditor
-        editorRef={editorRef}
         value={value as string}
         onChange={setValue}
         onCommit={commit}

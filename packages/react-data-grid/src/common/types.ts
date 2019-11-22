@@ -44,6 +44,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue, TField>): TDependentValue;
 
   enableNewEditor?: boolean;
+  enableNewEditorOnAlphanumericKeys?: boolean;
 }
 
 export type Column<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
@@ -135,7 +136,6 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any, TFie
   rowMetaData?: TDependentValue;
   rowData: TRow;
   height: number;
-  editorRef: React.RefObject<any>;
   onCommit(): void;
   onCommitCancel(): void;
   onChange(value: TValue): void;

@@ -21,7 +21,9 @@ export default class extends React.Component {
       {
         key: 'priority',
         name: 'Priority',
-        editable: true
+        editable: true,
+        enableNewEditor: true,
+        enableNewEditorOnAlphanumericKeys: true
       },
       {
         key: 'issueType',

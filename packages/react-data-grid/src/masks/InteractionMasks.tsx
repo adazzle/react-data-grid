@@ -183,7 +183,12 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
       this.onPressTab(e);
     } else if (this.isKeyboardNavigationEvent(e)) {
       this.changeCellFromEvent(e);
-    } else if (isKeyPrintable(e.keyCode) || ([KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter] as number[]).includes(e.keyCode)) {
+    } else if (e.keyCode === KeyCodes.Enter) {
+      this.openEditor(e);
+    } else if (isKeyPrintable(e.keyCode) || ([KeyCodes.Backspace, KeyCodes.Delete] as number[]).includes(e.keyCode)) {
+      const column = this.props.columns[this.state.selectedPosition.idx];
+      if (column && column.enableNewEditor && column.enableNewEditorOnAlphanumericKeys !== true) return;
+      // Fallback to legacy behavior
       this.openEditor(e);
     }
   };
