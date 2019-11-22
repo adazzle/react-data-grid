@@ -39,7 +39,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   // TODO: finalize API
   headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TDependentValue>>;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, unknown>>;
 
   getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
 }
@@ -201,7 +201,8 @@ export interface IRowRendererProps<TRow> {
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
   column: CalculatedColumn<TRow>;
-  onChange?(event: AddFilterEvent<TRow>): void;
+  value: TFilterValue;
+  onChange(value: TFilterValue): void;
 }
 
 export interface SubRowDetails<TChildRow = unknown> {
@@ -261,16 +262,14 @@ export interface RowGroupMetaData {
   getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }
 
+export type Filters<TRow> = { [key in keyof TRow]?: any };
+
 export interface HeaderRowData<TRow> {
   rowType: HeaderRowType;
   height: number;
   filterable?: boolean;
-  onFilterChange?(args: AddFilterEvent<TRow>): void;
-}
-
-export interface AddFilterEvent<TRow> {
-  filterTerm: string;
-  column: Column<TRow>;
+  filters?: Filters<TRow>;
+  onFiltersChange?(filters: Filters<TRow>): void;
 }
 
 export interface CommitEvent<TRow, TUpdatedValue = never> {

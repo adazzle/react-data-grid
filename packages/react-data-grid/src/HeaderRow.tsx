@@ -6,7 +6,7 @@ import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCel
 import { isFrozen } from './utils/columnUtils';
 import { isPositionStickySupported } from './utils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
-import { CalculatedColumn, AddFilterEvent } from './common/types';
+import { CalculatedColumn, Filters } from './common/types';
 import { HeaderProps } from './Header';
 
 type SharedHeaderProps<R, K extends keyof R> = Pick<HeaderProps<R, K>,
@@ -16,6 +16,8 @@ type SharedHeaderProps<R, K extends keyof R> = Pick<HeaderProps<R, K>,
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
+| 'filters'
+| 'onFiltersChange'
 >;
 
 export interface HeaderRowProps<R, K extends keyof R> extends SharedHeaderProps<R, K> {
@@ -26,7 +28,6 @@ export interface HeaderRowProps<R, K extends keyof R> extends SharedHeaderProps<
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
   onAllRowsSelectionChange(checked: boolean): void;
   filterable?: boolean;
-  onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;
 }
 
@@ -49,10 +50,19 @@ export default class HeaderRow<R, K extends keyof R> extends React.Component<Hea
 
   getFilterableHeaderCell(column: CalculatedColumn<R>) {
     const FilterRenderer = column.filterRenderer || FilterableHeaderCell;
+    const { filters, onFiltersChange } = this.props;
+
+    const onChange = (value: unknown) => {
+      const newFilters: Filters<R> = { ...filters };
+      newFilters[column.key] = value;
+      onFiltersChange && onFiltersChange(newFilters);
+    };
+
     return (
       <FilterRenderer<R>
         column={column}
-        onChange={this.props.onFilterChange}
+        value={filters ? filters[column.key] : undefined}
+        onChange={onChange}
       />
     );
   }

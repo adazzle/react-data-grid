@@ -14,6 +14,8 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onSelectedRowsChange'
 | 'sortColumn'
 | 'sortDirection'
+| 'filters'
+| 'onFiltersChange'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 >>;
@@ -73,7 +75,8 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
         lastFrozenColumnIndex={props.columnMetrics.lastFrozenColumnIndex}
         draggableHeaderCell={props.draggableHeaderCell}
         filterable={row.filterable}
-        onFilterChange={row.onFilterChange}
+        filters={row.filters}
+        onFiltersChange={row.onFiltersChange}
         onHeaderDrop={props.onHeaderDrop}
         allRowsSelected={props.allRowsSelected}
         onAllRowsSelectionChange={handleAllRowsSelectionChange}

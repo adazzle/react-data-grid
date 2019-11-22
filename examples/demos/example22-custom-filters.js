@@ -36,14 +36,8 @@ export default class extends React.Component {
     return Selectors.getRows(this.state).length;
   };
 
-  handleFilterChange = (filter) => {
-    const newFilters = { ...this.state.filters };
-    if (filter.filterTerm) {
-      newFilters[filter.column.key] = filter;
-    } else {
-      delete newFilters[filter.column.key];
-    }
-    this.setState({ filters: newFilters });
+  handleFilterChange = (filters) => {
+    this.setState({ filters });
   };
 
   getValidFilterValues = (columnId) => {
@@ -130,7 +124,8 @@ export default class extends React.Component {
           rowsCount={this.rowsCount()}
           minHeight={500}
           enableHeaderFilters={this.state.enableHeaderFilters}
-          onAddFilter={this.handleFilterChange}
+          filters={this.state.filters}
+          onFiltersChange={this.handleFilterChange}
         />
       </Wrapper>
     );

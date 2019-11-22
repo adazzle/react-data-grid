@@ -25,8 +25,7 @@ describe('Header Unit Tests', () => {
       cellMetaData: fakeCellMetaData,
       headerRows: [{
         height: 50,
-        rowType: HeaderRowType.HEADER,
-        onFilterChange() { }
+        rowType: HeaderRowType.HEADER
       }, undefined],
       onColumnResize: jest.fn(),
       onSort: () => null,
@@ -76,8 +75,7 @@ describe('Header Unit Tests', () => {
       },
       headerRows: [{
         height: 51,
-        rowType: HeaderRowType.HEADER,
-        onFilterChange() { }
+        rowType: HeaderRowType.HEADER
       }, undefined],
       onSort: jest.fn(),
       onHeaderDrop() { },
@@ -98,8 +96,7 @@ describe('Header Unit Tests', () => {
       },
       headerRows: [{
         height: 50,
-        rowType: HeaderRowType.HEADER,
-        onFilterChange() { }
+        rowType: HeaderRowType.HEADER
       }, undefined],
       sortColumn: 'count',
       sortDirection: DEFINE_SORT.DESC,

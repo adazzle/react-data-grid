@@ -17,7 +17,6 @@ import { getColumnMetrics } from './utils/columnUtils';
 import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import {
-  AddFilterEvent,
   CalculatedColumn,
   CellActionButton,
   CellCopyPasteEvent,
@@ -36,7 +35,8 @@ import {
   SubRowDetails,
   SubRowOptions,
   IRowRendererProps,
-  ScrollPosition
+  ScrollPosition,
+  Filters
 } from './common/types';
 
 export interface DataGridProps<R, K extends keyof R> {
@@ -61,7 +61,10 @@ export interface DataGridProps<R, K extends keyof R> {
   onRowClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
   /** Function called whenever row is double clicked */
   onRowDoubleClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
-  onAddFilter?(event: AddFilterEvent<R>): void;
+
+  filters?: Filters<R>;
+  onFiltersChange?(filters: Filters<R>): void;
+
   /** Function called whenever grid is sorted*/
   onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   /** Function called whenever keyboard key is released */
@@ -164,6 +167,7 @@ export interface DataGridHandle {
 function DataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
   rowHeight = 35,
+  headerRowHeight,
   headerFiltersHeight = 45,
   minColumnWidth = 80,
   minHeight = 350,
@@ -180,6 +184,8 @@ function DataGrid<R, K extends keyof R>({
   cellRangeSelection,
   selectedRows,
   onSelectedRowsChange,
+  filters,
+  onFiltersChange,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -325,13 +331,13 @@ function DataGrid<R, K extends keyof R>({
   }
 
   function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
-    const { headerRowHeight, onAddFilter } = props;
     return [
       { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
       props.enableHeaderFilters ? {
         rowType: HeaderRowType.FILTER,
         filterable: true,
-        onFilterChange: onAddFilter,
+        filters,
+        onFiltersChange,
         height: headerFiltersHeight || headerRowHeight || rowHeight
       } : undefined
     ];
