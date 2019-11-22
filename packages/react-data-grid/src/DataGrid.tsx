@@ -423,7 +423,7 @@ function DataGrid<R, K extends keyof R>({
             onHeaderDrop={props.onHeaderDrop}
             allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
             onSelectedRowsChange={onSelectedRowsChange}
-            cellMetaData={cellMetaData}
+            onCellClick={handleCellClick}
           />
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
