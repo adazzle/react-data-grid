@@ -7,6 +7,60 @@ const { NumericFilter, AutoCompleteFilter, MultiSelectFilter, SingleSelectFilter
 const { Selectors } = Data;
 
 export default class extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this._columns = [
+      {
+        key: 'id',
+        name: 'ID',
+        width: 120,
+        filterable: true,
+        filterRenderer: NumericFilter
+      },
+      {
+        key: 'task',
+        name: 'Title',
+        filterable: true
+      },
+      {
+        key: 'priority',
+        name: 'Priority',
+        filterable: true,
+        filterRenderer: p => <MultiSelectFilter {...p} getValidFilterValues={this.getValidFilterValues} />
+      },
+      {
+        key: 'issueType',
+        name: 'Issue Type',
+        filterable: true,
+        filterRenderer: p => <SingleSelectFilter {...p} getValidFilterValues={this.getValidFilterValues} />
+      },
+      {
+        key: 'developer',
+        name: 'Developer',
+        filterable: true,
+        filterRenderer: p => <AutoCompleteFilter {...p} getValidFilterValues={this.getValidFilterValues} />
+      },
+      {
+        key: 'complete',
+        name: '% Complete',
+        filterable: true,
+        filterRenderer: NumericFilter
+      },
+      {
+        key: 'startDate',
+        name: 'Start Date',
+        filterable: true
+      },
+      {
+        key: 'completeDate',
+        name: 'Expected Complete',
+        filterable: true
+      }
+    ];
+
+    this.state = { rows: this.createRows(1000), filters: {}, enableHeaderFilters: false };
+  }
+
   getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
   };
@@ -59,56 +113,6 @@ export default class extends React.Component {
       return { enableHeaderFilters };
     });
   };
-
-  state = { rows: this.createRows(1000), filters: {}, enableHeaderFilters: false };
-  _columns = [
-    {
-      key: 'id',
-      name: 'ID',
-      width: 120,
-      filterable: true,
-      filterRenderer: NumericFilter
-    },
-    {
-      key: 'task',
-      name: 'Title',
-      filterable: true
-    },
-    {
-      key: 'priority',
-      name: 'Priority',
-      filterable: true,
-      filterRenderer: p => <MultiSelectFilter {...p} getValidFilterValues={this.getValidFilterValues} />
-    },
-    {
-      key: 'issueType',
-      name: 'Issue Type',
-      filterable: true,
-      filterRenderer: p => <SingleSelectFilter {...p} getValidFilterValues={this.getValidFilterValues} />
-    },
-    {
-      key: 'developer',
-      name: 'Developer',
-      filterable: true,
-      filterRenderer: p => <AutoCompleteFilter {...p} getValidFilterValues={this.getValidFilterValues} />
-    },
-    {
-      key: 'complete',
-      name: '% Complete',
-      filterable: true,
-      filterRenderer: NumericFilter
-    },
-    {
-      key: 'startDate',
-      name: 'Start Date',
-      filterable: true
-    },
-    {
-      key: 'completeDate',
-      name: 'Expected Complete',
-      filterable: true
-    }
-  ];
 
   render() {
     return (
