@@ -58,9 +58,6 @@ export interface DataGridProps<R, K extends keyof R> {
 
   filters?: Filters<R>;
   onFiltersChange?(filters: Filters<R>): void;
-
-  /** Function called whenever grid is sorted*/
-  onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   /** Function called whenever keyboard key is released */
   onGridKeyUp?(event: React.KeyboardEvent<HTMLDivElement>): void;
   /** Function called whenever keyboard key is pressed down */
@@ -112,6 +109,8 @@ export interface DataGridProps<R, K extends keyof R> {
   sortColumn?: keyof R;
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
+  /** Function called whenever grid is sorted*/
+  onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Component used to render a draggable header cell */
@@ -133,6 +132,7 @@ export interface DataGridProps<R, K extends keyof R> {
 
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?(position: Position): void;
+  /** Function called whenever selected cell range is changed */
   onSelectedCellRangeChange?(selectedRange: SelectedRange): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
