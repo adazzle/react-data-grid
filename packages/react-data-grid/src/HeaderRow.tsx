@@ -7,7 +7,13 @@ import { isFrozen } from './utils/columnUtils';
 import { isPositionStickySupported } from './utils';
 import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, Filters } from './common/types';
+import { DataGridProps } from './DataGrid';
 import { HeaderProps } from './Header';
+
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+| 'filters'
+| 'onFiltersChange'
+>;
 
 type SharedHeaderProps<R, K extends keyof R> = Pick<HeaderProps<R, K>,
 | 'draggableHeaderCell'
@@ -16,11 +22,9 @@ type SharedHeaderProps<R, K extends keyof R> = Pick<HeaderProps<R, K>,
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
-| 'filters'
-| 'onFiltersChange'
 >;
 
-export interface HeaderRowProps<R, K extends keyof R> extends SharedHeaderProps<R, K> {
+export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K>, SharedHeaderProps<R, K> {
   width: number;
   height: number;
   columns: CalculatedColumn<R>[];

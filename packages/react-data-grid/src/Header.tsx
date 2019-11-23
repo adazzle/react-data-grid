@@ -14,8 +14,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onSelectedRowsChange'
 | 'sortColumn'
 | 'sortDirection'
-| 'filters'
-| 'onFiltersChange'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 >>;

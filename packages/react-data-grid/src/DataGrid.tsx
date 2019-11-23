@@ -19,7 +19,6 @@ import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SO
 import {
   CalculatedColumn,
   CellActionButton,
-  CellCopyPasteEvent,
   CellMetaData,
   CheckCellIsEditableEvent,
   Column,
@@ -110,6 +109,7 @@ export interface DataGridProps<R, K extends keyof R> {
   enableCellSelect?: boolean;
   /** Toggles whether cells should be autofocused */
   enableCellAutoFocus?: boolean;
+  enableCellCopyPaste?: boolean;
   cellNavigationMode?: CellNavigationMode;
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
@@ -136,8 +136,6 @@ export interface DataGridProps<R, K extends keyof R> {
   onCellExpand?(options: SubRowOptions<R>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
 
-  /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
-  onCellCopyPaste?(event: CellCopyPasteEvent<R>): void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?(position: Position): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
@@ -174,6 +172,7 @@ function DataGrid<R, K extends keyof R>({
   minWidth: width,
   enableCellSelect = false,
   enableCellAutoFocus = true,
+  enableCellCopyPaste = true,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
   renderBatchSize = 8,
@@ -444,6 +443,7 @@ function DataGrid<R, K extends keyof R>({
               rowGroupRenderer={props.rowGroupRenderer}
               enableCellSelect={enableCellSelect}
               enableCellAutoFocus={enableCellAutoFocus}
+              enableCellCopyPaste={enableCellCopyPaste}
               cellNavigationMode={cellNavigationMode}
               eventBus={eventBus}
               RowsContainer={props.RowsContainer}
@@ -453,7 +453,6 @@ function DataGrid<R, K extends keyof R>({
               renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
-              onCellCopyPaste={props.onCellCopyPaste}
               onGridRowsUpdated={handleGridRowsUpdated}
               onDragHandleDoubleClick={handleDragHandleDoubleClick}
               onSelectedCellChange={props.onSelectedCellChange}

@@ -51,12 +51,12 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'rowHeight'
 | 'enableCellSelect'
 | 'enableCellAutoFocus'
+| 'enableCellCopyPaste'
 | 'cellNavigationMode'
 | 'eventBus'
 | 'contextMenu'
 | 'editorPortalTarget'
 | 'onCheckCellIsEditable'
-| 'onCellCopyPaste'
 | 'onSelectedCellChange'
 | 'onDragHandleDoubleClick'
 | 'onCellRangeSelectionStarted'
@@ -266,7 +266,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   copyPasteEnabled(): boolean {
-    return this.props.onCellCopyPaste !== null && this.isSelectedCellEditable();
+    return this.props.enableCellCopyPaste && this.isSelectedCellEditable();
   }
 
   handleCopy(value: unknown): void {
@@ -281,7 +281,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   handlePaste(): void {
-    const { columns, onCellCopyPaste, onGridRowsUpdated } = this.props;
+    const { columns, onGridRowsUpdated } = this.props;
     const { selectedPosition, copiedPosition } = this.state;
     const { rowIdx: toRow } = selectedPosition;
 
@@ -291,16 +291,6 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
 
     const cellKey = columns[selectedPosition.idx].key;
     const { rowIdx: fromRow, value } = copiedPosition;
-
-    if (onCellCopyPaste) {
-      onCellCopyPaste({
-        cellKey,
-        rowIdx: toRow,
-        fromRow,
-        toRow,
-        value
-      });
-    }
 
     onGridRowsUpdated(cellKey, toRow, toRow, { [cellKey]: value }, UpdateActions.COPY_PASTE, fromRow);
   }

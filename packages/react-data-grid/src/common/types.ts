@@ -298,14 +298,6 @@ export interface GridRowsUpdatedEvent<TRow, TUpdatedValue = never> {
   fromRowData: TRow;
 }
 
-export interface CellCopyPasteEvent<TRow> {
-  cellKey: keyof TRow;
-  rowIdx: number;
-  fromRow: number;
-  toRow: number;
-  value: unknown;
-}
-
 export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
   column: CalculatedColumn<TRow>;
