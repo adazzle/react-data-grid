@@ -38,15 +38,14 @@ describe('<InteractionMasks/>', () => {
       onHitRightBoundary: jest.fn(),
       onHitLeftBoundary: jest.fn(),
       onSelectedCellChange,
-      onCellRangeSelectionStarted: jest.fn(),
-      onCellRangeSelectionUpdated: jest.fn(),
-      onCellRangeSelectionCompleted: jest.fn(),
+      onSelectedCellRangeChange: jest.fn(),
       onGridRowsUpdated: jest.fn(),
       onDragHandleDoubleClick() { },
       onCommit() { },
       rowGetter,
       enableCellSelect: true,
       enableCellAutoFocus: false,
+      enableCellCopyPaste: true,
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus: new EventBus(),
       getRowColumns: () => columns,
@@ -387,42 +386,47 @@ describe('<InteractionMasks/>', () => {
   });
 
   describe('Range selection events', () => {
-    it('should fire onCellRangeSelectionStarted on starting a selection', () => {
+    it('should fire onSelectedCellRangeChange on starting a selection', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-      expect(props.onCellRangeSelectionStarted).toHaveBeenCalledWith(expect.objectContaining({
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 2, rowIdx: 2 },
-        bottomRight: { idx: 2, rowIdx: 2 }
+        bottomRight: { idx: 2, rowIdx: 2 },
+        isDragging: true
       }));
     });
 
-    it('should fire onCellRangeSelectionUpdated on updating a selection', () => {
+    it('should fire onSelectedCellRangeChange on updating a selection', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
       props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
-      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(expect.objectContaining({
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 2, rowIdx: 2 },
-        bottomRight: { idx: 3, rowIdx: 3 }
+        bottomRight: { idx: 3, rowIdx: 3 },
+        isDragging: true
       }));
     });
 
-    it('should fire onCellRangeSelectionCompleted on completing a selection', () => {
+    it('should fire onSelectedCellRangeChange on completing a selection', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
       props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
       props.eventBus.dispatch(EventTypes.SELECT_END);
-      expect(props.onCellRangeSelectionCompleted).toHaveBeenCalled();
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
+        topLeft: { idx: 2, rowIdx: 2 },
+        bottomRight: { idx: 3, rowIdx: 3 },
+        isDragging: false
+      }));
     });
 
-    it('should fire onCellRangeSelectionUpdated and onCRSCompleted on modifying a selection via they keyboard', () => {
+    it('should fire onSelectedCellRangeChange and onCRSCompleted on modifying a selection via they keyboard', () => {
       const currentCell = { idx: 0, rowIdx: 0 };
       const { wrapper, props } = setup({}, { selectedPosition: currentCell });
       pressKey(wrapper, 'ArrowRight', { shiftKey: true });
-      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(expect.objectContaining({
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 0, rowIdx: 0 },
         bottomRight: { idx: 1, rowIdx: 0 }
       }));
-      expect(props.onCellRangeSelectionCompleted).toHaveBeenCalled();
     });
   });
 

@@ -49,11 +49,6 @@ export interface DataGridProps<R, K extends keyof R> {
   headerFiltersHeight?: number;
   /** Toggles whether filters row is displayed or not */
   enableHeaderFilters?: boolean;
-  cellRangeSelection?: {
-    onStart(selectedRange: SelectedRange): void;
-    onUpdate?(selectedRange: SelectedRange): void;
-    onComplete?(selectedRange: SelectedRange): void;
-  };
   /** Minimum column width in pixels */
   minColumnWidth?: number;
   /** Function called whenever row is clicked */
@@ -138,6 +133,7 @@ export interface DataGridProps<R, K extends keyof R> {
 
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?(position: Position): void;
+  onSelectedCellRangeChange?(selectedRange: SelectedRange): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
   /**
@@ -180,7 +176,7 @@ function DataGrid<R, K extends keyof R>({
   columns,
   rowsCount,
   rowGetter,
-  cellRangeSelection,
+  onSelectedCellRangeChange,
   selectedRows,
   onSelectedRowsChange,
   filters,
@@ -224,7 +220,7 @@ function DataGrid<R, K extends keyof R>({
   }, [width]);
 
   useEffect(() => {
-    if (!cellRangeSelection) return;
+    if (!onSelectedCellRangeChange) return;
 
     function handleWindowMouseUp() {
       eventBus.dispatch(EventTypes.SELECT_END);
@@ -235,7 +231,7 @@ function DataGrid<R, K extends keyof R>({
     return () => {
       window.removeEventListener('mouseup', handleWindowMouseUp);
     };
-  }, [eventBus, cellRangeSelection]);
+  }, [eventBus, onSelectedCellRangeChange]);
 
   function selectCell(position: Position, openEditor?: boolean) {
     eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
@@ -391,7 +387,7 @@ function DataGrid<R, K extends keyof R>({
     onAddSubRow: props.onAddSubRow,
     onDragEnter: handleDragEnter
   };
-  if (cellRangeSelection) {
+  if (onSelectedCellRangeChange) {
     cellMetaData.onCellMouseDown = handleCellMouseDown;
     cellMetaData.onCellMouseEnter = handleCellMouseEnter;
   }
@@ -456,9 +452,7 @@ function DataGrid<R, K extends keyof R>({
               onGridRowsUpdated={handleGridRowsUpdated}
               onDragHandleDoubleClick={handleDragHandleDoubleClick}
               onSelectedCellChange={props.onSelectedCellChange}
-              onCellRangeSelectionStarted={cellRangeSelection && cellRangeSelection.onStart}
-              onCellRangeSelectionUpdated={cellRangeSelection && cellRangeSelection.onUpdate}
-              onCellRangeSelectionCompleted={cellRangeSelection && cellRangeSelection.onComplete}
+              onSelectedCellRangeChange={onSelectedCellRangeChange}
               onCommit={handleCommit}
             />
           )}

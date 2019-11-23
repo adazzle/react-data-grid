@@ -59,9 +59,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'onCheckCellIsEditable'
 | 'onSelectedCellChange'
 | 'onDragHandleDoubleClick'
-| 'onCellRangeSelectionStarted'
-| 'onCellRangeSelectionUpdated'
-| 'onCellRangeSelectionCompleted'
+| 'onSelectedCellRangeChange'
 | 'onCommit'
 | 'onGridRowsUpdated'
 > & Pick<ColumnMetrics<R>, 'columns'>;
@@ -478,8 +476,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
       selectedRange: this.createSingleCellSelectedRange(selectedPosition, true),
       selectedPosition
     }, () => {
-      if (this.props.onCellRangeSelectionStarted) {
-        this.props.onCellRangeSelectionStarted(this.state.selectedRange);
+      if (this.props.onSelectedCellRangeChange) {
+        this.props.onSelectedCellRangeChange(this.state.selectedRange);
       }
     });
   };
@@ -508,8 +506,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     this.setState({
       selectedRange
     }, () => {
-      if (this.props.onCellRangeSelectionUpdated) {
-        this.props.onCellRangeSelectionUpdated(this.state.selectedRange);
+      if (this.props.onSelectedCellRangeChange) {
+        this.props.onSelectedCellRangeChange(this.state.selectedRange);
       }
       if (callback) {
         callback();
@@ -520,8 +518,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   onSelectCellRangeEnded = (): void => {
     const selectedRange = { ...this.state.selectedRange, isDragging: false };
     this.setState({ selectedRange }, () => {
-      if (this.props.onCellRangeSelectionCompleted) {
-        this.props.onCellRangeSelectionCompleted(this.state.selectedRange);
+      if (this.props.onSelectedCellRangeChange) {
+        this.props.onSelectedCellRangeChange(this.state.selectedRange);
       }
 
       // Focus the InteractionMasks, so it can receive keyboard events
