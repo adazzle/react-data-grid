@@ -580,11 +580,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   onDragHandleDoubleClick = (): void => {
-    const { onDragHandleDoubleClick, rowGetter } = this.props;
-    const { selectedPosition } = this.state;
-    const { idx, rowIdx } = selectedPosition;
-    const rowData = rowGetter(selectedPosition.rowIdx);
-    onDragHandleDoubleClick({ idx, rowIdx, rowData });
+    this.props.onDragHandleDoubleClick(this.state.selectedPosition);
   };
 
   onCommit = (args: CommitEvent<R>): void => {

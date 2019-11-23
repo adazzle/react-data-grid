@@ -44,7 +44,7 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
-  onDragHandleDoubleClick(data: Position & { rowData: R }): void;
+  onDragHandleDoubleClick(data: Position): void;
   onSelectedCellRangeChange?(selectedRange: SelectedRange): void;
   onCommit(e: CommitEvent<R>): void;
   onGridRowsUpdated(

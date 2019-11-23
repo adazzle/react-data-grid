@@ -295,9 +295,10 @@ function DataGrid<R, K extends keyof R>({
     openCellEditor(rowIdx, idx);
   }
 
-  function handleDragHandleDoubleClick(e: Position & { rowData: R }) {
+  function handleDragHandleDoubleClick(e: Position) {
     const cellKey = getColumn(e.idx).key;
-    handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
+    const value = rowGetter(e.rowIdx)[cellKey];
+    handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: value }, UpdateActions.COLUMN_FILL);
   }
 
   function handleGridRowsUpdated(cellKey: keyof R, fromRow: number, toRow: number, updated: { [key: string]: unknown }, action: UpdateActions, originRow?: number) {
