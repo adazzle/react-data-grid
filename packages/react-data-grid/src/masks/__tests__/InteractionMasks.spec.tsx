@@ -46,6 +46,7 @@ describe('<InteractionMasks/>', () => {
       enableCellSelect: true,
       enableCellAutoFocus: false,
       enableCellCopyPaste: true,
+      enableCellDragAndDrop: true,
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus: new EventBus(),
       getRowColumns: () => columns,

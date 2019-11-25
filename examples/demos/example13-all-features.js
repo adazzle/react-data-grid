@@ -212,6 +212,8 @@ export default class extends React.Component {
                 minHeight={height}
                 selectedRows={this.state.selectedRows}
                 onSelectedRowsChange={this.onSelectedRowsChange}
+                enableCellCopyPaste
+                enableCellDragAndDrop
               />
             )}
           </AutoSizer>

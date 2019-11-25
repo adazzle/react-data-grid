@@ -52,6 +52,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'enableCellSelect'
 | 'enableCellAutoFocus'
 | 'enableCellCopyPaste'
+| 'enableCellDragAndDrop'
 | 'cellNavigationMode'
 | 'eventBus'
 | 'contextMenu'
@@ -528,7 +529,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   isDragEnabled(): boolean {
-    return this.isSelectedCellEditable();
+    return this.props.enableCellDragAndDrop && this.isSelectedCellEditable();
   }
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>): void => {

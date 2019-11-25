@@ -102,6 +102,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** Toggles whether cells should be autofocused */
   enableCellAutoFocus?: boolean;
   enableCellCopyPaste?: boolean;
+  enableCellDragAndDrop?: boolean;
   cellNavigationMode?: CellNavigationMode;
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
@@ -168,7 +169,8 @@ function DataGrid<R, K extends keyof R>({
   minWidth: width,
   enableCellSelect = false,
   enableCellAutoFocus = true,
-  enableCellCopyPaste = true,
+  enableCellCopyPaste = false,
+  enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
   renderBatchSize = 8,
@@ -441,6 +443,7 @@ function DataGrid<R, K extends keyof R>({
               enableCellSelect={enableCellSelect}
               enableCellAutoFocus={enableCellAutoFocus}
               enableCellCopyPaste={enableCellCopyPaste}
+              enableCellDragAndDrop={enableCellDragAndDrop}
               cellNavigationMode={cellNavigationMode}
               eventBus={eventBus}
               RowsContainer={props.RowsContainer}

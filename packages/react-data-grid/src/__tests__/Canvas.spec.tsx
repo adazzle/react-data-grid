@@ -38,6 +38,7 @@ const testProps: CanvasProps<Row, 'id'> = {
   enableCellSelect: true,
   enableCellAutoFocus: false,
   enableCellCopyPaste: true,
+  enableCellDragAndDrop: true,
   cellNavigationMode: CellNavigationMode.NONE,
   eventBus: new EventBus(),
   editorPortalTarget: document.body,
