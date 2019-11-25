@@ -300,32 +300,31 @@ function DataGrid<R, K extends keyof R>({
   function handleDragHandleDoubleClick(e: Position) {
     const cellKey = getColumn(e.idx).key;
     const value = rowGetter(e.rowIdx)[cellKey];
-    handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: value }, UpdateActions.COLUMN_FILL);
+    handleGridRowsUpdated({
+      cellKey,
+      fromRow: e.rowIdx,
+      toRow: rowsCount - 1,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.COLUMN_FILL
+    });
   }
 
-  function handleGridRowsUpdated(cellKey: keyof R, fromRow: number, toRow: number, updated: { [key: string]: unknown }, action: UpdateActions, originRow?: number) {
+  function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
     const { onGridRowsUpdated } = props;
-    if (!onGridRowsUpdated) {
-      return;
+    if (onGridRowsUpdated) {
+      onGridRowsUpdated(event);
     }
-
-    const rowIds = [];
-    const start = Math.min(fromRow, toRow);
-    const end = Math.max(fromRow, toRow);
-
-    for (let i = start; i <= end; i++) {
-      rowIds.push(rowGetter(i)[rowKey]);
-    }
-
-    const fromRowData = rowGetter(action === UpdateActions.COPY_PASTE ? originRow! : fromRow);
-    const fromRowId = fromRowData[rowKey];
-    const toRowId = rowGetter(toRow)[rowKey];
-    onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated: updated as never, action, fromRowData });
   }
 
   function handleCommit(commit: CommitEvent<R>) {
-    const targetRow = commit.rowIdx;
-    handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
+    const { cellKey, rowIdx, updated } = commit;
+    handleGridRowsUpdated({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: rowIdx,
+      updated,
+      action: UpdateActions.CELL_UPDATE
+    });
   }
 
   function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {

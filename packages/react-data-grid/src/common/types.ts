@@ -290,12 +290,9 @@ export interface GridRowsUpdatedEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;
   fromRow: number;
   toRow: number;
-  fromRowId: unknown;
-  toRowId: unknown;
-  rowIds: unknown[];
   updated: TUpdatedValue;
   action: UpdateActions;
-  fromRowData: TRow;
+  fromCellKey?: keyof TRow;
 }
 
 export interface CheckCellIsEditableEvent<TRow> extends Position {

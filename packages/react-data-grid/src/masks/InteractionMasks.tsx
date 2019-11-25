@@ -217,10 +217,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
     if (this.copyPasteEnabled()) {
       if (keyCode === KeyCodes.c) {
-        const { columns, rowGetter } = this.props;
-        const { selectedPosition } = this.state;
-        const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
-        this.handleCopy(value);
+        this.handleCopy();
       } else if (keyCode === KeyCodes.v) {
         this.handlePaste();
       }
@@ -268,10 +265,12 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     return this.props.enableCellCopyPaste && this.isSelectedCellEditable();
   }
 
-  handleCopy(value: unknown): void {
-    const { rowIdx, idx } = this.state.selectedPosition;
+  handleCopy(): void {
+    const { columns, rowGetter } = this.props;
+    const { selectedPosition } = this.state;
+    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
     this.setState({
-      copiedPosition: { rowIdx, idx, value }
+      copiedPosition: { ...selectedPosition, value }
     });
   }
 
@@ -289,9 +288,17 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     }
 
     const cellKey = columns[selectedPosition.idx].key;
-    const { rowIdx: fromRow, value } = copiedPosition;
+    const { rowIdx: fromRow, idx, value } = copiedPosition;
+    const fromCellKey = columns[idx].key;
 
-    onGridRowsUpdated(cellKey, toRow, toRow, { [cellKey]: value }, UpdateActions.COPY_PASTE, fromRow);
+    onGridRowsUpdated({
+      cellKey,
+      fromRow,
+      toRow,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.COPY_PASTE,
+      fromCellKey
+    });
   }
 
   isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
@@ -573,7 +580,13 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
     const cellKey = column.key;
 
-    onGridRowsUpdated(cellKey, rowIdx, overRowIdx, { [cellKey]: value }, UpdateActions.CELL_DRAG);
+    onGridRowsUpdated({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: overRowIdx,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.CELL_DRAG
+    });
 
     this.setState({
       draggedPosition: null

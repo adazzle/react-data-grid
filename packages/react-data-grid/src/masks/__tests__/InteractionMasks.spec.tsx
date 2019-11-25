@@ -717,7 +717,14 @@ describe('<InteractionMasks/>', () => {
       // Paste copied cell
       pressKey(wrapper, 'v', { keyCode: KeyCodes.v, ctrlKey: true });
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, UpdateActions.COPY_PASTE, 2);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 2,
+        toRow: 1,
+        updated: { Column1: '3' },
+        action: UpdateActions.COPY_PASTE,
+        fromCellKey: 'Column1'
+      });
     });
   });
 
@@ -764,7 +771,13 @@ describe('<InteractionMasks/>', () => {
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
       wrapper.find(DragHandle).simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, UpdateActions.CELL_DRAG);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 2,
+        toRow: 6,
+        updated: { Column1: '3' },
+        action: UpdateActions.CELL_DRAG
+      });
     });
 
     it('should update the dragged over cells on upwards drag end', () => {
@@ -777,7 +790,13 @@ describe('<InteractionMasks/>', () => {
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
       wrapper.find(DragHandle).simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 4, 0, { Column1: '5' }, UpdateActions.CELL_DRAG);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 4,
+        toRow: 0,
+        updated: { Column1: '5' },
+        action: UpdateActions.CELL_DRAG
+      });
     });
   });
 

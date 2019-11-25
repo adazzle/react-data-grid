@@ -53,7 +53,10 @@ export default class extends React.Component {
   handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
     const rows = this.state.rows.slice();
 
-    for (let i = fromRow; i <= toRow; i++) {
+    const start = Math.min(fromRow, toRow);
+    const end = Math.max(fromRow, toRow);
+
+    for (let i = start; i <= end; i++) {
       const rowToUpdate = rows[i];
       const updatedRow = update(rowToUpdate, { $merge: updated });
       rows[i] = updatedRow;
@@ -72,6 +75,7 @@ export default class extends React.Component {
           rowsCount={this.state.rows.length}
           minHeight={500}
           onGridRowsUpdated={this.handleGridRowsUpdated}
+          enableCellDragAndDrop
         />
       </Wrapper>
     );
