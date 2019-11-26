@@ -2,7 +2,6 @@ import React, {
   forwardRef,
   useState,
   useRef,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useImperativeHandle,
@@ -221,20 +220,6 @@ function DataGrid<R, K extends keyof R>({
     };
   }, [width]);
 
-  useEffect(() => {
-    if (!onSelectedCellRangeChange) return;
-
-    function handleWindowMouseUp() {
-      eventBus.dispatch(EventTypes.SELECT_END);
-    }
-
-    window.addEventListener('mouseup', handleWindowMouseUp);
-
-    return () => {
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    };
-  }, [eventBus, onSelectedCellRangeChange]);
-
   function selectCell(position: Position, openEditor?: boolean) {
     eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
   }
@@ -279,6 +264,13 @@ function DataGrid<R, K extends keyof R>({
 
   function handleCellMouseDown(position: Position) {
     eventBus.dispatch(EventTypes.SELECT_START, position);
+
+    function handleWindowMouseUp() {
+      eventBus.dispatch(EventTypes.SELECT_END);
+      window.removeEventListener('mouseup', handleWindowMouseUp);
+    }
+
+    window.addEventListener('mouseup', handleWindowMouseUp);
   }
 
   function handleCellMouseEnter(position: Position) {
