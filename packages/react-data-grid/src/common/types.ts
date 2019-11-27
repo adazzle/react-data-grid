@@ -163,7 +163,7 @@ export interface CellRendererProps<TRow> {
 
 export type CellContentRenderer<TRow> = (props: CellContentRendererProps<TRow>) => React.ReactNode;
 
-export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
+export interface CellContentRendererProps<TRow> extends Pick<CellRendererProps<TRow>,
 | 'idx'
 | 'rowIdx'
 | 'rowData'
@@ -173,7 +173,9 @@ export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
 | 'isRowSelected'
 | 'onRowSelectionChange'
 | 'isSummaryRow'
->;
+> {
+  ref?: React.Ref<HTMLDivElement>;
+}
 
 export interface RowsContainerProps {
   id: string;
