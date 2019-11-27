@@ -16,9 +16,8 @@ function CellContent<R>({
   expandableOptions,
   isRowSelected,
   isSummaryRow,
-  onRowSelectionChange,
-  ref
-}: CellContentRendererProps<R>) {
+  onRowSelectionChange
+}: CellContentRendererProps<R>, ref: React.Ref<HTMLDivElement>): JSX.Element {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
   const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
@@ -113,4 +112,4 @@ function CellContent<R>({
 
 export default forwardRef(
   CellContent as React.RefForwardingComponent<HTMLDivElement, CellContentRendererProps<{ [key: string]: unknown }>>
-) as <R, K extends keyof R>(props: CellContentRendererProps<R>) => JSX.Element;
+) as <R>(props: CellContentRendererProps<R>) => JSX.Element;
