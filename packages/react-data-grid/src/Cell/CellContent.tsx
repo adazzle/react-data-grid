@@ -1,4 +1,4 @@
-import React, { createElement, cloneElement, forwardRef } from 'react';
+import React, { createElement, cloneElement } from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
 import CellActions from './CellActions';
@@ -7,7 +7,7 @@ import { SimpleCellFormatter } from '../formatters';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
 import { CellContentRendererProps } from '../common/types';
 
-function CellContent<R>({
+export default function CellContent<R>({
   idx,
   rowIdx,
   column,
@@ -17,7 +17,7 @@ function CellContent<R>({
   isRowSelected,
   isSummaryRow,
   onRowSelectionChange
-}: CellContentRendererProps<R>, ref: React.Ref<HTMLDivElement>): JSX.Element {
+}: CellContentRendererProps<R>): JSX.Element {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
   const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
@@ -94,7 +94,7 @@ function CellContent<R>({
           onCellExpand={handleCellExpand}
         />
       )}
-      <div ref={ref} className="rdg-cell-value">
+      <div className="rdg-cell-value">
         {expandableOptions && treeDepth > 0 && isExpandCell && (
           <ChildRowDeleteButton
             treeDepth={treeDepth}
@@ -109,7 +109,3 @@ function CellContent<R>({
     </>
   );
 }
-
-export default forwardRef(
-  CellContent as React.RefForwardingComponent<HTMLDivElement, CellContentRendererProps<{ [key: string]: unknown }>>
-) as <R>(props: CellContentRendererProps<R>) => JSX.Element;
