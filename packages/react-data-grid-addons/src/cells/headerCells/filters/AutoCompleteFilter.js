@@ -80,7 +80,7 @@ export default class AutoCompleteFilter extends React.Component {
         placeholder="Search"
         onChange={this.handleChange}
         escapeClearsValue
-        multi={multiSelection !== undefined && multiSelection !== null ? multiSelection : true}
+        multi={multiSelection != null ? multiSelection : true}
         value={value && value.filterTerm}
       />
     );
