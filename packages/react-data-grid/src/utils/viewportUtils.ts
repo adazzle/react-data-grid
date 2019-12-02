@@ -60,7 +60,7 @@ export function getHorizontalRangeToRender<R>({
   let { viewportWidth } = columnMetrics;
 
   let remainingScroll = scrollLeft;
-  let columnIndex = lastFrozenColumnIndex;
+  let columnIndex = Math.max(lastFrozenColumnIndex, 0);
   let hiddenColumnsWidth = 0;
   while (remainingScroll >= 0 && columnIndex < columns.length) {
     const { width = 0 } = columns[columnIndex];
