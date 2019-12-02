@@ -23,7 +23,7 @@ export default class extends React.Component {
 
     this._rows = rows;
 
-    this.state = { selectedRows: [] };
+    this.state = { selectedCell: undefined, prevSelectedCell: undefined };
   }
 
   rowGetter = (index) => {
@@ -31,14 +31,21 @@ export default class extends React.Component {
   };
 
   onSelectedCellChange = ({ rowIdx, idx }) => {
+    this.setState(({ selectedCell }) => ({
+      selectedCell: { rowIdx, idx },
+      prevSelectedCell: selectedCell ? { ...selectedCell } : undefined
+    }));
     this.grid.openCellEditor(rowIdx, idx);
   };
 
   render() {
-    const rowText = this.state.selectedRows.length === 1 ? 'row' : 'rows';
+    const { selectedCell, prevSelectedCell } = this.state;
     return (
       <Wrapper title="Cell selection/delesection events">
-        <span>{this.state.selectedRows.length} {rowText} selected</span>
+        <div className="react-grid-Toolbar">
+          {selectedCell && <>({selectedCell.idx}, {selectedCell.rowIdx}) is selected</>}
+          {prevSelectedCell && <> and ({prevSelectedCell.idx}, {prevSelectedCell.rowIdx}) was deselected</>}
+        </div>
         <DataGrid
           ref={node => this.grid = node}
           rowKey="id"
@@ -47,6 +54,7 @@ export default class extends React.Component {
           rowsCount={this._rows.length}
           minHeight={500}
           enableCellSelect
+          enableCellAutoFocus={false}
           onSelectedCellChange={this.onSelectedCellChange}
         />
       </Wrapper>
