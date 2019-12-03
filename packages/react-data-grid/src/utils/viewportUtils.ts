@@ -59,7 +59,12 @@ export function getHorizontalRangeToRender<R>({
   const { columns, totalColumnWidth, lastFrozenColumnIndex } = columnMetrics;
   let { viewportWidth } = columnMetrics;
 
-  let remainingScroll = scrollLeft;
+  // Get valid left scroll position.
+  // When we're scrolled all the way to the right and we remove columns, the scrollLeft value will be outdated,
+  // and greater than what's possible, so we need to handle that case here.
+  let remainingScroll = scrollLeft + viewportWidth > totalColumnWidth
+    ? totalColumnWidth - viewportWidth
+    : scrollLeft;
   let columnIndex = Math.max(lastFrozenColumnIndex, 0);
   let hiddenColumnsWidth = 0;
   while (remainingScroll >= 0 && columnIndex < columns.length) {
