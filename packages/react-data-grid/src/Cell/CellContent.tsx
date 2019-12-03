@@ -17,7 +17,7 @@ export default function CellContent<R>({
   isRowSelected,
   isSummaryRow,
   onRowSelectionChange
-}: CellContentRendererProps<R>) {
+}: CellContentRendererProps<R>): JSX.Element {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
   const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
