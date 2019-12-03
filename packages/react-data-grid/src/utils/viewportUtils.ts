@@ -65,15 +65,16 @@ export function getHorizontalRangeToRender<R>({
   let remainingScroll = scrollLeft + viewportWidth > totalColumnWidth
     ? totalColumnWidth - viewportWidth
     : scrollLeft;
-  let columnIndex = Math.max(lastFrozenColumnIndex, 0);
+
+  let columnIndex = lastFrozenColumnIndex;
   let hiddenColumnsWidth = 0;
-  while (remainingScroll >= 0 && columnIndex < columns.length) {
+  while (remainingScroll >= 0 && columnIndex < columns.length - 1) {
+    columnIndex++;
     const { width = 0 } = columns[columnIndex];
     remainingScroll -= width;
     if (remainingScroll >= 0) {
       hiddenColumnsWidth += width;
     }
-    columnIndex++;
   }
   const colVisibleStartIdx = Math.max(columnIndex, 0);
 
@@ -82,8 +83,6 @@ export function getHorizontalRangeToRender<R>({
   if (viewportWidth > 0) {
     const firstVisibleColumnHiddenWidth = scrollLeft - hiddenColumnsWidth;
     viewportWidth += firstVisibleColumnHiddenWidth;
-  } else if (remainingScroll > totalColumnWidth) {
-    viewportWidth = scrollLeft - totalColumnWidth;
   } else {
     viewportWidth = totalColumnWidth;
   }
