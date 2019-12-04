@@ -59,13 +59,13 @@ export default class HeaderRow<R, K extends keyof R> extends React.Component<Hea
     const onChange = (value: unknown) => {
       const newFilters: Filters<R> = { ...filters };
       newFilters[column.key] = value;
-      onFiltersChange && onFiltersChange(newFilters);
+      onFiltersChange?.(newFilters);
     };
 
     return (
       <FilterRenderer<R>
         column={column}
-        value={filters ? filters[column.key] : undefined}
+        value={filters?.[column.key]}
         onChange={onChange}
       />
     );

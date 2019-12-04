@@ -126,8 +126,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
       && this.isCellWithinBounds(selectedPosition);
     const isEditorClosed = isEditorEnabled !== prevIsEditorEnabled && !isEditorEnabled;
 
-    if (isSelectedPositionChanged && this.props.onSelectedCellChange) {
-      this.props.onSelectedCellChange({ ...selectedPosition });
+    if (isSelectedPositionChanged) {
+      this.props.onSelectedCellChange?.({ ...selectedPosition });
     }
 
     if (isSelectedPositionChanged || isEditorClosed) {

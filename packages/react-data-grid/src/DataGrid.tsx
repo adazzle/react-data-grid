@@ -302,10 +302,7 @@ function DataGrid<R, K extends keyof R>({
   }
 
   function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
-    const { onGridRowsUpdated } = props;
-    if (onGridRowsUpdated) {
-      onGridRowsUpdated(event);
-    }
+    props.onGridRowsUpdated?.(event);
   }
 
   function handleCommit(commit: CommitEvent<R>) {
