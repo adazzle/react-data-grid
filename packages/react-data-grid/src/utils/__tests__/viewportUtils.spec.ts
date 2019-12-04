@@ -97,20 +97,23 @@ describe('viewportUtils', () => {
     it('should use scrollLeft to calculate the range', () => {
       expect(getRange({ scrollLeft: 300 })).toEqual({
         colVisibleStartIdx: 3,
-        colVisibleEndIdx: 13,
+        colVisibleEndIdx: 12,
         colOverscanStartIdx: 2,
-        colOverscanEndIdx: 14
+        colOverscanEndIdx: 13
       });
     });
 
-    it('should use account for hidden width for large columns', () => {
+    it('should account for large columns', () => {
       const columnMetrics = getColumnMetrics();
       columnMetrics.columns[0].width = 500;
+      columnMetrics.columns.forEach((c, i) => {
+        if (i !== 0) c.left += 400;
+      });
       expect(getRange({ scrollLeft: 400, columnMetrics })).toEqual({
         colVisibleStartIdx: 0,
-        colVisibleEndIdx: 10,
+        colVisibleEndIdx: 9,
         colOverscanStartIdx: 0,
-        colOverscanEndIdx: 11
+        colOverscanEndIdx: 10
       });
     });
 
@@ -122,9 +125,9 @@ describe('viewportUtils', () => {
         scrollLeft: 200
       })).toEqual({
         colVisibleStartIdx: 2,
-        colVisibleEndIdx: 7,
+        colVisibleEndIdx: 6,
         colOverscanStartIdx: 1,
-        colOverscanEndIdx: 8
+        colOverscanEndIdx: 7
       });
     });
 
@@ -137,9 +140,9 @@ describe('viewportUtils', () => {
 
       expect(getRange({ scrollLeft: 500, columnMetrics })).toEqual({
         colVisibleStartIdx: 8,
-        colVisibleEndIdx: 15,
+        colVisibleEndIdx: 14,
         colOverscanStartIdx: 7,
-        colOverscanEndIdx: 16
+        colOverscanEndIdx: 15
       });
     });
   });

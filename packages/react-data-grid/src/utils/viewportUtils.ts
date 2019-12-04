@@ -8,22 +8,6 @@ function getTotalFrozenColumnWidth<R>(columns: CalculatedColumn<R>[], lastFrozen
   return lastFrozenColumn.left + lastFrozenColumn.width;
 }
 
-function getColumnCountForWidth<R>(columns: CalculatedColumn<R>[], initialWidth: number, colVisibleStartIdx: number): number {
-  let width = initialWidth;
-  let count = 0;
-
-  columns.forEach((column, idx) => {
-    if (idx >= colVisibleStartIdx) {
-      width -= column.width;
-      if (width >= 0) {
-        count++;
-      }
-    }
-  });
-
-  return count;
-}
-
 export function getVerticalRangeToRender(
   height: number,
   rowHeight: number,
@@ -56,42 +40,51 @@ export function getHorizontalRangeToRender<R>({
   columnMetrics,
   scrollLeft
 }: HorizontalRangeToRenderParams<R>): HorizontalRangeToRender {
-  const { columns, totalColumnWidth, lastFrozenColumnIndex } = columnMetrics;
-  let { viewportWidth } = columnMetrics;
-
-  // Get valid left scroll position.
-  // When we're scrolled all the way to the right and we remove columns, the scrollLeft value will be outdated,
-  // and greater than what's possible, so we need to handle that case here.
-  let remainingScroll = scrollLeft + viewportWidth > totalColumnWidth
-    ? totalColumnWidth - viewportWidth
-    : scrollLeft;
-
-  let columnIndex = lastFrozenColumnIndex;
-  let hiddenColumnsWidth = 0;
-  while (remainingScroll >= 0 && columnIndex < columns.length - 1) {
-    columnIndex++;
-    const { width = 0 } = columns[columnIndex];
-    remainingScroll -= width;
-    if (remainingScroll >= 0) {
-      hiddenColumnsWidth += width;
-    }
-  }
-  const colVisibleStartIdx = Math.max(columnIndex, 0);
-
+  const { columns, lastFrozenColumnIndex, viewportWidth } = columnMetrics;
+  // get the viewport's left side and right side positions for non-frozen columns
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns, lastFrozenColumnIndex);
+  const viewportLeft = scrollLeft + totalFrozenColumnWidth;
+  const viewportRight = scrollLeft + viewportWidth;
+  // get first and last non-frozen column indexes
+  const lastColIdx = columns.length - 1;
+  const firstUnfrozenColumnIdx = Math.min(lastFrozenColumnIndex + 1, lastColIdx);
 
-  if (viewportWidth > 0) {
-    const firstVisibleColumnHiddenWidth = scrollLeft - hiddenColumnsWidth;
-    viewportWidth += firstVisibleColumnHiddenWidth;
-  } else {
-    viewportWidth = totalColumnWidth;
+  // skip rendering non-frozen columns if the frozen columns cover the entire viewport
+  if (viewportLeft >= viewportRight) {
+    return {
+      colVisibleStartIdx: firstUnfrozenColumnIdx,
+      colVisibleEndIdx: firstUnfrozenColumnIdx,
+      colOverscanStartIdx: firstUnfrozenColumnIdx,
+      colOverscanEndIdx: firstUnfrozenColumnIdx
+    };
   }
 
-  const availableWidth = viewportWidth - totalFrozenColumnWidth;
-  const nonFrozenRenderedColumnCount = getColumnCountForWidth(columns, availableWidth, colVisibleStartIdx);
-  const colVisibleEndIdx = Math.min(columns.length - 1, colVisibleStartIdx + nonFrozenRenderedColumnCount);
-  const colOverscanStartIdx = Math.max(0, colVisibleStartIdx - 1);
-  const colOverscanEndIdx = Math.min(columns.length - 1, colVisibleEndIdx + 1);
+  // get the first visible non-frozen column index
+  let colVisibleStartIdx = firstUnfrozenColumnIdx;
+  while (colVisibleStartIdx < lastColIdx) {
+    const { left, width } = columns[colVisibleStartIdx];
+    // if the right side of the columnn is beyond the left side of the available viewport,
+    // then it is the first column that's at least partially visible
+    if (left + width > viewportLeft) {
+      break;
+    }
+    colVisibleStartIdx++;
+  }
+
+  // get the last visible non-frozen column index
+  let colVisibleEndIdx = colVisibleStartIdx;
+  while (colVisibleEndIdx < lastColIdx) {
+    const { left, width } = columns[colVisibleEndIdx];
+    // if the right side of the column is beyond or equal to the right side of the available viewport,
+    // then it the last column that's at least partially visible, as the previous column's right side is not beyond the viewport.
+    if (left + width >= viewportRight) {
+      break;
+    }
+    colVisibleEndIdx++;
+  }
+
+  const colOverscanStartIdx = Math.max(firstUnfrozenColumnIdx, colVisibleStartIdx - 1);
+  const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
   return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
 }
