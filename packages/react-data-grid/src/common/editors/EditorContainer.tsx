@@ -56,9 +56,7 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   const prevScrollTop = useRef(scrollTop);
   const { enableNewEditor, getRowMetaData, editor } = column;
 
-  const getInputNode = useCallback(() => {
-    return editorRef.current && editorRef.current.getInputNode();
-  }, []);
+  const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
 
   useEffect(() => {
     if (enableNewEditor) return;
@@ -90,24 +88,19 @@ export default function EditorContainer<R, RK extends keyof R, CK extends keyof 
   }
 
   function legacy_editorHasResults(): boolean {
-    return editorRef.current && editorRef.current.hasResults
-      ? editorRef.current.hasResults()
-      : false;
+    return editorRef.current?.hasResults?.() ?? false;
   }
 
   function legacy_editorIsSelectOpen(): boolean {
-    return editorRef.current && editorRef.current.isSelectOpen
-      ? editorRef.current.isSelectOpen()
-      : false;
+    return editorRef.current?.isSelectOpen?.() ?? false;
   }
 
   function legacy_isNewValueValid(value: unknown): boolean {
-    if (editorRef.current && editorRef.current.validate) {
-      const isValid = editorRef.current.validate(value);
+    const isValid = editorRef.current?.validate?.(value);
+    if (typeof isValid === 'boolean') {
       setIsInvalid(!isValid);
       return isValid;
     }
-
     return true;
   }
 

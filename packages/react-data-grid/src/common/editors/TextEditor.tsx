@@ -11,10 +11,8 @@ export default function TextEditor({
 }: TextEditorProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
+    inputRef.current?.focus();
+    inputRef.current?.select();
   }, []);
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
