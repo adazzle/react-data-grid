@@ -73,7 +73,8 @@ export default class extends React.Component {
     const comparer = (a, b) => {
       if (sortDirection === 'ASC') {
         return a[sortColumn] > b[sortColumn] ? 1 : -1;
-      } if (sortDirection === 'DESC') {
+      }
+      if (sortDirection === 'DESC') {
         return a[sortColumn] < b[sortColumn] ? 1 : -1;
       }
     };
