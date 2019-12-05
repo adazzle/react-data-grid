@@ -89,12 +89,11 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
   };
 
   createEditor() {
-    type P = EditorProps<ValueType<R> | string, unknown, R>;
+    type P = EditorProps<ValueType<R> | string, R>;
     const editorProps: P & { ref: React.RefObject<Editor> } = {
       ref: this.editor,
       column: this.props.column,
       value: this.getInitialValue(),
-      rowMetaData: this.getRowMetaData(),
       rowData: this.props.rowData,
       height: this.props.height,
       onCommit: this.commit,
@@ -175,14 +174,6 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     const { isSelectOpen } = this.getEditor();
     return isSelectOpen ? isSelectOpen() : false;
   };
-
-  getRowMetaData() {
-    // clone row data so editor cannot actually change this
-    // convention based method to get corresponding Id or Name of any Name or Id property
-    if (this.props.column.getRowMetaData) {
-      return this.props.column.getRowMetaData(this.props.rowData, this.props.column);
-    }
-  }
 
   getEditor = () => {
     return this.editor.current!;
