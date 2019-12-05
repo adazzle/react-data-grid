@@ -1,6 +1,5 @@
 import React from 'react';
-import { isElement } from 'react-is';
-import { HeaderRowType, DEFINE_SORT } from '../../enums';
+import { DEFINE_SORT } from '../../enums';
 import { CalculatedColumn } from '../../types';
 
 const SORT_TEXT = {
@@ -11,18 +10,23 @@ const SORT_TEXT = {
 
 export interface Props<R> {
   column: CalculatedColumn<R>;
-  rowType: HeaderRowType;
+  children: React.ReactNode;
+  sortColumn?: keyof R;
+  sortDirection?: DEFINE_SORT;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
-  sortDirection: DEFINE_SORT;
-  sortDescendingFirst: boolean;
-  allRowsSelected: boolean;
-  onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export default function SortableHeaderCell<R>(props: Props<R>) {
-  const { column, rowType, onSort, sortDirection, sortDescendingFirst, allRowsSelected, onAllRowsSelectionChange } = props;
+export default function SortableHeaderCell<R>({
+  column,
+  onSort,
+  sortColumn,
+  sortDirection,
+  children
+}: Props<R>) {
+  sortDirection = sortColumn === column.key && sortDirection || DEFINE_SORT.NONE;
   function onClick() {
     if (!onSort) return;
+    const sortDescendingFirst = column.sortDescendingFirst || false;
     let direction;
     switch (sortDirection) {
       case DEFINE_SORT.ASC:
@@ -38,21 +42,9 @@ export default function SortableHeaderCell<R>(props: Props<R>) {
     onSort(column.key, direction);
   }
 
-  const { headerRenderer } = column;
-  const content = !headerRenderer
-    ? column.name
-    : isElement(headerRenderer)
-      ? React.cloneElement(headerRenderer, { column })
-      : React.createElement(headerRenderer, {
-        column,
-        rowType,
-        allRowsSelected,
-        onAllRowsSelectionChange
-      });
-
   return (
     <span className="rdg-header-sort-cell" onClick={onClick}>
-      <span className="rdg-header-sort-name">{content}</span>
+      <span className="rdg-header-sort-name">{children}</span>
       <span>{SORT_TEXT[sortDirection]}</span>
     </span>
   );

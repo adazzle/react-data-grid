@@ -1,0 +1,73 @@
+import React, { createElement } from 'react';
+import classNames from 'classnames';
+
+import { getScrollbarSize, isFrozen } from './utils';
+import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
+import { ColumnMetrics, Filters } from './common/types';
+import { DataGridProps } from './DataGrid';
+
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+| 'filters'
+| 'onFiltersChange'
+>;
+
+export interface FilterRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
+  height: number;
+  columnMetrics: ColumnMetrics<R>;
+  scrollLeft: number | undefined;
+}
+
+export default function FilterRow<R, K extends keyof R>({
+  height,
+  columnMetrics,
+  scrollLeft,
+  filters,
+  onFiltersChange
+}: FilterRowProps<R, K>) {
+  const width = columnMetrics.totalColumnWidth + getScrollbarSize();
+
+  function onChange(key: keyof R, value: unknown) {
+    const newFilters: Filters<R> = { ...filters };
+    newFilters[key] = value;
+    onFiltersChange && onFiltersChange(newFilters);
+  }
+
+  return (
+    <div
+      className="rdg-header-row"
+      style={{ width, height }}
+    >
+      {columnMetrics.columns.map(column => {
+        const { key } = column;
+
+        const renderer = column.filterRenderer || FilterableHeaderCell;
+        const colIsFrozen = isFrozen(column);
+        const className = classNames('rdg-cell', {
+          'rdg-cell-frozen': colIsFrozen,
+          'rdg-cell-frozen-last': colIsFrozen && column.idx === columnMetrics.lastFrozenColumnIndex
+        }, column.cellClass);
+        const style: React.CSSProperties = {
+          width: column.width,
+          left: column.left
+        };
+
+        if (colIsFrozen && typeof scrollLeft === 'number') {
+          style.transform = `translateX(${scrollLeft}px)`;
+        }
+
+        return (
+          <div
+            style={style}
+            className={className}
+          >
+            {key !== 'select-row' && column.filterable && createElement(renderer, {
+              column,
+              value: filters ? filters[column.key] : undefined,
+              onChange: value => onChange(key, value)
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
-import { HeaderRowType, UpdateActions } from './enums';
+import { UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -37,9 +37,9 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
-  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
+  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRendererProps<TRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, unknown>>;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 
   getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
 }
@@ -140,9 +140,8 @@ export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
   onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
-export interface HeaderRowProps<TRow> {
+export interface HeaderRendererProps<TRow> {
   column: CalculatedColumn<TRow>;
-  rowType: HeaderRowType;
   allRowsSelected: boolean;
   onAllRowsSelectionChange(checked: boolean): void;
 }
@@ -263,14 +262,6 @@ export interface RowGroupMetaData {
 }
 
 export type Filters<TRow> = { [key in keyof TRow]?: any };
-
-export interface HeaderRowData<TRow> {
-  rowType: HeaderRowType;
-  height: number;
-  filterable?: boolean;
-  filters?: Filters<TRow>;
-  onFiltersChange?(filters: Filters<TRow>): void;
-}
 
 export interface CommitEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;

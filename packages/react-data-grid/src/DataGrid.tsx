@@ -9,12 +9,13 @@ import React, {
 } from 'react';
 import { isValidElementType } from 'react-is';
 
-import Header, { HeaderHandle } from './Header';
+import HeaderRow from './HeaderRow';
+import FilterRow from './FilterRow';
 import Canvas from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
-import { getColumnMetrics } from './utils/columnUtils';
+import { getColumnMetrics } from './utils';
 import EventBus from './EventBus';
-import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
+import { CellNavigationMode, EventTypes, UpdateActions, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
   CellActionButton,
@@ -24,7 +25,6 @@ import {
   CellContentRenderer,
   CommitEvent,
   GridRowsUpdatedEvent,
-  HeaderRowData,
   Position,
   RowsContainerProps,
   RowExpandToggleEvent,
@@ -166,8 +166,9 @@ function DataGrid<R, K extends keyof R>({
   minColumnWidth = 80,
   minHeight = 350,
   minWidth: width,
-  enableCellSelect = false,
   enableCellAutoFocus = true,
+  enableCellSelect = false,
+  enableHeaderFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
@@ -180,18 +181,15 @@ function DataGrid<R, K extends keyof R>({
   onSelectedCellRangeChange,
   selectedRows,
   onSelectedRowsChange,
-  filters,
-  onFiltersChange,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HeaderHandle>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
-  const scrollLeft = useRef(0);
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -240,9 +238,8 @@ function DataGrid<R, K extends keyof R>({
   }
 
   function handleScroll(scrollPosition: ScrollPosition) {
-    if (headerRef.current && scrollLeft.current !== scrollPosition.scrollLeft) {
-      scrollLeft.current = scrollPosition.scrollLeft;
-      headerRef.current.setScrollLeft(scrollPosition.scrollLeft);
+    if (headerRef.current) {
+      headerRef.current.scrollLeft = scrollPosition.scrollLeft;
     }
     if (props.onScroll) {
       props.onScroll(scrollPosition);
@@ -316,19 +313,6 @@ function DataGrid<R, K extends keyof R>({
     });
   }
 
-  function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
-    return [
-      { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
-      props.enableHeaderFilters ? {
-        rowType: HeaderRowType.FILTER,
-        filterable: true,
-        filters,
-        onFiltersChange,
-        height: headerFiltersHeight || headerRowHeight || rowHeight
-      } : undefined
-    ];
-  }
-
   function openCellEditor(rowIdx: number, idx: number) {
     selectCell({ rowIdx, idx }, true);
   }
@@ -383,8 +367,8 @@ function DataGrid<R, K extends keyof R>({
     cellMetaData.onCellMouseEnter = handleCellMouseEnter;
   }
 
-  const headerRows = getHeaderRows();
-  const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
+  headerRowHeight = headerRowHeight || rowHeight;
+  const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
 
   return (
     <div
@@ -394,23 +378,36 @@ function DataGrid<R, K extends keyof R>({
     >
       {columnMetrics && (
         <>
-          <Header<R, K>
+          <div
             ref={headerRef}
-            rowKey={rowKey}
-            rowsCount={rowsCount}
-            rowGetter={rowGetter}
-            columnMetrics={columnMetrics}
-            onColumnResize={handleColumnResize}
-            headerRows={headerRows}
-            sortColumn={props.sortColumn}
-            sortDirection={props.sortDirection}
-            draggableHeaderCell={props.draggableHeaderCell}
-            onSort={props.onGridSort}
-            onHeaderDrop={props.onHeaderDrop}
-            allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
-            onSelectedRowsChange={onSelectedRowsChange}
-            onCellClick={handleCellClick}
-          />
+            className="rdg-header"
+          >
+            <HeaderRow<R, K>
+              rowKey={rowKey}
+              rowsCount={rowsCount}
+              rowGetter={rowGetter}
+              height={headerRowHeight}
+              onColumnResize={handleColumnResize}
+              columnMetrics={columnMetrics}
+              draggableHeaderCell={props.draggableHeaderCell}
+              onHeaderDrop={props.onHeaderDrop}
+              allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
+              onSelectedRowsChange={onSelectedRowsChange}
+              sortColumn={props.sortColumn}
+              sortDirection={props.sortDirection}
+              onGridSort={props.onGridSort}
+              scrollLeft={undefined}
+            />
+            {enableHeaderFilters && (
+              <FilterRow
+                height={headerFiltersHeight}
+                columnMetrics={columnMetrics}
+                scrollLeft={undefined}
+                filters={props.filters}
+                onFiltersChange={props.onFiltersChange}
+              />
+            )}
+          </div>
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
               rowKey={rowKey}
