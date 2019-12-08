@@ -232,18 +232,14 @@ function DataGrid<R, K extends keyof R>({
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
-    if (props.onColumnResize) {
-      props.onColumnResize(column.idx, width);
-    }
+    props.onColumnResize?.(column.idx, width);
   }
 
   function handleScroll(scrollPosition: ScrollPosition) {
     if (headerRef.current) {
       headerRef.current.scrollLeft = scrollPosition.scrollLeft;
     }
-    if (props.onScroll) {
-      props.onScroll(scrollPosition);
-    }
+    props.onScroll?.(scrollPosition);
   }
 
   function handleDragEnter(overRowIdx: number) {
@@ -251,12 +247,8 @@ function DataGrid<R, K extends keyof R>({
   }
 
   function handleCellClick({ rowIdx, idx }: Position) {
-    const { onRowClick } = props;
     selectCell({ rowIdx, idx });
-
-    if (onRowClick) {
-      onRowClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
-    }
+    props.onRowClick?.(rowIdx, rowGetter(rowIdx), getColumn(idx));
   }
 
   function handleCellMouseDown(position: Position) {
@@ -279,10 +271,7 @@ function DataGrid<R, K extends keyof R>({
   }
 
   function handleCellDoubleClick({ rowIdx, idx }: Position) {
-    const { onRowDoubleClick } = props;
-    if (onRowDoubleClick) {
-      onRowDoubleClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
-    }
+    props.onRowDoubleClick?.(rowIdx, rowGetter(rowIdx), getColumn(idx));
     openCellEditor(rowIdx, idx);
   }
 

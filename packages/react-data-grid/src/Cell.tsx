@@ -30,15 +30,11 @@ function Cell<R>({
   }
 
   function handleCellMouseDown() {
-    if (cellMetaData.onCellMouseDown) {
-      cellMetaData.onCellMouseDown({ idx, rowIdx });
-    }
+    cellMetaData.onCellMouseDown?.({ idx, rowIdx });
   }
 
   function handleCellMouseEnter() {
-    if (cellMetaData.onCellMouseEnter) {
-      cellMetaData.onCellMouseEnter({ idx, rowIdx });
-    }
+    cellMetaData.onCellMouseEnter?.({ idx, rowIdx });
   }
 
   function handleCellContextMenu() {
