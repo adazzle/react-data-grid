@@ -40,8 +40,6 @@ describe('<InteractionMasks/>', () => {
       onSelectedCellChange,
       onSelectedCellRangeChange: jest.fn(),
       onGridRowsUpdated: jest.fn(),
-      onDragHandleDoubleClick() { },
-      onCommit() { },
       rowGetter,
       enableCellSelect: true,
       enableCellAutoFocus: false,

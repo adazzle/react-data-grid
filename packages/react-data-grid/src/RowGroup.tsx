@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { forwardRef } from 'react';
 import { EventTypes } from './common/enums';
-import { CellMetaData, IRowRendererProps, CalculatedColumn } from './common/types';
+import { IRowRendererProps, CalculatedColumn, RowExpandToggleEvent, Omit } from './common/types';
 import EventBus from './EventBus';
 
 interface Props<R> {
@@ -9,7 +9,6 @@ interface Props<R> {
   columns: CalculatedColumn<R>[];
   row: unknown;
   cellRenderer?(): void;
-  cellMetaData: CellMetaData<R>;
   isSelected?: boolean;
   idx: number;
   extraClasses?: string;
@@ -25,12 +24,13 @@ interface Props<R> {
   name: string;
   renderer?: React.ComponentType;
   eventBus: EventBus;
+  onRowExpandToggle?(event: RowExpandToggleEvent): void;
   renderBaseRow(p: IRowRendererProps<R>): React.ReactElement;
 }
 
 export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {
   function onRowExpandToggle(expand?: boolean) {
-    const { onRowExpandToggle } = props.cellMetaData;
+    const { onRowExpandToggle } = props;
     if (onRowExpandToggle) {
       const shouldExpand = expand == null ? !props.isExpanded : expand;
       onRowExpandToggle({ rowIdx: props.idx, shouldExpand, columnGroupName: props.columnGroupName, name: props.name });
@@ -54,7 +54,7 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
   );
 });
 
-interface DefaultBaseProps extends Props<any> {
+interface DefaultBaseProps extends Omit<Props<any>, 'onRowExpandToggle'> {
   onRowExpandClick(): void;
   onRowExpandToggle(expand?: boolean): void;
 }

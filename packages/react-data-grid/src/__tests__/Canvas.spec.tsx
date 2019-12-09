@@ -22,18 +22,7 @@ const testProps: CanvasProps<Row, 'id'> = {
   height: 200,
   rowsCount: 1,
   rowGetter(id) { return { id, row: String(id) }; },
-  cellMetaData: {
-    rowKey: 'row',
-    onCellClick() { },
-    onCellContextMenu() { },
-    onCellDoubleClick() { },
-    onDragEnter() { },
-    onCellExpand() { },
-    onRowExpandToggle() { }
-  },
-  onCommit() { },
   onGridRowsUpdated: noop,
-  onDragHandleDoubleClick: noop,
   onRowSelectionChange() {},
   enableCellSelect: true,
   enableCellAutoFocus: false,

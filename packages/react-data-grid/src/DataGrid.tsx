@@ -15,15 +15,13 @@ import Canvas from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
 import { getColumnMetrics } from './utils';
 import EventBus from './EventBus';
-import { CellNavigationMode, EventTypes, UpdateActions, DEFINE_SORT } from './common/enums';
+import { CellNavigationMode, EventTypes, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
   CellActionButton,
-  CellMetaData,
   CheckCellIsEditableEvent,
   Column,
   CellContentRenderer,
-  CommitEvent,
   GridRowsUpdatedEvent,
   Position,
   RowsContainerProps,
@@ -178,7 +176,6 @@ function DataGrid<R, K extends keyof R>({
   columns,
   rowsCount,
   rowGetter,
-  onSelectedCellRangeChange,
   selectedRows,
   onSelectedRowsChange,
   ...props
@@ -222,10 +219,6 @@ function DataGrid<R, K extends keyof R>({
     eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
   }
 
-  function getColumn(idx: number) {
-    return columnMetrics!.columns[idx];
-  }
-
   function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
     width = Math.max(width, minColumnWidth);
@@ -242,64 +235,8 @@ function DataGrid<R, K extends keyof R>({
     props.onScroll?.(scrollPosition);
   }
 
-  function handleDragEnter(overRowIdx: number) {
-    eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
-  }
-
-  function handleCellClick({ rowIdx, idx }: Position) {
-    selectCell({ rowIdx, idx });
-    props.onRowClick?.(rowIdx, rowGetter(rowIdx), getColumn(idx));
-  }
-
-  function handleCellMouseDown(position: Position) {
-    eventBus.dispatch(EventTypes.SELECT_START, position);
-
-    function handleWindowMouseUp() {
-      eventBus.dispatch(EventTypes.SELECT_END);
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    }
-
-    window.addEventListener('mouseup', handleWindowMouseUp);
-  }
-
-  function handleCellMouseEnter(position: Position) {
-    eventBus.dispatch(EventTypes.SELECT_UPDATE, position);
-  }
-
-  function handleCellContextMenu(position: Position) {
-    selectCell(position);
-  }
-
-  function handleCellDoubleClick({ rowIdx, idx }: Position) {
-    props.onRowDoubleClick?.(rowIdx, rowGetter(rowIdx), getColumn(idx));
-    openCellEditor(rowIdx, idx);
-  }
-
-  function handleDragHandleDoubleClick(e: Position) {
-    const cellKey = getColumn(e.idx).key;
-    const value = rowGetter(e.rowIdx)[cellKey];
-    handleGridRowsUpdated({
-      cellKey,
-      fromRow: e.rowIdx,
-      toRow: rowsCount - 1,
-      updated: { [cellKey]: value } as never,
-      action: UpdateActions.COLUMN_FILL
-    });
-  }
-
   function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
     props.onGridRowsUpdated?.(event);
-  }
-
-  function handleCommit(commit: CommitEvent<R>) {
-    const { cellKey, rowIdx, updated } = commit;
-    handleGridRowsUpdated({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: rowIdx,
-      updated,
-      action: UpdateActions.CELL_UPDATE
-    });
   }
 
   function openCellEditor(rowIdx: number, idx: number) {
@@ -338,23 +275,6 @@ function DataGrid<R, K extends keyof R>({
     selectCell,
     openCellEditor
   }));
-
-  const cellMetaData: CellMetaData<R> = {
-    rowKey,
-    onCellClick: handleCellClick,
-    onCellContextMenu: handleCellContextMenu,
-    onCellDoubleClick: handleCellDoubleClick,
-    onCellExpand: props.onCellExpand,
-    onRowExpandToggle: props.onRowExpandToggle,
-    getCellActions: props.getCellActions,
-    onDeleteSubRow: props.onDeleteSubRow,
-    onAddSubRow: props.onAddSubRow,
-    onDragEnter: handleDragEnter
-  };
-  if (onSelectedCellRangeChange) {
-    cellMetaData.onCellMouseDown = handleCellMouseDown;
-    cellMetaData.onCellMouseEnter = handleCellMouseEnter;
-  }
 
   headerRowHeight = headerRowHeight || rowHeight;
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
@@ -408,7 +328,6 @@ function DataGrid<R, K extends keyof R>({
               onRowSelectionChange={handleRowSelectionChange}
               columnMetrics={columnMetrics}
               onScroll={handleScroll}
-              cellMetaData={cellMetaData}
               height={minHeight - rowOffsetHeight}
               scrollToRowIndex={props.scrollToRowIndex}
               contextMenu={props.contextMenu}
@@ -428,10 +347,15 @@ function DataGrid<R, K extends keyof R>({
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
               onGridRowsUpdated={handleGridRowsUpdated}
-              onDragHandleDoubleClick={handleDragHandleDoubleClick}
               onSelectedCellChange={props.onSelectedCellChange}
-              onSelectedCellRangeChange={onSelectedCellRangeChange}
-              onCommit={handleCommit}
+              onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+              onRowClick={props.onRowClick}
+              onRowDoubleClick={props.onRowDoubleClick}
+              onCellExpand={props.onCellExpand}
+              onRowExpandToggle={props.onRowExpandToggle}
+              onDeleteSubRow={props.onDeleteSubRow}
+              onAddSubRow={props.onAddSubRow}
+              getCellActions={props.getCellActions}
             />
           )}
         </>

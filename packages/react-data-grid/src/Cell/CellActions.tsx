@@ -1,9 +1,9 @@
 import React from 'react';
 
 import CellAction from './CellAction';
-import { CellMetaData, CellContentRendererProps } from '../common/types';
+import { CellRendererProps, CellContentRendererProps } from '../common/types';
 
-type CellActionsProps<R> = Pick<CellContentRendererProps<R>, 'column' | 'rowData'> & Pick<Required<CellMetaData<R>>, 'getCellActions'>;
+type CellActionsProps<R> = Pick<CellContentRendererProps<R>, 'column' | 'rowData'> & Pick<Required<CellRendererProps<R>>, 'getCellActions'>;
 
 export default function CellActions<R>({ getCellActions, column, rowData }: CellActionsProps<R>) {
   const cellActionButtons = getCellActions(column, rowData);
