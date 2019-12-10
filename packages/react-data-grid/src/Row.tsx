@@ -53,7 +53,7 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
         return (
           <Renderer
             key={key as string} // FIXME: fix key type
-            idx={idx}
+            idx={column.idx}
             rowKey={key}
             rowIdx={idx}
             column={column}
