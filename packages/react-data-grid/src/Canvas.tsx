@@ -59,28 +59,17 @@ export interface CanvasHandle {
 }
 
 function Canvas<R, K extends keyof R>({
-  cellNavigationMode,
   columnMetrics,
   contextMenu,
-  editorPortalTarget,
-  enableCellAutoFocus,
-  enableCellSelect,
   eventBus,
-  getSubRowDetails,
   height,
-  onCanvasKeydown,
-  onCanvasKeyup,
-  onRowSelectionChange,
   onScroll,
   renderBatchSize,
   rowGetter,
-  rowGroupRenderer,
   rowHeight,
   rowKey,
-  rowRenderer,
   RowsContainer,
   rowsCount,
-  selectedRows,
   summaryRows,
   ...props
 }: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
@@ -188,14 +177,14 @@ function Canvas<R, K extends keyof R>({
           colOverscanStartIdx={colOverscanStartIdx}
           columnMetrics={columnMetrics}
           eventBus={eventBus}
-          getSubRowDetails={getSubRowDetails}
-          onRowSelectionChange={onRowSelectionChange}
-          rowGroupRenderer={rowGroupRenderer}
+          getSubRowDetails={props.getSubRowDetails}
+          onRowSelectionChange={props.onRowSelectionChange}
+          rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
           rowKey={rowKey}
-          rowRenderer={rowRenderer}
+          rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
-          selectedRows={selectedRows}
+          selectedRows={props.selectedRows}
           onRowClick={props.onRowClick}
           onRowDoubleClick={props.onRowDoubleClick}
           onCellExpand={props.onCellExpand}
@@ -253,8 +242,8 @@ function Canvas<R, K extends keyof R>({
         style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
         ref={canvas}
         onScroll={handleScroll}
-        onKeyDown={onCanvasKeydown}
-        onKeyUp={onCanvasKeyup}
+        onKeyDown={props.onCanvasKeydown}
+        onKeyUp={props.onCanvasKeyup}
       >
         <InteractionMasks<R, K>
           rowGetter={rowGetter}
@@ -264,11 +253,11 @@ function Canvas<R, K extends keyof R>({
           height={clientHeight}
           colVisibleStartIdx={colVisibleStartIdx}
           colVisibleEndIdx={colVisibleEndIdx}
-          enableCellSelect={enableCellSelect}
-          enableCellAutoFocus={enableCellAutoFocus}
+          enableCellSelect={props.enableCellSelect}
+          enableCellAutoFocus={props.enableCellAutoFocus}
           enableCellCopyPaste={props.enableCellCopyPaste}
           enableCellDragAndDrop={props.enableCellDragAndDrop}
-          cellNavigationMode={cellNavigationMode}
+          cellNavigationMode={props.cellNavigationMode}
           eventBus={eventBus}
           contextMenu={contextMenu}
           onHitBottomBoundary={onHitBottomCanvas}
@@ -278,7 +267,7 @@ function Canvas<R, K extends keyof R>({
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
           getRowColumns={getRowColumns}
-          editorPortalTarget={editorPortalTarget}
+          editorPortalTarget={props.editorPortalTarget}
           onCheckCellIsEditable={props.onCheckCellIsEditable}
           onGridRowsUpdated={props.onGridRowsUpdated}
           onSelectedCellChange={props.onSelectedCellChange}
