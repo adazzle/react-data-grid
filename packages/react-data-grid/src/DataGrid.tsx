@@ -11,7 +11,7 @@ import { isValidElementType } from 'react-is';
 
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
-import Canvas from './Canvas';
+import Canvas, { CanvasHandle } from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
 import { getColumnMetrics } from './utils';
 import EventBus from './EventBus';
@@ -90,8 +90,6 @@ export interface DataGridProps<R, K extends keyof R> {
   rowsCount: number;
   /** The minimum height of the grid in pixels */
   minHeight?: number;
-  /** When set, grid will scroll to this row index */
-  scrollToRowIndex?: number;
   /** Component used to render a context menu. react-data-grid-addons provides a default context menu which may be used*/
   contextMenu?: React.ReactElement;
   /** Used to toggle whether cells can be selected or not */
@@ -145,6 +143,7 @@ export interface DataGridProps<R, K extends keyof R> {
 
 export interface DataGridHandle {
   scrollToColumn(colIdx: number): void;
+  scrollToRow(rowIdx: number): void;
   selectCell(position: Position, openEditor?: boolean): void;
   openCellEditor(rowIdx: number, colIdx: number): void;
 }
@@ -185,6 +184,7 @@ function DataGrid<R, K extends keyof R>({
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<CanvasHandle>(null);
   const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
 
@@ -244,7 +244,13 @@ function DataGrid<R, K extends keyof R>({
   }
 
   function scrollToColumn(colIdx: number) {
-    eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
+    if (!canvasRef.current) return;
+    canvasRef.current.scrollToColumn(colIdx);
+  }
+
+  function scrollToRow(rowIdx: number) {
+    if (!canvasRef.current) return;
+    canvasRef.current.scrollToRow(rowIdx);
   }
 
   function handleRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) {
@@ -272,6 +278,7 @@ function DataGrid<R, K extends keyof R>({
 
   useImperativeHandle(ref, () => ({
     scrollToColumn,
+    scrollToRow,
     selectCell,
     openCellEditor
   }));
@@ -319,6 +326,7 @@ function DataGrid<R, K extends keyof R>({
           </div>
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
+              ref={canvasRef}
               rowKey={rowKey}
               rowHeight={rowHeight}
               rowRenderer={props.rowRenderer}
@@ -329,7 +337,6 @@ function DataGrid<R, K extends keyof R>({
               columnMetrics={columnMetrics}
               onScroll={handleScroll}
               height={minHeight - rowOffsetHeight}
-              scrollToRowIndex={props.scrollToRowIndex}
               contextMenu={props.contextMenu}
               getSubRowDetails={props.getSubRowDetails}
               rowGroupRenderer={props.rowGroupRenderer}
