@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { getScrollbarSize, isFrozen } from './utils';
+import { isFrozen } from './utils';
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn, ColumnMetrics } from './common/types';
+import { CalculatedColumn } from './common/types';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
@@ -20,7 +20,9 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 
 export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   height: number;
-  columnMetrics: ColumnMetrics<R>;
+  width: number;
+  lastFrozenColumnIndex: number;
+  columns: CalculatedColumn<R>[];
   allRowsSelected: boolean;
   scrollLeft: number | undefined;
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
@@ -28,12 +30,10 @@ export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProp
 
 export default function HeaderRow<R, K extends keyof R>({
   height,
-  columnMetrics,
+  width,
   onSelectedRowsChange,
   ...props
 }: HeaderRowProps<R, K>) {
-  const width = columnMetrics.totalColumnWidth + getScrollbarSize();
-
   function handleAllRowsSelectionChange(checked: boolean) {
     if (!onSelectedRowsChange) return;
 
@@ -52,12 +52,12 @@ export default function HeaderRow<R, K extends keyof R>({
       className="rdg-header-row"
       style={{ width, height }}
     >
-      {columnMetrics.columns.map(column => {
+      {props.columns.map(column => {
         return (
           <HeaderCell<R, K>
             key={column.key as string}
             column={column}
-            lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+            lastFrozenColumnIndex={props.lastFrozenColumnIndex}
             height={height}
             onResize={props.onColumnResize}
             onHeaderDrop={props.onHeaderDrop}

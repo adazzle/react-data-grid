@@ -1,9 +1,9 @@
 import React, { createElement } from 'react';
 import classNames from 'classnames';
 
-import { getScrollbarSize, isFrozen } from './utils';
+import { isFrozen } from './utils';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
-import { ColumnMetrics, Filters } from './common/types';
+import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
@@ -13,19 +13,21 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 
 export interface FilterRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   height: number;
-  columnMetrics: ColumnMetrics<R>;
+  width: number;
+  lastFrozenColumnIndex: number;
+  columns: CalculatedColumn<R>[];
   scrollLeft: number | undefined;
 }
 
 export default function FilterRow<R, K extends keyof R>({
   height,
-  columnMetrics,
+  width,
+  columns,
+  lastFrozenColumnIndex,
   scrollLeft,
   filters,
   onFiltersChange
 }: FilterRowProps<R, K>) {
-  const width = columnMetrics.totalColumnWidth + getScrollbarSize();
-
   function onChange(key: keyof R, value: unknown) {
     const newFilters: Filters<R> = { ...filters };
     newFilters[key] = value;
@@ -37,14 +39,14 @@ export default function FilterRow<R, K extends keyof R>({
       className="rdg-header-row"
       style={{ width, height }}
     >
-      {columnMetrics.columns.map(column => {
+      {columns.map(column => {
         const { key } = column;
 
         const renderer = column.filterRenderer || FilterableHeaderCell;
         const colIsFrozen = isFrozen(column);
         const className = classNames('rdg-cell', {
           'rdg-cell-frozen': colIsFrozen,
-          'rdg-cell-frozen-last': colIsFrozen && column.idx === columnMetrics.lastFrozenColumnIndex
+          'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex
         }, column.cellClass);
         const style: React.CSSProperties = {
           width: column.width,

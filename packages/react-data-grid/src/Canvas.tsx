@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState, useImperativeHandle, forwardRef } from 'react';
+import React, { useCallback, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition } from './common/types';
 import EventBus from './EventBus';
@@ -7,8 +7,7 @@ import { DataGridProps } from './DataGrid';
 import Row from './Row';
 import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
-import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported } from './utils';
-import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
+import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowGetter'
@@ -46,6 +45,11 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
   height: number;
+  scrollLeft: number;
+  colOverscanStartIdx: number;
+  colOverscanEndIdx: number;
+  colVisibleStartIdx: number;
+  colVisibleEndIdx: number;
   eventBus: EventBus;
   onScroll(position: ScrollPosition): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -63,7 +67,10 @@ function Canvas<R, K extends keyof R>({
   contextMenu,
   eventBus,
   height,
+  scrollLeft,
   onScroll,
+  colOverscanStartIdx,
+  colOverscanEndIdx,
   renderBatchSize,
   rowGetter,
   rowHeight,
@@ -74,7 +81,6 @@ function Canvas<R, K extends keyof R>({
   ...props
 }: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
   const [scrollTop, setScrollTop] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
@@ -90,16 +96,8 @@ function Canvas<R, K extends keyof R>({
     renderBatchSize
   );
 
-  const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
-    return getHorizontalRangeToRender({
-      columnMetrics,
-      scrollLeft
-    });
-  }, [columnMetrics, scrollLeft]);
-
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft, scrollTop } = e.currentTarget;
-    setScrollLeft(scrollLeft);
     setScrollTop(scrollTop);
     onScroll({ scrollLeft, scrollTop });
     if (summaryRef.current) {
@@ -251,8 +249,8 @@ function Canvas<R, K extends keyof R>({
           rowHeight={rowHeight}
           columns={columnMetrics.columns}
           height={clientHeight}
-          colVisibleStartIdx={colVisibleStartIdx}
-          colVisibleEndIdx={colVisibleEndIdx}
+          colVisibleStartIdx={props.colVisibleStartIdx}
+          colVisibleEndIdx={props.colVisibleEndIdx}
           enableCellSelect={props.enableCellSelect}
           enableCellAutoFocus={props.enableCellAutoFocus}
           enableCellCopyPaste={props.enableCellCopyPaste}

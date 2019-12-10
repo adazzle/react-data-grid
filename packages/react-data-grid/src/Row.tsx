@@ -4,7 +4,7 @@ import React from 'react';
 import Cell from './Cell';
 import { IRowRendererProps } from './common/types';
 import { EventTypes } from './common/enums';
-import { isFrozen } from './utils/columnUtils';
+import { isFrozen, getViewportColumns } from './utils';
 
 export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
@@ -46,43 +46,35 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       ...props
     } = this.props;
     const Renderer = this.props.cellRenderer!;
-    const cellElements = [];
 
-    for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
-      const column = columns[colIdx];
-      const colIsFrozen = isFrozen(column);
-
-      if (colIdx < colOverscanStartIdx && !colIsFrozen) continue;
-
-      const { key } = column;
-
-      cellElements.push(
-        <Renderer
-          key={key as string} // FIXME: fix key type
-          idx={colIdx}
-          rowKey={key}
-          rowIdx={idx}
-          column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          rowData={row}
-          expandableOptions={this.getExpandableOptions(key)}
-          scrollLeft={colIsFrozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
-          isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
-          isSummaryRow={isSummaryRow}
-          eventBus={props.eventBus}
-          onRowClick={props.onRowClick}
-          onRowDoubleClick={props.onRowDoubleClick}
-          onCellExpand={props.onCellExpand}
-          onDeleteSubRow={props.onDeleteSubRow}
-          onAddSubRow={props.onAddSubRow}
-          getCellActions={props.getCellActions}
-          enableCellRangeSelection={props.enableCellRangeSelection}
-        />
-      );
-    }
-
-    return cellElements;
+    return getViewportColumns(columns, colOverscanStartIdx, colOverscanEndIdx)
+      .map(column => {
+        const { key } = column;
+        return (
+          <Renderer
+            key={key as string} // FIXME: fix key type
+            idx={idx}
+            rowKey={key}
+            rowIdx={idx}
+            column={column}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
+            rowData={row}
+            expandableOptions={this.getExpandableOptions(key)}
+            scrollLeft={isFrozen(column) && typeof scrollLeft === 'number' ? scrollLeft : undefined}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+            isSummaryRow={isSummaryRow}
+            eventBus={props.eventBus}
+            onRowClick={props.onRowClick}
+            onRowDoubleClick={props.onRowDoubleClick}
+            onCellExpand={props.onCellExpand}
+            onDeleteSubRow={props.onDeleteSubRow}
+            onAddSubRow={props.onAddSubRow}
+            getCellActions={props.getCellActions}
+            enableCellRangeSelection={props.enableCellRangeSelection}
+          />
+        );
+      });
   }
 
   getExpandableOptions(columnKey: keyof R) {

@@ -5,6 +5,7 @@ import React, {
   useLayoutEffect,
   useMemo,
   useImperativeHandle,
+  useCallback,
   createElement
 } from 'react';
 import { isValidElementType } from 'react-is';
@@ -13,7 +14,7 @@ import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle } from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
-import { getColumnMetrics } from './utils';
+import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
 import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, DEFINE_SORT } from './common/enums';
 import {
@@ -158,7 +159,7 @@ export interface DataGridHandle {
 function DataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
   rowHeight = 35,
-  headerRowHeight,
+  headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
   minColumnWidth = 80,
   minHeight = 350,
@@ -180,6 +181,7 @@ function DataGrid<R, K extends keyof R>({
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -187,6 +189,7 @@ function DataGrid<R, K extends keyof R>({
   const canvasRef = useRef<CanvasHandle>(null);
   const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
+  const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -199,6 +202,14 @@ function DataGrid<R, K extends keyof R>({
       defaultCellContentRenderer
     });
   }, [columnWidths, columns, defaultCellContentRenderer, minColumnWidth, viewportWidth]);
+
+  const horizontalRange = useMemo(() => {
+    if (!columnMetrics) return null;
+    return getHorizontalRangeToRender({
+      columnMetrics,
+      scrollLeft
+    });
+  }, [columnMetrics, scrollLeft]);
 
   useLayoutEffect(() => {
     // Do not calculate the width if minWidth is provided
@@ -232,6 +243,7 @@ function DataGrid<R, K extends keyof R>({
     if (headerRef.current) {
       headerRef.current.scrollLeft = scrollPosition.scrollLeft;
     }
+    setScrollLeft(scrollPosition.scrollLeft);
     props.onScroll?.(scrollPosition);
   }
 
@@ -253,7 +265,7 @@ function DataGrid<R, K extends keyof R>({
     canvasRef.current.scrollToRow(rowIdx);
   }
 
-  function handleRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) {
+  const handleRowSelectionChange = useCallback((rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) => {
     if (!onSelectedRowsChange) return;
 
     const newSelectedRows = new Set(selectedRows);
@@ -274,7 +286,7 @@ function DataGrid<R, K extends keyof R>({
     }
 
     onSelectedRowsChange(newSelectedRows);
-  }
+  }, [onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
 
   useImperativeHandle(ref, () => ({
     scrollToColumn,
@@ -283,8 +295,12 @@ function DataGrid<R, K extends keyof R>({
     openCellEditor
   }));
 
-  headerRowHeight = headerRowHeight || rowHeight;
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
+  const viewportColumns = columnMetrics && horizontalRange ? getViewportColumns(
+    columnMetrics.columns,
+    horizontalRange.colOverscanStartIdx,
+    horizontalRange.colOverscanEndIdx
+  ) : [];
 
   return (
     <div
@@ -303,8 +319,10 @@ function DataGrid<R, K extends keyof R>({
               rowsCount={rowsCount}
               rowGetter={rowGetter}
               height={headerRowHeight}
+              width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+              columns={viewportColumns}
               onColumnResize={handleColumnResize}
-              columnMetrics={columnMetrics}
+              lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
               draggableHeaderCell={props.draggableHeaderCell}
               onHeaderDrop={props.onHeaderDrop}
               allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
@@ -312,13 +330,15 @@ function DataGrid<R, K extends keyof R>({
               sortColumn={props.sortColumn}
               sortDirection={props.sortDirection}
               onGridSort={props.onGridSort}
-              scrollLeft={undefined}
+              scrollLeft={nonStickyScrollLeft}
             />
             {enableHeaderFilters && (
               <FilterRow
                 height={headerFiltersHeight}
-                columnMetrics={columnMetrics}
-                scrollLeft={undefined}
+                width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+                lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+                columns={viewportColumns}
+                scrollLeft={nonStickyScrollLeft}
                 filters={props.filters}
                 onFiltersChange={props.onFiltersChange}
               />
@@ -346,6 +366,7 @@ function DataGrid<R, K extends keyof R>({
               enableCellDragAndDrop={enableCellDragAndDrop}
               cellNavigationMode={cellNavigationMode}
               eventBus={eventBus}
+              scrollLeft={scrollLeft}
               RowsContainer={props.RowsContainer}
               editorPortalTarget={editorPortalTarget}
               onCanvasKeydown={props.onGridKeyDown}
@@ -363,6 +384,7 @@ function DataGrid<R, K extends keyof R>({
               onDeleteSubRow={props.onDeleteSubRow}
               onAddSubRow={props.onAddSubRow}
               getCellActions={props.getCellActions}
+              {...horizontalRange!}
             />
           )}
         </>
