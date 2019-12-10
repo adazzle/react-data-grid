@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { forwardRef } from 'react';
 import { EventTypes } from './common/enums';
-import { IRowRendererProps, CalculatedColumn, RowExpandToggleEvent, Omit } from './common/types';
+import { IRowRendererProps, CalculatedColumn, RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
 import EventBus from './EventBus';
 
 interface Props<R> {
   height: number;
   columns: CalculatedColumn<R>[];
   row: unknown;
-  cellRenderer?(): void;
+  cellRenderer?: React.ComponentType<CellRendererProps<R>>;
   isSelected?: boolean;
   idx: number;
   extraClasses?: string;
@@ -52,7 +52,7 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
-});
+}) as <R>(props: Props<R>) => JSX.Element;
 
 interface DefaultBaseProps extends Omit<Props<any>, 'onRowExpandToggle'> {
   onRowExpandClick(): void;
