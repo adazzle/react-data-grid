@@ -524,8 +524,8 @@ module.exports = {
   rules,
   overrides: [{
     files: [
-      'packages/*/src/**/*',
-      'examples/**/*'
+      'examples/**/*',
+      'src/**/*'
     ],
     env: {
       browser: true
@@ -535,8 +535,8 @@ module.exports = {
     }
   }, {
     files: [
-      'packages/*/src/**/__tests__/**/*',
       'examples/**/__tests__/**/*',
+      'src/**/__tests__/**/*',
       'tests/**/*'
     ],
     env: {
@@ -547,20 +547,14 @@ module.exports = {
     }
   }, {
     files: [
-      '*.js'
+      '*.js',
+      '*.mjs'
     ],
-    parserOptions: {
-      ecmaFeatures: {
-        jsx: true
-      }
-    },
     rules: jsRules
   }, {
     files: [
       'babel.config.js',
-      'jest.config.js',
-      'webpack-dev-server.js',
-      'tools/**/*.js'
+      'jest.config.js'
     ],
     parserOptions: {
       sourceType: 'script'
@@ -576,6 +570,22 @@ module.exports = {
       'no-new-require': 2,
       'no-path-concat': 1,
       '@typescript-eslint/no-require-imports': 0
+    }
+  }, {
+    files: [
+      'webpack-dev-server.mjs',
+      'tools/**/*.mjs'
+    ],
+    env: {
+      node: true
+    },
+    rules: {
+      'no-console': 0,
+      'default-param-last': 2,
+      'global-require': 1,
+      'no-buffer-constructor': 2,
+      'no-new-require': 2,
+      'no-path-concat': 1
     }
   }]
 };

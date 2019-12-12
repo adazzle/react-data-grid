@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.base",
-  "compilerOptions": {
-    "outDir": "lib"
-  },
-  "files": [
-    "src/index.ts"
-  ]
-}

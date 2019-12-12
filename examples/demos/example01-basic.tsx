@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
+import DataGrid, { valueCellContentRenderer } from '../../src';
 import Wrapper from './Wrapper';
 
 const columns = [
@@ -8,7 +8,11 @@ const columns = [
   { key: 'count', name: 'Count' }
 ];
 
-const rows = [{ id: 0, title: 'row1', count: 20 }, { id: 1, title: 'row1', count: 40 }, { id: 2, title: 'row1', count: 60 }];
+const rows = [
+  { id: 0, title: 'row1', count: 20 },
+  { id: 1, title: 'row1', count: 40 },
+  { id: 2, title: 'row1', count: 60 }
+];
 
 export default function() {
   return (

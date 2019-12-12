@@ -101,7 +101,7 @@ For maintainers only.
 - `cd` to the root of the repo.
 - Checkout the branch you wish to publish. `master`, `next`, or `canary`
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
-- Install dependencies, bootstrap lerna:
+- Install dependencies:
   - `npm i`
 - Build the release files:
   - `npm run build`
@@ -109,7 +109,7 @@ For maintainers only.
 - Login to the `adazzle` npm account if you haven't already done so:
   - `npm login`
   - You can use `npm whoami` to check who you are logged in as.
-- Publish the update with lerna:
+- Publish the update with npm:
   - To release a new stable version:
     - `npx lerna publish`
   - To release a new `next` version:
@@ -120,6 +120,6 @@ For maintainers only.
     - `npx lerna publish --dist-tag canary`
     - Select `Custom Prerelease`
     - Type in `canary` for the prerelease name.
-  - Relevant Lerna docs:
-    - https://github.com/lerna/lerna/blob/master/commands/version/README.md
-    - https://github.com/lerna/lerna/blob/master/commands/publish/README.md
+  - Relevant npm docs:
+    - https://docs.npmjs.com/cli/version
+    - https://docs.npmjs.com/cli/publish
