@@ -1,6 +1,20 @@
 import classNames from 'classnames';
 import React from 'react';
-import { ConnectDropTarget, DragElementWrapper, DragSource, DragSourceCollector, DragSourceConnector, DragSourceMonitor, DragSourceOptions, DragSourceSpec, DropTarget, DropTargetCollector, DropTargetConnector, DropTargetMonitor, DropTargetSpec } from 'react-dnd';
+import {
+  ConnectDropTarget,
+  DragElementWrapper,
+  DragSource,
+  DragSourceCollector,
+  DragSourceConnector,
+  DragSourceMonitor,
+  DragSourceOptions,
+  DragSourceSpec,
+  DropTarget,
+  DropTargetCollector,
+  DropTargetConnector,
+  DropTargetMonitor,
+  DropTargetSpec
+} from 'react-dnd';
 import { Column } from '../common/types';
 
 interface DragCollectProps {
