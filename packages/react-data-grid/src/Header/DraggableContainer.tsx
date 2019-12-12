@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import DraggableHeaderCell from './DraggableHeaderCell';
 
-function withDragDropContext<TProps extends {}>(Comp: React.ComponentType<TProps>) {
+export function withDragDropContext<TProps extends {}>(Comp: React.ComponentType<TProps>) {
   function DragDropContext(props: TProps): JSX.Element {
     return (
       <DndProvider backend={HTML5Backend}>

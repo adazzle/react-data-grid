@@ -62,6 +62,22 @@
     .grid-autosizer-wrapper {
       flex: 1 1 auto;
     }
+
+    .disable-content {
+      position: fixed;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(2px);
+      z-index: 9999;
+    }
+
+    .disable-content h1 {
+      position: relative;
+      top: 50%;
+      text-align: center;
+      cursor: default;
+    }
   </style>
   <script defer src="https://unpkg.com/core-js-bundle/minified.js"></script>
   <script defer src="./index.js"></script>
