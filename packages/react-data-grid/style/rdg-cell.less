@@ -1,6 +1,5 @@
 .rdg-cell {
   display: inline-block;
-  position: absolute;
   height: inherit;
   padding: 0 8px;
   border-right: 1px solid @borderColor;
@@ -207,4 +206,20 @@
 .rdg-filter-badge {
   cursor: help;
   padding-left: 4px;
+}
+
+.rdg-dragging {
+  cursor: grabbing;
+}
+
+.rdg-draggable-header-cell {
+  cursor: move;
+  display: inline-block;
+  height: inherit;
+  background-color: inherit;
+  width: 100%;
+}
+
+.rdg-can-drop {
+  background-color: #ececec;
 }
