@@ -41,10 +41,6 @@ describe('Grid', () => {
     return { wrapper, props, columns, rows };
   };
 
-  // const getBaseHeader = (wrapper) => {
-  //   return wrapper.find('ForwardRef(Header)');
-  // };
-
   const getBaseCanvas = (wrapper) => {
     return wrapper.find('Canvas');
   };
@@ -59,64 +55,50 @@ describe('Grid', () => {
   });
 
   // Set of tests for the props that defined the height of our rows
-  // describe('when defininig heights on props', () => {
-  //   describe('for defaults props', () => {
-  //     function innerSetup() {
-  //       const { wrapper } = setup({ enableHeaderFilters: true });
-  //       return getBaseHeader(wrapper);
-  //     }
+  describe('when defininig heights on props', () => {
+    describe('for defaults props', () => {
+      it('uses the appropriate default for the header row height', () => {
+        const { wrapper } = setup({ enableHeaderFilters: true });
+        expect(wrapper.find('HeaderRow').prop('height')).toEqual(35);
+      });
 
-  //     it('uses the appropriate default for the header row height', () => {
-  //       expect(innerSetup().props().headerRows[0].height).toEqual(35);
-  //     });
+      it('uses the appropriate default for the header filter row height', () => {
+        const { wrapper } = setup({ enableHeaderFilters: true });
+        expect(wrapper.find('FilterRow').prop('height')).toEqual(45);
+      });
+    });
 
-  //     it('uses the appropriate default for the header filter row height', () => {
-  //       expect(innerSetup().props().headerRows[1].height).toEqual(45);
-  //     });
-  //   });
+    describe('for a given row height prop', () => {
+      it('passes the grid row height to the header row when no height to the specific header row is provided', () => {
+        const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
+        expect(wrapper.find('HeaderRow').prop('height')).toEqual(40);
+      });
 
-  //   describe('for a given row height prop', () => {
-  //     function innerSetup() {
-  //       const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
-  //       return getBaseHeader(wrapper);
-  //     }
+      it('uses the default prop height for the filter row when none is provided', () => {
+        const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
+        expect(wrapper.find('FilterRow').prop('height')).toEqual(45);
+      });
+    });
 
-  //     it('passes the grid row height to the header row when no height to the specific header row is provided', () => {
-  //       expect(innerSetup().props().headerRows[0].height).toEqual(40);
-  //     });
+    describe('for given row and header height props', () => {
+      function innerSetup() {
+        return setup({
+          enableHeaderFilters: true,
+          rowHeight: 40,
+          headerRowHeight: 50,
+          headerFiltersHeight: 60
+        });
+      }
 
-  //     it('uses the default prop height for the filter row when none is provided', () => {
-  //       expect(innerSetup().props().headerRows[1].height).toEqual(45);
-  //     });
-  //   });
+      it('passes the correct height to the header row', () => {
+        expect(innerSetup().wrapper.find('HeaderRow').prop('height')).toEqual(50);
+      });
 
-  //   describe('for given row and header height props', () => {
-  //     function innerSetup() {
-  //       const { wrapper } = setup({
-  //         enableHeaderFilters: true,
-  //         rowHeight: 40,
-  //         headerRowHeight: 50,
-  //         headerFiltersHeight: 60
-  //       });
-  //       return getBaseHeader(wrapper);
-  //     }
-
-  //     it('passes the correct height to the header row', () => {
-  //       expect(innerSetup().props().headerRows[0].height).toEqual(50);
-  //     });
-
-  //     it('passes the correct height to the header filter row', () => {
-  //       expect(innerSetup().props().headerRows[1].height).toEqual(60);
-  //     });
-  //   });
-  // });
-
-  // describe('if passed in as props to grid', () => {
-  //   it('should set filter state of grid and render a filterable header row', () => {
-  //     const { wrapper } = setup({ enableHeaderFilters: true });
-  //     expect(getBaseHeader(wrapper).props().headerRows.length).toEqual(2);
-  //   });
-  // });
+      it('passes the correct height to the header filter row', () => {
+        expect(innerSetup().wrapper.find('FilterRow').prop('height')).toEqual(60);
+      });
+    });
+  });
 
   describe('Table width', () => {
     describe('providing table width as prop', () => {
@@ -146,7 +128,7 @@ describe('Grid', () => {
         }
       });
 
-      getBaseCanvas(wrapper).props().onCellClick({ idx: 1, rowIdx: 1 });
+      wrapper.find('.rdg-row-odd').at(0).find('.rdg-cell').at(1).simulate('click');
       expect(rowClicks).toBe(1);
       const { row, column } = rowClicked;
       expect(row).toMatchObject(rows[1]);

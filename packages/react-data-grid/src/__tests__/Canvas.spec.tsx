@@ -47,7 +47,12 @@ const testProps: CanvasProps<Row, 'id'> = {
   },
   renderBatchSize: 8,
   onCanvasKeydown() {},
-  onCanvasKeyup() {}
+  onCanvasKeyup() {},
+  scrollLeft: 0,
+  colOverscanStartIdx: 0,
+  colOverscanEndIdx: 0,
+  colVisibleStartIdx: 0,
+  colVisibleEndIdx: 0
 };
 
 function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {

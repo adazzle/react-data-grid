@@ -1,163 +1,111 @@
-// import React from 'react';
-// import { shallow } from 'enzyme';
+import React from 'react';
+import { mount } from 'enzyme';
 
-// import helpers, { Row } from './GridPropHelpers';
-// import HeaderRow, { HeaderRowProps } from '../HeaderRow';
-// import HeaderCell from '../HeaderCell';
-// import SortableHeaderCell from '../common/cells/headerCells/SortableHeaderCell';
-// import FilterableHeaderCell from '../common/cells/headerCells/FilterableHeaderCell';
-// import { HeaderRowType, DEFINE_SORT } from '../common/enums';
+import helpers, { Row } from './GridPropHelpers';
+import HeaderRow, { HeaderRowProps } from '../HeaderRow';
+import HeaderCell from '../HeaderCell';
+import { DEFINE_SORT } from '../common/enums';
 
-// describe('Header Row Unit Tests', () => {
-//   const defaultProps = {
-//     rowType: HeaderRowType.HEADER,
-//     columns: helpers.columns,
-//     lastFrozenColumnIndex: -1,
-//     onColumnResize() { },
-//     onColumnResizeEnd() { },
-//     onSort: jest.fn(),
-//     sortDirection: DEFINE_SORT.NONE,
-//     width: 1000,
-//     height: 35,
-//     allRowsSelected: false,
-//     onAllRowsSelectionChange() {},
-//     onHeaderDrop() { },
-//     draggableHeaderCell: () => <div />
-//   };
+describe('Header Row Unit Tests', () => {
+  const defaultProps: HeaderRowProps<Row, 'id'> = {
+    rowKey: 'id',
+    rowsCount: 20,
+    rowGetter: jest.fn(),
+    scrollLeft: 0,
+    columns: helpers.columns,
+    lastFrozenColumnIndex: -1,
+    onColumnResize() { },
+    onGridSort: jest.fn(),
+    sortDirection: DEFINE_SORT.NONE,
+    width: 1000,
+    height: 35,
+    allRowsSelected: false,
+    onHeaderDrop() { },
+    draggableHeaderCell: () => <div />
+  };
 
-//   const setup = (testProps?: Partial<HeaderRowProps<Row, 'id'>>) => {
-//     const props: HeaderRowProps<Row, 'id'> = { ...defaultProps, ...testProps };
-//     const wrapper = shallow(<HeaderRow {...props} />);
-//     const headerCells = wrapper.find(HeaderCell);
-//     return { wrapper, headerCells, props };
-//   };
+  const setup = (testProps?: Partial<HeaderRowProps<Row, 'id'>>) => {
+    const props: HeaderRowProps<Row, 'id'> = { ...defaultProps, ...testProps };
+    const wrapper = mount(<HeaderRow {...props} />);
+    const headerCells = wrapper.find(HeaderCell);
+    return { wrapper, headerCells, props };
+  };
 
-//   describe('When column is sortable and headerCellRenderer not provided', () => {
-//     const sortableColIdx = 1;
+  describe('When column is sortable and headerCellRenderer not provided', () => {
+    const sortableColIdx = 1;
 
-//     beforeEach(() => {
-//       defaultProps.columns[sortableColIdx].sortable = true;
-//     });
+    beforeEach(() => {
+      defaultProps.columns[sortableColIdx].sortable = true;
+      defaultProps.columns[sortableColIdx + 1].sortable = true;
+    });
 
-//     afterEach(() => {
-//       defaultProps.columns[sortableColIdx].sortable = false;
-//     });
+    afterEach(() => {
+      defaultProps.columns[sortableColIdx].sortable = false;
+      defaultProps.columns[sortableColIdx + 1].sortable = false;
+    });
 
-//     it('should provide column with a sortableHeaderRenderer', () => {
-//       const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key });
-//       const renderer = headerCells.at(sortableColIdx).props().renderer as React.ReactElement;
-//       expect(renderer.type).toBe(SortableHeaderCell);
-//     });
+    it('should call onSort when headerRender triggers sort', () => {
+      const { wrapper, props } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: DEFINE_SORT.ASC });
+      wrapper.find('.rdg-header-sort-cell').at(0).simulate('click');
+      expect(props.onGridSort).toHaveBeenNthCalledWith(1, 'title', 'DESC');
 
-//     it('should pass sort direction as props to headerRenderer when column is sortColumn', () => {
-//       const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: DEFINE_SORT.ASC });
-//       const renderer = headerCells.at(sortableColIdx).props().renderer as React.ReactElement;
-//       expect(renderer.props.sortDirection).toEqual('ASC');
-//     });
+      wrapper.find('.rdg-header-sort-cell').at(1).simulate('click');
+      expect(props.onGridSort).toHaveBeenNthCalledWith(2, 'count', 'ASC');
+    });
+  });
 
-//     it('should call onSort when headerRender triggers sort', () => {
-//       const { headerCells, props } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: DEFINE_SORT.ASC });
-//       const renderer = headerCells.at(sortableColIdx).props().renderer as React.ReactElement;
-//       renderer.props.onSort('title', 'DESC');
-//       expect(props.onSort).toHaveBeenCalled();
-//       expect(props.onSort).toHaveBeenCalledWith('title', 'DESC');
-//     });
-//   });
+  describe('When column has a headerRenderer', () => {
+    const CustomHeader = () => <div>Custom</div>;
+    const customColumnIdx = 1;
+    beforeEach(() => {
+      defaultProps.columns[customColumnIdx].headerRenderer = <CustomHeader />;
+    });
 
-//   describe('When column is sortable and filterable', () => {
-//     const sortableAndFilterableColIdx = 1;
+    it('should render custom column header', () => {
+      const { wrapper } = setup();
+      expect(wrapper.find('.rdg-cell').at(customColumnIdx).text()).toContain('Custom');
+    });
 
-//     describe('When row is filterable', () => {
-//       beforeEach(() => {
-//         defaultProps.columns[sortableAndFilterableColIdx].sortable = true;
-//         defaultProps.columns[sortableAndFilterableColIdx].filterable = true;
-//       });
+    afterEach(() => {
+      defaultProps.columns[customColumnIdx].headerRenderer = undefined;
+    });
+  });
 
-//       it('should provide column with a filterableHeaderRenderer', () => {
-//         const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableAndFilterableColIdx].key, filterable: true });
-//         const renderer = headerCells.at(sortableAndFilterableColIdx).props().renderer as React.ReactElement;
-//         expect(renderer.type).toBe(FilterableHeaderCell);
-//       });
-//     });
+  describe('Rendering HeaderRow component', () => {
+    const renderComponent = (props: HeaderRowProps<Row, 'id'>) => {
+      return mount(<HeaderRow {...props} />);
+    };
 
-//     describe('When row is not filterable', () => {
-//       beforeEach(() => {
-//         defaultProps.columns[sortableAndFilterableColIdx].sortable = true;
-//         defaultProps.columns[sortableAndFilterableColIdx].filterable = true;
-//       });
+    const requiredProps: HeaderRowProps<Row, 'id'> = {
+      rowKey: 'id',
+      rowsCount: 20,
+      rowGetter: jest.fn(),
+      scrollLeft: 0,
+      width: 1000,
+      height: 35,
+      columns: helpers.columns,
+      lastFrozenColumnIndex: 1,
+      onGridSort: jest.fn(),
+      allRowsSelected: false,
+      onColumnResize: jest.fn(),
+      onHeaderDrop() { },
+      draggableHeaderCell: () => <div />
+    };
 
-//       it('should provide column with a sortableHeaderRenderer', () => {
-//         const { headerCells } = setup({ sortColumn: defaultProps.columns[sortableAndFilterableColIdx].key });
-//         const renderer = headerCells.at(sortableAndFilterableColIdx).props().renderer as React.ReactElement;
-//         expect(renderer.type).toBe(SortableHeaderCell);
-//       });
-//     });
-
-//     afterEach(() => {
-//       defaultProps.columns[sortableAndFilterableColIdx].sortable = false;
-//       defaultProps.columns[sortableAndFilterableColIdx].filterable = false;
-//     });
-//   });
-
-//   describe('When column has a headerRenderer', () => {
-//     const CustomHeader = () => <div>Custom</div>;
-//     const customColumnIdx = 1;
-//     beforeEach(() => {
-//       defaultProps.columns[customColumnIdx].headerRenderer = <CustomHeader />;
-//     });
-
-//     it('should render custom column header', () => {
-//       const { headerCells } = setup();
-//       const renderer = headerCells.at(customColumnIdx).props().renderer as React.ReactElement;
-//       expect(renderer.type).toBe(CustomHeader);
-//     });
-
-//     it('should render filter if header row if row and column is filterable', () => {
-//       defaultProps.columns[customColumnIdx].filterable = true;
-//       const { headerCells } = setup({ filterable: true });
-//       const renderer = headerCells.at(customColumnIdx).props().renderer as React.ReactElement;
-//       expect(renderer.type).toBe(FilterableHeaderCell);
-//     });
-
-//     afterEach(() => {
-//       defaultProps.columns[customColumnIdx].headerRenderer = undefined;
-//       defaultProps.columns[customColumnIdx].filterable = false;
-//     });
-//   });
-
-//   describe('Rendering HeaderRow component', () => {
-//     const renderComponent = (props: HeaderRowProps<Row, 'id'>) => {
-//       return shallow(<HeaderRow {...props} />);
-//     };
-
-//     const requiredProps: HeaderRowProps<Row, 'id'> = {
-//       width: 1000,
-//       height: 35,
-//       columns: helpers.columns,
-//       lastFrozenColumnIndex: 1,
-//       onSort: jest.fn(),
-//       rowType: HeaderRowType.HEADER,
-//       allRowsSelected: false,
-//       onAllRowsSelectionChange() {},
-//       onColumnResize: jest.fn(),
-//       onHeaderDrop() { },
-//       draggableHeaderCell: () => <div />
-//     };
-
-//     it('passes classname property', () => {
-//       const wrapper = renderComponent(requiredProps);
-//       const headerRowDiv = wrapper.find('div').at(0);
-//       expect(headerRowDiv.hasClass('rdg-header-row'));
-//     });
-//     it('does not pass width if not available from props', () => {
-//       const wrapper = renderComponent(requiredProps);
-//       const headerRowDiv = wrapper.find('div').at(0);
-//       expect(headerRowDiv.props().width).toBeUndefined();
-//     });
-//     it('does pass the height if available from props', () => {
-//       const wrapper = renderComponent(requiredProps);
-//       const headerRowDiv = wrapper.find('div').at(0);
-//       expect(headerRowDiv.props().style).toEqual({ height: 35, width: 1000 });
-//     });
-//   });
-// });
+    it('passes classname property', () => {
+      const wrapper = renderComponent(requiredProps);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.hasClass('rdg-header-row'));
+    });
+    it('does not pass width if not available from props', () => {
+      const wrapper = renderComponent(requiredProps);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().width).toBeUndefined();
+    });
+    it('does pass the height if available from props', () => {
+      const wrapper = renderComponent(requiredProps);
+      const headerRowDiv = wrapper.find('div').at(0);
+      expect(headerRowDiv.props().style).toEqual({ height: 35, width: 1000 });
+    });
+  });
+});
