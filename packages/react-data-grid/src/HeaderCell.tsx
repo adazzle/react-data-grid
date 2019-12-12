@@ -135,7 +135,8 @@ export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
       'rdg-cell-frozen-last': colIsFrozen && column.idx === this.props.lastFrozenColumnIndex
     }, this.props.className, column.cellClass);
 
-    const cell = (
+    const DraggableHeaderCell = this.props.draggableHeaderCell;
+    return (
       <div
         ref={this.cell}
         className={className}
@@ -146,23 +147,16 @@ export default class HeaderCell<R> extends React.Component<HeaderCellProps<R>> {
         onMouseDown={column.resizable ? this.onMouseDown : undefined}
         onTouchStart={column.resizable ? this.onTouchStart : undefined}
       >
-        {this.getCell()}
+        {rowType === HeaderRowType.HEADER && column.draggable && DraggableHeaderCell ? (
+          <DraggableHeaderCell
+            column={column}
+            onHeaderDrop={this.props.onHeaderDrop!}
+          >
+            {this.getCell()}
+          </DraggableHeaderCell>
+        ) : this.getCell()}
         {column.resizable && <div className="rdg-header-cell-resizer" />}
       </div>
     );
-
-    const DraggableHeaderCell = this.props.draggableHeaderCell;
-    if (rowType === HeaderRowType.HEADER && column.draggable && DraggableHeaderCell) {
-      return (
-        <DraggableHeaderCell
-          column={column}
-          onHeaderDrop={this.props.onHeaderDrop!}
-        >
-          {cell}
-        </DraggableHeaderCell>
-      );
-    }
-
-    return cell;
   }
 }
