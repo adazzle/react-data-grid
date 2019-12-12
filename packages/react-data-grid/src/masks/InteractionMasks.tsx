@@ -25,6 +25,7 @@ import {
 } from '../utils/selectedCellUtils';
 
 // Types
+import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
 import { CalculatedColumn, Position, SelectedRange, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
@@ -54,7 +55,6 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
 | 'cellNavigationMode'
-| 'eventBus'
 | 'contextMenu'
 | 'editorPortalTarget'
 | 'onCheckCellIsEditable'
@@ -74,6 +74,7 @@ export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanva
   getRowColumns(rowIdx: number): CalculatedColumn<R>[];
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
+  eventBus: EventBus;
 }
 
 export interface InteractionMasksState {

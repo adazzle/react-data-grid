@@ -3,7 +3,6 @@ import { mount } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
 import Canvas, { CanvasProps } from '../Canvas';
-import EventBus from '../EventBus';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
 import RowComponent from '../Row';
@@ -29,7 +28,6 @@ const testProps: CanvasProps<Row, 'id'> = {
   enableCellCopyPaste: true,
   enableCellDragAndDrop: true,
   cellNavigationMode: CellNavigationMode.NONE,
-  eventBus: new EventBus(),
   editorPortalTarget: document.body,
   onScroll() {},
   columnMetrics: {

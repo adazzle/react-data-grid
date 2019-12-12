@@ -12,7 +12,7 @@ export default function ResizableHeaderCell<R>({
   column,
   ...props
 }: ResizableHeaderCellProps<R>) {
-  const cell = useRef<HTMLDivElement>(null);
+  const cellRef = useRef<HTMLDivElement>(null);
 
   function onMouseDown(event: React.MouseEvent) {
     if (event.button !== 0) {
@@ -83,11 +83,11 @@ export default function ResizableHeaderCell<R>({
   }
 
   function getWidthFromMouseEvent(x: number): number {
-    return x - cell.current!.getBoundingClientRect().left;
+    return x - cellRef.current!.getBoundingClientRect().left;
   }
 
   return cloneElement(children, {
-    ref: cell,
+    ref: cellRef,
     onMouseDown,
     onTouchStart,
     children: (

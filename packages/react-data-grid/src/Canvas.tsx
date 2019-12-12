@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition } from './common/types';
+import { EventTypes } from './common/enums';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
@@ -50,7 +51,6 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   colOverscanEndIdx: number;
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
-  eventBus: EventBus;
   onScroll(position: ScrollPosition): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -60,12 +60,13 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
 export interface CanvasHandle {
   scrollToColumn(colIdx: number): void;
   scrollToRow(rowIdx: number): void;
+  selectCell(position: Position, openEditor?: boolean): void;
+  openCellEditor(rowIdx: number, colIdx: number): void;
 }
 
 function Canvas<R, K extends keyof R>({
   columnMetrics,
   contextMenu,
-  eventBus,
   height,
   scrollLeft,
   onScroll,
@@ -80,6 +81,7 @@ function Canvas<R, K extends keyof R>({
   summaryRows,
   ...props
 }: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
+  const [eventBus] = useState(() => new EventBus());
   const [scrollTop, setScrollTop] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -148,6 +150,14 @@ function Canvas<R, K extends keyof R>({
     current.scrollTop = rowIdx * rowHeight;
   }
 
+  function selectCell(position: Position, openEditor?: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
+  }
+
+  function openCellEditor(rowIdx: number, idx: number) {
+    selectCell({ rowIdx, idx }, true);
+  }
+
   const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
     if (row === null) {
       rowRefs.delete(idx);
@@ -158,7 +168,9 @@ function Canvas<R, K extends keyof R>({
 
   useImperativeHandle(ref, () => ({
     scrollToColumn,
-    scrollToRow
+    scrollToRow,
+    selectCell,
+    openCellEditor
   }));
 
   function getViewportRows() {

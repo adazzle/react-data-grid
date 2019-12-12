@@ -4,7 +4,6 @@ import React, {
   useRef,
   useLayoutEffect,
   useMemo,
-  useImperativeHandle,
   useCallback,
   createElement
 } from 'react';
@@ -12,11 +11,10 @@ import { isValidElementType } from 'react-is';
 
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
-import Canvas, { CanvasHandle } from './Canvas';
+import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
 import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
-import EventBus from './EventBus';
-import { CellNavigationMode, EventTypes, DEFINE_SORT } from './common/enums';
+import { CellNavigationMode, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
   CellActionButton,
@@ -35,6 +33,8 @@ import {
   ScrollPosition,
   Filters
 } from './common/types';
+
+export { DataGridHandle };
 
 export interface DataGridProps<R, K extends keyof R> {
   /** An array of objects representing each column on the grid */
@@ -142,13 +142,6 @@ export interface DataGridProps<R, K extends keyof R> {
   renderBatchSize?: number;
 }
 
-export interface DataGridHandle {
-  scrollToColumn(colIdx: number): void;
-  scrollToRow(rowIdx: number): void;
-  selectCell(position: Position, openEditor?: boolean): void;
-  openCellEditor(rowIdx: number, colIdx: number): void;
-}
-
 /**
  * Main API Component to render a data grid of rows and columns
  *
@@ -182,11 +175,9 @@ function DataGrid<R, K extends keyof R>({
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [eventBus] = useState(() => new EventBus());
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<CanvasHandle>(null);
   const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
@@ -226,10 +217,6 @@ function DataGrid<R, K extends keyof R>({
     };
   }, [width]);
 
-  function selectCell(position: Position, openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
-  }
-
   function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
     width = Math.max(width, minColumnWidth);
@@ -249,20 +236,6 @@ function DataGrid<R, K extends keyof R>({
 
   function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
     props.onGridRowsUpdated?.(event);
-  }
-
-  function openCellEditor(rowIdx: number, idx: number) {
-    selectCell({ rowIdx, idx }, true);
-  }
-
-  function scrollToColumn(colIdx: number) {
-    if (!canvasRef.current) return;
-    canvasRef.current.scrollToColumn(colIdx);
-  }
-
-  function scrollToRow(rowIdx: number) {
-    if (!canvasRef.current) return;
-    canvasRef.current.scrollToRow(rowIdx);
   }
 
   const handleRowSelectionChange = useCallback((rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) => {
@@ -287,13 +260,6 @@ function DataGrid<R, K extends keyof R>({
 
     onSelectedRowsChange(newSelectedRows);
   }, [onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
-
-  useImperativeHandle(ref, () => ({
-    scrollToColumn,
-    scrollToRow,
-    selectCell,
-    openCellEditor
-  }));
 
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
   const viewportColumns = columnMetrics && horizontalRange ? getViewportColumns(
@@ -346,7 +312,7 @@ function DataGrid<R, K extends keyof R>({
           </div>
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
-              ref={canvasRef}
+              ref={ref}
               rowKey={rowKey}
               rowHeight={rowHeight}
               rowRenderer={props.rowRenderer}
@@ -365,7 +331,6 @@ function DataGrid<R, K extends keyof R>({
               enableCellCopyPaste={enableCellCopyPaste}
               enableCellDragAndDrop={enableCellDragAndDrop}
               cellNavigationMode={cellNavigationMode}
-              eventBus={eventBus}
               scrollLeft={scrollLeft}
               RowsContainer={props.RowsContainer}
               editorPortalTarget={editorPortalTarget}

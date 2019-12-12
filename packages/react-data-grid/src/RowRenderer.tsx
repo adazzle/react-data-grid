@@ -5,10 +5,10 @@ import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
 import { IRowRendererProps, RowData } from './common/types';
+import EventBus from './EventBus';
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'columnMetrics'
-| 'eventBus'
 | 'getSubRowDetails'
 | 'onRowSelectionChange'
 | 'rowGroupRenderer'
@@ -33,6 +33,7 @@ export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProp
   scrollLeft: number | undefined;
   setRowRef(row: Row<R> | null, idx: number): void;
   enableCellRangeSelection?: boolean;
+  eventBus: EventBus;
 }
 
 function RowRenderer<R, K extends keyof R>({
