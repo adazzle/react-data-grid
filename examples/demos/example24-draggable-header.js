@@ -47,7 +47,6 @@ export default class extends React.Component {
       {
         key: 'count',
         name: 'Count',
-        draggable: true,
         resizable: true
       }
     ],
