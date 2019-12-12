@@ -7,6 +7,6 @@ export * from './common/enums';
 export * from './common/types';
 export { DataGridHandle, DataGridProps, default } from './DataGrid';
 export * from './formatters';
-export { default as DraggableContainer } from './Header/DraggableContainer';
+export { default as DraggableContainer, withDragDropContext } from './Header/DraggableContainer';
 export { default as HeaderCell } from './HeaderCell';
 export { default as Row } from './Row';
