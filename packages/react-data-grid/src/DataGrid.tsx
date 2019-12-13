@@ -13,7 +13,7 @@ import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
-import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
+import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize, HorizontalRangeToRender } from './utils';
 import { CellNavigationMode, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
@@ -194,12 +194,21 @@ function DataGrid<R, K extends keyof R>({
     });
   }, [columnWidths, columns, defaultCellContentRenderer, minColumnWidth, viewportWidth]);
 
-  const horizontalRange = useMemo(() => {
-    if (!columnMetrics) return null;
-    return getHorizontalRangeToRender({
+  const [horizontalRange, viewportColumns] = useMemo((): [HorizontalRangeToRender | null, CalculatedColumn<R>[]] => {
+    if (!columnMetrics) return [null, []];
+
+    const horizontalRange = getHorizontalRangeToRender({
       columnMetrics,
       scrollLeft
     });
+
+    const viewportColumns = getViewportColumns(
+      columnMetrics.columns,
+      horizontalRange.colOverscanStartIdx,
+      horizontalRange.colOverscanEndIdx
+    );
+
+    return [horizontalRange, viewportColumns];
   }, [columnMetrics, scrollLeft]);
 
   useLayoutEffect(() => {
@@ -262,11 +271,6 @@ function DataGrid<R, K extends keyof R>({
   }, [onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
 
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
-  const viewportColumns = columnMetrics && horizontalRange ? getViewportColumns(
-    columnMetrics.columns,
-    horizontalRange.colOverscanStartIdx,
-    horizontalRange.colOverscanEndIdx
-  ) : [];
 
   return (
     <div
@@ -291,7 +295,7 @@ function DataGrid<R, K extends keyof R>({
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
               draggableHeaderCell={props.draggableHeaderCell}
               onHeaderDrop={props.onHeaderDrop}
-              allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
+              allRowsSelected={selectedRows?.size === rowsCount}
               onSelectedRowsChange={onSelectedRowsChange}
               sortColumn={props.sortColumn}
               sortDirection={props.sortDirection}

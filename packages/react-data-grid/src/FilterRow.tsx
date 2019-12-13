@@ -31,7 +31,7 @@ export default function FilterRow<R, K extends keyof R>({
   function onChange(key: keyof R, value: unknown) {
     const newFilters: Filters<R> = { ...filters };
     newFilters[key] = value;
-    onFiltersChange && onFiltersChange(newFilters);
+    onFiltersChange?.(newFilters);
   }
 
   return (
@@ -59,12 +59,13 @@ export default function FilterRow<R, K extends keyof R>({
 
         return (
           <div
+            key={key as string}
             style={style}
             className={className}
           >
             {key !== 'select-row' && column.filterable && createElement(renderer, {
               column,
-              value: filters ? filters[column.key] : undefined,
+              value: filters?.[column.key],
               onChange: value => onChange(key, value)
             })}
           </div>
