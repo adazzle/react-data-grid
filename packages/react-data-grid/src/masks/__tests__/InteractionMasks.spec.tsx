@@ -738,15 +738,17 @@ describe('<InteractionMasks/>', () => {
   });
 
   describe('Drag functionality', () => {
-    const setupDrag = () => {
-      const selectedPosition = { idx: 1, rowIdx: 2 };
+    const setupDrag = (rowIdx: number = 2) => {
+      const selectedPosition = { idx: 1, rowIdx };
       const rows = [
         { Column1: '1' },
         { Column1: '2' },
-        { Column1: '3' }
+        { Column1: '3' },
+        { Column1: '4' },
+        { Column1: '5' }
       ];
       return setup({
-        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter()
+        rowGetter: (rowIdx) => rowIdx < 5 ? rows[rowIdx] : rowGetter()
       }, { selectedPosition });
     };
 
@@ -768,7 +770,7 @@ describe('<InteractionMasks/>', () => {
       expect(setData).toHaveBeenCalled();
     });
 
-    it('should update the dragged over cells on drag end', () => {
+    it('should update the dragged over cells on downwards drag end', () => {
       const { wrapper, props } = setupDrag();
       const setData = jest.fn();
       wrapper.find(DragHandle).simulate('dragstart', {
@@ -779,6 +781,19 @@ describe('<InteractionMasks/>', () => {
       wrapper.find(DragHandle).simulate('dragEnd');
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, UpdateActions.CELL_DRAG);
+    });
+
+    it('should update the dragged over cells on upwards drag end', () => {
+      const { wrapper, props } = setupDrag(4);
+      const setData = jest.fn();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
+      props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
+      wrapper.find(DragHandle).simulate('dragEnd');
+
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 4, 0, { Column1: '5' }, UpdateActions.CELL_DRAG);
     });
   });
 
