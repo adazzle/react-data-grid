@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid, { SelectColumn } from 'react-data-grid';
+import DataGrid, { SelectColumn, UpdateActions } from 'react-data-grid';
 import { Editors, Toolbar, Formatters } from 'react-data-grid-addons';
 import update from 'immutability-helper';
 import faker from 'faker';
@@ -152,10 +152,19 @@ export default class extends React.Component {
     };
   };
 
-  handleGridRowsUpdated = ({ fromRow, toRow, updated }) => {
+  handleGridRowsUpdated = ({ fromRow, toRow, updated, action }) => {
     const rows = this.state.rows.slice();
+    let start; let end;
 
-    for (let i = fromRow; i <= toRow; i++) {
+    if (action === UpdateActions.COPY_PASTE) {
+      start = toRow;
+      end = toRow;
+    } else {
+      start = Math.min(fromRow, toRow);
+      end = Math.max(fromRow, toRow);
+    }
+
+    for (let i = start; i <= end; i++) {
       const rowToUpdate = rows[i];
       const updatedRow = update(rowToUpdate, { $merge: updated });
       rows[i] = updatedRow;
@@ -212,6 +221,8 @@ export default class extends React.Component {
                 minHeight={height}
                 selectedRows={this.state.selectedRows}
                 onSelectedRowsChange={this.onSelectedRowsChange}
+                enableCellCopyPaste
+                enableCellDragAndDrop
               />
             )}
           </AutoSizer>

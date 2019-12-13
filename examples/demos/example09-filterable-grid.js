@@ -47,7 +47,13 @@ export default class extends React.Component {
       }
     ];
 
-    this.state = { rows: this.createRows(), filters: {}, enableHeaderFilters: false };
+    this.state = {
+      rows: this.createRows(),
+      filters: {
+        priority: { filterTerm: 'High' }
+      },
+      enableHeaderFilters: true
+    };
   }
 
   getRandomDate = (start, end) => {
@@ -84,14 +90,8 @@ export default class extends React.Component {
     return rows[rowIdx];
   };
 
-  handleFilterChange = (filter) => {
-    const newFilters = { ...this.state.filters };
-    if (filter.filterTerm) {
-      newFilters[filter.column.key] = filter;
-    } else {
-      delete newFilters[filter.column.key];
-    }
-    this.setState({ filters: newFilters });
+  handleFilterChange = (filters) => {
+    this.setState({ filters });
   };
 
   onToggleFilter = () => {
@@ -123,7 +123,8 @@ export default class extends React.Component {
           rowsCount={this.getSize()}
           minHeight={500}
           enableHeaderFilters={this.state.enableHeaderFilters}
-          onAddFilter={this.handleFilterChange}
+          filters={this.state.filters}
+          onFiltersChange={this.handleFilterChange}
         />
       </Wrapper>
     );
