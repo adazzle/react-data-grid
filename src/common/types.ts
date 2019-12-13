@@ -4,7 +4,7 @@ import { HeaderRowType, UpdateActions } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> {
+interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -18,7 +18,7 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   };
   cellContentRenderer?: CellContentRenderer<TRow>;
   /** Formatter to be used to render the cell content */
-  formatter?: React.ReactElement | React.ComponentType<FormatterProps<TRow[TField], TDependentValue, TRow>>;
+  formatter?: React.ReactElement | React.ComponentType<FormatterProps<TRow[TField], TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: TRow) => boolean);
   /** Enable dragging of a column */
@@ -34,21 +34,19 @@ interface ColumnValue<TRow, TDependentValue = unknown, TField extends keyof TRow
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TDependentValue, TRow>>;
+  editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, unknown>>;
-
-  getRowMetaData?(rowData: TRow, column: CalculatedColumn<TRow, TDependentValue>): TDependentValue;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow>>;
 }
 
-export type Column<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
-  TField extends keyof TRow ? ColumnValue<TRow, TDependentValue, TField> : never;
+export type Column<TRow, TField extends keyof TRow = keyof TRow> =
+  TField extends keyof TRow ? ColumnValue<TRow, TField> : never;
 
-export type CalculatedColumn<TRow, TDependentValue = unknown, TField extends keyof TRow = keyof TRow> =
-  Column<TRow, TDependentValue, TField> & {
+export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow> =
+  Column<TRow, TField> & {
     idx: number;
     width: number;
     left: number;
@@ -117,21 +115,19 @@ export interface Editor<TValue = never> extends React.Component {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<TValue, TDependentValue = unknown, TRow = any> {
+export interface FormatterProps<TValue, TRow = any> {
   rowIdx: number;
   value: TValue;
-  column: CalculatedColumn<TRow, TDependentValue>;
+  column: CalculatedColumn<TRow>;
   row: TRow;
   isRowSelected: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
-  dependentValues?: TDependentValue;
   isSummaryRow: boolean;
 }
 
-export interface EditorProps<TValue, TDependentValue = unknown, TRow = any> {
-  column: CalculatedColumn<TRow, TDependentValue>;
+export interface EditorProps<TValue, TRow = any> {
+  column: CalculatedColumn<TRow>;
   value: TValue;
-  rowMetaData?: TDependentValue;
   rowData: TRow;
   height: number;
   onCommit(args?: { key?: string }): void;
