@@ -3,9 +3,11 @@ import { mount } from 'enzyme';
 import SimpleTextEditor from '../SimpleTextEditor';
 import { CalculatedColumn } from '../../types';
 
+interface Row { text: string }
+
 describe('SimpleTextEditor', () => {
   describe('Basic tests', () => {
-    const fakeColumn: CalculatedColumn<string> = {
+    const fakeColumn: CalculatedColumn<Row, unknown, 'text'> = {
       idx: 0,
       key: 'text',
       name: 'name',

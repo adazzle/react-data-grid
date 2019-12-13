@@ -9,15 +9,15 @@ const SORT_TEXT = {
   [DEFINE_SORT.NONE]: ''
 } as const;
 
-export interface Props {
-  column: CalculatedColumn;
+export interface Props<R> {
+  column: CalculatedColumn<R>;
   rowType: HeaderRowType;
-  onSort(columnKey: string, direction: DEFINE_SORT): void;
+  onSort(columnKey: keyof R, direction: DEFINE_SORT): void;
   sortDirection: DEFINE_SORT;
   sortDescendingFirst: boolean;
 }
 
-export default function SortableHeaderCell(props: Props) {
+export default function SortableHeaderCell<R>(props: Props<R>) {
   const { column, rowType, onSort, sortDirection, sortDescendingFirst } = props;
   function onClick() {
     let direction;

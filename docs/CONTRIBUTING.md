@@ -36,6 +36,7 @@ You can start coding in 5 minutes.
 git clone https://github.com/adazzle/react-data-grid.git
 cd react-data-grid
 npm install
+npm run build
 npm start
 ```
 
@@ -99,22 +100,28 @@ All contributions are encouraged and most of all we hope you will have some fun 
 For maintainers only.
 
 - `cd` to the root of the repo.
-- Checkout the branch you wish to publish. `master` or `next`
+- Checkout the branch you wish to publish. `master`, `next`, or `canary`
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Install dependencies, bootstrap lerna:
   - `npm i`
 - Build the release files:
   - `npm run build`
   - `npm run build-commonjs`
-- Update the docs:
-  - `npm run docs`
-- Update the changelog, if necessary.
-- Commit your changes, if any.
+- Update the changelog, if necessary, and commit.
 - Login to the `adazzle` npm account if you haven't already done so:
   - `npm login`
+  - You can use `npm whoami` to check who you are logged in as.
 - Publish the update with lerna:
-  - To release a stable version: `npx lerna publish`
-  - To release an unstable version: `npx lerna publish --dist-tag next`
+  - To release a new stable version:
+    - `npx lerna publish`
+  - To release a new `next` version:
+    - `npx lerna publish --dist-tag next`
+    - Select `Custom Prerelease`
+    - Type in `alpha` for the prerelease name.
+  - To release a new `canary` version:
+    - `npx lerna publish --dist-tag canary`
+    - Select `Custom Prerelease`
+    - Type in `canary` for the prerelease name.
   - Relevant Lerna docs:
     - https://github.com/lerna/lerna/blob/master/commands/version/README.md
     - https://github.com/lerna/lerna/blob/master/commands/publish/README.md

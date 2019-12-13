@@ -7,16 +7,18 @@ import CellExpand from './Cell/CellExpander';
 import CellContent from './Cell/CellContent';
 import { isFrozen } from './ColumnUtils';
 
-const getSubRowOptions = ({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props): SubRowOptions => ({ rowIdx, idx, rowData, expandArgs });
+function getSubRowOptions<R>({ rowIdx, idx, rowData, expandableOptions: expandArgs }: Props<R>): SubRowOptions<R> {
+  return { rowIdx, idx, rowData, expandArgs };
+}
 
-export interface Props extends CellRendererProps {
+export interface Props<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
   className?: string;
-  tooltip?: string;
+  tooltip?: string | null;
   cellControls?: unknown;
 }
 
-export default class Cell extends React.PureComponent<Props> implements CellRenderer {
+export default class Cell<R> extends React.PureComponent<Props<R>> implements CellRenderer {
   static defaultProps = {
     value: ''
   };
@@ -27,7 +29,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     this.checkScroll();
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props<R>) {
     if (isFrozen(prevProps.column) && !isFrozen(this.props.column)) {
       this.removeScroll();
     }
@@ -115,7 +117,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
   removeScroll() {
     const node = this.cell.current;
     if (node) {
-      node.style.transform = null;
+      node.style.transform = 'none';
     }
   }
 
@@ -138,7 +140,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
     for (const event in columnEvents) {
       const columnEventHandler = columnEvents[event];
       if (columnEventHandler) {
-        const eventInfo: ColumnEventInfo = {
+        const eventInfo: ColumnEventInfo<R> = {
           idx,
           rowIdx,
           column,
@@ -169,7 +171,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
 
     const style = this.getStyle();
     const className = this.getCellClass();
-    const cellContent = children || <CellContent {...this.props} />;
+    const cellContent = children || <CellContent<R> {...this.props} />;
     const events = this.getEvents();
     const cellExpander = expandableOptions && expandableOptions.canExpand && (
       <CellExpand
@@ -185,7 +187,7 @@ export default class Cell extends React.PureComponent<Props> implements CellRend
         style={style}
         {...events}
       >
-        <CellActions
+        <CellActions<R>
           column={column}
           rowData={rowData}
           cellMetaData={cellMetaData}

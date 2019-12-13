@@ -1,11 +1,10 @@
 import React from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
-import { FormatterProps, RowData } from '../common/types';
 import { SimpleCellFormatter } from '../formatters';
 import { CellContentProps } from './CellContent';
 
-type CellValueProps = Pick<CellContentProps,
+type CellValueProps<R> = Pick<CellContentProps<R>,
 'rowIdx'
 | 'rowData'
 | 'column'
@@ -13,8 +12,8 @@ type CellValueProps = Pick<CellContentProps,
 | 'isScrolling'
 >;
 
-export default function CellValue({ rowIdx, rowData, column, value, isScrolling }: CellValueProps) {
-  function getFormatterDependencies(row: RowData) {
+export default function CellValue<R>({ rowIdx, rowData, column, value, isScrolling }: CellValueProps<R>) {
+  function getFormatterDependencies(row: R) {
     // convention based method to get corresponding Id or Name of any Name or Id property
     const { getRowMetaData } = column;
     if (getRowMetaData) {
@@ -25,27 +24,26 @@ export default function CellValue({ rowIdx, rowData, column, value, isScrolling 
     }
   }
 
-  function getFormatterProps(): FormatterProps<unknown> {
-    const row = typeof rowData.toJSON === 'function' ? rowData.toJSON() : rowData;
-
+  function getFormatterProps() {
     return {
       value,
       column,
       rowIdx,
       isScrolling,
-      row,
-      dependentValues: getFormatterDependencies(row)
+      row: rowData,
+      dependentValues: getFormatterDependencies(rowData)
     };
   }
 
-  const Formatter = column.formatter;
+  const { formatter } = column;
 
-  if (isElement(Formatter)) {
-    return React.cloneElement(Formatter, getFormatterProps());
+  if (isElement(formatter)) {
+    return React.cloneElement(formatter, getFormatterProps());
   }
 
-  if (isValidElementType(Formatter)) {
-    return <Formatter {...getFormatterProps()} />;
+  if (isValidElementType(formatter)) {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    return React.createElement(formatter, { ...getFormatterProps(), value: value as any }); //FIXME: fix value type
   }
 
   return <SimpleCellFormatter value={value as string} />;
