@@ -197,9 +197,8 @@ export interface IRowRendererProps<TRow> {
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
   column: CalculatedColumn<TRow>;
-  onChange?(event: AddFilterEvent<TRow>): void;
-  /** TODO: remove */
-  getValidFilterValues?(columnKey: keyof TRow): TFilterValue;
+  value: TFilterValue;
+  onChange(value: TFilterValue): void;
 }
 
 export interface SubRowDetails<TChildRow = unknown> {
@@ -250,26 +249,6 @@ export interface ScrollPosition {
   scrollTop: number;
 }
 
-export interface InteractionMasksMetaData<TRow> {
-  onCheckCellIsEditable?(e: CheckCellIsEditableEvent<TRow>): boolean;
-  onCellCopyPaste?(e: CellCopyPasteEvent<TRow>): void;
-  onGridRowsUpdated(
-    cellKey: keyof TRow,
-    toRow1: number,
-    toRow2: number,
-    data: { [key: string]: unknown }, // FIX ME: Use Pick<R, K>
-    updateAction: UpdateActions,
-    fromRow?: number
-  ): void;
-  onDragHandleDoubleClick(data: Position & { rowData: TRow }): void;
-  onCellSelected?(position: Position): void;
-  onCellDeSelected?(position: Position): void;
-  onCellRangeSelectionStarted?(selectedRange: SelectedRange): void;
-  onCellRangeSelectionUpdated?(selectedRange: SelectedRange): void;
-  onCellRangeSelectionCompleted?(selectedRange: SelectedRange): void;
-  onCommit(e: CommitEvent<TRow>): void;
-}
-
 export interface RowGroupMetaData {
   isGroup: boolean;
   treeDepth: number;
@@ -279,16 +258,14 @@ export interface RowGroupMetaData {
   getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }
 
+export type Filters<TRow> = { [key in keyof TRow]?: any };
+
 export interface HeaderRowData<TRow> {
   rowType: HeaderRowType;
   height: number;
   filterable?: boolean;
-  onFilterChange?(args: AddFilterEvent<TRow>): void;
-}
-
-export interface AddFilterEvent<TRow> {
-  filterTerm: string;
-  column: Column<TRow>;
+  filters?: Filters<TRow>;
+  onFiltersChange?(filters: Filters<TRow>): void;
 }
 
 export interface CommitEvent<TRow, TUpdatedValue = never> {
@@ -309,20 +286,9 @@ export interface GridRowsUpdatedEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;
   fromRow: number;
   toRow: number;
-  fromRowId: unknown;
-  toRowId: unknown;
-  rowIds: unknown[];
   updated: TUpdatedValue;
   action: UpdateActions;
-  fromRowData: TRow;
-}
-
-export interface CellCopyPasteEvent<TRow> {
-  cellKey: keyof TRow;
-  rowIdx: number;
-  fromRow: number;
-  toRow: number;
-  value: unknown;
+  fromCellKey?: keyof TRow;
 }
 
 export interface CheckCellIsEditableEvent<TRow> extends Position {

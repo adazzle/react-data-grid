@@ -6,8 +6,8 @@ import { isEmptyArray } from '../../../utils';
 
 export default class AutoCompleteFilter extends React.Component {
   static propTypes = {
+    value: PropTypes.object,
     onChange: PropTypes.func.isRequired,
-    // column: PropTypes.shape(shapes.Column),
     getValidFilterValues: PropTypes.func,
     multiSelection: PropTypes.bool
   };
@@ -17,7 +17,7 @@ export default class AutoCompleteFilter extends React.Component {
     this.getOptions = this.getOptions.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.filterValues = this.filterValues.bind(this);
-    this.state = { options: this.getOptions(), rawValue: '', placeholder: 'Search' };
+    this.state = { options: this.getOptions() };
   }
 
   // FIXME
@@ -66,21 +66,22 @@ export default class AutoCompleteFilter extends React.Component {
 
   handleChange(value) {
     const filters = value;
-    this.setState({ filters });
     this.props.onChange({ filterTerm: filters, column: this.props.column, rawValue: value, filterValues: this.filterValues });
   }
 
   render() {
+    const { value, multiSelection } = this.props;
+
     return (
       <Select
         autosize={false}
         name={`filter-${this.props.column.key}`}
         options={this.state.options}
-        placeholder={this.state.placeholder}
+        placeholder="Search"
         onChange={this.handleChange}
         escapeClearsValue
-        multi={this.props.multiSelection !== undefined && this.props.multiSelection !== null ? this.props.multiSelection : true}
-        value={this.state.filters}
+        multi={multiSelection != null ? multiSelection : true}
+        value={value && value.filterTerm}
       />
     );
   }

@@ -20,7 +20,13 @@ export default class extends React.Component {
       }
     ];
 
-    this.state = { rows: this.createRows(1000) };
+    this.state = { rows: this.createRows(1000), selectedRange: undefined, selectedRanges: [] };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.selectedRanges !== prevState.selectedRanges) {
+      this.divRef.scrollTop = this.divRef.scrollHeight;
+    }
   }
 
   createRows = () => {
@@ -41,46 +47,48 @@ export default class extends React.Component {
     return this.state.rows[i];
   };
 
-  onStart = (selectedRange) => {
-    this.textarea.value += 'START: '
-      + `(${selectedRange.topLeft.idx}, ${selectedRange.topLeft.rowIdx}) -> `
-      + `(${selectedRange.bottomRight.idx}, ${selectedRange.bottomRight.rowIdx})\n`;
-    this.textarea.scrollTop = this.textarea.scrollHeight;
-  };
-
-  onUpdate = (selectedRange) => {
-    this.textarea.value += 'UPDATE: '
-      + `(${selectedRange.topLeft.idx}, ${selectedRange.topLeft.rowIdx}) -> `
-      + `(${selectedRange.bottomRight.idx}, ${selectedRange.bottomRight.rowIdx})\n`;
-    this.textarea.scrollTop = this.textarea.scrollHeight;
-  };
-
-  onComplete = () => {
-    this.textarea.value += 'END\n';
-    this.textarea.scrollTop = this.textarea.scrollHeight;
+  onSelectedCellRangeChange = (selectedRange) => {
+    this.setState({ selectedRange });
+    if (!selectedRange.isDragging) {
+      this.setState({
+        selectedRanges: [...this.state.selectedRanges, selectedRange]
+      });
+    }
   };
 
   render() {
+    const { selectedRange, selectedRanges } = this.state;
     return (
       <Wrapper title="Selection Range Events">
-        <textarea
-          ref={(element) => this.textarea = element}
-          style={{ width: '100%', marginBottom: '1em', padding: '0.5em', border: '1px solid black' }}
-          rows={5}
-        />
+        <div
+          className="react-grid-Toolbar"
+          style={{ minHeight: 48, overflow: 'auto' }}
+          ref={r => this.divRef = r}
+        >
+          Previous selections <br />
+          {selectedRanges.map(selectedRange => <SelectedRange selectedRange={selectedRange} />)}
+          Current selection <br />
+          {selectedRange && <SelectedRange selectedRange={selectedRange} />}
+        </div>
         <DataGrid
           rowKey="id"
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={500}
-          cellRangeSelection={{
-            onStart: this.onStart,
-            onUpdate: this.onUpdate,
-            onComplete: this.onComplete
-          }}
+          onSelectedCellRangeChange={this.onSelectedCellRangeChange}
         />
       </Wrapper>
     );
   }
+}
+
+function SelectedRange({ selectedRange }) {
+  return (
+    <>
+      ({selectedRange.topLeft.idx}, {selectedRange.topLeft.rowIdx}) ->
+      ({selectedRange.bottomRight.idx}, {selectedRange.bottomRight.rowIdx})
+      <br />
+    </>
+  );
 }

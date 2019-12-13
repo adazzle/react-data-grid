@@ -26,7 +26,7 @@ import {
 
 // Types
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, Dimension, InteractionMasksMetaData, CommitEvent, ColumnMetrics } from '../common/types';
+import { CalculatedColumn, Position, SelectedRange, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 export enum KeyCodes {
@@ -51,13 +51,21 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'rowHeight'
 | 'enableCellSelect'
 | 'enableCellAutoFocus'
+| 'enableCellCopyPaste'
+| 'enableCellDragAndDrop'
 | 'cellNavigationMode'
 | 'eventBus'
 | 'contextMenu'
 | 'editorPortalTarget'
+| 'onCheckCellIsEditable'
+| 'onSelectedCellChange'
+| 'onDragHandleDoubleClick'
+| 'onSelectedCellRangeChange'
+| 'onCommit'
+| 'onGridRowsUpdated'
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
-export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K>, InteractionMasksMetaData<R> {
+export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   onHitTopBoundary(position: Position): void;
   onHitBottomBoundary(position: Position): void;
   onHitLeftBoundary(position: Position): void;
@@ -113,22 +121,16 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   componentDidUpdate(prevProps: InteractionMasksProps<R, K>, prevState: InteractionMasksState) {
     const { selectedPosition, isEditorEnabled } = this.state;
     const { selectedPosition: prevSelectedPosition, isEditorEnabled: prevIsEditorEnabled } = prevState;
-    const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx);
+    const isSelectedPositionChanged = selectedPosition !== prevSelectedPosition
+      && (selectedPosition.rowIdx !== prevSelectedPosition.rowIdx || selectedPosition.idx !== prevSelectedPosition.idx)
+      && this.isCellWithinBounds(selectedPosition);
     const isEditorClosed = isEditorEnabled !== prevIsEditorEnabled && !isEditorEnabled;
 
     if (isSelectedPositionChanged) {
-      // Call event handlers if selected cell has changed
-      const { onCellSelected, onCellDeSelected } = this.props;
-      if (onCellDeSelected && this.isCellWithinBounds(prevSelectedPosition)) {
-        onCellDeSelected({ ...prevSelectedPosition });
-      }
-
-      if (onCellSelected && this.isCellWithinBounds(selectedPosition)) {
-        onCellSelected({ ...selectedPosition });
-      }
+      this.props.onSelectedCellChange?.({ ...selectedPosition });
     }
 
-    if ((isSelectedPositionChanged && this.isCellWithinBounds(selectedPosition)) || isEditorClosed) {
+    if (isSelectedPositionChanged || isEditorClosed) {
       this.focus();
     }
   }
@@ -215,10 +217,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
     if (this.copyPasteEnabled()) {
       if (keyCode === KeyCodes.c) {
-        const { columns, rowGetter } = this.props;
-        const { selectedPosition } = this.state;
-        const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
-        this.handleCopy(value);
+        this.handleCopy();
       } else if (keyCode === KeyCodes.v) {
         this.handlePaste();
       }
@@ -263,13 +262,15 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   copyPasteEnabled(): boolean {
-    return this.props.onCellCopyPaste !== null && this.isSelectedCellEditable();
+    return this.props.enableCellCopyPaste && this.isSelectedCellEditable();
   }
 
-  handleCopy(value: unknown): void {
-    const { rowIdx, idx } = this.state.selectedPosition;
+  handleCopy(): void {
+    const { columns, rowGetter } = this.props;
+    const { selectedPosition } = this.state;
+    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
     this.setState({
-      copiedPosition: { rowIdx, idx, value }
+      copiedPosition: { ...selectedPosition, value }
     });
   }
 
@@ -278,7 +279,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   handlePaste(): void {
-    const { columns, onCellCopyPaste, onGridRowsUpdated } = this.props;
+    const { columns, onGridRowsUpdated } = this.props;
     const { selectedPosition, copiedPosition } = this.state;
     const { rowIdx: toRow } = selectedPosition;
 
@@ -287,19 +288,17 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     }
 
     const cellKey = columns[selectedPosition.idx].key;
-    const { rowIdx: fromRow, value } = copiedPosition;
+    const { rowIdx: fromRow, idx, value } = copiedPosition;
+    const fromCellKey = columns[idx].key;
 
-    if (onCellCopyPaste) {
-      onCellCopyPaste({
-        cellKey,
-        rowIdx: toRow,
-        fromRow,
-        toRow,
-        value
-      });
-    }
-
-    onGridRowsUpdated(cellKey, toRow, toRow, { [cellKey]: value }, UpdateActions.COPY_PASTE, fromRow);
+    onGridRowsUpdated({
+      cellKey,
+      fromRow,
+      toRow,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.COPY_PASTE,
+      fromCellKey
+    });
   }
 
   isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
@@ -485,8 +484,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
       selectedRange: this.createSingleCellSelectedRange(selectedPosition, true),
       selectedPosition
     }, () => {
-      if (this.props.onCellRangeSelectionStarted) {
-        this.props.onCellRangeSelectionStarted(this.state.selectedRange);
+      if (this.props.onSelectedCellRangeChange) {
+        this.props.onSelectedCellRangeChange(this.state.selectedRange);
       }
     });
   };
@@ -515,8 +514,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     this.setState({
       selectedRange
     }, () => {
-      if (this.props.onCellRangeSelectionUpdated) {
-        this.props.onCellRangeSelectionUpdated(this.state.selectedRange);
+      if (this.props.onSelectedCellRangeChange) {
+        this.props.onSelectedCellRangeChange(this.state.selectedRange);
       }
       if (callback) {
         callback();
@@ -527,8 +526,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   onSelectCellRangeEnded = (): void => {
     const selectedRange = { ...this.state.selectedRange, isDragging: false };
     this.setState({ selectedRange }, () => {
-      if (this.props.onCellRangeSelectionCompleted) {
-        this.props.onCellRangeSelectionCompleted(this.state.selectedRange);
+      if (this.props.onSelectedCellRangeChange) {
+        this.props.onSelectedCellRangeChange(this.state.selectedRange);
       }
 
       // Focus the InteractionMasks, so it can receive keyboard events
@@ -537,7 +536,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   isDragEnabled(): boolean {
-    return this.isSelectedCellEditable();
+    return this.props.enableCellDragAndDrop && this.isSelectedCellEditable();
   }
 
   handleDragStart = (e: React.DragEvent<HTMLDivElement>): void => {
@@ -581,7 +580,13 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
     const cellKey = column.key;
 
-    onGridRowsUpdated(cellKey, rowIdx, overRowIdx, { [cellKey]: value }, UpdateActions.CELL_DRAG);
+    onGridRowsUpdated({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: overRowIdx,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.CELL_DRAG
+    });
 
     this.setState({
       draggedPosition: null
@@ -589,11 +594,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   onDragHandleDoubleClick = (): void => {
-    const { onDragHandleDoubleClick, rowGetter } = this.props;
-    const { selectedPosition } = this.state;
-    const { idx, rowIdx } = selectedPosition;
-    const rowData = rowGetter(selectedPosition.rowIdx);
-    onDragHandleDoubleClick({ idx, rowIdx, rowData });
+    this.props.onDragHandleDoubleClick(this.state.selectedPosition);
   };
 
   onCommit = (args: CommitEvent<R>): void => {

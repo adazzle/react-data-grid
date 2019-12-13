@@ -92,15 +92,8 @@ export default class extends React.Component {
     this.setState({ sortColumn, sortDirection });
   };
 
-  handleFilterChange = (filter) => {
-    const newFilters = { ...this.state.filters };
-    if (filter.filterTerm) {
-      newFilters[filter.column.key] = filter;
-    } else {
-      delete newFilters[filter.column.key];
-    }
-
-    this.setState({ filters: newFilters });
+  handleFilterChange = (filters) => {
+    this.setState({ filters });
   };
 
   onToggleFilter = () => {
@@ -135,7 +128,8 @@ export default class extends React.Component {
           rowsCount={this.getSize()}
           minHeight={500}
           enableHeaderFilters={this.state.enableHeaderFilters}
-          onAddFilter={this.handleFilterChange}
+          filters={this.state.filters}
+          onFiltersChange={this.handleFilterChange}
         />
       </Wrapper>
     );

@@ -2,7 +2,6 @@ import React, {
   forwardRef,
   useState,
   useRef,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useImperativeHandle,
@@ -17,10 +16,8 @@ import { getColumnMetrics } from './utils/columnUtils';
 import EventBus from './EventBus';
 import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
 import {
-  AddFilterEvent,
   CalculatedColumn,
   CellActionButton,
-  CellCopyPasteEvent,
   CellMetaData,
   CheckCellIsEditableEvent,
   Column,
@@ -28,7 +25,6 @@ import {
   CommitEvent,
   GridRowsUpdatedEvent,
   HeaderRowData,
-  InteractionMasksMetaData,
   Position,
   RowsContainerProps,
   RowExpandToggleEvent,
@@ -37,7 +33,8 @@ import {
   SubRowDetails,
   SubRowOptions,
   IRowRendererProps,
-  ScrollPosition
+  ScrollPosition,
+  Filters
 } from './common/types';
 
 export interface DataGridProps<R, K extends keyof R> {
@@ -51,20 +48,15 @@ export interface DataGridProps<R, K extends keyof R> {
   headerFiltersHeight?: number;
   /** Toggles whether filters row is displayed or not */
   enableHeaderFilters?: boolean;
-  cellRangeSelection?: {
-    onStart(selectedRange: SelectedRange): void;
-    onUpdate?(selectedRange: SelectedRange): void;
-    onComplete?(selectedRange: SelectedRange): void;
-  };
   /** Minimum column width in pixels */
   minColumnWidth?: number;
   /** Function called whenever row is clicked */
   onRowClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
   /** Function called whenever row is double clicked */
   onRowDoubleClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
-  onAddFilter?(event: AddFilterEvent<R>): void;
-  /** Function called whenever grid is sorted*/
-  onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
+
+  filters?: Filters<R>;
+  onFiltersChange?(filters: Filters<R>): void;
   /** Function called whenever keyboard key is released */
   onGridKeyUp?(event: React.KeyboardEvent<HTMLDivElement>): void;
   /** Function called whenever keyboard key is pressed down */
@@ -108,6 +100,8 @@ export interface DataGridProps<R, K extends keyof R> {
   enableCellSelect?: boolean;
   /** Toggles whether cells should be autofocused */
   enableCellAutoFocus?: boolean;
+  enableCellCopyPaste?: boolean;
+  enableCellDragAndDrop?: boolean;
   cellNavigationMode?: CellNavigationMode;
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
@@ -115,11 +109,12 @@ export interface DataGridProps<R, K extends keyof R> {
   sortColumn?: keyof R;
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
+  /** Function called whenever grid is sorted*/
+  onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
-  getValidFilterValues?(columnKey: keyof R): unknown;
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   emptyRowsView?: React.ComponentType<{}>;
   onHeaderDrop?(): void;
@@ -135,13 +130,10 @@ export interface DataGridProps<R, K extends keyof R> {
   onCellExpand?(options: SubRowOptions<R>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
 
-  /** InteractionMasksMetaData */
-  /** Deprecated: Function called when grid is updated via a copy/paste. Use onGridRowsUpdated instead*/
-  onCellCopyPaste?(event: CellCopyPasteEvent<R>): void;
-  /** Function called whenever a cell is selected */
-  onCellSelected?(position: Position): void;
-  /** Function called whenever a cell is deselected */
-  onCellDeSelected?(position: Position): void;
+  /** Function called whenever selected cell is changed */
+  onSelectedCellChange?(position: Position): void;
+  /** Function called whenever selected cell range is changed */
+  onSelectedCellRangeChange?(selectedRange: SelectedRange): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
   /**
@@ -169,12 +161,15 @@ export interface DataGridHandle {
 function DataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
   rowHeight = 35,
+  headerRowHeight,
   headerFiltersHeight = 45,
   minColumnWidth = 80,
   minHeight = 350,
   minWidth: width,
   enableCellSelect = false,
   enableCellAutoFocus = true,
+  enableCellCopyPaste = false,
+  enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
   renderBatchSize = 8,
@@ -182,9 +177,11 @@ function DataGrid<R, K extends keyof R>({
   columns,
   rowsCount,
   rowGetter,
-  cellRangeSelection,
+  onSelectedCellRangeChange,
   selectedRows,
   onSelectedRowsChange,
+  filters,
+  onFiltersChange,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -223,22 +220,8 @@ function DataGrid<R, K extends keyof R>({
     };
   }, [width]);
 
-  useEffect(() => {
-    if (!cellRangeSelection) return;
-
-    function handleWindowMouseUp() {
-      eventBus.dispatch(EventTypes.SELECT_END);
-    }
-
-    window.addEventListener('mouseup', handleWindowMouseUp);
-
-    return () => {
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    };
-  }, [eventBus, cellRangeSelection]);
-
-  function selectCell({ idx, rowIdx }: Position, openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx, idx }, openEditor);
+  function selectCell(position: Position, openEditor?: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
   }
 
   function getColumn(idx: number) {
@@ -281,6 +264,13 @@ function DataGrid<R, K extends keyof R>({
 
   function handleCellMouseDown(position: Position) {
     eventBus.dispatch(EventTypes.SELECT_START, position);
+
+    function handleWindowMouseUp() {
+      eventBus.dispatch(EventTypes.SELECT_END);
+      window.removeEventListener('mouseup', handleWindowMouseUp);
+    }
+
+    window.addEventListener('mouseup', handleWindowMouseUp);
   }
 
   function handleCellMouseEnter(position: Position) {
@@ -299,44 +289,41 @@ function DataGrid<R, K extends keyof R>({
     openCellEditor(rowIdx, idx);
   }
 
-  const handleDragHandleDoubleClick: InteractionMasksMetaData<R>['onDragHandleDoubleClick'] = (e) => {
+  function handleDragHandleDoubleClick(e: Position) {
     const cellKey = getColumn(e.idx).key;
-    handleGridRowsUpdated(cellKey, e.rowIdx, rowsCount - 1, { [cellKey]: e.rowData[cellKey] }, UpdateActions.COLUMN_FILL);
-  };
+    const value = rowGetter(e.rowIdx)[cellKey];
+    handleGridRowsUpdated({
+      cellKey,
+      fromRow: e.rowIdx,
+      toRow: rowsCount - 1,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.COLUMN_FILL
+    });
+  }
 
-  const handleGridRowsUpdated: InteractionMasksMetaData<R>['onGridRowsUpdated'] = (cellKey, fromRow, toRow, updated, action, originRow) => {
-    const { onGridRowsUpdated } = props;
-    if (!onGridRowsUpdated) {
-      return;
-    }
-
-    const rowIds = [];
-    const start = Math.min(fromRow, toRow);
-    const end = Math.max(fromRow, toRow);
-
-    for (let i = start; i <= end; i++) {
-      rowIds.push(rowGetter(i)[rowKey]);
-    }
-
-    const fromRowData = rowGetter(action === UpdateActions.COPY_PASTE ? originRow! : fromRow);
-    const fromRowId = fromRowData[rowKey];
-    const toRowId = rowGetter(toRow)[rowKey];
-    onGridRowsUpdated({ cellKey, fromRow, toRow, fromRowId, toRowId, rowIds, updated: updated as never, action, fromRowData });
-  };
+  function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
+    props.onGridRowsUpdated?.(event);
+  }
 
   function handleCommit(commit: CommitEvent<R>) {
-    const targetRow = commit.rowIdx;
-    handleGridRowsUpdated(commit.cellKey, targetRow, targetRow, commit.updated, UpdateActions.CELL_UPDATE);
+    const { cellKey, rowIdx, updated } = commit;
+    handleGridRowsUpdated({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: rowIdx,
+      updated,
+      action: UpdateActions.CELL_UPDATE
+    });
   }
 
   function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
-    const { headerRowHeight, onAddFilter } = props;
     return [
       { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
       props.enableHeaderFilters ? {
         rowType: HeaderRowType.FILTER,
         filterable: true,
-        onFilterChange: onAddFilter,
+        filters,
+        onFiltersChange,
         height: headerFiltersHeight || headerRowHeight || rowHeight
       } : undefined
     ];
@@ -391,23 +378,10 @@ function DataGrid<R, K extends keyof R>({
     onAddSubRow: props.onAddSubRow,
     onDragEnter: handleDragEnter
   };
-  if (cellRangeSelection) {
+  if (onSelectedCellRangeChange) {
     cellMetaData.onCellMouseDown = handleCellMouseDown;
     cellMetaData.onCellMouseEnter = handleCellMouseEnter;
   }
-
-  const interactionMasksMetaData: InteractionMasksMetaData<R> = {
-    onCheckCellIsEditable: props.onCheckCellIsEditable,
-    onCellCopyPaste: props.onCellCopyPaste,
-    onGridRowsUpdated: handleGridRowsUpdated,
-    onDragHandleDoubleClick: handleDragHandleDoubleClick,
-    onCellSelected: props.onCellSelected,
-    onCellDeSelected: props.onCellDeSelected,
-    onCellRangeSelectionStarted: cellRangeSelection && cellRangeSelection.onStart,
-    onCellRangeSelectionUpdated: cellRangeSelection && cellRangeSelection.onUpdate,
-    onCellRangeSelectionCompleted: cellRangeSelection && cellRangeSelection.onComplete,
-    onCommit: handleCommit
-  };
 
   const headerRows = getHeaderRows();
   const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
@@ -435,8 +409,7 @@ function DataGrid<R, K extends keyof R>({
             onHeaderDrop={props.onHeaderDrop}
             allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
             onSelectedRowsChange={onSelectedRowsChange}
-            getValidFilterValues={props.getValidFilterValues}
-            cellMetaData={cellMetaData}
+            onCellClick={handleCellClick}
           />
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
@@ -457,15 +430,22 @@ function DataGrid<R, K extends keyof R>({
               rowGroupRenderer={props.rowGroupRenderer}
               enableCellSelect={enableCellSelect}
               enableCellAutoFocus={enableCellAutoFocus}
+              enableCellCopyPaste={enableCellCopyPaste}
+              enableCellDragAndDrop={enableCellDragAndDrop}
               cellNavigationMode={cellNavigationMode}
               eventBus={eventBus}
-              interactionMasksMetaData={interactionMasksMetaData}
               RowsContainer={props.RowsContainer}
               editorPortalTarget={editorPortalTarget}
               onCanvasKeydown={props.onGridKeyDown}
               onCanvasKeyup={props.onGridKeyUp}
               renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
+              onCheckCellIsEditable={props.onCheckCellIsEditable}
+              onGridRowsUpdated={handleGridRowsUpdated}
+              onDragHandleDoubleClick={handleDragHandleDoubleClick}
+              onSelectedCellChange={props.onSelectedCellChange}
+              onSelectedCellRangeChange={onSelectedCellRangeChange}
+              onCommit={handleCommit}
             />
           )}
         </>

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import Header, { HeaderProps } from '../Header';
 import HeaderRow, { HeaderRowProps } from '../HeaderRow';
-import helpers, { fakeCellMetaData, Row } from './GridPropHelpers';
+import helpers, { Row } from './GridPropHelpers';
 import * as utils from '../utils';
 import { HeaderRowType, DEFINE_SORT } from '../common/enums';
 
@@ -22,11 +22,10 @@ describe('Header Unit Tests', () => {
         viewportWidth: 2600,
         lastFrozenColumnIndex: 0
       },
-      cellMetaData: fakeCellMetaData,
+      onCellClick() { },
       headerRows: [{
         height: 50,
-        rowType: HeaderRowType.HEADER,
-        onFilterChange() { }
+        rowType: HeaderRowType.HEADER
       }, undefined],
       onColumnResize: jest.fn(),
       onSort: () => null,
@@ -76,12 +75,11 @@ describe('Header Unit Tests', () => {
       },
       headerRows: [{
         height: 51,
-        rowType: HeaderRowType.HEADER,
-        onFilterChange() { }
+        rowType: HeaderRowType.HEADER
       }, undefined],
       onSort: jest.fn(),
       onHeaderDrop() { },
-      cellMetaData: fakeCellMetaData,
+      onCellClick() { },
       draggableHeaderCell: () => null,
       onColumnResize() { }
     };
@@ -98,16 +96,14 @@ describe('Header Unit Tests', () => {
       },
       headerRows: [{
         height: 50,
-        rowType: HeaderRowType.HEADER,
-        onFilterChange() { }
+        rowType: HeaderRowType.HEADER
       }, undefined],
       sortColumn: 'count',
       sortDirection: DEFINE_SORT.DESC,
       onSort: jest.fn(),
       onColumnResize: jest.fn(),
       draggableHeaderCell: jest.fn(),
-      getValidFilterValues: jest.fn(),
-      cellMetaData: fakeCellMetaData,
+      onCellClick() { },
       onHeaderDrop() { }
     };
     it('passes classname property', () => {
@@ -123,11 +119,11 @@ describe('Header Unit Tests', () => {
     });
 
     it('execute onCellClick event on cellMetaData and rowIdx & idx = -1', () => {
-      jest.spyOn(testAllProps.cellMetaData, 'onCellClick').mockImplementation(() => { });
+      jest.spyOn(testAllProps, 'onCellClick').mockImplementation(() => { });
       const wrapper = renderComponent(testAllProps);
       const headerDiv = wrapper.find('div');
       headerDiv.simulate('click');
-      expect(testAllProps.cellMetaData.onCellClick).toHaveBeenCalledWith({ rowIdx: -1, idx: -1 });
+      expect(testAllProps.onCellClick).toHaveBeenCalledWith({ rowIdx: -1, idx: -1 });
     });
   });
 });

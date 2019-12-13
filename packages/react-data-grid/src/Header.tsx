@@ -2,13 +2,12 @@ import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 
 import HeaderRow from './HeaderRow';
 import { getScrollbarSize, isPositionStickySupported } from './utils';
-import { CalculatedColumn, HeaderRowData, ColumnMetrics, CellMetaData } from './common/types';
+import { CalculatedColumn, HeaderRowData, ColumnMetrics, Position } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'draggableHeaderCell'
-| 'getValidFilterValues'
 | 'rowGetter'
 | 'rowsCount'
 | 'onHeaderDrop'
@@ -23,7 +22,7 @@ export interface HeaderProps<R, K extends keyof R> extends SharedDataGridProps<R
   allRowsSelected: boolean;
   columnMetrics: ColumnMetrics<R>;
   headerRows: [HeaderRowData<R>, HeaderRowData<R> | undefined];
-  cellMetaData: CellMetaData<R>;
+  onCellClick(position: Position): void;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
 }
@@ -74,14 +73,14 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
         lastFrozenColumnIndex={props.columnMetrics.lastFrozenColumnIndex}
         draggableHeaderCell={props.draggableHeaderCell}
         filterable={row.filterable}
-        onFilterChange={row.onFilterChange}
+        filters={row.filters}
+        onFiltersChange={row.onFiltersChange}
         onHeaderDrop={props.onHeaderDrop}
         allRowsSelected={props.allRowsSelected}
         onAllRowsSelectionChange={handleAllRowsSelectionChange}
         sortColumn={props.sortColumn}
         sortDirection={props.sortDirection}
         onSort={props.onSort}
-        getValidFilterValues={props.getValidFilterValues}
       />
     );
   }
@@ -99,7 +98,7 @@ export default forwardRef(function Header<R, K extends keyof R>(props: HeaderPro
 
   // Set the cell selection to -1 x -1 when clicking on the header
   function onHeaderClick(): void {
-    props.cellMetaData.onCellClick({ rowIdx: -1, idx: -1 });
+    props.onCellClick({ rowIdx: -1, idx: -1 });
   }
 
   return (
