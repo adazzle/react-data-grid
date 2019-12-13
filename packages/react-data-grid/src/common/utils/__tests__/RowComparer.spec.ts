@@ -1,12 +1,19 @@
 import shouldRowUpdate from '../RowComparer';
 import { CalculatedColumn, RowRendererProps } from '../../types';
 
-const columns: CalculatedColumn[] = [
+interface Row {
+  col1?: string;
+  col2?: string;
+  col3?: string;
+  row?: string;
+}
+
+const columns: CalculatedColumn<Row>[] = [
   { idx: 0, key: 'col1', name: 'col1', width: 100, left: 0 },
   { idx: 1, key: 'col2', name: 'col2', width: 100, left: 100 }
 ];
 
-const defaultProps: RowRendererProps = {
+const defaultProps: RowRendererProps<Row> = {
   idx: 0,
   height: 60,
   columns,
@@ -44,7 +51,7 @@ describe('RowComparer shouldRowUpdate', () => {
   });
 
   it('different columns should cause update', () => {
-    const newColumns = [
+    const newColumns: CalculatedColumn<Row>[] = [
       ...columns,
       { idx: 1, key: 'col3', name: 'col3', width: 100, left: 200 }
     ];

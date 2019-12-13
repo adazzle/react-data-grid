@@ -1,9 +1,14 @@
 import React, { StrictMode } from 'react';
 import { render } from '@testing-library/react';
-import ReactDataGrid, { ReactDataGridProps, RowData } from '../packages/react-data-grid/src';
+import ReactDataGrid, { ReactDataGridProps } from '../packages/react-data-grid/src';
 
-export function getProps(extraProps?: Partial<ReactDataGridProps>): ReactDataGridProps {
-  const rows: RowData[] = [];
+interface RowType {
+  col1: string;
+  col2: string;
+}
+
+export function getProps(extraProps?: Partial<ReactDataGridProps<RowType>>): ReactDataGridProps<RowType> {
+  const rows: RowType[] = [];
 
   return {
     columns: [{
@@ -13,7 +18,7 @@ export function getProps(extraProps?: Partial<ReactDataGridProps>): ReactDataGri
       key: 'col2',
       name: 'Column 2'
     }],
-    rowGetter(idx: number): RowData {
+    rowGetter(idx: number) {
       return rows[idx];
     },
     rowsCount: rows.length,
@@ -21,7 +26,7 @@ export function getProps(extraProps?: Partial<ReactDataGridProps>): ReactDataGri
   };
 }
 
-export function setup(props: ReactDataGridProps = getProps()) {
+export function setup(props: ReactDataGridProps<RowType> = getProps()) {
   return {
     props,
     ...render(

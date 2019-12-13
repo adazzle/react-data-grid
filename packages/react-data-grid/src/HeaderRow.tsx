@@ -10,7 +10,7 @@ import { HeaderRowType, HeaderCellType, DEFINE_SORT } from './common/enums';
 import { CalculatedColumn, AddFilterEvent } from './common/types';
 import { HeaderProps } from './Header';
 
-type SharedHeaderProps = Pick<HeaderProps,
+type SharedHeaderProps<R> = Pick<HeaderProps<R>,
 'draggableHeaderCell'
 | 'onHeaderDrop'
 | 'sortColumn'
@@ -19,24 +19,24 @@ type SharedHeaderProps = Pick<HeaderProps,
 | 'getValidFilterValues'
 >;
 
-export interface HeaderRowProps extends SharedHeaderProps {
+export interface HeaderRowProps<R> extends SharedHeaderProps<R> {
   width?: number;
   height: number;
-  columns: CalculatedColumn[];
-  onColumnResize(column: CalculatedColumn, width: number): void;
-  onColumnResizeEnd(column: CalculatedColumn, width: number): void;
+  columns: CalculatedColumn<R>[];
+  onColumnResize(column: CalculatedColumn<R>, width: number): void;
+  onColumnResizeEnd(column: CalculatedColumn<R>, width: number): void;
   style?: React.CSSProperties;
   filterable?: boolean;
-  onFilterChange?(args: AddFilterEvent): void;
+  onFilterChange?(args: AddFilterEvent<R>): void;
   rowType: HeaderRowType;
 }
 
-export default class HeaderRow extends React.Component<HeaderRowProps> {
+export default class HeaderRow<R> extends React.Component<HeaderRowProps<R>> {
   static displayName = 'HeaderRow';
 
-  private readonly cells = new Map<string, HeaderCell>();
+  private readonly cells = new Map<keyof R, HeaderCell<R>>();
 
-  shouldComponentUpdate(nextProps: HeaderRowProps) {
+  shouldComponentUpdate(nextProps: HeaderRowProps<R>) {
     return (
       nextProps.width !== this.props.width
       || nextProps.height !== this.props.height
@@ -47,7 +47,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     );
   }
 
-  getHeaderCellType(column: CalculatedColumn): HeaderCellType {
+  getHeaderCellType(column: CalculatedColumn<R>): HeaderCellType {
     if (column.filterable && this.props.filterable) {
       return HeaderCellType.FILTERABLE;
     }
@@ -59,10 +59,10 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     return HeaderCellType.NONE;
   }
 
-  getFilterableHeaderCell(column: CalculatedColumn) {
+  getFilterableHeaderCell(column: CalculatedColumn<R>) {
     const FilterRenderer = column.filterRenderer || FilterableHeaderCell;
     return (
-      <FilterRenderer
+      <FilterRenderer<R>
         column={column}
         onChange={this.props.onFilterChange}
         getValidFilterValues={this.props.getValidFilterValues}
@@ -70,11 +70,11 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     );
   }
 
-  getSortableHeaderCell(column: CalculatedColumn) {
+  getSortableHeaderCell(column: CalculatedColumn<R>) {
     const sortDirection = this.props.sortColumn === column.key && this.props.sortDirection || DEFINE_SORT.NONE;
     const sortDescendingFirst = column.sortDescendingFirst || false;
     return (
-      <SortableHeaderCell
+      <SortableHeaderCell<R>
         column={column}
         rowType={this.props.rowType}
         onSort={this.props.onSort}
@@ -84,7 +84,7 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
     );
   }
 
-  getHeaderRenderer(column: CalculatedColumn) {
+  getHeaderRenderer(column: CalculatedColumn<R>) {
     if (column.headerRenderer && !column.sortable && !this.props.filterable) {
       return column.headerRenderer;
     }
@@ -109,8 +109,8 @@ export default class HeaderRow extends React.Component<HeaderRowProps> {
       const renderer = key === 'select-row' && rowType === HeaderRowType.FILTER ? <div /> : this.getHeaderRenderer(column);
 
       const cell = (
-        <HeaderCell
-          key={key}
+        <HeaderCell<R>
+          key={key as string}
           ref={node => node ? this.cells.set(key, node) : this.cells.delete(key)}
           column={column}
           rowType={rowType}

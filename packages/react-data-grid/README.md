@@ -27,7 +27,7 @@ const Grid = () => {
     columns={columns}
     rowGetter={rowGetter}
     rowsCount={rows.length}
-    minHeight={500} />);
+    minHeight={500} />;
 }
 ```
 
