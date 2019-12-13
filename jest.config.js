@@ -14,7 +14,7 @@ module.exports = {
   },
   collectCoverage: process.env.CI === 'true',
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}'
+    'src/**/*.{ts,tsx}'
   ],
   coverageReporters: [
     'cobertura'

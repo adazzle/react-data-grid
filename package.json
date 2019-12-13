@@ -1,19 +1,17 @@
 {
   "name": "react-data-grid",
   "version": "7.0.0-canary.7",
-  "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
-  "author": "Adazzle",
   "license": "MIT",
-  "repository": "adazzle/react-data-grid",
-  "homepage": "https://github.com/adazzle/react-data-grid",
-  "bugs": {
-    "url": "https://github.com/adazzle/react-data-grid/issues"
-  },
+  "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
   "keywords": [
     "react",
     "react-data-grid",
     "data-grid"
   ],
+  "repository": "github:adazzle/react-data-grid",
+  "bugs": {
+    "url": "https://github.com/adazzle/react-data-grid/issues"
+  },
   "main": "lib/index.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
