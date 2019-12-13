@@ -22,17 +22,6 @@ export default function CellContent<R>({
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
   const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
 
-  function getFormatterDependencies(row: R) {
-    // convention based method to get corresponding Id or Name of any Name or Id property
-    const { getRowMetaData } = column;
-    if (getRowMetaData) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('getRowMetaData for formatters is deprecated and will be removed in a future version of react-data-grid. Instead access row prop of formatter');
-      }
-      return getRowMetaData(row, column);
-    }
-  }
-
   function getFormatterProps() {
     return {
       value: rowData[column.key],
@@ -41,7 +30,6 @@ export default function CellContent<R>({
       row: rowData,
       isRowSelected,
       onRowSelectionChange,
-      dependentValues: getFormatterDependencies(rowData),
       isSummaryRow
     };
   }
