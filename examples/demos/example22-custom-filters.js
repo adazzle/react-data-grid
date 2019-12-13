@@ -26,19 +26,19 @@ export default class extends React.Component {
         key: 'priority',
         name: 'Priority',
         filterable: true,
-        filterRenderer: MultiSelectFilter
+        filterRenderer: p => <MultiSelectFilter {...p} getValidFilterValues={this.getValidFilterValues} />
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         filterable: true,
-        filterRenderer: SingleSelectFilter
+        filterRenderer: p => <SingleSelectFilter {...p} getValidFilterValues={this.getValidFilterValues} />
       },
       {
         key: 'developer',
         name: 'Developer',
         filterable: true,
-        filterRenderer: AutoCompleteFilter
+        filterRenderer: p => <AutoCompleteFilter {...p} getValidFilterValues={this.getValidFilterValues} />
       },
       {
         key: 'complete',
@@ -90,14 +90,8 @@ export default class extends React.Component {
     return Selectors.getRows(this.state).length;
   };
 
-  handleFilterChange = (filter) => {
-    const newFilters = { ...this.state.filters };
-    if (filter.filterTerm) {
-      newFilters[filter.column.key] = filter;
-    } else {
-      delete newFilters[filter.column.key];
-    }
-    this.setState({ filters: newFilters });
+  handleFilterChange = (filters) => {
+    this.setState({ filters });
   };
 
   getValidFilterValues = (columnId) => {
@@ -134,8 +128,8 @@ export default class extends React.Component {
           rowsCount={this.rowsCount()}
           minHeight={500}
           enableHeaderFilters={this.state.enableHeaderFilters}
-          onAddFilter={this.handleFilterChange}
-          getValidFilterValues={this.getValidFilterValues}
+          filters={this.state.filters}
+          onFiltersChange={this.handleFilterChange}
         />
       </Wrapper>
     );

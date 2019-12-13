@@ -25,7 +25,7 @@ describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
   function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
-    const onCellSelected = jest.fn();
+    const onSelectedCellChange = jest.fn();
     const props: InteractionMasksProps<Row, 'id'> = {
       height: 100,
       colVisibleStartIdx: 0,
@@ -37,17 +37,16 @@ describe('<InteractionMasks/>', () => {
       onHitTopBoundary: jest.fn(),
       onHitRightBoundary: jest.fn(),
       onHitLeftBoundary: jest.fn(),
-      onCellSelected,
-      onCellDeSelected: jest.fn(),
-      onCellRangeSelectionStarted: jest.fn(),
-      onCellRangeSelectionUpdated: jest.fn(),
-      onCellRangeSelectionCompleted: jest.fn(),
+      onSelectedCellChange,
+      onSelectedCellRangeChange: jest.fn(),
       onGridRowsUpdated: jest.fn(),
       onDragHandleDoubleClick() { },
       onCommit() { },
       rowGetter,
       enableCellSelect: true,
       enableCellAutoFocus: false,
+      enableCellCopyPaste: true,
+      enableCellDragAndDrop: true,
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus: new EventBus(),
       getRowColumns: () => columns,
@@ -60,13 +59,13 @@ describe('<InteractionMasks/>', () => {
     if (isMount) {
       const wrapper = mount<InteractionMasks<Row, 'id'>>(<InteractionMasks {...props} />);
       initialState && wrapper.setState(initialState);
-      onCellSelected.mockReset();
+      onSelectedCellChange.mockReset();
       return { wrapper, props };
     }
 
     const wrapper = shallow<InteractionMasks<Row, 'id'>>(<InteractionMasks {...props} />, { disableLifecycleMethods: false });
     initialState && wrapper.setState(initialState);
-    onCellSelected.mockReset();
+    onSelectedCellChange.mockReset();
     return { wrapper, props };
   }
 
@@ -388,42 +387,47 @@ describe('<InteractionMasks/>', () => {
   });
 
   describe('Range selection events', () => {
-    it('should fire onCellRangeSelectionStarted on starting a selection', () => {
+    it('should fire onSelectedCellRangeChange on starting a selection', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
-      expect(props.onCellRangeSelectionStarted).toHaveBeenCalledWith(expect.objectContaining({
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 2, rowIdx: 2 },
-        bottomRight: { idx: 2, rowIdx: 2 }
+        bottomRight: { idx: 2, rowIdx: 2 },
+        isDragging: true
       }));
     });
 
-    it('should fire onCellRangeSelectionUpdated on updating a selection', () => {
+    it('should fire onSelectedCellRangeChange on updating a selection', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
       props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
-      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(expect.objectContaining({
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 2, rowIdx: 2 },
-        bottomRight: { idx: 3, rowIdx: 3 }
+        bottomRight: { idx: 3, rowIdx: 3 },
+        isDragging: true
       }));
     });
 
-    it('should fire onCellRangeSelectionCompleted on completing a selection', () => {
+    it('should fire onSelectedCellRangeChange on completing a selection', () => {
       const { props } = setup();
       props.eventBus.dispatch(EventTypes.SELECT_START, { idx: 2, rowIdx: 2 });
       props.eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx: 3, rowIdx: 3 });
       props.eventBus.dispatch(EventTypes.SELECT_END);
-      expect(props.onCellRangeSelectionCompleted).toHaveBeenCalled();
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
+        topLeft: { idx: 2, rowIdx: 2 },
+        bottomRight: { idx: 3, rowIdx: 3 },
+        isDragging: false
+      }));
     });
 
-    it('should fire onCellRangeSelectionUpdated and onCRSCompleted on modifying a selection via they keyboard', () => {
+    it('should fire onSelectedCellRangeChange and onCRSCompleted on modifying a selection via they keyboard', () => {
       const currentCell = { idx: 0, rowIdx: 0 };
       const { wrapper, props } = setup({}, { selectedPosition: currentCell });
       pressKey(wrapper, 'ArrowRight', { shiftKey: true });
-      expect(props.onCellRangeSelectionUpdated).toHaveBeenCalledWith(expect.objectContaining({
+      expect(props.onSelectedCellRangeChange).toHaveBeenCalledWith(expect.objectContaining({
         topLeft: { idx: 0, rowIdx: 0 },
         bottomRight: { idx: 1, rowIdx: 0 }
       }));
-      expect(props.onCellRangeSelectionCompleted).toHaveBeenCalled();
     });
   });
 
@@ -512,42 +516,26 @@ describe('<InteractionMasks/>', () => {
 
         describe('when cell selection/deselection handlers are passed', () => {
           describe('cell in the middle of the grid is selected', () => {
-            it('deselection handler should have been called when moving to the next cell when press Tab', () => {
-              const { wrapper, props, initialCell } = setupCellSelectionTest();
-              simulateTab(wrapper);
-              expect(props.onCellDeSelected).toHaveBeenCalledWith(initialCell);
-            });
             it('selection handler should have been called when moving to the next cell', () => {
               const { wrapper, props } = setupCellSelectionTest();
               simulateTab(wrapper);
-              expect(props.onCellSelected).toHaveBeenCalledWith(expect.objectContaining({ rowIdx: 2, idx: 3 }));
+              expect(props.onSelectedCellChange).toHaveBeenCalledWith(expect.objectContaining({ rowIdx: 2, idx: 3 }));
             });
           });
 
           describe('user is able to exit the grid to the left', () => {
-            it('triggers the deselection handler on press Shift+Tab', () => {
-              const { wrapper, props, initialCell } = setupCellSelectionTest({ rowIdx: 0, idx: 0 });
-              simulateTab(wrapper, true);
-              expect(props.onCellDeSelected).toHaveBeenCalledWith(initialCell);
-            });
             it('does not trigger the selection handler on press Shift+Tab', () => {
               const { wrapper, props } = setupCellSelectionTest({ rowIdx: 0, idx: 0 });
               simulateTab(wrapper, true);
-              expect(props.onCellSelected).not.toHaveBeenCalled();
+              expect(props.onSelectedCellChange).not.toHaveBeenCalled();
             });
           });
 
           describe('user is able to exit the grid to the right', () => {
-            it('triggers the deselection handler on press Tab', () => {
-              const { wrapper, props, initialCell } = setupCellSelectionTest();
-              simulateTab(wrapper);
-              expect(props.onCellDeSelected).toHaveBeenCalledWith(initialCell);
-            });
-
             it('does not trigger the selection handler on press Tab', () => {
               const { wrapper, props } = setupCellSelectionTest({ rowIdx: ROWS_COUNT - 1, idx: 9 });
               simulateTab(wrapper);
-              expect(props.onCellSelected).not.toHaveBeenCalled();
+              expect(props.onSelectedCellChange).not.toHaveBeenCalled();
             });
           });
         });
@@ -729,7 +717,14 @@ describe('<InteractionMasks/>', () => {
       // Paste copied cell
       pressKey(wrapper, 'v', { keyCode: KeyCodes.v, ctrlKey: true });
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 1, 1, { Column1: '3' }, UpdateActions.COPY_PASTE, 2);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 2,
+        toRow: 1,
+        updated: { Column1: '3' },
+        action: UpdateActions.COPY_PASTE,
+        fromCellKey: 'Column1'
+      });
     });
   });
 
@@ -776,7 +771,13 @@ describe('<InteractionMasks/>', () => {
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
       wrapper.find(DragHandle).simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, UpdateActions.CELL_DRAG);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 2,
+        toRow: 6,
+        updated: { Column1: '3' },
+        action: UpdateActions.CELL_DRAG
+      });
     });
 
     it('should update the dragged over cells on upwards drag end', () => {
@@ -789,7 +790,13 @@ describe('<InteractionMasks/>', () => {
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
       wrapper.find(DragHandle).simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 4, 0, { Column1: '5' }, UpdateActions.CELL_DRAG);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 4,
+        toRow: 0,
+        updated: { Column1: '5' },
+        action: UpdateActions.CELL_DRAG
+      });
     });
   });
 

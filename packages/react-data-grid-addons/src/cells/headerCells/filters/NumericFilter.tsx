@@ -1,5 +1,5 @@
 import React from 'react';
-import { Column } from 'react-data-grid';
+import { Column, FilterRendererProps } from 'react-data-grid';
 
 enum RuleType {
   Number = 1,
@@ -19,12 +19,7 @@ interface ChangeEvent<R> {
   filterValues: typeof filterValues;
 }
 
-interface Props<R> {
-  column: Column<R>;
-  onChange(event: ChangeEvent<R>): void;
-}
-
-export default function NumericFilter<R>({ column, onChange }: Props<R>) {
+export default function NumericFilter<R>({ value, column, onChange }: FilterRendererProps<R, ChangeEvent<R>>) {
   /** Validates the input */
   function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     const result = /[><,0-9-]/.test(event.key);
@@ -44,14 +39,12 @@ export default function NumericFilter<R>({ column, onChange }: Props<R>) {
     });
   }
 
-  const inputKey = `header-filter-${column.key as keyof R}`;
-
   const tooltipText = 'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
 
   return (
     <div className="rdg-filter-container">
       <input
-        key={inputKey}
+        value={value && value.rawValue}
         className="rdg-filter"
         placeholder="e.g. 3,10-15,>20"
         onChange={handleChange}

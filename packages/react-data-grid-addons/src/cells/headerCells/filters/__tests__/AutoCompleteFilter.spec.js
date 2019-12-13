@@ -48,12 +48,6 @@ describe('AutoCompleteFilter', () => {
       expect(component).toBeDefined();
     });
 
-    it('should handle change', () => {
-      const value = [{ value: '1' }];
-      component.handleChange(value);
-      expect(component.state.filters).toEqual(value);
-    });
-
     it('When options are valid', () => {
       const request = component.getOptions();
       const result = [

@@ -21,7 +21,6 @@ describe('Header Row Unit Tests', () => {
     height: 35,
     allRowsSelected: false,
     onAllRowsSelectionChange() {},
-    onFilterChange() { },
     onHeaderDrop() { },
     draggableHeaderCell: () => <div />
   };
@@ -141,7 +140,6 @@ describe('Header Row Unit Tests', () => {
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       onColumnResize: jest.fn(),
-      onFilterChange() { },
       onHeaderDrop() { },
       draggableHeaderCell: () => <div />
     };

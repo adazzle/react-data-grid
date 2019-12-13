@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, CellMetaData, ColumnMetrics, InteractionMasksMetaData, Position, ScrollPosition } from './common/types';
+import { CalculatedColumn, CellMetaData, ColumnMetrics, Position, ScrollPosition, CommitEvent } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
@@ -22,14 +22,20 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'getSubRowDetails'
 | 'selectedRows'
 | 'summaryRows'
+| 'onCheckCellIsEditable'
+| 'onSelectedCellChange'
+| 'onSelectedCellRangeChange'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
+| 'enableCellAutoFocus'
 | 'enableCellSelect'
+| 'enableCellCopyPaste'
+| 'enableCellDragAndDrop'
 | 'rowHeight'
 | 'cellNavigationMode'
-| 'enableCellAutoFocus'
 | 'editorPortalTarget'
 | 'renderBatchSize'
+| 'onGridRowsUpdated'
 >>;
 
 export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
@@ -37,11 +43,12 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   cellMetaData: CellMetaData<R>;
   height: number;
   eventBus: EventBus;
-  interactionMasksMetaData: InteractionMasksMetaData<R>;
   onScroll(position: ScrollPosition): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
+  onDragHandleDoubleClick(data: Position): void;
+  onCommit(e: CommitEvent<R>): void;
 }
 
 export default function Canvas<R, K extends keyof R>({
@@ -55,7 +62,6 @@ export default function Canvas<R, K extends keyof R>({
   eventBus,
   getSubRowDetails,
   height,
-  interactionMasksMetaData,
   onCanvasKeydown,
   onCanvasKeyup,
   onRowSelectionChange,
@@ -70,7 +76,8 @@ export default function Canvas<R, K extends keyof R>({
   rowsCount,
   scrollToRowIndex,
   selectedRows,
-  summaryRows
+  summaryRows,
+  ...props
 }: CanvasProps<R, K>) {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -254,6 +261,8 @@ export default function Canvas<R, K extends keyof R>({
           colVisibleEndIdx={colVisibleEndIdx}
           enableCellSelect={enableCellSelect}
           enableCellAutoFocus={enableCellAutoFocus}
+          enableCellCopyPaste={props.enableCellCopyPaste}
+          enableCellDragAndDrop={props.enableCellDragAndDrop}
           cellNavigationMode={cellNavigationMode}
           eventBus={eventBus}
           contextMenu={contextMenu}
@@ -265,7 +274,12 @@ export default function Canvas<R, K extends keyof R>({
           scrollTop={scrollTop}
           getRowColumns={getRowColumns}
           editorPortalTarget={editorPortalTarget}
-          {...interactionMasksMetaData}
+          onCheckCellIsEditable={props.onCheckCellIsEditable}
+          onGridRowsUpdated={props.onGridRowsUpdated}
+          onDragHandleDoubleClick={props.onDragHandleDoubleClick}
+          onSelectedCellChange={props.onSelectedCellChange}
+          onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+          onCommit={props.onCommit}
         />
         {grid}
       </div>

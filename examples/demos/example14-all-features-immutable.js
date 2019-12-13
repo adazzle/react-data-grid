@@ -189,6 +189,8 @@ export default class extends React.Component {
           onGridRowsUpdated={this.handleGridRowsUpdated}
           rowHeight={50}
           minHeight={600}
+          enableCellCopyPaste
+          enableCellDragAndDrop
         />
       </Wrapper>
     );
