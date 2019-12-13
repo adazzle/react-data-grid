@@ -5,6 +5,7 @@ import { IRowRendererProps, CalculatedColumn, RowExpandToggleEvent, Omit, CellRe
 import EventBus from './EventBus';
 
 interface Props<R> {
+  ref?: React.Ref<HTMLDivElement>;
   height: number;
   columns: CalculatedColumn<R>[];
   row: unknown;

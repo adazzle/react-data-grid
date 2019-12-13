@@ -303,7 +303,7 @@ function DataGrid<R, K extends keyof R>({
               scrollLeft={nonStickyScrollLeft}
             />
             {enableHeaderFilters && (
-              <FilterRow
+              <FilterRow<R, K>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}

@@ -25,5 +25,8 @@ export const SelectColumn: Column<any, any> = {
         onChange={(value, isShiftClick) => props.onRowSelectionChange(props.rowIdx, props.rowData, value, isShiftClick)}
       />
     );
+  },
+  filterRenderer() {
+    return null;
   }
 };

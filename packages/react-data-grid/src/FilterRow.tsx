@@ -63,7 +63,7 @@ export default function FilterRow<R, K extends keyof R>({
             style={style}
             className={className}
           >
-            {key !== 'select-row' && column.filterable && createElement(renderer, {
+            {column.filterable && createElement(renderer, {
               column,
               value: filters?.[column.key],
               onChange: value => onChange(key, value)
