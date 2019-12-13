@@ -21,8 +21,7 @@ module.exports = {
   ],
   restoreMocks: true,
   moduleNameMapper: {
-    '^@material-ui/icons$': '<rootDir>/test/iconsMock.ts',
-    '\\.css$': '<rootDir>/test/fileMock.ts'
+    '^@material-ui/icons$': '<rootDir>/test/iconsMock.ts'
   },
   setupFiles: [
     '<rootDir>/test/setupTests.ts'
