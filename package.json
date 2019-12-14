@@ -83,10 +83,6 @@
     "webpack-dev-server": "^3.9.0"
   },
   "peerDependencies": {
-    "@types/classnames": "^2.2",
-    "@types/react": "^16.8",
-    "@types/react-dom": "^16.8",
-    "@types/react-is": "^16.7",
     "react": "^16.8",
     "react-dom": "^16.8"
   }
