@@ -24,11 +24,6 @@ const compiler = webpack({
     strictExportPresence: true,
     rules: [
       {
-        test: /\.js$/,
-        use: ['source-map-loader'],
-        enforce: 'pre'
-      },
-      {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: [{

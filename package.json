@@ -74,7 +74,6 @@
     "react-router-dom": "^5.1.2",
     "react-virtualized": "^9.21.2",
     "recharts": "^1.7.1",
-    "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.1",
     "ts-jest": "^24.2.0",
     "ts-loader": "^6.2.1",
