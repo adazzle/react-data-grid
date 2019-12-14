@@ -5,7 +5,6 @@ import { IRowRendererProps, CalculatedColumn, RowExpandToggleEvent, Omit, CellRe
 import EventBus from './EventBus';
 
 interface Props<R> {
-  ref?: React.Ref<HTMLDivElement>;
   height: number;
   columns: CalculatedColumn<R>[];
   row: unknown;
@@ -53,7 +52,7 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
-}) as <R>(props: Props<R>) => JSX.Element;
+}) as <R>(props: Props<R> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
 
 interface DefaultBaseProps extends Omit<Props<any>, 'onRowExpandToggle'> {
   onRowExpandClick(): void;
