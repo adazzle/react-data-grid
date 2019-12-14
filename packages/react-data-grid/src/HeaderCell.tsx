@@ -9,10 +9,6 @@ import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './common/cells/headerCells/ResizableHeaderCell';
 
-function SimpleCellRenderer<R>(props: HeaderRendererProps<R>) {
-  return <>{props.column.name}</>;
-}
-
 type SharedHeaderRowProps<R, K extends keyof R> = Pick<HeaderRowProps<R, K>,
 | 'sortColumn'
 | 'sortDirection'
@@ -41,7 +37,9 @@ export default function HeaderCell<R, K extends keyof R>({
   ...props
 }: HeaderCellProps<R, K>) {
   function getCell() {
-    const renderer = column.headerRenderer || SimpleCellRenderer;
+    if (!column.headerRenderer) return column.name;
+    const renderer = column.headerRenderer;
+
     if (isElement(renderer)) {
       // TODO: is this needed?
       // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
