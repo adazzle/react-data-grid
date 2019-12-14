@@ -535,13 +535,9 @@ module.exports = {
     }
   }, {
     files: [
-      'examples/**/__tests__/**/*',
       'src/**/__tests__/**/*',
       'tests/**/*'
     ],
-    env: {
-      jest: true
-    },
     rules: {
       'sonarjs/no-identical-functions': 0
     }
@@ -554,25 +550,7 @@ module.exports = {
   }, {
     files: [
       'babel.config.js',
-      'jest.config.js'
-    ],
-    parserOptions: {
-      sourceType: 'script'
-    },
-    env: {
-      node: true
-    },
-    rules: {
-      'no-console': 0,
-      'default-param-last': 2,
-      'global-require': 1,
-      'no-buffer-constructor': 2,
-      'no-new-require': 2,
-      'no-path-concat': 1,
-      '@typescript-eslint/no-require-imports': 0
-    }
-  }, {
-    files: [
+      'jest.config.js',
       'webpack-dev-server.mjs',
       'tools/**/*.mjs'
     ],
@@ -586,6 +564,17 @@ module.exports = {
       'no-buffer-constructor': 2,
       'no-new-require': 2,
       'no-path-concat': 1
+    }
+  }, {
+    files: [
+      'babel.config.js',
+      'jest.config.js'
+    ],
+    parserOptions: {
+      sourceType: 'script'
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 0
     }
   }]
 };
