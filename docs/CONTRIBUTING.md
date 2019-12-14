@@ -36,6 +36,7 @@ You can start coding in 5 minutes.
 git clone https://github.com/adazzle/react-data-grid.git
 cd react-data-grid
 npm install
+npm run build
 npm start
 ```
 

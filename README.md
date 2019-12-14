@@ -69,7 +69,7 @@ Features
 Contributing
 ------------
 
-Please see [CONTRIBUTING](CONTRIBUTING.md)
+Please see [CONTRIBUTING](docs/CONTRIBUTING.md)
 
 Credits
 ------------
