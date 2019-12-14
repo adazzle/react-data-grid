@@ -6,17 +6,8 @@ import helpers, { Row } from './GridPropHelpers';
 import CellAction from '../Cell/CellAction';
 import { legacyCellContentRenderer } from '../Cell/cellContentRenderers';
 import { SimpleCellFormatter } from '../formatters';
-import { CalculatedColumn, CellMetaData } from '../common/types';
-
-const testCellMetaData: CellMetaData<Row> = {
-  rowKey: 'id',
-  onCellClick() {},
-  onCellContextMenu() {},
-  onCellDoubleClick() {},
-  onDragEnter() {},
-  onCellExpand() {},
-  onRowExpandToggle() {}
-};
+import { CalculatedColumn } from '../common/types';
+import EventBus from '../EventBus';
 
 const expandableOptions = {
   canExpand: false,
@@ -49,12 +40,14 @@ const testProps: CellProps<Row> = {
   idx: 1,
   column: defaultColumn,
   lastFrozenColumnIndex: -1,
-  cellMetaData: testCellMetaData,
   rowData: { id: 1, description: 'Wicklow' },
   isRowSelected: false,
   onRowSelectionChange() {},
   scrollLeft: 0,
-  isSummaryRow: false
+  isSummaryRow: false,
+  rowKey: 'id',
+  onCellExpand() {},
+  eventBus: new EventBus()
 };
 
 const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>) => {
@@ -96,13 +89,15 @@ describe('Cell Tests', () => {
       idx: 19,
       column: helpers.columns[0],
       lastFrozenColumnIndex: -1,
-      cellMetaData: testCellMetaData,
       rowData: helpers.rowGetter(11),
       expandableOptions,
       isRowSelected: false,
       onRowSelectionChange() {},
       scrollLeft: 0,
-      isSummaryRow: false
+      isSummaryRow: false,
+      rowKey: 'id',
+      onCellExpand() {},
+      eventBus: new EventBus()
     };
 
     it('passes classname property', () => {
@@ -129,13 +124,15 @@ describe('Cell Tests', () => {
         idx: 19,
         column: helpers.columns[0],
         lastFrozenColumnIndex: -1,
-        cellMetaData: testCellMetaData,
         rowData: helpers.rowGetter(11),
         expandableOptions,
         isRowSelected: false,
         onRowSelectionChange() {},
         scrollLeft: 0,
         isSummaryRow: false,
+        rowKey: 'id',
+        onCellExpand() {},
+        eventBus: new EventBus(),
         ...propsOverride
       };
 
@@ -150,10 +147,7 @@ describe('Cell Tests', () => {
       it('should render some CellActions', () => {
         const action = { icon: 'glpyhicon glyphicon-link', callback: jest.fn() };
         const { wrapper } = setup({
-          cellMetaData: {
-            ...testCellMetaData,
-            getCellActions: jest.fn().mockReturnValue([action])
-          }
+          getCellActions: jest.fn().mockReturnValue([action])
         });
 
         const renderedCellActions = wrapper.find(CellAction);

@@ -25,6 +25,7 @@ import {
 } from '../utils/selectedCellUtils';
 
 // Types
+import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
 import { CalculatedColumn, Position, SelectedRange, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
@@ -54,14 +55,11 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
 | 'cellNavigationMode'
-| 'eventBus'
 | 'contextMenu'
 | 'editorPortalTarget'
 | 'onCheckCellIsEditable'
 | 'onSelectedCellChange'
-| 'onDragHandleDoubleClick'
 | 'onSelectedCellRangeChange'
-| 'onCommit'
 | 'onGridRowsUpdated'
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
@@ -76,6 +74,7 @@ export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanva
   getRowColumns(rowIdx: number): CalculatedColumn<R>[];
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
+  eventBus: EventBus;
 }
 
 export interface InteractionMasksState {
@@ -484,9 +483,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
       selectedRange: this.createSingleCellSelectedRange(selectedPosition, true),
       selectedPosition
     }, () => {
-      if (this.props.onSelectedCellRangeChange) {
-        this.props.onSelectedCellRangeChange(this.state.selectedRange);
-      }
+      this.props.onSelectedCellRangeChange?.(this.state.selectedRange);
     });
   };
 
@@ -514,9 +511,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     this.setState({
       selectedRange
     }, () => {
-      if (this.props.onSelectedCellRangeChange) {
-        this.props.onSelectedCellRangeChange(this.state.selectedRange);
-      }
+      this.props.onSelectedCellRangeChange?.(this.state.selectedRange);
       if (callback) {
         callback();
       }
@@ -526,9 +521,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   onSelectCellRangeEnded = (): void => {
     const selectedRange = { ...this.state.selectedRange, isDragging: false };
     this.setState({ selectedRange }, () => {
-      if (this.props.onSelectedCellRangeChange) {
-        this.props.onSelectedCellRangeChange(this.state.selectedRange);
-      }
+      this.props.onSelectedCellRangeChange?.(this.state.selectedRange);
 
       // Focus the InteractionMasks, so it can receive keyboard events
       this.focus();
@@ -594,11 +587,29 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   onDragHandleDoubleClick = (): void => {
-    this.props.onDragHandleDoubleClick(this.state.selectedPosition);
+    const { selectedPosition } = this.state;
+    const { columns, onGridRowsUpdated, rowGetter, rowsCount } = this.props;
+    const column = columns[selectedPosition.idx];
+    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
+    const cellKey = column.key;
+
+    onGridRowsUpdated({
+      cellKey,
+      fromRow: selectedPosition.rowIdx,
+      toRow: rowsCount - 1,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.COLUMN_FILL
+    });
   };
 
-  onCommit = (args: CommitEvent<R>): void => {
-    this.props.onCommit(args);
+  onCommit = ({ cellKey, rowIdx, updated }: CommitEvent<R>): void => {
+    this.props.onGridRowsUpdated({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: rowIdx,
+      updated,
+      action: UpdateActions.CELL_UPDATE
+    });
     this.closeEditor();
   };
 

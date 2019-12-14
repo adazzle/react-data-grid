@@ -3,7 +3,6 @@ import { mount } from 'enzyme';
 
 import InteractionMasks from '../masks/InteractionMasks';
 import Canvas, { CanvasProps } from '../Canvas';
-import EventBus from '../EventBus';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
 import RowComponent from '../Row';
@@ -22,25 +21,13 @@ const testProps: CanvasProps<Row, 'id'> = {
   height: 200,
   rowsCount: 1,
   rowGetter(id) { return { id, row: String(id) }; },
-  cellMetaData: {
-    rowKey: 'row',
-    onCellClick() { },
-    onCellContextMenu() { },
-    onCellDoubleClick() { },
-    onDragEnter() { },
-    onCellExpand() { },
-    onRowExpandToggle() { }
-  },
-  onCommit() { },
   onGridRowsUpdated: noop,
-  onDragHandleDoubleClick: noop,
   onRowSelectionChange() {},
   enableCellSelect: true,
   enableCellAutoFocus: false,
   enableCellCopyPaste: true,
   enableCellDragAndDrop: true,
   cellNavigationMode: CellNavigationMode.NONE,
-  eventBus: new EventBus(),
   editorPortalTarget: document.body,
   onScroll() {},
   columnMetrics: {
@@ -58,7 +45,12 @@ const testProps: CanvasProps<Row, 'id'> = {
   },
   renderBatchSize: 8,
   onCanvasKeydown() {},
-  onCanvasKeyup() {}
+  onCanvasKeyup() {},
+  scrollLeft: 0,
+  colOverscanStartIdx: 0,
+  colOverscanEndIdx: 0,
+  colVisibleStartIdx: 0,
+  colVisibleEndIdx: 0
 };
 
 function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {

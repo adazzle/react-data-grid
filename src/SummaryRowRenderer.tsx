@@ -4,28 +4,28 @@ import Row from './Row';
 import { RowRendererProps } from './RowRenderer';
 import { getScrollbarSize } from './utils';
 
-const noop = () => {};
+const noop = () => { };
 
 type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>,
 | 'idx'
 | 'rowData'
 | 'columnMetrics'
-| 'cellMetaData'
 | 'colOverscanEndIdx'
 | 'colOverscanStartIdx'
 | 'rowHeight'
 | 'scrollLeft'
+| 'eventBus'
 >;
 
 function RowRenderer<R, K extends keyof R>({
-  cellMetaData,
   colOverscanEndIdx,
   colOverscanStartIdx,
   columnMetrics,
   idx,
   rowData,
   rowHeight,
-  scrollLeft
+  scrollLeft,
+  eventBus
 }: SummaryRowRendererProps<R, K>) {
   return (
     <Row<R>
@@ -36,12 +36,12 @@ function RowRenderer<R, K extends keyof R>({
       columns={columnMetrics.columns}
       isRowSelected={false}
       onRowSelectionChange={noop}
-      cellMetaData={cellMetaData}
       colOverscanStartIdx={colOverscanStartIdx}
       colOverscanEndIdx={colOverscanEndIdx}
       lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
       scrollLeft={scrollLeft}
       isSummaryRow
+      eventBus={eventBus}
     />
   );
 }

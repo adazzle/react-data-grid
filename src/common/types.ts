@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent, ReactNode } from 'react';
-import { HeaderRowType, UpdateActions } from './enums';
+import { UpdateActions } from './enums';
+import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -37,9 +38,9 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
-  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRowProps<TRow>>;
+  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRendererProps<TRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow>>;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
 
 export type Column<TRow, TField extends keyof TRow = keyof TRow> =
@@ -63,21 +64,6 @@ export interface ColumnMetrics<TRow> {
 export interface RowData {
   name?: string;
   __metaData?: RowGroupMetaData;
-}
-
-export interface CellMetaData<TRow> {
-  rowKey: keyof TRow;
-  onCellClick(position: Position): void;
-  onCellContextMenu(position: Position): void;
-  onCellDoubleClick(position: Position): void;
-  onDragEnter(overRowIdx: number): void;
-  onCellExpand?(options: SubRowOptions<TRow>): void;
-  onRowExpandToggle?(e: RowExpandToggleEvent): void;
-  onCellMouseDown?(position: Position): void;
-  onCellMouseEnter?(position: Position): void;
-  onAddSubRow?(): void;
-  onDeleteSubRow?(options: SubRowOptions<TRow>): void;
-  getCellActions?(column: CalculatedColumn<TRow>, rowData: TRow): CellActionButton[] | undefined;
 }
 
 export interface Position {
@@ -136,25 +122,32 @@ export interface EditorProps<TValue, TRow = any> {
   onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
-export interface HeaderRowProps<TRow> {
+export interface HeaderRendererProps<TRow> {
   column: CalculatedColumn<TRow>;
-  rowType: HeaderRowType;
   allRowsSelected: boolean;
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
 export interface CellRendererProps<TRow> {
+  rowKey: keyof TRow;
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow>;
   lastFrozenColumnIndex: number;
   rowData: TRow;
-  cellMetaData: CellMetaData<TRow>;
   scrollLeft: number | undefined;
   expandableOptions?: ExpandableOptions;
   isSummaryRow: boolean;
   isRowSelected: boolean;
+  eventBus: EventBus;
+  enableCellRangeSelection?: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
+  onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
+  onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
+  onAddSubRow?(): void;
+  onDeleteSubRow?(options: SubRowOptions<TRow>): void;
+  onCellExpand?(options: SubRowOptions<TRow>): void;
+  getCellActions?(column: CalculatedColumn<TRow>, rowData: TRow): CellActionButton[] | undefined;
 }
 
 export type CellContentRenderer<TRow> = (props: CellContentRendererProps<TRow>) => React.ReactNode;
@@ -164,11 +157,13 @@ export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
 | 'rowIdx'
 | 'rowData'
 | 'column'
-| 'cellMetaData'
 | 'expandableOptions'
 | 'isRowSelected'
 | 'onRowSelectionChange'
 | 'isSummaryRow'
+| 'onDeleteSubRow'
+| 'onCellExpand'
+| 'getCellActions'
 >;
 
 export interface RowsContainerProps {
@@ -182,7 +177,6 @@ export interface IRowRendererProps<TRow> {
   columns: CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
-  cellMetaData: CellMetaData<TRow>;
   idx: number;
   extraClasses?: string;
   subRowDetails?: SubRowDetails;
@@ -192,7 +186,16 @@ export interface IRowRendererProps<TRow> {
   lastFrozenColumnIndex: number;
   isSummaryRow: boolean;
   isRowSelected: boolean;
+  eventBus: EventBus;
+  enableCellRangeSelection?: boolean;
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
+  onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
+  onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
+  onAddSubRow?(): void;
+  onDeleteSubRow?(options: SubRowOptions<TRow>): void;
+  onRowExpandToggle?(event: RowExpandToggleEvent): void;
+  onCellExpand?(options: SubRowOptions<TRow>): void;
+  getCellActions?(column: CalculatedColumn<TRow>, rowData: TRow): CellActionButton[] | undefined;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
@@ -259,14 +262,6 @@ export interface RowGroupMetaData {
 }
 
 export type Filters<TRow> = { [key in keyof TRow]?: any };
-
-export interface HeaderRowData<TRow> {
-  rowType: HeaderRowType;
-  height: number;
-  filterable?: boolean;
-  filters?: Filters<TRow>;
-  onFiltersChange?(filters: Filters<TRow>): void;
-}
 
 export interface CommitEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;

@@ -5,7 +5,8 @@ import { shallow } from 'enzyme';
 import Row from '../Row';
 import Cell from '../Cell';
 import { createColumns } from './utils';
-import { IRowRendererProps, CellMetaData } from '../common/types';
+import { IRowRendererProps } from '../common/types';
+import EventBus from '../EventBus';
 
 type RowType = any;
 
@@ -18,23 +19,12 @@ describe('Row', () => {
     return { wrapper, cells };
   }
 
-  const testCellMetaData: CellMetaData<RowType> = {
-    rowKey: 'row',
-    onCellClick() { },
-    onCellContextMenu() { },
-    onCellDoubleClick() { },
-    onDragEnter() { },
-    onCellExpand() { },
-    onRowExpandToggle() { }
-  };
-
   const requiredProperties: IRowRendererProps<RowType> = {
     height: 30,
     width: 1000,
     columns: createColumns(COLUMN_COUNT),
     row: { key: 'value' },
     cellRenderer: Cell,
-    cellMetaData: testCellMetaData,
     idx: 17,
     subRowDetails: {
       canExpand: false,
@@ -51,7 +41,8 @@ describe('Row', () => {
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
     onRowSelectionChange() {},
-    isSummaryRow: false
+    isSummaryRow: false,
+    eventBus: new EventBus()
   };
 
   it('passes classname property', () => {

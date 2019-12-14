@@ -22,18 +22,6 @@ export enum EventTypes {
   SCROLL_TO_COLUMN = 'SCROLL_TO_COLUMN'
 }
 
-export enum HeaderRowType {
-  HEADER = 'header',
-  FILTER = 'filter'
-}
-
-export enum HeaderCellType {
-  SORTABLE = 'SORTABLE',
-  FILTERABLE = 'FILTERABLE',
-  NONE = 'NONE',
-  CHECKBOX = 'CHECKBOX'
-}
-
 export enum UpdateActions {
   CELL_UPDATE = 'CELL_UPDATE',
   COLUMN_FILL = 'COLUMN_FILL',

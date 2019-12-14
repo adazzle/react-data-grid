@@ -1,13 +1,13 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import SortableHeaderCell, { Props } from '../SortableHeaderCell';
-import { HeaderRowType, DEFINE_SORT } from '../../../enums';
+import { DEFINE_SORT } from '../../../enums';
 import { valueCellContentRenderer } from '../../../../Cell/cellContentRenderers';
 
 interface Row { col1: string }
 
 describe('<SortableHeaderCell/>', () => {
-  const setup = (overrideProps?: Partial<Props<Row>>, overrideColumn = {}) => {
+  const setup = (overrideColumn = {}) => {
     const props: Props<Row> = {
       column: {
         idx: 0,
@@ -18,21 +18,16 @@ describe('<SortableHeaderCell/>', () => {
         cellContentRenderer: valueCellContentRenderer,
         ...overrideColumn
       },
-      rowType: HeaderRowType.HEADER,
       onSort: jest.fn(),
       sortDirection: DEFINE_SORT.NONE,
-      sortDescendingFirst: false,
-      allRowsSelected: false,
-      onAllRowsSelectionChange() {},
-      ...overrideProps
+      children: <div>Test</div>
     };
     const wrapper = shallow(<SortableHeaderCell {...props} />);
     return { wrapper, props };
   };
 
-  it('should render', () => {
-    const { wrapper } = setup();
-    expect(wrapper.exists()).toBe(true);
+  it('should render children', () => {
+    expect(setup().wrapper.text()).toContain('Test');
   });
 
   it('should toggle sort direction when clicked', () => {
@@ -46,14 +41,6 @@ describe('<SortableHeaderCell/>', () => {
       const { wrapper, props } = setup({ sortDescendingFirst: true });
       wrapper.simulate('click');
       expect(props.onSort).toHaveBeenCalledWith(props.column.key, DEFINE_SORT.DESC);
-    });
-  });
-
-  describe('When headerRenderer of column is set', () => {
-    it('should render the header renderer', () => {
-      const HeaderRenderer = () => <span>Custom</span>;
-      const { wrapper } = setup({}, { headerRenderer: <HeaderRenderer /> });
-      expect(wrapper.find(HeaderRenderer).length).toBe(1);
     });
   });
 });

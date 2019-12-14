@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import HeaderCell, { HeaderCellProps } from '../HeaderCell';
 import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
-import { HeaderRowType } from '../common/enums';
+import { CalculatedColumn } from '../common/types';
 
 interface Row {
   bla?: string;
@@ -15,7 +15,7 @@ describe('Header Cell Tests', () => {
   }
 
   function setup(overrideProps = {}, columnProps = {}) {
-    const props: HeaderCellProps<Row> = {
+    const props: HeaderCellProps<Row, 'bla'> = {
       column: {
         idx: 0,
         key: 'bla',
@@ -26,24 +26,24 @@ describe('Header Cell Tests', () => {
         ...columnProps
       },
       lastFrozenColumnIndex: -1,
-      rowType: HeaderRowType.HEADER,
       onResize: jest.fn(),
       height: 50,
       onHeaderDrop() { },
       draggableHeaderCell: DraggableHeaderCell,
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
+      scrollLeft: undefined,
       ...overrideProps
     };
-    const wrapper = mount<HeaderCell<Row>>(<HeaderCell<Row> {...props} />);
+    const wrapper = mount(<HeaderCell<Row, 'bla'> {...props} />);
     return { wrapper, props };
   }
 
   describe('When custom render is supplied', () => {
-    it('will have height passed in props', () => {
-      const CustomRenderer = () => <div>Custom</div>;
-      const { wrapper, props } = setup({ renderer: <CustomRenderer /> });
-      expect(wrapper.find(CustomRenderer).prop('height')).toBe(props.height);
+    it('pass the column as property to cell renderer if it is a function', () => {
+      const CustomRenderer = (column: CalculatedColumn<Row>) => <div>{column.name}</div>;
+      const { wrapper } = setup({ renderer: CustomRenderer });
+      expect(wrapper.find('.rdg-cell').at(0).text()).toBe('bla');
     });
   });
 
@@ -53,26 +53,6 @@ describe('Header Cell Tests', () => {
       wrapper.simulate('mousedown', { button: 0, clientX: 0 });
       window.dispatchEvent(new MouseEvent('mousemove', { clientX: 200 }));
       expect(props.onResize).toHaveBeenCalledWith(props.column, 200);
-    });
-  });
-
-  describe('getCell method', () => {
-    it('pass the column as property to cell renderer if it is a function', () => {
-      const rendererFunction = jest.fn(() => <div>Custom</div>);
-      const { props } = setup({ renderer: rendererFunction });
-      expect(rendererFunction).toHaveBeenCalledWith({
-        column: props.column,
-        rowType: HeaderRowType.HEADER,
-        allRowsSelected: false,
-        onAllRowsSelectionChange: expect.any(Function)
-      }, {});
-    });
-
-    it('should not pass the column as property to cell renderer if it is a jsx object', () => {
-      const renderer = <div>Value</div>;
-      const { wrapper } = setup({ renderer });
-      const cell = wrapper.instance().getCell();
-      expect(cell!.props.column).toBeUndefined();
     });
   });
 

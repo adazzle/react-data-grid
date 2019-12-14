@@ -4,27 +4,24 @@ import React, {
   useRef,
   useLayoutEffect,
   useMemo,
-  useImperativeHandle,
+  useCallback,
   createElement
 } from 'react';
 import { isValidElementType } from 'react-is';
 
-import Header, { HeaderHandle } from './Header';
-import Canvas from './Canvas';
+import HeaderRow from './HeaderRow';
+import FilterRow from './FilterRow';
+import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
-import { getColumnMetrics } from './utils/columnUtils';
-import EventBus from './EventBus';
-import { CellNavigationMode, EventTypes, UpdateActions, HeaderRowType, DEFINE_SORT } from './common/enums';
+import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize, HorizontalRangeToRender } from './utils';
+import { CellNavigationMode, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
   CellActionButton,
-  CellMetaData,
   CheckCellIsEditableEvent,
   Column,
   CellContentRenderer,
-  CommitEvent,
   GridRowsUpdatedEvent,
-  HeaderRowData,
   Position,
   RowsContainerProps,
   RowExpandToggleEvent,
@@ -36,6 +33,8 @@ import {
   ScrollPosition,
   Filters
 } from './common/types';
+
+export { DataGridHandle };
 
 export interface DataGridProps<R, K extends keyof R> {
   /** An array of objects representing each column on the grid */
@@ -92,8 +91,6 @@ export interface DataGridProps<R, K extends keyof R> {
   rowsCount: number;
   /** The minimum height of the grid in pixels */
   minHeight?: number;
-  /** When set, grid will scroll to this row index */
-  scrollToRowIndex?: number;
   /** Component used to render a context menu. react-data-grid-addons provides a default context menu which may be used*/
   contextMenu?: React.ReactElement;
   /** Used to toggle whether cells can be selected or not */
@@ -145,12 +142,6 @@ export interface DataGridProps<R, K extends keyof R> {
   renderBatchSize?: number;
 }
 
-export interface DataGridHandle {
-  scrollToColumn(colIdx: number): void;
-  selectCell(position: Position, openEditor?: boolean): void;
-  openCellEditor(rowIdx: number, colIdx: number): void;
-}
-
 /**
  * Main API Component to render a data grid of rows and columns
  *
@@ -161,13 +152,14 @@ export interface DataGridHandle {
 function DataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
   rowHeight = 35,
-  headerRowHeight,
+  headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
   minColumnWidth = 80,
   minHeight = 350,
   minWidth: width,
-  enableCellSelect = false,
   enableCellAutoFocus = true,
+  enableCellSelect = false,
+  enableHeaderFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
@@ -177,21 +169,18 @@ function DataGrid<R, K extends keyof R>({
   columns,
   rowsCount,
   rowGetter,
-  onSelectedCellRangeChange,
   selectedRows,
   onSelectedRowsChange,
-  filters,
-  onFiltersChange,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
-  const [eventBus] = useState(() => new EventBus());
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HeaderHandle>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
-  const scrollLeft = useRef(0);
+  const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -204,6 +193,23 @@ function DataGrid<R, K extends keyof R>({
       defaultCellContentRenderer
     });
   }, [columnWidths, columns, defaultCellContentRenderer, minColumnWidth, viewportWidth]);
+
+  const [horizontalRange, viewportColumns] = useMemo((): [HorizontalRangeToRender | null, CalculatedColumn<R>[]] => {
+    if (!columnMetrics) return [null, []];
+
+    const horizontalRange = getHorizontalRangeToRender({
+      columnMetrics,
+      scrollLeft
+    });
+
+    const viewportColumns = getViewportColumns(
+      columnMetrics.columns,
+      horizontalRange.colOverscanStartIdx,
+      horizontalRange.colOverscanEndIdx
+    );
+
+    return [horizontalRange, viewportColumns];
+  }, [columnMetrics, scrollLeft]);
 
   useLayoutEffect(() => {
     // Do not calculate the width if minWidth is provided
@@ -220,124 +226,28 @@ function DataGrid<R, K extends keyof R>({
     };
   }, [width]);
 
-  function selectCell(position: Position, openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
-  }
-
-  function getColumn(idx: number) {
-    return columnMetrics!.columns[idx];
-  }
-
   function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
     width = Math.max(width, minColumnWidth);
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
-    if (props.onColumnResize) {
-      props.onColumnResize(column.idx, width);
-    }
+    props.onColumnResize?.(column.idx, width);
   }
 
   function handleScroll(scrollPosition: ScrollPosition) {
-    if (headerRef.current && scrollLeft.current !== scrollPosition.scrollLeft) {
-      scrollLeft.current = scrollPosition.scrollLeft;
-      headerRef.current.setScrollLeft(scrollPosition.scrollLeft);
+    if (headerRef.current) {
+      headerRef.current.scrollLeft = scrollPosition.scrollLeft;
     }
-    if (props.onScroll) {
-      props.onScroll(scrollPosition);
-    }
-  }
-
-  function handleDragEnter(overRowIdx: number) {
-    eventBus.dispatch(EventTypes.DRAG_ENTER, overRowIdx);
-  }
-
-  function handleCellClick({ rowIdx, idx }: Position) {
-    const { onRowClick } = props;
-    selectCell({ rowIdx, idx });
-
-    if (onRowClick) {
-      onRowClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
-    }
-  }
-
-  function handleCellMouseDown(position: Position) {
-    eventBus.dispatch(EventTypes.SELECT_START, position);
-
-    function handleWindowMouseUp() {
-      eventBus.dispatch(EventTypes.SELECT_END);
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    }
-
-    window.addEventListener('mouseup', handleWindowMouseUp);
-  }
-
-  function handleCellMouseEnter(position: Position) {
-    eventBus.dispatch(EventTypes.SELECT_UPDATE, position);
-  }
-
-  function handleCellContextMenu(position: Position) {
-    selectCell(position);
-  }
-
-  function handleCellDoubleClick({ rowIdx, idx }: Position) {
-    const { onRowDoubleClick } = props;
-    if (onRowDoubleClick) {
-      onRowDoubleClick(rowIdx, rowGetter(rowIdx), getColumn(idx));
-    }
-    openCellEditor(rowIdx, idx);
-  }
-
-  function handleDragHandleDoubleClick(e: Position) {
-    const cellKey = getColumn(e.idx).key;
-    const value = rowGetter(e.rowIdx)[cellKey];
-    handleGridRowsUpdated({
-      cellKey,
-      fromRow: e.rowIdx,
-      toRow: rowsCount - 1,
-      updated: { [cellKey]: value } as never,
-      action: UpdateActions.COLUMN_FILL
-    });
+    setScrollLeft(scrollPosition.scrollLeft);
+    props.onScroll?.(scrollPosition);
   }
 
   function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
     props.onGridRowsUpdated?.(event);
   }
 
-  function handleCommit(commit: CommitEvent<R>) {
-    const { cellKey, rowIdx, updated } = commit;
-    handleGridRowsUpdated({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: rowIdx,
-      updated,
-      action: UpdateActions.CELL_UPDATE
-    });
-  }
-
-  function getHeaderRows(): [HeaderRowData<R>, HeaderRowData<R> | undefined] {
-    return [
-      { height: headerRowHeight || rowHeight, rowType: HeaderRowType.HEADER },
-      props.enableHeaderFilters ? {
-        rowType: HeaderRowType.FILTER,
-        filterable: true,
-        filters,
-        onFiltersChange,
-        height: headerFiltersHeight || headerRowHeight || rowHeight
-      } : undefined
-    ];
-  }
-
-  function openCellEditor(rowIdx: number, idx: number) {
-    selectCell({ rowIdx, idx }, true);
-  }
-
-  function scrollToColumn(colIdx: number) {
-    eventBus.dispatch(EventTypes.SCROLL_TO_COLUMN, colIdx);
-  }
-
-  function handleRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) {
+  const handleRowSelectionChange = useCallback((rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) => {
     if (!onSelectedRowsChange) return;
 
     const newSelectedRows = new Set(selectedRows);
@@ -358,33 +268,9 @@ function DataGrid<R, K extends keyof R>({
     }
 
     onSelectedRowsChange(newSelectedRows);
-  }
+  }, [onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
 
-  useImperativeHandle(ref, () => ({
-    scrollToColumn,
-    selectCell,
-    openCellEditor
-  }));
-
-  const cellMetaData: CellMetaData<R> = {
-    rowKey,
-    onCellClick: handleCellClick,
-    onCellContextMenu: handleCellContextMenu,
-    onCellDoubleClick: handleCellDoubleClick,
-    onCellExpand: props.onCellExpand,
-    onRowExpandToggle: props.onRowExpandToggle,
-    getCellActions: props.getCellActions,
-    onDeleteSubRow: props.onDeleteSubRow,
-    onAddSubRow: props.onAddSubRow,
-    onDragEnter: handleDragEnter
-  };
-  if (onSelectedCellRangeChange) {
-    cellMetaData.onCellMouseDown = handleCellMouseDown;
-    cellMetaData.onCellMouseEnter = handleCellMouseEnter;
-  }
-
-  const headerRows = getHeaderRows();
-  const rowOffsetHeight = headerRows[0].height + (headerRows[1] ? headerRows[1].height : 0);
+  const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
 
   return (
     <div
@@ -394,25 +280,43 @@ function DataGrid<R, K extends keyof R>({
     >
       {columnMetrics && (
         <>
-          <Header<R, K>
+          <div
             ref={headerRef}
-            rowKey={rowKey}
-            rowsCount={rowsCount}
-            rowGetter={rowGetter}
-            columnMetrics={columnMetrics}
-            onColumnResize={handleColumnResize}
-            headerRows={headerRows}
-            sortColumn={props.sortColumn}
-            sortDirection={props.sortDirection}
-            draggableHeaderCell={props.draggableHeaderCell}
-            onSort={props.onGridSort}
-            onHeaderDrop={props.onHeaderDrop}
-            allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
-            onSelectedRowsChange={onSelectedRowsChange}
-            onCellClick={handleCellClick}
-          />
+            className="rdg-header"
+          >
+            <HeaderRow<R, K>
+              rowKey={rowKey}
+              rowsCount={rowsCount}
+              rowGetter={rowGetter}
+              height={headerRowHeight}
+              width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+              columns={viewportColumns}
+              onColumnResize={handleColumnResize}
+              lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+              draggableHeaderCell={props.draggableHeaderCell}
+              onHeaderDrop={props.onHeaderDrop}
+              allRowsSelected={selectedRows?.size === rowsCount}
+              onSelectedRowsChange={onSelectedRowsChange}
+              sortColumn={props.sortColumn}
+              sortDirection={props.sortDirection}
+              onGridSort={props.onGridSort}
+              scrollLeft={nonStickyScrollLeft}
+            />
+            {enableHeaderFilters && (
+              <FilterRow<R, K>
+                height={headerFiltersHeight}
+                width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+                lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+                columns={viewportColumns}
+                scrollLeft={nonStickyScrollLeft}
+                filters={props.filters}
+                onFiltersChange={props.onFiltersChange}
+              />
+            )}
+          </div>
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
+              ref={ref}
               rowKey={rowKey}
               rowHeight={rowHeight}
               rowRenderer={props.rowRenderer}
@@ -422,9 +326,7 @@ function DataGrid<R, K extends keyof R>({
               onRowSelectionChange={handleRowSelectionChange}
               columnMetrics={columnMetrics}
               onScroll={handleScroll}
-              cellMetaData={cellMetaData}
               height={minHeight - rowOffsetHeight}
-              scrollToRowIndex={props.scrollToRowIndex}
               contextMenu={props.contextMenu}
               getSubRowDetails={props.getSubRowDetails}
               rowGroupRenderer={props.rowGroupRenderer}
@@ -433,7 +335,7 @@ function DataGrid<R, K extends keyof R>({
               enableCellCopyPaste={enableCellCopyPaste}
               enableCellDragAndDrop={enableCellDragAndDrop}
               cellNavigationMode={cellNavigationMode}
-              eventBus={eventBus}
+              scrollLeft={scrollLeft}
               RowsContainer={props.RowsContainer}
               editorPortalTarget={editorPortalTarget}
               onCanvasKeydown={props.onGridKeyDown}
@@ -442,10 +344,16 @@ function DataGrid<R, K extends keyof R>({
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
               onGridRowsUpdated={handleGridRowsUpdated}
-              onDragHandleDoubleClick={handleDragHandleDoubleClick}
               onSelectedCellChange={props.onSelectedCellChange}
-              onSelectedCellRangeChange={onSelectedCellRangeChange}
-              onCommit={handleCommit}
+              onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+              onRowClick={props.onRowClick}
+              onRowDoubleClick={props.onRowDoubleClick}
+              onCellExpand={props.onCellExpand}
+              onRowExpandToggle={props.onRowExpandToggle}
+              onDeleteSubRow={props.onDeleteSubRow}
+              onAddSubRow={props.onAddSubRow}
+              getCellActions={props.getCellActions}
+              {...horizontalRange!}
             />
           )}
         </>

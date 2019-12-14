@@ -12,11 +12,13 @@ export default function CellContent<R>({
   rowIdx,
   column,
   rowData,
-  cellMetaData,
   expandableOptions,
   isRowSelected,
   isSummaryRow,
-  onRowSelectionChange
+  onRowSelectionChange,
+  onDeleteSubRow,
+  onCellExpand,
+  getCellActions
 }: CellContentRendererProps<R>): JSX.Element {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
@@ -51,29 +53,25 @@ export default function CellContent<R>({
   }
 
   function handleDeleteSubRow() {
-    if (cellMetaData.onDeleteSubRow) {
-      cellMetaData.onDeleteSubRow({
-        idx,
-        rowIdx,
-        rowData,
-        expandArgs: expandableOptions
-      });
-    }
+    onDeleteSubRow?.({
+      idx,
+      rowIdx,
+      rowData,
+      expandArgs: expandableOptions
+    });
   }
 
   function handleCellExpand() {
-    if (cellMetaData.onCellExpand) {
-      cellMetaData.onCellExpand({ rowIdx, idx, rowData, expandArgs: expandableOptions });
-    }
+    onCellExpand?.({ rowIdx, idx, rowData, expandArgs: expandableOptions });
   }
 
   return (
     <>
-      {cellMetaData.getCellActions && (
+      {getCellActions && (
         <CellActions<R>
           column={column}
           rowData={rowData}
-          getCellActions={cellMetaData.getCellActions}
+          getCellActions={getCellActions}
         />
       )}
       {expandableOptions && expandableOptions.canExpand && (
@@ -87,7 +85,7 @@ export default function CellContent<R>({
           <ChildRowDeleteButton
             treeDepth={treeDepth}
             onDeleteSubRow={handleDeleteSubRow}
-            isDeleteSubRowEnabled={!!cellMetaData.onDeleteSubRow}
+            isDeleteSubRowEnabled={!!onDeleteSubRow}
           />
         )}
         <div style={style}>
