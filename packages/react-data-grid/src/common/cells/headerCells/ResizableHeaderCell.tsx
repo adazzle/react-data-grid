@@ -1,4 +1,4 @@
-import React, { useRef, cloneElement } from 'react';
+import React, { cloneElement } from 'react';
 import { CalculatedColumn } from '../../../common/types';
 
 export interface ResizableHeaderCellProps<R> {
@@ -12,14 +12,13 @@ export default function ResizableHeaderCell<R>({
   column,
   ...props
 }: ResizableHeaderCellProps<R>) {
-  const cellRef = useRef<HTMLDivElement>(null);
-
   function onMouseDown(event: React.MouseEvent) {
     if (event.button !== 0) {
       return;
     }
 
-    const { right } = event.currentTarget.getBoundingClientRect();
+    const { currentTarget } = event;
+    const { right } = currentTarget.getBoundingClientRect();
     const offset = right - event.clientX;
 
     if (offset > 11) { // +1px to account for the border size
@@ -27,7 +26,7 @@ export default function ResizableHeaderCell<R>({
     }
 
     const onMouseMove = (event: MouseEvent) => {
-      onResize(event.clientX + offset);
+      onResize(event.clientX + offset, currentTarget);
     };
 
     const onMouseUp = () => {
@@ -43,7 +42,8 @@ export default function ResizableHeaderCell<R>({
   function onTouchStart(event: React.TouchEvent) {
     const touch = event.changedTouches[0];
     const { identifier } = touch;
-    const { right } = event.currentTarget.getBoundingClientRect();
+    const { currentTarget } = event;
+    const { right } = currentTarget.getBoundingClientRect();
     const offset = right - touch.clientX;
 
     if (offset > 11) { // +1px to account for the border size
@@ -60,7 +60,7 @@ export default function ResizableHeaderCell<R>({
     const onTouchMove = (event: TouchEvent) => {
       const touch = getTouch(event);
       if (touch) {
-        onResize(touch.clientX + offset);
+        onResize(touch.clientX + offset, currentTarget);
       }
     };
 
@@ -75,19 +75,14 @@ export default function ResizableHeaderCell<R>({
     window.addEventListener('touchend', onTouchEnd);
   }
 
-  function onResize(x: number) {
-    const width = getWidthFromMouseEvent(x);
+  function onResize(x: number, target: Element) {
+    const width = x - target.getBoundingClientRect().left;
     if (width > 0) {
       props.onResize(column, width);
     }
   }
 
-  function getWidthFromMouseEvent(x: number): number {
-    return x - cellRef.current!.getBoundingClientRect().left;
-  }
-
   return cloneElement(children, {
-    ref: cellRef,
     onMouseDown,
     onTouchStart,
     children: (
