@@ -13,9 +13,10 @@ export default class extends React.Component {
     ];
 
     this.state = {
-      value: 10,
-      scrollToRowIndex: 10
+      value: 10
     };
+
+    this.gridRef = React.createRef();
   }
 
   createRows = () => {
@@ -49,16 +50,16 @@ export default class extends React.Component {
           <button
             type="button"
             style={{ padding: '5px' }}
-            onClick={() => this.setState({ scrollToRowIndex: this.state.value })}
+            onClick={() => this.gridRef.current.scrollToRow(this.state.value)}
           >Scroll to row
           </button>
         </div>
         <DataGrid
+          ref={this.gridRef}
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}
           minHeight={500}
-          scrollToRowIndex={+this.state.scrollToRowIndex}
         />
       </Wrapper>
     );

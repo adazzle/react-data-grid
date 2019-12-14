@@ -4,12 +4,11 @@ import { isElement } from 'react-is';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
-import { IRowRendererProps, CalculatedColumn, SubRowDetails, RowData } from './common/types';
+import { IRowRendererProps, RowData } from './common/types';
+import EventBus from './EventBus';
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
-| 'cellMetaData'
 | 'columnMetrics'
-| 'eventBus'
 | 'getSubRowDetails'
 | 'onRowSelectionChange'
 | 'rowGroupRenderer'
@@ -17,6 +16,13 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'rowKey'
 | 'rowRenderer'
 | 'selectedRows'
+| 'onRowClick'
+| 'onRowDoubleClick'
+| 'onCellExpand'
+| 'onRowExpandToggle'
+| 'onDeleteSubRow'
+| 'onAddSubRow'
+| 'getCellActions'
 >;
 
 export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
@@ -26,31 +32,11 @@ export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProp
   colOverscanEndIdx: number;
   scrollLeft: number | undefined;
   setRowRef(row: Row<R> | null, idx: number): void;
-}
-
-type SharedActualRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>,
-| 'idx'
-| 'cellMetaData'
-| 'onRowSelectionChange'
-| 'colOverscanStartIdx'
-| 'colOverscanEndIdx'
-| 'scrollLeft'
->;
-
-interface RendererProps<R, K extends keyof R> extends SharedActualRowRendererProps<R, K> {
-  ref: React.Ref<Row<R>>;
-  row: R;
-  columns: CalculatedColumn<R>[];
-  lastFrozenColumnIndex: number;
-  subRowDetails?: SubRowDetails;
-  width: number;
-  height: number;
-  isRowSelected: boolean;
-  isSummaryRow: boolean;
+  enableCellRangeSelection?: boolean;
+  eventBus: EventBus;
 }
 
 function RowRenderer<R, K extends keyof R>({
-  cellMetaData,
   colOverscanEndIdx,
   colOverscanStartIdx,
   columnMetrics,
@@ -65,10 +51,11 @@ function RowRenderer<R, K extends keyof R>({
   rowRenderer,
   scrollLeft,
   selectedRows,
-  setRowRef
+  setRowRef,
+  ...props
 }: RowRendererProps<R, K>) {
   const { __metaData } = rowData as RowData;
-  const rendererProps: RendererProps<R, K> = {
+  const rendererProps: IRowRendererProps<R> & { ref: React.Ref<Row<R>> } = {
     ref(row) {
       setRowRef(row, idx);
     },
@@ -79,13 +66,20 @@ function RowRenderer<R, K extends keyof R>({
     columns: columnMetrics.columns,
     isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),
     onRowSelectionChange,
-    cellMetaData,
     subRowDetails: getSubRowDetails ? getSubRowDetails(rowData) : undefined,
     colOverscanStartIdx,
     colOverscanEndIdx,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
     scrollLeft,
-    isSummaryRow: false
+    isSummaryRow: false,
+    eventBus,
+    onRowClick: props.onRowClick,
+    onRowDoubleClick: props.onRowDoubleClick,
+    onCellExpand: props.onCellExpand,
+    onDeleteSubRow: props.onDeleteSubRow,
+    onAddSubRow: props.onAddSubRow,
+    getCellActions: props.getCellActions,
+    enableCellRangeSelection: props.enableCellRangeSelection
   };
 
   function renderCustomRowRenderer() {
@@ -108,13 +102,14 @@ function RowRenderer<R, K extends keyof R>({
     const { ref, columns, ...rowGroupProps } = rendererProps;
 
     return (
-      <RowGroup
+      <RowGroup<R>
         {...rowGroupProps}
         {...__metaData!}
-        columns={columns as CalculatedColumn<unknown>[]}
+        columns={columns}
         name={(rowData as RowData).name!}
         eventBus={eventBus}
         renderer={rowGroupRenderer}
+        onRowExpandToggle={props.onRowExpandToggle}
         renderBaseRow={(p: IRowRendererProps<R>) => <Row ref={ref} {...p} />}
       />
     );

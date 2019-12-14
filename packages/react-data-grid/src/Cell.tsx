@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
-import { CellRendererProps, ColumnEventInfo } from './common/types';
+import { CellRendererProps, ColumnEventInfo, Position } from './common/types';
+import { EventTypes } from './common/enums';
 import { isFrozen } from './utils/columnUtils';
 
 export interface CellProps<R> extends CellRendererProps<R> {
@@ -11,7 +12,7 @@ export interface CellProps<R> extends CellRendererProps<R> {
 }
 
 function Cell<R>({
-  cellMetaData,
+  rowKey,
   children,
   className,
   column,
@@ -23,31 +24,49 @@ function Cell<R>({
   onRowSelectionChange,
   rowData,
   rowIdx,
-  scrollLeft
+  scrollLeft,
+  eventBus,
+  onRowClick,
+  onRowDoubleClick,
+  onDeleteSubRow,
+  onCellExpand,
+  getCellActions,
+  enableCellRangeSelection
 }: CellProps<R>) {
+  const position: Position = { idx, rowIdx };
+
+  function selectCell(openEditor?: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
+  }
+
   function handleCellClick() {
-    cellMetaData.onCellClick({ idx, rowIdx });
+    selectCell();
+    onRowClick?.(rowIdx, rowData, column);
   }
 
   function handleCellMouseDown() {
-    if (cellMetaData.onCellMouseDown) {
-      cellMetaData.onCellMouseDown({ idx, rowIdx });
+    eventBus.dispatch(EventTypes.SELECT_START, position);
+
+    function handleWindowMouseUp() {
+      eventBus.dispatch(EventTypes.SELECT_END);
+      window.removeEventListener('mouseup', handleWindowMouseUp);
     }
+
+    window.addEventListener('mouseup', handleWindowMouseUp);
   }
 
   function handleCellMouseEnter() {
-    if (cellMetaData.onCellMouseEnter) {
-      cellMetaData.onCellMouseEnter({ idx, rowIdx });
-    }
+    eventBus.dispatch(EventTypes.SELECT_UPDATE, position);
   }
 
   function handleCellContextMenu() {
-    cellMetaData.onCellContextMenu({ idx, rowIdx });
+    selectCell();
   }
 
   function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
-    cellMetaData.onCellDoubleClick({ idx, rowIdx });
+    onRowDoubleClick?.(rowIdx, rowData, column);
+    selectCell(true);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -60,12 +79,15 @@ function Cell<R>({
     const columnEvents = column.events;
     const allEvents: { [key: string]: Function } = {
       onClick: handleCellClick,
-      onMouseDown: handleCellMouseDown,
-      onMouseEnter: handleCellMouseEnter,
       onDoubleClick: handleCellDoubleClick,
       onContextMenu: handleCellContextMenu,
       onDragOver: handleDragOver
     };
+
+    if (enableCellRangeSelection) {
+      allEvents.onMouseDown = handleCellMouseDown;
+      allEvents.onMouseEnter = handleCellMouseEnter;
+    }
 
     if (!columnEvents) {
       return allEvents;
@@ -75,7 +97,7 @@ function Cell<R>({
       idx,
       rowIdx,
       column,
-      rowId: rowData[cellMetaData.rowKey]
+      rowId: rowData[rowKey]
     };
 
     for (const event in columnEvents) {
@@ -129,11 +151,13 @@ function Cell<R>({
         rowIdx,
         rowData,
         column,
-        cellMetaData,
         expandableOptions,
         isRowSelected,
         onRowSelectionChange,
-        isSummaryRow
+        isSummaryRow,
+        onDeleteSubRow,
+        onCellExpand,
+        getCellActions
       })}
     </div>
   );

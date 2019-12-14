@@ -1,4 +1,5 @@
 import { CalculatedColumn, ColumnMetrics } from '../common/types';
+import { isFrozen } from './columnUtils';
 
 function getTotalFrozenColumnWidth<R>(columns: CalculatedColumn<R>[], lastFrozenColumnIndex: number): number {
   if (lastFrozenColumnIndex === -1) {
@@ -87,4 +88,17 @@ export function getHorizontalRangeToRender<R>({
   const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
   return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
+}
+
+export function getViewportColumns<R>(columns: CalculatedColumn<R>[], colOverscanStartIdx: number, colOverscanEndIdx: number) {
+  const viewportColumns: CalculatedColumn<R>[] = [];
+  for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
+    const column = columns[colIdx];
+    const colIsFrozen = isFrozen(column);
+
+    if (colIdx < colOverscanStartIdx && !colIsFrozen) continue;
+    viewportColumns.push(column);
+  }
+
+  return viewportColumns;
 }

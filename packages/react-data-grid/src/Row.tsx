@@ -3,7 +3,8 @@ import React from 'react';
 
 import Cell from './Cell';
 import { IRowRendererProps } from './common/types';
-import { isFrozen } from './utils/columnUtils';
+import { EventTypes } from './common/enums';
+import { isFrozen, getViewportColumns } from './utils';
 
 export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
@@ -15,8 +16,8 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     // Prevent default to allow drop
     e.preventDefault();
-    const { idx, cellMetaData } = this.props;
-    cellMetaData.onDragEnter(idx);
+    const { idx, eventBus } = this.props;
+    eventBus.dispatch(EventTypes.DRAG_ENTER, idx);
   };
 
   handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -32,7 +33,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
 
   getCells() {
     const {
-      cellMetaData,
       colOverscanEndIdx,
       colOverscanStartIdx,
       columns,
@@ -42,38 +42,39 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       onRowSelectionChange,
       row,
       scrollLeft,
-      isSummaryRow
+      isSummaryRow,
+      ...props
     } = this.props;
     const Renderer = this.props.cellRenderer!;
-    const cellElements = [];
 
-    for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
-      const column = columns[colIdx];
-      const colIsFrozen = isFrozen(column);
-
-      if (colIdx < colOverscanStartIdx && !colIsFrozen) continue;
-
-      const { key } = column;
-
-      cellElements.push(
-        <Renderer
-          key={key as string} // FIXME: fix key type
-          idx={colIdx}
-          rowIdx={idx}
-          column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          cellMetaData={cellMetaData}
-          rowData={row}
-          expandableOptions={this.getExpandableOptions(key)}
-          scrollLeft={colIsFrozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
-          isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
-          isSummaryRow={isSummaryRow}
-        />
-      );
-    }
-
-    return cellElements;
+    return getViewportColumns(columns, colOverscanStartIdx, colOverscanEndIdx)
+      .map(column => {
+        const { key } = column;
+        return (
+          <Renderer
+            key={key as string} // FIXME: fix key type
+            idx={column.idx}
+            rowKey={key}
+            rowIdx={idx}
+            column={column}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
+            rowData={row}
+            expandableOptions={this.getExpandableOptions(key)}
+            scrollLeft={isFrozen(column) && typeof scrollLeft === 'number' ? scrollLeft : undefined}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+            isSummaryRow={isSummaryRow}
+            eventBus={props.eventBus}
+            onRowClick={props.onRowClick}
+            onRowDoubleClick={props.onRowDoubleClick}
+            onCellExpand={props.onCellExpand}
+            onDeleteSubRow={props.onDeleteSubRow}
+            onAddSubRow={props.onAddSubRow}
+            getCellActions={props.getCellActions}
+            enableCellRangeSelection={props.enableCellRangeSelection}
+          />
+        );
+      });
   }
 
   getExpandableOptions(columnKey: keyof R) {

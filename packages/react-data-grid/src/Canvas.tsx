@@ -1,22 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
+import { ColumnMetrics, Position, ScrollPosition } from './common/types';
 import { EventTypes } from './common/enums';
-import { CalculatedColumn, CellMetaData, ColumnMetrics, Position, ScrollPosition, CommitEvent } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
 import Row from './Row';
 import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
-import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported } from './utils';
-import { getHorizontalRangeToRender, getVerticalRangeToRender } from './utils/viewportUtils';
+import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowGetter'
 | 'rowsCount'
 | 'rowRenderer'
 | 'rowGroupRenderer'
-| 'scrollToRowIndex'
 | 'contextMenu'
 | 'RowsContainer'
 | 'getSubRowDetails'
@@ -25,6 +23,13 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onCheckCellIsEditable'
 | 'onSelectedCellChange'
 | 'onSelectedCellRangeChange'
+| 'onRowClick'
+| 'onRowDoubleClick'
+| 'onCellExpand'
+| 'onRowExpandToggle'
+| 'onDeleteSubRow'
+| 'onAddSubRow'
+| 'getCellActions'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellAutoFocus'
@@ -40,50 +45,46 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 
 export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
-  cellMetaData: CellMetaData<R>;
   height: number;
-  eventBus: EventBus;
+  scrollLeft: number;
+  colOverscanStartIdx: number;
+  colOverscanEndIdx: number;
+  colVisibleStartIdx: number;
+  colVisibleEndIdx: number;
   onScroll(position: ScrollPosition): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
-  onDragHandleDoubleClick(data: Position): void;
-  onCommit(e: CommitEvent<R>): void;
 }
 
-export default function Canvas<R, K extends keyof R>({
-  cellMetaData,
-  cellNavigationMode,
+export interface CanvasHandle {
+  scrollToColumn(colIdx: number): void;
+  scrollToRow(rowIdx: number): void;
+  selectCell(position: Position, openEditor?: boolean): void;
+  openCellEditor(rowIdx: number, colIdx: number): void;
+}
+
+function Canvas<R, K extends keyof R>({
   columnMetrics,
   contextMenu,
-  editorPortalTarget,
-  enableCellAutoFocus,
-  enableCellSelect,
-  eventBus,
-  getSubRowDetails,
   height,
-  onCanvasKeydown,
-  onCanvasKeyup,
-  onRowSelectionChange,
+  scrollLeft,
   onScroll,
+  colOverscanStartIdx,
+  colOverscanEndIdx,
   renderBatchSize,
   rowGetter,
-  rowGroupRenderer,
   rowHeight,
   rowKey,
-  rowRenderer,
   RowsContainer,
   rowsCount,
-  scrollToRowIndex,
-  selectedRows,
   summaryRows,
   ...props
-}: CanvasProps<R, K>) {
+}: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
+  const [eventBus] = useState(() => new EventBus());
   const [scrollTop, setScrollTop] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
-  const prevScrollToRowIndex = useRef<number | undefined>();
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
 
   const clientHeight = getClientHeight();
@@ -97,29 +98,8 @@ export default function Canvas<R, K extends keyof R>({
     renderBatchSize
   );
 
-  const { colOverscanStartIdx, colOverscanEndIdx, colVisibleStartIdx, colVisibleEndIdx } = useMemo(() => {
-    return getHorizontalRangeToRender({
-      columnMetrics,
-      scrollLeft
-    });
-  }, [columnMetrics, scrollLeft]);
-
-  useEffect(() => {
-    return eventBus.subscribe(EventTypes.SCROLL_TO_COLUMN, idx => scrollToColumn(idx, columnMetrics.columns));
-  }, [columnMetrics.columns, eventBus]);
-
-  useEffect(() => {
-    if (prevScrollToRowIndex.current === scrollToRowIndex) return;
-    prevScrollToRowIndex.current = scrollToRowIndex;
-    const { current } = canvas;
-    if (typeof scrollToRowIndex === 'number' && current) {
-      current.scrollTop = scrollToRowIndex * rowHeight;
-    }
-  }, [rowHeight, scrollToRowIndex]);
-
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft, scrollTop } = e.currentTarget;
-    setScrollLeft(scrollLeft);
     setScrollTop(scrollTop);
     onScroll({ scrollLeft, scrollTop });
     if (summaryRef.current) {
@@ -135,21 +115,17 @@ export default function Canvas<R, K extends keyof R>({
 
   function onHitBottomCanvas({ rowIdx }: Position) {
     const { current } = canvas;
-    if (current) {
-      // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
-      current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
-    }
+    if (!current) return;
+    // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
+    current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
   }
 
   function onHitTopCanvas({ rowIdx }: Position) {
-    const { current } = canvas;
-    if (current) {
-      current.scrollTop = rowIdx * rowHeight;
-    }
+    scrollToRow(rowIdx);
   }
 
   function handleHitColummBoundary({ idx }: Position) {
-    scrollToColumn(idx, columnMetrics.columns);
+    scrollToColumn(idx);
   }
 
   function getRowColumns(rowIdx: number) {
@@ -157,15 +133,29 @@ export default function Canvas<R, K extends keyof R>({
     return row && row.props ? row.props.columns : columnMetrics.columns;
   }
 
-  function scrollToColumn(idx: number, columns: CalculatedColumn<R>[]) {
+  function scrollToColumn(idx: number) {
     const { current } = canvas;
     if (!current) return;
 
     const { scrollLeft, clientWidth } = current;
-    const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
+    const newScrollLeft = getColumnScrollPosition(columnMetrics.columns, idx, scrollLeft, clientWidth);
     if (newScrollLeft !== 0) {
       current.scrollLeft = scrollLeft + newScrollLeft;
     }
+  }
+
+  function scrollToRow(rowIdx: number) {
+    const { current } = canvas;
+    if (!current) return;
+    current.scrollTop = rowIdx * rowHeight;
+  }
+
+  function selectCell(position: Position, openEditor?: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
+  }
+
+  function openCellEditor(rowIdx: number, idx: number) {
+    selectCell({ rowIdx, idx }, true);
   }
 
   const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
@@ -175,6 +165,13 @@ export default function Canvas<R, K extends keyof R>({
       rowRefs.set(idx, row);
     }
   }, [rowRefs]);
+
+  useImperativeHandle(ref, () => ({
+    scrollToColumn,
+    scrollToRow,
+    selectCell,
+    openCellEditor
+  }));
 
   function getViewportRows() {
     const rowElements = [];
@@ -186,19 +183,26 @@ export default function Canvas<R, K extends keyof R>({
           idx={idx}
           rowData={rowData}
           setRowRef={setRowRef}
-          cellMetaData={cellMetaData}
           colOverscanEndIdx={colOverscanEndIdx}
           colOverscanStartIdx={colOverscanStartIdx}
           columnMetrics={columnMetrics}
           eventBus={eventBus}
-          getSubRowDetails={getSubRowDetails}
-          onRowSelectionChange={onRowSelectionChange}
-          rowGroupRenderer={rowGroupRenderer}
+          getSubRowDetails={props.getSubRowDetails}
+          onRowSelectionChange={props.onRowSelectionChange}
+          rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
           rowKey={rowKey}
-          rowRenderer={rowRenderer}
+          rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
-          selectedRows={selectedRows}
+          selectedRows={props.selectedRows}
+          onRowClick={props.onRowClick}
+          onRowDoubleClick={props.onRowDoubleClick}
+          onCellExpand={props.onCellExpand}
+          onRowExpandToggle={props.onRowExpandToggle}
+          onDeleteSubRow={props.onDeleteSubRow}
+          onAddSubRow={props.onAddSubRow}
+          getCellActions={props.getCellActions}
+          enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}
         />
       );
     }
@@ -230,12 +234,12 @@ export default function Canvas<R, K extends keyof R>({
           key={idx}
           idx={idx}
           rowData={rowData}
-          cellMetaData={cellMetaData}
           colOverscanEndIdx={colOverscanEndIdx}
           colOverscanStartIdx={colOverscanStartIdx}
           columnMetrics={columnMetrics}
           rowHeight={rowHeight}
           scrollLeft={nonStickyScrollLeft}
+          eventBus={eventBus}
         />
       ))}
     </div>
@@ -248,8 +252,8 @@ export default function Canvas<R, K extends keyof R>({
         style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
         ref={canvas}
         onScroll={handleScroll}
-        onKeyDown={onCanvasKeydown}
-        onKeyUp={onCanvasKeyup}
+        onKeyDown={props.onCanvasKeydown}
+        onKeyUp={props.onCanvasKeyup}
       >
         <InteractionMasks<R, K>
           rowGetter={rowGetter}
@@ -257,13 +261,13 @@ export default function Canvas<R, K extends keyof R>({
           rowHeight={rowHeight}
           columns={columnMetrics.columns}
           height={clientHeight}
-          colVisibleStartIdx={colVisibleStartIdx}
-          colVisibleEndIdx={colVisibleEndIdx}
-          enableCellSelect={enableCellSelect}
-          enableCellAutoFocus={enableCellAutoFocus}
+          colVisibleStartIdx={props.colVisibleStartIdx}
+          colVisibleEndIdx={props.colVisibleEndIdx}
+          enableCellSelect={props.enableCellSelect}
+          enableCellAutoFocus={props.enableCellAutoFocus}
           enableCellCopyPaste={props.enableCellCopyPaste}
           enableCellDragAndDrop={props.enableCellDragAndDrop}
-          cellNavigationMode={cellNavigationMode}
+          cellNavigationMode={props.cellNavigationMode}
           eventBus={eventBus}
           contextMenu={contextMenu}
           onHitBottomBoundary={onHitBottomCanvas}
@@ -273,13 +277,11 @@ export default function Canvas<R, K extends keyof R>({
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
           getRowColumns={getRowColumns}
-          editorPortalTarget={editorPortalTarget}
+          editorPortalTarget={props.editorPortalTarget}
           onCheckCellIsEditable={props.onCheckCellIsEditable}
           onGridRowsUpdated={props.onGridRowsUpdated}
-          onDragHandleDoubleClick={props.onDragHandleDoubleClick}
           onSelectedCellChange={props.onSelectedCellChange}
           onSelectedCellRangeChange={props.onSelectedCellRangeChange}
-          onCommit={props.onCommit}
         />
         {grid}
       </div>
@@ -287,3 +289,7 @@ export default function Canvas<R, K extends keyof R>({
     </>
   );
 }
+
+export default forwardRef(
+  Canvas as React.RefForwardingComponent<CanvasHandle, CanvasProps<{ [key: string]: unknown }, string>>
+) as <R, K extends keyof R>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;

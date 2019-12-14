@@ -1,5 +1,5 @@
 import { valueCellContentRenderer, legacyCellContentRenderer } from '../Cell/cellContentRenderers';
-import { CalculatedColumn, CellMetaData } from '../common/types';
+import { CalculatedColumn } from '../common/types';
 
 export interface Row {
   id?: number;
@@ -53,16 +53,4 @@ export default {
     dragged: null,
     copied: null
   }
-};
-
-export const fakeCellMetaData: CellMetaData<Row> = {
-  rowKey: 'id',
-  onCellClick: () => null,
-  onCellMouseDown: () => null,
-  onCellExpand: () => null,
-  onCellMouseEnter: () => null,
-  onCellContextMenu: () => null,
-  onRowExpandToggle: () => null,
-  onCellDoubleClick: () => null,
-  onDragEnter: () => null
 };
