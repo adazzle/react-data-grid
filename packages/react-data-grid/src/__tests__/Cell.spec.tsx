@@ -3,7 +3,6 @@ import { mount } from 'enzyme';
 
 import Cell, { CellProps } from '../Cell';
 import helpers, { Row } from './GridPropHelpers';
-import CellAction from '../Cell/CellAction';
 import { legacyCellContentRenderer } from '../Cell/cellContentRenderers';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn } from '../common/types';
