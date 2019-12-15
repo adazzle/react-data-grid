@@ -29,7 +29,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onRowExpandToggle'
 | 'onDeleteSubRow'
 | 'onAddSubRow'
-| 'getCellActions'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellAutoFocus'
@@ -201,7 +200,6 @@ function Canvas<R, K extends keyof R>({
           onRowExpandToggle={props.onRowExpandToggle}
           onDeleteSubRow={props.onDeleteSubRow}
           onAddSubRow={props.onAddSubRow}
-          getCellActions={props.getCellActions}
           enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}
         />
       );

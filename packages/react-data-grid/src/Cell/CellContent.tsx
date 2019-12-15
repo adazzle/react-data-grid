@@ -1,7 +1,6 @@
 import React, { createElement, cloneElement } from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
-import CellActions from './CellActions';
 import CellExpand from './CellExpander';
 import { SimpleCellFormatter } from '../formatters';
 import ChildRowDeleteButton from '../ChildRowDeleteButton';
@@ -17,8 +16,7 @@ export default function CellContent<R>({
   isSummaryRow,
   onRowSelectionChange,
   onDeleteSubRow,
-  onCellExpand,
-  getCellActions
+  onCellExpand
 }: CellContentRendererProps<R>): JSX.Element {
   const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
   const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
@@ -67,13 +65,6 @@ export default function CellContent<R>({
 
   return (
     <>
-      {getCellActions && (
-        <CellActions<R>
-          column={column}
-          rowData={rowData}
-          getCellActions={getCellActions}
-        />
-      )}
       {expandableOptions && expandableOptions.canExpand && (
         <CellExpand
           expanded={expandableOptions.expanded}

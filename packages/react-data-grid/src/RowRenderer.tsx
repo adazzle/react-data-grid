@@ -22,7 +22,6 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'onRowExpandToggle'
 | 'onDeleteSubRow'
 | 'onAddSubRow'
-| 'getCellActions'
 >;
 
 export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
@@ -66,7 +65,7 @@ function RowRenderer<R, K extends keyof R>({
     columns: columnMetrics.columns,
     isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),
     onRowSelectionChange,
-    subRowDetails: getSubRowDetails ? getSubRowDetails(rowData) : undefined,
+    subRowDetails: getSubRowDetails?.(rowData),
     colOverscanStartIdx,
     colOverscanEndIdx,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
@@ -78,7 +77,6 @@ function RowRenderer<R, K extends keyof R>({
     onCellExpand: props.onCellExpand,
     onDeleteSubRow: props.onDeleteSubRow,
     onAddSubRow: props.onAddSubRow,
-    getCellActions: props.getCellActions,
     enableCellRangeSelection: props.enableCellRangeSelection
   };
 

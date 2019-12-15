@@ -30,7 +30,6 @@ function Cell<R>({
   onRowDoubleClick,
   onDeleteSubRow,
   onCellExpand,
-  getCellActions,
   enableCellRangeSelection
 }: CellProps<R>) {
   const position: Position = { idx, rowIdx };
@@ -156,8 +155,7 @@ function Cell<R>({
         onRowSelectionChange,
         isSummaryRow,
         onDeleteSubRow,
-        onCellExpand,
-        getCellActions
+        onCellExpand
       })}
     </div>
   );

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { KeyboardEvent, ReactNode } from 'react';
+import { KeyboardEvent } from 'react';
 import { UpdateActions } from './enums';
 import EventBus from '../EventBus';
 
@@ -147,7 +147,6 @@ export interface CellRendererProps<TRow> {
   onAddSubRow?(): void;
   onDeleteSubRow?(options: SubRowOptions<TRow>): void;
   onCellExpand?(options: SubRowOptions<TRow>): void;
-  getCellActions?(column: CalculatedColumn<TRow>, rowData: TRow): CellActionButton[] | undefined;
 }
 
 export type CellContentRenderer<TRow> = (props: CellContentRendererProps<TRow>) => React.ReactNode;
@@ -163,7 +162,6 @@ export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
 | 'isSummaryRow'
 | 'onDeleteSubRow'
 | 'onCellExpand'
-| 'getCellActions'
 >;
 
 export interface RowsContainerProps {
@@ -195,7 +193,6 @@ export interface IRowRendererProps<TRow> {
   onDeleteSubRow?(options: SubRowOptions<TRow>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
   onCellExpand?(options: SubRowOptions<TRow>): void;
-  getCellActions?(column: CalculatedColumn<TRow>, rowData: TRow): CellActionButton[] | undefined;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
@@ -229,17 +226,6 @@ export interface ExpandableOptions<TChildRow = unknown> {
   children: TChildRow[];
   treeDepth: number;
   subRowDetails: SubRowDetails;
-}
-
-interface Action {
-  text: ReactNode;
-  callback(): void;
-}
-
-export interface CellActionButton {
-  icon: ReactNode;
-  actions?: Action[];
-  callback?(): void;
 }
 
 export interface ColumnEventInfo<TRow> extends Position {
