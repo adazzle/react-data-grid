@@ -1,5 +1,5 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
-import { isFrozen, canEdit } from './columnUtils';
+import { canEdit } from './columnUtils';
 import { CalculatedColumn, Position, Range, Dimension, RowGetter } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
@@ -16,11 +16,10 @@ export function getSelectedDimensions<R>({ selectedPosition: { idx, rowIdx }, co
     return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
   }
   const column = columns[idx];
-  const frozen = isFrozen(column);
   const { width } = column;
-  const left = frozen ? column.left + scrollLeft : column.left;
+  const left = column.frozen ? column.left + scrollLeft : column.left;
   const top = getRowTop(rowIdx, rowHeight);
-  const zIndex = frozen ? Z_INDEXES.FROZEN_CELL_MASK : Z_INDEXES.CELL_MASK;
+  const zIndex = column.frozen ? Z_INDEXES.FROZEN_CELL_MASK : Z_INDEXES.CELL_MASK;
   return { width, left, top, height: rowHeight, zIndex };
 }
 
@@ -40,7 +39,7 @@ export function getSelectedRangeDimensions<R>({ selectedRange: { topLeft, bottom
   for (let i = topLeft.idx; i <= bottomRight.idx; i++) {
     const column = columns[i];
     width += column.width;
-    anyColFrozen = anyColFrozen || isFrozen(column);
+    if (column.frozen) anyColFrozen = true;
   }
 
   const { left } = columns[topLeft.idx];

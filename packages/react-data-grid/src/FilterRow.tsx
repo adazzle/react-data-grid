@@ -1,7 +1,6 @@
 import React, { createElement } from 'react';
 import classNames from 'classnames';
 
-import { isFrozen } from './utils';
 import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
 import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
@@ -43,17 +42,16 @@ export default function FilterRow<R, K extends keyof R>({
         const { key } = column;
 
         const renderer = column.filterRenderer || FilterableHeaderCell;
-        const colIsFrozen = isFrozen(column);
         const className = classNames('rdg-cell', {
-          'rdg-cell-frozen': colIsFrozen,
-          'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex
+          'rdg-cell-frozen': column.frozen,
+          'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
         }, column.cellClass);
         const style: React.CSSProperties = {
           width: column.width,
           left: column.left
         };
 
-        if (colIsFrozen && typeof scrollLeft === 'number') {
+        if (column.frozen && typeof scrollLeft === 'number') {
           style.transform = `translateX(${scrollLeft}px)`;
         }
 

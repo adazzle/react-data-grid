@@ -1,5 +1,4 @@
 import { CalculatedColumn, ColumnMetrics } from '../common/types';
-import { isFrozen } from './columnUtils';
 
 function getTotalFrozenColumnWidth<R>(columns: CalculatedColumn<R>[], lastFrozenColumnIndex: number): number {
   if (lastFrozenColumnIndex === -1) {
@@ -94,9 +93,8 @@ export function getViewportColumns<R>(columns: CalculatedColumn<R>[], colOversca
   const viewportColumns: CalculatedColumn<R>[] = [];
   for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
     const column = columns[colIdx];
-    const colIsFrozen = isFrozen(column);
 
-    if (colIdx < colOverscanStartIdx && !colIsFrozen) continue;
+    if (colIdx < colOverscanStartIdx && !column.frozen) continue;
     viewportColumns.push(column);
   }
 

@@ -4,7 +4,7 @@ import React from 'react';
 import Cell from './Cell';
 import { IRowRendererProps } from './common/types';
 import { EventTypes } from './common/enums';
-import { isFrozen, getViewportColumns } from './utils';
+import { getViewportColumns } from './utils';
 
 export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
@@ -60,7 +60,7 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
             lastFrozenColumnIndex={lastFrozenColumnIndex}
             rowData={row}
             expandableOptions={this.getExpandableOptions(key)}
-            scrollLeft={isFrozen(column) && typeof scrollLeft === 'number' ? scrollLeft : undefined}
+            scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
             isRowSelected={isRowSelected}
             onRowSelectionChange={onRowSelectionChange}
             isSummaryRow={isSummaryRow}

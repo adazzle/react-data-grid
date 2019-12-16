@@ -3,7 +3,6 @@ import classNames from 'classnames';
 
 import { CellRendererProps, ColumnEventInfo, Position } from './common/types';
 import { EventTypes } from './common/enums';
-import { isFrozen } from './utils/columnUtils';
 
 export interface CellProps<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
@@ -119,13 +118,12 @@ function Cell<R>({
     return allEvents;
   }
 
-  const colIsFrozen = isFrozen(column);
   className = classNames(
     column.cellClass,
     'rdg-cell',
     className, {
-      'rdg-cell-frozen': colIsFrozen,
-      'rdg-cell-frozen-last': colIsFrozen && column.idx === lastFrozenColumnIndex,
+      'rdg-cell-frozen': column.frozen,
+      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
       'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
     }
   );
