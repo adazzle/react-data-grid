@@ -27,7 +27,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
       allocatedWidths += width;
     }
 
-    if (isFrozen(column)) {
+    if (column.frozen) {
       lastFrozenColumnIndex++;
       columns.splice(lastFrozenColumnIndex, 0, column);
     } else {
@@ -92,10 +92,6 @@ export function canEdit<R>(column: CalculatedColumn<R>, rowData: R, enableCellSe
   return enableCellSelect === true && (!!column.editor || !!column.editable);
 }
 
-export function isFrozen<R>(column: Column<R> | CalculatedColumn<R>): boolean {
-  return column.frozen === true;
-}
-
 export function getColumnScrollPosition<R>(columns: CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;
@@ -106,7 +102,7 @@ export function getColumnScrollPosition<R>(columns: CalculatedColumn<R>[], idx: 
       if (column.width) {
         left += column.width;
       }
-      if (isFrozen(column)) {
+      if (column.frozen) {
         frozen += column.width;
       }
     }

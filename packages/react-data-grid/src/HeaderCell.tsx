@@ -2,7 +2,6 @@ import React, { createElement, cloneElement } from 'react';
 import classNames from 'classnames';
 import { isElement } from 'react-is';
 
-import { isFrozen } from './utils';
 import { CalculatedColumn, HeaderRendererProps } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { HeaderRowProps } from './HeaderRow';
@@ -66,10 +65,9 @@ export default function HeaderCell<R, K extends keyof R>({
     );
   }
 
-  const colIsFrozen = isFrozen(column);
   const className = classNames('rdg-cell', {
-    'rdg-cell-frozen': colIsFrozen,
-    'rdg-cell-frozen-last': colIsFrozen && column.idx === props.lastFrozenColumnIndex
+    'rdg-cell-frozen': column.frozen,
+    'rdg-cell-frozen-last': column.idx === props.lastFrozenColumnIndex
   }, column.cellClass);
   const style: React.CSSProperties = {
     width: column.width,
