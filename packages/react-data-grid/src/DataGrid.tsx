@@ -194,22 +194,31 @@ function DataGrid<R, K extends keyof R>({
     });
   }, [columnWidths, columns, defaultCellContentRenderer, minColumnWidth, viewportWidth]);
 
-  const [horizontalRange, viewportColumns] = useMemo((): [HorizontalRangeToRender | null, CalculatedColumn<R>[]] => {
-    if (!columnMetrics) return [null, []];
+  const horizontalRange: HorizontalRangeToRender = useMemo(() => {
+    if (!columnMetrics) {
+      return {
+        colVisibleStartIdx: 0,
+        colVisibleEndIdx: 0,
+        colOverscanStartIdx: 0,
+        colOverscanEndIdx: 0
+      };
+    }
 
-    const horizontalRange = getHorizontalRangeToRender({
+    return getHorizontalRangeToRender({
       columnMetrics,
       scrollLeft
     });
+  }, [columnMetrics, scrollLeft]);
 
-    const viewportColumns = getViewportColumns(
+  const viewportColumns: CalculatedColumn<R>[] = useMemo(() => {
+    if (!columnMetrics) return [];
+
+    return getViewportColumns(
       columnMetrics.columns,
       horizontalRange.colOverscanStartIdx,
       horizontalRange.colOverscanEndIdx
     );
-
-    return [horizontalRange, viewportColumns];
-  }, [columnMetrics, scrollLeft]);
+  }, [columnMetrics, horizontalRange.colOverscanEndIdx, horizontalRange.colOverscanStartIdx]);
 
   useLayoutEffect(() => {
     // Do not calculate the width if minWidth is provided
@@ -354,7 +363,7 @@ function DataGrid<R, K extends keyof R>({
               onDeleteSubRow={props.onDeleteSubRow}
               onAddSubRow={props.onAddSubRow}
               getCellActions={props.getCellActions}
-              {...horizontalRange!}
+              {...horizontalRange}
             />
           )}
         </>

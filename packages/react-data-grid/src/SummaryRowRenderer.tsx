@@ -16,7 +16,7 @@ type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>
 | 'eventBus'
 >;
 
-function RowRenderer<R, K extends keyof R>({
+function SummaryRowRenderer<R, K extends keyof R>({
   columnMetrics,
   viewportColumns,
   idx,
@@ -43,4 +43,4 @@ function RowRenderer<R, K extends keyof R>({
   );
 }
 
-export default memo(RowRenderer) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;
+export default memo(SummaryRowRenderer) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;
