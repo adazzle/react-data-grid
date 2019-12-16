@@ -181,8 +181,6 @@ export interface IRowRendererProps<TRow> {
   idx: number;
   extraClasses?: string;
   subRowDetails?: SubRowDetails;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isSummaryRow: boolean;

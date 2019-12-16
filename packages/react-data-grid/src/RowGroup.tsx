@@ -15,8 +15,6 @@ interface Props<R> {
   forceUpdate?: boolean;
   subRowDetails?: unknown;
   isRowHovered?: boolean;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
   columnGroupDisplayName: string;
   columnGroupName: string;
   isExpanded: boolean;

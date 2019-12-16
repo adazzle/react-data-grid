@@ -33,9 +33,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
 
   getCells() {
     const {
-      colOverscanEndIdx,
-      colOverscanStartIdx,
-      viewportColumns,
       idx,
       isRowSelected,
       lastFrozenColumnIndex,
@@ -43,11 +40,18 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       row,
       scrollLeft,
       isSummaryRow,
-      ...props
+      eventBus,
+      onRowClick,
+      onRowDoubleClick,
+      onCellExpand,
+      onDeleteSubRow,
+      onAddSubRow,
+      getCellActions,
+      enableCellRangeSelection
     } = this.props;
     const Renderer = this.props.cellRenderer!;
 
-    return viewportColumns.map(column => {
+    return this.props.viewportColumns.map(column => {
       const { key } = column;
       return (
         <Renderer
@@ -63,14 +67,14 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
           isSummaryRow={isSummaryRow}
-          eventBus={props.eventBus}
-          onRowClick={props.onRowClick}
-          onRowDoubleClick={props.onRowDoubleClick}
-          onCellExpand={props.onCellExpand}
-          onDeleteSubRow={props.onDeleteSubRow}
-          onAddSubRow={props.onAddSubRow}
-          getCellActions={props.getCellActions}
-          enableCellRangeSelection={props.enableCellRangeSelection}
+          eventBus={eventBus}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
+          onCellExpand={onCellExpand}
+          onDeleteSubRow={onDeleteSubRow}
+          onAddSubRow={onAddSubRow}
+          getCellActions={getCellActions}
+          enableCellRangeSelection={enableCellRangeSelection}
         />
       );
     });

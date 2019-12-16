@@ -185,8 +185,6 @@ function Canvas<R, K extends keyof R>({
           idx={idx}
           rowData={rowData}
           setRowRef={setRowRef}
-          colOverscanEndIdx={colOverscanEndIdx}
-          colOverscanStartIdx={colOverscanStartIdx}
           columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
           eventBus={eventBus}
@@ -237,8 +235,6 @@ function Canvas<R, K extends keyof R>({
           key={idx}
           idx={idx}
           rowData={rowData}
-          colOverscanEndIdx={colOverscanEndIdx}
-          colOverscanStartIdx={colOverscanStartIdx}
           columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
           rowHeight={rowHeight}

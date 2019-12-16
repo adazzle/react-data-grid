@@ -11,16 +11,12 @@ type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>
 | 'rowData'
 | 'columnMetrics'
 | 'viewportColumns'
-| 'colOverscanEndIdx'
-| 'colOverscanStartIdx'
 | 'rowHeight'
 | 'scrollLeft'
 | 'eventBus'
 >;
 
 function RowRenderer<R, K extends keyof R>({
-  colOverscanEndIdx,
-  colOverscanStartIdx,
   columnMetrics,
   viewportColumns,
   idx,
@@ -39,8 +35,6 @@ function RowRenderer<R, K extends keyof R>({
       viewportColumns={viewportColumns}
       isRowSelected={false}
       onRowSelectionChange={noop}
-      colOverscanStartIdx={colOverscanStartIdx}
-      colOverscanEndIdx={colOverscanEndIdx}
       lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
       scrollLeft={scrollLeft}
       isSummaryRow
