@@ -43,6 +43,14 @@ const testProps: CanvasProps<Row, 'id'> = {
     totalColumnWidth: 0,
     viewportWidth: 1000
   },
+  viewportColumns: [{
+    key: 'row',
+    name: 'ID',
+    idx: 0,
+    width: 100,
+    left: 100,
+    cellContentRenderer: valueCellContentRenderer
+  }],
   renderBatchSize: 8,
   onCanvasKeydown() {},
   onCanvasKeyup() {},
