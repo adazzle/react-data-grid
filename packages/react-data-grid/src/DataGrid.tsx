@@ -325,6 +325,7 @@ function DataGrid<R, K extends keyof R>({
               selectedRows={selectedRows}
               onRowSelectionChange={handleRowSelectionChange}
               columnMetrics={columnMetrics}
+              viewportColumns={viewportColumns}
               onScroll={handleScroll}
               height={minHeight - rowOffsetHeight}
               contextMenu={props.contextMenu}

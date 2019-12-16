@@ -4,7 +4,7 @@ import React from 'react';
 import Cell from './Cell';
 import { IRowRendererProps } from './common/types';
 import { EventTypes } from './common/enums';
-import { isFrozen, getViewportColumns } from './utils';
+import { isFrozen } from './utils';
 
 export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
@@ -35,7 +35,7 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
     const {
       colOverscanEndIdx,
       colOverscanStartIdx,
-      columns,
+      viewportColumns,
       idx,
       isRowSelected,
       lastFrozenColumnIndex,
@@ -47,34 +47,33 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
     } = this.props;
     const Renderer = this.props.cellRenderer!;
 
-    return getViewportColumns(columns, colOverscanStartIdx, colOverscanEndIdx)
-      .map(column => {
-        const { key } = column;
-        return (
-          <Renderer
-            key={key as string} // FIXME: fix key type
-            idx={column.idx}
-            rowKey={key}
-            rowIdx={idx}
-            column={column}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
-            rowData={row}
-            expandableOptions={this.getExpandableOptions(key)}
-            scrollLeft={isFrozen(column) && typeof scrollLeft === 'number' ? scrollLeft : undefined}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
-            isSummaryRow={isSummaryRow}
-            eventBus={props.eventBus}
-            onRowClick={props.onRowClick}
-            onRowDoubleClick={props.onRowDoubleClick}
-            onCellExpand={props.onCellExpand}
-            onDeleteSubRow={props.onDeleteSubRow}
-            onAddSubRow={props.onAddSubRow}
-            getCellActions={props.getCellActions}
-            enableCellRangeSelection={props.enableCellRangeSelection}
-          />
-        );
-      });
+    return viewportColumns.map(column => {
+      const { key } = column;
+      return (
+        <Renderer
+          key={key as string} // FIXME: fix key type
+          idx={column.idx}
+          rowKey={key}
+          rowIdx={idx}
+          column={column}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          rowData={row}
+          expandableOptions={this.getExpandableOptions(key)}
+          scrollLeft={isFrozen(column) && typeof scrollLeft === 'number' ? scrollLeft : undefined}
+          isRowSelected={isRowSelected}
+          onRowSelectionChange={onRowSelectionChange}
+          isSummaryRow={isSummaryRow}
+          eventBus={props.eventBus}
+          onRowClick={props.onRowClick}
+          onRowDoubleClick={props.onRowDoubleClick}
+          onCellExpand={props.onCellExpand}
+          onDeleteSubRow={props.onDeleteSubRow}
+          onAddSubRow={props.onAddSubRow}
+          getCellActions={props.getCellActions}
+          enableCellRangeSelection={props.enableCellRangeSelection}
+        />
+      );
+    });
   }
 
   getExpandableOptions(columnKey: keyof R) {

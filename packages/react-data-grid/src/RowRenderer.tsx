@@ -9,6 +9,7 @@ import EventBus from './EventBus';
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'columnMetrics'
+| 'viewportColumns'
 | 'getSubRowDetails'
 | 'onRowSelectionChange'
 | 'rowGroupRenderer'
@@ -40,6 +41,7 @@ function RowRenderer<R, K extends keyof R>({
   colOverscanEndIdx,
   colOverscanStartIdx,
   columnMetrics,
+  viewportColumns,
   eventBus,
   getSubRowDetails,
   idx,
@@ -64,6 +66,7 @@ function RowRenderer<R, K extends keyof R>({
     width: columnMetrics.totalColumnWidth,
     height: rowHeight,
     columns: columnMetrics.columns,
+    viewportColumns,
     isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),
     onRowSelectionChange,
     subRowDetails: getSubRowDetails ? getSubRowDetails(rowData) : undefined,

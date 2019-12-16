@@ -10,6 +10,7 @@ type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>
 | 'idx'
 | 'rowData'
 | 'columnMetrics'
+| 'viewportColumns'
 | 'colOverscanEndIdx'
 | 'colOverscanStartIdx'
 | 'rowHeight'
@@ -21,6 +22,7 @@ function RowRenderer<R, K extends keyof R>({
   colOverscanEndIdx,
   colOverscanStartIdx,
   columnMetrics,
+  viewportColumns,
   idx,
   rowData,
   rowHeight,
@@ -34,6 +36,7 @@ function RowRenderer<R, K extends keyof R>({
       width={columnMetrics.totalColumnWidth + getScrollbarSize()}
       height={rowHeight}
       columns={columnMetrics.columns}
+      viewportColumns={viewportColumns}
       isRowSelected={false}
       onRowSelectionChange={noop}
       colOverscanStartIdx={colOverscanStartIdx}
