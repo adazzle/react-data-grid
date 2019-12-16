@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 
-import { CellActionButton } from '../common/types';
-
-export interface CellActionProps extends CellActionButton {
-  isFirst: boolean;
-}
-
-export default function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
+function CellAction({ icon, actions, callback, isFirst }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const cellActionClasses = classNames('rdg-cell-action', {
@@ -42,4 +36,14 @@ export default function CellAction({ icon, actions, callback, isFirst }: CellAct
       }
     </div>
   );
+}
+export default function CellActions({ actions }) {
+  if (actions && actions.length > 0) {
+    const actionButtons = actions.map((action, index) => {
+      return <CellAction key={index} isFirst={index === 0} {...action} />;
+    });
+
+    return <>{actionButtons}</>;
+  }
+  return null;
 }

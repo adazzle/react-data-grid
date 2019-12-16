@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { isFrozen } from './utils';
 import HeaderCell from './HeaderCell';
 import { CalculatedColumn } from './common/types';
 import { DataGridProps } from './DataGrid';
@@ -67,7 +66,7 @@ export default function HeaderRow<R, K extends keyof R>({
             onSort={props.onGridSort}
             sortColumn={props.sortColumn}
             sortDirection={props.sortDirection}
-            scrollLeft={isFrozen(column) ? props.scrollLeft : undefined}
+            scrollLeft={column.frozen ? props.scrollLeft : undefined}
           />
         );
       })}
