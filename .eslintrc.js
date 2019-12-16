@@ -524,8 +524,8 @@ module.exports = {
   rules,
   overrides: [{
     files: [
-      'packages/*/src/**/*',
-      'examples/**/*'
+      'examples/**/*',
+      'src/**/*'
     ],
     env: {
       browser: true
@@ -535,36 +535,25 @@ module.exports = {
     }
   }, {
     files: [
-      'packages/*/src/**/__tests__/**/*',
-      'examples/**/__tests__/**/*',
+      'src/**/__tests__/**/*',
       'tests/**/*'
     ],
-    env: {
-      jest: true
-    },
     rules: {
       'sonarjs/no-identical-functions': 0
     }
   }, {
     files: [
-      '*.js'
+      '*.js',
+      '*.mjs'
     ],
-    parserOptions: {
-      ecmaFeatures: {
-        jsx: true
-      }
-    },
     rules: jsRules
   }, {
     files: [
       'babel.config.js',
       'jest.config.js',
-      'webpack-dev-server.js',
-      'tools/**/*.js'
+      'webpack-dev-server.mjs',
+      'tools/**/*.mjs'
     ],
-    parserOptions: {
-      sourceType: 'script'
-    },
     env: {
       node: true
     },
@@ -574,7 +563,17 @@ module.exports = {
       'global-require': 1,
       'no-buffer-constructor': 2,
       'no-new-require': 2,
-      'no-path-concat': 1,
+      'no-path-concat': 1
+    }
+  }, {
+    files: [
+      'babel.config.js',
+      'jest.config.js'
+    ],
+    parserOptions: {
+      sourceType: 'script'
+    },
+    rules: {
       '@typescript-eslint/no-require-imports': 0
     }
   }]

@@ -1,21 +1,25 @@
-// The following is a config using project references.
-// We can't use it yet as long as we have `allowJs` enabled.
-// https://www.typescriptlang.org/docs/handbook/project-references.html
-// {
-//   "references": [
-//     { "path": "packages/react-data-grid" },
-//     { "path": "packages/react-data-grid-addons" }
-//   ]
-// }
-
-// Temporary config to get types working in vscode:
 {
-  "extends": "./tsconfig.base",
   "compilerOptions": {
-    "noEmit": true
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "inlineSources": true,
+    "jsx": "react",
+    "lib": ["es2019", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "pretty": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es5",
+    "types": ["jest"]
   },
   "files": [
-    "packages/react-data-grid/src/index.ts",
-    "packages/react-data-grid-addons/src/index.ts"
+    "src/index.ts"
   ]
 }

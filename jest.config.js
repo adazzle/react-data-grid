@@ -4,7 +4,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
-  preset: 'ts-jest/presets/js-with-ts',
+  preset: 'ts-jest',
   globals: {
     'ts-jest': {
       tsConfig: {
@@ -14,23 +14,20 @@ module.exports = {
   },
   collectCoverage: process.env.CI === 'true',
   collectCoverageFrom: [
-    'packages/*/src/**/*.{js,jsx,ts,tsx}'
+    'src/**/*.{ts,tsx}'
   ],
   coverageReporters: [
     'cobertura'
   ],
   restoreMocks: true,
   moduleNameMapper: {
-    '^react-data-grid$': '<rootDir>/packages/react-data-grid/src/',
-    '^react-data-grid-addons$': '<rootDir>/packages/react-data-grid-addons/src/',
-    '^@material-ui/icons$': '<rootDir>/test/iconsMock.ts',
-    '\\.css$': '<rootDir>/test/fileMock.js'
+    '^@material-ui/icons$': '<rootDir>/test/iconsMock.ts'
   },
   setupFiles: [
-    '<rootDir>/test/setupTests.js'
+    '<rootDir>/test/setupTests.ts'
   ],
   testMatch: [
-    '<rootDir>/packages/*/src/**/*.spec.(js|ts|tsx)',
+    '<rootDir>/src/**/*.spec.(ts|tsx)',
     '<rootDir>/tests/**/*.test.(ts|tsx)'
   ]
 };

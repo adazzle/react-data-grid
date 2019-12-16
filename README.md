@@ -1,53 +1,57 @@
-# React Data Grid [![npm-badge]][npm-url] [![azure-badge]][azure-url] [![coverage-badge]][azure-url]
+# react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![coverage-badge]][azure-url]
 
-[npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid/next?style=flat-square
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[azure-badge]: https://img.shields.io/azure-devops/build/nstepi181/e5b746e6-be62-4d36-896f-1e636f889cdc/1/next.svg?logo=pipelines&style=flat-square
-[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/next.svg?style=flat-square
+[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid/next?style=flat-square
+[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid@next
+[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/next?style=flat-square
 [azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=next
 
-Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like
-
+<!--
+Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like
 
 http://adazzle.github.io/react-data-grid/
 ![react-data-grid](https://cloud.githubusercontent.com/assets/1432798/7348812/78063bd6-ecec-11e4-89d5-ffd327721cd7.PNG)
+-->
 
+## Install
 
-Overview
---------
-ReactDataGrid is an advanced JavaScript spreadsheet-like grid component built using React
-
-Installation
-------------
-The easiest way to use react-data-grid is to install it from npm and build it into your app with Webpack.
 ```sh
 npm install react-data-grid
 ```
 
-You can then import react-data-grid in your application as follows:
-```js
+## Usage
+
+```jsx
 import DataGrid from 'react-data-grid';
+import 'react-data-grid/dist/react-data-grid.css';
+
+const columns = [
+  { key: 'id', name: 'ID' },
+  { key: 'title', name: 'Title' }
+];
+
+const rows = [
+  { id: 0, title: 'Example' },
+  { id: 1, title: 'Demo' }
+];
+
+const rowGetter = rowIndex => rows[rowIndex];
+
+function App() {
+  return (
+    <DataGrid
+      columns={columns}
+      rowGetter={rowGetter}
+      rowsCount={rows.length}
+      minHeight={500}
+    />
+  );
+}
 ```
 
-Versions In This Repository
---------
-
-- [master](https://github.com/adazzle/react-data-grid/commits/master) - commits that will be included in the next _minor_ or _patch_ release
-- [next](https://github.com/adazzle/react-data-grid/commits/next) - commits that will be included in the next _major_ release (breaking changes)
-
-Most PRs should be made to **master**, unless you know it is a breaking change.
-
-To install the latest **unstable** version, you can run
-```sh
-npm install react-data-grid@next
-```
-
-Migrations
---------
-If you intend to do a major release update for you react-data-grid check [the migration documents](migrations).
-
-Features
---------
+<!--
+## Features
 
 - Lightning fast virtual rendering
 - [Can render hundreds of thousands of rows with no lag](http://adazzle.github.io/react-data-grid/#/examples/one-million-rows)
@@ -64,13 +68,14 @@ Features
 - Copy and Paste values into other cells
 - [Multiple cell updates using cell dragdown](http://adazzle.github.io/react-data-grid/#/examples/cell-drag-down)
 - [Association of events of individual columns](http://adazzle.github.io/react-data-grid/#/examples/column-events)
+-->
 
-
-Contributing
-------------
+## Contributing
 
 Please see [CONTRIBUTING](docs/CONTRIBUTING.md)
 
-Credits
-------------
+<!--
+## Credits
+
 This project has been built upon the great work done by [Prometheus Research](https://github.com/prometheusresearch). For the original project, please click [here]( https://github.com/prometheusresearch/react-grid). It is released under [MIT](https://github.com/adazzle/react-data-grid/blob/master/LICENSE)
+-->

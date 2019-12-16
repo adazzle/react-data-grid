@@ -1,9 +1,7 @@
-'use strict';
-
-const fs = require('fs').promises;
-const { dirname } = require('path');
-const less = require('less');
-const CleanCSS = require('clean-css');
+import { promises as fs } from 'fs';
+import { dirname } from 'path';
+import less from 'less';
+import CleanCSS from 'clean-css';
 
 const cleanCSS = new CleanCSS({
   level: { 1: { specialComments: false }, 2: {} },
@@ -11,12 +9,10 @@ const cleanCSS = new CleanCSS({
   returnPromise: true
 });
 
-[
-  './packages/react-data-grid/style/react-data-grid.less',
-  './packages/react-data-grid-addons/style/react-data-grid-addons.less'
-].forEach(buildStylesheet);
+buildStylesheet();
 
-async function buildStylesheet(path) {
+async function buildStylesheet() {
+  const path = './style/react-data-grid.less';
   const buf = await fs.readFile(path);
   try {
     const { css } = await less.render(buf.toString(), { filename: path });
