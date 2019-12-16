@@ -18,8 +18,7 @@ export enum EventTypes {
   SELECT_START = 'SELECT_START',
   SELECT_UPDATE = 'SELECT_UPDATE',
   SELECT_END = 'SELECT_END',
-  DRAG_ENTER = 'DRAG_ENTER',
-  SCROLL_TO_COLUMN = 'SCROLL_TO_COLUMN'
+  DRAG_ENTER = 'DRAG_ENTER'
 }
 
 export enum UpdateActions {

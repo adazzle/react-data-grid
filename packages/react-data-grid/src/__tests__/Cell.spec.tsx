@@ -3,7 +3,6 @@ import { mount } from 'enzyme';
 
 import Cell, { CellProps } from '../Cell';
 import helpers, { Row } from './GridPropHelpers';
-import CellAction from '../Cell/CellAction';
 import { legacyCellContentRenderer } from '../Cell/cellContentRenderers';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn } from '../common/types';
@@ -114,57 +113,6 @@ describe('Cell Tests', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
       expect(cellDiv.props().height).toBeUndefined();
-    });
-  });
-
-  describe('CellActions', () => {
-    const setup = (propsOverride: Partial<CellProps<Row>> = {}) => {
-      const props: CellProps<Row> = {
-        rowIdx: 18,
-        idx: 19,
-        column: helpers.columns[0],
-        lastFrozenColumnIndex: -1,
-        rowData: helpers.rowGetter(11),
-        expandableOptions,
-        isRowSelected: false,
-        onRowSelectionChange() {},
-        scrollLeft: 0,
-        isSummaryRow: false,
-        rowKey: 'id',
-        onCellExpand() {},
-        eventBus: new EventBus(),
-        ...propsOverride
-      };
-
-      const wrapper = mount(<Cell<Row> {...props} />);
-      return {
-        wrapper,
-        props
-      };
-    };
-
-    describe('when getCellActions is in cellMetadata', () => {
-      it('should render some CellActions', () => {
-        const action = { icon: 'glpyhicon glyphicon-link', callback: jest.fn() };
-        const { wrapper } = setup({
-          getCellActions: jest.fn().mockReturnValue([action])
-        });
-
-        const renderedCellActions = wrapper.find(CellAction);
-
-        expect(renderedCellActions).toHaveLength(1);
-        expect(renderedCellActions.props()).toEqual({
-          ...action,
-          isFirst: true
-        });
-      });
-    });
-
-    describe('when getCellActions is not in cellMetadata', () => {
-      it('should not render any CellActions', () => {
-        const { wrapper } = setup();
-        expect(wrapper.find(CellAction)).toHaveLength(0);
-      });
     });
   });
 });
