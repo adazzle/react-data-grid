@@ -17,7 +17,6 @@ import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported
 import { CellNavigationMode, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
-  CellActionButton,
   CheckCellIsEditableEvent,
   Column,
   CellContentRenderer,
@@ -116,9 +115,6 @@ export interface DataGridProps<R, K extends keyof R> {
   emptyRowsView?: React.ComponentType<{}>;
   onHeaderDrop?(): void;
   getSubRowDetails?(row: R): SubRowDetails;
-
-  /** CellMetaData */
-  getCellActions?(column: CalculatedColumn<R>, rowData: R): CellActionButton[] | undefined;
   /** Called whenever a sub row is deleted from the grid */
   onDeleteSubRow?(options: SubRowOptions<R>): void;
   /** Called whenever a sub row is added to the grid */
@@ -352,7 +348,6 @@ function DataGrid<R, K extends keyof R>({
               onRowExpandToggle={props.onRowExpandToggle}
               onDeleteSubRow={props.onDeleteSubRow}
               onAddSubRow={props.onAddSubRow}
-              getCellActions={props.getCellActions}
               {...horizontalRange!}
             />
           )}

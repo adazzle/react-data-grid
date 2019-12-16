@@ -70,7 +70,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
             onCellExpand={props.onCellExpand}
             onDeleteSubRow={props.onDeleteSubRow}
             onAddSubRow={props.onAddSubRow}
-            getCellActions={props.getCellActions}
             enableCellRangeSelection={props.enableCellRangeSelection}
           />
         );

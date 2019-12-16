@@ -4,6 +4,7 @@ import { Data, Formatters } from 'react-data-grid-addons';
 import { Clear, Link, FileCopy } from '@material-ui/icons';
 import faker from 'faker';
 import Wrapper from './Wrapper';
+import CellActions from './CellActions';
 
 const { Selectors } = Data;
 const { ImageFormatter } = Formatters;
@@ -52,7 +53,42 @@ const columns = [
   {
     key: 'county',
     name: 'County',
-    width: 200
+    width: 200,
+    cellClass: 'rdg-cell-action',
+    formatter({ row, value }) {
+      if (row.id === 'id_0') {
+        const actions = [
+          {
+            icon: <Clear />,
+            callback() { alert('Deleting'); }
+          },
+          {
+            icon: <Link />,
+            actions: [
+              {
+                text: 'Edit Cell',
+                callback() { alert('Edit Cell'); }
+              },
+              {
+                text: <><FileCopy /> Copy Cell</>,
+                callback() { alert('Copied'); }
+              }
+            ]
+          }
+        ];
+
+        return (
+          <>
+            <CellActions actions={actions} />
+            <div>
+              {value}
+            </div>
+          </>
+        );
+      }
+
+      return value;
+    }
   },
   {
     key: 'title',
@@ -130,30 +166,6 @@ export default class extends React.Component {
     return this.getRows().length;
   };
 
-  getCellActions(column, row) {
-    if (column.key === 'county' && row.id === 'id_0') {
-      return [
-        {
-          icon: <Clear />,
-          callback() { alert('Deleting'); }
-        },
-        {
-          icon: <Link />,
-          actions: [
-            {
-              text: 'Edit Cell',
-              callback() { alert('Edit Cell'); }
-            },
-            {
-              text: <><FileCopy /> Copy Cell</>,
-              callback() { alert('Copied'); }
-            }
-          ]
-        }
-      ];
-    }
-  }
-
   render() {
     return (
       <Wrapper title="Cell Actions Example">
@@ -165,7 +177,6 @@ export default class extends React.Component {
           rowsCount={this.getSize()}
           rowHeight={55}
           minHeight={600}
-          getCellActions={this.getCellActions}
         />
       </Wrapper>
     );
