@@ -173,13 +173,12 @@ export interface IRowRendererProps<TRow> {
   height: number;
   width: number;
   columns: CalculatedColumn<TRow>[];
+  viewportColumns: CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   idx: number;
   extraClasses?: string;
   subRowDetails?: SubRowDetails;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isSummaryRow: boolean;

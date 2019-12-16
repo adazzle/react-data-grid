@@ -9,6 +9,7 @@ import EventBus from './EventBus';
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'columnMetrics'
+| 'viewportColumns'
 | 'getSubRowDetails'
 | 'onRowSelectionChange'
 | 'rowGroupRenderer'
@@ -27,8 +28,6 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   idx: number;
   rowData: R;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
   scrollLeft: number | undefined;
   setRowRef(row: Row<R> | null, idx: number): void;
   enableCellRangeSelection?: boolean;
@@ -36,9 +35,8 @@ export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProp
 }
 
 function RowRenderer<R, K extends keyof R>({
-  colOverscanEndIdx,
-  colOverscanStartIdx,
   columnMetrics,
+  viewportColumns,
   eventBus,
   getSubRowDetails,
   idx,
@@ -63,11 +61,10 @@ function RowRenderer<R, K extends keyof R>({
     width: columnMetrics.totalColumnWidth,
     height: rowHeight,
     columns: columnMetrics.columns,
+    viewportColumns,
     isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),
     onRowSelectionChange,
     subRowDetails: getSubRowDetails?.(rowData),
-    colOverscanStartIdx,
-    colOverscanEndIdx,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
     scrollLeft,
     isSummaryRow: false,
