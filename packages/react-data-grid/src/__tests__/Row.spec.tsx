@@ -19,10 +19,12 @@ describe('Row', () => {
     return { wrapper, cells };
   }
 
+  const columns = createColumns(COLUMN_COUNT);
   const requiredProperties: IRowRendererProps<RowType> = {
     height: 30,
     width: 1000,
-    columns: createColumns(COLUMN_COUNT),
+    columns,
+    viewportColumns: columns.slice(0, 20),
     row: { key: 'value' },
     cellRenderer: Cell,
     idx: 17,
@@ -35,8 +37,6 @@ describe('Row', () => {
       siblingIndex: 0,
       numberSiblings: 0
     },
-    colOverscanStartIdx: 0,
-    colOverscanEndIdx: 20,
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
@@ -50,52 +50,10 @@ describe('Row', () => {
     const draggableDiv = wrapper.find('div').at(0);
     expect(draggableDiv.hasClass('rdg-row'));
   });
+
   it('passes style property', () => {
     const { wrapper } = setup(requiredProperties);
     const draggableDiv = wrapper.find('div').at(0);
     expect(draggableDiv.props().style).toBeDefined();
-  });
-
-  describe('Cell rendering', () => {
-    describe('When using frozen columns', () => {
-      const LAST_LOCKED_CELL_IDX = 5;
-
-      const lockColumns = () => {
-        const columns = createColumns(COLUMN_COUNT);
-        columns.forEach((c, idx) => c.frozen = idx <= LAST_LOCKED_CELL_IDX);
-        return columns;
-      };
-
-      it('should render all frozen and visible and overscan cells', () => {
-        const columns = lockColumns();
-        const { cells } = setup({ ...requiredProperties, columns, lastFrozenColumnIndex: LAST_LOCKED_CELL_IDX });
-        const { colOverscanStartIdx, colOverscanEndIdx } = requiredProperties;
-        const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
-        expect(cells.length).toBe(renderedRange);
-      });
-    });
-
-    describe('When not using frozen columns', () => {
-      it('should render all visible and overscan cells', () => {
-        const { cells } = setup(requiredProperties);
-        const { colOverscanStartIdx, colOverscanEndIdx } = requiredProperties;
-        const renderedRange = colOverscanEndIdx - colOverscanStartIdx + 1;
-        expect(cells.length).toBe(renderedRange);
-      });
-
-      it('first rendered cell index should be colOverscanStartIdx', () => {
-        const { cells } = setup(requiredProperties);
-        const { columns, colOverscanStartIdx } = requiredProperties;
-        const expectedFirstColumn = columns[colOverscanStartIdx];
-        expect(cells.first().props().column).toBe(expectedFirstColumn);
-      });
-
-      it('last rendered cell index should be colOverscanEndIdx', () => {
-        const { cells } = setup(requiredProperties);
-        const { columns, colOverscanEndIdx } = requiredProperties;
-        const expectedLastColumn = columns[colOverscanEndIdx];
-        expect(cells.last().props().column).toBe(expectedLastColumn);
-      });
-    });
   });
 });

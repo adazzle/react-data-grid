@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
-import { ColumnMetrics, Position, ScrollPosition } from './common/types';
+import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn } from './common/types';
 import { EventTypes } from './common/enums';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
@@ -44,6 +44,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 
 export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
+  viewportColumns: CalculatedColumn<R>[];
   height: number;
   scrollLeft: number;
   colOverscanStartIdx: number;
@@ -65,6 +66,7 @@ export interface CanvasHandle {
 
 function Canvas<R, K extends keyof R>({
   columnMetrics,
+  viewportColumns,
   contextMenu,
   height,
   scrollLeft,
@@ -182,9 +184,8 @@ function Canvas<R, K extends keyof R>({
           idx={idx}
           rowData={rowData}
           setRowRef={setRowRef}
-          colOverscanEndIdx={colOverscanEndIdx}
-          colOverscanStartIdx={colOverscanStartIdx}
           columnMetrics={columnMetrics}
+          viewportColumns={viewportColumns}
           eventBus={eventBus}
           getSubRowDetails={props.getSubRowDetails}
           onRowSelectionChange={props.onRowSelectionChange}
@@ -232,9 +233,8 @@ function Canvas<R, K extends keyof R>({
           key={idx}
           idx={idx}
           rowData={rowData}
-          colOverscanEndIdx={colOverscanEndIdx}
-          colOverscanStartIdx={colOverscanStartIdx}
           columnMetrics={columnMetrics}
+          viewportColumns={viewportColumns}
           rowHeight={rowHeight}
           scrollLeft={nonStickyScrollLeft}
           eventBus={eventBus}

@@ -4,7 +4,6 @@ import React from 'react';
 import Cell from './Cell';
 import { IRowRendererProps } from './common/types';
 import { EventTypes } from './common/enums';
-import { getViewportColumns } from './utils';
 
 export default class Row<R> extends React.Component<IRowRendererProps<R>> {
   static displayName = 'Row';
@@ -33,9 +32,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
 
   getCells() {
     const {
-      colOverscanEndIdx,
-      colOverscanStartIdx,
-      columns,
       idx,
       isRowSelected,
       lastFrozenColumnIndex,
@@ -43,37 +39,42 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       row,
       scrollLeft,
       isSummaryRow,
-      ...props
+      eventBus,
+      onRowClick,
+      onRowDoubleClick,
+      onCellExpand,
+      onDeleteSubRow,
+      onAddSubRow,
+      enableCellRangeSelection
     } = this.props;
     const Renderer = this.props.cellRenderer!;
 
-    return getViewportColumns(columns, colOverscanStartIdx, colOverscanEndIdx)
-      .map(column => {
-        const { key } = column;
-        return (
-          <Renderer
-            key={key as string} // FIXME: fix key type
-            idx={column.idx}
-            rowKey={key}
-            rowIdx={idx}
-            column={column}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
-            rowData={row}
-            expandableOptions={this.getExpandableOptions(key)}
-            scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
-            isSummaryRow={isSummaryRow}
-            eventBus={props.eventBus}
-            onRowClick={props.onRowClick}
-            onRowDoubleClick={props.onRowDoubleClick}
-            onCellExpand={props.onCellExpand}
-            onDeleteSubRow={props.onDeleteSubRow}
-            onAddSubRow={props.onAddSubRow}
-            enableCellRangeSelection={props.enableCellRangeSelection}
-          />
-        );
-      });
+    return this.props.viewportColumns.map(column => {
+      const { key } = column;
+      return (
+        <Renderer
+          key={key as string} // FIXME: fix key type
+          idx={column.idx}
+          rowKey={key}
+          rowIdx={idx}
+          column={column}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          rowData={row}
+          expandableOptions={this.getExpandableOptions(key)}
+          scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
+          isRowSelected={isRowSelected}
+          onRowSelectionChange={onRowSelectionChange}
+          isSummaryRow={isSummaryRow}
+          eventBus={eventBus}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
+          onCellExpand={onCellExpand}
+          onDeleteSubRow={onDeleteSubRow}
+          onAddSubRow={onAddSubRow}
+          enableCellRangeSelection={enableCellRangeSelection}
+        />
+      );
+    });
   }
 
   getExpandableOptions(columnKey: keyof R) {

@@ -10,17 +10,15 @@ type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>
 | 'idx'
 | 'rowData'
 | 'columnMetrics'
-| 'colOverscanEndIdx'
-| 'colOverscanStartIdx'
+| 'viewportColumns'
 | 'rowHeight'
 | 'scrollLeft'
 | 'eventBus'
 >;
 
-function RowRenderer<R, K extends keyof R>({
-  colOverscanEndIdx,
-  colOverscanStartIdx,
+function SummaryRowRenderer<R, K extends keyof R>({
   columnMetrics,
+  viewportColumns,
   idx,
   rowData,
   rowHeight,
@@ -34,10 +32,9 @@ function RowRenderer<R, K extends keyof R>({
       width={columnMetrics.totalColumnWidth + getScrollbarSize()}
       height={rowHeight}
       columns={columnMetrics.columns}
+      viewportColumns={viewportColumns}
       isRowSelected={false}
       onRowSelectionChange={noop}
-      colOverscanStartIdx={colOverscanStartIdx}
-      colOverscanEndIdx={colOverscanEndIdx}
       lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
       scrollLeft={scrollLeft}
       isSummaryRow
@@ -46,4 +43,4 @@ function RowRenderer<R, K extends keyof R>({
   );
 }
 
-export default memo(RowRenderer) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;
+export default memo(SummaryRowRenderer) as <R, K extends keyof R>(props: SummaryRowRendererProps<R, K>) => JSX.Element;
