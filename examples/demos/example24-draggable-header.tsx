@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid from 'react-data-grid';
+import DataGrid, { Column } from '../../src';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -16,11 +16,11 @@ export default class extends React.Component {
     return rows;
   };
 
-  rowGetter = (i) => {
+  rowGetter = (i: number) => {
     return this.state.rows[i];
   };
 
-  onHeaderDrop = (source, target) => {
+  onHeaderDrop = (source: string, target: string) => {
     const columns = [...this.state.columns];
     const columnSourceIndex = columns.findIndex(i => i.key === source);
     const columnTargetIndex = columns.findIndex(i => i.key === target);
@@ -57,7 +57,8 @@ export default class extends React.Component {
     return (
       <Wrapper title="Drag Columns to Reorder">
         <DataGrid
-          columns={this.state.columns}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          columns={this.state.columns as Column<any, any>[]}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={500}

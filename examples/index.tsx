@@ -27,7 +27,7 @@ import Basic from './demos/example01-basic';
 // import Grouping from './demos/example21-grouping';
 // import CustomFilters from './demos/example22-custom-filters';
 // import ImmutableDataGrouping from './demos/example23-immutable-data-grouping';
-// import DraggableHeader from './demos/example24-draggable-header';
+import DraggableHeader from './demos/example24-draggable-header';
 // import TreeView from './demos/example25-tree-view';
 // import TreeViewNoAddDelete from './demos/example26-tree-view-no-add-delete';
 // import CellActions from './demos/example27-cell-actions';
@@ -102,7 +102,7 @@ ReactDOM.render((
       {/* <Route path="/examples/grouping" component={Grouping} /> */}
       {/* <Route path="/examples/custom-filters" component={CustomFilters} /> */}
       {/* <Route path="/examples/immutable-data-grouping" component={ImmutableDataGrouping} /> */}
-      {/* <Route path="/examples/draggable-header" component={DraggableHeader} /> */}
+      <Route path="/examples/draggable-header" component={DraggableHeader} />
       {/* <Route path="/examples/tree-view" component={TreeView} /> */}
       {/* <Route path="/examples/tree-view-no-add-delete" component={TreeViewNoAddDelete} /> */}
       {/* <Route path="/examples/cell-actions" component={CellActions} /> */}
