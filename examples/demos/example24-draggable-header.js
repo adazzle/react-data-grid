@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid, { DraggableContainer } from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -56,16 +56,13 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Drag Columns to Reorder">
-        <DraggableContainer
+        <DataGrid
+          columns={this.state.columns}
+          rowGetter={this.rowGetter}
+          rowsCount={this.state.rows.length}
+          minHeight={500}
           onHeaderDrop={this.onHeaderDrop}
-        >
-          <DataGrid
-            columns={this.state.columns}
-            rowGetter={this.rowGetter}
-            rowsCount={this.state.rows.length}
-            minHeight={500}
-          />
-        </DraggableContainer>
+        />
       </Wrapper>
     );
   }

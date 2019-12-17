@@ -33,6 +33,10 @@ import {
   Filters
 } from './common/types';
 
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import DraggableHeaderCell from './Header/DraggableHeaderCell';
+
 export { DataGridHandle };
 
 export interface DataGridProps<R, K extends keyof R> {
@@ -110,10 +114,10 @@ export interface DataGridProps<R, K extends keyof R> {
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Component used to render a draggable header cell */
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(source: string, target: string): void }>;
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   emptyRowsView?: React.ComponentType<{}>;
-  onHeaderDrop?(): void;
+  onHeaderDrop?(source: string, target: string): void;
   getSubRowDetails?(row: R): SubRowDetails;
   /** Called whenever a sub row is deleted from the grid */
   onDeleteSubRow?(options: SubRowOptions<R>): void;
@@ -167,6 +171,8 @@ function DataGrid<R, K extends keyof R>({
   rowGetter,
   selectedRows,
   onSelectedRowsChange,
+  onHeaderDrop,
+  draggableHeaderCell,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -277,7 +283,7 @@ function DataGrid<R, K extends keyof R>({
 
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
 
-  return (
+  const grid = (
     <div
       className="rdg-root"
       style={{ width, lineHeight: `${rowHeight}px` }}
@@ -298,8 +304,9 @@ function DataGrid<R, K extends keyof R>({
               columns={viewportColumns}
               onColumnResize={handleColumnResize}
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-              draggableHeaderCell={props.draggableHeaderCell}
-              onHeaderDrop={props.onHeaderDrop}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              draggableHeaderCell={draggableHeaderCell || (onHeaderDrop && DraggableHeaderCell as React.ComponentType<any>)}
+              onHeaderDrop={onHeaderDrop}
               allRowsSelected={selectedRows?.size === rowsCount}
               onSelectedRowsChange={onSelectedRowsChange}
               sortColumn={props.sortColumn}
@@ -365,6 +372,8 @@ function DataGrid<R, K extends keyof R>({
       )}
     </div>
   );
+
+  return onHeaderDrop ? <DndProvider backend={HTML5Backend}>{grid}</DndProvider> : grid;
 }
 
 export default forwardRef(
