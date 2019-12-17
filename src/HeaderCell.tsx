@@ -50,7 +50,15 @@ export default function HeaderCell<R, K extends keyof R>({
     return createElement(renderer, { column, allRowsSelected, onAllRowsSelectionChange });
   }
 
-  let cell = getCell();
+  const DraggableHeaderCell = props.draggableHeaderCell;
+  let cell = column.draggable && DraggableHeaderCell ? (
+    <DraggableHeaderCell
+      column={column}
+      onHeaderDrop={props.onHeaderDrop!}
+    >
+      {getCell()}
+    </DraggableHeaderCell>
+  ) : getCell();
 
   if (column.sortable) {
     cell = (
@@ -95,18 +103,6 @@ export default function HeaderCell<R, K extends keyof R>({
       >
         {cell}
       </ResizableHeaderCell>
-    );
-  }
-
-  const DraggableHeaderCell = props.draggableHeaderCell;
-  if (column.draggable && DraggableHeaderCell) {
-    return (
-      <DraggableHeaderCell
-        column={column}
-        onHeaderDrop={props.onHeaderDrop!}
-      >
-        {cell}
-      </DraggableHeaderCell>
     );
   }
 

@@ -178,7 +178,7 @@ export default class extends React.Component {
 
   render() {
     return (
-      <Wrapper title="All the features grid with immutable data">
+      <Wrapper title="All the features grid with immutable data" disabledReason="Immutable collection is not supported in react-data-grid anymore.">
         <Toolbar onAddRow={this.handleAddRow} onToggleFilter={() => { }} numberOfRows={this.getSize()} />
         <DataGrid
           contextMenu={<MyContextMenu />}

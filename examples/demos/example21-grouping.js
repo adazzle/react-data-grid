@@ -1,42 +1,46 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import DataGrid from 'react-data-grid';
-import { ToolsPanel, Data, Draggable, Formatters } from 'react-data-grid-addons';
 import faker from 'faker';
+import React from 'react';
+import DataGrid from 'react-data-grid';
+import { Data, Formatters } from 'react-data-grid-addons';
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
+import DraggableHeaderCell from './components/draggable/DraggableHeaderCell';
+import GroupedColumnsPanel from './components/group/GroupedColumnsPanel';
 import Wrapper from './Wrapper';
 
-const { AdvancedToolbar: Toolbar, GroupedColumnsPanel } = ToolsPanel;
 const { Selectors } = Data;
-const { Container: DraggableContainer } = Draggable;
 const { ImageFormatter } = Formatters;
 
 faker.locale = 'en_GB';
 
-const createFakeRowObjectData = (index) => ({
-  id: `id_${index}`,
-  avatar: faker.image.avatar(),
-  county: faker.address.county(),
-  email: faker.internet.email(),
-  title: faker.name.prefix(),
-  firstName: faker.name.firstName(),
-  lastName: faker.name.lastName(),
-  street: faker.address.streetName(),
-  zipCode: faker.address.zipCode(),
-  date: faker.date.past().toLocaleDateString(),
-  bs: faker.company.bs(),
-  catchPhrase: faker.company.catchPhrase(),
-  companyName: faker.company.companyName(),
-  words: faker.lorem.words(),
-  sentence: faker.lorem.sentence()
-});
+function createFakeRowObjectData(index) {
+  return {
+    id: `id_${index}`,
+    avatar: faker.image.avatar(),
+    county: faker.address.county(),
+    email: faker.internet.email(),
+    title: faker.name.prefix(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    street: faker.address.streetName(),
+    zipCode: faker.address.zipCode(),
+    date: faker.date.past().toLocaleDateString(),
+    bs: faker.company.bs(),
+    catchPhrase: faker.company.catchPhrase(),
+    companyName: faker.company.companyName(),
+    words: faker.lorem.words(),
+    sentence: faker.lorem.sentence()
+  };
+}
 
-const createRows = (numberOfRows) => {
+function createRows(numberOfRows) {
   const rows = [];
   for (let i = 0; i < numberOfRows; i++) {
     rows[i] = createFakeRowObjectData(i);
   }
   return rows;
-};
+}
 
 const columns = [
   {
@@ -126,28 +130,8 @@ const columns = [
   }
 ];
 
-class CustomToolbar extends React.Component {
-  static propTypes = {
-    groupBy: PropTypes.array.isRequired,
-    onColumnGroupAdded: PropTypes.func.isRequired,
-    onColumnGroupDeleted: PropTypes.func.isRequired
-  };
-
-  render() {
-    return (
-      <Toolbar>
-        <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
-      </Toolbar>
-    );
-  }
-}
-
 export default class extends React.Component {
-  constructor(props) {
-    super(props);
-    const fakeRows = createRows(2000);
-    this.state = { rows: fakeRows, groupBy: [], expandedRows: {} };
-  }
+  state = { rows: createRows(2000), groupBy: [], expandedRows: {} };
 
   getRows = () => {
     return Selectors.getRows(this.state);
@@ -190,14 +174,14 @@ export default class extends React.Component {
   render() {
     return (
       <Wrapper title="Row Grouping Example">
-        <DraggableContainer>
-          <CustomToolbar
-            groupBy={this.state.groupBy}
-            onColumnGroupAdded={this.onColumnGroupAdded}
-            onColumnGroupDeleted={this.onColumnGroupDeleted}
-          />
-        </DraggableContainer>
-        <DraggableContainer>
+        <DndProvider backend={HTML5Backend}>
+          <div className="react-grid-Toolbar">
+            <GroupedColumnsPanel
+              groupBy={this.state.groupBy}
+              onColumnGroupAdded={this.onColumnGroupAdded}
+              onColumnGroupDeleted={this.onColumnGroupDeleted}
+            />
+          </div>
           <DataGrid
             ref={node => this.grid = node}
             enableCellSelect
@@ -207,8 +191,9 @@ export default class extends React.Component {
             onRowExpandToggle={this.onRowExpandToggle}
             rowHeight={50}
             minHeight={600}
+            draggableHeaderCell={DraggableHeaderCell}
           />
-        </DraggableContainer>
+        </DndProvider>
       </Wrapper>
     );
   }

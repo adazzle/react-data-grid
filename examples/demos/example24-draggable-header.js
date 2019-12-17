@@ -1,9 +1,6 @@
 import React from 'react';
-import DataGrid from 'react-data-grid';
-import { DraggableHeader } from 'react-data-grid-addons';
+import DataGrid, { DraggableContainer } from 'react-data-grid';
 import Wrapper from './Wrapper';
-
-const { DraggableContainer } = DraggableHeader;
 
 export default class extends React.Component {
   createRows = () => {
@@ -50,7 +47,6 @@ export default class extends React.Component {
       {
         key: 'count',
         name: 'Count',
-        draggable: true,
         resizable: true
       }
     ],

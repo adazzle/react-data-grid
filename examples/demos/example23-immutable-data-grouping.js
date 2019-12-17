@@ -1,13 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import DataGrid from 'react-data-grid';
-import { ToolsPanel, Data, Draggable } from 'react-data-grid-addons';
 import faker from 'faker';
+import React from 'react';
+import DataGrid from 'react-data-grid';
+import { Data } from 'react-data-grid-addons';
+
 import Wrapper from './Wrapper';
 
-const { AdvancedToolbar: Toolbar, GroupedColumnsPanel } = ToolsPanel;
 const { Selectors } = Data;
-const { Container: DraggableContainer } = Draggable;
 
 faker.locale = 'en_GB';
 
@@ -24,22 +22,6 @@ for (let rowIdx = 1; rowIdx < 100; rowIdx++) {
     row[c.key] = `(${colIdx},${rowIdx})`;
   });
   _rows.push(row);
-}
-
-class CustomToolbar extends React.Component {
-  static propTypes = {
-    groupBy: PropTypes.array.isRequired,
-    onColumnGroupAdded: PropTypes.func.isRequired,
-    onColumnGroupDeleted: PropTypes.func.isRequired
-  };
-
-  render() {
-    return (
-      <Toolbar>
-        <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
-      </Toolbar>
-    );
-  }
 }
 
 export default class extends React.Component {
@@ -85,26 +67,17 @@ export default class extends React.Component {
 
   render() {
     return (
-      <Wrapper title="Row Grouping (immutable collection input) Example">
-        <DraggableContainer>
-          <CustomToolbar
-            groupBy={this.state.groupBy}
-            onColumnGroupAdded={this.onColumnGroupAdded}
-            onColumnGroupDeleted={this.onColumnGroupDeleted}
-          />
-        </DraggableContainer>
-        <DraggableContainer>
-          <DataGrid
-            ref={node => this.grid = node}
-            enableCellSelect
-            columns={_cols}
-            rowGetter={this.getRowAt}
-            rowsCount={this.getSize()}
-            onRowExpandToggle={this.onRowExpandToggle}
-            rowHeight={50}
-            minHeight={600}
-          />
-        </DraggableContainer>
+      <Wrapper title="Row Grouping (immutable collection input) Example" disabledReason="Immutable collection is not supported in react-data-grid anymore.">
+        <DataGrid
+          ref={node => this.grid = node}
+          enableCellSelect
+          columns={_cols}
+          rowGetter={this.getRowAt}
+          rowsCount={this.getSize()}
+          onRowExpandToggle={this.onRowExpandToggle}
+          rowHeight={50}
+          minHeight={600}
+        />
       </Wrapper>
     );
   }

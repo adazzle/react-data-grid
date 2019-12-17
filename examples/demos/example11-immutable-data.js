@@ -40,7 +40,7 @@ export default class extends React.Component {
 
   render() {
     return (
-      <Wrapper title="Immutable Data Example">
+      <Wrapper title="Immutable Data Example" disabledReason="Immutable collection is not supported in react-data-grid anymore.">
         <DataGrid
           enableCellSelect
           columns={this._columns}
