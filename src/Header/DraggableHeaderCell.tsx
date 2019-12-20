@@ -15,35 +15,43 @@ import {
   DropTargetMonitor,
   DropTargetSpec
 } from 'react-dnd';
-import { Column } from '../common/types';
+import { CalculatedColumn, Primitive } from '../common/types';
 
-type DraggableColumn = Column<{ [key: string]: React.ReactText | object}>;
+interface Row {
+  [key: string]: Primitive | object;
+}
+
+interface RequiredProps<TRow> {
+  column: CalculatedColumn<TRow, keyof TRow>;
+  onHeaderDrop(source: string, target: string): void;
+}
 
 interface DragCollectProps {
   connectDragSource: DragElementWrapper<DragSourceOptions>;
   isDragging: boolean;
 }
 
-interface DropCollectProps {
+interface DropCollectProps<TRow> {
   connectDropTarget: ConnectDropTarget;
   isOver: boolean;
   canDrop: boolean;
-  draggedHeader: Pick<DraggableColumn, 'key'>;
+  draggedHeader: Pick<CalculatedColumn<TRow, keyof TRow>, 'key'>;
 }
 
-interface DraggableHeaderCellProps extends DragCollectProps, DropCollectProps {
-  children: JSX.Element;
+interface Props<TRow> extends DragCollectProps, DropCollectProps<TRow>, RequiredProps<TRow> {
+  children: React.ReactText | JSX.Element;
 }
 
-function DraggableHeaderCell(props: DraggableHeaderCellProps): JSX.Element {
-  const {
-    connectDragSource,
-    connectDropTarget,
-    isDragging,
-    isOver,
-    canDrop
-  } = props;
+export type DraggableHeaderCellProps<TRow> = Pick<Props<TRow>, 'column' | 'onHeaderDrop' | 'children'>;
 
+function DraggableHeaderCell<TRow>({
+  connectDragSource,
+  connectDropTarget,
+  isDragging,
+  isOver,
+  canDrop,
+  children
+}: Props<TRow>): JSX.Element {
   // set drag source and drop target on header cell
   // width: 0 - otherwise drag clone was wrongly positioned
   return connectDragSource(
@@ -52,18 +60,13 @@ function DraggableHeaderCell(props: DraggableHeaderCellProps): JSX.Element {
         className={classNames('rdg-draggable-header-cell', { 'rdg-can-drop': isOver && canDrop })}
         style={{ opacity: isDragging ? 0.2 : 1 }}
       >
-        {props.children}
+        {children}
       </div>
     )!
   )!;
 }
 
-interface RequiredProps {
-  column: DraggableColumn;
-  onHeaderDrop(source: number, target: number): void;
-}
-
-const headerCellSource: DragSourceSpec<RequiredProps, Pick<DraggableColumn, 'key'>> = {
+const headerCellSource: DragSourceSpec<RequiredProps<Row>, Pick<CalculatedColumn<Row>, 'key'>> = {
   beginDrag(props) {
     return {
       // source column
@@ -80,7 +83,7 @@ const headerCellSource: DragSourceSpec<RequiredProps, Pick<DraggableColumn, 'key
 };
 
 // drop target
-const target: DropTargetSpec<RequiredProps> = {
+const target: DropTargetSpec<RequiredProps<Row>> = {
   drop(props, monitor) {
     const source = monitor.getItem().key;
     const targetKey = props.column.key;
@@ -99,7 +102,7 @@ function collect(connect: DragSourceConnector, monitor: DragSourceMonitor): Drag
   };
 }
 
-function targetCollect(connect: DropTargetConnector, monitor: DropTargetMonitor): DropCollectProps {
+function targetCollect(connect: DropTargetConnector, monitor: DropTargetMonitor): DropCollectProps<Row> {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
@@ -109,7 +112,7 @@ function targetCollect(connect: DropTargetConnector, monitor: DropTargetMonitor)
 }
 
 export default DragSource('Column', headerCellSource, collect as DragSourceCollector<DragCollectProps, unknown>)(
-  DropTarget('Column', target, targetCollect as DropTargetCollector<DropCollectProps, unknown>)(
+  DropTarget('Column', target, targetCollect as DropTargetCollector<DropCollectProps<Row>, unknown>)(
     DraggableHeaderCell
   )
 );

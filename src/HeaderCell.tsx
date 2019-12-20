@@ -35,7 +35,7 @@ export default function HeaderCell<R, K extends keyof R>({
   scrollLeft,
   ...props
 }: HeaderCellProps<R, K>) {
-  function getCell() {
+  function getCell(): React.ReactText | JSX.Element {
     if (!column.headerRenderer) return column.name;
     const renderer = column.headerRenderer;
 

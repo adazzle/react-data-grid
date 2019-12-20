@@ -5,6 +5,15 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export type Primitive =
+  | string
+  | boolean
+  | number
+  | bigint
+  | symbol
+  | null
+  | undefined;
+
 interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;

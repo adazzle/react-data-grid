@@ -1,41 +1,47 @@
 import React, {
+  createElement,
   forwardRef,
-  useState,
-  useRef,
+  useCallback,
   useLayoutEffect,
   useMemo,
-  useCallback,
-  createElement
+  useRef,
+  useState
 } from 'react';
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import { isValidElementType } from 'react-is';
 
-import HeaderRow from './HeaderRow';
-import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
-import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize, HorizontalRangeToRender } from './utils';
 import { CellNavigationMode, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
+  CellContentRenderer,
   CheckCellIsEditableEvent,
   Column,
-  CellContentRenderer,
+  Filters,
   GridRowsUpdatedEvent,
+  IRowRendererProps,
   Position,
-  RowsContainerProps,
   RowExpandToggleEvent,
   RowGetter,
+  RowsContainerProps,
+  ScrollPosition,
   SelectedRange,
   SubRowDetails,
-  SubRowOptions,
-  IRowRendererProps,
-  ScrollPosition,
-  Filters
+  SubRowOptions
 } from './common/types';
-
-import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import DraggableHeaderCell from './Header/DraggableHeaderCell';
+import FilterRow from './FilterRow';
+import DraggableHeaderCell, { DraggableHeaderCellProps } from './Header/DraggableHeaderCell';
+import HeaderRow from './HeaderRow';
+import {
+  getColumnMetrics,
+  getHorizontalRangeToRender,
+  getScrollbarSize,
+  getViewportColumns,
+  HorizontalRangeToRender,
+  isPositionStickySupported
+} from './utils';
 
 export { DataGridHandle };
 
@@ -114,7 +120,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Component used to render a draggable header cell */
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(source: string, target: string): void }>;
+  draggableHeaderCell?: React.ComponentType<DraggableHeaderCellProps<R>>;
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   emptyRowsView?: React.ComponentType<{}>;
   onHeaderDrop?(source: string, target: string): void;
@@ -172,7 +178,6 @@ function DataGrid<R, K extends keyof R>({
   selectedRows,
   onSelectedRowsChange,
   onHeaderDrop,
-  draggableHeaderCell,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
@@ -282,6 +287,7 @@ function DataGrid<R, K extends keyof R>({
   }, [onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
 
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
+  const draggableHeaderCell = onHeaderDrop ? props.draggableHeaderCell || DraggableHeaderCell as unknown as React.ComponentType<DraggableHeaderCellProps<R>> : undefined;
 
   const grid = (
     <div
@@ -304,8 +310,7 @@ function DataGrid<R, K extends keyof R>({
               columns={viewportColumns}
               onColumnResize={handleColumnResize}
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              draggableHeaderCell={draggableHeaderCell || (onHeaderDrop && DraggableHeaderCell as React.ComponentType<any>)}
+              draggableHeaderCell={draggableHeaderCell}
               onHeaderDrop={onHeaderDrop}
               allRowsSelected={selectedRows?.size === rowsCount}
               onSelectedRowsChange={onSelectedRowsChange}
