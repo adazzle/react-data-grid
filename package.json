@@ -46,6 +46,7 @@
     "@types/classnames": "^2.2.9",
     "@types/enzyme": "^3.10.3",
     "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/faker": "^4.1.8",
     "@types/jest": "^24.0.23",
     "@types/react": "^16.9.14",
     "@types/react-dom": "^16.9.4",

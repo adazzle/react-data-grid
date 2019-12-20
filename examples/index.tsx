@@ -30,7 +30,7 @@ import Basic from './demos/example01-basic';
 // import DraggableHeader from './demos/example24-draggable-header';
 // import TreeView from './demos/example25-tree-view';
 // import TreeViewNoAddDelete from './demos/example26-tree-view-no-add-delete';
-// import CellActions from './demos/example27-cell-actions';
+import CellActions from './demos/example27-cell-actions';
 // import ScrollToRowIndex from './demos/example28-scroll-to-row-index';
 // import DescendingFirstSortable from './demos/example29-descendingFirstSortable';
 // import SelectionRangeEvents from './demos/example30-selection-range-events';
@@ -105,7 +105,9 @@ ReactDOM.render((
       {/* <Route path="/examples/draggable-header" component={DraggableHeader} /> */}
       {/* <Route path="/examples/tree-view" component={TreeView} /> */}
       {/* <Route path="/examples/tree-view-no-add-delete" component={TreeViewNoAddDelete} /> */}
-      {/* <Route path="/examples/cell-actions" component={CellActions} /> */}
+      <Route path="/examples/cell-actions">
+        <CellActions />
+      </Route>
       {/* <Route path="/examples/scroll-to-row-index" component={ScrollToRowIndex} /> */}
       {/* <Route path="/examples/descendingFirstSortable" component={DescendingFirstSortable} /> */}
       {/* <Route path="/examples/selection-range-events" component={SelectionRangeEvents} /> */}
