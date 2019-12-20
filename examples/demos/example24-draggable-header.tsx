@@ -8,8 +8,6 @@ interface Row {
   count: number;
 }
 
-type RowFields = keyof Row;
-
 function createRows(): Row[] {
   const rows: Row[] = [];
 
