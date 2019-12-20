@@ -67,7 +67,7 @@ export default class extends React.Component {
 
   render() {
     return (
-      <Wrapper title="Row Grouping (immutable collection input) Example" disabledReason="Immutable collection is not supported in react-data-grid anymore.">
+      <Wrapper title="Row Grouping (immutable collection input) Example">
         <DataGrid
           ref={node => this.grid = node}
           enableCellSelect

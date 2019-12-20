@@ -4,10 +4,9 @@ import { Menu, MenuOpen } from '@material-ui/icons';
 interface Props {
   title: string;
   children: React.ReactChild;
-  disabledReason?: string;
 }
 
-export default function Wrapper({ title, children, disabledReason }: Props) {
+export default function Wrapper({ title, children }: Props) {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   useLayoutEffect(() => {
@@ -22,11 +21,6 @@ export default function Wrapper({ title, children, disabledReason }: Props) {
       <h1 onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
         {isSidebarVisible ? <MenuOpen /> : <Menu />} {title}
       </h1>
-      {disabledReason && (
-        <div className="disable-content">
-          <h1>{disabledReason}</h1>
-        </div>
-      )}
       {children}
     </div>
   );
