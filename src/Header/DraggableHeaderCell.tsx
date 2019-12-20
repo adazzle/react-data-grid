@@ -17,6 +17,8 @@ import {
 } from 'react-dnd';
 import { Column } from '../common/types';
 
+type DraggableColumn = Column<{ [key: string]: React.ReactText | object}>;
+
 interface DragCollectProps {
   connectDragSource: DragElementWrapper<DragSourceOptions>;
   isDragging: boolean;
@@ -26,7 +28,7 @@ interface DropCollectProps {
   connectDropTarget: ConnectDropTarget;
   isOver: boolean;
   canDrop: boolean;
-  draggedHeader: { key: string };
+  draggedHeader: Pick<DraggableColumn, 'key'>;
 }
 
 interface DraggableHeaderCellProps extends DragCollectProps, DropCollectProps {
@@ -57,12 +59,11 @@ function DraggableHeaderCell(props: DraggableHeaderCellProps): JSX.Element {
 }
 
 interface RequiredProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  column: Column<any, any>;
+  column: DraggableColumn;
   onHeaderDrop(source: number, target: number): void;
 }
 
-const headerCellSource: DragSourceSpec<RequiredProps, { key: string }> = {
+const headerCellSource: DragSourceSpec<RequiredProps, Pick<DraggableColumn, 'key'>> = {
   beginDrag(props) {
     return {
       // source column
