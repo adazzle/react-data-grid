@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PropsWithChildren, useCallback } from 'react';
+import './toolbar.less';
 
 interface Props {
   onAddRow?(arg: { newRowIndex: number }): void;
@@ -7,13 +8,12 @@ interface Props {
   numberOfRows: number;
   addRowButtonText?: string;
   filterRowsButtonText?: string;
-  children: React.ReactNode;
 }
 
-export default function Toolbar(props: Props) {
-  function onAddRow() {
-    props.onAddRow!({ newRowIndex: props.numberOfRows });
-  }
+export default function Toolbar(props: PropsWithChildren<Props>) {
+  const onAddRow = useCallback(() => {
+    props.onAddRow?.({ newRowIndex: props.numberOfRows });
+  }, [props.numberOfRows, props.onAddRow]);
 
   return (
     <div className="react-grid-Toolbar">

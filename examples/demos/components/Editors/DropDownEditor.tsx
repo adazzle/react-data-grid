@@ -1,7 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Column } from '../../../../src';
 
-export default class DropDownEditor extends React.Component {
+interface Option {
+  id: string;
+  title: string;
+  value: string;
+  text: string;
+}
+
+interface DropDownEditorProps<TRow> {
+  column: Column<TRow>;
+  options: Array<Option | string>;
+  value?: string;
+  onBlur(): void;
+}
+
+export default class DropDownEditor<TRow> extends React.Component<DropDownEditorProps<TRow>> {
   static propTypes = {
     options: PropTypes.arrayOf(PropTypes.oneOfType([
       PropTypes.string,
@@ -11,28 +26,22 @@ export default class DropDownEditor extends React.Component {
         value: PropTypes.string,
         text: PropTypes.string
       })
-    ])).isRequired
-  };
-
-  static propTypes = {
+    ])).isRequired,
     value: PropTypes.any.isRequired,
     onBlur: PropTypes.func.isRequired
-    // column: PropTypes.shape(Column).isRequired
   };
 
+  selectRef: React.RefObject<HTMLSelectElement> = React.createRef();
+
   getInputNode() {
-    return this.select;
+    return this.selectRef?.current;
   }
 
   getValue() {
     return {
-      [this.props.column.key]: this.select.value
+      [this.props.column.key]: this.selectRef?.current?.value
     };
   }
-
-  setSelectRef = (select) => {
-    this.select = select;
-  };
 
   renderOptions() {
     return this.props.options.map(name => {
@@ -62,7 +71,7 @@ export default class DropDownEditor extends React.Component {
   render() {
     return (
       <select
-        ref={this.setSelectRef}
+        ref={this.selectRef}
         className="rdg-select-editor"
         defaultValue={this.props.value}
         onBlur={this.props.onBlur}
