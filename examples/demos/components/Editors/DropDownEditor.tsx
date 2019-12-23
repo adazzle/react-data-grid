@@ -18,7 +18,7 @@ interface DropDownEditorProps<TRow> {
 
 type DropDownEditorHandle = Pick<Editor<{[key: string]: string | undefined}>, 'getInputNode' | 'getValue'>;
 
-function DropDownEditor<TRow>({ column, value, onBlur, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
+function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
   const selectRef = React.createRef<HTMLSelectElement>();
 
   useImperativeHandle<DropDownEditorHandle, DropDownEditorHandle>(ref, () => ({
@@ -59,7 +59,11 @@ function DropDownEditor<TRow>({ column, value, onBlur, options }: DropDownEditor
   );
 }
 
-DropDownEditor.propTypes = {
+const DropDownEditor = forwardRef(
+  DropDownEditorWithRef as React.RefForwardingComponent<DropDownEditorHandle, DropDownEditorProps<{ [key: string]: unknown }>>
+) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;
+
+(DropDownEditor as React.ComponentType).propTypes = {
   options: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.shape({
@@ -73,6 +77,4 @@ DropDownEditor.propTypes = {
   onBlur: PropTypes.func.isRequired
 };
 
-export default forwardRef(
-  DropDownEditor as React.RefForwardingComponent<DropDownEditorHandle, DropDownEditorProps<{ [key: string]: unknown }>>
-) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;
+export default DropDownEditor;

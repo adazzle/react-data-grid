@@ -1,6 +1,6 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, NavLink } from 'react-router-dom';
+import { HashRouter as Router, Route, NavLink, Switch, Redirect } from 'react-router-dom';
 
 import Basic from './demos/example01-basic';
 // import ResizableCols from './demos/example02-resizable-cols';
@@ -69,39 +69,42 @@ ReactDOM.render((
         <li><NavLink to="/examples/isScrolling">IsScrolling Example</NavLink></li>
         <li><NavLink to="/examples/summary-rows">Summary Rows Example</NavLink></li> */}
       </ul>
-      <Route path="/examples/basic">
-        <Basic />
-      </Route>
-      {/* <Route path="/examples/resizable-cols" component={ResizableCols} /> */}
-      {/* <Route path="/examples/frozen-cols" component={FrozenCols} /> */}
-      {/* <Route path="/examples/editable" component={Editable} /> */}
-      {/* <Route path="/examples/custom-formatters" component={CustomFormatters} /> */}
-      {/* <Route path="/examples/built-in-editors" component={BuiltInEditors} /> */}
-      {/* <Route path="/examples/sortable-cols" component={SortableCols} /> */}
-      {/* <Route path="/examples/filterable-grid" component={FilterableGrid} /> */}
-      {/* <Route path="/examples/one-million-rows" component={OneMillionRows} /> */}
-      {/* <Route path="/examples/customRowRenderer" component={CustomRowRenderer} /> */}
-      <Route path="/examples/all-features" component={AllFeatures} />
-      {/* <Route path="/examples/empty-rows" component={EmptyRows} /> */}
-      {/* <Route path="/examples/cell-drag-down" component={CellDragDown} /> */}
-      {/* <Route path="/examples/filterable-sortable-grid" component={FilterableSortableGrid} /> */}
-      {/* <Route path="/examples/row-select" component={RowSelect} /> */}
-      {/* <Route path="/examples/grid-events" component={GridEvents} /> */}
-      {/* <Route path="/examples/context-menu" component={ContextMenu} /> */}
-      {/* <Route path="/examples/column-events" component={ColumnEvents} /> */}
-      {/* <Route path="/examples/cell-navigation" component={CellNavigation} /> */}
-      {/* <Route path="/examples/cell-selection-events" component={CellSelectionEvents} /> */}
-      {/* <Route path="/examples/grouping" component={Grouping} /> */}
-      {/* <Route path="/examples/custom-filters" component={CustomFilters} /> */}
-      {/* <Route path="/examples/draggable-header" component={DraggableHeader} /> */}
-      {/* <Route path="/examples/tree-view" component={TreeView} /> */}
-      {/* <Route path="/examples/tree-view-no-add-delete" component={TreeViewNoAddDelete} /> */}
-      {/* <Route path="/examples/cell-actions" component={CellActions} /> */}
-      {/* <Route path="/examples/scroll-to-row-index" component={ScrollToRowIndex} /> */}
-      {/* <Route path="/examples/descendingFirstSortable" component={DescendingFirstSortable} /> */}
-      {/* <Route path="/examples/selection-range-events" component={SelectionRangeEvents} /> */}
-      {/* <Route path="/examples/isScrolling" component={IsScrolling} /> */}
-      {/* <Route path="/examples/summary-rows" component={SummaryRows} /> */}
+      <Switch>
+        <Route path="/examples/basic">
+          <Basic />
+        </Route>
+        {/* <Route path="/examples/resizable-cols" component={ResizableCols} /> */}
+        {/* <Route path="/examples/frozen-cols" component={FrozenCols} /> */}
+        {/* <Route path="/examples/editable" component={Editable} /> */}
+        {/* <Route path="/examples/custom-formatters" component={CustomFormatters} /> */}
+        {/* <Route path="/examples/built-in-editors" component={BuiltInEditors} /> */}
+        {/* <Route path="/examples/sortable-cols" component={SortableCols} /> */}
+        {/* <Route path="/examples/filterable-grid" component={FilterableGrid} /> */}
+        {/* <Route path="/examples/one-million-rows" component={OneMillionRows} /> */}
+        {/* <Route path="/examples/customRowRenderer" component={CustomRowRenderer} /> */}
+        <Route path="/examples/all-features" component={AllFeatures} />
+        {/* <Route path="/examples/empty-rows" component={EmptyRows} /> */}
+        {/* <Route path="/examples/cell-drag-down" component={CellDragDown} /> */}
+        {/* <Route path="/examples/filterable-sortable-grid" component={FilterableSortableGrid} /> */}
+        {/* <Route path="/examples/row-select" component={RowSelect} /> */}
+        {/* <Route path="/examples/grid-events" component={GridEvents} /> */}
+        {/* <Route path="/examples/context-menu" component={ContextMenu} /> */}
+        {/* <Route path="/examples/column-events" component={ColumnEvents} /> */}
+        {/* <Route path="/examples/cell-navigation" component={CellNavigation} /> */}
+        {/* <Route path="/examples/cell-selection-events" component={CellSelectionEvents} /> */}
+        {/* <Route path="/examples/grouping" component={Grouping} /> */}
+        {/* <Route path="/examples/custom-filters" component={CustomFilters} /> */}
+        {/* <Route path="/examples/draggable-header" component={DraggableHeader} /> */}
+        {/* <Route path="/examples/tree-view" component={TreeView} /> */}
+        {/* <Route path="/examples/tree-view-no-add-delete" component={TreeViewNoAddDelete} /> */}
+        {/* <Route path="/examples/cell-actions" component={CellActions} /> */}
+        {/* <Route path="/examples/scroll-to-row-index" component={ScrollToRowIndex} /> */}
+        {/* <Route path="/examples/descendingFirstSortable" component={DescendingFirstSortable} /> */}
+        {/* <Route path="/examples/selection-range-events" component={SelectionRangeEvents} /> */}
+        {/* <Route path="/examples/isScrolling" component={IsScrolling} /> */}
+        {/* <Route path="/examples/summary-rows" component={SummaryRows} /> */}
+        <Redirect from="/" exact to="/examples/all-features" />
+      </Switch>
     </Router>
   </StrictMode>
 ), document.getElementById('root'));
