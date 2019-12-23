@@ -28,8 +28,7 @@ import Basic from './demos/example01-basic';
 // import CustomFilters from './demos/example22-custom-filters';
 // import ImmutableDataGrouping from './demos/example23-immutable-data-grouping';
 // import DraggableHeader from './demos/example24-draggable-header';
-// import TreeView from './demos/example25-tree-view';
-// import TreeViewNoAddDelete from './demos/example26-tree-view-no-add-delete';
+import TreeView from './demos/example25-tree-view';
 import CellActions from './demos/example27-cell-actions';
 // import ScrollToRowIndex from './demos/example28-scroll-to-row-index';
 // import DescendingFirstSortable from './demos/example29-descendingFirstSortable';
@@ -67,7 +66,6 @@ ReactDOM.render((
         <li><NavLink to="/examples/immutable-data-grouping">Immutable Data Grouping Example</NavLink></li>
         <li><NavLink to="/examples/draggable-header">Draggable Header Example</NavLink></li>
         <li><NavLink to="/examples/tree-view">Tree View Example</NavLink></li>
-        <li><NavLink to="/examples/tree-view-no-add-delete">Tree View No Add Delete Example</NavLink></li>
         <li><NavLink to="/examples/cell-actions">Cell Actions Example</NavLink></li>
         <li><NavLink to="/examples/scroll-to-row-index">Scroll To Row Index Example</NavLink></li>
         <li><NavLink to="/examples/descendingFirstSortable">Descending First Sortable Example</NavLink></li>
@@ -103,8 +101,9 @@ ReactDOM.render((
       {/* <Route path="/examples/custom-filters" component={CustomFilters} /> */}
       {/* <Route path="/examples/immutable-data-grouping" component={ImmutableDataGrouping} /> */}
       {/* <Route path="/examples/draggable-header" component={DraggableHeader} /> */}
-      {/* <Route path="/examples/tree-view" component={TreeView} /> */}
-      {/* <Route path="/examples/tree-view-no-add-delete" component={TreeViewNoAddDelete} /> */}
+      <Route path="/examples/tree-view">
+        <TreeView />
+      </Route>
       <Route path="/examples/cell-actions">
         <CellActions />
       </Route>

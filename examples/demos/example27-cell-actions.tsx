@@ -146,7 +146,7 @@ const columns: Column<Row>[] = [
   }
 ];
 
-export default function () {
+export default function() {
   const [rows] = useState(() => createRows(2000));
 
   return (

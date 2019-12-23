@@ -17,7 +17,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowGroupRenderer'
 | 'contextMenu'
 | 'RowsContainer'
-| 'getSubRowDetails'
 | 'selectedRows'
 | 'summaryRows'
 | 'onCheckCellIsEditable'
@@ -25,10 +24,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onSelectedCellRangeChange'
 | 'onRowClick'
 | 'onRowDoubleClick'
-| 'onCellExpand'
 | 'onRowExpandToggle'
-| 'onDeleteSubRow'
-| 'onAddSubRow'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellAutoFocus'
@@ -187,7 +183,6 @@ function Canvas<R, K extends keyof R>({
           columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
           eventBus={eventBus}
-          getSubRowDetails={props.getSubRowDetails}
           onRowSelectionChange={props.onRowSelectionChange}
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
@@ -197,10 +192,7 @@ function Canvas<R, K extends keyof R>({
           selectedRows={props.selectedRows}
           onRowClick={props.onRowClick}
           onRowDoubleClick={props.onRowDoubleClick}
-          onCellExpand={props.onCellExpand}
           onRowExpandToggle={props.onRowExpandToggle}
-          onDeleteSubRow={props.onDeleteSubRow}
-          onAddSubRow={props.onAddSubRow}
           enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}
         />
       );

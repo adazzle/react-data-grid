@@ -1,8 +1,3 @@
-export enum CellExpand {
-  DOWN_TRIANGLE = '\u25BC',
-  RIGHT_TRIANGLE = '\u25B6'
-}
-
 export enum CellNavigationMode {
   NONE = 'none',
   CHANGE_ROW = 'changeRow',

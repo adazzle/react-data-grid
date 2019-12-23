@@ -13,7 +13,6 @@ interface Props<R> {
   idx: number;
   extraClasses?: string;
   forceUpdate?: boolean;
-  subRowDetails?: unknown;
   isRowHovered?: boolean;
   columnGroupDisplayName: string;
   columnGroupName: string;

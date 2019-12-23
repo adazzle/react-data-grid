@@ -67,66 +67,6 @@
   padding: 0;
 }
 
-.rdg-cell-expand {
-    float: right;
-    display: table;
-    height: 100%;
-}
-
-.rdg-cell-expand > span {
-  display: table-cell;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-.rdg-child-row-action-cross:before, rdg-child-row-action-cross:after {
-  content: "";
-  position: absolute;
-  background: grey;
-  height: 50%;
-}
-
-.rdg-child-row-action-cross:before {
-  left: 21px;
-  width: 1px;
-  height: 100%;
-}
-
-.rdg-child-row-action-cross:after {
-  top: 50%;
-  left:20px;
-  height: 1px;
-  width: 15px;
-  content: "";
-  position: absolute;
-  background: grey;
-}
-
-.rdg-child-row-action-cross:hover {
-    background: red;
-}
-.rdg-child-row-btn {
-  cursor: pointer;
-  position: absolute;
-  top: calc(50% - 6px);
-  height: 12px;
-  width: 12px;
-  z-index: 2;
-  background: white;
-}
-
-.rdg-child-row-btn .MuiSvgIcon-root {
-  font-size: 16px;
-  color: grey;
-  position: absolute;
-  top: calc(50% - 8px);
-  left: calc(50% - 8px);
-
-  &:hover {
-    color: red;
-  }
-}
-
 .rdg-cell-mask {
   position: absolute;
   pointer-events: none;

@@ -136,7 +136,6 @@ export interface CellRendererProps<TRow> {
   lastFrozenColumnIndex: number;
   rowData: TRow;
   scrollLeft: number | undefined;
-  expandableOptions?: ExpandableOptions;
   isSummaryRow: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
@@ -144,9 +143,6 @@ export interface CellRendererProps<TRow> {
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
-  onAddSubRow?(): void;
-  onDeleteSubRow?(options: SubRowOptions<TRow>): void;
-  onCellExpand?(options: SubRowOptions<TRow>): void;
 }
 
 export type CellContentRenderer<TRow> = (props: CellContentRendererProps<TRow>) => React.ReactNode;
@@ -156,12 +152,9 @@ export type CellContentRendererProps<TRow> = Pick<CellRendererProps<TRow>,
 | 'rowIdx'
 | 'rowData'
 | 'column'
-| 'expandableOptions'
 | 'isRowSelected'
 | 'onRowSelectionChange'
 | 'isSummaryRow'
-| 'onDeleteSubRow'
-| 'onCellExpand'
 >;
 
 export interface RowsContainerProps {
@@ -178,7 +171,6 @@ export interface IRowRendererProps<TRow> {
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   idx: number;
   extraClasses?: string;
-  subRowDetails?: SubRowDetails;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isSummaryRow: boolean;
@@ -188,43 +180,13 @@ export interface IRowRendererProps<TRow> {
   onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
-  onAddSubRow?(): void;
-  onDeleteSubRow?(options: SubRowOptions<TRow>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
-  onCellExpand?(options: SubRowOptions<TRow>): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
   column: CalculatedColumn<TRow>;
   value: TFilterValue;
   onChange(value: TFilterValue): void;
-}
-
-export interface SubRowDetails<TChildRow = unknown> {
-  canExpand: boolean;
-  field: string;
-  expanded: boolean;
-  children: TChildRow[];
-  treeDepth: number;
-  siblingIndex: number;
-  numberSiblings: number;
-  group?: boolean;
-}
-
-export interface SubRowOptions<TRow, TChildRow = unknown> {
-  rowIdx: number;
-  idx: number;
-  rowData: TRow;
-  expandArgs?: ExpandableOptions<TChildRow>;
-}
-
-export interface ExpandableOptions<TChildRow = unknown> {
-  canExpand: boolean;
-  field: string;
-  expanded: boolean;
-  children: TChildRow[];
-  treeDepth: number;
-  subRowDetails: SubRowDetails;
 }
 
 export interface ColumnEventInfo<TRow> extends Position {
