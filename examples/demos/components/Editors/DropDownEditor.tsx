@@ -27,7 +27,7 @@ export default class DropDownEditor<TRow> extends React.Component<DropDownEditor
         text: PropTypes.string
       })
     ])).isRequired,
-    value: PropTypes.any.isRequired,
+    value: PropTypes.string,
     onBlur: PropTypes.func.isRequired
   };
 

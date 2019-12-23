@@ -81,10 +81,12 @@ export default class extends React.Component<{}, State> {
     {
       key: 'avatar',
       name: 'Avatar',
-      width: 60,
+      width: 40,
       formatter: ImageFormatter,
       resizable: true,
-      headerRenderer: <ImageFormatter value={faker.image.cats()} />
+      headerRenderer() {
+        return <ImageFormatter value={faker.image.cats()} />;
+      }
     },
     {
       key: 'title',

@@ -42,7 +42,7 @@ export default class extends React.Component {
     const { selectedCell, prevSelectedCell } = this.state;
     return (
       <Wrapper title="Cell selection/delesection events">
-        <div className="react-grid-Toolbar">
+        <div className="rdg-toolbar">
           {selectedCell && <>({selectedCell.idx}, {selectedCell.rowIdx}) is selected</>}
           {prevSelectedCell && <> and ({prevSelectedCell.idx}, {prevSelectedCell.rowIdx}) was deselected</>}
         </div>
