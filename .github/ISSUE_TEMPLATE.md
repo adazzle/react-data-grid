@@ -39,9 +39,9 @@
 - [ ] 💡 Feature Request
 
 > 👋 Need general support? Not sure about how to use React itself, or how to get started with the Grid?
-> Please do not submit support request here. Instead see
+> Please do not submit a support request here. Instead see
 
-> https://github.com/adazzle/react-data-grid/blob/master/CONTRIBUTING.md
+> https://github.com/adazzle/react-data-grid/blob/master/docs/CONTRIBUTING.md
 
 ---
 
@@ -50,7 +50,7 @@
 ```
 Please include:
 - What the current behavior is
-- What the desired behvaior is
+- What the desired behavior is
 - (If Bug) Steps to reproduce the issue
 - (If Feature) The motivation / use case for the feature
 

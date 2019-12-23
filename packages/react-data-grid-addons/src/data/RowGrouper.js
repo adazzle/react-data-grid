@@ -8,12 +8,11 @@ class RowGrouper {
   }
 
   isRowExpanded(columnName, name) {
-    let isExpanded = true;
     const expandedRowGroup = this.expandedRows[columnName];
     if (expandedRowGroup && expandedRowGroup[name]) {
-      isExpanded = expandedRowGroup[name].isExpanded;
+      return expandedRowGroup[name].isExpanded;
     }
-    return isExpanded;
+    return true;
   }
 
   groupRowsByColumn(rows, columnIndex = 0) {
