@@ -1,5 +1,5 @@
 import faker from 'faker';
-import React from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
@@ -22,11 +22,6 @@ interface Row {
   companyName: string;
   words: string;
   sentence: string;
-}
-
-interface State {
-  rows: Row[];
-  selectedRows: Set<string>;
 }
 
 faker.locale = 'en_GB';
@@ -62,14 +57,11 @@ function createRows(numberOfRows: number): Row[] {
   return rows;
 }
 
-export default class extends React.Component<{}, State> {
-  readonly state: Readonly<State> = {
-    rows: createRows(2000),
-    selectedRows: new Set()
-  };
-
-  gridRef: React.RefObject<DataGridHandle> = React.createRef();
-  columns: Column<Row>[] = [
+export default function AllFeaturesExample(): JSX.Element {
+  const [rows, setRows] = useState(() => createRows(2000));
+  const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
+  const gridRef = React.createRef<DataGridHandle>();
+  const columns: Column<Row>[] = useMemo(() => [
     SelectColumn,
     {
       key: 'id',
@@ -95,8 +87,8 @@ export default class extends React.Component<{}, State> {
       width: 200,
       resizable: true,
       events: {
-        onClick: (ev, { idx, rowIdx }) => {
-          this.gridRef?.current?.openCellEditor(rowIdx, idx);
+        onClick(ev, { idx, rowIdx }) {
+          gridRef?.current?.openCellEditor(rowIdx, idx);
         }
       }
     },
@@ -172,78 +164,62 @@ export default class extends React.Component<{}, State> {
       width: 200,
       resizable: true
     }
-  ];
+  ], [gridRef]);
 
-  handleGridRowsUpdated = ({ fromRow, toRow, updated, action }: GridRowsUpdatedEvent<Row, Partial<Row>>): void => {
-    this.setState((state) => {
-      const rows = [...state.rows];
-      let start;
-      let end;
+  const handleGridRowsUpdated = useCallback(({ fromRow, toRow, updated, action }: GridRowsUpdatedEvent<Row, Partial<Row>>): void => {
+    const newRows = [...rows];
+    let start;
+    let end;
 
-      if (action === UpdateActions.COPY_PASTE) {
-        start = toRow;
-        end = toRow;
-      } else {
-        start = Math.min(fromRow, toRow);
-        end = Math.max(fromRow, toRow);
-      }
+    if (action === UpdateActions.COPY_PASTE) {
+      start = toRow;
+      end = toRow;
+    } else {
+      start = Math.min(fromRow, toRow);
+      end = Math.max(fromRow, toRow);
+    }
 
-      for (let i = start; i <= end; i++) {
-        rows[i] = { ...rows[i], ...updated };
-      }
+    for (let i = start; i <= end; i++) {
+      newRows[i] = { ...newRows[i], ...updated };
+    }
 
-      return { rows };
-    });
-  };
+    setRows(newRows);
+  }, [rows]);
 
-  handleAddRow = ({ newRowIndex }: { newRowIndex: number}): void => {
-    this.setState((state) => {
-      const newRow = createFakeRowObjectData(newRowIndex);
-      const rows = [...state.rows, newRow];
-      return { rows };
-    });
-  };
+  const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number}): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
-  getRowAt = (index: number): Row => {
-    return this.state.rows[index];
-  };
+  const getRowAt = useCallback((index: number): Row => rows[index], [rows]);
 
-  getSize = (): number => {
-    return this.state.rows.length;
-  };
+  const getSize = useCallback((): number => rows.length, [rows.length]);
 
-  onSelectedRowsChange = (selectedRows: Set<string>): void => {
-    this.setState({ selectedRows });
-  };
+  const onSelectedRowsChange = useCallback((newSelectedRows: Set<string>): void => setSelectedRows(newSelectedRows), []);
 
-  render() {
-    return (
-      <Wrapper title="All the features grid">
-        <>
-          <Toolbar onAddRow={this.handleAddRow} numberOfRows={this.state.rows.length} />
-          <div className="grid-autosizer-wrapper">
-            <AutoSizer>
-              {({ height, width }) => (
-                <DataGrid<Row, keyof Row>
-                  ref={this.gridRef}
-                  enableCellSelect
-                  columns={this.columns}
-                  rowGetter={this.getRowAt}
-                  rowsCount={this.getSize()}
-                  onGridRowsUpdated={this.handleGridRowsUpdated}
-                  rowHeight={30}
-                  minWidth={width}
-                  minHeight={height}
-                  selectedRows={this.state.selectedRows}
-                  onSelectedRowsChange={this.onSelectedRowsChange}
-                  enableCellCopyPaste
-                  enableCellDragAndDrop
-                />
-              )}
-            </AutoSizer>
-          </div>
-        </>
-      </Wrapper>
-    );
-  }
+  return (
+    <Wrapper title="All the features grid">
+      <>
+        <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
+        <div className="grid-autosizer-wrapper">
+          <AutoSizer>
+            {({ height, width }) => (
+              <DataGrid<Row, keyof Row>
+                ref={gridRef}
+                enableCellSelect
+                columns={columns}
+                rowGetter={getRowAt}
+                rowsCount={getSize()}
+                onGridRowsUpdated={handleGridRowsUpdated}
+                rowHeight={30}
+                minWidth={width}
+                minHeight={height}
+                selectedRows={selectedRows}
+                onSelectedRowsChange={onSelectedRowsChange}
+                enableCellCopyPaste
+                enableCellDragAndDrop
+              />
+            )}
+          </AutoSizer>
+        </div>
+      </>
+    </Wrapper>
+  );
 }

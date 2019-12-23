@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
-import { Column } from '../../../../src';
+import { Column, Editor } from '../../../../src';
 
 interface Option {
   id: string;
@@ -16,47 +16,37 @@ interface DropDownEditorProps<TRow> {
   onBlur(): void;
 }
 
-export default class DropDownEditor<TRow> extends React.Component<DropDownEditorProps<TRow>> {
-  static propTypes = {
-    options: PropTypes.arrayOf(PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.shape({
-        id: PropTypes.string,
-        title: PropTypes.string,
-        value: PropTypes.string,
-        text: PropTypes.string
-      })
-    ])).isRequired,
-    value: PropTypes.string,
-    onBlur: PropTypes.func.isRequired
-  };
+type DropDownEditorHandle = Pick<Editor<{[key: string]: string | undefined}>, 'getInputNode' | 'getValue'>;
 
-  selectRef: React.RefObject<HTMLSelectElement> = React.createRef();
+function DropDownEditor<TRow>({ column, value, onBlur, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
+  const selectRef = React.createRef<HTMLSelectElement>();
 
-  getInputNode() {
-    return this.selectRef?.current;
-  }
+  useImperativeHandle<DropDownEditorHandle, DropDownEditorHandle>(ref, () => ({
+    getInputNode() {
+      return selectRef?.current;
+    },
+    getValue() {
+      return {
+        [column.key]: selectRef?.current?.value
+      };
+    }
+  }));
 
-  getValue() {
-    return {
-      [this.props.column.key]: this.selectRef?.current?.value
-    };
-  }
-
-  renderOptions() {
-    return this.props.options.map(name => {
-      if (typeof name === 'string') {
-        return (
-          <option
-            key={name}
-            value={name}
-          >
-            {name}
-          </option>
-        );
-      }
-
-      return (
+  return (
+    <select
+      ref={selectRef}
+      className="rdg-select-editor"
+      defaultValue={value}
+      onBlur={onBlur}
+    >
+      {options.map(name => typeof name === 'string' ? (
+        <option
+          key={name}
+          value={name}
+        >
+          {name}
+        </option>
+      ) : (
         <option
           key={name.id}
           value={name.value}
@@ -64,20 +54,25 @@ export default class DropDownEditor<TRow> extends React.Component<DropDownEditor
         >
           {name.text || name.value}
         </option>
-      );
-    });
-  }
-
-  render() {
-    return (
-      <select
-        ref={this.selectRef}
-        className="rdg-select-editor"
-        defaultValue={this.props.value}
-        onBlur={this.props.onBlur}
-      >
-        {this.renderOptions()}
-      </select>
-    );
-  }
+      ))}
+    </select>
+  );
 }
+
+DropDownEditor.propTypes = {
+  options: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      value: PropTypes.string,
+      text: PropTypes.string
+    })
+  ])).isRequired,
+  value: PropTypes.string,
+  onBlur: PropTypes.func.isRequired
+};
+
+export default forwardRef(
+  DropDownEditor as React.RefForwardingComponent<DropDownEditorHandle, DropDownEditorProps<{ [key: string]: unknown }>>
+) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;
