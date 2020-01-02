@@ -134,17 +134,18 @@ function Cell<R>({
     style.transform = `translateX(${scrollLeft}px)`;
   }
 
-  const formatterProps = {
-    value: rowData[column.key],
-    column,
-    rowIdx,
-    row: rowData,
-    isRowSelected,
-    onRowSelectionChange,
-    isSummaryRow
-  };
   if (!children) {
+    const formatterProps = {
+      value: rowData[column.key],
+      column,
+      rowIdx,
+      row: rowData,
+      isRowSelected,
+      onRowSelectionChange,
+      isSummaryRow
+    };
     const { formatter } = column;
+
     if (isValidElementType(formatter)) {
       children = createElement<typeof formatterProps>(formatter, formatterProps);
     }
