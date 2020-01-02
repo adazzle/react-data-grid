@@ -61,7 +61,7 @@ export default class extends React.Component {
     return (
       <Wrapper title="Selection Range Events">
         <div
-          className="react-grid-Toolbar"
+          className="rdg-toolbar"
           style={{ minHeight: 48, overflow: 'auto' }}
           ref={r => this.divRef = r}
         >
