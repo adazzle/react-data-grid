@@ -1,7 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import classNames from 'classnames';
 
-function CellAction({ icon, actions, callback, isFirst }) {
+import './CellActionsFormatter.less';
+
+interface Action {
+  text: ReactNode;
+  callback(): void;
+}
+
+interface CellActionButton {
+  icon: ReactNode;
+  actions?: Action[];
+  callback?(): void;
+}
+
+interface CellActionProps extends CellActionButton {
+  isFirst: boolean;
+}
+
+function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const cellActionClasses = classNames('rdg-cell-action', {
@@ -37,13 +54,15 @@ function CellAction({ icon, actions, callback, isFirst }) {
     </div>
   );
 }
-export default function CellActions({ actions }) {
-  if (actions && actions.length > 0) {
-    const actionButtons = actions.map((action, index) => {
-      return <CellAction key={index} isFirst={index === 0} {...action} />;
-    });
 
-    return <>{actionButtons}</>;
-  }
-  return null;
+interface CellActionsFormatterProps {
+  actions: CellActionButton[];
+}
+
+export function CellActionsFormatter({ actions }: CellActionsFormatterProps) {
+  const actionButtons = actions.map((action, index) => {
+    return <CellAction key={index} isFirst={index === 0} {...action} />;
+  });
+
+  return <>{actionButtons}</>;
 }

@@ -28,8 +28,9 @@ import {
   RowsContainerProps,
   ScrollPosition,
   SelectedRange,
-  SubRowDetails,
-  SubRowOptions
+  IRowRendererProps,
+  ScrollPosition,
+  Filters
 } from './common/types';
 import FilterRow from './FilterRow';
 import DraggableHeaderCell, { DraggableHeaderCellProps } from './Header/DraggableHeaderCell';
@@ -124,13 +125,6 @@ export interface DataGridProps<R, K extends keyof R> {
   RowsContainer?: React.ComponentType<RowsContainerProps>;
   emptyRowsView?: React.ComponentType<{}>;
   onHeaderDrop?(source: string, target: string): void;
-  getSubRowDetails?(row: R): SubRowDetails;
-  /** Called whenever a sub row is deleted from the grid */
-  onDeleteSubRow?(options: SubRowOptions<R>): void;
-  /** Called whenever a sub row is added to the grid */
-  onAddSubRow?(): void;
-  /** Function called whenever a cell has been expanded */
-  onCellExpand?(options: SubRowOptions<R>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
 
   /** Function called whenever selected cell is changed */
@@ -346,7 +340,6 @@ function DataGrid<R, K extends keyof R>({
               onScroll={handleScroll}
               height={minHeight - rowOffsetHeight}
               contextMenu={props.contextMenu}
-              getSubRowDetails={props.getSubRowDetails}
               rowGroupRenderer={props.rowGroupRenderer}
               enableCellSelect={enableCellSelect}
               enableCellAutoFocus={enableCellAutoFocus}
@@ -366,10 +359,7 @@ function DataGrid<R, K extends keyof R>({
               onSelectedCellRangeChange={props.onSelectedCellRangeChange}
               onRowClick={props.onRowClick}
               onRowDoubleClick={props.onRowDoubleClick}
-              onCellExpand={props.onCellExpand}
               onRowExpandToggle={props.onRowExpandToggle}
-              onDeleteSubRow={props.onDeleteSubRow}
-              onAddSubRow={props.onAddSubRow}
               {...horizontalRange}
             />
           )}

@@ -10,7 +10,6 @@ import EventBus from './EventBus';
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'columnMetrics'
 | 'viewportColumns'
-| 'getSubRowDetails'
 | 'onRowSelectionChange'
 | 'rowGroupRenderer'
 | 'rowHeight'
@@ -19,10 +18,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'selectedRows'
 | 'onRowClick'
 | 'onRowDoubleClick'
-| 'onCellExpand'
 | 'onRowExpandToggle'
-| 'onDeleteSubRow'
-| 'onAddSubRow'
 >;
 
 export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
@@ -38,7 +34,6 @@ function RowRenderer<R, K extends keyof R>({
   columnMetrics,
   viewportColumns,
   eventBus,
-  getSubRowDetails,
   idx,
   onRowSelectionChange,
   rowData,
@@ -64,16 +59,12 @@ function RowRenderer<R, K extends keyof R>({
     viewportColumns,
     isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),
     onRowSelectionChange,
-    subRowDetails: getSubRowDetails?.(rowData),
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
     scrollLeft,
     isSummaryRow: false,
     eventBus,
     onRowClick: props.onRowClick,
     onRowDoubleClick: props.onRowDoubleClick,
-    onCellExpand: props.onCellExpand,
-    onDeleteSubRow: props.onDeleteSubRow,
-    onAddSubRow: props.onAddSubRow,
     enableCellRangeSelection: props.enableCellRangeSelection
   };
 

@@ -42,9 +42,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       eventBus,
       onRowClick,
       onRowDoubleClick,
-      onCellExpand,
-      onDeleteSubRow,
-      onAddSubRow,
       enableCellRangeSelection
     } = this.props;
     const Renderer = this.props.cellRenderer!;
@@ -60,7 +57,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           rowData={row}
-          expandableOptions={this.getExpandableOptions(key)}
           scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
@@ -68,28 +64,10 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
           eventBus={eventBus}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
-          onCellExpand={onCellExpand}
-          onDeleteSubRow={onDeleteSubRow}
-          onAddSubRow={onAddSubRow}
           enableCellRangeSelection={enableCellRangeSelection}
         />
       );
     });
-  }
-
-  getExpandableOptions(columnKey: keyof R) {
-    const { subRowDetails } = this.props;
-    if (!subRowDetails) return;
-
-    const { field, expanded, children, treeDepth } = subRowDetails;
-    return {
-      canExpand: field === columnKey && ((children && children.length > 0) || subRowDetails.group === true),
-      field,
-      expanded,
-      children,
-      treeDepth,
-      subRowDetails
-    };
   }
 
   render() {
