@@ -123,21 +123,7 @@ describe('Canvas Tests', () => {
         rowOverscanEndIdx: 1,
         columns: COLUMNS,
         rowGetter,
-        rowsCount: 1,
-        getSubRowDetails() {
-          return {
-            canExpand: false,
-            field: 'field',
-            expanded: false,
-            children: [
-              { id: 'row1-0' },
-              { id: 'row1-1' }
-            ],
-            treeDepth: 1,
-            siblingIndex: 1,
-            numberSiblings: 2
-          };
-        }
+        rowsCount: 1
       };
 
       const wrapper = renderComponent(props);
