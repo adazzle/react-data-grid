@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import update from 'immutability-helper';
 import Wrapper from './Wrapper';
 
@@ -93,7 +93,6 @@ export default class extends React.Component {
           rowsCount={this.state.rows.length}
           minHeight={500}
           onGridRowsUpdated={this.handleGridRowsUpdated}
-          defaultCellContentRenderer={valueCellContentRenderer}
         />
       </Wrapper>
     );

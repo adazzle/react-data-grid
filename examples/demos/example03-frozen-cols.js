@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid, { valueCellContentRenderer } from 'react-data-grid';
+import DataGrid from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 export default class extends React.Component {
@@ -91,7 +91,6 @@ export default class extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this._rows.length}
           minHeight={600}
-          defaultCellContentRenderer={valueCellContentRenderer}
         />
       </Wrapper>
     );

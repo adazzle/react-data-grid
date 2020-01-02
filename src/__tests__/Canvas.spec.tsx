@@ -6,7 +6,7 @@ import Canvas, { CanvasProps } from '../Canvas';
 import { CellNavigationMode } from '../common/enums';
 import { CalculatedColumn } from '../common/types';
 import RowComponent from '../Row';
-import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
+import { ValueFormatter } from '../formatters';
 
 interface Row {
   id: number;
@@ -37,7 +37,7 @@ const testProps: CanvasProps<Row, 'id'> = {
       idx: 0,
       width: 100,
       left: 100,
-      cellContentRenderer: valueCellContentRenderer
+      formatter: ValueFormatter
     }],
     lastFrozenColumnIndex: -1,
     totalColumnWidth: 0,
@@ -49,7 +49,7 @@ const testProps: CanvasProps<Row, 'id'> = {
     idx: 0,
     width: 100,
     left: 100,
-    cellContentRenderer: valueCellContentRenderer
+    formatter: ValueFormatter
   }],
   renderBatchSize: 8,
   onCanvasKeydown() {},
@@ -97,7 +97,7 @@ describe('Canvas Tests', () => {
       name: 'ID',
       width: 100,
       left: 100,
-      cellContentRenderer: valueCellContentRenderer
+      formatter: ValueFormatter
     }];
 
     it('can render a custom renderer if __metadata property exists', () => {

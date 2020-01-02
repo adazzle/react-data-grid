@@ -1,4 +1,4 @@
-import { Column, CalculatedColumn, ColumnMetrics, CellContentRenderer } from '../common/types';
+import { Column, CalculatedColumn, ColumnMetrics, FormatterProps } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R> {
@@ -6,7 +6,7 @@ interface Metrics<R> {
   columnWidths: Map<keyof R, number>;
   minColumnWidth: number;
   viewportWidth: number;
-  defaultCellContentRenderer: CellContentRenderer<R>;
+  defaultFormatter: React.ComponentType<FormatterProps<unknown, R>>;
 }
 
 export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
@@ -44,12 +44,12 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   const calculatedColumns: CalculatedColumn<R>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
     const width = column.width === undefined ? unallocatedColumnWidth : column.width;
-    const newColumn: CalculatedColumn<R> = {
+    const newColumn = {
       ...column,
       idx,
       width,
       left,
-      cellContentRenderer: column.cellContentRenderer || metrics.defaultCellContentRenderer
+      formatter: column.formatter || metrics.defaultFormatter
     };
     totalWidth += width;
     left += width;

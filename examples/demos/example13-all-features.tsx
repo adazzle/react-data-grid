@@ -1,7 +1,7 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, CellContent, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent } from '../../src';
+import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent, ValueFormatter } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import ImageFormatter from './components/Formatters/ImageFormatter';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -87,10 +87,10 @@ export default function AllFeaturesExample(): JSX.Element {
       editor: <DropDownEditor<Row> options={titles} column={{} as Column<Row>} onBlur={() => {}} />,
       width: 200,
       resizable: true,
-      cellContentRenderer(props) {
+      formatter(props) {
         return (
-          <div onClick={() => gridRef.current?.openCellEditor(props.rowIdx, props.idx)}>
-            <CellContent {...props} />
+          <div onClick={() => gridRef.current?.openCellEditor(props.rowIdx, props.column.idx)}>
+            <ValueFormatter {...props} />
           </div>
         );
       }
@@ -204,7 +204,7 @@ export default function AllFeaturesExample(): JSX.Element {
         <div className="grid-autosizer-wrapper">
           <AutoSizer>
             {({ height, width }) => (
-              <DataGrid<Row, keyof Row>
+              <DataGrid<Row, 'id'>
                 ref={gridRef}
                 enableCellSelect
                 columns={columns}

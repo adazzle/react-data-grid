@@ -1,4 +1,4 @@
-import { valueCellContentRenderer } from '../../Cell/cellContentRenderers';
+import { ValueFormatter } from '../../formatters';
 import { CalculatedColumn } from '../../common/types';
 
 function createColumn(index: number): CalculatedColumn<{ [key: string]: React.ReactNode }> {
@@ -10,7 +10,7 @@ function createColumn(index: number): CalculatedColumn<{ [key: string]: React.Re
     idx: index,
     width: 100,
     left: 100 * index,
-    cellContentRenderer: valueCellContentRenderer
+    formatter: ValueFormatter
   };
 }
 

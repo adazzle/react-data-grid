@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import DataGrid, { SelectColumn, valueCellContentRenderer } from 'react-data-grid';
+import DataGrid, { SelectColumn } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
 function formatDecimal({ column, rowData, isSummaryRow, maximumFractionDigits = 2 }) {
@@ -33,7 +33,7 @@ const columns = [
     name: 'Title',
     width: 200,
     frozen: true,
-    cellContentRenderer: formatTitle
+    formatter: formatTitle
   },
   {
     key: 'priority',
@@ -64,19 +64,19 @@ const columns = [
     key: 'cost',
     name: 'Resource cost (USD)',
     width: 200,
-    cellContentRenderer: formatDecimal
+    formatter: formatDecimal
   },
   {
     key: 'hours',
     name: '# of working hours',
     width: 200,
-    cellContentRenderer: formatInteger
+    formatter: formatInteger
   },
   {
     key: 'issueCount',
     name: '# of issues',
     width: 200,
-    cellContentRenderer: formatInteger
+    formatter: formatInteger
   }
 ];
 
@@ -151,7 +151,6 @@ export default function Example() {
         minHeight={700}
         selectedRows={selectedRowIndexes}
         onSelectedRowsChange={setSelectedRowIndexes}
-        defaultCellContentRenderer={valueCellContentRenderer}
       />
       <div
         style={{

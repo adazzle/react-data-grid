@@ -3,7 +3,7 @@ import {
   getHorizontalRangeToRender,
   HorizontalRangeToRenderParams
 } from '../viewportUtils';
-import { valueCellContentRenderer } from '../../Cell/cellContentRenderers';
+import { ValueFormatter } from '../../formatters';
 import { ColumnMetrics } from '../../common/types';
 
 interface Row {
@@ -76,7 +76,7 @@ describe('viewportUtils', () => {
         name: `col${i}`,
         width: 100,
         left: i * 100,
-        cellContentRenderer: valueCellContentRenderer
+        formatter: ValueFormatter
       }));
       return {
         columns,

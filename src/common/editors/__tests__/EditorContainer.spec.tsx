@@ -4,7 +4,7 @@ import { mount, MountRendererProps } from 'enzyme';
 
 import EditorContainer, { Props } from '../EditorContainer';
 import SimpleTextEditor from '../SimpleTextEditor';
-import { valueCellContentRenderer } from '../../../Cell/cellContentRenderers';
+import { ValueFormatter } from '../../../formatters';
 import { CalculatedColumn, EditorProps } from '../../types';
 
 interface Row {
@@ -41,7 +41,7 @@ const fakeColumn: CalculatedColumn<Row> = {
   key: 'col1',
   width: 100,
   left: 0,
-  cellContentRenderer: valueCellContentRenderer
+  formatter: ValueFormatter
 };
 
 const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps) => {

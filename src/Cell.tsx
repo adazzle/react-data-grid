@@ -1,4 +1,5 @@
-import React, { memo } from 'react';
+import React, { memo, createElement, cloneElement } from 'react';
+import { isElement, isValidElementType } from 'react-is';
 import classNames from 'classnames';
 
 import { CellRendererProps, ColumnEventInfo, Position } from './common/types';
@@ -133,21 +134,33 @@ function Cell<R>({
     style.transform = `translateX(${scrollLeft}px)`;
   }
 
+  const formatterProps = {
+    value: rowData[column.key],
+    column,
+    rowIdx,
+    row: rowData,
+    isRowSelected,
+    onRowSelectionChange,
+    isSummaryRow
+  };
+  if (!children) {
+    const { formatter } = column;
+    if (isValidElementType(formatter)) {
+      children = createElement<typeof formatterProps>(formatter, formatterProps);
+    }
+
+    if (isElement(formatter)) {
+      children = cloneElement(formatter, formatterProps);
+    }
+  }
+
   return (
     <div
       className={className}
       style={style}
       {...getEvents()}
     >
-      {children || column.cellContentRenderer({
-        idx,
-        rowIdx,
-        rowData,
-        column,
-        isRowSelected,
-        onRowSelectionChange,
-        isSummaryRow
-      })}
+      {children}
     </div>
   );
 }

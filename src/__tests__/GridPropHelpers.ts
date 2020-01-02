@@ -1,4 +1,4 @@
-import { valueCellContentRenderer, legacyCellContentRenderer } from '../Cell/cellContentRenderers';
+import { ValueFormatter, SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn } from '../common/types';
 
 export interface Row {
@@ -14,21 +14,21 @@ const columns: CalculatedColumn<Row>[] = [{
   name: 'ID',
   width: 100,
   left: 0,
-  cellContentRenderer: legacyCellContentRenderer
+  formatter: SimpleCellFormatter
 }, {
   idx: 1,
   key: 'title',
   name: 'Title',
   width: 100,
   left: 100,
-  cellContentRenderer: valueCellContentRenderer
+  formatter: ValueFormatter
 }, {
   idx: 2,
   key: 'count',
   name: 'Count',
   width: 100,
   left: 200,
-  cellContentRenderer: valueCellContentRenderer
+  formatter: ValueFormatter
 }];
 
 const _rows: Row[] = [];
