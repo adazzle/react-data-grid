@@ -51,7 +51,7 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   colOverscanEndIdx: number;
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
-  onScroll(position: ScrollPosition): void;
+  onScroll(position: ScrollPosition, event: React.UIEvent<HTMLDivElement>): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
@@ -102,7 +102,7 @@ function Canvas<R, K extends keyof R>({
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
     const { scrollLeft, scrollTop } = e.currentTarget;
     setScrollTop(scrollTop);
-    onScroll({ scrollLeft, scrollTop });
+    onScroll({ scrollLeft, scrollTop }, e);
     if (summaryRef.current) {
       summaryRef.current.scrollLeft = scrollLeft;
     }

@@ -1,7 +1,8 @@
 import faker from 'faker';
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, CellContent, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent } from '../../src';
+
+import DataGrid, { CellContent, Column, DataGridHandle, GridRowsUpdatedEvent, ScrollPosition, SelectColumn, UpdateActions } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import ImageFormatter from './components/Formatters/ImageFormatter';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -28,6 +29,11 @@ faker.locale = 'en_GB';
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
 
+function isReachedBottom(event: React.UIEvent<HTMLDivElement>): boolean {
+  const target = event.target as HTMLDivElement;
+  return target.clientHeight + target.scrollTop === target.scrollHeight;
+}
+
 function createFakeRowObjectData(index: number): Row {
   return {
     id: `id_${index}`,
@@ -47,6 +53,18 @@ function createFakeRowObjectData(index: number): Row {
   };
 }
 
+function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
+  return new Promise(resolve => {
+    const newRows: Row[] = [];
+
+    for (let i = 0; i < newRowsCount; i++) {
+      newRows[i] = createFakeRowObjectData(i + length);
+    }
+
+    setTimeout(() => resolve(newRows), 1500);
+  });
+}
+
 function createRows(numberOfRows: number): Row[] {
   const rows: Row[] = [];
 
@@ -60,6 +78,7 @@ function createRows(numberOfRows: number): Row[] {
 export default function AllFeaturesExample(): JSX.Element {
   const [rows, setRows] = useState(() => createRows(2000));
   const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
+  const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
   const columns: Column<Row>[] = useMemo(() => [
@@ -191,6 +210,17 @@ export default function AllFeaturesExample(): JSX.Element {
 
   const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number}): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
+  const handleScroll = useCallback(async (position: ScrollPosition, event: React.UIEvent<HTMLDivElement>) => {
+    if (!isReachedBottom(event)) return;
+
+    setIsLoading(true);
+
+    const newRows = await loadMoreRows(50, rows.length);
+
+    setRows([...rows, ...newRows]);
+    setIsLoading(false);
+  }, [rows]);
+
   const getRowAt = useCallback((index: number): Row => rows[index], [rows]);
 
   const getSize = useCallback((): number => rows.length, [rows.length]);
@@ -200,6 +230,7 @@ export default function AllFeaturesExample(): JSX.Element {
   return (
     <Wrapper title="All the features grid">
       <>
+        { isLoading && <div className="rdg-loading"><div className="rdg-loading-text">Loading new rows...</div></div> }
         <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
         <div className="grid-autosizer-wrapper">
           <AutoSizer>
@@ -218,6 +249,7 @@ export default function AllFeaturesExample(): JSX.Element {
                 onSelectedRowsChange={onSelectedRowsChange}
                 enableCellCopyPaste
                 enableCellDragAndDrop
+                onScroll={handleScroll}
               />
             )}
           </AutoSizer>

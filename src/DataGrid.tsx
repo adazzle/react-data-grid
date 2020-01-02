@@ -108,7 +108,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** Function called whenever grid is sorted*/
   onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   /** Called when the grid is scrolled */
-  onScroll?(scrollPosition: ScrollPosition): void;
+  onScroll?(scrollPosition: ScrollPosition, event: React.UIEvent<HTMLDivElement>): void;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
   RowsContainer?: React.ComponentType<RowsContainerProps>;
@@ -240,12 +240,12 @@ function DataGrid<R, K extends keyof R>({
     props.onColumnResize?.(column.idx, width);
   }
 
-  function handleScroll(scrollPosition: ScrollPosition) {
+  function handleScroll(scrollPosition: ScrollPosition, event: React.UIEvent<HTMLDivElement>) {
     if (headerRef.current) {
       headerRef.current.scrollLeft = scrollPosition.scrollLeft;
     }
     setScrollLeft(scrollPosition.scrollLeft);
-    props.onScroll?.(scrollPosition);
+    props.onScroll?.(scrollPosition, event);
   }
 
   function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
