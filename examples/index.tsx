@@ -71,7 +71,7 @@ ReactDOM.render((
         <li><NavLink to="/examples/summary-rows">Summary Rows Example</NavLink></li> */}
       </ul>
       <Switch>
-        <Route>
+        <Route exact path="/">
           <AllFeatures />
         </Route>
         <Route path="/examples/basic">

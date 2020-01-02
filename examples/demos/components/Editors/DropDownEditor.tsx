@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+
 import { Column, Editor } from '../../../../src';
 
 interface Option {
@@ -76,22 +76,6 @@ function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDow
   );
 }
 
-const DropDownEditor = forwardRef(
+export default forwardRef(
   DropDownEditorWithRef as React.RefForwardingComponent<DropDownEditorHandle, DropDownEditorProps<{ [key: string]: unknown }>>
 ) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;
-
-(DropDownEditor as React.ComponentType).propTypes = {
-  options: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      value: PropTypes.string,
-      text: PropTypes.string
-    })
-  ])).isRequired,
-  value: PropTypes.string,
-  onBlur: PropTypes.func.isRequired
-};
-
-export default DropDownEditor;
