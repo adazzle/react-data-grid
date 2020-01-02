@@ -60,12 +60,9 @@ interface CellActionsFormatterProps {
 }
 
 export function CellActionsFormatter({ actions }: CellActionsFormatterProps) {
-  if (actions.length > 0) {
-    const actionButtons = actions.map((action, index) => {
-      return <CellAction key={index} isFirst={index === 0} {...action} />;
-    });
+  const actionButtons = actions.map((action, index) => {
+    return <CellAction key={index} isFirst={index === 0} {...action} />;
+  });
 
-    return <>{actionButtons}</>;
-  }
-  return null;
+  return <>{actionButtons}</>;
 }

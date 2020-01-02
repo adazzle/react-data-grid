@@ -50,12 +50,10 @@ function toggleSubRow(rows: Row[], id: string): Row[] {
   if (!children) return rows;
 
   const newRows = [...rows];
+  newRows[rowIndex] = { ...row, isExpanded: !row.isExpanded };
   if (!row.isExpanded) {
-    newRows[rowIndex] = { ...newRows[rowIndex], isExpanded: true };
-    const subRows = children.map(c => ({ ...c }));
-    newRows.splice(rowIndex + 1, 0, ...subRows);
+    newRows.splice(rowIndex + 1, 0, ...children);
   } else {
-    newRows[rowIndex] = { ...newRows[rowIndex], isExpanded: false };
     newRows.splice(rowIndex + 1, children.length);
   }
   return newRows;
