@@ -1,8 +1,10 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, NavLink, Switch, Redirect } from 'react-router-dom';
+import { HashRouter as Router, NavLink, Route, Switch } from 'react-router-dom';
 
 import Basic from './demos/example01-basic';
+import AllFeatures from './demos/example13-all-features';
+
 // import ResizableCols from './demos/example02-resizable-cols';
 // import FrozenCols from './demos/example03-frozen-cols';
 // import Editable from './demos/example04-editable';
@@ -12,7 +14,6 @@ import Basic from './demos/example01-basic';
 // import FilterableGrid from './demos/example09-filterable-grid';
 // import OneMillionRows from './demos/example10-one-million-rows';
 // import CustomRowRenderer from './demos/example12-customRowRenderer';
-import AllFeatures from './demos/example13-all-features';
 // import EmptyRows from './demos/example15-empty-rows';
 // import CellDragDown from './demos/example16-cell-drag-down';
 // import FilterableSortableGrid from './demos/example16-filterable-sortable-grid';
@@ -38,6 +39,7 @@ ReactDOM.render((
   <StrictMode>
     <Router>
       <ul className="nav">
+        <li><NavLink to="/">All Features Example</NavLink></li>
         <li><NavLink to="/examples/basic">Basic Example</NavLink></li>
         {/* <li><NavLink to="/examples/resizable-cols">Resizable Cols Example</NavLink></li>
         <li><NavLink to="/examples/frozen-cols">Frozen Cols Example</NavLink></li>
@@ -47,7 +49,6 @@ ReactDOM.render((
         <li><NavLink to="/examples/sortable-cols">Sortable Cols Example</NavLink></li>
         <li><NavLink to="/examples/filterable-grid">Filterable Grid Example</NavLink></li>
         <li><NavLink to="/examples/customRowRenderer">Custom Row Renderer Example</NavLink></li> */}
-        <li><NavLink to="/examples/all-features">All Features Example</NavLink></li>
         {/*<li><NavLink to="/examples/empty-rows">Empty Rows Example</NavLink></li>
         <li><NavLink to="/examples/cell-drag-down">Cell Drag Down Example</NavLink></li>
         <li><NavLink to="/examples/filterable-sortable-grid">Filterable Sortable Grid Example</NavLink></li>
@@ -70,6 +71,9 @@ ReactDOM.render((
         <li><NavLink to="/examples/summary-rows">Summary Rows Example</NavLink></li> */}
       </ul>
       <Switch>
+        <Route>
+          <AllFeatures />
+        </Route>
         <Route path="/examples/basic">
           <Basic />
         </Route>
@@ -82,7 +86,6 @@ ReactDOM.render((
         {/* <Route path="/examples/filterable-grid" component={FilterableGrid} /> */}
         {/* <Route path="/examples/one-million-rows" component={OneMillionRows} /> */}
         {/* <Route path="/examples/customRowRenderer" component={CustomRowRenderer} /> */}
-        <Route path="/examples/all-features" component={AllFeatures} />
         {/* <Route path="/examples/empty-rows" component={EmptyRows} /> */}
         {/* <Route path="/examples/cell-drag-down" component={CellDragDown} /> */}
         {/* <Route path="/examples/filterable-sortable-grid" component={FilterableSortableGrid} /> */}
@@ -103,7 +106,6 @@ ReactDOM.render((
         {/* <Route path="/examples/selection-range-events" component={SelectionRangeEvents} /> */}
         {/* <Route path="/examples/isScrolling" component={IsScrolling} /> */}
         {/* <Route path="/examples/summary-rows" component={SummaryRows} /> */}
-        <Redirect from="/" exact to="/examples/all-features" />
       </Switch>
     </Router>
   </StrictMode>

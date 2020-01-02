@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback } from 'react';
+import React, { PropsWithChildren } from 'react';
 import './rdg-toolbar.less';
 
 interface Props {
@@ -11,9 +11,9 @@ interface Props {
 }
 
 export default function Toolbar(props: PropsWithChildren<Props>) {
-  const onAddRow = useCallback(() => {
+  function onAddRow() {
     props.onAddRow?.({ newRowIndex: props.numberOfRows });
-  }, [props.numberOfRows, props.onAddRow]);
+  }
 
   return (
     <div className="rdg-toolbar">

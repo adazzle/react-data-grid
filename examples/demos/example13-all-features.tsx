@@ -1,5 +1,5 @@
 import faker from 'faker';
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column, CellContent, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
@@ -60,7 +60,7 @@ function createRows(numberOfRows: number): Row[] {
 export default function AllFeaturesExample(): JSX.Element {
   const [rows, setRows] = useState(() => createRows(2000));
   const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
-  const gridRef = React.createRef<DataGridHandle>();
+  const gridRef = useRef<DataGridHandle>(null);
 
   const columns: Column<Row>[] = useMemo(() => [
     SelectColumn,
@@ -89,7 +89,7 @@ export default function AllFeaturesExample(): JSX.Element {
       resizable: true,
       cellContentRenderer(props) {
         return (
-          <div onClick={() => gridRef?.current?.openCellEditor(props.rowIdx, props.idx)}>
+          <div onClick={() => gridRef.current?.openCellEditor(props.rowIdx, props.idx)}>
             <CellContent {...props} />
           </div>
         );
@@ -167,7 +167,7 @@ export default function AllFeaturesExample(): JSX.Element {
       width: 200,
       resizable: true
     }
-  ], [gridRef]);
+  ], []);
 
   const handleGridRowsUpdated = useCallback(({ fromRow, toRow, updated, action }: GridRowsUpdatedEvent<Row, Partial<Row>>): void => {
     const newRows = [...rows];

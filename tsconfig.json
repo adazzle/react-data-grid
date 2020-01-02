@@ -20,7 +20,6 @@
     "types": ["jest"]
   },
   "files": [
-    "src/index.ts",
-    "examples/index.tsx"
+    "src/index.ts"
   ]
 }

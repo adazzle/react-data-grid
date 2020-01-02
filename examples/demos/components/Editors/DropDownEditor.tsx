@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { Column, Editor } from '../../../../src';
 
 interface Option {
@@ -19,28 +19,30 @@ interface DropDownEditorProps<TRow> {
 type DropDownEditorHandle = Pick<Editor<{[key: string]: string | undefined}>, 'getInputNode' | 'getValue'>;
 
 function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
-  const selectRef = React.createRef<HTMLSelectElement>();
+  const selectRef = useRef<HTMLSelectElement>(null);
   const [optionsHeight, setOptionsHeight] = useState<number | undefined>();
 
-  const onFocus = useCallback(() => {
-    if (selectRef && selectRef.current) {
-      selectRef.current.size = options.length;
-
-      const option = selectRef.current.querySelector('option');
-      if (option) {
-        const optionsHeight = option.clientHeight * options.length + 8;
-        setOptionsHeight(optionsHeight > 200 ? 200 : optionsHeight);
-      }
+  function onFocus() {
+    if (selectRef.current === null) {
+      return;
     }
-  }, [options.length, selectRef]);
 
-  useImperativeHandle<DropDownEditorHandle, DropDownEditorHandle>(ref, () => ({
+    selectRef.current.size = options.length;
+
+    const option = selectRef.current.querySelector('option');
+    if (option) {
+      const optionsHeight = option.clientHeight * options.length + 8;
+      setOptionsHeight(Math.min(200, optionsHeight));
+    }
+  }
+
+  useImperativeHandle(ref, () => ({
     getInputNode() {
-      return selectRef?.current;
+      return selectRef.current;
     },
     getValue() {
       return {
-        [column.key]: selectRef?.current?.value
+        [column.key]: selectRef.current?.value
       };
     }
   }));
