@@ -1,5 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Column, Editor } from '../../../../src';
 
 interface Option {
@@ -20,21 +19,6 @@ type DropDownEditorHandle = Pick<Editor<{[key: string]: string | undefined}>, 'g
 
 function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
   const selectRef = useRef<HTMLSelectElement>(null);
-  const [optionsHeight, setOptionsHeight] = useState<number | undefined>();
-
-  function onFocus() {
-    if (selectRef.current === null) {
-      return;
-    }
-
-    selectRef.current.size = options.length;
-
-    const option = selectRef.current.querySelector('option');
-    if (option) {
-      const optionsHeight = option.clientHeight * options.length + 8;
-      setOptionsHeight(Math.min(200, optionsHeight));
-    }
-  }
 
   useImperativeHandle(ref, () => ({
     getInputNode() {
@@ -53,13 +37,14 @@ function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDow
       className="rdg-select-editor"
       defaultValue={value}
       onBlur={onBlur}
-      onFocus={onFocus}
-      style={{ height: optionsHeight && optionsHeight > 0 ? optionsHeight : 'initial', overflowY: 'auto' }}
+      size={options.length}
+      style={{ maxHeight: 200, height: 'auto', overflowY: 'auto' }}
     >
       {options.map(name => typeof name === 'string' ? (
         <option
           key={name}
           value={name}
+          onClick={onBlur}
         >
           {name}
         </option>
@@ -68,6 +53,7 @@ function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDow
           key={name.id}
           value={name.value}
           title={name.title}
+          onClick={onBlur}
         >
           {name.text || name.value}
         </option>
