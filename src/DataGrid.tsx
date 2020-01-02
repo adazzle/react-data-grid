@@ -13,7 +13,10 @@ import { isValidElementType } from 'react-is';
 
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
-import { CellNavigationMode, DEFINE_SORT } from './common/enums';
+import {
+  CellNavigationMode,
+  DEFINE_SORT
+} from './common/enums';
 import {
   CalculatedColumn,
   CellContentRenderer,
@@ -27,10 +30,7 @@ import {
   RowGetter,
   RowsContainerProps,
   ScrollPosition,
-  SelectedRange,
-  IRowRendererProps,
-  ScrollPosition,
-  Filters
+  SelectedRange
 } from './common/types';
 import FilterRow from './FilterRow';
 import DraggableHeaderCell, { DraggableHeaderCellProps } from './Header/DraggableHeaderCell';
@@ -46,7 +46,8 @@ import {
 
 export { DataGridHandle };
 
-export interface DataGridProps<R, K extends keyof R> {
+export interface DataGridProps<R,
+  K extends keyof R> {
   /** An array of objects representing each column on the grid */
   columns: Column<R>[];
   /** The minimum width of the grid in pixels */
