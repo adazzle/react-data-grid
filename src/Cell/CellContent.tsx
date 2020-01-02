@@ -1,88 +1,40 @@
 import React, { createElement, cloneElement } from 'react';
 import { isElement, isValidElementType } from 'react-is';
 
-import CellExpand from './CellExpander';
 import { SimpleCellFormatter } from '../formatters';
-import ChildRowDeleteButton from '../ChildRowDeleteButton';
 import { CellContentRendererProps } from '../common/types';
 
 export default function CellContent<R>({
-  idx,
   rowIdx,
   column,
   rowData,
-  expandableOptions,
   isRowSelected,
   isSummaryRow,
-  onRowSelectionChange,
-  onDeleteSubRow,
-  onCellExpand
-}: CellContentRendererProps<R>): JSX.Element {
-  const isExpandCell = expandableOptions ? expandableOptions.field === column.key : false;
-  const treeDepth = expandableOptions ? expandableOptions.treeDepth : 0;
-  const style = expandableOptions && isExpandCell ? { marginLeft: expandableOptions.treeDepth * 30 } : undefined;
+  onRowSelectionChange
+}: CellContentRendererProps<R>) {
+  const { formatter } = column;
 
-  function getFormatterProps() {
-    return {
-      value: rowData[column.key],
-      column,
-      rowIdx,
-      row: rowData,
-      isRowSelected,
-      onRowSelectionChange,
-      isSummaryRow
-    };
+  if (formatter === undefined) {
+    return <SimpleCellFormatter value={rowData[column.key] as unknown as string} />;
   }
 
-  function getFormattedValue(formatter: typeof column['formatter']) {
-    if (formatter === undefined) {
-      return <SimpleCellFormatter value={rowData[column.key] as unknown as string} />;
-    }
+  const formatterProps = {
+    value: rowData[column.key],
+    column,
+    rowIdx,
+    row: rowData,
+    isRowSelected,
+    onRowSelectionChange,
+    isSummaryRow
+  };
 
-    if (isValidElementType(formatter)) {
-      return createElement<ReturnType<typeof getFormatterProps>>(formatter, getFormatterProps());
-    }
-
-    if (isElement(formatter)) {
-      return cloneElement(formatter, getFormatterProps());
-    }
-
-    return null;
+  if (isValidElementType(formatter)) {
+    return createElement<typeof formatterProps>(formatter, formatterProps);
   }
 
-  function handleDeleteSubRow() {
-    onDeleteSubRow?.({
-      idx,
-      rowIdx,
-      rowData,
-      expandArgs: expandableOptions
-    });
+  if (isElement(formatter)) {
+    return cloneElement(formatter, formatterProps);
   }
 
-  function handleCellExpand() {
-    onCellExpand?.({ rowIdx, idx, rowData, expandArgs: expandableOptions });
-  }
-
-  return (
-    <>
-      {expandableOptions && expandableOptions.canExpand && (
-        <CellExpand
-          expanded={expandableOptions.expanded}
-          onCellExpand={handleCellExpand}
-        />
-      )}
-      <div className="rdg-cell-value">
-        {expandableOptions && treeDepth > 0 && isExpandCell && (
-          <ChildRowDeleteButton
-            treeDepth={treeDepth}
-            onDeleteSubRow={handleDeleteSubRow}
-            isDeleteSubRowEnabled={!!onDeleteSubRow}
-          />
-        )}
-        <div style={style}>
-          {getFormattedValue(column.formatter)}
-        </div>
-      </div>
-    </>
-  );
+  return null;
 }

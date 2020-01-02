@@ -26,9 +26,8 @@ import AllFeatures from './demos/example13-all-features';
 // import Grouping from './demos/example21-grouping';
 // import CustomFilters from './demos/example22-custom-filters';
 // import DraggableHeader from './demos/example24-draggable-header';
-// import TreeView from './demos/example25-tree-view';
-// import TreeViewNoAddDelete from './demos/example26-tree-view-no-add-delete';
-// import CellActions from './demos/example27-cell-actions';
+import TreeView from './demos/example25-tree-view';
+import CellActions from './demos/example27-cell-actions';
 // import ScrollToRowIndex from './demos/example28-scroll-to-row-index';
 // import DescendingFirstSortable from './demos/example29-descendingFirstSortable';
 // import SelectionRangeEvents from './demos/example30-selection-range-events';
@@ -48,8 +47,8 @@ ReactDOM.render((
         <li><NavLink to="/examples/built-in-editors">Built In Editors Example</NavLink></li>
         <li><NavLink to="/examples/sortable-cols">Sortable Cols Example</NavLink></li>
         <li><NavLink to="/examples/filterable-grid">Filterable Grid Example</NavLink></li>
-        <li><NavLink to="/examples/customRowRenderer">Custom Row Renderer Example</NavLink></li> */}
-        {/*<li><NavLink to="/examples/empty-rows">Empty Rows Example</NavLink></li>
+        <li><NavLink to="/examples/customRowRenderer">Custom Row Renderer Example</NavLink></li>
+        <li><NavLink to="/examples/empty-rows">Empty Rows Example</NavLink></li>
         <li><NavLink to="/examples/cell-drag-down">Cell Drag Down Example</NavLink></li>
         <li><NavLink to="/examples/filterable-sortable-grid">Filterable Sortable Grid Example</NavLink></li>
         <li><NavLink to="/examples/row-select">Row Select Example</NavLink></li>
@@ -60,11 +59,10 @@ ReactDOM.render((
         <li><NavLink to="/examples/cell-selection-events">Cell Selection Events</NavLink></li>
         <li><NavLink to="/examples/grouping">Grouping Example</NavLink></li>
         <li><NavLink to="/examples/custom-filters">Custom Filters Example</NavLink></li>
-        <li><NavLink to="/examples/draggable-header">Draggable Header Example</NavLink></li>
+        <li><NavLink to="/examples/draggable-header">Draggable Header Example</NavLink></li>*/}
         <li><NavLink to="/examples/tree-view">Tree View Example</NavLink></li>
-        <li><NavLink to="/examples/tree-view-no-add-delete">Tree View No Add Delete Example</NavLink></li>
         <li><NavLink to="/examples/cell-actions">Cell Actions Example</NavLink></li>
-        <li><NavLink to="/examples/scroll-to-row-index">Scroll To Row Index Example</NavLink></li>
+        {/* <li><NavLink to="/examples/scroll-to-row-index">Scroll To Row Index Example</NavLink></li>
         <li><NavLink to="/examples/descendingFirstSortable">Descending First Sortable Example</NavLink></li>
         <li><NavLink to="/examples/selection-range-events">Selection Range Events Example</NavLink></li>
         <li><NavLink to="/examples/isScrolling">IsScrolling Example</NavLink></li>
@@ -98,9 +96,12 @@ ReactDOM.render((
         {/* <Route path="/examples/grouping" component={Grouping} /> */}
         {/* <Route path="/examples/custom-filters" component={CustomFilters} /> */}
         {/* <Route path="/examples/draggable-header" component={DraggableHeader} /> */}
-        {/* <Route path="/examples/tree-view" component={TreeView} /> */}
-        {/* <Route path="/examples/tree-view-no-add-delete" component={TreeViewNoAddDelete} /> */}
-        {/* <Route path="/examples/cell-actions" component={CellActions} /> */}
+        <Route path="/examples/tree-view">
+          <TreeView />
+        </Route>
+        <Route path="/examples/cell-actions">
+          <CellActions />
+        </Route>
         {/* <Route path="/examples/scroll-to-row-index" component={ScrollToRowIndex} /> */}
         {/* <Route path="/examples/descendingFirstSortable" component={DescendingFirstSortable} /> */}
         {/* <Route path="/examples/selection-range-events" component={SelectionRangeEvents} /> */}

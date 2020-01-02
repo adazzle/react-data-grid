@@ -15,7 +15,6 @@ function Cell<R>({
   children,
   className,
   column,
-  expandableOptions,
   idx,
   isRowSelected,
   isSummaryRow,
@@ -27,8 +26,6 @@ function Cell<R>({
   eventBus,
   onRowClick,
   onRowDoubleClick,
-  onDeleteSubRow,
-  onCellExpand,
   enableCellRangeSelection
 }: CellProps<R>) {
   const position: Position = { idx, rowIdx };
@@ -123,8 +120,7 @@ function Cell<R>({
     'rdg-cell',
     className, {
       'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
-      'rdg-child-cell': expandableOptions && expandableOptions.subRowDetails && expandableOptions.treeDepth > 0
+      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
     }
   );
 
@@ -148,12 +144,9 @@ function Cell<R>({
         rowIdx,
         rowData,
         column,
-        expandableOptions,
         isRowSelected,
         onRowSelectionChange,
-        isSummaryRow,
-        onDeleteSubRow,
-        onCellExpand
+        isSummaryRow
       })}
     </div>
   );

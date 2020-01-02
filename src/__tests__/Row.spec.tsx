@@ -28,15 +28,6 @@ describe('Row', () => {
     row: { key: 'value' },
     cellRenderer: Cell,
     idx: 17,
-    subRowDetails: {
-      canExpand: false,
-      field: 'field',
-      expanded: false,
-      children: [],
-      treeDepth: 0,
-      siblingIndex: 0,
-      numberSiblings: 0
-    },
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,

@@ -8,23 +8,6 @@ import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn } from '../common/types';
 import EventBus from '../EventBus';
 
-const expandableOptions = {
-  canExpand: false,
-  field: 'field',
-  expanded: false,
-  children: [],
-  treeDepth: 0,
-  subRowDetails: {
-    canExpand: false,
-    field: 'field',
-    expanded: false,
-    children: [],
-    treeDepth: 0,
-    siblingIndex: 0,
-    numberSiblings: 0
-  }
-};
-
 const defaultColumn: CalculatedColumn<Row> = {
   idx: 0,
   key: 'description',
@@ -45,7 +28,6 @@ const testProps: CellProps<Row> = {
   scrollLeft: 0,
   isSummaryRow: false,
   rowKey: 'id',
-  onCellExpand() {},
   eventBus: new EventBus()
 };
 
@@ -89,13 +71,11 @@ describe('Cell Tests', () => {
       column: helpers.columns[0],
       lastFrozenColumnIndex: -1,
       rowData: helpers.rowGetter(11),
-      expandableOptions,
       isRowSelected: false,
       onRowSelectionChange() {},
       scrollLeft: 0,
       isSummaryRow: false,
       rowKey: 'id',
-      onCellExpand() {},
       eventBus: new EventBus()
     };
 

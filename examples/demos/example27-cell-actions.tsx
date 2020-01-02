@@ -1,17 +1,14 @@
-import React from 'react';
-import DataGrid from 'react-data-grid';
-import { Data, Formatters } from 'react-data-grid-addons';
+import React, { useState } from 'react';
 import { Clear, Link, FileCopy } from '@material-ui/icons';
 import faker from 'faker';
-import Wrapper from './Wrapper';
-import CellActions from './CellActions';
 
-const { Selectors } = Data;
-const { ImageFormatter } = Formatters;
+import DataGrid, { Column } from '../../src';
+import Wrapper from './Wrapper';
+import { CellActionsFormatter, ImageFormatter } from './formatters';
 
 faker.locale = 'en_GB';
 
-const createFakeRowObjectData = (index) => ({
+const createFakeRowObjectData = (index: number) => ({
   id: `id_${index}`,
   avatar: faker.image.avatar(),
   county: faker.address.county(),
@@ -29,7 +26,9 @@ const createFakeRowObjectData = (index) => ({
   sentence: faker.lorem.sentence()
 });
 
-const createRows = (numberOfRows) => {
+type Row = ReturnType<typeof createFakeRowObjectData>;
+
+const createRows = (numberOfRows: number) => {
   const rows = [];
   for (let i = 0; i < numberOfRows; i++) {
     rows[i] = createFakeRowObjectData(i);
@@ -37,7 +36,7 @@ const createRows = (numberOfRows) => {
   return rows;
 };
 
-const columns = [
+const columns: Column<Row>[] = [
   {
     key: 'id',
     name: 'ID',
@@ -79,7 +78,7 @@ const columns = [
 
         return (
           <>
-            <CellActions actions={actions} />
+            <CellActionsFormatter actions={actions} />
             <div>
               {value}
             </div>
@@ -87,7 +86,7 @@ const columns = [
         );
       }
 
-      return value;
+      return <>{value}</>;
     }
   },
   {
@@ -147,38 +146,19 @@ const columns = [
   }
 ];
 
-export default class extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { rows: createRows(2000) };
-  }
+export default function() {
+  const [rows] = useState(() => createRows(2000));
 
-  getRows = () => {
-    return Selectors.getRows(this.state);
-  };
-
-  getRowAt = (index) => {
-    const rows = this.getRows();
-    return rows[index];
-  };
-
-  getSize = () => {
-    return this.getRows().length;
-  };
-
-  render() {
-    return (
-      <Wrapper title="Cell Actions Example">
-        <DataGrid
-          ref={node => this.grid = node}
-          enableCellSelect
-          columns={columns}
-          rowGetter={this.getRowAt}
-          rowsCount={this.getSize()}
-          rowHeight={55}
-          minHeight={600}
-        />
-      </Wrapper>
-    );
-  }
+  return (
+    <Wrapper title="Cell Actions Example">
+      <DataGrid<Row, 'id'>
+        enableCellSelect
+        columns={columns}
+        rowGetter={i => rows[i]}
+        rowsCount={rows.length}
+        rowHeight={55}
+        minHeight={600}
+      />
+    </Wrapper>
+  );
 }

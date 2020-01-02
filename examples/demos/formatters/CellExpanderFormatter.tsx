@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { CellExpand } from '../common/enums';
+import './CellExpanderFormatter.less';
 
-export interface CellExpanderProps {
+export interface CellExpanderFormatterProps {
   expanded: boolean;
   onCellExpand(): void;
 }
 
-export default function CellExpander({ expanded, onCellExpand }: CellExpanderProps) {
+export function CellExpanderFormatter({ expanded, onCellExpand }: CellExpanderFormatterProps) {
   function handleCellExpand(e: React.MouseEvent<HTMLSpanElement>) {
     e.stopPropagation();
     onCellExpand();
@@ -16,7 +16,7 @@ export default function CellExpander({ expanded, onCellExpand }: CellExpanderPro
   return (
     <div className="rdg-cell-expand">
       <span onClick={handleCellExpand}>
-        {expanded ? CellExpand.DOWN_TRIANGLE : CellExpand.RIGHT_TRIANGLE}
+        {expanded ? '\u25BC' : '\u25B6'}
       </span>
     </div>
   );
