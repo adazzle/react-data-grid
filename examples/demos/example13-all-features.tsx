@@ -61,7 +61,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
       newRows[i] = createFakeRowObjectData(i + length);
     }
 
-    setTimeout(() => resolve(newRows), 1500);
+    setTimeout(() => resolve(newRows), 1000);
   });
 }
 
@@ -228,33 +228,30 @@ export default function AllFeaturesExample(): JSX.Element {
   const onSelectedRowsChange = useCallback((newSelectedRows: Set<string>): void => setSelectedRows(newSelectedRows), []);
 
   return (
-    <Wrapper title="All the features grid">
-      <>
-        { isLoading && <div className="rdg-loading"><div className="rdg-loading-text">Loading new rows...</div></div> }
-        <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
-        <div className="grid-autosizer-wrapper">
-          <AutoSizer>
-            {({ height, width }) => (
-              <DataGrid<Row, keyof Row>
-                ref={gridRef}
-                enableCellSelect
-                columns={columns}
-                rowGetter={getRowAt}
-                rowsCount={getSize()}
-                onGridRowsUpdated={handleGridRowsUpdated}
-                rowHeight={30}
-                minWidth={width}
-                minHeight={height}
-                selectedRows={selectedRows}
-                onSelectedRowsChange={onSelectedRowsChange}
-                enableCellCopyPaste
-                enableCellDragAndDrop
-                onScroll={handleScroll}
-              />
-            )}
-          </AutoSizer>
-        </div>
-      </>
+    <Wrapper title="All the features grid" isLoading={isLoading}>
+      <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
+      <div className="grid-autosizer-wrapper">
+        <AutoSizer>
+          {({ height, width }) => (
+            <DataGrid<Row, keyof Row>
+              ref={gridRef}
+              enableCellSelect
+              columns={columns}
+              rowGetter={getRowAt}
+              rowsCount={getSize()}
+              onGridRowsUpdated={handleGridRowsUpdated}
+              rowHeight={30}
+              minWidth={width}
+              minHeight={height}
+              selectedRows={selectedRows}
+              onSelectedRowsChange={onSelectedRowsChange}
+              enableCellCopyPaste
+              enableCellDragAndDrop
+              onScroll={handleScroll}
+            />
+          )}
+        </AutoSizer>
+      </div>
     </Wrapper>
   );
 }

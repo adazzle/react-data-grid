@@ -3,10 +3,10 @@ import { Menu, MenuOpen } from '@material-ui/icons';
 
 interface Props {
   title: string;
-  children: React.ReactChild;
+  isLoading?: boolean;
 }
 
-export default function Wrapper({ title, children }: Props) {
+export default function Wrapper({ title, children, isLoading }: React.PropsWithChildren<Props>) {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   useLayoutEffect(() => {
@@ -17,11 +17,18 @@ export default function Wrapper({ title, children }: Props) {
   }, [isSidebarVisible]);
 
   return (
-    <div className="example">
-      <h1 onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
-        {isSidebarVisible ? <MenuOpen /> : <Menu />} {title}
-      </h1>
-      {children}
-    </div>
+    <>
+      {isLoading && (
+        <div className="rdg-loading">
+          <div className="rdg-loading-text">Loading...</div>
+        </div>
+      )}
+      <div className="example">
+        <h1 onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+          {isSidebarVisible ? <MenuOpen /> : <Menu />} {title}
+        </h1>
+        {children}
+      </div>
+    </>
   );
 }
