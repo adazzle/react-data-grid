@@ -3,7 +3,6 @@ import { mount } from 'enzyme';
 
 import Cell, { CellProps } from '../Cell';
 import helpers, { Row } from './GridPropHelpers';
-import { legacyCellContentRenderer } from '../Cell/cellContentRenderers';
 import { SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn } from '../common/types';
 import EventBus from '../EventBus';
@@ -14,7 +13,7 @@ const defaultColumn: CalculatedColumn<Row> = {
   name: 'Desciption',
   width: 100,
   left: 0,
-  cellContentRenderer: legacyCellContentRenderer
+  formatter: SimpleCellFormatter
 };
 
 const testProps: CellProps<Row> = {

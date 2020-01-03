@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import HeaderCell, { HeaderCellProps } from '../HeaderCell';
-import { valueCellContentRenderer } from '../Cell/cellContentRenderers';
+import { ValueFormatter } from '../formatters';
 import { CalculatedColumn } from '../common/types';
 
 interface Row {
@@ -22,7 +22,7 @@ describe('Header Cell Tests', () => {
         name: 'bla',
         width: 150,
         left: 300,
-        cellContentRenderer: valueCellContentRenderer,
+        formatter: ValueFormatter,
         ...columnProps
       },
       lastFrozenColumnIndex: -1,

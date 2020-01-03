@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import SimpleTextEditor from '../SimpleTextEditor';
-import { valueCellContentRenderer } from '../../../Cell/cellContentRenderers';
+import { ValueFormatter } from '../../../formatters';
 import { CalculatedColumn } from '../../types';
 
 interface Row { text: string }
@@ -14,7 +14,7 @@ describe('SimpleTextEditor', () => {
       name: 'name',
       width: 0,
       left: 0,
-      cellContentRenderer: valueCellContentRenderer
+      formatter: ValueFormatter
     };
     function fakeBlurCb() { return true; }
 

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, createElement } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps, ColumnEventInfo, Position } from './common/types';
@@ -133,21 +133,27 @@ function Cell<R>({
     style.transform = `translateX(${scrollLeft}px)`;
   }
 
+  if (!children) {
+    const { formatter } = column;
+    const formatterProps = {
+      value: rowData[column.key],
+      column,
+      rowIdx,
+      row: rowData,
+      isRowSelected,
+      onRowSelectionChange,
+      isSummaryRow
+    };
+    children = createElement<typeof formatterProps>(formatter, formatterProps);
+  }
+
   return (
     <div
       className={className}
       style={style}
       {...getEvents()}
     >
-      {children || column.cellContentRenderer({
-        idx,
-        rowIdx,
-        rowData,
-        column,
-        isRowSelected,
-        onRowSelectionChange,
-        isSummaryRow
-      })}
+      {children}
     </div>
   );
 }

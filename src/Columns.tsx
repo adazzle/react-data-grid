@@ -18,11 +18,11 @@ export const SelectColumn: Column<any, any> = {
       />
     );
   },
-  cellContentRenderer(props) {
+  formatter(props) {
     return props.isSummaryRow ? null : (
       <SelectCellFormatter
         value={props.isRowSelected}
-        onChange={(value, isShiftClick) => props.onRowSelectionChange(props.rowIdx, props.rowData, value, isShiftClick)}
+        onChange={(value, isShiftClick) => props.onRowSelectionChange(props.rowIdx, props.row, value, isShiftClick)}
       />
     );
   },

@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import SortableHeaderCell, { Props } from '../SortableHeaderCell';
 import { DEFINE_SORT } from '../../../enums';
-import { valueCellContentRenderer } from '../../../../Cell/cellContentRenderers';
+import { ValueFormatter } from '../../../../formatters';
 
 interface Row { col1: string }
 
@@ -15,7 +15,7 @@ describe('<SortableHeaderCell/>', () => {
         key: 'col1',
         width: 100,
         left: 0,
-        cellContentRenderer: valueCellContentRenderer,
+        formatter: ValueFormatter,
         ...overrideColumn
       },
       onSort: jest.fn(),

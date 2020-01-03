@@ -1,5 +1,5 @@
 import { getColumnMetrics } from '../columnUtils';
-import { valueCellContentRenderer } from '../../Cell/cellContentRenderers';
+import { ValueFormatter } from '../../formatters';
 import { Column } from '../../common/types';
 
 interface Row {
@@ -34,7 +34,7 @@ describe('Column Metrics Tests', () => {
           viewportWidth,
           minColumnWidth: 50,
           columnWidths: new Map(),
-          defaultCellContentRenderer: valueCellContentRenderer
+          defaultFormatter: ValueFormatter
         });
 
         expect(metrics.columns[0].width).toEqual(60);
@@ -49,7 +49,7 @@ describe('Column Metrics Tests', () => {
           viewportWidth,
           minColumnWidth: 50,
           columnWidths: new Map(),
-          defaultCellContentRenderer: valueCellContentRenderer
+          defaultFormatter: ValueFormatter
         });
 
         expect(metrics.columns[0].left).toEqual(0);
@@ -68,7 +68,7 @@ describe('Column Metrics Tests', () => {
           viewportWidth,
           minColumnWidth: 50,
           columnWidths: new Map(),
-          defaultCellContentRenderer: valueCellContentRenderer
+          defaultFormatter: ValueFormatter
         });
         expect(metrics.columns[0]).toMatchObject(firstFrozenColumn);
         expect(metrics.columns[1]).toMatchObject(secondFrozenColumn);

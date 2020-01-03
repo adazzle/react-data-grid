@@ -12,14 +12,13 @@ import { isValidElementType } from 'react-is';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
-import { legacyCellContentRenderer } from './Cell/cellContentRenderers';
+import { ValueFormatter } from './formatters';
 import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize, HorizontalRangeToRender } from './utils';
 import { CellNavigationMode, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
   CheckCellIsEditableEvent,
   Column,
-  CellContentRenderer,
   GridRowsUpdatedEvent,
   Position,
   RowsContainerProps,
@@ -28,7 +27,8 @@ import {
   SelectedRange,
   IRowRendererProps,
   ScrollPosition,
-  Filters
+  Filters,
+  FormatterProps
 } from './common/types';
 
 export { DataGridHandle };
@@ -79,7 +79,7 @@ export interface DataGridProps<R, K extends keyof R> {
   rowKey?: K;
   /** The height of each row in pixels */
   rowHeight?: number;
-  defaultCellContentRenderer?: CellContentRenderer<R>;
+  defaultFormatter?: React.ComponentType<FormatterProps<unknown, R>>;
   rowRenderer?: React.ReactElement | React.ComponentType<IRowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
@@ -152,7 +152,7 @@ function DataGrid<R, K extends keyof R>({
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
   renderBatchSize = 8,
-  defaultCellContentRenderer = legacyCellContentRenderer,
+  defaultFormatter = ValueFormatter,
   columns,
   rowsCount,
   rowGetter,
@@ -177,9 +177,9 @@ function DataGrid<R, K extends keyof R>({
       minColumnWidth,
       viewportWidth,
       columnWidths,
-      defaultCellContentRenderer
+      defaultFormatter
     });
-  }, [columnWidths, columns, defaultCellContentRenderer, minColumnWidth, viewportWidth]);
+  }, [columnWidths, columns, defaultFormatter, minColumnWidth, viewportWidth]);
 
   const horizontalRange: HorizontalRangeToRender = useMemo(() => {
     if (!columnMetrics) {

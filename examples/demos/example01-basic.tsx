@@ -1,8 +1,14 @@
 import React from 'react';
-import DataGrid, { valueCellContentRenderer } from '../../src';
+import DataGrid, { Column } from '../../src';
 import Wrapper from './Wrapper';
 
-const columns = [
+interface Row {
+  id: number;
+  title: string;
+  count: number;
+}
+
+const columns: Column<Row>[] = [
   { key: 'id', name: 'ID' },
   { key: 'title', name: 'Title' },
   { key: 'count', name: 'Count' }
@@ -17,12 +23,11 @@ const rows = [
 export default function() {
   return (
     <Wrapper title="Basic Example">
-      <DataGrid
+      <DataGrid<Row, 'id'>
         columns={columns}
         rowGetter={i => rows[i]}
         rowsCount={3}
         minHeight={150}
-        defaultCellContentRenderer={valueCellContentRenderer}
       />
     </Wrapper>
   );
