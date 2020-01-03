@@ -159,9 +159,9 @@ function Canvas<R, K extends keyof R>({
   }
 
   useEffect(() => {
-    function handleRowSelectionChange({ rowIdx, row, checked, isShiftClick }: SelectRowEvent<R>) {
-      if (!onSelectedRowsChange) return;
+    if (!onSelectedRowsChange) return;
 
+    const handleRowSelectionChange = ({ rowIdx, row, checked, isShiftClick }: SelectRowEvent<R>) => {
       const newSelectedRows = new Set(selectedRows);
 
       if (checked) {
@@ -180,7 +180,7 @@ function Canvas<R, K extends keyof R>({
       }
 
       onSelectedRowsChange(newSelectedRows);
-    }
+    };
 
     return eventBus.subscribe(EventTypes.SELECT_ROW, handleRowSelectionChange);
   }, [eventBus, onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
