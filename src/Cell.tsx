@@ -1,5 +1,4 @@
 import React, { memo, createElement } from 'react';
-import { isValidElementType } from 'react-is';
 import classNames from 'classnames';
 
 import { CellRendererProps, ColumnEventInfo, Position } from './common/types';
@@ -136,19 +135,16 @@ function Cell<R>({
 
   if (!children) {
     const { formatter } = column;
-
-    if (isValidElementType(formatter)) {
-      const formatterProps = {
-        value: rowData[column.key],
-        column,
-        rowIdx,
-        row: rowData,
-        isRowSelected,
-        onRowSelectionChange,
-        isSummaryRow
-      };
-      children = createElement<typeof formatterProps>(formatter, formatterProps);
-    }
+    const formatterProps = {
+      value: rowData[column.key],
+      column,
+      rowIdx,
+      row: rowData,
+      isRowSelected,
+      onRowSelectionChange,
+      isSummaryRow
+    };
+    children = createElement<typeof formatterProps>(formatter, formatterProps);
   }
 
   return (
