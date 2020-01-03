@@ -22,7 +22,6 @@ const testProps: CanvasProps<Row, 'id'> = {
   rowsCount: 1,
   rowGetter(id) { return { id, row: String(id) }; },
   onGridRowsUpdated: noop,
-  onRowSelectionChange() {},
   enableCellSelect: true,
   enableCellAutoFocus: false,
   enableCellCopyPaste: true,

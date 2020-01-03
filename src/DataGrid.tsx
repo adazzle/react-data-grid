@@ -4,7 +4,6 @@ import React, {
   useRef,
   useLayoutEffect,
   useMemo,
-  useCallback,
   createElement
 } from 'react';
 import { isValidElementType } from 'react-is';
@@ -165,7 +164,6 @@ function DataGrid<R, K extends keyof R>({
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const lastSelectedRowIdx = useRef(-1);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
 
@@ -243,29 +241,6 @@ function DataGrid<R, K extends keyof R>({
     props.onGridRowsUpdated?.(event);
   }
 
-  const handleRowSelectionChange = useCallback((rowIdx: number, row: R, checked: boolean, isShiftClick: boolean) => {
-    if (!onSelectedRowsChange) return;
-
-    const newSelectedRows = new Set(selectedRows);
-
-    if (checked) {
-      newSelectedRows.add(row[rowKey]);
-      const previousRowIdx = lastSelectedRowIdx.current;
-      lastSelectedRowIdx.current = rowIdx;
-      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-        const step = Math.sign(rowIdx - previousRowIdx);
-        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-          newSelectedRows.add(rowGetter(i)[rowKey]);
-        }
-      }
-    } else {
-      newSelectedRows.delete(row[rowKey]);
-      lastSelectedRowIdx.current = -1;
-    }
-
-    onSelectedRowsChange(newSelectedRows);
-  }, [onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
-
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
 
   return (
@@ -319,7 +294,7 @@ function DataGrid<R, K extends keyof R>({
               rowGetter={rowGetter}
               rowsCount={rowsCount}
               selectedRows={selectedRows}
-              onRowSelectionChange={handleRowSelectionChange}
+              onSelectedRowsChange={onSelectedRowsChange}
               columnMetrics={columnMetrics}
               viewportColumns={viewportColumns}
               onScroll={handleScroll}

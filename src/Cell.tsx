@@ -10,6 +10,8 @@ export interface CellProps<R> extends CellRendererProps<R> {
   className?: string;
 }
 
+const noop = () => { };
+
 function Cell<R>({
   rowKey,
   children,
@@ -19,7 +21,6 @@ function Cell<R>({
   isRowSelected,
   isSummaryRow,
   lastFrozenColumnIndex,
-  onRowSelectionChange,
   rowData,
   rowIdx,
   scrollLeft,
@@ -66,6 +67,10 @@ function Cell<R>({
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
+  }
+
+  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_ROW, { rowIdx, row: rowData, checked, isShiftClick });
   }
 
   function getEvents() {
@@ -141,7 +146,7 @@ function Cell<R>({
       rowIdx,
       row: rowData,
       isRowSelected,
-      onRowSelectionChange,
+      onRowSelectionChange: isSummaryRow ? noop : onRowSelectionChange,
       isSummaryRow
     };
     children = createElement<typeof formatterProps>(formatter, formatterProps);

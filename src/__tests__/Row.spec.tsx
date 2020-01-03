@@ -31,7 +31,6 @@ describe('Row', () => {
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
-    onRowSelectionChange() {},
     isSummaryRow: false,
     eventBus: new EventBus()
   };

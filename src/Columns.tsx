@@ -22,7 +22,7 @@ export const SelectColumn: Column<any, any> = {
     return props.isSummaryRow ? null : (
       <SelectCellFormatter
         value={props.isRowSelected}
-        onChange={(value, isShiftClick) => props.onRowSelectionChange(props.rowIdx, props.row, value, isShiftClick)}
+        onChange={props.onRowSelectionChange}
       />
     );
   },
