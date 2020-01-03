@@ -53,7 +53,7 @@ const createColumns = (numberCols) => [...Array(numberCols).keys()].map(i => {
     name: `col${i}`
   };
   if (i === 3) {
-    column.formatter = () => <ExpensiveFormatter />;
+    column.formatter = ExpensiveFormatter;
     column.width = 500;
   }
   return column;
