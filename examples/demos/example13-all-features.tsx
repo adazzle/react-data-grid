@@ -1,7 +1,7 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent, ValueFormatter } from '../../src';
+import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import ImageFormatter from './components/Formatters/ImageFormatter';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -84,13 +84,13 @@ export default function AllFeaturesExample(): JSX.Element {
     {
       key: 'title',
       name: 'Title',
-      editor: <DropDownEditor<Row> options={titles} column={{} as Column<Row>} onBlur={() => {}} />,
+      editor: <DropDownEditor<Row> options={titles} column={{} as Column<Row>} onBlur={() => { }} />,
       width: 200,
       resizable: true,
       formatter(props) {
         return (
           <div onClick={() => gridRef.current?.openCellEditor(props.rowIdx, props.column.idx)}>
-            <ValueFormatter {...props} />
+            {props.row[props.column.key]}
           </div>
         );
       }
@@ -189,7 +189,7 @@ export default function AllFeaturesExample(): JSX.Element {
     setRows(newRows);
   }, [rows]);
 
-  const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number}): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
+  const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
   const getRowAt = useCallback((index: number): Row => rows[index], [rows]);
 
