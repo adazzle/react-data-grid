@@ -24,48 +24,48 @@ function Cell<R>({
   rowIdx,
   scrollLeft,
   eventBus,
-  onRowClick,
-  onRowDoubleClick,
+  // onRowClick,
+  // onRowDoubleClick,
   enableCellRangeSelection
 }: CellProps<R>) {
   const position: Position = { idx, rowIdx };
 
-  function selectCell(openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
-  }
+  // function selectCell(openEditor?: boolean) {
+  //   eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
+  // }
 
-  function handleCellClick() {
-    selectCell();
-    onRowClick?.(rowIdx, rowData, column);
-  }
+  // function handleCellClick() {
+  //   selectCell();
+  //   onRowClick?.(rowIdx, rowData, column);
+  // }
 
-  function handleCellMouseDown() {
-    eventBus.dispatch(EventTypes.SELECT_START, position);
+  // function handleCellMouseDown() {
+  //   eventBus.dispatch(EventTypes.SELECT_START, position);
 
-    function handleWindowMouseUp() {
-      eventBus.dispatch(EventTypes.SELECT_END);
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    }
+  //   function handleWindowMouseUp() {
+  //     eventBus.dispatch(EventTypes.SELECT_END);
+  //     window.removeEventListener('mouseup', handleWindowMouseUp);
+  //   }
 
-    window.addEventListener('mouseup', handleWindowMouseUp);
-  }
+  //   window.addEventListener('mouseup', handleWindowMouseUp);
+  // }
+
+  // function handleCellContextMenu() {
+  //   selectCell();
+  // }
+
+  // function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
+  //   e.stopPropagation();
+  //   onRowDoubleClick?.(rowIdx, rowData, column);
+  //   selectCell(true);
+  // }
+
+  // function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+  //   e.preventDefault();
+  // }
 
   function handleCellMouseEnter() {
     eventBus.dispatch(EventTypes.SELECT_UPDATE, position);
-  }
-
-  function handleCellContextMenu() {
-    selectCell();
-  }
-
-  function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-    onRowDoubleClick?.(rowIdx, rowData, column);
-    selectCell(true);
-  }
-
-  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
-    e.preventDefault();
   }
 
   function getEvents() {
@@ -73,14 +73,17 @@ function Cell<R>({
 
     const columnEvents = column.events;
     const allEvents: { [key: string]: Function } = {
-      onClick: handleCellClick,
-      onDoubleClick: handleCellDoubleClick,
-      onContextMenu: handleCellContextMenu,
-      onDragOver: handleDragOver
+      // onClick: handleCellClick,
+      // onDoubleClick: handleCellDoubleClick,
+      // onContextMenu: handleCellContextMenu,
+      // onDragOver: handleDragOver
     };
 
+    // if (enableCellRangeSelection) {
+    //   allEvents.onMouseDown = handleCellMouseDown;
+    // }
+
     if (enableCellRangeSelection) {
-      allEvents.onMouseDown = handleCellMouseDown;
       allEvents.onMouseEnter = handleCellMouseEnter;
     }
 
@@ -149,6 +152,7 @@ function Cell<R>({
 
   return (
     <div
+      data-idx={idx}
       className={className}
       style={style}
       {...getEvents()}
