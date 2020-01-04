@@ -59,18 +59,15 @@ function FrozenCols() {
       },
       {
         key: 'complete',
-        name: '% Complete',
-        width: 40
+        name: '% Complete'
       },
       {
         key: 'startDate',
-        name: 'Start Date',
-        width: 40
+        name: 'Start Date'
       },
       {
         key: 'completeDate',
-        name: 'Expected Complete',
-        width: 40
+        name: 'Expected Complete'
       },
       ...extraColumns
     ];
