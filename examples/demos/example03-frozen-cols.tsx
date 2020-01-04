@@ -91,7 +91,9 @@ function FrozenCols() {
               rowsCount={rows.length}
               minHeight={height}
               minWidth={width}
-              rowHeight={30}
+              headerRowHeight={27}
+              rowHeight={18}
+              minColumnWidth={60}
             />
           )}
         </AutoSizer>
