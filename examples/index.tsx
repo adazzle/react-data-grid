@@ -42,7 +42,6 @@ ReactDOM.render((
         <li><NavLink to="/examples/basic">Basic Example</NavLink></li>
         <li><NavLink to="/examples/frozen-cols">Frozen columns Example</NavLink></li>
         {/* <li><NavLink to="/examples/resizable-cols">Resizable Cols Example</NavLink></li>
-        <li><NavLink to="/examples/frozen-cols">Frozen Cols Example</NavLink></li>
         <li><NavLink to="/examples/editable">Editable Example</NavLink></li>
         <li><NavLink to="/examples/custom-formatters">Custom Formatters Example</NavLink></li>
         <li><NavLink to="/examples/built-in-editors">Built In Editors Example</NavLink></li>
