@@ -4,9 +4,9 @@ import { HashRouter as Router, NavLink, Route, Switch } from 'react-router-dom';
 
 import Basic from './demos/example01-basic';
 import AllFeatures from './demos/example13-all-features';
+import FrozenCols from './demos/example03-frozen-cols';
 
 // import ResizableCols from './demos/example02-resizable-cols';
-// import FrozenCols from './demos/example03-frozen-cols';
 // import Editable from './demos/example04-editable';
 // import CustomFormatters from './demos/example05-custom-formatters';
 // import BuiltInEditors from './demos/example06-built-in-editors';
@@ -38,10 +38,10 @@ ReactDOM.render((
   <StrictMode>
     <Router>
       <ul className="nav">
-        <li><NavLink to="/">All Features Example</NavLink></li>
+        <li><NavLink to="/" exact>All Features Example</NavLink></li>
         <li><NavLink to="/examples/basic">Basic Example</NavLink></li>
+        <li><NavLink to="/examples/frozen-cols">Frozen columns Example</NavLink></li>
         {/* <li><NavLink to="/examples/resizable-cols">Resizable Cols Example</NavLink></li>
-        <li><NavLink to="/examples/frozen-cols">Frozen Cols Example</NavLink></li>
         <li><NavLink to="/examples/editable">Editable Example</NavLink></li>
         <li><NavLink to="/examples/custom-formatters">Custom Formatters Example</NavLink></li>
         <li><NavLink to="/examples/built-in-editors">Built In Editors Example</NavLink></li>
@@ -75,8 +75,10 @@ ReactDOM.render((
         <Route path="/examples/basic">
           <Basic />
         </Route>
+        <Route path="/examples/frozen-cols">
+          <FrozenCols />
+        </Route>
         {/* <Route path="/examples/resizable-cols" component={ResizableCols} /> */}
-        {/* <Route path="/examples/frozen-cols" component={FrozenCols} /> */}
         {/* <Route path="/examples/editable" component={Editable} /> */}
         {/* <Route path="/examples/custom-formatters" component={CustomFormatters} /> */}
         {/* <Route path="/examples/built-in-editors" component={BuiltInEditors} /> */}
