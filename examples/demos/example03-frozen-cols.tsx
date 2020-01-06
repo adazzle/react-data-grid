@@ -42,7 +42,7 @@ function createRows(extraColumns: Column<Row>[]): Row[] {
 
 export default function FrozenCols() {
   const [columns, rows] = useMemo(() => {
-    const extraColumns: Column<Row>[] = [...Array(5).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
+    const extraColumns: Column<Row>[] = [...Array(500).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
     const columns: Column<Row>[] = [
       {
         key: 'id',
