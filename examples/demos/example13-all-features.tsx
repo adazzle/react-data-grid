@@ -84,7 +84,7 @@ export default function AllFeaturesExample(): JSX.Element {
     {
       key: 'title',
       name: 'Title',
-      editor: <DropDownEditor<Row> options={titles} column={{} as Column<Row>} onBlur={() => { }} />,
+      editor: <DropDownEditor<Row> options={titles} column={{} as Column<Row>} onCommit={() => { }} />,
       width: 200,
       resizable: true,
       formatter(props) {
