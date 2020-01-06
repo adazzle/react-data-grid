@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import HeaderCell from './HeaderCell';
 import { CalculatedColumn } from './common/types';
@@ -31,20 +31,23 @@ export default function HeaderRow<R, K extends keyof R>({
   height,
   width,
   onSelectedRowsChange,
+  rowKey,
+  rowsCount,
+  rowGetter,
   ...props
 }: HeaderRowProps<R, K>) {
-  function handleAllRowsSelectionChange(checked: boolean) {
+  const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
 
     const newSelectedRows = new Set<R[K]>();
     if (checked) {
-      for (let i = 0; i < props.rowsCount; i++) {
-        newSelectedRows.add(props.rowGetter(i)[props.rowKey]);
+      for (let i = 0; i < rowsCount; i++) {
+        newSelectedRows.add(rowGetter(i)[rowKey]);
       }
     }
 
     onSelectedRowsChange(newSelectedRows);
-  }
+  }, [onSelectedRowsChange, rowGetter, rowKey, rowsCount]);
 
   return (
     <div

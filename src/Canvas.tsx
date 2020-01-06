@@ -1,6 +1,6 @@
-import React, { useCallback, useRef, useState, useImperativeHandle, forwardRef } from 'react';
+import React, { useCallback, useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
-import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn } from './common/types';
+import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import { EventTypes } from './common/enums';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
@@ -25,6 +25,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onRowClick'
 | 'onRowDoubleClick'
 | 'onRowExpandToggle'
+| 'onSelectedRowsChange'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellAutoFocus'
@@ -50,7 +51,6 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   onScroll(position: ScrollPosition): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
-  onRowSelectionChange(rowIdx: number, row: R, checked: boolean, isShiftClick: boolean): void;
 }
 
 export interface CanvasHandle {
@@ -76,6 +76,8 @@ function Canvas<R, K extends keyof R>({
   RowsContainer,
   rowsCount,
   summaryRows,
+  selectedRows,
+  onSelectedRowsChange,
   ...props
 }: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
   const [eventBus] = useState(() => new EventBus());
@@ -83,6 +85,7 @@ function Canvas<R, K extends keyof R>({
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const [rowRefs] = useState(() => new Map<number, Row<R>>());
+  const lastSelectedRowIdx = useRef(-1);
 
   const clientHeight = getClientHeight();
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
@@ -155,6 +158,34 @@ function Canvas<R, K extends keyof R>({
     selectCell({ rowIdx, idx }, true);
   }
 
+  useEffect(() => {
+    if (!onSelectedRowsChange) return;
+
+    const handleRowSelectionChange = ({ rowIdx, row, checked, isShiftClick }: SelectRowEvent<R>) => {
+      const newSelectedRows = new Set(selectedRows);
+
+      if (checked) {
+        newSelectedRows.add(row[rowKey]);
+        const previousRowIdx = lastSelectedRowIdx.current;
+        lastSelectedRowIdx.current = rowIdx;
+        if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+          const step = Math.sign(rowIdx - previousRowIdx);
+          for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+            newSelectedRows.add(rowGetter(i)[rowKey]);
+          }
+        }
+      } else {
+        newSelectedRows.delete(row[rowKey]);
+        lastSelectedRowIdx.current = -1;
+      }
+
+      onSelectedRowsChange(newSelectedRows);
+    };
+
+    return eventBus.subscribe(EventTypes.SELECT_ROW, handleRowSelectionChange);
+  }, [eventBus, onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
+
+
   const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
     if (row === null) {
       rowRefs.delete(idx);
@@ -183,13 +214,12 @@ function Canvas<R, K extends keyof R>({
           columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
           eventBus={eventBus}
-          onRowSelectionChange={props.onRowSelectionChange}
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
           rowKey={rowKey}
           rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
-          selectedRows={props.selectedRows}
+          isRowSelected={selectedRows?.has(rowData[rowKey]) ?? false}
           onRowClick={props.onRowClick}
           onRowDoubleClick={props.onRowDoubleClick}
           onRowExpandToggle={props.onRowExpandToggle}

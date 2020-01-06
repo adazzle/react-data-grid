@@ -35,7 +35,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
       idx,
       isRowSelected,
       lastFrozenColumnIndex,
-      onRowSelectionChange,
       row,
       scrollLeft,
       isSummaryRow,
@@ -59,7 +58,6 @@ export default class Row<R> extends React.Component<IRowRendererProps<R>> {
           rowData={row}
           scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
           isSummaryRow={isSummaryRow}
           eventBus={eventBus}
           onRowClick={onRowClick}

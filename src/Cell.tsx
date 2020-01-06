@@ -19,7 +19,6 @@ function Cell<R>({
   isRowSelected,
   isSummaryRow,
   lastFrozenColumnIndex,
-  onRowSelectionChange,
   rowData,
   rowIdx,
   scrollLeft,
@@ -66,6 +65,10 @@ function Cell<R>({
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
+  }
+
+  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
+    eventBus.dispatch(EventTypes.SELECT_ROW, { rowIdx, row: rowData, checked, isShiftClick });
   }
 
   function getEvents() {
