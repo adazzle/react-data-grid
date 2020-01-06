@@ -54,7 +54,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
 
   componentWillUnmount() {
     if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit({ key: 'Enter' });
+      this.commit();
     }
   }
 
@@ -122,11 +122,11 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
   }
 
   onPressEnter = () => {
-    this.commit({ key: 'Enter' });
+    this.commit();
   };
 
   onPressTab = () => {
-    this.commit({ key: 'Tab' });
+    this.commit();
   };
 
   onPressEscape = (e: KeyboardEvent) => {
@@ -143,7 +143,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
     } else {
-      this.commit(e);
+      this.commit();
     }
   };
 
@@ -152,7 +152,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     if (!this.isCaretAtBeginningOfInput()) {
       e.stopPropagation();
     } else {
-      this.commit(e);
+      this.commit();
     }
   };
 
@@ -161,7 +161,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     if (!this.isCaretAtEndOfInput()) {
       e.stopPropagation();
     } else {
-      this.commit(e);
+      this.commit();
     }
   };
 
@@ -195,13 +195,13 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     return key || value;
   }
 
-  commit = (args: { key?: string } = {}) => {
+  commit = () => {
     const { onCommit } = this.props;
     const updated = this.getEditor().getValue();
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       const cellKey = this.props.column.key;
-      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated, key: args.key });
+      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated });
     }
   };
 

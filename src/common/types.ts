@@ -199,7 +199,6 @@ export interface CommitEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;
   rowIdx: number;
   updated: TUpdatedValue;
-  key?: string;
 }
 
 export interface RowExpandToggleEvent {
