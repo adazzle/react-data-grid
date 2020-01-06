@@ -222,3 +222,10 @@ export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
   column: CalculatedColumn<TRow>;
 }
+
+export interface SelectRowEvent<R> {
+  rowIdx: number;
+  row: R;
+  checked: boolean;
+  isShiftClick: boolean;
+}

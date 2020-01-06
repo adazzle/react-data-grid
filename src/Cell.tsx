@@ -10,8 +10,6 @@ export interface CellProps<R> extends CellRendererProps<R> {
   className?: string;
 }
 
-const noop = () => { };
-
 function Cell<R>({
   rowKey,
   children,
@@ -146,7 +144,7 @@ function Cell<R>({
       rowIdx,
       row: rowData,
       isRowSelected,
-      onRowSelectionChange: isSummaryRow ? noop : onRowSelectionChange,
+      onRowSelectionChange,
       isSummaryRow
     };
     children = createElement<typeof formatterProps>(formatter, formatterProps);

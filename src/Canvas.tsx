@@ -1,8 +1,8 @@
 import React, { useCallback, useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
-import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn } from './common/types';
+import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import { EventTypes } from './common/enums';
-import EventBus, { SelectRowEvent } from './EventBus';
+import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
 import Row from './Row';

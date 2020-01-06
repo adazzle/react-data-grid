@@ -1,11 +1,4 @@
-import { Position } from './common/types';
-
-export interface SelectRowEvent<R> {
-  rowIdx: number;
-  row: R;
-  checked: boolean;
-  isShiftClick: boolean;
-}
+import { Position, SelectRowEvent } from './common/types';
 
 interface EventMap {
   SELECT_CELL(cell: Position, openEditor?: boolean): void;
