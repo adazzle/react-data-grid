@@ -106,7 +106,7 @@ export interface FormatterProps<TValue, TRow = any> {
   column: CalculatedColumn<TRow>;
   row: TRow;
   isRowSelected: boolean;
-  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
+  onRowSelectionChange(checked: boolean, isShiftClick: boolean): void;
   isSummaryRow: boolean;
 }
 
@@ -139,7 +139,6 @@ export interface CellRendererProps<TRow> {
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
 }
@@ -164,7 +163,6 @@ export interface IRowRendererProps<TRow> {
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowSelectionChange(rowIdx: number, row: TRow, checked: boolean, isShiftClick: boolean): void;
   onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
@@ -223,4 +221,11 @@ export interface GridRowsUpdatedEvent<TRow, TUpdatedValue = never> {
 export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
   column: CalculatedColumn<TRow>;
+}
+
+export interface SelectRowEvent<R> {
+  rowIdx: number;
+  row: R;
+  checked: boolean;
+  isShiftClick: boolean;
 }

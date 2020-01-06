@@ -10,12 +10,10 @@ import EventBus from './EventBus';
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'columnMetrics'
 | 'viewportColumns'
-| 'onRowSelectionChange'
 | 'rowGroupRenderer'
 | 'rowHeight'
 | 'rowKey'
 | 'rowRenderer'
-| 'selectedRows'
 | 'onRowClick'
 | 'onRowDoubleClick'
 | 'onRowExpandToggle'
@@ -28,6 +26,7 @@ export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProp
   setRowRef(row: Row<R> | null, idx: number): void;
   enableCellRangeSelection?: boolean;
   eventBus: EventBus;
+  isRowSelected: boolean;
 }
 
 function RowRenderer<R, K extends keyof R>({
@@ -35,14 +34,12 @@ function RowRenderer<R, K extends keyof R>({
   viewportColumns,
   eventBus,
   idx,
-  onRowSelectionChange,
   rowData,
   rowGroupRenderer,
   rowHeight,
   rowKey,
   rowRenderer,
   scrollLeft,
-  selectedRows,
   setRowRef,
   ...props
 }: RowRendererProps<R, K>) {
@@ -57,8 +54,7 @@ function RowRenderer<R, K extends keyof R>({
     height: rowHeight,
     columns: columnMetrics.columns,
     viewportColumns,
-    isRowSelected: selectedRows !== undefined && selectedRows.has(rowData[rowKey]),
-    onRowSelectionChange,
+    isRowSelected: props.isRowSelected,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
     scrollLeft,
     isSummaryRow: false,

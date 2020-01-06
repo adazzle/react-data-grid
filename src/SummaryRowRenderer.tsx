@@ -4,8 +4,6 @@ import Row from './Row';
 import { RowRendererProps } from './RowRenderer';
 import { getScrollbarSize } from './utils';
 
-const noop = () => { };
-
 type SummaryRowRendererProps<R, K extends keyof R> = Pick<RowRendererProps<R, K>,
 | 'idx'
 | 'rowData'
@@ -34,7 +32,6 @@ function SummaryRowRenderer<R, K extends keyof R>({
       columns={columnMetrics.columns}
       viewportColumns={viewportColumns}
       isRowSelected={false}
-      onRowSelectionChange={noop}
       lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
       scrollLeft={scrollLeft}
       isSummaryRow

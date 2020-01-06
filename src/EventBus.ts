@@ -1,7 +1,8 @@
-import { Position } from './common/types';
+import { Position, SelectRowEvent } from './common/types';
 
 interface EventMap {
   SELECT_CELL(cell: Position, openEditor?: boolean): void;
+  SELECT_ROW(event: SelectRowEvent<unknown>): void;
   SELECT_START(selectedPosition: Position): void;
   SELECT_UPDATE(cellPosition: Position, isFromKeyboard?: boolean, callback?: () => void): void;
   SELECT_END(): void;
