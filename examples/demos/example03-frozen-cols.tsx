@@ -1,9 +1,16 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
+import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column } from '../../src';
 import Wrapper from './Wrapper';
-import { AutoSizer } from 'react-virtualized';
 
 interface Row {
+  id: number;
+  task: string;
+  complete: number;
+  priority: string;
+  issueType: string;
+  startDate: string;
+  completeDate: string;
   [key: string]: number | string;
 }
 
@@ -33,9 +40,9 @@ function createRows(extraColumns: Column<Row>[]): Row[] {
   return rows;
 }
 
-function FrozenCols() {
+export default function FrozenCols() {
   const [columns, rows] = useMemo(() => {
-    const extraColumns = [...Array(500).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
+    const extraColumns: Column<Row>[] = [...Array(5).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
     const columns: Column<Row>[] = [
       {
         key: 'id',
@@ -76,9 +83,9 @@ function FrozenCols() {
     return [columns, rows];
   }, []);
 
-  function rowGetter(i: number): Row {
+  const rowGetter = useCallback((i: number): Row => {
     return rows[i];
-  }
+  }, [rows]);
 
   return (
     <Wrapper title="Frozen Columns Example">
@@ -101,5 +108,3 @@ function FrozenCols() {
     </Wrapper>
   );
 }
-
-export default FrozenCols;
