@@ -6,7 +6,6 @@ import React, {
   useMemo,
   createElement
 } from 'react';
-import { isValidElementType } from 'react-is';
 
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -24,7 +23,7 @@ import {
   RowExpandToggleEvent,
   RowGetter,
   SelectedRange,
-  IRowRendererProps,
+  CustomRowRendererProps,
   ScrollPosition,
   Filters,
   FormatterProps
@@ -79,7 +78,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** The height of each row in pixels */
   rowHeight?: number;
   defaultFormatter?: React.ComponentType<FormatterProps<unknown, R>>;
-  rowRenderer?: React.ReactElement | React.ComponentType<IRowRendererProps<R>>;
+  rowRenderer?: React.ComponentType<CustomRowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
   rowGetter: RowGetter<R>;
@@ -285,7 +284,7 @@ function DataGrid<R, K extends keyof R>({
               />
             )}
           </div>
-          {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
+          {rowsCount === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
               ref={ref}
               rowKey={rowKey}

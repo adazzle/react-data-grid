@@ -1,10 +1,9 @@
 import React, { memo } from 'react';
-import { isElement } from 'react-is';
 
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
-import { IRowRendererProps, RowData } from './common/types';
+import { IRowRendererProps, CustomRowRendererProps, RowData } from './common/types';
 import EventBus from './EventBus';
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
@@ -64,22 +63,6 @@ function RowRenderer<R, K extends keyof R>({
     enableCellRangeSelection: props.enableCellRangeSelection
   };
 
-  function renderCustomRowRenderer() {
-    const { ref, ...otherProps } = rendererProps;
-    const CustomRowRenderer = rowRenderer!;
-    const customRowRendererProps = { ...otherProps, renderBaseRow: (p: IRowRendererProps<R>) => <Row ref={ref} {...p} /> };
-
-    if (isElement(CustomRowRenderer)) {
-      if (CustomRowRenderer.type === Row) {
-        // In the case where Row is specified as the custom render, ensure the correct ref is passed
-        return <Row<R> {...rendererProps} />;
-      }
-      return React.cloneElement(CustomRowRenderer, customRowRendererProps);
-    }
-
-    return <CustomRowRenderer {...customRowRendererProps} />;
-  }
-
   function renderGroupRow() {
     const { ref, columns, ...rowGroupProps } = rendererProps;
 
@@ -107,7 +90,11 @@ function RowRenderer<R, K extends keyof R>({
   }
 
   if (rowRenderer) {
-    return renderCustomRowRenderer();
+    const { ref, ...otherProps } = rendererProps;
+    return React.createElement<CustomRowRendererProps<R>>(rowRenderer, {
+      ...otherProps,
+      renderBaseRow: (p: IRowRendererProps<R>) => <Row ref={ref} {...p} />
+    });
   }
 
   return <Row<R> {...rendererProps} />;

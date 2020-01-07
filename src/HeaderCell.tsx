@@ -1,8 +1,7 @@
-import React, { createElement, cloneElement } from 'react';
+import React, { createElement } from 'react';
 import classNames from 'classnames';
-import { isElement } from 'react-is';
 
-import { CalculatedColumn, HeaderRendererProps } from './common/types';
+import { CalculatedColumn } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
@@ -19,7 +18,6 @@ type SharedHeaderRowProps<R, K extends keyof R> = Pick<HeaderRowProps<R, K>,
 
 export interface HeaderCellProps<R, K extends keyof R> extends SharedHeaderRowProps<R, K> {
   column: CalculatedColumn<R>;
-  renderer?: React.ReactElement | React.ComponentType<HeaderRendererProps<R>>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
@@ -37,17 +35,8 @@ export default function HeaderCell<R, K extends keyof R>({
 }: HeaderCellProps<R, K>) {
   function getCell() {
     if (!column.headerRenderer) return column.name;
-    const renderer = column.headerRenderer;
 
-    if (isElement(renderer)) {
-      // TODO: is this needed?
-      // if it is a string, it's an HTML element, and column is not a valid property, so only pass height
-      if (typeof renderer.type === 'string') {
-        return cloneElement(renderer, { height });
-      }
-      return cloneElement(renderer, { column, height });
-    }
-    return createElement(renderer, { column, allRowsSelected, onAllRowsSelectionChange });
+    return createElement(column.headerRenderer, { column, allRowsSelected, onAllRowsSelectionChange });
   }
 
   let cell = getCell();
@@ -93,7 +82,7 @@ export default function HeaderCell<R, K extends keyof R>({
         column={column}
         onResize={props.onResize}
       >
-        {cell}
+        {cell as React.ReactElement<React.ComponentProps<'div'>>}
       </ResizableHeaderCell>
     );
   }

@@ -55,10 +55,9 @@ describe('Header Row Unit Tests', () => {
   });
 
   describe('When column has a headerRenderer', () => {
-    const CustomHeader = () => <div>Custom</div>;
     const customColumnIdx = 1;
     beforeEach(() => {
-      defaultProps.columns[customColumnIdx].headerRenderer = <CustomHeader />;
+      defaultProps.columns[customColumnIdx].headerRenderer = () => <div>Custom</div>;
     });
 
     it('should render custom column header', () => {
