@@ -54,17 +54,15 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
 
   componentWillUnmount() {
     if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit({ key: 'Enter' });
+      this.commit();
     }
   }
 
   onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
     switch (e.key) {
       case 'Enter':
-        this.onPressEnter();
-        break;
       case 'Tab':
-        this.onPressTab();
+        this.commit();
         break;
       case 'Escape':
         this.onPressEscape(e);
@@ -83,9 +81,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
         break;
     }
 
-    if (this.props.onGridKeyDown) {
-      this.props.onGridKeyDown(e);
-    }
+    this.props.onGridKeyDown?.(e);
   };
 
   createEditor() {
@@ -98,7 +94,6 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
       height: this.props.height,
       onCommit: this.commit,
       onCommitCancel: this.commitCancel,
-      onBlur: this.commit,
       onOverrideKeyDown: this.onKeyDown
     };
 
@@ -116,18 +111,10 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
         ref={this.editor as unknown as React.RefObject<SimpleTextEditor>}
         column={this.props.column as CalculatedColumn<unknown>}
         value={this.getInitialValue() as string}
-        onBlur={this.commit}
+        onCommit={this.commit}
       />
     );
   }
-
-  onPressEnter = () => {
-    this.commit({ key: 'Enter' });
-  };
-
-  onPressTab = () => {
-    this.commit({ key: 'Tab' });
-  };
 
   onPressEscape = (e: KeyboardEvent) => {
     if (!this.editorIsSelectOpen()) {
@@ -143,7 +130,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
       // dont want to propogate as that then moves us round the grid
       e.stopPropagation();
     } else {
-      this.commit(e);
+      this.commit();
     }
   };
 
@@ -152,7 +139,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     if (!this.isCaretAtBeginningOfInput()) {
       e.stopPropagation();
     } else {
-      this.commit(e);
+      this.commit();
     }
   };
 
@@ -161,26 +148,20 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     if (!this.isCaretAtEndOfInput()) {
       e.stopPropagation();
     } else {
-      this.commit(e);
+      this.commit();
     }
   };
 
   editorHasResults = () => {
-    const { hasResults } = this.getEditor();
-    return hasResults ? hasResults() : false;
+    return this.editor.current?.hasResults?.() ?? false;
   };
 
   editorIsSelectOpen = () => {
-    const { isSelectOpen } = this.getEditor();
-    return isSelectOpen ? isSelectOpen() : false;
-  };
-
-  getEditor = () => {
-    return this.editor.current!;
+    return this.editor.current?.isSelectOpen?.() ?? false;
   };
 
   getInputNode = () => {
-    return this.getEditor().getInputNode();
+    return this.editor.current?.getInputNode();
   };
 
   getInitialValue(): ValueType<R> | string {
@@ -195,13 +176,13 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     return key || value;
   }
 
-  commit = (args: { key?: string } = {}) => {
+  commit = () => {
     const { onCommit } = this.props;
-    const updated = this.getEditor().getValue();
+    const updated = this.editor.current?.getValue() as never;
     if (this.isNewValueValid(updated)) {
       this.changeCommitted = true;
       const cellKey = this.props.column.key;
-      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated, key: args.key });
+      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated });
     }
   };
 
@@ -211,8 +192,8 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
   };
 
   isNewValueValid = (value: unknown) => {
-    const editor = this.getEditor();
-    if (editor.validate) {
+    const editor = this.editor.current;
+    if (editor?.validate) {
       const isValid = editor.validate(value);
       this.setState({ isInvalid: !isValid });
       return isValid;
