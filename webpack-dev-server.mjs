@@ -27,10 +27,11 @@ const compiler = webpack({
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: [{
+          loader: 'babel-loader',
+          options: { cacheDirectory: true }
+        }, {
           loader: 'ts-loader',
-          options: {
-            onlyCompileBundledFiles: true
-          }
+          options: { onlyCompileBundledFiles: true }
         }]
       },
       {
