@@ -91,7 +91,7 @@ export interface Dimension {
 
 export type RowGetter<TRow> = (rowIdx: number) => TRow;
 
-export interface Editor<TValue = never> extends React.Component {
+export interface Editor<TValue = never> {
   getInputNode(): Element | Text | undefined | null;
   getValue(): TValue;
   hasResults?(): boolean;
@@ -115,9 +115,8 @@ export interface EditorProps<TValue, TRow = any> {
   value: TValue;
   rowData: TRow;
   height: number;
-  onCommit(args?: { key?: string }): void;
+  onCommit(): void;
   onCommitCancel(): void;
-  onBlur(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
@@ -199,7 +198,6 @@ export interface CommitEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;
   rowIdx: number;
   updated: TUpdatedValue;
-  key?: string;
 }
 
 export interface RowExpandToggleEvent {

@@ -12,12 +12,12 @@ interface DropDownEditorProps<TRow> {
   column: Column<TRow>;
   options: Array<Option | string>;
   value?: string;
-  onBlur(): void;
+  onCommit(): void;
 }
 
 type DropDownEditorHandle = Pick<Editor<{[key: string]: string | undefined}>, 'getInputNode' | 'getValue'>;
 
-function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
+function DropDownEditorWithRef<TRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
   const selectRef = useRef<HTMLSelectElement>(null);
 
   useImperativeHandle(ref, () => ({
@@ -36,7 +36,7 @@ function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDow
       ref={selectRef}
       className="rdg-select-editor"
       defaultValue={value}
-      onBlur={onBlur}
+      onBlur={onCommit}
       size={options.length}
       style={{ maxHeight: 200, height: 'auto', overflowY: 'auto' }}
     >
@@ -44,7 +44,7 @@ function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDow
         <option
           key={name}
           value={name}
-          onClick={onBlur}
+          onClick={onCommit}
         >
           {name}
         </option>
@@ -53,7 +53,7 @@ function DropDownEditorWithRef<TRow>({ column, value, onBlur, options }: DropDow
           key={name.id}
           value={name.value}
           title={name.title}
-          onClick={onBlur}
+          onClick={onCommit}
         >
           {name.text || name.value}
         </option>
