@@ -1,3 +1,4 @@
+import 'core-js/stable';
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, NavLink, Route, Switch } from 'react-router-dom';
