@@ -37,7 +37,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
-  headerRenderer?: React.ReactElement | React.ComponentType<HeaderRendererProps<TRow>>;
+  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
@@ -165,6 +165,10 @@ export interface IRowRendererProps<TRow> {
   onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
+}
+
+export interface CustomRowRendererProps<TRow> extends IRowRendererProps<TRow> {
+  renderBaseRow: React.FunctionComponent<IRowRendererProps<TRow>>;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
