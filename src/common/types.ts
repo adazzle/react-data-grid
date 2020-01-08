@@ -18,7 +18,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
     [key: string]: undefined | ((e: Event, info: ColumnEventInfo<TRow>) => void);
   };
   /** Formatter to be used to render the cell content */
-  formatter?: React.ComponentType<FormatterProps<TRow[TField], TRow>>;
+  formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: TRow) => boolean);
   /** Enable dragging of a column */
@@ -34,7 +34,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TRow>>;
+  editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
@@ -50,7 +50,7 @@ export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow> =
     idx: number;
     width: number;
     left: number;
-    formatter: React.ComponentType<FormatterProps<any, TRow>>;
+    formatter: React.ComponentType<FormatterProps<TRow>>;
   };
 
 export interface ColumnMetrics<TRow> {
@@ -100,9 +100,8 @@ export interface Editor<TValue = never> {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<TValue, TRow = any> {
+export interface FormatterProps<TRow = any> {
   rowIdx: number;
-  value: TValue;
   column: CalculatedColumn<TRow>;
   row: TRow;
   isRowSelected: boolean;
@@ -111,6 +110,7 @@ export interface FormatterProps<TValue, TRow = any> {
 }
 
 export interface EditorProps<TValue, TRow = any> {
+  ref: React.Ref<Editor<{ [key: string]: TValue }>>;
   column: CalculatedColumn<TRow>;
   value: TValue;
   rowData: TRow;
