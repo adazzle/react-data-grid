@@ -111,7 +111,7 @@ export interface FormatterProps<TValue, TRow = any> {
 }
 
 export interface EditorProps<TValue, TRow = any> {
-  ref: React.Ref<Editor<TValue>>;
+  ref: React.Ref<Editor<{ [key: string]: TValue }>>;
   column: CalculatedColumn<TRow>;
   value: TValue;
   rowData: TRow;

@@ -12,9 +12,9 @@ interface DropDownEditorProps<TRow> extends EditorProps<string, TRow> {
   options: Array<Option | string>;
 }
 
-type DropDownEditorHandle = Editor<string>;
+type DropDownEditorHandle = Editor<{ [key: string]: string }>;
 
-function DropDownEditor<TRow>({ value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>) {
+function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>) {
   const selectRef = useRef<HTMLSelectElement>(null);
 
   useImperativeHandle(ref, () => ({
@@ -22,7 +22,9 @@ function DropDownEditor<TRow>({ value, onCommit, options }: DropDownEditorProps<
       return selectRef.current;
     },
     getValue() {
-      return selectRef.current!.value;
+      return {
+        [column.key]: selectRef.current!.value
+      };
     }
   }));
 
