@@ -46,7 +46,6 @@ function RowRenderer<R, K extends keyof R>({
     row: rowData,
     width: columnMetrics.totalColumnWidth,
     height: rowHeight,
-    columns: columnMetrics.columns,
     viewportColumns,
     isRowSelected: props.isRowSelected,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
@@ -67,7 +66,6 @@ function RowRenderer<R, K extends keyof R>({
         <RowGroup<R>
           {...rendererProps}
           {...__metaData!}
-          columns={rendererProps.columns}
           name={(rowData as RowData).name!}
           eventBus={eventBus}
           renderer={rowGroupRenderer}
