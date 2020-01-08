@@ -43,10 +43,6 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   viewportColumns: CalculatedColumn<R>[];
   height: number;
   scrollLeft: number;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
-  colVisibleStartIdx: number;
-  colVisibleEndIdx: number;
   onScroll(position: ScrollPosition): void;
   onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
   onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
@@ -66,8 +62,6 @@ function Canvas<R, K extends keyof R>({
   height,
   scrollLeft,
   onScroll,
-  colOverscanStartIdx,
-  colOverscanEndIdx,
   renderBatchSize,
   rowGetter,
   rowHeight,
