@@ -70,7 +70,6 @@ function RowRenderer<R, K extends keyof R>({
           eventBus={eventBus}
           renderer={rowGroupRenderer}
           onRowExpandToggle={props.onRowExpandToggle}
-          renderBaseRow={(p: IRowRendererProps<R>) => <Row {...p} />}
         />
       );
     }
