@@ -84,7 +84,7 @@ export default function AllFeaturesExample(): JSX.Element {
     {
       key: 'title',
       name: 'Title',
-      editor: ({ column }) => <DropDownEditor<Row> options={titles} column={column} onCommit={() => {}} />,
+      editor: React.forwardRef((props, ref) => <DropDownEditor<Row> ref={ref} {...props} options={titles} />),
       width: 200,
       resizable: true,
       formatter(props) {
