@@ -1,11 +1,10 @@
-import React, { useCallback, useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import { EventTypes } from './common/enums';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
-import Row from './Row';
 import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
@@ -84,7 +83,6 @@ function Canvas<R, K extends keyof R>({
   const [scrollTop, setScrollTop] = useState(0);
   const canvas = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
-  const [rowRefs] = useState(() => new Map<number, Row<R>>());
   const lastSelectedRowIdx = useRef(-1);
 
   const clientHeight = getClientHeight();
@@ -126,11 +124,6 @@ function Canvas<R, K extends keyof R>({
 
   function handleHitColummBoundary({ idx }: Position) {
     scrollToColumn(idx);
-  }
-
-  function getRowColumns(rowIdx: number) {
-    const row = rowRefs.get(rowIdx);
-    return row && row.props ? row.props.columns : columnMetrics.columns;
   }
 
   function scrollToColumn(idx: number) {
@@ -185,15 +178,6 @@ function Canvas<R, K extends keyof R>({
     return eventBus.subscribe(EventTypes.SELECT_ROW, handleRowSelectionChange);
   }, [eventBus, onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
 
-
-  const setRowRef = useCallback((row: Row<R> | null, idx: number) => {
-    if (row === null) {
-      rowRefs.delete(idx);
-    } else {
-      rowRefs.set(idx, row);
-    }
-  }, [rowRefs]);
-
   useImperativeHandle(ref, () => ({
     scrollToColumn,
     scrollToRow,
@@ -210,7 +194,6 @@ function Canvas<R, K extends keyof R>({
           key={idx}
           idx={idx}
           rowData={rowData}
-          setRowRef={setRowRef}
           columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
           eventBus={eventBus}
@@ -296,7 +279,6 @@ function Canvas<R, K extends keyof R>({
           onHitRightBoundary={handleHitColummBoundary}
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
-          getRowColumns={getRowColumns}
           editorPortalTarget={props.editorPortalTarget}
           onCheckCellIsEditable={props.onCheckCellIsEditable}
           onGridRowsUpdated={props.onGridRowsUpdated}

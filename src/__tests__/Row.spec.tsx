@@ -11,20 +11,16 @@ import EventBus from '../EventBus';
 type RowType = any;
 
 describe('Row', () => {
-  const COLUMN_COUNT = 50;
-
   function setup(props: IRowRendererProps<RowType>) {
-    const wrapper = shallow<Row<RowType>>(<Row {...props} />);
+    const wrapper = shallow<typeof Row>(<Row {...props} />);
     const cells = wrapper.find(Cell);
     return { wrapper, cells };
   }
 
-  const columns = createColumns(COLUMN_COUNT);
   const requiredProperties: IRowRendererProps<RowType> = {
     height: 30,
     width: 1000,
-    columns,
-    viewportColumns: columns.slice(0, 20),
+    viewportColumns: createColumns(50),
     row: { key: 'value' },
     cellRenderer: Cell,
     idx: 17,
