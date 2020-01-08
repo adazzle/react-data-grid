@@ -95,12 +95,7 @@ describe('viewportUtils', () => {
     }
 
     it('should use scrollLeft to calculate the range', () => {
-      expect(getRange({ scrollLeft: 300 })).toEqual({
-        colVisibleStartIdx: 3,
-        colVisibleEndIdx: 12,
-        colOverscanStartIdx: 2,
-        colOverscanEndIdx: 13
-      });
+      expect(getRange({ scrollLeft: 300 })).toEqual([2, 13]);
     });
 
     it('should account for large columns', () => {
@@ -109,12 +104,7 @@ describe('viewportUtils', () => {
       columnMetrics.columns.forEach((c, i) => {
         if (i !== 0) c.left += 400;
       });
-      expect(getRange({ scrollLeft: 400, columnMetrics })).toEqual({
-        colVisibleStartIdx: 0,
-        colVisibleEndIdx: 9,
-        colOverscanStartIdx: 0,
-        colOverscanEndIdx: 10
-      });
+      expect(getRange({ scrollLeft: 400, columnMetrics })).toEqual([0, 10]);
     });
 
     it('should use viewportWidth to calculate the range', () => {
@@ -123,12 +113,7 @@ describe('viewportUtils', () => {
       expect(getHorizontalRangeToRender({
         columnMetrics,
         scrollLeft: 200
-      })).toEqual({
-        colVisibleStartIdx: 2,
-        colVisibleEndIdx: 6,
-        colOverscanStartIdx: 1,
-        colOverscanEndIdx: 7
-      });
+      })).toEqual([1, 7]);
     });
 
     it('should use frozen columns to calculate the range', () => {
@@ -138,12 +123,7 @@ describe('viewportUtils', () => {
       columnMetrics.columns[2].frozen = true;
       columnMetrics.lastFrozenColumnIndex = 2;
 
-      expect(getRange({ scrollLeft: 500, columnMetrics })).toEqual({
-        colVisibleStartIdx: 8,
-        colVisibleEndIdx: 14,
-        colOverscanStartIdx: 7,
-        colOverscanEndIdx: 15
-      });
+      expect(getRange({ scrollLeft: 500, columnMetrics })).toEqual([7, 15]);
     });
   });
 });
