@@ -150,7 +150,6 @@ export interface RowsContainerProps {
 export interface IRowRendererProps<TRow> {
   height: number;
   width: number;
-  columns: CalculatedColumn<TRow>[];
   viewportColumns: CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
@@ -164,11 +163,6 @@ export interface IRowRendererProps<TRow> {
   enableCellRangeSelection?: boolean;
   onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
   onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
-  onRowExpandToggle?(event: RowExpandToggleEvent): void;
-}
-
-export interface CustomRowRendererProps<TRow> extends IRowRendererProps<TRow> {
-  renderBaseRow: React.FunctionComponent<IRowRendererProps<TRow>>;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
