@@ -27,7 +27,7 @@ import {
 // Types
 import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
-import { CalculatedColumn, Position, SelectedRange, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
+import { Position, SelectedRange, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 export enum KeyCodes {
@@ -71,7 +71,6 @@ export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanva
   height: number;
   scrollLeft: number;
   scrollTop: number;
-  getRowColumns(rowIdx: number): CalculatedColumn<R>[];
   colVisibleStartIdx: number;
   colVisibleEndIdx: number;
   eventBus: EventBus;
@@ -621,9 +620,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     return rowIdx * this.props.rowHeight;
   }
 
-  getSelectedDimensions = (selectedPosition: Position, useGridColumns = false): Dimension => {
-    const { scrollLeft, rowHeight, getRowColumns } = this.props;
-    const columns = useGridColumns ? this.props.columns : getRowColumns(selectedPosition.rowIdx);
+  getSelectedDimensions = (selectedPosition: Position): Dimension => {
+    const { columns, scrollLeft, rowHeight } = this.props;
     const top = this.getRowTop(selectedPosition.rowIdx);
     const dimension = getSelectedDimensions({ selectedPosition, columns, scrollLeft, rowHeight });
     dimension.top = top;
@@ -634,7 +632,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     return (
       !this.state.isEditorEnabled && this.isGridSelected() && (
         <SelectionMask
-          {...this.getSelectedDimensions(this.state.selectedPosition, true)}
+          {...this.getSelectedDimensions(this.state.selectedPosition)}
           ref={this.selectionMask}
         >
           {this.isDragEnabled() && (
@@ -657,7 +655,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
           {...getSelectedRangeDimensions({ selectedRange: this.state.selectedRange, columns, rowHeight })}
         />
         <SelectionMask
-          {...this.getSelectedDimensions(this.state.selectedPosition, true)}
+          {...this.getSelectedDimensions(this.state.selectedPosition)}
           ref={this.selectionMask}
         />
       </>
@@ -665,10 +663,9 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   render() {
-    const { rowGetter, contextMenu, getRowColumns, scrollLeft, scrollTop, editorPortalTarget } = this.props;
+    const { rowGetter, contextMenu, columns, scrollLeft, scrollTop, editorPortalTarget } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
     const rowData = rowGetter(selectedPosition.rowIdx);
-    const columns = getRowColumns(selectedPosition.rowIdx);
     return (
       <div
         onKeyDown={this.onKeyDown}

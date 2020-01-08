@@ -167,10 +167,6 @@ export interface IRowRendererProps<TRow> {
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
 }
 
-export interface CustomRowRendererProps<TRow> extends IRowRendererProps<TRow> {
-  renderBaseRow: React.FunctionComponent<IRowRendererProps<TRow>>;
-}
-
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
   column: CalculatedColumn<TRow>;
   value: TFilterValue;
