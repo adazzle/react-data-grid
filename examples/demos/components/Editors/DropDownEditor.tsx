@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Column, Editor } from '../../../../src';
+import { Editor, EditorProps } from '../../../../src';
 
 interface Option {
   id: string;
@@ -8,16 +8,13 @@ interface Option {
   text: string;
 }
 
-interface DropDownEditorProps<TRow> {
-  column: Column<TRow>;
+interface DropDownEditorProps<TRow> extends EditorProps<string, TRow> {
   options: Array<Option | string>;
-  value?: string;
-  onCommit(): void;
 }
 
-type DropDownEditorHandle = Pick<Editor<{[key: string]: string | undefined}>, 'getInputNode' | 'getValue'>;
+type DropDownEditorHandle = Editor<{ [key: string]: string }>;
 
-function DropDownEditorWithRef<TRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>): JSX.Element {
+function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>) {
   const selectRef = useRef<HTMLSelectElement>(null);
 
   useImperativeHandle(ref, () => ({
@@ -26,7 +23,7 @@ function DropDownEditorWithRef<TRow>({ column, value, onCommit, options }: DropD
     },
     getValue() {
       return {
-        [column.key]: selectRef.current?.value
+        [column.key]: selectRef.current!.value
       };
     }
   }));
@@ -63,5 +60,5 @@ function DropDownEditorWithRef<TRow>({ column, value, onCommit, options }: DropD
 }
 
 export default forwardRef(
-  DropDownEditorWithRef as React.RefForwardingComponent<DropDownEditorHandle, DropDownEditorProps<{ [key: string]: unknown }>>
+  DropDownEditor as React.RefForwardingComponent<DropDownEditorHandle, DropDownEditorProps<{ [key: string]: unknown }>>
 ) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;
