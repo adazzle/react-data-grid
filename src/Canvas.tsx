@@ -106,7 +106,6 @@ function Canvas<R, K extends keyof R>({
   }
 
   function getClientHeight() {
-    if (canvas.current) return canvas.current.clientHeight;
     const scrollbarSize = columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0;
     return height - scrollbarSize;
   }
