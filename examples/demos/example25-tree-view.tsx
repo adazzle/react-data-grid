@@ -107,7 +107,7 @@ export default function() {
       {
         key: 'format',
         name: 'format',
-        formatter({ value, row }) {
+        formatter({ row }) {
           const hasChildren = row.children !== undefined;
           const style = !hasChildren ? { marginLeft: 30 } : undefined;
           return (
@@ -126,7 +126,7 @@ export default function() {
                   />
                 )}
                 <div style={style}>
-                  {value}
+                  {row.format}
                 </div>
               </div>
             </>

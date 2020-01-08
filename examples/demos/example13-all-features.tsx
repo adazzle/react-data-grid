@@ -75,11 +75,9 @@ export default function AllFeaturesExample(): JSX.Element {
       key: 'avatar',
       name: 'Avatar',
       width: 40,
-      formatter: ImageFormatter,
       resizable: true,
-      headerRenderer() {
-        return <ImageFormatter value={faker.image.cats()} />;
-      }
+      headerRenderer: () => <ImageFormatter value={faker.image.cats()} />,
+      formatter: ({ row }) => <ImageFormatter value={row.avatar} />
     },
     {
       key: 'title',

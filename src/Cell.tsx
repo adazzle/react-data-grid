@@ -137,17 +137,14 @@ function Cell<R>({
   }
 
   if (!children) {
-    const { formatter } = column;
-    const formatterProps = {
-      value: rowData[column.key],
+    children = createElement(column.formatter, {
       column,
       rowIdx,
       row: rowData,
       isRowSelected,
       onRowSelectionChange,
       isSummaryRow
-    };
-    children = createElement<typeof formatterProps>(formatter, formatterProps);
+    });
   }
 
   return (
