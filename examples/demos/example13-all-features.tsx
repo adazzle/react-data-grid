@@ -62,7 +62,7 @@ export default function AllFeaturesExample(): JSX.Element {
   const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
   const gridRef = useRef<DataGridHandle>(null);
 
-  const columns: Column<Row>[] = useMemo(() => [
+  const columns = useMemo((): Column<Row>[] => [
     SelectColumn,
     {
       key: 'id',
@@ -84,7 +84,7 @@ export default function AllFeaturesExample(): JSX.Element {
     {
       key: 'title',
       name: 'Title',
-      editor: <DropDownEditor<Row> options={titles} column={{} as Column<Row>} onCommit={() => { }} />,
+      editor: React.forwardRef((props, ref) => <DropDownEditor<Row> ref={ref} {...props} options={titles} />),
       width: 200,
       resizable: true,
       formatter(props) {

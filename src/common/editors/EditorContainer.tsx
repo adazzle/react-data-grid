@@ -1,9 +1,8 @@
 import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
-import { isElement, isValidElementType } from 'react-is';
 import { Clear } from '@material-ui/icons';
 
-import { CalculatedColumn, Editor, EditorProps, CommitEvent, Dimension, Omit } from '../types';
+import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
@@ -85,25 +84,20 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
   };
 
   createEditor() {
-    type P = EditorProps<ValueType<R> | string, R>;
-    const editorProps: P & { ref: React.RefObject<Editor> } = {
-      ref: this.editor,
-      column: this.props.column,
-      value: this.getInitialValue(),
-      rowData: this.props.rowData,
-      height: this.props.height,
-      onCommit: this.commit,
-      onCommitCancel: this.commitCancel,
-      onOverrideKeyDown: this.onKeyDown
-    };
-
-    const CustomEditor = this.props.column.editor as React.ComponentType<P>;
     // return custom column editor or SimpleEditor if none specified
-    if (isElement(CustomEditor)) {
-      return React.cloneElement(CustomEditor, editorProps);
-    }
-    if (isValidElementType(CustomEditor)) {
-      return <CustomEditor {...editorProps} />;
+    if (this.props.column.editor) {
+      return (
+        <this.props.column.editor
+          ref={this.editor}
+          column={this.props.column}
+          value={this.getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
+          rowData={this.props.rowData}
+          height={this.props.height}
+          onCommit={this.commit}
+          onCommitCancel={this.commitCancel}
+          onOverrideKeyDown={this.onKeyDown}
+        />
+      );
     }
 
     return (

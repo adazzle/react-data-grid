@@ -185,7 +185,7 @@ describe('Editor Container Tests', () => {
     function innerSetup() {
       const container = document.createElement('div');
       document.body.appendChild(container);
-      const setupResult = setup({ column: { ...fakeColumn, editor: <PortalTestEditor /> } }, { attachTo: container });
+      const setupResult = setup({ column: { ...fakeColumn, editor: () => <PortalTestEditor /> } }, { attachTo: container });
       return { container, ...setupResult };
     }
 

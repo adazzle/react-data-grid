@@ -34,7 +34,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ReactElement | React.ComponentType<EditorProps<TRow[TField], TRow>>;
+  editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
@@ -111,6 +111,7 @@ export interface FormatterProps<TValue, TRow = any> {
 }
 
 export interface EditorProps<TValue, TRow = any> {
+  ref: React.Ref<Editor<{ [key: string]: TValue }>>;
   column: CalculatedColumn<TRow>;
   value: TValue;
   rowData: TRow;
