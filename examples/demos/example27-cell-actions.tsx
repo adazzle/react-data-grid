@@ -47,14 +47,14 @@ const columns: Column<Row>[] = [
     key: 'avatar',
     name: 'Avatar',
     width: 60,
-    formatter: ImageFormatter
+    formatter: ({ row }) => <ImageFormatter value={row.avatar} />
   },
   {
     key: 'county',
     name: 'County',
     width: 200,
     cellClass: 'rdg-cell-action',
-    formatter({ row, value }) {
+    formatter({ row }) {
       if (row.id === 'id_0') {
         const actions = [
           {
@@ -80,13 +80,13 @@ const columns: Column<Row>[] = [
           <>
             <CellActionsFormatter actions={actions} />
             <div>
-              {value}
+              {row.county}
             </div>
           </>
         );
       }
 
-      return <>{value}</>;
+      return <>{row.county}</>;
     }
   },
   {

@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import Cell, { CellProps } from '../Cell';
 import helpers, { Row } from './GridPropHelpers';
 import { SimpleCellFormatter } from '../formatters';
-import { CalculatedColumn } from '../common/types';
+import { CalculatedColumn, FormatterProps } from '../common/types';
 import EventBus from '../EventBus';
 
 const defaultColumn: CalculatedColumn<Row> = {
@@ -37,11 +37,11 @@ describe('Cell Tests', () => {
   it('should render a SimpleCellFormatter with value', () => {
     const wrapper = renderComponent();
     const formatter = wrapper.find(SimpleCellFormatter);
-    expect(formatter.props().value).toEqual('Wicklow');
+    expect(formatter.props().row[defaultColumn.key]).toEqual('Wicklow');
   });
 
   it('should render a custom formatter when specified on column', () => {
-    const CustomFormatter = () => <div>Custom</div>;
+    const CustomFormatter = (props: FormatterProps) => <div>{props.row[props.column.key]}</div>;
 
     const column = {
       ...defaultColumn,
@@ -50,7 +50,7 @@ describe('Cell Tests', () => {
 
     const wrapper = renderComponent({ column });
     const formatterInstance = wrapper.find(CustomFormatter);
-    expect(formatterInstance.prop('value')).toEqual('Wicklow');
+    expect(formatterInstance.prop('row')[column.key]).toEqual('Wicklow');
   });
 
   it('should render children when those are passed', () => {

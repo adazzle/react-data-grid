@@ -1,9 +1,7 @@
 import React from 'react';
+import { FormatterProps } from '../common/types';
 
-export interface SimpleCellFormatterProps {
-  value?: string | number | boolean;
-}
-
-export function SimpleCellFormatter({ value }: SimpleCellFormatterProps) {
+export function SimpleCellFormatter({ row, column }: FormatterProps) {
+  const value = row[column.key];
   return <span title={String(value)}>{value}</span>;
 }

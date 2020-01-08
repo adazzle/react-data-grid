@@ -18,7 +18,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
     [key: string]: undefined | ((e: Event, info: ColumnEventInfo<TRow>) => void);
   };
   /** Formatter to be used to render the cell content */
-  formatter?: React.ComponentType<FormatterProps<TRow[TField], TRow>>;
+  formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((rowData: TRow) => boolean);
   /** Enable dragging of a column */
@@ -50,7 +50,7 @@ export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow> =
     idx: number;
     width: number;
     left: number;
-    formatter: React.ComponentType<FormatterProps<any, TRow>>;
+    formatter: React.ComponentType<FormatterProps<TRow>>;
   };
 
 export interface ColumnMetrics<TRow> {
@@ -100,9 +100,8 @@ export interface Editor<TValue = never> {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<TValue, TRow = any> {
+export interface FormatterProps<TRow = any> {
   rowIdx: number;
-  value: TValue;
   column: CalculatedColumn<TRow>;
   row: TRow;
   isRowSelected: boolean;

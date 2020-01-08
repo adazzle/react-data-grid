@@ -6,7 +6,7 @@ interface Metrics<R> {
   columnWidths: Map<keyof R, number>;
   minColumnWidth: number;
   viewportWidth: number;
-  defaultFormatter: React.ComponentType<FormatterProps<unknown, R>>;
+  defaultFormatter: React.ComponentType<FormatterProps<R>>;
 }
 
 export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
