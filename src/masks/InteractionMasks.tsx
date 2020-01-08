@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 
 // Components
 import SelectionMask from './SelectionMask';
-// import SelectionRangeMask from './SelectionRangeMask';
 import CopyMask from './CopyMask';
 import DragMask, { DraggedPosition } from './DragMask';
 import DragHandle from './DragHandle';
@@ -15,11 +14,9 @@ import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 import {
   getSelectedDimensions as getDimensions,
   getSelectedCellValue,
-  // getSelectedRangeDimensions,
   getNextSelectedCellPosition,
   canExitGrid,
   isSelectedCellEditable
-  // selectedRangeIsSingleCell
 } from '../utils/selectedCellUtils';
 
 // Types
@@ -207,13 +204,6 @@ export default function InteractionMasks<R, K extends keyof R>({
     }
   }
 
-  // function onFocus(): void {
-  //   const { idx, rowIdx } = selectedPosition;
-  //   if (idx === -1 && rowIdx === -1) {
-  //     selectFirstCell();
-  //   }
-  // }
-
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
     // When there are no rows in the grid, we need to allow the browser to handle tab presses
     if (rowsCount === 0) {
@@ -280,34 +270,13 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
     e.preventDefault();
-    const isShift = e.shiftKey;
-
-    if (isShift) {
-      changeSelectedRangeFromArrowKeyAction();
-    } else {
-      const nextPosition = getNextPosition(e.keyCode);
-      selectCell(nextPosition);
-    }
-  }
-
-  function changeSelectedRangeFromArrowKeyAction(): void {
-    // const keyNavAction = this.getKeyNavActionFromEvent(e);
-    // if (keyNavAction) {
-    //   const { cellNavigationMode } = this.props;
-    //   const currentPosition = this.state.selectedRange.cursorCell || this.state.selectedPosition;
-    //   const next = this.getNextSelectedCellPositionForKeyNavAction(keyNavAction, currentPosition, cellNavigationMode);
-    //   // this.checkIsAtGridBoundary(keyNavAction, next);
-    //   this.onSelectCellRangeUpdated({ ...next }, true, () => { this.onSelectCellRangeEnded(); });
-    // }
+    const nextPosition = getNextPosition(e.keyCode);
+    selectCell(nextPosition);
   }
 
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
     return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columns.length;
   }
-
-  // function selectFirstCell(): void {
-  //   selectCell({ rowIdx: 0, idx: 0 });
-  // }
 
   function selectCell(position: Position, enableEditor = false): void {
     // Close the editor to commit any pending changes
@@ -423,7 +392,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   return (
     <div
       onKeyDown={onKeyDown}
-      // onFocus={onFocus}
     >
       {copiedPosition && <CopyMask {...getSelectedDimensions(copiedPosition)} />}
       {draggedPosition && (
