@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
-import { IRowRendererProps, CustomRowRendererProps, RowData } from './common/types';
+import { IRowRendererProps, RowData } from './common/types';
 import EventBus from './EventBus';
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
@@ -22,7 +22,6 @@ export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProp
   idx: number;
   rowData: R;
   scrollLeft: number | undefined;
-  setRowRef(row: Row<R> | null, idx: number): void;
   enableCellRangeSelection?: boolean;
   eventBus: EventBus;
   isRowSelected: boolean;
@@ -39,19 +38,14 @@ function RowRenderer<R, K extends keyof R>({
   rowKey,
   rowRenderer,
   scrollLeft,
-  setRowRef,
   ...props
 }: RowRendererProps<R, K>) {
   const { __metaData } = rowData as RowData;
-  const rendererProps: IRowRendererProps<R> & { ref: React.Ref<Row<R>> } = {
-    ref(row) {
-      setRowRef(row, idx);
-    },
+  const rendererProps: IRowRendererProps<R> = {
     idx,
     row: rowData,
     width: columnMetrics.totalColumnWidth,
     height: rowHeight,
-    columns: columnMetrics.columns,
     viewportColumns,
     isRowSelected: props.isRowSelected,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
@@ -63,41 +57,25 @@ function RowRenderer<R, K extends keyof R>({
     enableCellRangeSelection: props.enableCellRangeSelection
   };
 
-  function renderGroupRow() {
-    const { ref, columns, ...rowGroupProps } = rendererProps;
-
-    return (
-      <RowGroup<R>
-        {...rowGroupProps}
-        {...__metaData!}
-        columns={columns}
-        name={(rowData as RowData).name!}
-        eventBus={eventBus}
-        renderer={rowGroupRenderer}
-        onRowExpandToggle={props.onRowExpandToggle}
-        renderBaseRow={(p: IRowRendererProps<R>) => <Row ref={ref} {...p} />}
-      />
-    );
-  }
-
   if (__metaData) {
     if (__metaData.getRowRenderer) {
       return __metaData.getRowRenderer(rendererProps, idx);
     }
     if (__metaData.isGroup) {
-      return renderGroupRow();
+      return (
+        <RowGroup<R>
+          {...rendererProps}
+          {...__metaData!}
+          name={(rowData as RowData).name!}
+          eventBus={eventBus}
+          renderer={rowGroupRenderer}
+          onRowExpandToggle={props.onRowExpandToggle}
+        />
+      );
     }
   }
 
-  if (rowRenderer) {
-    const { ref, ...otherProps } = rendererProps;
-    return React.createElement<CustomRowRendererProps<R>>(rowRenderer, {
-      ...otherProps,
-      renderBaseRow: (p: IRowRendererProps<R>) => <Row ref={ref} {...p} />
-    });
-  }
-
-  return <Row<R> {...rendererProps} />;
+  return React.createElement<IRowRendererProps<R>>(rowRenderer || Row, rendererProps);
 }
 
 export default memo(RowRenderer) as <R, K extends keyof R>(props: RowRendererProps<R, K>) => JSX.Element;

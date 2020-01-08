@@ -29,7 +29,6 @@ function SummaryRowRenderer<R, K extends keyof R>({
       row={rowData}
       width={columnMetrics.totalColumnWidth + getScrollbarSize()}
       height={rowHeight}
-      columns={columnMetrics.columns}
       viewportColumns={viewportColumns}
       isRowSelected={false}
       lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}

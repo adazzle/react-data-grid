@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { forwardRef } from 'react';
 import { EventTypes } from './common/enums';
-import { IRowRendererProps, CalculatedColumn, RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
+import { RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
 import EventBus from './EventBus';
 
 interface Props<R> {
   height: number;
-  columns: CalculatedColumn<R>[];
   row: unknown;
   cellRenderer?: React.ComponentType<CellRendererProps<R>>;
   isSelected?: boolean;
@@ -22,7 +21,6 @@ interface Props<R> {
   renderer?: React.ComponentType;
   eventBus: EventBus;
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
-  renderBaseRow(p: IRowRendererProps<R>): React.ReactElement;
 }
 
 export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {
