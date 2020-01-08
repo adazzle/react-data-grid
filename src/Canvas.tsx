@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, useMemo } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import { EventTypes } from './common/enums';
@@ -87,6 +87,15 @@ function Canvas<R, K extends keyof R>({
 
   const clientHeight = getClientHeight();
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
+  const { columns, lastFrozenColumnIndex } = columnMetrics;
+
+  const frozenColumnsWidth = useMemo(() => {
+    let width = 0;
+    for (let i = 0; i <= lastFrozenColumnIndex; i++) {
+      width += columns[i].width;
+    }
+    return width;
+  }, [columns, lastFrozenColumnIndex]);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -111,30 +120,39 @@ function Canvas<R, K extends keyof R>({
     return height - scrollbarSize;
   }
 
-  function onHitBottomCanvas({ rowIdx }: Position) {
+  function scrollToCell({ idx, rowIdx }: Partial<Position>) {
     const { current } = canvas;
     if (!current) return;
-    // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
-    current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
-  }
 
-  function onHitTopCanvas({ rowIdx }: Position) {
-    scrollToRow(rowIdx);
-  }
+    if (typeof idx === 'number' && !columns[idx].frozen) {
+      const { left, width } = columns[idx];
+      const { clientWidth } = current;
+      const isCellAtLeftBoundary = left < scrollLeft + width + frozenColumnsWidth;
+      const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
+      if (isCellAtLeftBoundary || isCellAtRightBoundary) {
+        const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
+        if (newScrollLeft !== 0) {
+          current.scrollLeft = scrollLeft + newScrollLeft;
+        }
+      }
+    }
 
-  function handleHitColummBoundary({ idx }: Position) {
-    scrollToColumn(idx);
+    if (typeof rowIdx === 'number') {
+      const isCellAtTopBoundary = rowIdx * rowHeight < scrollTop;
+      if (isCellAtTopBoundary) {
+        current.scrollTop = rowIdx * rowHeight;
+      }
+
+      const isCellAtBottomBoundary = (rowIdx + 1) * rowHeight > scrollTop + height;
+      if (isCellAtBottomBoundary) {
+      // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
+        current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
+      }
+    }
   }
 
   function scrollToColumn(idx: number) {
-    const { current } = canvas;
-    if (!current) return;
-
-    const { scrollLeft, clientWidth } = current;
-    const newScrollLeft = getColumnScrollPosition(columnMetrics.columns, idx, scrollLeft, clientWidth);
-    if (newScrollLeft !== 0) {
-      current.scrollLeft = scrollLeft + newScrollLeft;
-    }
+    scrollToCell({ idx });
   }
 
   function scrollToRow(rowIdx: number) {
@@ -262,10 +280,8 @@ function Canvas<R, K extends keyof R>({
           rowGetter={rowGetter}
           rowsCount={rowsCount}
           rowHeight={rowHeight}
-          columns={columnMetrics.columns}
+          columns={columns}
           height={clientHeight}
-          colVisibleStartIdx={props.colVisibleStartIdx}
-          colVisibleEndIdx={props.colVisibleEndIdx}
           enableCellSelect={props.enableCellSelect}
           enableCellAutoFocus={props.enableCellAutoFocus}
           enableCellCopyPaste={props.enableCellCopyPaste}
@@ -273,12 +289,9 @@ function Canvas<R, K extends keyof R>({
           cellNavigationMode={props.cellNavigationMode}
           eventBus={eventBus}
           contextMenu={contextMenu}
-          onHitBottomBoundary={onHitBottomCanvas}
-          onHitTopBoundary={onHitTopCanvas}
-          onHitLeftBoundary={handleHitColummBoundary}
-          onHitRightBoundary={handleHitColummBoundary}
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
+          scrollToCell={scrollToCell}
           editorPortalTarget={props.editorPortalTarget}
           onCheckCellIsEditable={props.onCheckCellIsEditable}
           onGridRowsUpdated={props.onGridRowsUpdated}
