@@ -7,7 +7,7 @@ import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
 import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
-import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
+import { getColumnScrollPosition, isPositionStickySupported, getVerticalRangeToRender } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowGetter'
@@ -85,11 +85,10 @@ function Canvas<R, K extends keyof R>({
   const summaryRef = useRef<HTMLDivElement>(null);
   const lastSelectedRowIdx = useRef(-1);
 
-  const clientHeight = getClientHeight();
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
-    clientHeight,
+    height,
     rowHeight,
     scrollTop,
     rowsCount,
@@ -105,17 +104,11 @@ function Canvas<R, K extends keyof R>({
     }
   }
 
-  function getClientHeight() {
-    if (canvas.current) return canvas.current.clientHeight;
-    const scrollbarSize = columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0;
-    return height - scrollbarSize;
-  }
-
   function onHitBottomCanvas({ rowIdx }: Position) {
     const { current } = canvas;
     if (!current) return;
     // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
-    current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
+    current.scrollTop = (rowIdx + 1) * rowHeight - canvas.current!.clientHeight;
   }
 
   function onHitTopCanvas({ rowIdx }: Position) {
@@ -263,7 +256,7 @@ function Canvas<R, K extends keyof R>({
           rowsCount={rowsCount}
           rowHeight={rowHeight}
           columns={columnMetrics.columns}
-          height={clientHeight}
+          height={height}
           colVisibleStartIdx={props.colVisibleStartIdx}
           colVisibleEndIdx={props.colVisibleEndIdx}
           enableCellSelect={props.enableCellSelect}
