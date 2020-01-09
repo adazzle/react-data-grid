@@ -19,8 +19,7 @@ const testProps: CanvasProps<Row, 'id'> = {
   rowKey: 'id',
   rowHeight: 25,
   height: 200,
-  rowsCount: 1,
-  rowGetter(id) { return { id, row: String(id) }; },
+  rows: [{ id: 0, row: '0' }],
   onGridRowsUpdated: noop,
   enableCellSelect: true,
   enableCellAutoFocus: false,
@@ -70,7 +69,6 @@ describe('Canvas Tests', () => {
 
     expect(wrapper.find(InteractionMasks).props()).toMatchObject({
       rowHeight: 25,
-      rowsCount: 1,
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 0
     });
@@ -79,8 +77,7 @@ describe('Canvas Tests', () => {
   describe('Row Selection', () => {
     it('renders row selected', () => {
       const wrapper = renderComponent({
-        rowGetter(id) { return { id, row: 'one' }; },
-        rowsCount: 1,
+        rows: [{ id: 0, row: 'one' }],
         rowKey: 'id',
         selectedRows: new Set([0])
       });
@@ -104,9 +101,9 @@ describe('Canvas Tests', () => {
         return <div key={rowIdx} className="test-row-renderer" />;
       };
 
-      const rowGetter = (id: number) => ({
-        id,
-        row: String(id),
+      const rows = [{
+        id: 0,
+        row: '0',
         __metaData: {
           isGroup: false,
           treeDepth: 0,
@@ -115,17 +112,12 @@ describe('Canvas Tests', () => {
           columnGroupDisplayName: 'ColGroup',
           getRowRenderer: EmptyChildRow
         }
+      }];
+
+      const wrapper = renderComponent({
+        viewportColumns: COLUMNS,
+        rows
       });
-
-      const props = {
-        rowOverscanStartIdx: 0,
-        rowOverscanEndIdx: 1,
-        columns: COLUMNS,
-        rowGetter,
-        rowsCount: 1
-      };
-
-      const wrapper = renderComponent(props);
       expect(wrapper.find('.test-row-renderer')).toHaveLength(1);
     });
   });

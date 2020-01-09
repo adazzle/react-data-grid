@@ -10,8 +10,7 @@ import SummaryRowRenderer from './SummaryRowRenderer';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
-| 'rowGetter'
-| 'rowsCount'
+| 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
 | 'contextMenu'
@@ -69,11 +68,10 @@ function Canvas<R, K extends keyof R>({
   colOverscanStartIdx,
   colOverscanEndIdx,
   renderBatchSize,
-  rowGetter,
+  rows,
   rowHeight,
   rowKey,
   RowsContainer,
-  rowsCount,
   summaryRows,
   selectedRows,
   onSelectedRowsChange,
@@ -92,7 +90,7 @@ function Canvas<R, K extends keyof R>({
     clientHeight,
     rowHeight,
     scrollTop,
-    rowsCount,
+    rows.length,
     renderBatchSize
   );
 
@@ -163,7 +161,7 @@ function Canvas<R, K extends keyof R>({
         if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
           const step = Math.sign(rowIdx - previousRowIdx);
           for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-            newSelectedRows.add(rowGetter(i)[rowKey]);
+            newSelectedRows.add(rows[i][rowKey]);
           }
         }
       } else {
@@ -175,7 +173,7 @@ function Canvas<R, K extends keyof R>({
     };
 
     return eventBus.subscribe(EventTypes.SELECT_ROW, handleRowSelectionChange);
-  }, [eventBus, onSelectedRowsChange, rowGetter, rowKey, selectedRows]);
+  }, [eventBus, onSelectedRowsChange, rows, rowKey, selectedRows]);
 
   useImperativeHandle(ref, () => ({
     scrollToColumn,
@@ -187,7 +185,7 @@ function Canvas<R, K extends keyof R>({
   function getViewportRows() {
     const rowElements = [];
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
-      const rowData = rowGetter(idx);
+      const rowData = rows[idx];
       rowElements.push(
         <RowRenderer<R, K>
           key={idx}
@@ -219,7 +217,7 @@ function Canvas<R, K extends keyof R>({
       style={{
         width: columnMetrics.totalColumnWidth,
         paddingTop: rowOverscanStartIdx * rowHeight,
-        paddingBottom: (rowsCount - 1 - rowOverscanEndIdx) * rowHeight
+        paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
       }}
     >
       {getViewportRows()}
@@ -258,8 +256,7 @@ function Canvas<R, K extends keyof R>({
         onKeyUp={props.onCanvasKeyup}
       >
         <InteractionMasks<R, K>
-          rowGetter={rowGetter}
-          rowsCount={rowsCount}
+          rows={rows}
           rowHeight={rowHeight}
           columns={columnMetrics.columns}
           height={clientHeight}

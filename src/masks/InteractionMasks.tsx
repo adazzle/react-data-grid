@@ -47,8 +47,7 @@ interface NavAction {
 }
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
-| 'rowGetter'
-| 'rowsCount'
+| 'rows'
 | 'rowHeight'
 | 'enableCellSelect'
 | 'enableCellAutoFocus'
@@ -189,9 +188,9 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   isSelectedCellEditable(): boolean {
-    const { enableCellSelect, columns, rowGetter, onCheckCellIsEditable } = this.props;
+    const { enableCellSelect, columns, rows, onCheckCellIsEditable } = this.props;
     const { selectedPosition } = this.state;
-    return isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
+    return isSelectedCellEditable<R>({ enableCellSelect, columns, rows, selectedPosition, onCheckCellIsEditable });
   }
 
   openEditor = (event?: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -230,15 +229,15 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   };
 
   onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
-    const { cellNavigationMode, columns, rowsCount } = this.props;
+    const { cellNavigationMode, columns, rows } = this.props;
     const { selectedPosition, isEditorEnabled } = this.state;
     // When there are no rows in the grid, we need to allow the browser to handle tab presses
-    if (rowsCount === 0) {
+    if (rows.length === 0) {
       return;
     }
 
     // If we are in a position to leave the grid, stop editing but stay in that cell
-    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount, selectedPosition })) {
+    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
       if (isEditorEnabled) {
         this.closeEditor();
         return;
@@ -264,9 +263,9 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   handleCopy(): void {
-    const { columns, rowGetter } = this.props;
+    const { columns, rows } = this.props;
     const { selectedPosition } = this.state;
-    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
+    const value = getSelectedCellValue({ selectedPosition, columns, rows });
     this.setState({
       copiedPosition: { ...selectedPosition, value }
     });
@@ -401,10 +400,10 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   getNextSelectedCellPositionForKeyNavAction(keyNavAction: NavAction, currentPosition: Position, cellNavigationMode: CellNavigationMode): NextSelectedCellPosition {
     const { getNext } = keyNavAction;
     const nextPosition = getNext(currentPosition);
-    const { columns, rowsCount } = this.props;
+    const { columns, rows } = this.props;
     return getNextSelectedCellPosition({
       columns,
-      rowsCount,
+      rowsCount: rows.length,
       cellNavigationMode,
       nextPosition
     });
@@ -419,8 +418,8 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   isCellWithinBounds({ idx, rowIdx }: Position): boolean {
-    const { columns, rowsCount } = this.props;
-    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columns.length;
+    const { columns, rows } = this.props;
+    return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
   }
 
   isGridSelected(): boolean {
@@ -567,9 +566,9 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
     if (draggedPosition === null) return;
 
     const { rowIdx, overRowIdx } = draggedPosition;
-    const { columns, onGridRowsUpdated, rowGetter } = this.props;
+    const { columns, onGridRowsUpdated, rows } = this.props;
     const column = columns[draggedPosition.idx];
-    const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
+    const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rows });
     const cellKey = column.key;
 
     onGridRowsUpdated({
@@ -587,15 +586,15 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
 
   onDragHandleDoubleClick = (): void => {
     const { selectedPosition } = this.state;
-    const { columns, onGridRowsUpdated, rowGetter, rowsCount } = this.props;
+    const { columns, onGridRowsUpdated, rows } = this.props;
     const column = columns[selectedPosition.idx];
-    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
+    const value = getSelectedCellValue({ selectedPosition, columns, rows });
     const cellKey = column.key;
 
     onGridRowsUpdated({
       cellKey,
       fromRow: selectedPosition.rowIdx,
-      toRow: rowsCount - 1,
+      toRow: rows.length - 1,
       updated: { [cellKey]: value } as never,
       action: UpdateActions.COLUMN_FILL
     });
@@ -663,9 +662,9 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
   }
 
   render() {
-    const { rowGetter, contextMenu, columns, scrollLeft, scrollTop, editorPortalTarget } = this.props;
+    const { rows, contextMenu, columns, scrollLeft, scrollTop, editorPortalTarget } = this.props;
     const { isEditorEnabled, firstEditorKeyPress, selectedPosition, draggedPosition, copiedPosition } = this.state;
-    const rowData = rowGetter(selectedPosition.rowIdx);
+    const rowData = rows[selectedPosition.rowIdx];
     return (
       <div
         onKeyDown={this.onKeyDown}
@@ -688,7 +687,7 @@ export default class InteractionMasks<R, K extends keyof R> extends React.Compon
               onCommit={this.onCommit}
               onCommitCancel={this.onCommitCancel}
               rowIdx={selectedPosition.rowIdx}
-              value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
+              value={getSelectedCellValue({ selectedPosition, columns, rows })!}
               rowData={rowData}
               column={columns[selectedPosition.idx]}
               scrollLeft={scrollLeft}

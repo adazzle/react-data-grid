@@ -68,7 +68,7 @@ describe('Cell Tests', () => {
       idx: 19,
       column: helpers.columns[0],
       lastFrozenColumnIndex: -1,
-      rowData: helpers.rowGetter(11),
+      rowData: helpers.rows[11],
       isRowSelected: false,
       scrollLeft: 0,
       isSummaryRow: false,

@@ -22,8 +22,6 @@ interface Row {
 }
 
 describe('<InteractionMasks/>', () => {
-  const rowGetter = () => ({ col1: 1 });
-
   function setup<K extends keyof InteractionMasksState>(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialState?: Pick<InteractionMasksState, K>, isMount = false) {
     const onSelectedCellChange = jest.fn();
     const props: InteractionMasksProps<Row, 'id'> = {
@@ -31,8 +29,8 @@ describe('<InteractionMasks/>', () => {
       colVisibleStartIdx: 0,
       colVisibleEndIdx: 10,
       columns,
+      rows: Array(ROWS_COUNT).fill({ col1: 1 }),
       rowHeight: 30,
-      rowsCount: ROWS_COUNT,
       onHitBottomBoundary: jest.fn(),
       onHitTopBoundary: jest.fn(),
       onHitRightBoundary: jest.fn(),
@@ -40,7 +38,6 @@ describe('<InteractionMasks/>', () => {
       onSelectedCellChange,
       onSelectedCellRangeChange: jest.fn(),
       onGridRowsUpdated: jest.fn(),
-      rowGetter,
       enableCellSelect: true,
       enableCellAutoFocus: false,
       enableCellCopyPaste: true,
@@ -569,10 +566,10 @@ describe('<InteractionMasks/>', () => {
       describe('when cellNavigationMode is changeRow', () => {
         const cellNavigationMode = CellNavigationMode.CHANGE_ROW;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+          assertExitGridOnTab({ cellNavigationMode, rows: [] });
         });
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+          assertExitGridOnTab({ cellNavigationMode, rows: [] }, true);
         });
         it('allows the user to exit to the grid with Shift+Tab at the first cell of the grid', () => {
           const selectedPosition = { rowIdx: 0, idx: 0 };
@@ -607,10 +604,10 @@ describe('<InteractionMasks/>', () => {
       describe('when cellNavigationMode is none', () => {
         const cellNavigationMode = CellNavigationMode.NONE;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+          assertExitGridOnTab({ cellNavigationMode, rows: [] });
         });
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+          assertExitGridOnTab({ cellNavigationMode, rows: [] }, true);
         });
         it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
           const selectedPosition = { rowIdx: 0, idx: 0 };
@@ -645,10 +642,10 @@ describe('<InteractionMasks/>', () => {
       describe('when cellNavigationMode is loopOverRow', () => {
         const cellNavigationMode = CellNavigationMode.LOOP_OVER_ROW;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+          assertExitGridOnTab({ cellNavigationMode, rows: [] });
         });
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+          assertExitGridOnTab({ cellNavigationMode, rows: [] }, true);
         });
         it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
           const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
@@ -682,9 +679,7 @@ describe('<InteractionMasks/>', () => {
         { Column1: '2' },
         { Column1: '3' }
       ];
-      return setup({
-        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter()
-      }, { selectedPosition });
+      return setup({ rows }, { selectedPosition });
     };
 
     it('should not render a CopyMask component if there is no copied cell', () => {
@@ -735,9 +730,7 @@ describe('<InteractionMasks/>', () => {
         { Column1: '4' },
         { Column1: '5' }
       ];
-      return setup({
-        rowGetter: (rowIdx) => rowIdx < 5 ? rows[rowIdx] : rowGetter()
-      }, { selectedPosition });
+      return setup({ rows }, { selectedPosition });
     };
 
     it('should not render the DragMask component if drag has not started', () => {

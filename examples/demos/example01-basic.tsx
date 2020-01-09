@@ -25,8 +25,7 @@ export default function() {
     <Wrapper title="Basic Example">
       <DataGrid<Row, 'id'>
         columns={columns}
-        rowGetter={i => rows[i]}
-        rowsCount={3}
+        rows={rows}
         minHeight={150}
       />
     </Wrapper>

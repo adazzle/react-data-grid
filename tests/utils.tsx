@@ -19,10 +19,7 @@ export function getProps(extraProps?: Partial<DataGridProps<RowType, 'id'>>): Da
       key: 'col2',
       name: 'Column 2'
     }],
-    rowGetter(idx: number) {
-      return rows[idx];
-    },
-    rowsCount: rows.length,
+    rows,
     ...extraProps
   };
 }

@@ -6,8 +6,7 @@ import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'draggableHeaderCell'
-| 'rowGetter'
-| 'rowsCount'
+| 'rows'
 | 'onHeaderDrop'
 | 'onSelectedRowsChange'
 | 'sortColumn'
@@ -32,8 +31,7 @@ export default function HeaderRow<R, K extends keyof R>({
   width,
   onSelectedRowsChange,
   rowKey,
-  rowsCount,
-  rowGetter,
+  rows,
   ...props
 }: HeaderRowProps<R, K>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
@@ -41,13 +39,13 @@ export default function HeaderRow<R, K extends keyof R>({
 
     const newSelectedRows = new Set<R[K]>();
     if (checked) {
-      for (let i = 0; i < rowsCount; i++) {
-        newSelectedRows.add(rowGetter(i)[rowKey]);
+      for (const row of rows) {
+        newSelectedRows.add(row[rowKey]);
       }
     }
 
     onSelectedRowsChange(newSelectedRows);
-  }, [onSelectedRowsChange, rowGetter, rowKey, rowsCount]);
+  }, [onSelectedRowsChange, rows, rowKey]);
 
   return (
     <div
