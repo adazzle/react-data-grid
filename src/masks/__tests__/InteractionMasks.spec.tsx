@@ -44,6 +44,7 @@ describe('<InteractionMasks/>', () => {
       cellNavigationMode: CellNavigationMode.NONE,
       eventBus: new EventBus(),
       editorPortalTarget: document.body,
+      canvasRef: React.createRef(),
       scrollLeft: 0,
       scrollTop: 0,
       ...overrideProps
