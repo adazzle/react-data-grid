@@ -115,7 +115,7 @@ function Canvas<R, K extends keyof R>({
     const { current } = canvas;
     if (!current) return;
 
-    const { clientWidth, clientHeight } = current;
+    const { clientWidth, clientHeight, scrollLeft, scrollTop } = current;
 
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { left, width } = columns[idx];
