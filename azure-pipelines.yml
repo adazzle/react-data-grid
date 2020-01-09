@@ -19,6 +19,9 @@ steps:
 - script: npm run eslint
   displayName: 'ESLint'
 
+- script: npm run typecheck
+  displayName: 'Typecheck'
+
 - script: npm run build
   displayName: 'Build'
 
