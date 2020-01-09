@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, useMemo } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import { EventTypes } from './common/enums';
@@ -83,14 +83,6 @@ function Canvas<R, K extends keyof R>({
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
   const { columns, lastFrozenColumnIndex } = columnMetrics;
 
-  const frozenColumnsWidth = useMemo(() => {
-    let width = 0;
-    for (let i = 0; i <= lastFrozenColumnIndex; i++) {
-      width += columns[i].width;
-    }
-    return width;
-  }, [columns, lastFrozenColumnIndex]);
-
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
     rowHeight,
@@ -113,33 +105,34 @@ function Canvas<R, K extends keyof R>({
     return height - scrollbarSize;
   }
 
+  function getFrozenColumnsWidth() {
+    if (lastFrozenColumnIndex === -1) return 0;
+    const lastFrozenCol = columns[lastFrozenColumnIndex];
+    return lastFrozenCol.left + lastFrozenCol.width;
+  }
+
   function scrollToCell({ idx, rowIdx }: Partial<Position>) {
     const { current } = canvas;
     if (!current) return;
 
+    const { clientWidth, clientHeight } = current;
+
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { left, width } = columns[idx];
-      const { clientWidth, scrollLeft } = current;
-      const isCellAtLeftBoundary = left < scrollLeft + width + frozenColumnsWidth;
+      const isCellAtLeftBoundary = left < scrollLeft + width + getFrozenColumnsWidth();
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary || isCellAtRightBoundary) {
         const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
-        if (newScrollLeft !== 0) {
-          current.scrollLeft = scrollLeft + newScrollLeft;
-        }
+        current.scrollLeft = scrollLeft + newScrollLeft;
       }
     }
 
     if (typeof rowIdx === 'number') {
-      const { clientHeight, scrollTop } = current;
-      const isCellAtTopBoundary = rowIdx * rowHeight < scrollTop;
-      if (isCellAtTopBoundary) {
+      if (rowIdx * rowHeight < scrollTop) {
+        // at top boundary, scroll to the row's top
         current.scrollTop = rowIdx * rowHeight;
-      }
-
-      const isCellAtBottomBoundary = (rowIdx + 1) * rowHeight > scrollTop + clientHeight;
-      if (isCellAtBottomBoundary) {
-      // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
+      } else if ((rowIdx + 1) * rowHeight > scrollTop + clientHeight) {
+        // at bottom boundary, scroll the next row's top to the bottom of the viewport
         current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
       }
     }

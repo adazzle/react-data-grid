@@ -135,8 +135,10 @@ export default function InteractionMasks<R, K extends keyof R>({
   }, [isEditorEnabled]);
 
   useEffect(() => {
-    if (!enableEditorAfterRender || !isCellEditable) return;
+    if (!enableEditorAfterRender) return;
     setEnableEditorAfterRender(false);
+
+    if (!isCellEditable) return;
     setEditorPosition(getEditorPosition());
   }, [enableEditorAfterRender, getEditorPosition, isCellEditable]);
 
@@ -151,7 +153,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   });
 
   useEffect(() => {
-    if (!draggedPosition) return;
+    if (draggedPosition === null) return;
     const handleDragEnter = (overRowIdx: number) => {
       setDraggedPosition({ ...draggedPosition, overRowIdx });
     };
@@ -392,8 +394,6 @@ export default function InteractionMasks<R, K extends keyof R>({
     );
   }
 
-  const rowData = rowGetter(selectedPosition.rowIdx);
-
   return (
     <div
       onKeyDown={onKeyDown}
@@ -414,7 +414,7 @@ export default function InteractionMasks<R, K extends keyof R>({
             onCommitCancel={onCommitCancel}
             rowIdx={selectedPosition.rowIdx}
             value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
-            rowData={rowData}
+            rowData={rowGetter(selectedPosition.rowIdx)}
             column={columns[selectedPosition.idx]}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
