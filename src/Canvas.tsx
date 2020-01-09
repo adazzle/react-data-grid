@@ -276,7 +276,7 @@ function Canvas<R, K extends keyof R>({
           cellNavigationMode={props.cellNavigationMode}
           eventBus={eventBus}
           contextMenu={contextMenu}
-          canvas={canvas}
+          canvasRef={canvas}
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
           scrollToCell={scrollToCell}

@@ -58,7 +58,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 
 export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   height: number;
-  canvas: React.RefObject<HTMLDivElement>;
+  canvasRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
   scrollTop: number;
   eventBus: EventBus;
@@ -86,7 +86,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   enableCellDragAndDrop,
   editorPortalTarget,
   cellNavigationMode,
-  canvas,
+  canvasRef,
   scrollLeft,
   scrollTop,
   contextMenu,
@@ -133,8 +133,8 @@ export default function InteractionMasks<R, K extends keyof R>({
   }, [draggedPosition, eventBus]);
 
   function getEditorPosition() {
-    if (!canvas.current) return null;
-    const { left, top } = canvas.current.getBoundingClientRect();
+    if (!canvasRef.current) return null;
+    const { left, top } = canvasRef.current.getBoundingClientRect();
     return {
       left: columns[selectedPosition.idx].left - scrollLeft + left,
       top: selectedPosition.rowIdx * rowHeight - scrollTop + top
