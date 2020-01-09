@@ -1,4 +1,4 @@
-import React, { cloneElement, useState, useRef, useEffect, useMemo } from 'react';
+import React, { cloneElement, useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 // Components
@@ -58,6 +58,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 
 export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   height: number;
+  canvasRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
   scrollTop: number;
   eventBus: EventBus;
@@ -85,6 +86,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   enableCellDragAndDrop,
   editorPortalTarget,
   cellNavigationMode,
+  canvasRef,
   scrollLeft,
   scrollTop,
   contextMenu,
@@ -103,7 +105,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
   const [firstEditorKeyPress, setFirstEditorKeyPress] = useState<string | null>(null);
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
-  const [enableEditorAfterRender, setEnableEditorAfterRender] = useState(false);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
   const isCellEditable = isCellWithinBounds(selectedPosition) && isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
 
@@ -120,14 +121,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   }, [isEditorEnabled]);
 
   useEffect(() => {
-    if (!enableEditorAfterRender) return;
-    setEnableEditorAfterRender(false);
-
-    if (!isCellEditable) return;
-    setIsEditorEnabled(true);
-  }, [enableEditorAfterRender, isCellEditable]);
-
-  useEffect(() => {
     return eventBus.subscribe(EventTypes.SELECT_CELL, selectCell);
   });
 
@@ -139,24 +132,14 @@ export default function InteractionMasks<R, K extends keyof R>({
     return eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
   }, [draggedPosition, eventBus]);
 
-  const editorPosition = useMemo(() => {
-    if (!isEditorEnabled || !selectionMaskRef.current) return null;
-    const { left: selectionMaskLeft, top: selectionMaskTop } = selectionMaskRef.current.getBoundingClientRect();
-    if (editorPortalTarget === document.body) {
-      const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
-      return {
-        left: selectionMaskLeft + scrollLeft,
-        top: selectionMaskTop + scrollTop
-      };
-    }
-
-    const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
-    const { scrollLeft, scrollTop } = editorPortalTarget;
+  function getEditorPosition() {
+    if (!canvasRef.current) return null;
+    const { left, top } = canvasRef.current.getBoundingClientRect();
     return {
-      left: selectionMaskLeft - portalTargetLeft + scrollLeft,
-      top: selectionMaskTop - portalTargetTop + scrollTop
+      left: columns[selectedPosition.idx].left - scrollLeft + left,
+      top: selectedPosition.rowIdx * rowHeight - scrollTop + top
     };
-  }, [editorPortalTarget, isEditorEnabled]);
+  }
 
   function getNextPosition(keyCode: number) {
     switch (keyCode) {
@@ -195,7 +178,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function closeEditor(): void {
-    setEnableEditorAfterRender(false);
     setIsEditorEnabled(false);
     setFirstEditorKeyPress(null);
   }
@@ -297,7 +279,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     if (enableEditor) {
       // The editor position is dependent on the selectionMask position so we need to wait
       // for the next render cycle when the updated selection mask position is set
-      setEnableEditorAfterRender(true);
+      setIsEditorEnabled(true);
     }
   }
 
@@ -413,7 +395,7 @@ export default function InteractionMasks<R, K extends keyof R>({
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
             {...getSelectedDimensions(selectedPosition)}
-            {...editorPosition}
+            {...getEditorPosition()}
           />
         </EditorPortal>
       )}
