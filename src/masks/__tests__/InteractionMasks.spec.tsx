@@ -9,7 +9,7 @@ import CopyMask from '../CopyMask';
 import DragMask from '../DragMask';
 import DragHandle from '../DragHandle';
 import EventBus from '../../EventBus';
-import EditorContainer from '../../common/editors/EditorContainer';
+import EditorContainer from '../../editors/EditorContainer';
 import { createColumns } from '../../__tests__/utils';
 import { CellNavigationMode, EventTypes, UpdateActions } from '../../common/enums';
 import { Position } from '../../common/types';

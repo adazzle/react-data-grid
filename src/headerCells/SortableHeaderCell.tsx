@@ -1,6 +1,6 @@
 import React from 'react';
-import { DEFINE_SORT } from '../../enums';
-import { CalculatedColumn } from '../../types';
+import { DEFINE_SORT } from '../common/enums';
+import { CalculatedColumn } from '../common/types';
 
 const SORT_TEXT = {
   [DEFINE_SORT.ASC]: '\u25B2',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilterRendererProps } from '../../types';
+import { FilterRendererProps } from '../common/types';
 
 export default function FilterableHeaderCell<R>({ value, onChange }: FilterRendererProps<R, { filterTerm: string } | undefined>) {
   return (

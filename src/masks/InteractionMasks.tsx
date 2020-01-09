@@ -6,8 +6,8 @@ import SelectionMask from './SelectionMask';
 import CopyMask from './CopyMask';
 import DragMask, { DraggedPosition } from './DragMask';
 import DragHandle from './DragHandle';
-import EditorContainer from '../common/editors/EditorContainer';
-import EditorPortal from '../common/editors/EditorPortal';
+import EditorContainer from '../editors/EditorContainer';
+import EditorPortal from '../editors/EditorPortal';
 
 // Utils
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
