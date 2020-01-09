@@ -2,10 +2,10 @@ import React, { KeyboardEvent } from 'react';
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
-import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../types';
+import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
-import { InteractionMasksProps } from '../../masks/InteractionMasks';
+import { InteractionMasksProps } from '../masks/InteractionMasks';
 
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 

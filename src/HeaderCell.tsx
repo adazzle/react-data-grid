@@ -4,8 +4,8 @@ import classNames from 'classnames';
 import { CalculatedColumn } from './common/types';
 import { DEFINE_SORT } from './common/enums';
 import { HeaderRowProps } from './HeaderRow';
-import SortableHeaderCell from './common/cells/headerCells/SortableHeaderCell';
-import ResizableHeaderCell from './common/cells/headerCells/ResizableHeaderCell';
+import SortableHeaderCell from './headerCells/SortableHeaderCell';
+import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 
 type SharedHeaderRowProps<R, K extends keyof R> = Pick<HeaderRowProps<R, K>,
 | 'sortColumn'

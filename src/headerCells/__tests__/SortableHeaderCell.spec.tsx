@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import SortableHeaderCell, { Props } from '../SortableHeaderCell';
-import { DEFINE_SORT } from '../../../enums';
-import { ValueFormatter } from '../../../../formatters';
+import { DEFINE_SORT } from '../../common/enums';
+import { ValueFormatter } from '../../formatters';
 
 interface Row { col1: string }
 

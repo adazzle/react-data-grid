@@ -1,7 +1,7 @@
 import React, { createElement } from 'react';
 import classNames from 'classnames';
 
-import FilterableHeaderCell from './common/cells/headerCells/FilterableHeaderCell';
+import FilterableHeaderCell from './headerCells/FilterableHeaderCell';
 import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
 
