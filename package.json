@@ -29,8 +29,9 @@
     "postbuild": "node tools/buildStylesheets.mjs",
     "test": "jest",
     "test:watch": "jest --watch",
-    "eslint": "eslint --ext js,mjs,ts,tsx --max-warnings 0 -f codeframe --cache --color examples src test tests tools",
+    "eslint": "eslint --ext js,mjs,ts,tsx --max-warnings 0 -f codeframe --cache --color examples src test tools",
     "eslint:fix": "npm run eslint -- --fix",
+    "typecheck": "tsc -p tsconfig.all.json",
     "prepublishOnly": "npm install && npm run build",
     "postpublish": "git push --follow-tags origin HEAD"
   },
