@@ -178,7 +178,7 @@ function DataGrid<R, K extends keyof R>({
     });
   }, [columnWidths, columns, defaultFormatter, minColumnWidth, viewportWidth]);
 
-  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo(() => {
+  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!columnMetrics) {
       return [0, 0];
     }
