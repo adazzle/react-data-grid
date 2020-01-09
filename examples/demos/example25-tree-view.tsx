@@ -1,7 +1,7 @@
 import React, { useState, useReducer, useMemo } from 'react';
 
 import DataGrid, { Column } from '../../src';
-import { CellExpanderFormatter, ChildRowDeleteButton } from './formatters';
+import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
 import Wrapper from './Wrapper';
 
 interface Row {
