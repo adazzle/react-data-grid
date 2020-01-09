@@ -125,7 +125,7 @@ export function getNextSelectedCellPosition<R>({ cellNavigationMode, columns, ro
     }
   }
 
-  return { ...nextPosition };
+  return nextPosition;
 }
 
 interface canExitGridOpts<R> {
