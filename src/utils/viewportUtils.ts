@@ -32,7 +32,7 @@ export interface HorizontalRangeToRenderParams<R> {
 export function getHorizontalRangeToRender<R>({
   columnMetrics,
   scrollLeft
-}: HorizontalRangeToRenderParams<R>) {
+}: HorizontalRangeToRenderParams<R>): [number, number] {
   const { columns, lastFrozenColumnIndex, viewportWidth } = columnMetrics;
   // get the viewport's left side and right side positions for non-frozen columns
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns, lastFrozenColumnIndex);
