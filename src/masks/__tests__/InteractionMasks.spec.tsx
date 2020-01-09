@@ -487,43 +487,6 @@ describe('<InteractionMasks/>', () => {
       });
     });
 
-    // describe('Full render tests', () => {
-    //   describe('Cell Selection/DeSelection handlers', () => {
-    //     const setupCellSelectionTest = (initialCell: Position = { rowIdx: 2, idx: 2 }) => {
-    //       return {
-    //         ...setup({}, { selectedPosition: initialCell }, true),
-    //         initialCell
-    //       };
-    //     };
-
-    //     describe('when cell selection/deselection handlers are passed', () => {
-    //       describe('cell in the middle of the grid is selected', () => {
-    //         it('selection handler should have been called when moving to the next cell', () => {
-    //           const { wrapper, props } = setupCellSelectionTest();
-    //           simulateTab(wrapper);
-    //           expect(props.onSelectedCellChange).toHaveBeenCalledWith(expect.objectContaining({ rowIdx: 2, idx: 3 }));
-    //         });
-    //       });
-
-    //       describe('user is able to exit the grid to the left', () => {
-    //         it('does not trigger the selection handler on press Shift+Tab', () => {
-    //           const { wrapper, props } = setupCellSelectionTest({ rowIdx: 0, idx: 0 });
-    //           simulateTab(wrapper, true);
-    //           expect(props.onSelectedCellChange).not.toHaveBeenCalled();
-    //         });
-    //       });
-
-    //       describe('user is able to exit the grid to the right', () => {
-    //         it('does not trigger the selection handler on press Tab', () => {
-    //           const { wrapper, props } = setupCellSelectionTest({ rowIdx: ROWS_COUNT - 1, idx: 9 });
-    //           simulateTab(wrapper);
-    //           expect(props.onSelectedCellChange).not.toHaveBeenCalled();
-    //         });
-    //       });
-    //     });
-    //   });
-    // });
-
     describe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
       // enzyme doesn't allow dom keyboard navigation, but we can assume that if
       // prevent default isn't called, it lets the dom do normal navigation
