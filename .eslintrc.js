@@ -535,8 +535,7 @@ module.exports = {
     }
   }, {
     files: [
-      'src/**/__tests__/**/*',
-      'tests/**/*'
+      'src/**/__tests__/**/*'
     ],
     rules: {
       'sonarjs/no-identical-functions': 0
