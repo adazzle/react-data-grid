@@ -155,7 +155,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     const handleDragEnter = (overRowIdx: number) => {
       setDraggedPosition({ ...draggedPosition, overRowIdx });
     };
-    eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
+    return eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
   }, [draggedPosition, eventBus]);
 
   function getNextPosition(keyCode: number) {
