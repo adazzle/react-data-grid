@@ -1,7 +1,7 @@
 import React, { memo, createElement } from 'react';
 import classNames from 'classnames';
 
-import { CellRendererProps, ColumnEventInfo, Position } from './common/types';
+import { CellRendererProps, ColumnEventInfo } from './common/types';
 import { EventTypes } from './common/enums';
 
 export interface CellProps<R> extends CellRendererProps<R> {
@@ -27,10 +27,8 @@ function Cell<R>({
   onRowDoubleClick,
   enableCellRangeSelection
 }: CellProps<R>) {
-  const position: Position = { idx, rowIdx };
-
   function selectCell(openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
+    eventBus.dispatch(EventTypes.SELECT_CELL, { idx, rowIdx }, openEditor);
   }
 
   function handleCellClick() {
@@ -39,7 +37,7 @@ function Cell<R>({
   }
 
   function handleCellMouseDown() {
-    eventBus.dispatch(EventTypes.SELECT_START, position);
+    eventBus.dispatch(EventTypes.SELECT_START, { idx, rowIdx });
 
     function handleWindowMouseUp() {
       eventBus.dispatch(EventTypes.SELECT_END);
@@ -50,7 +48,7 @@ function Cell<R>({
   }
 
   function handleCellMouseEnter() {
-    eventBus.dispatch(EventTypes.SELECT_UPDATE, position);
+    eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx, rowIdx });
   }
 
   function handleCellContextMenu() {

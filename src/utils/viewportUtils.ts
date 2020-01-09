@@ -24,13 +24,6 @@ export function getVerticalRangeToRender(
   return [rowOverscanStartIdx, rowOverscanEndIdx] as const;
 }
 
-export interface HorizontalRangeToRender {
-  colVisibleStartIdx: number;
-  colVisibleEndIdx: number;
-  colOverscanStartIdx: number;
-  colOverscanEndIdx: number;
-}
-
 export interface HorizontalRangeToRenderParams<R> {
   columnMetrics: ColumnMetrics<R>;
   scrollLeft: number;
@@ -39,7 +32,7 @@ export interface HorizontalRangeToRenderParams<R> {
 export function getHorizontalRangeToRender<R>({
   columnMetrics,
   scrollLeft
-}: HorizontalRangeToRenderParams<R>): HorizontalRangeToRender {
+}: HorizontalRangeToRenderParams<R>): [number, number] {
   const { columns, lastFrozenColumnIndex, viewportWidth } = columnMetrics;
   // get the viewport's left side and right side positions for non-frozen columns
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns, lastFrozenColumnIndex);
@@ -51,12 +44,7 @@ export function getHorizontalRangeToRender<R>({
 
   // skip rendering non-frozen columns if the frozen columns cover the entire viewport
   if (viewportLeft >= viewportRight) {
-    return {
-      colVisibleStartIdx: firstUnfrozenColumnIdx,
-      colVisibleEndIdx: firstUnfrozenColumnIdx,
-      colOverscanStartIdx: firstUnfrozenColumnIdx,
-      colOverscanEndIdx: firstUnfrozenColumnIdx
-    };
+    return [firstUnfrozenColumnIdx, firstUnfrozenColumnIdx];
   }
 
   // get the first visible non-frozen column index
@@ -86,7 +74,7 @@ export function getHorizontalRangeToRender<R>({
   const colOverscanStartIdx = Math.max(firstUnfrozenColumnIdx, colVisibleStartIdx - 1);
   const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
-  return { colVisibleStartIdx, colVisibleEndIdx, colOverscanStartIdx, colOverscanEndIdx };
+  return [colOverscanStartIdx, colOverscanEndIdx];
 }
 
 export function getViewportColumns<R>(columns: CalculatedColumn<R>[], colOverscanStartIdx: number, colOverscanEndIdx: number) {

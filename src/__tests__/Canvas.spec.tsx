@@ -52,11 +52,7 @@ const testProps: CanvasProps<Row, 'id'> = {
   renderBatchSize: 8,
   onCanvasKeydown() {},
   onCanvasKeyup() {},
-  scrollLeft: 0,
-  colOverscanStartIdx: 0,
-  colOverscanEndIdx: 0,
-  colVisibleStartIdx: 0,
-  colVisibleEndIdx: 0
+  scrollLeft: 0
 };
 
 function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {
@@ -68,9 +64,7 @@ describe('Canvas Tests', () => {
     const wrapper = renderComponent();
 
     expect(wrapper.find(InteractionMasks).props()).toMatchObject({
-      rowHeight: 25,
-      colVisibleStartIdx: 0,
-      colVisibleEndIdx: 0
+      rowHeight: 25
     });
   });
 
