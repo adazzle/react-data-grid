@@ -1,4 +1,4 @@
-import React, { cloneElement, useState, useRef, useEffect, useCallback } from 'react';
+import React, { cloneElement, useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
 // Components
@@ -97,30 +97,10 @@ export default function InteractionMasks<R, K extends keyof R>({
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
   const [firstEditorKeyPress, setFirstEditorKeyPress] = useState<string | null>(null);
+  const [isEditorEnabled, setIsEditorEnabled] = useState(false);
   const [enableEditorAfterRender, setEnableEditorAfterRender] = useState(false);
-  const [editorPosition, setEditorPosition] = useState<{ top: number; left: number } | null>(null);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
   const isCellEditable = isCellWithinBounds(selectedPosition) && isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
-  const isEditorEnabled = editorPosition !== null;
-
-  const getEditorPosition = useCallback(() => {
-    if (!selectionMaskRef.current) return null;
-    const { left: selectionMaskLeft, top: selectionMaskTop } = selectionMaskRef.current.getBoundingClientRect();
-    if (editorPortalTarget === document.body) {
-      const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
-      return {
-        left: selectionMaskLeft + scrollLeft,
-        top: selectionMaskTop + scrollTop
-      };
-    }
-
-    const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
-    const { scrollLeft, scrollTop } = editorPortalTarget;
-    return {
-      left: selectionMaskLeft - portalTargetLeft + scrollLeft,
-      top: selectionMaskTop - portalTargetTop + scrollTop
-    };
-  }, [editorPortalTarget]);
 
   // Focus on the selection mask when the selected position is changed
   useEffect(() => {
@@ -139,8 +119,8 @@ export default function InteractionMasks<R, K extends keyof R>({
     setEnableEditorAfterRender(false);
 
     if (!isCellEditable) return;
-    setEditorPosition(getEditorPosition());
-  }, [enableEditorAfterRender, getEditorPosition, isCellEditable]);
+    setIsEditorEnabled(true);
+  }, [enableEditorAfterRender, isCellEditable]);
 
   useEffect(() => {
     if (enableCellAutoFocus && document.activeElement === document.body) {
@@ -159,6 +139,26 @@ export default function InteractionMasks<R, K extends keyof R>({
     };
     return eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
   }, [draggedPosition, eventBus]);
+
+  const editorPosition = useMemo(() => {
+    if (!isEditorEnabled || !selectionMaskRef.current) return null;
+    if (!selectionMaskRef.current) return null;
+    const { left: selectionMaskLeft, top: selectionMaskTop } = selectionMaskRef.current.getBoundingClientRect();
+    if (editorPortalTarget === document.body) {
+      const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
+      return {
+        left: selectionMaskLeft + scrollLeft,
+        top: selectionMaskTop + scrollTop
+      };
+    }
+
+    const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
+    const { scrollLeft, scrollTop } = editorPortalTarget;
+    return {
+      left: selectionMaskLeft - portalTargetLeft + scrollLeft,
+      top: selectionMaskTop - portalTargetTop + scrollTop
+    };
+  }, [editorPortalTarget, isEditorEnabled]);
 
   function getNextPosition(keyCode: number) {
     switch (keyCode) {
@@ -192,13 +192,13 @@ export default function InteractionMasks<R, K extends keyof R>({
   function openEditor(event: React.KeyboardEvent<HTMLDivElement>): void {
     if (isCellEditable && !isEditorEnabled) {
       setFirstEditorKeyPress(event.key);
-      setEditorPosition(getEditorPosition());
+      setIsEditorEnabled(true);
     }
   }
 
   function closeEditor(): void {
     setEnableEditorAfterRender(false);
-    setEditorPosition(null);
+    setIsEditorEnabled(false);
     setFirstEditorKeyPress(null);
   }
 
