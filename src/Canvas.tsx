@@ -119,7 +119,7 @@ function Canvas<R, K extends keyof R>({
 
     if (typeof idx === 'number' && !columns[idx].frozen) {
       const { left, width } = columns[idx];
-      const { clientWidth } = current;
+      const { clientWidth, scrollLeft } = current;
       const isCellAtLeftBoundary = left < scrollLeft + width + frozenColumnsWidth;
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary || isCellAtRightBoundary) {
@@ -131,12 +131,13 @@ function Canvas<R, K extends keyof R>({
     }
 
     if (typeof rowIdx === 'number') {
+      const { clientHeight, scrollTop } = current;
       const isCellAtTopBoundary = rowIdx * rowHeight < scrollTop;
       if (isCellAtTopBoundary) {
         current.scrollTop = rowIdx * rowHeight;
       }
 
-      const isCellAtBottomBoundary = (rowIdx + 1) * rowHeight > scrollTop + height;
+      const isCellAtBottomBoundary = (rowIdx + 1) * rowHeight > scrollTop + clientHeight;
       if (isCellAtBottomBoundary) {
       // We do not need to check for the index being in range, as the scrollTop setter will adequately clamp the value.
         current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;

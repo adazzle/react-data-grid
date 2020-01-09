@@ -1,4 +1,4 @@
-import React, { cloneElement, useState, useRef, useEffect } from 'react';
+import React, { cloneElement, useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
 // Components
@@ -98,23 +98,47 @@ export default function InteractionMasks<R, K extends keyof R>({
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
   const [firstEditorKeyPress, setFirstEditorKeyPress] = useState<string | null>(null);
   const [enableEditorAfterRender, setEnableEditorAfterRender] = useState(false);
-  const [isEditorEnabled, setIsEditorEnabled] = useState(false);
-  const prevSelectedPosition = useRef<Position>(selectedPosition);
+  const [editorPosition, setEditorPosition] = useState<{ top: number; left: number } | null>(null);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
   const isCellEditable = isCellWithinBounds(selectedPosition) && isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
+  const isEditorEnabled = editorPosition !== null;
 
+  const getEditorPosition = useCallback(() => {
+    if (!selectionMaskRef.current) return null;
+    const { left: selectionMaskLeft, top: selectionMaskTop } = selectionMaskRef.current.getBoundingClientRect();
+    if (editorPortalTarget === document.body) {
+      const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
+      return {
+        left: selectionMaskLeft + scrollLeft,
+        top: selectionMaskTop + scrollTop
+      };
+    }
+
+    const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
+    const { scrollLeft, scrollTop } = editorPortalTarget;
+    return {
+      left: selectionMaskLeft - portalTargetLeft + scrollLeft,
+      top: selectionMaskTop - portalTargetTop + scrollTop
+    };
+  }, [editorPortalTarget]);
+
+  // Focus on the selection mask when the selected position is changed
   useEffect(() => {
-    if (prevSelectedPosition.current === selectedPosition) return;
-    prevSelectedPosition.current = selectedPosition;
+    if (selectedPosition.rowIdx === -1 || selectedPosition.idx === -1) return;
+    selectionMaskRef.current?.focus();
+  }, [selectedPosition]);
+
+  // Focus on the selection mask after the editor is closed
+  useEffect(() => {
     if (isEditorEnabled) return;
     selectionMaskRef.current?.focus();
-  }, [isEditorEnabled, selectedPosition]);
+  }, [isEditorEnabled]);
 
   useEffect(() => {
     if (!enableEditorAfterRender || !isCellEditable) return;
     setEnableEditorAfterRender(false);
-    setIsEditorEnabled(true);
-  }, [enableEditorAfterRender, isCellEditable]);
+    setEditorPosition(getEditorPosition());
+  }, [enableEditorAfterRender, getEditorPosition, isCellEditable]);
 
   useEffect(() => {
     if (enableCellAutoFocus && document.activeElement === document.body) {
@@ -133,25 +157,6 @@ export default function InteractionMasks<R, K extends keyof R>({
     };
     eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
   }, [draggedPosition, eventBus]);
-
-  function getEditorPosition() {
-    if (!selectionMaskRef.current) return null;
-    const { left: selectionMaskLeft, top: selectionMaskTop } = selectionMaskRef.current.getBoundingClientRect();
-    if (editorPortalTarget === document.body) {
-      const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
-      return {
-        left: selectionMaskLeft + scrollLeft,
-        top: selectionMaskTop + scrollTop
-      };
-    }
-
-    const { left: portalTargetLeft, top: portalTargetTop } = editorPortalTarget.getBoundingClientRect();
-    const { scrollLeft, scrollTop } = editorPortalTarget;
-    return {
-      left: selectionMaskLeft - portalTargetLeft + scrollLeft,
-      top: selectionMaskTop - portalTargetTop + scrollTop
-    };
-  }
 
   function getNextPosition(keyCode: number) {
     switch (keyCode) {
@@ -185,13 +190,13 @@ export default function InteractionMasks<R, K extends keyof R>({
   function openEditor(event: React.KeyboardEvent<HTMLDivElement>): void {
     if (isCellEditable && !isEditorEnabled) {
       setFirstEditorKeyPress(event.key);
-      setIsEditorEnabled(true);
+      setEditorPosition(getEditorPosition());
     }
   }
 
   function closeEditor(): void {
     setEnableEditorAfterRender(false);
-    setIsEditorEnabled(false);
+    setEditorPosition(null);
     setFirstEditorKeyPress(null);
   }
 
@@ -414,7 +419,7 @@ export default function InteractionMasks<R, K extends keyof R>({
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
             {...getSelectedDimensions(selectedPosition)}
-            {...getEditorPosition()}
+            {...editorPosition}
           />
         </EditorPortal>
       )}
