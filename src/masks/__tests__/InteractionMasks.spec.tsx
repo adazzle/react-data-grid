@@ -1,13 +1,18 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 
 import InteractionMasks, { InteractionMasksProps, KeyCodes } from '../InteractionMasks';
+import SelectionMask from '../SelectionMask';
 // import SelectionRangeMask from '../SelectionRangeMask';
-// import DragHandle from '../DragHandle';
+import CopyMask from '../CopyMask';
+import DragMask from '../DragMask';
+import DragHandle from '../DragHandle';
 import EventBus from '../../EventBus';
 import EditorContainer from '../../common/editors/EditorContainer';
 import { createColumns } from '../../__tests__/utils';
 import { CellNavigationMode, EventTypes, UpdateActions } from '../../common/enums';
+import { Position } from '../../common/types';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
@@ -20,7 +25,7 @@ interface Row {
 describe('<InteractionMasks/>', () => {
   const rowGetter = () => ({ col1: 1 });
 
-  function setup(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>) {
+  function setup(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialPosition?: Position) {
     const onSelectedCellChange = jest.fn();
     const props: InteractionMasksProps<Row, 'id'> = {
       height: 100,
@@ -45,7 +50,13 @@ describe('<InteractionMasks/>', () => {
     };
 
     const wrapper = mount(<InteractionMasks {...props} />);
-    onSelectedCellChange.mockReset();
+    if (initialPosition) {
+      act(() => {
+        props.eventBus.dispatch(EventTypes.SELECT_CELL, initialPosition);
+      });
+      wrapper.update();
+      onSelectedCellChange.mockReset();
+    }
     return { wrapper, props };
   }
 
@@ -53,24 +64,23 @@ describe('<InteractionMasks/>', () => {
     wrapper.simulate('keydown', { keyCode, preventDefault: () => null, ...eventData });
   };
 
-  // const simulateTab = (wrapper: ReturnType<typeof setup>['wrapper'], shiftKey = false, preventDefault = () => { }) => {
-  //   pressKey(wrapper, 'Tab', { keyCode: KeyCodes.Tab, shiftKey, preventDefault });
-  // };
+  const simulateTab = (wrapper: ReturnType<typeof setup>['wrapper'], shiftKey = false, preventDefault = () => { }) => {
+    pressKey(wrapper, KeyCodes.Tab, { shiftKey, preventDefault });
+  };
 
   describe('Rendered masks', () => {
     describe('When a single cell is selected', () => {
       describe('within grid bounds', () => {
         it('should render a SelectionMask component', () => {
-          const { wrapper, props } = setup();
-          props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 0 });
-          expect(wrapper.getDOMNode().querySelector('.rdg-selected')).not.toBeNull();
+          const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
+          expect(wrapper.find(SelectionMask).length).toBe(1);
         });
       });
 
       describe('outside grid bounds', () => {
         it('should not render a SelectionMask component', () => {
           const { wrapper } = setup();
-          expect(wrapper.getDOMNode().querySelector('.rdg-selected')).toBeNull();
+          expect(wrapper.find(SelectionMask).length).toBe(0);
         });
       });
     });
@@ -414,76 +424,66 @@ describe('<InteractionMasks/>', () => {
 
   describe('Keyboard navigation functionality', () => {
     it('Press enter should enable editing', () => {
-      const { wrapper, props } = setup({});
-      props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 0 });
+      const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
       pressKey(wrapper, KeyCodes.Enter, { keyCode: KeyCodes.Enter });
       expect(wrapper.find(EditorContainer).length).toBe(1);
     });
 
     describe('When current selected cell is not in outer bounds', () => {
       it('Press arrow up should move up', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 1 });
+        const { wrapper, props } = setup({}, { idx: 0, rowIdx: 1 });
         pressKey(wrapper, KeyCodes.ArrowUp);
-        expect(props.onSelectedCellChange).toHaveBeenNthCalledWith(2, { idx: 0, rowIdx: 0 });
+        expect(props.onSelectedCellChange).toHaveBeenCalledWith({ idx: 0, rowIdx: 0 });
       });
 
       it('Press arrow right should move right', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: 0, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.ArrowRight);
-        expect(props.onSelectedCellChange).toHaveBeenNthCalledWith(2, { idx: 1, rowIdx: 0 });
+        expect(props.onSelectedCellChange).toHaveBeenCalledWith({ idx: 1, rowIdx: 0 });
       });
 
       it('Press arrow down should move down', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: 0, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.ArrowDown);
-        expect(props.onSelectedCellChange).toHaveBeenNthCalledWith(2, { idx: 0, rowIdx: 1 });
+        expect(props.onSelectedCellChange).toHaveBeenCalledWith({ idx: 0, rowIdx: 1 });
       });
 
       it('Press arrow left should move left', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: 1, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.ArrowLeft);
-        expect(props.onSelectedCellChange).toHaveBeenNthCalledWith(2, { idx: 0, rowIdx: 0 });
+        expect(props.onSelectedCellChange).toHaveBeenCalledWith({ idx: 0, rowIdx: 0 });
       });
 
       it('Press tab should move right', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: 0, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.Tab);
-        expect(props.onSelectedCellChange).toHaveBeenNthCalledWith(2, { idx: 1, rowIdx: 0 });
+        expect(props.onSelectedCellChange).toHaveBeenCalledWith({ idx: 1, rowIdx: 0 });
       });
 
       it('Press shiftKey + tab should move left', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: 1, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.Tab, { shiftKey: true });
-        expect(props.onSelectedCellChange).toHaveBeenNthCalledWith(2, { idx: 0, rowIdx: 0 });
+        expect(props.onSelectedCellChange).toHaveBeenCalledWith({ idx: 0, rowIdx: 0 });
       });
     });
 
     describe('When next cell is out of bounds', () => {
       it('Press arrow left should not move left', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: 0, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.ArrowLeft);
-        expect(props.onSelectedCellChange).toHaveBeenCalledTimes(1);
+        expect(props.onSelectedCellChange).toHaveBeenCalledTimes(0);
       });
 
       it('Press arrow right should not move right', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: NUMBER_OF_COLUMNS - 1, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: NUMBER_OF_COLUMNS - 1, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.ArrowRight);
-        expect(props.onSelectedCellChange).toHaveBeenCalledTimes(1);
+        expect(props.onSelectedCellChange).toHaveBeenCalledTimes(0);
       });
 
       it('Press arrow up should not move up', () => {
-        const { wrapper, props } = setup({});
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 0, rowIdx: 0 });
+        const { wrapper, props } = setup({}, { idx: 0, rowIdx: 0 });
         pressKey(wrapper, KeyCodes.ArrowUp);
-        expect(props.onSelectedCellChange).toHaveBeenCalledTimes(1);
+        expect(props.onSelectedCellChange).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -524,139 +524,140 @@ describe('<InteractionMasks/>', () => {
     //   });
     // });
 
-    // describe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
-    //   // enzyme doesn't allow dom keyboard navigation, but we can assume that if
-    //   // prevent default isn't called, it lets the dom do normal navigation
+    describe('using keyboard to navigate through the grid by pressing Tab or Shift+Tab', () => {
+      // enzyme doesn't allow dom keyboard navigation, but we can assume that if
+      // prevent default isn't called, it lets the dom do normal navigation
 
-    //   const assertGridWasExited = (wrapper: ReturnType<typeof setup>['wrapper']) => {
-    //     expect(wrapper.state().selectedPosition).toEqual({ idx: -1, rowIdx: -1 });
-    //   };
+      const assertGridWasExited = (wrapper: ReturnType<typeof setup>['wrapper']) => {
+        expect(wrapper.find(SelectionMask).length).toBe(0);
+      };
 
-    //   const tabCell = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
-    //     const { wrapper } = setup(props, state);
-    //     const preventDefaultSpy = jest.fn();
-    //     simulateTab(wrapper, shiftKey, preventDefaultSpy);
-    //     return { wrapper, preventDefaultSpy };
-    //   };
+      const tabCell = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
+        const { wrapper, props: { onSelectedCellChange } } = setup(props, state?.selectedPosition);
+        const preventDefaultSpy = jest.fn();
+        simulateTab(wrapper, shiftKey, preventDefaultSpy);
+        wrapper.update();
+        return { wrapper, preventDefaultSpy, onSelectedCellChange };
+      };
 
-    //   const assertExitGridOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
-    //     const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
-    //     expect(preventDefaultSpy).not.toHaveBeenCalled();
-    //     assertGridWasExited(wrapper);
-    //   };
+      const assertExitGridOnTab = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
+        const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
+        expect(preventDefaultSpy).not.toHaveBeenCalled();
+        assertGridWasExited(wrapper);
+      };
 
-    //   const assertSelectedCellOnTab = <K extends keyof InteractionMasksState>(props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: Pick<InteractionMasksState, K>) => {
-    //     const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
-    //     expect(preventDefaultSpy).toHaveBeenCalled();
-    //     return expect(wrapper.state().selectedPosition);
-    //   };
+      const assertSelectedCellOnTab = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
+        const { preventDefaultSpy, onSelectedCellChange } = tabCell(props, shiftKey, state);
+        expect(preventDefaultSpy).toHaveBeenCalled();
+        return expect(onSelectedCellChange);
+      };
 
-    //   describe('when cellNavigationMode is changeRow', () => {
-    //     const cellNavigationMode = CellNavigationMode.CHANGE_ROW;
-    //     it('allows the user to exit the grid with Tab if there are no rows', () => {
-    //       assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
-    //     });
-    //     it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-    //       assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
-    //     });
-    //     it('allows the user to exit to the grid with Shift+Tab at the first cell of the grid', () => {
-    //       const selectedPosition = { rowIdx: 0, idx: 0 };
-    //       assertExitGridOnTab({ cellNavigationMode }, true, { selectedPosition });
-    //     });
-    //     it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
-    //       const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
-    //       assertExitGridOnTab({ cellNavigationMode }, false, { selectedPosition });
-    //     });
-    //     it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
-    //       const selectedPosition = { rowIdx: 3, idx: 3 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-    //         .toMatchObject({ rowIdx: 3, idx: 4, changeRowOrColumn: false });
-    //     });
-    //     it('goes to the beginning of the next row when the user presses Tab and they are at the end of a row', () => {
-    //       const selectedPosition = { rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-    //         .toEqual({ rowIdx: 3, idx: 0, changeRowOrColumn: true });
-    //     });
-    //     it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
-    //       const selectedPosition = { rowIdx: 2, idx: 2 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-    //         .toEqual({ rowIdx: 2, idx: 1, changeRowOrColumn: false });
-    //     });
-    //     it('goes to the end of the previous row when the user presses Shift+Tab and they are at the beginning of a row', () => {
-    //       const selectedPosition = { rowIdx: 2, idx: 0 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-    //         .toEqual({ rowIdx: 1, idx: NUMBER_OF_COLUMNS - 1, changeRowOrColumn: true });
-    //     });
-    //   });
+      describe('when cellNavigationMode is changeRow', () => {
+        const cellNavigationMode = CellNavigationMode.CHANGE_ROW;
+        it('allows the user to exit the grid with Tab if there are no rows', () => {
+          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+        });
+        it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
+          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+        });
+        it('allows the user to exit to the grid with Shift+Tab at the first cell of the grid', () => {
+          const selectedPosition = { rowIdx: 0, idx: 0 };
+          assertExitGridOnTab({ cellNavigationMode }, true, { selectedPosition });
+        });
+        it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
+          const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
+          assertExitGridOnTab({ cellNavigationMode }, false, { selectedPosition });
+        });
+        it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
+          const selectedPosition = { rowIdx: 3, idx: 3 };
+          assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 3, idx: 4 });
+        });
+        it('goes to the beginning of the next row when the user presses Tab and they are at the end of a row', () => {
+          const selectedPosition = { rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 };
+          assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 3, idx: 0 });
+        });
+        it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
+          const selectedPosition = { rowIdx: 2, idx: 2 };
+          assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 2, idx: 1 });
+        });
+        it('goes to the end of the previous row when the user presses Shift+Tab and they are at the beginning of a row', () => {
+          const selectedPosition = { rowIdx: 2, idx: 0 };
+          assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 1, idx: NUMBER_OF_COLUMNS - 1 });
+        });
+      });
 
-    //   describe('when cellNavigationMode is none', () => {
-    //     const cellNavigationMode = CellNavigationMode.NONE;
-    //     it('allows the user to exit the grid with Tab if there are no rows', () => {
-    //       assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
-    //     });
-    //     it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-    //       assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
-    //     });
-    //     it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
-    //       const selectedPosition = { rowIdx: 0, idx: 0 };
-    //       assertExitGridOnTab({ cellNavigationMode }, true, { selectedPosition });
-    //     });
-    //     it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
-    //       const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
-    //       assertExitGridOnTab({ cellNavigationMode }, false, { selectedPosition });
-    //     });
-    //     it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
-    //       const selectedPosition = { rowIdx: 3, idx: 3 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-    //         .toEqual({ rowIdx: 3, idx: 4, changeRowOrColumn: false });
-    //     });
-    //     it('goes to the first cell of the next row when they press Tab and they are at the end of a row', () => {
-    //       const selectedPosition = { rowIdx: 3, idx: NUMBER_OF_COLUMNS - 1 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-    //         .toMatchObject({ rowIdx: 4, idx: 0 });
-    //     });
-    //     it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
-    //       const selectedPosition = { rowIdx: 2, idx: 2 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-    //         .toMatchObject({ rowIdx: 2, idx: 1 });
-    //     });
-    //     it('goes to the last cell of the previous row when they press Shift+Tab and they are at the beginning of a row', () => {
-    //       const selectedPosition = { rowIdx: 3, idx: 0 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-    //         .toMatchObject({ rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 });
-    //     });
-    //   });
+      describe('when cellNavigationMode is none', () => {
+        const cellNavigationMode = CellNavigationMode.NONE;
+        it('allows the user to exit the grid with Tab if there are no rows', () => {
+          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+        });
+        it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
+          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+        });
+        it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
+          const selectedPosition = { rowIdx: 0, idx: 0 };
+          assertExitGridOnTab({ cellNavigationMode }, true, { selectedPosition });
+        });
+        it('allows the user to exit the grid when they press Tab at the last cell in the grid', () => {
+          const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
+          assertExitGridOnTab({ cellNavigationMode }, false, { selectedPosition });
+        });
+        it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
+          const selectedPosition = { rowIdx: 3, idx: 3 };
+          assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 3, idx: 4 });
+        });
+        it('goes to the first cell of the next row when they press Tab and they are at the end of a row', () => {
+          const selectedPosition = { rowIdx: 3, idx: NUMBER_OF_COLUMNS - 1 };
+          assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 4, idx: 0 });
+        });
+        it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
+          const selectedPosition = { rowIdx: 2, idx: 2 };
+          assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 2, idx: 1 });
+        });
+        it('goes to the last cell of the previous row when they press Shift+Tab and they are at the beginning of a row', () => {
+          const selectedPosition = { rowIdx: 3, idx: 0 };
+          assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 2, idx: NUMBER_OF_COLUMNS - 1 });
+        });
+      });
 
-    //   describe('when cellNavigationMode is loopOverRow', () => {
-    //     const cellNavigationMode = CellNavigationMode.LOOP_OVER_ROW;
-    //     it('allows the user to exit the grid with Tab if there are no rows', () => {
-    //       assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
-    //     });
-    //     it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-    //       assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
-    //     });
-    //     it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
-    //       const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-    //         .toMatchObject({ rowIdx: ROWS_COUNT - 1, idx: 0 });
-    //     });
-    //     it('goes to the last cell in the row when the user presses Shift+Tab and they are at the beginning of a row', () => {
-    //       const selectedPosition = { rowIdx: 0, idx: 0 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-    //         .toEqual({ rowIdx: 0, idx: NUMBER_OF_COLUMNS - 1, changeRowOrColumn: true });
-    //     });
-    //     it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
-    //       const selectedPosition = { rowIdx: 3, idx: 3 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
-    //         .toEqual({ rowIdx: 3, idx: 4, changeRowOrColumn: false });
-    //     });
-    //     it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
-    //       const selectedPosition = { rowIdx: 2, idx: 2 };
-    //       assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
-    //         .toMatchObject({ rowIdx: 2, idx: 1 });
-    //     });
-    //   });
-    // });
+      describe('when cellNavigationMode is loopOverRow', () => {
+        const cellNavigationMode = CellNavigationMode.LOOP_OVER_ROW;
+        it('allows the user to exit the grid with Tab if there are no rows', () => {
+          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+        });
+        it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
+          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+        });
+        it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
+          const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
+          assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: ROWS_COUNT - 1, idx: 0 });
+        });
+        it('goes to the last cell in the row when the user presses Shift+Tab and they are at the beginning of a row', () => {
+          const selectedPosition = { rowIdx: 0, idx: 0 };
+          assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 0, idx: NUMBER_OF_COLUMNS - 1 });
+        });
+        it('goes to the next cell when the user presses Tab and they are not at the end of a row', () => {
+          const selectedPosition = { rowIdx: 3, idx: 3 };
+          assertSelectedCellOnTab({ cellNavigationMode }, false, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 3, idx: 4 });
+        });
+        it('goes to the previous cell when the user presses Shift+Tab and they are not at the beginning of a row', () => {
+          const selectedPosition = { rowIdx: 2, idx: 2 };
+          assertSelectedCellOnTab({ cellNavigationMode }, true, { selectedPosition })
+            .toHaveBeenCalledWith({ rowIdx: 2, idx: 1 });
+        });
+      });
+    });
   });
 
   describe('Copy functionality', () => {
@@ -675,21 +676,21 @@ describe('<InteractionMasks/>', () => {
 
     it('should not render a CopyMask component if there is no copied cell', () => {
       const { wrapper } = setupCopy();
-      expect(wrapper.getDOMNode().querySelector('.react-grid-cell-copied')).toBeNull();
+      expect(wrapper.find(CopyMask).length).toBe(0);
     });
 
     it('should render a CopyMask component when a cell is copied', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
-      expect(wrapper.getDOMNode().querySelector('.react-grid-cell-copied')).not.toBeNull();
-      // expect(wrapper.find(CopyMask).props()).toEqual({ height: 30, left: 100, top: 60, width: 100, zIndex: 1 });
+      expect(wrapper.find(CopyMask).length).toBe(1);
+      expect(wrapper.find(CopyMask).props()).toEqual({ height: 30, left: 100, top: 60, width: 100, zIndex: 1 });
     });
 
     it('should remove the CopyMask component on escape', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
       pressKey(wrapper, KeyCodes.Escape);
-      expect(wrapper.getDOMNode().querySelector('.react-grid-cell-copied')).toBeNull();
+      expect(wrapper.find(CopyMask).length).toBe(0);
     });
 
     it('should update the selected cell with the copied value on paste', () => {
@@ -713,83 +714,82 @@ describe('<InteractionMasks/>', () => {
     });
   });
 
-  // describe('Drag functionality', () => {
-  //   const setupDrag = (rowIdx = 2) => {
-  //     const selectedPosition = { idx: 1, rowIdx };
-  //     const rows = [
-  //       { Column1: '1' },
-  //       { Column1: '2' },
-  //       { Column1: '3' },
-  //       { Column1: '4' },
-  //       { Column1: '5' }
-  //     ];
-  //     return setup({
-  //       rowGetter: (rowIdx) => rowIdx < 5 ? rows[rowIdx] : rowGetter()
-  //     }, { selectedPosition });
-  //   };
+  describe('Drag functionality', () => {
+    const setupDrag = (rowIdx = 2) => {
+      const rows = [
+        { Column1: '1' },
+        { Column1: '2' },
+        { Column1: '3' },
+        { Column1: '4' },
+        { Column1: '5' }
+      ];
+      const { wrapper, props } = setup({
+        rowGetter: (rowIdx) => rowIdx < 5 ? rows[rowIdx] : rowGetter()
+      }, { idx: 1, rowIdx });
+      return { wrapper, props };
+    };
 
-  //   it('should not render the DragMask component if drag has not started', () => {
-  //     const { wrapper } = setupDrag();
+    it('should not render the DragMask component if drag has not started', () => {
+      const { wrapper } = setupDrag();
 
-  //     expect(wrapper.find(DragMask).length).toBe(0);
-  //   });
+      expect(wrapper.find(DragMask).length).toBe(0);
+    });
 
-  //   it('should render the DragMask component on cell drag', () => {
-  //     const { wrapper } = setupDrag();
-  //     const setData = jest.fn();
-  //     wrapper.find(DragHandle).simulate('dragstart', {
-  //       target: { className: 'test' },
-  //       dataTransfer: { setData }
-  //     });
+    it('should render the DragMask component on cell drag', () => {
+      const { wrapper } = setupDrag();
+      const setData = jest.fn();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
 
-  //     expect(wrapper.find(DragMask).length).toBe(1);
-  //     expect(setData).toHaveBeenCalled();
-  //   });
+      expect(wrapper.find(DragMask).length).toBe(1);
+      expect(setData).toHaveBeenCalled();
+    });
 
-  //   it('should update the dragged over cells on downwards drag end', () => {
-  //     const { wrapper, props } = setupDrag();
-  //     const setData = jest.fn();
-  //     wrapper.find(DragHandle).simulate('dragstart', {
-  //       target: { className: 'test' },
-  //       dataTransfer: { setData }
-  //     });
-  //     props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
-  //     wrapper.find(DragHandle).simulate('dragEnd');
+    it('should update the dragged over cells on downwards drag end', () => {
+      const { wrapper, props } = setupDrag();
+      const setData = jest.fn();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
+      props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
+      wrapper.find(DragHandle).simulate('dragEnd');
 
-  //     expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
-  //       cellKey: 'Column1',
-  //       fromRow: 2,
-  //       toRow: 6,
-  //       updated: { Column1: '3' },
-  //       action: UpdateActions.CELL_DRAG
-  //     });
-  //   });
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 2,
+        toRow: 6,
+        updated: { Column1: '3' },
+        action: UpdateActions.CELL_DRAG
+      });
+    });
 
-  //   it('should update the dragged over cells on upwards drag end', () => {
-  //     const { wrapper, props } = setupDrag(4);
-  //     const setData = jest.fn();
-  //     wrapper.find(DragHandle).simulate('dragstart', {
-  //       target: { className: 'test' },
-  //       dataTransfer: { setData }
-  //     });
-  //     props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
-  //     wrapper.find(DragHandle).simulate('dragEnd');
+    it('should update the dragged over cells on upwards drag end', () => {
+      const { wrapper, props } = setupDrag(4);
+      const setData = jest.fn();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
+      props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
+      wrapper.find(DragHandle).simulate('dragEnd');
 
-  //     expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
-  //       cellKey: 'Column1',
-  //       fromRow: 4,
-  //       toRow: 0,
-  //       updated: { Column1: '5' },
-  //       action: UpdateActions.CELL_DRAG
-  //     });
-  //   });
-  // });
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+        cellKey: 'Column1',
+        fromRow: 4,
+        toRow: 0,
+        updated: { Column1: '5' },
+        action: UpdateActions.CELL_DRAG
+      });
+    });
+  });
 
   describe('ContextMenu functionality', () => {
     it('should render the context menu if it a valid element', () => {
       const FakeContextMenu = <div className="context-menu">Context Menu</div>;
-      const { wrapper, props } = setup({ contextMenu: FakeContextMenu });
-      props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
+      const { wrapper } = setup({ contextMenu: FakeContextMenu }, { idx: 1, rowIdx: 2 });
       wrapper.update();
 
       expect(wrapper.find('.context-menu').props())
