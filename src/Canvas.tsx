@@ -117,7 +117,7 @@ function Canvas<R, K extends keyof R>({
     const { current } = canvas;
     if (!current) return;
 
-    if (typeof idx === 'number' && !columns[idx].frozen) {
+    if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { left, width } = columns[idx];
       const { clientWidth, scrollLeft } = current;
       const isCellAtLeftBoundary = left < scrollLeft + width + frozenColumnsWidth;
