@@ -11,7 +11,7 @@ import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { ValueFormatter } from './formatters';
-import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize, HorizontalRangeToRender } from './utils';
+import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
 import { CellNavigationMode, DEFINE_SORT } from './common/enums';
 import {
   CalculatedColumn,
@@ -178,14 +178,9 @@ function DataGrid<R, K extends keyof R>({
     });
   }, [columnWidths, columns, defaultFormatter, minColumnWidth, viewportWidth]);
 
-  const horizontalRange: HorizontalRangeToRender = useMemo(() => {
+  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!columnMetrics) {
-      return {
-        colVisibleStartIdx: 0,
-        colVisibleEndIdx: 0,
-        colOverscanStartIdx: 0,
-        colOverscanEndIdx: 0
-      };
+      return [0, 0];
     }
 
     return getHorizontalRangeToRender({
@@ -199,10 +194,10 @@ function DataGrid<R, K extends keyof R>({
 
     return getViewportColumns(
       columnMetrics.columns,
-      horizontalRange.colOverscanStartIdx,
-      horizontalRange.colOverscanEndIdx
+      colOverscanStartIdx,
+      colOverscanEndIdx
     );
-  }, [columnMetrics, horizontalRange.colOverscanEndIdx, horizontalRange.colOverscanStartIdx]);
+  }, [colOverscanEndIdx, colOverscanStartIdx, columnMetrics]);
 
   useLayoutEffect(() => {
     // Do not calculate the width if minWidth is provided
@@ -319,7 +314,6 @@ function DataGrid<R, K extends keyof R>({
               onRowClick={props.onRowClick}
               onRowDoubleClick={props.onRowDoubleClick}
               onRowExpandToggle={props.onRowExpandToggle}
-              {...horizontalRange}
             />
           )}
         </>

@@ -5,14 +5,13 @@ import { Clear } from '@material-ui/icons';
 import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
-import { InteractionMasksProps, InteractionMasksState } from '../../masks/InteractionMasks';
+import { InteractionMasksProps } from '../../masks/InteractionMasks';
 
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
-type SharedInteractionMasksState = Pick<InteractionMasksState, 'firstEditorKeyPress'>;
 
 type ValueType<R> = R[keyof R];
 
-export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, SharedInteractionMasksState, Omit<Dimension, 'zIndex'> {
+export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
   value: ValueType<R>;
@@ -20,6 +19,7 @@ export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent<R>): void;
   onCommitCancel(): void;
+  firstEditorKeyPress: string | null;
 }
 
 interface State {

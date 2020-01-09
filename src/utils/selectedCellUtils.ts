@@ -85,11 +85,7 @@ interface getNextSelectedCellPositionOpts<R> {
   nextPosition: Position;
 }
 
-export interface NextSelectedCellPosition extends Position {
-  changeRowOrColumn: boolean;
-}
-
-export function getNextSelectedCellPosition<R>({ cellNavigationMode, columns, rowsCount, nextPosition }: getNextSelectedCellPositionOpts<R>): NextSelectedCellPosition {
+export function getNextSelectedCellPosition<R>({ cellNavigationMode, columns, rowsCount, nextPosition }: getNextSelectedCellPositionOpts<R>): Position {
   if (cellNavigationMode !== CellNavigationMode.NONE) {
     const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
@@ -102,15 +98,13 @@ export function getNextSelectedCellPosition<R>({ cellNavigationMode, columns, ro
         if (!isLastRow) {
           return {
             idx: 0,
-            rowIdx: rowIdx + 1,
-            changeRowOrColumn: true
+            rowIdx: rowIdx + 1
           };
         }
       } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
         return {
           rowIdx,
-          idx: 0,
-          changeRowOrColumn: true
+          idx: 0
         };
       }
     } else if (isBeforeFirstColumn) {
@@ -119,21 +113,19 @@ export function getNextSelectedCellPosition<R>({ cellNavigationMode, columns, ro
         if (!isFirstRow) {
           return {
             rowIdx: rowIdx - 1,
-            idx: columnsCount - 1,
-            changeRowOrColumn: true
+            idx: columnsCount - 1
           };
         }
       } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
         return {
           rowIdx,
-          idx: columnsCount - 1,
-          changeRowOrColumn: true
+          idx: columnsCount - 1
         };
       }
     }
   }
 
-  return { ...nextPosition, changeRowOrColumn: false };
+  return nextPosition;
 }
 
 interface canExitGridOpts<R> {
