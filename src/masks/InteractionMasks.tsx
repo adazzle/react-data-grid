@@ -93,7 +93,12 @@ export default function InteractionMasks<R, K extends keyof R>({
   onGridRowsUpdated,
   scrollToCell
 }: InteractionMasksProps<R, K>) {
-  const [selectedPosition, setSelectedPosition] = useState<Position>({ idx: -1, rowIdx: -1 });
+  const [selectedPosition, setSelectedPosition] = useState<Position>(() => {
+    if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rowsCount > 0) {
+      return { idx: 0, rowIdx: 0 };
+    }
+    return { idx: -1, rowIdx: -1 };
+  });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
   const [firstEditorKeyPress, setFirstEditorKeyPress] = useState<string | null>(null);
@@ -123,12 +128,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   }, [enableEditorAfterRender, isCellEditable]);
 
   useEffect(() => {
-    if (enableCellAutoFocus && document.activeElement === document.body) {
-      setSelectedPosition({ idx: 0, rowIdx: 0 });
-    }
-  }, [enableCellAutoFocus]);
-
-  useEffect(() => {
     return eventBus.subscribe(EventTypes.SELECT_CELL, selectCell);
   });
 
@@ -142,7 +141,6 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   const editorPosition = useMemo(() => {
     if (!isEditorEnabled || !selectionMaskRef.current) return null;
-    if (!selectionMaskRef.current) return null;
     const { left: selectionMaskLeft, top: selectionMaskTop } = selectionMaskRef.current.getBoundingClientRect();
     if (editorPortalTarget === document.body) {
       const { scrollLeft, scrollTop } = document.scrollingElement || document.documentElement;
@@ -364,10 +362,6 @@ export default function InteractionMasks<R, K extends keyof R>({
     closeEditor();
   }
 
-  function onCommitCancel(): void {
-    closeEditor();
-  }
-
   function getSelectedDimensions(selectedPosition: Position): Dimension {
     const top = rowHeight * selectedPosition.rowIdx;
     const dimension = getDimensions({ selectedPosition, columns, scrollLeft, rowHeight });
@@ -411,7 +405,7 @@ export default function InteractionMasks<R, K extends keyof R>({
           <EditorContainer<R, K>
             firstEditorKeyPress={firstEditorKeyPress}
             onCommit={onCommit}
-            onCommitCancel={onCommitCancel}
+            onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}
             value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
             rowData={rowGetter(selectedPosition.rowIdx)}
