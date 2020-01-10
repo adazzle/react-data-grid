@@ -159,7 +159,7 @@ function Canvas<R, K extends keyof R>({
 
     const handleRowSelectionChange = ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => {
       const newSelectedRows = new Set(selectedRows);
-      const rowId = rowGetter(rowIdx)[rowKey];
+      const rowId = rows[rowIdx][rowKey];
 
       if (checked) {
         newSelectedRows.add(rowId);
