@@ -1,11 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 import { mount } from 'enzyme';
 
-import Cell, { CellProps } from '../Cell';
-import helpers, { Row } from './GridPropHelpers';
-import { SimpleCellFormatter } from '../formatters';
-import { CalculatedColumn, FormatterProps } from '../common/types';
-import EventBus from '../EventBus';
+import Cell, { CellProps } from './Cell';
+import helpers, { Row } from './test/GridPropHelpers';
+import { SimpleCellFormatter } from './formatters';
+import { CalculatedColumn, FormatterProps } from './common/types';
+import EventBus from './EventBus';
 
 const defaultColumn: CalculatedColumn<Row> = {
   idx: 0,

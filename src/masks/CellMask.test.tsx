@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { Z_INDEXES } from './../../common/enums';
-import { sel } from '../../__tests__/utils';
-import CellMask from '../CellMask';
+import { Z_INDEXES } from '../common/enums';
+import { sel } from '../test/utils';
+import CellMask from './CellMask';
 
 describe('CellMask', () => {
   const setup = (children?: JSX.Element) => {

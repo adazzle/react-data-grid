@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
 
-import EditorContainer, { Props } from '../EditorContainer';
-import SimpleTextEditor from '../SimpleTextEditor';
-import { ValueFormatter } from '../../formatters';
-import { CalculatedColumn, EditorProps } from '../../common/types';
+import EditorContainer, { Props } from './EditorContainer';
+import SimpleTextEditor from './SimpleTextEditor';
+import { ValueFormatter } from '../formatters';
+import { CalculatedColumn, EditorProps } from '../common/types';
 
 interface Row {
   id: string;

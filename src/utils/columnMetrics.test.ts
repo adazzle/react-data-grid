@@ -1,6 +1,6 @@
-import { getColumnMetrics } from '../columnUtils';
-import { ValueFormatter } from '../../formatters';
-import { Column } from '../../common/types';
+import { getColumnMetrics } from './columnUtils';
+import { ValueFormatter } from '../formatters';
+import { Column } from '../common/types';
 
 interface Row {
   id?: number;

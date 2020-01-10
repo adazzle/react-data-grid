@@ -1,12 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import InteractionMasks from '../masks/InteractionMasks';
-import Canvas, { CanvasProps } from '../Canvas';
-import { CellNavigationMode } from '../common/enums';
-import { CalculatedColumn } from '../common/types';
-import RowComponent from '../Row';
-import { ValueFormatter } from '../formatters';
+import InteractionMasks from './masks/InteractionMasks';
+import Canvas, { CanvasProps } from './Canvas';
+import { CellNavigationMode } from './common/enums';
+import { CalculatedColumn } from './common/types';
+import RowComponent from './Row';
+import { ValueFormatter } from './formatters';
 
 interface Row {
   id: number;

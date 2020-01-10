@@ -579,7 +579,7 @@ module.exports = {
   }, {
     // TODO: remove
     files: [
-      'src/**/__tests__/**/*'
+      '*.test.*'
     ],
     rules: {
       'sonarjs/no-identical-functions': 0

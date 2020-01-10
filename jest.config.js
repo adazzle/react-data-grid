@@ -21,13 +21,12 @@ module.exports = {
   ],
   restoreMocks: true,
   moduleNameMapper: {
-    '^@material-ui/icons$': '<rootDir>/test/iconsMock.ts'
+    '^@material-ui/icons$': '<rootDir>/jest/iconsMock.ts'
   },
   setupFiles: [
-    '<rootDir>/test/setupTests.ts'
+    '<rootDir>/jest/setupTests.ts'
   ],
   testMatch: [
-    '<rootDir>/src/**/*.spec.(ts|tsx)',
-    '<rootDir>/test/**/*.test.(ts|tsx)'
+    '<rootDir>/src/**/*.test.*'
   ]
 };

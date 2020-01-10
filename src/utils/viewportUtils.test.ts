@@ -2,9 +2,9 @@ import {
   getVerticalRangeToRender,
   getHorizontalRangeToRender,
   HorizontalRangeToRenderParams
-} from '../viewportUtils';
-import { ValueFormatter } from '../../formatters';
-import { ColumnMetrics } from '../../common/types';
+} from './viewportUtils';
+import { ValueFormatter } from '../formatters';
+import { ColumnMetrics } from '../common/types';
 
 interface Row {
   [key: string]: React.ReactNode;
