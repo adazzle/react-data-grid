@@ -83,9 +83,9 @@ describe('Editor Container Tests', () => {
       const { wrapper } = setup();
       const editor = wrapper.find(SimpleTextEditor);
 
-      expect(editor.length).toBe(1);
-      expect(editor.props().value).toEqual('Adwolf');
-      expect(editor.props().column).toEqual(fakeColumn);
+      expect(editor).toHaveLength(1);
+      expect(editor.props().value).toStrictEqual('Adwolf');
+      expect(editor.props().column).toStrictEqual(fakeColumn);
     });
 
     it('should render the editor container div with correct properties', () => {
@@ -124,7 +124,7 @@ describe('Editor Container Tests', () => {
       const { wrapper } = innerSetup();
       const editor = wrapper.find(TestEditor);
 
-      expect(editor.length).toBe(1);
+      expect(editor).toHaveLength(1);
       expect(editor.prop('value')).toBe('SupernaviX');
       expect(editor.prop('onCommit')).toBeDefined();
       expect(editor.prop('onCommitCancel')).toBeDefined();

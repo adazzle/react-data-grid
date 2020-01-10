@@ -392,6 +392,48 @@ const rules = {
   'react-hooks/rules-of-hooks': 2,
   'react-hooks/exhaustive-deps': 1,
 
+  // https://github.com/jest-community/eslint-plugin-jest#rules
+  'jest/consistent-test-it': 1,
+  'jest/expect-expect': 0,
+  'jest/lowercase-name': 0,
+  'jest/no-alias-methods': 1,
+  'jest/no-commented-out-tests': 0, // TODO
+  'jest/no-disabled-tests': 0,
+  'jest/no-duplicate-hooks': 2,
+  'jest/no-expect-resolves': 0,
+  'jest/no-export': 1,
+  'jest/no-focused-tests': 1,
+  'jest/no-hooks': 0, // TODO
+  'jest/no-identical-title': 2,
+  'jest/no-if': 1,
+  'jest/no-jasmine-globals': 1,
+  'jest/no-jest-import': 1,
+  'jest/no-large-snapshots': 0,
+  'jest/no-mocks-import': 1,
+  'jest/no-standalone-expect': 2,
+  'jest/no-test-callback': 0,
+  'jest/no-test-prefixes': 0,
+  'jest/no-test-return-statement': 0,
+  'jest/no-truthy-falsy': 1,
+  'jest/no-try-expect': 1,
+  'jest/prefer-called-with': 0,
+  'jest/prefer-expect-assertions': 0,
+  'jest/prefer-hooks-on-top': 0,
+  'jest/prefer-inline-snapshots': 0,
+  'jest/prefer-spy-on': 2,
+  'jest/prefer-strict-equal': 1,
+  'jest/prefer-to-be-null': 1,
+  'jest/prefer-to-be-undefined': 1,
+  'jest/prefer-to-contain': 1,
+  'jest/prefer-to-have-length': 1,
+  'jest/prefer-todo': 1,
+  'jest/require-top-level-describe': 0,
+  'jest/require-to-throw-message': 0,
+  'jest/valid-describe': 2,
+  'jest/valid-expect-in-promise': 1,
+  'jest/valid-expect': [1, { alwaysAwait: true }],
+  'jest/valid-title': 2,
+
   // SonarJS rules
   // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
   'sonarjs/no-all-duplicated-branches': 2,
@@ -521,6 +563,7 @@ module.exports = {
   plugins: [
     'react',
     'react-hooks',
+    'jest',
     'sonarjs',
     '@typescript-eslint'
   ],
