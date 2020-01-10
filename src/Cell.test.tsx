@@ -25,7 +25,6 @@ const testProps: CellProps<Row> = {
   isRowSelected: false,
   scrollLeft: 0,
   isSummaryRow: false,
-  rowKey: 'id',
   eventBus: new EventBus()
 };
 
@@ -72,7 +71,6 @@ describe('Cell', () => {
       isRowSelected: false,
       scrollLeft: 0,
       isSummaryRow: false,
-      rowKey: 'id',
       eventBus: new EventBus()
     };
 

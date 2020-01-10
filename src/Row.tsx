@@ -41,12 +41,10 @@ export default function Row<R>({
 
   function getCells() {
     return viewportColumns.map(column => {
-      const { key } = column;
       return (
         <CellRenderer
-          key={key as string} // FIXME: fix key type
+          key={column.key as string} // FIXME: fix key type
           idx={column.idx}
-          rowKey={key}
           rowIdx={idx}
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
