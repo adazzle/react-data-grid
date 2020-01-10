@@ -54,7 +54,7 @@ export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow> =
   };
 
 export interface ColumnMetrics<TRow> {
-  columns: CalculatedColumn<TRow>[];
+  columns: readonly CalculatedColumn<TRow>[];
   lastFrozenColumnIndex: number;
   viewportWidth: number;
   totalColumnWidth: number;
@@ -150,7 +150,7 @@ export interface RowsContainerProps {
 export interface IRowRendererProps<TRow> {
   height: number;
   width: number;
-  viewportColumns: CalculatedColumn<TRow>[];
+  viewportColumns: readonly CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   idx: number;

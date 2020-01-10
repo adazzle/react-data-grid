@@ -12,7 +12,7 @@ interface EventMap {
 type EventName = keyof EventMap;
 
 export default class EventBus {
-  readonly subscribers = new Map<EventName, Set<EventMap[EventName]>>();
+  private readonly subscribers = new Map<EventName, Set<EventMap[EventName]>>();
 
   subscribe<T extends EventName>(type: T, handler: EventMap[T]) {
     if (!this.subscribers.has(type)) {
