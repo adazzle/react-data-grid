@@ -13,10 +13,6 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number | string;
   cellClass?: string;
-  /** By adding an event object with callbacks for the native react events you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column */
-  events?: {
-    [key: string]: undefined | ((e: Event, info: ColumnEventInfo<TRow>) => void);
-  };
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
@@ -169,11 +165,6 @@ export interface FilterRendererProps<TRow, TFilterValue = unknown> {
   column: CalculatedColumn<TRow>;
   value: TFilterValue;
   onChange(value: TFilterValue): void;
-}
-
-export interface ColumnEventInfo<TRow> extends Position {
-  rowId: unknown;
-  column: CalculatedColumn<TRow>;
 }
 
 export interface ScrollPosition {
