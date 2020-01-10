@@ -9,7 +9,7 @@ interface Row {
   bla?: string;
 }
 
-describe('Header Cell Tests', () => {
+describe('HeaderCell', () => {
   function DraggableHeaderCell() {
     return <div />;
   }

@@ -6,7 +6,7 @@ import { ValueFormatter } from '../formatters';
 
 interface Row { col1: string }
 
-describe('<SortableHeaderCell/>', () => {
+describe('SortableHeaderCell', () => {
   const setup = (overrideColumn = {}) => {
     const props: Props<Row> = {
       column: {

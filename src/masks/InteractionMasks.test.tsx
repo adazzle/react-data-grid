@@ -22,7 +22,7 @@ interface Row {
   [key: string]: React.ReactNode;
 }
 
-describe('<InteractionMasks/>', () => {
+describe('InteractionMasks', () => {
   const rowGetter = () => ({ col1: 1 });
 
   function setup(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialPosition?: Position) {

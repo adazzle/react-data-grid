@@ -71,7 +71,7 @@ const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps
   return { wrapper, props };
 };
 
-describe('Editor Container Tests', () => {
+describe('EditorContainer', () => {
   describe('Basic render tests', () => {
     it('should select the text of the default input when the editor is rendered', () => {
       const { wrapper } = setup();

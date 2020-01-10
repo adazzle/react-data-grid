@@ -6,7 +6,7 @@ import HeaderRow, { HeaderRowProps } from './HeaderRow';
 import HeaderCell from './HeaderCell';
 import { DEFINE_SORT } from './common/enums';
 
-describe('Header Row Unit Tests', () => {
+describe('HeaderRow', () => {
   const defaultProps: HeaderRowProps<Row, 'id'> = {
     rowKey: 'id',
     rowsCount: 20,

@@ -33,7 +33,7 @@ const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>
   return mount(<Cell<Row> {...testProps} {...extraProps} />);
 };
 
-describe('Cell Tests', () => {
+describe('Cell', () => {
   it('should render a SimpleCellFormatter with value', () => {
     const wrapper = renderComponent();
     const formatter = wrapper.find(SimpleCellFormatter);

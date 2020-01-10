@@ -60,7 +60,7 @@ function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {
   return mount(<Canvas<Row, 'id'> {...testProps} {...extraProps} />);
 }
 
-describe('Canvas Tests', () => {
+describe('Canvas', () => {
   it('Should render the InteractionMasks component', () => {
     const wrapper = renderComponent();
 
