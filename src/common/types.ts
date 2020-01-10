@@ -123,7 +123,6 @@ export interface HeaderRendererProps<TRow> {
 }
 
 export interface CellRendererProps<TRow> {
-  rowKey: keyof TRow;
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow>;

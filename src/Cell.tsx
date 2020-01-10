@@ -11,7 +11,6 @@ export interface CellProps<R> extends CellRendererProps<R> {
 }
 
 function Cell<R>({
-  rowKey,
   children,
   className,
   column,
