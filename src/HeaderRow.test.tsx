@@ -1,12 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import helpers, { Row } from './GridPropHelpers';
-import HeaderRow, { HeaderRowProps } from '../HeaderRow';
-import HeaderCell from '../HeaderCell';
-import { DEFINE_SORT } from '../common/enums';
+import helpers, { Row } from './test/GridPropHelpers';
+import HeaderRow, { HeaderRowProps } from './HeaderRow';
+import HeaderCell from './HeaderCell';
+import { DEFINE_SORT } from './common/enums';
 
-describe('Header Row Unit Tests', () => {
+describe('HeaderRow', () => {
   const defaultProps: HeaderRowProps<Row, 'id'> = {
     rowKey: 'id',
     rowsCount: 20,

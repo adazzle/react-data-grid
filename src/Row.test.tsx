@@ -2,11 +2,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Row from '../Row';
-import Cell from '../Cell';
-import { createColumns } from './utils';
-import { IRowRendererProps } from '../common/types';
-import EventBus from '../EventBus';
+import Row from './Row';
+import Cell from './Cell';
+import { createColumns } from './test/utils';
+import { IRowRendererProps } from './common/types';
+import EventBus from './EventBus';
 
 type RowType = any;
 

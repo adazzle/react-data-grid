@@ -1,5 +1,5 @@
-import { ValueFormatter } from '../../formatters';
-import { CalculatedColumn } from '../../common/types';
+import { ValueFormatter } from '../formatters';
+import { CalculatedColumn } from '../common/types';
 
 function createColumn(index: number): CalculatedColumn<{ [key: string]: React.ReactNode }> {
   const key = `Column${index}`;

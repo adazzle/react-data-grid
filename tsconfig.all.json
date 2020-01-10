@@ -8,9 +8,7 @@
     "examples/index.tsx"
   ],
   "include": [
-    "test/**/*.ts",
-    "test/**/*.tsx",
-    "src/**/*.spec.ts",
-    "src/**/*.spec.tsx"
+    "jest/**/*",
+    "src/**/*.test.*"
   ]
 }
