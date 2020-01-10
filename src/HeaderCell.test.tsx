@@ -1,15 +1,15 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import HeaderCell, { HeaderCellProps } from '../HeaderCell';
-import { ValueFormatter } from '../formatters';
-import { CalculatedColumn } from '../common/types';
+import HeaderCell, { HeaderCellProps } from './HeaderCell';
+import { ValueFormatter } from './formatters';
+import { CalculatedColumn } from './common/types';
 
 interface Row {
   bla?: string;
 }
 
-describe('Header Cell Tests', () => {
+describe('HeaderCell', () => {
   function DraggableHeaderCell() {
     return <div />;
   }

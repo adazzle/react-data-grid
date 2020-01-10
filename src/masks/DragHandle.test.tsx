@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import DragHandle from '../DragHandle';
+import DragHandle from './DragHandle';
 
 describe('DragHandle', () => {
   const setup = () => {

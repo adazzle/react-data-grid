@@ -1,11 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 import { mount } from 'enzyme';
 
-import Cell, { CellProps } from '../Cell';
-import helpers, { Row } from './GridPropHelpers';
-import { SimpleCellFormatter } from '../formatters';
-import { CalculatedColumn, FormatterProps } from '../common/types';
-import EventBus from '../EventBus';
+import Cell, { CellProps } from './Cell';
+import helpers, { Row } from './test/GridPropHelpers';
+import { SimpleCellFormatter } from './formatters';
+import { CalculatedColumn, FormatterProps } from './common/types';
+import EventBus from './EventBus';
 
 const defaultColumn: CalculatedColumn<Row> = {
   idx: 0,
@@ -25,7 +25,6 @@ const testProps: CellProps<Row> = {
   isRowSelected: false,
   scrollLeft: 0,
   isSummaryRow: false,
-  rowKey: 'id',
   eventBus: new EventBus()
 };
 
@@ -33,7 +32,7 @@ const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>
   return mount(<Cell<Row> {...testProps} {...extraProps} />);
 };
 
-describe('Cell Tests', () => {
+describe('Cell', () => {
   it('should render a SimpleCellFormatter with value', () => {
     const wrapper = renderComponent();
     const formatter = wrapper.find(SimpleCellFormatter);
@@ -72,7 +71,6 @@ describe('Cell Tests', () => {
       isRowSelected: false,
       scrollLeft: 0,
       isSummaryRow: false,
-      rowKey: 'id',
       eventBus: new EventBus()
     };
 

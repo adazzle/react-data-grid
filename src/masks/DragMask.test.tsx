@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { Position } from '../../common/types';
-import CellMask from '../CellMask';
-import DragMask, { DraggedPosition } from '../DragMask';
+import { Position } from '../common/types';
+import CellMask from './CellMask';
+import DragMask, { DraggedPosition } from './DragMask';
 
 describe('DragMask', () => {
   const setup = (draggedPosition: DraggedPosition) => {

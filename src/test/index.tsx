@@ -1,6 +1,6 @@
 import React, { StrictMode } from 'react';
 import { render } from '@testing-library/react';
-import DataGrid, { DataGridProps } from '../src';
+import DataGrid, { DataGridProps } from '../';
 
 interface RowType {
   id: number;

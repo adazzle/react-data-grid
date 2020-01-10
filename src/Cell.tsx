@@ -1,7 +1,7 @@
 import React, { memo, createElement } from 'react';
 import classNames from 'classnames';
 
-import { CellRendererProps, ColumnEventInfo } from './common/types';
+import { CellRendererProps } from './common/types';
 import { EventTypes } from './common/enums';
 
 export interface CellProps<R> extends CellRendererProps<R> {
@@ -11,7 +11,6 @@ export interface CellProps<R> extends CellRendererProps<R> {
 }
 
 function Cell<R>({
-  rowKey,
   children,
   className,
   column,
@@ -57,8 +56,8 @@ function Cell<R>({
 
   function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
-    onRowDoubleClick?.(rowIdx, rowData, column);
     selectCell(true);
+    onRowDoubleClick?.(rowIdx, rowData, column);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -66,54 +65,7 @@ function Cell<R>({
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_ROW, { rowIdx, row: rowData, checked, isShiftClick });
-  }
-
-  function getEvents() {
-    if (isSummaryRow) return null;
-
-    const columnEvents = column.events;
-    const allEvents: { [key: string]: Function } = {
-      onClick: handleCellClick,
-      onDoubleClick: handleCellDoubleClick,
-      onContextMenu: handleCellContextMenu,
-      onDragOver: handleDragOver
-    };
-
-    if (enableCellRangeSelection) {
-      allEvents.onMouseDown = handleCellMouseDown;
-      allEvents.onMouseEnter = handleCellMouseEnter;
-    }
-
-    if (!columnEvents) {
-      return allEvents;
-    }
-
-    const eventInfo: ColumnEventInfo<R> = {
-      idx,
-      rowIdx,
-      column,
-      rowId: rowData[rowKey]
-    };
-
-    for (const event in columnEvents) {
-      const columnEventHandler = columnEvents[event];
-      if (columnEventHandler) {
-        if (allEvents.hasOwnProperty(event)) {
-          const existingEvent = allEvents[event];
-          allEvents[event] = (e: Event) => {
-            existingEvent(e);
-            columnEventHandler(e, eventInfo);
-          };
-        } else {
-          allEvents[event] = (e: Event) => {
-            columnEventHandler(e, eventInfo);
-          };
-        }
-      }
-    }
-
-    return allEvents;
+    eventBus.dispatch(EventTypes.SELECT_ROW, { rowIdx, checked, isShiftClick });
   }
 
   className = classNames(
@@ -149,7 +101,12 @@ function Cell<R>({
     <div
       className={className}
       style={style}
-      {...getEvents()}
+      onClick={isSummaryRow ? undefined : handleCellClick}
+      onDoubleClick={isSummaryRow ? undefined : handleCellDoubleClick}
+      onContextMenu={isSummaryRow ? undefined : handleCellContextMenu}
+      onDragOver={isSummaryRow ? undefined : handleDragOver}
+      onMouseDown={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseDown}
+      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseEnter}
     >
       {children}
     </div>

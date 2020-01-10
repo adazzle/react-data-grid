@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
 
-import EditorContainer, { Props } from '../EditorContainer';
-import SimpleTextEditor from '../SimpleTextEditor';
-import { ValueFormatter } from '../../formatters';
-import { CalculatedColumn, EditorProps } from '../../common/types';
+import EditorContainer, { Props } from './EditorContainer';
+import SimpleTextEditor from './SimpleTextEditor';
+import { ValueFormatter } from '../formatters';
+import { CalculatedColumn, EditorProps } from '../common/types';
 
 interface Row {
   id: string;
@@ -71,7 +71,7 @@ const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps
   return { wrapper, props };
 };
 
-describe('Editor Container Tests', () => {
+describe('EditorContainer', () => {
   describe('Basic render tests', () => {
     it('should select the text of the default input when the editor is rendered', () => {
       const { wrapper } = setup();
