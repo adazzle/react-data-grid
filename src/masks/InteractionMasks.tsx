@@ -106,7 +106,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   const [firstEditorKeyPress, setFirstEditorKeyPress] = useState<string | null>(null);
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
-  const isCellEditable = isCellWithinBounds(selectedPosition) && isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition, onCheckCellIsEditable });
 
   // Focus on the selection mask when the selected position is changed
   useEffect(() => {
@@ -171,7 +170,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function openEditor(event: React.KeyboardEvent<HTMLDivElement>): void {
-    if (isCellEditable && !isEditorEnabled) {
+    if (!isEditorEnabled && isCellEditable(selectedPosition)) {
       setFirstEditorKeyPress(event.key);
       setIsEditorEnabled(true);
     }
@@ -235,7 +234,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function handlePaste(): void {
-    if (copiedPosition === null || !isCellEditable) {
+    if (copiedPosition === null || !isCellEditable(selectedPosition)) {
       return;
     }
 
@@ -265,6 +264,11 @@ export default function InteractionMasks<R, K extends keyof R>({
     return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columns.length;
   }
 
+  function isCellEditable(position: Position) {
+    return isCellWithinBounds(position)
+      && isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition: position, onCheckCellIsEditable });
+  }
+
   function selectCell(position: Position, enableEditor = false): void {
     // Close the editor to commit any pending changes
     if (isEditorEnabled) {
@@ -276,7 +280,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     scrollToCell(position);
     setSelectedPosition(position);
     onSelectedCellChange?.({ ...position });
-    if (enableEditor) {
+    if (enableEditor && isCellEditable(position)) {
       // The editor position is dependent on the selectionMask position so we need to wait
       // for the next render cycle when the updated selection mask position is set
       setIsEditorEnabled(true);
@@ -284,7 +288,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function isDragEnabled(): boolean {
-    return enableCellDragAndDrop && isCellEditable;
+    return enableCellDragAndDrop && isCellEditable(selectedPosition);
   }
 
   function handleDragStart(e: React.DragEvent<HTMLDivElement>): void {
