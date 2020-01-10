@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
-import ImageFormatter from './components/Formatters/ImageFormatter';
+import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
 import Wrapper from './Wrapper';
 

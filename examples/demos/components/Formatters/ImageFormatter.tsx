@@ -6,7 +6,7 @@ interface Props {
   value: string;
 }
 
-export default function ImageFormatter({ value }: Props) {
+export function ImageFormatter({ value }: Props) {
   return (
     <div className="rdg-image-cell-wrapper">
       <div className="rdg-image-cell" style={{ backgroundImage: `url(${value})` }} />

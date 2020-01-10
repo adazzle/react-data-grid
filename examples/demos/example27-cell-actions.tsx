@@ -4,7 +4,7 @@ import faker from 'faker';
 
 import DataGrid, { Column } from '../../src';
 import Wrapper from './Wrapper';
-import { CellActionsFormatter, ImageFormatter } from './formatters';
+import { CellActionsFormatter, ImageFormatter } from './components/Formatters';
 
 faker.locale = 'en_GB';
 
