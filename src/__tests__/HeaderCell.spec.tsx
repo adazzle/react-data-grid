@@ -59,12 +59,12 @@ describe('Header Cell Tests', () => {
   describe('Render draggableHeaderCell', () => {
     it('should not render DraggableHeaderCell when draggable is false', () => {
       const { wrapper } = setup({}, { draggable: false });
-      expect(wrapper.find(DraggableHeaderCell).length).toBe(0);
+      expect(wrapper.find(DraggableHeaderCell)).toHaveLength(0);
     });
 
     it('should not render DraggableHeaderCell when draggable is true', () => {
       const { wrapper } = setup({}, { draggable: true });
-      expect(wrapper.find(DraggableHeaderCell).length).toBe(1);
+      expect(wrapper.find(DraggableHeaderCell)).toHaveLength(1);
     });
   });
 });

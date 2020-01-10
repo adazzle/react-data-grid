@@ -80,8 +80,8 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editor).not.toBe(undefined);
-        expect(testProps.col.editable).toBe(undefined);
+        expect(testProps.col.editor).not.toBeUndefined();
+        expect(testProps.col.editable).toBeUndefined();
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(true);
       });
@@ -96,8 +96,8 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editor).toBe(undefined);
-        expect(testProps.col.editable).toBe(undefined);
+        expect(testProps.col.editor).toBeUndefined();
+        expect(testProps.col.editable).toBeUndefined();
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(false);
       });
@@ -112,7 +112,7 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(testProps.col.editable).toBe(true);
-        expect(testProps.enableCellSelect).toBe(undefined);
+        expect(testProps.enableCellSelect).toBeUndefined();
         expect(result).toBe(false);
       });
 
@@ -125,8 +125,8 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editable).toBe(undefined);
-        expect(testProps.enableCellSelect).toBe(undefined);
+        expect(testProps.col.editable).toBeUndefined();
+        expect(testProps.enableCellSelect).toBeUndefined();
         expect(result).toBe(false);
       });
     });
@@ -142,8 +142,8 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editor).not.toBe(null);
-        expect(testProps.col.editable).toBe(undefined);
+        expect(testProps.col.editor).not.toBeNull();
+        expect(testProps.col.editable).toBeUndefined();
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(true);
       });
@@ -158,8 +158,8 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editor).toBe(undefined);
-        expect(testProps.col.editable).toBe(undefined);
+        expect(testProps.col.editor).toBeUndefined();
+        expect(testProps.col.editable).toBeUndefined();
         expect(testProps.enableCellSelect).toBe(true);
         expect(result).toBe(false);
       });
@@ -174,7 +174,7 @@ describe('ColumnUtils tests', () => {
 
         // Assert
         expect(testProps.col.editable).toBe(true);
-        expect(testProps.enableCellSelect).toBe(undefined);
+        expect(testProps.enableCellSelect).toBeUndefined();
         expect(result).toBe(false);
       });
 
@@ -187,8 +187,8 @@ describe('ColumnUtils tests', () => {
         const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
 
         // Assert
-        expect(testProps.col.editable).toBe(undefined);
-        expect(testProps.enableCellSelect).toBe(undefined);
+        expect(testProps.col.editable).toBeUndefined();
+        expect(testProps.enableCellSelect).toBeUndefined();
         expect(result).toBe(false);
       });
     });

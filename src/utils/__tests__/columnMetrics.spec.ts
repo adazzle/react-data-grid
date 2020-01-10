@@ -37,9 +37,9 @@ describe('Column Metrics Tests', () => {
           defaultFormatter: ValueFormatter
         });
 
-        expect(metrics.columns[0].width).toEqual(60);
-        expect(metrics.columns[1].width).toEqual(120);
-        expect(metrics.columns[2].width).toEqual(120);
+        expect(metrics.columns[0].width).toStrictEqual(60);
+        expect(metrics.columns[1].width).toStrictEqual(120);
+        expect(metrics.columns[2].width).toStrictEqual(120);
       });
 
       it('should set the column left based on the column widths', () => {
@@ -52,9 +52,9 @@ describe('Column Metrics Tests', () => {
           defaultFormatter: ValueFormatter
         });
 
-        expect(metrics.columns[0].left).toEqual(0);
-        expect(metrics.columns[1].left).toEqual(columns[0].width);
-        expect(metrics.columns[2].left).toEqual(180);
+        expect(metrics.columns[0].left).toStrictEqual(0);
+        expect(metrics.columns[1].left).toStrictEqual(columns[0].width);
+        expect(metrics.columns[2].left).toStrictEqual(180);
       });
 
       it('should shift all frozen columns to the start of column metrics array', () => {

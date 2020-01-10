@@ -9,7 +9,7 @@ const rules = {
   'no-await-in-loop': 0,
   'no-compare-neg-zero': 2,
   'no-cond-assign': 2,
-  'no-console': 0,
+  'no-console': 1,
   'no-constant-condition': 2,
   'no-control-regex': 2,
   'no-debugger': 2,
@@ -22,7 +22,7 @@ const rules = {
   'no-ex-assign': 2,
   'no-extra-boolean-cast': 2,
   'no-extra-parens': 0, // replaced by @typescript-eslint/no-extra-parens
-  'no-extra-semi': 2,
+  'no-extra-semi': 0, // replaced by @typescript-eslint/no-extra-semi
   'no-func-assign': 2,
   'no-import-assign': 2,
   'no-inner-declarations': 0,
@@ -346,7 +346,7 @@ const rules = {
   'react/jsx-curly-newline': 1,
   'react/jsx-curly-spacing': 1,
   'react/jsx-equals-spacing': 1,
-  'react/jsx-filename-extension': [1, { extensions: ['.js', '.tsx'] }],
+  'react/jsx-filename-extension': [1, { extensions: ['.js', '.tsx'] }], // TODO: remove .js
   'react/jsx-first-prop-new-line': 1,
   'react/jsx-handler-names': 0,
   'react/jsx-indent': [1, 2],
@@ -392,6 +392,48 @@ const rules = {
   'react-hooks/rules-of-hooks': 2,
   'react-hooks/exhaustive-deps': 1,
 
+  // https://github.com/jest-community/eslint-plugin-jest#rules
+  'jest/consistent-test-it': 1,
+  'jest/expect-expect': 0,
+  'jest/lowercase-name': 0,
+  'jest/no-alias-methods': 1,
+  'jest/no-commented-out-tests': 0, // TODO
+  'jest/no-disabled-tests': 0,
+  'jest/no-duplicate-hooks': 2,
+  'jest/no-expect-resolves': 0,
+  'jest/no-export': 1,
+  'jest/no-focused-tests': 1,
+  'jest/no-hooks': 0, // TODO
+  'jest/no-identical-title': 2,
+  'jest/no-if': 1,
+  'jest/no-jasmine-globals': 1,
+  'jest/no-jest-import': 1,
+  'jest/no-large-snapshots': 0,
+  'jest/no-mocks-import': 1,
+  'jest/no-standalone-expect': 2,
+  'jest/no-test-callback': 0,
+  'jest/no-test-prefixes': 0,
+  'jest/no-test-return-statement': 0,
+  'jest/no-truthy-falsy': 1,
+  'jest/no-try-expect': 1,
+  'jest/prefer-called-with': 0,
+  'jest/prefer-expect-assertions': 0,
+  'jest/prefer-hooks-on-top': 0,
+  'jest/prefer-inline-snapshots': 0,
+  'jest/prefer-spy-on': 2,
+  'jest/prefer-strict-equal': 1,
+  'jest/prefer-to-be-null': 1,
+  'jest/prefer-to-be-undefined': 1,
+  'jest/prefer-to-contain': 1,
+  'jest/prefer-to-have-length': 1,
+  'jest/prefer-todo': 1,
+  'jest/require-top-level-describe': 0,
+  'jest/require-to-throw-message': 0,
+  'jest/valid-describe': 2,
+  'jest/valid-expect-in-promise': 1,
+  'jest/valid-expect': [1, { alwaysAwait: true }],
+  'jest/valid-title': 2,
+
   // SonarJS rules
   // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
   'sonarjs/no-all-duplicated-branches': 2,
@@ -430,7 +472,7 @@ const rules = {
   '@typescript-eslint/brace-style': [1, '1tbs', { allowSingleLine: true }],
   '@typescript-eslint/camelcase': 0,
   '@typescript-eslint/class-name-casing': 0,
-  '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' }],
+  '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' }], // TODO: allow -> never
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
@@ -451,9 +493,11 @@ const rules = {
     nestedBinaryExpressions: false,
     ignoreJSX: 'all'
   }],
+  '@typescript-eslint/no-extra-semi': 2,
   '@typescript-eslint/no-extraneous-class': 2,
   '@typescript-eslint/no-floating-promises': 0,
   '@typescript-eslint/no-for-in-array': 0,
+  '@typescript-eslint/no-implied-eval': 0,
   '@typescript-eslint/no-inferrable-types': 1,
   '@typescript-eslint/no-magic-numbers': 0,
   '@typescript-eslint/no-misused-new': 2,
@@ -463,6 +507,7 @@ const rules = {
   '@typescript-eslint/no-parameter-properties': 0,
   '@typescript-eslint/no-require-imports': 1,
   '@typescript-eslint/no-this-alias': 0,
+  '@typescript-eslint/no-throw-literal': 0,
   '@typescript-eslint/no-type-alias': 0,
   '@typescript-eslint/no-unnecessary-condition': 0,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
@@ -518,22 +563,21 @@ module.exports = {
   plugins: [
     'react',
     'react-hooks',
+    'jest',
     'sonarjs',
     '@typescript-eslint'
   ],
   rules,
   overrides: [{
+    // TODO: remove
     files: [
-      'examples/**/*',
-      'src/**/*'
+      'examples/**/*'
     ],
     env: {
       browser: true
-    },
-    globals: {
-      process: 'readable'
     }
   }, {
+    // TODO: remove
     files: [
       'src/**/__tests__/**/*'
     ],
@@ -550,8 +594,7 @@ module.exports = {
     files: [
       'babel.config.js',
       'jest.config.js',
-      'webpack-dev-server.mjs',
-      'tools/**/*.mjs'
+      '*.mjs'
     ],
     env: {
       node: true
@@ -571,9 +614,6 @@ module.exports = {
     ],
     parserOptions: {
       sourceType: 'script'
-    },
-    rules: {
-      '@typescript-eslint/no-require-imports': 0
     }
   }]
 };

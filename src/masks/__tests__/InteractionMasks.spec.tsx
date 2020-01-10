@@ -74,14 +74,14 @@ describe('<InteractionMasks/>', () => {
       describe('within grid bounds', () => {
         it('should render a SelectionMask component', () => {
           const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
-          expect(wrapper.find(SelectionMask).length).toBe(1);
+          expect(wrapper.find(SelectionMask)).toHaveLength(1);
         });
       });
 
       describe('outside grid bounds', () => {
         it('should not render a SelectionMask component', () => {
           const { wrapper } = setup();
-          expect(wrapper.find(SelectionMask).length).toBe(0);
+          expect(wrapper.find(SelectionMask)).toHaveLength(0);
         });
       });
     });
@@ -427,7 +427,7 @@ describe('<InteractionMasks/>', () => {
     it('Press enter should enable editing', () => {
       const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
       pressKey(wrapper, KeyCodes.Enter, { keyCode: KeyCodes.Enter });
-      expect(wrapper.find(EditorContainer).length).toBe(1);
+      expect(wrapper.find(EditorContainer)).toHaveLength(1);
     });
 
     describe('When current selected cell is not in outer bounds', () => {
@@ -493,7 +493,7 @@ describe('<InteractionMasks/>', () => {
       // prevent default isn't called, it lets the dom do normal navigation
 
       const assertGridWasExited = (wrapper: ReturnType<typeof setup>['wrapper']) => {
-        expect(wrapper.find(SelectionMask).length).toBe(0);
+        expect(wrapper.find(SelectionMask)).toHaveLength(0);
       };
 
       const tabCell = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
@@ -640,21 +640,21 @@ describe('<InteractionMasks/>', () => {
 
     it('should not render a CopyMask component if there is no copied cell', () => {
       const { wrapper } = setupCopy();
-      expect(wrapper.find(CopyMask).length).toBe(0);
+      expect(wrapper.find(CopyMask)).toHaveLength(0);
     });
 
     it('should render a CopyMask component when a cell is copied', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
-      expect(wrapper.find(CopyMask).length).toBe(1);
-      expect(wrapper.find(CopyMask).props()).toEqual({ height: 30, left: 100, top: 60, width: 100, zIndex: 1 });
+      expect(wrapper.find(CopyMask)).toHaveLength(1);
+      expect(wrapper.find(CopyMask).props()).toStrictEqual({ height: 30, left: 100, top: 60, width: 100, zIndex: 1 });
     });
 
     it('should remove the CopyMask component on escape', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
       pressKey(wrapper, KeyCodes.Escape);
-      expect(wrapper.find(CopyMask).length).toBe(0);
+      expect(wrapper.find(CopyMask)).toHaveLength(0);
     });
 
     it('should update the selected cell with the copied value on paste', () => {
@@ -696,7 +696,7 @@ describe('<InteractionMasks/>', () => {
     it('should not render the DragMask component if drag has not started', () => {
       const { wrapper } = setupDrag();
 
-      expect(wrapper.find(DragMask).length).toBe(0);
+      expect(wrapper.find(DragMask)).toHaveLength(0);
     });
 
     it('should render the DragMask component on cell drag', () => {
@@ -707,7 +707,7 @@ describe('<InteractionMasks/>', () => {
         dataTransfer: { setData }
       });
 
-      expect(wrapper.find(DragMask).length).toBe(1);
+      expect(wrapper.find(DragMask)).toHaveLength(1);
       expect(setData).toHaveBeenCalled();
     });
 

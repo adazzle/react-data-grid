@@ -37,7 +37,7 @@ describe('Cell Tests', () => {
   it('should render a SimpleCellFormatter with value', () => {
     const wrapper = renderComponent();
     const formatter = wrapper.find(SimpleCellFormatter);
-    expect(formatter.props().row[defaultColumn.key]).toEqual('Wicklow');
+    expect(formatter.props().row[defaultColumn.key]).toStrictEqual('Wicklow');
   });
 
   it('should render a custom formatter when specified on column', () => {
@@ -50,7 +50,7 @@ describe('Cell Tests', () => {
 
     const wrapper = renderComponent({ column });
     const formatterInstance = wrapper.find(CustomFormatter);
-    expect(formatterInstance.prop('row')[column.key]).toEqual('Wicklow');
+    expect(formatterInstance.prop('row')[column.key]).toStrictEqual('Wicklow');
   });
 
   it('should render children when those are passed', () => {
@@ -79,7 +79,7 @@ describe('Cell Tests', () => {
     it('passes classname property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
       const cellDiv = wrapper.find('div').at(0);
-      expect(cellDiv.hasClass('rdg-cell'));
+      expect(cellDiv.hasClass('rdg-cell')).toBe(true);
     });
     it('passes style property', () => {
       const wrapper = shallowRenderComponent(requiredProperties);
