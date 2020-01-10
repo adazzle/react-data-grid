@@ -11,7 +11,7 @@ const compiler = webpack({
       'webpack-dev-server/client?http://localhost:8080/',
       'webpack/hot/dev-server',
       './examples',
-      './style/react-data-grid.less'
+      './style/index.less'
     ]
   },
   resolve: {
@@ -33,10 +33,6 @@ const compiler = webpack({
           loader: 'ts-loader',
           options: { onlyCompileBundledFiles: true }
         }]
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.less$/,

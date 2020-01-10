@@ -36,7 +36,7 @@ describe('DragMask', () => {
   it('should not render the CellMask component if the drag handle is on the same row as the dragged cell', () => {
     const mask = setup({ idx: 0, rowIdx: 2, overRowIdx: 2 });
 
-    expect(mask.length).toBe(0);
+    expect(mask).toHaveLength(0);
   });
 
   it('should render the CellMask component with correct position for the dragged down cell', () => {
