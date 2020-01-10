@@ -40,7 +40,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 
 export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
-  viewportColumns: CalculatedColumn<R>[];
+  viewportColumns: readonly CalculatedColumn<R>[];
   height: number;
   scrollLeft: number;
   onScroll(position: ScrollPosition): void;
