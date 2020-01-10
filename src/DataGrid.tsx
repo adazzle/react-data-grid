@@ -32,7 +32,7 @@ export { DataGridHandle };
 
 export interface DataGridProps<R, K extends keyof R> {
   /** An array of objects representing each column on the grid */
-  columns: Column<R>[];
+  columns: readonly Column<R>[];
   /** The minimum width of the grid in pixels */
   minWidth?: number;
   /** The height of the header row in pixels */
@@ -55,7 +55,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** Function called whenever keyboard key is pressed down */
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
 
-  selectedRows?: Set<R[K]>;
+  selectedRows?: ReadonlySet<R[K]>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?(selectedRows: Set<R[K]>): void;
 
@@ -119,7 +119,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: R[];
+  summaryRows?: readonly R[];
   /** Control how big render row batches will be. */
   renderBatchSize?: number;
 }
@@ -185,7 +185,7 @@ function DataGrid<R, K extends keyof R>({
     });
   }, [columnMetrics, scrollLeft]);
 
-  const viewportColumns: CalculatedColumn<R>[] = useMemo(() => {
+  const viewportColumns: readonly CalculatedColumn<R>[] = useMemo(() => {
     if (!columnMetrics) return [];
 
     return getViewportColumns(
