@@ -1,6 +1,6 @@
-import { isCtrlKeyHeldDown, isKeyPrintable } from '../keyboardUtils';
+import { isCtrlKeyHeldDown, isKeyPrintable } from './keyboardUtils';
 
-describe('isKeyPrintable', () => {
+describe('isCtrlKeyHeldDown', () => {
   it('should return true if ctrl key is pressed', () => {
     expect(isCtrlKeyHeldDown({ ctrlKey: true, key: 's' } as React.KeyboardEvent)).toBe(true);
   });
@@ -16,7 +16,9 @@ describe('isKeyPrintable', () => {
   it('should return false if only ctrl key is pressed', () => {
     expect(isCtrlKeyHeldDown({ ctrlKey: true, key: 'Control' } as React.KeyboardEvent)).toBe(false);
   });
+});
 
+describe('isKeyPrintable', () => {
   it('should return true for printable keys', () => {
     expect(isKeyPrintable(50)).toBe(true);
     expect(isKeyPrintable(32)).toBe(true);

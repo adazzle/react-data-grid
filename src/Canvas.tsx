@@ -159,11 +159,12 @@ function Canvas<R, K extends keyof R>({
   useEffect(() => {
     if (!onSelectedRowsChange) return;
 
-    const handleRowSelectionChange = ({ rowIdx, row, checked, isShiftClick }: SelectRowEvent<R>) => {
+    const handleRowSelectionChange = ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => {
       const newSelectedRows = new Set(selectedRows);
+      const rowId = rowGetter(rowIdx)[rowKey];
 
       if (checked) {
-        newSelectedRows.add(row[rowKey]);
+        newSelectedRows.add(rowId);
         const previousRowIdx = lastSelectedRowIdx.current;
         lastSelectedRowIdx.current = rowIdx;
         if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
@@ -173,7 +174,7 @@ function Canvas<R, K extends keyof R>({
           }
         }
       } else {
-        newSelectedRows.delete(row[rowKey]);
+        newSelectedRows.delete(rowId);
         lastSelectedRowIdx.current = -1;
       }
 
