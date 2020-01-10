@@ -1,4 +1,4 @@
-import { setup } from './utils';
+import { setup } from './test';
 
 test('rendering <DataGrid /> should work', () => {
   const { container } = setup();

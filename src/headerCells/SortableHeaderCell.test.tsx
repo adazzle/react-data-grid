@@ -1,12 +1,12 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SortableHeaderCell, { Props } from '../SortableHeaderCell';
-import { DEFINE_SORT } from '../../common/enums';
-import { ValueFormatter } from '../../formatters';
+import SortableHeaderCell, { Props } from './SortableHeaderCell';
+import { DEFINE_SORT } from '../common/enums';
+import { ValueFormatter } from '../formatters';
 
 interface Row { col1: string }
 
-describe('<SortableHeaderCell/>', () => {
+describe('SortableHeaderCell', () => {
   const setup = (overrideColumn = {}) => {
     const props: Props<Row> = {
       column: {

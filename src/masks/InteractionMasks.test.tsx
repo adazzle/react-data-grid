@@ -2,17 +2,17 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
-import InteractionMasks, { InteractionMasksProps, KeyCodes } from '../InteractionMasks';
-import SelectionMask from '../SelectionMask';
+import InteractionMasks, { InteractionMasksProps, KeyCodes } from './InteractionMasks';
+import SelectionMask from './SelectionMask';
 // import SelectionRangeMask from '../SelectionRangeMask';
-import CopyMask from '../CopyMask';
-import DragMask from '../DragMask';
-import DragHandle from '../DragHandle';
-import EventBus from '../../EventBus';
-import EditorContainer from '../../editors/EditorContainer';
-import { createColumns } from '../../__tests__/utils';
-import { CellNavigationMode, EventTypes, UpdateActions } from '../../common/enums';
-import { Position } from '../../common/types';
+import CopyMask from './CopyMask';
+import DragMask from './DragMask';
+import DragHandle from './DragHandle';
+import EventBus from '../EventBus';
+import EditorContainer from '../editors/EditorContainer';
+import { createColumns } from '../test/utils';
+import { CellNavigationMode, EventTypes, UpdateActions } from '../common/enums';
+import { Position } from '../common/types';
 
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
@@ -22,7 +22,7 @@ interface Row {
   [key: string]: React.ReactNode;
 }
 
-describe('<InteractionMasks/>', () => {
+describe('InteractionMasks', () => {
   const rowGetter = () => ({ col1: 1 });
 
   function setup(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialPosition?: Position) {
