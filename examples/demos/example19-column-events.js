@@ -20,12 +20,7 @@ export default class extends React.Component {
         key: 'title',
         name: 'Title',
         editor: <DropDownEditor options={titles} />,
-        resizable: true,
-        events: {
-          onDoubleClick(ev, args) {
-            console.log(`The user entered edit mode on title column with rowIdx: ${args.rowIdx} & rowId: ${args.rowId}`);
-          }
-        }
+        resizable: true
       },
       {
         key: 'name',

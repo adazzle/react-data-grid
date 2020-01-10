@@ -32,12 +32,7 @@ const columns = [
     name: 'Title',
     editor: <DropDownEditor options={titles} />,
     width: 200,
-    resizable: true,
-    events: {
-      onDoubleClick() {
-        console.log('The user double clicked on title column');
-      }
-    }
+    resizable: true
   },
   {
     key: 'firstName',

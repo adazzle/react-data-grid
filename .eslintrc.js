@@ -9,7 +9,7 @@ const rules = {
   'no-await-in-loop': 0,
   'no-compare-neg-zero': 2,
   'no-cond-assign': 2,
-  'no-console': 0,
+  'no-console': 1,
   'no-constant-condition': 2,
   'no-control-regex': 2,
   'no-debugger': 2,
@@ -22,7 +22,7 @@ const rules = {
   'no-ex-assign': 2,
   'no-extra-boolean-cast': 2,
   'no-extra-parens': 0, // replaced by @typescript-eslint/no-extra-parens
-  'no-extra-semi': 2,
+  'no-extra-semi': 0, // replaced by @typescript-eslint/no-extra-semi
   'no-func-assign': 2,
   'no-import-assign': 2,
   'no-inner-declarations': 0,
@@ -346,7 +346,7 @@ const rules = {
   'react/jsx-curly-newline': 1,
   'react/jsx-curly-spacing': 1,
   'react/jsx-equals-spacing': 1,
-  'react/jsx-filename-extension': [1, { extensions: ['.js', '.tsx'] }],
+  'react/jsx-filename-extension': [1, { extensions: ['.js', '.tsx'] }], // TODO: remove .js
   'react/jsx-first-prop-new-line': 1,
   'react/jsx-handler-names': 0,
   'react/jsx-indent': [1, 2],
@@ -430,7 +430,7 @@ const rules = {
   '@typescript-eslint/brace-style': [1, '1tbs', { allowSingleLine: true }],
   '@typescript-eslint/camelcase': 0,
   '@typescript-eslint/class-name-casing': 0,
-  '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' }],
+  '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' }], // TODO: allow -> never
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
@@ -451,9 +451,11 @@ const rules = {
     nestedBinaryExpressions: false,
     ignoreJSX: 'all'
   }],
+  '@typescript-eslint/no-extra-semi': 2,
   '@typescript-eslint/no-extraneous-class': 2,
   '@typescript-eslint/no-floating-promises': 0,
   '@typescript-eslint/no-for-in-array': 0,
+  '@typescript-eslint/no-implied-eval': 0,
   '@typescript-eslint/no-inferrable-types': 1,
   '@typescript-eslint/no-magic-numbers': 0,
   '@typescript-eslint/no-misused-new': 2,
@@ -463,6 +465,7 @@ const rules = {
   '@typescript-eslint/no-parameter-properties': 0,
   '@typescript-eslint/no-require-imports': 1,
   '@typescript-eslint/no-this-alias': 0,
+  '@typescript-eslint/no-throw-literal': 0,
   '@typescript-eslint/no-type-alias': 0,
   '@typescript-eslint/no-unnecessary-condition': 0,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
@@ -523,17 +526,15 @@ module.exports = {
   ],
   rules,
   overrides: [{
+    // TODO: remove
     files: [
-      'examples/**/*',
-      'src/**/*'
+      'examples/**/*'
     ],
     env: {
       browser: true
-    },
-    globals: {
-      process: 'readable'
     }
   }, {
+    // TODO: remove
     files: [
       'src/**/__tests__/**/*'
     ],
@@ -550,8 +551,7 @@ module.exports = {
     files: [
       'babel.config.js',
       'jest.config.js',
-      'webpack-dev-server.mjs',
-      'tools/**/*.mjs'
+      '*.mjs'
     ],
     env: {
       node: true
@@ -571,9 +571,6 @@ module.exports = {
     ],
     parserOptions: {
       sourceType: 'script'
-    },
-    rules: {
-      '@typescript-eslint/no-require-imports': 0
     }
   }]
 };
