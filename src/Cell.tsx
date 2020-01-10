@@ -66,7 +66,7 @@ function Cell<R>({
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_ROW, { rowIdx, row: rowData, checked, isShiftClick });
+    eventBus.dispatch(EventTypes.SELECT_ROW, { rowIdx, checked, isShiftClick });
   }
 
   className = classNames(

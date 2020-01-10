@@ -210,9 +210,8 @@ export interface CheckCellIsEditableEvent<TRow> extends Position {
   column: CalculatedColumn<TRow>;
 }
 
-export interface SelectRowEvent<R> {
+export interface SelectRowEvent {
   rowIdx: number;
-  row: R;
   checked: boolean;
   isShiftClick: boolean;
 }
