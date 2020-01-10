@@ -6,7 +6,7 @@ const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHei
 
 interface getSelectedDimensionsOpts<R> {
   selectedPosition: Position;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   rowHeight: number;
   scrollLeft: number;
 }
@@ -25,7 +25,7 @@ export function getSelectedDimensions<R>({ selectedPosition: { idx, rowIdx }, co
 
 interface getSelectedRangeDimensionsOpts<R> {
   selectedRange: Range;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   rowHeight: number;
 }
 
@@ -52,7 +52,7 @@ export function getSelectedRangeDimensions<R>({ selectedRange: { topLeft, bottom
 
 interface getSelectedCellValueOpts<R> {
   selectedPosition: Position;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   rowGetter: RowGetter<R>;
 }
 
@@ -66,7 +66,7 @@ export function getSelectedCellValue<R>({ selectedPosition, columns, rowGetter }
 interface isSelectedCellEditableOpts<R> {
   enableCellSelect: boolean;
   selectedPosition: Position;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   rowGetter: RowGetter<R>;
   onCheckCellIsEditable?(arg: { row: R; column: CalculatedColumn<R> } & Position): boolean;
 }
@@ -80,7 +80,7 @@ export function isSelectedCellEditable<R>({ enableCellSelect, selectedPosition, 
 
 interface getNextSelectedCellPositionOpts<R> {
   cellNavigationMode: CellNavigationMode;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   rowsCount: number;
   nextPosition: Position;
 }
@@ -130,7 +130,7 @@ export function getNextSelectedCellPosition<R>({ cellNavigationMode, columns, ro
 
 interface canExitGridOpts<R> {
   cellNavigationMode: CellNavigationMode;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   rowsCount: number;
   selectedPosition: Position;
 }

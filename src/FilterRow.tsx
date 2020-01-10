@@ -14,7 +14,7 @@ export interface FilterRowProps<R, K extends keyof R> extends SharedDataGridProp
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   scrollLeft: number | undefined;
 }
 

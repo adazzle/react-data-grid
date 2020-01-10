@@ -21,7 +21,7 @@ export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProp
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
-  columns: CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R>[];
   allRowsSelected: boolean;
   scrollLeft: number | undefined;
   onColumnResize(column: CalculatedColumn<R>, width: number): void;

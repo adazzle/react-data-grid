@@ -2,8 +2,8 @@ import { Column, CalculatedColumn, ColumnMetrics, FormatterProps } from '../comm
 import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R> {
-  columns: Column<R>[];
-  columnWidths: Map<keyof R, number>;
+  columns: readonly Column<R>[];
+  columnWidths: ReadonlyMap<keyof R, number>;
   minColumnWidth: number;
   viewportWidth: number;
   defaultFormatter: React.ComponentType<FormatterProps<R>>;
@@ -66,7 +66,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
 
 function getSpecifiedWidth<R>(
   column: Column<R>,
-  columnWidths: Map<keyof R, number>,
+  columnWidths: ReadonlyMap<keyof R, number>,
   viewportWidth: number,
   minColumnWidth: number
 ): number | void {
@@ -92,7 +92,7 @@ export function canEdit<R>(column: CalculatedColumn<R>, rowData: R, enableCellSe
   return enableCellSelect === true && (!!column.editor || !!column.editable);
 }
 
-export function getColumnScrollPosition<R>(columns: CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
+export function getColumnScrollPosition<R>(columns: readonly CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;
 
