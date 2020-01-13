@@ -22,7 +22,7 @@ import {
   RowsContainerProps,
   RowExpandToggleEvent,
   SelectedRange,
-  IRowRendererProps,
+  RowRendererProps,
   ScrollPosition,
   Filters,
   FormatterProps
@@ -77,7 +77,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** The height of each row in pixels */
   rowHeight?: number;
   defaultFormatter?: React.ComponentType<FormatterProps<R>>;
-  rowRenderer?: React.ComponentType<IRowRendererProps<R>>;
+  rowRenderer?: React.ComponentType<RowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];

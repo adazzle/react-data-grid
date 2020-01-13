@@ -73,7 +73,7 @@ function Canvas<R, K extends keyof R>({
 }: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
   const [eventBus] = useState(() => new EventBus());
   const [scrollTop, setScrollTop] = useState(0);
-  const canvas = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
   const lastSelectedRowIdx = useRef(-1);
 
@@ -110,7 +110,7 @@ function Canvas<R, K extends keyof R>({
   }
 
   function scrollToCell({ idx, rowIdx }: Partial<Position>) {
-    const { current } = canvas;
+    const { current } = canvasRef;
     if (!current) return;
 
     const { clientWidth, clientHeight, scrollLeft, scrollTop } = current;
@@ -141,7 +141,7 @@ function Canvas<R, K extends keyof R>({
   }
 
   function scrollToRow(rowIdx: number) {
-    const { current } = canvas;
+    const { current } = canvasRef;
     if (!current) return;
     current.scrollTop = rowIdx * rowHeight;
   }
@@ -238,14 +238,17 @@ function Canvas<R, K extends keyof R>({
   const summary = summaryRows && summaryRows.length > 0 && (
     <div ref={summaryRef} className="rdg-summary">
       {summaryRows.map((rowData, idx) => (
-        <SummaryRowRenderer<R, K>
+        <SummaryRowRenderer<R>
           key={idx}
           idx={idx}
-          rowData={rowData}
-          columnMetrics={columnMetrics}
+          row={rowData}
+          width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+          height={rowHeight}
           viewportColumns={viewportColumns}
-          rowHeight={rowHeight}
+          isRowSelected={false}
+          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
           scrollLeft={nonStickyScrollLeft}
+          isSummaryRow
           eventBus={eventBus}
         />
       ))}
@@ -257,7 +260,7 @@ function Canvas<R, K extends keyof R>({
       <div
         className="rdg-viewport"
         style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
-        ref={canvas}
+        ref={canvasRef}
         onScroll={handleScroll}
         onKeyDown={props.onCanvasKeydown}
         onKeyUp={props.onCanvasKeyup}
@@ -274,7 +277,7 @@ function Canvas<R, K extends keyof R>({
           cellNavigationMode={props.cellNavigationMode}
           eventBus={eventBus}
           contextMenu={contextMenu}
-          canvasRef={canvas}
+          canvasRef={canvasRef}
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
           scrollToCell={scrollToCell}
