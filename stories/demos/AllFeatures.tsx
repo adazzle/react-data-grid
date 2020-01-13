@@ -5,7 +5,6 @@ import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, GridRows
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
-import Wrapper from './Wrapper';
 
 interface Row {
   id: string;
@@ -57,7 +56,7 @@ function createRows(numberOfRows: number): Row[] {
   return rows;
 }
 
-export default function AllFeaturesExample(): JSX.Element {
+export default function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
   const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
   const gridRef = useRef<DataGridHandle>(null);
@@ -190,30 +189,28 @@ export default function AllFeaturesExample(): JSX.Element {
   const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
   return (
-    <Wrapper title="All the features grid">
-      <>
-        <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
-        <div className="grid-autosizer-wrapper">
-          <AutoSizer>
-            {({ height, width }) => (
-              <DataGrid<Row, 'id'>
-                ref={gridRef}
-                enableCellSelect
-                columns={columns}
-                rows={rows}
-                onGridRowsUpdated={handleGridRowsUpdated}
-                rowHeight={30}
-                minWidth={width}
-                minHeight={height}
-                selectedRows={selectedRows}
-                onSelectedRowsChange={setSelectedRows}
-                enableCellCopyPaste
-                enableCellDragAndDrop
-              />
-            )}
-          </AutoSizer>
-        </div>
-      </>
-    </Wrapper>
+    <>
+      <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
+      <div className="grid-autosizer-wrapper">
+        <AutoSizer>
+          {({ height, width }) => (
+            <DataGrid<Row, 'id'>
+              ref={gridRef}
+              enableCellSelect
+              columns={columns}
+              rows={rows}
+              onGridRowsUpdated={handleGridRowsUpdated}
+              rowHeight={30}
+              minWidth={width}
+              minHeight={height}
+              selectedRows={selectedRows}
+              onSelectedRowsChange={setSelectedRows}
+              enableCellCopyPaste
+              enableCellDragAndDrop
+            />
+          )}
+        </AutoSizer>
+      </div>
+    </>
   );
 }

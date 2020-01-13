@@ -2,7 +2,6 @@ import React, { useState, useReducer, useMemo } from 'react';
 
 import DataGrid, { Column } from '../../src';
 import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
-import Wrapper from './Wrapper';
 
 interface Row {
   id: string;
@@ -90,7 +89,7 @@ function reducer(rows: Row[], { type, id }: Action): Row[] {
 
 const defaultRows = createRows();
 
-export default function() {
+export default function TreeView() {
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
   const columns: Column<Row>[] = useMemo(() => {
@@ -145,23 +144,21 @@ export default function() {
   }, [allowDelete]);
 
   return (
-    <Wrapper title="Tree View">
-      <>
-        <label>
+    <>
+      <label>
           Allow Delete
-          <input
-            type="checkbox"
-            checked={allowDelete}
-            onChange={() => setAllowDelete(!allowDelete)}
-          />
-        </label>
-        <DataGrid<Row, 'id'>
-          enableCellSelect
-          columns={columns}
-          rows={rows}
-          minHeight={500}
+        <input
+          type="checkbox"
+          checked={allowDelete}
+          onChange={() => setAllowDelete(!allowDelete)}
         />
-      </>
-    </Wrapper>
+      </label>
+      <DataGrid<Row, 'id'>
+        enableCellSelect
+        columns={columns}
+        rows={rows}
+        minHeight={500}
+      />
+    </>
   );
 }
