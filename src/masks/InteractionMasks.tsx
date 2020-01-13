@@ -13,7 +13,6 @@ import EditorPortal from '../editors/EditorPortal';
 import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 import {
   getSelectedDimensions as getDimensions,
-  getSelectedCellValue,
   getNextSelectedCellPosition,
   canExitGrid,
   isSelectedCellEditable
@@ -234,8 +233,9 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function handleCopy(): void {
-    const value = getSelectedCellValue({ selectedPosition, columns, rows });
-    setCopiedPosition({ ...selectedPosition, value });
+    const { idx, rowIdx } = selectedPosition;
+    const value = rows[rowIdx][columns[idx].key];
+    setCopiedPosition({ idx, rowIdx, value });
   }
 
   function handlePaste(): void {
@@ -314,8 +314,8 @@ export default function InteractionMasks<R, K extends keyof R>({
 
     const { rowIdx, overRowIdx } = draggedPosition;
     const column = columns[draggedPosition.idx];
-    const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rows });
     const cellKey = column.key;
+    const value = rows[rowIdx][cellKey];
 
     onGridRowsUpdated({
       cellKey,
@@ -330,8 +330,8 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   function onDragHandleDoubleClick(): void {
     const column = columns[selectedPosition.idx];
-    const value = getSelectedCellValue({ selectedPosition, columns, rows });
     const cellKey = column.key;
+    const value = rows[selectedPosition.rowIdx][cellKey];
 
     onGridRowsUpdated({
       cellKey,
@@ -394,7 +394,6 @@ export default function InteractionMasks<R, K extends keyof R>({
             onCommit={onCommit}
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}
-            value={getSelectedCellValue({ selectedPosition, columns, rows })!}
             rowData={rows[selectedPosition.rowIdx]}
             column={columns[selectedPosition.idx]}
             scrollLeft={scrollLeft}

@@ -9,12 +9,9 @@ import { InteractionMasksProps } from '../masks/InteractionMasks';
 
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 
-type ValueType<R> = R[keyof R];
-
 export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
-  value: ValueType<R>;
   column: CalculatedColumn<R>;
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent<R>): void;
@@ -158,8 +155,9 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     return this.editor.current?.getInputNode();
   };
 
-  getInitialValue(): ValueType<R> | string {
-    const { firstEditorKeyPress: key, value } = this.props;
+  getInitialValue() {
+    const { firstEditorKeyPress: key, rowData, column } = this.props;
+    const value = rowData[column.key];
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }

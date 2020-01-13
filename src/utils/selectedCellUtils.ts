@@ -2,8 +2,6 @@ import { CellNavigationMode, Z_INDEXES } from '../common/enums';
 import { canEdit } from './columnUtils';
 import { CalculatedColumn, Position, Range, Dimension } from '../common/types';
 
-const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
-
 interface getSelectedDimensionsOpts<R> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R>[];
@@ -18,7 +16,7 @@ export function getSelectedDimensions<R>({ selectedPosition: { idx, rowIdx }, co
   const column = columns[idx];
   const { width } = column;
   const left = column.frozen ? column.left + scrollLeft : column.left;
-  const top = getRowTop(rowIdx, rowHeight);
+  const top = rowIdx * rowHeight;
   const zIndex = column.frozen ? Z_INDEXES.FROZEN_CELL_MASK : Z_INDEXES.CELL_MASK;
   return { width, left, top, height: rowHeight, zIndex };
 }
@@ -43,24 +41,11 @@ export function getSelectedRangeDimensions<R>({ selectedRange: { topLeft, bottom
   }
 
   const { left } = columns[topLeft.idx];
-  const top = getRowTop(topLeft.rowIdx, rowHeight);
+  const top = topLeft.rowIdx * rowHeight;
   const height = (bottomRight.rowIdx - topLeft.rowIdx + 1) * rowHeight;
   const zIndex = anyColFrozen ? Z_INDEXES.FROZEN_CELL_MASK : Z_INDEXES.CELL_MASK;
 
   return { width, left, top, height, zIndex };
-}
-
-interface getSelectedCellValueOpts<R> {
-  selectedPosition: Position;
-  columns: readonly CalculatedColumn<R>[];
-  rows: readonly R[];
-}
-
-export function getSelectedCellValue<R>({ selectedPosition, columns, rows }: getSelectedCellValueOpts<R>) {
-  const column = columns[selectedPosition.idx];
-  const row = rows[selectedPosition.rowIdx];
-
-  return row && column ? row[column.key] : null;
 }
 
 interface isSelectedCellEditableOpts<R> {
