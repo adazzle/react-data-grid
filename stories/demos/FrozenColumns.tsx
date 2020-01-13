@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column } from '../../src';
-import Wrapper from './Wrapper';
 
 interface Row {
   id: number;
@@ -40,7 +39,7 @@ function createRows(extraColumns: Column<Row>[]): Row[] {
   return rows;
 }
 
-export default function FrozenCols() {
+export default function FrozenColumns() {
   const [columns, rows] = useMemo(() => {
     const extraColumns: Column<Row>[] = [...Array(500).keys()].map(i => ({ key: `col${i}`, name: `col${i}` }));
     const columns: Column<Row>[] = [
@@ -84,22 +83,20 @@ export default function FrozenCols() {
   }, []);
 
   return (
-    <Wrapper title="Frozen Columns Example">
-      <div className="grid-autosizer-wrapper">
-        <AutoSizer>
-          {({ height, width }) => (
-            <DataGrid<Row, 'id'>
-              columns={columns}
-              rows={rows}
-              minHeight={height}
-              minWidth={width}
-              headerRowHeight={27}
-              rowHeight={18}
-              minColumnWidth={60}
-            />
-          )}
-        </AutoSizer>
-      </div>
-    </Wrapper>
+    <div className="grid-autosizer-wrapper">
+      <AutoSizer>
+        {({ height, width }) => (
+          <DataGrid<Row, 'id'>
+            columns={columns}
+            rows={rows}
+            minHeight={height}
+            minWidth={width}
+            headerRowHeight={27}
+            rowHeight={18}
+            minColumnWidth={60}
+          />
+        )}
+      </AutoSizer>
+    </div>
   );
 }

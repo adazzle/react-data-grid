@@ -3,7 +3,6 @@ import { Clear, Link, FileCopy } from '@material-ui/icons';
 import faker from 'faker';
 
 import DataGrid, { Column } from '../../src';
-import Wrapper from './Wrapper';
 import { CellActionsFormatter, ImageFormatter } from './components/Formatters';
 
 faker.locale = 'en_GB';
@@ -146,18 +145,16 @@ const columns: Column<Row>[] = [
   }
 ];
 
-export default function() {
+export default function CellActions() {
   const [rows] = useState(() => createRows(2000));
 
   return (
-    <Wrapper title="Cell Actions Example">
-      <DataGrid<Row, 'id'>
-        enableCellSelect
-        columns={columns}
-        rows={rows}
-        rowHeight={55}
-        minHeight={600}
-      />
-    </Wrapper>
+    <DataGrid<Row, 'id'>
+      enableCellSelect
+      columns={columns}
+      rows={rows}
+      rowHeight={55}
+      minHeight={600}
+    />
   );
 }

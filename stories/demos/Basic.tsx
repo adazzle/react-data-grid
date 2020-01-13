@@ -1,6 +1,5 @@
 import React from 'react';
 import DataGrid, { Column } from '../../src';
-import Wrapper from './Wrapper';
 
 interface Row {
   id: number;
@@ -20,14 +19,12 @@ const rows = [
   { id: 2, title: 'row1', count: 60 }
 ];
 
-export default function() {
+export default function Basic() {
   return (
-    <Wrapper title="Basic Example">
-      <DataGrid<Row, 'id'>
-        columns={columns}
-        rows={rows}
-        minHeight={150}
-      />
-    </Wrapper>
+    <DataGrid<Row, 'id'>
+      columns={columns}
+      rows={rows}
+      minHeight={150}
+    />
   );
 }

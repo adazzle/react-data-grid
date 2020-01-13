@@ -2,6 +2,7 @@
 /dist
 /lib
 /node_modules
+/storybook-static
 /.eslintcache
 /package-lock.json
 

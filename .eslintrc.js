@@ -571,7 +571,7 @@ module.exports = {
   overrides: [{
     // TODO: remove
     files: [
-      'examples/**/*'
+      'stories/**/*'
     ],
     env: {
       browser: true
