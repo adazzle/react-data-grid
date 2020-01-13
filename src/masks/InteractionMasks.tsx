@@ -129,6 +129,12 @@ export default function InteractionMasks<R, K extends keyof R>({
     return eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
   }, [draggedPosition, eventBus]);
 
+  // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
+  if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
+    setSelectedPosition({ idx: -1, rowIdx: -1 });
+    setCopiedPosition(null);
+  }
+
   function getEditorPosition() {
     if (!canvasRef.current) return null;
     const { left, top } = canvasRef.current.getBoundingClientRect();
