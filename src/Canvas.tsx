@@ -238,14 +238,17 @@ function Canvas<R, K extends keyof R>({
   const summary = summaryRows && summaryRows.length > 0 && (
     <div ref={summaryRef} className="rdg-summary">
       {summaryRows.map((rowData, idx) => (
-        <SummaryRowRenderer<R, K>
+        <SummaryRowRenderer<R>
           key={idx}
           idx={idx}
-          rowData={rowData}
-          columnMetrics={columnMetrics}
+          row={rowData}
+          width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+          height={rowHeight}
           viewportColumns={viewportColumns}
-          rowHeight={rowHeight}
+          isRowSelected={false}
+          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
           scrollLeft={nonStickyScrollLeft}
+          isSummaryRow
           eventBus={eventBus}
         />
       ))}
