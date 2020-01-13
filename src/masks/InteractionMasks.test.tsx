@@ -7,7 +7,6 @@ import SelectionMask from './SelectionMask';
 // import SelectionRangeMask from '../SelectionRangeMask';
 import CopyMask from './CopyMask';
 import DragMask from './DragMask';
-import DragHandle from './DragHandle';
 import EventBus from '../EventBus';
 import EditorContainer from '../editors/EditorContainer';
 import { createColumns } from '../test/utils';
@@ -695,7 +694,7 @@ describe('InteractionMasks', () => {
     it('should render the DragMask component on cell drag', () => {
       const { wrapper } = setupDrag();
       const setData = jest.fn();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      wrapper.find('.drag-handle').simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
       });
@@ -707,12 +706,12 @@ describe('InteractionMasks', () => {
     it('should update the dragged over cells on downwards drag end', () => {
       const { wrapper, props } = setupDrag();
       const setData = jest.fn();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      wrapper.find('.drag-handle').simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
       });
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
-      wrapper.find(DragHandle).simulate('dragEnd');
+      wrapper.find('.drag-handle').simulate('dragEnd');
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
         cellKey: 'Column1',
@@ -726,12 +725,12 @@ describe('InteractionMasks', () => {
     it('should update the dragged over cells on upwards drag end', () => {
       const { wrapper, props } = setupDrag(4);
       const setData = jest.fn();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      wrapper.find('.drag-handle').simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
       });
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
-      wrapper.find(DragHandle).simulate('dragEnd');
+      wrapper.find('.drag-handle').simulate('dragEnd');
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
         cellKey: 'Column1',

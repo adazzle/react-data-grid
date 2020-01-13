@@ -5,7 +5,6 @@ import { createPortal } from 'react-dom';
 import SelectionMask from './SelectionMask';
 import CopyMask from './CopyMask';
 import DragMask, { DraggedPosition } from './DragMask';
-import DragHandle from './DragHandle';
 import EditorContainer from '../editors/EditorContainer';
 import EditorPortal from '../editors/EditorPortal';
 
@@ -380,7 +379,9 @@ export default function InteractionMasks<R, K extends keyof R>({
           ref={selectionMaskRef}
         >
           {isDragEnabled() && (
-            <DragHandle
+            <div
+              className="drag-handle"
+              draggable
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
               onDoubleClick={onDragHandleDoubleClick}
