@@ -189,12 +189,6 @@ export default function AllFeaturesExample(): JSX.Element {
 
   const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
-  const getRowAt = useCallback((index: number): Row => rows[index], [rows]);
-
-  const getSize = useCallback((): number => rows.length, [rows.length]);
-
-  const onSelectedRowsChange = useCallback((newSelectedRows: Set<string>): void => setSelectedRows(newSelectedRows), []);
-
   return (
     <Wrapper title="All the features grid">
       <>
@@ -206,14 +200,13 @@ export default function AllFeaturesExample(): JSX.Element {
                 ref={gridRef}
                 enableCellSelect
                 columns={columns}
-                rowGetter={getRowAt}
-                rowsCount={getSize()}
+                rows={rows}
                 onGridRowsUpdated={handleGridRowsUpdated}
                 rowHeight={30}
                 minWidth={width}
                 minHeight={height}
                 selectedRows={selectedRows}
-                onSelectedRowsChange={onSelectedRowsChange}
+                onSelectedRowsChange={setSelectedRows}
                 enableCellCopyPaste
                 enableCellDragAndDrop
               />

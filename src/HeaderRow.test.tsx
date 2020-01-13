@@ -9,8 +9,7 @@ import { DEFINE_SORT } from './common/enums';
 describe('HeaderRow', () => {
   const defaultProps: HeaderRowProps<Row, 'id'> = {
     rowKey: 'id',
-    rowsCount: 20,
-    rowGetter: jest.fn(),
+    rows: [],
     scrollLeft: 0,
     columns: helpers.columns,
     lastFrozenColumnIndex: -1,
@@ -77,8 +76,7 @@ describe('HeaderRow', () => {
 
     const requiredProps: HeaderRowProps<Row, 'id'> = {
       rowKey: 'id',
-      rowsCount: 20,
-      rowGetter: jest.fn(),
+      rows: [],
       scrollLeft: 0,
       width: 1000,
       height: 35,

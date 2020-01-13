@@ -1,6 +1,6 @@
 import { CellNavigationMode, Z_INDEXES } from '../common/enums';
 import { canEdit } from './columnUtils';
-import { CalculatedColumn, Position, Range, Dimension, RowGetter } from '../common/types';
+import { CalculatedColumn, Position, Range, Dimension } from '../common/types';
 
 const getRowTop = (rowIdx: number, rowHeight: number): number => rowIdx * rowHeight;
 
@@ -53,12 +53,12 @@ export function getSelectedRangeDimensions<R>({ selectedRange: { topLeft, bottom
 interface getSelectedCellValueOpts<R> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R>[];
-  rowGetter: RowGetter<R>;
+  rows: readonly R[];
 }
 
-export function getSelectedCellValue<R>({ selectedPosition, columns, rowGetter }: getSelectedCellValueOpts<R>) {
+export function getSelectedCellValue<R>({ selectedPosition, columns, rows }: getSelectedCellValueOpts<R>) {
   const column = columns[selectedPosition.idx];
-  const row = rowGetter(selectedPosition.rowIdx);
+  const row = rows[selectedPosition.rowIdx];
 
   return row && column ? row[column.key] : null;
 }
@@ -67,13 +67,13 @@ interface isSelectedCellEditableOpts<R> {
   enableCellSelect: boolean;
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R>[];
-  rowGetter: RowGetter<R>;
+  rows: readonly R[];
   onCheckCellIsEditable?(arg: { row: R; column: CalculatedColumn<R> } & Position): boolean;
 }
 
-export function isSelectedCellEditable<R>({ enableCellSelect, selectedPosition, columns, rowGetter, onCheckCellIsEditable }: isSelectedCellEditableOpts<R>): boolean {
+export function isSelectedCellEditable<R>({ enableCellSelect, selectedPosition, columns, rows, onCheckCellIsEditable }: isSelectedCellEditableOpts<R>): boolean {
   const column = columns[selectedPosition.idx];
-  const row = rowGetter(selectedPosition.rowIdx);
+  const row = rows[selectedPosition.rowIdx];
   const isCellEditable = onCheckCellIsEditable ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
   return isCellEditable && canEdit<R>(column, row, enableCellSelect);
 }

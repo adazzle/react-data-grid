@@ -85,8 +85,6 @@ export interface Dimension {
   zIndex: number;
 }
 
-export type RowGetter<TRow> = (rowIdx: number) => TRow;
-
 export interface Editor<TValue = never> {
   getInputNode(): Element | Text | undefined | null;
   getValue(): TValue;

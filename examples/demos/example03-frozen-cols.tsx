@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column } from '../../src';
 import Wrapper from './Wrapper';
@@ -83,10 +83,6 @@ export default function FrozenCols() {
     return [columns, rows];
   }, []);
 
-  const rowGetter = useCallback((i: number): Row => {
-    return rows[i];
-  }, [rows]);
-
   return (
     <Wrapper title="Frozen Columns Example">
       <div className="grid-autosizer-wrapper">
@@ -94,8 +90,7 @@ export default function FrozenCols() {
           {({ height, width }) => (
             <DataGrid<Row, 'id'>
               columns={columns}
-              rowGetter={rowGetter}
-              rowsCount={rows.length}
+              rows={rows}
               minHeight={height}
               minWidth={width}
               headerRowHeight={27}

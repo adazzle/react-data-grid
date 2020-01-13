@@ -42,12 +42,7 @@ for (let i = 0; i < 1000; i++) {
 
 export default {
   columns,
-  rowGetter(i: number) {
-    return _rows[i];
-  },
-  rowsCount() {
-    return _rows.length;
-  },
+  rows: _rows,
   cellMetaData: {
     selected: { idx: 2, rowIdx: 3 },
     dragged: null,

@@ -21,7 +21,6 @@ import {
   Position,
   RowsContainerProps,
   RowExpandToggleEvent,
-  RowGetter,
   SelectedRange,
   IRowRendererProps,
   ScrollPosition,
@@ -81,9 +80,7 @@ export interface DataGridProps<R, K extends keyof R> {
   rowRenderer?: React.ComponentType<IRowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   /** A function called for each rendered row that should return a plain key/value pair object */
-  rowGetter: RowGetter<R>;
-  /** The number of rows to be rendered */
-  rowsCount: number;
+  rows: readonly R[];
   /** The minimum height of the grid in pixels */
   minHeight?: number;
   /** Component used to render a context menu. react-data-grid-addons provides a default context menu which may be used*/
@@ -132,7 +129,7 @@ export interface DataGridProps<R, K extends keyof R> {
  *
  * @example
  *
- * <DataGrid columns={columns} rowGetter={i => rows[i]} rowsCount={3} />
+ * <DataGrid columns={columns} rows={rows} />
 */
 function DataGrid<R, K extends keyof R>({
   rowKey = 'id' as K,
@@ -152,8 +149,7 @@ function DataGrid<R, K extends keyof R>({
   renderBatchSize = 8,
   defaultFormatter = ValueFormatter,
   columns,
-  rowsCount,
-  rowGetter,
+  rows,
   selectedRows,
   onSelectedRowsChange,
   ...props
@@ -251,8 +247,7 @@ function DataGrid<R, K extends keyof R>({
           >
             <HeaderRow<R, K>
               rowKey={rowKey}
-              rowsCount={rowsCount}
-              rowGetter={rowGetter}
+              rows={rows}
               height={headerRowHeight}
               width={columnMetrics.totalColumnWidth + getScrollbarSize()}
               columns={viewportColumns}
@@ -260,7 +255,7 @@ function DataGrid<R, K extends keyof R>({
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
               draggableHeaderCell={props.draggableHeaderCell}
               onHeaderDrop={props.onHeaderDrop}
-              allRowsSelected={selectedRows?.size === rowsCount}
+              allRowsSelected={selectedRows?.size === rows.length}
               onSelectedRowsChange={onSelectedRowsChange}
               sortColumn={props.sortColumn}
               sortDirection={props.sortDirection}
@@ -279,14 +274,13 @@ function DataGrid<R, K extends keyof R>({
               />
             )}
           </div>
-          {rowsCount === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
+          {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
               ref={ref}
               rowKey={rowKey}
               rowHeight={rowHeight}
               rowRenderer={props.rowRenderer}
-              rowGetter={rowGetter}
-              rowsCount={rowsCount}
+              rows={rows}
               selectedRows={selectedRows}
               onSelectedRowsChange={onSelectedRowsChange}
               columnMetrics={columnMetrics}

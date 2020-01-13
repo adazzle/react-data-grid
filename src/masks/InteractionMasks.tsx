@@ -40,8 +40,7 @@ export enum KeyCodes {
 }
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
-| 'rowGetter'
-| 'rowsCount'
+| 'rows'
 | 'rowHeight'
 | 'enableCellSelect'
 | 'enableCellAutoFocus'
@@ -76,8 +75,7 @@ function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): bool
 
 export default function InteractionMasks<R, K extends keyof R>({
   columns,
-  rowGetter,
-  rowsCount,
+  rows,
   rowHeight,
   eventBus,
   enableCellSelect,
@@ -96,7 +94,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   scrollToCell
 }: InteractionMasksProps<R, K>) {
   const [selectedPosition, setSelectedPosition] = useState<Position>(() => {
-    if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rowsCount > 0) {
+    if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
       return { idx: 0, rowIdx: 0 };
     }
     return { idx: -1, rowIdx: -1 };
@@ -192,12 +190,12 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
     // When there are no rows in the grid, we need to allow the browser to handle tab presses
-    if (rowsCount === 0) {
+    if (rows.length === 0) {
       return;
     }
 
     // If we are in a position to leave the grid, stop editing but stay in that cell
-    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount, selectedPosition })) {
+    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
       if (isEditorEnabled) {
         closeEditor();
         return;
@@ -216,7 +214,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     let nextPosition = getNextPosition(keyCode);
     nextPosition = getNextSelectedCellPosition<R>({
       columns,
-      rowsCount,
+      rowsCount: rows.length,
       cellNavigationMode: tabCellNavigationMode,
       nextPosition
     });
@@ -229,7 +227,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function handleCopy(): void {
-    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
+    const value = getSelectedCellValue({ selectedPosition, columns, rows });
     setCopiedPosition({ ...selectedPosition, value });
   }
 
@@ -261,12 +259,12 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
-    return rowIdx >= 0 && rowIdx < rowsCount && idx >= 0 && idx < columns.length;
+    return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
   }
 
   function isCellEditable(position: Position) {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R>({ enableCellSelect, columns, rowGetter, selectedPosition: position, onCheckCellIsEditable });
+      && isSelectedCellEditable<R>({ enableCellSelect, columns, rows, selectedPosition: position, onCheckCellIsEditable });
   }
 
   function selectCell(position: Position, enableEditor = false): void {
@@ -309,7 +307,7 @@ export default function InteractionMasks<R, K extends keyof R>({
 
     const { rowIdx, overRowIdx } = draggedPosition;
     const column = columns[draggedPosition.idx];
-    const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
+    const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rows });
     const cellKey = column.key;
 
     onGridRowsUpdated({
@@ -325,13 +323,13 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   function onDragHandleDoubleClick(): void {
     const column = columns[selectedPosition.idx];
-    const value = getSelectedCellValue({ selectedPosition, columns, rowGetter });
+    const value = getSelectedCellValue({ selectedPosition, columns, rows });
     const cellKey = column.key;
 
     onGridRowsUpdated({
       cellKey,
       fromRow: selectedPosition.rowIdx,
-      toRow: rowsCount - 1,
+      toRow: rows.length - 1,
       updated: { [cellKey]: value } as never,
       action: UpdateActions.COLUMN_FILL
     });
@@ -393,8 +391,8 @@ export default function InteractionMasks<R, K extends keyof R>({
             onCommit={onCommit}
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}
-            value={getSelectedCellValue({ selectedPosition, columns, rowGetter })!}
-            rowData={rowGetter(selectedPosition.rowIdx)}
+            value={getSelectedCellValue({ selectedPosition, columns, rows })!}
+            rowData={rows[selectedPosition.rowIdx]}
             column={columns[selectedPosition.idx]}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}

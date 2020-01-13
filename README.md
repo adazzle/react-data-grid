@@ -29,14 +29,11 @@ const rows = [
   { id: 1, title: 'Demo' }
 ];
 
-const rowGetter = rowIndex => rows[rowIndex];
-
 function App() {
   return (
     <DataGrid
       columns={columns}
-      rowGetter={rowGetter}
-      rowsCount={rows.length}
+      rows={rows}
       minHeight={500}
     />
   );

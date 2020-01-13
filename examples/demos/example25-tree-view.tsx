@@ -158,8 +158,7 @@ export default function() {
         <DataGrid<Row, 'id'>
           enableCellSelect
           columns={columns}
-          rowGetter={i => rows[i]}
-          rowsCount={rows.length}
+          rows={rows}
           minHeight={500}
         />
       </>

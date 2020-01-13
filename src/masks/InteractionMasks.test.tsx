@@ -23,20 +23,17 @@ interface Row {
 }
 
 describe('InteractionMasks', () => {
-  const rowGetter = () => ({ col1: 1 });
-
   function setup(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialPosition?: Position) {
     const onSelectedCellChange = jest.fn();
     const props: InteractionMasksProps<Row, 'id'> = {
       height: 100,
       columns,
+      rows: Array(ROWS_COUNT).fill({ col1: 1 }),
       rowHeight: 30,
-      rowsCount: ROWS_COUNT,
       scrollToCell: jest.fn(),
       onSelectedCellChange,
       onSelectedCellRangeChange: jest.fn(),
       onGridRowsUpdated: jest.fn(),
-      rowGetter,
       enableCellSelect: true,
       enableCellAutoFocus: false,
       enableCellCopyPaste: true,
@@ -519,10 +516,10 @@ describe('InteractionMasks', () => {
       describe('when cellNavigationMode is changeRow', () => {
         const cellNavigationMode = CellNavigationMode.CHANGE_ROW;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+          assertExitGridOnTab({ cellNavigationMode, rows: [] });
         });
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+          assertExitGridOnTab({ cellNavigationMode, rows: [] }, true);
         });
         it('allows the user to exit to the grid with Shift+Tab at the first cell of the grid', () => {
           const selectedPosition = { rowIdx: 0, idx: 0 };
@@ -557,10 +554,10 @@ describe('InteractionMasks', () => {
       describe('when cellNavigationMode is none', () => {
         const cellNavigationMode = CellNavigationMode.NONE;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+          assertExitGridOnTab({ cellNavigationMode, rows: [] });
         });
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+          assertExitGridOnTab({ cellNavigationMode, rows: [] }, true);
         });
         it('allows the user to exit the grid when they press Shift+Tab at the first cell of the grid', () => {
           const selectedPosition = { rowIdx: 0, idx: 0 };
@@ -595,10 +592,10 @@ describe('InteractionMasks', () => {
       describe('when cellNavigationMode is loopOverRow', () => {
         const cellNavigationMode = CellNavigationMode.LOOP_OVER_ROW;
         it('allows the user to exit the grid with Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 });
+          assertExitGridOnTab({ cellNavigationMode, rows: [] });
         });
         it('allows the user to exit the grid with Shift+Tab if there are no rows', () => {
-          assertExitGridOnTab({ cellNavigationMode, rowsCount: 0 }, true);
+          assertExitGridOnTab({ cellNavigationMode, rows: [] }, true);
         });
         it('goes to the first cell in the row when the user presses Tab and they are at the end of a row', () => {
           const selectedPosition = { rowIdx: ROWS_COUNT - 1, idx: NUMBER_OF_COLUMNS - 1 };
@@ -631,9 +628,7 @@ describe('InteractionMasks', () => {
         { Column1: '2' },
         { Column1: '3' }
       ];
-      const { wrapper, props } = setup({
-        rowGetter: (rowIdx) => rowIdx < 3 ? rows[rowIdx] : rowGetter()
-      });
+      const { wrapper, props } = setup({ rows });
       props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
       return { wrapper, props };
     };
@@ -687,9 +682,7 @@ describe('InteractionMasks', () => {
         { Column1: '4' },
         { Column1: '5' }
       ];
-      const { wrapper, props } = setup({
-        rowGetter: (rowIdx) => rowIdx < 5 ? rows[rowIdx] : rowGetter()
-      }, { idx: 1, rowIdx });
+      const { wrapper, props } = setup({ rows }, { idx: 1, rowIdx });
       return { wrapper, props };
     };
 
