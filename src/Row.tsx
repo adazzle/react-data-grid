@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import Cell from './Cell';
-import { IRowRendererProps } from './common/types';
+import { RowRendererProps } from './common/types';
 import { EventTypes } from './common/enums';
 
 export default function Row<R>({
@@ -21,7 +21,7 @@ export default function Row<R>({
   scrollLeft,
   viewportColumns,
   width
-}: IRowRendererProps<R>) {
+}: RowRendererProps<R>) {
   function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
     e.preventDefault();

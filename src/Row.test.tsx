@@ -5,19 +5,19 @@ import { shallow } from 'enzyme';
 import Row from './Row';
 import Cell from './Cell';
 import { createColumns } from './test/utils';
-import { IRowRendererProps } from './common/types';
+import { RowRendererProps } from './common/types';
 import EventBus from './EventBus';
 
 type RowType = any;
 
 describe('Row', () => {
-  function setup(props: IRowRendererProps<RowType>) {
+  function setup(props: RowRendererProps<RowType>) {
     const wrapper = shallow<typeof Row>(<Row {...props} />);
     const cells = wrapper.find(Cell);
     return { wrapper, cells };
   }
 
-  const requiredProperties: IRowRendererProps<RowType> = {
+  const requiredProperties: RowRendererProps<RowType> = {
     height: 30,
     width: 1000,
     viewportColumns: createColumns(50),
