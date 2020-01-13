@@ -140,7 +140,7 @@ export interface RowsContainerProps {
   children: React.ReactElement;
 }
 
-export interface IRowRendererProps<TRow> {
+export interface RowRendererProps<TRow> {
   height: number;
   width: number;
   viewportColumns: readonly CalculatedColumn<TRow>[];

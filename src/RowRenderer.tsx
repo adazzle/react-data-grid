@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
-import { IRowRendererProps, RowData } from './common/types';
+import { RowRendererProps, RowData } from './common/types';
 import EventBus from './EventBus';
 
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
@@ -18,7 +18,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'onRowExpandToggle'
 >;
 
-export interface RowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
+interface IRowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   idx: number;
   rowData: R;
   scrollLeft: number | undefined;
@@ -39,9 +39,9 @@ function RowRenderer<R, K extends keyof R>({
   rowRenderer,
   scrollLeft,
   ...props
-}: RowRendererProps<R, K>) {
+}: IRowRendererProps<R, K>) {
   const { __metaData } = rowData as RowData;
-  const rendererProps: IRowRendererProps<R> = {
+  const rendererProps: RowRendererProps<R> = {
     idx,
     row: rowData,
     width: columnMetrics.totalColumnWidth,
@@ -75,7 +75,7 @@ function RowRenderer<R, K extends keyof R>({
     }
   }
 
-  return React.createElement<IRowRendererProps<R>>(rowRenderer || Row, rendererProps);
+  return React.createElement<RowRendererProps<R>>(rowRenderer || Row, rendererProps);
 }
 
-export default memo(RowRenderer) as <R, K extends keyof R>(props: RowRendererProps<R, K>) => JSX.Element;
+export default memo(RowRenderer) as <R, K extends keyof R>(props: IRowRendererProps<R, K>) => JSX.Element;
