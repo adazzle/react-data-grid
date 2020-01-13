@@ -23,7 +23,10 @@ steps:
   displayName: 'Typecheck'
 
 - script: npm run build
-  displayName: 'Build'
+  displayName: 'Build lib'
+
+- script: npm run build-storybook
+  displayName: 'Build storybook'
 
 - script: npm test
   displayName: 'Test'
