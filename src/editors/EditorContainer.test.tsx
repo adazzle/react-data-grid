@@ -49,12 +49,11 @@ const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps
     rowIdx: 0,
     rowData: {
       id: '1',
-      col1: 'I',
-      col2: 'love',
+      col1: 'Adwolf',
+      col2: 'SupernaviX',
       col3: 'Testing'
     },
     column: fakeColumn,
-    value: 'Adwolf',
     width: 100,
     height: 50,
     left: 0,
@@ -115,8 +114,7 @@ describe('EditorContainer', () => {
 
     function innerSetup() {
       return setup({
-        value: 'SupernaviX',
-        column: { ...fakeColumn, editor: TestEditor }
+        column: { ...fakeColumn, key: 'col2', editor: TestEditor }
       });
     }
 
