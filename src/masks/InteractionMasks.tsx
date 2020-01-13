@@ -2,8 +2,7 @@ import React, { cloneElement, useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 // Components
-import SelectionMask from './SelectionMask';
-import CopyMask from './CopyMask';
+import CellMask from './CellMask';
 import DragMask, { DraggedPosition } from './DragMask';
 import EditorContainer from '../editors/EditorContainer';
 import EditorPortal from '../editors/EditorPortal';
@@ -365,7 +364,10 @@ export default function InteractionMasks<R, K extends keyof R>({
       onKeyDown={onKeyDown}
     >
       {copiedPosition && isCellWithinBounds(copiedPosition) && (
-        <CopyMask {...getSelectedDimensions(copiedPosition)} />
+        <CellMask
+          className="rdg-cell-copied"
+          {...getSelectedDimensions(copiedPosition)}
+        />
       )}
       {draggedPosition && isCellWithinBounds(draggedPosition) && (
         <DragMask
@@ -374,9 +376,11 @@ export default function InteractionMasks<R, K extends keyof R>({
         />
       )}
       {!isEditorEnabled && isCellWithinBounds(selectedPosition) && (
-        <SelectionMask
-          {...getSelectedDimensions(selectedPosition)}
+        <CellMask
+          className="rdg-selected"
+          tabIndex={0}
           ref={selectionMaskRef}
+          {...getSelectedDimensions(selectedPosition)}
         >
           {isDragEnabled() && (
             <div
@@ -387,7 +391,7 @@ export default function InteractionMasks<R, K extends keyof R>({
               onDoubleClick={onDragHandleDoubleClick}
             />
           )}
-        </SelectionMask>
+        </CellMask>
       )}
       {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
