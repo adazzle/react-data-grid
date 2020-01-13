@@ -133,6 +133,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
     setSelectedPosition({ idx: -1, rowIdx: -1 });
     setCopiedPosition(null);
+    setDraggedPosition(null);
   }
 
   function getEditorPosition() {
@@ -359,9 +360,20 @@ export default function InteractionMasks<R, K extends keyof R>({
     return dimension;
   }
 
-  function renderSingleCellSelectView() {
-    return (
-      !isEditorEnabled && isCellWithinBounds(selectedPosition) && (
+  return (
+    <div
+      onKeyDown={onKeyDown}
+    >
+      {copiedPosition && isCellWithinBounds(copiedPosition) && (
+        <CopyMask {...getSelectedDimensions(copiedPosition)} />
+      )}
+      {draggedPosition && isCellWithinBounds(draggedPosition) && (
+        <DragMask
+          draggedPosition={draggedPosition}
+          getSelectedDimensions={getSelectedDimensions}
+        />
+      )}
+      {!isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <SelectionMask
           {...getSelectedDimensions(selectedPosition)}
           ref={selectionMaskRef}
@@ -374,22 +386,7 @@ export default function InteractionMasks<R, K extends keyof R>({
             />
           )}
         </SelectionMask>
-      )
-    );
-  }
-
-  return (
-    <div
-      onKeyDown={onKeyDown}
-    >
-      {copiedPosition && <CopyMask {...getSelectedDimensions(copiedPosition)} />}
-      {draggedPosition && (
-        <DragMask
-          draggedPosition={draggedPosition}
-          getSelectedDimensions={getSelectedDimensions}
-        />
       )}
-      {renderSingleCellSelectView()}
       {isEditorEnabled && (
         <EditorPortal target={editorPortalTarget}>
           <EditorContainer<R, K>
