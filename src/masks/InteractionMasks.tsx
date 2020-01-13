@@ -129,6 +129,13 @@ export default function InteractionMasks<R, K extends keyof R>({
     return eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
   }, [draggedPosition, eventBus]);
 
+  // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
+  if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
+    setSelectedPosition({ idx: -1, rowIdx: -1 });
+    setCopiedPosition(null);
+    setDraggedPosition(null);
+  }
+
   function getEditorPosition() {
     if (!canvasRef.current) return null;
     const { left, top } = canvasRef.current.getBoundingClientRect();
@@ -353,9 +360,20 @@ export default function InteractionMasks<R, K extends keyof R>({
     return dimension;
   }
 
-  function renderSingleCellSelectView() {
-    return (
-      !isEditorEnabled && isCellWithinBounds(selectedPosition) && (
+  return (
+    <div
+      onKeyDown={onKeyDown}
+    >
+      {copiedPosition && isCellWithinBounds(copiedPosition) && (
+        <CopyMask {...getSelectedDimensions(copiedPosition)} />
+      )}
+      {draggedPosition && isCellWithinBounds(draggedPosition) && (
+        <DragMask
+          draggedPosition={draggedPosition}
+          getSelectedDimensions={getSelectedDimensions}
+        />
+      )}
+      {!isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <SelectionMask
           {...getSelectedDimensions(selectedPosition)}
           ref={selectionMaskRef}
@@ -368,23 +386,8 @@ export default function InteractionMasks<R, K extends keyof R>({
             />
           )}
         </SelectionMask>
-      )
-    );
-  }
-
-  return (
-    <div
-      onKeyDown={onKeyDown}
-    >
-      {copiedPosition && <CopyMask {...getSelectedDimensions(copiedPosition)} />}
-      {draggedPosition && (
-        <DragMask
-          draggedPosition={draggedPosition}
-          getSelectedDimensions={getSelectedDimensions}
-        />
       )}
-      {renderSingleCellSelectView()}
-      {isEditorEnabled && (
+      {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
           <EditorContainer<R, K>
             firstEditorKeyPress={firstEditorKeyPress}
@@ -401,7 +404,7 @@ export default function InteractionMasks<R, K extends keyof R>({
           />
         </EditorPortal>
       )}
-      {contextMenu && createPortal(
+      {contextMenu && isCellWithinBounds(selectedPosition) && createPortal(
         cloneElement(contextMenu, { ...selectedPosition }),
         editorPortalTarget
       )}
