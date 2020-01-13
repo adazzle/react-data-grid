@@ -10,13 +10,14 @@ import EditorContainer from '../editors/EditorContainer';
 import EditorPortal from '../editors/EditorPortal';
 
 // Utils
-import { isKeyPrintable, isCtrlKeyHeldDown } from '../utils/keyboardUtils';
 import {
+  isKeyPrintable,
+  isCtrlKeyHeldDown,
   getSelectedDimensions as getDimensions,
   getNextSelectedCellPosition,
   canExitGrid,
   isSelectedCellEditable
-} from '../utils/selectedCellUtils';
+} from '../utils';
 
 // Types
 import EventBus from '../EventBus';
