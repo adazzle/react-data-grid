@@ -387,7 +387,7 @@ export default function InteractionMasks<R, K extends keyof R>({
           )}
         </SelectionMask>
       )}
-      {isEditorEnabled && (
+      {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
           <EditorContainer<R, K>
             firstEditorKeyPress={firstEditorKeyPress}
@@ -404,7 +404,7 @@ export default function InteractionMasks<R, K extends keyof R>({
           />
         </EditorPortal>
       )}
-      {contextMenu && createPortal(
+      {contextMenu && isCellWithinBounds(selectedPosition) && createPortal(
         cloneElement(contextMenu, { ...selectedPosition }),
         editorPortalTarget
       )}
