@@ -191,26 +191,24 @@ export default function AllFeatures() {
   return (
     <>
       <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
-      <div className="grid-autosizer-wrapper">
-        <AutoSizer>
-          {({ height, width }) => (
-            <DataGrid<Row, 'id'>
-              ref={gridRef}
-              enableCellSelect
-              columns={columns}
-              rows={rows}
-              onRowsUpdate={handleRowUpdate}
-              rowHeight={30}
-              width={width}
-              height={height}
-              selectedRows={selectedRows}
-              onSelectedRowsChange={setSelectedRows}
-              enableCellCopyPaste
-              enableCellDragAndDrop
-            />
-          )}
-        </AutoSizer>
-      </div>
+      <AutoSizer>
+        {({ height, width }) => (
+          <DataGrid<Row, 'id'>
+            ref={gridRef}
+            enableCellSelect
+            columns={columns}
+            rows={rows}
+            onRowsUpdate={handleRowUpdate}
+            rowHeight={30}
+            width={width}
+            height={height}
+            selectedRows={selectedRows}
+            onSelectedRowsChange={setSelectedRows}
+            enableCellCopyPaste
+            enableCellDragAndDrop
+          />
+        )}
+      </AutoSizer>
     </>
   );
 }
