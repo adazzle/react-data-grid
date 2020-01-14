@@ -17,7 +17,7 @@ import {
   CalculatedColumn,
   CheckCellIsEditableEvent,
   Column,
-  GridRowsUpdatedEvent,
+  RowUpdateEvent,
   Position,
   RowsContainerProps,
   RowExpandToggleEvent,
@@ -53,7 +53,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onGridRowsUpdated?<E extends GridRowsUpdatedEvent<R>>(event: E): void;
+  onRowUpdate?<E extends RowUpdateEvent<R>>(event: E): void;
 
   /**
    * Dimensions props
@@ -83,7 +83,7 @@ export interface DataGridProps<R, K extends keyof R> {
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
   /** Function called whenever grid is sorted*/
-  onGridSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
+  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   filters?: Filters<R>;
   onFiltersChange?(filters: Filters<R>): void;
 
@@ -249,8 +249,8 @@ function DataGrid<R, K extends keyof R>({
     props.onScroll?.(scrollPosition);
   }
 
-  function handleGridRowsUpdated(event: GridRowsUpdatedEvent<R>) {
-    props.onGridRowsUpdated?.(event);
+  function handleRowUpdate(event: RowUpdateEvent<R>) {
+    props.onRowUpdate?.(event);
   }
 
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
@@ -281,7 +281,7 @@ function DataGrid<R, K extends keyof R>({
               onSelectedRowsChange={onSelectedRowsChange}
               sortColumn={props.sortColumn}
               sortDirection={props.sortDirection}
-              onGridSort={props.onGridSort}
+              onSort={props.onSort}
               scrollLeft={nonStickyScrollLeft}
             />
             {enableHeaderFilters && (
@@ -324,7 +324,7 @@ function DataGrid<R, K extends keyof R>({
               renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
-              onGridRowsUpdated={handleGridRowsUpdated}
+              onRowUpdate={handleRowUpdate}
               onSelectedCellChange={props.onSelectedCellChange}
               onSelectedCellRangeChange={props.onSelectedCellRangeChange}
               onRowClick={props.onRowClick}

@@ -34,7 +34,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'cellNavigationMode'
 | 'editorPortalTarget'
 | 'renderBatchSize'
-| 'onGridRowsUpdated'
+| 'onRowUpdate'
 >>;
 
 export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
@@ -283,7 +283,7 @@ function Canvas<R, K extends keyof R>({
           scrollToCell={scrollToCell}
           editorPortalTarget={props.editorPortalTarget}
           onCheckCellIsEditable={props.onCheckCellIsEditable}
-          onGridRowsUpdated={props.onGridRowsUpdated}
+          onRowUpdate={props.onRowUpdate}
           onSelectedCellChange={props.onSelectedCellChange}
           onSelectedCellRangeChange={props.onSelectedCellRangeChange}
         />

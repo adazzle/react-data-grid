@@ -30,7 +30,7 @@ describe('Grid', () => {
       rowsCount: rows.length,
       minWidth: 300,
       onCellCopyPaste() {},
-      onGridSort() {},
+      onSort() {},
       onAddFilter() {},
       rowKey: 'id',
       ...extraProps
@@ -59,24 +59,24 @@ describe('Grid', () => {
     describe('for defaults props', () => {
       it('uses the appropriate default for the header row height', () => {
         const { wrapper } = setup({ enableHeaderFilters: true });
-        expect(wrapper.find('HeaderRow').prop('height')).toEqual(35);
+        expect(wrapper.find('HeaderRow').prop('height')).toStrictEqual(35);
       });
 
       it('uses the appropriate default for the header filter row height', () => {
         const { wrapper } = setup({ enableHeaderFilters: true });
-        expect(wrapper.find('FilterRow').prop('height')).toEqual(45);
+        expect(wrapper.find('FilterRow').prop('height')).toStrictEqual(45);
       });
     });
 
     describe('for a given row height prop', () => {
       it('passes the grid row height to the header row when no height to the specific header row is provided', () => {
         const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
-        expect(wrapper.find('HeaderRow').prop('height')).toEqual(40);
+        expect(wrapper.find('HeaderRow').prop('height')).toStrictEqual(40);
       });
 
       it('uses the default prop height for the filter row when none is provided', () => {
         const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
-        expect(wrapper.find('FilterRow').prop('height')).toEqual(45);
+        expect(wrapper.find('FilterRow').prop('height')).toStrictEqual(45);
       });
     });
 
@@ -91,11 +91,11 @@ describe('Grid', () => {
       }
 
       it('passes the correct height to the header row', () => {
-        expect(innerSetup().wrapper.find('HeaderRow').prop('height')).toEqual(50);
+        expect(innerSetup().wrapper.find('HeaderRow').prop('height')).toStrictEqual(50);
       });
 
       it('passes the correct height to the header filter row', () => {
-        expect(innerSetup().wrapper.find('FilterRow').prop('height')).toEqual(60);
+        expect(innerSetup().wrapper.find('FilterRow').prop('height')).toStrictEqual(60);
       });
     });
   });
@@ -105,7 +105,7 @@ describe('Grid', () => {
       it('should set the width of the table', () => {
         const { wrapper } = setup();
         wrapper.setProps({ minWidth: 900 });
-        expect(wrapper.find('.rdg-root').props().style.width).toEqual(900);
+        expect(wrapper.find('.rdg-root').props().style.width).toStrictEqual(900);
       });
     });
   });

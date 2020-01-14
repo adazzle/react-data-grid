@@ -1,7 +1,7 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, GridRowsUpdatedEvent } from '../../src';
+import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowUpdateEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -166,7 +166,7 @@ export default function AllFeatures() {
     }
   ], []);
 
-  const handleGridRowsUpdated = useCallback(({ fromRow, toRow, updated, action }: GridRowsUpdatedEvent<Row, Partial<Row>>): void => {
+  const handleRowUpdate = useCallback(({ fromRow, toRow, updated, action }: RowUpdateEvent<Row, Partial<Row>>): void => {
     const newRows = [...rows];
     let start;
     let end;
@@ -199,7 +199,7 @@ export default function AllFeatures() {
               enableCellSelect
               columns={columns}
               rows={rows}
-              onGridRowsUpdated={handleGridRowsUpdated}
+              onRowUpdate={handleRowUpdate}
               rowHeight={30}
               width={width}
               height={height}
