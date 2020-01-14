@@ -3,11 +3,8 @@ import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
 import InteractionMasks, { InteractionMasksProps, KeyCodes } from './InteractionMasks';
-import SelectionMask from './SelectionMask';
 // import SelectionRangeMask from '../SelectionRangeMask';
-import CopyMask from './CopyMask';
 import DragMask from './DragMask';
-import DragHandle from './DragHandle';
 import EventBus from '../EventBus';
 import EditorContainer from '../editors/EditorContainer';
 import { createColumns } from '../test/utils';
@@ -17,6 +14,10 @@ import { Position } from '../common/types';
 const NUMBER_OF_COLUMNS = 10;
 const ROWS_COUNT = 5;
 const columns = createColumns(NUMBER_OF_COLUMNS);
+
+// Enzyme sets the className on the ForwardRef component also so we need to filter div
+const selectionMaskSelector = 'div.rdg-selected';
+const copyMaskSelector = 'div.rdg-cell-copied';
 
 interface Row {
   [key: string]: React.ReactNode;
@@ -59,11 +60,15 @@ describe('InteractionMasks', () => {
   }
 
   const pressKey = (wrapper: ReturnType<typeof setup>['wrapper'], keyCode: number, eventData?: Partial<React.KeyboardEvent>) => {
-    wrapper.simulate('keydown', { keyCode, preventDefault: () => null, ...eventData });
+    act(() => {
+      wrapper.simulate('keydown', { keyCode, preventDefault: () => null, ...eventData });
+    });
   };
 
   const simulateTab = (wrapper: ReturnType<typeof setup>['wrapper'], shiftKey = false, preventDefault = () => { }) => {
-    pressKey(wrapper, KeyCodes.Tab, { shiftKey, preventDefault });
+    act(() => {
+      pressKey(wrapper, KeyCodes.Tab, { shiftKey, preventDefault });
+    });
   };
 
   describe('Rendered masks', () => {
@@ -71,14 +76,14 @@ describe('InteractionMasks', () => {
       describe('within grid bounds', () => {
         it('should render a SelectionMask component', () => {
           const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
-          expect(wrapper.find(SelectionMask)).toHaveLength(1);
+          expect(wrapper.find(selectionMaskSelector)).toHaveLength(1);
         });
       });
 
       describe('outside grid bounds', () => {
         it('should not render a SelectionMask component', () => {
           const { wrapper } = setup();
-          expect(wrapper.find(SelectionMask)).toHaveLength(0);
+          expect(wrapper.find(selectionMaskSelector)).toHaveLength(0);
         });
       });
     });
@@ -424,6 +429,7 @@ describe('InteractionMasks', () => {
     it('Press enter should enable editing', () => {
       const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
       pressKey(wrapper, KeyCodes.Enter, { keyCode: KeyCodes.Enter });
+      wrapper.update();
       expect(wrapper.find(EditorContainer)).toHaveLength(1);
     });
 
@@ -490,7 +496,7 @@ describe('InteractionMasks', () => {
       // prevent default isn't called, it lets the dom do normal navigation
 
       const assertGridWasExited = (wrapper: ReturnType<typeof setup>['wrapper']) => {
-        expect(wrapper.find(SelectionMask)).toHaveLength(0);
+        expect(wrapper.find(selectionMaskSelector)).toHaveLength(0);
       };
 
       const tabCell = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
@@ -629,32 +635,43 @@ describe('InteractionMasks', () => {
         { Column1: '3' }
       ];
       const { wrapper, props } = setup({ rows });
-      props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
+      act(() => {
+        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
+      });
       return { wrapper, props };
     };
 
     it('should not render a CopyMask component if there is no copied cell', () => {
       const { wrapper } = setupCopy();
-      expect(wrapper.find(CopyMask)).toHaveLength(0);
+      expect(wrapper.find(copyMaskSelector)).toHaveLength(0);
     });
 
     it('should render a CopyMask component when a cell is copied', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
-      expect(wrapper.find(CopyMask)).toHaveLength(1);
-      expect(wrapper.find(CopyMask).props()).toStrictEqual({ height: 30, left: 100, top: 60, width: 100, zIndex: 1 });
+      wrapper.update();
+      expect(wrapper.find(copyMaskSelector)).toHaveLength(1);
+      expect(wrapper.find(copyMaskSelector).props().style).toStrictEqual({
+        height: 30,
+        width: 100,
+        transform: 'translate(100px, 60px)',
+        zIndex: 1
+      });
     });
 
     it('should remove the CopyMask component on escape', () => {
       const { wrapper } = setupCopy();
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
       pressKey(wrapper, KeyCodes.Escape);
-      expect(wrapper.find(CopyMask)).toHaveLength(0);
+      wrapper.update();
+      expect(wrapper.find(copyMaskSelector)).toHaveLength(0);
     });
 
     it('should update the selected cell with the copied value on paste', () => {
       const { wrapper, props } = setupCopy();
-      props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
+      act(() => {
+        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
+      });
       // Copy selected cell
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
       // Move up
@@ -695,7 +712,7 @@ describe('InteractionMasks', () => {
     it('should render the DragMask component on cell drag', () => {
       const { wrapper } = setupDrag();
       const setData = jest.fn();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      wrapper.find('.drag-handle').simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
       });
@@ -707,12 +724,14 @@ describe('InteractionMasks', () => {
     it('should update the dragged over cells on downwards drag end', () => {
       const { wrapper, props } = setupDrag();
       const setData = jest.fn();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      wrapper.find('.drag-handle').simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
       });
-      props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
-      wrapper.find(DragHandle).simulate('dragEnd');
+      act(() => {
+        props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
+      });
+      wrapper.find('.drag-handle').simulate('dragEnd');
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
         cellKey: 'Column1',
@@ -726,12 +745,14 @@ describe('InteractionMasks', () => {
     it('should update the dragged over cells on upwards drag end', () => {
       const { wrapper, props } = setupDrag(4);
       const setData = jest.fn();
-      wrapper.find(DragHandle).simulate('dragstart', {
+      wrapper.find('.drag-handle').simulate('dragstart', {
         target: { className: 'test' },
         dataTransfer: { setData }
       });
-      props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
-      wrapper.find(DragHandle).simulate('dragEnd');
+      act(() => {
+        props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
+      });
+      wrapper.find('.drag-handle').simulate('dragEnd');
 
       expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
         cellKey: 'Column1',
