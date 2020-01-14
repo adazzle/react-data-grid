@@ -24,7 +24,7 @@ export default function Basic() {
     <DataGrid<Row, 'id'>
       columns={columns}
       rows={rows}
-      minHeight={150}
+      height={150}
     />
   );
 }

@@ -82,7 +82,7 @@ export default class extends React.Component {
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}
           minHeight={500}
-          onGridRowsUpdated={this.handleGridRowsUpdated}
+          onRowsUpdate={this.handleGridRowsUpdated}
         />
       </Wrapper>
     );

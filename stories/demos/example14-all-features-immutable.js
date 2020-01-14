@@ -181,7 +181,7 @@ export default class extends React.Component {
           columns={columns}
           rowGetter={this.getRowAt}
           rowsCount={this.getSize()}
-          onGridRowsUpdated={this.handleGridRowsUpdated}
+          onRowsUpdate={this.handleGridRowsUpdated}
           rowHeight={50}
           minHeight={600}
           enableCellCopyPaste

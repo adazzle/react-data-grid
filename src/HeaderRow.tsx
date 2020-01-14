@@ -11,7 +11,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onSelectedRowsChange'
 | 'sortColumn'
 | 'sortDirection'
-| 'onGridSort'
+| 'onSort'
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 >>;
@@ -50,7 +50,7 @@ export default function HeaderRow<R, K extends keyof R>({
   return (
     <div
       className="rdg-header-row"
-      style={{ width, height }}
+      style={{ width, height, lineHeight: `${height}px` }}
     >
       {props.columns.map(column => {
         return (
@@ -64,7 +64,7 @@ export default function HeaderRow<R, K extends keyof R>({
             allRowsSelected={props.allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}
             draggableHeaderCell={props.draggableHeaderCell}
-            onSort={props.onGridSort}
+            onSort={props.onSort}
             sortColumn={props.sortColumn}
             sortDirection={props.sortDirection}
             scrollLeft={column.frozen ? props.scrollLeft : undefined}

@@ -193,7 +193,7 @@ export interface RowExpandToggleEvent {
   name: string;
 }
 
-export interface GridRowsUpdatedEvent<TRow, TUpdatedValue = never> {
+export interface RowUpdateEvent<TRow, TUpdatedValue = never> {
   cellKey: keyof TRow;
   fromRow: number;
   toRow: number;

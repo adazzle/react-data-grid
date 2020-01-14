@@ -20,7 +20,7 @@ const testProps: CanvasProps<Row, 'id'> = {
   rowHeight: 25,
   height: 200,
   rows: [{ id: 0, row: '0' }],
-  onGridRowsUpdated: noop,
+  onRowsUpdate: noop,
   enableCellSelect: true,
   enableCellAutoFocus: false,
   enableCellCopyPaste: true,

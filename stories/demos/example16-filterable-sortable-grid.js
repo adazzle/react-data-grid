@@ -119,7 +119,7 @@ export default class extends React.Component {
           onToggleFilter={this.onToggleFilter}
         />
         <DataGrid
-          onGridSort={this.handleGridSort}
+          onSort={this.handleGridSort}
           sortDirection={this.state.sortDirection}
           sortColumn={this.state.sortColumn}
           enableCellSelect

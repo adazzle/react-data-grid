@@ -157,7 +157,7 @@ export default function TreeView() {
         enableCellSelect
         columns={columns}
         rows={rows}
-        minHeight={500}
+        height={500}
       />
     </>
   );

@@ -99,7 +99,7 @@ export default class extends React.Component {
     return (
       <Wrapper title="Sort Descending First Sortable Columns Example">
         <DataGrid
-          onGridSort={this.handleGridSort}
+          onSort={this.handleGridSort}
           columns={this._columns}
           rowGetter={this.rowGetter}
           rowsCount={this.state.rows.length}

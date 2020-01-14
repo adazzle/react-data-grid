@@ -2,7 +2,6 @@ import React, { createElement } from 'react';
 import classNames from 'classnames';
 
 import { CalculatedColumn } from './common/types';
-import { DEFINE_SORT } from './common/enums';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
@@ -10,6 +9,7 @@ import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 type SharedHeaderRowProps<R, K extends keyof R> = Pick<HeaderRowProps<R, K>,
 | 'sortColumn'
 | 'sortDirection'
+| 'onSort'
 | 'height'
 | 'onHeaderDrop'
 | 'allRowsSelected'
@@ -20,7 +20,6 @@ export interface HeaderCellProps<R, K extends keyof R> extends SharedHeaderRowPr
   column: CalculatedColumn<R>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
-  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
   onResize(column: CalculatedColumn<R>, width: number): void;
   onAllRowsSelectionChange(checked: boolean): void;
 }

@@ -154,7 +154,7 @@ export default function CellActions() {
       columns={columns}
       rows={rows}
       rowHeight={55}
-      minHeight={600}
+      height={600}
     />
   );
 }

@@ -14,7 +14,7 @@ describe('HeaderRow', () => {
     columns: helpers.columns,
     lastFrozenColumnIndex: -1,
     onColumnResize() { },
-    onGridSort: jest.fn(),
+    onSort: jest.fn(),
     sortDirection: DEFINE_SORT.NONE,
     width: 1000,
     height: 35,
@@ -46,10 +46,10 @@ describe('HeaderRow', () => {
     it('should call onSort when headerRender triggers sort', () => {
       const { wrapper, props } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: DEFINE_SORT.ASC });
       wrapper.find('.rdg-header-sort-cell').at(0).simulate('click');
-      expect(props.onGridSort).toHaveBeenNthCalledWith(1, 'title', 'DESC');
+      expect(props.onSort).toHaveBeenNthCalledWith(1, 'title', 'DESC');
 
       wrapper.find('.rdg-header-sort-cell').at(1).simulate('click');
-      expect(props.onGridSort).toHaveBeenNthCalledWith(2, 'count', 'ASC');
+      expect(props.onSort).toHaveBeenNthCalledWith(2, 'count', 'ASC');
     });
   });
 
@@ -82,7 +82,7 @@ describe('HeaderRow', () => {
       height: 35,
       columns: helpers.columns,
       lastFrozenColumnIndex: 1,
-      onGridSort: jest.fn(),
+      onSort: jest.fn(),
       allRowsSelected: false,
       onColumnResize: jest.fn(),
       onHeaderDrop() { },
@@ -102,7 +102,7 @@ describe('HeaderRow', () => {
     it('does pass the height if available from props', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toStrictEqual({ height: 35, width: 1000 });
+      expect(headerRowDiv.props().style).toStrictEqual({ height: 35, width: 1000, lineHeight: '35px' });
     });
   });
 });

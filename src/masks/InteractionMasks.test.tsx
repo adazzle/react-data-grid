@@ -34,7 +34,7 @@ describe('InteractionMasks', () => {
       scrollToCell: jest.fn(),
       onSelectedCellChange,
       onSelectedCellRangeChange: jest.fn(),
-      onGridRowsUpdated: jest.fn(),
+      onRowsUpdate: jest.fn(),
       enableCellSelect: true,
       enableCellAutoFocus: false,
       enableCellCopyPaste: true,
@@ -679,7 +679,7 @@ describe('InteractionMasks', () => {
       // Paste copied cell
       pressKey(wrapper, KeyCodes.v, { ctrlKey: true });
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+      expect(props.onRowsUpdate).toHaveBeenCalledWith({
         cellKey: 'Column1',
         fromRow: 2,
         toRow: 1,
@@ -733,7 +733,7 @@ describe('InteractionMasks', () => {
       });
       wrapper.find('.drag-handle').simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+      expect(props.onRowsUpdate).toHaveBeenCalledWith({
         cellKey: 'Column1',
         fromRow: 2,
         toRow: 6,
@@ -754,7 +754,7 @@ describe('InteractionMasks', () => {
       });
       wrapper.find('.drag-handle').simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith({
+      expect(props.onRowsUpdate).toHaveBeenCalledWith({
         cellKey: 'Column1',
         fromRow: 4,
         toRow: 0,

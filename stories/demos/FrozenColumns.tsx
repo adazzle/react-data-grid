@@ -89,8 +89,8 @@ export default function FrozenColumns() {
           <DataGrid<Row, 'id'>
             columns={columns}
             rows={rows}
-            minHeight={height}
-            minWidth={width}
+            height={height}
+            width={width}
             headerRowHeight={27}
             rowHeight={18}
             minColumnWidth={60}
