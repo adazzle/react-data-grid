@@ -23,7 +23,7 @@
 - Rename `minWidth` to `width`
 - Rename `RowsContainer` to `rowsContainer`
 - Rename `onGridSort` to `onSort`
-- Rename `onGridRowsUpdated` to `onRowsUpdat`
+- Rename `onGridRowsUpdated` to `onRowsUpdate`
 
 ## next -> canary
 - Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.
