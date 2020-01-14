@@ -199,7 +199,7 @@ export default function AllFeatures() {
               enableCellSelect
               columns={columns}
               rows={rows}
-              onRowUpdate={handleRowUpdate}
+              onRowsUpdate={handleRowUpdate}
               rowHeight={30}
               width={width}
               height={height}

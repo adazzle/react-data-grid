@@ -53,7 +53,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onRowUpdate?<E extends RowUpdateEvent<R>>(event: E): void;
+  onRowsUpdate?<E extends RowUpdateEvent<R>>(event: E): void;
 
   /**
    * Dimensions props
@@ -250,7 +250,7 @@ function DataGrid<R, K extends keyof R>({
   }
 
   function handleRowUpdate(event: RowUpdateEvent<R>) {
-    props.onRowUpdate?.(event);
+    props.onRowsUpdate?.(event);
   }
 
   const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
@@ -324,7 +324,7 @@ function DataGrid<R, K extends keyof R>({
               renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
-              onRowUpdate={handleRowUpdate}
+              onRowsUpdate={handleRowUpdate}
               onSelectedCellChange={props.onSelectedCellChange}
               onSelectedCellRangeChange={props.onSelectedCellRangeChange}
               onRowClick={props.onRowClick}

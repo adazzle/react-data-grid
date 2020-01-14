@@ -93,7 +93,7 @@ export default class extends React.Component {
           columns={this.getColumns()}
           enableCellSelect
           rowGetter={this.rowGetter}
-          onRowUpdate={this.handleGridRowsUpdated}
+          onRowsUpdate={this.handleGridRowsUpdated}
           rowsCount={this.state.rows.length}
           minHeight={500}
         />

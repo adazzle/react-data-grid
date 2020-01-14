@@ -50,7 +50,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'onCheckCellIsEditable'
 | 'onSelectedCellChange'
 | 'onSelectedCellRangeChange'
-| 'onRowUpdate'
+| 'onRowsUpdate'
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
 export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
@@ -88,7 +88,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   contextMenu,
   onSelectedCellChange,
   onCheckCellIsEditable,
-  onRowUpdate,
+  onRowsUpdate,
   scrollToCell
 }: InteractionMasksProps<R, K>) {
   const [selectedPosition, setSelectedPosition] = useState<Position>(() => {
@@ -249,7 +249,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     const { rowIdx: fromRow, idx, value } = copiedPosition;
     const fromCellKey = columns[idx].key;
 
-    onRowUpdate({
+    onRowsUpdate({
       cellKey,
       fromRow,
       toRow,
@@ -317,7 +317,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     const cellKey = column.key;
     const value = rows[rowIdx][cellKey];
 
-    onRowUpdate({
+    onRowsUpdate({
       cellKey,
       fromRow: rowIdx,
       toRow: overRowIdx,
@@ -333,7 +333,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     const cellKey = column.key;
     const value = rows[selectedPosition.rowIdx][cellKey];
 
-    onRowUpdate({
+    onRowsUpdate({
       cellKey,
       fromRow: selectedPosition.rowIdx,
       toRow: rows.length - 1,
@@ -343,7 +343,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
-    onRowUpdate({
+    onRowsUpdate({
       cellKey,
       fromRow: rowIdx,
       toRow: rowIdx,
