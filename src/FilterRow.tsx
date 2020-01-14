@@ -36,7 +36,7 @@ export default function FilterRow<R, K extends keyof R>({
   return (
     <div
       className="rdg-header-row"
-      style={{ width, height }}
+      style={{ width, height, lineHeight: `${height}px` }}
     >
       {columns.map(column => {
         const { key } = column;

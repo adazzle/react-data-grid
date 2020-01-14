@@ -201,8 +201,8 @@ export default function AllFeatures() {
               rows={rows}
               onGridRowsUpdated={handleGridRowsUpdated}
               rowHeight={30}
-              minWidth={width}
-              minHeight={height}
+              width={width}
+              height={height}
               selectedRows={selectedRows}
               onSelectedRowsChange={setSelectedRows}
               enableCellCopyPaste

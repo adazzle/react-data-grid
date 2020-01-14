@@ -80,7 +80,7 @@ export default function ResizableColumns() {
     <DataGrid
       columns={columns}
       rows={rows}
-      minHeight={500}
+      height={500}
       minColumnWidth={120}
     />
   );

@@ -14,7 +14,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowRenderer'
 | 'rowGroupRenderer'
 | 'contextMenu'
-| 'RowsContainer'
+| 'rowsContainer'
 | 'selectedRows'
 | 'summaryRows'
 | 'onCheckCellIsEditable'
@@ -65,7 +65,7 @@ function Canvas<R, K extends keyof R>({
   rows,
   rowHeight,
   rowKey,
-  RowsContainer,
+  rowsContainer: RowsContainer,
   summaryRows,
   selectedRows,
   onSelectedRowsChange,

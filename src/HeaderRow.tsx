@@ -50,7 +50,7 @@ export default function HeaderRow<R, K extends keyof R>({
   return (
     <div
       className="rdg-header-row"
-      style={{ width, height }}
+      style={{ width, height, lineHeight: `${height}px` }}
     >
       {props.columns.map(column => {
         return (
