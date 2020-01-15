@@ -164,7 +164,7 @@ const columns: readonly Column<Row>[] = [
     resizable: true,
     sortable: true,
     formatter(props) {
-      return <>{String(props.row.available)}</>;
+      return <>{props.row.available ? '✔️' : '❌'}</>;
     }
   }
 ];
