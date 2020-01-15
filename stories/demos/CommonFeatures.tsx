@@ -195,8 +195,7 @@ function createRows(): readonly Row[] {
 
   return rows;
 }
-// @ts-ignore
-window.faker = faker;
+
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, DEFINE_SORT]>(['id', DEFINE_SORT.NONE]);
