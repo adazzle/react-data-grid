@@ -39,7 +39,7 @@
 - Remove internal `sortColumn` and `sortDirection` states. Sorting is now only controlled by `sortColumn` and `sortDirection` props. Check [here](https://github.com/adazzle/react-data-grid/pull/1768) on how to migrate.
 - Improve scrolling performance
 - Improve frozen columns performance
-- Re-implement row selection. Previous row selection API has been replaced by the new `selectedRows` and `onSelectedRowsChange` props. A new `SelectColumn` component is now needed to add checkbox column. Check [here](https://github.com/adazzle/react-data-grid/pull/1762) on how to migrate.
+- Re-implement row selection. Previous row selection API has been replaced by the new `selectedRows` and `onSelectedRowsChange` props. A new `SelectColumn` is now available to import and add a row selection column. Check [here](https://github.com/adazzle/react-data-grid/pull/1762) on how to migrate.
 - Add `renderBatchSize` prop [1779](https://github.com/adazzle/react-data-grid/pull/1779)
 - Remove bootstrap dependency and re-implement grid css [1780](https://github.com/adazzle/react-data-grid/pull/1780)
 
