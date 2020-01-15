@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { forwardRef } from 'react';
-import { EventTypes } from './common/enums';
 import { RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
 import EventBus from './EventBus';
 
@@ -37,7 +36,7 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
   }
 
   function onClick() {
-    props.eventBus.dispatch(EventTypes.SELECT_CELL, { rowIdx: props.idx, idx: 0 });
+    props.eventBus.dispatch('SELECT_CELL', { rowIdx: props.idx, idx: 0 });
   }
 
   const Renderer = props.renderer || DefaultBase;

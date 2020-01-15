@@ -8,7 +8,7 @@ import DragMask from './DragMask';
 import EventBus from '../EventBus';
 import EditorContainer from '../editors/EditorContainer';
 import { createColumns } from '../test/utils';
-import { CellNavigationMode, EventTypes, UpdateActions } from '../common/enums';
+import { CellNavigationMode, UpdateActions } from '../common/enums';
 import { Position } from '../common/types';
 
 const NUMBER_OF_COLUMNS = 10;
@@ -51,7 +51,7 @@ describe('InteractionMasks', () => {
     const wrapper = mount(<InteractionMasks {...props} />);
     if (initialPosition) {
       act(() => {
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, initialPosition);
+        props.eventBus.dispatch('SELECT_CELL', initialPosition);
       });
       wrapper.update();
       onSelectedCellChange.mockReset();
@@ -636,7 +636,7 @@ describe('InteractionMasks', () => {
       ];
       const { wrapper, props } = setup({ rows });
       act(() => {
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
+        props.eventBus.dispatch('SELECT_CELL', { idx: 1, rowIdx: 2 });
       });
       return { wrapper, props };
     };
@@ -670,7 +670,7 @@ describe('InteractionMasks', () => {
     it('should update the selected cell with the copied value on paste', () => {
       const { wrapper, props } = setupCopy();
       act(() => {
-        props.eventBus.dispatch(EventTypes.SELECT_CELL, { idx: 1, rowIdx: 2 });
+        props.eventBus.dispatch('SELECT_CELL', { idx: 1, rowIdx: 2 });
       });
       // Copy selected cell
       pressKey(wrapper, KeyCodes.c, { ctrlKey: true });
@@ -729,7 +729,7 @@ describe('InteractionMasks', () => {
         dataTransfer: { setData }
       });
       act(() => {
-        props.eventBus.dispatch(EventTypes.DRAG_ENTER, 6);
+        props.eventBus.dispatch('DRAG_ENTER', 6);
       });
       wrapper.find('.drag-handle').simulate('dragEnd');
 
@@ -750,7 +750,7 @@ describe('InteractionMasks', () => {
         dataTransfer: { setData }
       });
       act(() => {
-        props.eventBus.dispatch(EventTypes.DRAG_ENTER, 0);
+        props.eventBus.dispatch('DRAG_ENTER', 0);
       });
       wrapper.find('.drag-handle').simulate('dragEnd');
 
