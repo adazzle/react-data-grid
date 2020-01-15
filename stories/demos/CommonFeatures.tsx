@@ -20,11 +20,19 @@ function CurrencyFormatter({ value }: { value: number }) {
 interface Row {
   id: number;
   title: string;
+  client: string;
+  area: string;
+  country: string;
+  contact: string;
   assignee: string;
   progress: number;
   startTimestamp: number;
   endTimestamp: number;
   budget: number;
+  transaction: string;
+  account: string;
+  version: string;
+  available: boolean;
 }
 
 const columns: readonly Column<Row>[] = [
@@ -46,8 +54,41 @@ const columns: readonly Column<Row>[] = [
     sortable: true
   },
   {
+    key: 'client',
+    name: 'Client',
+    width: 220,
+    editable: true,
+    resizable: true,
+    sortable: true
+  },
+  {
+    key: 'area',
+    name: 'Area',
+    width: 120,
+    editable: true,
+    resizable: true,
+    sortable: true
+  },
+  {
+    key: 'country',
+    name: 'Country',
+    width: 120,
+    editable: true,
+    resizable: true,
+    sortable: true
+  },
+  {
+    key: 'contact',
+    name: 'Contact',
+    width: 160,
+    editable: true,
+    resizable: true,
+    sortable: true
+  },
+  {
     key: 'assignee',
     name: 'Assignee',
+    width: 150,
     editable: true,
     resizable: true,
     sortable: true
@@ -55,13 +96,14 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'progress',
     name: 'Completion',
+    width: 110,
     resizable: true,
     sortable: true,
     formatter(props) {
       const value = props.row.progress;
       return (
         <>
-          <progress max={100} value={value} /> {Math.round(value)}%
+          <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
         </>
       );
     }
@@ -69,6 +111,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'startTimestamp',
     name: 'Start date',
+    width: 100,
     resizable: true,
     sortable: true,
     formatter(props) {
@@ -78,6 +121,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'endTimestamp',
     name: 'Deadline',
+    width: 100,
     resizable: true,
     sortable: true,
     formatter(props) {
@@ -87,10 +131,40 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'budget',
     name: 'Budget',
+    width: 100,
     resizable: true,
     sortable: true,
     formatter(props) {
       return <CurrencyFormatter value={props.row.budget} />;
+    }
+  },
+  {
+    key: 'transaction',
+    name: 'Transaction type',
+    resizable: true,
+    sortable: true
+  },
+  {
+    key: 'account',
+    name: 'Account',
+    width: 150,
+    resizable: true,
+    sortable: true
+  },
+  {
+    key: 'version',
+    name: 'Version',
+    editable: true,
+    resizable: true,
+    sortable: true
+  },
+  {
+    key: 'available',
+    name: 'Available',
+    resizable: true,
+    sortable: true,
+    formatter(props) {
+      return <>{String(props.row.available)}</>;
     }
   }
 ];
@@ -102,18 +176,27 @@ function createRows(): readonly Row[] {
   for (let i = 0; i < 1000; i++) {
     rows.push({
       id: i,
-      title: `Task ${i + 1}`,
+      title: `Task #${i + 1}`,
+      client: faker.company.companyName(),
+      area: faker.name.jobArea(),
+      country: faker.address.country(),
+      contact: faker.internet.exampleEmail(),
       assignee: faker.name.findName(),
       progress: Math.random() * 100,
       startTimestamp: now - Math.round(Math.random() * 1e10),
       endTimestamp: now + Math.round(Math.random() * 1e10),
-      budget: 500 + Math.random() * 10500
+      budget: 500 + Math.random() * 10500,
+      transaction: faker.finance.transactionType(),
+      account: faker.finance.iban(),
+      version: faker.system.semver(),
+      available: Math.random() > 0.5
     });
   }
 
   return rows;
 }
-
+// @ts-ignore
+window.faker = faker;
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, DEFINE_SORT]>(['id', DEFINE_SORT.NONE]);
@@ -122,12 +205,26 @@ export default function CommonFeatures() {
   const sortedRows: readonly Row[] = useMemo(() => {
     if (sortDirection === DEFINE_SORT.NONE) return rows;
 
-    let sortedRows: Row[];
+    let sortedRows: Row[] = [...rows];
 
-    if (sortColumn === 'assignee' || sortColumn === 'title') {
-      sortedRows = [...rows].sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
-    } else {
-      sortedRows = [...rows].sort((a, b) => a[sortColumn] - b[sortColumn]);
+    switch (sortColumn) {
+      case 'assignee':
+      case 'title':
+      case 'client':
+      case 'area':
+      case 'country':
+      case 'contact':
+      case 'transaction':
+      case 'account':
+      case 'version':
+        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
+        break;
+      case 'available':
+        sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
+        break;
+      default:
+        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
+        break;
     }
 
     return sortDirection === DEFINE_SORT.DESC ? sortedRows.reverse() : sortedRows;
