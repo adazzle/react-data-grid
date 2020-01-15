@@ -5,16 +5,14 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 import AllFeatures from './demos/AllFeatures';
-import Basic from './demos/Basic';
 import CellActions from './demos/CellActions';
-import FrozenColumns from './demos/FrozenColumns';
-import ResizableColumns from './demos/ResizableColumns';
+import CommonFeatures from './demos/CommonFeatures';
+import NoRows from './demos/NoRows';
 import TreeView from './demos/TreeView';
 
 storiesOf('Demos', module)
+  .add('Common Features', () => <CommonFeatures />)
   .add('All Features', () => <AllFeatures />)
-  .add('Basic', () => <Basic />)
-  .add('Resizable Columns', () => <ResizableColumns />)
-  .add('Frozen Columns', () => <FrozenColumns />)
+  .add('No Rows', () => <NoRows />)
   .add('Cell Actions', () => <CellActions />)
   .add('Tree View', () => <TreeView />);
