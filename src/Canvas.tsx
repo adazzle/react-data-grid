@@ -1,7 +1,6 @@
 import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
-import { EventTypes } from './common/enums';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
@@ -147,7 +146,7 @@ function Canvas<R, K extends keyof R>({
   }
 
   function selectCell(position: Position, openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, position, openEditor);
+    eventBus.dispatch('SELECT_CELL', position, openEditor);
   }
 
   function openCellEditor(rowIdx: number, idx: number) {
@@ -179,7 +178,7 @@ function Canvas<R, K extends keyof R>({
       onSelectedRowsChange(newSelectedRows);
     };
 
-    return eventBus.subscribe(EventTypes.SELECT_ROW, handleRowSelectionChange);
+    return eventBus.subscribe('SELECT_ROW', handleRowSelectionChange);
   }, [eventBus, onSelectedRowsChange, rows, rowKey, selectedRows]);
 
   useImperativeHandle(ref, () => ({

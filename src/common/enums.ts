@@ -8,15 +8,6 @@ export enum DragItemTypes {
   Column = 'column'
 }
 
-export enum EventTypes {
-  SELECT_CELL = 'SELECT_CELL',
-  SELECT_ROW = 'SELECT_ROW',
-  SELECT_START = 'SELECT_START',
-  SELECT_UPDATE = 'SELECT_UPDATE',
-  SELECT_END = 'SELECT_END',
-  DRAG_ENTER = 'DRAG_ENTER'
-}
-
 export enum UpdateActions {
   CELL_UPDATE = 'CELL_UPDATE',
   COLUMN_FILL = 'COLUMN_FILL',
