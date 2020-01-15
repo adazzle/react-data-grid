@@ -77,7 +77,7 @@ const columns: readonly Column<Row>[] = [
   },
   {
     key: 'endTimestamp',
-    name: 'End date',
+    name: 'Deadline',
     resizable: true,
     sortable: true,
     formatter(props) {
