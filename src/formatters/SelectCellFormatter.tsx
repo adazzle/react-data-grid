@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface SelectCellFormatterProps {
+export interface SelectCellFormatterProps {
   value: boolean;
   onChange(value: boolean, isShiftClick: boolean): void;
 }
