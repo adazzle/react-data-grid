@@ -3,7 +3,6 @@ import React from 'react';
 
 import Cell from './Cell';
 import { RowRendererProps } from './common/types';
-import { EventTypes } from './common/enums';
 
 export default function Row<R>({
   cellRenderer: CellRenderer = Cell,
@@ -25,7 +24,7 @@ export default function Row<R>({
   function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
     e.preventDefault();
-    eventBus.dispatch(EventTypes.DRAG_ENTER, idx);
+    eventBus.dispatch('DRAG_ENTER', idx);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {

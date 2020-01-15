@@ -19,7 +19,7 @@ import {
 
 // Types
 import EventBus from '../EventBus';
-import { UpdateActions, CellNavigationMode, EventTypes } from '../common/enums';
+import { UpdateActions, CellNavigationMode } from '../common/enums';
 import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
@@ -116,7 +116,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }, [isEditorEnabled]);
 
   useEffect(() => {
-    return eventBus.subscribe(EventTypes.SELECT_CELL, selectCell);
+    return eventBus.subscribe('SELECT_CELL', selectCell);
   });
 
   useEffect(() => {
@@ -124,7 +124,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     const handleDragEnter = (overRowIdx: number) => {
       setDraggedPosition({ ...draggedPosition, overRowIdx });
     };
-    return eventBus.subscribe(EventTypes.DRAG_ENTER, handleDragEnter);
+    return eventBus.subscribe('DRAG_ENTER', handleDragEnter);
   }, [draggedPosition, eventBus]);
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed

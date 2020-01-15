@@ -2,7 +2,6 @@ import React, { memo, createElement } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
-import { EventTypes } from './common/enums';
 
 export interface CellProps<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
@@ -27,7 +26,7 @@ function Cell<R>({
   enableCellRangeSelection
 }: CellProps<R>) {
   function selectCell(openEditor?: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_CELL, { idx, rowIdx }, openEditor);
+    eventBus.dispatch('SELECT_CELL', { idx, rowIdx }, openEditor);
   }
 
   function handleCellClick() {
@@ -36,10 +35,10 @@ function Cell<R>({
   }
 
   function handleCellMouseDown() {
-    eventBus.dispatch(EventTypes.SELECT_START, { idx, rowIdx });
+    eventBus.dispatch('SELECT_START', { idx, rowIdx });
 
     function handleWindowMouseUp() {
-      eventBus.dispatch(EventTypes.SELECT_END);
+      eventBus.dispatch('SELECT_END');
       window.removeEventListener('mouseup', handleWindowMouseUp);
     }
 
@@ -47,7 +46,7 @@ function Cell<R>({
   }
 
   function handleCellMouseEnter() {
-    eventBus.dispatch(EventTypes.SELECT_UPDATE, { idx, rowIdx });
+    eventBus.dispatch('SELECT_UPDATE', { idx, rowIdx });
   }
 
   function handleCellContextMenu() {
@@ -65,7 +64,7 @@ function Cell<R>({
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch(EventTypes.SELECT_ROW, { rowIdx, checked, isShiftClick });
+    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
   }
 
   className = classNames(
