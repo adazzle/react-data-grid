@@ -17,7 +17,7 @@ import {
   CalculatedColumn,
   CheckCellIsEditableEvent,
   Column,
-  RowUpdateEvent,
+  RowsUpdateEvent,
   Position,
   RowsContainerProps,
   RowExpandToggleEvent,
@@ -53,7 +53,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onRowsUpdate?<E extends RowUpdateEvent<R>>(event: E): void;
+  onRowsUpdate?<E extends RowsUpdateEvent<R>>(event: E): void;
 
   /**
    * Dimensions props
@@ -249,7 +249,7 @@ function DataGrid<R, K extends keyof R>({
     props.onScroll?.(scrollPosition);
   }
 
-  function handleRowUpdate(event: RowUpdateEvent<R>) {
+  function handleRowUpdate(event: RowsUpdateEvent<R>) {
     props.onRowsUpdate?.(event);
   }
 

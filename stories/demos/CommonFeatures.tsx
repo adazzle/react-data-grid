@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { SelectColumn, Column, GridRowsUpdatedEvent } from '../../src';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent } from '../../src';
 
 const formatter = new Intl.DateTimeFormat(navigator.language);
 
@@ -93,7 +93,7 @@ export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
-  const handleGridRowsUpdated = useCallback(({ fromRow, toRow, updated }: GridRowsUpdatedEvent<Row, Partial<Row>>) => {
+  const handleRowsUpdate = useCallback(({ fromRow, toRow, updated }: RowsUpdateEvent<Row, Partial<Row>>) => {
     const newRows = [...rows];
 
     for (let i = fromRow; i <= toRow; i++) {
@@ -110,11 +110,11 @@ export default function CommonFeatures() {
           rowKey="id"
           columns={columns}
           rows={rows}
-          minHeight={height}
-          minWidth={width}
+          width={width}
+          height={height}
           selectedRows={selectedRows}
           onSelectedRowsChange={setSelectedRows}
-          onGridRowsUpdated={handleGridRowsUpdated}
+          onRowsUpdate={handleRowsUpdate}
           enableCellSelect
         />
       )}
