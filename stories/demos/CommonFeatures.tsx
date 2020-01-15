@@ -3,10 +3,18 @@ import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
 import DataGrid, { SelectColumn, Column, RowsUpdateEvent, DEFINE_SORT } from '../../src';
 
-const formatter = new Intl.DateTimeFormat(navigator.language);
+const dateFormatter = new Intl.DateTimeFormat(navigator.language);
+const currencyFormatter = new Intl.NumberFormat(navigator.language, {
+  style: 'currency',
+  currency: 'eur'
+});
 
 function TimestampFormatter({ timestamp }: { timestamp: number }) {
-  return <>{formatter.format(timestamp)}</>;
+  return <>{dateFormatter.format(timestamp)}</>;
+}
+
+function CurrencyFormatter({ value }: { value: number }) {
+  return <>{currencyFormatter.format(value)}</>;
 }
 
 interface Row {
@@ -16,6 +24,7 @@ interface Row {
   progress: number;
   startTimestamp: number;
   endTimestamp: number;
+  budget: number;
 }
 
 const columns: readonly Column<Row>[] = [
@@ -74,6 +83,15 @@ const columns: readonly Column<Row>[] = [
     formatter(props) {
       return <TimestampFormatter timestamp={props.row.endTimestamp} />;
     }
+  },
+  {
+    key: 'budget',
+    name: 'Budget',
+    resizable: true,
+    sortable: true,
+    formatter(props) {
+      return <CurrencyFormatter value={props.row.budget} />;
+    }
   }
 ];
 
@@ -88,7 +106,8 @@ function createRows(): readonly Row[] {
       assignee: faker.name.findName(),
       progress: Math.random() * 100,
       startTimestamp: now - Math.round(Math.random() * 1e10),
-      endTimestamp: now + Math.round(Math.random() * 1e10)
+      endTimestamp: now + Math.round(Math.random() * 1e10),
+      budget: 500 + Math.random() * 10500
     });
   }
 
