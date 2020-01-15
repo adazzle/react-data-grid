@@ -43,7 +43,7 @@
 - Add `renderBatchSize` prop [1779](https://github.com/adazzle/react-data-grid/pull/1779)
 - Remove bootstrap dependency and re-implement grid css [1780](https://github.com/adazzle/react-data-grid/pull/1780)
 
-## master -> next
+## master -> alpha
 
 ### react-data-grid
 
