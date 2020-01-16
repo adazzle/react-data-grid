@@ -56,7 +56,7 @@ export default function HeaderCell<R, K extends keyof R>({
   const className = classNames('rdg-cell', {
     'rdg-cell-frozen': column.frozen,
     'rdg-cell-frozen-last': column.idx === props.lastFrozenColumnIndex
-  }, column.cellClass);
+  });
   const style: React.CSSProperties = {
     width: column.width,
     left: column.left
