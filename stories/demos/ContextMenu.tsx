@@ -4,7 +4,7 @@ import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 
-import DataGrid, { Column, Position } from '../../src';
+import DataGrid, { Column, Position, RowsContainerProps } from '../../src';
 import './react-contextmenu.less';
 
 interface Row {
@@ -31,7 +31,7 @@ const columns: readonly Column<Row>[] = [
   { key: 'price', name: 'Price' }
 ];
 
-function RowsContainer({ children }: { children: React.ReactNode }) {
+function RowsContainer({ children }: RowsContainerProps) {
   return (
     <ContextMenuTrigger id="grid-context-menu">
       {children}
