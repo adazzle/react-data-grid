@@ -24,6 +24,9 @@
 - Rename `RowsContainer` to `rowsContainer`
 - Rename `onGridSort` to `onSort`
 - Rename `onGridRowsUpdated` to `onRowsUpdate`
+- Added function support for `column.cellClass`:
+  - `column = { ..., cellClass(row) { return string; } }`
+  - `column.cellClass` does not affect header cells anymore
 
 ## next -> canary
 - Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.
@@ -34,7 +37,7 @@
 - Drop dynamic height row support. This was not an official feature but it was still possible to implement dynamic rows via custom Row renderer. This was a buggy feature so it has been removed.
 - Remove `formatter.isScrolling` prop. `isScrolling` prop was introduced to improve performance of expensive formatters. This is no longer required as the internals of the grid were rewritten to improve performance
 - Add summary rows [1773](https://github.com/adazzle/react-data-grid/pull/1773)
-- Remove row reordering support. This was a buggy feature so it has been removed. 
+- Remove row reordering support. This was a buggy feature so it has been removed.
 - Remove toolbar prop. Check [here](https://github.com/adazzle/react-data-grid/pull/1769) on how to migrate.
 - Remove internal `sortColumn` and `sortDirection` states. Sorting is now only controlled by `sortColumn` and `sortDirection` props. Check [here](https://github.com/adazzle/react-data-grid/pull/1768) on how to migrate.
 - Improve scrolling performance
