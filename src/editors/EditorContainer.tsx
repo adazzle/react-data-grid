@@ -1,4 +1,4 @@
-import React, { KeyboardEvent } from 'react';
+import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
@@ -9,7 +9,7 @@ import { InteractionMasksProps } from '../masks/InteractionMasks';
 
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 
-export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   rowData: R;
   column: CalculatedColumn<R>;
@@ -19,144 +19,39 @@ export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps
   firstEditorKeyPress: string | null;
 }
 
-interface State {
-  isInvalid: boolean;
-}
+export default function EditorContainer<R, K extends keyof R>({
+  rowIdx,
+  column,
+  rowData,
+  width,
+  height,
+  left,
+  top,
+  onCommit,
+  onCommitCancel,
+  scrollLeft,
+  scrollTop,
+  firstEditorKeyPress: key
+}: EditorContainerProps<R, K>) {
+  const editorRef = useRef<Editor>(null);
+  const [isValid, setValid] = useState(true);
+  const prevScrollLeft = useRef(scrollLeft);
+  const prevScrollTop = useRef(scrollTop);
 
-export default class EditorContainer<R, K extends keyof R> extends React.Component<Props<R, K>, State> {
-  static displayName = 'EditorContainer';
+  const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
 
-  changeCommitted = false;
-  changeCanceled = false;
+  useLayoutEffect(() => {
+    const inputNode = getInputNode();
 
-  private readonly editor = React.createRef<Editor>();
-  readonly state: Readonly<State> = { isInvalid: false };
-
-  componentDidMount() {
-    const inputNode = this.getInputNode();
     if (inputNode instanceof HTMLElement) {
       inputNode.focus();
     }
     if (inputNode instanceof HTMLInputElement) {
       inputNode.select();
     }
-  }
+  }, [getInputNode]);
 
-  componentDidUpdate(prevProps: Props<R, K>) {
-    if (prevProps.scrollLeft !== this.props.scrollLeft || prevProps.scrollTop !== this.props.scrollTop) {
-      this.commitCancel();
-    }
-  }
-
-  componentWillUnmount() {
-    if (!this.changeCommitted && !this.changeCanceled) {
-      this.commit();
-    }
-  }
-
-  onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
-    switch (e.key) {
-      case 'Enter':
-      case 'Tab':
-        this.commit();
-        break;
-      case 'Escape':
-        this.onPressEscape(e);
-        break;
-      case 'ArrowUp':
-      case 'ArrowDown':
-        this.onPressArrowUpOrDown(e);
-        break;
-      case 'ArrowLeft':
-        this.onPressArrowLeft(e);
-        break;
-      case 'ArrowRight':
-        this.onPressArrowRight(e);
-        break;
-      default:
-        break;
-    }
-
-    this.props.onGridKeyDown?.(e);
-  };
-
-  createEditor() {
-    // return custom column editor or SimpleEditor if none specified
-    if (this.props.column.editor) {
-      return (
-        <this.props.column.editor
-          ref={this.editor}
-          column={this.props.column}
-          value={this.getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
-          rowData={this.props.rowData}
-          height={this.props.height}
-          onCommit={this.commit}
-          onCommitCancel={this.commitCancel}
-          onOverrideKeyDown={this.onKeyDown}
-        />
-      );
-    }
-
-    return (
-      <SimpleTextEditor
-        ref={this.editor as unknown as React.RefObject<SimpleTextEditor>}
-        column={this.props.column as CalculatedColumn<unknown>}
-        value={this.getInitialValue() as string}
-        onCommit={this.commit}
-      />
-    );
-  }
-
-  onPressEscape = (e: KeyboardEvent) => {
-    if (!this.editorIsSelectOpen()) {
-      this.commitCancel();
-    } else {
-      // prevent event from bubbling if editor has results to select
-      e.stopPropagation();
-    }
-  };
-
-  onPressArrowUpOrDown = (e: KeyboardEvent) => {
-    if (this.editorHasResults()) {
-      // dont want to propogate as that then moves us round the grid
-      e.stopPropagation();
-    } else {
-      this.commit();
-    }
-  };
-
-  onPressArrowLeft = (e: KeyboardEvent) => {
-    // prevent event propogation. this disables left cell navigation
-    if (!this.isCaretAtBeginningOfInput()) {
-      e.stopPropagation();
-    } else {
-      this.commit();
-    }
-  };
-
-  onPressArrowRight = (e: KeyboardEvent) => {
-    // prevent event propogation. this disables right cell navigation
-    if (!this.isCaretAtEndOfInput()) {
-      e.stopPropagation();
-    } else {
-      this.commit();
-    }
-  };
-
-  editorHasResults = () => {
-    return this.editor.current?.hasResults?.() ?? false;
-  };
-
-  editorIsSelectOpen = () => {
-    return this.editor.current?.isSelectOpen?.() ?? false;
-  };
-
-  getInputNode = () => {
-    return this.editor.current?.getInputNode();
-  };
-
-  getInitialValue() {
-    const { firstEditorKeyPress: key, rowData, column } = this.props;
+  function getInitialValue() {
     const value = rowData[column.key];
     if (key === 'Delete' || key === 'Backspace') {
       return '';
@@ -168,71 +63,108 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
     return key || value;
   }
 
-  commit = () => {
-    const { onCommit } = this.props;
-    const updated = this.editor.current?.getValue() as never;
-    if (this.isNewValueValid(updated)) {
-      this.changeCommitted = true;
-      const cellKey = this.props.column.key;
-      onCommit({ cellKey, rowIdx: this.props.rowIdx, updated });
-    }
-  };
+  // Cancel changes and close editor on scroll
+  if (prevScrollLeft.current !== scrollLeft || prevScrollTop.current !== scrollTop) {
+    onCommitCancel();
+  }
 
-  commitCancel = () => {
-    this.changeCanceled = true;
-    this.props.onCommitCancel();
-  };
-
-  isNewValueValid = (value: unknown) => {
-    const editor = this.editor.current;
-    if (editor?.validate) {
-      const isValid = editor.validate(value);
-      this.setState({ isInvalid: !isValid });
-      return isValid;
-    }
-
-    return true;
-  };
-
-  isCaretAtBeginningOfInput = () => {
-    const inputNode = this.getInputNode();
+  function isCaretAtBeginningOfInput(): boolean {
+    const inputNode = getInputNode();
     return inputNode instanceof HTMLInputElement
       && inputNode.selectionEnd === 0;
-  };
+  }
 
-  isCaretAtEndOfInput = () => {
-    const inputNode = this.getInputNode();
+  function isCaretAtEndOfInput(): boolean {
+    const inputNode = getInputNode();
     return inputNode instanceof HTMLInputElement
       && inputNode.selectionStart === inputNode.value.length;
-  };
-
-  handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
-  renderStatusIcon() {
-    return this.state.isInvalid
-      && <Clear className="form-control-feedback" />;
   }
 
-  render() {
-    const { width, height, left, top } = this.props;
-    const className = classNames('rdg-editor-container', {
-      'has-error': this.state.isInvalid
-    });
+  function editorHasResults(): boolean {
+    return editorRef.current?.hasResults?.() ?? false;
+  }
+
+  function editorIsSelectOpen(): boolean {
+    return editorRef.current?.isSelectOpen?.() ?? false;
+  }
+
+  function isNewValueValid(value: unknown): boolean {
+    const isValid = editorRef.current?.validate?.(value);
+    if (typeof isValid === 'boolean') {
+      setValid(isValid);
+      return isValid;
+    }
+    return true;
+  }
+
+  function preventDefaultNavigation(key: string): boolean {
+    return (key === 'ArrowLeft' && !isCaretAtBeginningOfInput())
+      || (key === 'ArrowRight' && !isCaretAtEndOfInput())
+      || (key === 'Escape' && editorIsSelectOpen())
+      || (['ArrowUp', 'ArrowDown'].includes(key) && editorHasResults());
+  }
+
+  function commit(): void {
+    if (!editorRef.current) return;
+    const updated = editorRef.current.getValue();
+    if (isNewValueValid(updated)) {
+      const cellKey = column.key;
+      onCommit({ cellKey, rowIdx, updated });
+    }
+  }
+
+  function onKeyDown(e: KeyboardEvent<HTMLElement>) {
+    if (preventDefaultNavigation(e.key)) {
+      e.stopPropagation();
+    } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+      commit();
+    } else if (e.key === 'Escape') {
+      onCommitCancel();
+    }
+  }
+
+  function createEditor() {
+    // return custom column editor or SimpleEditor if none specified
+    if (column.editor) {
+      return (
+        <column.editor
+          ref={editorRef}
+          column={column}
+          value={getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
+          rowData={rowData}
+          height={height}
+          onCommit={commit}
+          onCommitCancel={onCommitCancel}
+          onOverrideKeyDown={onKeyDown}
+        />
+      );
+    }
 
     return (
-      <ClickOutside onClickOutside={this.commit}>
-        <div
-          className={className}
-          style={{ height, width, left, top }}
-          onKeyDown={this.onKeyDown}
-          onContextMenu={this.handleRightClick}
-        >
-          {this.createEditor()}
-          {this.renderStatusIcon()}
-        </div>
-      </ClickOutside>
+      <SimpleTextEditor
+        ref={editorRef as unknown as React.RefObject<SimpleTextEditor>}
+        column={column as CalculatedColumn<unknown>}
+        value={getInitialValue() as string}
+        onCommit={commit}
+      />
     );
   }
+
+  const className = classNames('rdg-editor-container', {
+    'has-error': !isValid
+  });
+
+  return (
+    <ClickOutside onClickOutside={commit}>
+      <div
+        className={className}
+        style={{ height, width, left, top }}
+        onKeyDown={onKeyDown}
+        onContextMenu={e => e.preventDefault()}
+      >
+        {createEditor()}
+        {!isValid && <Clear className="form-control-feedback" />}
+      </div>
+    </ClickOutside>
+  );
 }
