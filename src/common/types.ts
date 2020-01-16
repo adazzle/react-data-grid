@@ -132,7 +132,6 @@ export interface CellRendererProps<TRow> {
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
-  onRowDoubleClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
 export interface RowsContainerProps {
@@ -155,7 +154,6 @@ export interface RowRendererProps<TRow> {
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
-  onRowDoubleClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
