@@ -2,8 +2,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import DataGrid, { SelectColumn } from 'react-data-grid';
 import Wrapper from './Wrapper';
 
-function formatDecimal({ column, rowData, isSummaryRow, maximumFractionDigits = 2 }) {
-  const value = rowData[column.key];
+function formatDecimal({ column, row, isSummaryRow, maximumFractionDigits = 2 }) {
+  const value = row[column.key];
   const text = value.toLocaleString('en-US', { maximumFractionDigits });
   return isSummaryRow ? <strong>{text}</strong> : text;
 }
@@ -12,13 +12,13 @@ function formatInteger(props) {
   return formatDecimal({ ...props, maximumFractionDigits: 0 });
 }
 
-function formatTitle({ column, rowData, isSummaryRow }) {
+function formatTitle({ column, row, isSummaryRow }) {
   if (isSummaryRow) {
-    const { selectedRowsCount } = rowData;
+    const { selectedRowsCount } = row;
     return <strong>{ selectedRowsCount >= 0 ? `${selectedRowsCount} row${selectedRowsCount > 1 ? 's' : ''} selected` : 'Total'}</strong>;
   }
 
-  return rowData[column.key];
+  return row[column.key];
 }
 
 const columns = [

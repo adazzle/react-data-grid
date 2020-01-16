@@ -401,7 +401,7 @@ export default function InteractionMasks<R, K extends keyof R>({
             onCommit={onCommit}
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}
-            rowData={rows[selectedPosition.rowIdx]}
+            row={rows[selectedPosition.rowIdx]}
             column={columns[selectedPosition.idx]}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}

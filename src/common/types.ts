@@ -12,11 +12,11 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   key: TField;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number | string;
-  cellClass?: string | ((rowData: TRow) => string);
+  cellClass?: string | ((row: TRow) => string);
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
-  editable?: boolean | ((rowData: TRow) => boolean);
+  editable?: boolean | ((row: TRow) => boolean);
   /** Enable dragging of a column */
   draggable?: boolean;
   /** Enable filtering of a column */
@@ -107,7 +107,7 @@ export interface EditorProps<TValue, TRow = any> {
   ref: React.Ref<Editor<{ [key: string]: TValue }>>;
   column: CalculatedColumn<TRow>;
   value: TValue;
-  rowData: TRow;
+  row: TRow;
   height: number;
   onCommit(): void;
   onCommitCancel(): void;
@@ -125,14 +125,14 @@ export interface CellRendererProps<TRow> {
   rowIdx: number;
   column: CalculatedColumn<TRow>;
   lastFrozenColumnIndex: number;
-  rowData: TRow;
+  row: TRow;
   scrollLeft: number | undefined;
   isSummaryRow: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
-  onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
+  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
+  onRowDoubleClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
 export interface RowsContainerProps {
@@ -154,8 +154,8 @@ export interface RowRendererProps<TRow> {
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
-  onRowDoubleClick?(rowIdx: number, rowData: TRow, column: CalculatedColumn<TRow>): void;
+  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
+  onRowDoubleClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

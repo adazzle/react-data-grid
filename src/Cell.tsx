@@ -17,7 +17,7 @@ function Cell<R>({
   isRowSelected,
   isSummaryRow,
   lastFrozenColumnIndex,
-  rowData,
+  row,
   rowIdx,
   scrollLeft,
   eventBus,
@@ -31,7 +31,7 @@ function Cell<R>({
 
   function handleCellClick() {
     selectCell();
-    onRowClick?.(rowIdx, rowData, column);
+    onRowClick?.(rowIdx, row, column);
   }
 
   function handleCellMouseDown() {
@@ -56,7 +56,7 @@ function Cell<R>({
   function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
     selectCell(true);
-    onRowDoubleClick?.(rowIdx, rowData, column);
+    onRowDoubleClick?.(rowIdx, row, column);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -75,7 +75,7 @@ function Cell<R>({
       'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
     },
     className,
-    typeof cellClass === 'function' ? cellClass(rowData) : cellClass
+    typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
   const style: React.CSSProperties = {
@@ -91,7 +91,7 @@ function Cell<R>({
     children = createElement(column.formatter, {
       column,
       rowIdx,
-      row: rowData,
+      row,
       isRowSelected,
       onRowSelectionChange,
       isSummaryRow

@@ -47,7 +47,7 @@ const fakeColumn: CalculatedColumn<Row> = {
 const setup = (extraProps?: Partial<EditorContainerProps<Row, 'id'>>, opts?: MountRendererProps) => {
   const props: EditorContainerProps<Row, 'id'> = {
     rowIdx: 0,
-    rowData: {
+    row: {
       id: '1',
       col1: 'Adwolf',
       col2: 'SupernaviX',

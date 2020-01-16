@@ -20,7 +20,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 
 interface IRowRendererProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
   idx: number;
-  rowData: R;
+  row: R;
   scrollLeft: number | undefined;
   enableCellRangeSelection?: boolean;
   eventBus: EventBus;
@@ -32,7 +32,7 @@ function RowRenderer<R, K extends keyof R>({
   viewportColumns,
   eventBus,
   idx,
-  rowData,
+  row,
   rowGroupRenderer,
   rowHeight,
   rowKey,
@@ -40,10 +40,10 @@ function RowRenderer<R, K extends keyof R>({
   scrollLeft,
   ...props
 }: IRowRendererProps<R, K>) {
-  const { __metaData } = rowData as RowData;
+  const { __metaData } = row as RowData;
   const rendererProps: RowRendererProps<R> = {
     idx,
-    row: rowData,
+    row,
     width: columnMetrics.totalColumnWidth,
     height: rowHeight,
     viewportColumns,
@@ -66,7 +66,7 @@ function RowRenderer<R, K extends keyof R>({
         <RowGroup<R>
           {...rendererProps}
           {...__metaData!}
-          name={(rowData as RowData).name!}
+          name={(row as RowData).name!}
           eventBus={eventBus}
           renderer={rowGroupRenderer}
           onRowExpandToggle={props.onRowExpandToggle}

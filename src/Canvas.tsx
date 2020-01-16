@@ -191,12 +191,12 @@ function Canvas<R, K extends keyof R>({
   function getViewportRows() {
     const rowElements = [];
     for (let idx = rowOverscanStartIdx; idx <= rowOverscanEndIdx; idx++) {
-      const rowData = rows[idx];
+      const row = rows[idx];
       rowElements.push(
         <RowRenderer<R, K>
           key={idx}
           idx={idx}
-          rowData={rowData}
+          row={row}
           columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
           eventBus={eventBus}
@@ -205,7 +205,7 @@ function Canvas<R, K extends keyof R>({
           rowKey={rowKey}
           rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
-          isRowSelected={selectedRows?.has(rowData[rowKey]) ?? false}
+          isRowSelected={selectedRows?.has(row[rowKey]) ?? false}
           onRowClick={props.onRowClick}
           onRowDoubleClick={props.onRowDoubleClick}
           onRowExpandToggle={props.onRowExpandToggle}
@@ -236,11 +236,11 @@ function Canvas<R, K extends keyof R>({
 
   const summary = summaryRows && summaryRows.length > 0 && (
     <div ref={summaryRef} className="rdg-summary">
-      {summaryRows.map((rowData, idx) => (
+      {summaryRows.map((row, idx) => (
         <SummaryRowRenderer<R>
           key={idx}
           idx={idx}
-          row={rowData}
+          row={row}
           width={columnMetrics.totalColumnWidth + getScrollbarSize()}
           height={rowHeight}
           viewportColumns={viewportColumns}
