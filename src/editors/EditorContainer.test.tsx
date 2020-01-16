@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
 
-import EditorContainer, { Props } from './EditorContainer';
+import EditorContainer, { EditorContainerProps } from './EditorContainer';
 import SimpleTextEditor from './SimpleTextEditor';
 import { ValueFormatter } from '../formatters';
 import { CalculatedColumn, EditorProps } from '../common/types';
@@ -44,8 +44,8 @@ const fakeColumn: CalculatedColumn<Row> = {
   formatter: ValueFormatter
 };
 
-const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps) => {
-  const props: Props<Row, 'id'> = {
+const setup = (extraProps?: Partial<EditorContainerProps<Row, 'id'>>, opts?: MountRendererProps) => {
+  const props: EditorContainerProps<Row, 'id'> = {
     rowIdx: 0,
     rowData: {
       id: '1',
@@ -65,7 +65,7 @@ const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps
     scrollTop: 0,
     ...extraProps
   };
-  const wrapper = mount<EditorContainer<Row, 'id'>>(<EditorContainer {...props} />, opts);
+  const wrapper = mount(<EditorContainer {...props} />, opts);
 
   return { wrapper, props };
 };
@@ -74,7 +74,7 @@ describe('EditorContainer', () => {
   describe('Basic render tests', () => {
     it('should select the text of the default input when the editor is rendered', () => {
       const { wrapper } = setup();
-      const input = wrapper.instance().getInputNode() as HTMLInputElement;
+      const input = wrapper.find('input').getDOMNode() as HTMLInputElement;
       expect(input.selectionStart === 0 && input.selectionEnd === input.value.length).toBe(true);
     });
 
@@ -98,7 +98,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps<Row[keyof Row]>> {
+    class TestEditor extends React.Component<EditorProps<string>> {
       getValue() {
         return undefined;
       }
@@ -166,7 +166,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Portal editors', () => {
-    class PortalTestEditor extends React.Component {
+    class PortalTestEditor extends React.Component<EditorProps<string>> {
       getValue() {
         return undefined;
       }
@@ -183,7 +183,7 @@ describe('EditorContainer', () => {
     function innerSetup() {
       const container = document.createElement('div');
       document.body.appendChild(container);
-      const setupResult = setup({ column: { ...fakeColumn, editor: () => <PortalTestEditor /> } }, { attachTo: container });
+      const setupResult = setup({ column: { ...fakeColumn, editor: PortalTestEditor } }, { attachTo: container });
       return { container, ...setupResult };
     }
 
