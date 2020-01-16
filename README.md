@@ -34,12 +34,13 @@ function App() {
     <DataGrid
       columns={columns}
       rows={rows}
-      minHeight={500}
     />
   );
 }
 ```
 
-## Contributing
+## Documentation
 
-Please see [CONTRIBUTING](docs/CONTRIBUTING.md)
+- [Website](https://adazzle.github.io/react-data-grid/)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
