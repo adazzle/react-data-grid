@@ -97,8 +97,8 @@ export default function ContextMenuStory() {
             <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
             <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
           </SubMenu>
-        </ContextMenu>
-        , document.body
+        </ContextMenu>,
+        document.body
       )}
     </>
   );

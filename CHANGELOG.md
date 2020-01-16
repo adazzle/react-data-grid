@@ -29,6 +29,7 @@
   - `column.cellClass` does not affect header cells anymore
 - Rename various `rowData` to `row`, `fromRowData` to `fromRow`
 - Remove `onGridKeyDown`, `onGridKeyUp`, and `onRowDoubleClick` props
+- Remove `contextMenu` prop
 
 ## next -> canary
 - Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.
