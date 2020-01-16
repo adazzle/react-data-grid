@@ -69,7 +69,7 @@ export default function ContextMenuStory() {
     setRows([
       ...rows.slice(0, insertRowIdx),
       newRow,
-      ...rows.slice(insertRowIdx + 1)
+      ...rows.slice(insertRowIdx)
     ]);
     setNextId();
   }
