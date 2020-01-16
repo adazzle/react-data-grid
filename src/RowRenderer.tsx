@@ -13,8 +13,6 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'rowHeight'
 | 'rowKey'
 | 'rowRenderer'
-| 'onRowClick'
-| 'onRowDoubleClick'
 | 'onRowExpandToggle'
 >;
 
@@ -52,8 +50,6 @@ function RowRenderer<R, K extends keyof R>({
     scrollLeft,
     isSummaryRow: false,
     eventBus,
-    onRowClick: props.onRowClick,
-    onRowDoubleClick: props.onRowDoubleClick,
     enableCellRangeSelection: props.enableCellRangeSelection
   };
 

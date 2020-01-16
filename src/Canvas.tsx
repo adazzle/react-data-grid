@@ -19,8 +19,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onCheckCellIsEditable'
 | 'onSelectedCellChange'
 | 'onSelectedCellRangeChange'
-| 'onRowClick'
-| 'onRowDoubleClick'
 | 'onRowExpandToggle'
 | 'onSelectedRowsChange'
 > & Required<Pick<DataGridProps<R, K>,
@@ -206,8 +204,6 @@ function Canvas<R, K extends keyof R>({
           rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
           isRowSelected={selectedRows?.has(row[rowKey]) ?? false}
-          onRowClick={props.onRowClick}
-          onRowDoubleClick={props.onRowDoubleClick}
           onRowExpandToggle={props.onRowExpandToggle}
           enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}
         />

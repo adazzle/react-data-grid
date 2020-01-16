@@ -6,36 +6,41 @@ import { RowRendererProps } from './common/types';
 
 export default function Row<R>({
   cellRenderer: CellRenderer = Cell,
+  className,
   enableCellRangeSelection,
   eventBus,
-  extraClasses,
   height,
   idx,
   isRowSelected,
   isSummaryRow,
   lastFrozenColumnIndex,
-  onRowClick,
-  onRowDoubleClick,
+  onDragEnter,
+  onDragOver,
+  onDrop,
   row,
   scrollLeft,
   viewportColumns,
-  width
+  width,
+  ...props
 }: RowRendererProps<R>) {
-  function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
+  function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
-    e.preventDefault();
+    event.preventDefault();
     eventBus.dispatch('DRAG_ENTER', idx);
+    onDragEnter?.(event);
   }
 
-  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
+  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    onDragOver?.(event);
   }
 
-  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
     // The default in Firefox is to treat data in dataTransfer as a URL and perform navigation on it, even if the data type used is 'text'
     // To bypass this, we need to capture and prevent the drop event.
-    e.preventDefault();
+    event.preventDefault();
+    onDrop?.(event);
   }
 
   function getCells() {
@@ -52,28 +57,27 @@ export default function Row<R>({
           isRowSelected={isRowSelected}
           isSummaryRow={isSummaryRow}
           eventBus={eventBus}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
           enableCellRangeSelection={enableCellRangeSelection}
         />
       );
     });
   }
 
-  const className = classNames(
+  className = classNames(
     'rdg-row',
     `rdg-row-${idx % 2 === 0 ? 'even' : 'odd'}`,
     { 'rdg-row-selected': isRowSelected },
-    extraClasses
+    className
   );
 
   return (
     <div
       className={className}
       style={{ width, height }}
-      onDragEnter={isSummaryRow ? undefined : handleDragEnter}
-      onDragOver={isSummaryRow ? undefined : handleDragOver}
-      onDrop={isSummaryRow ? undefined : handleDrop}
+      onDragEnter={isSummaryRow ? onDragEnter : handleDragEnter}
+      onDragOver={isSummaryRow ? onDragOver : handleDragOver}
+      onDrop={isSummaryRow ? onDrop : handleDrop}
+      {...props}
     >
       {getCells()}
     </div>

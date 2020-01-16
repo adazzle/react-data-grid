@@ -131,8 +131,6 @@ export interface CellRendererProps<TRow> {
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
-  onRowDoubleClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
 export interface RowsContainerProps {
@@ -140,22 +138,19 @@ export interface RowsContainerProps {
   children: React.ReactElement;
 }
 
-export interface RowRendererProps<TRow> {
+export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   height: number;
   width: number;
   viewportColumns: readonly CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   idx: number;
-  extraClasses?: string;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isSummaryRow: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
-  onRowDoubleClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
