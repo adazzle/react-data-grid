@@ -34,7 +34,7 @@ export default function EditorContainer<R, K extends keyof R>({
   firstEditorKeyPress: key
 }: EditorContainerProps<R, K>) {
   const editorRef = useRef<Editor>(null);
-  const [isInvalid, setIsInvalid] = useState(false);
+  const [isValid, setValid] = useState(true);
   const prevScrollLeft = useRef(scrollLeft);
   const prevScrollTop = useRef(scrollTop);
 
@@ -91,7 +91,7 @@ export default function EditorContainer<R, K extends keyof R>({
   function isNewValueValid(value: unknown): boolean {
     const isValid = editorRef.current?.validate?.(value);
     if (typeof isValid === 'boolean') {
-      setIsInvalid(!isValid);
+      setValid(isValid);
       return isValid;
     }
     return true;
@@ -116,10 +116,7 @@ export default function EditorContainer<R, K extends keyof R>({
   function onKeyDown(e: KeyboardEvent<HTMLElement>) {
     if (preventDefaultNavigation(e.key)) {
       e.stopPropagation();
-      return;
-    }
-
-    if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       commit();
     } else if (e.key === 'Escape') {
       onCommitCancel();
@@ -154,7 +151,7 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   const className = classNames('rdg-editor-container', {
-    'has-error': isInvalid
+    'has-error': !isValid
   });
 
   return (
@@ -166,7 +163,7 @@ export default function EditorContainer<R, K extends keyof R>({
         onContextMenu={e => e.preventDefault()}
       >
         {createEditor()}
-        {isInvalid && <Clear className="form-control-feedback" />}
+        {!isValid && <Clear className="form-control-feedback" />}
       </div>
     </ClickOutside>
   );
