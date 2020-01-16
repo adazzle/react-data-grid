@@ -1,5 +1,5 @@
 import React from 'react';
-import SelectCellFormatter from './formatters/SelectCellFormatter';
+import { SelectCellFormatter } from './formatters';
 import { Column } from './common/types';
 
 // TODO: fix type
