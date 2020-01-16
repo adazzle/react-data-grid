@@ -22,9 +22,6 @@ steps:
 - script: npm run typecheck
   displayName: 'Typecheck'
 
-- script: npm run build
-  displayName: 'Build lib'
-
 - script: npm run build-storybook
   displayName: 'Build storybook'
 
