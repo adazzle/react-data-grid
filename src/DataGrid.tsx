@@ -104,9 +104,9 @@ export interface DataGridProps<R, K extends keyof R> {
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
+  onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R>): void;
   /** Function called whenever a row is double clicked */
-  onRowDoubleClick?(rowIdx: number, rowData: R, column: CalculatedColumn<R>): void;
+  onRowDoubleClick?(rowIdx: number, row: R, column: CalculatedColumn<R>): void;
   /** Function called whenever a key is pressed down */
   onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
   /** Function called whenever a key is released */

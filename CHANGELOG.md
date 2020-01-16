@@ -27,6 +27,7 @@
 - Added function support for `column.cellClass`:
   - `column = { ..., cellClass(row) { return string; } }`
   - `column.cellClass` does not affect header cells anymore
+- Rename various `rowData` to `row`, `fromRowData` to `fromRow`
 
 ## next -> canary
 - Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.

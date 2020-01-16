@@ -47,7 +47,7 @@ export default function Row<R>({
           rowIdx={idx}
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
-          rowData={row}
+          row={row}
           scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
           isSummaryRow={isSummaryRow}

@@ -47,7 +47,7 @@ const fakeColumn: CalculatedColumn<Row> = {
 const setup = (extraProps?: Partial<Props<Row, 'id'>>, opts?: MountRendererProps) => {
   const props: Props<Row, 'id'> = {
     rowIdx: 0,
-    rowData: {
+    row: {
       id: '1',
       col1: 'Adwolf',
       col2: 'SupernaviX',

@@ -11,7 +11,7 @@ type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksPr
 
 export interface Props<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
-  rowData: R;
+  row: R;
   column: CalculatedColumn<R>;
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent<R>): void;
@@ -88,7 +88,7 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
           ref={this.editor}
           column={this.props.column}
           value={this.getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
-          rowData={this.props.rowData}
+          row={this.props.row}
           height={this.props.height}
           onCommit={this.commit}
           onCommitCancel={this.commitCancel}
@@ -156,8 +156,8 @@ export default class EditorContainer<R, K extends keyof R> extends React.Compone
   };
 
   getInitialValue() {
-    const { firstEditorKeyPress: key, rowData, column } = this.props;
-    const value = rowData[column.key];
+    const { firstEditorKeyPress: key, row, column } = this.props;
+    const value = row[column.key];
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }
