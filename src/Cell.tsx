@@ -67,13 +67,15 @@ function Cell<R>({
     eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
   }
 
+  const { cellClass } = column;
   className = classNames(
-    column.cellClass,
     'rdg-cell',
-    className, {
+    {
       'rdg-cell-frozen': column.frozen,
       'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
-    }
+    },
+    className,
+    typeof cellClass === 'function' ? cellClass(rowData) : cellClass
   );
 
   const style: React.CSSProperties = {

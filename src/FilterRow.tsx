@@ -45,7 +45,7 @@ export default function FilterRow<R, K extends keyof R>({
         const className = classNames('rdg-cell', {
           'rdg-cell-frozen': column.frozen,
           'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
-        }, column.cellClass);
+        });
         const style: React.CSSProperties = {
           width: column.width,
           left: column.left
