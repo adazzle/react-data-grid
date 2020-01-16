@@ -50,8 +50,7 @@ function Cell<R>({
     selectCell();
   }
 
-  function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
+  function handleCellDoubleClick() {
     selectCell(true);
   }
 

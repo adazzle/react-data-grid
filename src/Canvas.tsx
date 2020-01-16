@@ -40,8 +40,6 @@ export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R
   height: number;
   scrollLeft: number;
   onScroll(position: ScrollPosition): void;
-  onCanvasKeydown?(e: React.KeyboardEvent<HTMLDivElement>): void;
-  onCanvasKeyup?(e: React.KeyboardEvent<HTMLDivElement>): void;
 }
 
 export interface CanvasHandle {
@@ -257,8 +255,6 @@ function Canvas<R, K extends keyof R>({
         style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
         ref={canvasRef}
         onScroll={handleScroll}
-        onKeyDown={props.onCanvasKeydown}
-        onKeyUp={props.onCanvasKeyup}
       >
         <InteractionMasks<R, K>
           rows={rows}

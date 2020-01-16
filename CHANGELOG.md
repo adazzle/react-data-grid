@@ -28,8 +28,8 @@
   - `column = { ..., cellClass(row) { return string; } }`
   - `column.cellClass` does not affect header cells anymore
 - Rename various `rowData` to `row`, `fromRowData` to `fromRow`
-- Removed support for the `onRowClick` and `onRowDoubleClick` props on `DataGrid`, and `extraClasses` on `Row`
-  - Use props on the `Row` component itself instead, via `rowRenderer`:
+- Remove `onGridKeyDown`, `onGridKeyUp`, `onRowClick`, and `onRowDoubleClick` props on `DataGrid`, and `extraClasses` on `Row`
+  - Use standard `div` props on the `Row` component itself instead, via `rowRenderer`:
   ```jsx
   function RowRenderer(props) {
     return <Row className="my-row" onClick={(event) => {}} {...props} />;
