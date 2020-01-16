@@ -105,8 +105,6 @@ export interface DataGridProps<R, K extends keyof R> {
    */
   /** Function called whenever a row is clicked */
   onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R>): void;
-  /** Function called whenever a row is double clicked */
-  onRowDoubleClick?(rowIdx: number, row: R, column: CalculatedColumn<R>): void;
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Called when a column is resized */
@@ -322,7 +320,6 @@ function DataGrid<R, K extends keyof R>({
               onSelectedCellChange={props.onSelectedCellChange}
               onSelectedCellRangeChange={props.onSelectedCellRangeChange}
               onRowClick={props.onRowClick}
-              onRowDoubleClick={props.onRowDoubleClick}
               onRowExpandToggle={props.onRowExpandToggle}
             />
           )}

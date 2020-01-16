@@ -28,7 +28,7 @@
   - `column = { ..., cellClass(row) { return string; } }`
   - `column.cellClass` does not affect header cells anymore
 - Rename various `rowData` to `row`, `fromRowData` to `fromRow`
-- Remove `onGridKeyDown` and `onGridKeyUp` props
+- Remove `onGridKeyDown`, `onGridKeyUp`, and `onRowDoubleClick` props
 
 ## next -> canary
 - Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.

@@ -15,7 +15,6 @@ export default function Row<R>({
   isSummaryRow,
   lastFrozenColumnIndex,
   onRowClick,
-  onRowDoubleClick,
   row,
   scrollLeft,
   viewportColumns,
@@ -53,7 +52,6 @@ export default function Row<R>({
           isSummaryRow={isSummaryRow}
           eventBus={eventBus}
           onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
           enableCellRangeSelection={enableCellRangeSelection}
         />
       );

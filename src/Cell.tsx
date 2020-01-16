@@ -22,7 +22,6 @@ function Cell<R>({
   scrollLeft,
   eventBus,
   onRowClick,
-  onRowDoubleClick,
   enableCellRangeSelection
 }: CellProps<R>) {
   function selectCell(openEditor?: boolean) {
@@ -53,10 +52,8 @@ function Cell<R>({
     selectCell();
   }
 
-  function handleCellDoubleClick(e: React.MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
+  function handleCellDoubleClick() {
     selectCell(true);
-    onRowDoubleClick?.(rowIdx, row, column);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
