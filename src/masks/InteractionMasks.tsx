@@ -1,5 +1,4 @@
-import React, { cloneElement, useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useState, useRef, useEffect } from 'react';
 
 // Components
 import CellMask from './CellMask';
@@ -45,7 +44,6 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
 | 'cellNavigationMode'
-| 'contextMenu'
 | 'editorPortalTarget'
 | 'onCheckCellIsEditable'
 | 'onSelectedCellChange'
@@ -85,7 +83,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   canvasRef,
   scrollLeft,
   scrollTop,
-  contextMenu,
   onSelectedCellChange,
   onCheckCellIsEditable,
   onRowsUpdate,
@@ -409,10 +406,6 @@ export default function InteractionMasks<R, K extends keyof R>({
             {...getEditorPosition()}
           />
         </EditorPortal>
-      )}
-      {contextMenu && isCellWithinBounds(selectedPosition) && createPortal(
-        cloneElement(contextMenu, { ...selectedPosition }),
-        editorPortalTarget
       )}
     </div>
   );

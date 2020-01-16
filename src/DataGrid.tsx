@@ -97,8 +97,6 @@ export interface DataGridProps<R, K extends keyof R> {
   rowsContainer?: React.ComponentType<RowsContainerProps>;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
-  /** Component used to render a context menu. */
-  contextMenu?: React.ReactElement;
 
   /**
    * Event props
@@ -303,7 +301,6 @@ function DataGrid<R, K extends keyof R>({
               viewportColumns={viewportColumns}
               onScroll={handleScroll}
               height={height - rowOffsetHeight}
-              contextMenu={props.contextMenu}
               rowGroupRenderer={props.rowGroupRenderer}
               enableCellSelect={enableCellSelect}
               enableCellAutoFocus={enableCellAutoFocus}
