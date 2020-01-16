@@ -50,8 +50,6 @@ const testProps: CanvasProps<Row, 'id'> = {
     formatter: ValueFormatter
   }],
   renderBatchSize: 8,
-  onCanvasKeydown() {},
-  onCanvasKeyup() {},
   scrollLeft: 0
 };
 

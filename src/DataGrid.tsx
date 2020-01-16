@@ -107,10 +107,6 @@ export interface DataGridProps<R, K extends keyof R> {
   onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R>): void;
   /** Function called whenever a row is double clicked */
   onRowDoubleClick?(rowIdx: number, row: R, column: CalculatedColumn<R>): void;
-  /** Function called whenever a key is pressed down */
-  onGridKeyDown?(event: React.KeyboardEvent<HTMLDivElement>): void;
-  /** Function called whenever a key is released */
-  onGridKeyUp?(event: React.KeyboardEvent<HTMLDivElement>): void;
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Called when a column is resized */
@@ -319,8 +315,6 @@ function DataGrid<R, K extends keyof R>({
               scrollLeft={scrollLeft}
               rowsContainer={props.rowsContainer}
               editorPortalTarget={editorPortalTarget}
-              onCanvasKeydown={props.onGridKeyDown}
-              onCanvasKeyup={props.onGridKeyUp}
               renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
