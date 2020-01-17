@@ -133,10 +133,6 @@ export interface CellRendererProps<TRow> {
   enableCellRangeSelection?: boolean;
 }
 
-export interface RowsContainerProps {
-  children: React.ReactElement;
-}
-
 export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   height: number;
   width: number;

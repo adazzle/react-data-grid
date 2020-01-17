@@ -38,6 +38,7 @@
   return <DataGrid rowRenderer={RowRenderer}>;
   ```
 - Remove `contextMenu` prop
+- Remove `rowsContainer` prop
 
 ## next -> canary
 - Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.
