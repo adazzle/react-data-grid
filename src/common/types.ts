@@ -140,7 +140,7 @@ export interface RowRendererProps<TRow> {
   viewportColumns: readonly CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
-  idx: number;
+  rowIdx: number;
   extraClasses?: string;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;

@@ -10,7 +10,7 @@ export default function Row<R>({
   eventBus,
   extraClasses,
   height,
-  idx,
+  rowIdx,
   isRowSelected,
   isSummaryRow,
   lastFrozenColumnIndex,
@@ -23,7 +23,7 @@ export default function Row<R>({
   function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
     e.preventDefault();
-    eventBus.dispatch('DRAG_ENTER', idx);
+    eventBus.dispatch('DRAG_ENTER', rowIdx);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
@@ -43,7 +43,7 @@ export default function Row<R>({
         <CellRenderer
           key={column.key as string} // FIXME: fix key type
           idx={column.idx}
-          rowIdx={idx}
+          rowIdx={rowIdx}
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
@@ -60,7 +60,7 @@ export default function Row<R>({
 
   const className = classNames(
     'rdg-row',
-    `rdg-row-${idx % 2 === 0 ? 'even' : 'odd'}`,
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     { 'rdg-row-selected': isRowSelected },
     extraClasses
   );
