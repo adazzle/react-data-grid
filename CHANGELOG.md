@@ -4,6 +4,7 @@
 - **Added:**
   - **Props:**
     - `onSelectedCellChange`
+      - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
     - `filters`
     - `onFiltersChange`
     - `enableCellCopyPaste`
@@ -20,11 +21,11 @@
   - **Props:**
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
+      <!-- TODO: fill link to storybook -->
+      - Check the [Context Menu]() example
     - ⚠️ `enableCellSelect`
     - ⚠️ `getValidFilterValues`
     - ⚠️ `onCellCopyPaste`
-    - ⚠️ `onCellDeSelected`
-    - ⚠️ `onCellSelected`
     - ⚠️ `onGridKeyDown`
     - ⚠️ `onGridKeyUp`
     - ⚠️ `onRowDoubleClick`
@@ -34,9 +35,18 @@
     - ⚠️ `cellMetaData` (from `Row` and `Cell` props)
     - ⚠️ `value` (from `column.formatter` props)
   - ⚠️ React elements are no longer supported, please use components instead.
+    - For example:
+    ```diff js
+    const column = {
+      key: 'example',
+      name: 'Example',
+    - formatter: <CustomFormatter length={5} />
+    + formatter: (props) => <CustomFormatter {...props} length={5} />
+    };
+    ```
   - ⚠️ `column.events`
-    - Check [#1845](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
   - ⚠️ `column.getCellActions`
+    - Check [#1845](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
   - ⚠️ `column.getRowMetaData`
   - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`
   - ⚠️ `fromRowId`, `toRowId`, and `fromRowData` from `onRowsUpdate` argument
