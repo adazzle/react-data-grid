@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AutoSizer } from 'react-virtualized';
 import { Clear, Link, FileCopy } from '@material-ui/icons';
 import faker from 'faker';
 
@@ -27,9 +28,9 @@ const createFakeRowObjectData = (index: number) => ({
 
 type Row = ReturnType<typeof createFakeRowObjectData>;
 
-const createRows = (numberOfRows: number) => {
+const createRows = () => {
   const rows = [];
-  for (let i = 0; i < numberOfRows; i++) {
+  for (let i = 0; i < 500; i++) {
     rows[i] = createFakeRowObjectData(i);
   }
   return rows;
@@ -146,14 +147,19 @@ const columns: Column<Row>[] = [
 ];
 
 export default function CellActions() {
-  const [rows] = useState(() => createRows(2000));
+  const [rows] = useState(createRows);
 
   return (
-    <DataGrid<Row, 'id'>
-      columns={columns}
-      rows={rows}
-      rowHeight={55}
-      height={600}
-    />
+    <AutoSizer>
+      {({ height, width }) => (
+        <DataGrid<Row, 'id'>
+          columns={columns}
+          rows={rows}
+          width={width}
+          height={height}
+          rowHeight={55}
+        />
+      )}
+    </AutoSizer>
   );
 }
