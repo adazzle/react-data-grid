@@ -21,7 +21,6 @@ const testProps: CanvasProps<Row, 'id'> = {
   height: 200,
   rows: [{ id: 0, row: '0' }],
   onRowsUpdate: noop,
-  enableCellSelect: true,
   enableCellAutoFocus: false,
   enableCellCopyPaste: true,
   enableCellDragAndDrop: true,

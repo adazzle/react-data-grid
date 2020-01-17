@@ -49,18 +49,17 @@ export function getSelectedRangeDimensions<R>({ selectedRange: { topLeft, bottom
 }
 
 interface isSelectedCellEditableOpts<R> {
-  enableCellSelect: boolean;
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R>[];
   rows: readonly R[];
   onCheckCellIsEditable?(arg: { row: R; column: CalculatedColumn<R> } & Position): boolean;
 }
 
-export function isSelectedCellEditable<R>({ enableCellSelect, selectedPosition, columns, rows, onCheckCellIsEditable }: isSelectedCellEditableOpts<R>): boolean {
+export function isSelectedCellEditable<R>({ selectedPosition, columns, rows, onCheckCellIsEditable }: isSelectedCellEditableOpts<R>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
   const isCellEditable = onCheckCellIsEditable ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
-  return isCellEditable && canEdit<R>(column, row, enableCellSelect);
+  return isCellEditable && canEdit<R>(column, row);
 }
 
 interface getNextSelectedCellPositionOpts<R> {

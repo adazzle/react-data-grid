@@ -154,7 +154,6 @@ export default function TreeView() {
         />
       </label>
       <DataGrid<Row, 'id'>
-        enableCellSelect
         columns={columns}
         rows={rows}
         height={500}

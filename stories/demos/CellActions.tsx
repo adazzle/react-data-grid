@@ -150,7 +150,6 @@ export default function CellActions() {
 
   return (
     <DataGrid<Row, 'id'>
-      enableCellSelect
       columns={columns}
       rows={rows}
       rowHeight={55}

@@ -119,8 +119,6 @@ export interface DataGridProps<R, K extends keyof R> {
    */
   /** Toggles whether filters row is displayed or not */
   enableHeaderFilters?: boolean;
-  /** Used to toggle whether cells can be selected or not */
-  enableCellSelect?: boolean;
   /** Toggles whether cells should be autofocused */
   enableCellAutoFocus?: boolean;
   enableCellCopyPaste?: boolean;
@@ -152,7 +150,6 @@ function DataGrid<R, K extends keyof R>({
   height = 350,
   width,
   enableCellAutoFocus = true,
-  enableCellSelect = false,
   enableHeaderFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
@@ -300,7 +297,6 @@ function DataGrid<R, K extends keyof R>({
               onScroll={handleScroll}
               height={height - rowOffsetHeight}
               rowGroupRenderer={props.rowGroupRenderer}
-              enableCellSelect={enableCellSelect}
               enableCellAutoFocus={enableCellAutoFocus}
               enableCellCopyPaste={enableCellCopyPaste}
               enableCellDragAndDrop={enableCellDragAndDrop}

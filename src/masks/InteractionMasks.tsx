@@ -39,7 +39,6 @@ export enum KeyCodes {
 type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'rows'
 | 'rowHeight'
-| 'enableCellSelect'
 | 'enableCellAutoFocus'
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
@@ -74,7 +73,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   rows,
   rowHeight,
   eventBus,
-  enableCellSelect,
   enableCellAutoFocus,
   enableCellCopyPaste,
   enableCellDragAndDrop,
@@ -268,7 +266,7 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   function isCellEditable(position: Position) {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R>({ enableCellSelect, columns, rows, selectedPosition: position, onCheckCellIsEditable });
+      && isSelectedCellEditable<R>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
   }
 
   function selectCell(position: Position, enableEditor = false): void {

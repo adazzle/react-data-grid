@@ -31,6 +31,7 @@
 - Remove `onGridKeyDown`, `onGridKeyUp`, and `onRowDoubleClick` props
 - Remove `contextMenu` prop
 - Remove `rowsContainer` prop
+- Remove `enableCellSelect` prop
 
 ## next -> canary
 - Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.
