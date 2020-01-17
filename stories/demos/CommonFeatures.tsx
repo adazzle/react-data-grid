@@ -258,7 +258,6 @@ export default function CommonFeatures() {
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={handleSort}
-          enableCellSelect
         />
       )}
     </AutoSizer>

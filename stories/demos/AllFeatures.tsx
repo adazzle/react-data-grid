@@ -195,7 +195,6 @@ export default function AllFeatures() {
         {({ height, width }) => (
           <DataGrid<Row, 'id'>
             ref={gridRef}
-            enableCellSelect
             columns={columns}
             rows={rows}
             onRowsUpdate={handleRowUpdate}

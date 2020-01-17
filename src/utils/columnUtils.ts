@@ -85,11 +85,11 @@ function getSpecifiedWidth<R>(
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to decide whether we can be editing from a cell level
-export function canEdit<R>(column: CalculatedColumn<R>, row: R, enableCellSelect?: boolean): boolean {
+export function canEdit<R>(column: CalculatedColumn<R>, row: R): boolean {
   if (typeof column.editable === 'function') {
-    return enableCellSelect === true && column.editable(row);
+    return column.editable(row);
   }
-  return enableCellSelect === true && (!!column.editor || !!column.editable);
+  return Boolean(column.editor || column.editable);
 }
 
 export function getColumnScrollPosition<R>(columns: readonly CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
