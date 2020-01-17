@@ -1,10 +1,10 @@
 # React Data Grid [![npm-badge]][npm-url] [![azure-badge]][azure-url] [![coverage-badge]][azure-url]
 
-[npm-badge]: https://img.shields.io/npm/v/react-data-grid/next.svg
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid/alpha.svg
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[azure-badge]: https://img.shields.io/azure-devops/build/nstepi181/e5b746e6-be62-4d36-896f-1e636f889cdc/1/next.svg?logo=pipelines&style=flat-square
-[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/next.svg?style=flat-square
-[azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=next
+[azure-badge]: https://img.shields.io/azure-devops/build/nstepi181/e5b746e6-be62-4d36-896f-1e636f889cdc/1/alpha.svg?logo=pipelines&style=flat-square
+[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/alpha.svg?style=flat-square
+[azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=alpha
 
 Excel-like grid component built with React, with editors, keyboard navigation, copy &amp; paste, and the like
 
@@ -33,13 +33,13 @@ Versions In This Repository
 --------
 
 - [master](https://github.com/adazzle/react-data-grid/commits/master) - commits that will be included in the next _minor_ or _patch_ release
-- [next](https://github.com/adazzle/react-data-grid/commits/next) - commits that will be included in the next _major_ release (breaking changes)
+- [alpha](https://github.com/adazzle/react-data-grid/commits/alpha) - commits that will be included in the next _major_ release (breaking changes)
 
 Most PRs should be made to **master**, unless you know it is a breaking change.
 
 To install the latest **unstable** version, you can run
 ```sh
-npm install react-data-grid@next
+npm install react-data-grid@alpha
 ```
 
 Migrations
