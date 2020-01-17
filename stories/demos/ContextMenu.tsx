@@ -4,7 +4,7 @@ import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 
-import DataGrid, { Column, Position, RowsContainerProps } from '../../src';
+import DataGrid, { Column, Row as GridRow, RowRendererProps } from '../../src';
 import './react-contextmenu.less';
 
 interface Row {
@@ -31,31 +31,30 @@ const columns: readonly Column<Row>[] = [
   { key: 'price', name: 'Price' }
 ];
 
-function RowsContainer({ children }: RowsContainerProps) {
+function RowRenderer(props: RowRendererProps<Row>) {
   return (
-    <ContextMenuTrigger id="grid-context-menu">
-      {children}
+    <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.idx })}>
+      <GridRow {...props} />
     </ContextMenuTrigger>
   );
 }
 
 export default function ContextMenuStory() {
   const [rows, setRows] = useState(createRows);
-  const [{ rowIdx }, setSelectedCell] = useState<Position>({ idx: -1, rowIdx: -1 });
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 
-  function onRowDelete() {
+  function onRowDelete(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
     setRows([
       ...rows.slice(0, rowIdx),
       ...rows.slice(rowIdx + 1)
     ]);
   }
 
-  function onRowInsertAbove() {
+  function onRowInsertAbove(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
     insertRow(rowIdx);
   }
 
-  function onRowInsertBelow() {
+  function onRowInsertBelow(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
     insertRow(rowIdx + 1);
   }
 
@@ -85,8 +84,7 @@ export default function ContextMenuStory() {
             width={width}
             height={height}
             enableCellSelect
-            onSelectedCellChange={setSelectedCell}
-            rowsContainer={RowsContainer}
+            rowRenderer={RowRenderer}
           />
         )}
       </AutoSizer>

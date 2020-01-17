@@ -19,7 +19,6 @@ import {
   Column,
   RowsUpdateEvent,
   Position,
-  RowsContainerProps,
   RowExpandToggleEvent,
   SelectedRange,
   RowRendererProps,
@@ -94,7 +93,6 @@ export interface DataGridProps<R, K extends keyof R> {
   rowRenderer?: React.ComponentType<RowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   emptyRowsView?: React.ComponentType<{}>;
-  rowsContainer?: React.ComponentType<RowsContainerProps>;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
 
@@ -308,7 +306,6 @@ function DataGrid<R, K extends keyof R>({
               enableCellDragAndDrop={enableCellDragAndDrop}
               cellNavigationMode={cellNavigationMode}
               scrollLeft={scrollLeft}
-              rowsContainer={props.rowsContainer}
               editorPortalTarget={editorPortalTarget}
               renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
