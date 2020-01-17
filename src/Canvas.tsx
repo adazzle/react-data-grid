@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, Fragment } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import EventBus from './EventBus';
@@ -12,7 +12,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
-| 'rowsContainer'
 | 'selectedRows'
 | 'summaryRows'
 | 'onCheckCellIsEditable'
@@ -59,7 +58,6 @@ function Canvas<R, K extends keyof R>({
   rows,
   rowHeight,
   rowKey,
-  rowsContainer: RowsContainer = Fragment,
   summaryRows,
   selectedRows,
   onSelectedRowsChange,
@@ -212,18 +210,16 @@ function Canvas<R, K extends keyof R>({
   }
 
   const grid = (
-    <RowsContainer>
-      <div
-        className="rdg-grid"
-        style={{
-          width: columnMetrics.totalColumnWidth,
-          paddingTop: rowOverscanStartIdx * rowHeight,
-          paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
-        }}
-      >
-        {getViewportRows()}
-      </div>
-    </RowsContainer>
+    <div
+      className="rdg-grid"
+      style={{
+        width: columnMetrics.totalColumnWidth,
+        paddingTop: rowOverscanStartIdx * rowHeight,
+        paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
+      }}
+    >
+      {getViewportRows()}
+    </div>
   );
 
   const summary = summaryRows && summaryRows.length > 0 && (
