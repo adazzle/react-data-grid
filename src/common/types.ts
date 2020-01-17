@@ -134,10 +134,6 @@ export interface CellRendererProps<TRow> {
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
-export interface RowsContainerProps {
-  children: React.ReactElement;
-}
-
 export interface RowRendererProps<TRow> {
   height: number;
   width: number;
