@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, Fragment } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import EventBus from './EventBus';
@@ -12,7 +12,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
-| 'contextMenu'
 | 'rowsContainer'
 | 'selectedRows'
 | 'summaryRows'
@@ -53,7 +52,6 @@ export interface CanvasHandle {
 function Canvas<R, K extends keyof R>({
   columnMetrics,
   viewportColumns,
-  contextMenu,
   height,
   scrollLeft,
   onScroll,
@@ -61,7 +59,7 @@ function Canvas<R, K extends keyof R>({
   rows,
   rowHeight,
   rowKey,
-  rowsContainer: RowsContainer,
+  rowsContainer: RowsContainer = Fragment,
   summaryRows,
   selectedRows,
   onSelectedRowsChange,
@@ -213,22 +211,20 @@ function Canvas<R, K extends keyof R>({
     return rowElements;
   }
 
-  let grid = (
-    <div
-      className="rdg-grid"
-      style={{
-        width: columnMetrics.totalColumnWidth,
-        paddingTop: rowOverscanStartIdx * rowHeight,
-        paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
-      }}
-    >
-      {getViewportRows()}
-    </div>
+  const grid = (
+    <RowsContainer>
+      <div
+        className="rdg-grid"
+        style={{
+          width: columnMetrics.totalColumnWidth,
+          paddingTop: rowOverscanStartIdx * rowHeight,
+          paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
+        }}
+      >
+        {getViewportRows()}
+      </div>
+    </RowsContainer>
   );
-
-  if (RowsContainer !== undefined) {
-    grid = <RowsContainer id={contextMenu ? contextMenu.props.id : 'rowsContainer'}>{grid}</RowsContainer>;
-  }
 
   const summary = summaryRows && summaryRows.length > 0 && (
     <div ref={summaryRef} className="rdg-summary">
@@ -269,7 +265,6 @@ function Canvas<R, K extends keyof R>({
           enableCellDragAndDrop={props.enableCellDragAndDrop}
           cellNavigationMode={props.cellNavigationMode}
           eventBus={eventBus}
-          contextMenu={contextMenu}
           canvasRef={canvasRef}
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
