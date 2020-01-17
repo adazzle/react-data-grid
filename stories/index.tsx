@@ -11,6 +11,7 @@ import MillionCells from './demos/MillionCells';
 import NoRows from './demos/NoRows';
 import TreeView from './demos/TreeView';
 import ContextMenu from './demos/ContextMenu';
+import ScrollToRow from './demos/ScrollToRow';
 
 storiesOf('Demos', module)
   .add('Common Features', () => <CommonFeatures />)
@@ -19,4 +20,5 @@ storiesOf('Demos', module)
   .add('No Rows', () => <NoRows />)
   .add('Cell Actions', () => <CellActions />)
   .add('Tree View', () => <TreeView />)
-  .add('Context Menu', () => <ContextMenu />);
+  .add('Context Menu', () => <ContextMenu />)
+  .add('Scroll To Row', () => <ScrollToRow />);
