@@ -4,7 +4,7 @@ import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 
-import DataGrid, { Column, Row, RowRendererProps } from '../../src';
+import DataGrid, { Column, Row as GridRow, RowRendererProps } from '../../src';
 import './react-contextmenu.less';
 
 interface Row {
@@ -34,7 +34,7 @@ const columns: readonly Column<Row>[] = [
 function RowRenderer(props: RowRendererProps<Row>) {
   return (
     <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.idx })}>
-      <Row {...props} />
+      <GridRow {...props} />
     </ContextMenuTrigger>
   );
 }
