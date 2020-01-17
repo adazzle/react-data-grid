@@ -763,15 +763,4 @@ describe('InteractionMasks', () => {
       });
     });
   });
-
-  describe('ContextMenu functionality', () => {
-    it('should render the context menu if it a valid element', () => {
-      const FakeContextMenu = <div className="context-menu">Context Menu</div>;
-      const { wrapper } = setup({ contextMenu: FakeContextMenu }, { idx: 1, rowIdx: 2 });
-      wrapper.update();
-
-      expect(wrapper.find('.context-menu').props())
-        .toMatchObject({ idx: 1, rowIdx: 2 });
-    });
-  });
 });

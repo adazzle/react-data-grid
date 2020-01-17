@@ -134,7 +134,6 @@ export interface CellRendererProps<TRow> {
 }
 
 export interface RowsContainerProps {
-  id: string;
   children: React.ReactElement;
 }
 
