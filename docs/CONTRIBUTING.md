@@ -100,7 +100,7 @@ All contributions are encouraged and most of all we hope you will have some fun 
 For maintainers only.
 
 - `cd` to the root of the repo.
-- Checkout the branch you wish to publish. `master`, `next`, or `canary`
+- Checkout the branch you wish to publish. `master`, `alpha`, or `canary`
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Install dependencies, bootstrap lerna:
   - `npm i`
@@ -113,8 +113,8 @@ For maintainers only.
 - Publish the update with lerna:
   - To release a new stable version:
     - `npx lerna publish`
-  - To release a new `next` version:
-    - `npx lerna publish --dist-tag next`
+  - To release a new `alpha` version:
+    - `npx lerna publish --dist-tag alpha`
     - Select `Custom Prerelease`
     - Type in `alpha` for the prerelease name.
   - To release a new `canary` version:
