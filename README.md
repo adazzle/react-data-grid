@@ -1,11 +1,11 @@
 # react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![coverage-badge]][azure-url]
 
-[npm-badge]: https://img.shields.io/npm/v/react-data-grid/next?style=flat-square
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid/alpha?style=flat-square
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid/next?style=flat-square
-[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid@next
-[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/next?style=flat-square
-[azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=next
+[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid/alpha?style=flat-square
+[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid@alpha
+[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/alpha?style=flat-square
+[azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=alpha
 
 ## Install
 

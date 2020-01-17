@@ -3,7 +3,7 @@
 For maintainers only.
 
 - `cd` to the root of the repo.
-- Checkout the branch you wish to publish. `master`, `next`, or `canary`
+- Checkout the branch you wish to publish. `master`, `alpha`, or `canary`
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Update the changelog, if necessary, and commit.
 - Login to the `adazzle` npm account if you haven't already done so:
@@ -13,9 +13,9 @@ For maintainers only.
   - To release a new stable version:
     - `npm version [major | minor | patch] -m "Publish %s"`
     - `npm publish`
-  - To release a new `next` version:
+  - To release a new `alpha` version:
     - `npm version prerelease --preid=alpha -m "Publish %s"`
-    - `npm publish --tag next`
+    - `npm publish --tag alpha`
   - To release a new `canary` version:
     - `npm version prerelease --preid=canary -m "Publish %s"`
     - `npm publish --tag canary`
