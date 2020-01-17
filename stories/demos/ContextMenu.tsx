@@ -33,7 +33,7 @@ const columns: readonly Column<Row>[] = [
 
 function RowRenderer(props: RowRendererProps<Row>) {
   return (
-    <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.idx })}>
+    <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
       <GridRow {...props} />
     </ContextMenuTrigger>
   );

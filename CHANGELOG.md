@@ -57,6 +57,7 @@
   - ⚠️ `onGridRowsUpdated` to `onRowsUpdate`
   - ⚠️ `rowData` to `row`
   - ⚠️ `fromRowData` to `fromRow`
+  - ⚠️ `idx` to `rowIdx` in `Row` renderer
 - **Changed:**
   - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
   - ⚠️ `column.cellClass` does not affect header cells anymore.
