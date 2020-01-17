@@ -1,88 +1,121 @@
-## canary -> pre-canary
-- Remove `onCellCopyPaste` prop
-- Remove `getValidFilterValues` prop
-- Replace `onCellSelected` and `onCellDeSelected` with `onSelectedCellChange` prop
-- Replace `cellRangeSelection.onStart/onUpdate/onEnd` props with a single `onCellRangeSelectionChange` prop
-- Add `filters` and `onFiltersChange` props
-- Add `enableCellCopyPaste` prop to toggle copy/paste
-- Add `enableCellDragAndDrop` prop to toggle drag fill
-- Remove `fromRowId`, `toRowId`, and `fromRowData` from `onGridRowsUpdated` argument
-- Remove `column.getRowMetaData` prop
-- Header now only render visible cells [1837](https://github.com/adazzle/react-data-grid/pull/1837)
-- Replace `scrollToRowIndex` prop with `scrollToRow` method
-- Row and Cell renderers no longer receive `cellMetaData` prop
-- Remove `getCellActions` prop. Check [here](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
-- Remove `react-data-grid-addons` package.
-- Remove subrow props (`getSubRowDetails`, `onCellExpand`, `onDeleteSubRow`, and `onAddSubRow`). Check [here](https://github.com/adazzle/react-data-grid/pull/1853) on how to migrate
-- Remove `cellContentRenderer`
-- `column.editor`, `rowRenderer`, and `headerRenderer` no longer support `ReactElement`
-- `column.formatter` no longer receives a `value` prop.
-- Remove `column.events` prop
-- Replace `rowGetter` and `rowsCount` props with a single `rows` prop
-- Rename `minHeight` to `height`
-- Rename `minWidth` to `width`
-- Rename `RowsContainer` to `rowsContainer`
-- Rename `onGridSort` to `onSort`
-- Rename `onGridRowsUpdated` to `onRowsUpdate`
-- Added function support for `column.cellClass`:
-  - `column = { ..., cellClass(row) { return string; } }`
-  - `column.cellClass` does not affect header cells anymore
-- Rename various `rowData` to `row`, `fromRowData` to `fromRow`
-- Remove `onGridKeyDown`, `onGridKeyUp`, and `onRowDoubleClick` props
-- Remove `contextMenu` prop
-- Remove `rowsContainer` prop
-- Remove `enableCellSelect` prop
+# Changelog
 
-## next -> canary
-- Column resize now resizes all the cells which means re-rendering the whole grid when resizing columns.
-- Add `column.cellContentRenderer`. This is an opt-in feature, so it should not break anything. More info in [here](https://gist.github.com/nstepien/090298c3c2d94324cb332c33d82fdcfb)
-- `ReactDataGrid` component is renamed to `DataGrid`
-- Remove `setScrollLeft` from Row and Cell renderers. `setScrollLeft` instance method was previously required on custom Cell and Row renderers and it can be safely removed now. More info in [here](https://github.com/adazzle/react-data-grid/pull/1793)
-- Drop ImmutableJS support
-- Drop dynamic height row support. This was not an official feature but it was still possible to implement dynamic rows via custom Row renderer. This was a buggy feature so it has been removed.
-- Remove `formatter.isScrolling` prop. `isScrolling` prop was introduced to improve performance of expensive formatters. This is no longer required as the internals of the grid were rewritten to improve performance
-- Add summary rows [1773](https://github.com/adazzle/react-data-grid/pull/1773)
-- Remove row reordering support. This was a buggy feature so it has been removed.
-- Remove toolbar prop. Check [here](https://github.com/adazzle/react-data-grid/pull/1769) on how to migrate.
-- Remove internal `sortColumn` and `sortDirection` states. Sorting is now only controlled by `sortColumn` and `sortDirection` props. Check [here](https://github.com/adazzle/react-data-grid/pull/1768) on how to migrate.
-- Improve scrolling performance
-- Improve frozen columns performance
-- Re-implement row selection. Previous row selection API has been replaced by the new `selectedRows` and `onSelectedRowsChange` props. A new `SelectColumn` is now available to import and add a row selection column. Check [here](https://github.com/adazzle/react-data-grid/pull/1762) on how to migrate.
-- Add `renderBatchSize` prop [1779](https://github.com/adazzle/react-data-grid/pull/1779)
-- Remove bootstrap dependency and re-implement grid css [1780](https://github.com/adazzle/react-data-grid/pull/1780)
+## `alpha` to `canary`
+- **Added:**
+  - **Props:**
+    - `onSelectedCellChange`
+      - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
+    - `filters`
+    - `onFiltersChange`
+    - `enableCellCopyPaste`
+    - `enableCellDragAndDrop`
+    - `rows`
+      - ⚠️ This replace the `rowGetter` and `rowsCount` props
+  - `column.cellClass(row)` function support:
+    - `column = { ..., cellClass(row) { return string; } }`
+  - `scrollToRow` method
+    - ⚠️ This replaces the `scrollToRowIndex` prop
+- **Removed:**
+  - **Packages:**
+    - ⚠️ `react-data-grid-addons`
+  - **Props:**
+    - ⚠️ `cellContentRenderer`
+    - ⚠️ `contextMenu`
+      <!-- TODO: fill link to storybook -->
+      - Check the [Context Menu]() example
+    - ⚠️ `enableCellSelect`
+    - ⚠️ `getValidFilterValues`
+    - ⚠️ `onCellCopyPaste`
+    - ⚠️ `onGridKeyDown`
+    - ⚠️ `onGridKeyUp`
+    - ⚠️ `onRowDoubleClick`
+    - ⚠️ `rowsContainer`
+    - ⚠️ Subrow props: `getSubRowDetails`, `onCellExpand`, `onDeleteSubRow`, and `onAddSubRow`
+      - Check [#1853](https://github.com/adazzle/react-data-grid/pull/1853) on how to migrate
+    - ⚠️ `cellMetaData` (from `Row` and `Cell` props)
+    - ⚠️ `value` (from `column.formatter` props)
+  - ⚠️ React elements are no longer supported, please use components instead.
+    - For example:
+    ```diff js
+    const column = {
+      key: 'example',
+      name: 'Example',
+    - formatter: <CustomFormatter length={5} />
+    + formatter: (props) => <CustomFormatter {...props} length={5} />
+    };
+    ```
+  - ⚠️ `column.events`
+  - ⚠️ `column.getCellActions`
+    - Check [#1845](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
+  - ⚠️ `column.getRowMetaData`
+  - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`
+  - ⚠️ `fromRowId`, `toRowId`, and `fromRowData` from `onRowsUpdate` argument
+- **Renamed:**
+  - ⚠️ `minHeight` to `height`
+  - ⚠️ `minWidth` to `width`
+  - ⚠️ `onGridSort` to `onSort`
+  - ⚠️ `onGridRowsUpdated` to `onRowsUpdate`
+  - ⚠️ `rowData` to `row`
+  - ⚠️ `fromRowData` to `fromRow`
+- **Changed:**
+  - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
+  - ⚠️ `column.cellClass` does not affect header cells anymore.
 
-## master -> alpha
-
-### react-data-grid
-
-- **Breaking**: the stylesheets are now bundled separately:
-  - `react-data-grid/dist/react-data-grid.css`
-- **Breaking**: removed:
-  - `ContainerEditorWrapper`
-  - `EditorBase`
-  - `onCellsDragged` prop
-  - `onDragHandleDoubleClick` prop
-  - `onRows` prop
-  - `onRowUpdated` prop
-  - `rowScrollTimeout` prop
-- **Feature**: Added support for `forwardRef`
-- **TechDebt**: Dependency updates
+## `master` to `alpha`
+- **Added:**
+  - TypeScript declaration files
+  - `column.cellContentRenderer`
+    - More info in this [gist](https://gist.github.com/nstepien/090298c3c2d94324cb332c33d82fdcfb)
+  - `summaryRows` prop [#1773](https://github.com/adazzle/react-data-grid/pull/1773)
+  - `sortColumn` and `sortDirection` props
+    - ⚠️ The internal sort states have been removed.
+    - Check [#1768](https://github.com/adazzle/react-data-grid/pull/1768) on how to migrate.
+  - `selectedRows` and `onSelectedRowsChange` props
+    - ⚠️ Row selection has been reimplemented.
+    - A new `SelectColumn` is now available to import and add a row selection column.
+    - Check [#1762](https://github.com/adazzle/react-data-grid/pull/1762) on how to migrate.
+  - `renderBatchSize` prop [#1779](https://github.com/adazzle/react-data-grid/pull/1779)
+- **Removed:**
+  - **Packages:**
+    - `react-data-grid-examples`
+      - Use the website as reference, or clone the repo locally and run `npm install` + `npm start`
+  - **Props:**
+    - ⚠️ `onCellsDragged`
+    - ⚠️ `onDragHandleDoubleClick`
+    - ⚠️ `onRows`
+    - ⚠️ `onRowUpdated`
+    - ⚠️ `rowScrollTimeout`
+    - ⚠️ `toolbar`
+      - Check [#1769](https://github.com/adazzle/react-data-grid/pull/1769) on how to migrate
+    - ⚠️ `isScrolling` (from `column.formatter` props)
+  - ⚠️ `ContainerEditorWrapper`
+  - ⚠️ `EditorBase`
+  - ⚠️ `setScrollLeft` from `Row` and `Cell` renderers
+    - `setScrollLeft` instance method was previously required on custom Cell and Row renderers and it can be safely removed now.
+    - More info in [#1793](https://github.com/adazzle/react-data-grid/pull/1793)
+  - ⚠️ Dropped ImmutableJS support.
+  - ⚠️ Dropped dynamic height row support.
+    - This was not officially supported, but it was still possible to implement dynamic rows via custom Row renderer. This was a buggy feature so it has been removed.
+  - ⚠️ Removed row reordering support.
+- **Renamed:**
+  - `ReactDataGrid` to `DataGrid`
+- **Changed:**
+  - ⚠️ The stylesheets are now bundled separately:
+    - `react-data-grid/dist/react-data-grid.css`
+  - ⚠️ Reimplemented stylesheets, renamed various class names [#1780](https://github.com/adazzle/react-data-grid/pull/1780)
+    - No longer depends on bootstrap
+  - Resizing a column now immediately resizes all its cells instead of just its header.
+  - Improved performance across the board.
 
 ### react-data-grid-addons
 
-- **Breaking**: react-data-grid-addons has no default export anymore
-  - Use `import * as ReactDataGridAddons from 'react-data-grid-addons';` instead
-- **Breaking**: the stylesheets are now bundled separately:
+- ⚠️ `react-data-grid-addons` has no default export anymore
+  - Use `import * as DataGridAddons from 'react-data-grid-addons';` instead
+- ⚠️ The stylesheets are now bundled separately:
   - `react-data-grid-addons/dist/react-data-grid-addons.css`
-- **Breaking**: removed:
-  - `AutoComplete` editor
-  - `Utils`
-- **TechDebt**: Dependency updates
-
-### react-data-grid-examples
-
-- **Breaking**: stopped publishing this package
-  - Use the website as reference, or clone the repo locally and run `npm install` + `npm start`
+- **Removed:**
+  - ⚠️ `AutoComplete` editor
+  - ⚠️ `Utils`
 
 
 ## 5.0.5 (Dec 6, 2018)
