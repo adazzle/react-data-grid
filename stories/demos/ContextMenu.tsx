@@ -84,7 +84,6 @@ export default function ContextMenuStory() {
             rows={rows}
             width={width}
             height={height}
-            enableCellSelect
             onSelectedCellChange={setSelectedCell}
             rowsContainer={RowsContainer}
           />

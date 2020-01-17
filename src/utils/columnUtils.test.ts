@@ -196,7 +196,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editor).not.toBeUndefined();
@@ -212,7 +212,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editor).toBeUndefined();
@@ -227,7 +227,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = undefined;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editable).toBe(true);
@@ -241,7 +241,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = undefined;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editable).toBeUndefined();
@@ -258,7 +258,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editor).not.toBeNull();
@@ -274,7 +274,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editor).toBeUndefined();
@@ -289,7 +289,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = undefined;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editable).toBe(true);
@@ -303,7 +303,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = undefined;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(testProps.col.editable).toBeUndefined();
@@ -319,7 +319,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('boolean');
@@ -335,7 +335,7 @@ describe('canEdit', () => {
         testProps.col.editor = undefined;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('boolean');
@@ -351,7 +351,7 @@ describe('canEdit', () => {
         testProps.col.editor = undefined;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('boolean');
@@ -366,7 +366,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = false;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('boolean');
@@ -383,7 +383,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
@@ -398,7 +398,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = true;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
@@ -413,7 +413,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = false;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
@@ -428,7 +428,7 @@ describe('canEdit', () => {
         testProps.enableCellSelect = false;
 
         // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
+        const result = canEdit(testProps.col, testProps.RowData);
 
         // Assert
         expect(typeof testProps.col.editable).toBe('function');
