@@ -2,7 +2,7 @@
 
 trigger:
 - master
-- next
+- alpha
 
 pool:
   vmImage: 'ubuntu-latest'
