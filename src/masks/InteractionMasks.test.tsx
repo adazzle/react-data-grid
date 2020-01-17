@@ -35,7 +35,6 @@ describe('InteractionMasks', () => {
       onSelectedCellChange,
       onSelectedCellRangeChange: jest.fn(),
       onRowsUpdate: jest.fn(),
-      enableCellSelect: true,
       enableCellAutoFocus: false,
       enableCellCopyPaste: true,
       enableCellDragAndDrop: true,

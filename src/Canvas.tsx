@@ -23,7 +23,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 > & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
 | 'enableCellAutoFocus'
-| 'enableCellSelect'
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
 | 'rowHeight'
@@ -242,7 +241,6 @@ function Canvas<R, K extends keyof R>({
           rowHeight={rowHeight}
           columns={columns}
           height={clientHeight}
-          enableCellSelect={props.enableCellSelect}
           enableCellAutoFocus={props.enableCellAutoFocus}
           enableCellCopyPaste={props.enableCellCopyPaste}
           enableCellDragAndDrop={props.enableCellDragAndDrop}

@@ -1,6 +1,6 @@
 import { getColumnMetrics, getColumnScrollPosition, canEdit } from './columnUtils';
 import { ValueFormatter } from '../formatters';
-import { Column, CalculatedColumn, Omit } from '../common/types';
+import { Column, CalculatedColumn } from '../common/types';
 import { createColumns } from '../test/utils';
 
 describe('getColumnMetrics', () => {
@@ -123,319 +123,36 @@ describe('getColumnScrollPosition', () => {
 
 describe('canEdit', () => {
   interface Row {
-    PlacementType?: string;
+    id: number;
   }
 
-  function setup() {
-    const col: CalculatedColumn<Row> = {
-      idx: 0,
-      editable: true,
-      editor: () => null,
-      filterable: true,
-      key: 'PlacementType',
-      left: 460,
-      name: 'Adserver Placement Type',
-      resizable: true,
-      width: 150,
-      formatter: ValueFormatter
+  const column: CalculatedColumn<Row> = {
+    idx: 0,
+    key: 'id',
+    name: 'ID',
+    left: 460,
+    width: 150,
+    formatter: ValueFormatter
+  };
+
+  it('should return the result of editable(row)', () => {
+    const fnColumn = {
+      ...column,
+      editable(row: Row) { return row.id === 1; }
     };
-
-    return {
-      col,
-      RowData: {
-        CostModel: 'CPM',
-        Dimensions: '468x60',
-        EndDate: '17 Apr 16',
-        ExternalSiteName: 'Crimtan',
-        FloodlightActivityId: null,
-        FloodlightActivityName: null,
-        FormatAdditionalInfo: '',
-        FormatBasicDescription: 'Banner - Standard (468x60)',
-        InactivePlacementId: 'False',
-        NumberOfUnits: '147223',
-        PackageId: '522140',
-        PackageName: 'BannerFull (468x60), Leaderboard (728x90), Mpu (300x250)',
-        PlacementId: '11212201702442',
-        PlacementType: 'Display',
-        RowState: 0,
-        Section: 'Run of Site',
-        SentToAdserver: 'True',
-        StartDate: '14 Mar 16',
-        SupplierId: '20966',
-        SupplierName: 'CrimTan',
-        TotalCost: '0',
-        UnitCost: '0',
-        adServingFormat: 'VAST',
-        additionalPlacementInfo: '1',
-        addtlUnitDimensions: '15s',
-        deviceType: 'D',
-        executionId: '502859',
-        isSiteMatched: 'True',
-        os: 'IOS',
-        placementName: 'CrimTan>>RunofSite>>468x60>>15s>> >>D>>CPM>>AUT>>W>>IOS>>VAST>> >>1',
-        targetAudienceType: 'AUT',
-        techType: 'Serving',
-        webOrApp: 'W'
-      },
-      enableCellSelect: true
-    };
-  }
-
-  let testProps: Omit<ReturnType<typeof setup>, 'enableCellSelect'> & { enableCellSelect?: boolean } = setup();
-
-  afterEach(() => {
-    testProps = setup();
+    expect(canEdit(fnColumn, { id: 1 })).toBe(true);
+    expect(canEdit(fnColumn, { id: 0 })).toBe(false);
   });
 
-  describe('canEdit tests', () => {
-    describe('canEdit tests using undefineds', () => {
-      it('CanEdit returns true when col.editable is undefined but col.editor is defined and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = undefined;
-        testProps.col.editor = () => null;
-        testProps.enableCellSelect = true;
+  it('should return correct booleans', () => {
+    const row: Row = { id: 1 };
+    const editor = () => null;
 
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editor).not.toBeUndefined();
-        expect(testProps.col.editable).toBeUndefined();
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(true);
-      });
-
-      it('CanEdit returns false when col.editable is undefined, col.editor is undefined and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = undefined;
-        testProps.col.editor = undefined;
-        testProps.enableCellSelect = true;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editor).toBeUndefined();
-        expect(testProps.col.editable).toBeUndefined();
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is true and enableCellSelect is undefined', () => {
-        // Arrange
-        testProps.col.editable = true;
-        testProps.enableCellSelect = undefined;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editable).toBe(true);
-        expect(testProps.enableCellSelect).toBeUndefined();
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is undefined and enableCellSelect is undefined', () => {
-        // Arrange
-        testProps.col.editable = undefined;
-        testProps.enableCellSelect = undefined;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editable).toBeUndefined();
-        expect(testProps.enableCellSelect).toBeUndefined();
-        expect(result).toBe(false);
-      });
-    });
-
-    describe('canEdit tests using nulls', () => {
-      it('CanEdit returns true when col.editable is null but col.editor is defined and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = undefined;
-        testProps.col.editor = () => null;
-        testProps.enableCellSelect = true;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editor).not.toBeNull();
-        expect(testProps.col.editable).toBeUndefined();
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(true);
-      });
-
-      it('CanEdit returns false when col.editable is null, col.editor is undefined and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = undefined;
-        testProps.col.editor = undefined;
-        testProps.enableCellSelect = true;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editor).toBeUndefined();
-        expect(testProps.col.editable).toBeUndefined();
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is true and enableCellSelect is null', () => {
-        // Arrange
-        testProps.col.editable = true;
-        testProps.enableCellSelect = undefined;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editable).toBe(true);
-        expect(testProps.enableCellSelect).toBeUndefined();
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is null and enableCellSelect is null', () => {
-        // Arrange
-        testProps.col.editable = undefined;
-        testProps.enableCellSelect = undefined;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(testProps.col.editable).toBeUndefined();
-        expect(testProps.enableCellSelect).toBeUndefined();
-        expect(result).toBe(false);
-      });
-    });
-
-    describe('canEdit tests using booleans', () => {
-      it('CanEdit returns true when col.editable is true and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = true;
-        testProps.enableCellSelect = true;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('boolean');
-        expect(testProps.col.editable).toBe(true);
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(true);
-      });
-
-      it('CanEdit returns false when col.editable is false and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = false;
-        testProps.enableCellSelect = true;
-        testProps.col.editor = undefined;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('boolean');
-        expect(testProps.col.editable).toBe(false);
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is true and enableCellSelect is false', () => {
-        // Arrange
-        testProps.col.editable = true;
-        testProps.enableCellSelect = false;
-        testProps.col.editor = undefined;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('boolean');
-        expect(testProps.col.editable).toBe(true);
-        expect(testProps.enableCellSelect).toBe(false);
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is false and enableCellSelect is false', () => {
-        // Arrange
-        testProps.col.editable = false;
-        testProps.enableCellSelect = false;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('boolean');
-        expect(testProps.col.editable).toBe(false);
-        expect(testProps.enableCellSelect).toBe(false);
-        expect(result).toBe(false);
-      });
-    });
-
-    describe('canEdit tests with col.editable as a function', () => {
-      it('CanEdit returns true when col.editable is a function which returns true and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = () => { return true; };
-        testProps.enableCellSelect = true;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable({})).toBe(true);
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(true);
-      });
-
-      it('CanEdit returns false when col.editable is a function which returns false and enableCellSelect is true', () => {
-        // Arrange
-        testProps.col.editable = () => { return false; };
-        testProps.enableCellSelect = true;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable({})).toBe(false);
-        expect(testProps.enableCellSelect).toBe(true);
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is a function which returns true and enableCellSelect is false', () => {
-        // Arrange
-        testProps.col.editable = () => { return true; };
-        testProps.enableCellSelect = false;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable({})).toBe(true);
-        expect(testProps.enableCellSelect).toBe(false);
-        expect(result).toBe(false);
-      });
-
-      it('CanEdit returns false when col.editable is a function which returns false and enableCellSelect is false', () => {
-        // Arrange
-        testProps.col.editable = () => { return false; };
-        testProps.enableCellSelect = false;
-
-        // Act
-        const result = canEdit(testProps.col, testProps.RowData, testProps.enableCellSelect);
-
-        // Assert
-        expect(typeof testProps.col.editable).toBe('function');
-        expect(testProps.col.editable({})).toBe(false);
-        expect(testProps.enableCellSelect).toBe(false);
-        expect(result).toBe(false);
-      });
-    });
+    expect(canEdit(column, row)).toBe(false);
+    expect(canEdit({ ...column, editable: false }, row)).toBe(false);
+    expect(canEdit({ ...column, editable: true }, row)).toBe(true);
+    expect(canEdit({ ...column, editor }, row)).toBe(true);
+    expect(canEdit({ ...column, editor, editable: false }, row)).toBe(true);
+    expect(canEdit({ ...column, editor, editable: true }, row)).toBe(true);
   });
 });
