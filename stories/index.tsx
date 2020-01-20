@@ -12,6 +12,7 @@ import NoRows from './demos/NoRows';
 import TreeView from './demos/TreeView';
 import ContextMenu from './demos/ContextMenu';
 import ScrollToRow from './demos/ScrollToRow';
+import CellNavigation from './demos/CellNavigation';
 
 storiesOf('Demos', module)
   .add('Common Features', () => <CommonFeatures />)
@@ -21,4 +22,5 @@ storiesOf('Demos', module)
   .add('Cell Actions', () => <CellActions />)
   .add('Tree View', () => <TreeView />)
   .add('Context Menu', () => <ContextMenu />)
-  .add('Scroll To Row', () => <ScrollToRow />);
+  .add('Scroll To Row', () => <ScrollToRow />)
+  .add('Cell Navigation', () => <CellNavigation />);

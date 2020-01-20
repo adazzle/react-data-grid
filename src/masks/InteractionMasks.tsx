@@ -256,7 +256,14 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
     e.preventDefault();
-    const nextPosition = getNextPosition(e.keyCode);
+    let nextPosition = getNextPosition(e.keyCode);
+    nextPosition = getNextSelectedCellPosition<R>({
+      columns,
+      rowsCount: rows.length,
+      cellNavigationMode,
+      nextPosition
+    });
+
     selectCell(nextPosition);
   }
 
