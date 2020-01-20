@@ -36,7 +36,7 @@
     - ⚠️ `value` (from `column.formatter` props)
   - ⚠️ React elements are no longer supported, please use components instead.
     - For example:
-    ```diff js
+    ```diff
     const column = {
       key: 'example',
       name: 'Example',
@@ -59,6 +59,8 @@
   - ⚠️ `fromRowData` to `fromRow`
   - ⚠️ `idx` to `rowIdx` in `Row` renderer
 - **Changed:**
+  - ⚠️ Started publishing ES2020/ESM modules instead of ES5/CommonJS modules.
+    - Using [`@babel/preset-env`](https://www.npmjs.com/package/@babel/preset-env) with [`core-js`](https://www.npmjs.com/package/core-js) is recommended to enable compatibility for the browsers your project aims to support.
   - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
   - ⚠️ `column.cellClass` does not affect header cells anymore.
 
