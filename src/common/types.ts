@@ -122,6 +122,7 @@ export interface EditorProps2<TRow> {
   column: CalculatedColumn<TRow>;
   row: TRow;
   onChange<K extends keyof TRow>(rowUpdate: { [k in K]: TRow[k] }): void;
+  onClose(): void;
 }
 
 export interface HeaderRendererProps<TRow> {

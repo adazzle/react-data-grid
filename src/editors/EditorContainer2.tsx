@@ -8,6 +8,7 @@ interface EditorContainerProps<R, K extends keyof R> extends Pick<InteractionMas
   column: CalculatedColumn<R>;
   row: R;
   rowIdx: number;
+  onClose(): void;
 }
 
 export default function EditorContainer<R, K extends keyof R>({
@@ -18,7 +19,8 @@ export default function EditorContainer<R, K extends keyof R>({
   canvasRef,
   scrollTop,
   scrollLeft,
-  onRowsUpdate
+  onRowsUpdate,
+  onClose
 }: EditorContainerProps<R, K>) {
   const Editor = column.editor2!;
 
@@ -51,6 +53,7 @@ export default function EditorContainer<R, K extends keyof R>({
           column={column}
           row={row}
           onChange={onChange}
+          onClose={onClose}
         />
       </div>
     </EditorPortal>

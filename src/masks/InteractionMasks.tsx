@@ -407,6 +407,7 @@ export default function InteractionMasks<R, K extends keyof R>({
           scrollTop={scrollTop}
           scrollLeft={scrollLeft}
           onRowsUpdate={onRowsUpdate}
+          onClose={closeEditor}
         />
       )}
       {/* {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
