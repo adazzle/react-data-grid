@@ -31,6 +31,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
+  editor2?: React.ComponentType<EditorProps2<TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
@@ -112,6 +113,12 @@ export interface EditorProps<TValue, TRow = any> {
   onCommit(): void;
   onCommitCancel(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
+}
+
+export interface EditorProps2<TRow> {
+  column: CalculatedColumn<TRow>;
+  row: TRow;
+  onChange<K extends keyof TRow>(rowUpdate: { [k in K]: TRow[k] }): void;
 }
 
 export interface HeaderRendererProps<TRow> {

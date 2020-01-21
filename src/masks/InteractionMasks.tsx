@@ -3,8 +3,9 @@ import React, { useState, useRef, useEffect } from 'react';
 // Components
 import CellMask from './CellMask';
 import DragMask, { DraggedPosition } from './DragMask';
-import EditorContainer from '../editors/EditorContainer';
-import EditorPortal from '../editors/EditorPortal';
+import EditorContainer from '../editors/EditorContainer2';
+// import EditorContainer from '../editors/EditorContainer';
+// import EditorPortal from '../editors/EditorPortal';
 
 // Utils
 import {
@@ -19,7 +20,7 @@ import {
 // Types
 import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode } from '../common/enums';
-import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
+import { Position, Dimension, /*CommitEvent,*/ ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 export enum KeyCodes {
@@ -76,7 +77,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   enableCellAutoFocus,
   enableCellCopyPaste,
   enableCellDragAndDrop,
-  editorPortalTarget,
+  // editorPortalTarget,
   cellNavigationMode,
   canvasRef,
   scrollLeft,
@@ -94,7 +95,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
-  const [firstEditorKeyPress, setFirstEditorKeyPress] = useState<string | null>(null);
+  const [/*firstEditorKeyPress*/, setFirstEditorKeyPress] = useState<string | null>(null);
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
 
@@ -129,15 +130,15 @@ export default function InteractionMasks<R, K extends keyof R>({
     setDraggedPosition(null);
   }
 
-  function getEditorPosition() {
-    if (!canvasRef.current) return null;
-    const { left, top } = canvasRef.current.getBoundingClientRect();
-    const column = columns[selectedPosition.idx];
-    return {
-      left: column.left - (column.frozen ? 0 : scrollLeft) + left,
-      top: selectedPosition.rowIdx * rowHeight - scrollTop + top
-    };
-  }
+  // function getEditorPosition() {
+  //   if (!canvasRef.current) return null;
+  //   const { left, top } = canvasRef.current.getBoundingClientRect();
+  //   const column = columns[selectedPosition.idx];
+  //   return {
+  //     left: column.left - (column.frozen ? 0 : scrollLeft) + left,
+  //     top: selectedPosition.rowIdx * rowHeight - scrollTop + top
+  //   };
+  // }
 
   function getNextPosition(keyCode: number) {
     switch (keyCode) {
@@ -344,16 +345,16 @@ export default function InteractionMasks<R, K extends keyof R>({
     });
   }
 
-  function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
-    onRowsUpdate({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: rowIdx,
-      updated,
-      action: UpdateActions.CELL_UPDATE
-    });
-    closeEditor();
-  }
+  // function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
+  //   onRowsUpdate({
+  //     cellKey,
+  //     fromRow: rowIdx,
+  //     toRow: rowIdx,
+  //     updated,
+  //     action: UpdateActions.CELL_UPDATE
+  //   });
+  //   closeEditor();
+  // }
 
   function getSelectedDimensions(selectedPosition: Position): Dimension {
     const top = rowHeight * selectedPosition.rowIdx;
@@ -397,6 +398,18 @@ export default function InteractionMasks<R, K extends keyof R>({
         </CellMask>
       )}
       {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
+        <EditorContainer
+          column={columns[selectedPosition.idx]}
+          row={rows[selectedPosition.rowIdx]}
+          canvasRef={canvasRef}
+          rowIdx={selectedPosition.rowIdx}
+          rowHeight={rowHeight}
+          scrollTop={scrollTop}
+          scrollLeft={scrollLeft}
+          onRowsUpdate={onRowsUpdate}
+        />
+      )}
+      {/* {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
           <EditorContainer<R, K>
             firstEditorKeyPress={firstEditorKeyPress}
@@ -411,7 +424,7 @@ export default function InteractionMasks<R, K extends keyof R>({
             {...getEditorPosition()}
           />
         </EditorPortal>
-      )}
+      )} */}
     </div>
   );
 }

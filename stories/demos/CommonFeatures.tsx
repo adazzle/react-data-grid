@@ -57,7 +57,15 @@ const columns: readonly Column<Row>[] = [
     key: 'client',
     name: 'Client',
     width: 220,
-    editable: true,
+    // editable: true,
+    editor2({ row, onChange }) {
+      return (
+        <input
+          value={row.client}
+          onChange={event => onChange({ client: event.target.value })}
+        />
+      );
+    },
     resizable: true,
     sortable: true
   },
