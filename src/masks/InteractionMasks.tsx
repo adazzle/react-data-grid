@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 // Components
 import CellMask from './CellMask';
@@ -176,10 +176,10 @@ export default function InteractionMasks<R, K extends keyof R>({
     }
   }
 
-  function closeEditor(): void {
+  const closeEditor = useCallback((): void => {
     setIsEditorEnabled(false);
     setFirstEditorKeyPress(null);
-  }
+  }, []);
 
   function onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
     if (!enableCellCopyPaste) return;

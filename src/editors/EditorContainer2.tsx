@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import EditorPortal from './EditorPortal';
 import { CalculatedColumn } from '../common/types';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
@@ -23,6 +23,9 @@ export default function EditorContainer<R, K extends keyof R>({
   onClose
 }: EditorContainerProps<R, K>) {
   const Editor = column.editor2!;
+
+  // close editor when scrolling
+  useEffect(() => onClose, [onClose, scrollTop, scrollLeft]);
 
   function onChange<K extends keyof R>(rowUpdate: { [k in K]: R[k] }) {
     onRowsUpdate({
