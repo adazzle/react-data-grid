@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { SelectColumn, Column, TextEditor, RowsUpdateEvent, DEFINE_SORT } from '../../src';
+import DataGrid, { SelectColumn, Column, TextEditor, onTextCellInput, RowsUpdateEvent, DEFINE_SORT } from '../../src';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -57,10 +57,10 @@ const columns: readonly Column<Row>[] = [
     key: 'client',
     name: 'Client',
     width: 220,
-    // editable: true,
-    editor2: TextEditor,
     resizable: true,
-    sortable: true
+    sortable: true,
+    editor2: TextEditor,
+    onCellInput: onTextCellInput
   },
   {
     key: 'area',

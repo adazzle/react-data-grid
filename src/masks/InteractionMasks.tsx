@@ -9,17 +9,17 @@ import EditorContainer from '../editors/EditorContainer2';
 
 // Utils
 import {
-  isKeyPrintable,
-  isCtrlKeyHeldDown,
+  // isKeyPrintable,
+  // isCtrlKeyHeldDown,
   getSelectedDimensions as getDimensions,
-  getNextSelectedCellPosition,
-  canExitGrid,
+  // getNextSelectedCellPosition,
+  // canExitGrid,
   isSelectedCellEditable
 } from '../utils';
 
 // Types
 import EventBus from '../EventBus';
-import { UpdateActions, CellNavigationMode } from '../common/enums';
+import { UpdateActions/*, CellNavigationMode*/ } from '../common/enums';
 import { Position, Dimension, /*CommitEvent,*/ ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
@@ -60,14 +60,14 @@ export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanva
   scrollToCell(cell: Position): void;
 }
 
-function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
-  return [
-    KeyCodes.ArrowLeft,
-    KeyCodes.ArrowUp,
-    KeyCodes.ArrowRight,
-    KeyCodes.ArrowDown
-  ].includes(e.keyCode);
-}
+// function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
+//   return [
+//     KeyCodes.ArrowLeft,
+//     KeyCodes.ArrowUp,
+//     KeyCodes.ArrowRight,
+//     KeyCodes.ArrowDown
+//   ].includes(e.keyCode);
+// }
 
 export default function InteractionMasks<R, K extends keyof R>({
   columns,
@@ -75,10 +75,10 @@ export default function InteractionMasks<R, K extends keyof R>({
   rowHeight,
   eventBus,
   enableCellAutoFocus,
-  enableCellCopyPaste,
+  // enableCellCopyPaste,
   enableCellDragAndDrop,
   // editorPortalTarget,
-  cellNavigationMode,
+  // cellNavigationMode,
   canvasRef,
   scrollLeft,
   scrollTop,
@@ -140,133 +140,153 @@ export default function InteractionMasks<R, K extends keyof R>({
   //   };
   // }
 
-  function getNextPosition(keyCode: number) {
-    switch (keyCode) {
-      case KeyCodes.ArrowUp:
-        return { ...selectedPosition, rowIdx: selectedPosition.rowIdx - 1 };
-      case KeyCodes.ArrowDown:
-        return { ...selectedPosition, rowIdx: selectedPosition.rowIdx + 1 };
-      case KeyCodes.ArrowLeft:
-        return { ...selectedPosition, idx: selectedPosition.idx - 1 };
-      case KeyCodes.ArrowRight:
-        return { ...selectedPosition, idx: selectedPosition.idx + 1 };
-      default:
-        return selectedPosition;
-    }
-  }
+  // function getNextPosition(keyCode: number) {
+  //   switch (keyCode) {
+  //     case KeyCodes.ArrowUp:
+  //       return { ...selectedPosition, rowIdx: selectedPosition.rowIdx - 1 };
+  //     case KeyCodes.ArrowDown:
+  //       return { ...selectedPosition, rowIdx: selectedPosition.rowIdx + 1 };
+  //     case KeyCodes.ArrowLeft:
+  //       return { ...selectedPosition, idx: selectedPosition.idx - 1 };
+  //     case KeyCodes.ArrowRight:
+  //       return { ...selectedPosition, idx: selectedPosition.idx + 1 };
+  //     default:
+  //       return selectedPosition;
+  //   }
+  // }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
-    if (isCtrlKeyHeldDown(e)) {
-      onPressKeyWithCtrl(e);
-    } else if (e.keyCode === KeyCodes.Escape) {
-      onPressEscape();
-    } else if (e.keyCode === KeyCodes.Tab) {
-      onPressTab(e);
-    } else if (isKeyboardNavigationEvent(e)) {
-      changeCellFromEvent(e);
-    } else if (isKeyPrintable(e.keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(e.keyCode)) {
-      openEditor(e);
+    if (!isEditorEnabled && isCellWithinBounds(selectedPosition) && typeof columns[selectedPosition.idx].onCellInput === 'function') {
+      const column = columns[selectedPosition.idx];
+
+      const enableEditor = column.onCellInput!({
+        column,
+        row: rows[selectedPosition.rowIdx],
+        event: e,
+        onChange(rowUpdate) {
+          onRowsUpdate({
+            cellKey: column.key,
+            fromRow: selectedPosition.rowIdx,
+            toRow: selectedPosition.rowIdx,
+            updated: rowUpdate as never, // TODO: fix type, or data structure
+            action: UpdateActions.CELL_UPDATE
+          });
+        }
+      });
+
+      setIsEditorEnabled(enableEditor);
+    // TODO
+    // } else if (isCtrlKeyHeldDown(e)) {
+    //   onPressKeyWithCtrl(e);
+    // } else if (e.keyCode === KeyCodes.Escape) {
+    //   onPressEscape();
+    // } else if (e.keyCode === KeyCodes.Tab) {
+    //   onPressTab(e);
+    // } else if (isKeyboardNavigationEvent(e)) {
+    //   changeCellFromEvent(e);
+    // } else if (isKeyPrintable(e.keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(e.keyCode)) {
+    //   openEditor(e);
     }
   }
 
-  function openEditor(event: React.KeyboardEvent<HTMLDivElement>): void {
-    if (!isEditorEnabled && isCellEditable(selectedPosition)) {
-      setFirstEditorKeyPress(event.key);
-      setIsEditorEnabled(true);
-    }
-  }
+  // function openEditor(event: React.KeyboardEvent<HTMLDivElement>): void {
+  //   if (!isEditorEnabled && isCellEditable(selectedPosition)) {
+  //     setFirstEditorKeyPress(event.key);
+  //     setIsEditorEnabled(true);
+  //   }
+  // }
 
   const closeEditor = useCallback((): void => {
     setIsEditorEnabled(false);
     setFirstEditorKeyPress(null);
   }, []);
 
-  function onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
-    if (!enableCellCopyPaste) return;
-    if (keyCode === KeyCodes.c) {
-      handleCopy();
-    } else if (keyCode === KeyCodes.v) {
-      handlePaste();
-    }
-  }
+  // function onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
+  //   if (!enableCellCopyPaste) return;
+  //   if (keyCode === KeyCodes.c) {
+  //     handleCopy();
+  //   } else if (keyCode === KeyCodes.v) {
+  //     handlePaste();
+  //   }
+  // }
 
-  function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
-    // When there are no rows in the grid, we need to allow the browser to handle tab presses
-    if (rows.length === 0) {
-      return;
-    }
+  // function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
+  //   // When there are no rows in the grid, we need to allow the browser to handle tab presses
+  //   if (rows.length === 0) {
+  //     return;
+  //   }
 
-    // If we are in a position to leave the grid, stop editing but stay in that cell
-    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
-      if (isEditorEnabled) {
-        closeEditor();
-        return;
-      }
+  //   // If we are in a position to leave the grid, stop editing but stay in that cell
+  //   if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+  //     if (isEditorEnabled) {
+  //       closeEditor();
+  //       return;
+  //     }
 
-      // Reset the selected position before exiting
-      setSelectedPosition({ idx: -1, rowIdx: -1 });
-      return;
-    }
+  //     // Reset the selected position before exiting
+  //     setSelectedPosition({ idx: -1, rowIdx: -1 });
+  //     return;
+  //   }
 
-    e.preventDefault();
-    const tabCellNavigationMode = cellNavigationMode === CellNavigationMode.NONE
-      ? CellNavigationMode.CHANGE_ROW
-      : cellNavigationMode;
-    const keyCode = e.shiftKey ? KeyCodes.ArrowLeft : KeyCodes.ArrowRight;
-    let nextPosition = getNextPosition(keyCode);
-    nextPosition = getNextSelectedCellPosition<R>({
-      columns,
-      rowsCount: rows.length,
-      cellNavigationMode: tabCellNavigationMode,
-      nextPosition
-    });
-    selectCell(nextPosition);
-  }
+  //   e.preventDefault();
+  //   const tabCellNavigationMode = cellNavigationMode === CellNavigationMode.NONE
+  //     ? CellNavigationMode.CHANGE_ROW
+  //     : cellNavigationMode;
+  //   const keyCode = e.shiftKey ? KeyCodes.ArrowLeft : KeyCodes.ArrowRight;
+  //   let nextPosition = getNextPosition(keyCode);
+  //   nextPosition = getNextSelectedCellPosition<R>({
+  //     columns,
+  //     rowsCount: rows.length,
+  //     cellNavigationMode: tabCellNavigationMode,
+  //     nextPosition
+  //   });
+  //   selectCell(nextPosition);
+  // }
 
-  function onPressEscape(): void {
-    closeEditor();
-    setCopiedPosition(null);
-  }
+  // function onPressEscape(): void {
+  //   closeEditor();
+  //   setCopiedPosition(null);
+  // }
 
-  function handleCopy(): void {
-    const { idx, rowIdx } = selectedPosition;
-    const value = rows[rowIdx][columns[idx].key];
-    setCopiedPosition({ idx, rowIdx, value });
-  }
+  // function handleCopy(): void {
+  //   const { idx, rowIdx } = selectedPosition;
+  //   const value = rows[rowIdx][columns[idx].key];
+  //   setCopiedPosition({ idx, rowIdx, value });
+  // }
 
-  function handlePaste(): void {
-    if (copiedPosition === null || !isCellEditable(selectedPosition)) {
-      return;
-    }
+  // function handlePaste(): void {
+  //   if (copiedPosition === null || !isCellEditable(selectedPosition)) {
+  //     return;
+  //   }
 
-    const { rowIdx: toRow } = selectedPosition;
+  //   const { rowIdx: toRow } = selectedPosition;
 
-    const cellKey = columns[selectedPosition.idx].key;
-    const { rowIdx: fromRow, idx, value } = copiedPosition;
-    const fromCellKey = columns[idx].key;
+  //   const cellKey = columns[selectedPosition.idx].key;
+  //   const { rowIdx: fromRow, idx, value } = copiedPosition;
+  //   const fromCellKey = columns[idx].key;
 
-    onRowsUpdate({
-      cellKey,
-      fromRow,
-      toRow,
-      updated: { [cellKey]: value } as never,
-      action: UpdateActions.COPY_PASTE,
-      fromCellKey
-    });
-  }
+  //   onRowsUpdate({
+  //     cellKey,
+  //     fromRow,
+  //     toRow,
+  //     updated: { [cellKey]: value } as never,
+  //     action: UpdateActions.COPY_PASTE,
+  //     fromCellKey
+  //   });
+  // }
 
-  function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
-    e.preventDefault();
-    let nextPosition = getNextPosition(e.keyCode);
-    nextPosition = getNextSelectedCellPosition<R>({
-      columns,
-      rowsCount: rows.length,
-      cellNavigationMode,
-      nextPosition
-    });
+  // function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
+  //   e.preventDefault();
+  //   let nextPosition = getNextPosition(e.keyCode);
+  //   nextPosition = getNextSelectedCellPosition<R>({
+  //     columns,
+  //     rowsCount: rows.length,
+  //     cellNavigationMode,
+  //     nextPosition
+  //   });
 
-    selectCell(nextPosition);
-  }
+  //   selectCell(nextPosition);
+  // }
 
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
     return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;

@@ -33,6 +33,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   // TODO: remove, rename editor2 to editor
   editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
   editor2?: React.ComponentType<EditorProps2<TRow>>;
+  onCellInput?(event: CellInputEvent<TRow>): boolean;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
@@ -123,6 +124,10 @@ export interface EditorProps2<TRow> {
   row: TRow;
   onChange<K extends keyof TRow>(rowUpdate: { [k in K]: TRow[k] }): void;
   onClose(): void;
+}
+
+export interface CellInputEvent<TRow> extends Pick<EditorProps2<TRow>, 'column' | 'row' | 'onChange'> {
+  event: React.KeyboardEvent<HTMLDivElement>;
 }
 
 export interface HeaderRendererProps<TRow> {
