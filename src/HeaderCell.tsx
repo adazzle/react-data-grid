@@ -53,7 +53,7 @@ export default function HeaderCell<R, K extends keyof R>({
     );
   }
 
-  const className = classNames('rdg-cell', {
+  const className = classNames('rdg-cell', column.headerCellClass, {
     'rdg-cell-frozen': column.frozen,
     'rdg-cell-frozen-last': column.idx === props.lastFrozenColumnIndex
   });
