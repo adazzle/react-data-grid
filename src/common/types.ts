@@ -13,6 +13,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number | string;
   cellClass?: string | ((row: TRow) => string);
+  headerCellClass?: string;
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */

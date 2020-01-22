@@ -13,6 +13,7 @@
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
   - `column.cellClass(row)` function support:
     - `column = { ..., cellClass(row) { return string; } }`
+  - `column.headerCellClass`
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
 - **Removed:**
