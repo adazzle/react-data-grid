@@ -4,6 +4,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
+  testEnvironment: 'jest-environment-jsdom-sixteen',
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
@@ -12,6 +13,7 @@ module.exports = {
       }
     }
   },
+  coverageProvider: 'v8',
   collectCoverage: process.env.CI === 'true',
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}'
