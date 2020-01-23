@@ -41,7 +41,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: readonly R[];
+  summaryRows?: readonly unknown[];
   /** The primary key property of each row */
   rowKey?: K;
   /**

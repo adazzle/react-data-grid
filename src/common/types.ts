@@ -5,6 +5,10 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export interface SummaryFormatterProps<TSummaryRow = any, TRow = any> extends Pick<FormatterProps<TRow>, 'column' | 'rowIdx'> {
+  row: TSummaryRow;
+}
+
 interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
@@ -14,8 +18,11 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   width?: number | string;
   cellClass?: string | ((row: TRow) => string);
   headerCellClass?: string;
+  summaryCellClass?: string | ((row: any) => string);
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow>>;
+  /** Formatter to be used to render the summary cell content */
+  summaryFormatter?: React.ComponentType<SummaryFormatterProps<any, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
   /** Enable dragging of a column */
@@ -150,6 +157,10 @@ export interface RowRendererProps<TRow> {
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
+}
+
+export interface SummaryRendererProps<TRow> extends Pick<RowRendererProps<TRow>, 'extraClasses' | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'viewportColumns' | 'width'> {
+  row: unknown;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

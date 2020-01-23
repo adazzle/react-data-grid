@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { RowRendererProps } from './common/types';
-import Row from './Row';
+import { SummaryRendererProps } from './common/types';
+import SummaryRow from './SummaryRow';
 
-export default memo(Row) as <R>(props: RowRendererProps<R>) => JSX.Element;
+export default memo(SummaryRow) as <R>(props: SummaryRendererProps<R>) => JSX.Element;

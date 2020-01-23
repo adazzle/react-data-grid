@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, DEFINE_SORT } from '../../src';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent, DEFINE_SORT, SummaryFormatterProps } from '../../src';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -16,6 +16,17 @@ function TimestampFormatter({ timestamp }: { timestamp: number }) {
 function CurrencyFormatter({ value }: { value: number }) {
   return <>{currencyFormatter.format(value)}</>;
 }
+
+interface SummaryRow {
+  id: string;
+  totalCount: number;
+  availableCount: {
+    yes: number;
+    no: number;
+  };
+}
+
+type SummaryRowFormatterProps = SummaryFormatterProps<SummaryRow, Row>;
 
 interface Row {
   id: number;
@@ -36,13 +47,21 @@ interface Row {
 }
 
 const columns: readonly Column<Row>[] = [
-  SelectColumn,
+  {
+    ...SelectColumn,
+    summaryFormatter() {
+      return <strong>Total</strong>;
+    }
+  },
   {
     key: 'id',
     name: 'ID',
     width: 60,
     frozen: true,
-    sortable: true
+    sortable: true,
+    summaryFormatter({ row }: SummaryRowFormatterProps) {
+      return <>{row.totalCount}</>;
+    }
   },
   {
     key: 'title',
@@ -163,8 +182,21 @@ const columns: readonly Column<Row>[] = [
     name: 'Available',
     resizable: true,
     sortable: true,
+    width: 80,
+    summaryCellClass: 'common-feature-summary-available',
     formatter(props) {
       return <>{props.row.available ? '✔️' : '❌'}</>;
+    },
+    summaryFormatter({ column, row }: SummaryRowFormatterProps) {
+      return (
+        <>{column.key === 'available' && (
+          <>
+            <div>{`✔️: ${row.availableCount.yes}`}</div>
+            <div>{`❌: ${row.availableCount.no}`}</div>
+          </>
+        )}
+        </>
+      );
     }
   }
 ];
@@ -201,6 +233,20 @@ export default function CommonFeatures() {
   const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, DEFINE_SORT]>(['id', DEFINE_SORT.NONE]);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
+  const summaryRows = useMemo(() => {
+    const summaryRows: SummaryRow[] = [{ id: 'total_0', totalCount: 0, availableCount: { yes: 0, no: 0 } }];
+
+    for (const row of rows) {
+      if (row.available) {
+        summaryRows[0].availableCount.yes++;
+      } else {
+        summaryRows[0].availableCount.no++;
+      }
+    }
+
+    summaryRows[0].totalCount = rows.length;
+    return summaryRows;
+  }, [rows]);
   const sortedRows: readonly Row[] = useMemo(() => {
     if (sortDirection === DEFINE_SORT.NONE) return rows;
 
@@ -258,6 +304,7 @@ export default function CommonFeatures() {
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={handleSort}
+          summaryRows={summaryRows}
         />
       )}
     </AutoSizer>

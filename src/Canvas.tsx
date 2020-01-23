@@ -218,11 +218,8 @@ function Canvas<R, K extends keyof R>({
           width={columnMetrics.totalColumnWidth + getScrollbarSize()}
           height={rowHeight}
           viewportColumns={viewportColumns}
-          isRowSelected={false}
           lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
           scrollLeft={nonStickyScrollLeft}
-          isSummaryRow
-          eventBus={eventBus}
         />
       ))}
     </div>
