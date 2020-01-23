@@ -132,10 +132,11 @@ export default function InteractionMasks<R, K extends keyof R>({
   function getEditorPosition() {
     if (!canvasRef.current) return null;
     const { left, top } = canvasRef.current.getBoundingClientRect();
+    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
     const column = columns[selectedPosition.idx];
     return {
-      left: column.left - (column.frozen ? 0 : scrollLeft) + left,
-      top: selectedPosition.rowIdx * rowHeight - scrollTop + top
+      left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
+      top: top + docTop + selectedPosition.rowIdx * rowHeight - scrollTop
     };
   }
 
