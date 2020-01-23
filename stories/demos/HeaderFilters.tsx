@@ -1,6 +1,7 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import Select from 'react-select';
+import faker from 'faker';
 
 import DataGrid, { Column, Filters } from '../../src';
 import { NumericFilter } from './components/Filters';
@@ -13,12 +14,6 @@ interface Row {
   issueType: string;
   developer: string;
   complete: number;
-  startDate: string;
-  completeDate: string;
-}
-
-function getRandomDate(start: Date, end: Date) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
 }
 
 function createRows() {
@@ -28,52 +23,95 @@ function createRows() {
       id: i,
       task: `Task ${i}`,
       complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
-      developer: ['James', 'Tim', 'Daniel', 'Alan'][Math.floor((Math.random() * 3) + 1)],
-      startDate: getRandomDate(new Date(2015, 3, 1), new Date()),
-      completeDate: getRandomDate(new Date(), new Date(2016, 0, 1))
+      priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
+      developer: faker.name.findName()
     });
   }
   return rows;
 }
 
 export default function HeaderFilters() {
-  const [rows, setRows] = useState(createRows);
-  const [filters, setFilters] = useState<Filters<Row>>({});
+  const [rows] = useState(createRows);
+  const [filters, setFilters] = useState<Filters<Row>>({
+    priority: 'Critical',
+    issueType: ''
+  });
+  const [filteredRows, setFilteredRows] = useState(() => filterRows(filters));
   const [enableHeaderFilters, setEnableHeaderFilters] = useState(true);
-  const getValidFilterValues = useCallback((columnKey: keyof Row) => {
-    const values = new Set(rows.map(r => r[columnKey]));
-    return Array.from(values).map(v => ({
-      label: v,
-      value: v
-    }));
-  }, [rows]);
 
   const columns = useMemo((): Column<Row>[] => {
+    const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
+      label: d,
+      value: d
+    }));
+
     return [
       {
         key: 'id',
         name: 'ID',
-        width: 120,
-        filterable: true,
-        filterRenderer: NumericFilter
+        width: 50,
+        filterable: false
       },
       {
         key: 'task',
         name: 'Title',
-        filterable: true
+        filterable: true,
+        filterRenderer: p => (
+          <div className="rdg-filter-container">
+            <input
+              type="text"
+              className="rdg-filter"
+              value={p.value}
+              onChange={e => p.onChange(e.target.value)}
+            />
+          </div>
+        )
       },
       {
         key: 'priority',
         name: 'Priority',
         filterable: true,
+        width: 120,
+        filterRenderer: p => (
+          <div className="rdg-filter-container">
+            <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
+              <option value="">All</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        )
+      },
+      {
+        key: 'issueType',
+        name: 'Issue Type',
+        filterable: true,
+        filterRenderer: p => (
+          <div className="rdg-filter-container">
+            <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
+              <option value="">All</option>
+              <option value="Bug">Bug</option>
+              <option value="Improvement">Improvement</option>
+              <option value="Epic">Epic</option>
+              <option value="Story">Story</option>
+            </select>
+          </div>
+        )
+      },
+      {
+        key: 'developer',
+        name: 'Developer',
+        filterable: true,
+        width: 200,
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <Select
               value={p.value}
               onChange={p.onChange}
-              options={getValidFilterValues(p.column.key)}
+              options={developerOptions}
               styles={{
                 option: (provided) => ({
                   ...provided,
@@ -97,37 +135,35 @@ export default function HeaderFilters() {
         )
       },
       {
-        key: 'issueType',
-        name: 'Issue Type',
-        filterable: true
-      },
-      {
-        key: 'developer',
-        name: 'Developer',
-        filterable: true
-      },
-      {
         key: 'complete',
         name: '% Complete',
         filterable: true,
         filterRenderer: NumericFilter
-      },
-      {
-        key: 'startDate',
-        name: 'Start Date',
-        filterable: true
-      },
-      {
-        key: 'completeDate',
-        name: 'Expected Complete',
-        filterable: true
       }
     ];
-  }, [getValidFilterValues]);
+  }, [rows]);
+
+  function filterRows(filters: Filters<Row>) {
+    return rows.filter(r => {
+      return (
+        (filters.task ? r.task.includes(filters.task) : true)
+        && (filters.priority ? r.priority === filters.priority : true)
+        && (filters.issueType ? r.issueType.includes(filters.issueType.filterTerm) : true)
+        && (filters.developer ? r.developer === filters.developer.value : true)
+        && (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
+      );
+    });
+  }
+
+  function onToggleFilter() {
+    setEnableHeaderFilters(!enableHeaderFilters);
+    setFilters({});
+    setFilteredRows(filterRows({}));
+  }
 
   function onFiltersChange(filters: Filters<Row>) {
     setFilters(filters);
-    setRows(rows);
+    setFilteredRows(filterRows(filters));
   }
 
   return (
@@ -135,16 +171,13 @@ export default function HeaderFilters() {
       <Toolbar
         enableFilter
         numberOfRows={rows.length}
-        onToggleFilter={() => {
-          setEnableHeaderFilters(!enableHeaderFilters);
-          setFilters({});
-        }}
+        onToggleFilter={onToggleFilter}
       />
       <AutoSizer>
         {({ height, width }) => (
           <DataGrid<Row, 'id'>
             columns={columns}
-            rows={rows}
+            rows={filteredRows}
             width={width}
             height={height - 40}
             enableHeaderFilters={enableHeaderFilters}
