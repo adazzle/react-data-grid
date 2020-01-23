@@ -77,7 +77,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   enableCellAutoFocus,
   // enableCellCopyPaste,
   enableCellDragAndDrop,
-  // editorPortalTarget,
+  editorPortalTarget,
   // cellNavigationMode,
   canvasRef,
   scrollLeft,
@@ -423,6 +423,7 @@ export default function InteractionMasks<R, K extends keyof R>({
           column={columns[selectedPosition.idx]}
           row={rows[selectedPosition.rowIdx]}
           canvasRef={canvasRef}
+          editorPortalTarget={editorPortalTarget}
           rowIdx={selectedPosition.rowIdx}
           rowHeight={rowHeight}
           scrollTop={scrollTop}

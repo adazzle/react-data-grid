@@ -4,7 +4,16 @@ import { CalculatedColumn } from '../common/types';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { UpdateActions } from '../common/enums';
 
-interface EditorContainerProps<R, K extends keyof R> extends Pick<InteractionMasksProps<R, K>, 'canvasRef' | 'rowHeight' | 'scrollTop' | 'scrollLeft' | 'onRowsUpdate'> {
+type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>,
+| 'canvasRef'
+| 'editorPortalTarget'
+| 'rowHeight'
+| 'scrollTop'
+| 'scrollLeft'
+| 'onRowsUpdate'
+> ;
+
+interface EditorContainerProps<R, K extends keyof R> extends SharedInteractionMasksProps<R, K> {
   column: CalculatedColumn<R>;
   row: R;
   rowIdx: number;
@@ -17,6 +26,7 @@ export default function EditorContainer<R, K extends keyof R>({
   rowIdx,
   rowHeight,
   canvasRef,
+  editorPortalTarget,
   scrollTop,
   scrollLeft,
   onRowsUpdate,
@@ -50,7 +60,7 @@ export default function EditorContainer<R, K extends keyof R>({
   }
 
   return (
-    <EditorPortal target={document.body}>
+    <EditorPortal target={editorPortalTarget}>
       <div className="rdg-editor-container" style={getContainerStyle()}>
         <Editor
           column={column}
