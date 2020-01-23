@@ -72,7 +72,8 @@
     "eslint-plugin-sonarjs": "^0.5.0",
     "faker": "^4.1.0",
     "immutability-helper": "^3.0.1",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
+    "jest-environment-jsdom-sixteen": "^1.0.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.9.0",
@@ -82,7 +83,7 @@
     "react-dom": "^16.12.0",
     "react-virtualized": "^9.21.2",
     "style-loader": "^1.1.2",
-    "ts-jest": "^24.3.0",
+    "ts-jest": "^25.0.0",
     "ts-loader": "^6.2.1",
     "typescript": "~3.7.4"
   },
