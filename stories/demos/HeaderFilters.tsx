@@ -37,7 +37,6 @@ export default function HeaderFilters() {
     priority: 'Critical',
     issueType: ''
   });
-  const [filteredRows, setFilteredRows] = useState(() => filterRows(filters));
   const [enableHeaderFilters, setEnableHeaderFilters] = useState(true);
 
   const columns = useMemo((): Column<Row>[] => {
@@ -71,7 +70,6 @@ export default function HeaderFilters() {
         key: 'priority',
         name: 'Priority',
         filterable: true,
-        width: 120,
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
@@ -104,7 +102,6 @@ export default function HeaderFilters() {
         key: 'developer',
         name: 'Developer',
         filterable: true,
-        width: 200,
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <Select
@@ -142,27 +139,21 @@ export default function HeaderFilters() {
     ];
   }, [rows]);
 
-  function filterRows(filters: Filters<Row>) {
+  const filteredRows = useMemo(() => {
     return rows.filter(r => {
       return (
         (filters.task ? r.task.includes(filters.task) : true)
         && (filters.priority ? r.priority === filters.priority : true)
-        && (filters.issueType ? r.issueType.includes(filters.issueType.filterTerm) : true)
+        && (filters.issueType ? r.issueType === filters.issueType : true)
         && (filters.developer ? r.developer === filters.developer.value : true)
         && (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
       );
     });
-  }
+  }, [rows, filters]);
 
   function onToggleFilter() {
     setEnableHeaderFilters(!enableHeaderFilters);
     setFilters({});
-    setFilteredRows(filterRows({}));
-  }
-
-  function onFiltersChange(filters: Filters<Row>) {
-    setFilters(filters);
-    setFilteredRows(filterRows(filters));
   }
 
   return (
@@ -174,14 +165,14 @@ export default function HeaderFilters() {
       />
       <AutoSizer>
         {({ height, width }) => (
-          <DataGrid<Row, 'id'>
+          <DataGrid
             columns={columns}
             rows={filteredRows}
             width={width}
             height={height - 40}
             enableHeaderFilters={enableHeaderFilters}
             filters={filters}
-            onFiltersChange={onFiltersChange}
+            onFiltersChange={setFilters}
           />
         )}
       </AutoSizer>

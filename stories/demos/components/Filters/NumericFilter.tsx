@@ -10,7 +10,7 @@ enum RuleType {
 
 type Rule =
   | { type: RuleType.Range; begin: number; end: number }
-  | { type: RuleType.GreaterThen | RuleType.LessThen | RuleType.Number; value: number };
+  | { type: RuleType.GreaterThan | RuleType.LessThan | RuleType.Number; value: number };
 
 interface ChangeEvent<R> {
   filterTerm: Rule[] | null;
@@ -72,12 +72,12 @@ function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: 
           return true;
         }
         break;
-      case RuleType.GreaterThen:
+      case RuleType.GreaterThan:
         if (rule.value <= value) {
           return true;
         }
         break;
-      case RuleType.LessThen:
+      case RuleType.LessThan:
         if (rule.value >= value) {
           return true;
         }
@@ -113,13 +113,13 @@ export function getRules(value: string): Rule[] {
     // handle greater then
     if (str.includes('>')) {
       const begin = parseInt(str.slice(str.indexOf('>') + 1), 10);
-      return { type: RuleType.GreaterThen, value: begin };
+      return { type: RuleType.GreaterThan, value: begin };
     }
 
     // handle less then
     if (str.includes('<')) {
       const end = parseInt(str.slice(str.indexOf('<') + 1), 10);
-      return { type: RuleType.LessThen, value: end };
+      return { type: RuleType.LessThan, value: end };
     }
 
     // handle normal values
