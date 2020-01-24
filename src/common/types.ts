@@ -5,10 +5,6 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface SummaryFormatterProps<TSummaryRow = any, TRow = any> extends Pick<FormatterProps<TRow>, 'column' | 'rowIdx'> {
-  row: TSummaryRow;
-}
-
 interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
@@ -109,6 +105,10 @@ export interface FormatterProps<TRow = any> {
   isRowSelected: boolean;
   onRowSelectionChange(checked: boolean, isShiftClick: boolean): void;
   isSummaryRow: boolean;
+}
+
+export interface SummaryFormatterProps<TSummaryRow = any, TRow = any> extends Pick<FormatterProps<TRow>, 'column' | 'rowIdx'> {
+  row: TSummaryRow;
 }
 
 export interface EditorProps<TValue, TRow = any> {
