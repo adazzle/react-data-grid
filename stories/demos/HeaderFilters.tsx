@@ -5,7 +5,6 @@ import faker from 'faker';
 
 import DataGrid, { Column, Filters } from '../../src';
 import { NumericFilter } from './components/Filters';
-import Toolbar from './components/Toolbar/Toolbar';
 
 interface Row {
   id: number;
@@ -34,8 +33,11 @@ function createRows() {
 export default function HeaderFilters() {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filters<Row>>({
+    task: '',
     priority: 'Critical',
-    issueType: ''
+    issueType: 'All',
+    developer: '',
+    complete: ''
   });
   const [enableHeaderFilters, setEnableHeaderFilters] = useState(true);
 
@@ -73,7 +75,7 @@ export default function HeaderFilters() {
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
-              <option value="">All</option>
+              <option value="All">All</option>
               <option value="Critical">Critical</option>
               <option value="High">High</option>
               <option value="Medium">Medium</option>
@@ -89,7 +91,7 @@ export default function HeaderFilters() {
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
-              <option value="">All</option>
+              <option value="All">All</option>
               <option value="Bug">Bug</option>
               <option value="Improvement">Improvement</option>
               <option value="Epic">Epic</option>
@@ -143,33 +145,41 @@ export default function HeaderFilters() {
     return rows.filter(r => {
       return (
         (filters.task ? r.task.includes(filters.task) : true)
-        && (filters.priority ? r.priority === filters.priority : true)
-        && (filters.issueType ? r.issueType === filters.issueType : true)
+        && (filters.priority !== 'All' ? r.priority === filters.priority : true)
+        && (filters.issueType !== 'All' ? r.issueType === filters.issueType : true)
         && (filters.developer ? r.developer === filters.developer.value : true)
         && (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
       );
     });
   }, [rows, filters]);
 
-  function onToggleFilter() {
+  function clearFilters() {
+    setFilters({
+      task: '',
+      priority: 'All',
+      issueType: 'All',
+      developer: '',
+      complete: ''
+    });
+  }
+
+  function toggleFilters() {
     setEnableHeaderFilters(!enableHeaderFilters);
-    setFilters({});
   }
 
   return (
     <>
-      <Toolbar
-        enableFilter
-        numberOfRows={rows.length}
-        onToggleFilter={onToggleFilter}
-      />
+      <div style={{ marginBottom: 10, textAlign: 'right' }}>
+        <button type="button" onClick={toggleFilters}>Toggle Filters</button>{' '}
+        <button type="button" onClick={clearFilters}>Clear Filters</button>
+      </div>
       <AutoSizer>
         {({ height, width }) => (
           <DataGrid
             columns={columns}
             rows={filteredRows}
             width={width}
-            height={height - 40}
+            height={height - 30}
             enableHeaderFilters={enableHeaderFilters}
             filters={filters}
             onFiltersChange={setFilters}

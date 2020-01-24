@@ -44,7 +44,7 @@ export function NumericFilter<R>({ value, column, onChange }: FilterRendererProp
   return (
     <div className="rdg-filter-container">
       <input
-        value={value?.rawValue}
+        value={value?.rawValue ?? ''}
         className="rdg-filter"
         placeholder="e.g. 3,10-15,>20"
         onChange={handleChange}
