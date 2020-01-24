@@ -108,7 +108,7 @@ export interface FormatterProps<TRow = any> {
   isSummaryRow: boolean;
 }
 
-// TODO: remove
+// TODO: remove, rename EditorProps2 to EditorProps
 export interface EditorProps<TValue, TRow = any> {
   ref: React.Ref<Editor<{ [key: string]: TValue }>>;
   column: CalculatedColumn<TRow>;

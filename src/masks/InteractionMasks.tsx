@@ -9,7 +9,6 @@ import EditorContainer from '../editors/EditorContainer2';
 
 // Utils
 import {
-  isKeyPrintable,
   // isCtrlKeyHeldDown,
   getSelectedDimensions as getDimensions,
   getNextSelectedCellPosition,
@@ -160,10 +159,10 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
-    const cellIsEditable = isCellEditable(selectedPosition);
+    const canOpenEditor = !isEditorEnabled && isCellEditable(selectedPosition);
     const { onCellInput } = columns[selectedPosition.idx];
 
-    if (!isEditorEnabled && cellIsEditable && typeof onCellInput === 'function') {
+    if (canOpenEditor && typeof onCellInput === 'function') {
       const column = columns[selectedPosition.idx];
 
       const enableEditor = onCellInput({
@@ -187,7 +186,7 @@ export default function InteractionMasks<R, K extends keyof R>({
       }
     }
 
-    const { key, keyCode } = event;
+    const { key } = event;
     // TODO: move paste control to onCellInput?
     // if (isCtrlKeyHeldDown(e)) {
     //   onPressKeyWithCtrl(e);
@@ -198,7 +197,7 @@ export default function InteractionMasks<R, K extends keyof R>({
       onPressTab(event);
     } else if (isKeyboardNavigationEvent(event)) {
       changeCellFromEvent(event);
-    } else if (!isEditorEnabled && cellIsEditable && (isKeyPrintable(keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(keyCode))) {
+    } else if (canOpenEditor && key === 'Enter') {
       setIsEditorEnabled(true);
     }
   }

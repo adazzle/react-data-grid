@@ -48,10 +48,11 @@ const columns: readonly Column<Row>[] = [
     key: 'title',
     name: 'Task',
     width: 120,
-    editable: true,
     frozen: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    editor2: TextEditor,
+    onCellInput: onTextCellInput
   },
   {
     key: 'client',
@@ -66,33 +67,37 @@ const columns: readonly Column<Row>[] = [
     key: 'area',
     name: 'Area',
     width: 120,
-    editable: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    editor2: TextEditor,
+    onCellInput: onTextCellInput
   },
   {
     key: 'country',
     name: 'Country',
     width: 120,
-    editable: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    editor2: TextEditor,
+    onCellInput: onTextCellInput
   },
   {
     key: 'contact',
     name: 'Contact',
     width: 160,
-    editable: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    editor2: TextEditor,
+    onCellInput: onTextCellInput
   },
   {
     key: 'assignee',
     name: 'Assignee',
     width: 150,
-    editable: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    editor2: TextEditor,
+    onCellInput: onTextCellInput
   },
   {
     key: 'progress',
@@ -155,9 +160,10 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'version',
     name: 'Version',
-    editable: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    editor2: TextEditor,
+    onCellInput: onTextCellInput
   },
   {
     key: 'available',
