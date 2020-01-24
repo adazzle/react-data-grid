@@ -60,7 +60,6 @@ export default function HeaderFilters() {
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <input
-              type="text"
               className="rdg-filter"
               value={p.value}
               onChange={e => p.onChange(e.target.value)}
