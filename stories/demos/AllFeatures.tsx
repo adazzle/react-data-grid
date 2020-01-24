@@ -200,7 +200,7 @@ export default function AllFeatures() {
             onRowsUpdate={handleRowUpdate}
             rowHeight={30}
             width={width}
-            height={height}
+            height={height - 40}
             selectedRows={selectedRows}
             onSelectedRowsChange={setSelectedRows}
             enableCellCopyPaste
