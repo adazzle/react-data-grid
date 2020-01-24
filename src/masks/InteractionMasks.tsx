@@ -9,7 +9,7 @@ import EditorContainer from '../editors/EditorContainer2';
 
 // Utils
 import {
-  // isCtrlKeyHeldDown,
+  isCtrlKeyHeldDown,
   getSelectedDimensions as getDimensions,
   getNextSelectedCellPosition,
   canExitGrid,
@@ -59,22 +59,13 @@ export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanva
   scrollToCell(cell: Position): void;
 }
 
-function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
-  return [
-    KeyCodes.ArrowLeft,
-    KeyCodes.ArrowUp,
-    KeyCodes.ArrowRight,
-    KeyCodes.ArrowDown
-  ].includes(e.keyCode);
-}
-
 export default function InteractionMasks<R, K extends keyof R>({
   columns,
   rows,
   rowHeight,
   eventBus,
   enableCellAutoFocus,
-  // enableCellCopyPaste,
+  enableCellCopyPaste,
   enableCellDragAndDrop,
   editorPortalTarget,
   cellNavigationMode,
@@ -159,6 +150,13 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
+      // event.key may be uppercase `C` or `V`
+      const lowerCaseKey = event.key.toLowerCase();
+      if (lowerCaseKey === 'c') return handleCopy();
+      if (lowerCaseKey === 'v') return handlePaste();
+    }
+
     const canOpenEditor = !isEditorEnabled && isCellEditable(selectedPosition);
     const { onCellInput } = columns[selectedPosition.idx];
 
@@ -186,30 +184,28 @@ export default function InteractionMasks<R, K extends keyof R>({
       }
     }
 
-    const { key } = event;
-    // TODO: move paste control to onCellInput?
-    // if (isCtrlKeyHeldDown(e)) {
-    //   onPressKeyWithCtrl(e);
-    if (key === 'Escape') {
-      closeEditor();
-      setCopiedPosition(null);
-    } else if (key === 'Tab') {
-      onPressTab(event);
-    } else if (isKeyboardNavigationEvent(event)) {
-      changeCellFromEvent(event);
-    } else if (canOpenEditor && key === 'Enter') {
-      setIsEditorEnabled(true);
+    switch (event.key) {
+      case 'Enter':
+        if (canOpenEditor) {
+          setIsEditorEnabled(true);
+        }
+        break;
+      case 'Escape':
+        closeEditor();
+        setCopiedPosition(null);
+        break;
+      case 'Tab':
+        onPressTab(event);
+        break;
+      case 'ArrowDown':
+      case 'ArrowUp':
+      case 'ArrowLeft':
+      case 'ArrowRight':
+        changeCellFromEvent(event);
+        break;
+      default:
     }
   }
-
-  // function onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
-  //   if (!enableCellCopyPaste) return;
-  //   if (keyCode === KeyCodes.c) {
-  //     handleCopy();
-  //   } else if (keyCode === KeyCodes.v) {
-  //     handlePaste();
-  //   }
-  // }
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
     // When there are no rows in the grid, we need to allow the browser to handle tab presses
@@ -244,32 +240,32 @@ export default function InteractionMasks<R, K extends keyof R>({
     selectCell(nextPosition);
   }
 
-  // function handleCopy(): void {
-  //   const { idx, rowIdx } = selectedPosition;
-  //   const value = rows[rowIdx][columns[idx].key];
-  //   setCopiedPosition({ idx, rowIdx, value });
-  // }
+  function handleCopy(): void {
+    const { idx, rowIdx } = selectedPosition;
+    const value = rows[rowIdx][columns[idx].key];
+    setCopiedPosition({ idx, rowIdx, value });
+  }
 
-  // function handlePaste(): void {
-  //   if (copiedPosition === null || !isCellEditable(selectedPosition)) {
-  //     return;
-  //   }
+  function handlePaste(): void {
+    if (copiedPosition === null || !isCellEditable(selectedPosition)) {
+      return;
+    }
 
-  //   const { rowIdx: toRow } = selectedPosition;
+    const { rowIdx: toRow } = selectedPosition;
 
-  //   const cellKey = columns[selectedPosition.idx].key;
-  //   const { rowIdx: fromRow, idx, value } = copiedPosition;
-  //   const fromCellKey = columns[idx].key;
+    const cellKey = columns[selectedPosition.idx].key;
+    const { rowIdx: fromRow, idx, value } = copiedPosition;
+    const fromCellKey = columns[idx].key;
 
-  //   onRowsUpdate({
-  //     cellKey,
-  //     fromRow,
-  //     toRow,
-  //     updated: { [cellKey]: value } as never,
-  //     action: UpdateActions.COPY_PASTE,
-  //     fromCellKey
-  //   });
-  // }
+    onRowsUpdate({
+      cellKey,
+      fromRow,
+      toRow,
+      updated: { [cellKey]: value } as never,
+      action: UpdateActions.COPY_PASTE,
+      fromCellKey
+    });
+  }
 
   function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
     e.preventDefault();
