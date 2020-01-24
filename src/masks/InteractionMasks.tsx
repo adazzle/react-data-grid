@@ -117,7 +117,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }, []);
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
-  if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
+  if (!isCellWithinBounds(selectedPosition)) {
     setSelectedPosition({ idx: -1, rowIdx: -1 });
     setCopiedPosition(null);
     setDraggedPosition(null);
@@ -188,6 +188,8 @@ export default function InteractionMasks<R, K extends keyof R>({
       case 'Enter':
         if (canOpenEditor) {
           setIsEditorEnabled(true);
+        } else if (isEditorEnabled) {
+          setIsEditorEnabled(false);
         }
         break;
       case 'Escape':
@@ -376,9 +378,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   }
 
   return (
-    <div
-      onKeyDown={onKeyDown}
-    >
+    <div onKeyDown={onKeyDown}>
       {copiedPosition && isCellWithinBounds(copiedPosition) && (
         <CellMask
           className="rdg-cell-copied"
