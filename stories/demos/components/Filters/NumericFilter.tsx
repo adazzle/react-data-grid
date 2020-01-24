@@ -4,7 +4,7 @@ import { Column, FilterRendererProps } from '../../../../src';
 enum RuleType {
   Number = 1,
   Range = 2,
-  GreaterThen = 3,
+  GreaterThan = 3,
   LessThen = 4
 }
 
