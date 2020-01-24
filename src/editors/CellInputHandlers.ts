@@ -1,6 +1,6 @@
 import { CellInputEvent } from '../common/types';
 
-export function onTextCellInput<TRow>({ column, event: { key }, onChange }: CellInputEvent<TRow>): boolean {
+export function onTextCellInput<TRow>({ column, event: { key }, onChange }: CellInputEvent<TRow>): boolean | void {
   if (key.length === 1) {
     onChange({ [column.key]: key } as {}); // TODO: fix type
     return true;
@@ -10,6 +10,4 @@ export function onTextCellInput<TRow>({ column, event: { key }, onChange }: Cell
     onChange({ [column.key]: '' } as {}); // TODO: fix type
     return true;
   }
-
-  return key === 'Enter';
 }

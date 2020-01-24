@@ -9,17 +9,17 @@ import EditorContainer from '../editors/EditorContainer2';
 
 // Utils
 import {
-  // isKeyPrintable,
+  isKeyPrintable,
   // isCtrlKeyHeldDown,
   getSelectedDimensions as getDimensions,
-  // getNextSelectedCellPosition,
-  // canExitGrid,
+  getNextSelectedCellPosition,
+  canExitGrid,
   isSelectedCellEditable
 } from '../utils';
 
 // Types
 import EventBus from '../EventBus';
-import { UpdateActions/*, CellNavigationMode*/ } from '../common/enums';
+import { UpdateActions, CellNavigationMode } from '../common/enums';
 import { Position, Dimension, /*CommitEvent,*/ ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
@@ -60,14 +60,14 @@ export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanva
   scrollToCell(cell: Position): void;
 }
 
-// function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
-//   return [
-//     KeyCodes.ArrowLeft,
-//     KeyCodes.ArrowUp,
-//     KeyCodes.ArrowRight,
-//     KeyCodes.ArrowDown
-//   ].includes(e.keyCode);
-// }
+function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
+  return [
+    KeyCodes.ArrowLeft,
+    KeyCodes.ArrowUp,
+    KeyCodes.ArrowRight,
+    KeyCodes.ArrowDown
+  ].includes(e.keyCode);
+}
 
 export default function InteractionMasks<R, K extends keyof R>({
   columns,
@@ -78,7 +78,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   // enableCellCopyPaste,
   enableCellDragAndDrop,
   editorPortalTarget,
-  // cellNavigationMode,
+  cellNavigationMode,
   canvasRef,
   scrollLeft,
   scrollTop,
@@ -95,7 +95,6 @@ export default function InteractionMasks<R, K extends keyof R>({
   });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
-  const [/*firstEditorKeyPress*/, setFirstEditorKeyPress] = useState<string | null>(null);
   const [isEditorEnabled, setIsEditorEnabled] = useState(false);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
 
@@ -123,6 +122,10 @@ export default function InteractionMasks<R, K extends keyof R>({
     return eventBus.subscribe('DRAG_ENTER', handleDragEnter);
   }, [draggedPosition, eventBus]);
 
+  const closeEditor = useCallback((): void => {
+    setIsEditorEnabled(false);
+  }, []);
+
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
     setSelectedPosition({ idx: -1, rowIdx: -1 });
@@ -141,29 +144,32 @@ export default function InteractionMasks<R, K extends keyof R>({
   //   };
   // }
 
-  // function getNextPosition(keyCode: number) {
-  //   switch (keyCode) {
-  //     case KeyCodes.ArrowUp:
-  //       return { ...selectedPosition, rowIdx: selectedPosition.rowIdx - 1 };
-  //     case KeyCodes.ArrowDown:
-  //       return { ...selectedPosition, rowIdx: selectedPosition.rowIdx + 1 };
-  //     case KeyCodes.ArrowLeft:
-  //       return { ...selectedPosition, idx: selectedPosition.idx - 1 };
-  //     case KeyCodes.ArrowRight:
-  //       return { ...selectedPosition, idx: selectedPosition.idx + 1 };
-  //     default:
-  //       return selectedPosition;
-  //   }
-  // }
+  function getNextPosition(keyCode: number) {
+    switch (keyCode) {
+      case KeyCodes.ArrowUp:
+        return { ...selectedPosition, rowIdx: selectedPosition.rowIdx - 1 };
+      case KeyCodes.ArrowDown:
+        return { ...selectedPosition, rowIdx: selectedPosition.rowIdx + 1 };
+      case KeyCodes.ArrowLeft:
+        return { ...selectedPosition, idx: selectedPosition.idx - 1 };
+      case KeyCodes.ArrowRight:
+        return { ...selectedPosition, idx: selectedPosition.idx + 1 };
+      default:
+        return selectedPosition;
+    }
+  }
 
-  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
-    if (!isEditorEnabled && isCellWithinBounds(selectedPosition) && typeof columns[selectedPosition.idx].onCellInput === 'function') {
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    const cellIsEditable = isCellEditable(selectedPosition);
+    const { onCellInput } = columns[selectedPosition.idx];
+
+    if (!isEditorEnabled && cellIsEditable && typeof onCellInput === 'function') {
       const column = columns[selectedPosition.idx];
 
-      const enableEditor = column.onCellInput!({
+      const enableEditor = onCellInput({
         column,
         row: rows[selectedPosition.rowIdx],
-        event: e,
+        event,
         onChange(rowUpdate) {
           onRowsUpdate({
             cellKey: column.key,
@@ -175,32 +181,27 @@ export default function InteractionMasks<R, K extends keyof R>({
         }
       });
 
-      setIsEditorEnabled(enableEditor);
-    // TODO
-    // } else if (isCtrlKeyHeldDown(e)) {
+      if (typeof enableEditor === 'boolean') {
+        setIsEditorEnabled(enableEditor);
+        return;
+      }
+    }
+
+    const { key, keyCode } = event;
+    // TODO: move paste control to onCellInput?
+    // if (isCtrlKeyHeldDown(e)) {
     //   onPressKeyWithCtrl(e);
-    // } else if (e.keyCode === KeyCodes.Escape) {
-    //   onPressEscape();
-    // } else if (e.keyCode === KeyCodes.Tab) {
-    //   onPressTab(e);
-    // } else if (isKeyboardNavigationEvent(e)) {
-    //   changeCellFromEvent(e);
-    // } else if (isKeyPrintable(e.keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(e.keyCode)) {
-    //   openEditor(e);
+    if (key === 'Escape') {
+      closeEditor();
+      setCopiedPosition(null);
+    } else if (key === 'Tab') {
+      onPressTab(event);
+    } else if (isKeyboardNavigationEvent(event)) {
+      changeCellFromEvent(event);
+    } else if (!isEditorEnabled && cellIsEditable && (isKeyPrintable(keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(keyCode))) {
+      setIsEditorEnabled(true);
     }
   }
-
-  // function openEditor(event: React.KeyboardEvent<HTMLDivElement>): void {
-  //   if (!isEditorEnabled && isCellEditable(selectedPosition)) {
-  //     setFirstEditorKeyPress(event.key);
-  //     setIsEditorEnabled(true);
-  //   }
-  // }
-
-  const closeEditor = useCallback((): void => {
-    setIsEditorEnabled(false);
-    setFirstEditorKeyPress(null);
-  }, []);
 
   // function onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
   //   if (!enableCellCopyPaste) return;
@@ -211,43 +212,38 @@ export default function InteractionMasks<R, K extends keyof R>({
   //   }
   // }
 
-  // function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
-  //   // When there are no rows in the grid, we need to allow the browser to handle tab presses
-  //   if (rows.length === 0) {
-  //     return;
-  //   }
+  function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
+    // When there are no rows in the grid, we need to allow the browser to handle tab presses
+    if (rows.length === 0) {
+      return;
+    }
 
-  //   // If we are in a position to leave the grid, stop editing but stay in that cell
-  //   if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
-  //     if (isEditorEnabled) {
-  //       closeEditor();
-  //       return;
-  //     }
+    // If we are in a position to leave the grid, stop editing but stay in that cell
+    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+      if (isEditorEnabled) {
+        closeEditor();
+        return;
+      }
 
-  //     // Reset the selected position before exiting
-  //     setSelectedPosition({ idx: -1, rowIdx: -1 });
-  //     return;
-  //   }
+      // Reset the selected position before exiting
+      setSelectedPosition({ idx: -1, rowIdx: -1 });
+      return;
+    }
 
-  //   e.preventDefault();
-  //   const tabCellNavigationMode = cellNavigationMode === CellNavigationMode.NONE
-  //     ? CellNavigationMode.CHANGE_ROW
-  //     : cellNavigationMode;
-  //   const keyCode = e.shiftKey ? KeyCodes.ArrowLeft : KeyCodes.ArrowRight;
-  //   let nextPosition = getNextPosition(keyCode);
-  //   nextPosition = getNextSelectedCellPosition<R>({
-  //     columns,
-  //     rowsCount: rows.length,
-  //     cellNavigationMode: tabCellNavigationMode,
-  //     nextPosition
-  //   });
-  //   selectCell(nextPosition);
-  // }
-
-  // function onPressEscape(): void {
-  //   closeEditor();
-  //   setCopiedPosition(null);
-  // }
+    e.preventDefault();
+    const tabCellNavigationMode = cellNavigationMode === CellNavigationMode.NONE
+      ? CellNavigationMode.CHANGE_ROW
+      : cellNavigationMode;
+    const keyCode = e.shiftKey ? KeyCodes.ArrowLeft : KeyCodes.ArrowRight;
+    let nextPosition = getNextPosition(keyCode);
+    nextPosition = getNextSelectedCellPosition<R>({
+      columns,
+      rowsCount: rows.length,
+      cellNavigationMode: tabCellNavigationMode,
+      nextPosition
+    });
+    selectCell(nextPosition);
+  }
 
   // function handleCopy(): void {
   //   const { idx, rowIdx } = selectedPosition;
@@ -276,18 +272,18 @@ export default function InteractionMasks<R, K extends keyof R>({
   //   });
   // }
 
-  // function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
-  //   e.preventDefault();
-  //   let nextPosition = getNextPosition(e.keyCode);
-  //   nextPosition = getNextSelectedCellPosition<R>({
-  //     columns,
-  //     rowsCount: rows.length,
-  //     cellNavigationMode,
-  //     nextPosition
-  //   });
+  function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
+    e.preventDefault();
+    let nextPosition = getNextPosition(e.keyCode);
+    nextPosition = getNextSelectedCellPosition<R>({
+      columns,
+      rowsCount: rows.length,
+      cellNavigationMode,
+      nextPosition
+    });
 
-  //   selectCell(nextPosition);
-  // }
+    selectCell(nextPosition);
+  }
 
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
     return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;

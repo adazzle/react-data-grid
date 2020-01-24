@@ -34,7 +34,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   // TODO: remove, rename editor2 to editor
   editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
   editor2?: React.ComponentType<EditorProps2<TRow>>;
-  onCellInput?(event: CellInputEvent<TRow>): boolean;
+  onCellInput?(event: CellInputEvent<TRow>): unknown;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
