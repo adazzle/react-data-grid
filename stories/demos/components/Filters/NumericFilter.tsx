@@ -21,7 +21,7 @@ interface ChangeEvent<R> {
 
 export function NumericFilter<R>({ value, column, onChange }: FilterRendererProps<R, ChangeEvent<R>>) {
   /** Validates the input */
-  function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const result = /[><,0-9-]/.test(event.key);
     if (result === false) {
       event.preventDefault();
@@ -48,7 +48,7 @@ export function NumericFilter<R>({ value, column, onChange }: FilterRendererProp
         className="rdg-filter"
         placeholder="e.g. 3,10-15,>20"
         onChange={handleChange}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
       />
       <span style={{ paddingLeft: 4, cursor: 'help' }} title={tooltipText}>?</span>
     </div>
