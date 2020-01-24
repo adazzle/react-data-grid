@@ -5,7 +5,7 @@ enum RuleType {
   Number = 1,
   Range = 2,
   GreaterThan = 3,
-  LessThen = 4
+  LessThan = 4
 }
 
 type Rule =
