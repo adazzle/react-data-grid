@@ -16,7 +16,6 @@ export interface EditorContainerProps<R, K extends keyof R> extends SharedIntera
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent<R>): void;
   onCommitCancel(): void;
-  firstEditorKeyPress: string | null;
 }
 
 export default function EditorContainer<R, K extends keyof R>({
@@ -30,8 +29,7 @@ export default function EditorContainer<R, K extends keyof R>({
   onCommit,
   onCommitCancel,
   scrollLeft,
-  scrollTop,
-  firstEditorKeyPress: key
+  scrollTop
 }: EditorContainerProps<R, K>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
@@ -52,15 +50,7 @@ export default function EditorContainer<R, K extends keyof R>({
   }, [getInputNode]);
 
   function getInitialValue() {
-    const value = row[column.key];
-    if (key === 'Delete' || key === 'Backspace') {
-      return '';
-    }
-    if (key === 'Enter') {
-      return value;
-    }
-
-    return key || value;
+    return row[column.key];
   }
 
   // Cancel changes and close editor on scroll
@@ -144,7 +134,7 @@ export default function EditorContainer<R, K extends keyof R>({
       <SimpleTextEditor
         ref={editorRef as unknown as React.RefObject<SimpleTextEditor>}
         column={column as CalculatedColumn<unknown>}
-        value={getInitialValue() as string}
+        value={getInitialValue() as unknown as string}
         onCommit={commit}
       />
     );

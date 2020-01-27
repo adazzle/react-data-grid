@@ -4,8 +4,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import CellMask from './CellMask';
 import DragMask, { DraggedPosition } from './DragMask';
 import EditorContainer from '../editors/EditorContainer2';
-// import EditorContainer from '../editors/EditorContainer';
-// import EditorPortal from '../editors/EditorPortal';
+import OldEditorContainer from '../editors/EditorContainer';
+import EditorPortal from '../editors/EditorPortal';
 
 // Utils
 import {
@@ -19,7 +19,7 @@ import {
 // Types
 import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode } from '../common/enums';
-import { Position, Dimension, /*CommitEvent,*/ ColumnMetrics } from '../common/types';
+import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
 export enum KeyCodes {
@@ -123,16 +123,16 @@ export default function InteractionMasks<R, K extends keyof R>({
     setDraggedPosition(null);
   }
 
-  // function getEditorPosition() {
-  //   if (!canvasRef.current) return null;
-  //   const { left, top } = canvasRef.current.getBoundingClientRect();
-  //   const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
-  //   const column = columns[selectedPosition.idx];
-  //   return {
-  //     left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
-  //     top: top + docTop + selectedPosition.rowIdx * rowHeight - scrollTop
-  //   };
-  // }
+  function getEditorPosition() {
+    if (!canvasRef.current) return null;
+    const { left, top } = canvasRef.current.getBoundingClientRect();
+    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
+    const column = columns[selectedPosition.idx];
+    return {
+      left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
+      top: top + docTop + selectedPosition.rowIdx * rowHeight - scrollTop
+    };
+  }
 
   function getNextPosition(keyCode: number) {
     switch (keyCode) {
@@ -359,16 +359,16 @@ export default function InteractionMasks<R, K extends keyof R>({
     });
   }
 
-  // function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
-  //   onRowsUpdate({
-  //     cellKey,
-  //     fromRow: rowIdx,
-  //     toRow: rowIdx,
-  //     updated,
-  //     action: UpdateActions.CELL_UPDATE
-  //   });
-  //   closeEditor();
-  // }
+  function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
+    onRowsUpdate({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: rowIdx,
+      updated,
+      action: UpdateActions.CELL_UPDATE
+    });
+    closeEditor();
+  }
 
   function getSelectedDimensions(selectedPosition: Position): Dimension {
     const top = rowHeight * selectedPosition.rowIdx;
@@ -409,7 +409,7 @@ export default function InteractionMasks<R, K extends keyof R>({
           )}
         </CellMask>
       )}
-      {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
+      {isEditorEnabled && isCellWithinBounds(selectedPosition) && columns[selectedPosition.idx].editor2 && (
         <EditorContainer
           column={columns[selectedPosition.idx]}
           row={rows[selectedPosition.rowIdx]}
@@ -423,10 +423,9 @@ export default function InteractionMasks<R, K extends keyof R>({
           onClose={closeEditor}
         />
       )}
-      {/* {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
+      {isEditorEnabled && isCellWithinBounds(selectedPosition) && !columns[selectedPosition.idx].editor2 && (
         <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R, K>
-            firstEditorKeyPress={firstEditorKeyPress}
+          <OldEditorContainer<R, K>
             onCommit={onCommit}
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}
@@ -438,7 +437,7 @@ export default function InteractionMasks<R, K extends keyof R>({
             {...getEditorPosition()}
           />
         </EditorPortal>
-      )} */}
+      )}
     </div>
   );
 }
