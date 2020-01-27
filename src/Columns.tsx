@@ -8,7 +8,6 @@ export const SelectColumn: Column<any, any> = {
   key: 'select-row',
   name: '',
   width: 60,
-  filterable: false,
   frozen: true,
   headerRenderer(props) {
     return (
