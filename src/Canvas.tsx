@@ -5,7 +5,7 @@ import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
 import RowRenderer from './RowRenderer';
-import SummaryRowRenderer from './SummaryRowRenderer';
+import SummaryRow from './SummaryRow';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
@@ -211,7 +211,7 @@ function Canvas<R, K extends keyof R>({
   const summary = summaryRows && summaryRows.length > 0 && (
     <div ref={summaryRef} className="rdg-summary">
       {summaryRows.map((row, rowIdx) => (
-        <SummaryRowRenderer<R>
+        <SummaryRow<R>
           key={rowIdx}
           rowIdx={rowIdx}
           row={row}

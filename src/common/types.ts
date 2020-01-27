@@ -104,7 +104,6 @@ export interface FormatterProps<TRow = any> {
   row: TRow;
   isRowSelected: boolean;
   onRowSelectionChange(checked: boolean, isShiftClick: boolean): void;
-  isSummaryRow: boolean;
 }
 
 export interface SummaryFormatterProps<TSummaryRow = any, TRow = any> extends Pick<FormatterProps<TRow>, 'column' | 'rowIdx'> {
@@ -135,7 +134,6 @@ export interface CellRendererProps<TRow> {
   lastFrozenColumnIndex: number;
   row: TRow;
   scrollLeft: number | undefined;
-  isSummaryRow: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
@@ -152,15 +150,10 @@ export interface RowRendererProps<TRow> {
   extraClasses?: string;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
-  isSummaryRow: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
-}
-
-export interface SummaryRendererProps<TRow> extends Pick<RowRendererProps<TRow>, 'extraClasses' | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'viewportColumns' | 'width'> {
-  row: unknown;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {

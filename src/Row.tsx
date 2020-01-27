@@ -12,7 +12,6 @@ export default function Row<R>({
   height,
   rowIdx,
   isRowSelected,
-  isSummaryRow,
   lastFrozenColumnIndex,
   onRowClick,
   row,
@@ -49,7 +48,6 @@ export default function Row<R>({
           row={row}
           scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
-          isSummaryRow={isSummaryRow}
           eventBus={eventBus}
           onRowClick={onRowClick}
           enableCellRangeSelection={enableCellRangeSelection}
@@ -69,9 +67,9 @@ export default function Row<R>({
     <div
       className={className}
       style={{ width, height }}
-      onDragEnter={isSummaryRow ? undefined : handleDragEnter}
-      onDragOver={isSummaryRow ? undefined : handleDragOver}
-      onDrop={isSummaryRow ? undefined : handleDrop}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
       {getCells()}
     </div>

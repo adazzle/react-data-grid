@@ -15,7 +15,6 @@ function Cell<R>({
   column,
   idx,
   isRowSelected,
-  isSummaryRow,
   lastFrozenColumnIndex,
   row,
   rowIdx,
@@ -90,8 +89,7 @@ function Cell<R>({
       rowIdx,
       row,
       isRowSelected,
-      onRowSelectionChange,
-      isSummaryRow
+      onRowSelectionChange
     });
   }
 
@@ -99,12 +97,12 @@ function Cell<R>({
     <div
       className={className}
       style={style}
-      onClick={isSummaryRow ? undefined : handleCellClick}
-      onDoubleClick={isSummaryRow ? undefined : handleCellDoubleClick}
-      onContextMenu={isSummaryRow ? undefined : handleCellContextMenu}
-      onDragOver={isSummaryRow ? undefined : handleDragOver}
-      onMouseDown={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseDown}
-      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseEnter}
+      onClick={handleCellClick}
+      onDoubleClick={handleCellDoubleClick}
+      onContextMenu={handleCellContextMenu}
+      onDragOver={handleDragOver}
+      onMouseDown={!enableCellRangeSelection ? undefined : handleCellMouseDown}
+      onMouseEnter={!enableCellRangeSelection ? undefined : handleCellMouseEnter}
     >
       {children}
     </div>

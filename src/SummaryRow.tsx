@@ -1,10 +1,14 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { memo } from 'react';
 
 import SummaryCell from './SummaryCell';
-import { SummaryRendererProps } from './common/types';
+import { RowRendererProps } from './common/types';
 
-export default function SummaryRow<R>({
+export interface SummaryRendererProps<TRow> extends Pick<RowRendererProps<TRow>, 'extraClasses' | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'viewportColumns' | 'width'> {
+  row: unknown;
+}
+
+export function SummaryRow<R>({
   extraClasses,
   height,
   rowIdx,
@@ -37,3 +41,5 @@ export default function SummaryRow<R>({
     </div>
   );
 }
+
+export default memo(SummaryRow) as <R>(props: SummaryRendererProps<R>) => JSX.Element;

@@ -49,7 +49,6 @@ function RowRenderer<R, K extends keyof R>({
     isRowSelected: props.isRowSelected,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
     scrollLeft,
-    isSummaryRow: false,
     eventBus,
     onRowClick: props.onRowClick,
     enableCellRangeSelection: props.enableCellRangeSelection

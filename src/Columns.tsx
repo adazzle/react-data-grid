@@ -19,7 +19,7 @@ export const SelectColumn: Column<any, any> = {
     );
   },
   formatter(props) {
-    return props.isSummaryRow ? null : (
+    return (
       <SelectCellFormatter
         value={props.isRowSelected}
         onChange={props.onRowSelectionChange}
