@@ -40,7 +40,7 @@ export default function HeaderFilters() {
     developer: '',
     complete: ''
   });
-  const [filterable, setFilterable] = useState(true);
+  const [enableFilters, setEnableFilters] = useState(true);
 
   const columns = useMemo((): Column<Row>[] => {
     const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
@@ -159,7 +159,7 @@ export default function HeaderFilters() {
   }
 
   function toggleFilters() {
-    setFilterable(!filterable);
+    setEnableFilters(!enableFilters);
   }
 
   return (
@@ -175,7 +175,7 @@ export default function HeaderFilters() {
             rows={filteredRows}
             width={width}
             height={height - 30}
-            filterable={filterable}
+            enableFilters={enableFilters}
             filters={filters}
             onFiltersChange={setFilters}
           />

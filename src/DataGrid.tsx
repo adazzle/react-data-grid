@@ -118,7 +118,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * Toggles and modes
    */
   /** Toggles whether filters row is displayed or not */
-  filterable?: boolean;
+  enableFilters?: boolean;
   /** Toggles whether cells should be autofocused */
   enableCellAutoFocus?: boolean;
   enableCellCopyPaste?: boolean;
@@ -150,7 +150,7 @@ function DataGrid<R, K extends keyof R>({
   height = 350,
   width,
   enableCellAutoFocus = true,
-  filterable = false,
+  enableFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
@@ -240,7 +240,7 @@ function DataGrid<R, K extends keyof R>({
     props.onRowsUpdate?.(event);
   }
 
-  const rowOffsetHeight = headerRowHeight + (filterable ? headerFiltersHeight : 0);
+  const rowOffsetHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
 
   return (
     <div
@@ -271,7 +271,7 @@ function DataGrid<R, K extends keyof R>({
               onSort={props.onSort}
               scrollLeft={nonStickyScrollLeft}
             />
-            {filterable && (
+            {enableFilters && (
               <FilterRow<R, K>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
