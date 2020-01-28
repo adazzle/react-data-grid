@@ -2,12 +2,7 @@ import React, { memo, createElement } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
-
-export interface CellProps<R> extends CellRendererProps<R> {
-  // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
-  children?: React.ReactNode;
-  className?: string;
-}
+import { preventDefault, wrapEvent } from './utils';
 
 function Cell<R>({
   children,
@@ -22,8 +17,15 @@ function Cell<R>({
   scrollLeft,
   eventBus,
   onRowClick,
-  enableCellRangeSelection
-}: CellProps<R>) {
+  enableCellRangeSelection,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
+  onDragOver,
+  onMouseDown,
+  onMouseEnter,
+  ...props
+}: CellRendererProps<R>) {
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx, rowIdx }, openEditor);
   }
@@ -56,10 +58,6 @@ function Cell<R>({
     selectCell(true);
   }
 
-  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
-    e.preventDefault();
-  }
-
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
     eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
   }
@@ -71,8 +69,8 @@ function Cell<R>({
       'rdg-cell-frozen': column.frozen,
       'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
     },
-    className,
-    typeof cellClass === 'function' ? cellClass(row) : cellClass
+    typeof cellClass === 'function' ? cellClass(row) : cellClass,
+    className
   );
 
   const style: React.CSSProperties = {
@@ -84,6 +82,7 @@ function Cell<R>({
     style.transform = `translateX(${scrollLeft}px)`;
   }
 
+  // TODO: Check if the children prop is required or not. These are most likely set by custom cell renderer
   if (!children) {
     children = createElement(column.formatter, {
       column,
@@ -99,16 +98,17 @@ function Cell<R>({
     <div
       className={className}
       style={style}
-      onClick={isSummaryRow ? undefined : handleCellClick}
-      onDoubleClick={isSummaryRow ? undefined : handleCellDoubleClick}
-      onContextMenu={isSummaryRow ? undefined : handleCellContextMenu}
-      onDragOver={isSummaryRow ? undefined : handleDragOver}
-      onMouseDown={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseDown}
-      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseEnter}
+      onClick={isSummaryRow ? onClick : wrapEvent(handleCellClick, onClick)}
+      onDoubleClick={isSummaryRow ? onDoubleClick : wrapEvent(handleCellDoubleClick, onDoubleClick)}
+      onContextMenu={isSummaryRow ? onContextMenu : wrapEvent(handleCellContextMenu, onContextMenu)}
+      onDragOver={isSummaryRow ? onDragOver : wrapEvent(preventDefault, onDragOver)}
+      onMouseDown={isSummaryRow || !enableCellRangeSelection ? onMouseDown : wrapEvent(handleCellMouseDown, onMouseDown)}
+      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? onMouseEnter : wrapEvent(handleCellMouseEnter, onMouseEnter)}
+      {...props}
     >
       {children}
     </div>
   );
 }
 
-export default memo(Cell) as <R>(props: CellProps<R>) => JSX.Element;
+export default memo(Cell) as <R>(props: CellRendererProps<R>) => JSX.Element;

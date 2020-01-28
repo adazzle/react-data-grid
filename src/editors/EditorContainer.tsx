@@ -6,6 +6,7 @@ import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../commo
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
+import { preventDefault } from '../utils';
 
 type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 
@@ -160,7 +161,7 @@ export default function EditorContainer<R, K extends keyof R>({
         className={className}
         style={{ height, width, left, top }}
         onKeyDown={onKeyDown}
-        onContextMenu={e => e.preventDefault()}
+        onContextMenu={preventDefault}
       >
         {createEditor()}
         {!isValid && <Clear className="form-control-feedback" />}
