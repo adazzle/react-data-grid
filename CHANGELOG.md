@@ -5,7 +5,8 @@
   - **Props:**
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
-    - `filterable`  
+    - `filterable`
+      - ⚠️ This replaces the `enableHeaderFilters` and `column.filterable` props
     - `filters`
     - `onFiltersChange`
     - `enableCellCopyPaste`
