@@ -7,7 +7,7 @@ import { Column } from './common/types';
 export const SelectColumn: Column<any, any> = {
   key: 'select-row',
   name: '',
-  width: 60,
+  width: 35,
   frozen: true,
   headerRenderer(props) {
     return (
@@ -24,8 +24,5 @@ export const SelectColumn: Column<any, any> = {
         onChange={props.onRowSelectionChange}
       />
     );
-  },
-  filterRenderer() {
-    return null;
   }
 };

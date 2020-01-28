@@ -75,8 +75,7 @@ function getSpecifiedWidth<R>(
     return columnWidths.get(column.key);
   }
   if (typeof column.width === 'number') {
-    // TODO: allow width to be less than minWidth?
-    return Math.max(column.width, minColumnWidth);
+    return column.width;
   }
   if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
     return Math.max(Math.floor(viewportWidth * parseInt(column.width, 10) / 100), minColumnWidth);
