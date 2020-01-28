@@ -1,7 +1,6 @@
 import React, { createElement } from 'react';
 import classNames from 'classnames';
 
-import FilterableHeaderCell from './headerCells/FilterableHeaderCell';
 import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
 
@@ -41,7 +40,6 @@ export default function FilterRow<R, K extends keyof R>({
       {columns.map(column => {
         const { key } = column;
 
-        const renderer = column.filterRenderer || FilterableHeaderCell;
         const className = classNames('rdg-cell', {
           'rdg-cell-frozen': column.frozen,
           'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
@@ -61,7 +59,7 @@ export default function FilterRow<R, K extends keyof R>({
             style={style}
             className={className}
           >
-            {column.filterable && createElement(renderer, {
+            {column.filterRenderer && createElement(column.filterRenderer, {
               column,
               value: filters?.[column.key],
               onChange: value => onChange(key, value)
