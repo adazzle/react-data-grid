@@ -5,6 +5,8 @@
   - **Props:**
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
+    - `enableFilters`
+      - ⚠️ This replaces the `enableHeaderFilters` and `column.filterable` props
     - `filters`
     - `onFiltersChange`
     - `enableCellCopyPaste`
@@ -49,6 +51,7 @@
   - ⚠️ `column.getCellActions`
     - Check [#1845](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
   - ⚠️ `column.getRowMetaData`
+  - ⚠️ `column.filterable`
   - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`
   - ⚠️ `fromRowId`, `toRowId`, and `fromRowData` from `onRowsUpdate` argument
 - **Renamed:**

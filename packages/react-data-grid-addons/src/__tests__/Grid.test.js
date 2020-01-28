@@ -58,24 +58,24 @@ describe('Grid', () => {
   describe('when defininig heights on props', () => {
     describe('for defaults props', () => {
       it('uses the appropriate default for the header row height', () => {
-        const { wrapper } = setup({ enableHeaderFilters: true });
+        const { wrapper } = setup({ enableFilters: true });
         expect(wrapper.find('HeaderRow').prop('height')).toStrictEqual(35);
       });
 
       it('uses the appropriate default for the header filter row height', () => {
-        const { wrapper } = setup({ enableHeaderFilters: true });
+        const { wrapper } = setup({ enableFilters: true });
         expect(wrapper.find('FilterRow').prop('height')).toStrictEqual(45);
       });
     });
 
     describe('for a given row height prop', () => {
       it('passes the grid row height to the header row when no height to the specific header row is provided', () => {
-        const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
+        const { wrapper } = setup({ enableFilters: true, rowHeight: 40 });
         expect(wrapper.find('HeaderRow').prop('height')).toStrictEqual(40);
       });
 
       it('uses the default prop height for the filter row when none is provided', () => {
-        const { wrapper } = setup({ enableHeaderFilters: true, rowHeight: 40 });
+        const { wrapper } = setup({ enableFilters: true, rowHeight: 40 });
         expect(wrapper.find('FilterRow').prop('height')).toStrictEqual(45);
       });
     });
@@ -83,7 +83,7 @@ describe('Grid', () => {
     describe('for given row and header height props', () => {
       function innerSetup() {
         return setup({
-          enableHeaderFilters: true,
+          enableFilters: true,
           rowHeight: 40,
           headerRowHeight: 50,
           headerFiltersHeight: 60
