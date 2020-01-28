@@ -24,8 +24,5 @@ export const SelectColumn: Column<any, any> = {
         onChange={props.onRowSelectionChange}
       />
     );
-  },
-  filterRenderer() {
-    return null;
   }
 };
