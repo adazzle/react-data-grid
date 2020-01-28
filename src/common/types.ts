@@ -20,8 +20,6 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   editable?: boolean | ((row: TRow) => boolean);
   /** Enable dragging of a column */
   draggable?: boolean;
-  /** Enable filtering of a column */
-  filterable?: boolean;
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */

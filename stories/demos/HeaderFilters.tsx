@@ -5,6 +5,7 @@ import faker from 'faker';
 
 import DataGrid, { Column, Filters } from '../../src';
 import { NumericFilter } from './components/Filters';
+import './HeaderFilters.less';
 
 interface Row {
   id: number;
@@ -39,7 +40,7 @@ export default function HeaderFilters() {
     developer: '',
     complete: ''
   });
-  const [enableHeaderFilters, setEnableHeaderFilters] = useState(true);
+  const [enableFilters, setEnableFilters] = useState(true);
 
   const columns = useMemo((): Column<Row>[] => {
     const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
@@ -51,13 +52,11 @@ export default function HeaderFilters() {
       {
         key: 'id',
         name: 'ID',
-        width: 50,
-        filterable: false
+        width: 50
       },
       {
         key: 'task',
         name: 'Title',
-        filterable: true,
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <input
@@ -71,7 +70,6 @@ export default function HeaderFilters() {
       {
         key: 'priority',
         name: 'Priority',
-        filterable: true,
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
@@ -87,7 +85,6 @@ export default function HeaderFilters() {
       {
         key: 'issueType',
         name: 'Issue Type',
-        filterable: true,
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
@@ -103,7 +100,6 @@ export default function HeaderFilters() {
       {
         key: 'developer',
         name: 'Developer',
-        filterable: true,
         filterRenderer: p => (
           <div className="rdg-filter-container">
             <Select
@@ -135,7 +131,6 @@ export default function HeaderFilters() {
       {
         key: 'complete',
         name: '% Complete',
-        filterable: true,
         filterRenderer: NumericFilter
       }
     ];
@@ -164,7 +159,7 @@ export default function HeaderFilters() {
   }
 
   function toggleFilters() {
-    setEnableHeaderFilters(!enableHeaderFilters);
+    setEnableFilters(!enableFilters);
   }
 
   return (
@@ -180,7 +175,7 @@ export default function HeaderFilters() {
             rows={filteredRows}
             width={width}
             height={height - 30}
-            enableHeaderFilters={enableHeaderFilters}
+            enableFilters={enableFilters}
             filters={filters}
             onFiltersChange={setFilters}
           />
