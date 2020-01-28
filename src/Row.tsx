@@ -3,12 +3,13 @@ import React from 'react';
 
 import Cell from './Cell';
 import { RowRendererProps } from './common/types';
+import { preventDefault, wrapEvent } from './utils';
 
 export default function Row<R>({
   cellRenderer: CellRenderer = Cell,
+  className,
   enableCellRangeSelection,
   eventBus,
-  extraClasses,
   height,
   rowIdx,
   isRowSelected,
@@ -18,23 +19,21 @@ export default function Row<R>({
   row,
   scrollLeft,
   viewportColumns,
-  width
+  width,
+  onDragEnter,
+  onDragOver,
+  onDrop,
+  ...props
 }: RowRendererProps<R>) {
-  function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
+  function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
-    e.preventDefault();
+    event.preventDefault();
     eventBus.dispatch('DRAG_ENTER', rowIdx);
   }
 
-  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  }
-
-  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
-    // The default in Firefox is to treat data in dataTransfer as a URL and perform navigation on it, even if the data type used is 'text'
-    // To bypass this, we need to capture and prevent the drop event.
-    e.preventDefault();
+  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
   }
 
   function getCells() {
@@ -58,20 +57,24 @@ export default function Row<R>({
     });
   }
 
-  const className = classNames(
+  className = classNames(
     'rdg-row',
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     { 'rdg-row-selected': isRowSelected },
-    extraClasses
+    className
   );
 
+  // Regarding onDrop: the default in Firefox is to treat data in dataTransfer as a URL,
+  // and perform navigation on it, even if the data type used is 'text'.
+  // To bypass this, we need to capture and prevent the drop event.
   return (
     <div
       className={className}
       style={{ width, height }}
-      onDragEnter={isSummaryRow ? undefined : handleDragEnter}
-      onDragOver={isSummaryRow ? undefined : handleDragOver}
-      onDrop={isSummaryRow ? undefined : handleDrop}
+      onDragEnter={isSummaryRow ? onDragEnter : wrapEvent(handleDragEnter, onDragEnter)}
+      onDragOver={isSummaryRow ? onDragOver : wrapEvent(handleDragOver, onDragOver)}
+      onDrop={isSummaryRow ? onDrop : wrapEvent(preventDefault, onDrop)}
+      {...props}
     >
       {getCells()}
     </div>

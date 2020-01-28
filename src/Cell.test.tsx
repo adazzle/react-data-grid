@@ -1,10 +1,10 @@
 import React, { PropsWithChildren } from 'react';
 import { mount } from 'enzyme';
 
-import Cell, { CellProps } from './Cell';
+import Cell from './Cell';
 import helpers, { Row } from './test/GridPropHelpers';
 import { SimpleCellFormatter } from './formatters';
-import { CalculatedColumn, FormatterProps } from './common/types';
+import { CalculatedColumn, CellRendererProps, FormatterProps } from './common/types';
 import EventBus from './EventBus';
 
 const defaultColumn: CalculatedColumn<Row> = {
@@ -16,7 +16,7 @@ const defaultColumn: CalculatedColumn<Row> = {
   formatter: SimpleCellFormatter
 };
 
-const testProps: CellProps<Row> = {
+const testProps: CellRendererProps<Row> = {
   rowIdx: 0,
   idx: 1,
   column: defaultColumn,
@@ -28,7 +28,7 @@ const testProps: CellProps<Row> = {
   eventBus: new EventBus()
 };
 
-const renderComponent = (extraProps?: PropsWithChildren<Partial<CellProps<Row>>>) => {
+const renderComponent = (extraProps?: PropsWithChildren<Partial<CellRendererProps<Row>>>) => {
   return mount(<Cell<Row> {...testProps} {...extraProps} />);
 };
 
@@ -58,11 +58,11 @@ describe('Cell', () => {
   });
 
   describe('Rendering Cell component', () => {
-    function shallowRenderComponent(props: CellProps<Row>) {
+    function shallowRenderComponent(props: CellRendererProps<Row>) {
       return mount(<Cell<Row> {...props} />);
     }
 
-    const requiredProperties: CellProps<Row> = {
+    const requiredProperties: CellRendererProps<Row> = {
       rowIdx: 18,
       idx: 19,
       column: helpers.columns[0],

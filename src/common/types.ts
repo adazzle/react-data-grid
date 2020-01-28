@@ -135,7 +135,7 @@ export interface HeaderRendererProps<TRow> {
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export interface CellRendererProps<TRow> {
+export interface CellRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow>;
@@ -149,14 +149,13 @@ export interface CellRendererProps<TRow> {
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
-export interface RowRendererProps<TRow> {
+export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   height: number;
   width: number;
   viewportColumns: readonly CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   rowIdx: number;
-  extraClasses?: string;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isSummaryRow: boolean;
