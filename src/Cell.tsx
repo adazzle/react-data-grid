@@ -3,12 +3,6 @@ import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
 
-export interface CellProps<R> extends CellRendererProps<R> {
-  // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
-  children?: React.ReactNode;
-  className?: string;
-}
-
 function Cell<R>({
   children,
   className,
@@ -22,18 +16,26 @@ function Cell<R>({
   scrollLeft,
   eventBus,
   onRowClick,
-  enableCellRangeSelection
-}: CellProps<R>) {
+  enableCellRangeSelection,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
+  onDragOver,
+  onMouseDown,
+  onMouseEnter,
+  ...props
+}: CellRendererProps<R>) {
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx, rowIdx }, openEditor);
   }
 
-  function handleCellClick() {
+  function handleCellClick(event: React.MouseEvent<HTMLDivElement>) {
     selectCell();
     onRowClick?.(rowIdx, row, column);
+    onClick?.(event);
   }
 
-  function handleCellMouseDown() {
+  function handleCellMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     eventBus.dispatch('SELECT_START', { idx, rowIdx });
 
     function handleWindowMouseUp() {
@@ -42,22 +44,28 @@ function Cell<R>({
     }
 
     window.addEventListener('mouseup', handleWindowMouseUp);
+
+    onMouseDown?.(event);
   }
 
-  function handleCellMouseEnter() {
+  function handleCellMouseEnter(event: React.MouseEvent<HTMLDivElement>) {
     eventBus.dispatch('SELECT_UPDATE', { idx, rowIdx });
+    onMouseEnter?.(event);
   }
 
-  function handleCellContextMenu() {
+  function handleCellContextMenu(event: React.MouseEvent<HTMLDivElement>) {
     selectCell();
+    onContextMenu?.(event);
   }
 
-  function handleCellDoubleClick() {
+  function handleCellDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     selectCell(true);
+    onDoubleClick?.(event);
   }
 
-  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
-    e.preventDefault();
+  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    onDragOver?.(event);
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
@@ -71,8 +79,8 @@ function Cell<R>({
       'rdg-cell-frozen': column.frozen,
       'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
     },
-    className,
-    typeof cellClass === 'function' ? cellClass(row) : cellClass
+    typeof cellClass === 'function' ? cellClass(row) : cellClass,
+    className
   );
 
   const style: React.CSSProperties = {
@@ -84,6 +92,7 @@ function Cell<R>({
     style.transform = `translateX(${scrollLeft}px)`;
   }
 
+  // TODO: Check if the children prop is required or not. These are most likely set by custom cell renderer
   if (!children) {
     children = createElement(column.formatter, {
       column,
@@ -99,16 +108,17 @@ function Cell<R>({
     <div
       className={className}
       style={style}
-      onClick={isSummaryRow ? undefined : handleCellClick}
-      onDoubleClick={isSummaryRow ? undefined : handleCellDoubleClick}
-      onContextMenu={isSummaryRow ? undefined : handleCellContextMenu}
-      onDragOver={isSummaryRow ? undefined : handleDragOver}
-      onMouseDown={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseDown}
-      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? undefined : handleCellMouseEnter}
+      onClick={isSummaryRow ? onClick : handleCellClick}
+      onDoubleClick={isSummaryRow ? onDoubleClick : handleCellDoubleClick}
+      onContextMenu={isSummaryRow ? onContextMenu : handleCellContextMenu}
+      onDragOver={isSummaryRow ? onDragOver : handleDragOver}
+      onMouseDown={isSummaryRow || !enableCellRangeSelection ? onMouseDown : handleCellMouseDown}
+      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? onMouseEnter : handleCellMouseEnter}
+      {...props}
     >
       {children}
     </div>
   );
 }
 
-export default memo(Cell) as <R>(props: CellProps<R>) => JSX.Element;
+export default memo(Cell) as <R>(props: CellRendererProps<R>) => JSX.Element;

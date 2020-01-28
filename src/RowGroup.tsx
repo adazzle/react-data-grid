@@ -9,7 +9,6 @@ interface Props<R> {
   cellRenderer?: React.ComponentType<CellRendererProps<R>>;
   isSelected?: boolean;
   rowIdx: number;
-  extraClasses?: string;
   forceUpdate?: boolean;
   isRowHovered?: boolean;
   columnGroupDisplayName: string;
