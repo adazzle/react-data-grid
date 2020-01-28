@@ -2,6 +2,7 @@ import React, { memo, createElement } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
+import { preventDefault, wrapEvent } from './utils';
 
 function Cell<R>({
   children,
@@ -29,13 +30,12 @@ function Cell<R>({
     eventBus.dispatch('SELECT_CELL', { idx, rowIdx }, openEditor);
   }
 
-  function handleCellClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleCellClick() {
     selectCell();
     onRowClick?.(rowIdx, row, column);
-    onClick?.(event);
   }
 
-  function handleCellMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+  function handleCellMouseDown() {
     eventBus.dispatch('SELECT_START', { idx, rowIdx });
 
     function handleWindowMouseUp() {
@@ -44,28 +44,18 @@ function Cell<R>({
     }
 
     window.addEventListener('mouseup', handleWindowMouseUp);
-
-    onMouseDown?.(event);
   }
 
-  function handleCellMouseEnter(event: React.MouseEvent<HTMLDivElement>) {
+  function handleCellMouseEnter() {
     eventBus.dispatch('SELECT_UPDATE', { idx, rowIdx });
-    onMouseEnter?.(event);
   }
 
-  function handleCellContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+  function handleCellContextMenu() {
     selectCell();
-    onContextMenu?.(event);
   }
 
-  function handleCellDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleCellDoubleClick() {
     selectCell(true);
-    onDoubleClick?.(event);
-  }
-
-  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    onDragOver?.(event);
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
@@ -108,12 +98,12 @@ function Cell<R>({
     <div
       className={className}
       style={style}
-      onClick={isSummaryRow ? onClick : handleCellClick}
-      onDoubleClick={isSummaryRow ? onDoubleClick : handleCellDoubleClick}
-      onContextMenu={isSummaryRow ? onContextMenu : handleCellContextMenu}
-      onDragOver={isSummaryRow ? onDragOver : handleDragOver}
-      onMouseDown={isSummaryRow || !enableCellRangeSelection ? onMouseDown : handleCellMouseDown}
-      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? onMouseEnter : handleCellMouseEnter}
+      onClick={isSummaryRow ? onClick : wrapEvent(handleCellClick, onClick)}
+      onDoubleClick={isSummaryRow ? onDoubleClick : wrapEvent(handleCellDoubleClick, onDoubleClick)}
+      onContextMenu={isSummaryRow ? onContextMenu : wrapEvent(handleCellContextMenu, onContextMenu)}
+      onDragOver={isSummaryRow ? onDragOver : wrapEvent(preventDefault, onDragOver)}
+      onMouseDown={isSummaryRow || !enableCellRangeSelection ? onMouseDown : wrapEvent(handleCellMouseDown, onMouseDown)}
+      onMouseEnter={isSummaryRow || !enableCellRangeSelection ? onMouseEnter : wrapEvent(handleCellMouseEnter, onMouseEnter)}
       {...props}
     >
       {children}
