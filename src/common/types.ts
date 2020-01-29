@@ -13,14 +13,13 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number | string;
   cellClass?: string | ((row: TRow) => string);
+  headerCellClass?: string;
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
   /** Enable dragging of a column */
   draggable?: boolean;
-  /** Enable filtering of a column */
-  filterable?: boolean;
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */
@@ -120,7 +119,7 @@ export interface HeaderRendererProps<TRow> {
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export interface CellRendererProps<TRow> {
+export interface CellRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow>;
@@ -133,13 +132,13 @@ export interface CellRendererProps<TRow> {
   enableCellRangeSelection?: boolean;
 }
 
-export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
+export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   height: number;
   width: number;
   viewportColumns: readonly CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
-  idx: number;
+  rowIdx: number;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isSummaryRow: boolean;

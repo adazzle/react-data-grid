@@ -5,6 +5,8 @@
   - **Props:**
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
+    - `enableFilters`
+      - ⚠️ This replaces the `enableHeaderFilters` and `column.filterable` props
     - `filters`
     - `onFiltersChange`
     - `enableCellCopyPaste`
@@ -13,6 +15,7 @@
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
   - `column.cellClass(row)` function support:
     - `column = { ..., cellClass(row) { return string; } }`
+  - `column.headerCellClass`
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
 - **Removed:**
@@ -43,7 +46,7 @@
     - ⚠️ `value` (from `column.formatter` props)
   - ⚠️ React elements are no longer supported, please use components instead.
     - For example:
-    ```diff js
+    ```diff
     const column = {
       key: 'example',
       name: 'Example',
@@ -55,6 +58,7 @@
   - ⚠️ `column.getCellActions`
     - Check [#1845](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
   - ⚠️ `column.getRowMetaData`
+  - ⚠️ `column.filterable`
   - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`
   - ⚠️ `fromRowId`, `toRowId`, and `fromRowData` from `onRowsUpdate` argument
 - **Renamed:**
@@ -64,7 +68,10 @@
   - ⚠️ `onGridRowsUpdated` to `onRowsUpdate`
   - ⚠️ `rowData` to `row`
   - ⚠️ `fromRowData` to `fromRow`
+  - ⚠️ `idx` to `rowIdx` in `Row` renderer
 - **Changed:**
+  - ⚠️ Started publishing ES2020/ESM modules instead of ES5/CommonJS modules.
+    - Using [`@babel/preset-env`](https://www.npmjs.com/package/@babel/preset-env) with [`core-js`](https://www.npmjs.com/package/core-js) is recommended to enable compatibility for the browsers your project aims to support.
   - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
   - ⚠️ `column.cellClass` does not affect header cells anymore.
 

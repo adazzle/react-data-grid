@@ -8,8 +8,7 @@ interface Props<R> {
   row: unknown;
   cellRenderer?: React.ComponentType<CellRendererProps<R>>;
   isSelected?: boolean;
-  idx: number;
-  extraClasses?: string;
+  rowIdx: number;
   forceUpdate?: boolean;
   isRowHovered?: boolean;
   columnGroupDisplayName: string;
@@ -27,7 +26,7 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
     const { onRowExpandToggle } = props;
     if (onRowExpandToggle) {
       const shouldExpand = expand == null ? !props.isExpanded : expand;
-      onRowExpandToggle({ rowIdx: props.idx, shouldExpand, columnGroupName: props.columnGroupName, name: props.name });
+      onRowExpandToggle({ rowIdx: props.rowIdx, shouldExpand, columnGroupName: props.columnGroupName, name: props.name });
     }
   }
 
@@ -36,7 +35,7 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
   }
 
   function onClick() {
-    props.eventBus.dispatch('SELECT_CELL', { rowIdx: props.idx, idx: 0 });
+    props.eventBus.dispatch('SELECT_CELL', { rowIdx: props.rowIdx, idx: 0 });
   }
 
   const Renderer = props.renderer || DefaultBase;

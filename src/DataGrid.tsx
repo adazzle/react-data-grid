@@ -116,7 +116,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * Toggles and modes
    */
   /** Toggles whether filters row is displayed or not */
-  enableHeaderFilters?: boolean;
+  enableFilters?: boolean;
   /** Toggles whether cells should be autofocused */
   enableCellAutoFocus?: boolean;
   enableCellCopyPaste?: boolean;
@@ -148,7 +148,7 @@ function DataGrid<R, K extends keyof R>({
   height = 350,
   width,
   enableCellAutoFocus = true,
-  enableHeaderFilters = false,
+  enableFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
@@ -219,7 +219,11 @@ function DataGrid<R, K extends keyof R>({
 
   function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
-    width = Math.max(width, minColumnWidth);
+    const originalWidth = columns.find(col => col.key === column.key)!.width;
+    const minWidth = typeof originalWidth === 'number'
+      ? Math.min(originalWidth, minColumnWidth)
+      : minColumnWidth;
+    width = Math.max(width, minWidth);
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
@@ -238,7 +242,7 @@ function DataGrid<R, K extends keyof R>({
     props.onRowsUpdate?.(event);
   }
 
-  const rowOffsetHeight = headerRowHeight + (enableHeaderFilters ? headerFiltersHeight : 0);
+  const rowOffsetHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
 
   return (
     <div
@@ -269,7 +273,7 @@ function DataGrid<R, K extends keyof R>({
               onSort={props.onSort}
               scrollLeft={nonStickyScrollLeft}
             />
-            {enableHeaderFilters && (
+            {enableFilters && (
               <FilterRow<R, K>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}

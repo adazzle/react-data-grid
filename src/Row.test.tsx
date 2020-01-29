@@ -23,7 +23,7 @@ describe('Row', () => {
     viewportColumns: createColumns(50),
     row: { key: 'value' },
     cellRenderer: Cell,
-    idx: 17,
+    rowIdx: 17,
     scrollLeft: 0,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
