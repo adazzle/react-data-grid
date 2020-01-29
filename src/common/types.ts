@@ -23,8 +23,6 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   editable?: boolean | ((row: TRow) => boolean);
   /** Enable dragging of a column */
   draggable?: boolean;
-  /** Enable filtering of a column */
-  filterable?: boolean;
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */
@@ -127,7 +125,7 @@ export interface HeaderRendererProps<TRow> {
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export interface CellRendererProps<TRow> {
+export interface CellRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow>;
@@ -140,14 +138,13 @@ export interface CellRendererProps<TRow> {
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
-export interface RowRendererProps<TRow> {
+export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   height: number;
   width: number;
   viewportColumns: readonly CalculatedColumn<TRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   rowIdx: number;
-  extraClasses?: string;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
