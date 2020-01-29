@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, Key } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent, ExtractIDKeys } from './common/types';
 import EventBus from './EventBus';
@@ -20,8 +20,8 @@ type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, 
 | 'onRowClick'
 | 'onRowExpandToggle'
 | 'onSelectedRowsChange'
-> & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
+> & Required<Pick<DataGridProps<R, K>,
 | 'enableCellAutoFocus'
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
@@ -186,8 +186,8 @@ function Canvas<R, K extends ExtractIDKeys<R>>({
       const row = rows[rowIdx];
       const key = row[rowKey];
       rowElements.push(
-        <RowRenderer<R, K>
-          key={key}
+        <RowRenderer<R>
+          key={key as unknown as Key}
           rowIdx={rowIdx}
           row={row}
           columnMetrics={columnMetrics}
@@ -195,7 +195,6 @@ function Canvas<R, K extends ExtractIDKeys<R>>({
           eventBus={eventBus}
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
-          rowKey={rowKey}
           rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
           isRowSelected={selectedRows?.has(key) ?? false}
@@ -237,7 +236,7 @@ function Canvas<R, K extends ExtractIDKeys<R>>({
         ref={canvasRef}
         onScroll={handleScroll}
       >
-        <InteractionMasks<R, K>
+        <InteractionMasks<R>
           rows={rows}
           rowHeight={rowHeight}
           columns={columns}

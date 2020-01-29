@@ -1,12 +1,12 @@
 import React, { createElement } from 'react';
 import classNames from 'classnames';
 
-import { CalculatedColumn, ExtractIDKeys } from './common/types';
+import { CalculatedColumn } from './common/types';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 
-type SharedHeaderRowProps<R, K extends ExtractIDKeys<R>> = Pick<HeaderRowProps<R, K>,
+type SharedHeaderRowProps<R> = Pick<HeaderRowProps<R, never>,
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
@@ -16,7 +16,7 @@ type SharedHeaderRowProps<R, K extends ExtractIDKeys<R>> = Pick<HeaderRowProps<R
 | 'draggableHeaderCell'
 >;
 
-export interface HeaderCellProps<R, K extends ExtractIDKeys<R>> extends SharedHeaderRowProps<R, K> {
+export interface HeaderCellProps<R> extends SharedHeaderRowProps<R> {
   column: CalculatedColumn<R>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
@@ -24,14 +24,14 @@ export interface HeaderCellProps<R, K extends ExtractIDKeys<R>> extends SharedHe
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export default function HeaderCell<R, K extends ExtractIDKeys<R>>({
+export default function HeaderCell<R>({
   height,
   column,
   allRowsSelected,
   onAllRowsSelectionChange,
   scrollLeft,
   ...props
-}: HeaderCellProps<R, K>) {
+}: HeaderCellProps<R>) {
   function getCell() {
     if (!column.headerRenderer) return column.name;
 

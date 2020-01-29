@@ -277,7 +277,7 @@ function DataGrid<R, K extends ExtractIDKeys<R>>({
               scrollLeft={nonStickyScrollLeft}
             />
             {enableFilters && (
-              <FilterRow<R, K>
+              <FilterRow<R>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}

@@ -1,16 +1,16 @@
-import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback } from 'react';
+import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, createElement, ComponentType } from 'react';
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
-import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit, ExtractIDKeys } from '../common/types';
+import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit, EditorProps } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, K extends ExtractIDKeys<R>> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
 
-export interface EditorContainerProps<R, K extends ExtractIDKeys<R>> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R>;
@@ -20,7 +20,7 @@ export interface EditorContainerProps<R, K extends ExtractIDKeys<R>> extends Sha
   firstEditorKeyPress: string | null;
 }
 
-export default function EditorContainer<R, K extends ExtractIDKeys<R>>({
+export default function EditorContainer<R>({
   rowIdx,
   column,
   row,
@@ -33,7 +33,7 @@ export default function EditorContainer<R, K extends ExtractIDKeys<R>>({
   scrollLeft,
   scrollTop,
   firstEditorKeyPress: key
-}: EditorContainerProps<R, K>) {
+}: EditorContainerProps<R>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
   const prevScrollLeft = useRef(scrollLeft);
@@ -127,18 +127,16 @@ export default function EditorContainer<R, K extends ExtractIDKeys<R>>({
   function createEditor() {
     // return custom column editor or SimpleEditor if none specified
     if (column.editor) {
-      return (
-        <column.editor
-          ref={editorRef}
-          column={column}
-          value={getInitialValue() as R[ExtractIDKeys<R> & string] & R[ExtractIDKeys<R> & number] & R[ExtractIDKeys<R> & symbol]}
-          row={row}
-          height={height}
-          onCommit={commit}
-          onCommitCancel={onCommitCancel}
-          onOverrideKeyDown={onKeyDown}
-        />
-      );
+      return createElement(column.editor as ComponentType<EditorProps<R[keyof R & string], R>>, {
+        ref: editorRef,
+        column,
+        value: getInitialValue() as R[keyof R & string],
+        row,
+        height,
+        onCommit: commit,
+        onCommitCancel,
+        onOverrideKeyDown: onKeyDown
+      });
     }
 
     return (

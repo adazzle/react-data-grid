@@ -12,9 +12,8 @@ type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, 
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
-> & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
->>;
+>;
 
 export interface HeaderRowProps<R, K extends ExtractIDKeys<R>> extends SharedDataGridProps<R, K> {
   height: number;
@@ -54,7 +53,7 @@ export default function HeaderRow<R, K extends ExtractIDKeys<R>>({
     >
       {props.columns.map(column => {
         return (
-          <HeaderCell<R, K>
+          <HeaderCell<R>
             key={column.key as string}
             column={column}
             lastFrozenColumnIndex={props.lastFrozenColumnIndex}
