@@ -1,12 +1,12 @@
 import React, { createElement } from 'react';
 import classNames from 'classnames';
 
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn, ExtractIDKeys } from './common/types';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 
-type SharedHeaderRowProps<R, K extends keyof R> = Pick<HeaderRowProps<R, K>,
+type SharedHeaderRowProps<R, K extends ExtractIDKeys<R>> = Pick<HeaderRowProps<R, K>,
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
@@ -16,7 +16,7 @@ type SharedHeaderRowProps<R, K extends keyof R> = Pick<HeaderRowProps<R, K>,
 | 'draggableHeaderCell'
 >;
 
-export interface HeaderCellProps<R, K extends keyof R> extends SharedHeaderRowProps<R, K> {
+export interface HeaderCellProps<R, K extends ExtractIDKeys<R>> extends SharedHeaderRowProps<R, K> {
   column: CalculatedColumn<R>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
@@ -24,7 +24,7 @@ export interface HeaderCellProps<R, K extends keyof R> extends SharedHeaderRowPr
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export default function HeaderCell<R, K extends keyof R>({
+export default function HeaderCell<R, K extends ExtractIDKeys<R>>({
   height,
   column,
   allRowsSelected,

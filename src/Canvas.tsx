@@ -1,6 +1,6 @@
 import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
-import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
+import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent, ExtractIDKeys } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
@@ -8,7 +8,7 @@ import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, K>,
 | 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
@@ -32,7 +32,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onRowsUpdate'
 >>;
 
-export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
+export interface CanvasProps<R, K extends ExtractIDKeys<R>> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
   viewportColumns: readonly CalculatedColumn<R>[];
   height: number;
@@ -47,7 +47,7 @@ export interface CanvasHandle {
   openCellEditor(rowIdx: number, colIdx: number): void;
 }
 
-function Canvas<R, K extends keyof R>({
+function Canvas<R, K extends ExtractIDKeys<R>>({
   columnMetrics,
   viewportColumns,
   height,
@@ -274,5 +274,5 @@ function Canvas<R, K extends keyof R>({
 }
 
 export default forwardRef(
-  Canvas as React.RefForwardingComponent<CanvasHandle, CanvasProps<{ [key: string]: unknown }, string>>
-) as <R, K extends keyof R>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;
+  Canvas as React.RefForwardingComponent<CanvasHandle>
+) as <R, K extends ExtractIDKeys<R>>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;

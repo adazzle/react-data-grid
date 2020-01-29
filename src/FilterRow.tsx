@@ -1,15 +1,15 @@
 import React, { createElement } from 'react';
 import classNames from 'classnames';
 
-import { CalculatedColumn, Filters } from './common/types';
+import { CalculatedColumn, Filters, ExtractIDKeys } from './common/types';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, K>,
 | 'filters'
 | 'onFiltersChange'
 >;
 
-export interface FilterRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
+export interface FilterRowProps<R, K extends ExtractIDKeys<R>> extends SharedDataGridProps<R, K> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
@@ -17,7 +17,7 @@ export interface FilterRowProps<R, K extends keyof R> extends SharedDataGridProp
   scrollLeft: number | undefined;
 }
 
-export default function FilterRow<R, K extends keyof R>({
+export default function FilterRow<R, K extends ExtractIDKeys<R>>({
   height,
   width,
   columns,
@@ -26,7 +26,7 @@ export default function FilterRow<R, K extends keyof R>({
   filters,
   onFiltersChange
 }: FilterRowProps<R, K>) {
-  function onChange(key: keyof R, value: unknown) {
+  function onChange(key: ExtractIDKeys<R>, value: unknown) {
     const newFilters: Filters<R> = { ...filters };
     newFilters[key] = value;
     onFiltersChange?.(newFilters);

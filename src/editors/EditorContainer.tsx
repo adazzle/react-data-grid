@@ -2,15 +2,15 @@ import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback } 
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
-import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
+import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit, ExtractIDKeys } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R, K extends ExtractIDKeys<R>> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
 
-export interface EditorContainerProps<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R, K extends ExtractIDKeys<R>> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R>;
@@ -20,7 +20,7 @@ export interface EditorContainerProps<R, K extends keyof R> extends SharedIntera
   firstEditorKeyPress: string | null;
 }
 
-export default function EditorContainer<R, K extends keyof R>({
+export default function EditorContainer<R, K extends ExtractIDKeys<R>>({
   rowIdx,
   column,
   row,
@@ -131,7 +131,7 @@ export default function EditorContainer<R, K extends keyof R>({
         <column.editor
           ref={editorRef}
           column={column}
-          value={getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
+          value={getInitialValue() as R[ExtractIDKeys<R> & string] & R[ExtractIDKeys<R> & number] & R[ExtractIDKeys<R> & symbol]}
           row={row}
           height={height}
           onCommit={commit}

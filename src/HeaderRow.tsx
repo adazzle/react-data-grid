@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn, ExtractIDKeys } from './common/types';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, K>,
 | 'draggableHeaderCell'
 | 'rows'
 | 'onHeaderDrop'
@@ -16,7 +16,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowKey'
 >>;
 
-export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
+export interface HeaderRowProps<R, K extends ExtractIDKeys<R>> extends SharedDataGridProps<R, K> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
@@ -26,7 +26,7 @@ export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProp
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
 }
 
-export default function HeaderRow<R, K extends keyof R>({
+export default function HeaderRow<R, K extends ExtractIDKeys<R>>({
   height,
   width,
   onSelectedRowsChange,

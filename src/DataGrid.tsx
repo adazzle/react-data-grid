@@ -24,12 +24,13 @@ import {
   RowRendererProps,
   ScrollPosition,
   Filters,
-  FormatterProps
+  FormatterProps,
+  ExtractIDKeys
 } from './common/types';
 
 export { DataGridHandle };
 
-export interface DataGridProps<R, K extends keyof R> {
+export interface DataGridProps<R, K extends ExtractIDKeys<R>> {
   /**
    * Grid and data Props
    */
@@ -141,7 +142,7 @@ export interface DataGridProps<R, K extends keyof R> {
  *
  * <DataGrid columns={columns} rows={rows} />
 */
-function DataGrid<R, K extends keyof R>({
+function DataGrid<R, K extends ExtractIDKeys<R>>({
   rowKey,
   rowHeight = 35,
   headerRowHeight = rowHeight,
@@ -324,5 +325,5 @@ function DataGrid<R, K extends keyof R>({
 }
 
 export default forwardRef(
-  DataGrid as React.RefForwardingComponent<DataGridHandle, DataGridProps<{ [key: string]: unknown }, string>>
-) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
+  DataGrid as React.RefForwardingComponent<DataGridHandle>
+) as <R, K extends ExtractIDKeys<R>>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
