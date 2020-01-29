@@ -184,9 +184,10 @@ function Canvas<R, K extends keyof R>({
     const rowElements = [];
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
+      const key = row[rowKey];
       rowElements.push(
         <RowRenderer<R, K>
-          key={rowIdx}
+          key={key}
           rowIdx={rowIdx}
           row={row}
           columnMetrics={columnMetrics}
@@ -197,7 +198,7 @@ function Canvas<R, K extends keyof R>({
           rowKey={rowKey}
           rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
-          isRowSelected={selectedRows?.has(row[rowKey]) ?? false}
+          isRowSelected={selectedRows?.has(key) ?? false}
           onRowClick={props.onRowClick}
           onRowExpandToggle={props.onRowExpandToggle}
           enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}

@@ -105,6 +105,7 @@ export default function ScrollToRow() {
       <DataGrid<Row, 'id'>
         columns={columns}
         rows={rows}
+        rowKey="id"
         cellNavigationMode={cellNavigatioMode}
       />
     </>

@@ -43,7 +43,7 @@ export interface DataGridProps<R, K extends keyof R> {
    */
   summaryRows?: readonly R[];
   /** The primary key property of each row */
-  rowKey?: K;
+  rowKey: K;
   /**
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
@@ -142,7 +142,7 @@ export interface DataGridProps<R, K extends keyof R> {
  * <DataGrid columns={columns} rows={rows} />
 */
 function DataGrid<R, K extends keyof R>({
-  rowKey = 'id' as K,
+  rowKey,
   rowHeight = 35,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,

@@ -173,6 +173,7 @@ export default function HeaderFilters() {
           <DataGrid
             columns={columns}
             rows={filteredRows}
+            rowKey="id"
             width={width}
             height={height - 30}
             enableFilters={enableFilters}

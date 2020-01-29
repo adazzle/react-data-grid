@@ -51,6 +51,7 @@ export default function ScrollToRow() {
         ref={gridRef}
         columns={columns}
         rows={rows}
+        rowKey="id"
       />
     </>
   );

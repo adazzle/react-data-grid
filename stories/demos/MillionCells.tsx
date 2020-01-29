@@ -45,6 +45,7 @@ export default function MillionCells() {
         <DataGrid
           columns={columns}
           rows={rows}
+          rowKey="id"
           width={width}
           height={height}
           rowHeight={22}
