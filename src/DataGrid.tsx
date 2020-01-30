@@ -130,8 +130,6 @@ export interface DataGridProps<R, K extends keyof R> {
    */
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
-  /** Control how big render row batches will be. */
-  renderBatchSize?: number;
 }
 
 /**
@@ -155,7 +153,6 @@ function DataGrid<R, K extends keyof R>({
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
-  renderBatchSize = 8,
   defaultFormatter = ValueFormatter,
   columns,
   rows,
@@ -307,7 +304,6 @@ function DataGrid<R, K extends keyof R>({
               cellNavigationMode={cellNavigationMode}
               scrollLeft={scrollLeft}
               editorPortalTarget={editorPortalTarget}
-              renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
               onRowsUpdate={handleRowUpdate}
