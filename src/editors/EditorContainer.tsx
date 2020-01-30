@@ -1,8 +1,8 @@
-import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, createElement, ComponentType } from 'react';
+import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
-import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit, EditorProps } from '../common/types';
+import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
@@ -127,16 +127,18 @@ export default function EditorContainer<R>({
   function createEditor() {
     // return custom column editor or SimpleEditor if none specified
     if (column.editor) {
-      return createElement(column.editor as ComponentType<EditorProps<string | R[(keyof R & string) | (keyof R & number) | (keyof R & symbol)], R>>, {
-        ref: editorRef,
-        column,
-        value: getInitialValue(),
-        row,
-        height,
-        onCommit: commit,
-        onCommitCancel,
-        onOverrideKeyDown: onKeyDown
-      });
+      return (
+        <column.editor
+          ref={editorRef}
+          column={column}
+          value={getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
+          row={row}
+          height={height}
+          onCommit={commit}
+          onCommitCancel={onCommitCancel}
+          onOverrideKeyDown={onKeyDown}
+        />
+      );
     }
 
     return (
