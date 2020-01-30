@@ -24,9 +24,9 @@ interface Row {
 }
 
 describe('InteractionMasks', () => {
-  function setup(overrideProps?: Partial<InteractionMasksProps<Row, 'id'>>, initialPosition?: Position) {
+  function setup(overrideProps?: Partial<InteractionMasksProps<Row>>, initialPosition?: Position) {
     const onSelectedCellChange = jest.fn();
-    const props: InteractionMasksProps<Row, 'id'> = {
+    const props: InteractionMasksProps<Row> = {
       height: 100,
       columns,
       rows: Array(ROWS_COUNT).fill({ col1: 1 }),
@@ -498,7 +498,7 @@ describe('InteractionMasks', () => {
         expect(wrapper.find(selectionMaskSelector)).toHaveLength(0);
       };
 
-      const tabCell = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
+      const tabCell = (props: Partial<InteractionMasksProps<Row>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
         const { wrapper, props: { onSelectedCellChange } } = setup(props, state?.selectedPosition);
         const preventDefaultSpy = jest.fn();
         simulateTab(wrapper, shiftKey, preventDefaultSpy);
@@ -506,13 +506,13 @@ describe('InteractionMasks', () => {
         return { wrapper, preventDefaultSpy, onSelectedCellChange };
       };
 
-      const assertExitGridOnTab = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
+      const assertExitGridOnTab = (props: Partial<InteractionMasksProps<Row>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
         const { wrapper, preventDefaultSpy } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).not.toHaveBeenCalled();
         assertGridWasExited(wrapper);
       };
 
-      const assertSelectedCellOnTab = (props: Partial<InteractionMasksProps<Row, 'id'>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
+      const assertSelectedCellOnTab = (props: Partial<InteractionMasksProps<Row>>, shiftKey?: boolean, state?: { selectedPosition: Position }) => {
         const { preventDefaultSpy, onSelectedCellChange } = tabCell(props, shiftKey, state);
         expect(preventDefaultSpy).toHaveBeenCalled();
         return expect(onSelectedCellChange);
