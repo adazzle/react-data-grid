@@ -1,14 +1,14 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, Key } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
 
-import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent, ExtractIDKeys } from './common/types';
+import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
 import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
-import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
+import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
 
-type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
@@ -32,7 +32,7 @@ type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, 
 | 'onRowsUpdate'
 >>;
 
-export interface CanvasProps<R, K extends ExtractIDKeys<R>> extends SharedDataGridProps<R, K> {
+export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
   viewportColumns: readonly CalculatedColumn<R>[];
   height: number;
@@ -47,7 +47,7 @@ export interface CanvasHandle {
   openCellEditor(rowIdx: number, colIdx: number): void;
 }
 
-function Canvas<R, K extends ExtractIDKeys<R>>({
+function Canvas<R, K extends keyof R>({
   columnMetrics,
   viewportColumns,
   height,
@@ -149,6 +149,7 @@ function Canvas<R, K extends ExtractIDKeys<R>>({
     if (!onSelectedRowsChange) return;
 
     const handleRowSelectionChange = ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => {
+      assertIsValidKey(rowKey);
       const newSelectedRows = new Set(selectedRows);
       const rowId = rows[rowIdx][rowKey];
 
@@ -184,10 +185,19 @@ function Canvas<R, K extends ExtractIDKeys<R>>({
     const rowElements = [];
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
-      const key = row[rowKey];
+      let key: string | number = rowIdx;
+      let isRowSelected = false;
+      if (rowKey !== undefined) {
+        const rowKeyValue = row[rowKey];
+        isRowSelected = selectedRows?.has(rowKeyValue) ?? false;
+        if (typeof rowKeyValue === 'string' || typeof rowKeyValue === 'number') {
+          key = rowKeyValue;
+        }
+      }
+
       rowElements.push(
         <RowRenderer<R>
-          key={key as unknown as Key}
+          key={key}
           rowIdx={rowIdx}
           row={row}
           columnMetrics={columnMetrics}
@@ -197,7 +207,7 @@ function Canvas<R, K extends ExtractIDKeys<R>>({
           rowHeight={rowHeight}
           rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
-          isRowSelected={selectedRows?.has(key) ?? false}
+          isRowSelected={isRowSelected}
           onRowClick={props.onRowClick}
           onRowExpandToggle={props.onRowExpandToggle}
           enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}
@@ -274,4 +284,4 @@ function Canvas<R, K extends ExtractIDKeys<R>>({
 
 export default forwardRef(
   Canvas as React.RefForwardingComponent<CanvasHandle>
-) as <R, K extends ExtractIDKeys<R>>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;
+) as <R, K extends keyof R>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;

@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
 
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn, ExtractIDKeys } from './common/types';
+import { CalculatedColumn } from './common/types';
+import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'draggableHeaderCell'
 | 'rows'
 | 'onHeaderDrop'
@@ -15,7 +16,7 @@ type SharedDataGridProps<R, K extends ExtractIDKeys<R>> = Pick<DataGridProps<R, 
 | 'rowKey'
 >;
 
-export interface HeaderRowProps<R, K extends ExtractIDKeys<R>> extends SharedDataGridProps<R, K> {
+export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
@@ -25,7 +26,7 @@ export interface HeaderRowProps<R, K extends ExtractIDKeys<R>> extends SharedDat
   onColumnResize(column: CalculatedColumn<R>, width: number): void;
 }
 
-export default function HeaderRow<R, K extends ExtractIDKeys<R>>({
+export default function HeaderRow<R, K extends keyof R>({
   height,
   width,
   onSelectedRowsChange,
@@ -35,6 +36,8 @@ export default function HeaderRow<R, K extends ExtractIDKeys<R>>({
 }: HeaderRowProps<R, K>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
+
+    assertIsValidKey(rowKey);
 
     const newSelectedRows = new Set<R[K]>();
     if (checked) {

@@ -24,13 +24,12 @@ import {
   RowRendererProps,
   ScrollPosition,
   Filters,
-  FormatterProps,
-  ExtractIDKeys
+  FormatterProps
 } from './common/types';
 
 export { DataGridHandle };
 
-export interface DataGridProps<R, K extends ExtractIDKeys<R>> {
+export interface DataGridProps<R, K extends keyof R> {
   /**
    * Grid and data Props
    */
@@ -44,7 +43,7 @@ export interface DataGridProps<R, K extends ExtractIDKeys<R>> {
    */
   summaryRows?: readonly R[];
   /** The primary key property of each row */
-  rowKey: K;
+  rowKey?: K;
   /**
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
@@ -142,7 +141,7 @@ export interface DataGridProps<R, K extends ExtractIDKeys<R>> {
  *
  * <DataGrid columns={columns} rows={rows} />
 */
-function DataGrid<R, K extends ExtractIDKeys<R>>({
+function DataGrid<R, K extends keyof R>({
   rowKey,
   rowHeight = 35,
   headerRowHeight = rowHeight,
@@ -326,4 +325,4 @@ function DataGrid<R, K extends ExtractIDKeys<R>>({
 
 export default forwardRef(
   DataGrid as React.RefForwardingComponent<DataGridHandle>
-) as <R, K extends ExtractIDKeys<R>>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
+) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

@@ -127,10 +127,10 @@ export default function EditorContainer<R>({
   function createEditor() {
     // return custom column editor or SimpleEditor if none specified
     if (column.editor) {
-      return createElement(column.editor as ComponentType<EditorProps<R[keyof R & string], R>>, {
+      return createElement(column.editor as ComponentType<EditorProps<string | R[(keyof R & string) | (keyof R & number) | (keyof R & symbol)], R>>, {
         ref: editorRef,
         column,
-        value: getInitialValue() as R[keyof R & string],
+        value: getInitialValue(),
         row,
         height,
         onCommit: commit,
