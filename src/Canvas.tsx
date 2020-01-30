@@ -188,10 +188,10 @@ function Canvas<R, K extends keyof R>({
       let key: string | number = rowIdx;
       let isRowSelected = false;
       if (rowKey !== undefined) {
-        const rowKeyValue = row[rowKey];
-        isRowSelected = selectedRows?.has(rowKeyValue) ?? false;
-        if (typeof rowKeyValue === 'string' || typeof rowKeyValue === 'number') {
-          key = rowKeyValue;
+        const rowId = row[rowKey];
+        isRowSelected = selectedRows?.has(rowId) ?? false;
+        if (typeof rowId === 'string' || typeof rowId === 'number') {
+          key = rowId;
         }
       }
 

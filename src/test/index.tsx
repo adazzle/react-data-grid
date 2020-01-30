@@ -20,7 +20,6 @@ export function getProps(extraProps?: Partial<DataGridProps<RowType, 'id'>>): Da
       name: 'Column 2'
     }],
     rows,
-    rowKey: 'id',
     ...extraProps
   };
 }
