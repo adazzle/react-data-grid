@@ -36,7 +36,7 @@ export enum KeyCodes {
   v = 86
 }
 
-type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
+type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
 | 'rows'
 | 'rowHeight'
 | 'enableCellAutoFocus'
@@ -50,7 +50,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'onRowsUpdate'
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
-export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
+export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   height: number;
   canvasRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
@@ -59,7 +59,7 @@ export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanva
   scrollToCell(cell: Position): void;
 }
 
-export default function InteractionMasks<R, K extends keyof R>({
+export default function InteractionMasks<R>({
   columns,
   rows,
   rowHeight,
@@ -76,7 +76,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   onCheckCellIsEditable,
   onRowsUpdate,
   scrollToCell
-}: InteractionMasksProps<R, K>) {
+}: InteractionMasksProps<R>) {
   const [selectedPosition, setSelectedPosition] = useState<Position>(() => {
     if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
       return { idx: 0, rowIdx: 0 };
@@ -425,7 +425,7 @@ export default function InteractionMasks<R, K extends keyof R>({
       )}
       {isEditorEnabled && isCellWithinBounds(selectedPosition) && !columns[selectedPosition.idx].editor2 && (
         <EditorPortal target={editorPortalTarget}>
-          <OldEditorContainer<R, K>
+          <OldEditorContainer<R>
             onCommit={onCommit}
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}

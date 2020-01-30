@@ -8,9 +8,9 @@ import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
 
-export interface EditorContainerProps<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R>;
@@ -19,7 +19,7 @@ export interface EditorContainerProps<R, K extends keyof R> extends SharedIntera
   onCommitCancel(): void;
 }
 
-export default function EditorContainer<R, K extends keyof R>({
+export default function EditorContainer<R>({
   rowIdx,
   column,
   row,
@@ -31,7 +31,7 @@ export default function EditorContainer<R, K extends keyof R>({
   onCommitCancel,
   scrollLeft,
   scrollTop
-}: EditorContainerProps<R, K>) {
+}: EditorContainerProps<R>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
   const prevScrollLeft = useRef(scrollLeft);

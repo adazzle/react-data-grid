@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 
 import HeaderCell from './HeaderCell';
 import { CalculatedColumn } from './common/types';
+import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
@@ -12,9 +13,8 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
-> & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
->>;
+>;
 
 export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   height: number;
@@ -37,6 +37,8 @@ export default function HeaderRow<R, K extends keyof R>({
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
 
+    assertIsValidKey(rowKey);
+
     const newSelectedRows = new Set<R[K]>();
     if (checked) {
       for (const row of rows) {
@@ -54,7 +56,7 @@ export default function HeaderRow<R, K extends keyof R>({
     >
       {props.columns.map(column => {
         return (
-          <HeaderCell<R, K>
+          <HeaderCell<R>
             key={column.key as string}
             column={column}
             lastFrozenColumnIndex={props.lastFrozenColumnIndex}

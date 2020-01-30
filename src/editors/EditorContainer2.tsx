@@ -4,7 +4,7 @@ import { CalculatedColumn } from '../common/types';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { UpdateActions } from '../common/enums';
 
-type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>,
+type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>,
 | 'canvasRef'
 | 'editorPortalTarget'
 | 'rowHeight'
@@ -13,7 +13,7 @@ type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksPr
 | 'onRowsUpdate'
 > ;
 
-interface EditorContainerProps<R, K extends keyof R> extends SharedInteractionMasksProps<R, K> {
+interface EditorContainerProps<R> extends SharedInteractionMasksProps<R> {
   column: CalculatedColumn<R>;
   row: R;
   rowIdx: number;
@@ -31,7 +31,7 @@ export default function EditorContainer<R, K extends keyof R>({
   scrollLeft,
   onRowsUpdate,
   onClose
-}: EditorContainerProps<R, K>) {
+}: EditorContainerProps<R>) {
   const Editor = column.editor2!;
 
   // close editor when scrolling

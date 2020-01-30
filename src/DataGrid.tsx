@@ -130,8 +130,6 @@ export interface DataGridProps<R, K extends keyof R> {
    */
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
-  /** Control how big render row batches will be. */
-  renderBatchSize?: number;
 }
 
 /**
@@ -142,7 +140,7 @@ export interface DataGridProps<R, K extends keyof R> {
  * <DataGrid columns={columns} rows={rows} />
 */
 function DataGrid<R, K extends keyof R>({
-  rowKey = 'id' as K,
+  rowKey,
   rowHeight = 35,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
@@ -155,7 +153,6 @@ function DataGrid<R, K extends keyof R>({
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
-  renderBatchSize = 8,
   defaultFormatter = ValueFormatter,
   columns,
   rows,
@@ -276,7 +273,7 @@ function DataGrid<R, K extends keyof R>({
               scrollLeft={nonStickyScrollLeft}
             />
             {enableFilters && (
-              <FilterRow<R, K>
+              <FilterRow<R>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
@@ -307,7 +304,6 @@ function DataGrid<R, K extends keyof R>({
               cellNavigationMode={cellNavigationMode}
               scrollLeft={scrollLeft}
               editorPortalTarget={editorPortalTarget}
-              renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
               onRowsUpdate={handleRowUpdate}
@@ -324,5 +320,5 @@ function DataGrid<R, K extends keyof R>({
 }
 
 export default forwardRef(
-  DataGrid as React.RefForwardingComponent<DataGridHandle, DataGridProps<{ [key: string]: unknown }, string>>
+  DataGrid as React.RefForwardingComponent<DataGridHandle>
 ) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
