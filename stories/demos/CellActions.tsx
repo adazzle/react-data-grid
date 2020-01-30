@@ -155,7 +155,6 @@ export default function CellActions() {
         <DataGrid<Row, 'id'>
           columns={columns}
           rows={rows}
-          rowKey="id"
           width={width}
           height={height}
           rowHeight={55}

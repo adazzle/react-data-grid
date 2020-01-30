@@ -24,7 +24,6 @@ export default function NoRows() {
     <DataGrid
       columns={columns}
       rows={rows}
-      rowKey="id"
       width={600}
       emptyRowsView={EmptyRowsView}
     />

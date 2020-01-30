@@ -156,7 +156,6 @@ export default function TreeView() {
       <DataGrid
         columns={columns}
         rows={rows}
-        rowKey="id"
         height={500}
       />
     </>
