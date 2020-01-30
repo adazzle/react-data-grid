@@ -4,12 +4,11 @@ import React, { memo } from 'react';
 import SummaryCell from './SummaryCell';
 import { RowRendererProps } from './common/types';
 
-export interface SummaryRowProps<TRow> extends Pick<RowRendererProps<TRow>, 'extraClasses' | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'viewportColumns' | 'width'> {
+export interface SummaryRowProps<TRow> extends Pick<RowRendererProps<TRow>, | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'viewportColumns' | 'width'> {
   row: unknown;
 }
 
 export function SummaryRow<R>({
-  extraClasses,
   height,
   rowIdx,
   lastFrozenColumnIndex,
@@ -23,8 +22,7 @@ export function SummaryRow<R>({
       className={classNames(
         'rdg-row',
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-        'rdg-summary-row',
-        extraClasses
+        'rdg-summary-row'
       )}
       style={{ width, height }}
     >
