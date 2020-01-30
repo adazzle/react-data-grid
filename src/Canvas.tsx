@@ -6,7 +6,7 @@ import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
 import RowRenderer from './RowRenderer';
 import SummaryRowRenderer from './SummaryRowRenderer';
-import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender } from './utils';
+import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rows'
@@ -20,8 +20,8 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onRowClick'
 | 'onRowExpandToggle'
 | 'onSelectedRowsChange'
-> & Required<Pick<DataGridProps<R, K>,
 | 'rowKey'
+> & Required<Pick<DataGridProps<R, K>,
 | 'enableCellAutoFocus'
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
@@ -149,6 +149,7 @@ function Canvas<R, K extends keyof R>({
     if (!onSelectedRowsChange) return;
 
     const handleRowSelectionChange = ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => {
+      assertIsValidKey(rowKey);
       const newSelectedRows = new Set(selectedRows);
       const rowId = rows[rowIdx][rowKey];
 
@@ -184,9 +185,19 @@ function Canvas<R, K extends keyof R>({
     const rowElements = [];
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
+      let key: string | number = rowIdx;
+      let isRowSelected = false;
+      if (rowKey !== undefined) {
+        const rowId = row[rowKey];
+        isRowSelected = selectedRows?.has(rowId) ?? false;
+        if (typeof rowId === 'string' || typeof rowId === 'number') {
+          key = rowId;
+        }
+      }
+
       rowElements.push(
-        <RowRenderer<R, K>
-          key={rowIdx}
+        <RowRenderer<R>
+          key={key}
           rowIdx={rowIdx}
           row={row}
           columnMetrics={columnMetrics}
@@ -194,10 +205,9 @@ function Canvas<R, K extends keyof R>({
           eventBus={eventBus}
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
-          rowKey={rowKey}
           rowRenderer={props.rowRenderer}
           scrollLeft={nonStickyScrollLeft}
-          isRowSelected={selectedRows?.has(row[rowKey]) ?? false}
+          isRowSelected={isRowSelected}
           onRowClick={props.onRowClick}
           onRowExpandToggle={props.onRowExpandToggle}
           enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}
@@ -236,7 +246,7 @@ function Canvas<R, K extends keyof R>({
         ref={canvasRef}
         onScroll={handleScroll}
       >
-        <InteractionMasks<R, K>
+        <InteractionMasks<R>
           rows={rows}
           rowHeight={rowHeight}
           columns={columns}
@@ -273,5 +283,5 @@ function Canvas<R, K extends keyof R>({
 }
 
 export default forwardRef(
-  Canvas as React.RefForwardingComponent<CanvasHandle, CanvasProps<{ [key: string]: unknown }, string>>
+  Canvas as React.RefForwardingComponent<CanvasHandle>
 ) as <R, K extends keyof R>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;

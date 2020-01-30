@@ -193,10 +193,11 @@ export default function AllFeatures() {
       <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
       <AutoSizer>
         {({ height, width }) => (
-          <DataGrid<Row, 'id'>
+          <DataGrid
             ref={gridRef}
             columns={columns}
             rows={rows}
+            rowKey="id"
             onRowsUpdate={handleRowUpdate}
             rowHeight={30}
             width={width}
