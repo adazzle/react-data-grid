@@ -48,7 +48,6 @@ const testProps: CanvasProps<Row, 'id'> = {
     left: 100,
     formatter: ValueFormatter
   }],
-  renderBatchSize: 8,
   scrollLeft: 0
 };
 
