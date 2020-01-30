@@ -28,7 +28,6 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowHeight'
 | 'cellNavigationMode'
 | 'editorPortalTarget'
-| 'renderBatchSize'
 | 'onRowsUpdate'
 >>;
 
@@ -53,7 +52,6 @@ function Canvas<R, K extends keyof R>({
   height,
   scrollLeft,
   onScroll,
-  renderBatchSize,
   rows,
   rowHeight,
   rowKey,
@@ -76,8 +74,7 @@ function Canvas<R, K extends keyof R>({
     clientHeight,
     rowHeight,
     scrollTop,
-    rows.length,
-    renderBatchSize
+    rows.length
   );
 
   function handleScroll(e: React.UIEvent<HTMLDivElement>) {
