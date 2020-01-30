@@ -153,7 +153,7 @@ export default function TreeView() {
           onChange={() => setAllowDelete(!allowDelete)}
         />
       </label>
-      <DataGrid<Row, 'id'>
+      <DataGrid
         columns={columns}
         rows={rows}
         height={500}
