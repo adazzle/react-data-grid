@@ -1,19 +1,20 @@
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
-import { CellRendererProps } from './common/types';
+import { CellRendererProps, CalculatedColumn } from './common/types';
 
-export interface SummaryCellProps<TRow> extends Pick<CellRendererProps<TRow>, 'idx' | 'rowIdx' | 'column' | 'lastFrozenColumnIndex' | 'scrollLeft'> {
-  row: unknown;
+export interface SummaryCellProps<TRow, TSummaryRow> extends Pick<CellRendererProps<TRow>, 'idx' | 'rowIdx' | 'lastFrozenColumnIndex' | 'scrollLeft'> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TSummaryRow;
 }
 
-function SummaryCell<R>({
+function SummaryCell<R, SR>({
   column,
   lastFrozenColumnIndex,
   row,
   rowIdx,
   scrollLeft
-}: SummaryCellProps<R>) {
+}: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, frozen, idx, width, left, summaryCellClass } = column;
   const className = classNames(
     'rdg-cell',
@@ -37,4 +38,4 @@ function SummaryCell<R>({
   );
 }
 
-export default memo(SummaryCell) as <R>(props: SummaryCellProps<R>) => JSX.Element;
+export default memo(SummaryCell) as <R, SR>(props: SummaryCellProps<R, SR>) => JSX.Element;

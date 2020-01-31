@@ -8,7 +8,7 @@ import RowRenderer from './RowRenderer';
 import SummaryRow from './SummaryRow';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
 | 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
@@ -21,7 +21,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onRowExpandToggle'
 | 'onSelectedRowsChange'
 | 'rowKey'
-> & Required<Pick<DataGridProps<R, K>,
+> & Required<Pick<DataGridProps<R, K, SR>,
 | 'enableCellAutoFocus'
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
@@ -31,9 +31,9 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'onRowsUpdate'
 >>;
 
-export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
-  columnMetrics: ColumnMetrics<R>;
-  viewportColumns: readonly CalculatedColumn<R>[];
+export interface CanvasProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
+  columnMetrics: ColumnMetrics<R, SR>;
+  viewportColumns: readonly CalculatedColumn<R, SR>[];
   height: number;
   scrollLeft: number;
   onScroll(position: ScrollPosition): void;
@@ -46,7 +46,7 @@ export interface CanvasHandle {
   openCellEditor(rowIdx: number, colIdx: number): void;
 }
 
-function Canvas<R, K extends keyof R>({
+function Canvas<R, K extends keyof R, SR>({
   columnMetrics,
   viewportColumns,
   height,
@@ -59,7 +59,7 @@ function Canvas<R, K extends keyof R>({
   selectedRows,
   onSelectedRowsChange,
   ...props
-}: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
+}: CanvasProps<R, K, SR>, ref: React.Ref<CanvasHandle>) {
   const [eventBus] = useState(() => new EventBus());
   const [scrollTop, setScrollTop] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -108,7 +108,7 @@ function Canvas<R, K extends keyof R>({
       const isCellAtLeftBoundary = left < scrollLeft + width + getFrozenColumnsWidth();
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary || isCellAtRightBoundary) {
-        const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
+        const newScrollLeft = getColumnScrollPosition(columns as readonly CalculatedColumn<R, never>[], idx, scrollLeft, clientWidth);
         current.scrollLeft = scrollLeft + newScrollLeft;
       }
     }
@@ -197,8 +197,8 @@ function Canvas<R, K extends keyof R>({
           key={key}
           rowIdx={rowIdx}
           row={row}
-          columnMetrics={columnMetrics}
-          viewportColumns={viewportColumns}
+          columnMetrics={columnMetrics as ColumnMetrics<R, never>}
+          viewportColumns={viewportColumns as readonly CalculatedColumn<R, never>[]}
           eventBus={eventBus}
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
@@ -218,7 +218,7 @@ function Canvas<R, K extends keyof R>({
   const summary = summaryRows && summaryRows.length > 0 && (
     <div ref={summaryRef} className="rdg-summary">
       {summaryRows.map((row, rowIdx) => (
-        <SummaryRow<R>
+        <SummaryRow<R, SR>
           key={rowIdx}
           rowIdx={rowIdx}
           row={row}
@@ -243,7 +243,7 @@ function Canvas<R, K extends keyof R>({
         <InteractionMasks<R>
           rows={rows}
           rowHeight={rowHeight}
-          columns={columns}
+          columns={columns as readonly CalculatedColumn<R, never>[]}
           height={clientHeight}
           enableCellAutoFocus={props.enableCellAutoFocus}
           enableCellCopyPaste={props.enableCellCopyPaste}
@@ -278,4 +278,4 @@ function Canvas<R, K extends keyof R>({
 
 export default forwardRef(
   Canvas as React.RefForwardingComponent<CanvasHandle>
-) as <R, K extends keyof R>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;
+) as <R, K extends keyof R, SR>(props: CanvasProps<R, K, SR> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;

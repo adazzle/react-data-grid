@@ -5,7 +5,7 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<TRow> {
+export interface Column<TRow, TSummaryRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -14,11 +14,11 @@ export interface Column<TRow> {
   width?: number | string;
   cellClass?: string | ((row: TRow) => string);
   headerCellClass?: string;
-  summaryCellClass?: string | ((row: any) => string);
+  summaryCellClass?: string | ((row: TSummaryRow) => string);
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Formatter to be used to render the summary cell content */
-  summaryFormatter?: React.ComponentType<SummaryFormatterProps<any, TRow>>;
+  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
   /** Enable dragging of a column */
@@ -40,15 +40,15 @@ export interface Column<TRow> {
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
 
-export interface CalculatedColumn<TRow> extends Column<TRow> {
+export interface CalculatedColumn<TRow, TSummaryRow> extends Column<TRow, TSummaryRow> {
   idx: number;
   width: number;
   left: number;
   formatter: React.ComponentType<FormatterProps<TRow>>;
 }
 
-export interface ColumnMetrics<TRow> {
-  columns: readonly CalculatedColumn<TRow>[];
+export interface ColumnMetrics<TRow, TSummaryRow> {
+  columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
   viewportWidth: number;
   totalColumnWidth: number;
@@ -94,19 +94,20 @@ export interface Editor<TValue = never> {
 
 export interface FormatterProps<TRow = any> {
   rowIdx: number;
-  column: CalculatedColumn<TRow>;
+  column: CalculatedColumn<TRow, never>;
   row: TRow;
   isRowSelected: boolean;
   onRowSelectionChange(checked: boolean, isShiftClick: boolean): void;
 }
 
-export interface SummaryFormatterProps<TSummaryRow = any, TRow = any> extends Pick<FormatterProps<TRow>, 'column' | 'rowIdx'> {
+export interface SummaryFormatterProps<TSummaryRow, TRow = any> extends Pick<FormatterProps<TRow>, 'rowIdx'> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
 }
 
 export interface EditorProps<TValue, TRow = any> {
   ref: React.Ref<Editor<{ [key: string]: TValue }>>;
-  column: CalculatedColumn<TRow>;
+  column: CalculatedColumn<TRow, never>;
   value: TValue;
   row: TRow;
   height: number;
@@ -116,7 +117,7 @@ export interface EditorProps<TValue, TRow = any> {
 }
 
 export interface HeaderRendererProps<TRow> {
-  column: CalculatedColumn<TRow>;
+  column: CalculatedColumn<TRow, never>;
   allRowsSelected: boolean;
   onAllRowsSelectionChange(checked: boolean): void;
 }
@@ -124,20 +125,20 @@ export interface HeaderRendererProps<TRow> {
 export interface CellRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   idx: number;
   rowIdx: number;
-  column: CalculatedColumn<TRow>;
+  column: CalculatedColumn<TRow, never>;
   lastFrozenColumnIndex: number;
   row: TRow;
   scrollLeft: number | undefined;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
+  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, never>): void;
 }
 
 export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   height: number;
   width: number;
-  viewportColumns: readonly CalculatedColumn<TRow>[];
+  viewportColumns: readonly CalculatedColumn<TRow, never>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   rowIdx: number;
@@ -146,11 +147,11 @@ export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDi
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
+  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, never>): void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown> {
-  column: CalculatedColumn<TRow>;
+  column: CalculatedColumn<TRow, never>;
   value: TFilterValue;
   onChange(value: TFilterValue): void;
 }
@@ -195,7 +196,7 @@ export interface RowsUpdateEvent<TUpdatedValue = never> {
 
 export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
-  column: CalculatedColumn<TRow>;
+  column: CalculatedColumn<TRow, never>;
 }
 
 export interface SelectRowEvent {

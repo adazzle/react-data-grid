@@ -13,7 +13,7 @@ type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft
 export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
-  column: CalculatedColumn<R>;
+  column: CalculatedColumn<R, never>;
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent): void;
   onCommitCancel(): void;
@@ -144,7 +144,7 @@ export default function EditorContainer<R>({
     return (
       <SimpleTextEditor
         ref={editorRef as unknown as React.RefObject<SimpleTextEditor>}
-        column={column as CalculatedColumn<unknown>}
+        column={column as CalculatedColumn<unknown, never>}
         value={getInitialValue() as string}
         onCommit={commit}
       />

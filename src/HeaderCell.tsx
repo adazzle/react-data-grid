@@ -17,10 +17,10 @@ type SharedHeaderRowProps<R> = Pick<HeaderRowProps<R, never>,
 >;
 
 export interface HeaderCellProps<R> extends SharedHeaderRowProps<R> {
-  column: CalculatedColumn<R>;
+  column: CalculatedColumn<R, never>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
-  onResize(column: CalculatedColumn<R>, width: number): void;
+  onResize(column: CalculatedColumn<R, never>, width: number): void;
   onAllRowsSelectionChange(checked: boolean): void;
 }
 

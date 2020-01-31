@@ -3,8 +3,8 @@ import { CalculatedColumn } from '../common/types';
 
 export interface ResizableHeaderCellProps<R> {
   children: React.ReactElement<React.ComponentProps<'div'>>;
-  column: CalculatedColumn<R>;
-  onResize(column: CalculatedColumn<R>, width: number): void;
+  column: CalculatedColumn<R, never>;
+  onResize(column: CalculatedColumn<R, never>, width: number): void;
 }
 
 export default function ResizableHeaderCell<R>({

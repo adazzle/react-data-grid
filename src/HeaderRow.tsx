@@ -5,7 +5,7 @@ import { CalculatedColumn } from './common/types';
 import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K, never>,
 | 'draggableHeaderCell'
 | 'rows'
 | 'onHeaderDrop'
@@ -20,10 +20,10 @@ export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProp
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
-  columns: readonly CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R, never>[];
   allRowsSelected: boolean;
   scrollLeft: number | undefined;
-  onColumnResize(column: CalculatedColumn<R>, width: number): void;
+  onColumnResize(column: CalculatedColumn<R, never>, width: number): void;
 }
 
 export default function HeaderRow<R, K extends keyof R>({

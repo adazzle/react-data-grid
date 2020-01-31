@@ -6,7 +6,7 @@ import { CanvasProps } from './Canvas';
 import { RowRendererProps, RowData } from './common/types';
 import EventBus from './EventBus';
 
-type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
+type SharedCanvasProps<R> = Pick<CanvasProps<R, never, never>,
 | 'columnMetrics'
 | 'viewportColumns'
 | 'rowGroupRenderer'

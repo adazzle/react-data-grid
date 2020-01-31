@@ -36,7 +36,7 @@ export enum KeyCodes {
   v = 86
 }
 
-type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
+type SharedCanvasProps<R> = Pick<CanvasProps<R, never, never>,
 | 'rows'
 | 'rowHeight'
 | 'enableCellAutoFocus'
@@ -48,7 +48,7 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
 | 'onSelectedCellChange'
 | 'onSelectedCellRangeChange'
 | 'onRowsUpdate'
-> & Pick<ColumnMetrics<R>, 'columns'>;
+> & Pick<ColumnMetrics<R, never>, 'columns'>;
 
 export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   height: number;

@@ -2,20 +2,20 @@ import { Column, CalculatedColumn, ColumnMetrics, FormatterProps, Omit } from '.
 import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R> {
-  columns: readonly Column<R>[];
+  columns: readonly Column<R, never>[];
   columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
   viewportWidth: number;
   defaultFormatter: React.ComponentType<FormatterProps<R>>;
 }
 
-export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
+export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R, never> {
   let left = 0;
   let totalWidth = 0;
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Array<Omit<Column<R>, 'width'> & { width: number | void }> = [];
+  const columns: Array<Omit<Column<R, never>, 'width'> & { width: number | void }> = [];
 
   for (const metricsColumn of metrics.columns) {
     const width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
@@ -41,7 +41,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
     metrics.minColumnWidth
   );
 
-  const calculatedColumns: CalculatedColumn<R>[] = columns.map((column, idx) => {
+  const calculatedColumns: CalculatedColumn<R, never>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
     const width = column.width === undefined ? unallocatedColumnWidth : column.width;
     const newColumn = {
@@ -65,7 +65,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
 }
 
 function getSpecifiedWidth<R>(
-  column: Column<R>,
+  column: Column<R, never>,
   columnWidths: ReadonlyMap<string, number>,
   viewportWidth: number,
   minColumnWidth: number
@@ -84,14 +84,14 @@ function getSpecifiedWidth<R>(
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to decide whether we can be editing from a cell level
-export function canEdit<R>(column: CalculatedColumn<R>, row: R): boolean {
+export function canEdit<R>(column: CalculatedColumn<R, never>, row: R): boolean {
   if (typeof column.editable === 'function') {
     return column.editable(row);
   }
   return Boolean(column.editor || column.editable);
 }
 
-export function getColumnScrollPosition<R>(columns: readonly CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
+export function getColumnScrollPosition<R>(columns: readonly CalculatedColumn<R, never>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;
 
