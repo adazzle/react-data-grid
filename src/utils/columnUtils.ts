@@ -1,9 +1,9 @@
-import { Column, CalculatedColumn, ColumnMetrics, FormatterProps } from '../common/types';
+import { Column, CalculatedColumn, ColumnMetrics, FormatterProps, Omit } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R> {
   columns: readonly Column<R>[];
-  columnWidths: ReadonlyMap<keyof R, number>;
+  columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
   viewportWidth: number;
   defaultFormatter: React.ComponentType<FormatterProps<R>>;
@@ -15,7 +15,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Array<Column<R> & { width: number | void }> = [];
+  const columns: Array<Omit<Column<R>, 'width'> & { width: number | void }> = [];
 
   for (const metricsColumn of metrics.columns) {
     const width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
@@ -66,7 +66,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
 
 function getSpecifiedWidth<R>(
   column: Column<R>,
-  columnWidths: ReadonlyMap<keyof R, number>,
+  columnWidths: ReadonlyMap<string, number>,
   viewportWidth: number,
   minColumnWidth: number
 ): number | void {

@@ -33,7 +33,7 @@ function createRows() {
 
 export default function HeaderFilters() {
   const [rows] = useState(createRows);
-  const [filters, setFilters] = useState<Filters<Row>>({
+  const [filters, setFilters] = useState<Filters>({
     task: '',
     priority: 'Critical',
     issueType: 'All',

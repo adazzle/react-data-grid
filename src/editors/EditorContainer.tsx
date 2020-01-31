@@ -15,7 +15,7 @@ export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>,
   row: R;
   column: CalculatedColumn<R>;
   onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(e: CommitEvent<R>): void;
+  onCommit(e: CommitEvent): void;
   onCommitCancel(): void;
   firstEditorKeyPress: string | null;
 }
@@ -53,7 +53,7 @@ export default function EditorContainer<R>({
   }, [getInputNode]);
 
   function getInitialValue() {
-    const value = row[column.key];
+    const value = row[column.key as keyof R];
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }

@@ -7,13 +7,13 @@ import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 
 type SharedHeaderRowProps<R> = Pick<HeaderRowProps<R, never>,
-| 'sortColumn'
-| 'sortDirection'
-| 'onSort'
-| 'height'
-| 'onHeaderDrop'
-| 'allRowsSelected'
-| 'draggableHeaderCell'
+  | 'sortColumn'
+  | 'sortDirection'
+  | 'onSort'
+  | 'height'
+  | 'onHeaderDrop'
+  | 'allRowsSelected'
+  | 'draggableHeaderCell'
 >;
 
 export interface HeaderCellProps<R> extends SharedHeaderRowProps<R> {

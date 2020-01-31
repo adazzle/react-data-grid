@@ -5,11 +5,11 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
+export interface Column<TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
-  key: TField;
+  key: string;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number | string;
   cellClass?: string | ((row: TRow) => string);
@@ -29,7 +29,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
+  editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
@@ -37,16 +37,12 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
 
-export type Column<TRow, TField extends keyof TRow = keyof TRow> =
-  TField extends keyof TRow ? ColumnValue<TRow, TField> : never;
-
-export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow> =
-  Column<TRow, TField> & {
-    idx: number;
-    width: number;
-    left: number;
-    formatter: React.ComponentType<FormatterProps<TRow>>;
-  };
+export interface CalculatedColumn<TRow> extends Column<TRow> {
+  idx: number;
+  width: number;
+  left: number;
+  formatter: React.ComponentType<FormatterProps<TRow>>;
+}
 
 export interface ColumnMetrics<TRow> {
   columns: readonly CalculatedColumn<TRow>[];
@@ -169,10 +165,10 @@ export interface RowGroupMetaData {
   getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }
 
-export type Filters<TRow> = { [key in keyof TRow]?: any };
+export type Filters = Record<string, any>;
 
-export interface CommitEvent<TRow, TUpdatedValue = never> {
-  cellKey: keyof TRow;
+export interface CommitEvent<TUpdatedValue = never> {
+  cellKey: string;
   rowIdx: number;
   updated: TUpdatedValue;
 }
@@ -184,13 +180,13 @@ export interface RowExpandToggleEvent {
   name: string;
 }
 
-export interface RowsUpdateEvent<TRow, TUpdatedValue = never> {
-  cellKey: keyof TRow;
+export interface RowsUpdateEvent<TUpdatedValue = never> {
+  cellKey: string;
   fromRow: number;
   toRow: number;
   updated: TUpdatedValue;
   action: UpdateActions;
-  fromCellKey?: keyof TRow;
+  fromCellKey?: string;
 }
 
 export interface CheckCellIsEditableEvent<TRow> extends Position {
