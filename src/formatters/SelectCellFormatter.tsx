@@ -13,7 +13,7 @@ export function SelectCellFormatter({ value, disabled = false, onChange }: Selec
   }
 
   return (
-    <label className={classNames('rdg-checkbox-label', { disabled })}>
+    <label className={classNames('rdg-checkbox-label', { 'rdg-checkbox-label-disabled': disabled })}>
       <input
         type="checkbox"
         className="rdg-checkbox-input"
