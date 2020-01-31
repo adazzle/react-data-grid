@@ -5,7 +5,7 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
+export interface Column<TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -29,7 +29,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
+  editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
@@ -37,11 +37,8 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
 
-export type Column<TRow, TField extends keyof TRow = keyof TRow> =
-  TField extends keyof TRow ? ColumnValue<TRow, TField> : never;
-
-export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow> =
-  Column<TRow, TField> & {
+export type CalculatedColumn<TRow> =
+  Column<TRow> & {
     idx: number;
     width: number;
     left: number;
