@@ -5,7 +5,7 @@ import Cell from './Cell';
 import { RowRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
 
-export default function Row<R>({
+export default function Row<R, SR>({
   cellRenderer: CellRenderer = Cell,
   className,
   enableCellRangeSelection,
@@ -23,7 +23,7 @@ export default function Row<R>({
   onDragOver,
   onDrop,
   ...props
-}: RowRendererProps<R>) {
+}: RowRendererProps<R, SR>) {
   function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
     event.preventDefault();
