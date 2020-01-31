@@ -15,7 +15,6 @@ interface VerticalRangeToRenderParams {
   rowHeight: number;
   scrollTop: number;
   rowsCount: number;
-  renderBatchSize: number;
 }
 
 describe('getVerticalRangeToRender', () => {
@@ -23,10 +22,9 @@ describe('getVerticalRangeToRender', () => {
     height = 500,
     rowHeight = 50,
     scrollTop = 200,
-    rowsCount = 1000,
-    renderBatchSize = 8
+    rowsCount = 1000
   }: Partial<VerticalRangeToRenderParams>) {
-    return getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount, renderBatchSize);
+    return getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount);
   }
 
   it('should use rowHeight to calculate the range', () => {
@@ -43,27 +41,6 @@ describe('getVerticalRangeToRender', () => {
 
   it('should use rowsCount to calculate the range', () => {
     expect(getRange({ rowsCount: 5, scrollTop: 0 })).toStrictEqual([0, 4]);
-  });
-
-  it('should use renderBatchSize to calculate the range', () => {
-    expect(getRange({ renderBatchSize: 4, scrollTop: 0 }))
-      .toStrictEqual([0, 16]);
-    expect(getRange({ renderBatchSize: 4, scrollTop: 50 * 1000 - 500 /* max scroll top */ }))
-      .toStrictEqual([984, 999]);
-    expect(getRange({ renderBatchSize: 4, scrollTop: 2350 }))
-      .toStrictEqual([40, 64]);
-    expect(getRange({ renderBatchSize: 12, scrollTop: 2350 }))
-      .toStrictEqual([36, 72]);
-    expect(getRange({ renderBatchSize: 12, scrollTop: 2550 }))
-      .toStrictEqual([36, 72]);
-    expect(getRange({ renderBatchSize: 12, scrollTop: 2850 }))
-      .toStrictEqual([48, 72]);
-    expect(getRange({ renderBatchSize: 12, scrollTop: 2950 }))
-      .toStrictEqual([48, 84]);
-    expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 200 }))
-      .toStrictEqual([48, 72]);
-    expect(getRange({ renderBatchSize: 12, scrollTop: 2950, height: 800 }))
-      .toStrictEqual([48, 84]);
   });
 });
 

@@ -230,7 +230,7 @@ export default function InteractionMasks<R>({
 
   function handleCopy(): void {
     const { idx, rowIdx } = selectedPosition;
-    const value = rows[rowIdx][columns[idx].key];
+    const value = rows[rowIdx][columns[idx].key as keyof R];
     setCopiedPosition({ idx, rowIdx, value });
   }
 
@@ -318,7 +318,7 @@ export default function InteractionMasks<R>({
     const { rowIdx, overRowIdx } = draggedPosition;
     const column = columns[draggedPosition.idx];
     const cellKey = column.key;
-    const value = rows[rowIdx][cellKey];
+    const value = rows[rowIdx][cellKey as keyof R];
 
     onRowsUpdate({
       cellKey,
@@ -334,7 +334,7 @@ export default function InteractionMasks<R>({
   function onDragHandleDoubleClick(): void {
     const column = columns[selectedPosition.idx];
     const cellKey = column.key;
-    const value = rows[selectedPosition.rowIdx][cellKey];
+    const value = rows[selectedPosition.rowIdx][cellKey as keyof R];
 
     onRowsUpdate({
       cellKey,
@@ -345,7 +345,7 @@ export default function InteractionMasks<R>({
     });
   }
 
-  function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
+  function onCommit({ cellKey, rowIdx, updated }: CommitEvent): void {
     onRowsUpdate({
       cellKey,
       fromRow: rowIdx,

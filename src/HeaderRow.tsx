@@ -57,7 +57,7 @@ export default function HeaderRow<R, K extends keyof R>({
       {props.columns.map(column => {
         return (
           <HeaderCell<R>
-            key={column.key as string}
+            key={column.key}
             column={column}
             lastFrozenColumnIndex={props.lastFrozenColumnIndex}
             height={height}

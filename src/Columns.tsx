@@ -4,7 +4,7 @@ import { Column } from './common/types';
 
 // TODO: fix type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const SelectColumn: Column<any, any> = {
+export const SelectColumn: Column<any> = {
   key: 'select-row',
   name: '',
   width: 35,

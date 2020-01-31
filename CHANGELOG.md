@@ -82,7 +82,6 @@
     - ⚠️ Row selection has been reimplemented.
     - A new `SelectColumn` is now available to import and add a row selection column.
     - Check [#1762](https://github.com/adazzle/react-data-grid/pull/1762) on how to migrate.
-  - `renderBatchSize` prop [#1779](https://github.com/adazzle/react-data-grid/pull/1779)
 - **Removed:**
   - **Packages:**
     - `react-data-grid-examples`

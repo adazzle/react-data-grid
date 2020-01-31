@@ -26,8 +26,8 @@ export default function FilterRow<R>({
   filters,
   onFiltersChange
 }: FilterRowProps<R>) {
-  function onChange(key: keyof R, value: unknown) {
-    const newFilters: Filters<R> = { ...filters };
+  function onChange(key: string, value: unknown) {
+    const newFilters: Filters = { ...filters };
     newFilters[key] = value;
     onFiltersChange?.(newFilters);
   }
@@ -55,7 +55,7 @@ export default function FilterRow<R>({
 
         return (
           <div
-            key={key as string}
+            key={key}
             style={style}
             className={className}
           >

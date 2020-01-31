@@ -60,5 +60,5 @@ function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEdit
 }
 
 export default forwardRef(
-  DropDownEditor as React.RefForwardingComponent<DropDownEditorHandle, DropDownEditorProps<{ [key: string]: unknown }>>
+  DropDownEditor as React.RefForwardingComponent<DropDownEditorHandle>
 ) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;
