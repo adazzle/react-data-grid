@@ -1,4 +1,4 @@
-import { Column, CalculatedColumn, ColumnMetrics, FormatterProps } from '../common/types';
+import { Column, CalculatedColumn, ColumnMetrics, FormatterProps, Omit } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R> {
@@ -15,7 +15,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Array<Column<R> & { width: number | undefined }> = [];
+  const columns: Array<Omit<Column<R>, 'width'> & { width: number | void }> = [];
 
   for (const metricsColumn of metrics.columns) {
     const width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
@@ -69,7 +69,7 @@ function getSpecifiedWidth<R>(
   columnWidths: ReadonlyMap<string, number>,
   viewportWidth: number,
   minColumnWidth: number
-): number | undefined {
+): number | void {
   if (columnWidths.has(column.key)) {
     // Use the resized width if available
     return columnWidths.get(column.key);
@@ -80,8 +80,6 @@ function getSpecifiedWidth<R>(
   if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
     return Math.max(Math.floor(viewportWidth * parseInt(column.width, 10) / 100), minColumnWidth);
   }
-
-  return undefined;
 }
 
 // Logic extented to allow for functions to be passed down in column.editable
