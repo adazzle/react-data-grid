@@ -5,7 +5,7 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow, TSummaryRow = unknown> {
+interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -14,11 +14,11 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow, TSummaryRow 
   width?: number | string;
   cellClass?: string | ((row: TRow) => string);
   headerCellClass?: string;
-  summaryCellClass?: string | ((row: TSummaryRow) => string);
+  summaryCellClass?: string | ((row: any) => string);
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow>>;
   /** Formatter to be used to render the summary cell content */
-  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
+  summaryFormatter?: React.ComponentType<SummaryFormatterProps<any, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
   /** Enable dragging of a column */
@@ -35,24 +35,24 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow, TSummaryRow 
   editor?: React.ComponentType<EditorProps<TRow[TField], TRow>>;
   /** Header renderer for each header cell */
   // TODO: finalize API
-  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
+  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
 
-export type Column<TRow, TField extends keyof TRow = keyof TRow, TSummaryRow = unknown> =
-  TField extends keyof TRow ? ColumnValue<TRow, TField, TSummaryRow> : never;
+export type Column<TRow, TField extends keyof TRow = keyof TRow> =
+  TField extends keyof TRow ? ColumnValue<TRow, TField> : never;
 
-export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow, TSummaryRow = unknown> =
-  Column<TRow, TField, TSummaryRow> & {
+export type CalculatedColumn<TRow, TField extends keyof TRow = keyof TRow> =
+  Column<TRow, TField> & {
     idx: number;
     width: number;
     left: number;
     formatter: React.ComponentType<FormatterProps<TRow>>;
   };
 
-export interface ColumnMetrics<TRow, TSummaryRow = unknown> {
-  columns: readonly CalculatedColumn<TRow, keyof TRow, TSummaryRow>[];
+export interface ColumnMetrics<TRow> {
+  columns: readonly CalculatedColumn<TRow>[];
   lastFrozenColumnIndex: number;
   viewportWidth: number;
   totalColumnWidth: number;
@@ -96,9 +96,9 @@ export interface Editor<TValue = never> {
   readonly disableContainerStyles?: boolean;
 }
 
-export interface FormatterProps<TRow = any, TSummaryRow = any> {
+export interface FormatterProps<TRow = any> {
   rowIdx: number;
-  column: CalculatedColumn<TRow, keyof TRow, TSummaryRow>;
+  column: CalculatedColumn<TRow>;
   row: TRow;
   isRowSelected: boolean;
   onRowSelectionChange(checked: boolean, isShiftClick: boolean): void;
@@ -108,9 +108,9 @@ export interface SummaryFormatterProps<TSummaryRow = any, TRow = any> extends Pi
   row: TSummaryRow;
 }
 
-export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
+export interface EditorProps<TValue, TRow = any> {
   ref: React.Ref<Editor<{ [key: string]: TValue }>>;
-  column: CalculatedColumn<TRow, keyof TRow, TSummaryRow>;
+  column: CalculatedColumn<TRow>;
   value: TValue;
   row: TRow;
   height: number;
@@ -119,13 +119,13 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
-export interface HeaderRendererProps<TRow, TSummaryRow> {
-  column: CalculatedColumn<TRow, keyof TRow, TSummaryRow>;
+export interface HeaderRendererProps<TRow> {
+  column: CalculatedColumn<TRow>;
   allRowsSelected: boolean;
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
+export interface CellRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow>;
@@ -135,26 +135,26 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, keyof TRow, TSummaryRow>): void;
+  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface RowRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   height: number;
   width: number;
-  viewportColumns: readonly CalculatedColumn<TRow, keyof TRow, TSummaryRow>[];
+  viewportColumns: readonly CalculatedColumn<TRow>[];
   row: TRow;
-  cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
+  cellRenderer?: React.ComponentType<CellRendererProps<TRow>>;
   rowIdx: number;
   scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, keyof TRow, TSummaryRow>): void;
+  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow>): void;
 }
 
-export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, keyof TRow, TSummaryRow>;
+export interface FilterRendererProps<TRow, TFilterValue = unknown> {
+  column: CalculatedColumn<TRow>;
   value: TFilterValue;
   onChange(value: TFilterValue): void;
 }
@@ -197,9 +197,9 @@ export interface RowsUpdateEvent<TRow, TUpdatedValue = never> {
   fromCellKey?: keyof TRow;
 }
 
-export interface CheckCellIsEditableEvent<TRow, TSummaryRow> extends Position {
+export interface CheckCellIsEditableEvent<TRow> extends Position {
   row: TRow;
-  column: CalculatedColumn<TRow, keyof TRow, TSummaryRow>;
+  column: CalculatedColumn<TRow>;
 }
 
 export interface SelectRowEvent {

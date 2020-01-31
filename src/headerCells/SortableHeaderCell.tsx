@@ -8,21 +8,21 @@ const SORT_TEXT = {
   [DEFINE_SORT.NONE]: ''
 } as const;
 
-export interface Props<R, SR = unknown> {
-  column: CalculatedColumn<R, keyof R, SR>;
+export interface Props<R> {
+  column: CalculatedColumn<R>;
   children: React.ReactNode;
   sortColumn?: keyof R;
   sortDirection?: DEFINE_SORT;
   onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
 }
 
-export default function SortableHeaderCell<R, SR>({
+export default function SortableHeaderCell<R>({
   column,
   onSort,
   sortColumn,
   sortDirection,
   children
-}: Props<R, SR>) {
+}: Props<R>) {
   sortDirection = sortColumn === column.key && sortDirection || DEFINE_SORT.NONE;
   function onClick() {
     if (!onSort) return;

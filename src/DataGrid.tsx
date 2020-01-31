@@ -29,19 +29,19 @@ import {
 
 export { DataGridHandle };
 
-export interface DataGridProps<R, K extends keyof R, SR = unknown> {
+export interface DataGridProps<R, K extends keyof R> {
   /**
    * Grid and data Props
    */
   /** An array of objects representing each column on the grid */
-  columns: readonly Column<R, keyof R, SR>[];
+  columns: readonly Column<R>[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: readonly SR[];
+  summaryRows?: readonly unknown[];
   /** The primary key property of each row */
   rowKey?: K;
   /**
@@ -90,17 +90,17 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    * Custom renderers
    */
   defaultFormatter?: React.ComponentType<FormatterProps<R>>;
-  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
+  rowRenderer?: React.ComponentType<RowRendererProps<R>>;
   rowGroupRenderer?: React.ComponentType;
   emptyRowsView?: React.ComponentType<{}>;
   /** Component used to render a draggable header cell */
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R, keyof R, SR>; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R>; onHeaderDrop(): void }>;
 
   /**
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R, keyof R, SR>): void;
+  onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R>): void;
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Called when a column is resized */
@@ -112,7 +112,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   /** Function called whenever selected cell range is changed */
   onSelectedCellRangeChange?(selectedRange: SelectedRange): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
-  onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R, SR>): boolean;
+  onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
 
   /**
    * Toggles and modes
@@ -141,7 +141,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
  *
  * <DataGrid columns={columns} rows={rows} />
 */
-function DataGrid<R, K extends keyof R, SR>({
+function DataGrid<R, K extends keyof R>({
   rowKey,
   rowHeight = 35,
   headerRowHeight = rowHeight,
@@ -162,7 +162,7 @@ function DataGrid<R, K extends keyof R, SR>({
   selectedRows,
   onSelectedRowsChange,
   ...props
-}: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
+}: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
   const [scrollLeft, setScrollLeft] = useState(0);
   const [gridWidth, setGridWidth] = useState(0);
@@ -174,7 +174,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
 
-    return getColumnMetrics<R, SR>({
+    return getColumnMetrics<R>({
       columns,
       minColumnWidth,
       viewportWidth,
@@ -194,7 +194,7 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }, [columnMetrics, scrollLeft]);
 
-  const viewportColumns: readonly CalculatedColumn<R, keyof R, SR>[] = useMemo(() => {
+  const viewportColumns: readonly CalculatedColumn<R>[] = useMemo(() => {
     if (!columnMetrics) return [];
 
     return getViewportColumns(
@@ -219,7 +219,7 @@ function DataGrid<R, K extends keyof R, SR>({
     };
   }, [width]);
 
-  function handleColumnResize(column: CalculatedColumn<R, keyof R, SR>, width: number) {
+  function handleColumnResize(column: CalculatedColumn<R>, width: number) {
     const newColumnWidths = new Map(columnWidths);
     const originalWidth = columns.find(col => col.key === column.key)!.width;
     const minWidth = typeof originalWidth === 'number'
@@ -258,7 +258,7 @@ function DataGrid<R, K extends keyof R, SR>({
             ref={headerRef}
             className="rdg-header"
           >
-            <HeaderRow<R, K, SR>
+            <HeaderRow<R, K>
               rowKey={rowKey}
               rows={rows}
               height={headerRowHeight}
@@ -276,7 +276,7 @@ function DataGrid<R, K extends keyof R, SR>({
               scrollLeft={nonStickyScrollLeft}
             />
             {enableFilters && (
-              <FilterRow<R, SR>
+              <FilterRow<R>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
@@ -288,7 +288,7 @@ function DataGrid<R, K extends keyof R, SR>({
             )}
           </div>
           {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
-            <Canvas<R, K, SR>
+            <Canvas<R, K>
               ref={ref}
               rowKey={rowKey}
               rowHeight={rowHeight}
@@ -325,4 +325,4 @@ function DataGrid<R, K extends keyof R, SR>({
 
 export default forwardRef(
   DataGrid as React.RefForwardingComponent<DataGridHandle>
-) as <R, K extends keyof R, SR = unknown>(props: DataGridProps<R, K, SR> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
+) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

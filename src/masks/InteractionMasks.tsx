@@ -36,7 +36,7 @@ export enum KeyCodes {
   v = 86
 }
 
-type SharedCanvasProps<R, SR = unknown> = Pick<CanvasProps<R, never, SR>,
+type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
 | 'rows'
 | 'rowHeight'
 | 'enableCellAutoFocus'
@@ -48,9 +48,9 @@ type SharedCanvasProps<R, SR = unknown> = Pick<CanvasProps<R, never, SR>,
 | 'onSelectedCellChange'
 | 'onSelectedCellRangeChange'
 | 'onRowsUpdate'
-> & Pick<ColumnMetrics<R, SR>, 'columns'>;
+> & Pick<ColumnMetrics<R>, 'columns'>;
 
-export interface InteractionMasksProps<R, SR = unknown> extends SharedCanvasProps<R, SR> {
+export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   height: number;
   canvasRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
@@ -68,7 +68,7 @@ function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): bool
   ].includes(e.keyCode);
 }
 
-export default function InteractionMasks<R, SR = unknown>({
+export default function InteractionMasks<R>({
   columns,
   rows,
   rowHeight,
@@ -85,7 +85,7 @@ export default function InteractionMasks<R, SR = unknown>({
   onCheckCellIsEditable,
   onRowsUpdate,
   scrollToCell
-}: InteractionMasksProps<R, SR>) {
+}: InteractionMasksProps<R>) {
   const [selectedPosition, setSelectedPosition] = useState<Position>(() => {
     if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
       return { idx: 0, rowIdx: 0 };
@@ -214,7 +214,7 @@ export default function InteractionMasks<R, SR = unknown>({
       : cellNavigationMode;
     const keyCode = e.shiftKey ? KeyCodes.ArrowLeft : KeyCodes.ArrowRight;
     let nextPosition = getNextPosition(keyCode);
-    nextPosition = getNextSelectedCellPosition<R, SR>({
+    nextPosition = getNextSelectedCellPosition<R>({
       columns,
       rowsCount: rows.length,
       cellNavigationMode: tabCellNavigationMode,
@@ -258,7 +258,7 @@ export default function InteractionMasks<R, SR = unknown>({
   function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
     e.preventDefault();
     let nextPosition = getNextPosition(e.keyCode);
-    nextPosition = getNextSelectedCellPosition<R, SR>({
+    nextPosition = getNextSelectedCellPosition<R>({
       columns,
       rowsCount: rows.length,
       cellNavigationMode,
@@ -274,7 +274,7 @@ export default function InteractionMasks<R, SR = unknown>({
 
   function isCellEditable(position: Position) {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
+      && isSelectedCellEditable<R>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
   }
 
   function selectCell(position: Position, enableEditor = false): void {
@@ -399,7 +399,7 @@ export default function InteractionMasks<R, SR = unknown>({
       )}
       {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R, SR>
+          <EditorContainer<R>
             firstEditorKeyPress={firstEditorKeyPress}
             onCommit={onCommit}
             onCommitCancel={closeEditor}

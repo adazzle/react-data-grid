@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, DEFINE_SORT } from '../../src';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent, DEFINE_SORT, SummaryFormatterProps } from '../../src';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -26,6 +26,8 @@ interface SummaryRow {
   };
 }
 
+type SummaryRowFormatterProps = SummaryFormatterProps<SummaryRow, Row>;
+
 interface Row {
   id: number;
   title: string;
@@ -44,7 +46,7 @@ interface Row {
   available: boolean;
 }
 
-const columns: readonly Column<Row, keyof Row, SummaryRow>[] = [
+const columns: readonly Column<Row>[] = [
   {
     ...SelectColumn,
     summaryFormatter() {
@@ -57,7 +59,7 @@ const columns: readonly Column<Row, keyof Row, SummaryRow>[] = [
     width: 60,
     frozen: true,
     sortable: true,
-    summaryFormatter({ row }) {
+    summaryFormatter({ row }: SummaryRowFormatterProps) {
       return <>{row.totalCount}</>;
     }
   },
@@ -185,7 +187,7 @@ const columns: readonly Column<Row, keyof Row, SummaryRow>[] = [
     formatter(props) {
       return <>{props.row.available ? '✔️' : '❌'}</>;
     },
-    summaryFormatter({ column, row }) {
+    summaryFormatter({ column, row }: SummaryRowFormatterProps) {
       return (
         <>{column.key === 'available' && (
           <>
@@ -290,7 +292,7 @@ export default function CommonFeatures() {
   return (
     <AutoSizer>
       {({ height, width }) => (
-        <DataGrid<Row, 'id', SummaryRow>
+        <DataGrid
           rowKey="id"
           columns={columns}
           rows={sortedRows}

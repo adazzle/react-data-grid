@@ -6,7 +6,7 @@ import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
+type SharedHeaderRowProps<R> = Pick<HeaderRowProps<R, never>,
 | 'sortColumn'
 | 'sortDirection'
 | 'onSort'
@@ -16,22 +16,22 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
 | 'draggableHeaderCell'
 >;
 
-export interface HeaderCellProps<R, SR = unknown> extends SharedHeaderRowProps<R, SR> {
-  column: CalculatedColumn<R, keyof R, SR>;
+export interface HeaderCellProps<R> extends SharedHeaderRowProps<R> {
+  column: CalculatedColumn<R>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
-  onResize(column: CalculatedColumn<R, keyof R, SR>, width: number): void;
+  onResize(column: CalculatedColumn<R>, width: number): void;
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export default function HeaderCell<R, SR = unknown>({
+export default function HeaderCell<R>({
   height,
   column,
   allRowsSelected,
   onAllRowsSelectionChange,
   scrollLeft,
   ...props
-}: HeaderCellProps<R, SR>) {
+}: HeaderCellProps<R>) {
   function getCell() {
     if (!column.headerRenderer) return column.name;
 

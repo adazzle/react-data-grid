@@ -8,7 +8,7 @@ import RowRenderer from './RowRenderer';
 import SummaryRow from './SummaryRow';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
 
-type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
+type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
@@ -21,7 +21,7 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
 | 'onRowExpandToggle'
 | 'onSelectedRowsChange'
 | 'rowKey'
-> & Required<Pick<DataGridProps<R, K, SR>,
+> & Required<Pick<DataGridProps<R, K>,
 | 'enableCellAutoFocus'
 | 'enableCellCopyPaste'
 | 'enableCellDragAndDrop'
@@ -32,9 +32,9 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
 | 'onRowsUpdate'
 >>;
 
-export interface CanvasProps<R, K extends keyof R, SR = unknown> extends SharedDataGridProps<R, K, SR> {
-  columnMetrics: ColumnMetrics<R, SR>;
-  viewportColumns: readonly CalculatedColumn<R, keyof R, SR>[];
+export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
+  columnMetrics: ColumnMetrics<R>;
+  viewportColumns: readonly CalculatedColumn<R>[];
   height: number;
   scrollLeft: number;
   onScroll(position: ScrollPosition): void;
@@ -47,7 +47,7 @@ export interface CanvasHandle {
   openCellEditor(rowIdx: number, colIdx: number): void;
 }
 
-function Canvas<R, K extends keyof R, SR>({
+function Canvas<R, K extends keyof R>({
   columnMetrics,
   viewportColumns,
   height,
@@ -61,7 +61,7 @@ function Canvas<R, K extends keyof R, SR>({
   selectedRows,
   onSelectedRowsChange,
   ...props
-}: CanvasProps<R, K, SR>, ref: React.Ref<CanvasHandle>) {
+}: CanvasProps<R, K>, ref: React.Ref<CanvasHandle>) {
   const [eventBus] = useState(() => new EventBus());
   const [scrollTop, setScrollTop] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -196,7 +196,7 @@ function Canvas<R, K extends keyof R, SR>({
       }
 
       rowElements.push(
-        <RowRenderer<R, SR>
+        <RowRenderer<R>
           key={key}
           rowIdx={rowIdx}
           row={row}
@@ -221,7 +221,7 @@ function Canvas<R, K extends keyof R, SR>({
   const summary = summaryRows && summaryRows.length > 0 && (
     <div ref={summaryRef} className="rdg-summary">
       {summaryRows.map((row, rowIdx) => (
-        <SummaryRow<R, SR>
+        <SummaryRow<R>
           key={rowIdx}
           rowIdx={rowIdx}
           row={row}
@@ -243,7 +243,7 @@ function Canvas<R, K extends keyof R, SR>({
         ref={canvasRef}
         onScroll={handleScroll}
       >
-        <InteractionMasks<R, SR>
+        <InteractionMasks<R>
           rows={rows}
           rowHeight={rowHeight}
           columns={columns}
@@ -281,4 +281,4 @@ function Canvas<R, K extends keyof R, SR>({
 
 export default forwardRef(
   Canvas as React.RefForwardingComponent<CanvasHandle>
-) as <R, K extends keyof R, SR = unknown>(props: CanvasProps<R, K, SR> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;
+) as <R, K extends keyof R>(props: CanvasProps<R, K> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;

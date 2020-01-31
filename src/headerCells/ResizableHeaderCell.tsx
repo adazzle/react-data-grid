@@ -1,17 +1,17 @@
 import React, { cloneElement } from 'react';
 import { CalculatedColumn } from '../common/types';
 
-export interface ResizableHeaderCellProps<R, SR> {
+export interface ResizableHeaderCellProps<R> {
   children: React.ReactElement<React.ComponentProps<'div'>>;
-  column: CalculatedColumn<R, keyof R, SR>;
-  onResize(column: CalculatedColumn<R, keyof R, SR>, width: number): void;
+  column: CalculatedColumn<R>;
+  onResize(column: CalculatedColumn<R>, width: number): void;
 }
 
-export default function ResizableHeaderCell<R, SR>({
+export default function ResizableHeaderCell<R>({
   children,
   column,
   ...props
-}: ResizableHeaderCellProps<R, SR>) {
+}: ResizableHeaderCellProps<R>) {
   function onMouseDown(event: React.MouseEvent) {
     if (event.button !== 0) {
       return;

@@ -4,20 +4,20 @@ import classNames from 'classnames';
 import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
+type SharedDataGridProps<R> = Pick<DataGridProps<R, never>,
 | 'filters'
 | 'onFiltersChange'
 >;
 
-export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+export interface FilterRowProps<R> extends SharedDataGridProps<R> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
-  columns: readonly CalculatedColumn<R, keyof R, SR>[];
+  columns: readonly CalculatedColumn<R>[];
   scrollLeft: number | undefined;
 }
 
-export default function FilterRow<R, SR>({
+export default function FilterRow<R>({
   height,
   width,
   columns,
@@ -25,7 +25,7 @@ export default function FilterRow<R, SR>({
   scrollLeft,
   filters,
   onFiltersChange
-}: FilterRowProps<R, SR>) {
+}: FilterRowProps<R>) {
   function onChange(key: keyof R, value: unknown) {
     const newFilters: Filters<R> = { ...filters };
     newFilters[key] = value;

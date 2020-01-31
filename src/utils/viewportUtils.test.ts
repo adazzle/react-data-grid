@@ -68,7 +68,7 @@ describe('getVerticalRangeToRender', () => {
 });
 
 describe('getHorizontalRangeToRender', () => {
-  function getColumnMetrics(): ColumnMetrics<Row, unknown> {
+  function getColumnMetrics(): ColumnMetrics<Row> {
     const columns = [...Array(500).keys()].map(i => ({
       idx: i,
       key: `col${i}`,

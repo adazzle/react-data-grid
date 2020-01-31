@@ -2,14 +2,13 @@ import classNames from 'classnames';
 import React, { memo } from 'react';
 
 import SummaryCell from './SummaryCell';
-import { RowRendererProps, CalculatedColumn } from './common/types';
+import { RowRendererProps } from './common/types';
 
-export interface SummaryRowProps<TRow, TSummaryRow> extends Pick<RowRendererProps<TRow, TSummaryRow>, | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'width'> {
-  viewportColumns: readonly CalculatedColumn<TRow, keyof TRow, TSummaryRow>[];
-  row: TSummaryRow;
+export interface SummaryRowProps<TRow> extends Pick<RowRendererProps<TRow>, | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'viewportColumns' | 'width'> {
+  row: unknown;
 }
 
-export function SummaryRow<R, SR>({
+export function SummaryRow<R>({
   height,
   rowIdx,
   lastFrozenColumnIndex,
@@ -17,7 +16,7 @@ export function SummaryRow<R, SR>({
   scrollLeft,
   viewportColumns,
   width
-}: SummaryRowProps<R, SR>) {
+}: SummaryRowProps<R>) {
   return (
     <div
       className={classNames(
@@ -28,7 +27,7 @@ export function SummaryRow<R, SR>({
       style={{ width, height }}
     >
       {viewportColumns.map(column => (
-        <SummaryCell<R, SR>
+        <SummaryCell<R>
           key={column.key as string} // FIXME: fix key type
           idx={column.idx}
           rowIdx={rowIdx}
@@ -42,4 +41,4 @@ export function SummaryRow<R, SR>({
   );
 }
 
-export default memo(SummaryRow) as <R, SR>(props: SummaryRowProps<R, SR>) => JSX.Element;
+export default memo(SummaryRow) as <R>(props: SummaryRowProps<R>) => JSX.Element;
