@@ -3,7 +3,7 @@ import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R> {
   columns: readonly Column<R>[];
-  columnWidths: ReadonlyMap<keyof R, number>;
+  columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
   viewportWidth: number;
   defaultFormatter: React.ComponentType<FormatterProps<R>>;
@@ -66,7 +66,7 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
 
 function getSpecifiedWidth<R>(
   column: Column<R>,
-  columnWidths: ReadonlyMap<keyof R, number>,
+  columnWidths: ReadonlyMap<string, number>,
   viewportWidth: number,
   minColumnWidth: number
 ): number | void {

@@ -1,6 +1,6 @@
 import React from 'react';
+import { HeaderCellProps } from '../HeaderCell';
 import { DEFINE_SORT } from '../common/enums';
-import { CalculatedColumn } from '../common/types';
 
 const SORT_TEXT = {
   [DEFINE_SORT.ASC]: '\u25B2',
@@ -8,12 +8,15 @@ const SORT_TEXT = {
   [DEFINE_SORT.NONE]: ''
 } as const;
 
-export interface Props<R> {
-  column: CalculatedColumn<R>;
+type SharedHeaderCellProps<R> = Pick<HeaderCellProps<R>,
+  | 'column'
+  | 'sortColumn'
+  | 'sortDirection'
+  | 'onSort'
+>;
+
+export interface Props<R> extends SharedHeaderCellProps<R> {
   children: React.ReactNode;
-  sortColumn?: keyof R;
-  sortDirection?: DEFINE_SORT;
-  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
 }
 
 export default function SortableHeaderCell<R>({

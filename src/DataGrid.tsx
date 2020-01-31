@@ -52,7 +52,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onRowsUpdate?<E extends RowsUpdateEvent<R>>(event: E): void;
+  onRowsUpdate?<E extends RowsUpdateEvent>(event: E): void;
 
   /**
    * Dimensions props
@@ -78,13 +78,13 @@ export interface DataGridProps<R, K extends keyof R> {
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?(selectedRows: Set<R[K]>): void;
   /** The key of the column which is currently being sorted */
-  sortColumn?: keyof R;
+  sortColumn?: string;
   /** The direction to sort the sortColumn*/
   sortDirection?: DEFINE_SORT;
   /** Function called whenever grid is sorted*/
-  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
-  filters?: Filters<R>;
-  onFiltersChange?(filters: Filters<R>): void;
+  onSort?(columnKey: string, direction: DEFINE_SORT): void;
+  filters?: Filters;
+  onFiltersChange?(filters: Filters): void;
 
   /**
    * Custom renderers
@@ -160,7 +160,7 @@ function DataGrid<R, K extends keyof R>({
   onSelectedRowsChange,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
-  const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
+  const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [scrollLeft, setScrollLeft] = useState(0);
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -237,7 +237,7 @@ function DataGrid<R, K extends keyof R>({
     props.onScroll?.(scrollPosition);
   }
 
-  function handleRowUpdate(event: RowsUpdateEvent<R>) {
+  function handleRowUpdate(event: RowsUpdateEvent) {
     props.onRowsUpdate?.(event);
   }
 

@@ -345,7 +345,7 @@ export default function InteractionMasks<R>({
     });
   }
 
-  function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
+  function onCommit({ cellKey, rowIdx, updated }: CommitEvent): void {
     onRowsUpdate({
       cellKey,
       fromRow: rowIdx,

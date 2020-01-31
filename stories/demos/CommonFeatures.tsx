@@ -229,7 +229,7 @@ export default function CommonFeatures() {
     return sortDirection === DEFINE_SORT.DESC ? sortedRows.reverse() : sortedRows;
   }, [rows, sortDirection, sortColumn]);
 
-  const handleRowsUpdate = useCallback(({ fromRow, toRow, updated }: RowsUpdateEvent<Row, Partial<Row>>) => {
+  const handleRowsUpdate = useCallback(({ fromRow, toRow, updated }: RowsUpdateEvent<Partial<Row>>) => {
     const newRows = [...sortedRows];
 
     for (let i = fromRow; i <= toRow; i++) {

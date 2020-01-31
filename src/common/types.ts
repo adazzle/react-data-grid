@@ -9,7 +9,7 @@ interface ColumnValue<TRow, TField extends keyof TRow = keyof TRow> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
-  key: TField;
+  key: string;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
   width?: number | string;
   cellClass?: string | ((row: TRow) => string);
@@ -169,10 +169,10 @@ export interface RowGroupMetaData {
   getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
 }
 
-export type Filters<TRow> = { [key in keyof TRow]?: any };
+export type Filters = Record<string, any>;
 
-export interface CommitEvent<TRow, TUpdatedValue = never> {
-  cellKey: keyof TRow;
+export interface CommitEvent<TUpdatedValue = never> {
+  cellKey: string;
   rowIdx: number;
   updated: TUpdatedValue;
 }
@@ -184,13 +184,13 @@ export interface RowExpandToggleEvent {
   name: string;
 }
 
-export interface RowsUpdateEvent<TRow, TUpdatedValue = never> {
-  cellKey: keyof TRow;
+export interface RowsUpdateEvent<TUpdatedValue = never> {
+  cellKey: string;
   fromRow: number;
   toRow: number;
   updated: TUpdatedValue;
   action: UpdateActions;
-  fromCellKey?: keyof TRow;
+  fromCellKey?: string;
 }
 
 export interface CheckCellIsEditableEvent<TRow> extends Position {

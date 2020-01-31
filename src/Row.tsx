@@ -40,7 +40,7 @@ export default function Row<R>({
     return viewportColumns.map(column => {
       return (
         <CellRenderer
-          key={column.key as string} // FIXME: fix key type
+          key={column.key}
           idx={column.idx}
           rowIdx={rowIdx}
           column={column}
