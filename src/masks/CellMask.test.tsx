@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { Z_INDEXES } from '../common/enums';
 import { sel } from '../test/utils';
 import CellMask from './CellMask';
 
@@ -12,7 +11,7 @@ describe('CellMask', () => {
       width: 50,
       left: 5,
       top: 10,
-      zIndex: Z_INDEXES.CELL_MASK
+      zIndex: 1
     };
 
     const wrapper = shallow(<CellMask {...props}>{children}</CellMask>);
@@ -25,7 +24,7 @@ describe('CellMask', () => {
     expect(mask.prop('style')).toMatchObject({
       height: 30,
       width: 50,
-      zIndex: Z_INDEXES.CELL_MASK,
+      zIndex: 1,
       transform: 'translate(5px, 10px)'
     });
   });
