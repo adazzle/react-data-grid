@@ -53,7 +53,7 @@ export default function EditorContainer<R>({
   }, [getInputNode]);
 
   function getInitialValue() {
-    const value = row[column.key];
+    const value = row[column.key as keyof R];
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }
