@@ -37,13 +37,12 @@ export interface Column<TRow> {
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
 
-export type CalculatedColumn<TRow> =
-  Column<TRow> & {
-    idx: number;
-    width: number;
-    left: number;
-    formatter: React.ComponentType<FormatterProps<TRow>>;
-  };
+export interface CalculatedColumn<TRow> extends Column<TRow> {
+  idx: number;
+  width: number;
+  left: number;
+  formatter: React.ComponentType<FormatterProps<TRow>>;
+}
 
 export interface ColumnMetrics<TRow> {
   columns: readonly CalculatedColumn<TRow>[];
