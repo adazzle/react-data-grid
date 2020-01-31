@@ -3,9 +3,9 @@ import { HeaderCellProps } from '../HeaderCell';
 import { SortDirection } from '../common/enums';
 
 const SORT_TEXT = {
-  [SortDirection.ASC]: '\u25B2',
-  [SortDirection.DESC]: '\u25BC',
-  [SortDirection.NONE]: ''
+  ASC: '\u25B2',
+  DESC: '\u25BC',
+  NONE: ''
 } as const;
 
 type SharedHeaderCellProps<R> = Pick<HeaderCellProps<R>,
@@ -26,20 +26,20 @@ export default function SortableHeaderCell<R>({
   sortDirection,
   children
 }: Props<R>) {
-  sortDirection = sortColumn === column.key && sortDirection || SortDirection.NONE;
+  sortDirection = sortColumn === column.key && sortDirection || 'NONE';
   function onClick() {
     if (!onSort) return;
     const sortDescendingFirst = column.sortDescendingFirst || false;
-    let direction;
+    let direction: SortDirection;
     switch (sortDirection) {
-      case SortDirection.ASC:
-        direction = sortDescendingFirst ? SortDirection.NONE : SortDirection.DESC;
+      case 'ASC':
+        direction = sortDescendingFirst ? 'NONE' : 'DESC';
         break;
-      case SortDirection.DESC:
-        direction = sortDescendingFirst ? SortDirection.ASC : SortDirection.NONE;
+      case 'DESC':
+        direction = sortDescendingFirst ? 'ASC' : 'NONE';
         break;
       default:
-        direction = sortDescendingFirst ? SortDirection.DESC : SortDirection.ASC;
+        direction = sortDescendingFirst ? 'DESC' : 'ASC';
         break;
     }
     onSort(column.key, direction);

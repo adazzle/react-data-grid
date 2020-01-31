@@ -198,11 +198,11 @@ function createRows(): readonly Row[] {
 
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, SortDirection]>(['id', SortDirection.NONE]);
+  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
   const sortedRows: readonly Row[] = useMemo(() => {
-    if (sortDirection === SortDirection.NONE) return rows;
+    if (sortDirection === 'NONE') return rows;
 
     let sortedRows: Row[] = [...rows];
 
@@ -226,7 +226,7 @@ export default function CommonFeatures() {
         break;
     }
 
-    return sortDirection === SortDirection.DESC ? sortedRows.reverse() : sortedRows;
+    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
   }, [rows, sortDirection, sortColumn]);
 
   const handleRowsUpdate = useCallback(({ fromRow, toRow, updated }: RowsUpdateEvent<Partial<Row>>) => {
@@ -239,7 +239,7 @@ export default function CommonFeatures() {
     setRows(newRows);
   }, [sortedRows]);
 
-  const handleSort = useCallback((columnKey: keyof Row, direction: SortDirection) => {
+  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
     setSort([columnKey, direction]);
   }, []);
 

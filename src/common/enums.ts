@@ -15,8 +15,4 @@ export enum UpdateActions {
   CELL_DRAG = 'CELL_DRAG'
 }
 
-export enum SortDirection {
-  ASC = 'ASC',
-  DESC = 'DESC',
-  NONE = 'NONE'
-}
+export type SortDirection = 'ASC' | 'DESC' | 'NONE';
