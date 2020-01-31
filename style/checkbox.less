@@ -8,6 +8,15 @@
   right: 0;
   bottom: 0;
   left: 0;
+
+  &.disabled {
+    cursor: default;
+
+    .rdg-checkbox {
+      border: 2px solid #ccc;
+      background: #ddd;
+    }
+  }
 }
 
 .rdg-checkbox-input {
