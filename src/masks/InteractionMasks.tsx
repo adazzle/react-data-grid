@@ -22,12 +22,6 @@ import { UpdateActions, CellNavigationMode } from '../common/enums';
 import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
-export enum KeyCodes {
-  Backspace = 8,
-  Enter = 13,
-  Delete = 46
-}
-
 type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
   | 'rows'
   | 'rowHeight'
@@ -172,6 +166,8 @@ export default function InteractionMasks<R>({
       if (lowerCaseKey === 'v') return handlePaste();
     }
 
+    console.log(`key=(${key})`);
+
     switch (key) {
       case 'Escape':
         closeEditor();
@@ -206,7 +202,7 @@ export default function InteractionMasks<R>({
     if (typeof isEditable === 'boolean') return isEditable;
 
     // Fall back to the default behavior
-    return isKeyPrintable(event.keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(event.keyCode);
+    return isKeyPrintable(event.keyCode) || ['Backspace', 'Delete', 'Enter'].includes(event.key);
   }
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {

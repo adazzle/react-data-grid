@@ -61,8 +61,6 @@ const setup = (extraProps?: Partial<EditorContainerProps<Row>>, opts?: MountRend
     onCommit: jest.fn(),
     onCommitCancel: jest.fn(),
     firstEditorKeyPress: null,
-    scrollLeft: 0,
-    scrollTop: 0,
     ...extraProps
   };
   const wrapper = mount(<EditorContainer {...props} />, opts);

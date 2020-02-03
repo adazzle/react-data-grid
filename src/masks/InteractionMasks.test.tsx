@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
-import InteractionMasks, { InteractionMasksProps, KeyCodes } from './InteractionMasks';
+import InteractionMasks, { InteractionMasksProps } from './InteractionMasks';
 // import SelectionRangeMask from '../SelectionRangeMask';
 import DragMask from './DragMask';
 import EventBus from '../EventBus';
@@ -427,7 +427,7 @@ describe('InteractionMasks', () => {
   describe('Keyboard navigation functionality', () => {
     it('Press enter should enable editing', () => {
       const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
-      pressKey(wrapper, 'Enter', { keyCode: KeyCodes.Enter });
+      pressKey(wrapper, 'Enter');
       wrapper.update();
       expect(wrapper.find(EditorContainer)).toHaveLength(1);
     });
