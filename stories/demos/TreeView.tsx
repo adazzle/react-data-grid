@@ -146,7 +146,7 @@ export default function TreeView() {
   return (
     <>
       <label>
-          Allow Delete
+        Allow Delete
         <input
           type="checkbox"
           checked={allowDelete}
