@@ -479,11 +479,11 @@ const rules = {
   '@typescript-eslint/explicit-module-boundary-types': 0,
   '@typescript-eslint/member-delimiter-style': 1,
   '@typescript-eslint/member-ordering': 0,
-  '@typescript-eslint/naming-convention': [1, {
-    selector: 'class', format: ['PascalCase']
-  }, {
-    selector: 'interface', format: ['PascalCase']
-  }],
+  '@typescript-eslint/naming-convention': [1,
+    { selector: 'function', format: ['camelCase', 'PascalCase'] },
+    { selector: 'parameter', format: ['camelCase', 'PascalCase'], leadingUnderscore: 'allow' },
+    { selector: 'typeLike', format: ['PascalCase'] }
+  ],
   '@typescript-eslint/no-dynamic-delete': 0,
   '@typescript-eslint/no-empty-interface': 2,
   '@typescript-eslint/no-explicit-any': [2, { fixToUnknown: true }],

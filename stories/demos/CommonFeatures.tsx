@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, DEFINE_SORT, SummaryFormatterProps } from '../../src';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection, SummaryFormatterProps } from '../../src';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -230,7 +230,7 @@ function createRows(): readonly Row[] {
 
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, DEFINE_SORT]>(['id', DEFINE_SORT.NONE]);
+  const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
   const summaryRows = useMemo(() => {
@@ -248,7 +248,7 @@ export default function CommonFeatures() {
     return summaryRows;
   }, [rows]);
   const sortedRows: readonly Row[] = useMemo(() => {
-    if (sortDirection === DEFINE_SORT.NONE) return rows;
+    if (sortDirection === 'NONE') return rows;
 
     let sortedRows: Row[] = [...rows];
 
@@ -272,7 +272,7 @@ export default function CommonFeatures() {
         break;
     }
 
-    return sortDirection === DEFINE_SORT.DESC ? sortedRows.reverse() : sortedRows;
+    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
   }, [rows, sortDirection, sortColumn]);
 
   const handleRowsUpdate = useCallback(({ fromRow, toRow, updated }: RowsUpdateEvent<Partial<Row>>) => {
@@ -285,7 +285,7 @@ export default function CommonFeatures() {
     setRows(newRows);
   }, [sortedRows]);
 
-  const handleSort = useCallback((columnKey: keyof Row, direction: DEFINE_SORT) => {
+  const handleSort = useCallback((columnKey: keyof Row, direction: SortDirection) => {
     setSort([columnKey, direction]);
   }, []);
 

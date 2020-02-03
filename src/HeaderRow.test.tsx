@@ -4,7 +4,6 @@ import { mount } from 'enzyme';
 import helpers, { Row } from './test/GridPropHelpers';
 import HeaderRow, { HeaderRowProps } from './HeaderRow';
 import HeaderCell from './HeaderCell';
-import { DEFINE_SORT } from './common/enums';
 
 describe('HeaderRow', () => {
   const defaultProps: HeaderRowProps<Row, 'id'> = {
@@ -15,7 +14,7 @@ describe('HeaderRow', () => {
     lastFrozenColumnIndex: -1,
     onColumnResize() { },
     onSort: jest.fn(),
-    sortDirection: DEFINE_SORT.NONE,
+    sortDirection: 'NONE',
     width: 1000,
     height: 35,
     allRowsSelected: false,
@@ -44,7 +43,7 @@ describe('HeaderRow', () => {
     });
 
     it('should call onSort when headerRender triggers sort', () => {
-      const { wrapper, props } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: DEFINE_SORT.ASC });
+      const { wrapper, props } = setup({ sortColumn: defaultProps.columns[sortableColIdx].key, sortDirection: 'ASC' });
       wrapper.find('.rdg-header-sort-cell').at(0).simulate('click');
       expect(props.onSort).toHaveBeenNthCalledWith(1, 'title', 'DESC');
 
