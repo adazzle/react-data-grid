@@ -5,12 +5,9 @@ import { Clear } from '@material-ui/icons';
 import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
-import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
-
-export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R> extends Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R>;
@@ -30,15 +27,10 @@ export default function EditorContainer<R>({
   top,
   onCommit,
   onCommitCancel,
-  scrollLeft,
-  scrollTop,
   firstEditorKeyPress: key
 }: EditorContainerProps<R>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
-  const prevScrollLeft = useRef(scrollLeft);
-  const prevScrollTop = useRef(scrollTop);
-
   const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
 
   useLayoutEffect(() => {
@@ -62,11 +54,6 @@ export default function EditorContainer<R>({
     }
 
     return key || value;
-  }
-
-  // Cancel changes and close editor on scroll
-  if (prevScrollLeft.current !== scrollLeft || prevScrollTop.current !== scrollTop) {
-    onCommitCancel();
   }
 
   function isCaretAtBeginningOfInput(): boolean {
@@ -119,8 +106,6 @@ export default function EditorContainer<R>({
       e.stopPropagation();
     } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       commit();
-    } else if (e.key === 'Escape') {
-      onCommitCancel();
     }
   }
 

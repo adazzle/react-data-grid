@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 // Components
 import CellMask from './CellMask';
@@ -97,6 +97,13 @@ export default function InteractionMasks<R>({
   useEffect(() => {
     return eventBus.subscribe('SELECT_CELL', selectCell);
   });
+
+  const closeEditor = useCallback(() => {
+    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
+  }, []);
+
+  // close editor when scrolling
+  useEffect(() => closeEditor, [scrollTop, scrollLeft, closeEditor]);
 
   useEffect(() => {
     if (draggedPosition === null) return;
@@ -200,10 +207,6 @@ export default function InteractionMasks<R>({
 
     // Fall back to the default behavior
     return isKeyPrintable(event.keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(event.keyCode);
-  }
-
-  function closeEditor(): void {
-    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
   }
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
@@ -389,8 +392,6 @@ export default function InteractionMasks<R>({
             rowIdx={selectedPosition.rowIdx}
             row={rows[selectedPosition.rowIdx]}
             column={columns[selectedPosition.idx]}
-            scrollLeft={scrollLeft}
-            scrollTop={scrollTop}
             {...getSelectedDimensions(selectedPosition)}
             {...getEditorPosition()}
           />
