@@ -90,7 +90,7 @@ export default function ScrollToRow() {
             checked={cellNavigatioMode === CellNavigationMode.CHANGE_ROW}
             onChange={() => setCellNavigationMode(CellNavigationMode.CHANGE_ROW)}
           />
-         Change Row
+          Change Row
         </label>
         <label>
           <input
@@ -99,7 +99,7 @@ export default function ScrollToRow() {
             checked={cellNavigatioMode === CellNavigationMode.LOOP_OVER_ROW}
             onChange={() => setCellNavigationMode(CellNavigationMode.LOOP_OVER_ROW)}
           />
-        Loop Over Row
+          Loop Over Row
         </label>
       </div>
       <DataGrid<Row, 'id'>
