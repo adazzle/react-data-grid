@@ -29,7 +29,7 @@ import {
 
 export { DataGridHandle };
 
-export interface DataGridProps<R, K extends keyof R, SR> {
+export interface DataGridProps<R, K extends keyof R, SR = never> {
   /**
    * Grid and data Props
    */
@@ -321,4 +321,4 @@ function DataGrid<R, K extends keyof R, SR>({
 
 export default forwardRef(
   DataGrid as React.RefForwardingComponent<DataGridHandle>
-) as <R, K extends keyof R, SR>(props: DataGridProps<R, K, SR> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
+) as <R, K extends keyof R, SR = never>(props: DataGridProps<R, K, SR> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

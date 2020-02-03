@@ -46,13 +46,13 @@ interface Row {
   available: boolean;
 }
 
-const columns: readonly Column<Row>[] = [
+const columns: readonly Column<Row, SummaryRow>[] = [
   {
     ...SelectColumn,
     summaryFormatter() {
       return <strong>Total</strong>;
     }
-  },
+  } as Column<Row, SummaryRow>,
   {
     key: 'id',
     name: 'ID',
@@ -234,19 +234,19 @@ export default function CommonFeatures() {
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
   const summaryRows = useMemo(() => {
-    const summaryRows: SummaryRow[] = [{ id: 'total_0', totalCount: 0, availableCount: { yes: 0, no: 0 } }];
+    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, availableCount: { yes: 0, no: 0 } };
 
     for (const row of rows) {
       if (row.available) {
-        summaryRows[0].availableCount.yes++;
+        summaryRow.availableCount.yes++;
       } else {
-        summaryRows[0].availableCount.no++;
+        summaryRow.availableCount.no++;
       }
     }
 
-    summaryRows[0].totalCount = rows.length;
-    return summaryRows;
+    return [summaryRow];
   }, [rows]);
+
   const sortedRows: readonly Row[] = useMemo(() => {
     if (sortDirection === 'NONE') return rows;
 

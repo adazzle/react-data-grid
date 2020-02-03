@@ -5,7 +5,7 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<TRow, TSummaryRow> {
+export interface Column<TRow, TSummaryRow = never> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -40,14 +40,14 @@ export interface Column<TRow, TSummaryRow> {
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any>>;
 }
 
-export interface CalculatedColumn<TRow, TSummaryRow> extends Column<TRow, TSummaryRow> {
+export interface CalculatedColumn<TRow, TSummaryRow = never> extends Column<TRow, TSummaryRow> {
   idx: number;
   width: number;
   left: number;
   formatter: React.ComponentType<FormatterProps<TRow>>;
 }
 
-export interface ColumnMetrics<TRow, TSummaryRow> {
+export interface ColumnMetrics<TRow, TSummaryRow = never> {
   columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
   viewportWidth: number;
