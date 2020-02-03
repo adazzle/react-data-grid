@@ -44,8 +44,8 @@ const fakeColumn: CalculatedColumn<Row> = {
   formatter: ValueFormatter
 };
 
-const setup = (extraProps?: Partial<EditorContainerProps<Row, 'id'>>, opts?: MountRendererProps) => {
-  const props: EditorContainerProps<Row, 'id'> = {
+const setup = (extraProps?: Partial<EditorContainerProps<Row>>, opts?: MountRendererProps) => {
+  const props: EditorContainerProps<Row> = {
     rowIdx: 0,
     row: {
       id: '1',

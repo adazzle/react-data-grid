@@ -12,7 +12,7 @@ import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { ValueFormatter } from './formatters';
 import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
-import { CellNavigationMode, DEFINE_SORT } from './common/enums';
+import { CellNavigationMode, SortDirection } from './common/enums';
 import {
   CalculatedColumn,
   CheckCellIsEditableEvent,
@@ -52,7 +52,7 @@ export interface DataGridProps<R, K extends keyof R> {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onRowsUpdate?<E extends RowsUpdateEvent<R>>(event: E): void;
+  onRowsUpdate?<E extends RowsUpdateEvent>(event: E): void;
 
   /**
    * Dimensions props
@@ -78,13 +78,13 @@ export interface DataGridProps<R, K extends keyof R> {
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?(selectedRows: Set<R[K]>): void;
   /** The key of the column which is currently being sorted */
-  sortColumn?: keyof R;
+  sortColumn?: string;
   /** The direction to sort the sortColumn*/
-  sortDirection?: DEFINE_SORT;
+  sortDirection?: SortDirection;
   /** Function called whenever grid is sorted*/
-  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
-  filters?: Filters<R>;
-  onFiltersChange?(filters: Filters<R>): void;
+  onSort?(columnKey: string, direction: SortDirection): void;
+  filters?: Filters;
+  onFiltersChange?(filters: Filters): void;
 
   /**
    * Custom renderers
@@ -128,8 +128,6 @@ export interface DataGridProps<R, K extends keyof R> {
    */
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
-  /** Control how big render row batches will be. */
-  renderBatchSize?: number;
 }
 
 /**
@@ -140,7 +138,7 @@ export interface DataGridProps<R, K extends keyof R> {
  * <DataGrid columns={columns} rows={rows} />
 */
 function DataGrid<R, K extends keyof R>({
-  rowKey = 'id' as K,
+  rowKey,
   rowHeight = 35,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
@@ -153,7 +151,6 @@ function DataGrid<R, K extends keyof R>({
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
   editorPortalTarget = document.body,
-  renderBatchSize = 8,
   defaultFormatter = ValueFormatter,
   columns,
   rows,
@@ -161,7 +158,7 @@ function DataGrid<R, K extends keyof R>({
   onSelectedRowsChange,
   ...props
 }: DataGridProps<R, K>, ref: React.Ref<DataGridHandle>) {
-  const [columnWidths, setColumnWidths] = useState(() => new Map<keyof R, number>());
+  const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [scrollLeft, setScrollLeft] = useState(0);
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -238,7 +235,7 @@ function DataGrid<R, K extends keyof R>({
     props.onScroll?.(scrollPosition);
   }
 
-  function handleRowUpdate(event: RowsUpdateEvent<R>) {
+  function handleRowUpdate(event: RowsUpdateEvent) {
     props.onRowsUpdate?.(event);
   }
 
@@ -274,7 +271,7 @@ function DataGrid<R, K extends keyof R>({
               scrollLeft={nonStickyScrollLeft}
             />
             {enableFilters && (
-              <FilterRow<R, K>
+              <FilterRow<R>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
@@ -305,7 +302,6 @@ function DataGrid<R, K extends keyof R>({
               cellNavigationMode={cellNavigationMode}
               scrollLeft={scrollLeft}
               editorPortalTarget={editorPortalTarget}
-              renderBatchSize={renderBatchSize}
               summaryRows={props.summaryRows}
               onCheckCellIsEditable={props.onCheckCellIsEditable}
               onRowsUpdate={handleRowUpdate}
@@ -321,5 +317,5 @@ function DataGrid<R, K extends keyof R>({
 }
 
 export default forwardRef(
-  DataGrid as React.RefForwardingComponent<DataGridHandle, DataGridProps<{ [key: string]: unknown }, string>>
+  DataGrid as React.RefForwardingComponent<DataGridHandle>
 ) as <R, K extends keyof R>(props: DataGridProps<R, K> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

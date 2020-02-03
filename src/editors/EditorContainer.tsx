@@ -8,19 +8,19 @@ import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, K extends keyof R> = Pick<InteractionMasksProps<R, K>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
 
-export interface EditorContainerProps<R, K extends keyof R> extends SharedInteractionMasksProps<R, K>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R>;
   onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(e: CommitEvent<R>): void;
+  onCommit(e: CommitEvent): void;
   onCommitCancel(): void;
   firstEditorKeyPress: string | null;
 }
 
-export default function EditorContainer<R, K extends keyof R>({
+export default function EditorContainer<R>({
   rowIdx,
   column,
   row,
@@ -33,7 +33,7 @@ export default function EditorContainer<R, K extends keyof R>({
   scrollLeft,
   scrollTop,
   firstEditorKeyPress: key
-}: EditorContainerProps<R, K>) {
+}: EditorContainerProps<R>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
   const prevScrollLeft = useRef(scrollLeft);
@@ -53,7 +53,7 @@ export default function EditorContainer<R, K extends keyof R>({
   }, [getInputNode]);
 
   function getInitialValue() {
-    const value = row[column.key];
+    const value = row[column.key as keyof R];
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }

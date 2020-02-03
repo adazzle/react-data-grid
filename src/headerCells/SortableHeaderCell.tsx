@@ -1,19 +1,22 @@
 import React from 'react';
-import { DEFINE_SORT } from '../common/enums';
-import { CalculatedColumn } from '../common/types';
+import { HeaderCellProps } from '../HeaderCell';
+import { SortDirection } from '../common/enums';
 
 const SORT_TEXT = {
-  [DEFINE_SORT.ASC]: '\u25B2',
-  [DEFINE_SORT.DESC]: '\u25BC',
-  [DEFINE_SORT.NONE]: ''
+  ASC: '\u25B2',
+  DESC: '\u25BC',
+  NONE: ''
 } as const;
 
-export interface Props<R> {
-  column: CalculatedColumn<R>;
+type SharedHeaderCellProps<R> = Pick<HeaderCellProps<R>,
+  | 'column'
+  | 'sortColumn'
+  | 'sortDirection'
+  | 'onSort'
+>;
+
+export interface Props<R> extends SharedHeaderCellProps<R> {
   children: React.ReactNode;
-  sortColumn?: keyof R;
-  sortDirection?: DEFINE_SORT;
-  onSort?(columnKey: keyof R, direction: DEFINE_SORT): void;
 }
 
 export default function SortableHeaderCell<R>({
@@ -23,20 +26,20 @@ export default function SortableHeaderCell<R>({
   sortDirection,
   children
 }: Props<R>) {
-  sortDirection = sortColumn === column.key && sortDirection || DEFINE_SORT.NONE;
+  sortDirection = sortColumn === column.key && sortDirection || 'NONE';
   function onClick() {
     if (!onSort) return;
     const sortDescendingFirst = column.sortDescendingFirst || false;
-    let direction;
+    let direction: SortDirection;
     switch (sortDirection) {
-      case DEFINE_SORT.ASC:
-        direction = sortDescendingFirst ? DEFINE_SORT.NONE : DEFINE_SORT.DESC;
+      case 'ASC':
+        direction = sortDescendingFirst ? 'NONE' : 'DESC';
         break;
-      case DEFINE_SORT.DESC:
-        direction = sortDescendingFirst ? DEFINE_SORT.ASC : DEFINE_SORT.NONE;
+      case 'DESC':
+        direction = sortDescendingFirst ? 'ASC' : 'NONE';
         break;
       default:
-        direction = sortDescendingFirst ? DEFINE_SORT.DESC : DEFINE_SORT.ASC;
+        direction = sortDescendingFirst ? 'DESC' : 'ASC';
         break;
     }
     onSort(column.key, direction);

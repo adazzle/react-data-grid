@@ -87,7 +87,7 @@ export default function AllFeatures() {
       formatter(props) {
         return (
           <div onClick={() => gridRef.current?.openCellEditor(props.rowIdx, props.column.idx)}>
-            {props.row[props.column.key]}
+            {props.row.title}
           </div>
         );
       }
@@ -166,7 +166,7 @@ export default function AllFeatures() {
     }
   ], []);
 
-  const handleRowUpdate = useCallback(({ fromRow, toRow, updated, action }: RowsUpdateEvent<Row, Partial<Row>>): void => {
+  const handleRowUpdate = useCallback(({ fromRow, toRow, updated, action }: RowsUpdateEvent<Partial<Row>>): void => {
     const newRows = [...rows];
     let start;
     let end;
@@ -193,10 +193,11 @@ export default function AllFeatures() {
       <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
       <AutoSizer>
         {({ height, width }) => (
-          <DataGrid<Row, 'id'>
+          <DataGrid
             ref={gridRef}
             columns={columns}
             rows={rows}
+            rowKey="id"
             onRowsUpdate={handleRowUpdate}
             rowHeight={30}
             width={width}

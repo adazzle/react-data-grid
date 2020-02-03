@@ -36,7 +36,7 @@ export enum KeyCodes {
   v = 86
 }
 
-type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
+type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
 | 'rows'
 | 'rowHeight'
 | 'enableCellAutoFocus'
@@ -50,7 +50,7 @@ type SharedCanvasProps<R, K extends keyof R> = Pick<CanvasProps<R, K>,
 | 'onRowsUpdate'
 > & Pick<ColumnMetrics<R>, 'columns'>;
 
-export interface InteractionMasksProps<R, K extends keyof R> extends SharedCanvasProps<R, K> {
+export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   height: number;
   canvasRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
@@ -68,7 +68,7 @@ function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): bool
   ].includes(e.keyCode);
 }
 
-export default function InteractionMasks<R, K extends keyof R>({
+export default function InteractionMasks<R>({
   columns,
   rows,
   rowHeight,
@@ -85,7 +85,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   onCheckCellIsEditable,
   onRowsUpdate,
   scrollToCell
-}: InteractionMasksProps<R, K>) {
+}: InteractionMasksProps<R>) {
   const [selectedPosition, setSelectedPosition] = useState<Position>(() => {
     if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
       return { idx: 0, rowIdx: 0 };
@@ -230,7 +230,7 @@ export default function InteractionMasks<R, K extends keyof R>({
 
   function handleCopy(): void {
     const { idx, rowIdx } = selectedPosition;
-    const value = rows[rowIdx][columns[idx].key];
+    const value = rows[rowIdx][columns[idx].key as keyof R];
     setCopiedPosition({ idx, rowIdx, value });
   }
 
@@ -318,7 +318,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     const { rowIdx, overRowIdx } = draggedPosition;
     const column = columns[draggedPosition.idx];
     const cellKey = column.key;
-    const value = rows[rowIdx][cellKey];
+    const value = rows[rowIdx][cellKey as keyof R];
 
     onRowsUpdate({
       cellKey,
@@ -334,7 +334,7 @@ export default function InteractionMasks<R, K extends keyof R>({
   function onDragHandleDoubleClick(): void {
     const column = columns[selectedPosition.idx];
     const cellKey = column.key;
-    const value = rows[selectedPosition.rowIdx][cellKey];
+    const value = rows[selectedPosition.rowIdx][cellKey as keyof R];
 
     onRowsUpdate({
       cellKey,
@@ -345,7 +345,7 @@ export default function InteractionMasks<R, K extends keyof R>({
     });
   }
 
-  function onCommit({ cellKey, rowIdx, updated }: CommitEvent<R>): void {
+  function onCommit({ cellKey, rowIdx, updated }: CommitEvent): void {
     onRowsUpdate({
       cellKey,
       fromRow: rowIdx,
@@ -399,7 +399,7 @@ export default function InteractionMasks<R, K extends keyof R>({
       )}
       {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R, K>
+          <EditorContainer<R>
             firstEditorKeyPress={firstEditorKeyPress}
             onCommit={onCommit}
             onCommitCancel={closeEditor}

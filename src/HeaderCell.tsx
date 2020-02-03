@@ -6,17 +6,17 @@ import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 
-type SharedHeaderRowProps<R, K extends keyof R> = Pick<HeaderRowProps<R, K>,
-| 'sortColumn'
-| 'sortDirection'
-| 'onSort'
-| 'height'
-| 'onHeaderDrop'
-| 'allRowsSelected'
-| 'draggableHeaderCell'
+type SharedHeaderRowProps<R> = Pick<HeaderRowProps<R, never>,
+  | 'sortColumn'
+  | 'sortDirection'
+  | 'onSort'
+  | 'height'
+  | 'onHeaderDrop'
+  | 'allRowsSelected'
+  | 'draggableHeaderCell'
 >;
 
-export interface HeaderCellProps<R, K extends keyof R> extends SharedHeaderRowProps<R, K> {
+export interface HeaderCellProps<R> extends SharedHeaderRowProps<R> {
   column: CalculatedColumn<R>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
@@ -24,14 +24,14 @@ export interface HeaderCellProps<R, K extends keyof R> extends SharedHeaderRowPr
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export default function HeaderCell<R, K extends keyof R>({
+export default function HeaderCell<R>({
   height,
   column,
   allRowsSelected,
   onAllRowsSelectionChange,
   scrollLeft,
   ...props
-}: HeaderCellProps<R, K>) {
+}: HeaderCellProps<R>) {
   function getCell() {
     if (!column.headerRenderer) return column.name;
 
