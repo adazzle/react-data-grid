@@ -24,31 +24,32 @@ import { CanvasProps } from '../Canvas';
 
 export enum KeyCodes {
   Backspace = 8,
-  Tab = 9,
   Enter = 13,
-  Escape = 27,
-  ArrowLeft = 37,
-  ArrowUp = 38,
-  ArrowRight = 39,
-  ArrowDown = 40,
-  Delete = 46,
-  c = 67,
-  v = 86
+  Delete = 46
 }
 
 type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
-| 'rows'
-| 'rowHeight'
-| 'enableCellAutoFocus'
-| 'enableCellCopyPaste'
-| 'enableCellDragAndDrop'
-| 'cellNavigationMode'
-| 'editorPortalTarget'
-| 'onCheckCellIsEditable'
-| 'onSelectedCellChange'
-| 'onSelectedCellRangeChange'
-| 'onRowsUpdate'
+  | 'rows'
+  | 'rowHeight'
+  | 'enableCellAutoFocus'
+  | 'enableCellCopyPaste'
+  | 'enableCellDragAndDrop'
+  | 'cellNavigationMode'
+  | 'editorPortalTarget'
+  | 'onCheckCellIsEditable'
+  | 'onSelectedCellChange'
+  | 'onSelectedCellRangeChange'
+  | 'onRowsUpdate'
 > & Pick<ColumnMetrics<R>, 'columns'>;
+
+interface SelectCellState extends Position {
+  status: 'SELECT';
+}
+
+interface EditCellState extends Position {
+  status: 'EDIT';
+  key: string | null;
+}
 
 export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   height: number;
@@ -57,15 +58,6 @@ export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   scrollTop: number;
   eventBus: EventBus;
   scrollToCell(cell: Position): void;
-}
-
-function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): boolean {
-  return [
-    KeyCodes.ArrowLeft,
-    KeyCodes.ArrowUp,
-    KeyCodes.ArrowRight,
-    KeyCodes.ArrowDown
-  ].includes(e.keyCode);
 }
 
 export default function InteractionMasks<R>({
@@ -86,29 +78,22 @@ export default function InteractionMasks<R>({
   onRowsUpdate,
   scrollToCell
 }: InteractionMasksProps<R>) {
-  const [selectedPosition, setSelectedPosition] = useState<Position>(() => {
+  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>(() => {
     if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
-      return { idx: 0, rowIdx: 0 };
+      return { idx: 0, rowIdx: 0, status: 'SELECT' };
     }
-    return { idx: -1, rowIdx: -1 };
+    return { idx: -1, rowIdx: -1, status: 'SELECT' };
   });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
-  const [firstEditorKeyPress, setFirstEditorKeyPress] = useState<string | null>(null);
-  const [isEditorEnabled, setIsEditorEnabled] = useState(false);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
 
-  // Focus on the selection mask when the selected position is changed
+  // Focus on the selection mask when the selected position is changed or the editor is closed
   useEffect(() => {
-    if (selectedPosition.rowIdx === -1 || selectedPosition.idx === -1) return;
+    if (selectedPosition.rowIdx === -1 || selectedPosition.idx === -1 || selectedPosition.status === 'EDIT') return;
     selectionMaskRef.current?.focus();
-  }, [selectedPosition]);
-
-  // Focus on the selection mask after the editor is closed
-  useEffect(() => {
-    if (isEditorEnabled) return;
-    selectionMaskRef.current?.focus();
-  }, [isEditorEnabled]);
+    scrollToCell(selectedPosition);
+  }, [scrollToCell, selectedPosition]);
 
   useEffect(() => {
     return eventBus.subscribe('SELECT_CELL', selectCell);
@@ -124,7 +109,7 @@ export default function InteractionMasks<R>({
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
-    setSelectedPosition({ idx: -1, rowIdx: -1 });
+    setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
     setCopiedPosition(null);
     setDraggedPosition(null);
   }
@@ -140,54 +125,86 @@ export default function InteractionMasks<R>({
     };
   }
 
-  function getNextPosition(keyCode: number) {
-    switch (keyCode) {
-      case KeyCodes.ArrowUp:
-        return { ...selectedPosition, rowIdx: selectedPosition.rowIdx - 1 };
-      case KeyCodes.ArrowDown:
-        return { ...selectedPosition, rowIdx: selectedPosition.rowIdx + 1 };
-      case KeyCodes.ArrowLeft:
-        return { ...selectedPosition, idx: selectedPosition.idx - 1 };
-      case KeyCodes.ArrowRight:
-        return { ...selectedPosition, idx: selectedPosition.idx + 1 };
+  function getNextPosition(key: string, mode = cellNavigationMode, shiftKey = false) {
+    const { idx, rowIdx } = selectedPosition;
+    let nextPosition: Position;
+    switch (key) {
+      case 'ArrowUp':
+        nextPosition = { idx, rowIdx: rowIdx - 1 };
+        break;
+      case 'ArrowDown':
+        nextPosition = { idx, rowIdx: rowIdx + 1 };
+        break;
+      case 'ArrowLeft':
+        nextPosition = { idx: idx - 1, rowIdx };
+        break;
+      case 'ArrowRight':
+        nextPosition = { idx: idx + 1, rowIdx };
+        break;
+      case 'Tab':
+        nextPosition = shiftKey ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
+        break;
       default:
-        return selectedPosition;
+        nextPosition = { idx, rowIdx };
+        break;
+    }
+
+    return getNextSelectedCellPosition({
+      columns,
+      rowsCount: rows.length,
+      cellNavigationMode: mode,
+      nextPosition
+    });
+  }
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    const { key } = event;
+    if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
+      // event.key may be uppercase `C` or `V`
+      const lowerCaseKey = event.key.toLowerCase();
+      if (lowerCaseKey === 'c') return handleCopy();
+      if (lowerCaseKey === 'v') return handlePaste();
+    }
+
+    switch (key) {
+      case 'Escape':
+        closeEditor();
+        setCopiedPosition(null);
+        break;
+      case 'Tab':
+        onPressTab(event);
+        break;
+      case 'ArrowUp':
+      case 'ArrowDown':
+      case 'ArrowLeft':
+      case 'ArrowRight':
+        event.preventDefault();
+        selectCell(getNextPosition(key));
+        break;
+      default:
+        break;
+    }
+
+    if (canOpenEditor(event)) {
+      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
     }
   }
 
-  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
-    if (isCtrlKeyHeldDown(e)) {
-      onPressKeyWithCtrl(e);
-    } else if (e.keyCode === KeyCodes.Escape) {
-      onPressEscape();
-    } else if (e.keyCode === KeyCodes.Tab) {
-      onPressTab(e);
-    } else if (isKeyboardNavigationEvent(e)) {
-      changeCellFromEvent(e);
-    } else if (isKeyPrintable(e.keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(e.keyCode)) {
-      openEditor(e);
-    }
-  }
+  function canOpenEditor(event: React.KeyboardEvent<HTMLDivElement>): boolean {
+    if (selectedPosition.status === 'EDIT' || !isCellEditable(selectedPosition)) return false;
 
-  function openEditor(event: React.KeyboardEvent<HTMLDivElement>): void {
-    if (!isEditorEnabled && isCellEditable(selectedPosition)) {
-      setFirstEditorKeyPress(event.key);
-      setIsEditorEnabled(true);
-    }
+    const column = columns[selectedPosition.idx];
+    const row = rows[selectedPosition.rowIdx];
+    const isEditable = column.onCellInput?.(event, row);
+
+    if (typeof isEditable === 'boolean') return isEditable;
+
+    // Fall back to the default behavior
+    return isKeyPrintable(event.keyCode) || [KeyCodes.Backspace, KeyCodes.Delete, KeyCodes.Enter].includes(event.keyCode);
   }
 
   function closeEditor(): void {
-    setIsEditorEnabled(false);
-    setFirstEditorKeyPress(null);
-  }
-
-  function onPressKeyWithCtrl({ keyCode }: React.KeyboardEvent<HTMLDivElement>): void {
-    if (!enableCellCopyPaste) return;
-    if (keyCode === KeyCodes.c) {
-      handleCopy();
-    } else if (keyCode === KeyCodes.v) {
-      handlePaste();
-    }
+    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
   }
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
@@ -198,13 +215,13 @@ export default function InteractionMasks<R>({
 
     // If we are in a position to leave the grid, stop editing but stay in that cell
     if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
-      if (isEditorEnabled) {
+      if (selectedPosition.status === 'EDIT') {
         closeEditor();
         return;
       }
 
       // Reset the selected position before exiting
-      setSelectedPosition({ idx: -1, rowIdx: -1 });
+      setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
       return;
     }
 
@@ -212,20 +229,8 @@ export default function InteractionMasks<R>({
     const tabCellNavigationMode = cellNavigationMode === CellNavigationMode.NONE
       ? CellNavigationMode.CHANGE_ROW
       : cellNavigationMode;
-    const keyCode = e.shiftKey ? KeyCodes.ArrowLeft : KeyCodes.ArrowRight;
-    let nextPosition = getNextPosition(keyCode);
-    nextPosition = getNextSelectedCellPosition<R>({
-      columns,
-      rowsCount: rows.length,
-      cellNavigationMode: tabCellNavigationMode,
-      nextPosition
-    });
+    const nextPosition = getNextPosition('Tab', tabCellNavigationMode, e.shiftKey);
     selectCell(nextPosition);
-  }
-
-  function onPressEscape(): void {
-    closeEditor();
-    setCopiedPosition(null);
   }
 
   function handleCopy(): void {
@@ -255,19 +260,6 @@ export default function InteractionMasks<R>({
     });
   }
 
-  function changeCellFromEvent(e: React.KeyboardEvent<HTMLDivElement>): void {
-    e.preventDefault();
-    let nextPosition = getNextPosition(e.keyCode);
-    nextPosition = getNextSelectedCellPosition<R>({
-      columns,
-      rowsCount: rows.length,
-      cellNavigationMode,
-      nextPosition
-    });
-
-    selectCell(nextPosition);
-  }
-
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
     return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
   }
@@ -278,21 +270,14 @@ export default function InteractionMasks<R>({
   }
 
   function selectCell(position: Position, enableEditor = false): void {
-    // Close the editor to commit any pending changes
-    if (isEditorEnabled) {
-      closeEditor();
-    }
-
     if (!isCellWithinBounds(position)) return;
 
-    scrollToCell(position);
-    setSelectedPosition(position);
-    onSelectedCellChange?.({ ...position });
     if (enableEditor && isCellEditable(position)) {
-      // The editor position is dependent on the selectionMask position so we need to wait
-      // for the next render cycle when the updated selection mask position is set
-      setIsEditorEnabled(true);
+      setSelectedPosition({ ...position, status: 'EDIT', key: null });
+    } else {
+      setSelectedPosition({ ...position, status: 'SELECT' });
     }
+    onSelectedCellChange?.({ ...position });
   }
 
   function isDragEnabled(): boolean {
@@ -364,9 +349,7 @@ export default function InteractionMasks<R>({
   }
 
   return (
-    <div
-      onKeyDown={onKeyDown}
-    >
+    <div onKeyDown={onKeyDown}>
       {copiedPosition && isCellWithinBounds(copiedPosition) && (
         <CellMask
           className="rdg-cell-copied"
@@ -379,7 +362,7 @@ export default function InteractionMasks<R>({
           getSelectedDimensions={getSelectedDimensions}
         />
       )}
-      {!isEditorEnabled && isCellWithinBounds(selectedPosition) && (
+      {selectedPosition.status === 'SELECT' && isCellWithinBounds(selectedPosition) && (
         <CellMask
           className="rdg-selected"
           tabIndex={0}
@@ -397,10 +380,10 @@ export default function InteractionMasks<R>({
           )}
         </CellMask>
       )}
-      {isEditorEnabled && isCellWithinBounds(selectedPosition) && (
+      {selectedPosition.status === 'EDIT' && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
           <EditorContainer<R>
-            firstEditorKeyPress={firstEditorKeyPress}
+            firstEditorKeyPress={selectedPosition.key}
             onCommit={onCommit}
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}

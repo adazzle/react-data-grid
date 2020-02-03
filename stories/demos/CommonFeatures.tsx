@@ -136,6 +136,10 @@ const columns: readonly Column<Row>[] = [
     sortable: true,
     formatter(props) {
       return <CurrencyFormatter value={props.row.budget} />;
+    },
+    editable: true,
+    onCellInput({ key }) {
+      return /^\d$/.test(key) || key === 'Enter';
     }
   },
   {

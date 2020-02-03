@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, useCallback } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import EventBus from './EventBus';
@@ -91,16 +91,15 @@ function Canvas<R, K extends keyof R>({
     return height - scrollbarSize;
   }
 
-  function getFrozenColumnsWidth() {
-    if (lastFrozenColumnIndex === -1) return 0;
-    const lastFrozenCol = columns[lastFrozenColumnIndex];
-    return lastFrozenCol.left + lastFrozenCol.width;
-  }
-
-  function scrollToCell({ idx, rowIdx }: Partial<Position>) {
+  const scrollToCell = useCallback(({ idx, rowIdx }: Partial<Position>) => {
     const { current } = canvasRef;
     if (!current) return;
 
+    const getFrozenColumnsWidth = () => {
+      if (lastFrozenColumnIndex === -1) return 0;
+      const lastFrozenCol = columns[lastFrozenColumnIndex];
+      return lastFrozenCol.left + lastFrozenCol.width;
+    };
     const { clientWidth, clientHeight, scrollLeft, scrollTop } = current;
 
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
@@ -122,7 +121,7 @@ function Canvas<R, K extends keyof R>({
         current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
       }
     }
-  }
+  }, [columns, lastFrozenColumnIndex, rowHeight]);
 
   function scrollToColumn(idx: number) {
     scrollToCell({ idx });
