@@ -13,15 +13,10 @@
 }
 
 .rdg-cell-frozen {
+  position: -webkit-sticky;
+  position: sticky;
   /* Should have a higher value than 1 to show in front of cell masks */
   z-index: 2;
-
-  @supports (position: sticky) or (position: -webkit-sticky) {
-    & {
-      position: -webkit-sticky;
-      position: sticky;
-    }
-  }
 }
 
 .rdg-cell-frozen-last {
