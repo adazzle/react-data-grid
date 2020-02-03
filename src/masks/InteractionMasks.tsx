@@ -92,8 +92,7 @@ export default function InteractionMasks<R>({
   useEffect(() => {
     if (selectedPosition.rowIdx === -1 || selectedPosition.idx === -1 || selectedPosition.status === 'EDIT') return;
     selectionMaskRef.current?.focus();
-    scrollToCell(selectedPosition);
-  }, [scrollToCell, selectedPosition]);
+  }, [selectedPosition]);
 
   useEffect(() => {
     return eventBus.subscribe('SELECT_CELL', selectCell);
@@ -277,6 +276,7 @@ export default function InteractionMasks<R>({
     } else {
       setSelectedPosition({ ...position, status: 'SELECT' });
     }
+    scrollToCell(position);
     onSelectedCellChange?.({ ...position });
   }
 
