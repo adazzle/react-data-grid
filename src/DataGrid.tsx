@@ -12,7 +12,7 @@ import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { ValueFormatter } from './formatters';
 import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
-import { CellNavigationMode, DEFINE_SORT } from './common/enums';
+import { CellNavigationMode, SortDirection } from './common/enums';
 import {
   CalculatedColumn,
   CheckCellIsEditableEvent,
@@ -80,9 +80,9 @@ export interface DataGridProps<R, K extends keyof R> {
   /** The key of the column which is currently being sorted */
   sortColumn?: string;
   /** The direction to sort the sortColumn*/
-  sortDirection?: DEFINE_SORT;
+  sortDirection?: SortDirection;
   /** Function called whenever grid is sorted*/
-  onSort?(columnKey: string, direction: DEFINE_SORT): void;
+  onSort?(columnKey: string, direction: SortDirection): void;
   filters?: Filters;
   onFiltersChange?(filters: Filters): void;
 
