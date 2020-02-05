@@ -11,13 +11,13 @@ import EventBus from './EventBus';
 type RowType = any;
 
 describe('Row', () => {
-  function setup(props: RowRendererProps<RowType>) {
+  function setup(props: RowRendererProps<RowType, never>) {
     const wrapper = shallow<typeof Row>(<Row {...props} />);
     const cells = wrapper.find(Cell);
     return { wrapper, cells };
   }
 
-  const requiredProperties: RowRendererProps<RowType> = {
+  const requiredProperties: RowRendererProps<RowType, never> = {
     height: 30,
     width: 1000,
     viewportColumns: createColumns(50),

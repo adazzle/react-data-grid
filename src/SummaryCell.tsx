@@ -1,10 +1,9 @@
 import React, { memo } from 'react';
 import classNames from 'classnames';
 
-import { CellRendererProps, CalculatedColumn } from './common/types';
+import { CellRendererProps } from './common/types';
 
-export interface SummaryCellProps<TRow, TSummaryRow> extends Pick<CellRendererProps<TRow>, 'idx' | 'rowIdx' | 'lastFrozenColumnIndex' | 'scrollLeft'> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
+export interface SummaryCellProps<TRow, TSummaryRow> extends Pick<CellRendererProps<TRow, TSummaryRow>, 'idx' | 'rowIdx' | 'lastFrozenColumnIndex' | 'scrollLeft' | 'column'> {
   row: TSummaryRow;
 }
 

@@ -7,7 +7,7 @@ import { SimpleCellFormatter } from './formatters';
 import { CalculatedColumn, CellRendererProps, FormatterProps } from './common/types';
 import EventBus from './EventBus';
 
-const defaultColumn: CalculatedColumn<Row> = {
+const defaultColumn: CalculatedColumn<Row, never> = {
   idx: 0,
   key: 'description',
   name: 'Desciption',
@@ -16,7 +16,7 @@ const defaultColumn: CalculatedColumn<Row> = {
   formatter: SimpleCellFormatter
 };
 
-const testProps: CellRendererProps<Row> = {
+const testProps: CellRendererProps<Row, never> = {
   rowIdx: 0,
   idx: 1,
   column: defaultColumn,
@@ -27,8 +27,8 @@ const testProps: CellRendererProps<Row> = {
   eventBus: new EventBus()
 };
 
-const renderComponent = (extraProps?: PropsWithChildren<Partial<CellRendererProps<Row>>>) => {
-  return mount(<Cell<Row> {...testProps} {...extraProps} />);
+const renderComponent = (extraProps?: PropsWithChildren<Partial<CellRendererProps<Row, never>>>) => {
+  return mount(<Cell<Row, never> {...testProps} {...extraProps} />);
 };
 
 describe('Cell', () => {
@@ -57,11 +57,11 @@ describe('Cell', () => {
   });
 
   describe('Rendering Cell component', () => {
-    function shallowRenderComponent(props: CellRendererProps<Row>) {
-      return mount(<Cell<Row> {...props} />);
+    function shallowRenderComponent(props: CellRendererProps<Row, never>) {
+      return mount(<Cell<Row, never> {...props} />);
     }
 
-    const requiredProperties: CellRendererProps<Row> = {
+    const requiredProperties: CellRendererProps<Row, never> = {
       rowIdx: 18,
       idx: 19,
       column: helpers.columns[0],

@@ -12,14 +12,14 @@ type Rule =
   | { type: RuleType.Range; begin: number; end: number }
   | { type: RuleType.GreaterThan | RuleType.LessThan | RuleType.Number; value: number };
 
-interface ChangeEvent<R> {
+interface ChangeEvent<R, SR> {
   filterTerm: Rule[] | null;
-  column: Column<R>;
+  column: Column<R, SR>;
   rawValue: string;
   filterValues: typeof filterValues;
 }
 
-export function NumericFilter<R>({ value, column, onChange }: FilterRendererProps<R, ChangeEvent<R>>) {
+export function NumericFilter<R, SR>({ value, column, onChange }: FilterRendererProps<R, ChangeEvent<R, SR>>) {
   /** Validates the input */
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const result = /[><,0-9-]/.test(event.key);
@@ -56,7 +56,7 @@ export function NumericFilter<R>({ value, column, onChange }: FilterRendererProp
 }
 
 
-function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
+function filterValues<R, SR>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
   if (columnFilter.filterTerm == null) {
     return true;
   }

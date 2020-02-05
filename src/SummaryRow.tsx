@@ -4,7 +4,7 @@ import React, { memo } from 'react';
 import SummaryCell from './SummaryCell';
 import { RowRendererProps, CalculatedColumn } from './common/types';
 
-export interface SummaryRowProps<TRow, TSummaryRow> extends Pick<RowRendererProps<TRow>, | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'width'> {
+export interface SummaryRowProps<TRow, TSummaryRow> extends Pick<RowRendererProps<TRow, TSummaryRow>, | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'width'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TSummaryRow;
 }

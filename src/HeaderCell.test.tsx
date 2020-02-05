@@ -15,7 +15,7 @@ describe('HeaderCell', () => {
   }
 
   function setup(overrideProps = {}, columnProps = {}) {
-    const props: HeaderCellProps<Row> = {
+    const props: HeaderCellProps<Row, never> = {
       column: {
         idx: 0,
         key: 'bla',
@@ -35,13 +35,13 @@ describe('HeaderCell', () => {
       scrollLeft: undefined,
       ...overrideProps
     };
-    const wrapper = mount(<HeaderCell<Row> {...props} />);
+    const wrapper = mount(<HeaderCell<Row, never> {...props} />);
     return { wrapper, props };
   }
 
   describe('When custom render is supplied', () => {
     it('pass the column as property to cell renderer if it is a function', () => {
-      const CustomRenderer = (column: CalculatedColumn<Row>) => <div>{column.name}</div>;
+      const CustomRenderer = (column: CalculatedColumn<Row, never>) => <div>{column.name}</div>;
       const { wrapper } = setup({ renderer: CustomRenderer });
       expect(wrapper.find('.rdg-cell').at(0).text()).toBe('bla');
     });

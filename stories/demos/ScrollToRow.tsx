@@ -7,7 +7,7 @@ interface Row {
   count: number;
 }
 
-const columns: readonly Column<Row>[] = [
+const columns: readonly Column<Row, never>[] = [
   { key: 'id', name: 'ID' },
   { key: 'title', name: 'Title' },
   { key: 'count', name: 'Count' }

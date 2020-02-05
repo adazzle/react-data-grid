@@ -8,13 +8,13 @@ interface Option {
   text: string;
 }
 
-interface DropDownEditorProps<TRow> extends EditorProps<string, TRow> {
+interface DropDownEditorProps<TRow, TSummaryRow> extends EditorProps<string, TRow, TSummaryRow> {
   options: Array<Option | string>;
 }
 
 type DropDownEditorHandle = Editor<{ [key: string]: string }>;
 
-function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>) {
+function DropDownEditor<TRow, TSummaryRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow, TSummaryRow>, ref: React.Ref<DropDownEditorHandle>) {
   const selectRef = useRef<HTMLSelectElement>(null);
 
   useImperativeHandle(ref, () => ({
@@ -61,4 +61,4 @@ function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEdit
 
 export default forwardRef(
   DropDownEditor as React.RefForwardingComponent<DropDownEditorHandle>
-) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;
+) as <R, SR>(props: DropDownEditorProps<R, SR> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;

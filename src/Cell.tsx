@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { CellRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
 
-function Cell<R>({
+function Cell<R, SR>({
   children,
   className,
   column,
@@ -24,7 +24,7 @@ function Cell<R>({
   onMouseDown,
   onMouseEnter,
   ...props
-}: CellRendererProps<R>) {
+}: CellRendererProps<R, SR>) {
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx, rowIdx }, openEditor);
   }
@@ -109,4 +109,4 @@ function Cell<R>({
   );
 }
 
-export default memo(Cell) as <R>(props: CellRendererProps<R>) => JSX.Element;
+export default memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => JSX.Element;

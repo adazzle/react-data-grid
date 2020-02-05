@@ -29,7 +29,7 @@ import {
 
 export { DataGridHandle };
 
-export interface DataGridProps<R, K extends keyof R, SR = never> {
+export interface DataGridProps<R, K extends keyof R, SR> {
   /**
    * Grid and data Props
    */
@@ -89,18 +89,18 @@ export interface DataGridProps<R, K extends keyof R, SR = never> {
   /**
    * Custom renderers
    */
-  defaultFormatter?: React.ComponentType<FormatterProps<R>>;
-  rowRenderer?: React.ComponentType<RowRendererProps<R>>;
+  defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
+  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
   rowGroupRenderer?: React.ComponentType;
   emptyRowsView?: React.ComponentType<{}>;
   /** Component used to render a draggable header cell */
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R, never>; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R, SR>; onHeaderDrop(): void }>;
 
   /**
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R, never>): void;
+  onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R, SR>): void;
   /** Called when the grid is scrolled */
   onScroll?(scrollPosition: ScrollPosition): void;
   /** Called when a column is resized */
@@ -112,7 +112,7 @@ export interface DataGridProps<R, K extends keyof R, SR = never> {
   /** Function called whenever selected cell range is changed */
   onSelectedCellRangeChange?(selectedRange: SelectedRange): void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
-  onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R>): boolean;
+  onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R, SR>): boolean;
 
   /**
    * Toggles and modes
@@ -171,8 +171,8 @@ function DataGrid<R, K extends keyof R, SR>({
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
 
-    return getColumnMetrics<R>({
-      columns: columns as unknown as readonly Column<R, never>[],
+    return getColumnMetrics<R, SR>({
+      columns: columns as unknown as readonly Column<R, SR>[],
       minColumnWidth,
       viewportWidth,
       columnWidths,
@@ -191,7 +191,7 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }, [columnMetrics, scrollLeft]);
 
-  const viewportColumns: readonly CalculatedColumn<R, never>[] = useMemo(() => {
+  const viewportColumns: readonly CalculatedColumn<R, SR>[] = useMemo(() => {
     if (!columnMetrics) return [];
 
     return getViewportColumns(
@@ -216,7 +216,7 @@ function DataGrid<R, K extends keyof R, SR>({
     };
   }, [width]);
 
-  function handleColumnResize(column: CalculatedColumn<R, never>, width: number) {
+  function handleColumnResize(column: CalculatedColumn<R, SR>, width: number) {
     const newColumnWidths = new Map(columnWidths);
     const originalWidth = columns.find(col => col.key === column.key)!.width;
     const minWidth = typeof originalWidth === 'number'
@@ -255,7 +255,7 @@ function DataGrid<R, K extends keyof R, SR>({
             ref={headerRef}
             className="rdg-header"
           >
-            <HeaderRow<R, K>
+            <HeaderRow<R, K, SR>
               rowKey={rowKey}
               rows={rows}
               height={headerRowHeight}
@@ -273,7 +273,7 @@ function DataGrid<R, K extends keyof R, SR>({
               scrollLeft={nonStickyScrollLeft}
             />
             {enableFilters && (
-              <FilterRow<R>
+              <FilterRow<R, SR>
                 height={headerFiltersHeight}
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
@@ -321,4 +321,4 @@ function DataGrid<R, K extends keyof R, SR>({
 
 export default forwardRef(
   DataGrid as React.RefForwardingComponent<DataGridHandle>
-) as <R, K extends keyof R, SR = never>(props: DataGridProps<R, K, SR> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
+) as <R, K extends keyof R, SR>(props: DataGridProps<R, K, SR> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;

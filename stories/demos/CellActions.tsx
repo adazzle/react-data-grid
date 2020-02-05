@@ -36,7 +36,7 @@ const createRows = () => {
   return rows;
 };
 
-const columns: Column<Row>[] = [
+const columns: Column<Row, never>[] = [
   {
     key: 'id',
     name: 'ID',
@@ -152,7 +152,7 @@ export default function CellActions() {
   return (
     <AutoSizer>
       {({ height, width }) => (
-        <DataGrid<Row, 'id'>
+        <DataGrid<Row, 'id', never>
           columns={columns}
           rows={rows}
           width={width}

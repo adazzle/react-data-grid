@@ -35,7 +35,7 @@ function DefaultEditor() {
   );
 }
 
-const fakeColumn: CalculatedColumn<Row> = {
+const fakeColumn: CalculatedColumn<Row, never> = {
   idx: 0,
   name: 'col1',
   key: 'col1',
@@ -44,8 +44,8 @@ const fakeColumn: CalculatedColumn<Row> = {
   formatter: ValueFormatter
 };
 
-const setup = (extraProps?: Partial<EditorContainerProps<Row>>, opts?: MountRendererProps) => {
-  const props: EditorContainerProps<Row> = {
+const setup = (extraProps?: Partial<EditorContainerProps<Row, never>>, opts?: MountRendererProps) => {
+  const props: EditorContainerProps<Row, never> = {
     rowIdx: 0,
     row: {
       id: '1',
@@ -98,7 +98,8 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps<string>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    class TestEditor extends React.Component<EditorProps<string, any, never>> {
       getValue() {
         return undefined;
       }
@@ -166,7 +167,8 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Portal editors', () => {
-    class PortalTestEditor extends React.Component<EditorProps<string>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    class PortalTestEditor extends React.Component<EditorProps<string, any, never>> {
       getValue() {
         return undefined;
       }
