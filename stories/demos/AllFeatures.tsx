@@ -1,7 +1,7 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent } from '../../src';
+import DataGrid, { Column, UpdateActions, DataGridHandle, RowsUpdateEvent, getSelectColumn } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -62,7 +62,7 @@ export default function AllFeatures() {
   const gridRef = useRef<DataGridHandle>(null);
 
   const columns = useMemo((): Column<Row, never>[] => [
-    SelectColumn,
+    getSelectColumn<Row, never>(),
     {
       key: 'id',
       name: 'ID',

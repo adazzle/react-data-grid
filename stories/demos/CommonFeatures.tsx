@@ -47,20 +47,15 @@ interface Row {
 }
 
 const columns: readonly Column<Row, SummaryRow>[] = [
-  {
-    ...SelectColumn,
-    summaryFormatter() {
-      return <strong>Total</strong>;
-    }
-  } as Column<Row, SummaryRow>,
+  SelectColumn,
   {
     key: 'id',
     name: 'ID',
     width: 60,
     frozen: true,
     sortable: true,
-    summaryFormatter({ row }: SummaryRowFormatterProps) {
-      return <>{row.totalCount}</>;
+    summaryFormatter() {
+      return <strong>Total</strong>;
     }
   },
   {
@@ -70,7 +65,10 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     editable: true,
     frozen: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    summaryFormatter({ row }: SummaryRowFormatterProps) {
+      return <>{row.totalCount} records</>;
+    }
   },
   {
     key: 'client',
