@@ -3,7 +3,7 @@ import { canEdit } from './columnUtils';
 import { CalculatedColumn, Position, Range, Dimension } from '../common/types';
 
 const zCellMask = 1;
-const zFrozenCellMask = 2;
+const zFrozenCellMask = 3;
 
 interface GetSelectedDimensionsOpts<R> {
   selectedPosition: Position;
