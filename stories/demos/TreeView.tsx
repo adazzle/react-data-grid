@@ -92,7 +92,7 @@ const defaultRows = createRows();
 export default function TreeView() {
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
-  const columns: Column<Row, never >[] = useMemo(() => {
+  const columns: Column<Row>[] = useMemo(() => {
     return [
       {
         key: 'id',

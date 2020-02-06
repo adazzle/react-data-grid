@@ -4,12 +4,12 @@ import classNames from 'classnames';
 import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
+type SharedDataGridProps<R, SR = never> = Pick<DataGridProps<R, never, SR>,
 | 'filters'
 | 'onFiltersChange'
 >;
 
-export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+export interface FilterRowProps<R, SR = never> extends SharedDataGridProps<R, SR> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
@@ -17,7 +17,7 @@ export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   scrollLeft: number | undefined;
 }
 
-export default function FilterRow<R, SR>({
+export default function FilterRow<R, SR = never>({
   height,
   width,
   columns,

@@ -1,13 +1,13 @@
 import React, { cloneElement } from 'react';
 import { CalculatedColumn } from '../common/types';
 
-export interface ResizableHeaderCellProps<R, SR> {
+export interface ResizableHeaderCellProps<R, SR = never> {
   children: React.ReactElement<React.ComponentProps<'div'>>;
   column: CalculatedColumn<R, SR>;
   onResize(column: CalculatedColumn<R, SR>, width: number): void;
 }
 
-export default function ResizableHeaderCell<R, SR>({
+export default function ResizableHeaderCell<R, SR = never>({
   children,
   column,
   ...props

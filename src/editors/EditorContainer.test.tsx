@@ -98,8 +98,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Editors', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    class TestEditor extends React.Component<EditorProps<string, any, never>> {
+    class TestEditor extends React.Component<EditorProps<string, Row, never>> {
       getValue() {
         return undefined;
       }
@@ -167,8 +166,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Portal editors', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    class PortalTestEditor extends React.Component<EditorProps<string, any, never>> {
+    class PortalTestEditor extends React.Component<EditorProps<string, Row, never>> {
       getValue() {
         return undefined;
       }

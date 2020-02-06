@@ -5,14 +5,14 @@ import { CalculatedColumn, Position, Range, Dimension } from '../common/types';
 const zCellMask = 1;
 const zFrozenCellMask = 3;
 
-interface GetSelectedDimensionsOpts<R, SR> {
+interface GetSelectedDimensionsOpts<R, SR = never> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R, SR>[];
   rowHeight: number;
   scrollLeft: number;
 }
 
-export function getSelectedDimensions<R, SR>({ selectedPosition: { idx, rowIdx }, columns, rowHeight, scrollLeft }: GetSelectedDimensionsOpts<R, SR>): Dimension {
+export function getSelectedDimensions<R, SR = never>({ selectedPosition: { idx, rowIdx }, columns, rowHeight, scrollLeft }: GetSelectedDimensionsOpts<R, SR>): Dimension {
   if (idx < 0) {
     return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
   }
@@ -24,13 +24,13 @@ export function getSelectedDimensions<R, SR>({ selectedPosition: { idx, rowIdx }
   return { width, left, top, height: rowHeight, zIndex };
 }
 
-interface GetSelectedRangeDimensionsOpts<R, SR> {
+interface GetSelectedRangeDimensionsOpts<R, SR = never> {
   selectedRange: Range;
   columns: readonly CalculatedColumn<R, SR>[];
   rowHeight: number;
 }
 
-export function getSelectedRangeDimensions<R, SR>({ selectedRange: { topLeft, bottomRight }, columns, rowHeight }: GetSelectedRangeDimensionsOpts<R, SR>): Dimension {
+export function getSelectedRangeDimensions<R, SR = never>({ selectedRange: { topLeft, bottomRight }, columns, rowHeight }: GetSelectedRangeDimensionsOpts<R, SR>): Dimension {
   if (topLeft.idx < 0) {
     return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: zCellMask };
   }
@@ -51,28 +51,28 @@ export function getSelectedRangeDimensions<R, SR>({ selectedRange: { topLeft, bo
   return { width, left, top, height, zIndex };
 }
 
-interface IsSelectedCellEditableOpts<R, SR> {
+interface IsSelectedCellEditableOpts<R, SR = never> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R, SR>[];
   rows: readonly R[];
   onCheckCellIsEditable?(arg: { row: R; column: CalculatedColumn<R, SR> } & Position): boolean;
 }
 
-export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, onCheckCellIsEditable }: IsSelectedCellEditableOpts<R, SR>): boolean {
+export function isSelectedCellEditable<R, SR = never>({ selectedPosition, columns, rows, onCheckCellIsEditable }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
   const isCellEditable = onCheckCellIsEditable ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
   return isCellEditable && canEdit<R, SR>(column, row);
 }
 
-interface GetNextSelectedCellPositionOpts<R, SR> {
+interface GetNextSelectedCellPositionOpts<R, SR = never> {
   cellNavigationMode: CellNavigationMode;
   columns: readonly CalculatedColumn<R, SR>[];
   rowsCount: number;
   nextPosition: Position;
 }
 
-export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns, rowsCount, nextPosition }: GetNextSelectedCellPositionOpts<R, SR>): Position {
+export function getNextSelectedCellPosition<R, SR = never>({ cellNavigationMode, columns, rowsCount, nextPosition }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   if (cellNavigationMode !== CellNavigationMode.NONE) {
     const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
@@ -115,14 +115,14 @@ export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns
   return nextPosition;
 }
 
-interface CanExitGridOpts<R, SR> {
+interface CanExitGridOpts<R, SR = never> {
   cellNavigationMode: CellNavigationMode;
   columns: readonly CalculatedColumn<R, SR>[];
   rowsCount: number;
   selectedPosition: Position;
 }
 
-export function canExitGrid<R, SR>(event: React.KeyboardEvent, { cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx } }: CanExitGridOpts<R, SR>): boolean {
+export function canExitGrid<R, SR = never>(event: React.KeyboardEvent, { cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx } }: CanExitGridOpts<R, SR>): boolean {
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
   if (cellNavigationMode === CellNavigationMode.NONE || cellNavigationMode === CellNavigationMode.CHANGE_ROW) {

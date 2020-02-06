@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection, SummaryFormatterProps } from '../../src';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -25,8 +25,6 @@ interface SummaryRow {
     no: number;
   };
 }
-
-type SummaryRowFormatterProps = SummaryFormatterProps<SummaryRow, Row>;
 
 interface Row {
   id: number;
@@ -66,7 +64,7 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     frozen: true,
     resizable: true,
     sortable: true,
-    summaryFormatter({ row }: SummaryRowFormatterProps) {
+    summaryFormatter({ row }) {
       return <>{row.totalCount} records</>;
     }
   },
@@ -185,7 +183,7 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     formatter(props) {
       return <>{props.row.available ? '✔️' : '❌'}</>;
     },
-    summaryFormatter({ column, row }: SummaryRowFormatterProps) {
+    summaryFormatter({ column, row }) {
       return (
         <>{column.key === 'available' && (
           <>
