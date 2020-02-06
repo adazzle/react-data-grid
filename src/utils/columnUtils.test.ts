@@ -14,7 +14,7 @@ describe('getColumnMetrics', () => {
   }
 
   const viewportWidth = 300;
-  const getInitialColumns = (): Column<Row, never>[] => [{
+  const getInitialColumns = (): Column<Row>[] => [{
     key: 'id',
     name: 'ID',
     width: 60
@@ -28,7 +28,7 @@ describe('getColumnMetrics', () => {
 
   it('should set the unset column widths based on the total width', () => {
     const columns = getInitialColumns();
-    const metrics = getColumnMetrics<Row, never>({
+    const metrics = getColumnMetrics<Row>({
       columns,
       viewportWidth,
       minColumnWidth: 50,
@@ -43,7 +43,7 @@ describe('getColumnMetrics', () => {
 
   it('should set the column left based on the column widths', () => {
     const columns = getInitialColumns();
-    const metrics = getColumnMetrics<Row, never>({
+    const metrics = getColumnMetrics<Row>({
       columns,
       viewportWidth,
       minColumnWidth: 50,
@@ -57,12 +57,12 @@ describe('getColumnMetrics', () => {
   });
 
   it('should shift all frozen columns to the start of column metrics array', () => {
-    const firstFrozenColumn: Column<Row, never> = { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
-    const secondFrozenColumn: Column<Row, never> = { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
-    const thirdFrozenColumn: Column<Row, never> = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
+    const firstFrozenColumn: Column<Row> = { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
+    const secondFrozenColumn: Column<Row> = { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
+    const thirdFrozenColumn: Column<Row> = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
     const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
     columns.splice(2, 0, firstFrozenColumn);
-    const metrics = getColumnMetrics<Row, never>({
+    const metrics = getColumnMetrics<Row>({
       columns,
       viewportWidth,
       minColumnWidth: 50,
@@ -126,7 +126,7 @@ describe('canEdit', () => {
     id: number;
   }
 
-  const column: CalculatedColumn<Row, never> = {
+  const column: CalculatedColumn<Row> = {
     idx: 0,
     key: 'id',
     name: 'ID',

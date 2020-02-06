@@ -25,13 +25,13 @@ function createRows(): Row[] {
   return rows;
 }
 
-const columns: readonly Column<Row, never>[] = [
+const columns: readonly Column<Row>[] = [
   { key: 'id', name: 'ID' },
   { key: 'product', name: 'Product' },
   { key: 'price', name: 'Price' }
 ];
 
-function RowRenderer(props: RowRendererProps<Row, never>) {
+function RowRenderer(props: RowRendererProps<Row>) {
   return (
     <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
       <GridRow {...props} />

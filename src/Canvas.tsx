@@ -8,7 +8,7 @@ import RowRenderer from './RowRenderer';
 import SummaryRow from './SummaryRow';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
 
-type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
+type SharedDataGridProps<R, K extends keyof R, SR = never> = Pick<DataGridProps<R, K, SR>,
 | 'rows'
 | 'rowRenderer'
 | 'rowGroupRenderer'
@@ -31,7 +31,7 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
 | 'onRowsUpdate'
 >>;
 
-export interface CanvasProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
+export interface CanvasProps<R, K extends keyof R, SR = never> extends SharedDataGridProps<R, K, SR> {
   columnMetrics: ColumnMetrics<R, SR>;
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   height: number;
@@ -46,7 +46,7 @@ export interface CanvasHandle {
   openCellEditor(rowIdx: number, colIdx: number): void;
 }
 
-function Canvas<R, K extends keyof R, SR>({
+function Canvas<R, K extends keyof R, SR = never>({
   columnMetrics,
   viewportColumns,
   height,
@@ -108,7 +108,7 @@ function Canvas<R, K extends keyof R, SR>({
       const isCellAtLeftBoundary = left < scrollLeft + width + getFrozenColumnsWidth();
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary || isCellAtRightBoundary) {
-        const newScrollLeft = getColumnScrollPosition(columns as readonly CalculatedColumn<R, SR>[], idx, scrollLeft, clientWidth);
+        const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
         current.scrollLeft = scrollLeft + newScrollLeft;
       }
     }
@@ -198,7 +198,7 @@ function Canvas<R, K extends keyof R, SR>({
           rowIdx={rowIdx}
           row={row}
           columnMetrics={columnMetrics as ColumnMetrics<R, SR>}
-          viewportColumns={viewportColumns as readonly CalculatedColumn<R, SR>[]}
+          viewportColumns={viewportColumns}
           eventBus={eventBus}
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
@@ -243,7 +243,7 @@ function Canvas<R, K extends keyof R, SR>({
         <InteractionMasks<R, SR>
           rows={rows}
           rowHeight={rowHeight}
-          columns={columns as readonly CalculatedColumn<R, SR>[]}
+          columns={columns}
           height={clientHeight}
           enableCellAutoFocus={props.enableCellAutoFocus}
           enableCellCopyPaste={props.enableCellCopyPaste}
@@ -278,4 +278,4 @@ function Canvas<R, K extends keyof R, SR>({
 
 export default forwardRef(
   Canvas as React.RefForwardingComponent<CanvasHandle>
-) as <R, K extends keyof R, SR>(props: CanvasProps<R, K, SR> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;
+) as <R, K extends keyof R, SR = never>(props: CanvasProps<R, K, SR> & { ref?: React.Ref<CanvasHandle> }) => JSX.Element;

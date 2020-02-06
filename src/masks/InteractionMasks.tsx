@@ -36,7 +36,7 @@ export enum KeyCodes {
   v = 86
 }
 
-type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
+type SharedCanvasProps<R, SR = never> = Pick<CanvasProps<R, never, SR>,
 | 'rows'
 | 'rowHeight'
 | 'enableCellAutoFocus'
@@ -50,7 +50,7 @@ type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
 | 'onRowsUpdate'
 > & Pick<ColumnMetrics<R, SR>, 'columns'>;
 
-export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
+export interface InteractionMasksProps<R, SR = never> extends SharedCanvasProps<R, SR> {
   height: number;
   canvasRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
@@ -68,7 +68,7 @@ function isKeyboardNavigationEvent(e: React.KeyboardEvent<HTMLDivElement>): bool
   ].includes(e.keyCode);
 }
 
-export default function InteractionMasks<R, SR>({
+export default function InteractionMasks<R, SR = never>({
   columns,
   rows,
   rowHeight,

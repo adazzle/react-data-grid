@@ -5,7 +5,7 @@ import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<TRow, TSummaryRow> {
+export interface Column<TRow, TSummaryRow = never> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string;
   /** A unique key to distinguish each column */
@@ -40,14 +40,14 @@ export interface Column<TRow, TSummaryRow> {
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
 }
 
-export interface CalculatedColumn<TRow, TSummaryRow> extends Column<TRow, TSummaryRow> {
+export interface CalculatedColumn<TRow, TSummaryRow = never> extends Column<TRow, TSummaryRow> {
   idx: number;
   width: number;
   left: number;
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
-export interface ColumnMetrics<TRow, TSummaryRow> {
+export interface ColumnMetrics<TRow, TSummaryRow = never> {
   columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
   viewportWidth: number;
@@ -115,13 +115,13 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   onOverrideKeyDown(e: KeyboardEvent): void;
 }
 
-export interface HeaderRendererProps<TRow, TSummaryRow> {
+export interface HeaderRendererProps<TRow, TSummaryRow = never> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   allRowsSelected: boolean;
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
+export interface CellRendererProps<TRow, TSummaryRow = never> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -134,7 +134,7 @@ export interface CellRendererProps<TRow, TSummaryRow> extends Omit<React.HTMLAtt
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>): void;
 }
 
-export interface RowRendererProps<TRow, TSummaryRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface RowRendererProps<TRow, TSummaryRow = never> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   height: number;
   width: number;
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
@@ -193,7 +193,7 @@ export interface RowsUpdateEvent<TUpdatedValue = never> {
   fromCellKey?: string;
 }
 
-export interface CheckCellIsEditableEvent<TRow, TSummaryRow> extends Position {
+export interface CheckCellIsEditableEvent<TRow, TSummaryRow = never> extends Position {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
 }

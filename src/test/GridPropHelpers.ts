@@ -8,7 +8,7 @@ export interface Row {
   description?: string;
 }
 
-const columns: CalculatedColumn<Row, never>[] = [{
+const columns: CalculatedColumn<Row>[] = [{
   idx: 0,
   key: 'id',
   name: 'ID',

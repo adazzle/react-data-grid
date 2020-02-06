@@ -6,7 +6,7 @@ import HeaderRow, { HeaderRowProps } from './HeaderRow';
 import HeaderCell from './HeaderCell';
 
 describe('HeaderRow', () => {
-  const defaultProps: HeaderRowProps<Row, 'id', never> = {
+  const defaultProps: HeaderRowProps<Row, 'id'> = {
     rowKey: 'id',
     rows: [],
     scrollLeft: 0,
@@ -22,8 +22,8 @@ describe('HeaderRow', () => {
     draggableHeaderCell: () => <div />
   };
 
-  const setup = (testProps?: Partial<HeaderRowProps<Row, 'id', never>>) => {
-    const props: HeaderRowProps<Row, 'id', never> = { ...defaultProps, ...testProps };
+  const setup = (testProps?: Partial<HeaderRowProps<Row, 'id'>>) => {
+    const props: HeaderRowProps<Row, 'id'> = { ...defaultProps, ...testProps };
     const wrapper = mount(<HeaderRow {...props} />);
     const headerCells = wrapper.find(HeaderCell);
     return { wrapper, headerCells, props };
@@ -69,11 +69,11 @@ describe('HeaderRow', () => {
   });
 
   describe('Rendering HeaderRow component', () => {
-    const renderComponent = (props: HeaderRowProps<Row, 'id', never>) => {
+    const renderComponent = (props: HeaderRowProps<Row, 'id'>) => {
       return mount(<HeaderRow {...props} />);
     };
 
-    const requiredProps: HeaderRowProps<Row, 'id', never> = {
+    const requiredProps: HeaderRowProps<Row, 'id'> = {
       rowKey: 'id',
       rows: [],
       scrollLeft: 0,

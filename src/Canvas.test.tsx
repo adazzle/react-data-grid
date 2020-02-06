@@ -14,7 +14,7 @@ interface Row {
 
 const noop = () => null;
 
-const testProps: CanvasProps<Row, 'id', never> = {
+const testProps: CanvasProps<Row, 'id'> = {
   rowKey: 'id',
   rowHeight: 25,
   height: 200,
@@ -50,8 +50,8 @@ const testProps: CanvasProps<Row, 'id', never> = {
   scrollLeft: 0
 };
 
-function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id', never>>) {
-  return mount(<Canvas<Row, 'id', never> {...testProps} {...extraProps} />);
+function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {
+  return mount(<Canvas<Row, 'id'> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas', () => {
@@ -64,7 +64,7 @@ describe('Canvas', () => {
   });
 
   describe('Tree View', () => {
-    const COLUMNS: CalculatedColumn<Row, never>[] = [{
+    const COLUMNS: CalculatedColumn<Row>[] = [{
       idx: 0,
       key: 'id',
       name: 'ID',

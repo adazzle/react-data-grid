@@ -12,7 +12,7 @@ interface Row {
   completeDate: string;
 }
 
-const columns: Column<Row, never>[] = [
+const columns: Column<Row>[] = [
   {
     key: 'id',
     name: 'ID',
@@ -102,7 +102,7 @@ export default function ScrollToRow() {
           Loop Over Row
         </label>
       </div>
-      <DataGrid<Row, 'id', never>
+      <DataGrid<Row, 'id'>
         columns={columns}
         rows={rows}
         cellNavigationMode={cellNavigatioMode}

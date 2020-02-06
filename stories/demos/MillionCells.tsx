@@ -13,7 +13,7 @@ function CellFormatter(props: FormatterProps<Row>) {
 
 export default function MillionCells() {
   const [columns] = useState(() => {
-    const columns: Column<Row, never>[] = [];
+    const columns: Column<Row>[] = [];
 
     for (let i = 0; i < 1000; i++) {
       const key = String(i);

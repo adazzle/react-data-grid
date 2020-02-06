@@ -1,7 +1,7 @@
 import { ValueFormatter } from '../formatters';
 import { CalculatedColumn } from '../common/types';
 
-function createColumn(index: number): CalculatedColumn<{ [key: string]: React.ReactNode }, never> {
+function createColumn(index: number): CalculatedColumn<{ [key: string]: React.ReactNode }> {
   const key = `Column${index}`;
   return {
     key,
@@ -14,7 +14,7 @@ function createColumn(index: number): CalculatedColumn<{ [key: string]: React.Re
   };
 }
 
-export const createColumns = (count: number): CalculatedColumn<{ [key: string]: React.ReactNode }, never>[] =>
+export const createColumns = (count: number): CalculatedColumn<{ [key: string]: React.ReactNode }>[] =>
   Array(count).fill(null).map((_, i) => createColumn(i));
 
 export const sel = (id: string): string => `[data-test="${id}"]`;

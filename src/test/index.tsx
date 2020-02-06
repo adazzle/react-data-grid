@@ -8,7 +8,7 @@ interface RowType {
   col2: string;
 }
 
-export function getProps(extraProps?: Partial<DataGridProps<RowType, 'id', never>>): DataGridProps<RowType, 'id', never> {
+export function getProps(extraProps?: Partial<DataGridProps<RowType, 'id'>>): DataGridProps<RowType, 'id'> {
   const rows: RowType[] = [];
 
   return {
@@ -24,7 +24,7 @@ export function getProps(extraProps?: Partial<DataGridProps<RowType, 'id', never
   };
 }
 
-export function setup(props: DataGridProps<RowType, 'id', never> = getProps()) {
+export function setup(props: DataGridProps<RowType, 'id'> = getProps()) {
   return {
     props,
     ...render(

@@ -35,7 +35,7 @@ function DefaultEditor() {
   );
 }
 
-const fakeColumn: CalculatedColumn<Row, never> = {
+const fakeColumn: CalculatedColumn<Row> = {
   idx: 0,
   name: 'col1',
   key: 'col1',
@@ -44,8 +44,8 @@ const fakeColumn: CalculatedColumn<Row, never> = {
   formatter: ValueFormatter
 };
 
-const setup = (extraProps?: Partial<EditorContainerProps<Row, never>>, opts?: MountRendererProps) => {
-  const props: EditorContainerProps<Row, never> = {
+const setup = (extraProps?: Partial<EditorContainerProps<Row>>, opts?: MountRendererProps) => {
+  const props: EditorContainerProps<Row> = {
     rowIdx: 0,
     row: {
       id: '1',
