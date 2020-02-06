@@ -139,7 +139,7 @@ export default class HeaderRow<R, K extends keyof R> extends React.Component<Hea
     return (
       <div
         className="rdg-header-row"
-        style={{ width: this.props.width, height: this.props.height }}
+        style={{ width: this.props.width, height: this.props.height, lineHeight: `${this.props.height}px` }}
       >
         {this.getCells()}
       </div>
