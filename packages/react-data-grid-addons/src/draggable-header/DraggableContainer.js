@@ -20,3 +20,5 @@ class DraggableContainer extends React.Component {
 }
 
 export default html5DragDropContext(DraggableContainer);
+
+export const DraggableContainerWithoutDragDropContext = DraggableContainer;

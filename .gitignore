@@ -1,14 +1,10 @@
 /coverage
-/dist
-/lib
-/node_modules
+**/dist/*
+**/lib/*
+**/node_modules/*
 /storybook-static
 /.eslintcache
-/package-lock.json
-
-**/node_modules/*
-**/lib/*
-**/dist/*
+**/package-lock.json
 
 npm-debug.log
 **.orig
