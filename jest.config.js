@@ -14,12 +14,11 @@ module.exports = {
     }
   },
   coverageProvider: 'v8',
-  collectCoverage: process.env.CI === 'true',
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}'
   ],
   coverageReporters: [
-    'cobertura'
+    'text'
   ],
   restoreMocks: true,
   moduleNameMapper: {
