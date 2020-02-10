@@ -1,11 +1,11 @@
-# react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![coverage-badge]][azure-url]
+# react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![ci-badge]][ci-url]
 
-[npm-badge]: https://img.shields.io/npm/v/react-data-grid/alpha?style=flat-square
+[npm-badge]: https://img.shields.io/npm/v/react-data-grid
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid/alpha?style=flat-square
-[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid@alpha
-[coverage-badge]: https://img.shields.io/azure-devops/coverage/nstepi181/react-data-grid/1/alpha?style=flat-square
-[azure-url]: https://dev.azure.com/nstepi181/react-data-grid/_build/latest?definitionId=1&branchName=alpha
+[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
+[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid
+[ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
+[ci-url]: https://github.com/adazzle/react-data-grid/actions?query=workflow%3ACI
 
 ## Install
 
