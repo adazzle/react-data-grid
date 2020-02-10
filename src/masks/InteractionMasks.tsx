@@ -54,6 +54,10 @@ export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   scrollToCell(cell: Position): void;
 }
 
+function legacyCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
+  return isKeyPrintable(event.keyCode) || ['Backspace', 'Delete'].includes(event.key);
+}
+
 export default function InteractionMasks<R>({
   columns,
   rows,
@@ -166,7 +170,16 @@ export default function InteractionMasks<R>({
       if (lowerCaseKey === 'v') return handlePaste();
     }
 
+    const canOpenEditor = selectedPosition.status === 'SELECT' && isCellEditable(selectedPosition);
+
     switch (key) {
+      case 'Enter':
+        if (canOpenEditor) {
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key: 'Enter' }));
+        } else if (selectedPosition.status === 'EDIT') {
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
+        }
+        break;
       case 'Escape':
         closeEditor();
         setCopiedPosition(null);
@@ -182,26 +195,15 @@ export default function InteractionMasks<R>({
         selectCell(getNextPosition(key));
         break;
       default:
+        if (canOpenEditor) {
+          const column = columns[selectedPosition.idx];
+          const row = rows[selectedPosition.rowIdx];
+          if ((column.unsafe_onCellInput ?? legacyCellInput)(event, row)) {
+            setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
+          }
+        }
         break;
     }
-
-    if (canOpenEditor(event)) {
-      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
-    }
-  }
-
-  function canOpenEditor(event: React.KeyboardEvent<HTMLDivElement>): boolean {
-    if (selectedPosition.status === 'EDIT' || !isCellEditable(selectedPosition)) return false;
-
-    const column = columns[selectedPosition.idx];
-    const row = rows[selectedPosition.rowIdx];
-    const isEditable = column.unsafe_onCellInput?.(event, row);
-
-    // Let the user override the activation logic
-    if (typeof isEditable === 'boolean') return isEditable;
-
-    // Fall back to the default behavior
-    return isKeyPrintable(event.keyCode) || ['Backspace', 'Delete', 'Enter'].includes(event.key);
   }
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {

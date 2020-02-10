@@ -139,7 +139,7 @@ const columns: readonly Column<Row>[] = [
     },
     editable: true,
     unsafe_onCellInput({ key }) {
-      return /^\d$/.test(key) || key === 'Enter';
+      return /^\d$/.test(key);
     }
   },
   {
