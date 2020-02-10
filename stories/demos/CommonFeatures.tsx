@@ -138,7 +138,7 @@ const columns: readonly Column<Row>[] = [
       return <CurrencyFormatter value={props.row.budget} />;
     },
     editable: true,
-    onCellInput({ key }) {
+    unsafe_onCellInput({ key }) {
       return /^\d$/.test(key) || key === 'Enter';
     }
   },

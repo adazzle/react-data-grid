@@ -166,8 +166,6 @@ export default function InteractionMasks<R>({
       if (lowerCaseKey === 'v') return handlePaste();
     }
 
-    console.log(`key=(${key})`);
-
     switch (key) {
       case 'Escape':
         closeEditor();
@@ -197,8 +195,9 @@ export default function InteractionMasks<R>({
 
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
-    const isEditable = column.onCellInput?.(event, row);
+    const isEditable = column.unsafe_onCellInput?.(event, row);
 
+    // Let the user override the activation logic
     if (typeof isEditable === 'boolean') return isEditable;
 
     // Fall back to the default behavior
