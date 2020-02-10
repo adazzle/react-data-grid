@@ -11,12 +11,14 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: 'latest'
+        node-version: '13.x'
     - name: npm install
       run: npm i
     - name: ESLint
       run: npm run eslint
-    - name: Build
-      run: npm run build
+    - name: Typecheck
+      run: npm run typecheck
+    - name: Build storybook
+      run: npm run build-storybook
     - name: Test
       run: npm t
