@@ -162,6 +162,15 @@ export default function InteractionMasks<R>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    const column = columns[selectedPosition.idx];
+    const row = rows[selectedPosition.rowIdx];
+    const isActivedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
+
+    // TODO: should we return if user has handled the event?
+    // if (event.defaultPrevented) {
+    //   return;
+    // }
+
     const { key } = event;
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
       // event.key may be uppercase `C` or `V`
@@ -195,12 +204,8 @@ export default function InteractionMasks<R>({
         selectCell(getNextPosition(key));
         break;
       default:
-        if (canOpenEditor) {
-          const column = columns[selectedPosition.idx];
-          const row = rows[selectedPosition.rowIdx];
-          if ((column.unsafe_onCellInput ?? legacyCellInput)(event, row)) {
-            setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
-          }
+        if (canOpenEditor && isActivedByUser) {
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
         }
         break;
     }

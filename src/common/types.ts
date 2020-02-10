@@ -28,6 +28,8 @@ export interface Column<TRow> {
   sortable?: boolean;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
+  // TODO: Should we return an object to make it more powerful?
+  // { isEditable?: boolean, initialInput?: unknown } | undefined
   unsafe_onCellInput?(event: React.KeyboardEvent<HTMLDivElement>, row: TRow): unknown;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow>>;
