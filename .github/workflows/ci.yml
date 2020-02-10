@@ -12,6 +12,14 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '13.x'
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: npm-${{ hashFiles('package.json') }}
+    - uses: actions/cache@v1
+      with:
+        path: node_modules/.cache
+        key: build-${{ hashFiles('package.json') }}
     - name: npm install
       run: npm i
     - name: ESLint
@@ -21,4 +29,4 @@ jobs:
     - name: Build storybook
       run: npm run build-storybook
     - name: Test
-      run: npm t -- --coverage
+      run: npm t -- --coverage --colors
