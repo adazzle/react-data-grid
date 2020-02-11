@@ -164,7 +164,7 @@ export default function InteractionMasks<R>({
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
-    const isActivedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
+    const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
 
     // TODO: should we return if user has handled the event?
     // if (event.defaultPrevented) {
