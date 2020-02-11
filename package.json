@@ -24,7 +24,7 @@
     "*.less"
   ],
   "scripts": {
-    "start": "start-storybook -p 6006",
+    "start": "start-storybook --quiet -p 6006",
     "build": "tsc",
     "postbuild": "node tools/buildStylesheets.mjs",
     "test": "jest",
@@ -32,7 +32,7 @@
     "eslint": "eslint --ext js,mjs,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories jest tools",
     "eslint:fix": "npm run eslint -- --fix",
     "typecheck": "tsc -p tsconfig.all.json",
-    "build-storybook": "build-storybook",
+    "build-storybook": "build-storybook --quiet",
     "prepublishOnly": "npm install && npm run build",
     "postpublish": "git push --follow-tags origin HEAD"
   },
