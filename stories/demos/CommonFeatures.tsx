@@ -20,10 +20,7 @@ function CurrencyFormatter({ value }: { value: number }) {
 interface SummaryRow {
   id: string;
   totalCount: number;
-  availableCount: {
-    yes: number;
-    no: number;
-  };
+  yesCount: number;
 }
 
 interface Row {
@@ -179,19 +176,12 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     resizable: true,
     sortable: true,
     width: 80,
-    summaryCellClass: 'common-feature-summary-available',
     formatter(props) {
       return <>{props.row.available ? '✔️' : '❌'}</>;
     },
-    summaryFormatter({ column, row }) {
+    summaryFormatter({ column, row: { yesCount, totalCount } }) {
       return (
-        <>{column.key === 'available' && (
-          <>
-            <div>{`✔️: ${row.availableCount.yes}`}</div>
-            <div>{`❌: ${row.availableCount.no}`}</div>
-          </>
-        )}
-        </>
+        <>{column.key === 'available' && <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>}</>
       );
     }
   }
@@ -230,16 +220,7 @@ export default function CommonFeatures() {
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
   const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, availableCount: { yes: 0, no: 0 } };
-
-    for (const row of rows) {
-      if (row.available) {
-        summaryRow.availableCount.yes++;
-      } else {
-        summaryRow.availableCount.no++;
-      }
-    }
-
+    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
     return [summaryRow];
   }, [rows]);
 
