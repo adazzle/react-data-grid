@@ -146,7 +146,7 @@ export default function InteractionMasks<R>({
         nextPosition = { idx: idx + 1, rowIdx };
         break;
       case 'Tab':
-        nextPosition = { idx: idx + (shiftKey ?  -1 : 1), rowIdx };
+        nextPosition = { idx: idx + (shiftKey ? -1 : 1), rowIdx };
         break;
       default:
         nextPosition = { idx, rowIdx };
@@ -204,7 +204,7 @@ export default function InteractionMasks<R>({
         selectCell(getNextPosition(key));
         break;
       default:
-        if (canOpenEditor && isActivedByUser) {
+        if (canOpenEditor && isActivatedByUser) {
           setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
         }
         break;
