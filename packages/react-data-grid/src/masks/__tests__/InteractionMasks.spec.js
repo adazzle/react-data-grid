@@ -760,9 +760,36 @@ describe('<InteractionMasks/>', () => {
       props.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx: 6 });
       wrapper.find(DragHandle).simulate('dragEnd');
 
-      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 2, 6, { Column1: '3' }, UpdateActions.CELL_DRAG);
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 3, 6, { Column1: '3' }, UpdateActions.CELL_DRAG);
+    });
+
+    it('should ignore drag interacations that do not cause edits', () => {
+      const { wrapper, props } = setupDrag();
+      const setData = jasmine.createSpy();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
+      props.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx: 2 });
+      wrapper.find(DragHandle).simulate('dragEnd');
+
+      expect(props.onGridRowsUpdated).not.toHaveBeenCalled();
+    });
+
+    it('should update a lone adjacent dragged over cell on drag end', () => {
+      const { wrapper, props } = setupDrag();
+      const setData = jasmine.createSpy();
+      wrapper.find(DragHandle).simulate('dragstart', {
+        target: { className: 'test' },
+        dataTransfer: { setData }
+      });
+      props.eventBus.dispatch(EventTypes.DRAG_ENTER, { overRowIdx: 3 });
+      wrapper.find(DragHandle).simulate('dragEnd');
+
+      expect(props.onGridRowsUpdated).toHaveBeenCalledWith('Column1', 3, 3, { Column1: '3' }, UpdateActions.CELL_DRAG);
     });
   });
+
 
   describe('ContextMenu functionality', () => {
     it('should render the context menu if it a valid element', () => {

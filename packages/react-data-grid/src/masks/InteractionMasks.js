@@ -600,14 +600,14 @@ class InteractionMasks extends React.Component {
     const { draggedPosition } = this.state;
     if (draggedPosition != null) {
       const { rowIdx, overRowIdx } = draggedPosition;
-      if (overRowIdx != null) {
+      const offsetRowIdx = rowIdx + 1;
+      if (overRowIdx != null && rowIdx !== overRowIdx) {
         const { columns, onCellsDragged, onGridRowsUpdated, rowGetter } = this.props;
         const column = getSelectedColumn({ selectedPosition: draggedPosition, columns });
         const value = getSelectedCellValue({ selectedPosition: draggedPosition, columns, rowGetter });
         const cellKey = column.key;
-        const fromRow = rowIdx < overRowIdx ? rowIdx : overRowIdx;
-        const toRow = rowIdx > overRowIdx ? rowIdx : overRowIdx;
-
+        const fromRow = offsetRowIdx < overRowIdx ? offsetRowIdx : overRowIdx;
+        const toRow = offsetRowIdx > overRowIdx ? offsetRowIdx : overRowIdx;
         if (isFunction(onCellsDragged)) {
           onCellsDragged({ cellKey, fromRow, toRow, value });
         }
@@ -622,11 +622,13 @@ class InteractionMasks extends React.Component {
   };
 
   onDragHandleDoubleClick = () => {
-    const { onDragHandleDoubleClick, rowGetter } = this.props;
+    const { onDragHandleDoubleClick, rowGetter, rowsCount } = this.props;
     const { selectedPosition } = this.state;
     const { idx, rowIdx } = selectedPosition;
     const rowData = getSelectedRow({ selectedPosition, rowGetter });
-    onDragHandleDoubleClick({ idx, rowIdx, rowData });
+    if(rowIdx !== rowsCount - 1) {
+      onDragHandleDoubleClick({ idx, rowIdx: rowIdx + 1, rowData });
+    }
   };
 
   onCommit = (...args) => {
