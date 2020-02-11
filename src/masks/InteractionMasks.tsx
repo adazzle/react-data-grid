@@ -5,10 +5,10 @@ import CellMask from './CellMask';
 import DragMask, { DraggedPosition } from './DragMask';
 import EditorContainer from '../editors/EditorContainer';
 import EditorPortal from '../editors/EditorPortal';
+import { legacyCellInput } from '../editors/CellInputHandlers';
 
 // Utils
 import {
-  isKeyPrintable,
   isCtrlKeyHeldDown,
   getSelectedDimensions as getDimensions,
   getNextSelectedCellPosition,
@@ -52,10 +52,6 @@ export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   scrollTop: number;
   eventBus: EventBus;
   scrollToCell(cell: Position): void;
-}
-
-function legacyCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
-  return isKeyPrintable(event.keyCode) || ['Backspace', 'Delete'].includes(event.key);
 }
 
 export default function InteractionMasks<R>({
@@ -162,11 +158,6 @@ export default function InteractionMasks<R>({
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
     const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
-
-    // TODO: should we return if user has handled the event?
-    // if (event.defaultPrevented) {
-    //   return;
-    // }
 
     const { key } = event;
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
