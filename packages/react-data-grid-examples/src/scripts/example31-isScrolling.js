@@ -1,7 +1,7 @@
 import ReactDataGrid from 'react-data-grid';
 import exampleWrapper from '../components/exampleWrapper';
 import React from 'react';
-import {AreaChart, Area} from 'Recharts';
+import {AreaChart, Area} from 'recharts';
 
 const getRandom = (min, max) => {
   min = Math.ceil(min);
