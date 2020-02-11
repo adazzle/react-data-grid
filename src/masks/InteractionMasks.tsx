@@ -146,7 +146,7 @@ export default function InteractionMasks<R>({
         nextPosition = { idx: idx + 1, rowIdx };
         break;
       case 'Tab':
-        nextPosition = shiftKey ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
+        nextPosition = { idx: idx + (shiftKey ?  -1 : 1), rowIdx };
         break;
       default:
         nextPosition = { idx, rowIdx };
