@@ -200,11 +200,6 @@ export default function InteractionMasks<R>({
   }
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
-    // When there are no rows in the grid, we need to allow the browser to handle tab presses
-    if (rows.length === 0) {
-      return;
-    }
-
     // If we are in a position to leave the grid, stop editing but stay in that cell
     if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
       if (selectedPosition.status === 'EDIT') {
