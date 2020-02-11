@@ -96,13 +96,6 @@ export default function InteractionMasks<R>({
     return eventBus.subscribe('SELECT_CELL', selectCell);
   });
 
-  const closeEditor = useCallback(() => {
-    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
-  }, []);
-
-  // close editor when scrolling
-  useEffect(() => closeEditor, [scrollTop, scrollLeft, closeEditor]);
-
   useEffect(() => {
     if (draggedPosition === null) return;
     const handleDragEnter = (overRowIdx: number) => {
@@ -110,6 +103,10 @@ export default function InteractionMasks<R>({
     };
     return eventBus.subscribe('DRAG_ENTER', handleDragEnter);
   }, [draggedPosition, eventBus]);
+
+  const closeEditor = useCallback(() => {
+    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
+  }, []);
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
@@ -394,6 +391,8 @@ export default function InteractionMasks<R>({
             rowIdx={selectedPosition.rowIdx}
             row={rows[selectedPosition.rowIdx]}
             column={columns[selectedPosition.idx]}
+            scrollLeft={scrollLeft}
+            scrollTop={scrollTop}
             {...getSelectedDimensions(selectedPosition)}
             {...getEditorPosition()}
           />

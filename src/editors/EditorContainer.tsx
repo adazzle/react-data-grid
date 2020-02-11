@@ -1,13 +1,16 @@
-import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback } from 'react';
+import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
 import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
+import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-export interface EditorContainerProps<R> extends Omit<Dimension, 'zIndex'> {
+type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
+
+export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R>;
@@ -27,6 +30,8 @@ export default function EditorContainer<R>({
   top,
   onCommit,
   onCommitCancel,
+  scrollLeft,
+  scrollTop,
   firstEditorKeyPress: key
 }: EditorContainerProps<R>) {
   const editorRef = useRef<Editor>(null);
@@ -43,6 +48,9 @@ export default function EditorContainer<R>({
       inputNode.select();
     }
   }, [getInputNode]);
+
+  // close editor when scrolling
+  useEffect(() => onCommitCancel, [scrollTop, scrollLeft, onCommitCancel]);
 
   function getInitialValue() {
     const value = row[column.key as keyof R];
