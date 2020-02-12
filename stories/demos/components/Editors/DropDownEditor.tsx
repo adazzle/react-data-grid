@@ -8,7 +8,7 @@ interface Option {
   text: string;
 }
 
-interface DropDownEditorProps<TRow> extends EditorProps<string, TRow> {
+interface DropDownEditorProps<TRow> extends EditorProps<string, TRow, unknown> {
   options: Array<Option | string>;
 }
 
