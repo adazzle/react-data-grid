@@ -7,7 +7,7 @@ interface Row { col1: string }
 
 describe('SortableHeaderCell', () => {
   const setup = (overrideColumn = {}) => {
-    const props: Props<Row> = {
+    const props: Props<Row, unknown> = {
       column: {
         idx: 0,
         name: 'col1',

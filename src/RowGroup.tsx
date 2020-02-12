@@ -3,10 +3,10 @@ import React, { forwardRef } from 'react';
 import { RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
 import EventBus from './EventBus';
 
-interface Props<R> {
+interface Props<R, SR> {
   height: number;
   row: unknown;
-  cellRenderer?: React.ComponentType<CellRendererProps<R>>;
+  cellRenderer?: React.ComponentType<CellRendererProps<R, SR>>;
   isSelected?: boolean;
   rowIdx: number;
   forceUpdate?: boolean;
@@ -21,7 +21,7 @@ interface Props<R> {
   onRowExpandToggle?(event: RowExpandToggleEvent): void;
 }
 
-export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, ref) {
+export default forwardRef<HTMLDivElement, Props<any, any>>(function RowGroup(props, ref) {
   function onRowExpandToggle(expand?: boolean) {
     const { onRowExpandToggle } = props;
     if (onRowExpandToggle) {
@@ -45,9 +45,9 @@ export default forwardRef<HTMLDivElement, Props<any>>(function RowGroup(props, r
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
-}) as <R>(props: Props<R> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
+}) as <R, SR>(props: Props<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
 
-interface DefaultBaseProps extends Omit<Props<any>, 'onRowExpandToggle'> {
+interface DefaultBaseProps extends Omit<Props<any, any>, 'onRowExpandToggle'> {
   onRowExpandClick(): void;
   onRowExpandToggle(expand?: boolean): void;
 }

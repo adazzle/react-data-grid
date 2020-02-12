@@ -22,7 +22,7 @@ import { UpdateActions, CellNavigationMode } from '../common/enums';
 import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
 import { CanvasProps } from '../Canvas';
 
-type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
+type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
   | 'rows'
   | 'rowHeight'
   | 'enableCellAutoFocus'
@@ -34,7 +34,7 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
   | 'onSelectedCellChange'
   | 'onSelectedCellRangeChange'
   | 'onRowsUpdate'
-> & Pick<ColumnMetrics<R>, 'columns'>;
+> & Pick<ColumnMetrics<R, SR>, 'columns'>;
 
 interface SelectCellState extends Position {
   status: 'SELECT';
@@ -45,7 +45,7 @@ interface EditCellState extends Position {
   key: string | null;
 }
 
-export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
+export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
   height: number;
   canvasRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
@@ -54,7 +54,7 @@ export interface InteractionMasksProps<R> extends SharedCanvasProps<R> {
   scrollToCell(cell: Position): void;
 }
 
-export default function InteractionMasks<R>({
+export default function InteractionMasks<R, SR>({
   columns,
   rows,
   rowHeight,
@@ -71,7 +71,7 @@ export default function InteractionMasks<R>({
   onCheckCellIsEditable,
   onRowsUpdate,
   scrollToCell
-}: InteractionMasksProps<R>) {
+}: InteractionMasksProps<R, SR>) {
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>(() => {
     if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
       return { idx: 0, rowIdx: 0, status: 'SELECT' };
@@ -146,7 +146,7 @@ export default function InteractionMasks<R>({
         break;
     }
 
-    return getNextSelectedCellPosition({
+    return getNextSelectedCellPosition<R, SR>({
       columns,
       rowsCount: rows.length,
       cellNavigationMode: mode,
@@ -253,7 +253,7 @@ export default function InteractionMasks<R>({
 
   function isCellEditable(position: Position) {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
+      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
   }
 
   function selectCell(position: Position, enableEditor = false): void {
@@ -370,7 +370,7 @@ export default function InteractionMasks<R>({
       )}
       {selectedPosition.status === 'EDIT' && isCellWithinBounds(selectedPosition) && (
         <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R>
+          <EditorContainer<R, SR>
             firstEditorKeyPress={selectedPosition.key}
             onCommit={onCommit}
             onCommitCancel={closeEditor}

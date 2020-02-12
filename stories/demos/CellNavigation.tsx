@@ -102,7 +102,7 @@ export default function ScrollToRow() {
           Loop Over Row
         </label>
       </div>
-      <DataGrid<Row, 'id'>
+      <DataGrid
         columns={columns}
         rows={rows}
         cellNavigationMode={cellNavigatioMode}
