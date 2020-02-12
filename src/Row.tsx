@@ -5,7 +5,7 @@ import Cell from './Cell';
 import { RowRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
 
-export default function Row<R, SR = never>({
+export default function Row<R, SR>({
   cellRenderer: CellRenderer = Cell,
   className,
   enableCellRangeSelection,

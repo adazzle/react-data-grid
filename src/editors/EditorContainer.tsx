@@ -8,9 +8,9 @@ import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, SR = never> = Pick<InteractionMasksProps<R, SR>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R, SR> = Pick<InteractionMasksProps<R, SR>, 'scrollLeft' | 'scrollTop'>;
 
-export interface EditorContainerProps<R, SR = never> extends SharedInteractionMasksProps<R, SR>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps<R, SR>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
@@ -20,7 +20,7 @@ export interface EditorContainerProps<R, SR = never> extends SharedInteractionMa
   firstEditorKeyPress: string | null;
 }
 
-export default function EditorContainer<R, SR = never>({
+export default function EditorContainer<R, SR>({
   rowIdx,
   column,
   row,

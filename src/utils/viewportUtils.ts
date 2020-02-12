@@ -1,6 +1,6 @@
 import { CalculatedColumn, ColumnMetrics } from '../common/types';
 
-function getTotalFrozenColumnWidth<R, SR = never>(columns: readonly CalculatedColumn<R, SR>[], lastFrozenColumnIndex: number): number {
+function getTotalFrozenColumnWidth<R, SR>(columns: readonly CalculatedColumn<R, SR>[], lastFrozenColumnIndex: number): number {
   if (lastFrozenColumnIndex === -1) {
     return 0;
   }
@@ -25,12 +25,12 @@ export function getVerticalRangeToRender(
   return [rowOverscanStartIdx, rowOverscanEndIdx] as const;
 }
 
-export interface HorizontalRangeToRenderParams<R, SR = never> {
+export interface HorizontalRangeToRenderParams<R, SR> {
   columnMetrics: ColumnMetrics<R, SR>;
   scrollLeft: number;
 }
 
-export function getHorizontalRangeToRender<R, SR = never>({
+export function getHorizontalRangeToRender<R, SR>({
   columnMetrics,
   scrollLeft
 }: HorizontalRangeToRenderParams<R, SR>): [number, number] {
@@ -78,7 +78,7 @@ export function getHorizontalRangeToRender<R, SR = never>({
   return [colOverscanStartIdx, colOverscanEndIdx];
 }
 
-export function getViewportColumns<R, SR = never>(columns: readonly CalculatedColumn<R, SR>[], colOverscanStartIdx: number, colOverscanEndIdx: number) {
+export function getViewportColumns<R, SR>(columns: readonly CalculatedColumn<R, SR>[], colOverscanStartIdx: number, colOverscanEndIdx: number) {
   const viewportColumns: CalculatedColumn<R, SR>[] = [];
   for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
     const column = columns[colIdx];

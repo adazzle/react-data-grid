@@ -1,7 +1,7 @@
 import { Column, CalculatedColumn, ColumnMetrics, FormatterProps, Omit } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
-interface Metrics<R, SR = never> {
+interface Metrics<R, SR> {
   columns: readonly Column<R, SR>[];
   columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
@@ -9,7 +9,7 @@ interface Metrics<R, SR = never> {
   defaultFormatter: React.ComponentType<FormatterProps<R, SR>>;
 }
 
-export function getColumnMetrics<R, SR = never>(metrics: Metrics<R, SR>): ColumnMetrics<R, SR> {
+export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<R, SR> {
   let left = 0;
   let totalWidth = 0;
   let allocatedWidths = 0;
@@ -64,7 +64,7 @@ export function getColumnMetrics<R, SR = never>(metrics: Metrics<R, SR>): Column
   };
 }
 
-function getSpecifiedWidth<R, SR = never>(
+function getSpecifiedWidth<R, SR>(
   column: Column<R, SR>,
   columnWidths: ReadonlyMap<string, number>,
   viewportWidth: number,
@@ -84,14 +84,14 @@ function getSpecifiedWidth<R, SR = never>(
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to decide whether we can be editing from a cell level
-export function canEdit<R, SR = never>(column: CalculatedColumn<R, SR>, row: R): boolean {
+export function canEdit<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   if (typeof column.editable === 'function') {
     return column.editable(row);
   }
   return Boolean(column.editor || column.editable);
 }
 
-export function getColumnScrollPosition<R, SR = never>(columns: readonly CalculatedColumn<R, SR>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
+export function getColumnScrollPosition<R, SR>(columns: readonly CalculatedColumn<R, SR>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;
 

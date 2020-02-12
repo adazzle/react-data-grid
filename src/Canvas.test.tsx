@@ -14,7 +14,7 @@ interface Row {
 
 const noop = () => null;
 
-const testProps: CanvasProps<Row, 'id'> = {
+const testProps: CanvasProps<Row, 'id', unknown> = {
   rowKey: 'id',
   rowHeight: 25,
   height: 200,
@@ -50,8 +50,8 @@ const testProps: CanvasProps<Row, 'id'> = {
   scrollLeft: 0
 };
 
-function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {
-  return mount(<Canvas<Row, 'id'> {...testProps} {...extraProps} />);
+function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id', unknown>>) {
+  return mount(<Canvas<Row, 'id', unknown> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas', () => {

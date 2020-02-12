@@ -15,7 +15,7 @@ describe('HeaderCell', () => {
   }
 
   function setup(overrideProps = {}, columnProps = {}) {
-    const props: HeaderCellProps<Row> = {
+    const props: HeaderCellProps<Row, unknown> = {
       column: {
         idx: 0,
         key: 'bla',
@@ -35,7 +35,7 @@ describe('HeaderCell', () => {
       scrollLeft: undefined,
       ...overrideProps
     };
-    const wrapper = mount(<HeaderCell<Row> {...props} />);
+    const wrapper = mount(<HeaderCell {...props} />);
     return { wrapper, props };
   }
 

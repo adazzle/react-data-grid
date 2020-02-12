@@ -6,7 +6,7 @@ import { CanvasProps } from './Canvas';
 import { RowRendererProps, RowData } from './common/types';
 import EventBus from './EventBus';
 
-type SharedCanvasProps<R, SR = never> = Pick<CanvasProps<R, never, SR>,
+type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
 | 'columnMetrics'
 | 'viewportColumns'
 | 'rowGroupRenderer'
@@ -16,7 +16,7 @@ type SharedCanvasProps<R, SR = never> = Pick<CanvasProps<R, never, SR>,
 | 'onRowExpandToggle'
 >;
 
-interface IRowRendererProps<R, SR = never> extends SharedCanvasProps<R, SR> {
+interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {
   rowIdx: number;
   row: R;
   scrollLeft: number | undefined;
@@ -25,7 +25,7 @@ interface IRowRendererProps<R, SR = never> extends SharedCanvasProps<R, SR> {
   isRowSelected: boolean;
 }
 
-function RowRenderer<R, SR = never>({
+function RowRenderer<R, SR>({
   columnMetrics,
   viewportColumns,
   eventBus,
@@ -73,4 +73,4 @@ function RowRenderer<R, SR = never>({
   return React.createElement<RowRendererProps<R, SR>>(rowRenderer || Row, rendererProps);
 }
 
-export default memo(RowRenderer) as <R, SR = never>(props: IRowRendererProps<R, SR>) => JSX.Element;
+export default memo(RowRenderer) as <R, SR>(props: IRowRendererProps<R, SR>) => JSX.Element;

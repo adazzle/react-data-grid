@@ -26,7 +26,3 @@ export const SelectColumn: Column<any, any> = {
     );
   }
 };
-
-export function getSelectColumn<TRow, TSummaryRow = never>() {
-  return SelectColumn as Column<TRow, TSummaryRow>;
-}

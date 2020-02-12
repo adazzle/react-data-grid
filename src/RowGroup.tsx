@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react';
 import { RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
 import EventBus from './EventBus';
 
-interface Props<R, SR = never> {
+interface Props<R, SR> {
   height: number;
   row: unknown;
   cellRenderer?: React.ComponentType<CellRendererProps<R, SR>>;

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { CellRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
 
-function Cell<R, SR = never>({
+function Cell<R, SR>({
   children,
   className,
   column,
@@ -109,4 +109,4 @@ function Cell<R, SR = never>({
   );
 }
 
-export default memo(Cell) as <R, SR = never>(props: CellRendererProps<R, SR>) => JSX.Element;
+export default memo(Cell) as <R, SR = unknown>(props: CellRendererProps<R, SR>) => JSX.Element;
