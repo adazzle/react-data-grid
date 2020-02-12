@@ -4,7 +4,7 @@ import React, { memo } from 'react';
 import SummaryCell from './SummaryCell';
 import { RowRendererProps } from './common/types';
 
-type SharedRowRendererProps<TRow, TSummaryRow> = Pick<RowRendererProps<TRow, TSummaryRow>,
+type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
   | 'height'
   | 'width'
   | 'viewportColumns'
@@ -13,8 +13,8 @@ type SharedRowRendererProps<TRow, TSummaryRow> = Pick<RowRendererProps<TRow, TSu
   | 'scrollLeft'
 >;
 
-interface SummaryRowProps<TRow, TSummaryRow> extends SharedRowRendererProps<TRow, TSummaryRow> {
-  row: TSummaryRow;
+interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
+  row: SR;
 }
 
 function SummaryRow<R, SR>({

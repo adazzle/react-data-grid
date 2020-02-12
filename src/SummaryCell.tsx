@@ -3,15 +3,15 @@ import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
 
-type SharedCellRendererProps<TRow, TSummaryRow> = Pick<CellRendererProps<TRow, TSummaryRow>,
+type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'idx'
   | 'lastFrozenColumnIndex'
   | 'scrollLeft'
   | 'column'
 >;
 
-interface SummaryCellProps<TRow, TSummaryRow> extends SharedCellRendererProps<TRow, TSummaryRow> {
-  row: TSummaryRow;
+interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
+  row: SR;
 }
 
 function SummaryCell<R, SR>({
