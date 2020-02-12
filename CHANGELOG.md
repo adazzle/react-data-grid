@@ -54,6 +54,7 @@
   - ⚠️ `column.filterable`
   - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`
   - ⚠️ `fromRowId`, `toRowId`, and `fromRowData` from `onRowsUpdate` argument
+  - ⚠️ Stopped exporting `HeaderCell`
 - **Renamed:**
   - ⚠️ `minHeight` to `height`
   - ⚠️ `minWidth` to `width`
