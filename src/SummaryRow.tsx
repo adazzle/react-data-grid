@@ -38,7 +38,6 @@ function SummaryRow<R, SR>({
       {viewportColumns.map(column => (
         <SummaryCell<R, SR>
           key={column.key}
-          idx={column.idx}
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}

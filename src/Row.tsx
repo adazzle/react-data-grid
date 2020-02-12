@@ -40,7 +40,6 @@ export default function Row<R, SR = unknown>({
       return (
         <CellRenderer
           key={column.key}
-          idx={column.idx}
           rowIdx={rowIdx}
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}

@@ -8,7 +8,6 @@ function Cell<R, SR>({
   children,
   className,
   column,
-  idx,
   isRowSelected,
   lastFrozenColumnIndex,
   row,
@@ -26,7 +25,7 @@ function Cell<R, SR>({
   ...props
 }: CellRendererProps<R, SR>) {
   function selectCell(openEditor?: boolean) {
-    eventBus.dispatch('SELECT_CELL', { idx, rowIdx }, openEditor);
+    eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
   }
 
   function handleCellClick() {
@@ -35,7 +34,7 @@ function Cell<R, SR>({
   }
 
   function handleCellMouseDown() {
-    eventBus.dispatch('SELECT_START', { idx, rowIdx });
+    eventBus.dispatch('SELECT_START', { idx: column.idx, rowIdx });
 
     function handleWindowMouseUp() {
       eventBus.dispatch('SELECT_END');
@@ -46,7 +45,7 @@ function Cell<R, SR>({
   }
 
   function handleCellMouseEnter() {
-    eventBus.dispatch('SELECT_UPDATE', { idx, rowIdx });
+    eventBus.dispatch('SELECT_UPDATE', { idx: column.idx, rowIdx });
   }
 
   function handleCellContextMenu() {
