@@ -4,7 +4,7 @@ import { Column } from './common/types';
 
 // TODO: fix type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const SelectColumn: Column<any> = {
+export const SelectColumn: Column<any, any> = {
   key: 'select-row',
   name: '',
   width: 35,
@@ -18,7 +18,7 @@ export const SelectColumn: Column<any> = {
     );
   },
   formatter(props) {
-    return props.isSummaryRow ? null : (
+    return (
       <SelectCellFormatter
         value={props.isRowSelected}
         onChange={props.onRowSelectionChange}

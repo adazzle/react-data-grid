@@ -5,7 +5,7 @@ import { CalculatedColumn } from './common/types';
 import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
+type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
 | 'draggableHeaderCell'
 | 'rows'
 | 'onHeaderDrop'
@@ -16,24 +16,24 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 | 'rowKey'
 >;
 
-export interface HeaderRowProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
+export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
-  columns: readonly CalculatedColumn<R>[];
+  columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   scrollLeft: number | undefined;
-  onColumnResize(column: CalculatedColumn<R>, width: number): void;
+  onColumnResize(column: CalculatedColumn<R, SR>, width: number): void;
 }
 
-export default function HeaderRow<R, K extends keyof R>({
+export default function HeaderRow<R, K extends keyof R, SR>({
   height,
   width,
   onSelectedRowsChange,
   rowKey,
   rows,
   ...props
-}: HeaderRowProps<R, K>) {
+}: HeaderRowProps<R, K, SR>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
 
@@ -56,7 +56,7 @@ export default function HeaderRow<R, K extends keyof R>({
     >
       {props.columns.map(column => {
         return (
-          <HeaderCell<R>
+          <HeaderCell<R, SR>
             key={column.key}
             column={column}
             lastFrozenColumnIndex={props.lastFrozenColumnIndex}
