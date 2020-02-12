@@ -123,7 +123,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow> {
 }
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
-  idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
