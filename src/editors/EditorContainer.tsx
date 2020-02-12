@@ -8,19 +8,19 @@ import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R> = Pick<InteractionMasksProps<R>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R, SR> = Pick<InteractionMasksProps<R, SR>, 'scrollLeft' | 'scrollTop'>;
 
-export interface EditorContainerProps<R> extends SharedInteractionMasksProps<R>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps<R, SR>, Omit<Dimension, 'zIndex'> {
   rowIdx: number;
   row: R;
-  column: CalculatedColumn<R>;
+  column: CalculatedColumn<R, SR>;
   onGridKeyDown?(e: KeyboardEvent): void;
   onCommit(e: CommitEvent): void;
   onCommitCancel(): void;
   firstEditorKeyPress: string | null;
 }
 
-export default function EditorContainer<R>({
+export default function EditorContainer<R, SR>({
   rowIdx,
   column,
   row,
@@ -33,7 +33,7 @@ export default function EditorContainer<R>({
   scrollLeft,
   scrollTop,
   firstEditorKeyPress: key
-}: EditorContainerProps<R>) {
+}: EditorContainerProps<R, SR>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
   const prevScrollLeft = useRef(scrollLeft);
@@ -144,7 +144,7 @@ export default function EditorContainer<R>({
     return (
       <SimpleTextEditor
         ref={editorRef as unknown as React.RefObject<SimpleTextEditor>}
-        column={column as CalculatedColumn<unknown>}
+        column={column}
         value={getInitialValue() as string}
         onCommit={commit}
       />

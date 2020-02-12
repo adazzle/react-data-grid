@@ -5,7 +5,6 @@ import InteractionMasks from './masks/InteractionMasks';
 import Canvas, { CanvasProps } from './Canvas';
 import { CellNavigationMode } from './common/enums';
 import { CalculatedColumn } from './common/types';
-import RowComponent from './Row';
 import { ValueFormatter } from './formatters';
 
 interface Row {
@@ -15,7 +14,7 @@ interface Row {
 
 const noop = () => null;
 
-const testProps: CanvasProps<Row, 'id'> = {
+const testProps: CanvasProps<Row, 'id', unknown> = {
   rowKey: 'id',
   rowHeight: 25,
   height: 200,
@@ -51,8 +50,8 @@ const testProps: CanvasProps<Row, 'id'> = {
   scrollLeft: 0
 };
 
-function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id'>>) {
-  return mount(<Canvas<Row, 'id'> {...testProps} {...extraProps} />);
+function renderComponent(extraProps?: Partial<CanvasProps<Row, 'id', unknown>>) {
+  return mount(<Canvas<Row, 'id', unknown> {...testProps} {...extraProps} />);
 }
 
 describe('Canvas', () => {
@@ -61,18 +60,6 @@ describe('Canvas', () => {
 
     expect(wrapper.find(InteractionMasks).props()).toMatchObject({
       rowHeight: 25
-    });
-  });
-
-  describe('Row Selection', () => {
-    it('renders row selected', () => {
-      const wrapper = renderComponent({
-        rows: [{ id: 0, row: 'one' }],
-        rowKey: 'id',
-        selectedRows: new Set([0])
-      });
-
-      expect(wrapper.find(RowComponent).props().isRowSelected).toBe(true);
     });
   });
 

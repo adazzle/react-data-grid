@@ -5,7 +5,7 @@ import Cell from './Cell';
 import { RowRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
 
-export default function Row<R>({
+export default function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
   className,
   enableCellRangeSelection,
@@ -13,7 +13,6 @@ export default function Row<R>({
   height,
   rowIdx,
   isRowSelected,
-  isSummaryRow,
   lastFrozenColumnIndex,
   onRowClick,
   row,
@@ -24,7 +23,7 @@ export default function Row<R>({
   onDragOver,
   onDrop,
   ...props
-}: RowRendererProps<R>) {
+}: RowRendererProps<R, SR>) {
   function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
     event.preventDefault();
@@ -48,7 +47,6 @@ export default function Row<R>({
           row={row}
           scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
-          isSummaryRow={isSummaryRow}
           eventBus={eventBus}
           onRowClick={onRowClick}
           enableCellRangeSelection={enableCellRangeSelection}
@@ -71,9 +69,9 @@ export default function Row<R>({
     <div
       className={className}
       style={{ width, height }}
-      onDragEnter={isSummaryRow ? onDragEnter : wrapEvent(handleDragEnter, onDragEnter)}
-      onDragOver={isSummaryRow ? onDragOver : wrapEvent(handleDragOver, onDragOver)}
-      onDrop={isSummaryRow ? onDrop : wrapEvent(preventDefault, onDrop)}
+      onDragEnter={wrapEvent(handleDragEnter, onDragEnter)}
+      onDragOver={wrapEvent(handleDragOver, onDragOver)}
+      onDrop={wrapEvent(preventDefault, onDrop)}
       {...props}
     >
       {getCells()}

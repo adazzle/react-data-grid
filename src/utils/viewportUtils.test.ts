@@ -45,7 +45,7 @@ describe('getVerticalRangeToRender', () => {
 });
 
 describe('getHorizontalRangeToRender', () => {
-  function getColumnMetrics(): ColumnMetrics<Row> {
+  function getColumnMetrics(): ColumnMetrics<Row, unknown> {
     const columns = [...Array(500).keys()].map(i => ({
       idx: i,
       key: `col${i}`,
@@ -62,7 +62,7 @@ describe('getHorizontalRangeToRender', () => {
     };
   }
 
-  function getRange<K extends keyof HorizontalRangeToRenderParams<Row>>(overrides: Pick<HorizontalRangeToRenderParams<Row>, K>) {
+  function getRange<K extends keyof HorizontalRangeToRenderParams<Row, unknown>>(overrides: Pick<HorizontalRangeToRenderParams<Row, unknown>, K>) {
     return getHorizontalRangeToRender({
       columnMetrics: getColumnMetrics(),
       scrollLeft: 200,

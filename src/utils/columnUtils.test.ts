@@ -28,7 +28,7 @@ describe('getColumnMetrics', () => {
 
   it('should set the unset column widths based on the total width', () => {
     const columns = getInitialColumns();
-    const metrics = getColumnMetrics({
+    const metrics = getColumnMetrics<Row, unknown>({
       columns,
       viewportWidth,
       minColumnWidth: 50,
@@ -43,7 +43,7 @@ describe('getColumnMetrics', () => {
 
   it('should set the column left based on the column widths', () => {
     const columns = getInitialColumns();
-    const metrics = getColumnMetrics({
+    const metrics = getColumnMetrics<Row, unknown>({
       columns,
       viewportWidth,
       minColumnWidth: 50,
@@ -62,7 +62,7 @@ describe('getColumnMetrics', () => {
     const thirdFrozenColumn: Column<Row> = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
     const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
     columns.splice(2, 0, firstFrozenColumn);
-    const metrics = getColumnMetrics({
+    const metrics = getColumnMetrics<Row, unknown>({
       columns,
       viewportWidth,
       minColumnWidth: 50,

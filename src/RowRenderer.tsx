@@ -6,7 +6,7 @@ import { CanvasProps } from './Canvas';
 import { RowRendererProps, RowData } from './common/types';
 import EventBus from './EventBus';
 
-type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
+type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
 | 'columnMetrics'
 | 'viewportColumns'
 | 'rowGroupRenderer'
@@ -16,7 +16,7 @@ type SharedCanvasProps<R> = Pick<CanvasProps<R, never>,
 | 'onRowExpandToggle'
 >;
 
-interface IRowRendererProps<R> extends SharedCanvasProps<R> {
+interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {
   rowIdx: number;
   row: R;
   scrollLeft: number | undefined;
@@ -25,7 +25,7 @@ interface IRowRendererProps<R> extends SharedCanvasProps<R> {
   isRowSelected: boolean;
 }
 
-function RowRenderer<R>({
+function RowRenderer<R, SR>({
   columnMetrics,
   viewportColumns,
   eventBus,
@@ -36,9 +36,9 @@ function RowRenderer<R>({
   rowRenderer,
   scrollLeft,
   ...props
-}: IRowRendererProps<R>) {
+}: IRowRendererProps<R, SR>) {
   const { __metaData } = row as RowData;
-  const rendererProps: RowRendererProps<R> = {
+  const rendererProps: RowRendererProps<R, SR> = {
     rowIdx,
     row,
     width: columnMetrics.totalColumnWidth,
@@ -47,7 +47,6 @@ function RowRenderer<R>({
     isRowSelected: props.isRowSelected,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
     scrollLeft,
-    isSummaryRow: false,
     eventBus,
     onRowClick: props.onRowClick,
     enableCellRangeSelection: props.enableCellRangeSelection
@@ -59,7 +58,7 @@ function RowRenderer<R>({
     }
     if (__metaData.isGroup) {
       return (
-        <RowGroup<R>
+        <RowGroup<R, SR>
           {...rendererProps}
           {...__metaData!}
           name={(row as RowData).name!}
@@ -71,7 +70,7 @@ function RowRenderer<R>({
     }
   }
 
-  return React.createElement<RowRendererProps<R>>(rowRenderer || Row, rendererProps);
+  return React.createElement<RowRendererProps<R, SR>>(rowRenderer || Row, rendererProps);
 }
 
-export default memo(RowRenderer) as <R>(props: IRowRendererProps<R>) => JSX.Element;
+export default memo(RowRenderer) as <R, SR>(props: IRowRendererProps<R, SR>) => JSX.Element;
