@@ -13,11 +13,11 @@ type SharedRowRendererProps<TRow, TSummaryRow> = Pick<RowRendererProps<TRow, TSu
   | 'scrollLeft'
 >;
 
-export interface SummaryRowProps<TRow, TSummaryRow> extends SharedRowRendererProps<TRow, TSummaryRow> {
+interface SummaryRowProps<TRow, TSummaryRow> extends SharedRowRendererProps<TRow, TSummaryRow> {
   row: TSummaryRow;
 }
 
-export function SummaryRow<R, SR>({
+function SummaryRow<R, SR>({
   height,
   rowIdx,
   lastFrozenColumnIndex,
@@ -39,7 +39,6 @@ export function SummaryRow<R, SR>({
         <SummaryCell<R, SR>
           key={column.key}
           idx={column.idx}
-          rowIdx={rowIdx}
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}

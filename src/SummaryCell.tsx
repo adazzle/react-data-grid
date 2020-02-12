@@ -3,7 +3,14 @@ import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
 
-export interface SummaryCellProps<TRow, TSummaryRow> extends Pick<CellRendererProps<TRow, TSummaryRow>, 'idx' | 'rowIdx' | 'lastFrozenColumnIndex' | 'scrollLeft' | 'column'> {
+type SharedCellRendererProps<TRow, TSummaryRow> = Pick<CellRendererProps<TRow, TSummaryRow>,
+  | 'idx'
+  | 'lastFrozenColumnIndex'
+  | 'scrollLeft'
+  | 'column'
+>;
+
+interface SummaryCellProps<TRow, TSummaryRow> extends SharedCellRendererProps<TRow, TSummaryRow> {
   row: TSummaryRow;
 }
 
@@ -11,7 +18,6 @@ function SummaryCell<R, SR>({
   column,
   lastFrozenColumnIndex,
   row,
-  rowIdx,
   scrollLeft
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, frozen, idx, width, left, summaryCellClass } = column;
@@ -32,7 +38,7 @@ function SummaryCell<R, SR>({
 
   return (
     <div className={className} style={style}>
-      {SummaryFormatter && <SummaryFormatter rowIdx={rowIdx} column={column} row={row} />}
+      {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>
   );
 }

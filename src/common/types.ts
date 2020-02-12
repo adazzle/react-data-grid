@@ -100,7 +100,8 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   onRowSelectionChange(checked: boolean, isShiftClick: boolean): void;
 }
 
-export interface SummaryFormatterProps<TSummaryRow, TRow = any> extends Pick<FormatterProps<TRow, TSummaryRow>, 'rowIdx' | 'column'> {
+export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
 }
 
