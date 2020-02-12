@@ -179,9 +179,9 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     formatter(props) {
       return <>{props.row.available ? '✔️' : '❌'}</>;
     },
-    summaryFormatter({ column, row: { yesCount, totalCount } }) {
+    summaryFormatter({ row: { yesCount, totalCount } }) {
       return (
-        <>{column.key === 'available' && <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>}</>
+        <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>
       );
     }
   }
