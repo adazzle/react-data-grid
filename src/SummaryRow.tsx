@@ -2,10 +2,18 @@ import classNames from 'classnames';
 import React, { memo } from 'react';
 
 import SummaryCell from './SummaryCell';
-import { RowRendererProps, CalculatedColumn } from './common/types';
+import { RowRendererProps } from './common/types';
 
-export interface SummaryRowProps<TRow, TSummaryRow> extends Pick<RowRendererProps<TRow, TSummaryRow>, | 'height' | 'rowIdx' |'lastFrozenColumnIndex' | 'scrollLeft' | 'width'> {
-  viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
+type SharedRowRendererProps<TRow, TSummaryRow> = Pick<RowRendererProps<TRow, TSummaryRow>,
+  | 'height'
+  | 'width'
+  | 'viewportColumns'
+  | 'rowIdx'
+  | 'lastFrozenColumnIndex'
+  | 'scrollLeft'
+>;
+
+export interface SummaryRowProps<TRow, TSummaryRow> extends SharedRowRendererProps<TRow, TSummaryRow> {
   row: TSummaryRow;
 }
 
@@ -29,7 +37,7 @@ export function SummaryRow<R, SR>({
     >
       {viewportColumns.map(column => (
         <SummaryCell<R, SR>
-          key={column.key as string} // FIXME: fix key type
+          key={column.key}
           idx={column.idx}
           rowIdx={rowIdx}
           column={column}
