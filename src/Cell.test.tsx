@@ -18,7 +18,6 @@ const defaultColumn: CalculatedColumn<Row> = {
 
 const testProps: CellRendererProps<Row> = {
   rowIdx: 0,
-  idx: 1,
   column: defaultColumn,
   lastFrozenColumnIndex: -1,
   row: { id: 1, description: 'Wicklow' },
@@ -63,7 +62,6 @@ describe('Cell', () => {
 
     const requiredProperties: CellRendererProps<Row> = {
       rowIdx: 18,
-      idx: 19,
       column: helpers.columns[0],
       lastFrozenColumnIndex: -1,
       row: helpers.rows[11],

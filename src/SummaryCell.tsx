@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { CellRendererProps } from './common/types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
-  | 'idx'
   | 'lastFrozenColumnIndex'
   | 'scrollLeft'
   | 'column'
@@ -20,12 +19,12 @@ function SummaryCell<R, SR>({
   row,
   scrollLeft
 }: SummaryCellProps<R, SR>) {
-  const { summaryFormatter: SummaryFormatter, frozen, idx, width, left, summaryCellClass } = column;
+  const { summaryFormatter: SummaryFormatter, width, left, summaryCellClass } = column;
   const className = classNames(
     'rdg-cell',
     {
-      'rdg-cell-frozen': frozen,
-      'rdg-cell-frozen-last': idx === lastFrozenColumnIndex
+      'rdg-cell-frozen': column.frozen,
+      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
     },
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
