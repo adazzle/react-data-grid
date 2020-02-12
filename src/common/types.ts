@@ -150,7 +150,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>): void;
 }
 
-export interface FilterRendererProps<TRow, TFilterValue, TSummaryRow> {
+export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   value: TFilterValue;
   onChange(value: TFilterValue): void;
