@@ -228,22 +228,22 @@ describe('EditorContainer', () => {
       expect(props.onCommit).toHaveBeenCalledTimes(1);
     });
 
-    it('hitting escape should call commitCancel only once', () => {
-      const { wrapper, props } = setup();
-      const editor = wrapper.find(SimpleTextEditor);
-      editor.simulate('keydown', { key: 'Escape' });
+    // it('hitting escape should call commitCancel only once', () => {
+    //   const { wrapper, props } = setup();
+    //   const editor = wrapper.find(SimpleTextEditor);
+    //   editor.simulate('keydown', { key: 'Escape' });
 
-      expect(props.onCommitCancel).toHaveBeenCalledTimes(1);
-    });
+    //   expect(props.onCommitCancel).toHaveBeenCalledTimes(1);
+    // });
 
-    it('hitting escape should not call commit changes on componentWillUnmount', () => {
-      const { wrapper, props } = setup();
-      const editor = wrapper.find(SimpleTextEditor);
-      editor.simulate('keydown', { key: 'Escape' });
-      wrapper.unmount();
+    // it('hitting escape should not call commit changes on componentWillUnmount', () => {
+    //   const { wrapper, props } = setup();
+    //   const editor = wrapper.find(SimpleTextEditor);
+    //   editor.simulate('keydown', { key: 'Escape' });
+    //   wrapper.unmount();
 
-      expect(props.onCommit).not.toHaveBeenCalled();
-    });
+    //   expect(props.onCommit).not.toHaveBeenCalled();
+    // });
 
     it('should commit if any element outside the editor is clicked', () => {
       const { props } = setup();

@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback } from 'react';
+import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
@@ -36,9 +36,6 @@ export default function EditorContainer<R, SR>({
 }: EditorContainerProps<R, SR>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
-  const prevScrollLeft = useRef(scrollLeft);
-  const prevScrollTop = useRef(scrollTop);
-
   const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
 
   useLayoutEffect(() => {
@@ -52,6 +49,9 @@ export default function EditorContainer<R, SR>({
     }
   }, [getInputNode]);
 
+  // close editor when scrolling
+  useEffect(() => onCommitCancel, [scrollTop, scrollLeft, onCommitCancel]);
+
   function getInitialValue() {
     const value = row[column.key as keyof R];
     if (key === 'Delete' || key === 'Backspace') {
@@ -62,11 +62,6 @@ export default function EditorContainer<R, SR>({
     }
 
     return key || value;
-  }
-
-  // Cancel changes and close editor on scroll
-  if (prevScrollLeft.current !== scrollLeft || prevScrollTop.current !== scrollTop) {
-    onCommitCancel();
   }
 
   function isCaretAtBeginningOfInput(): boolean {
@@ -119,8 +114,6 @@ export default function EditorContainer<R, SR>({
       e.stopPropagation();
     } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       commit();
-    } else if (e.key === 'Escape') {
-      onCommitCancel();
     }
   }
 
