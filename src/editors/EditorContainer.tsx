@@ -1,38 +1,34 @@
-import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
+import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback } from 'react';
 import classNames from 'classnames';
 import { Clear } from '@material-ui/icons';
 
-import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
+import { Editor } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
-import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
+import { EditorContainerWrapperProps } from './EditorContainerWrapper';
 
-type SharedInteractionMasksProps<R, SR> = Pick<InteractionMasksProps<R, SR>, 'scrollLeft' | 'scrollTop'>;
+type SharedEditorContainerProps<R, SR> = Pick<EditorContainerWrapperProps<R, SR>,
+  | 'rowIdx'
+  | 'column'
+  | 'row'
+  | 'onCommit'
+  | 'onCommitCancel'
+  | 'firstEditorKeyPress'
+>;
 
-export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps<R, SR>, Omit<Dimension, 'zIndex'> {
-  rowIdx: number;
-  row: R;
-  column: CalculatedColumn<R, SR>;
-  onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(e: CommitEvent): void;
-  onCommitCancel(): void;
-  firstEditorKeyPress: string | null;
+interface EditorContainerProps<R, SR> extends SharedEditorContainerProps<R, SR> {
+  style?: React.CSSProperties;
 }
 
 export default function EditorContainer<R, SR>({
   rowIdx,
   column,
   row,
-  width,
-  height,
-  left,
-  top,
   onCommit,
   onCommitCancel,
-  scrollLeft,
-  scrollTop,
-  firstEditorKeyPress: key
+  firstEditorKeyPress: key,
+  style
 }: EditorContainerProps<R, SR>) {
   const editorRef = useRef<Editor>(null);
   const [isValid, setValid] = useState(true);
@@ -48,9 +44,6 @@ export default function EditorContainer<R, SR>({
       inputNode.select();
     }
   }, [getInputNode]);
-
-  // close editor when scrolling
-  useEffect(() => onCommitCancel, [scrollTop, scrollLeft, onCommitCancel]);
 
   function getInitialValue() {
     const value = row[column.key as keyof R];
@@ -126,7 +119,6 @@ export default function EditorContainer<R, SR>({
           column={column}
           value={getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
           row={row}
-          height={height}
           onCommit={commit}
           onCommitCancel={onCommitCancel}
           onOverrideKeyDown={onKeyDown}
@@ -152,7 +144,7 @@ export default function EditorContainer<R, SR>({
     <ClickOutside onClickOutside={commit}>
       <div
         className={className}
-        style={{ height, width, left, top }}
+        style={style}
         onKeyDown={onKeyDown}
         onContextMenu={preventDefault}
       >

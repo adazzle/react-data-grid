@@ -36,6 +36,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   unsafe_onCellInput?(event: React.KeyboardEvent<HTMLDivElement>, row: TRow): unknown;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
+  editor2?: React.ComponentType<EditorProps2<unknown, TRow, TSummaryRow>>;
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
   /** Component to be used to filter the data of the column */
@@ -112,10 +113,18 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   value: TValue;
   row: TRow;
-  height: number;
   onCommit(): void;
   onCommitCancel(): void;
   onOverrideKeyDown(e: KeyboardEvent): void;
+}
+
+export interface EditorProps2<TValue, TRow = any, TSummaryRow = any> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  value: TValue;
+  row: TRow;
+  onChange(value: TValue): void;
+  onCommit(closeEditor?: boolean): void;
+  onCommitCancel(): void;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow> {

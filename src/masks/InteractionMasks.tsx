@@ -3,9 +3,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 // Components
 import CellMask from './CellMask';
 import DragMask, { DraggedPosition } from './DragMask';
-import EditorContainer from '../editors/EditorContainer';
-import EditorPortal from '../editors/EditorPortal';
-import { legacyCellInput } from '../editors/CellInputHandlers';
+import EditorContainerWrapper from '../editors/EditorContainerWrapper';
+import { defaultCellInput, legacyCellInput } from '../editors/CellInputHandlers';
 
 // Utils
 import {
@@ -111,17 +110,6 @@ export default function InteractionMasks<R, SR>({
     setDraggedPosition(null);
   }
 
-  function getEditorPosition() {
-    if (!canvasRef.current) return null;
-    const { left, top } = canvasRef.current.getBoundingClientRect();
-    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
-    const column = columns[selectedPosition.idx];
-    return {
-      left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
-      top: top + docTop + selectedPosition.rowIdx * rowHeight - scrollTop
-    };
-  }
-
   function getNextPosition(key: string, mode = cellNavigationMode, shiftKey = false) {
     const { idx, rowIdx } = selectedPosition;
     let nextPosition: Position;
@@ -155,30 +143,29 @@ export default function InteractionMasks<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    const { key } = event;
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
-    const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
+    const isTriggeredByUser = column.unsafe_onCellInput?.(event, row) === true;
 
-    const { key } = event;
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
       // event.key may be uppercase `C` or `V`
-      const lowerCaseKey = event.key.toLowerCase();
+      const lowerCaseKey = key.toLowerCase();
       if (lowerCaseKey === 'c') return handleCopy();
       if (lowerCaseKey === 'v') return handlePaste();
     }
 
-    const canOpenEditor = selectedPosition.status === 'SELECT' && isCellEditable(selectedPosition);
+    const isEditableInput = column.editor2 !== undefined
+      // TODO: should we skip checking defaultCellInput is user has canceled editing
+      ? defaultCellInput(event) || isTriggeredByUser
+      : legacyCellInput(event);
 
     switch (key) {
-      case 'Enter':
-        if (canOpenEditor) {
-          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key: 'Enter' }));
-        } else if (selectedPosition.status === 'EDIT') {
-          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
-        }
-        break;
       case 'Escape':
-        closeEditor();
+        if (selectedPosition.status === 'EDIT') {
+          // discard changes
+          closeEditor();
+        }
         setCopiedPosition(null);
         break;
       case 'Tab':
@@ -192,7 +179,7 @@ export default function InteractionMasks<R, SR>({
         selectCell(getNextPosition(key));
         break;
       default:
-        if (canOpenEditor && isActivatedByUser) {
+        if (selectedPosition.status === 'SELECT' && isEditableInput && isCellEditable(selectedPosition)) {
           setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
         }
         break;
@@ -259,6 +246,7 @@ export default function InteractionMasks<R, SR>({
   function selectCell(position: Position, enableEditor = false): void {
     if (!isCellWithinBounds(position)) return;
 
+    // TODO: commit pending changes before selecting new cell
     if (enableEditor && isCellEditable(position)) {
       setSelectedPosition({ ...position, status: 'EDIT', key: null });
     } else {
@@ -369,20 +357,19 @@ export default function InteractionMasks<R, SR>({
         </CellMask>
       )}
       {selectedPosition.status === 'EDIT' && isCellWithinBounds(selectedPosition) && (
-        <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R, SR>
-            firstEditorKeyPress={selectedPosition.key}
-            onCommit={onCommit}
-            onCommitCancel={closeEditor}
-            rowIdx={selectedPosition.rowIdx}
-            row={rows[selectedPosition.rowIdx]}
-            column={columns[selectedPosition.idx]}
-            scrollLeft={scrollLeft}
-            scrollTop={scrollTop}
-            {...getSelectedDimensions(selectedPosition)}
-            {...getEditorPosition()}
-          />
-        </EditorPortal>
+        <EditorContainerWrapper<R, SR>
+          column={columns[selectedPosition.idx]}
+          row={rows[selectedPosition.rowIdx]}
+          canvasRef={canvasRef}
+          editorPortalTarget={editorPortalTarget}
+          rowIdx={selectedPosition.rowIdx}
+          rowHeight={rowHeight}
+          scrollTop={scrollTop}
+          scrollLeft={scrollLeft}
+          firstEditorKeyPress={selectedPosition.key}
+          onCommit={onCommit}
+          onCommitCancel={closeEditor}
+        />
       )}
     </div>
   );
