@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [master, alpha, canary, cdsb]
+    branches: [master, alpha, canary]
   pull_request:
 
 jobs:
@@ -60,8 +60,8 @@ jobs:
         git checkout origin/gh-pages -- canary
         git commit -m "master storybook deployment"
         git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
-    - name: Deploy cdsb
-      if: github.ref == 'refs/heads/cdsb'
+    - name: Deploy canary
+      if: github.ref == 'refs/heads/canary'
       run: |
         git fetch origin gh-pages
         git checkout gh-pages
