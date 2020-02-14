@@ -57,4 +57,10 @@ jobs:
       run: npx gh-pages@^2 --dist storybook-static --dest canary
     - name: Deploy cdsb
       if: github.ref == 'refs/heads/cdsb'
-      run: npx gh-pages@^2 --dist storybook-static --dest cdsb
+      run: |
+        git checkout --orphan gh-pages-canary
+        git rm --cached $(git ls-files)
+        git add -f storybook-static
+        git mv storybook-static/* .
+        git commit -m "storybook deployment"
+        git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
