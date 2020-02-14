@@ -1,7 +1,7 @@
-name: CI
+name: CD
 on:
   push:
-    branches: [master, alpha, canary]
+    branches: [alpha, canary, cdsb]
 
 jobs:
   build:
@@ -19,16 +19,18 @@ jobs:
       with:
         path: node_modules/.cache
         key: build-${{ hashFiles('package.json') }}
-    - name: npm install
-      run: npm i
-    - name: Build storybook
-      run: npm run build-storybook
-    - name: Deploy master
-      if: github.ref == 'refs/heads/master'
-      run: npx gh-pages@&^2 --dist storybook-static
+    - name: Build
+      run: |
+        npm i
+        npm run build-storybook
+        git config user.email 'action@github.com'
+        git config user.name 'GitHub Action'
     - name: Deploy alpha
       if: github.ref == 'refs/heads/alpha'
-      run: npx gh-pages@&^2 --dist storybook-static --dest alpha
+      run: npx gh-pages@^2 --dist storybook-static --dest alpha
     - name: Deploy canary
       if: github.ref == 'refs/heads/canary'
-      run: npx gh-pages@&^2 --dist storybook-static --dest canary
+      run: npx gh-pages@^2 --dist storybook-static --dest canary
+    - name: Deploy cdsb
+      if: github.ref == 'refs/heads/cdsb'
+      run: npx gh-pages@^2 --dist storybook-static --dest cdsb
