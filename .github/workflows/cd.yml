@@ -1,0 +1,34 @@
+name: CI
+on:
+  push:
+    branches: [master, alpha, canary]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '13.x'
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: npm-${{ hashFiles('package.json') }}
+    - uses: actions/cache@v1
+      with:
+        path: node_modules/.cache
+        key: build-${{ hashFiles('package.json') }}
+    - name: npm install
+      run: npm i
+    - name: Build storybook
+      run: npm run build-storybook
+    - name: Deploy master
+      if: github.ref == 'refs/heads/master'
+      run: npx gh-pages@&^2 --dist storybook-static
+    - name: Deploy alpha
+      if: github.ref == 'refs/heads/alpha'
+      run: npx gh-pages@&^2 --dist storybook-static --dest alpha
+    - name: Deploy canary
+      if: github.ref == 'refs/heads/canary'
+      run: npx gh-pages@&^2 --dist storybook-static --dest canary
