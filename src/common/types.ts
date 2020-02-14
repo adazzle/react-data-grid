@@ -31,10 +31,12 @@ export interface Column<TRow, TSummaryRow = unknown> {
   sortable?: boolean;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
+  // TODO: Should we return an object to make it more powerful?
+  // { isEditable?: boolean, initialInput?: unknown } | undefined
+  unsafe_onCellInput?(event: React.KeyboardEvent<HTMLDivElement>, row: TRow): unknown;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
   /** Header renderer for each header cell */
-  // TODO: finalize API
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
