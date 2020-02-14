@@ -49,18 +49,24 @@ jobs:
       run: |
         git config --global user.email 'action@github.com'
         git config --global user.name 'GitHub Action'
-    - name: Deploy alpha
-      if: github.ref == 'refs/heads/alpha'
-      run: npx gh-pages@^2 --dist storybook-static --dest alpha
-    - name: Deploy canary
-      if: github.ref == 'refs/heads/canary'
-      run: npx gh-pages@^2 --dist storybook-static --dest canary
-    - name: Deploy cdsb
-      if: github.ref == 'refs/heads/cdsb'
+    - name: Deploy master
+      if: github.ref == 'refs/heads/master'
       run: |
-        git checkout --orphan gh-pages-canary
+        git checkout --orphan gh-pages
         git rm --cached $(git ls-files)
         git add -f storybook-static
         git mv storybook-static/* .
-        git commit -m "storybook deployment"
+        git fetch origin gh-pages
+        git checkout origin/gh-pages -- canary
+        git commit -m "master storybook deployment"
+        git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
+    - name: Deploy cdsb
+      if: github.ref == 'refs/heads/cdsb'
+      run: |
+        git fetch origin gh-pages
+        git checkout gh-pages
+        git rm -r --ignore-unmatch canary
+        mv storybook-static canary
+        git add canary
+        git commit -m "canary storybook deployment"
         git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
