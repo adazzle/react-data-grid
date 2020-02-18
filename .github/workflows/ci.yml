@@ -53,7 +53,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
         git fetch origin gh-pages
-        git worktree add gh-pages
+        git worktree add gh-pages gh-pages
         git rm -r .
         git checkout gh-pages -- canary
         mv ../storybook-static/* .
@@ -64,7 +64,7 @@ jobs:
       if: github.ref == 'refs/heads/canary'
       run: |
         git fetch origin gh-pages
-        git worktree add gh-pages
+        git worktree add gh-pages gh-pages
         cd gh-pages
         git rm -r --ignore-unmatch canary
         mv ../storybook-static canary
