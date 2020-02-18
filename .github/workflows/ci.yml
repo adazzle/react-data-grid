@@ -52,21 +52,22 @@ jobs:
     - name: Deploy master
       if: github.ref == 'refs/heads/master'
       run: |
-        git checkout --orphan gh-pages
-        git rm --cached $(git ls-files)
-        git add -f storybook-static
-        git mv storybook-static/* .
         git fetch origin gh-pages
-        git checkout origin/gh-pages -- canary
-        git commit -m "master storybook deployment"
+        git worktree add gh-pages
+        git rm -r .
+        git checkout gh-pages -- canary
+        mv ../storybook-static/* .
+        git add .
+        git commit --allow-empty -m "master storybook deployment"
         git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
     - name: Deploy canary
       if: github.ref == 'refs/heads/canary'
       run: |
         git fetch origin gh-pages
-        git checkout gh-pages
+        git worktree add gh-pages
+        cd gh-pages
         git rm -r --ignore-unmatch canary
-        mv storybook-static canary
+        mv ../storybook-static canary
         git add canary
-        git commit -m "canary storybook deployment"
+        git commit --allow-empty -m "canary storybook deployment"
         git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
