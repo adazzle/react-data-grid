@@ -262,7 +262,7 @@ const rules = {
   'no-class-assign': 0,
   'no-confusing-arrow': 0,
   'no-const-assign': 0,
-  'no-dupe-class-members': 0,
+  'no-dupe-class-members': 0, // replaced by @typescript-eslint/no-dupe-class-members
   'no-duplicate-imports': 1,
   'no-new-symbol': 0,
   'no-restricted-imports': 0,
@@ -299,7 +299,7 @@ const rules = {
   'react/forbid-foreign-prop-types': 0,
   'react/forbid-prop-types': 0,
   'react/function-component-definition': 0,
-  'react/no-access-state-in-setstate': 0, // TODO
+  'react/no-access-state-in-setstate': 2,
   'react/no-adjacent-inline-elements': 0,
   'react/no-array-index-key': 0,
   'react/no-children-prop': 0,
@@ -349,7 +349,7 @@ const rules = {
   'react/jsx-curly-newline': 1,
   'react/jsx-curly-spacing': 1,
   'react/jsx-equals-spacing': 1,
-  'react/jsx-filename-extension': [1, { extensions: ['.js', '.tsx'] }], // TODO: remove .js
+  'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
   'react/jsx-first-prop-new-line': 1,
   'react/jsx-fragments': 1,
   'react/jsx-handler-names': 0,
@@ -503,6 +503,7 @@ const rules = {
   '@typescript-eslint/no-this-alias': 0,
   '@typescript-eslint/no-throw-literal': 0,
   '@typescript-eslint/no-type-alias': 0,
+  '@typescript-eslint/no-unnecessary-boolean-literal-compare': 0,
   '@typescript-eslint/no-unnecessary-condition': 0,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
   '@typescript-eslint/no-unnecessary-type-arguments': 0,
@@ -523,6 +524,7 @@ const rules = {
   '@typescript-eslint/restrict-plus-operands': 0,
   '@typescript-eslint/restrict-template-expressions': 0,
   '@typescript-eslint/strict-boolean-expressions': 0,
+  '@typescript-eslint/switch-exhaustiveness-check': 0,
   '@typescript-eslint/triple-slash-reference': [2, { path: 'never', types: 'never', lib: 'never' }],
   '@typescript-eslint/type-annotation-spacing': 1,
   '@typescript-eslint/typedef': 0,
@@ -537,6 +539,7 @@ const rules = {
   '@typescript-eslint/func-call-spacing': 1,
   '@typescript-eslint/indent': [1, 2, { SwitchCase: 1, ignoredNodes: ['TSTypeParameterInstantiation'] }], // https://github.com/typescript-eslint/typescript-eslint/issues/455
   '@typescript-eslint/no-array-constructor': 2,
+  '@typescript-eslint/no-dupe-class-members': 0,
   '@typescript-eslint/no-empty-function': 0,
   '@typescript-eslint/no-extra-parens': [1, 'all', {
     nestedBinaryExpressions: false,
@@ -581,49 +584,48 @@ module.exports = {
   overrides: [{
     // TODO: remove
     files: [
-      'stories/**/*'
-    ],
-    env: {
-      browser: true
-    }
-  }, {
-    // TODO: remove
-    files: [
       '*.test.*'
     ],
     rules: {
       'sonarjs/no-identical-functions': 0
     }
   }, {
-    files: [
-      '*.js',
-      '*.mjs'
-    ],
-    rules: jsRules
+    files: ['*.mjs'],
+    env: {
+      node: true
+    },
+    globals: {
+      __dirname: 'off',
+      __filename: 'off',
+      exports: 'off',
+      module: 'off',
+      require: 'off'
+    },
+    rules: {
+      ...jsRules,
+      'no-console': 0,
+      'default-param-last': 2,
+      'no-buffer-constructor': 2,
+      '@typescript-eslint/prefer-optional-chain': 0 // TODO: enable once Node supports ?. and &&
+    }
   }, {
-    files: [
-      'babel.config.js',
-      'jest.config.js',
-      '*.mjs'
-    ],
+    files: ['*.cjs'],
+    parserOptions: {
+      sourceType: 'script'
+    },
     env: {
       node: true
     },
     rules: {
+      ...jsRules,
       'no-console': 0,
       'default-param-last': 2,
       'global-require': 1,
       'no-buffer-constructor': 2,
       'no-new-require': 2,
-      'no-path-concat': 1
-    }
-  }, {
-    files: [
-      'babel.config.js',
-      'jest.config.js'
-    ],
-    parserOptions: {
-      sourceType: 'script'
+      'no-path-concat': 1,
+      '@typescript-eslint/no-require-imports': 0,
+      '@typescript-eslint/prefer-optional-chain': 0 // TODO: enable once Node supports ?. and &&
     }
   }]
 };
