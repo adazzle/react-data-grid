@@ -1,5 +1,5 @@
 {
-  "version": "7.0.0-alpha.26",
+  "version": "7.0.0-alpha.27",
   "ignoreChanges": [
     "*.spec.*",
     "*.md"
