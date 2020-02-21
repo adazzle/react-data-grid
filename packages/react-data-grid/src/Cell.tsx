@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { forwardRef, memo } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps, ColumnEventInfo } from './common/types';
@@ -24,7 +24,7 @@ function Cell<R>({
   rowData,
   rowIdx,
   scrollLeft
-}: CellProps<R>) {
+}: CellProps<R>, ref: React.Ref<HTMLDivElement>) {
   function handleCellClick() {
     cellMetaData.onCellClick({ idx, rowIdx });
   }
@@ -120,6 +120,7 @@ function Cell<R>({
 
   return (
     <div
+      ref={ref}
       className={className}
       style={style}
       {...getEvents()}
@@ -139,4 +140,4 @@ function Cell<R>({
   );
 }
 
-export default memo(Cell) as <R>(props: CellProps<R>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R>(props: CellProps<R>) => JSX.Element;
