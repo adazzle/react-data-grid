@@ -93,6 +93,7 @@ function Cell<R, SR>({
 
   return (
     <div
+      ref={ref}
       className={className}
       style={style}
       onClick={wrapEvent(handleCellClick, onClick)}
