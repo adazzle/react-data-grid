@@ -30,3 +30,12 @@ export function isPositionStickySupported(): boolean {
   }
   return positionSticky;
 }
+
+export function wrapEvent<E extends React.SyntheticEvent>(ourHandler: React.EventHandler<E>, theirHandler: React.EventHandler<E> | undefined) {
+  if (theirHandler === undefined) return ourHandler;
+
+  return function(event: E) {
+    ourHandler(event);
+    theirHandler(event);
+  };
+}

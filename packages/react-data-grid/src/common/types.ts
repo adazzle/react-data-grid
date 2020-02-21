@@ -147,7 +147,7 @@ export interface HeaderRowProps<TRow> {
   onAllRowsSelectionChange(checked: boolean): void;
 }
 
-export interface CellRendererProps<TRow> {
+export interface CellRendererProps<TRow> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
   idx: number;
   rowIdx: number;
   column: CalculatedColumn<TRow>;
