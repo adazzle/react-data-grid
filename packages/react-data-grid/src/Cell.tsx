@@ -2,7 +2,7 @@ import React, { forwardRef, memo } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps, ColumnEventInfo } from './common/types';
-import { isFrozen } from './utils/columnUtils';
+import { isFrozen, wrapEvent } from './utils';
 
 export interface CellProps<R> extends CellRendererProps<R> {
   // TODO: Check if these props are required or not. These are most likely set by custom cell renderer
@@ -23,7 +23,8 @@ function Cell<R>({
   onRowSelectionChange,
   rowData,
   rowIdx,
-  scrollLeft
+  scrollLeft,
+  ...props
 }: CellProps<R>, ref: React.Ref<HTMLDivElement>) {
   function handleCellClick() {
     cellMetaData.onCellClick({ idx, rowIdx });
@@ -58,7 +59,7 @@ function Cell<R>({
     if (isSummaryRow) return null;
 
     const columnEvents = column.events;
-    const allEvents: { [key: string]: Function } = {
+    const allEvents: Record<string, Function> = {
       onClick: handleCellClick,
       onMouseDown: handleCellMouseDown,
       onMouseEnter: handleCellMouseEnter,
@@ -98,6 +99,16 @@ function Cell<R>({
     return allEvents;
   }
 
+  function wrapEvents(events: Record<string, Function> | null) {
+    for (const eventName in events) {
+      events[eventName] = wrapEvent(
+        events[eventName] as React.EventHandler<React.SyntheticEvent>,
+        (props as Record<string, Function>)[eventName] as React.EventHandler<React.SyntheticEvent>
+      );
+    }
+    return events;
+  }
+
   const colIsFrozen = isFrozen(column);
   className = classNames(
     column.cellClass,
@@ -123,7 +134,8 @@ function Cell<R>({
       ref={ref}
       className={className}
       style={style}
-      {...getEvents()}
+      {...props}
+      {...wrapEvents(getEvents())}
     >
       {children || column.cellContentRenderer({
         idx,
