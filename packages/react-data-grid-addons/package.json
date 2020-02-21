@@ -25,6 +25,8 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@material-ui/core": "^4.7.1",
+    "@material-ui/icons": "^4.5.1",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "react-contextmenu": "^2.13.0",
