@@ -1,4 +1,4 @@
-import React, { memo, createElement } from 'react';
+import React, { forwardRef, memo, createElement } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
@@ -23,7 +23,7 @@ function Cell<R, SR>({
   onMouseDown,
   onMouseEnter,
   ...props
-}: CellRendererProps<R, SR>) {
+}: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
   }
@@ -93,6 +93,7 @@ function Cell<R, SR>({
 
   return (
     <div
+      ref={ref}
       className={className}
       style={style}
       onClick={wrapEvent(handleCellClick, onClick)}
@@ -108,4 +109,4 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(Cell) as <R, SR = unknown>(props: CellRendererProps<R, SR>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR>) => JSX.Element;
