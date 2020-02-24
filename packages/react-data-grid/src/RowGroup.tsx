@@ -78,7 +78,7 @@ const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function Defaul
 
   return (
     <div
-      className="rdg-row-group"
+      className="rdg-row-default-group"
       style={{ height }}
       onKeyDown={onKeyDown}
       tabIndex={0}
