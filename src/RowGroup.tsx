@@ -41,7 +41,7 @@ export default forwardRef<HTMLDivElement, Props<any, any>>(function RowGroup(pro
   const Renderer = props.renderer || DefaultBase;
 
   return (
-    <div onClick={onClick}>
+    <div className="rdg-row-group" onClick={onClick}>
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
