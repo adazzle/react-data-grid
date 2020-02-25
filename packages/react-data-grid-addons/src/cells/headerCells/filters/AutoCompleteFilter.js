@@ -81,6 +81,7 @@ export default class AutoCompleteFilter extends React.Component {
         escapeClearsValue
         multi={this.props.multiSelection !== undefined && this.props.multiSelection !== null ? this.props.multiSelection : true}
         value={this.state.filters}
+        menuRenderer={this.props.menuRenderer}
       />
     );
   }
