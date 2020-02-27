@@ -44,7 +44,7 @@ npm install react-data-grid@alpha
 
 Migrations
 --------
-If you intend to do a major release update for you react-data-grid check [the migration documents](migrations).
+If you intend to do a major release update for you react-data-grid check [the migration documents](docs/migrations).
 
 Features
 --------
