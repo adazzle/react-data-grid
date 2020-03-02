@@ -14,23 +14,36 @@ $ yarn add react-data-grid
 ```
 
 ## Importing Data Grid Component
+
 Below is the minimum configuration required to import ReactDataGrid into your application.
+
+- Note CSS is no longer bundled and must be imported seperately
+
 ```typescript
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
+import 'react-data-grid/dist/react-data-grid.css';
 
 const columns = [
   { key: 'id', name: 'ID' },
   { key: 'title', name: 'Title' },
-  { key: 'count', name: 'Count' } ];
+  { key: 'count', name: 'Count' },
+];
 
-const rows = [{id: 0, title: 'row1', count: 20}, {id: 1, title: 'row1', count: 40}, {id: 2, title: 'row1', count: 60}];
+const rows = [
+  { id: 0, title: 'row1', count: 20 },
+  { id: 1, title: 'row1', count: 40 },
+  { id: 2, title: 'row1', count: 60 },
+];
 
 function HelloWorld() {
-  return (<ReactDataGrid
-  columns={columns}
-  rowGetter={i => rows[i]}
-  rowsCount={3}
-  minHeight={150} />);
+  return (
+    <ReactDataGrid
+      columns={columns}
+      rowGetter={i => rows[i]}
+      rowsCount={3}
+      minHeight={150}
+    />
+  );
 }
 ```
