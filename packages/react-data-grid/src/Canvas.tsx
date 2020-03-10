@@ -35,6 +35,7 @@ type SharedDataGridProps<R, K extends keyof R> = Pick<DataGridProps<R, K>,
 export interface CanvasProps<R, K extends keyof R> extends SharedDataGridProps<R, K> {
   columnMetrics: ColumnMetrics<R>;
   cellMetaData: CellMetaData<R>;
+  header: React.ReactElement;
   height: number;
   eventBus: EventBus;
   interactionMasksMetaData: InteractionMasksMetaData<R>;
@@ -55,6 +56,7 @@ export default function Canvas<R, K extends keyof R>({
   eventBus,
   getSubRowDetails,
   height,
+  header,
   interactionMasksMetaData,
   onCanvasKeydown,
   onCanvasKeyup,
@@ -244,6 +246,7 @@ export default function Canvas<R, K extends keyof R>({
         onKeyDown={onCanvasKeydown}
         onKeyUp={onCanvasKeyup}
       >
+        {header}
         <InteractionMasks<R, K>
           rowGetter={rowGetter}
           rowsCount={rowsCount}

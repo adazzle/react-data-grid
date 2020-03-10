@@ -420,26 +420,28 @@ function DataGrid<R, K extends keyof R>({
     >
       {columnMetrics && (
         <>
-          <Header<R, K>
-            ref={headerRef}
-            rowKey={rowKey}
-            rowsCount={rowsCount}
-            rowGetter={rowGetter}
-            columnMetrics={columnMetrics}
-            onColumnResize={handleColumnResize}
-            headerRows={headerRows}
-            sortColumn={props.sortColumn}
-            sortDirection={props.sortDirection}
-            draggableHeaderCell={props.draggableHeaderCell}
-            onSort={props.onGridSort}
-            onHeaderDrop={props.onHeaderDrop}
-            allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
-            onSelectedRowsChange={onSelectedRowsChange}
-            getValidFilterValues={props.getValidFilterValues}
-            cellMetaData={cellMetaData}
-          />
           {rowsCount === 0 && isValidElementType(props.emptyRowsView) ? createElement(props.emptyRowsView) : (
             <Canvas<R, K>
+              header={(
+                <Header<R, K>
+                  ref={headerRef}
+                  rowKey={rowKey}
+                  rowsCount={rowsCount}
+                  rowGetter={rowGetter}
+                  columnMetrics={columnMetrics}
+                  onColumnResize={handleColumnResize}
+                  headerRows={headerRows}
+                  sortColumn={props.sortColumn}
+                  sortDirection={props.sortDirection}
+                  draggableHeaderCell={props.draggableHeaderCell}
+                  onSort={props.onGridSort}
+                  onHeaderDrop={props.onHeaderDrop}
+                  allRowsSelected={selectedRows !== undefined && selectedRows.size === rowsCount}
+                  onSelectedRowsChange={onSelectedRowsChange}
+                  getValidFilterValues={props.getValidFilterValues}
+                  cellMetaData={cellMetaData}
+                />
+              )}
               rowKey={rowKey}
               rowHeight={rowHeight}
               rowRenderer={props.rowRenderer}
