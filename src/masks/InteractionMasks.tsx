@@ -114,7 +114,7 @@ export default function InteractionMasks<R, SR>({
   function getEditorPosition() {
     if (!canvasRef.current) return null;
     const { left, top } = canvasRef.current.getBoundingClientRect();
-    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
+    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement!;
     const column = columns[selectedPosition.idx];
     return {
       left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
