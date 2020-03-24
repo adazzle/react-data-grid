@@ -18,19 +18,6 @@ export function getScrollbarSize(): number {
   return size;
 }
 
-let positionSticky: boolean | undefined;
-
-export function isPositionStickySupported(): boolean {
-  if (positionSticky === undefined) {
-    const el = document.createElement('a');
-    const { style } = el;
-    style.cssText = 'position:-webkit-sticky;position:sticky';
-
-    positionSticky = style.position ? style.position.includes('sticky') : false;
-  }
-  return positionSticky;
-}
-
 export function preventDefault(event: React.SyntheticEvent) {
   event.preventDefault();
 }

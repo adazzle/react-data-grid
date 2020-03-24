@@ -9,7 +9,6 @@ describe('HeaderRow', () => {
   const defaultProps: HeaderRowProps<Row, 'id', unknown> = {
     rowKey: 'id',
     rows: [],
-    scrollLeft: 0,
     columns: helpers.columns,
     lastFrozenColumnIndex: -1,
     onColumnResize() { },
@@ -76,7 +75,6 @@ describe('HeaderRow', () => {
     const requiredProps: HeaderRowProps<Row, 'id', unknown> = {
       rowKey: 'id',
       rows: [],
-      scrollLeft: 0,
       width: 1000,
       height: 35,
       columns: helpers.columns,

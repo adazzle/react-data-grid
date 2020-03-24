@@ -22,7 +22,6 @@ const testProps: CellRendererProps<Row> = {
   lastFrozenColumnIndex: -1,
   row: { id: 1, description: 'Wicklow' },
   isRowSelected: false,
-  scrollLeft: 0,
   eventBus: new EventBus()
 };
 
@@ -66,7 +65,6 @@ describe('Cell', () => {
       lastFrozenColumnIndex: -1,
       row: helpers.rows[11],
       isRowSelected: false,
-      scrollLeft: 0,
       eventBus: new EventBus()
     };
 

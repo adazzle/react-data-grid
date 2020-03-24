@@ -276,12 +276,7 @@ export default function InteractionMasks<R, SR>({
     e.dataTransfer.effectAllowed = 'copy';
     // Setting data is required to make an element draggable in FF
     const transferData = JSON.stringify(selectedPosition);
-    try {
-      e.dataTransfer.setData('text/plain', transferData);
-    } catch (ex) {
-      // IE only supports 'text' and 'URL' for the 'type' argument
-      e.dataTransfer.setData('text', transferData);
-    }
+    e.dataTransfer.setData('text/plain', transferData);
     setDraggedPosition({ ...selectedPosition, overRowIdx: selectedPosition.rowIdx });
   }
 

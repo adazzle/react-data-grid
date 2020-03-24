@@ -32,7 +32,6 @@ describe('HeaderCell', () => {
       draggableHeaderCell: DraggableHeaderCell,
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
-      scrollLeft: undefined,
       ...overrideProps
     };
     const wrapper = mount(<HeaderCell {...props} />);

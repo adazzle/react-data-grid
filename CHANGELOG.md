@@ -19,6 +19,8 @@
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
 - **Removed:**
+  - **Support:**
+    - ⚠️ IE11
   - **Packages:**
     - ⚠️ `react-data-grid-addons`
   - **Props:**
