@@ -1,39 +1,63 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useMemo, useImperativeHandle, useEffect, forwardRef } from 'react';
 
-import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
+import { Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
+import HeaderRow from './HeaderRow';
+import FilterRow from './FilterRow';
 import RowRenderer from './RowRenderer';
 import SummaryRow from './SummaryRow';
-import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
+import {
+  assertIsValidKey,
+  getColumnMetrics,
+  getColumnScrollPosition,
+  getHorizontalRangeToRender,
+  getScrollbarSize,
+  getVerticalRangeToRender,
+  getViewportColumns,
+  isPositionStickySupported
+} from './utils';
 
 type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
-| 'rows'
-| 'rowRenderer'
-| 'rowGroupRenderer'
-| 'selectedRows'
-| 'summaryRows'
-| 'onCheckCellIsEditable'
-| 'onSelectedCellChange'
-| 'onSelectedCellRangeChange'
-| 'onRowClick'
-| 'onRowExpandToggle'
-| 'onSelectedRowsChange'
-| 'rowKey'
+  | 'columns'
+  | 'draggableHeaderCell'
+  | 'onCheckCellIsEditable'
+  | 'onColumnResize'
+  | 'onRowClick'
+  | 'onRowExpandToggle'
+  | 'onSelectedCellChange'
+  | 'onSelectedCellRangeChange'
+  | 'filters'
+  | 'onFiltersChange'
+  | 'onSelectedRowsChange'
+  | 'rowGroupRenderer'
+  | 'rowKey'
+  | 'onHeaderDrop'
+  | 'onSort'
+  | 'sortDirection'
+  | 'rowRenderer'
+  | 'rows'
+  | 'sortColumn'
+  | 'selectedRows'
+  | 'summaryRows'
 > & Required<Pick<DataGridProps<R, K, SR>,
-| 'enableCellAutoFocus'
-| 'enableCellCopyPaste'
-| 'enableCellDragAndDrop'
-| 'rowHeight'
-| 'cellNavigationMode'
-| 'editorPortalTarget'
-| 'onRowsUpdate'
+  | 'cellNavigationMode'
+  | 'defaultFormatter'
+  | 'editorPortalTarget'
+  | 'enableCellAutoFocus'
+  | 'enableCellCopyPaste'
+  | 'enableFilters'
+  | 'enableCellDragAndDrop'
+  | 'headerRowHeight'
+  | 'headerFiltersHeight'
+  | 'minColumnWidth'
+  | 'onRowsUpdate'
+  | 'rowHeight'
 >>;
 
 export interface CanvasProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
-  columnMetrics: ColumnMetrics<R, SR>;
-  viewportColumns: readonly CalculatedColumn<R, SR>[];
+  viewportWidth: number;
   height: number;
   scrollLeft: number;
   onScroll(position: ScrollPosition): void;
@@ -47,13 +71,16 @@ export interface CanvasHandle {
 }
 
 function Canvas<R, K extends keyof R, SR>({
-  columnMetrics,
-  viewportColumns,
+  viewportWidth,
   height,
+  minColumnWidth,
+  defaultFormatter,
   scrollLeft,
   onScroll,
+  columns: rawColumns,
   rows,
   rowHeight,
+  headerRowHeight,
   rowKey,
   summaryRows,
   selectedRows,
@@ -61,14 +88,39 @@ function Canvas<R, K extends keyof R, SR>({
   ...props
 }: CanvasProps<R, K, SR>, ref: React.Ref<CanvasHandle>) {
   const [eventBus] = useState(() => new EventBus());
+  const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [scrollTop, setScrollTop] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
-  const summaryRef = useRef<HTMLDivElement>(null);
   const lastSelectedRowIdx = useRef(-1);
-
-  const clientHeight = getClientHeight();
   const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
+
+  const columnMetrics = useMemo(() => {
+    return getColumnMetrics<R, SR>({
+      columns: rawColumns,
+      minColumnWidth,
+      viewportWidth,
+      columnWidths,
+      defaultFormatter
+    });
+  }, [columnWidths, rawColumns, defaultFormatter, minColumnWidth, viewportWidth]);
+
   const { columns, lastFrozenColumnIndex } = columnMetrics;
+  const clientHeight = getClientHeight();
+
+  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
+    return getHorizontalRangeToRender({
+      columnMetrics,
+      scrollLeft
+    });
+  }, [columnMetrics, scrollLeft]);
+
+  const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
+    return getViewportColumns(
+      columns,
+      colOverscanStartIdx,
+      colOverscanEndIdx
+    );
+  }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -81,9 +133,6 @@ function Canvas<R, K extends keyof R, SR>({
     const { scrollLeft, scrollTop } = e.currentTarget;
     setScrollTop(scrollTop);
     onScroll({ scrollLeft, scrollTop });
-    if (summaryRef.current) {
-      summaryRef.current.scrollLeft = scrollLeft;
-    }
   }
 
   function getClientHeight() {
@@ -95,6 +144,19 @@ function Canvas<R, K extends keyof R, SR>({
     if (lastFrozenColumnIndex === -1) return 0;
     const lastFrozenCol = columns[lastFrozenColumnIndex];
     return lastFrozenCol.left + lastFrozenCol.width;
+  }
+
+  function handleColumnResize(column: CalculatedColumn<R, SR>, width: number) {
+    const newColumnWidths = new Map(columnWidths);
+    const originalWidth = columns.find(col => col.key === column.key)!.width;
+    const minWidth = typeof originalWidth === 'number'
+      ? Math.min(originalWidth, minColumnWidth)
+      : minColumnWidth;
+    width = Math.max(width, minWidth);
+    newColumnWidths.set(column.key, width);
+    setColumnWidths(newColumnWidths);
+
+    props.onColumnResize?.(column.idx, width);
   }
 
   function scrollToCell({ idx, rowIdx }: Partial<Position>) {
@@ -215,64 +277,85 @@ function Canvas<R, K extends keyof R, SR>({
     return rowElements;
   }
 
-  const summary = summaryRows && summaryRows.length > 0 && (
-    <div ref={summaryRef} className="rdg-summary">
-      {summaryRows.map((row, rowIdx) => (
-        <SummaryRow<R, SR>
-          key={rowIdx}
-          rowIdx={rowIdx}
-          row={row}
+  return (
+    <div
+      className="rdg-viewport"
+      style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
+      ref={canvasRef}
+      onScroll={handleScroll}
+    >
+      <InteractionMasks<R, SR>
+        rows={rows}
+        rowHeight={rowHeight}
+        columns={columns}
+        height={clientHeight}
+        enableCellAutoFocus={props.enableCellAutoFocus}
+        enableCellCopyPaste={props.enableCellCopyPaste}
+        enableCellDragAndDrop={props.enableCellDragAndDrop}
+        cellNavigationMode={props.cellNavigationMode}
+        eventBus={eventBus}
+        canvasRef={canvasRef}
+        scrollLeft={scrollLeft}
+        scrollTop={scrollTop}
+        scrollToCell={scrollToCell}
+        editorPortalTarget={props.editorPortalTarget}
+        onCheckCellIsEditable={props.onCheckCellIsEditable}
+        onRowsUpdate={props.onRowsUpdate}
+        onSelectedCellChange={props.onSelectedCellChange}
+        onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+      />
+      <div
+        className="rdg-grid"
+        style={{
+          width: columnMetrics.totalColumnWidth,
+          paddingTop: rowOverscanStartIdx * rowHeight,
+          paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
+        }}
+      >
+        <HeaderRow<R, K, SR>
+          rowKey={rowKey}
+          rows={rows}
+          height={headerRowHeight}
           width={columnMetrics.totalColumnWidth + getScrollbarSize()}
-          height={rowHeight}
-          viewportColumns={viewportColumns}
+          columns={viewportColumns}
+          onColumnResize={handleColumnResize}
           lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+          draggableHeaderCell={props.draggableHeaderCell}
+          onHeaderDrop={props.onHeaderDrop}
+          allRowsSelected={selectedRows?.size === rows.length}
+          onSelectedRowsChange={onSelectedRowsChange}
+          sortColumn={props.sortColumn}
+          sortDirection={props.sortDirection}
+          onSort={props.onSort}
           scrollLeft={nonStickyScrollLeft}
         />
-      ))}
-    </div>
-  );
-
-  return (
-    <>
-      <div
-        className="rdg-viewport"
-        style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
-        ref={canvasRef}
-        onScroll={handleScroll}
-      >
-        <InteractionMasks<R, SR>
-          rows={rows}
-          rowHeight={rowHeight}
-          columns={columns}
-          height={clientHeight}
-          enableCellAutoFocus={props.enableCellAutoFocus}
-          enableCellCopyPaste={props.enableCellCopyPaste}
-          enableCellDragAndDrop={props.enableCellDragAndDrop}
-          cellNavigationMode={props.cellNavigationMode}
-          eventBus={eventBus}
-          canvasRef={canvasRef}
-          scrollLeft={scrollLeft}
-          scrollTop={scrollTop}
-          scrollToCell={scrollToCell}
-          editorPortalTarget={props.editorPortalTarget}
-          onCheckCellIsEditable={props.onCheckCellIsEditable}
-          onRowsUpdate={props.onRowsUpdate}
-          onSelectedCellChange={props.onSelectedCellChange}
-          onSelectedCellRangeChange={props.onSelectedCellRangeChange}
-        />
-        <div
-          className="rdg-grid"
-          style={{
-            width: columnMetrics.totalColumnWidth,
-            paddingTop: rowOverscanStartIdx * rowHeight,
-            paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
-          }}
-        >
-          {getViewportRows()}
-        </div>
+        {props.enableFilters && (
+          <FilterRow<R, SR>
+            headerRowHeight={headerRowHeight}
+            height={props.headerFiltersHeight}
+            width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+            lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+            columns={viewportColumns}
+            scrollLeft={nonStickyScrollLeft}
+            filters={props.filters}
+            onFiltersChange={props.onFiltersChange}
+          />
+        )}
+        {getViewportRows()}
+        {summaryRows?.map((row, rowIdx) => (
+          <SummaryRow<R, SR>
+            key={rowIdx}
+            rowIdx={rowIdx}
+            row={row}
+            width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+            height={rowHeight}
+            viewportColumns={viewportColumns}
+            lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+            scrollLeft={nonStickyScrollLeft}
+          />
+        ))}
       </div>
-      {summary}
-    </>
+    </div>
   );
 }
 

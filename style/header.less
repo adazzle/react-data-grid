@@ -1,15 +1,13 @@
 @import './variables.less';
 
-.rdg-header {
-  background: #f9f9f9;
-  overflow: hidden;
-  font-weight: bold;
-}
-
 .rdg-header-row {
-  position: relative;
-  background-color: inherit;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background-color: #f9f9f9;
+  font-weight: bold;
   .user-select();
+  z-index: 3;
 }
 
 // TODO: replace this with a pseudo-element once we drop support for IE11/Edge,

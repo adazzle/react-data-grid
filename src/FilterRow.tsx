@@ -2,14 +2,15 @@ import React, { createElement } from 'react';
 import classNames from 'classnames';
 
 import { CalculatedColumn, Filters } from './common/types';
-import { DataGridProps } from './DataGrid';
+import { CanvasProps } from './Canvas';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
-| 'filters'
-| 'onFiltersChange'
+type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
+  | 'filters'
+  | 'onFiltersChange'
+  | 'headerRowHeight'
 >;
 
-export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+export interface FilterRowProps<R, SR> extends SharedCanvasProps<R, SR> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
@@ -18,6 +19,7 @@ export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
 }
 
 export default function FilterRow<R, SR>({
+  headerRowHeight,
   height,
   width,
   columns,
@@ -35,7 +37,7 @@ export default function FilterRow<R, SR>({
   return (
     <div
       className="rdg-header-row"
-      style={{ width, height, lineHeight: `${height}px` }}
+      style={{ top: headerRowHeight, width, height, lineHeight: `${height}px` }}
     >
       {columns.map(column => {
         const { key } = column;

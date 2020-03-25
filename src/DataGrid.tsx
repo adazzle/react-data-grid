@@ -3,15 +3,11 @@ import React, {
   useState,
   useRef,
   useLayoutEffect,
-  useMemo,
   createElement
 } from 'react';
 
-import HeaderRow from './HeaderRow';
-import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { ValueFormatter } from './formatters';
-import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
 import { CellNavigationMode, SortDirection } from './common/enums';
 import {
   CalculatedColumn,
@@ -160,46 +156,10 @@ function DataGrid<R, K extends keyof R, SR>({
   onSelectedRowsChange,
   ...props
 }: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
-  const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [scrollLeft, setScrollLeft] = useState(0);
   const [gridWidth, setGridWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
-  const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
-
-  const columnMetrics = useMemo(() => {
-    if (viewportWidth <= 0) return null;
-
-    return getColumnMetrics<R, SR>({
-      columns,
-      minColumnWidth,
-      viewportWidth,
-      columnWidths,
-      defaultFormatter
-    });
-  }, [columnWidths, columns, defaultFormatter, minColumnWidth, viewportWidth]);
-
-  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
-    if (!columnMetrics) {
-      return [0, 0];
-    }
-
-    return getHorizontalRangeToRender({
-      columnMetrics,
-      scrollLeft
-    });
-  }, [columnMetrics, scrollLeft]);
-
-  const viewportColumns: readonly CalculatedColumn<R, SR>[] = useMemo(() => {
-    if (!columnMetrics) return [];
-
-    return getViewportColumns(
-      columnMetrics.columns,
-      colOverscanStartIdx,
-      colOverscanEndIdx
-    );
-  }, [colOverscanEndIdx, colOverscanStartIdx, columnMetrics]);
 
   useLayoutEffect(() => {
     // Do not calculate the width if width is provided
@@ -216,23 +176,7 @@ function DataGrid<R, K extends keyof R, SR>({
     };
   }, [width]);
 
-  function handleColumnResize(column: CalculatedColumn<R, SR>, width: number) {
-    const newColumnWidths = new Map(columnWidths);
-    const originalWidth = columns.find(col => col.key === column.key)!.width;
-    const minWidth = typeof originalWidth === 'number'
-      ? Math.min(originalWidth, minColumnWidth)
-      : minColumnWidth;
-    width = Math.max(width, minWidth);
-    newColumnWidths.set(column.key, width);
-    setColumnWidths(newColumnWidths);
-
-    props.onColumnResize?.(column.idx, width);
-  }
-
   function handleScroll(scrollPosition: ScrollPosition) {
-    if (headerRef.current) {
-      headerRef.current.scrollLeft = scrollPosition.scrollLeft;
-    }
     setScrollLeft(scrollPosition.scrollLeft);
     props.onScroll?.(scrollPosition);
   }
@@ -249,72 +193,40 @@ function DataGrid<R, K extends keyof R, SR>({
       style={{ width, lineHeight: `${rowHeight}px` }}
       ref={gridRef}
     >
-      {columnMetrics && (
-        <>
-          <div
-            ref={headerRef}
-            className="rdg-header"
-          >
-            <HeaderRow<R, K, SR>
-              rowKey={rowKey}
-              rows={rows}
-              height={headerRowHeight}
-              width={columnMetrics.totalColumnWidth + getScrollbarSize()}
-              columns={viewportColumns}
-              onColumnResize={handleColumnResize}
-              lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-              draggableHeaderCell={props.draggableHeaderCell}
-              onHeaderDrop={props.onHeaderDrop}
-              allRowsSelected={selectedRows?.size === rows.length}
-              onSelectedRowsChange={onSelectedRowsChange}
-              sortColumn={props.sortColumn}
-              sortDirection={props.sortDirection}
-              onSort={props.onSort}
-              scrollLeft={nonStickyScrollLeft}
-            />
-            {enableFilters && (
-              <FilterRow<R, SR>
-                height={headerFiltersHeight}
-                width={columnMetrics.totalColumnWidth + getScrollbarSize()}
-                lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-                columns={viewportColumns}
-                scrollLeft={nonStickyScrollLeft}
-                filters={props.filters}
-                onFiltersChange={props.onFiltersChange}
-              />
-            )}
-          </div>
-          {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
-            <Canvas<R, K, SR>
-              ref={ref}
-              rowKey={rowKey}
-              rowHeight={rowHeight}
-              rowRenderer={props.rowRenderer}
-              rows={rows}
-              selectedRows={selectedRows}
-              onSelectedRowsChange={onSelectedRowsChange}
-              columnMetrics={columnMetrics}
-              viewportColumns={viewportColumns}
-              onScroll={handleScroll}
-              height={height - rowOffsetHeight}
-              rowGroupRenderer={props.rowGroupRenderer}
-              enableCellAutoFocus={enableCellAutoFocus}
-              enableCellCopyPaste={enableCellCopyPaste}
-              enableCellDragAndDrop={enableCellDragAndDrop}
-              cellNavigationMode={cellNavigationMode}
-              scrollLeft={scrollLeft}
-              editorPortalTarget={editorPortalTarget}
-              summaryRows={props.summaryRows}
-              onCheckCellIsEditable={props.onCheckCellIsEditable}
-              onRowsUpdate={handleRowUpdate}
-              onSelectedCellChange={props.onSelectedCellChange}
-              onSelectedCellRangeChange={props.onSelectedCellRangeChange}
-              onRowClick={props.onRowClick}
-              onRowExpandToggle={props.onRowExpandToggle}
-            />
-          )}
-        </>
-      )}
+      {viewportWidth > 0 && (rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
+        <Canvas<R, K, SR>
+          ref={ref}
+          rowKey={rowKey}
+          rowHeight={rowHeight}
+          rowRenderer={props.rowRenderer}
+          columns={columns}
+          rows={rows}
+          minColumnWidth={minColumnWidth}
+          defaultFormatter={defaultFormatter}
+          selectedRows={selectedRows}
+          onSelectedRowsChange={onSelectedRowsChange}
+          onScroll={handleScroll}
+          viewportWidth={viewportWidth}
+          headerRowHeight={headerRowHeight}
+          headerFiltersHeight={headerFiltersHeight}
+          enableFilters={enableFilters}
+          height={height - rowOffsetHeight}
+          rowGroupRenderer={props.rowGroupRenderer}
+          enableCellAutoFocus={enableCellAutoFocus}
+          enableCellCopyPaste={enableCellCopyPaste}
+          enableCellDragAndDrop={enableCellDragAndDrop}
+          cellNavigationMode={cellNavigationMode}
+          scrollLeft={scrollLeft}
+          editorPortalTarget={editorPortalTarget}
+          summaryRows={props.summaryRows}
+          onCheckCellIsEditable={props.onCheckCellIsEditable}
+          onRowsUpdate={handleRowUpdate}
+          onSelectedCellChange={props.onSelectedCellChange}
+          onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+          onRowClick={props.onRowClick}
+          onRowExpandToggle={props.onRowExpandToggle}
+        />
+      ))}
     </div>
   );
 }

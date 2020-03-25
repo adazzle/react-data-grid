@@ -3,12 +3,10 @@ import React, { memo } from 'react';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { CanvasProps } from './Canvas';
-import { RowRendererProps, RowData } from './common/types';
+import { RowRendererProps, RowData, ColumnMetrics, CalculatedColumn } from './common/types';
 import EventBus from './EventBus';
 
 type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
-| 'columnMetrics'
-| 'viewportColumns'
 | 'rowGroupRenderer'
 | 'rowHeight'
 | 'rowRenderer'
@@ -17,6 +15,8 @@ type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
 >;
 
 interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {
+  columnMetrics: ColumnMetrics<R, SR>;
+  viewportColumns: readonly CalculatedColumn<R, SR>[];
   rowIdx: number;
   row: R;
   scrollLeft: number | undefined;
