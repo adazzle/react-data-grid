@@ -10,8 +10,12 @@ export interface Column<TRow, TSummaryRow = unknown> {
   name: string;
   /** A unique key to distinguish each column */
   key: string;
-  /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
+  /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
   width?: number | string;
+  /** Minimum column width in px. */
+  minWidth?: number;
+  /** Maximum column width in px. */
+  maxWidth?: number;
   cellClass?: string | ((row: TRow) => string);
   headerCellClass?: string;
   summaryCellClass?: string | ((row: TSummaryRow) => string);
