@@ -14,9 +14,9 @@ export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
-  onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(e: CommitEvent): void;
-  onCommitCancel(): void;
+  onGridKeyDown?: (e: KeyboardEvent) => void;
+  onCommit: (e: CommitEvent) => void;
+  onCommitCancel: () => void;
   firstEditorKeyPress: string | null;
 }
 

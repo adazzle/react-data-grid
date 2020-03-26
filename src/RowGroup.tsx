@@ -18,7 +18,7 @@ interface Props<R, SR> {
   name: string;
   renderer?: React.ComponentType;
   eventBus: EventBus;
-  onRowExpandToggle?(event: RowExpandToggleEvent): void;
+  onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
 }
 
 export default forwardRef<HTMLDivElement, Props<any, any>>(function RowGroup(props, ref) {
@@ -48,8 +48,8 @@ export default forwardRef<HTMLDivElement, Props<any, any>>(function RowGroup(pro
 }) as <R, SR>(props: Props<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
 
 interface DefaultBaseProps extends Omit<Props<any, any>, 'onRowExpandToggle'> {
-  onRowExpandClick(): void;
-  onRowExpandToggle(expand?: boolean): void;
+  onRowExpandClick: () => void;
+  onRowExpandToggle: (expand?: boolean) => void;
 }
 
 const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function DefaultBase(props, ref) {
