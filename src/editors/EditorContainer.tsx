@@ -109,7 +109,7 @@ export default function EditorContainer<R, SR>({
     }
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLElement>) {
+  function onKeyDown(e: KeyboardEvent) {
     if (preventDefaultNavigation(e.key)) {
       e.stopPropagation();
     } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
