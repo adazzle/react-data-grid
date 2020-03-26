@@ -20,8 +20,8 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   lastFrozenColumnIndex: number;
   scrollLeft: number | undefined;
-  onResize(column: CalculatedColumn<R, SR>, width: number): void;
-  onAllRowsSelectionChange(checked: boolean): void;
+  onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({

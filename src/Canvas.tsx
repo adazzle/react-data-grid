@@ -9,26 +9,26 @@ import SummaryRow from './SummaryRow';
 import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
-| 'rows'
-| 'rowRenderer'
-| 'rowGroupRenderer'
-| 'selectedRows'
-| 'summaryRows'
-| 'onCheckCellIsEditable'
-| 'onSelectedCellChange'
-| 'onSelectedCellRangeChange'
-| 'onRowClick'
-| 'onRowExpandToggle'
-| 'onSelectedRowsChange'
-| 'rowKey'
+  | 'rows'
+  | 'rowRenderer'
+  | 'rowGroupRenderer'
+  | 'selectedRows'
+  | 'summaryRows'
+  | 'onCheckCellIsEditable'
+  | 'onSelectedCellChange'
+  | 'onSelectedCellRangeChange'
+  | 'onRowClick'
+  | 'onRowExpandToggle'
+  | 'onSelectedRowsChange'
+  | 'rowKey'
 > & Required<Pick<DataGridProps<R, K, SR>,
-| 'enableCellAutoFocus'
-| 'enableCellCopyPaste'
-| 'enableCellDragAndDrop'
-| 'rowHeight'
-| 'cellNavigationMode'
-| 'editorPortalTarget'
-| 'onRowsUpdate'
+  | 'enableCellAutoFocus'
+  | 'enableCellCopyPaste'
+  | 'enableCellDragAndDrop'
+  | 'rowHeight'
+  | 'cellNavigationMode'
+  | 'editorPortalTarget'
+  | 'onRowsUpdate'
 >>;
 
 export interface CanvasProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
@@ -36,14 +36,14 @@ export interface CanvasProps<R, K extends keyof R, SR> extends SharedDataGridPro
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   height: number;
   scrollLeft: number;
-  onScroll(position: ScrollPosition): void;
+  onScroll: (position: ScrollPosition) => void;
 }
 
 export interface CanvasHandle {
-  scrollToColumn(colIdx: number): void;
-  scrollToRow(rowIdx: number): void;
-  selectCell(position: Position, openEditor?: boolean): void;
-  openCellEditor(rowIdx: number, colIdx: number): void;
+  scrollToColumn: (colIdx: number) => void;
+  scrollToRow: (rowIdx: number) => void;
+  selectCell: (position: Position, openEditor?: boolean) => void;
+  openCellEditor: (rowIdx: number, colIdx: number) => void;
 }
 
 function Canvas<R, K extends keyof R, SR>({

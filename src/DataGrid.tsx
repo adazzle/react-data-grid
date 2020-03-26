@@ -52,7 +52,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onRowsUpdate?<E extends RowsUpdateEvent>(event: E): void;
+  onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
 
   /**
    * Dimensions props
@@ -76,15 +76,15 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   /** Set of selected row keys */
   selectedRows?: ReadonlySet<R[K]>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?(selectedRows: Set<R[K]>): void;
+  onSelectedRowsChange?: (selectedRows: Set<R[K]>) => void;
   /** The key of the column which is currently being sorted */
   sortColumn?: string;
   /** The direction to sort the sortColumn*/
   sortDirection?: SortDirection;
   /** Function called whenever grid is sorted*/
-  onSort?(columnKey: string, direction: SortDirection): void;
+  onSort?: (columnKey: string, direction: SortDirection) => void;
   filters?: Filters;
-  onFiltersChange?(filters: Filters): void;
+  onFiltersChange?: (filters: Filters) => void;
 
   /**
    * Custom renderers
@@ -94,25 +94,25 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   rowGroupRenderer?: React.ComponentType;
   emptyRowsView?: React.ComponentType<{}>;
   /** Component used to render a draggable header cell */
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R, SR>; onHeaderDrop(): void }>;
+  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R, SR>; onHeaderDrop: () => void }>;
 
   /**
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?(rowIdx: number, row: R, column: CalculatedColumn<R, SR>): void;
+  onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
   /** Called when the grid is scrolled */
-  onScroll?(scrollPosition: ScrollPosition): void;
+  onScroll?: (scrollPosition: ScrollPosition) => void;
   /** Called when a column is resized */
-  onColumnResize?(idx: number, width: number): void;
-  onHeaderDrop?(): void;
-  onRowExpandToggle?(event: RowExpandToggleEvent): void;
+  onColumnResize?: (idx: number, width: number) => void;
+  onHeaderDrop?: () => void;
+  onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
   /** Function called whenever selected cell is changed */
-  onSelectedCellChange?(position: Position): void;
+  onSelectedCellChange?: (position: Position) => void;
   /** Function called whenever selected cell range is changed */
-  onSelectedCellRangeChange?(selectedRange: SelectedRange): void;
+  onSelectedCellRangeChange?: (selectedRange: SelectedRange) => void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
-  onCheckCellIsEditable?(event: CheckCellIsEditableEvent<R, SR>): boolean;
+  onCheckCellIsEditable?: (event: CheckCellIsEditableEvent<R, SR>) => boolean;
 
   /**
    * Toggles and modes
@@ -191,7 +191,7 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }, [columnMetrics, scrollLeft]);
 
-  const viewportColumns: readonly CalculatedColumn<R, SR>[] = useMemo(() => {
+  const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
     if (!columnMetrics) return [];
 
     return getViewportColumns(

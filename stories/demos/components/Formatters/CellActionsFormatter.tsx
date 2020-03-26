@@ -5,13 +5,13 @@ import './CellActionsFormatter.less';
 
 interface Action {
   text: ReactNode;
-  callback(): void;
+  callback: () => void;
 }
 
 interface CellActionButton {
   icon: ReactNode;
   actions?: Action[];
-  callback?(): void;
+  callback?: () => void;
 }
 
 interface CellActionProps extends CellActionButton {

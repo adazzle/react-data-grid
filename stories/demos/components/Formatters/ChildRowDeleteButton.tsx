@@ -2,7 +2,7 @@ import React from 'react';
 import { RemoveCircle } from '@material-ui/icons';
 
 export interface ChildRowDeleteButtonProps {
-  onDeleteSubRow(): void;
+  onDeleteSubRow: () => void;
   isDeleteSubRowEnabled: boolean;
 }
 
