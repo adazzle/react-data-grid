@@ -139,6 +139,8 @@ export default function EditorContainer<R, SR>({
       e.stopPropagation();
     } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       commit();
+    } else if (e.key === 'Escape') {
+      commitCancel();
     }
   }
 
