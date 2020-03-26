@@ -55,7 +55,7 @@ interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R, SR>[];
   rows: readonly R[];
-  onCheckCellIsEditable?(arg: { row: R; column: CalculatedColumn<R, SR> } & Position): boolean;
+  onCheckCellIsEditable?: (arg: { row: R; column: CalculatedColumn<R, SR> } & Position) => boolean;
 }
 
 export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, onCheckCellIsEditable }: IsSelectedCellEditableOpts<R, SR>): boolean {

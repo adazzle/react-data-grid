@@ -608,24 +608,5 @@ module.exports = {
       'no-buffer-constructor': 2,
       '@typescript-eslint/prefer-optional-chain': 0 // TODO: enable once Node supports ?. and &&
     }
-  }, {
-    files: ['*.cjs'],
-    parserOptions: {
-      sourceType: 'script'
-    },
-    env: {
-      node: true
-    },
-    rules: {
-      ...jsRules,
-      'no-console': 0,
-      'default-param-last': 2,
-      'global-require': 1,
-      'no-buffer-constructor': 2,
-      'no-new-require': 2,
-      'no-path-concat': 1,
-      '@typescript-eslint/no-require-imports': 0,
-      '@typescript-eslint/prefer-optional-chain': 0 // TODO: enable once Node supports ?. and &&
-    }
   }]
 };

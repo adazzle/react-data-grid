@@ -14,9 +14,9 @@ export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
-  onGridKeyDown?(e: KeyboardEvent): void;
-  onCommit(e: CommitEvent): void;
-  onCommitCancel(): void;
+  onGridKeyDown?: (e: KeyboardEvent) => void;
+  onCommit: (e: CommitEvent) => void;
+  onCommitCancel: () => void;
   firstEditorKeyPress: string | null;
 }
 
@@ -109,7 +109,7 @@ export default function EditorContainer<R, SR>({
     }
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLElement>) {
+  function onKeyDown(e: KeyboardEvent) {
     if (preventDefaultNavigation(e.key)) {
       e.stopPropagation();
     } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {

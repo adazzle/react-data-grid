@@ -4,7 +4,7 @@ import { Delete } from '@material-ui/icons';
 interface Props {
   name: string;
   columnKey: string;
-  onColumnGroupDeleted(columnKey: string): void;
+  onColumnGroupDeleted: (columnKey: string) => void;
 }
 
 export default function GroupedColumnButton({ name, columnKey, onColumnGroupDeleted }: Props) {
