@@ -241,7 +241,7 @@ export default function InteractionMasks<R, SR>({
       cellKey,
       fromRow,
       toRow,
-      updated: { [cellKey]: value } as never,
+      updated: { [cellKey]: value },
       action: UpdateActions.COPY_PASTE,
       fromCellKey
     });
@@ -297,7 +297,7 @@ export default function InteractionMasks<R, SR>({
       cellKey,
       fromRow: rowIdx,
       toRow: overRowIdx,
-      updated: { [cellKey]: value } as never,
+      updated: { [cellKey]: value },
       action: UpdateActions.CELL_DRAG
     });
 
@@ -313,7 +313,7 @@ export default function InteractionMasks<R, SR>({
       cellKey,
       fromRow: selectedPosition.rowIdx,
       toRow: rows.length - 1,
-      updated: { [cellKey]: value } as never,
+      updated: { [cellKey]: value },
       action: UpdateActions.COLUMN_FILL
     });
   }

@@ -85,7 +85,7 @@ export interface Dimension {
   zIndex: number;
 }
 
-export interface Editor<TValue = never> {
+export interface Editor<TValue = unknown> {
   getInputNode: () => Element | Text | undefined | null;
   getValue: () => TValue;
   hasResults?: () => boolean;
@@ -173,10 +173,10 @@ export interface RowGroupMetaData {
 
 export type Filters = Record<string, any>;
 
-export interface CommitEvent<TUpdatedValue = never> {
+export interface CommitEvent {
   cellKey: string;
   rowIdx: number;
-  updated: TUpdatedValue;
+  updated: unknown;
 }
 
 export interface RowExpandToggleEvent {
@@ -186,7 +186,7 @@ export interface RowExpandToggleEvent {
   name: string;
 }
 
-export interface RowsUpdateEvent<TUpdatedValue = never> {
+export interface RowsUpdateEvent<TUpdatedValue> {
   cellKey: string;
   fromRow: number;
   toRow: number;

@@ -34,7 +34,7 @@ export default function EditorContainer<R, SR>({
   scrollTop,
   firstEditorKeyPress: key
 }: EditorContainerProps<R, SR>) {
-  const editorRef = useRef<Editor>(null);
+  const editorRef = useRef<Editor<{ [key: string]: R[keyof R] }>>(null);
   const changeCommitted = useRef(false);
   const changeCanceled = useRef(false);
   const [isValid, setValid] = useState(true);

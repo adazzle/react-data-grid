@@ -52,7 +52,8 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
-  onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onRowsUpdate?: (event: RowsUpdateEvent<any>) => void;
 
   /**
    * Dimensions props
@@ -237,7 +238,7 @@ function DataGrid<R, K extends keyof R, SR>({
     props.onScroll?.(scrollPosition);
   }
 
-  function handleRowUpdate(event: RowsUpdateEvent) {
+  function handleRowUpdate(event: RowsUpdateEvent<unknown>) {
     props.onRowsUpdate?.(event);
   }
 
