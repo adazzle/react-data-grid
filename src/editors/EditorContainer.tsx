@@ -40,6 +40,7 @@ export default function EditorContainer<R, SR>({
   const [isValid, setValid] = useState(true);
   const prevScrollLeft = useRef(scrollLeft);
   const prevScrollTop = useRef(scrollTop);
+  const isUnmounting = useRef(false);
 
   const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
 
@@ -66,15 +67,16 @@ export default function EditorContainer<R, SR>({
     }
   }, [commitCancel, scrollLeft, scrollTop]);
 
-  // commit changes when editor is closed
-  useEffect(() => {
-    return () => {
-      if (!changeCommitted.current && !changeCanceled.current) {
-        commit();
-      }
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => () => {
+    isUnmounting.current = true;
   }, []);
+
+  // commit changes when editor is closed
+  useEffect(() => () => {
+    if (isUnmounting.current && !changeCommitted.current && !changeCanceled.current) {
+      commit();
+    }
+  });
 
   function getInitialValue() {
     const value = row[column.key as keyof R];
