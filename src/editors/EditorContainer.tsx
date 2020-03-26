@@ -35,8 +35,18 @@ export default function EditorContainer<R, SR>({
   firstEditorKeyPress: key
 }: EditorContainerProps<R, SR>) {
   const editorRef = useRef<Editor>(null);
+  const changeCommitted = useRef(false);
+  const changeCanceled = useRef(false);
   const [isValid, setValid] = useState(true);
+  const prevScrollLeft = useRef(scrollLeft);
+  const prevScrollTop = useRef(scrollTop);
+
   const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
+
+  const commitCancel = useCallback(() => {
+    changeCanceled.current = true;
+    onCommitCancel();
+  }, [onCommitCancel]);
 
   useLayoutEffect(() => {
     const inputNode = getInputNode();
@@ -50,7 +60,21 @@ export default function EditorContainer<R, SR>({
   }, [getInputNode]);
 
   // close editor when scrolling
-  useEffect(() => onCommitCancel, [scrollTop, scrollLeft, onCommitCancel]);
+  useEffect(() => {
+    if (scrollLeft !== prevScrollLeft.current || scrollTop !== prevScrollTop.current) {
+      commitCancel();
+    }
+  }, [commitCancel, scrollLeft, scrollTop]);
+
+  // commit changes when editor is closed
+  useEffect(() => {
+    return () => {
+      if (!changeCommitted.current && !changeCanceled.current) {
+        commit();
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function getInitialValue() {
     const value = row[column.key as keyof R];
@@ -104,6 +128,7 @@ export default function EditorContainer<R, SR>({
     if (!editorRef.current) return;
     const updated = editorRef.current.getValue();
     if (isNewValueValid(updated)) {
+      changeCommitted.current = true;
       const cellKey = column.key;
       onCommit({ cellKey, rowIdx, updated });
     }
@@ -128,7 +153,7 @@ export default function EditorContainer<R, SR>({
           row={row}
           height={height}
           onCommit={commit}
-          onCommitCancel={onCommitCancel}
+          onCommitCancel={commitCancel}
           onOverrideKeyDown={onKeyDown}
         />
       );
