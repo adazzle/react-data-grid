@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Delete } from '@material-ui/icons';
 
 interface Props {
   name: string;
@@ -15,7 +14,7 @@ export default function GroupedColumnButton({ name, columnKey, onColumnGroupDele
 
   return (
     <div className="grouped-col-btn btn">
-      {name} <Delete onClick={onClick} />
+      {name} <div onClick={onClick} />
     </div>
   );
 }

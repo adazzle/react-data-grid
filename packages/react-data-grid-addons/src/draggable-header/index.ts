@@ -1,1 +1,1 @@
-export { default as DraggableContainer } from './DraggableContainer';
+export { default as DraggableContainer, DraggableContainerWithoutDragDropContext } from './DraggableContainer';

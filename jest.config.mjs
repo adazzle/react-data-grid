@@ -19,9 +19,6 @@ export default {
     'text'
   ],
   restoreMocks: true,
-  moduleNameMapper: {
-    '^@material-ui/icons$': '<rootDir>/jest/iconsMock.ts'
-  },
   setupFiles: [
     '<rootDir>/jest/setupTests.ts'
   ],
