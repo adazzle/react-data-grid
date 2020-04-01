@@ -15,6 +15,8 @@
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
   - `column.cellClass(row)` function support:
     - `column = { ..., cellClass(row) { return string; } }`
+  - `column.minWidth`
+  - `column.maxWidth`
   - `column.headerCellClass`
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
@@ -54,6 +56,7 @@
   - ⚠️ `column.filterable`
   - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`
   - ⚠️ `fromRowId`, `toRowId`, and `fromRowData` from `onRowsUpdate` argument
+  - ⚠️ Stopped exporting `HeaderCell`
 - **Renamed:**
   - ⚠️ `minHeight` to `height`
   - ⚠️ `minWidth` to `width`
@@ -65,6 +68,10 @@
 - **Changed:**
   - ⚠️ Started publishing ES2020/ESM modules instead of ES5/CommonJS modules.
     - Using [`@babel/preset-env`](https://www.npmjs.com/package/@babel/preset-env) with [`core-js`](https://www.npmjs.com/package/core-js) is recommended to enable compatibility for the browsers your project aims to support.
+  - ⚠️ Improved support for summary rows:
+    - `summaryRows` types are now independent from `rows`
+    - Added `column.summaryCellClass` and `column.summaryFormatter` props
+    - `column.formatter` isn't used anymore to render summary row cells.
   - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
   - ⚠️ the `rowKey` prop is now required for row selection.
   - ⚠️ `column.cellClass` does not affect header cells anymore.

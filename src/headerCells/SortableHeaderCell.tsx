@@ -8,24 +8,24 @@ const SORT_TEXT = {
   NONE: ''
 } as const;
 
-type SharedHeaderCellProps<R> = Pick<HeaderCellProps<R>,
+type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
   | 'column'
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
 >;
 
-export interface Props<R> extends SharedHeaderCellProps<R> {
+export interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
   children: React.ReactNode;
 }
 
-export default function SortableHeaderCell<R>({
+export default function SortableHeaderCell<R, SR>({
   column,
   onSort,
   sortColumn,
   sortDirection,
   children
-}: Props<R>) {
+}: Props<R, SR>) {
   sortDirection = sortColumn === column.key && sortDirection || 'NONE';
   function onClick() {
     if (!onSort) return;

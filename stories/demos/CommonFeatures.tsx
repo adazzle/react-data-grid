@@ -17,6 +17,12 @@ function CurrencyFormatter({ value }: { value: number }) {
   return <>{currencyFormatter.format(value)}</>;
 }
 
+interface SummaryRow {
+  id: string;
+  totalCount: number;
+  yesCount: number;
+}
+
 interface Row {
   id: number;
   title: string;
@@ -35,14 +41,17 @@ interface Row {
   available: boolean;
 }
 
-const columns: readonly Column<Row>[] = [
+const columns: readonly Column<Row, SummaryRow>[] = [
   SelectColumn,
   {
     key: 'id',
     name: 'ID',
     width: 60,
     frozen: true,
-    sortable: true
+    sortable: true,
+    summaryFormatter() {
+      return <strong>Total</strong>;
+    }
   },
   {
     key: 'title',
@@ -51,7 +60,10 @@ const columns: readonly Column<Row>[] = [
     editable: true,
     frozen: true,
     resizable: true,
-    sortable: true
+    sortable: true,
+    summaryFormatter({ row }) {
+      return <>{row.totalCount} records</>;
+    }
   },
   {
     key: 'client',
@@ -163,8 +175,14 @@ const columns: readonly Column<Row>[] = [
     name: 'Available',
     resizable: true,
     sortable: true,
+    width: 80,
     formatter(props) {
       return <>{props.row.available ? '✔️' : '❌'}</>;
+    },
+    summaryFormatter({ row: { yesCount, totalCount } }) {
+      return (
+        <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>
+      );
     }
   }
 ];
@@ -198,8 +216,13 @@ function createRows(): readonly Row[] {
 
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, SortDirection]>(['id', 'NONE']);
+  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
+
+  const summaryRows = useMemo(() => {
+    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
+    return [summaryRow];
+  }, [rows]);
 
   const sortedRows: readonly Row[] = useMemo(() => {
     if (sortDirection === 'NONE') return rows;
@@ -221,9 +244,14 @@ export default function CommonFeatures() {
       case 'available':
         sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
         break;
-      default:
+      case 'id':
+      case 'progress':
+      case 'startTimestamp':
+      case 'endTimestamp':
+      case 'budget':
         sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
         break;
+      default:
     }
 
     return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
@@ -239,7 +267,7 @@ export default function CommonFeatures() {
     setRows(newRows);
   }, [sortedRows]);
 
-  const handleSort = useCallback((columnKey: keyof Row, direction: SortDirection) => {
+  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
     setSort([columnKey, direction]);
   }, []);
 
@@ -258,6 +286,7 @@ export default function CommonFeatures() {
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={handleSort}
+          summaryRows={summaryRows}
         />
       )}
     </AutoSizer>

@@ -44,8 +44,8 @@ const fakeColumn: CalculatedColumn<Row> = {
   formatter: ValueFormatter
 };
 
-const setup = (extraProps?: Partial<EditorContainerProps<Row>>, opts?: MountRendererProps) => {
-  const props: EditorContainerProps<Row> = {
+const setup = (extraProps?: Partial<EditorContainerProps<Row, unknown>>, opts?: MountRendererProps) => {
+  const props: EditorContainerProps<Row, unknown> = {
     rowIdx: 0,
     row: {
       id: '1',
@@ -98,7 +98,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps<string>> {
+    class TestEditor extends React.Component<EditorProps<string, Row, unknown>> {
       getValue() {
         return undefined;
       }
@@ -166,7 +166,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Portal editors', () => {
-    class PortalTestEditor extends React.Component<EditorProps<string>> {
+    class PortalTestEditor extends React.Component<EditorProps<string, Row, unknown>> {
       getValue() {
         return undefined;
       }

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export interface SelectCellFormatterProps {
   value: boolean;
   disabled?: boolean;
-  onChange(value: boolean, isShiftClick: boolean): void;
+  onChange: (value: boolean, isShiftClick: boolean) => void;
 }
 
 export function SelectCellFormatter({ value, disabled = false, onChange }: SelectCellFormatterProps) {

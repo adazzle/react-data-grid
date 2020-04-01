@@ -1,31 +1,33 @@
 import { Column, CalculatedColumn, ColumnMetrics, FormatterProps, Omit } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
-interface Metrics<R> {
-  columns: readonly Column<R>[];
+interface Metrics<R, SR> {
+  columns: readonly Column<R, SR>[];
   columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
   viewportWidth: number;
-  defaultFormatter: React.ComponentType<FormatterProps<R>>;
+  defaultFormatter: React.ComponentType<FormatterProps<R, SR>>;
 }
 
-export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
+export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<R, SR> {
   let left = 0;
   let totalWidth = 0;
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Array<Omit<Column<R>, 'width'> & { width: number | void }> = [];
+  const columns: Array<Omit<Column<R, SR>, 'width'> & { width: number | undefined }> = [];
 
   for (const metricsColumn of metrics.columns) {
-    const width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
-    const column = { ...metricsColumn, width };
+    let width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth);
 
     if (width === undefined) {
       unassignedColumnsCount++;
     } else {
+      width = clampColumnWidth(width, metricsColumn, metrics.minColumnWidth);
       allocatedWidths += width;
     }
+
+    const column = { ...metricsColumn, width };
 
     if (column.frozen) {
       lastFrozenColumnIndex++;
@@ -41,15 +43,15 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
     metrics.minColumnWidth
   );
 
-  const calculatedColumns: CalculatedColumn<R>[] = columns.map((column, idx) => {
+  const calculatedColumns: CalculatedColumn<R, SR>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
-    const width = column.width === undefined ? unallocatedColumnWidth : column.width;
+    const width = column.width ?? clampColumnWidth(unallocatedColumnWidth, column, metrics.minColumnWidth);
     const newColumn = {
       ...column,
       idx,
       width,
       left,
-      formatter: column.formatter || metrics.defaultFormatter
+      formatter: column.formatter ?? metrics.defaultFormatter
     };
     totalWidth += width;
     left += width;
@@ -64,34 +66,48 @@ export function getColumnMetrics<R>(metrics: Metrics<R>): ColumnMetrics<R> {
   };
 }
 
-function getSpecifiedWidth<R>(
-  column: Column<R>,
+function getSpecifiedWidth<R, SR>(
+  { key, width }: Column<R, SR>,
   columnWidths: ReadonlyMap<string, number>,
-  viewportWidth: number,
-  minColumnWidth: number
-): number | void {
-  if (columnWidths.has(column.key)) {
+  viewportWidth: number
+): number | undefined {
+  if (columnWidths.has(key)) {
     // Use the resized width if available
-    return columnWidths.get(column.key);
+    return columnWidths.get(key);
   }
-  if (typeof column.width === 'number') {
-    return column.width;
+  if (typeof width === 'number') {
+    return width;
   }
-  if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-    return Math.max(Math.floor(viewportWidth * parseInt(column.width, 10) / 100), minColumnWidth);
+  if (typeof width === 'string' && /^\d+%$/.test(width)) {
+    return Math.floor(viewportWidth * parseInt(width, 10) / 100);
   }
+  return undefined;
+}
+
+function clampColumnWidth<R, SR>(
+  width: number,
+  { minWidth, maxWidth }: Column<R, SR>,
+  minColumnWidth: number
+): number {
+  width = Math.max(width, minWidth ?? minColumnWidth);
+
+  if (typeof maxWidth === 'number') {
+    return Math.min(width, maxWidth);
+  }
+
+  return width;
 }
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to decide whether we can be editing from a cell level
-export function canEdit<R>(column: CalculatedColumn<R>, row: R): boolean {
+export function canEdit<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   if (typeof column.editable === 'function') {
     return column.editable(row);
   }
   return Boolean(column.editor || column.editable);
 }
 
-export function getColumnScrollPosition<R>(columns: readonly CalculatedColumn<R>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
+export function getColumnScrollPosition<R, SR>(columns: readonly CalculatedColumn<R, SR>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;
 
