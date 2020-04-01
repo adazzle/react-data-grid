@@ -10,5 +10,9 @@
 /package-lock.json
 **/package-lock.json
 
+**/node_modules/*
+**/lib/*
+**/dist/*
+
 npm-debug.log
 **.orig
