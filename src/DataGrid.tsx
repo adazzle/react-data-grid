@@ -3,8 +3,7 @@ import React, {
   useState,
   useRef,
   useLayoutEffect,
-  useMemo,
-  createElement
+  useMemo
 } from 'react';
 
 import HeaderRow from './HeaderRow';
@@ -24,7 +23,8 @@ import {
   RowRendererProps,
   ScrollPosition,
   Filters,
-  FormatterProps
+  FormatterProps,
+  EmptyRowsViewProps
 } from './common/types';
 
 export { DataGridHandle };
@@ -92,7 +92,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
   rowGroupRenderer?: React.ComponentType;
-  emptyRowsView?: React.ComponentType<{}>;
+  emptyRowsView?: React.ComponentType<EmptyRowsViewProps>;
   /** Component used to render a draggable header cell */
   draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R, SR>; onHeaderDrop: () => void }>;
 
@@ -158,6 +158,7 @@ function DataGrid<R, K extends keyof R, SR>({
   rows,
   selectedRows,
   onSelectedRowsChange,
+  emptyRowsView,
   ...props
 }: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
@@ -279,35 +280,34 @@ function DataGrid<R, K extends keyof R, SR>({
               />
             )}
           </div>
-          {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
-            <Canvas<R, K, SR>
-              ref={ref}
-              rowKey={rowKey}
-              rowHeight={rowHeight}
-              rowRenderer={props.rowRenderer}
-              rows={rows}
-              selectedRows={selectedRows}
-              onSelectedRowsChange={onSelectedRowsChange}
-              columnMetrics={columnMetrics}
-              viewportColumns={viewportColumns}
-              onScroll={handleScroll}
-              height={height - rowOffsetHeight}
-              rowGroupRenderer={props.rowGroupRenderer}
-              enableCellAutoFocus={enableCellAutoFocus}
-              enableCellCopyPaste={enableCellCopyPaste}
-              enableCellDragAndDrop={enableCellDragAndDrop}
-              cellNavigationMode={cellNavigationMode}
-              scrollLeft={scrollLeft}
-              editorPortalTarget={editorPortalTarget}
-              summaryRows={props.summaryRows}
-              onCheckCellIsEditable={props.onCheckCellIsEditable}
-              onRowsUpdate={handleRowUpdate}
-              onSelectedCellChange={props.onSelectedCellChange}
-              onSelectedCellRangeChange={props.onSelectedCellRangeChange}
-              onRowClick={props.onRowClick}
-              onRowExpandToggle={props.onRowExpandToggle}
-            />
-          )}
+          <Canvas<R, K, SR>
+            ref={ref}
+            rowKey={rowKey}
+            emptyRowsView={emptyRowsView}
+            rowHeight={rowHeight}
+            rowRenderer={props.rowRenderer}
+            rows={rows}
+            selectedRows={selectedRows}
+            onSelectedRowsChange={onSelectedRowsChange}
+            columnMetrics={columnMetrics}
+            viewportColumns={viewportColumns}
+            onScroll={handleScroll}
+            height={height - rowOffsetHeight}
+            rowGroupRenderer={props.rowGroupRenderer}
+            enableCellAutoFocus={enableCellAutoFocus}
+            enableCellCopyPaste={enableCellCopyPaste}
+            enableCellDragAndDrop={enableCellDragAndDrop}
+            cellNavigationMode={cellNavigationMode}
+            scrollLeft={scrollLeft}
+            editorPortalTarget={editorPortalTarget}
+            summaryRows={props.summaryRows}
+            onCheckCellIsEditable={props.onCheckCellIsEditable}
+            onRowsUpdate={handleRowUpdate}
+            onSelectedCellChange={props.onSelectedCellChange}
+            onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+            onRowClick={props.onRowClick}
+            onRowExpandToggle={props.onRowExpandToggle}
+          />
         </>
       )}
     </div>

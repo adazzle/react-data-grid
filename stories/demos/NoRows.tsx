@@ -1,8 +1,9 @@
 import React from 'react';
-import DataGrid, { Column } from '../../src';
+import DataGrid, { Column, EmptyRowsViewProps } from '../../src';
+import { AutoSizer } from 'react-virtualized';
 
-function EmptyRowsView() {
-  return <div style={{ textAlign: 'center' }}>Nothing to show <span lang="ja" title="ショボーン">(´・ω・`)</span></div>;
+function EmptyRowsView({ width, height }: EmptyRowsViewProps) {
+  return <div style={{ textAlign: 'center', height, width }}>Nothing to show <span lang="ja" title="ショボーン">(´・ω・`)</span></div>;
 }
 
 interface Row {
@@ -12,20 +13,25 @@ interface Row {
 }
 
 const columns: readonly Column<Row>[] = [
-  { key: 'id', name: 'ID' },
-  { key: 'title', name: 'Title' },
-  { key: 'count', name: 'Count' }
+  { key: 'id', name: 'ID', resizable: true },
+  { key: 'title', name: 'Title', resizable: true },
+  { key: 'count', name: 'Count', resizable: true }
 ];
 
 const rows: readonly Row[] = [];
 
 export default function NoRows() {
   return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      width={600}
-      emptyRowsView={EmptyRowsView}
-    />
+    <AutoSizer>
+      {({ width, height }) => (
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          width={width}
+          height={height}
+          emptyRowsView={EmptyRowsView}
+        />
+      )}
+    </AutoSizer>
   );
 }

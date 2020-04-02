@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect, forwardRef, createElement } from 'react';
 
 import { ColumnMetrics, Position, ScrollPosition, CalculatedColumn, SelectRowEvent } from './common/types';
 import EventBus from './EventBus';
@@ -12,6 +12,7 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
   | 'rows'
   | 'rowRenderer'
   | 'rowGroupRenderer'
+  | 'emptyRowsView'
   | 'selectedRows'
   | 'summaryRows'
   | 'onCheckCellIsEditable'
@@ -48,6 +49,7 @@ export interface CanvasHandle {
 
 function Canvas<R, K extends keyof R, SR>({
   columnMetrics,
+  emptyRowsView,
   viewportColumns,
   height,
   scrollLeft,
@@ -232,46 +234,53 @@ function Canvas<R, K extends keyof R, SR>({
     </div>
   );
 
+  const canvasHeight = height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0);
   return (
     <>
       <div
         className="rdg-viewport"
-        style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
+        style={{ height: canvasHeight }}
         ref={canvasRef}
         onScroll={handleScroll}
       >
-        <InteractionMasks<R, SR>
-          rows={rows}
-          rowHeight={rowHeight}
-          columns={columns}
-          height={clientHeight}
-          enableCellAutoFocus={props.enableCellAutoFocus}
-          enableCellCopyPaste={props.enableCellCopyPaste}
-          enableCellDragAndDrop={props.enableCellDragAndDrop}
-          cellNavigationMode={props.cellNavigationMode}
-          eventBus={eventBus}
-          canvasRef={canvasRef}
-          scrollLeft={scrollLeft}
-          scrollTop={scrollTop}
-          scrollToCell={scrollToCell}
-          editorPortalTarget={props.editorPortalTarget}
-          onCheckCellIsEditable={props.onCheckCellIsEditable}
-          onRowsUpdate={props.onRowsUpdate}
-          onSelectedCellChange={props.onSelectedCellChange}
-          onSelectedCellRangeChange={props.onSelectedCellRangeChange}
-        />
-        <div
-          className="rdg-grid"
-          style={{
-            width: columnMetrics.totalColumnWidth,
-            paddingTop: rowOverscanStartIdx * rowHeight,
-            paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
-          }}
-        >
-          {getViewportRows()}
-        </div>
+        {rows.length === 0 && emptyRowsView
+          ? createElement(emptyRowsView, { height: canvasHeight, width: columnMetrics.totalColumnWidth })
+          : (
+            <>
+              <InteractionMasks<R, SR>
+                rows={rows}
+                rowHeight={rowHeight}
+                columns={columns}
+                height={clientHeight}
+                enableCellAutoFocus={props.enableCellAutoFocus}
+                enableCellCopyPaste={props.enableCellCopyPaste}
+                enableCellDragAndDrop={props.enableCellDragAndDrop}
+                cellNavigationMode={props.cellNavigationMode}
+                eventBus={eventBus}
+                canvasRef={canvasRef}
+                scrollLeft={scrollLeft}
+                scrollTop={scrollTop}
+                scrollToCell={scrollToCell}
+                editorPortalTarget={props.editorPortalTarget}
+                onCheckCellIsEditable={props.onCheckCellIsEditable}
+                onRowsUpdate={props.onRowsUpdate}
+                onSelectedCellChange={props.onSelectedCellChange}
+                onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+              />
+              <div
+                className="rdg-grid"
+                style={{
+                  width: columnMetrics.totalColumnWidth,
+                  paddingTop: rowOverscanStartIdx * rowHeight,
+                  paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
+                }}
+              >
+                {getViewportRows()}
+              </div>
+              {summary}
+            </>
+          )}
       </div>
-      {summary}
     </>
   );
 }
