@@ -186,7 +186,7 @@ export default function EditorContainer<R, SR>({
         onContextMenu={preventDefault}
       >
         {createEditor()}
-        {!isValid && <Clear className="form-control-feedback" />}
+        {!isValid && <Clear />}
       </div>
     </ClickOutside>
   );
