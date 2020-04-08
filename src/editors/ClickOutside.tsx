@@ -51,7 +51,7 @@ import React, { useRef, useEffect } from 'react';
 
 interface Props {
   children: React.ReactElement;
-  onClickOutside(): void;
+  onClickOutside: () => void;
 }
 
 export default function ClickOutside({ onClickOutside, children }: Props) {

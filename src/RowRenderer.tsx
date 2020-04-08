@@ -7,13 +7,13 @@ import { RowRendererProps, RowData } from './common/types';
 import EventBus from './EventBus';
 
 type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
-| 'columnMetrics'
-| 'viewportColumns'
-| 'rowGroupRenderer'
-| 'rowHeight'
-| 'rowRenderer'
-| 'onRowClick'
-| 'onRowExpandToggle'
+  | 'columnMetrics'
+  | 'viewportColumns'
+  | 'rowGroupRenderer'
+  | 'rowHeight'
+  | 'rowRenderer'
+  | 'onRowClick'
+  | 'onRowExpandToggle'
 >;
 
 interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {

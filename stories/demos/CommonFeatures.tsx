@@ -216,7 +216,7 @@ function createRows(): readonly Row[] {
 
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[keyof Row, SortDirection]>(['id', 'NONE']);
+  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
   const summaryRows = useMemo(() => {
@@ -244,9 +244,14 @@ export default function CommonFeatures() {
       case 'available':
         sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
         break;
-      default:
+      case 'id':
+      case 'progress':
+      case 'startTimestamp':
+      case 'endTimestamp':
+      case 'budget':
         sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
         break;
+      default:
     }
 
     return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
@@ -262,7 +267,7 @@ export default function CommonFeatures() {
     setRows(newRows);
   }, [sortedRows]);
 
-  const handleSort = useCallback((columnKey: keyof Row, direction: SortDirection) => {
+  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
     setSort([columnKey, direction]);
   }, []);
 

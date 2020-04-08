@@ -19,8 +19,8 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   lastFrozenColumnIndex: number;
-  onResize(column: CalculatedColumn<R, SR>, width: number): void;
-  onAllRowsSelectionChange(checked: boolean): void;
+  onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({

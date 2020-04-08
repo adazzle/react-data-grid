@@ -5,8 +5,8 @@ import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
-| 'filters'
-| 'onFiltersChange'
+  | 'filters'
+  | 'onFiltersChange'
 >;
 
 export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {

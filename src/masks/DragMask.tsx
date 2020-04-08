@@ -9,7 +9,7 @@ export interface DraggedPosition extends Position {
 
 interface Props {
   draggedPosition: DraggedPosition;
-  getSelectedDimensions(position: Position): Dimension;
+  getSelectedDimensions: (position: Position) => Dimension;
 }
 
 export default function DragMask({ draggedPosition, getSelectedDimensions }: Props) {

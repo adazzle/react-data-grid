@@ -51,7 +51,7 @@ export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
   scrollLeft: number;
   scrollTop: number;
   eventBus: EventBus;
-  scrollToCell(cell: Position): void;
+  scrollToCell: (cell: Position) => void;
 }
 
 export default function InteractionMasks<R, SR>({

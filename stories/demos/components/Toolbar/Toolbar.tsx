@@ -2,8 +2,8 @@ import React, { PropsWithChildren } from 'react';
 import './rdg-toolbar.less';
 
 interface Props {
-  onAddRow?(arg: { newRowIndex: number }): void;
-  onToggleFilter?(): void;
+  onAddRow?: (arg: { newRowIndex: number }) => void;
+  onToggleFilter?: () => void;
   enableFilter?: boolean;
   numberOfRows: number;
   addRowButtonText?: string;
