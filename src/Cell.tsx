@@ -12,7 +12,6 @@ function Cell<R, SR>({
   lastFrozenColumnIndex,
   row,
   rowIdx,
-  scrollLeft,
   eventBus,
   onRowClick,
   enableCellRangeSelection,
@@ -75,10 +74,6 @@ function Cell<R, SR>({
     width: column.width,
     left: column.left
   };
-
-  if (scrollLeft !== undefined) {
-    style.transform = `translateX(${scrollLeft}px)`;
-  }
 
   // TODO: Check if the children prop is required or not. These are most likely set by custom cell renderer
   if (!children) {

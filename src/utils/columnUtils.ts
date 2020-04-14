@@ -15,17 +15,19 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Array<Omit<Column<R, SR>, 'width'> & { width: number | void }> = [];
+  const columns: Array<Omit<Column<R, SR>, 'width'> & { width: number | undefined }> = [];
 
   for (const metricsColumn of metrics.columns) {
-    const width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth, metrics.minColumnWidth);
-    const column = { ...metricsColumn, width };
+    let width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth);
 
     if (width === undefined) {
       unassignedColumnsCount++;
     } else {
+      width = clampColumnWidth(width, metricsColumn, metrics.minColumnWidth);
       allocatedWidths += width;
     }
+
+    const column = { ...metricsColumn, width };
 
     if (column.frozen) {
       lastFrozenColumnIndex++;
@@ -43,13 +45,13 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
 
   const calculatedColumns: CalculatedColumn<R, SR>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
-    const width = column.width === undefined ? unallocatedColumnWidth : column.width;
+    const width = column.width ?? clampColumnWidth(unallocatedColumnWidth, column, metrics.minColumnWidth);
     const newColumn = {
       ...column,
       idx,
       width,
       left,
-      formatter: column.formatter || metrics.defaultFormatter
+      formatter: column.formatter ?? metrics.defaultFormatter
     };
     totalWidth += width;
     left += width;
@@ -65,21 +67,35 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
 }
 
 function getSpecifiedWidth<R, SR>(
-  column: Column<R, SR>,
+  { key, width }: Column<R, SR>,
   columnWidths: ReadonlyMap<string, number>,
-  viewportWidth: number,
-  minColumnWidth: number
-): number | void {
-  if (columnWidths.has(column.key)) {
+  viewportWidth: number
+): number | undefined {
+  if (columnWidths.has(key)) {
     // Use the resized width if available
-    return columnWidths.get(column.key);
+    return columnWidths.get(key);
   }
-  if (typeof column.width === 'number') {
-    return column.width;
+  if (typeof width === 'number') {
+    return width;
   }
-  if (typeof column.width === 'string' && /^\d+%$/.test(column.width)) {
-    return Math.max(Math.floor(viewportWidth * parseInt(column.width, 10) / 100), minColumnWidth);
+  if (typeof width === 'string' && /^\d+%$/.test(width)) {
+    return Math.floor(viewportWidth * parseInt(width, 10) / 100);
   }
+  return undefined;
+}
+
+function clampColumnWidth<R, SR>(
+  width: number,
+  { minWidth, maxWidth }: Column<R, SR>,
+  minColumnWidth: number
+): number {
+  width = Math.max(width, minWidth ?? minColumnWidth);
+
+  if (typeof maxWidth === 'number') {
+    return Math.min(width, maxWidth);
+  }
+
+  return width;
 }
 
 // Logic extented to allow for functions to be passed down in column.editable

@@ -16,7 +16,6 @@ export default function Row<R, SR = unknown>({
   lastFrozenColumnIndex,
   onRowClick,
   row,
-  scrollLeft,
   viewportColumns,
   width,
   onDragEnter,
@@ -44,7 +43,6 @@ export default function Row<R, SR = unknown>({
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
-          scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
           isRowSelected={isRowSelected}
           eventBus={eventBus}
           onRowClick={onRowClick}

@@ -15,8 +15,7 @@ import {
   getHorizontalRangeToRender,
   getScrollbarSize,
   getVerticalRangeToRender,
-  getViewportColumns,
-  isPositionStickySupported
+  getViewportColumns
 } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
@@ -60,14 +59,14 @@ export interface CanvasProps<R, K extends keyof R, SR> extends SharedDataGridPro
   viewportWidth: number;
   height: number;
   scrollLeft: number;
-  onScroll(position: ScrollPosition): void;
+  onScroll: (position: ScrollPosition) => void;
 }
 
 export interface CanvasHandle {
-  scrollToColumn(colIdx: number): void;
-  scrollToRow(rowIdx: number): void;
-  selectCell(position: Position, openEditor?: boolean): void;
-  openCellEditor(rowIdx: number, colIdx: number): void;
+  scrollToColumn: (colIdx: number) => void;
+  scrollToRow: (rowIdx: number) => void;
+  selectCell: (position: Position, openEditor?: boolean) => void;
+  openCellEditor: (rowIdx: number, colIdx: number) => void;
 }
 
 function Canvas<R, K extends keyof R, SR>({
@@ -92,7 +91,6 @@ function Canvas<R, K extends keyof R, SR>({
   const [scrollTop, setScrollTop] = useState(0);
   const canvasRef = useRef<HTMLDivElement>(null);
   const lastSelectedRowIdx = useRef(-1);
-  const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
 
   const columnMetrics = useMemo(() => {
     return getColumnMetrics<R, SR>({
@@ -148,11 +146,6 @@ function Canvas<R, K extends keyof R, SR>({
 
   function handleColumnResize(column: CalculatedColumn<R, SR>, width: number) {
     const newColumnWidths = new Map(columnWidths);
-    const originalWidth = columns.find(col => col.key === column.key)!.width;
-    const minWidth = typeof originalWidth === 'number'
-      ? Math.min(originalWidth, minColumnWidth)
-      : minColumnWidth;
-    width = Math.max(width, minWidth);
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
@@ -265,7 +258,6 @@ function Canvas<R, K extends keyof R, SR>({
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
           rowRenderer={props.rowRenderer}
-          scrollLeft={nonStickyScrollLeft}
           isRowSelected={isRowSelected}
           onRowClick={props.onRowClick}
           onRowExpandToggle={props.onRowExpandToggle}
@@ -327,7 +319,6 @@ function Canvas<R, K extends keyof R, SR>({
           sortColumn={props.sortColumn}
           sortDirection={props.sortDirection}
           onSort={props.onSort}
-          scrollLeft={nonStickyScrollLeft}
         />
         {props.enableFilters && (
           <FilterRow<R, SR>
@@ -336,7 +327,6 @@ function Canvas<R, K extends keyof R, SR>({
             width={columnMetrics.totalColumnWidth + getScrollbarSize()}
             lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
             columns={viewportColumns}
-            scrollLeft={nonStickyScrollLeft}
             filters={props.filters}
             onFiltersChange={props.onFiltersChange}
           />
@@ -351,7 +341,6 @@ function Canvas<R, K extends keyof R, SR>({
             height={rowHeight}
             viewportColumns={viewportColumns}
             lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-            scrollLeft={nonStickyScrollLeft}
           />
         ))}
       </div>

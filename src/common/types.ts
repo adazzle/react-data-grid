@@ -10,8 +10,12 @@ export interface Column<TRow, TSummaryRow = unknown> {
   name: string;
   /** A unique key to distinguish each column */
   key: string;
-  /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns*/
+  /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
   width?: number | string;
+  /** Minimum column width in px. */
+  minWidth?: number;
+  /** Maximum column width in px. */
+  maxWidth?: number;
   cellClass?: string | ((row: TRow) => string);
   headerCellClass?: string;
   summaryCellClass?: string | ((row: TSummaryRow) => string);
@@ -33,7 +37,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   sortDescendingFirst?: boolean;
   // TODO: Should we return an object to make it more powerful?
   // { isEditable?: boolean, initialInput?: unknown } | undefined
-  unsafe_onCellInput?(event: React.KeyboardEvent<HTMLDivElement>, row: TRow): unknown;
+  unsafe_onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>, row: TRow) => unknown;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
   /** Header renderer for each header cell */
@@ -86,11 +90,11 @@ export interface Dimension {
 }
 
 export interface Editor<TValue = never> {
-  getInputNode(): Element | Text | undefined | null;
-  getValue(): TValue;
-  hasResults?(): boolean;
-  isSelectOpen?(): boolean;
-  validate?(value: unknown): boolean;
+  getInputNode: () => Element | Text | undefined | null;
+  getValue: () => TValue;
+  hasResults?: () => boolean;
+  isSelectOpen?: () => boolean;
+  validate?: (value: unknown) => boolean;
   readonly disableContainerStyles?: boolean;
 }
 
@@ -99,7 +103,7 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isRowSelected: boolean;
-  onRowSelectionChange(checked: boolean, isShiftClick: boolean): void;
+  onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
 }
 
 export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
@@ -113,15 +117,15 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   value: TValue;
   row: TRow;
   height: number;
-  onCommit(): void;
-  onCommitCancel(): void;
-  onOverrideKeyDown(e: KeyboardEvent): void;
+  onCommit: () => void;
+  onCommitCancel: () => void;
+  onOverrideKeyDown: (e: KeyboardEvent) => void;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   allRowsSelected: boolean;
-  onAllRowsSelectionChange(checked: boolean): void;
+  onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
@@ -129,11 +133,10 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
-  scrollLeft: number | undefined;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>): void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -143,18 +146,17 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
-  scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
-  onRowClick?(rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>): void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   value: TFilterValue;
-  onChange(value: TFilterValue): void;
+  onChange: (value: TFilterValue) => void;
 }
 
 export interface ScrollPosition {
@@ -168,7 +170,7 @@ export interface RowGroupMetaData {
   isExpanded: boolean;
   columnGroupName: string;
   columnGroupDisplayName: string;
-  getRowRenderer?(props: unknown, rowIdx: number): React.ReactElement;
+  getRowRenderer?: (props: unknown, rowIdx: number) => React.ReactElement;
 }
 
 export type Filters = Record<string, any>;

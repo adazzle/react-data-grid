@@ -2,8 +2,6 @@
 
 .user-select(@value: none) {
   -webkit-user-select: @value;
-  -moz-user-select: @value;
-  -ms-user-select: @value;
   user-select: @value;
 }
 
@@ -11,14 +9,5 @@
   &::placeholder {
     color: @color;
     opacity: 1;
-  }
-
-  // IE
-  &:-ms-input-placeholder {
-    color: @color;
-  }
-  // Edge
-  &::-ms-input-placeholder {
-    color: @color;
   }
 }

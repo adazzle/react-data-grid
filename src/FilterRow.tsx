@@ -15,7 +15,6 @@ export interface FilterRowProps<R, SR> extends SharedCanvasProps<R, SR> {
   width: number;
   lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
-  scrollLeft: number | undefined;
 }
 
 export default function FilterRow<R, SR>({
@@ -24,7 +23,6 @@ export default function FilterRow<R, SR>({
   width,
   columns,
   lastFrozenColumnIndex,
-  scrollLeft,
   filters,
   onFiltersChange
 }: FilterRowProps<R, SR>) {
@@ -50,10 +48,6 @@ export default function FilterRow<R, SR>({
           width: column.width,
           left: column.left
         };
-
-        if (column.frozen && typeof scrollLeft === 'number') {
-          style.transform = `translateX(${scrollLeft}px)`;
-        }
 
         return (
           <div

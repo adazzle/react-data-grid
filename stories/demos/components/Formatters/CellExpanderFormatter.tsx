@@ -4,7 +4,7 @@ import './CellExpanderFormatter.less';
 
 export interface CellExpanderFormatterProps {
   expanded: boolean;
-  onCellExpand(): void;
+  onCellExpand: () => void;
 }
 
 export function CellExpanderFormatter({ expanded, onCellExpand }: CellExpanderFormatterProps) {

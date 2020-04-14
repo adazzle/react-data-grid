@@ -10,7 +10,6 @@ type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
   | 'viewportColumns'
   | 'rowIdx'
   | 'lastFrozenColumnIndex'
-  | 'scrollLeft'
 >;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
@@ -22,7 +21,6 @@ function SummaryRow<R, SR>({
   rowIdx,
   lastFrozenColumnIndex,
   row,
-  scrollLeft,
   viewportColumns,
   width
 }: SummaryRowProps<R, SR>) {
@@ -41,7 +39,6 @@ function SummaryRow<R, SR>({
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
-          scrollLeft={column.frozen && typeof scrollLeft === 'number' ? scrollLeft : undefined}
         />
       ))}
     </div>
