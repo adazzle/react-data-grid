@@ -5,7 +5,6 @@ import { CellRendererProps } from './common/types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'lastFrozenColumnIndex'
-  | 'scrollLeft'
   | 'column'
 >;
 
@@ -16,8 +15,7 @@ interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
 function SummaryCell<R, SR>({
   column,
   lastFrozenColumnIndex,
-  row,
-  scrollLeft
+  row
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, width, left, summaryCellClass } = column;
   const className = classNames(
@@ -29,14 +27,8 @@ function SummaryCell<R, SR>({
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
 
-  const style: React.CSSProperties = { width, left };
-
-  if (scrollLeft !== undefined) {
-    style.transform = `translateX(${scrollLeft}px)`;
-  }
-
   return (
-    <div className={className} style={style}>
+    <div className={className} style={{ width, left }}>
       {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>
   );

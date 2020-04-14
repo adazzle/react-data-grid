@@ -6,7 +6,7 @@ import InteractionMasks from './masks/InteractionMasks';
 import { DataGridProps } from './DataGrid';
 import RowRenderer from './RowRenderer';
 import SummaryRow from './SummaryRow';
-import { getColumnScrollPosition, getScrollbarSize, isPositionStickySupported, getVerticalRangeToRender, assertIsValidKey } from './utils';
+import { getColumnScrollPosition, getScrollbarSize, getVerticalRangeToRender, assertIsValidKey } from './utils';
 
 type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
   | 'rows'
@@ -67,7 +67,6 @@ function Canvas<R, K extends keyof R, SR>({
   const lastSelectedRowIdx = useRef(-1);
 
   const clientHeight = getClientHeight();
-  const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
   const { columns, lastFrozenColumnIndex } = columnMetrics;
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
@@ -203,7 +202,6 @@ function Canvas<R, K extends keyof R, SR>({
           rowGroupRenderer={props.rowGroupRenderer}
           rowHeight={rowHeight}
           rowRenderer={props.rowRenderer}
-          scrollLeft={nonStickyScrollLeft}
           isRowSelected={isRowSelected}
           onRowClick={props.onRowClick}
           onRowExpandToggle={props.onRowExpandToggle}
@@ -226,7 +224,6 @@ function Canvas<R, K extends keyof R, SR>({
           height={rowHeight}
           viewportColumns={viewportColumns}
           lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-          scrollLeft={nonStickyScrollLeft}
         />
       ))}
     </div>

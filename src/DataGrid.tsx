@@ -11,7 +11,7 @@ import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Canvas, { CanvasHandle as DataGridHandle } from './Canvas';
 import { ValueFormatter } from './formatters';
-import { getColumnMetrics, getHorizontalRangeToRender, isPositionStickySupported, getViewportColumns, getScrollbarSize } from './utils';
+import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns, getScrollbarSize } from './utils';
 import { CellNavigationMode, SortDirection } from './common/enums';
 import {
   CalculatedColumn,
@@ -166,7 +166,6 @@ function DataGrid<R, K extends keyof R, SR>({
   const gridRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
-  const nonStickyScrollLeft = isPositionStickySupported() ? undefined : scrollLeft;
 
   const columnMetrics = useMemo(() => {
     if (viewportWidth <= 0) return null;
@@ -265,7 +264,6 @@ function DataGrid<R, K extends keyof R, SR>({
               sortColumn={props.sortColumn}
               sortDirection={props.sortDirection}
               onSort={props.onSort}
-              scrollLeft={nonStickyScrollLeft}
             />
             {enableFilters && (
               <FilterRow<R, SR>
@@ -273,7 +271,6 @@ function DataGrid<R, K extends keyof R, SR>({
                 width={columnMetrics.totalColumnWidth + getScrollbarSize()}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
                 columns={viewportColumns}
-                scrollLeft={nonStickyScrollLeft}
                 filters={props.filters}
                 onFiltersChange={props.onFiltersChange}
               />

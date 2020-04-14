@@ -133,7 +133,6 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
-  scrollLeft: number | undefined;
   isRowSelected: boolean;
   eventBus: EventBus;
   enableCellRangeSelection?: boolean;
@@ -147,7 +146,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
-  scrollLeft: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   eventBus: EventBus;

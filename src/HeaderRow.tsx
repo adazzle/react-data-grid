@@ -22,7 +22,6 @@ export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGrid
   lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
-  scrollLeft: number | undefined;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
 }
 
@@ -69,7 +68,6 @@ export default function HeaderRow<R, K extends keyof R, SR>({
             onSort={props.onSort}
             sortColumn={props.sortColumn}
             sortDirection={props.sortDirection}
-            scrollLeft={column.frozen ? props.scrollLeft : undefined}
           />
         );
       })}

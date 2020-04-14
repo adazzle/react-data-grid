@@ -19,7 +19,6 @@ type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
 interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {
   rowIdx: number;
   row: R;
-  scrollLeft: number | undefined;
   enableCellRangeSelection?: boolean;
   eventBus: EventBus;
   isRowSelected: boolean;
@@ -34,7 +33,6 @@ function RowRenderer<R, SR>({
   rowGroupRenderer,
   rowHeight,
   rowRenderer,
-  scrollLeft,
   ...props
 }: IRowRendererProps<R, SR>) {
   const { __metaData } = row as RowData;
@@ -46,7 +44,6 @@ function RowRenderer<R, SR>({
     viewportColumns,
     isRowSelected: props.isRowSelected,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
-    scrollLeft,
     eventBus,
     onRowClick: props.onRowClick,
     enableCellRangeSelection: props.enableCellRangeSelection

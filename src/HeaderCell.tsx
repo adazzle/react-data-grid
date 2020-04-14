@@ -19,7 +19,6 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   lastFrozenColumnIndex: number;
-  scrollLeft: number | undefined;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
@@ -29,7 +28,6 @@ export default function HeaderCell<R, SR>({
   column,
   allRowsSelected,
   onAllRowsSelectionChange,
-  scrollLeft,
   ...props
 }: HeaderCellProps<R, SR>) {
   function getCell() {
@@ -61,10 +59,6 @@ export default function HeaderCell<R, SR>({
     width: column.width,
     left: column.left
   };
-
-  if (typeof scrollLeft === 'number') {
-    style.transform = `translateX(${scrollLeft}px)`;
-  }
 
   cell = (
     <div
