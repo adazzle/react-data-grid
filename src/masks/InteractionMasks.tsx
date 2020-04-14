@@ -114,7 +114,7 @@ export default function InteractionMasks<R, SR>({
   function getEditorPosition() {
     if (!canvasRef.current) return null;
     const { left, top } = canvasRef.current.getBoundingClientRect();
-    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement!;
+    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
     const column = columns[selectedPosition.idx];
     return {
       left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
@@ -276,7 +276,12 @@ export default function InteractionMasks<R, SR>({
     e.dataTransfer.effectAllowed = 'copy';
     // Setting data is required to make an element draggable in FF
     const transferData = JSON.stringify(selectedPosition);
-    e.dataTransfer.setData('text/plain', transferData);
+    try {
+      e.dataTransfer.setData('text/plain', transferData);
+    } catch (ex) {
+      // IE only supports 'text' and 'URL' for the 'type' argument
+      e.dataTransfer.setData('text', transferData);
+    }
     setDraggedPosition({ ...selectedPosition, overRowIdx: selectedPosition.rowIdx });
   }
 
