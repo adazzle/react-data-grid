@@ -10,14 +10,12 @@ export default function Row<R, SR = unknown>({
   className,
   enableCellRangeSelection,
   eventBus,
-  height,
   rowIdx,
   isRowSelected,
   lastFrozenColumnIndex,
   onRowClick,
   row,
   viewportColumns,
-  width,
   onDragEnter,
   onDragOver,
   onDrop,
@@ -65,7 +63,6 @@ export default function Row<R, SR = unknown>({
   return (
     <div
       className={className}
-      style={{ width, height }}
       onDragEnter={wrapEvent(handleDragEnter, onDragEnter)}
       onDragOver={wrapEvent(handleDragOver, onDragOver)}
       onDrop={wrapEvent(preventDefault, onDrop)}

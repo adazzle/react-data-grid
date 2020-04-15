@@ -7,21 +7,14 @@ import { DataGridProps } from './DataGrid';
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'filters'
   | 'onFiltersChange'
-  > & Pick<Required<DataGridProps<R, never, SR>>,
-  | 'headerRowHeight'
 >;
 
 export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
-  height: number;
-  width: number;
   lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
 }
 
 export default function FilterRow<R, SR>({
-  headerRowHeight,
-  height,
-  width,
   columns,
   lastFrozenColumnIndex,
   filters,
@@ -34,10 +27,7 @@ export default function FilterRow<R, SR>({
   }
 
   return (
-    <div
-      className="rdg-header-row"
-      style={{ top: headerRowHeight, width, height, lineHeight: `${height}px` }}
-    >
+    <div className="rdg-filter-row">
       {columns.map(column => {
         const { key } = column;
 

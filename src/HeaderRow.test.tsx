@@ -14,8 +14,6 @@ describe('HeaderRow', () => {
     onColumnResize() { },
     onSort: jest.fn(),
     sortDirection: 'NONE',
-    width: 1000,
-    height: 35,
     allRowsSelected: false,
     onHeaderDrop() { },
     draggableHeaderCell: () => <div />
@@ -75,8 +73,6 @@ describe('HeaderRow', () => {
     const requiredProps: HeaderRowProps<Row, 'id', unknown> = {
       rowKey: 'id',
       rows: [],
-      width: 1000,
-      height: 35,
       columns: helpers.columns,
       lastFrozenColumnIndex: 1,
       onSort: jest.fn(),

@@ -18,8 +18,6 @@ describe('Row', () => {
   }
 
   const requiredProperties: RowRendererProps<RowType> = {
-    height: 30,
-    width: 1000,
     viewportColumns: createColumns(50),
     row: { key: 'value' },
     cellRenderer: Cell,

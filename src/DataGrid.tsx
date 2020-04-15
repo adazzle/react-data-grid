@@ -176,8 +176,14 @@ function DataGrid<R, K extends keyof R, SR>({
   defaultFormatter = ValueFormatter,
   columns: rawColumns,
   rows,
+  rowRenderer,
+  rowGroupRenderer,
   summaryRows,
   selectedRows,
+  onRowClick,
+  onRowExpandToggle,
+  onSelectedCellChange,
+  onSelectedCellRangeChange,
   onSelectedRowsChange,
   ...props
 }: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
@@ -390,13 +396,12 @@ function DataGrid<R, K extends keyof R, SR>({
           columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
           eventBus={eventBus}
-          rowGroupRenderer={props.rowGroupRenderer}
-          rowHeight={rowHeight}
-          rowRenderer={props.rowRenderer}
+          rowGroupRenderer={rowGroupRenderer}
+          rowRenderer={rowRenderer}
           isRowSelected={isRowSelected}
-          onRowClick={props.onRowClick}
-          onRowExpandToggle={props.onRowExpandToggle}
-          enableCellRangeSelection={typeof props.onSelectedCellRangeChange === 'function'}
+          onRowClick={onRowClick}
+          onRowExpandToggle={onRowExpandToggle}
+          enableCellRangeSelection={typeof onSelectedCellRangeChange === 'function'}
         />
       );
     }
@@ -410,8 +415,11 @@ function DataGrid<R, K extends keyof R, SR>({
       style={{
         width,
         height,
-        lineHeight: `${rowHeight}px`
-      }}
+        '--header-row-height': `${headerRowHeight}px`,
+        '--filter-row-height': `${headerFiltersHeight}px`,
+        '--row-width': `${columnMetrics.totalColumnWidth}px`,
+        '--row-height': `${rowHeight}px`
+      } as React.CSSProperties}
       ref={gridRef}
       onScroll={onScroll}
     >
@@ -434,14 +442,12 @@ function DataGrid<R, K extends keyof R, SR>({
             editorPortalTarget={editorPortalTarget}
             onCheckCellIsEditable={props.onCheckCellIsEditable}
             onRowsUpdate={handleRowsUpdate}
-            onSelectedCellChange={props.onSelectedCellChange}
-            onSelectedCellRangeChange={props.onSelectedCellRangeChange}
+            onSelectedCellChange={onSelectedCellChange}
+            onSelectedCellRangeChange={onSelectedCellRangeChange}
           />
           <HeaderRow<R, K, SR>
             rowKey={rowKey}
             rows={rows}
-            height={headerRowHeight}
-            width={columnMetrics.totalColumnWidth}
             columns={viewportColumns}
             onColumnResize={handleColumnResize}
             lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
@@ -455,9 +461,6 @@ function DataGrid<R, K extends keyof R, SR>({
           />
           {enableFilters && (
             <FilterRow<R, SR>
-              headerRowHeight={headerRowHeight}
-              height={headerFiltersHeight}
-              width={columnMetrics.totalColumnWidth}
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
               columns={viewportColumns}
               filters={props.filters}
@@ -472,8 +475,6 @@ function DataGrid<R, K extends keyof R, SR>({
               key={rowIdx}
               rowIdx={rowIdx}
               row={row}
-              width={columnMetrics.totalColumnWidth}
-              height={rowHeight}
               viewportColumns={viewportColumns}
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
             />

@@ -11,8 +11,6 @@ type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rowRenderer'
   | 'onRowClick'
   | 'onRowExpandToggle'
-> & Pick<Required<DataGridProps<R, never, SR>>,
-  | 'rowHeight'
 >;
 
 interface IRowRendererProps<R, SR> extends SharedDataGridProps<R, SR> {
@@ -32,7 +30,6 @@ function RowRenderer<R, SR>({
   rowIdx,
   row,
   rowGroupRenderer,
-  rowHeight,
   rowRenderer,
   ...props
 }: IRowRendererProps<R, SR>) {
@@ -40,8 +37,6 @@ function RowRenderer<R, SR>({
   const rendererProps: RowRendererProps<R, SR> = {
     rowIdx,
     row,
-    width: columnMetrics.totalColumnWidth,
-    height: rowHeight,
     viewportColumns,
     isRowSelected: props.isRowSelected,
     lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,

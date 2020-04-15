@@ -1,6 +1,8 @@
 @import './variables.less';
 
-.rdg-header-row {
+.rdg-header-row,
+.rdg-filter-row {
+  width: var(--row-width);
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -8,6 +10,17 @@
   font-weight: bold;
   .user-select();
   z-index: 3;
+}
+
+.rdg-header-row {
+  height: var(--header-row-height);
+  line-height: var(--header-row-height);
+}
+
+.rdg-filter-row {
+  height: var(--filter-row-height);
+  line-height: var(--filter-row-height);
+  top: var(--header-row-height);
 }
 
 // TODO: replace this with a pseudo-element once we drop support for Legacy Edge,
