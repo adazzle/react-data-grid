@@ -82,7 +82,7 @@
     "react-select": "^3.1.0",
     "react-virtualized": "^9.21.2",
     "ts-jest": "^25.3.1",
-    "ts-loader": "^6.2.2",
+    "ts-loader": "^7.0.0",
     "typescript": "~3.8.3"
   },
   "peerDependencies": {
