@@ -437,54 +437,47 @@ function DataGrid<R, K extends keyof R, SR>({
             onSelectedCellChange={props.onSelectedCellChange}
             onSelectedCellRangeChange={props.onSelectedCellRangeChange}
           />
-          <div
-            className="rdg-grid"
-            style={{
-              width: columnMetrics.totalColumnWidth,
-              paddingTop: rowOverscanStartIdx * rowHeight,
-              paddingBottom: (rows.length - 1 - rowOverscanEndIdx) * rowHeight
-            }}
-          >
-            <HeaderRow<R, K, SR>
-              rowKey={rowKey}
-              rows={rows}
-              height={headerRowHeight}
+          <HeaderRow<R, K, SR>
+            rowKey={rowKey}
+            rows={rows}
+            height={headerRowHeight}
+            width={columnMetrics.totalColumnWidth}
+            columns={viewportColumns}
+            onColumnResize={handleColumnResize}
+            lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+            draggableHeaderCell={props.draggableHeaderCell}
+            onHeaderDrop={props.onHeaderDrop}
+            allRowsSelected={selectedRows?.size === rows.length}
+            onSelectedRowsChange={onSelectedRowsChange}
+            sortColumn={props.sortColumn}
+            sortDirection={props.sortDirection}
+            onSort={props.onSort}
+          />
+          {enableFilters && (
+            <FilterRow<R, SR>
+              headerRowHeight={headerRowHeight}
+              height={headerFiltersHeight}
               width={columnMetrics.totalColumnWidth}
-              columns={viewportColumns}
-              onColumnResize={handleColumnResize}
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-              draggableHeaderCell={props.draggableHeaderCell}
-              onHeaderDrop={props.onHeaderDrop}
-              allRowsSelected={selectedRows?.size === rows.length}
-              onSelectedRowsChange={onSelectedRowsChange}
-              sortColumn={props.sortColumn}
-              sortDirection={props.sortDirection}
-              onSort={props.onSort}
+              columns={viewportColumns}
+              filters={props.filters}
+              onFiltersChange={props.onFiltersChange}
             />
-            {enableFilters && (
-              <FilterRow<R, SR>
-                headerRowHeight={headerRowHeight}
-                height={headerFiltersHeight}
-                width={columnMetrics.totalColumnWidth}
-                lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-                columns={viewportColumns}
-                filters={props.filters}
-                onFiltersChange={props.onFiltersChange}
-              />
-            )}
-            {getViewportRows()}
-            {summaryRows?.map((row, rowIdx) => (
-              <SummaryRow<R, SR>
-                key={rowIdx}
-                rowIdx={rowIdx}
-                row={row}
-                width={columnMetrics.totalColumnWidth}
-                height={rowHeight}
-                viewportColumns={viewportColumns}
-                lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
-              />
-            ))}
-          </div>
+          )}
+          <div style={{ height: rowOverscanStartIdx * rowHeight }} />
+          {getViewportRows()}
+          <div style={{ height: (rows.length - 1 - rowOverscanEndIdx) * rowHeight }} />
+          {summaryRows?.map((row, rowIdx) => (
+            <SummaryRow<R, SR>
+              key={rowIdx}
+              rowIdx={rowIdx}
+              row={row}
+              width={columnMetrics.totalColumnWidth}
+              height={rowHeight}
+              viewportColumns={viewportColumns}
+              lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+            />
+          ))}
         </>
       )}
     </div>
