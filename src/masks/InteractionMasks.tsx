@@ -20,21 +20,24 @@ import {
 import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode } from '../common/enums';
 import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
-import { CanvasProps } from '../Canvas';
+import { DataGridProps } from '../DataGrid';
 
-type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
+type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rows'
+  | 'onCheckCellIsEditable'
+  | 'onSelectedCellChange'
+  | 'onSelectedCellRangeChange'
+> & Pick<Required<DataGridProps<R, never, SR>>,
   | 'rowHeight'
   | 'enableCellAutoFocus'
   | 'enableCellCopyPaste'
   | 'enableCellDragAndDrop'
   | 'cellNavigationMode'
   | 'editorPortalTarget'
-  | 'onCheckCellIsEditable'
-  | 'onSelectedCellChange'
-  | 'onSelectedCellRangeChange'
   | 'onRowsUpdate'
-> & Pick<ColumnMetrics<R, SR>, 'columns'>;
+> & Pick<ColumnMetrics<R, SR>,
+  | 'columns'
+>;
 
 interface SelectCellState extends Position {
   status: 'SELECT';

@@ -2,19 +2,20 @@ import React, { memo } from 'react';
 
 import Row from './Row';
 import RowGroup from './RowGroup';
-import { CanvasProps } from './Canvas';
+import { DataGridProps } from './DataGrid';
 import { RowRendererProps, RowData, ColumnMetrics, CalculatedColumn } from './common/types';
 import EventBus from './EventBus';
 
-type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
+type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rowGroupRenderer'
-  | 'rowHeight'
   | 'rowRenderer'
   | 'onRowClick'
   | 'onRowExpandToggle'
+> & Pick<Required<DataGridProps<R, never, SR>>,
+  | 'rowHeight'
 >;
 
-interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {
+interface IRowRendererProps<R, SR> extends SharedDataGridProps<R, SR> {
   columnMetrics: ColumnMetrics<R, SR>;
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   rowIdx: number;

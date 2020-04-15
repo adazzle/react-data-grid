@@ -2,15 +2,16 @@ import React, { createElement } from 'react';
 import classNames from 'classnames';
 
 import { CalculatedColumn, Filters } from './common/types';
-import { CanvasProps } from './Canvas';
+import { DataGridProps } from './DataGrid';
 
-type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
+type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'filters'
   | 'onFiltersChange'
+  > & Pick<Required<DataGridProps<R, never, SR>>,
   | 'headerRowHeight'
 >;
 
-export interface FilterRowProps<R, SR> extends SharedCanvasProps<R, SR> {
+export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   height: number;
   width: number;
   lastFrozenColumnIndex: number;
