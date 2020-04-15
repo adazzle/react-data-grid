@@ -26,7 +26,6 @@ type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rows'
   | 'onCheckCellIsEditable'
   | 'onSelectedCellChange'
-  | 'onSelectedCellRangeChange'
 > & Pick<Required<DataGridProps<R, never, SR>>,
   | 'rowHeight'
   | 'enableCellAutoFocus'
@@ -49,7 +48,6 @@ interface EditCellState extends Position {
 }
 
 export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
-  height: number;
   gridRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
   scrollTop: number;

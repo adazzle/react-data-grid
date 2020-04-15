@@ -218,8 +218,6 @@ function DataGrid<R, K extends keyof R, SR>({
   }, [columnWidths, rawColumns, defaultFormatter, minColumnWidth, viewportWidth]);
 
   const { columns, lastFrozenColumnIndex } = columnMetrics;
-  // FIXME?
-  const clientHeight = height - (columnMetrics.totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     return getHorizontalRangeToRender({
@@ -236,6 +234,13 @@ function DataGrid<R, K extends keyof R, SR>({
       colOverscanEndIdx
     );
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
+
+  const totalHeaderHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
+  const clientHeight = height
+    - 2 // border width
+    - totalHeaderHeight
+    - (summaryRows?.length ?? 0) * rowHeight
+    - (columnMetrics.totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -429,7 +434,6 @@ function DataGrid<R, K extends keyof R, SR>({
             rows={rows}
             rowHeight={rowHeight}
             columns={columns}
-            height={clientHeight}
             enableCellAutoFocus={enableCellAutoFocus}
             enableCellCopyPaste={enableCellCopyPaste}
             enableCellDragAndDrop={enableCellDragAndDrop}
@@ -443,7 +447,6 @@ function DataGrid<R, K extends keyof R, SR>({
             onCheckCellIsEditable={props.onCheckCellIsEditable}
             onRowsUpdate={handleRowsUpdate}
             onSelectedCellChange={onSelectedCellChange}
-            onSelectedCellRangeChange={onSelectedCellRangeChange}
           />
           <HeaderRow<R, K, SR>
             rowKey={rowKey}

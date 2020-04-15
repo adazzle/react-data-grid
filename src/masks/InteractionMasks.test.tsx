@@ -27,13 +27,11 @@ describe('InteractionMasks', () => {
   function setup(overrideProps?: Partial<InteractionMasksProps<Row, unknown>>, initialPosition?: Position) {
     const onSelectedCellChange = jest.fn();
     const props: InteractionMasksProps<Row, unknown> = {
-      height: 100,
       columns,
       rows: Array(ROWS_COUNT).fill({ col1: 1 }),
       rowHeight: 30,
       scrollToCell: jest.fn(),
       onSelectedCellChange,
-      onSelectedCellRangeChange: jest.fn(),
       onRowsUpdate: jest.fn(),
       enableCellAutoFocus: false,
       enableCellCopyPaste: true,
