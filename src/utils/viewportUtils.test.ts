@@ -56,7 +56,6 @@ describe('getHorizontalRangeToRender', () => {
     }));
     return {
       columns,
-      viewportWidth: 1000,
       totalColumnWidth: 200,
       lastFrozenColumnIndex: -1
     };
@@ -65,6 +64,7 @@ describe('getHorizontalRangeToRender', () => {
   function getRange<K extends keyof HorizontalRangeToRenderParams<Row, unknown>>(overrides: Pick<HorizontalRangeToRenderParams<Row, unknown>, K>) {
     return getHorizontalRangeToRender({
       columnMetrics: getColumnMetrics(),
+      viewportWidth: 1000,
       scrollLeft: 200,
       ...overrides
     });
@@ -85,9 +85,9 @@ describe('getHorizontalRangeToRender', () => {
 
   it('should use viewportWidth to calculate the range', () => {
     const columnMetrics = getColumnMetrics();
-    columnMetrics.viewportWidth = 500;
     expect(getHorizontalRangeToRender({
       columnMetrics,
+      viewportWidth: 500,
       scrollLeft: 200
     })).toStrictEqual([1, 7]);
   });

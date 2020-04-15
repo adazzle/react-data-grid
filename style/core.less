@@ -7,23 +7,19 @@
   z-index: 0;
   border: 1px solid @borderColor;
   box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: scroll;
   .user-select();
+  background-color: #fff;
   font-size: 14px;
+  // will-change promotes the canvas to a new layer, improving scroll responsiveness
+  will-change: transform;
 
   *,
   *::before,
   *::after {
     box-sizing: inherit;
   }
-}
-
-.rdg-viewport {
-  position: relative;
-  overflow-x: auto;
-  overflow-y: scroll;
-  background-color: #fff;
-  // will-change promotes the canvas to a new layer, improving scroll responsiveness
-  will-change: transform;
 }
 
 .rdg-grid {

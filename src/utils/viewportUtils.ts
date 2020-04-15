@@ -27,14 +27,15 @@ export function getVerticalRangeToRender(
 
 export interface HorizontalRangeToRenderParams<R, SR> {
   columnMetrics: ColumnMetrics<R, SR>;
+  viewportWidth: number;
   scrollLeft: number;
 }
 
 export function getHorizontalRangeToRender<R, SR>({
-  columnMetrics,
+  columnMetrics: { columns, lastFrozenColumnIndex },
+  viewportWidth,
   scrollLeft
 }: HorizontalRangeToRenderParams<R, SR>): [number, number] {
-  const { columns, lastFrozenColumnIndex, viewportWidth } = columnMetrics;
   // get the viewport's left side and right side positions for non-frozen columns
   const totalFrozenColumnWidth = getTotalFrozenColumnWidth(columns, lastFrozenColumnIndex);
   const viewportLeft = scrollLeft + totalFrozenColumnWidth;

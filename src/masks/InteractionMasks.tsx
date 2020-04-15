@@ -50,7 +50,7 @@ interface EditCellState extends Position {
 
 export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
   height: number;
-  canvasRef: React.RefObject<HTMLDivElement>;
+  gridRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
   scrollTop: number;
   eventBus: EventBus;
@@ -67,7 +67,7 @@ export default function InteractionMasks<R, SR>({
   enableCellDragAndDrop,
   editorPortalTarget,
   cellNavigationMode,
-  canvasRef,
+  gridRef,
   scrollLeft,
   scrollTop,
   onSelectedCellChange,
@@ -115,8 +115,8 @@ export default function InteractionMasks<R, SR>({
   }
 
   function getEditorPosition() {
-    if (!canvasRef.current) return null;
-    const { left, top } = canvasRef.current.getBoundingClientRect();
+    if (!gridRef.current) return null;
+    const { left, top } = gridRef.current.getBoundingClientRect();
     const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
     const column = columns[selectedPosition.idx];
     return {

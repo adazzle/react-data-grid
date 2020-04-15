@@ -61,8 +61,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   return {
     columns: calculatedColumns,
     lastFrozenColumnIndex,
-    totalColumnWidth: totalWidth,
-    viewportWidth: metrics.viewportWidth
+    totalColumnWidth: totalWidth
   };
 }
 

@@ -185,7 +185,6 @@ function DataGrid<R, K extends keyof R, SR>({
    * refs
    * */
   const gridRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLDivElement>(null);
   const lastSelectedRowIdx = useRef(-1);
 
   /**
@@ -200,9 +199,7 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * computed values
    */
-  // FIXME?
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
-  // const viewportWidth = (width || gridWidth) - getScrollbarSize() - 2; // 2 for border width;
 
   const columnMetrics = useMemo(() => {
     return getColumnMetrics<R, SR>({
@@ -216,14 +213,15 @@ function DataGrid<R, K extends keyof R, SR>({
 
   const { columns, lastFrozenColumnIndex } = columnMetrics;
   // FIXME?
-  const clientHeight = height - (columnMetrics.totalColumnWidth > columnMetrics.viewportWidth ? getScrollbarSize() : 0);
+  const clientHeight = height - (columnMetrics.totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     return getHorizontalRangeToRender({
       columnMetrics,
+      viewportWidth,
       scrollLeft
     });
-  }, [columnMetrics, scrollLeft]);
+  }, [scrollLeft, columnMetrics, viewportWidth]);
 
   const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
     return getViewportColumns(
@@ -326,7 +324,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function scrollToCell({ idx, rowIdx }: Partial<Position>) {
-    const { current } = canvasRef;
+    const { current } = gridRef;
     if (!current) return;
 
     const { clientWidth, clientHeight, scrollLeft, scrollTop } = current;
@@ -357,7 +355,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function scrollToRow(rowIdx: number) {
-    const { current } = canvasRef;
+    const { current } = gridRef;
     if (!current) return;
     current.scrollTop = rowIdx * rowHeight;
   }
@@ -409,16 +407,16 @@ function DataGrid<R, K extends keyof R, SR>({
   return (
     <div
       className="rdg-root"
-      style={{ width, lineHeight: `${rowHeight}px` }}
+      style={{
+        width,
+        height,
+        lineHeight: `${rowHeight}px`
+      }}
       ref={gridRef}
+      onScroll={onScroll}
     >
       {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
-        <div
-          className="rdg-viewport"
-          style={{ height: height - 2 - (summaryRows ? summaryRows.length * rowHeight + 2 : 0) }}
-          ref={canvasRef}
-          onScroll={onScroll}
-        >
+        <>
           <InteractionMasks<R, SR>
             rows={rows}
             rowHeight={rowHeight}
@@ -429,7 +427,7 @@ function DataGrid<R, K extends keyof R, SR>({
             enableCellDragAndDrop={enableCellDragAndDrop}
             cellNavigationMode={cellNavigationMode}
             eventBus={eventBus}
-            canvasRef={canvasRef}
+            gridRef={gridRef}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
             scrollToCell={scrollToCell}
@@ -451,7 +449,7 @@ function DataGrid<R, K extends keyof R, SR>({
               rowKey={rowKey}
               rows={rows}
               height={headerRowHeight}
-              width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+              width={columnMetrics.totalColumnWidth}
               columns={viewportColumns}
               onColumnResize={handleColumnResize}
               lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
@@ -467,7 +465,7 @@ function DataGrid<R, K extends keyof R, SR>({
               <FilterRow<R, SR>
                 headerRowHeight={headerRowHeight}
                 height={headerFiltersHeight}
-                width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+                width={columnMetrics.totalColumnWidth}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
                 columns={viewportColumns}
                 filters={props.filters}
@@ -480,14 +478,14 @@ function DataGrid<R, K extends keyof R, SR>({
                 key={rowIdx}
                 rowIdx={rowIdx}
                 row={row}
-                width={columnMetrics.totalColumnWidth + getScrollbarSize()}
+                width={columnMetrics.totalColumnWidth}
                 height={rowHeight}
                 viewportColumns={viewportColumns}
                 lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
               />
             ))}
           </div>
-        </div>
+        </>
       )}
     </div>
   );

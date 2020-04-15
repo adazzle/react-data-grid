@@ -56,7 +56,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
 export interface ColumnMetrics<TRow, TSummaryRow> {
   columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
-  viewportWidth: number;
   totalColumnWidth: number;
 }
 
