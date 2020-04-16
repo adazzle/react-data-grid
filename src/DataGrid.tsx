@@ -371,7 +371,9 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function getViewportRows() {
+    const enableCellRangeSelection = typeof onSelectedCellRangeChange === 'function';
     const rowElements = [];
+
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
       let key: string | number = rowIdx;
@@ -397,7 +399,7 @@ function DataGrid<R, K extends keyof R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           onRowExpandToggle={onRowExpandToggle}
-          enableCellRangeSelection={typeof onSelectedCellRangeChange === 'function'}
+          enableCellRangeSelection={enableCellRangeSelection}
         />
       );
     }
