@@ -348,9 +348,8 @@ function DataGrid<R, K extends keyof R, SR>({
     const { current } = gridRef;
     if (!current) return;
 
-    const { clientWidth, clientHeight } = current;
-
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
+      const { clientWidth } = current;
       const { left, width } = columns[idx];
       const isCellAtLeftBoundary = left < scrollLeft + width + getFrozenColumnsWidth();
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
