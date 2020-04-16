@@ -11,16 +11,21 @@ type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   row: SR;
+  bottom: number;
 }
 
 function SummaryRow<R, SR>({
   rowIdx,
   lastFrozenColumnIndex,
   row,
-  viewportColumns
+  viewportColumns,
+  bottom
 }: SummaryRowProps<R, SR>) {
   return (
-    <div className={`rdg-row rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} rdg-summary-row`}>
+    <div
+      className={`rdg-row rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} rdg-summary-row`}
+      style={{ bottom }}
+    >
       {viewportColumns.map(column => (
         <SummaryCell<R, SR>
           key={column.key}
