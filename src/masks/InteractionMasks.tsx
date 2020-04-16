@@ -43,8 +43,6 @@ interface SelectCellState extends Position {
 interface EditCellState extends Position {
   status: 'EDIT';
   key: string | null;
-  top: number;
-  left: number;
 }
 
 export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
@@ -104,28 +102,6 @@ export default function InteractionMasks<R, SR>({
     return eventBus.subscribe('DRAG_ENTER', handleDragEnter);
   }, [draggedPosition, eventBus]);
 
-  function openEditor(key: string | null, position?: Position) {
-    if (gridRef.current === null) return;
-    const { left, top } = gridRef.current.getBoundingClientRect();
-    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
-    const gridTop = top + docTop;
-    const gridLeft = left + docLeft;
-
-    setSelectedPosition(currentPosition => {
-      const { idx, rowIdx } = position ?? currentPosition;
-      const column = columns[idx];
-
-      return {
-        idx,
-        rowIdx,
-        status: 'EDIT',
-        key,
-        top: gridTop + totalHeaderHeight + rowIdx * rowHeight - scrollTop,
-        left: gridLeft + column.left - (column.frozen ? 0 : scrollLeft)
-      };
-    });
-  }
-
   const closeEditor = useCallback(() => {
     setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
   }, []);
@@ -135,6 +111,19 @@ export default function InteractionMasks<R, SR>({
     setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
     setCopiedPosition(null);
     setDraggedPosition(null);
+  }
+
+  function getEditorPosition() {
+    if (gridRef.current === null) return { left: 0, top: 0 };
+    const { left, top } = gridRef.current.getBoundingClientRect();
+    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
+    const gridLeft = left + docLeft;
+    const gridTop = top + docTop;
+    const column = columns[selectedPosition.idx];
+    return {
+      left: gridLeft + column.left - (column.frozen ? 0 : scrollLeft),
+      top: gridTop + totalHeaderHeight + selectedPosition.rowIdx * rowHeight - scrollTop
+    };
   }
 
   function getNextPosition(key: string, mode = cellNavigationMode, shiftKey = false) {
@@ -187,7 +176,7 @@ export default function InteractionMasks<R, SR>({
     switch (key) {
       case 'Enter':
         if (canOpenEditor) {
-          openEditor('Enter');
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key: 'Enter' }));
         } else if (selectedPosition.status === 'EDIT') {
           setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
         }
@@ -208,7 +197,7 @@ export default function InteractionMasks<R, SR>({
         break;
       default:
         if (canOpenEditor && isActivatedByUser) {
-          openEditor(key);
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
         }
         break;
     }
@@ -275,7 +264,7 @@ export default function InteractionMasks<R, SR>({
     if (!isCellWithinBounds(position)) return;
 
     if (enableEditor && isCellEditable(position)) {
-      openEditor(null, position);
+      setSelectedPosition({ ...position, status: 'EDIT', key: null });
     } else {
       setSelectedPosition({ ...position, status: 'SELECT' });
     }
@@ -392,8 +381,7 @@ export default function InteractionMasks<R, SR>({
             column={columns[selectedPosition.idx]}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
-            top={selectedPosition.top}
-            left={selectedPosition.left}
+            {...getEditorPosition()}
           />
         </EditorPortal>
       )}
