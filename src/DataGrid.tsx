@@ -408,7 +408,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   return (
     <div
-      className="rdg-root"
+      className="rdg"
       style={{
         width,
         height,
