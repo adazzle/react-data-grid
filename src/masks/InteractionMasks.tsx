@@ -43,11 +43,14 @@ interface SelectCellState extends Position {
 interface EditCellState extends Position {
   status: 'EDIT';
   key: string | null;
+  top: number;
+  left: number;
 }
 
 export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   gridRef: React.RefObject<HTMLDivElement>;
+  totalHeaderHeight: number;
   scrollLeft: number;
   scrollTop: number;
   eventBus: EventBus;
@@ -65,6 +68,7 @@ export default function InteractionMasks<R, SR>({
   editorPortalTarget,
   cellNavigationMode,
   gridRef,
+  totalHeaderHeight,
   scrollLeft,
   scrollTop,
   onSelectedCellChange,
@@ -100,6 +104,28 @@ export default function InteractionMasks<R, SR>({
     return eventBus.subscribe('DRAG_ENTER', handleDragEnter);
   }, [draggedPosition, eventBus]);
 
+  function openEditor(key: string | null, position?: Position) {
+    if (gridRef.current === null) return;
+    const { left, top } = gridRef.current.getBoundingClientRect();
+    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
+    const gridTop = top + docTop;
+    const gridLeft = left + docLeft;
+
+    setSelectedPosition(currentPosition => {
+      const { idx, rowIdx } = position ?? currentPosition;
+      const column = columns[idx];
+
+      return {
+        idx,
+        rowIdx,
+        status: 'EDIT',
+        key,
+        top: gridTop + totalHeaderHeight + rowIdx * rowHeight - scrollTop,
+        left: gridLeft + column.left - (column.frozen ? 0 : scrollLeft)
+      };
+    });
+  }
+
   const closeEditor = useCallback(() => {
     setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
   }, []);
@@ -109,17 +135,6 @@ export default function InteractionMasks<R, SR>({
     setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
     setCopiedPosition(null);
     setDraggedPosition(null);
-  }
-
-  function getEditorPosition() {
-    if (!gridRef.current) return null;
-    const { left, top } = gridRef.current.getBoundingClientRect();
-    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
-    const column = columns[selectedPosition.idx];
-    return {
-      left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
-      top: top + docTop + selectedPosition.rowIdx * rowHeight - scrollTop
-    };
   }
 
   function getNextPosition(key: string, mode = cellNavigationMode, shiftKey = false) {
@@ -172,7 +187,7 @@ export default function InteractionMasks<R, SR>({
     switch (key) {
       case 'Enter':
         if (canOpenEditor) {
-          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key: 'Enter' }));
+          openEditor('Enter');
         } else if (selectedPosition.status === 'EDIT') {
           setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
         }
@@ -193,7 +208,7 @@ export default function InteractionMasks<R, SR>({
         break;
       default:
         if (canOpenEditor && isActivatedByUser) {
-          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
+          openEditor(key);
         }
         break;
     }
@@ -260,7 +275,7 @@ export default function InteractionMasks<R, SR>({
     if (!isCellWithinBounds(position)) return;
 
     if (enableEditor && isCellEditable(position)) {
-      setSelectedPosition({ ...position, status: 'EDIT', key: null });
+      openEditor(null, position);
     } else {
       setSelectedPosition({ ...position, status: 'SELECT' });
     }
@@ -330,10 +345,7 @@ export default function InteractionMasks<R, SR>({
   }
 
   function getSelectedDimensions(selectedPosition: Position): Dimension {
-    const top = rowHeight * selectedPosition.rowIdx;
-    const dimension = getDimensions({ selectedPosition, columns, scrollLeft, rowHeight });
-    dimension.top = top;
-    return dimension;
+    return getDimensions({ selectedPosition, columns, scrollLeft, rowHeight });
   }
 
   return (
@@ -376,11 +388,12 @@ export default function InteractionMasks<R, SR>({
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}
             row={rows[selectedPosition.rowIdx]}
+            rowHeight={rowHeight}
             column={columns[selectedPosition.idx]}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
-            {...getSelectedDimensions(selectedPosition)}
-            {...getEditorPosition()}
+            top={selectedPosition.top}
+            left={selectedPosition.left}
           />
         </EditorPortal>
       )}

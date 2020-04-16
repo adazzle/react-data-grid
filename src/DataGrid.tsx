@@ -348,7 +348,7 @@ function DataGrid<R, K extends keyof R, SR>({
     const { current } = gridRef;
     if (!current) return;
 
-    const { clientWidth, clientHeight, scrollLeft, scrollTop } = current;
+    const { clientWidth, clientHeight } = current;
 
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { left, width } = columns[idx];
@@ -454,6 +454,7 @@ function DataGrid<R, K extends keyof R, SR>({
             cellNavigationMode={cellNavigationMode}
             eventBus={eventBus}
             gridRef={gridRef}
+            totalHeaderHeight={totalHeaderHeight}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
             scrollToCell={scrollToCell}
