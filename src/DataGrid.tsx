@@ -420,6 +420,28 @@ function DataGrid<R, K extends keyof R, SR>({
       ref={gridRef}
       onScroll={onScroll}
     >
+      <HeaderRow<R, K, SR>
+        rowKey={rowKey}
+        rows={rows}
+        columns={viewportColumns}
+        onColumnResize={handleColumnResize}
+        lastFrozenColumnIndex={lastFrozenColumnIndex}
+        draggableHeaderCell={props.draggableHeaderCell}
+        onHeaderDrop={props.onHeaderDrop}
+        allRowsSelected={selectedRows?.size === rows.length}
+        onSelectedRowsChange={onSelectedRowsChange}
+        sortColumn={props.sortColumn}
+        sortDirection={props.sortDirection}
+        onSort={props.onSort}
+      />
+      {enableFilters && (
+        <FilterRow<R, SR>
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          columns={viewportColumns}
+          filters={props.filters}
+          onFiltersChange={props.onFiltersChange}
+        />
+      )}
       {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
         <>
           <InteractionMasks<R, SR>
@@ -440,28 +462,6 @@ function DataGrid<R, K extends keyof R, SR>({
             onRowsUpdate={handleRowsUpdate}
             onSelectedCellChange={onSelectedCellChange}
           />
-          <HeaderRow<R, K, SR>
-            rowKey={rowKey}
-            rows={rows}
-            columns={viewportColumns}
-            onColumnResize={handleColumnResize}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
-            draggableHeaderCell={props.draggableHeaderCell}
-            onHeaderDrop={props.onHeaderDrop}
-            allRowsSelected={selectedRows?.size === rows.length}
-            onSelectedRowsChange={onSelectedRowsChange}
-            sortColumn={props.sortColumn}
-            sortDirection={props.sortDirection}
-            onSort={props.onSort}
-          />
-          {enableFilters && (
-            <FilterRow<R, SR>
-              lastFrozenColumnIndex={lastFrozenColumnIndex}
-              columns={viewportColumns}
-              filters={props.filters}
-              onFiltersChange={props.onFiltersChange}
-            />
-          )}
           <div style={{ height: rowOverscanStartIdx * rowHeight }} />
           {getViewportRows()}
           <div style={{ height: (rows.length - 1 - rowOverscanEndIdx) * rowHeight }} />
