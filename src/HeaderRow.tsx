@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
 import { CalculatedColumn } from './common/types';
@@ -23,7 +23,7 @@ export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGrid
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
 }
 
-export default function HeaderRow<R, K extends keyof R, SR>({
+function HeaderRow<R, K extends keyof R, SR>({
   onSelectedRowsChange,
   rowKey,
   rows,
@@ -66,3 +66,5 @@ export default function HeaderRow<R, K extends keyof R, SR>({
     </div>
   );
 }
+
+export default memo(HeaderRow) as <R, K extends keyof R, SR>(props: HeaderRowProps<R, K, SR>) => JSX.Element;

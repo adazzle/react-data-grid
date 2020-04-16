@@ -6,6 +6,7 @@ import React, {
   useLayoutEffect,
   useEffect,
   useImperativeHandle,
+  useCallback,
   createElement
 } from 'react';
 
@@ -313,13 +314,13 @@ function DataGrid<R, K extends keyof R, SR>({
     props.onScroll?.({ scrollTop, scrollLeft });
   }
 
-  function handleColumnResize(column: CalculatedColumn<R, SR>, width: number) {
+  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
     const newColumnWidths = new Map(columnWidths);
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
     props.onColumnResize?.(column.idx, width);
-  }
+  }, [columnWidths, props.onColumnResize]);
 
   function handleRowsUpdate(event: RowsUpdateEvent) {
     props.onRowsUpdate?.(event);

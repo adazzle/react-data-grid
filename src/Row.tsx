@@ -32,24 +32,6 @@ export default function Row<R, SR = unknown>({
     event.dataTransfer.dropEffect = 'copy';
   }
 
-  function getCells() {
-    return viewportColumns.map(column => {
-      return (
-        <CellRenderer
-          key={column.key}
-          rowIdx={rowIdx}
-          column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          row={row}
-          isRowSelected={isRowSelected}
-          eventBus={eventBus}
-          onRowClick={onRowClick}
-          enableCellRangeSelection={enableCellRangeSelection}
-        />
-      );
-    });
-  }
-
   className = classNames(
     'rdg-row',
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
@@ -68,7 +50,21 @@ export default function Row<R, SR = unknown>({
       onDrop={wrapEvent(preventDefault, onDrop)}
       {...props}
     >
-      {getCells()}
+      {viewportColumns.map(column => {
+        return (
+          <CellRenderer
+            key={column.key}
+            rowIdx={rowIdx}
+            column={column}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
+            row={row}
+            isRowSelected={isRowSelected}
+            eventBus={eventBus}
+            onRowClick={onRowClick}
+            enableCellRangeSelection={enableCellRangeSelection}
+          />
+        );
+      })}
     </div>
   );
 }
