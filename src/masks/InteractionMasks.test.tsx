@@ -6,7 +6,6 @@ import InteractionMasks, { InteractionMasksProps } from './InteractionMasks';
 // import SelectionRangeMask from '../SelectionRangeMask';
 import DragMask from './DragMask';
 import EventBus from '../EventBus';
-import EditorContainer from '../editors/EditorContainer';
 import { createColumns } from '../test/utils';
 import { CellNavigationMode, UpdateActions } from '../common/enums';
 import { Position } from '../common/types';
@@ -424,13 +423,6 @@ describe('InteractionMasks', () => {
   // });
 
   describe('Keyboard navigation functionality', () => {
-    it('Press enter should enable editing', () => {
-      const { wrapper } = setup({}, { idx: 0, rowIdx: 0 });
-      pressKey(wrapper, 'Enter');
-      wrapper.update();
-      expect(wrapper.find(EditorContainer)).toHaveLength(1);
-    });
-
     describe('When current selected cell is not in outer bounds', () => {
       it('Press arrow up should move up', () => {
         const { wrapper, props } = setup({}, { idx: 0, rowIdx: 1 });
