@@ -92,10 +92,5 @@ describe('HeaderRow', () => {
       const headerRowDiv = wrapper.find('div').at(0);
       expect(headerRowDiv.props().width).toBeUndefined();
     });
-    it('does pass the height if available from props', () => {
-      const wrapper = renderComponent(requiredProps);
-      const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toStrictEqual({ height: 35, width: 1000, lineHeight: '35px' });
-    });
   });
 });
