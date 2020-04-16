@@ -399,8 +399,8 @@ function DataGrid<R, K extends keyof R, SR>({
           key={key}
           rowIdx={rowIdx}
           row={row}
-          columnMetrics={columnMetrics}
           viewportColumns={viewportColumns}
+          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
           eventBus={eventBus}
           rowGroupRenderer={rowGroupRenderer}
           rowRenderer={rowRenderer}

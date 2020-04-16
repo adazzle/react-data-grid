@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import Row from './Row';
 import RowGroup from './RowGroup';
 import { DataGridProps } from './DataGrid';
-import { RowRendererProps, RowData, ColumnMetrics, CalculatedColumn } from './common/types';
+import { RowRendererProps, RowData, CalculatedColumn } from './common/types';
 import EventBus from './EventBus';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
@@ -14,8 +14,8 @@ type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
 >;
 
 interface IRowRendererProps<R, SR> extends SharedDataGridProps<R, SR> {
-  columnMetrics: ColumnMetrics<R, SR>;
   viewportColumns: readonly CalculatedColumn<R, SR>[];
+  lastFrozenColumnIndex: number;
   rowIdx: number;
   row: R;
   enableCellRangeSelection?: boolean;
@@ -24,8 +24,8 @@ interface IRowRendererProps<R, SR> extends SharedDataGridProps<R, SR> {
 }
 
 function RowRenderer<R, SR>({
-  columnMetrics,
   viewportColumns,
+  lastFrozenColumnIndex,
   eventBus,
   rowIdx,
   row,
@@ -39,7 +39,7 @@ function RowRenderer<R, SR>({
     row,
     viewportColumns,
     isRowSelected: props.isRowSelected,
-    lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
+    lastFrozenColumnIndex,
     eventBus,
     onRowClick: props.onRowClick,
     enableCellRangeSelection: props.enableCellRangeSelection
