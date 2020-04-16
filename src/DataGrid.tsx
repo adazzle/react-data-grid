@@ -297,10 +297,20 @@ function DataGrid<R, K extends keyof R, SR>({
   }, [eventBus, onSelectedRowsChange, rows, rowKey, selectedRows]);
 
   useImperativeHandle(ref, () => ({
-    scrollToColumn,
-    scrollToRow,
-    selectCell,
-    openCellEditor
+    scrollToColumn(idx: number) {
+      scrollToCell({ idx });
+    },
+    scrollToRow(rowIdx: number) {
+      const { current } = gridRef;
+      if (!current) return;
+      current.scrollTop = rowIdx * rowHeight;
+    },
+    selectCell(position: Position, openEditor?: boolean) {
+      eventBus.dispatch('SELECT_CELL', position, openEditor);
+    },
+    openCellEditor(rowIdx: number, idx: number) {
+      eventBus.dispatch('SELECT_CELL', { rowIdx, idx }, true);
+    }
   }));
 
   /**
@@ -359,24 +369,6 @@ function DataGrid<R, K extends keyof R, SR>({
         current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
       }
     }
-  }
-
-  function scrollToColumn(idx: number) {
-    scrollToCell({ idx });
-  }
-
-  function scrollToRow(rowIdx: number) {
-    const { current } = gridRef;
-    if (!current) return;
-    current.scrollTop = rowIdx * rowHeight;
-  }
-
-  function selectCell(position: Position, openEditor?: boolean) {
-    eventBus.dispatch('SELECT_CELL', position, openEditor);
-  }
-
-  function openCellEditor(rowIdx: number, idx: number) {
-    selectCell({ rowIdx, idx }, true);
   }
 
   function getViewportRows() {
