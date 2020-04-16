@@ -19,7 +19,7 @@ import {
 // Types
 import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode } from '../common/enums';
-import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
+import { CalculatedColumn, Position, Dimension, CommitEvent } from '../common/types';
 import { DataGridProps } from '../DataGrid';
 
 type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
@@ -34,8 +34,6 @@ type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'cellNavigationMode'
   | 'editorPortalTarget'
   | 'onRowsUpdate'
-> & Pick<ColumnMetrics<R, SR>,
-  | 'columns'
 >;
 
 interface SelectCellState extends Position {
@@ -48,6 +46,7 @@ interface EditCellState extends Position {
 }
 
 export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
+  columns: readonly CalculatedColumn<R, SR>[];
   gridRef: React.RefObject<HTMLDivElement>;
   scrollLeft: number;
   scrollTop: number;

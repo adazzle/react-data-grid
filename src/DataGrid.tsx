@@ -208,7 +208,7 @@ function DataGrid<R, K extends keyof R, SR>({
    */
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
 
-  const columnMetrics = useMemo(() => {
+  const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
       columns: rawColumns,
       minColumnWidth,
@@ -218,15 +218,14 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }, [columnWidths, rawColumns, defaultFormatter, minColumnWidth, viewportWidth]);
 
-  const { columns, lastFrozenColumnIndex } = columnMetrics;
-
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
-    return getHorizontalRangeToRender({
-      columnMetrics,
+    return getHorizontalRangeToRender(
+      columns,
+      lastFrozenColumnIndex,
       viewportWidth,
       scrollLeft
-    });
-  }, [scrollLeft, columnMetrics, viewportWidth]);
+    );
+  }, [scrollLeft, columns, lastFrozenColumnIndex, viewportWidth]);
 
   const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
     return getViewportColumns(
@@ -241,7 +240,7 @@ function DataGrid<R, K extends keyof R, SR>({
     - 2 // border width
     - totalHeaderHeight
     - (summaryRows?.length ?? 0) * rowHeight
-    - (columnMetrics.totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
+    - (totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -400,7 +399,7 @@ function DataGrid<R, K extends keyof R, SR>({
           rowIdx={rowIdx}
           row={row}
           viewportColumns={viewportColumns}
-          lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
           eventBus={eventBus}
           rowGroupRenderer={rowGroupRenderer}
           rowRenderer={rowRenderer}
@@ -423,7 +422,7 @@ function DataGrid<R, K extends keyof R, SR>({
         height,
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
-        '--row-width': `${columnMetrics.totalColumnWidth}px`,
+        '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`
       } as React.CSSProperties}
       ref={gridRef}
@@ -454,7 +453,7 @@ function DataGrid<R, K extends keyof R, SR>({
             rows={rows}
             columns={viewportColumns}
             onColumnResize={handleColumnResize}
-            lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
             draggableHeaderCell={props.draggableHeaderCell}
             onHeaderDrop={props.onHeaderDrop}
             allRowsSelected={selectedRows?.size === rows.length}
@@ -465,7 +464,7 @@ function DataGrid<R, K extends keyof R, SR>({
           />
           {enableFilters && (
             <FilterRow<R, SR>
-              lastFrozenColumnIndex={columnMetrics.lastFrozenColumnIndex}
+              lastFrozenColumnIndex={lastFrozenColumnIndex}
               columns={viewportColumns}
               filters={props.filters}
               onFiltersChange={props.onFiltersChange}

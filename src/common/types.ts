@@ -53,12 +53,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
-export interface ColumnMetrics<TRow, TSummaryRow> {
-  columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  lastFrozenColumnIndex: number;
-  totalColumnWidth: number;
-}
-
 export interface RowData {
   name?: string;
   __metaData?: RowGroupMetaData;
