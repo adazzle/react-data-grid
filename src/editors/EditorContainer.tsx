@@ -1,6 +1,5 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
-import { Clear } from '@material-ui/icons';
 
 import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -174,7 +173,7 @@ export default function EditorContainer<R, SR>({
   }
 
   const className = classNames('rdg-editor-container', {
-    'has-error': !isValid
+    'rdg-editor-invalid': !isValid
   });
 
   return (
@@ -186,7 +185,6 @@ export default function EditorContainer<R, SR>({
         onContextMenu={preventDefault}
       >
         {createEditor()}
-        {!isValid && <Clear />}
       </div>
     </ClickOutside>
   );

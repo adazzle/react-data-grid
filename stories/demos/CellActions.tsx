@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import { Clear, Link, FileCopy } from '@material-ui/icons';
 import faker from 'faker';
 
 import DataGrid, { Column } from '../../src';
@@ -58,18 +57,18 @@ const columns: Column<Row>[] = [
       if (row.id === 'id_0') {
         const actions = [
           {
-            icon: <Clear />,
+            icon: '🗑️',
             callback() { alert('Deleting'); }
           },
           {
-            icon: <Link />,
+            icon: '🔗',
             actions: [
               {
-                text: 'Edit Cell',
+                text: '✍️ Edit Cell',
                 callback() { alert('Edit Cell'); }
               },
               {
-                text: <><FileCopy /> Copy Cell</>,
+                text: '📋 Copy Cell',
                 callback() { alert('Copied'); }
               }
             ]

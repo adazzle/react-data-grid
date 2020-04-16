@@ -1,5 +1,4 @@
 import React from 'react';
-import { RemoveCircle } from '@material-ui/icons';
 
 export interface ChildRowDeleteButtonProps {
   onDeleteSubRow: () => void;
@@ -11,8 +10,8 @@ export function ChildRowDeleteButton({ onDeleteSubRow, isDeleteSubRowEnabled }: 
     <>
       <div className="rdg-child-row-action-cross" />
       {isDeleteSubRowEnabled && (
-        <div className="rdg-child-row-btn" style={{ left: 15 }} onClick={onDeleteSubRow}>
-          <RemoveCircle />
+        <div className="rdg-child-row-btn" onClick={onDeleteSubRow}>
+          ❌
         </div>
       )}
     </>
