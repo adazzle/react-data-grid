@@ -30,6 +30,7 @@ describe('InteractionMasks', () => {
       columns,
       rows: Array(ROWS_COUNT).fill({ col1: 1 }),
       rowHeight: 30,
+      totalHeaderHeight: 30,
       scrollToCell: jest.fn(),
       onSelectedCellChange,
       onRowsUpdate: jest.fn(),
