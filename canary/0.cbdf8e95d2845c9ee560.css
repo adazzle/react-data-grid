@@ -292,10 +292,6 @@ html {
 .rdg-toolbar .grouped-col-btn + .grouped-col-btn {
   margin-left: 5px;
 }
-.grouped-col-btn > .MuiSvgIcon-root {
-  font-size: 18px;
-  vertical-align: middle;
-}
 .rdg-toolbar .tools {
   float: right;
   position: relative;
@@ -373,7 +369,6 @@ html {
   content: "";
   position: absolute;
   background: grey;
-  height: 50%;
 }
 .rdg-child-row-action-cross:before {
   left: 21px;
@@ -385,9 +380,6 @@ html {
   left: 20px;
   height: 1px;
   width: 15px;
-  content: "";
-  position: absolute;
-  background: grey;
 }
 .rdg-child-row-action-cross:hover {
   background: red;
@@ -395,21 +387,9 @@ html {
 .rdg-child-row-btn {
   cursor: pointer;
   position: absolute;
-  top: calc(50% - 6px);
-  height: 12px;
-  width: 12px;
-  z-index: 2;
-  background: white;
-}
-.rdg-child-row-btn .MuiSvgIcon-root {
-  font-size: 16px;
-  color: grey;
-  position: absolute;
-  top: calc(50% - 8px);
-  left: calc(50% - 8px);
-}
-.rdg-child-row-btn .MuiSvgIcon-root:hover {
-  color: red;
+  left: 21px;
+  transform: translateX(-50%);
+  filter: grayscale(1);
 }
 
 .react-contextmenu {
@@ -492,4 +472,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.de77d339a56d53db66c2.css.map*/
+/*# sourceMappingURL=0.cbdf8e95d2845c9ee560.css.map*/
