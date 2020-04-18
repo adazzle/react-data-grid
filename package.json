@@ -26,7 +26,7 @@
   "scripts": {
     "start": "start-storybook --quiet -p 6006",
     "build": "tsc",
-    "postbuild": "node tools/buildStylesheets.mjs",
+    "postbuild": "node --experimental-modules tools/buildStylesheets.mjs",
     "test": "jest",
     "test:watch": "jest --watch",
     "eslint": "eslint --ext mjs,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories jest tools",

@@ -6,7 +6,7 @@
     "inlineSources": true,
     "jsx": "react",
     "lib": ["es2020", "dom", "dom.iterable"],
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
