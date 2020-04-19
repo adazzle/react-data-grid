@@ -254,7 +254,7 @@ function DataGrid<R, K extends keyof R, SR>({
    */
   useLayoutEffect(() => {
     // Do not calculate the width if width is provided
-    if (width) return;
+    if (typeof width === 'number') return;
     function onResize() {
       // Immediately re-render when the component is mounted to get valid columnMetrics.
       setGridWidth(gridRef.current!.getBoundingClientRect().width);
@@ -445,25 +445,27 @@ function DataGrid<R, K extends keyof R, SR>({
       )}
       {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
         <>
-          <InteractionMasks<R, SR>
-            rows={rows}
-            rowHeight={rowHeight}
-            columns={columns}
-            enableCellAutoFocus={enableCellAutoFocus}
-            enableCellCopyPaste={enableCellCopyPaste}
-            enableCellDragAndDrop={enableCellDragAndDrop}
-            cellNavigationMode={cellNavigationMode}
-            eventBus={eventBus}
-            gridRef={gridRef}
-            totalHeaderHeight={totalHeaderHeight}
-            scrollLeft={scrollLeft}
-            scrollTop={scrollTop}
-            scrollToCell={scrollToCell}
-            editorPortalTarget={editorPortalTarget}
-            onCheckCellIsEditable={props.onCheckCellIsEditable}
-            onRowsUpdate={handleRowsUpdate}
-            onSelectedCellChange={onSelectedCellChange}
-          />
+          {viewportWidth > 0 && (
+            <InteractionMasks<R, SR>
+              rows={rows}
+              rowHeight={rowHeight}
+              columns={columns}
+              enableCellAutoFocus={enableCellAutoFocus}
+              enableCellCopyPaste={enableCellCopyPaste}
+              enableCellDragAndDrop={enableCellDragAndDrop}
+              cellNavigationMode={cellNavigationMode}
+              eventBus={eventBus}
+              gridRef={gridRef}
+              totalHeaderHeight={totalHeaderHeight}
+              scrollLeft={scrollLeft}
+              scrollTop={scrollTop}
+              scrollToCell={scrollToCell}
+              editorPortalTarget={editorPortalTarget}
+              onCheckCellIsEditable={props.onCheckCellIsEditable}
+              onRowsUpdate={handleRowsUpdate}
+              onSelectedCellChange={onSelectedCellChange}
+            />
+          )}
           <div style={{ height: rowOverscanStartIdx * rowHeight }} />
           {getViewportRows()}
           <div style={{ height: (rows.length - 1 - rowOverscanEndIdx) * rowHeight }} />
