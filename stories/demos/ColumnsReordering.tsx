@@ -77,14 +77,16 @@ export default function ColumnsReordering() {
     }
 
     function handleColumnsReorder(sourceKey: string, targetKey: string) {
-      const sourceColumn = columns.find(c => c.key === sourceKey)!;
-      const targetColumn = columns.find(c => c.key === targetKey)!;
+      const sourceColumnIndex = columns.findIndex(c => c.key === sourceKey)!;
+      const targetColumnIndex = columns.findIndex(c => c.key === targetKey)!;
 
-      const reorderedColumns = columns.map(c => {
-        if (c === sourceColumn) return targetColumn;
-        if (c === targetColumn) return sourceColumn;
-        return c;
-      });
+      const reorderedColumns = [...columns];
+
+      reorderedColumns.splice(
+        targetColumnIndex,
+        0,
+        reorderedColumns.splice(sourceColumnIndex, 1)[0]
+      );
 
       setColumns(reorderedColumns);
     }
