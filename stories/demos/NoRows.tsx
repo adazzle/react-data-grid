@@ -1,7 +1,7 @@
 import React from 'react';
 import DataGrid, { Column } from '../../src';
 
-function EmptyRowsView() {
+function EmptyRowsRenderer() {
   return <div style={{ textAlign: 'center' }}>Nothing to show <span lang="ja" title="ショボーン">(´・ω・`)</span></div>;
 }
 
@@ -25,7 +25,7 @@ export default function NoRows() {
       columns={columns}
       rows={rows}
       width={600}
-      emptyRowsView={EmptyRowsView}
+      emptyRowsRenderer={EmptyRowsRenderer}
     />
   );
 }

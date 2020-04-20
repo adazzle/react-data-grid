@@ -111,7 +111,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
   rowGroupRenderer?: React.ComponentType;
-  emptyRowsView?: React.ComponentType<{}>;
+  emptyRowsRenderer?: React.ComponentType<{}>;
 
   /**
    * Event props
@@ -179,7 +179,7 @@ function DataGrid<R, K extends keyof R, SR>({
   defaultFormatter = ValueFormatter,
   rowRenderer,
   rowGroupRenderer,
-  emptyRowsView,
+  emptyRowsRenderer,
   // Event props
   onRowClick,
   onScroll,
@@ -444,7 +444,7 @@ function DataGrid<R, K extends keyof R, SR>({
           onFiltersChange={onFiltersChange}
         />
       )}
-      {rows.length === 0 && emptyRowsView ? createElement(emptyRowsView) : (
+      {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
         <>
           {viewportWidth > 0 && (
             <InteractionMasks<R, SR>

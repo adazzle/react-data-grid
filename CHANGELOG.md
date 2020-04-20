@@ -71,6 +71,7 @@
   - ⚠️ `minWidth` to `width`
   - ⚠️ `onGridSort` to `onSort`
   - ⚠️ `onGridRowsUpdated` to `onRowsUpdate`
+  - ⚠️ `emptyRowsView` to `emptyRowsRenderer`
   - ⚠️ `rowData` to `row`
   - ⚠️ `fromRowData` to `fromRow`
   - ⚠️ `idx` to `rowIdx` in `Row` renderer
