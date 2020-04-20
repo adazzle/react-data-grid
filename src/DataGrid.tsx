@@ -47,7 +47,6 @@ export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, openEditor?: boolean) => void;
-  openCellEditor: (rowIdx: number, colIdx: number) => void;
 }
 
 export interface DataGridProps<R, K extends keyof R, SR = unknown> {
@@ -325,9 +324,6 @@ function DataGrid<R, K extends keyof R, SR>({
     },
     selectCell(position: Position, openEditor?: boolean) {
       eventBus.dispatch('SELECT_CELL', position, openEditor);
-    },
-    openCellEditor(rowIdx: number, idx: number) {
-      eventBus.dispatch('SELECT_CELL', { rowIdx, idx }, true);
     }
   }));
 
