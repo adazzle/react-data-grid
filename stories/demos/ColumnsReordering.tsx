@@ -28,9 +28,8 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function ColumnsReordering() {
-  const [rows] = useState(createRows);
-  const [columns, setColumns] = useState<Column<Row>[]>(() => [
+function createColumns(): Column<Row>[] {
+  return [
     {
       key: 'id',
       name: 'ID',
@@ -40,32 +39,61 @@ export default function ColumnsReordering() {
       key: 'task',
       name: 'Title',
       resizable: true,
-      sortable: true,
-      headerRenderer: HeaderRenderer
+      sortable: true
     },
     {
       key: 'priority',
       name: 'Priority',
       resizable: true,
-      sortable: true,
-      headerRenderer: HeaderRenderer
+      sortable: true
     },
     {
       key: 'issueType',
       name: 'Issue Type',
       resizable: true,
-      sortable: true,
-      headerRenderer: HeaderRenderer
+      sortable: true
     },
     {
       key: 'complete',
       name: '% Complete',
       resizable: true,
-      sortable: true,
-      headerRenderer: HeaderRenderer
+      sortable: true
     }
-  ]);
+  ];
+}
+
+export default function ColumnsReordering() {
+  const [rows] = useState(createRows);
+  const [columns, setColumns] = useState(createColumns);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['task', 'NONE']);
+
+  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
+    setSort([columnKey, direction]);
+  }, []);
+
+  const draggableColumns = useMemo(() => {
+    function HeaderRenderer(props: HeaderRendererProps<Row>) {
+      return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
+    }
+
+    function handleColumnsReorder(sourceKey: string, targetKey: string) {
+      const sourceColumn = columns.find(c => c.key === sourceKey)!;
+      const targetColumn = columns.find(c => c.key === targetKey)!;
+
+      const reorderedColumns = columns.map(c => {
+        if (c === sourceColumn) return targetColumn;
+        if (c === targetColumn) return sourceColumn;
+        return c;
+      });
+
+      setColumns(reorderedColumns);
+    }
+
+    return columns.map(c => {
+      if (c.key === 'id') return c;
+      return { ...c, headerRenderer: HeaderRenderer };
+    });
+  }, [columns]);
 
   const sortedRows: readonly Row[] = useMemo(() => {
     if (sortDirection === 'NONE') return rows;
@@ -87,31 +115,10 @@ export default function ColumnsReordering() {
     return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
   }, [rows, sortDirection, sortColumn]);
 
-  function HeaderRenderer(props: HeaderRendererProps<Row>) {
-    return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
-  }
-
-  function handleColumnsReorder(sourceKey: string, targetKey: string) {
-    const sourceColumn = columns.find(c => c.key === sourceKey)!;
-    const targetColumn = columns.find(c => c.key === targetKey)!;
-
-    const reorderedColumns = columns.map(c => {
-      if (c === sourceColumn) return targetColumn;
-      if (c === targetColumn) return sourceColumn;
-      return c;
-    });
-
-    setColumns(reorderedColumns);
-  }
-
-  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
-    setSort([columnKey, direction]);
-  }, []);
-
   return (
     <DndProvider backend={Backend}>
       <DataGrid
-        columns={columns}
+        columns={draggableColumns}
         rows={sortedRows}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
