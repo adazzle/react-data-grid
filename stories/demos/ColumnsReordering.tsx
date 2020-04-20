@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
-import DataGrid, { Column, HeaderRendererProps } from '../../src';
+import DataGrid, { Column, HeaderRendererProps, SortDirection } from '../../src';
 
 interface Row {
   id: number;
@@ -40,33 +40,58 @@ export default function ColumnsReordering() {
       key: 'task',
       name: 'Title',
       resizable: true,
+      sortable: true,
       headerRenderer: HeaderRenderer
     },
     {
       key: 'priority',
       name: 'Priority',
       resizable: true,
+      sortable: true,
       headerRenderer: HeaderRenderer
     },
     {
       key: 'issueType',
       name: 'Issue Type',
       resizable: true,
+      sortable: true,
       headerRenderer: HeaderRenderer
     },
     {
       key: 'complete',
       name: '% Complete',
       resizable: true,
+      sortable: true,
       headerRenderer: HeaderRenderer
     }
   ]);
+  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['task', 'NONE']);
+
+  const sortedRows: readonly Row[] = useMemo(() => {
+    if (sortDirection === 'NONE') return rows;
+
+    let sortedRows: Row[] = [...rows];
+
+    switch (sortColumn) {
+      case 'task':
+      case 'priority':
+      case 'issueType':
+        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
+        break;
+      case 'complete':
+        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
+        break;
+      default:
+    }
+
+    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
+  }, [rows, sortDirection, sortColumn]);
 
   function HeaderRenderer(props: HeaderRendererProps<Row>) {
-    return <DraggableHeaderRenderer {...props} onColumnsReorder={onColumnsReorder} />;
+    return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
   }
 
-  function onColumnsReorder(sourceKey: string, targetKey: string) {
+  function handleColumnsReorder(sourceKey: string, targetKey: string) {
     const sourceColumn = columns.find(c => c.key === sourceKey)!;
     const targetColumn = columns.find(c => c.key === targetKey)!;
 
@@ -79,11 +104,18 @@ export default function ColumnsReordering() {
     setColumns(reorderedColumns);
   }
 
+  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
+    setSort([columnKey, direction]);
+  }, []);
+
   return (
     <DndProvider backend={Backend}>
       <DataGrid
         columns={columns}
-        rows={rows}
+        rows={sortedRows}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={handleSort}
       />
     </DndProvider>
   );
