@@ -6,9 +6,7 @@ import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
-  | 'draggableHeaderCell'
   | 'rows'
-  | 'onHeaderDrop'
   | 'onSelectedRowsChange'
   | 'sortColumn'
   | 'sortDirection'
@@ -31,8 +29,6 @@ function HeaderRow<R, K extends keyof R, SR>({
   onSelectedRowsChange,
   allRowsSelected,
   onColumnResize,
-  draggableHeaderCell,
-  onHeaderDrop,
   sortColumn,
   sortDirection,
   onSort
@@ -61,10 +57,8 @@ function HeaderRow<R, K extends keyof R, SR>({
             column={column}
             lastFrozenColumnIndex={lastFrozenColumnIndex}
             onResize={onColumnResize}
-            onHeaderDrop={onHeaderDrop}
             allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}
-            draggableHeaderCell={draggableHeaderCell}
             onSort={onSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}

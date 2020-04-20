@@ -112,8 +112,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
   rowGroupRenderer?: React.ComponentType;
   emptyRowsView?: React.ComponentType<{}>;
-  /** Component used to render a draggable header cell */
-  draggableHeaderCell?: React.ComponentType<{ column: CalculatedColumn<R, SR>; onHeaderDrop: () => void }>;
 
   /**
    * Event props
@@ -124,7 +122,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   onScroll?: (scrollPosition: ScrollPosition) => void;
   /** Called when a column is resized */
   onColumnResize?: (idx: number, width: number) => void;
-  onHeaderDrop?: () => void;
   onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
@@ -183,12 +180,10 @@ function DataGrid<R, K extends keyof R, SR>({
   rowRenderer,
   rowGroupRenderer,
   emptyRowsView,
-  draggableHeaderCell,
   // Event props
   onRowClick,
   onScroll,
   onColumnResize,
-  onHeaderDrop,
   onRowExpandToggle,
   onSelectedCellChange,
   onCheckCellIsEditable,
@@ -435,8 +430,6 @@ function DataGrid<R, K extends keyof R, SR>({
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
-        draggableHeaderCell={draggableHeaderCell}
-        onHeaderDrop={onHeaderDrop}
         allRowsSelected={selectedRows?.size === rows.length}
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
