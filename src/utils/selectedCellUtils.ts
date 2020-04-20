@@ -1,6 +1,6 @@
 import { CellNavigationMode } from '../common/enums';
 import { canEdit } from './columnUtils';
-import { CalculatedColumn, Position, Range, Dimension } from '../common/types';
+import { CalculatedColumn, Position, Dimension } from '../common/types';
 
 // above unfrozen cells, below frozen cells
 const zCellMask = 1;
@@ -24,33 +24,6 @@ export function getSelectedDimensions<R, SR>({ selectedPosition: { idx, rowIdx }
   const top = rowIdx * rowHeight;
   const zIndex = column.frozen ? zFrozenCellMask : zCellMask;
   return { width, left, top, height: rowHeight, zIndex };
-}
-
-interface GetSelectedRangeDimensionsOpts<R, SR> {
-  selectedRange: Range;
-  columns: readonly CalculatedColumn<R, SR>[];
-  rowHeight: number;
-}
-
-export function getSelectedRangeDimensions<R, SR>({ selectedRange: { topLeft, bottomRight }, columns, rowHeight }: GetSelectedRangeDimensionsOpts<R, SR>): Dimension {
-  if (topLeft.idx < 0) {
-    return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: zCellMask };
-  }
-
-  let width = 0;
-  let anyColFrozen = false;
-  for (let i = topLeft.idx; i <= bottomRight.idx; i++) {
-    const column = columns[i];
-    width += column.width;
-    if (column.frozen) anyColFrozen = true;
-  }
-
-  const { left } = columns[topLeft.idx];
-  const top = topLeft.rowIdx * rowHeight;
-  const height = (bottomRight.rowIdx - topLeft.rowIdx + 1) * rowHeight;
-  const zIndex = anyColFrozen ? zFrozenCellMask : zCellMask;
-
-  return { width, left, top, height, zIndex };
 }
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -138,8 +111,4 @@ export function canExitGrid<R, SR>(event: React.KeyboardEvent, { cellNavigationM
   }
 
   return false;
-}
-
-export function selectedRangeIsSingleCell({ topLeft, bottomRight }: Range): boolean {
-  return topLeft.idx === bottomRight.idx && topLeft.rowIdx === bottomRight.rowIdx;
 }

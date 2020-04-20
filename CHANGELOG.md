@@ -33,6 +33,7 @@
     - ⚠️ `enableCellSelect`
     - ⚠️ `getValidFilterValues`
     - ⚠️ `onCellCopyPaste`
+    - ⚠️ `onSelectedCellRangeChange`
     - ⚠️ `onGridKeyDown`
     - ⚠️ `onGridKeyUp`
     - ⚠️ `onRowDoubleClick`

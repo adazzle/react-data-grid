@@ -13,13 +13,10 @@ function Cell<R, SR>({
   rowIdx,
   eventBus,
   onRowClick,
-  enableCellRangeSelection,
   onClick,
   onDoubleClick,
   onContextMenu,
   onDragOver,
-  onMouseDown,
-  onMouseEnter,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   function selectCell(openEditor?: boolean) {
@@ -29,21 +26,6 @@ function Cell<R, SR>({
   function handleCellClick() {
     selectCell();
     onRowClick?.(rowIdx, row, column);
-  }
-
-  function handleCellMouseDown() {
-    eventBus.dispatch('SELECT_START', { idx: column.idx, rowIdx });
-
-    function handleWindowMouseUp() {
-      eventBus.dispatch('SELECT_END');
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    }
-
-    window.addEventListener('mouseup', handleWindowMouseUp);
-  }
-
-  function handleCellMouseEnter() {
-    eventBus.dispatch('SELECT_UPDATE', { idx: column.idx, rowIdx });
   }
 
   function handleCellContextMenu() {
@@ -81,8 +63,6 @@ function Cell<R, SR>({
       onDoubleClick={wrapEvent(handleCellDoubleClick, onDoubleClick)}
       onContextMenu={wrapEvent(handleCellContextMenu, onContextMenu)}
       onDragOver={wrapEvent(preventDefault, onDragOver)}
-      onMouseDown={!enableCellRangeSelection ? onMouseDown : wrapEvent(handleCellMouseDown, onMouseDown)}
-      onMouseEnter={!enableCellRangeSelection ? onMouseEnter : wrapEvent(handleCellMouseEnter, onMouseEnter)}
       {...props}
     >
       <column.formatter

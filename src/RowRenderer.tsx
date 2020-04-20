@@ -18,7 +18,6 @@ interface IRowRendererProps<R, SR> extends SharedDataGridProps<R, SR> {
   lastFrozenColumnIndex: number;
   rowIdx: number;
   row: R;
-  enableCellRangeSelection?: boolean;
   eventBus: EventBus;
   isRowSelected: boolean;
 }
@@ -31,7 +30,6 @@ function RowRenderer<R, SR>({
   row,
   rowGroupRenderer,
   rowRenderer,
-  enableCellRangeSelection,
   isRowSelected,
   onRowClick,
   onRowExpandToggle
@@ -44,8 +42,7 @@ function RowRenderer<R, SR>({
     isRowSelected,
     lastFrozenColumnIndex,
     eventBus,
-    onRowClick,
-    enableCellRangeSelection
+    onRowClick
   };
 
   if (__metaData) {

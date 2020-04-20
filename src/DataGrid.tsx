@@ -38,7 +38,6 @@ import {
   RowRendererProps,
   RowsUpdateEvent,
   ScrollPosition,
-  SelectedRange,
   SelectRowEvent
 } from './common/types';
 import { CellNavigationMode, SortDirection } from './common/enums';
@@ -129,8 +128,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
-  /** Function called whenever selected cell range is changed */
-  onSelectedCellRangeChange?: (selectedRange: SelectedRange) => void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?: (event: CheckCellIsEditableEvent<R, SR>) => boolean;
 
@@ -194,7 +191,6 @@ function DataGrid<R, K extends keyof R, SR>({
   onHeaderDrop,
   onRowExpandToggle,
   onSelectedCellChange,
-  onSelectedCellRangeChange,
   onCheckCellIsEditable,
   // Toggles and modes
   enableFilters = false,
@@ -385,7 +381,6 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function getViewportRows() {
-    const enableCellRangeSelection = typeof onSelectedCellRangeChange === 'function';
     const rowElements = [];
 
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
@@ -413,7 +408,6 @@ function DataGrid<R, K extends keyof R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           onRowExpandToggle={onRowExpandToggle}
-          enableCellRangeSelection={enableCellRangeSelection}
         />
       );
     }
