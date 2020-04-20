@@ -25,8 +25,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
   summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
-  /** Enable dragging of a column */
-  draggable?: boolean;
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */
@@ -115,7 +113,7 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   onOverrideKeyDown: (e: KeyboardEvent) => void;
 }
 
-export interface HeaderRendererProps<TRow, TSummaryRow> {
+export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;

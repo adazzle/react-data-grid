@@ -14,6 +14,7 @@ import ContextMenu from './demos/ContextMenu';
 import ScrollToRow from './demos/ScrollToRow';
 import CellNavigation from './demos/CellNavigation';
 import HeaderFilters from './demos/HeaderFilters';
+import ColumnsReordering from './demos/ColumnsReordering';
 
 storiesOf('Demos', module)
   .add('Common Features', () => <CommonFeatures />)
@@ -25,4 +26,5 @@ storiesOf('Demos', module)
   .add('Context Menu', () => <ContextMenu />)
   .add('Scroll To Row', () => <ScrollToRow />)
   .add('Cell Navigation', () => <CellNavigation />)
-  .add('Header Filters', () => <HeaderFilters />);
+  .add('Header Filters', () => <HeaderFilters />)
+  .add('Columns Reordering', () => <ColumnsReordering />);

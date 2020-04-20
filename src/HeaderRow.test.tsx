@@ -14,9 +14,7 @@ describe('HeaderRow', () => {
     onColumnResize() { },
     onSort: jest.fn(),
     sortDirection: 'NONE',
-    allRowsSelected: false,
-    onHeaderDrop() { },
-    draggableHeaderCell: () => <div />
+    allRowsSelected: false
   };
 
   const setup = (testProps?: Partial<HeaderRowProps<Row, 'id', unknown>>) => {
@@ -77,9 +75,7 @@ describe('HeaderRow', () => {
       lastFrozenColumnIndex: 1,
       onSort: jest.fn(),
       allRowsSelected: false,
-      onColumnResize: jest.fn(),
-      onHeaderDrop() { },
-      draggableHeaderCell: () => <div />
+      onColumnResize: jest.fn()
     };
 
     it('passes classname property', () => {

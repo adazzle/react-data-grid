@@ -10,9 +10,7 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
-  | 'onHeaderDrop'
   | 'allRowsSelected'
-  | 'draggableHeaderCell'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -75,18 +73,6 @@ export default function HeaderCell<R, SR>({
       >
         {cell as React.ReactElement<React.ComponentProps<'div'>>}
       </ResizableHeaderCell>
-    );
-  }
-
-  const DraggableHeaderCell = props.draggableHeaderCell;
-  if (column.draggable && DraggableHeaderCell) {
-    return (
-      <DraggableHeaderCell
-        column={column}
-        onHeaderDrop={props.onHeaderDrop!}
-      >
-        {cell}
-      </DraggableHeaderCell>
     );
   }
 
