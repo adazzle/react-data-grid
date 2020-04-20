@@ -27,7 +27,6 @@ describe('HeaderCell', () => {
       },
       lastFrozenColumnIndex: -1,
       onResize: jest.fn(),
-      height: 50,
       onHeaderDrop() { },
       draggableHeaderCell: DraggableHeaderCell,
       allRowsSelected: false,

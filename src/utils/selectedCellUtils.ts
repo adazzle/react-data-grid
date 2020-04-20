@@ -2,8 +2,10 @@ import { CellNavigationMode } from '../common/enums';
 import { canEdit } from './columnUtils';
 import { CalculatedColumn, Position, Range, Dimension } from '../common/types';
 
+// above unfrozen cells, below frozen cells
 const zCellMask = 1;
-const zFrozenCellMask = 3;
+// above frozen cells, below header/filter/summary rows
+const zFrozenCellMask = 2;
 
 interface GetSelectedDimensionsOpts<R, SR> {
   selectedPosition: Position;

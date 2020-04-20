@@ -10,14 +10,12 @@ export default function Row<R, SR = unknown>({
   className,
   enableCellRangeSelection,
   eventBus,
-  height,
   rowIdx,
   isRowSelected,
   lastFrozenColumnIndex,
   onRowClick,
   row,
   viewportColumns,
-  width,
   onDragEnter,
   onDragOver,
   onDrop,
@@ -34,24 +32,6 @@ export default function Row<R, SR = unknown>({
     event.dataTransfer.dropEffect = 'copy';
   }
 
-  function getCells() {
-    return viewportColumns.map(column => {
-      return (
-        <CellRenderer
-          key={column.key}
-          rowIdx={rowIdx}
-          column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          row={row}
-          isRowSelected={isRowSelected}
-          eventBus={eventBus}
-          onRowClick={onRowClick}
-          enableCellRangeSelection={enableCellRangeSelection}
-        />
-      );
-    });
-  }
-
   className = classNames(
     'rdg-row',
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
@@ -65,13 +45,24 @@ export default function Row<R, SR = unknown>({
   return (
     <div
       className={className}
-      style={{ width, height }}
       onDragEnter={wrapEvent(handleDragEnter, onDragEnter)}
       onDragOver={wrapEvent(handleDragOver, onDragOver)}
       onDrop={wrapEvent(preventDefault, onDrop)}
       {...props}
     >
-      {getCells()}
+      {viewportColumns.map(column => (
+        <CellRenderer
+          key={column.key}
+          rowIdx={rowIdx}
+          column={column}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          row={row}
+          isRowSelected={isRowSelected}
+          eventBus={eventBus}
+          onRowClick={onRowClick}
+          enableCellRangeSelection={enableCellRangeSelection}
+        />
+      ))}
     </div>
   );
 }

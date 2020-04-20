@@ -54,8 +54,7 @@ const setup = (extraProps?: Partial<EditorContainerProps<Row, unknown>>, opts?: 
       col3: 'Testing'
     },
     column: fakeColumn,
-    width: 100,
-    height: 50,
+    rowHeight: 50,
     left: 0,
     top: 0,
     onCommit: jest.fn(),

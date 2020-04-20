@@ -1,4 +1,4 @@
-import React, { createElement } from 'react';
+import React, { createElement, memo } from 'react';
 import classNames from 'classnames';
 
 import { CalculatedColumn, Filters } from './common/types';
@@ -10,15 +10,11 @@ type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
 >;
 
 export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
-  height: number;
-  width: number;
   lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
 }
 
-export default function FilterRow<R, SR>({
-  height,
-  width,
+function FilterRow<R, SR>({
   columns,
   lastFrozenColumnIndex,
   filters,
@@ -31,10 +27,7 @@ export default function FilterRow<R, SR>({
   }
 
   return (
-    <div
-      className="rdg-header-row"
-      style={{ width, height, lineHeight: `${height}px` }}
-    >
+    <div className="rdg-filter-row">
       {columns.map(column => {
         const { key } = column;
 
@@ -64,3 +57,5 @@ export default function FilterRow<R, SR>({
     </div>
   );
 }
+
+export default memo(FilterRow) as <R, SR>(props: FilterRowProps<R, SR>) => JSX.Element;

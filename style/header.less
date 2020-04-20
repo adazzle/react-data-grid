@@ -1,15 +1,26 @@
 @import './variables.less';
 
-.rdg-header {
-  background: #f9f9f9;
-  overflow: hidden;
+.rdg-header-row,
+.rdg-filter-row {
+  width: var(--row-width);
+  position: -webkit-sticky;
+  position: sticky;
+  background-color: #f9f9f9;
   font-weight: bold;
+  .user-select();
+  z-index: 3;
 }
 
 .rdg-header-row {
-  position: relative;
-  background-color: inherit;
-  .user-select();
+  height: var(--header-row-height);
+  line-height: var(--header-row-height);
+  top: 0;
+}
+
+.rdg-filter-row {
+  height: var(--filter-row-height);
+  line-height: var(--filter-row-height);
+  top: var(--header-row-height);
 }
 
 // TODO: replace this with a pseudo-element once we drop support for Legacy Edge,

@@ -1,4 +1,4 @@
-import { Column, CalculatedColumn, ColumnMetrics, FormatterProps, Omit } from '../common/types';
+import { Column, CalculatedColumn, FormatterProps, Omit } from '../common/types';
 import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R, SR> {
@@ -7,6 +7,12 @@ interface Metrics<R, SR> {
   minColumnWidth: number;
   viewportWidth: number;
   defaultFormatter: React.ComponentType<FormatterProps<R, SR>>;
+}
+
+interface ColumnMetrics<TRow, TSummaryRow> {
+  columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
+  lastFrozenColumnIndex: number;
+  totalColumnWidth: number;
 }
 
 export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<R, SR> {
@@ -61,8 +67,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   return {
     columns: calculatedColumns,
     lastFrozenColumnIndex,
-    totalColumnWidth: totalWidth,
-    viewportWidth: metrics.viewportWidth
+    totalColumnWidth: totalWidth
   };
 }
 

@@ -1,13 +1,16 @@
 @import './variables.less';
 
-.rdg-root {
+.rdg {
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal components don't render above external components.
   position: relative;
   z-index: 0;
   border: 1px solid @borderColor;
   box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: scroll;
   .user-select();
+  background-color: #fff;
   font-size: 14px;
 
   *,
@@ -15,18 +18,4 @@
   *::after {
     box-sizing: inherit;
   }
-}
-
-.rdg-viewport {
-  position: relative;
-  overflow-x: auto;
-  overflow-y: scroll;
-  background-color: #fff;
-  // will-change promotes the canvas to a new layer, improving scroll responsiveness
-  will-change: transform;
-}
-
-.rdg-grid {
-  // min-height is here to show the horizontal scrollbar when there are no rows
-  min-height: 1px;
 }

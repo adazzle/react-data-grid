@@ -10,7 +10,6 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
-  | 'height'
   | 'onHeaderDrop'
   | 'allRowsSelected'
   | 'draggableHeaderCell'
@@ -24,7 +23,6 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
 }
 
 export default function HeaderCell<R, SR>({
-  height,
   column,
   allRowsSelected,
   onAllRowsSelectionChange,

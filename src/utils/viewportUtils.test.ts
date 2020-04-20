@@ -1,10 +1,9 @@
 import {
   getVerticalRangeToRender,
-  getHorizontalRangeToRender,
-  HorizontalRangeToRenderParams
+  getHorizontalRangeToRender
 } from './viewportUtils';
 import { ValueFormatter } from '../formatters';
-import { ColumnMetrics } from '../common/types';
+import { CalculatedColumn } from '../common/types';
 
 interface Row {
   [key: string]: React.ReactNode;
@@ -45,8 +44,8 @@ describe('getVerticalRangeToRender', () => {
 });
 
 describe('getHorizontalRangeToRender', () => {
-  function getColumnMetrics(): ColumnMetrics<Row, unknown> {
-    const columns = [...Array(500).keys()].map(i => ({
+  function getColumns(): CalculatedColumn<Row, unknown>[] {
+    return [...Array(500).keys()].map(i => ({
       idx: i,
       key: `col${i}`,
       name: `col${i}`,
@@ -54,51 +53,52 @@ describe('getHorizontalRangeToRender', () => {
       left: i * 100,
       formatter: ValueFormatter
     }));
-    return {
-      columns,
-      viewportWidth: 1000,
-      totalColumnWidth: 200,
-      lastFrozenColumnIndex: -1
-    };
-  }
-
-  function getRange<K extends keyof HorizontalRangeToRenderParams<Row, unknown>>(overrides: Pick<HorizontalRangeToRenderParams<Row, unknown>, K>) {
-    return getHorizontalRangeToRender({
-      columnMetrics: getColumnMetrics(),
-      scrollLeft: 200,
-      ...overrides
-    });
   }
 
   it('should use scrollLeft to calculate the range', () => {
-    expect(getRange({ scrollLeft: 300 })).toStrictEqual([2, 13]);
+    expect(getHorizontalRangeToRender(
+      getColumns(),
+      -1,
+      1000,
+      300
+    )).toStrictEqual([2, 13]);
   });
 
   it('should account for large columns', () => {
-    const columnMetrics = getColumnMetrics();
-    columnMetrics.columns[0].width = 500;
-    columnMetrics.columns.forEach((c, i) => {
+    const columns = getColumns();
+    columns[0].width = 500;
+    columns.forEach((c, i) => {
       if (i !== 0) c.left += 400;
     });
-    expect(getRange({ scrollLeft: 400, columnMetrics })).toStrictEqual([0, 10]);
+    expect(getHorizontalRangeToRender(
+      columns,
+      -1,
+      1000,
+      400
+    )).toStrictEqual([0, 10]);
   });
 
   it('should use viewportWidth to calculate the range', () => {
-    const columnMetrics = getColumnMetrics();
-    columnMetrics.viewportWidth = 500;
-    expect(getHorizontalRangeToRender({
-      columnMetrics,
-      scrollLeft: 200
-    })).toStrictEqual([1, 7]);
+    const columns = getColumns();
+    expect(getHorizontalRangeToRender(
+      columns,
+      -1,
+      500,
+      200
+    )).toStrictEqual([1, 7]);
   });
 
   it('should use frozen columns to calculate the range', () => {
-    const columnMetrics = getColumnMetrics();
-    columnMetrics.columns[0].frozen = true;
-    columnMetrics.columns[1].frozen = true;
-    columnMetrics.columns[2].frozen = true;
-    columnMetrics.lastFrozenColumnIndex = 2;
+    const columns = getColumns();
+    columns[0].frozen = true;
+    columns[1].frozen = true;
+    columns[2].frozen = true;
 
-    expect(getRange({ scrollLeft: 500, columnMetrics })).toStrictEqual([7, 15]);
+    expect(getHorizontalRangeToRender(
+      columns,
+      2,
+      1000,
+      500
+    )).toStrictEqual([7, 15]);
   });
 });

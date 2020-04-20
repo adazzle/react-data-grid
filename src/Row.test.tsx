@@ -18,8 +18,6 @@ describe('Row', () => {
   }
 
   const requiredProperties: RowRendererProps<RowType> = {
-    height: 30,
-    width: 1000,
     viewportColumns: createColumns(50),
     row: { key: 'value' },
     cellRenderer: Cell,
@@ -33,11 +31,5 @@ describe('Row', () => {
     const { wrapper } = setup(requiredProperties);
     const draggableDiv = wrapper.find('div').at(0);
     expect(draggableDiv.hasClass('rdg-row')).toBe(true);
-  });
-
-  it('passes style property', () => {
-    const { wrapper } = setup(requiredProperties);
-    const draggableDiv = wrapper.find('div').at(0);
-    expect(draggableDiv.props().style).toBeDefined();
   });
 });

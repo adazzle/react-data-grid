@@ -53,13 +53,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
-export interface ColumnMetrics<TRow, TSummaryRow> {
-  columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  lastFrozenColumnIndex: number;
-  viewportWidth: number;
-  totalColumnWidth: number;
-}
-
 export interface RowData {
   name?: string;
   __metaData?: RowGroupMetaData;
@@ -140,8 +133,6 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  height: number;
-  width: number;
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;

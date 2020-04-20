@@ -1,4 +1,7 @@
 .rdg-row {
+  width: var(--row-width);
+  height: var(--row-height);
+  line-height: var(--row-height);
   @bg: #fff;
   background-color: @bg;
 
@@ -29,12 +32,12 @@
   border-bottom: 1px solid @borderColor;
 }
 
-.rdg-summary {
-  border-top: 2px solid darken(@borderColor, 20%);
-  position: relative;
-  overflow: hidden;
+.rdg-summary-row {
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: 3;
 
-  .rdg-row:last-child .rdg-cell {
-    border-bottom-color: transparent;
+  > .rdg-cell {
+    border-top: 2px solid darken(@borderColor, 20%);
   }
 }

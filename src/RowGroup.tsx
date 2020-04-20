@@ -4,7 +4,6 @@ import { RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
 import EventBus from './EventBus';
 
 interface Props<R, SR> {
-  height: number;
   row: unknown;
   cellRenderer?: React.ComponentType<CellRendererProps<R, SR>>;
   isSelected?: boolean;
@@ -66,13 +65,12 @@ const DefaultBase = forwardRef<HTMLDivElement, DefaultBaseProps>(function Defaul
     }
   }
 
-  const { treeDepth = 0, height, onRowExpandClick, isExpanded, columnGroupDisplayName, name } = props;
+  const { treeDepth = 0, onRowExpandClick, isExpanded, columnGroupDisplayName, name } = props;
   const marginLeft = treeDepth * 20;
 
   return (
     <div
       className="rdg-row-default-group"
-      style={{ height }}
       onKeyDown={onKeyDown}
       tabIndex={0}
       ref={ref}

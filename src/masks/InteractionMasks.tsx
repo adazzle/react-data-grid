@@ -19,22 +19,22 @@ import {
 // Types
 import EventBus from '../EventBus';
 import { UpdateActions, CellNavigationMode } from '../common/enums';
-import { Position, Dimension, CommitEvent, ColumnMetrics } from '../common/types';
-import { CanvasProps } from '../Canvas';
+import { CalculatedColumn, Position, Dimension, CommitEvent } from '../common/types';
+import { DataGridProps } from '../DataGrid';
 
-type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
+type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rows'
+  | 'onCheckCellIsEditable'
+  | 'onSelectedCellChange'
+> & Pick<Required<DataGridProps<R, never, SR>>,
   | 'rowHeight'
   | 'enableCellAutoFocus'
   | 'enableCellCopyPaste'
   | 'enableCellDragAndDrop'
   | 'cellNavigationMode'
   | 'editorPortalTarget'
-  | 'onCheckCellIsEditable'
-  | 'onSelectedCellChange'
-  | 'onSelectedCellRangeChange'
   | 'onRowsUpdate'
-> & Pick<ColumnMetrics<R, SR>, 'columns'>;
+>;
 
 interface SelectCellState extends Position {
   status: 'SELECT';
@@ -46,8 +46,9 @@ interface EditCellState extends Position {
 }
 
 export interface InteractionMasksProps<R, SR> extends SharedCanvasProps<R, SR> {
-  height: number;
-  canvasRef: React.RefObject<HTMLDivElement>;
+  columns: readonly CalculatedColumn<R, SR>[];
+  gridRef: React.RefObject<HTMLDivElement>;
+  totalHeaderHeight: number;
   scrollLeft: number;
   scrollTop: number;
   eventBus: EventBus;
@@ -64,7 +65,8 @@ export default function InteractionMasks<R, SR>({
   enableCellDragAndDrop,
   editorPortalTarget,
   cellNavigationMode,
-  canvasRef,
+  gridRef,
+  totalHeaderHeight,
   scrollLeft,
   scrollTop,
   onSelectedCellChange,
@@ -112,13 +114,15 @@ export default function InteractionMasks<R, SR>({
   }
 
   function getEditorPosition() {
-    if (!canvasRef.current) return null;
-    const { left, top } = canvasRef.current.getBoundingClientRect();
+    if (gridRef.current === null) return { left: 0, top: 0 };
+    const { left, top } = gridRef.current.getBoundingClientRect();
     const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
+    const gridLeft = left + docLeft;
+    const gridTop = top + docTop;
     const column = columns[selectedPosition.idx];
     return {
-      left: left + docLeft + column.left - (column.frozen ? 0 : scrollLeft),
-      top: top + docTop + selectedPosition.rowIdx * rowHeight - scrollTop
+      left: gridLeft + column.left - (column.frozen ? 0 : scrollLeft),
+      top: gridTop + totalHeaderHeight + selectedPosition.rowIdx * rowHeight - scrollTop
     };
   }
 
@@ -330,10 +334,7 @@ export default function InteractionMasks<R, SR>({
   }
 
   function getSelectedDimensions(selectedPosition: Position): Dimension {
-    const top = rowHeight * selectedPosition.rowIdx;
-    const dimension = getDimensions({ selectedPosition, columns, scrollLeft, rowHeight });
-    dimension.top = top;
-    return dimension;
+    return getDimensions({ selectedPosition, columns, scrollLeft, rowHeight });
   }
 
   return (
@@ -376,10 +377,10 @@ export default function InteractionMasks<R, SR>({
             onCommitCancel={closeEditor}
             rowIdx={selectedPosition.rowIdx}
             row={rows[selectedPosition.rowIdx]}
+            rowHeight={rowHeight}
             column={columns[selectedPosition.idx]}
             scrollLeft={scrollLeft}
             scrollTop={scrollTop}
-            {...getSelectedDimensions(selectedPosition)}
             {...getEditorPosition()}
           />
         </EditorPortal>

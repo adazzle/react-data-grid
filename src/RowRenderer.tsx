@@ -2,21 +2,20 @@ import React, { memo } from 'react';
 
 import Row from './Row';
 import RowGroup from './RowGroup';
-import { CanvasProps } from './Canvas';
-import { RowRendererProps, RowData } from './common/types';
+import { DataGridProps } from './DataGrid';
+import { RowRendererProps, RowData, CalculatedColumn } from './common/types';
 import EventBus from './EventBus';
 
-type SharedCanvasProps<R, SR> = Pick<CanvasProps<R, never, SR>,
-  | 'columnMetrics'
-  | 'viewportColumns'
+type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rowGroupRenderer'
-  | 'rowHeight'
   | 'rowRenderer'
   | 'onRowClick'
   | 'onRowExpandToggle'
 >;
 
-interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {
+interface IRowRendererProps<R, SR> extends SharedDataGridProps<R, SR> {
+  viewportColumns: readonly CalculatedColumn<R, SR>[];
+  lastFrozenColumnIndex: number;
   rowIdx: number;
   row: R;
   enableCellRangeSelection?: boolean;
@@ -25,13 +24,12 @@ interface IRowRendererProps<R, SR> extends SharedCanvasProps<R, SR> {
 }
 
 function RowRenderer<R, SR>({
-  columnMetrics,
   viewportColumns,
+  lastFrozenColumnIndex,
   eventBus,
   rowIdx,
   row,
   rowGroupRenderer,
-  rowHeight,
   rowRenderer,
   ...props
 }: IRowRendererProps<R, SR>) {
@@ -39,11 +37,9 @@ function RowRenderer<R, SR>({
   const rendererProps: RowRendererProps<R, SR> = {
     rowIdx,
     row,
-    width: columnMetrics.totalColumnWidth,
-    height: rowHeight,
     viewportColumns,
     isRowSelected: props.isRowSelected,
-    lastFrozenColumnIndex: columnMetrics.lastFrozenColumnIndex,
+    lastFrozenColumnIndex,
     eventBus,
     onRowClick: props.onRowClick,
     enableCellRangeSelection: props.enableCellRangeSelection

@@ -1,30 +1,34 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import classNames from 'classnames';
 
-import { CalculatedColumn, Editor, CommitEvent, Dimension, Omit } from '../common/types';
+import { CalculatedColumn, Editor, CommitEvent } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
 import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, SR> = Pick<InteractionMasksProps<R, SR>, 'scrollLeft' | 'scrollTop'>;
+type SharedInteractionMasksProps<R, SR> = Pick<InteractionMasksProps<R, SR>,
+  | 'scrollLeft'
+  | 'scrollTop'
+  | 'rowHeight'
+>;
 
-export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps<R, SR>, Omit<Dimension, 'zIndex'> {
+export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps<R, SR> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
-  onGridKeyDown?: (e: KeyboardEvent) => void;
   onCommit: (e: CommitEvent) => void;
   onCommitCancel: () => void;
   firstEditorKeyPress: string | null;
+  top: number;
+  left: number;
 }
 
 export default function EditorContainer<R, SR>({
   rowIdx,
   column,
   row,
-  width,
-  height,
+  rowHeight,
   left,
   top,
   onCommit,
@@ -154,7 +158,7 @@ export default function EditorContainer<R, SR>({
           column={column}
           value={getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
           row={row}
-          height={height}
+          height={rowHeight}
           onCommit={commit}
           onCommitCancel={commitCancel}
           onOverrideKeyDown={onKeyDown}
@@ -180,7 +184,7 @@ export default function EditorContainer<R, SR>({
     <ClickOutside onClickOutside={commit}>
       <div
         className={className}
-        style={{ height, width, left, top }}
+        style={{ height: rowHeight, width: column.width, left, top }}
         onKeyDown={onKeyDown}
         onContextMenu={preventDefault}
       >

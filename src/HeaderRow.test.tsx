@@ -14,8 +14,6 @@ describe('HeaderRow', () => {
     onColumnResize() { },
     onSort: jest.fn(),
     sortDirection: 'NONE',
-    width: 1000,
-    height: 35,
     allRowsSelected: false,
     onHeaderDrop() { },
     draggableHeaderCell: () => <div />
@@ -75,8 +73,6 @@ describe('HeaderRow', () => {
     const requiredProps: HeaderRowProps<Row, 'id', unknown> = {
       rowKey: 'id',
       rows: [],
-      width: 1000,
-      height: 35,
       columns: helpers.columns,
       lastFrozenColumnIndex: 1,
       onSort: jest.fn(),
@@ -95,11 +91,6 @@ describe('HeaderRow', () => {
       const wrapper = renderComponent(requiredProps);
       const headerRowDiv = wrapper.find('div').at(0);
       expect(headerRowDiv.props().width).toBeUndefined();
-    });
-    it('does pass the height if available from props', () => {
-      const wrapper = renderComponent(requiredProps);
-      const headerRowDiv = wrapper.find('div').at(0);
-      expect(headerRowDiv.props().style).toStrictEqual({ height: 35, width: 1000, lineHeight: '35px' });
     });
   });
 });
