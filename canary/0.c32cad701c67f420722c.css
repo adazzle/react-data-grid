@@ -175,10 +175,6 @@
   height: 16px;
   border: 1px solid #66afe9;
 }
-.rdg-selected-range {
-  border: 1px solid #66afe9;
-  background-color: #66afe930;
-}
 .react-grid-cell-dragged-over-up,
 .react-grid-cell-dragged-over-down {
   border: 1px dashed black;
@@ -478,4 +474,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.6d1ea16e24696d03c547.css.map*/
+/*# sourceMappingURL=0.c32cad701c67f420722c.css.map*/
