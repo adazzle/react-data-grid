@@ -10,10 +10,6 @@ interface Row {
 }
 
 describe('HeaderCell', () => {
-  function DraggableHeaderCell() {
-    return <div />;
-  }
-
   function setup(overrideProps = {}, columnProps = {}) {
     const props: HeaderCellProps<Row, unknown> = {
       column: {
@@ -27,8 +23,6 @@ describe('HeaderCell', () => {
       },
       lastFrozenColumnIndex: -1,
       onResize: jest.fn(),
-      onHeaderDrop() { },
-      draggableHeaderCell: DraggableHeaderCell,
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       ...overrideProps
@@ -51,18 +45,6 @@ describe('HeaderCell', () => {
       wrapper.simulate('mousedown', { button: 0, clientX: 0 });
       window.dispatchEvent(new MouseEvent('mousemove', { clientX: 200 }));
       expect(props.onResize).toHaveBeenCalledWith(props.column, 200);
-    });
-  });
-
-  describe('Render draggableHeaderCell', () => {
-    it('should not render DraggableHeaderCell when draggable is false', () => {
-      const { wrapper } = setup({}, { draggable: false });
-      expect(wrapper.find(DraggableHeaderCell)).toHaveLength(0);
-    });
-
-    it('should not render DraggableHeaderCell when draggable is true', () => {
-      const { wrapper } = setup({}, { draggable: true });
-      expect(wrapper.find(DraggableHeaderCell)).toHaveLength(1);
     });
   });
 });

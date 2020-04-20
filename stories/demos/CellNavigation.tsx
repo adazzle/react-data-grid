@@ -66,7 +66,7 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function ScrollToRow() {
+export default function CellNavigation() {
   const [rows] = useState(createRows);
   const [cellNavigatioMode, setCellNavigationMode] = useState<CellNavigationMode>(CellNavigationMode.CHANGE_ROW);
 

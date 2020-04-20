@@ -36,6 +36,9 @@
     - ⚠️ `onGridKeyDown`
     - ⚠️ `onGridKeyUp`
     - ⚠️ `onRowDoubleClick`
+    - ⚠️ `onHeaderDrop`
+    - ⚠️ `draggableHeaderCell`
+      - Check [#2007](https://github.com/adazzle/react-data-grid/pull/2007) on how to migrate
     - ⚠️ `rowsContainer`
     - ⚠️ Subrow props: `getSubRowDetails`, `onCellExpand`, `onDeleteSubRow`, and `onAddSubRow`
       - Check [#1853](https://github.com/adazzle/react-data-grid/pull/1853) on how to migrate
@@ -56,6 +59,7 @@
     - Check [#1845](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
   - ⚠️ `column.getRowMetaData`
   - ⚠️ `column.filterable`
+  - ⚠️ `column.draggable`
   - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`
   - ⚠️ `fromRowId`, `toRowId`, and `fromRowData` from `onRowsUpdate` argument
   - ⚠️ Stopped exporting `HeaderCell`
