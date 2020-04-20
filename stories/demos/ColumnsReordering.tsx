@@ -95,7 +95,7 @@ export default function ColumnsReordering() {
     });
   }, [columns]);
 
-  const sortedRows: readonly Row[] = useMemo(() => {
+  const sortedRows = useMemo((): readonly Row[] => {
     if (sortDirection === 'NONE') return rows;
 
     let sortedRows: Row[] = [...rows];
