@@ -32,7 +32,7 @@ export default function HeaderCell<R, SR>({
   sortDirection,
   onSort,
   onHeaderDrop,
-  draggableHeaderCell
+  draggableHeaderCell: DraggableHeaderCell
 }: HeaderCellProps<R, SR>) {
   function getCell() {
     if (!column.headerRenderer) return column.name;
@@ -84,7 +84,6 @@ export default function HeaderCell<R, SR>({
     );
   }
 
-  const DraggableHeaderCell = draggableHeaderCell;
   if (column.draggable && DraggableHeaderCell) {
     return (
       <DraggableHeaderCell

@@ -1,11 +1,10 @@
-import React, { forwardRef, memo, createElement } from 'react';
+import React, { forwardRef, memo } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
 
 function Cell<R, SR>({
-  children,
   className,
   column,
   isRowSelected,
@@ -70,27 +69,14 @@ function Cell<R, SR>({
     className
   );
 
-  const style: React.CSSProperties = {
-    width: column.width,
-    left: column.left
-  };
-
-  // TODO: Check if the children prop is required or not. These are most likely set by custom cell renderer
-  if (!children) {
-    children = createElement(column.formatter, {
-      column,
-      rowIdx,
-      row,
-      isRowSelected,
-      onRowSelectionChange
-    });
-  }
-
   return (
     <div
       ref={ref}
       className={className}
-      style={style}
+      style={{
+        width: column.width,
+        left: column.left
+      }}
       onClick={wrapEvent(handleCellClick, onClick)}
       onDoubleClick={wrapEvent(handleCellDoubleClick, onDoubleClick)}
       onContextMenu={wrapEvent(handleCellContextMenu, onContextMenu)}
@@ -99,7 +85,13 @@ function Cell<R, SR>({
       onMouseEnter={!enableCellRangeSelection ? onMouseEnter : wrapEvent(handleCellMouseEnter, onMouseEnter)}
       {...props}
     >
-      {children}
+      <column.formatter
+        column={column}
+        rowIdx={rowIdx}
+        row={row}
+        isRowSelected={isRowSelected}
+        onRowSelectionChange={onRowSelectionChange}
+      />
     </div>
   );
 }

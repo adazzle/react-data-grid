@@ -121,7 +121,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow> {
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
+export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
