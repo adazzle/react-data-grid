@@ -186,7 +186,7 @@ export default function AllFeatures() {
 
   const handleRowClick = useCallback((rowIdx: number, row: Row, column: CalculatedColumn<Row>) => {
     if (column.key === 'title') {
-      gridRef.current?.openCellEditor(rowIdx, column.idx);
+      gridRef.current?.selectCell({ rowIdx, idx: column.idx }, true);
     }
   }, []);
 

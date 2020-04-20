@@ -33,6 +33,7 @@
     - ⚠️ `enableCellSelect`
     - ⚠️ `getValidFilterValues`
     - ⚠️ `onCellCopyPaste`
+    - ⚠️ `onSelectedCellRangeChange`
     - ⚠️ `onGridKeyDown`
     - ⚠️ `onGridKeyUp`
     - ⚠️ `onRowDoubleClick`
@@ -44,6 +45,8 @@
       - Check [#1853](https://github.com/adazzle/react-data-grid/pull/1853) on how to migrate
     - ⚠️ `cellMetaData` (from `Row` and `Cell` props)
     - ⚠️ `value` (from `column.formatter` props)
+  - **Ref handlers:**
+    - ⚠️ `openCellEditor`, use `selectCell` instead.
   - ⚠️ React elements are no longer supported, please use components instead.
     - For example:
     ```diff

@@ -8,7 +8,6 @@ import { preventDefault, wrapEvent } from './utils';
 export default function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
   className,
-  enableCellRangeSelection,
   eventBus,
   rowIdx,
   isRowSelected,
@@ -60,7 +59,6 @@ export default function Row<R, SR = unknown>({
           isRowSelected={isRowSelected}
           eventBus={eventBus}
           onRowClick={onRowClick}
-          enableCellRangeSelection={enableCellRangeSelection}
         />
       ))}
     </div>

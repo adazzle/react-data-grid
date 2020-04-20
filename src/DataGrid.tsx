@@ -38,7 +38,6 @@ import {
   RowRendererProps,
   RowsUpdateEvent,
   ScrollPosition,
-  SelectedRange,
   SelectRowEvent
 } from './common/types';
 import { CellNavigationMode, SortDirection } from './common/enums';
@@ -47,7 +46,6 @@ export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, openEditor?: boolean) => void;
-  openCellEditor: (rowIdx: number, colIdx: number) => void;
 }
 
 export interface DataGridProps<R, K extends keyof R, SR = unknown> {
@@ -127,8 +125,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
-  /** Function called whenever selected cell range is changed */
-  onSelectedCellRangeChange?: (selectedRange: SelectedRange) => void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?: (event: CheckCellIsEditableEvent<R, SR>) => boolean;
 
@@ -158,32 +154,47 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
  * <DataGrid columns={columns} rows={rows} />
 */
 function DataGrid<R, K extends keyof R, SR>({
+  // Grid and data Props
+  columns: rawColumns,
+  rows,
+  summaryRows,
   rowKey,
+  onRowsUpdate,
+  // Dimensions props
+  width,
+  height = 350,
+  minColumnWidth = 80,
   rowHeight = 35,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
-  minColumnWidth = 80,
-  height = 350,
-  width,
-  enableCellAutoFocus = true,
+  // Feature props
+  selectedRows,
+  onSelectedRowsChange,
+  sortColumn,
+  sortDirection,
+  onSort,
+  filters,
+  onFiltersChange,
+  // Custom renderers
+  defaultFormatter = ValueFormatter,
+  rowRenderer,
+  rowGroupRenderer,
+  emptyRowsView,
+  // Event props
+  onRowClick,
+  onScroll,
+  onColumnResize,
+  onRowExpandToggle,
+  onSelectedCellChange,
+  onCheckCellIsEditable,
+  // Toggles and modes
   enableFilters = false,
+  enableCellAutoFocus = true,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
-  editorPortalTarget = document.body,
-  defaultFormatter = ValueFormatter,
-  columns: rawColumns,
-  rows,
-  rowRenderer,
-  rowGroupRenderer,
-  summaryRows,
-  selectedRows,
-  onRowClick,
-  onRowExpandToggle,
-  onSelectedCellChange,
-  onSelectedCellRangeChange,
-  onSelectedRowsChange,
-  ...props
+  // Miscellaneous
+  editorPortalTarget = document.body
 }: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
   /**
    * refs
@@ -304,20 +315,17 @@ function DataGrid<R, K extends keyof R, SR>({
     },
     selectCell(position: Position, openEditor?: boolean) {
       eventBus.dispatch('SELECT_CELL', position, openEditor);
-    },
-    openCellEditor(rowIdx: number, idx: number) {
-      eventBus.dispatch('SELECT_CELL', { rowIdx, idx }, true);
     }
   }));
 
   /**
    * event handlers
    */
-  function onScroll(event: React.UIEvent<HTMLDivElement>) {
+  function onGridScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, scrollLeft } = event.currentTarget;
     setScrollTop(scrollTop);
     setScrollLeft(scrollLeft);
-    props.onScroll?.({ scrollTop, scrollLeft });
+    onScroll?.({ scrollTop, scrollLeft });
   }
 
   const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
@@ -325,11 +333,11 @@ function DataGrid<R, K extends keyof R, SR>({
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
-    props.onColumnResize?.(column.idx, width);
-  }, [columnWidths, props.onColumnResize]);
+    onColumnResize?.(column.idx, width);
+  }, [columnWidths, onColumnResize]);
 
   function handleRowsUpdate(event: RowsUpdateEvent) {
-    props.onRowsUpdate?.(event);
+    onRowsUpdate?.(event);
   }
 
   /**
@@ -368,7 +376,6 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function getViewportRows() {
-    const enableCellRangeSelection = typeof onSelectedCellRangeChange === 'function';
     const rowElements = [];
 
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
@@ -396,7 +403,6 @@ function DataGrid<R, K extends keyof R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           onRowExpandToggle={onRowExpandToggle}
-          enableCellRangeSelection={enableCellRangeSelection}
         />
       );
     }
@@ -416,7 +422,7 @@ function DataGrid<R, K extends keyof R, SR>({
         '--row-height': `${rowHeight}px`
       } as React.CSSProperties}
       ref={gridRef}
-      onScroll={onScroll}
+      onScroll={onGridScroll}
     >
       <HeaderRow<R, K, SR>
         rowKey={rowKey}
@@ -426,19 +432,19 @@ function DataGrid<R, K extends keyof R, SR>({
         lastFrozenColumnIndex={lastFrozenColumnIndex}
         allRowsSelected={selectedRows?.size === rows.length}
         onSelectedRowsChange={onSelectedRowsChange}
-        sortColumn={props.sortColumn}
-        sortDirection={props.sortDirection}
-        onSort={props.onSort}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={onSort}
       />
       {enableFilters && (
         <FilterRow<R, SR>
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           columns={viewportColumns}
-          filters={props.filters}
-          onFiltersChange={props.onFiltersChange}
+          filters={filters}
+          onFiltersChange={onFiltersChange}
         />
       )}
-      {rows.length === 0 && props.emptyRowsView ? createElement(props.emptyRowsView) : (
+      {rows.length === 0 && emptyRowsView ? createElement(emptyRowsView) : (
         <>
           {viewportWidth > 0 && (
             <InteractionMasks<R, SR>
@@ -456,7 +462,7 @@ function DataGrid<R, K extends keyof R, SR>({
               scrollTop={scrollTop}
               scrollToCell={scrollToCell}
               editorPortalTarget={editorPortalTarget}
-              onCheckCellIsEditable={props.onCheckCellIsEditable}
+              onCheckCellIsEditable={onCheckCellIsEditable}
               onRowsUpdate={handleRowsUpdate}
               onSelectedCellChange={onSelectedCellChange}
             />

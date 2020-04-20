@@ -61,17 +61,6 @@ export interface Position {
   rowIdx: number;
 }
 
-export interface Range {
-  topLeft: Position;
-  bottomRight: Position;
-}
-
-export interface SelectedRange extends Range {
-  startCell: Position | null;
-  cursorCell: Position | null;
-  isDragging: boolean;
-}
-
 export interface Dimension {
   width: number;
   height: number;
@@ -119,14 +108,13 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style'> {
+export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
   isRowSelected: boolean;
   eventBus: EventBus;
-  enableCellRangeSelection?: boolean;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
@@ -138,7 +126,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   eventBus: EventBus;
-  enableCellRangeSelection?: boolean;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 

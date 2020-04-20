@@ -22,10 +22,16 @@ export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGrid
 }
 
 function HeaderRow<R, K extends keyof R, SR>({
-  onSelectedRowsChange,
-  rowKey,
+  columns,
+  lastFrozenColumnIndex,
   rows,
-  ...props
+  rowKey,
+  onSelectedRowsChange,
+  allRowsSelected,
+  onColumnResize,
+  sortColumn,
+  sortDirection,
+  onSort
 }: HeaderRowProps<R, K, SR>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
@@ -44,18 +50,18 @@ function HeaderRow<R, K extends keyof R, SR>({
 
   return (
     <div className="rdg-header-row">
-      {props.columns.map(column => {
+      {columns.map(column => {
         return (
           <HeaderCell<R, SR>
             key={column.key}
             column={column}
-            lastFrozenColumnIndex={props.lastFrozenColumnIndex}
-            onResize={props.onColumnResize}
-            allRowsSelected={props.allRowsSelected}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
+            onResize={onColumnResize}
+            allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}
-            onSort={props.onSort}
-            sortColumn={props.sortColumn}
-            sortDirection={props.sortDirection}
+            onSort={onSort}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
           />
         );
       })}

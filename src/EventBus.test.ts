@@ -9,7 +9,7 @@ describe('EventBus', () => {
 
     eventBus.subscribe('SELECT_CELL', eventAHandler1);
     eventBus.subscribe('SELECT_CELL', eventAHandler2);
-    eventBus.subscribe('SELECT_START', eventBHandler);
+    eventBus.subscribe('SELECT_ROW', eventBHandler);
 
     eventBus.dispatch('SELECT_CELL', { idx: 1, rowIdx: 2 }, true);
 

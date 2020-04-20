@@ -1,11 +1,10 @@
-import React, { forwardRef, memo, createElement } from 'react';
+import React, { forwardRef, memo } from 'react';
 import classNames from 'classnames';
 
 import { CellRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
 
 function Cell<R, SR>({
-  children,
   className,
   column,
   isRowSelected,
@@ -14,13 +13,10 @@ function Cell<R, SR>({
   rowIdx,
   eventBus,
   onRowClick,
-  enableCellRangeSelection,
   onClick,
   onDoubleClick,
   onContextMenu,
   onDragOver,
-  onMouseDown,
-  onMouseEnter,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   function selectCell(openEditor?: boolean) {
@@ -30,21 +26,6 @@ function Cell<R, SR>({
   function handleCellClick() {
     selectCell();
     onRowClick?.(rowIdx, row, column);
-  }
-
-  function handleCellMouseDown() {
-    eventBus.dispatch('SELECT_START', { idx: column.idx, rowIdx });
-
-    function handleWindowMouseUp() {
-      eventBus.dispatch('SELECT_END');
-      window.removeEventListener('mouseup', handleWindowMouseUp);
-    }
-
-    window.addEventListener('mouseup', handleWindowMouseUp);
-  }
-
-  function handleCellMouseEnter() {
-    eventBus.dispatch('SELECT_UPDATE', { idx: column.idx, rowIdx });
   }
 
   function handleCellContextMenu() {
@@ -70,36 +51,27 @@ function Cell<R, SR>({
     className
   );
 
-  const style: React.CSSProperties = {
-    width: column.width,
-    left: column.left
-  };
-
-  // TODO: Check if the children prop is required or not. These are most likely set by custom cell renderer
-  if (!children) {
-    children = createElement(column.formatter, {
-      column,
-      rowIdx,
-      row,
-      isRowSelected,
-      onRowSelectionChange
-    });
-  }
-
   return (
     <div
       ref={ref}
       className={className}
-      style={style}
+      style={{
+        width: column.width,
+        left: column.left
+      }}
       onClick={wrapEvent(handleCellClick, onClick)}
       onDoubleClick={wrapEvent(handleCellDoubleClick, onDoubleClick)}
       onContextMenu={wrapEvent(handleCellContextMenu, onContextMenu)}
       onDragOver={wrapEvent(preventDefault, onDragOver)}
-      onMouseDown={!enableCellRangeSelection ? onMouseDown : wrapEvent(handleCellMouseDown, onMouseDown)}
-      onMouseEnter={!enableCellRangeSelection ? onMouseEnter : wrapEvent(handleCellMouseEnter, onMouseEnter)}
       {...props}
     >
-      {children}
+      <column.formatter
+        column={column}
+        rowIdx={rowIdx}
+        row={row}
+        isRowSelected={isRowSelected}
+        onRowSelectionChange={onRowSelectionChange}
+      />
     </div>
   );
 }

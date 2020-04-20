@@ -49,11 +49,6 @@ describe('Cell', () => {
     expect(formatterInstance.prop('row')[column.key]).toStrictEqual('Wicklow');
   });
 
-  it('should render children when those are passed', () => {
-    const wrapper = renderComponent({ children: <div>Child</div> });
-    expect(wrapper.children().text()).toBe('Child');
-  });
-
   describe('Rendering Cell component', () => {
     function shallowRenderComponent(props: CellRendererProps<Row>) {
       return mount(<Cell<Row> {...props} />);
