@@ -24,9 +24,15 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
 
 export default function HeaderCell<R, SR>({
   column,
+  lastFrozenColumnIndex,
+  onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
-  ...props
+  sortColumn,
+  sortDirection,
+  onSort,
+  onHeaderDrop,
+  draggableHeaderCell
 }: HeaderCellProps<R, SR>) {
   function getCell() {
     if (!column.headerRenderer) return column.name;
@@ -40,9 +46,9 @@ export default function HeaderCell<R, SR>({
     cell = (
       <SortableHeaderCell
         column={column}
-        onSort={props.onSort}
-        sortColumn={props.sortColumn}
-        sortDirection={props.sortDirection}
+        onSort={onSort}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
       >
         {cell}
       </SortableHeaderCell>
@@ -51,7 +57,7 @@ export default function HeaderCell<R, SR>({
 
   const className = classNames('rdg-cell', column.headerCellClass, {
     'rdg-cell-frozen': column.frozen,
-    'rdg-cell-frozen-last': column.idx === props.lastFrozenColumnIndex
+    'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
   });
   const style: React.CSSProperties = {
     width: column.width,
@@ -71,19 +77,19 @@ export default function HeaderCell<R, SR>({
     cell = (
       <ResizableHeaderCell
         column={column}
-        onResize={props.onResize}
+        onResize={onResize}
       >
         {cell as React.ReactElement<React.ComponentProps<'div'>>}
       </ResizableHeaderCell>
     );
   }
 
-  const DraggableHeaderCell = props.draggableHeaderCell;
+  const DraggableHeaderCell = draggableHeaderCell;
   if (column.draggable && DraggableHeaderCell) {
     return (
       <DraggableHeaderCell
         column={column}
-        onHeaderDrop={props.onHeaderDrop!}
+        onHeaderDrop={onHeaderDrop!}
       >
         {cell}
       </DraggableHeaderCell>

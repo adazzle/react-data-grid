@@ -566,11 +566,6 @@ const rules = {
   '@typescript-eslint/space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }]
 };
 
-const jsRules = {
-  'no-undef': 2,
-  'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
-};
-
 module.exports = {
   root: true,
   reportUnusedDisableDirectives: true,
@@ -610,9 +605,10 @@ module.exports = {
       require: 'off'
     },
     rules: {
-      ...jsRules,
       'no-console': 0,
       'default-param-last': 2,
+      'no-undef': 2,
+      'no-use-before-define': [2, { functions: false, classes: false, variables: false }],
       'no-buffer-constructor': 2,
       '@typescript-eslint/prefer-optional-chain': 0 // TODO: enable once Node supports ?. and &&
     }

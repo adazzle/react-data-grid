@@ -31,18 +31,21 @@ function RowRenderer<R, SR>({
   row,
   rowGroupRenderer,
   rowRenderer,
-  ...props
+  enableCellRangeSelection,
+  isRowSelected,
+  onRowClick,
+  onRowExpandToggle
 }: IRowRendererProps<R, SR>) {
   const { __metaData } = row as RowData;
   const rendererProps: RowRendererProps<R, SR> = {
     rowIdx,
     row,
     viewportColumns,
-    isRowSelected: props.isRowSelected,
+    isRowSelected,
     lastFrozenColumnIndex,
     eventBus,
-    onRowClick: props.onRowClick,
-    enableCellRangeSelection: props.enableCellRangeSelection
+    onRowClick,
+    enableCellRangeSelection
   };
 
   if (__metaData) {
@@ -57,7 +60,7 @@ function RowRenderer<R, SR>({
           name={(row as RowData).name!}
           eventBus={eventBus}
           renderer={rowGroupRenderer}
-          onRowExpandToggle={props.onRowExpandToggle}
+          onRowExpandToggle={onRowExpandToggle}
         />
       );
     }
