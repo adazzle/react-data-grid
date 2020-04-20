@@ -1,21 +1,9 @@
 import React, { useState } from 'react';
-import { DndProvider, useDrag, useDrop, DragObjectWithType } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 
+import { DraggableHeaderRenderer } from './components/HeaderRenderers';
 import DataGrid, { Column, HeaderRendererProps } from '../../src';
-
-function wrapRefs<T>(...refs: React.Ref<T>[]) {
-  return (handle: T | null) => {
-    for (const ref of refs) {
-      if (typeof ref === 'function') {
-        ref(handle);
-      } else if (ref !== null) {
-        // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31065
-        (ref as React.MutableRefObject<T | null>).current = handle;
-      }
-    }
-  };
-}
 
 interface Row {
   id: number;
@@ -23,51 +11,6 @@ interface Row {
   complete: number;
   priority: string;
   issueType: string;
-  startDate: string;
-  completeDate: string;
-}
-
-interface ColumnDragObject extends DragObjectWithType {
-  key: string;
-}
-
-function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: HeaderRendererProps<R> & { onColumnsReorder: (sourceKey: string, targetKey: string) => void }) {
-  const [{ isDragging }, drag] = useDrag({
-    item: { key: props.column.key, type: 'COLUMN_DRAG' },
-    collect: monitor => ({
-      isDragging: !!monitor.isDragging()
-    })
-  });
-
-  const [{ isOver }, drop] = useDrop({
-    accept: 'COLUMN_DRAG',
-    drop({ key, type }: ColumnDragObject) {
-      if (type === 'COLUMN_DRAG') {
-        onColumnsReorder(key, props.column.key);
-      }
-    },
-    collect: monitor => ({
-      isOver: !!monitor.isOver(),
-      canDrop: !!monitor.canDrop()
-    })
-  });
-
-  return (
-    <div
-      ref={wrapRefs(drag, drop)}
-      style={{
-        opacity: isDragging ? 0.5 : 1,
-        backgroundColor: isOver ? '#ececec' : 'inherit',
-        cursor: 'move'
-      }}
-    >
-      {props.column.name}
-    </div>
-  );
-}
-
-function getRandomDate(start: Date, end: Date) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toLocaleDateString();
 }
 
 function createRows(): Row[] {
@@ -78,9 +21,7 @@ function createRows(): Row[] {
       task: `Task ${i}`,
       complete: Math.min(100, Math.round(Math.random() * 110)),
       priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)],
-      startDate: getRandomDate(new Date(2015, 3, 1), new Date()),
-      completeDate: getRandomDate(new Date(), new Date(2016, 0, 1))
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)]
     });
   }
 
@@ -116,19 +57,6 @@ export default function ColumnsReordering() {
     {
       key: 'complete',
       name: '% Complete',
-      resizable: true,
-      headerRenderer: HeaderRenderer
-    },
-    {
-      key: 'startDate',
-      name: 'Start Date',
-      resizable: true,
-      headerRenderer: HeaderRenderer
-    },
-    {
-      key: 'completeDate',
-      name: 'Expected Complete',
-      width: 200,
       resizable: true,
       headerRenderer: HeaderRenderer
     }
