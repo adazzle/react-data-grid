@@ -77,8 +77,8 @@ export default function ColumnsReordering() {
     }
 
     function handleColumnsReorder(sourceKey: string, targetKey: string) {
-      const sourceColumnIndex = columns.findIndex(c => c.key === sourceKey)!;
-      const targetColumnIndex = columns.findIndex(c => c.key === targetKey)!;
+      const sourceColumnIndex = columns.findIndex(c => c.key === sourceKey);
+      const targetColumnIndex = columns.findIndex(c => c.key === targetKey);
       const reorderedColumns = [...columns];
 
       reorderedColumns.splice(
