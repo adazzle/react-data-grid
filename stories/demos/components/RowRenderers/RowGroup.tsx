@@ -5,17 +5,15 @@ import { GroupRowRendererProps, RowGroupMetaData } from './GroupRowRenderer';
 import { Omit } from '../../../../src';
 
 type RowGroupProps<R, SR> = GroupRowRendererProps<R, SR> & RowGroupMetaData<R, SR> & {
+  groupKey: string;
   name: string;
   renderer?: React.ComponentType;
 };
 
 export default forwardRef<HTMLDivElement, RowGroupProps<any, any>>(function RowGroup(props, ref) {
   function onRowExpandToggle(expand?: boolean) {
-    const { onRowExpandToggle } = props;
-    if (onRowExpandToggle) {
-      const shouldExpand = expand == null ? !props.isExpanded : expand;
-      onRowExpandToggle({ rowIdx: props.rowIdx, shouldExpand, columnGroupName: props.columnGroupName, name: props.name });
-    }
+    const shouldExpand = expand == null ? !props.isExpanded : expand;
+    props.onRowExpandToggle({ rowIdx: props.rowIdx, shouldExpand, columnGroupName: props.columnGroupName, name: props.name, groupKey: props.groupKey });
   }
 
   function onRowExpandClick() {

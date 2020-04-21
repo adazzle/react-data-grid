@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import groupBy from 'lodash/groupBy';
 
-import { GroupRowRenderer, RowData } from './components/RowRenderers';
+import { GroupRowRenderer, RowData, RowExpandToggleEvent } from './components/RowRenderers';
 import DataGrid, { Column } from '../../src';
 
 interface Row extends RowData<Row, unknown> {
@@ -52,29 +52,60 @@ function createRows(): Row[] {
   return rows;
 }
 
+function groupByColumn(rows: Row[], columnKeys: string[], expandedGroups: Set<string>, treeDepth = 0, parentKey = '') {
+  if (columnKeys.length === 0) return rows;
+  const gridRows: any = [];
+  const [columnKey, ...remainingColumnKeys] = columnKeys;
+  const groupedRows = groupBy(rows, columnKey);
+  const groupedKeys = Object.keys(groupedRows);
+  for (const key of groupedKeys) {
+    const groupKey = parentKey ? `${parentKey}_${key}` : key;
+    const isExpanded = expandedGroups.has(groupKey);
+    const rowGroupHeader = {
+      groupKey,
+      name: key,
+      __metaData: {
+        isGroup: true,
+        treeDepth,
+        isExpanded,
+        columnGroupName: groupByColumn,
+        columnGroupDisplayName: columns.find(c => c.key === columnKey)!.name
+      }
+    };
+    gridRows.push(rowGroupHeader);
+    if (isExpanded) {
+      gridRows.push(...groupByColumn(groupedRows[key], remainingColumnKeys, expandedGroups, treeDepth + 1, key));
+    }
+  }
+
+  return gridRows;
+}
+
 export default function LegacyGrouping() {
   const [rows] = useState(createRows);
-  const [groupByFields] = useState(['priority']);
+  const [groupByColumns] = useState(['priority', 'issueType']);
+  const [expandedGroups, setExpandedGroups] = useState(new Set(['Low', 'Low_Epic']));
 
-  const groupedRows = useMemo(() => {
-    const groupedRows = groupBy(rows, groupByFields[0]);
-    const groupedFields = Object.keys(groupedRows);
+  const gridRows = useMemo(() => {
+    return groupByColumn(rows, groupByColumns, expandedGroups);
+  }, [rows, groupByColumns, expandedGroups]);
 
-    const dataviewRows = [];
-    for (const field of groupedFields) {
-      const rowGroupHeader = { name: field, __metaData: { isGroup: true, treeDepth: 0, isExpanded: false, columnGroupName: groupByFields[0], columnGroupDisplayName: groupByFields[0] } };
-      dataviewRows.push(rowGroupHeader);
+  function onRowExpandToggle({ groupKey }: RowExpandToggleEvent) {
+    const newExpandedGroups = new Set(expandedGroups);
+    if (newExpandedGroups.has(groupKey)) {
+      newExpandedGroups.delete(groupKey);
+    } else {
+      newExpandedGroups.add(groupKey);
     }
-
-    return dataviewRows;
-  }, [rows, groupByFields]);
+    setExpandedGroups(newExpandedGroups);
+  }
 
   return (
     <DataGrid
       columns={columns}
-      rows={groupedRows}
+      rows={gridRows}
       height={650}
-      rowRenderer={GroupRowRenderer}
+      rowRenderer={p => <GroupRowRenderer {...p} onRowExpandToggle={onRowExpandToggle} />}
     />
   );
 }

@@ -7,6 +7,7 @@ import './GroupRowRenderer.less';
 
 export interface RowData<R, SR> {
   name?: string;
+  groupKey?: string;
   __metaData?: RowGroupMetaData<R, SR>;
 }
 
@@ -24,10 +25,12 @@ export interface RowExpandToggleEvent {
   shouldExpand: boolean;
   columnGroupName: string;
   name: string;
+  groupKey: string;
 }
 
 export interface GroupRowRendererProps<R, SR> extends RowRendererProps<R, SR> {
-  onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
+  onRowExpandToggle: (event: RowExpandToggleEvent) => void;
+  rowGroupRenderer?: React.ComponentType;
 }
 
 export function GroupRowRenderer<R extends RowData<R, SR>, SR>(props: GroupRowRendererProps<R, SR>) {
@@ -43,6 +46,7 @@ export function GroupRowRenderer<R extends RowData<R, SR>, SR>(props: GroupRowRe
           {...props}
           {...__metaData}
           name={props.row.name!}
+          groupKey={props.row.groupKey!}
         />
       );
     }
