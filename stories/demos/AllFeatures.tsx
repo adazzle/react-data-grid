@@ -1,7 +1,7 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
+import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn, ScrollPosition } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -56,9 +56,27 @@ function createRows(numberOfRows: number): Row[] {
   return rows;
 }
 
+function isReachedBottom(event: React.UIEvent<HTMLDivElement>): boolean {
+  const target = event.target as HTMLDivElement;
+  return target.clientHeight + target.scrollTop === target.scrollHeight;
+}
+
+function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
+  return new Promise(resolve => {
+    const newRows: Row[] = [];
+
+    for (let i = 0; i < newRowsCount; i++) {
+      newRows[i] = createFakeRowObjectData(i + length);
+    }
+
+    setTimeout(() => resolve(newRows), 1000);
+  });
+}
+
 export default function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
   const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
+  const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
   const columns = useMemo((): Column<Row>[] => [
@@ -190,26 +208,41 @@ export default function AllFeatures() {
     }
   }, []);
 
+  const handleScroll = useCallback(async (position: ScrollPosition, event: React.UIEvent<HTMLDivElement>) => {
+    if (!isReachedBottom(event)) return;
+
+    setIsLoading(true);
+
+    const newRows = await loadMoreRows(50, rows.length);
+
+    setRows([...rows, ...newRows]);
+    setIsLoading(false);
+  }, [rows]);
+
   return (
     <>
       <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
       <AutoSizer>
         {({ height, width }) => (
-          <DataGrid
-            ref={gridRef}
-            columns={columns}
-            rows={rows}
-            rowKey="id"
-            onRowsUpdate={handleRowUpdate}
-            onRowClick={handleRowClick}
-            rowHeight={30}
-            width={width}
-            height={height - 40}
-            selectedRows={selectedRows}
-            onSelectedRowsChange={setSelectedRows}
-            enableCellCopyPaste
-            enableCellDragAndDrop
-          />
+          <>
+            <DataGrid
+              ref={gridRef}
+              columns={columns}
+              rows={rows}
+              rowKey="id"
+              onRowsUpdate={handleRowUpdate}
+              onRowClick={handleRowClick}
+              rowHeight={30}
+              width={width}
+              height={height - 40}
+              selectedRows={selectedRows}
+              onScroll={handleScroll}
+              onSelectedRowsChange={setSelectedRows}
+              enableCellCopyPaste
+              enableCellDragAndDrop
+            />
+            {isLoading && <div className="load-more-rows-tag" style={{ '--load-more-rows-left': `${width - 230}px` } as React.CSSProperties}>Loading more rows...</div>}
+          </>
         )}
       </AutoSizer>
     </>
