@@ -51,11 +51,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
-export interface RowData {
-  name?: string;
-  __metaData?: RowGroupMetaData;
-}
-
 export interface Position {
   idx: number;
   rowIdx: number;
@@ -135,28 +130,12 @@ export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow =
   onChange: (value: TFilterValue) => void;
 }
 
-export interface RowGroupMetaData {
-  isGroup: boolean;
-  treeDepth: number;
-  isExpanded: boolean;
-  columnGroupName: string;
-  columnGroupDisplayName: string;
-  getRowRenderer?: (props: unknown, rowIdx: number) => React.ReactElement;
-}
-
 export type Filters = Record<string, any>;
 
 export interface CommitEvent<TUpdatedValue = never> {
   cellKey: string;
   rowIdx: number;
   updated: TUpdatedValue;
-}
-
-export interface RowExpandToggleEvent {
-  rowIdx: number;
-  shouldExpand: boolean;
-  columnGroupName: string;
-  name: string;
 }
 
 export interface RowsUpdateEvent<TUpdatedValue = never> {
