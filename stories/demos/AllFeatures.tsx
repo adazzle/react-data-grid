@@ -1,7 +1,7 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn, ScrollPosition } from '../../src';
+import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -56,7 +56,7 @@ function createRows(numberOfRows: number): Row[] {
   return rows;
 }
 
-function isReachedBottom(event: React.UIEvent<HTMLDivElement>): boolean {
+function isAtBottom(event: React.UIEvent<HTMLDivElement>): boolean {
   const target = event.target as HTMLDivElement;
   return target.clientHeight + target.scrollTop === target.scrollHeight;
 }
@@ -208,8 +208,8 @@ export default function AllFeatures() {
     }
   }, []);
 
-  const handleScroll = useCallback(async (position: ScrollPosition, event: React.UIEvent<HTMLDivElement>) => {
-    if (!isReachedBottom(event)) return;
+  async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
+    if (!isAtBottom(event)) return;
 
     setIsLoading(true);
 
@@ -217,7 +217,7 @@ export default function AllFeatures() {
 
     setRows([...rows, ...newRows]);
     setIsLoading(false);
-  }, [rows]);
+  }
 
   return (
     <>
