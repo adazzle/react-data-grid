@@ -135,11 +135,6 @@ export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow =
   onChange: (value: TFilterValue) => void;
 }
 
-export interface ScrollPosition {
-  scrollLeft: number;
-  scrollTop: number;
-}
-
 export interface RowGroupMetaData {
   isGroup: boolean;
   treeDepth: number;

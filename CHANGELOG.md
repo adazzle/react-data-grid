@@ -85,6 +85,7 @@
   - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
   - ⚠️ the `rowKey` prop is now required for row selection.
   - ⚠️ `column.cellClass` does not affect header cells anymore.
+  - ⚠️ `onScroll` will directly pass the UIEvent rather than the scrollLeft and scrollRight only.
 
 ## `master` to `alpha`
 - **Added:**
