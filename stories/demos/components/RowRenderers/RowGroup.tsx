@@ -1,26 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { forwardRef } from 'react';
-import { RowExpandToggleEvent, Omit, CellRendererProps } from './common/types';
-import EventBus from './EventBus';
 
-interface Props<R, SR> {
-  row: unknown;
-  cellRenderer?: React.ComponentType<CellRendererProps<R, SR>>;
-  isSelected?: boolean;
-  rowIdx: number;
-  forceUpdate?: boolean;
-  isRowHovered?: boolean;
-  columnGroupDisplayName: string;
-  columnGroupName: string;
-  isExpanded: boolean;
-  treeDepth?: number;
+import { GroupRowRendererProps, RowGroupMetaData } from './GroupRowRenderer';
+import { Omit } from '../../../../src';
+
+type RowGroupProps<R, SR> = GroupRowRendererProps<R, SR> & RowGroupMetaData<R, SR> & {
   name: string;
   renderer?: React.ComponentType;
-  eventBus: EventBus;
-  onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
-}
+};
 
-export default forwardRef<HTMLDivElement, Props<any, any>>(function RowGroup(props, ref) {
+export default forwardRef<HTMLDivElement, RowGroupProps<any, any>>(function RowGroup(props, ref) {
   function onRowExpandToggle(expand?: boolean) {
     const { onRowExpandToggle } = props;
     if (onRowExpandToggle) {
@@ -44,9 +33,9 @@ export default forwardRef<HTMLDivElement, Props<any, any>>(function RowGroup(pro
       <Renderer {...props} ref={ref} onRowExpandClick={onRowExpandClick} onRowExpandToggle={onRowExpandToggle} />
     </div>
   );
-}) as <R, SR>(props: Props<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
+}) as <R, SR>(props: RowGroupProps<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
 
-interface DefaultBaseProps extends Omit<Props<any, any>, 'onRowExpandToggle'> {
+interface DefaultBaseProps extends Omit<RowGroupProps<any, any>, 'onRowExpandToggle'> {
   onRowExpandClick: () => void;
   onRowExpandToggle: (expand?: boolean) => void;
 }

@@ -34,7 +34,6 @@ import {
   Filters,
   FormatterProps,
   Position,
-  RowExpandToggleEvent,
   RowRendererProps,
   RowsUpdateEvent,
   ScrollPosition,
@@ -110,7 +109,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    */
   defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
-  rowGroupRenderer?: React.ComponentType;
   emptyRowsRenderer?: React.ComponentType<{}>;
 
   /**
@@ -122,7 +120,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   onScroll?: (scrollPosition: ScrollPosition) => void;
   /** Called when a column is resized */
   onColumnResize?: (idx: number, width: number) => void;
-  onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
@@ -178,13 +175,11 @@ function DataGrid<R, K extends keyof R, SR>({
   // Custom renderers
   defaultFormatter = ValueFormatter,
   rowRenderer,
-  rowGroupRenderer,
   emptyRowsRenderer,
   // Event props
   onRowClick,
   onScroll,
   onColumnResize,
-  onRowExpandToggle,
   onSelectedCellChange,
   onCheckCellIsEditable,
   // Toggles and modes
@@ -398,11 +393,9 @@ function DataGrid<R, K extends keyof R, SR>({
           viewportColumns={viewportColumns}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           eventBus={eventBus}
-          rowGroupRenderer={rowGroupRenderer}
           rowRenderer={rowRenderer}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
-          onRowExpandToggle={onRowExpandToggle}
         />
       );
     }
