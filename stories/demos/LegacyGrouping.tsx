@@ -128,7 +128,7 @@ function GroupRowRenderer({ onRowExpandToggle, ...props }: GroupRowRendererProps
 
 export default function LegacyGrouping() {
   const [rows] = useState(createRows);
-  const [expandedGroups, setExpandedGroups] = useState(new Set(['Low', 'Low_Epic']));
+  const [expandedGroups, setExpandedGroups] = useState(() => new Set(['Low', 'Low_Epic']));
 
   const gridRows = useMemo(() => {
     return groupByColumn(rows, groups, expandedGroups);
