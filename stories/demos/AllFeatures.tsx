@@ -241,7 +241,7 @@ export default function AllFeatures() {
               enableCellCopyPaste
               enableCellDragAndDrop
             />
-            {isLoading && <div className="load-more-rows-tag" style={{ '--load-more-rows-left': `${width - 230}px` } as React.CSSProperties}>Loading more rows...</div>}
+            {isLoading && <div className="load-more-rows-tag" style={{ left: width - 230 }}>Loading more rows...</div>}
           </>
         )}
       </AutoSizer>
