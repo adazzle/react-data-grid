@@ -4,10 +4,6 @@ export enum CellNavigationMode {
   LOOP_OVER_ROW = 'loopOverRow'
 }
 
-export enum DragItemTypes {
-  Column = 'column'
-}
-
 export enum UpdateActions {
   CELL_UPDATE = 'CELL_UPDATE',
   COLUMN_FILL = 'COLUMN_FILL',

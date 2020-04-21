@@ -14,7 +14,7 @@ import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
-import RowRenderer from './RowRenderer';
+import Row from './Row';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
 import {
@@ -34,7 +34,6 @@ import {
   Filters,
   FormatterProps,
   Position,
-  RowExpandToggleEvent,
   RowRendererProps,
   RowsUpdateEvent,
   SelectRowEvent
@@ -109,7 +108,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    */
   defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
-  rowGroupRenderer?: React.ComponentType;
   emptyRowsRenderer?: React.ComponentType<{}>;
 
   /**
@@ -121,7 +119,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
   onColumnResize?: (idx: number, width: number) => void;
-  onRowExpandToggle?: (event: RowExpandToggleEvent) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
@@ -176,14 +173,12 @@ function DataGrid<R, K extends keyof R, SR>({
   onFiltersChange,
   // Custom renderers
   defaultFormatter = ValueFormatter,
-  rowRenderer,
-  rowGroupRenderer,
+  rowRenderer: RowRenderer = Row,
   emptyRowsRenderer,
   // Event props
   onRowClick,
   onScroll,
   onColumnResize,
-  onRowExpandToggle,
   onSelectedCellChange,
   onCheckCellIsEditable,
   // Toggles and modes
@@ -390,18 +385,15 @@ function DataGrid<R, K extends keyof R, SR>({
       }
 
       rowElements.push(
-        <RowRenderer<R, SR>
+        <RowRenderer
           key={key}
           rowIdx={rowIdx}
           row={row}
           viewportColumns={viewportColumns}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           eventBus={eventBus}
-          rowGroupRenderer={rowGroupRenderer}
-          rowRenderer={rowRenderer}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
-          onRowExpandToggle={onRowExpandToggle}
         />
       );
     }

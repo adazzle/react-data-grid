@@ -40,6 +40,9 @@
     - ⚠️ `onHeaderDrop`
     - ⚠️ `draggableHeaderCell`
       - Check [#2007](https://github.com/adazzle/react-data-grid/pull/2007) on how to migrate
+    - ⚠️ `rowGroupRenderer`
+    - ⚠️ `onRowExpandToggle`
+      - Check [#2012](https://github.com/adazzle/react-data-grid/pull/2012) on how to migrate
     - ⚠️ `rowsContainer`
     - ⚠️ Subrow props: `getSubRowDetails`, `onCellExpand`, `onDeleteSubRow`, and `onAddSubRow`
       - Check [#1853](https://github.com/adazzle/react-data-grid/pull/1853) on how to migrate
