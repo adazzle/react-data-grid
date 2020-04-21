@@ -14,7 +14,7 @@ import EventBus from './EventBus';
 import InteractionMasks from './masks/InteractionMasks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
-import RowRenderer from './RowRenderer';
+import Row from './Row';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
 import {
@@ -173,7 +173,7 @@ function DataGrid<R, K extends keyof R, SR>({
   onFiltersChange,
   // Custom renderers
   defaultFormatter = ValueFormatter,
-  rowRenderer,
+  rowRenderer: RowRenderer = Row,
   emptyRowsRenderer,
   // Event props
   onRowClick,
@@ -385,14 +385,13 @@ function DataGrid<R, K extends keyof R, SR>({
       }
 
       rowElements.push(
-        <RowRenderer<R, SR>
+        <RowRenderer
           key={key}
           rowIdx={rowIdx}
           row={row}
           viewportColumns={viewportColumns}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           eventBus={eventBus}
-          rowRenderer={rowRenderer}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
         />

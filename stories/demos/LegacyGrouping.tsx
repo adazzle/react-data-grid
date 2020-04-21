@@ -1,11 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from 'react';
-import groupBy from 'lodash/groupBy';
+import { groupBy } from 'lodash';
 
-import { GroupRowRenderer, RowData, RowExpandToggleEvent } from './components/RowRenderers';
-import DataGrid, { Column } from '../../src';
+import DataGrid, { Column, Row, RowRendererProps } from '../../src';
+import './LegacyGrouping.less';
 
-interface Row extends RowData<Row, unknown> {
+interface RowGroupMetaData {
+  groupId: string;
+  groupKey: string;
+  treeDepth: number;
+  isExpanded: boolean;
+  columnGroupName: string;
+}
+
+interface RowGroup {
+  __metaData: RowGroupMetaData;
+}
+
+interface RowData {
   id: number;
   task: string;
   complete: number;
@@ -13,7 +24,13 @@ interface Row extends RowData<Row, unknown> {
   issueType: string;
 }
 
-const columns: Column<any>[] = [
+type GridRow = RowGroup | RowData;
+
+interface GroupRowRendererProps extends RowRendererProps<GridRow> {
+  onRowExpandToggle: (groupId: string) => void;
+}
+
+const columns: Column<GridRow>[] = [
   {
     key: 'id',
     name: 'ID',
@@ -37,7 +54,9 @@ const columns: Column<any>[] = [
   }
 ];
 
-function createRows(): Row[] {
+const groups = ['priority', 'issueType'];
+
+function createRows(): GridRow[] {
   const rows = [];
   for (let i = 1; i < 500; i++) {
     rows.push({
@@ -52,50 +71,75 @@ function createRows(): Row[] {
   return rows;
 }
 
-function groupByColumn(rows: Row[], columnKeys: string[], expandedGroups: Set<string>, treeDepth = 0, parentKey = '') {
+function groupByColumn(rows: GridRow[], columnKeys: string[], expandedGroups: Set<string>, treeDepth = 0, parentId = '') {
   if (columnKeys.length === 0) return rows;
-  const gridRows: any = [];
+  const gridRows: GridRow[] = [];
   const [columnKey, ...remainingColumnKeys] = columnKeys;
   const groupedRows = groupBy(rows, columnKey);
   const groupedKeys = Object.keys(groupedRows);
-  for (const key of groupedKeys) {
-    const groupKey = parentKey ? `${parentKey}_${key}` : key;
-    const isExpanded = expandedGroups.has(groupKey);
-    const rowGroupHeader = {
-      groupKey,
-      name: key,
+
+  for (const groupKey of groupedKeys) {
+    const groupId = parentId ? `${parentId}_${groupKey}` : groupKey;
+    const isExpanded = expandedGroups.has(groupId);
+    const rowGroupHeader: GridRow = {
       __metaData: {
-        isGroup: true,
+        groupId,
+        groupKey,
         treeDepth,
         isExpanded,
-        columnGroupName: groupByColumn,
-        columnGroupDisplayName: columns.find(c => c.key === columnKey)!.name
+        columnGroupName: columns.find(c => c.key === columnKey)!.name
       }
     };
     gridRows.push(rowGroupHeader);
     if (isExpanded) {
-      gridRows.push(...groupByColumn(groupedRows[key], remainingColumnKeys, expandedGroups, treeDepth + 1, key));
+      gridRows.push(...groupByColumn(groupedRows[groupKey], remainingColumnKeys, expandedGroups, treeDepth + 1, groupId));
     }
   }
 
   return gridRows;
 }
 
+function isRowGroup(row: GridRow): row is RowGroup {
+  return typeof (row as RowGroup).__metaData !== 'undefined';
+}
+
+function GroupRowRenderer({ onRowExpandToggle, ...props }: GroupRowRendererProps) {
+  if (!isRowGroup(props.row)) {
+    return <Row {...props} />;
+  }
+
+  const { groupKey, isExpanded, treeDepth, columnGroupName, groupId } = props.row.__metaData;
+  return (
+    <div
+      className="rdg-row-default-group"
+      tabIndex={0}
+    >
+      <span
+        className="rdg-row-expand-icon"
+        style={{ marginLeft: treeDepth * 20 }}
+        onClick={() => onRowExpandToggle(groupId)}
+      >
+        {isExpanded ? String.fromCharCode(9660) : String.fromCharCode(9658)}
+      </span>
+      <strong>{' '}{columnGroupName}: {groupKey}</strong>
+    </div>
+  );
+}
+
 export default function LegacyGrouping() {
   const [rows] = useState(createRows);
-  const [groupByColumns] = useState(['priority', 'issueType']);
   const [expandedGroups, setExpandedGroups] = useState(new Set(['Low', 'Low_Epic']));
 
   const gridRows = useMemo(() => {
-    return groupByColumn(rows, groupByColumns, expandedGroups);
-  }, [rows, groupByColumns, expandedGroups]);
+    return groupByColumn(rows, groups, expandedGroups);
+  }, [rows, expandedGroups]);
 
-  function onRowExpandToggle({ groupKey }: RowExpandToggleEvent) {
+  function onRowExpandToggle(groupId: string) {
     const newExpandedGroups = new Set(expandedGroups);
-    if (newExpandedGroups.has(groupKey)) {
-      newExpandedGroups.delete(groupKey);
+    if (newExpandedGroups.has(groupId)) {
+      newExpandedGroups.delete(groupId);
     } else {
-      newExpandedGroups.add(groupKey);
+      newExpandedGroups.add(groupId);
     }
     setExpandedGroups(newExpandedGroups);
   }
