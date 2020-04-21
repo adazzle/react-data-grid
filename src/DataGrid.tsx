@@ -36,7 +36,6 @@ import {
   Position,
   RowRendererProps,
   RowsUpdateEvent,
-  ScrollPosition,
   SelectRowEvent
 } from './common/types';
 import { CellNavigationMode, SortDirection } from './common/enums';
@@ -117,7 +116,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   /** Function called whenever a row is clicked */
   onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
   /** Called when the grid is scrolled */
-  onScroll?: (scrollPosition: ScrollPosition) => void;
+  onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
   onColumnResize?: (idx: number, width: number) => void;
   /** Function called whenever selected cell is changed */
@@ -320,7 +319,7 @@ function DataGrid<R, K extends keyof R, SR>({
     const { scrollTop, scrollLeft } = event.currentTarget;
     setScrollTop(scrollTop);
     setScrollLeft(scrollLeft);
-    onScroll?.({ scrollTop, scrollLeft });
+    onScroll?.(event);
   }
 
   const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {

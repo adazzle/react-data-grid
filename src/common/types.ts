@@ -130,11 +130,6 @@ export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow =
   onChange: (value: TFilterValue) => void;
 }
 
-export interface ScrollPosition {
-  scrollLeft: number;
-  scrollTop: number;
-}
-
 export type Filters = Record<string, any>;
 
 export interface CommitEvent<TUpdatedValue = never> {
