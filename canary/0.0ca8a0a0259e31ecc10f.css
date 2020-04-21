@@ -236,6 +236,15 @@ html {
   height: 100vh;
   padding: 8px;
 }
+.load-more-rows-tag {
+  line-height: 35px;
+  width: 180px;
+  position: relative;
+  top: -70px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+}
 
 .rdg-image-cell {
   background: #efefef;
@@ -474,4 +483,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.c32cad701c67f420722c.css.map*/
+/*# sourceMappingURL=0.0ca8a0a0259e31ecc10f.css.map*/
