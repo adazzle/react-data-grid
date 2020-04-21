@@ -204,16 +204,6 @@
 .rdg-row-selected:hover {
   background-color: #c9e3f8;
 }
-.rdg-row-expand-icon {
-  cursor: pointer;
-}
-.rdg-row-expand-icon:hover {
-  color: #777;
-}
-.rdg-row-default-group {
-  padding: 0 8px;
-  border-bottom: 1px solid #ddd;
-}
 .rdg-summary-row {
   position: -webkit-sticky;
   position: sticky;
@@ -482,5 +472,19 @@ html {
   font-size: 14px;
 }
 
+.rdg-row-expand-icon {
+  cursor: pointer;
+}
+.rdg-row-expand-icon:hover {
+  color: #777;
+}
+.rdg-row-default-group {
+  width: var(--row-width);
+  height: var(--row-height);
+  line-height: var(--row-height);
+  padding: 0 8px;
+  border-bottom: 1px solid #ddd;
+}
 
-/*# sourceMappingURL=0.0ca8a0a0259e31ecc10f.css.map*/
+
+/*# sourceMappingURL=0.67b1faff10138e3844b5.css.map*/
