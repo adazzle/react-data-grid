@@ -109,7 +109,7 @@ export function canEdit<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean
   if (typeof column.editable === 'function') {
     return column.editable(row);
   }
-  return Boolean(column.editor || column.editable);
+  return column.editable || column.editor != null && column.editable !== false;
 }
 
 export function getColumnScrollPosition<R, SR>(columns: readonly CalculatedColumn<R, SR>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {

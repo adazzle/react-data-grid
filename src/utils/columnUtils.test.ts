@@ -152,7 +152,7 @@ describe('canEdit', () => {
     expect(canEdit({ ...column, editable: false }, row)).toBe(false);
     expect(canEdit({ ...column, editable: true }, row)).toBe(true);
     expect(canEdit({ ...column, editor }, row)).toBe(true);
-    expect(canEdit({ ...column, editor, editable: false }, row)).toBe(true);
+    expect(canEdit({ ...column, editor, editable: false }, row)).toBe(false);
     expect(canEdit({ ...column, editor, editable: true }, row)).toBe(true);
   });
 });
