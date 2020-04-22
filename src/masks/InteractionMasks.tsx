@@ -24,7 +24,6 @@ import { DataGridProps } from '../DataGrid';
 
 type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rows'
-  | 'onCheckCellIsEditable'
   | 'onSelectedCellChange'
 > & Pick<Required<DataGridProps<R, never, SR>>,
   | 'rowHeight'
@@ -70,7 +69,6 @@ export default function InteractionMasks<R, SR>({
   scrollLeft,
   scrollTop,
   onSelectedCellChange,
-  onCheckCellIsEditable,
   onRowsUpdate,
   scrollToCell
 }: InteractionMasksProps<R, SR>) {
@@ -257,7 +255,7 @@ export default function InteractionMasks<R, SR>({
 
   function isCellEditable(position: Position) {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
+      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position });
   }
 
   function selectCell(position: Position, enableEditor = false): void {

@@ -30,14 +30,12 @@ interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R, SR>[];
   rows: readonly R[];
-  onCheckCellIsEditable?: (arg: { row: R; column: CalculatedColumn<R, SR> } & Position) => boolean;
 }
 
-export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, onCheckCellIsEditable }: IsSelectedCellEditableOpts<R, SR>): boolean {
+export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
-  const isCellEditable = onCheckCellIsEditable ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
-  return isCellEditable && canEdit<R, SR>(column, row);
+  return canEdit<R, SR>(column, row);
 }
 
 interface GetNextSelectedCellPositionOpts<R, SR> {

@@ -29,7 +29,6 @@ import {
 
 import {
   CalculatedColumn,
-  CheckCellIsEditableEvent,
   Column,
   Filters,
   FormatterProps,
@@ -121,8 +120,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   onColumnResize?: (idx: number, width: number) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
-  /** called before cell is set active, returns a boolean to determine whether cell is editable */
-  onCheckCellIsEditable?: (event: CheckCellIsEditableEvent<R, SR>) => boolean;
 
   /**
    * Toggles and modes
@@ -180,7 +177,6 @@ function DataGrid<R, K extends keyof R, SR>({
   onScroll,
   onColumnResize,
   onSelectedCellChange,
-  onCheckCellIsEditable,
   // Toggles and modes
   enableFilters = false,
   enableCellAutoFocus = true,
@@ -453,7 +449,6 @@ function DataGrid<R, K extends keyof R, SR>({
               scrollTop={scrollTop}
               scrollToCell={scrollToCell}
               editorPortalTarget={editorPortalTarget}
-              onCheckCellIsEditable={onCheckCellIsEditable}
               onRowsUpdate={handleRowsUpdate}
               onSelectedCellChange={onSelectedCellChange}
             />
