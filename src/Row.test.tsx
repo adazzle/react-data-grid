@@ -24,7 +24,8 @@ describe('Row', () => {
     rowIdx: 17,
     lastFrozenColumnIndex: -1,
     isRowSelected: false,
-    eventBus: new EventBus()
+    eventBus: new EventBus(),
+    top: 0
   };
 
   it('passes classname property', () => {

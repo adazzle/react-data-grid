@@ -459,7 +459,7 @@ function DataGrid<R, K extends keyof R, SR>({
               onSelectedCellChange={onSelectedCellChange}
             />
           )}
-          <div style={{ height: rows.length * rowHeight }} />
+          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
