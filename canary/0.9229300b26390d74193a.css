@@ -1,5 +1,5 @@
 .rdg-cell {
-  display: inline-block;
+  contain: strict;
   position: absolute;
   height: inherit;
   padding: 0 8px;
@@ -62,8 +62,7 @@
   border-color: #62b8ff;
 }
 .rdg {
-  position: relative;
-  z-index: 0;
+  contain: strict;
   border: 1px solid #ddd;
   box-sizing: border-box;
   overflow-x: auto;
@@ -77,6 +76,12 @@
 .rdg *::before,
 .rdg *::after {
   box-sizing: inherit;
+}
+@supports not (contain: strict) {
+  .rdg {
+    position: relative;
+    z-index: 0;
+  }
 }
 .rdg-editor-container {
   position: absolute;
@@ -107,6 +112,8 @@
 }
 .rdg-header-row,
 .rdg-filter-row {
+  contain: strict;
+  display: flex;
   width: var(--row-width);
   position: -webkit-sticky;
   position: sticky;
@@ -190,6 +197,8 @@
   background: rgba(0, 0, 255, 0.2) !important;
 }
 .rdg-row {
+  contain: strict;
+  display: flex;
   width: var(--row-width);
   height: var(--row-height);
   line-height: var(--row-height);
@@ -487,4 +496,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.67b1faff10138e3844b5.css.map*/
+/*# sourceMappingURL=0.9229300b26390d74193a.css.map*/
