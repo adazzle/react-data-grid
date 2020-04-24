@@ -1,5 +1,5 @@
 import React, { createElement } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import { CalculatedColumn } from './common/types';
 import { HeaderRowProps } from './HeaderRow';
@@ -51,7 +51,7 @@ export default function HeaderCell<R, SR>({
     );
   }
 
-  const className = classNames('rdg-cell', column.headerCellClass, {
+  const className = clsx('rdg-cell', column.headerCellClass, {
     'rdg-cell-frozen': column.frozen,
     'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
   });
