@@ -37,7 +37,7 @@
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
-    "classnames": "^2.2.6"
+    "clsx": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -46,7 +46,6 @@
     "@babel/runtime": "^7.9.2",
     "@storybook/react": "^5.3.18",
     "@testing-library/react": "^10.0.2",
-    "@types/classnames": "^2.2.10",
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/faker": "^4.1.11",

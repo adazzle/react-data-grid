@@ -1,5 +1,5 @@
-import classNames from 'classnames';
 import React, { memo } from 'react';
+import clsx from 'clsx';
 
 import Cell from './Cell';
 import { RowRendererProps } from './common/types';
@@ -31,7 +31,7 @@ function Row<R, SR = unknown>({
     event.dataTransfer.dropEffect = 'copy';
   }
 
-  className = classNames(
+  className = clsx(
     'rdg-row',
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     { 'rdg-row-selected': isRowSelected },

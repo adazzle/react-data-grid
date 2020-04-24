@@ -1,5 +1,5 @@
 import React, { useState, ReactNode } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import './CellActionsFormatter.less';
 
@@ -21,11 +21,11 @@ interface CellActionProps extends CellActionButton {
 function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const cellActionClasses = classNames('rdg-cell-action', {
+  const cellActionClasses = clsx('rdg-cell-action', {
     'rdg-cell-action-last': isFirst
   });
 
-  const actionButtonClasses = classNames('rdg-cell-action-button', {
+  const actionButtonClasses = clsx('rdg-cell-action-button', {
     'rdg-cell-action-button-toggled': isOpen
   });
 
