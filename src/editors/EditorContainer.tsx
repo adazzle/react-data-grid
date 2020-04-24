@@ -1,5 +1,5 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import { CalculatedColumn, Editor, CommitEvent } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -176,7 +176,7 @@ export default function EditorContainer<R, SR>({
     );
   }
 
-  const className = classNames('rdg-editor-container', {
+  const className = clsx('rdg-editor-container', {
     'rdg-editor-invalid': !isValid
   });
 
