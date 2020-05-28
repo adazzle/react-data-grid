@@ -1,3 +1,5 @@
+/* eslint-disable jest/no-commented-out-tests */
+/* eslint-disable sonarjs/no-identical-functions */
 import React from 'react';
 import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';

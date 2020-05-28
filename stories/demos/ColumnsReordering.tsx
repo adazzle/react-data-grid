@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
-import Backend from 'react-dnd-html5-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
 import DataGrid, { Column, HeaderRendererProps, SortDirection } from '../../src';
@@ -117,7 +117,7 @@ export default function ColumnsReordering() {
   }, [rows, sortDirection, sortColumn]);
 
   return (
-    <DndProvider backend={Backend}>
+    <DndProvider backend={HTML5Backend}>
       <DataGrid
         columns={draggableColumns}
         rows={sortedRows}
