@@ -2,11 +2,13 @@
   "presets": [
     ["@babel/env", {
       "bugfixes": true,
+      "shippedProposals": true,
       "corejs": 3,
       "useBuiltIns": "entry"
     }]
   ],
   "plugins": [
-    ["@babel/transform-runtime", { "useESModules": true }]
+    ["@babel/transform-runtime", { "useESModules": true }],
+    "babel-plugin-optimize-clsx"
   ]
 }

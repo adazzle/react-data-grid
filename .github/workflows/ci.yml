@@ -12,7 +12,7 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '13.x'
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: ~/.npm
         key: npm-${{ hashFiles('package.json') }}
@@ -32,11 +32,11 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '13.x'
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: ~/.npm
         key: npm-${{ hashFiles('package.json') }}
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: node_modules/.cache
         key: build-${{ hashFiles('package.json') }}

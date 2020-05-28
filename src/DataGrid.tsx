@@ -108,7 +108,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    */
   defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
-  emptyRowsRenderer?: React.ComponentType<{}>;
+  emptyRowsRenderer?: React.ComponentType;
 
   /**
    * Event props
@@ -411,7 +411,7 @@ function DataGrid<R, K extends keyof R, SR>({
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`
-      } as React.CSSProperties}
+      } as unknown as React.CSSProperties}
       ref={gridRef}
       onScroll={onGridScroll}
     >
