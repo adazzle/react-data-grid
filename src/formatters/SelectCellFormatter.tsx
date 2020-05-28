@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 export interface SelectCellFormatterProps {
   value: boolean;
@@ -13,7 +13,7 @@ export function SelectCellFormatter({ value, disabled = false, onChange }: Selec
   }
 
   return (
-    <label className={classNames('rdg-checkbox-label', { 'rdg-checkbox-label-disabled': disabled })}>
+    <label className={clsx('rdg-checkbox-label', { 'rdg-checkbox-label-disabled': disabled })}>
       <input
         type="checkbox"
         className="rdg-checkbox-input"

@@ -2,7 +2,6 @@
 // https://jestjs.io/docs/en/configuration.html
 
 export default {
-  testEnvironment: 'jest-environment-jsdom-sixteen',
   preset: 'ts-jest',
   globals: {
     'ts-jest': {

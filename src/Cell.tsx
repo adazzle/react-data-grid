@@ -1,5 +1,5 @@
 import React, { forwardRef, memo } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import { CellRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
@@ -41,7 +41,7 @@ function Cell<R, SR>({
   }
 
   const { cellClass } = column;
-  className = classNames(
+  className = clsx(
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,

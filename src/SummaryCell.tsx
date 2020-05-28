@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import { CellRendererProps } from './common/types';
 
@@ -18,7 +18,7 @@ function SummaryCell<R, SR>({
   row
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, width, left, summaryCellClass } = column;
-  const className = classNames(
+  const className = clsx(
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,

@@ -1,5 +1,5 @@
 import React, { createElement, memo } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import { CalculatedColumn, Filters } from './common/types';
 import { DataGridProps } from './DataGrid';
@@ -31,7 +31,7 @@ function FilterRow<R, SR>({
       {columns.map(column => {
         const { key } = column;
 
-        const className = classNames('rdg-cell', {
+        const className = clsx('rdg-cell', {
           'rdg-cell-frozen': column.frozen,
           'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
         });
