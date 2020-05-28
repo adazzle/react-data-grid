@@ -28,7 +28,9 @@ export default class EventBus {
     const handlers = this.subscribers.get(type);
     if (handlers) {
       // handler needed a type assertion to fix type bug
-      handlers.forEach(handler => (handler as (...args: Parameters<EventMap[T]>) => void)(...args));
+      handlers.forEach(handler => {
+        (handler as (...args: Parameters<EventMap[T]>) => void)(...args);
+      });
     }
   }
 }
