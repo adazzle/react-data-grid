@@ -18,6 +18,7 @@ function Row<R, SR = unknown>({
   onDragEnter,
   onDragOver,
   onDrop,
+  rowClass,
   top,
   ...props
 }: RowRendererProps<R, SR>) {
@@ -36,6 +37,7 @@ function Row<R, SR = unknown>({
     'rdg-row',
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     { 'rdg-row-selected': isRowSelected },
+    rowClass?.(row),
     className
   );
 
