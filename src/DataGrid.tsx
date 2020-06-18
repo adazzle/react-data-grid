@@ -140,7 +140,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    */
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
-  rowClass?: (row: R) => string;
+  rowClass?: (rowIdx: number, row: R) => string;
 }
 
 /**
