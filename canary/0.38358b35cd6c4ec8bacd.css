@@ -245,6 +245,14 @@ html {
   color: white;
 }
 
+.highlight {
+  background-color: #9370DB;
+  color: white;
+}
+.rdg-row.highlight:hover {
+  background-color: #800080;
+}
+
 .rdg-image-cell {
   background: #efefef;
   background-size: 100%;
@@ -496,4 +504,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.9229300b26390d74193a.css.map*/
+/*# sourceMappingURL=0.38358b35cd6c4ec8bacd.css.map*/
