@@ -199,6 +199,8 @@
 .rdg-row {
   contain: strict;
   display: flex;
+  position: absolute;
+  left: 0;
   width: var(--row-width);
   height: var(--row-height);
   line-height: var(--row-height);
@@ -368,9 +370,6 @@ html {
   text-decoration: none;
   background-color: #f5f5f5;
 }
-.rdg-cell.rdg-cell-action {
-  overflow: visible;
-}
 
 .rdg-cell-expand {
   float: right;
@@ -504,4 +503,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.38358b35cd6c4ec8bacd.css.map*/
+/*# sourceMappingURL=0.98c71d6796019be90142.css.map*/
