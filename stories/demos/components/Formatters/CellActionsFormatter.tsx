@@ -1,5 +1,7 @@
 import React, { useState, ReactNode } from 'react';
 import clsx from 'clsx';
+import { usePopper } from 'react-popper';
+import { createPortal } from 'react-dom';
 
 import './CellActionsFormatter.less';
 
@@ -20,6 +22,12 @@ interface CellActionProps extends CellActionButton {
 
 function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [reference, setReference] = useState<HTMLDivElement | null>(null);
+  const [popper, setPopper] = useState<HTMLDivElement | null>(null);
+  const { styles } = usePopper(reference, popper, {
+    placement: 'bottom-start',
+    modifiers: [{ name: 'offset', options: { offset: [0, -8] } }]
+  });
 
   const cellActionClasses = clsx('rdg-cell-action', {
     'rdg-cell-action-last': isFirst
@@ -41,16 +49,15 @@ function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
 
   return (
     <div className={cellActionClasses} onMouseLeave={() => setIsOpen(false)}>
-      <div className={actionButtonClasses} onClick={onActionIconClick}>
+      <div ref={setReference} className={actionButtonClasses} onClick={onActionIconClick}>
         {icon}
       </div>
-      {
-        isOpen && actions && actions.length && (
-          <div className="rdg-cell-action-menu">
-            {actions.map((action, index) => <span key={index} onClick={action.callback}>{action.text}</span>)}
-          </div>
-        )
-      }
+      {isOpen && actions && actions.length && createPortal(
+        <div ref={setPopper} className="rdg-cell-action-menu" style={styles.popper}>
+          {actions.map((action, index) => <span key={index} onClick={action.callback}>{action.text}</span>)}
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
