@@ -397,6 +397,7 @@ function DataGrid<R, K extends keyof R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
+          top={rowIdx * rowHeight + totalHeaderHeight}
         />
       );
     }
@@ -461,9 +462,8 @@ function DataGrid<R, K extends keyof R, SR>({
               onSelectedCellChange={onSelectedCellChange}
             />
           )}
-          <div style={{ height: rowOverscanStartIdx * rowHeight }} />
+          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
-          <div style={{ height: (rows.length - 1 - rowOverscanEndIdx) * rowHeight }} />
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               key={rowIdx}

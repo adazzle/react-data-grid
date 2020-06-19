@@ -19,6 +19,7 @@ function Row<R, SR = unknown>({
   onDragOver,
   onDrop,
   rowClass,
+  top,
   ...props
 }: RowRendererProps<R, SR>) {
   function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
@@ -49,6 +50,7 @@ function Row<R, SR = unknown>({
       onDragEnter={wrapEvent(handleDragEnter, onDragEnter)}
       onDragOver={wrapEvent(handleDragOver, onDragOver)}
       onDrop={wrapEvent(preventDefault, onDrop)}
+      style={{ top }}
       {...props}
     >
       {viewportColumns.map(column => (

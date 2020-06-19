@@ -52,7 +52,6 @@ const columns: Column<Row>[] = [
     key: 'county',
     name: 'County',
     width: 200,
-    cellClass: 'rdg-cell-action',
     formatter({ row }) {
       if (row.id === 'id_0') {
         const actions = [

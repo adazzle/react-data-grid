@@ -111,8 +111,9 @@ function GroupRowRenderer({ onRowExpandToggle, ...props }: GroupRowRendererProps
   const { groupKey, isExpanded, treeDepth, columnGroupName, groupId } = props.row.__metaData;
   return (
     <div
-      className="rdg-row-default-group"
+      className="rdg-row rdg-row-default-group"
       tabIndex={0}
+      style={{ top: props.top }}
     >
       <span
         className="rdg-row-expand-icon"
