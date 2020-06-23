@@ -11,12 +11,12 @@ import React, {
 } from 'react';
 
 import EventBus from './EventBus';
-import InteractionMasks from './masks/InteractionMasks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
+import { legacyCellInput } from './editors/CellInputHandlers';
 import {
   assertIsValidKey,
   getColumnMetrics,
@@ -24,7 +24,10 @@ import {
   getHorizontalRangeToRender,
   getScrollbarSize,
   getVerticalRangeToRender,
-  getViewportColumns
+  getViewportColumns,
+  getNextSelectedCellPosition,
+  isSelectedCellEditable,
+  isCtrlKeyHeldDown
 } from './utils';
 
 import {
@@ -38,7 +41,17 @@ import {
   RowsUpdateEvent,
   SelectRowEvent
 } from './common/types';
-import { CellNavigationMode, SortDirection } from './common/enums';
+import { CellNavigationMode, SortDirection, UpdateActions } from './common/enums';
+
+interface SelectCellState extends Position {
+  status: 'SELECT';
+}
+
+interface EditCellState extends Position {
+  status: 'EDIT';
+  key: string | null;
+}
+
 
 export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
@@ -222,6 +235,14 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }, [columnWidths, rawColumns, defaultFormatter, minColumnWidth, viewportWidth]);
 
+  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>(() => {
+    if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
+      return { idx: 0, rowIdx: 0, status: 'SELECT' };
+    }
+    return { idx: -1, rowIdx: -1, status: 'SELECT' };
+  });
+  const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
+
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     return getHorizontalRangeToRender(
       columns,
@@ -300,6 +321,14 @@ function DataGrid<R, K extends keyof R, SR>({
     return eventBus.subscribe('SELECT_ROW', handleRowSelectionChange);
   }, [eventBus, onSelectedRowsChange, rows, rowKey, selectedRows]);
 
+  useEffect(() => {
+    return eventBus.subscribe('SELECT_CELL', selectCell);
+  });
+
+  useEffect(() => {
+    return eventBus.subscribe('CELL_KEYDOWN', onKeyDown);
+  });
+
   useImperativeHandle(ref, () => ({
     scrollToColumn(idx: number) {
       scrollToCell({ idx });
@@ -332,13 +361,134 @@ function DataGrid<R, K extends keyof R, SR>({
     onColumnResize?.(column.idx, width);
   }, [columnWidths, onColumnResize]);
 
-  function handleRowsUpdate(event: RowsUpdateEvent) {
-    onRowsUpdate?.(event);
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    const column = columns[selectedPosition.idx];
+    const row = rows[selectedPosition.rowIdx];
+    const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
+
+    const { key } = event;
+    if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
+      // event.key may be uppercase `C` or `V`
+      const lowerCaseKey = event.key.toLowerCase();
+      if (lowerCaseKey === 'c') return handleCopy();
+      if (lowerCaseKey === 'v') return handlePaste();
+    }
+
+    const canOpenEditor = selectedPosition.status === 'SELECT' && isCellEditable(selectedPosition);
+
+    switch (key) {
+      case 'Enter':
+        if (canOpenEditor) {
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key: 'Enter' }));
+        } else if (selectedPosition.status === 'EDIT') {
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
+        }
+        break;
+      case 'Escape':
+        // closeEditor();
+        setCopiedPosition(null);
+        break;
+      // case 'Tab':
+      //   onPressTab(event);
+      //   break;
+      case 'ArrowUp':
+      case 'ArrowDown':
+      case 'ArrowLeft':
+      case 'ArrowRight':
+        event.preventDefault();
+        selectCell(getNextPosition(key));
+        break;
+      default:
+        if (canOpenEditor && isActivatedByUser) {
+          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
+        }
+        break;
+    }
   }
 
   /**
    * utils
    */
+  function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
+    return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
+  }
+
+  function isCellEditable(position: Position) {
+    return isCellWithinBounds(position)
+      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
+  }
+
+  function selectCell(position: Position, enableEditor = false): void {
+    if (!isCellWithinBounds(position)) return;
+
+    if (enableEditor && isCellEditable(position)) {
+      setSelectedPosition({ ...position, status: 'EDIT', key: null });
+    } else {
+      setSelectedPosition({ ...position, status: 'SELECT' });
+    }
+    scrollToCell(position);
+    onSelectedCellChange?.({ ...position });
+  }
+
+  function getNextPosition(key: string, mode = cellNavigationMode, shiftKey = false) {
+    const { idx, rowIdx } = selectedPosition;
+    let nextPosition: Position;
+    switch (key) {
+      case 'ArrowUp':
+        nextPosition = { idx, rowIdx: rowIdx - 1 };
+        break;
+      case 'ArrowDown':
+        nextPosition = { idx, rowIdx: rowIdx + 1 };
+        break;
+      case 'ArrowLeft':
+        nextPosition = { idx: idx - 1, rowIdx };
+        break;
+      case 'ArrowRight':
+        nextPosition = { idx: idx + 1, rowIdx };
+        break;
+      case 'Tab':
+        nextPosition = { idx: idx + (shiftKey ? -1 : 1), rowIdx };
+        break;
+      default:
+        nextPosition = { idx, rowIdx };
+        break;
+    }
+
+    return getNextSelectedCellPosition<R, SR>({
+      columns,
+      rowsCount: rows.length,
+      cellNavigationMode: mode,
+      nextPosition
+    });
+  }
+
+  function handleCopy(): void {
+    const { idx, rowIdx } = selectedPosition;
+    const value = rows[rowIdx][columns[idx].key as keyof R];
+    setCopiedPosition({ idx, rowIdx, value });
+  }
+
+  function handlePaste(): void {
+    if (copiedPosition === null || !isCellEditable(selectedPosition)) {
+      return;
+    }
+
+    const { rowIdx: toRow } = selectedPosition;
+
+    const cellKey = columns[selectedPosition.idx].key;
+    const { rowIdx: fromRow, idx, value } = copiedPosition;
+    const fromCellKey = columns[idx].key;
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow,
+      toRow,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.COPY_PASTE,
+      fromCellKey
+    });
+  }
+
   function getFrozenColumnsWidth() {
     if (lastFrozenColumnIndex === -1) return 0;
     const lastFrozenCol = columns[lastFrozenColumnIndex];
@@ -393,6 +543,8 @@ function DataGrid<R, K extends keyof R, SR>({
           row={row}
           viewportColumns={viewportColumns}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
+          selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
+          copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
           eventBus={eventBus}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
@@ -441,29 +593,8 @@ function DataGrid<R, K extends keyof R, SR>({
       )}
       {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
         <>
-          {viewportWidth > 0 && (
-            <InteractionMasks<R, SR>
-              rows={rows}
-              rowHeight={rowHeight}
-              columns={columns}
-              enableCellAutoFocus={enableCellAutoFocus}
-              enableCellCopyPaste={enableCellCopyPaste}
-              enableCellDragAndDrop={enableCellDragAndDrop}
-              cellNavigationMode={cellNavigationMode}
-              eventBus={eventBus}
-              gridRef={gridRef}
-              totalHeaderHeight={totalHeaderHeight}
-              scrollLeft={scrollLeft}
-              scrollTop={scrollTop}
-              scrollToCell={scrollToCell}
-              editorPortalTarget={editorPortalTarget}
-              onCheckCellIsEditable={onCheckCellIsEditable}
-              onRowsUpdate={handleRowsUpdate}
-              onSelectedCellChange={onSelectedCellChange}
-            />
-          )}
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
-          {getViewportRows()}
+          {viewportWidth > 0 && getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               key={rowIdx}

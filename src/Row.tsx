@@ -12,6 +12,8 @@ function Row<R, SR = unknown>({
   rowIdx,
   isRowSelected,
   lastFrozenColumnIndex,
+  selectedCellIdx,
+  copiedCellIdx,
   onRowClick,
   row,
   viewportColumns,
@@ -60,6 +62,8 @@ function Row<R, SR = unknown>({
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
+          isSelected={selectedCellIdx === column.idx}
+          isCopied={copiedCellIdx === column.idx}
           isRowSelected={isRowSelected}
           eventBus={eventBus}
           onRowClick={onRowClick}

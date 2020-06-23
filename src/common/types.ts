@@ -109,6 +109,8 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   lastFrozenColumnIndex: number;
   row: TRow;
   isRowSelected: boolean;
+  isSelected: boolean;
+  isCopied: boolean;
   eventBus: EventBus;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
@@ -119,6 +121,8 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
   lastFrozenColumnIndex: number;
+  selectedCellIdx?: number;
+  copiedCellIdx?: number;
   isRowSelected: boolean;
   eventBus: EventBus;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;

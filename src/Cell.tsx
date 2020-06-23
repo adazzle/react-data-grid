@@ -1,12 +1,15 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 import { CellRendererProps } from './common/types';
 import { preventDefault, wrapEvent } from './utils';
+import { useCombinedRefs } from './hooks';
 
 function Cell<R, SR>({
   className,
   column,
+  isSelected,
+  isCopied,
   isRowSelected,
   lastFrozenColumnIndex,
   row,
@@ -15,10 +18,12 @@ function Cell<R, SR>({
   onRowClick,
   onClick,
   onDoubleClick,
+  onKeyDown,
   onContextMenu,
   onDragOver,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+  const cellRef = useRef<HTMLDivElement>(null);
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
   }
@@ -26,6 +31,10 @@ function Cell<R, SR>({
   function handleCellClick() {
     selectCell();
     onRowClick?.(rowIdx, row, column);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    eventBus.dispatch('CELL_KEYDOWN', event);
   }
 
   function handleCellContextMenu() {
@@ -40,12 +49,20 @@ function Cell<R, SR>({
     eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
   }
 
+  useEffect(() => {
+    if (isSelected) {
+      cellRef.current?.focus();
+    }
+  }, [isSelected]);
+
   const { cellClass } = column;
   className = clsx(
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
+      'rdg-cell-selected': isSelected,
+      'rdg-cell-copied': isCopied
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
@@ -53,8 +70,9 @@ function Cell<R, SR>({
 
   return (
     <div
-      ref={ref}
+      ref={useCombinedRefs(cellRef, ref)}
       className={className}
+      tabIndex={isSelected ? 0 : undefined}
       style={{
         width: column.width,
         left: column.left
@@ -63,6 +81,7 @@ function Cell<R, SR>({
       onDoubleClick={wrapEvent(handleCellDoubleClick, onDoubleClick)}
       onContextMenu={wrapEvent(handleCellContextMenu, onContextMenu)}
       onDragOver={wrapEvent(preventDefault, onDragOver)}
+      onKeyDown={wrapEvent(handleKeyDown, onKeyDown)}
       {...props}
     >
       <column.formatter
