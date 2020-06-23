@@ -27,7 +27,8 @@ import {
   getViewportColumns,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
-  isCtrlKeyHeldDown
+  isCtrlKeyHeldDown,
+  canExitGrid
 } from './utils';
 
 import {
@@ -388,9 +389,9 @@ function DataGrid<R, K extends keyof R, SR>({
         // closeEditor();
         setCopiedPosition(null);
         break;
-      // case 'Tab':
-      //   onPressTab(event);
-      //   break;
+      case 'Tab':
+        onPressTab(event);
+        break;
       case 'ArrowUp':
       case 'ArrowDown':
       case 'ArrowLeft':
@@ -487,6 +488,27 @@ function DataGrid<R, K extends keyof R, SR>({
       action: UpdateActions.COPY_PASTE,
       fromCellKey
     });
+  }
+
+  function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
+    // If we are in a position to leave the grid, stop editing but stay in that cell
+    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+      if (selectedPosition.status === 'EDIT') {
+        // closeEditor();
+        return;
+      }
+
+      // Reset the selected position before exiting
+      setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
+      return;
+    }
+
+    e.preventDefault();
+    const tabCellNavigationMode = cellNavigationMode === CellNavigationMode.NONE
+      ? CellNavigationMode.CHANGE_ROW
+      : cellNavigationMode;
+    const nextPosition = getNextPosition('Tab', tabCellNavigationMode, e.shiftKey);
+    selectCell(nextPosition);
   }
 
   function getFrozenColumnsWidth() {
