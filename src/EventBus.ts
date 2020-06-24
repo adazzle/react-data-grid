@@ -1,10 +1,13 @@
 import { Position, SelectRowEvent } from './common/types';
 
 interface EventMap {
-  SELECT_CELL: (position: Position, enableEditor?: boolean) => void;
+  CELL_SELECT: (position: Position, enableEditor?: boolean) => void;
   CELL_KEYDOWN: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  SELECT_ROW: (event: SelectRowEvent) => void;
-  DRAG_ENTER: (overRowIdx: number) => void;
+  CELL_DRAG_START: () => void;
+  CELL_DRAG_END: () => void;
+  CELL_DRAG_HANDLE_DOUBLE_CLICK: () => void;
+  ROW_SELECT: (event: SelectRowEvent) => void;
+  ROW_DRAG_ENTER: (overRowIdx: number) => void;
 }
 
 type EventName = keyof EventMap;

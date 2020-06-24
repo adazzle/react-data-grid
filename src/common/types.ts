@@ -111,7 +111,9 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isRowSelected: boolean;
   isSelected: boolean;
   isCopied: boolean;
+  isDraggedOver: boolean;
   eventBus: EventBus;
+  enableCellDragAndDrop: boolean;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
@@ -123,11 +125,13 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   lastFrozenColumnIndex: number;
   selectedCellIdx?: number;
   copiedCellIdx?: number;
+  draggedOverCellIdx?: number;
   isRowSelected: boolean;
   eventBus: EventBus;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   top: number;
+  enableCellDragAndDrop: boolean;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

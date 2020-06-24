@@ -51,7 +51,7 @@ describe('InteractionMasks', () => {
     const wrapper = mount(<InteractionMasks {...props} />);
     if (initialPosition) {
       act(() => {
-        props.eventBus.dispatch('SELECT_CELL', initialPosition);
+        props.eventBus.dispatch('CELL_SELECT', initialPosition);
       });
       wrapper.update();
       onSelectedCellChange.mockReset();
@@ -636,7 +636,7 @@ describe('InteractionMasks', () => {
       ];
       const { wrapper, props } = setup({ rows });
       act(() => {
-        props.eventBus.dispatch('SELECT_CELL', { idx: 1, rowIdx: 2 });
+        props.eventBus.dispatch('CELL_SELECT', { idx: 1, rowIdx: 2 });
       });
       return { wrapper, props };
     };
@@ -670,7 +670,7 @@ describe('InteractionMasks', () => {
     it('should update the selected cell with the copied value on paste', () => {
       const { wrapper, props } = setupCopy();
       act(() => {
-        props.eventBus.dispatch('SELECT_CELL', { idx: 1, rowIdx: 2 });
+        props.eventBus.dispatch('CELL_SELECT', { idx: 1, rowIdx: 2 });
       });
       // Copy selected cell
       pressKey(wrapper, 'c', { ctrlKey: true });

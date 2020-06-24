@@ -53,7 +53,6 @@ interface EditCellState extends Position {
   key: string | null;
 }
 
-
 export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
@@ -243,6 +242,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return { idx: -1, rowIdx: -1, status: 'SELECT' };
   });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
+  const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     return getHorizontalRangeToRender(
@@ -319,15 +319,38 @@ function DataGrid<R, K extends keyof R, SR>({
       onSelectedRowsChange(newSelectedRows);
     };
 
-    return eventBus.subscribe('SELECT_ROW', handleRowSelectionChange);
+    return eventBus.subscribe('ROW_SELECT', handleRowSelectionChange);
   }, [eventBus, onSelectedRowsChange, rows, rowKey, selectedRows]);
 
   useEffect(() => {
-    return eventBus.subscribe('SELECT_CELL', selectCell);
+    return eventBus.subscribe('CELL_SELECT', selectCell);
   });
 
   useEffect(() => {
-    return eventBus.subscribe('CELL_KEYDOWN', onKeyDown);
+    return eventBus.subscribe('CELL_KEYDOWN', handleKeyDown);
+  });
+
+  useEffect(() => {
+    const handleDragEnter = (overRowIdx: number) => {
+      setDraggedOverRowIdx(overRowIdx);
+    };
+    return eventBus.subscribe('ROW_DRAG_ENTER', handleDragEnter);
+  }, [eventBus]);
+
+  useEffect(() => {
+    function handleDragStart() {
+      setDraggedOverRowIdx(selectedPosition.rowIdx);
+    }
+
+    return eventBus.subscribe('CELL_DRAG_START', handleDragStart);
+  }, [eventBus, selectedPosition]);
+
+  useEffect(() => {
+    return eventBus.subscribe('CELL_DRAG_END', handleDragEnd);
+  });
+
+  useEffect(() => {
+    return eventBus.subscribe('CELL_DRAG_HANDLE_DOUBLE_CLICK', handleDragHandleDoubleClick);
   });
 
   useImperativeHandle(ref, () => ({
@@ -340,7 +363,7 @@ function DataGrid<R, K extends keyof R, SR>({
       current.scrollTop = rowIdx * rowHeight;
     },
     selectCell(position: Position, openEditor?: boolean) {
-      eventBus.dispatch('SELECT_CELL', position, openEditor);
+      eventBus.dispatch('CELL_SELECT', position, openEditor);
     }
   }));
 
@@ -362,7 +385,7 @@ function DataGrid<R, K extends keyof R, SR>({
     onColumnResize?.(column.idx, width);
   }, [columnWidths, onColumnResize]);
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
     const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
@@ -405,6 +428,39 @@ function DataGrid<R, K extends keyof R, SR>({
         }
         break;
     }
+  }
+
+  function handleDragEnd() {
+    if (typeof draggedOverRowIdx === 'undefined') return;
+
+    const { idx, rowIdx } = selectedPosition;
+    const column = columns[idx];
+    const cellKey = column.key;
+    const value = rows[rowIdx][cellKey as keyof R];
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: draggedOverRowIdx,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.CELL_DRAG
+    });
+
+    setDraggedOverRowIdx(undefined);
+  }
+
+  function handleDragHandleDoubleClick(): void {
+    const column = columns[selectedPosition.idx];
+    const cellKey = column.key;
+    const value = rows[selectedPosition.rowIdx][cellKey as keyof R];
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: selectedPosition.rowIdx,
+      toRow: rows.length - 1,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.COLUMN_FILL
+    });
   }
 
   /**
@@ -543,6 +599,15 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
+  function isDraggedOver(currentRowIdx: number) {
+    if (typeof draggedOverRowIdx === 'undefined') return;
+    const { rowIdx } = selectedPosition;
+
+    return rowIdx < draggedOverRowIdx
+      ? rowIdx < currentRowIdx && currentRowIdx <= draggedOverRowIdx
+      : rowIdx > currentRowIdx && currentRowIdx >= draggedOverRowIdx;
+  }
+
   function getViewportRows() {
     const rowElements = [];
 
@@ -567,16 +632,25 @@ function DataGrid<R, K extends keyof R, SR>({
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
           copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
+          draggedOverCellIdx={isDraggedOver(rowIdx) ? selectedPosition.idx : undefined}
           eventBus={eventBus}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={rowIdx * rowHeight + totalHeaderHeight}
+          enableCellDragAndDrop={enableCellDragAndDrop}
         />
       );
     }
 
     return rowElements;
+  }
+
+  // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
+  if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
+    setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
+    setCopiedPosition(null);
+    setDraggedOverRowIdx(undefined);
   }
 
   return (

@@ -14,6 +14,7 @@ function Row<R, SR = unknown>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   copiedCellIdx,
+  draggedOverCellIdx,
   onRowClick,
   row,
   viewportColumns,
@@ -22,12 +23,13 @@ function Row<R, SR = unknown>({
   onDrop,
   rowClass,
   top,
+  enableCellDragAndDrop,
   ...props
 }: RowRendererProps<R, SR>) {
   function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
     event.preventDefault();
-    eventBus.dispatch('DRAG_ENTER', rowIdx);
+    eventBus.dispatch('ROW_DRAG_ENTER', rowIdx);
   }
 
   function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -64,8 +66,10 @@ function Row<R, SR = unknown>({
           row={row}
           isSelected={selectedCellIdx === column.idx}
           isCopied={copiedCellIdx === column.idx}
+          isDraggedOver={draggedOverCellIdx === column.idx}
           isRowSelected={isRowSelected}
           eventBus={eventBus}
+          enableCellDragAndDrop={enableCellDragAndDrop}
           onRowClick={onRowClick}
         />
       ))}

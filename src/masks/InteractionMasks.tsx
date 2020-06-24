@@ -91,7 +91,7 @@ export default function InteractionMasks<R, SR>({
   }, [selectedPosition]);
 
   useEffect(() => {
-    return eventBus.subscribe('SELECT_CELL', selectCell);
+    return eventBus.subscribe('CELL_SELECT', selectCell);
   });
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function InteractionMasks<R, SR>({
     const handleDragEnter = (overRowIdx: number) => {
       setDraggedPosition({ ...draggedPosition, overRowIdx });
     };
-    return eventBus.subscribe('DRAG_ENTER', handleDragEnter);
+    return eventBus.subscribe('ROW_DRAG_ENTER', handleDragEnter);
   }, [draggedPosition, eventBus]);
 
   const closeEditor = useCallback(() => {
