@@ -241,6 +241,9 @@ export default function AllFeatures() {
               onScroll={handleScroll}
               onSelectedRowsChange={setSelectedRows}
               rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
+              onKeyboard={e => {
+                console.debug(e);
+              }}
               enableCellCopyPaste
               enableCellDragAndDrop
             />

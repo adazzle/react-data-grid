@@ -159,3 +159,8 @@ export interface SelectRowEvent {
   checked: boolean;
   isShiftClick: boolean;
 }
+
+export interface KeyDownEvent {
+  event: React.KeyboardEvent<HTMLDivElement>;
+  selectedPosition: Position;
+}

@@ -26,6 +26,7 @@ type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'rows'
   | 'onCheckCellIsEditable'
   | 'onSelectedCellChange'
+  | 'onKeyboard'
 > & Pick<Required<DataGridProps<R, never, SR>>,
   | 'rowHeight'
   | 'enableCellAutoFocus'
@@ -72,6 +73,7 @@ export default function InteractionMasks<R, SR>({
   onSelectedCellChange,
   onCheckCellIsEditable,
   onRowsUpdate,
+  onKeyboard,
   scrollToCell
 }: InteractionMasksProps<R, SR>) {
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>(() => {
@@ -159,6 +161,11 @@ export default function InteractionMasks<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    let preventDefault = false;
+    // use DataGridHandle.selectCell get current cell.
+    if (onKeyboard) onKeyboard({ selectedPosition, event: { ...event, preventDefault: () => preventDefault = true } });
+    if (preventDefault) return;
+
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
     const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;

@@ -36,7 +36,8 @@ import {
   Position,
   RowRendererProps,
   RowsUpdateEvent,
-  SelectRowEvent
+  SelectRowEvent,
+  KeyDownEvent
 } from './common/types';
 import { CellNavigationMode, SortDirection } from './common/enums';
 
@@ -123,7 +124,8 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   onSelectedCellChange?: (position: Position) => void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
   onCheckCellIsEditable?: (event: CheckCellIsEditableEvent<R, SR>) => boolean;
-
+  /** events triggered by pressing the key */
+  onKeyboard?: (event: KeyDownEvent) => void;
   /**
    * Toggles and modes
    */
@@ -182,6 +184,7 @@ function DataGrid<R, K extends keyof R, SR>({
   onColumnResize,
   onSelectedCellChange,
   onCheckCellIsEditable,
+  onKeyboard,
   // Toggles and modes
   enableFilters = false,
   enableCellAutoFocus = true,
@@ -460,6 +463,7 @@ function DataGrid<R, K extends keyof R, SR>({
               onCheckCellIsEditable={onCheckCellIsEditable}
               onRowsUpdate={handleRowsUpdate}
               onSelectedCellChange={onSelectedCellChange}
+              onKeyboard={onKeyboard}
             />
           )}
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
