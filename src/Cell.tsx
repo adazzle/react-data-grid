@@ -2,7 +2,7 @@ import React, { forwardRef, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 import { CellRendererProps } from './common/types';
-import { preventDefault, wrapEvent, canEdit } from './utils';
+import { preventDefault, wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 
 function Cell<R, SR>({
@@ -111,7 +111,7 @@ function Cell<R, SR>({
         isRowSelected={isRowSelected}
         onRowSelectionChange={onRowSelectionChange}
       />
-      {enableCellDragAndDrop && isSelected && canEdit(column, row) && (
+      {enableCellDragAndDrop && isSelected && (
         <div
           className="rdg-cell-drag-handle"
           draggable
