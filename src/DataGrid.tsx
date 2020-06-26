@@ -385,13 +385,22 @@ function DataGrid<R, K extends keyof R, SR>({
       if (lowerCaseKey === 'v') return handlePaste();
     }
 
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
-      event.preventDefault();
-      navigate(event.key, event.shiftKey);
-      return;
+    switch (event.key) {
+      case 'Escape':
+        setCopiedPosition(null);
+        return;
+      case 'ArrowUp':
+      case 'ArrowDown':
+      case 'ArrowLeft':
+      case 'ArrowRight':
+      case 'Tab':
+        event.preventDefault();
+        navigate(event.key, event.shiftKey);
+        break;
+      default:
+        handleCellInput(event);
+        break;
     }
-
-    handleCellInput(event);
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
