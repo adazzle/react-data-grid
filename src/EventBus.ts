@@ -1,12 +1,7 @@
-import { Position, SelectRowEvent, CommitEvent } from './common/types';
+import { Position, SelectRowEvent } from './common/types';
 
 interface EventMap {
-  CELL_SELECT: (position: Position) => void;
-  CELL_EDIT: (position: Position) => void;
-  CELL_NAVIGATE: (key: string, shiftKey: boolean, nextPosition: Position) => void;
-  CELL_COPY: (value: unknown) => void;
-  CELL_PASTE: (position: Position) => void;
-  CELL_COMMIT: (event: CommitEvent) => void;
+  CELL_SELECT: (position: Position, openEditor?: boolean) => void;
   CELL_DRAG_START: () => void;
   CELL_DRAG_END: () => void;
   CELL_DRAG_HANDLE_DOUBLE_CLICK: () => void;

@@ -23,7 +23,6 @@ function Row<R, SR = unknown>({
   onDrop,
   rowClass,
   top,
-  rowHeight,
   enableCellDragAndDrop,
   ...props
 }: RowRendererProps<R, SR>) {
@@ -65,7 +64,6 @@ function Row<R, SR = unknown>({
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
-          rowHeight={rowHeight}
           isSelected={selectedCellIdx === column.idx}
           isCopied={copiedCellIdx === column.idx}
           isDraggedOver={draggedOverCellIdx === column.idx}
