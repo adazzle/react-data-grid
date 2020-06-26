@@ -26,12 +26,26 @@ export default function SortableHeaderCell<R, SR>({
   sortDirection,
   children
 }: Props<R, SR>) {
-  sortDirection = sortColumn === column.key && sortDirection || 'NONE';
+  let tempSortDirection: 'ASC' | 'DESC' | 'NONE' = 'NONE';
+  if (typeof sortColumn === 'string' && !(sortDirection instanceof Array)) {
+    tempSortDirection = sortColumn === column.key && sortDirection || 'NONE';
+  }
+
+  if (sortDirection instanceof Array) {
+    sortDirection.some(ele => {
+      if (ele.columnKey === column.key) {
+        tempSortDirection = ele.sortDirection;
+        return true;
+      }
+      return false;
+    });
+  }
+
   function onClick() {
     if (!onSort) return;
     const sortDescendingFirst = column.sortDescendingFirst || false;
     let direction: SortDirection;
-    switch (sortDirection) {
+    switch (tempSortDirection) {
       case 'ASC':
         direction = sortDescendingFirst ? 'NONE' : 'DESC';
         break;
@@ -48,7 +62,7 @@ export default function SortableHeaderCell<R, SR>({
   return (
     <span className="rdg-header-sort-cell" onClick={onClick}>
       <span className="rdg-header-sort-name">{children}</span>
-      <span>{SORT_TEXT[sortDirection]}</span>
+      <span>{SORT_TEXT[tempSortDirection]}</span>
     </span>
   );
 }

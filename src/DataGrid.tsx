@@ -37,7 +37,8 @@ import {
   RowRendererProps,
   RowsUpdateEvent,
   SelectRowEvent,
-  KeyDownEvent
+  KeyDownEvent,
+  SortColumn
 } from './common/types';
 import { CellNavigationMode, SortDirection } from './common/enums';
 
@@ -98,7 +99,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   /** The key of the column which is currently being sorted */
   sortColumn?: string;
   /** The direction to sort the sortColumn*/
-  sortDirection?: SortDirection;
+  sortDirection?: SortColumn[] | SortDirection;
   /** Function called whenever grid is sorted*/
   onSort?: (columnKey: string, direction: SortDirection) => void;
   filters?: Filters;

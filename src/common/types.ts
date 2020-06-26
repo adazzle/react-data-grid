@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent } from 'react';
-import { UpdateActions } from './enums';
+import { UpdateActions, SortDirection } from './enums';
 import EventBus from '../EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -163,4 +163,9 @@ export interface SelectRowEvent {
 export interface KeyDownEvent {
   event: React.KeyboardEvent<HTMLDivElement>;
   selectedPosition: Position;
+}
+
+export interface SortColumn {
+  columnKey: string;
+  sortDirection: SortDirection;
 }
