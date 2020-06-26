@@ -378,9 +378,6 @@ function DataGrid<R, K extends keyof R, SR>({
    * event handlers
    */
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const { key, shiftKey } = event;
-    const { idx, rowIdx } = selectedPosition;
-    const column = columns[idx];
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
       // event.key may be uppercase `C` or `V`
       const lowerCaseKey = event.key.toLowerCase();
@@ -388,9 +385,9 @@ function DataGrid<R, K extends keyof R, SR>({
       if (lowerCaseKey === 'v') return handlePaste();
     }
 
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(key)) {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
       event.preventDefault();
-      navigate(key, event.shiftKey, getNextPosition(key, shiftKey, { idx: column.idx, rowIdx }));
+      navigate(event.key, event.shiftKey);
       return;
     }
 
@@ -597,7 +594,8 @@ function DataGrid<R, K extends keyof R, SR>({
     );
   }
 
-  function navigate(key: string, shiftKey: boolean, nextPosition: Position) {
+  function navigate(key: string, shiftKey: boolean) {
+    let nextPosition = getNextPosition(key, shiftKey, selectedPosition);
     let mode = cellNavigationMode;
     if (key === 'Tab') {
       // If we are in a position to leave the grid, stop editing but stay in that cell
