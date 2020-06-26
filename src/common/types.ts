@@ -108,6 +108,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
+  rowHeight: number;
   isRowSelected: boolean;
   isSelected: boolean;
   isCopied: boolean;
@@ -122,6 +123,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
+  rowHeight: number;
   lastFrozenColumnIndex: number;
   selectedCellIdx?: number;
   copiedCellIdx?: number;

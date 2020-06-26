@@ -1,9 +1,30 @@
-import React, { forwardRef, memo, useEffect, useRef } from 'react';
+import React, { forwardRef, memo, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 
-import { CellRendererProps } from './common/types';
-import { preventDefault, wrapEvent, canEdit } from './utils';
+import { legacyCellInput } from './editors/CellInputHandlers';
+import EditorContainer from './editors/EditorContainer';
+import EditorPortal from './editors/EditorPortal';
+import { CellRendererProps, CommitEvent, Position } from './common/types';
+import { preventDefault, wrapEvent, canEdit, isCtrlKeyHeldDown } from './utils';
 import { useCombinedRefs } from './hooks';
+
+function getNextPosition(key: string, shiftKey: boolean, currentPosition: Position) {
+  const { idx, rowIdx } = currentPosition;
+  switch (key) {
+    case 'ArrowUp':
+      return { idx, rowIdx: rowIdx - 1 };
+    case 'ArrowDown':
+      return { idx, rowIdx: rowIdx + 1 };
+    case 'ArrowLeft':
+      return { idx: idx - 1, rowIdx };
+    case 'ArrowRight':
+      return { idx: idx + 1, rowIdx };
+    case 'Tab':
+      return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
+    default:
+      return currentPosition;
+  }
+}
 
 function Cell<R, SR>({
   className,
@@ -15,6 +36,7 @@ function Cell<R, SR>({
   lastFrozenColumnIndex,
   row,
   rowIdx,
+  rowHeight,
   eventBus,
   enableCellDragAndDrop,
   onRowClick,
@@ -26,8 +48,20 @@ function Cell<R, SR>({
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const cellRef = useRef<HTMLDivElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputKey, setInputKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isEditing && isSelected) {
+      cellRef.current?.focus();
+    }
+  }, [isEditing, isSelected]);
+
   function selectCell(openEditor?: boolean) {
-    eventBus.dispatch('CELL_SELECT', { idx: column.idx, rowIdx }, openEditor);
+    if (openEditor && canEdit(column, row)) {
+      setIsEditing(true);
+    }
+    eventBus.dispatch('CELL_SELECT', { idx: column.idx, rowIdx });
   }
 
   function handleClick() {
@@ -36,7 +70,56 @@ function Cell<R, SR>({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    eventBus.dispatch('CELL_KEYDOWN', event);
+    const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
+    const canOpenEditor = !isEditing && canEdit(column, row);
+
+    const { key, shiftKey } = event;
+    if (isCtrlKeyHeldDown(event)) {
+      // event.key may be uppercase `C` or `V`
+      const lowerCaseKey = key.toLowerCase();
+      if (lowerCaseKey === 'c') {
+        eventBus.dispatch('CELL_COPY', row[column.key as keyof R]);
+        return;
+      }
+
+      if (lowerCaseKey === 'v') {
+        eventBus.dispatch('CELL_PASTE', { idx: column.idx, rowIdx });
+        return;
+      }
+    }
+
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(key)) {
+      event.preventDefault();
+      eventBus.dispatch('CELL_NAVIGATE',
+        key,
+        shiftKey,
+        getNextPosition(key, shiftKey, { idx: column.idx, rowIdx })
+      );
+      return;
+    }
+
+    // Use CELL_EDIT action instead?
+    switch (key) {
+      case 'Enter':
+        if (canOpenEditor) {
+          setIsEditing(true);
+          setInputKey(key);
+        } else if (isEditing) {
+          setIsEditing(false);
+          setInputKey(null);
+        }
+        break;
+      case 'Escape':
+        setIsEditing(false);
+        setInputKey(null);
+        break;
+      default:
+        if (canOpenEditor && isActivatedByUser) {
+          setIsEditing(true);
+          setInputKey(key);
+        }
+        break;
+    }
   }
 
   function handleContextMenu() {
@@ -64,7 +147,8 @@ function Cell<R, SR>({
     eventBus.dispatch('CELL_DRAG_END');
   }
 
-  function handleDragHandleDoubleClick() {
+  function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    event.stopPropagation();
     eventBus.dispatch('CELL_DRAG_HANDLE_DOUBLE_CLICK');
   }
 
@@ -72,11 +156,10 @@ function Cell<R, SR>({
     eventBus.dispatch('ROW_SELECT', { rowIdx, checked, isShiftClick });
   }
 
-  useEffect(() => {
-    if (isSelected) {
-      cellRef.current?.focus();
-    }
-  }, [isSelected]);
+  function onCommit(event: CommitEvent): void {
+    eventBus.dispatch('CELL_COMMIT', event);
+    setIsEditing(false);
+  }
 
   const { cellClass } = column;
   className = clsx(
@@ -108,21 +191,42 @@ function Cell<R, SR>({
       onKeyDown={wrapEvent(handleKeyDown, onKeyDown)}
       {...props}
     >
-      <column.formatter
-        column={column}
-        rowIdx={rowIdx}
-        row={row}
-        isRowSelected={isRowSelected}
-        onRowSelectionChange={onRowSelectionChange}
-      />
-      {enableCellDragAndDrop && isSelected && canEdit(column, row) && (
-        <div
-          className="rdg-cell-drag-handle"
-          draggable
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onDoubleClick={handleDragHandleDoubleClick}
-        />
+      {!isEditing && (
+        <>
+          <column.formatter
+            column={column}
+            rowIdx={rowIdx}
+            row={row}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+          />
+          {enableCellDragAndDrop && isSelected && canEdit(column, row) && (
+            <div
+              className="rdg-cell-drag-handle"
+              draggable
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDoubleClick={handleDragHandleDoubleClick}
+            />
+          )}
+        </>
+      )}
+      {isEditing && (
+        <EditorPortal target={document.body}>
+          <EditorContainer<R, SR>
+            firstEditorKeyPress={inputKey}
+            onCommit={onCommit}
+            onCommitCancel={() => setIsEditing(false)}
+            rowIdx={rowIdx}
+            row={row}
+            rowHeight={rowHeight}
+            column={column}
+            scrollLeft={0}
+            scrollTop={0}
+            left={cellRef.current?.getBoundingClientRect().left ?? 0}
+            top={cellRef.current?.getBoundingClientRect().top ?? 0}
+          />
+        </EditorPortal>
       )}
     </div>
   );

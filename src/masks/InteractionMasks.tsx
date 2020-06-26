@@ -28,7 +28,6 @@ type SharedCanvasProps<R, SR> = Pick<DataGridProps<R, never, SR>,
   | 'onSelectedCellChange'
 > & Pick<Required<DataGridProps<R, never, SR>>,
   | 'rowHeight'
-  | 'enableCellAutoFocus'
   | 'enableCellCopyPaste'
   | 'enableCellDragAndDrop'
   | 'cellNavigationMode'
@@ -60,7 +59,6 @@ export default function InteractionMasks<R, SR>({
   rows,
   rowHeight,
   eventBus,
-  enableCellAutoFocus,
   enableCellCopyPaste,
   enableCellDragAndDrop,
   editorPortalTarget,
@@ -74,12 +72,7 @@ export default function InteractionMasks<R, SR>({
   onRowsUpdate,
   scrollToCell
 }: InteractionMasksProps<R, SR>) {
-  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>(() => {
-    if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
-      return { idx: 0, rowIdx: 0, status: 'SELECT' };
-    }
-    return { idx: -1, rowIdx: -1, status: 'SELECT' };
-  });
+  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>({ idx: -1, rowIdx: -1, status: 'SELECT' });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [draggedPosition, setDraggedPosition] = useState<DraggedPosition | null>(null);
   const selectionMaskRef = useRef<HTMLDivElement>(null);
@@ -205,7 +198,7 @@ export default function InteractionMasks<R, SR>({
 
   function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
     // If we are in a position to leave the grid, stop editing but stay in that cell
-    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+    if (canExitGrid({ cellNavigationMode, columns, rowsCount: rows.length, selectedPosition, shiftKey: e.shiftKey })) {
       if (selectedPosition.status === 'EDIT') {
         closeEditor();
         return;

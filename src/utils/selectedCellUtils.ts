@@ -95,9 +95,10 @@ interface CanExitGridOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   rowsCount: number;
   selectedPosition: Position;
+  shiftKey: boolean;
 }
 
-export function canExitGrid<R, SR>(event: React.KeyboardEvent, { cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx } }: CanExitGridOpts<R, SR>): boolean {
+export function canExitGrid<R, SR>({ cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx }, shiftKey }: CanExitGridOpts<R, SR>): boolean {
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
   if (cellNavigationMode === CellNavigationMode.NONE || cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
@@ -105,7 +106,7 @@ export function canExitGrid<R, SR>(event: React.KeyboardEvent, { cellNavigationM
     const atFirstCellInRow = idx === 0;
     const atLastRow = rowIdx === rowsCount - 1;
     const atFirstRow = rowIdx === 0;
-    const shift = event.shiftKey === true;
+    const shift = shiftKey;
 
     return shift ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
   }

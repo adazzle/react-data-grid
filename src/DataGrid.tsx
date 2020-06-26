@@ -16,7 +16,6 @@ import FilterRow from './FilterRow';
 import Row from './Row';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
-import { legacyCellInput } from './editors/CellInputHandlers';
 import {
   assertIsValidKey,
   getColumnMetrics,
@@ -27,7 +26,6 @@ import {
   getViewportColumns,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
-  isCtrlKeyHeldDown,
   canExitGrid
 } from './utils';
 
@@ -40,16 +38,17 @@ import {
   Position,
   RowRendererProps,
   RowsUpdateEvent,
-  SelectRowEvent
+  SelectRowEvent,
+  CommitEvent
 } from './common/types';
 import { CellNavigationMode, SortDirection, UpdateActions } from './common/enums';
 
 interface SelectCellState extends Position {
-  status: 'SELECT';
+  mode: 'SELECT';
 }
 
 interface EditCellState extends Position {
-  status: 'EDIT';
+  mode: 'EDIT';
   key: string | null;
 }
 
@@ -142,8 +141,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    */
   /** Toggles whether filters row is displayed or not */
   enableFilters?: boolean;
-  /** Toggles whether cells should be autofocused */
-  enableCellAutoFocus?: boolean;
   enableCellCopyPaste?: boolean;
   enableCellDragAndDrop?: boolean;
   cellNavigationMode?: CellNavigationMode;
@@ -197,7 +194,6 @@ function DataGrid<R, K extends keyof R, SR>({
   onCheckCellIsEditable,
   // Toggles and modes
   enableFilters = false,
-  enableCellAutoFocus = true,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
@@ -219,6 +215,9 @@ function DataGrid<R, K extends keyof R, SR>({
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
+  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>({ idx: -1, rowIdx: -1, mode: 'SELECT' });
+  const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
+  const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
 
   /**
    * computed values
@@ -234,15 +233,6 @@ function DataGrid<R, K extends keyof R, SR>({
       defaultFormatter
     });
   }, [columnWidths, rawColumns, defaultFormatter, minColumnWidth, viewportWidth]);
-
-  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>(() => {
-    if (enableCellAutoFocus && document.activeElement === document.body && columns.length > 0 && rows.length > 0) {
-      return { idx: 0, rowIdx: 0, status: 'SELECT' };
-    }
-    return { idx: -1, rowIdx: -1, status: 'SELECT' };
-  });
-  const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
-  const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     return getHorizontalRangeToRender(
@@ -327,7 +317,74 @@ function DataGrid<R, K extends keyof R, SR>({
   });
 
   useEffect(() => {
-    return eventBus.subscribe('CELL_KEYDOWN', handleKeyDown);
+    function navigate(key: string, shiftKey: boolean, nextPosition: Position) {
+      let mode = cellNavigationMode;
+      if (key === 'Tab') {
+        // If we are in a position to leave the grid, stop editing but stay in that cell
+        if (canExitGrid({ shiftKey, cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+          // Reset the selected position before exiting
+          setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
+          return;
+        }
+
+        mode = cellNavigationMode === CellNavigationMode.NONE
+          ? CellNavigationMode.CHANGE_ROW
+          : cellNavigationMode;
+      }
+
+      nextPosition = getNextSelectedCellPosition<R, SR>({
+        columns,
+        rowsCount: rows.length,
+        cellNavigationMode: mode,
+        nextPosition
+      });
+
+      selectCell(nextPosition);
+    }
+
+    return eventBus.subscribe('CELL_NAVIGATE', navigate);
+  });
+
+  useEffect(() => {
+    if (!enableCellCopyPaste) return;
+
+    function handleCopy(value: unknown) {
+      const { idx, rowIdx } = selectedPosition;
+      setCopiedPosition({ idx, rowIdx, value });
+    }
+
+    return eventBus.subscribe('CELL_COPY', handleCopy);
+  });
+
+  useEffect(() => {
+    if (!enableCellCopyPaste) return;
+
+    function handlePaste(position: Position) {
+      if (copiedPosition === null || !isCellEditable(position)) {
+        return;
+      }
+
+      const { rowIdx: toRow } = position;
+
+      const cellKey = columns[position.idx].key;
+      const { rowIdx: fromRow, idx, value } = copiedPosition;
+      const fromCellKey = columns[idx].key;
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow,
+      toRow,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.COPY_PASTE,
+      fromCellKey
+    });
+    }
+
+    return eventBus.subscribe('CELL_PASTE', handlePaste);
+  });
+
+  useEffect(() => {
+    return eventBus.subscribe('CELL_COMMIT', handleCommit);
   });
 
   useEffect(() => {
@@ -362,9 +419,7 @@ function DataGrid<R, K extends keyof R, SR>({
       if (!current) return;
       current.scrollTop = rowIdx * rowHeight;
     },
-    selectCell(position: Position, openEditor?: boolean) {
-      eventBus.dispatch('CELL_SELECT', position, openEditor);
-    }
+    selectCell
   }));
 
   /**
@@ -385,49 +440,14 @@ function DataGrid<R, K extends keyof R, SR>({
     onColumnResize?.(column.idx, width);
   }, [columnWidths, onColumnResize]);
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
-    const column = columns[selectedPosition.idx];
-    const row = rows[selectedPosition.rowIdx];
-    const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
-
-    const { key } = event;
-    if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
-      // event.key may be uppercase `C` or `V`
-      const lowerCaseKey = event.key.toLowerCase();
-      if (lowerCaseKey === 'c') return handleCopy();
-      if (lowerCaseKey === 'v') return handlePaste();
-    }
-
-    const canOpenEditor = selectedPosition.status === 'SELECT' && isCellEditable(selectedPosition);
-
-    switch (key) {
-      case 'Enter':
-        if (canOpenEditor) {
-          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key: 'Enter' }));
-        } else if (selectedPosition.status === 'EDIT') {
-          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'SELECT' }));
-        }
-        break;
-      case 'Escape':
-        // closeEditor();
-        setCopiedPosition(null);
-        break;
-      case 'Tab':
-        onPressTab(event);
-        break;
-      case 'ArrowUp':
-      case 'ArrowDown':
-      case 'ArrowLeft':
-      case 'ArrowRight':
-        event.preventDefault();
-        selectCell(getNextPosition(key));
-        break;
-      default:
-        if (canOpenEditor && isActivatedByUser) {
-          setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, status: 'EDIT', key }));
-        }
-        break;
-    }
+  function handleCommit({ cellKey, rowIdx, updated }: CommitEvent) {
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: rowIdx,
+      updated,
+      action: UpdateActions.CELL_UPDATE
+    });
   }
 
   function handleDragEnd() {
@@ -479,92 +499,12 @@ function DataGrid<R, K extends keyof R, SR>({
     if (!isCellWithinBounds(position)) return;
 
     if (enableEditor && isCellEditable(position)) {
-      setSelectedPosition({ ...position, status: 'EDIT', key: null });
+      setSelectedPosition({ ...position, mode: 'EDIT', key: null });
     } else {
-      setSelectedPosition({ ...position, status: 'SELECT' });
+      setSelectedPosition({ ...position, mode: 'SELECT' });
     }
     scrollToCell(position);
     onSelectedCellChange?.({ ...position });
-  }
-
-  function getNextPosition(key: string, mode = cellNavigationMode, shiftKey = false) {
-    const { idx, rowIdx } = selectedPosition;
-    let nextPosition: Position;
-    switch (key) {
-      case 'ArrowUp':
-        nextPosition = { idx, rowIdx: rowIdx - 1 };
-        break;
-      case 'ArrowDown':
-        nextPosition = { idx, rowIdx: rowIdx + 1 };
-        break;
-      case 'ArrowLeft':
-        nextPosition = { idx: idx - 1, rowIdx };
-        break;
-      case 'ArrowRight':
-        nextPosition = { idx: idx + 1, rowIdx };
-        break;
-      case 'Tab':
-        nextPosition = { idx: idx + (shiftKey ? -1 : 1), rowIdx };
-        break;
-      default:
-        nextPosition = { idx, rowIdx };
-        break;
-    }
-
-    return getNextSelectedCellPosition<R, SR>({
-      columns,
-      rowsCount: rows.length,
-      cellNavigationMode: mode,
-      nextPosition
-    });
-  }
-
-  function handleCopy(): void {
-    const { idx, rowIdx } = selectedPosition;
-    const value = rows[rowIdx][columns[idx].key as keyof R];
-    setCopiedPosition({ idx, rowIdx, value });
-  }
-
-  function handlePaste(): void {
-    if (copiedPosition === null || !isCellEditable(selectedPosition)) {
-      return;
-    }
-
-    const { rowIdx: toRow } = selectedPosition;
-
-    const cellKey = columns[selectedPosition.idx].key;
-    const { rowIdx: fromRow, idx, value } = copiedPosition;
-    const fromCellKey = columns[idx].key;
-
-    onRowsUpdate?.({
-      cellKey,
-      fromRow,
-      toRow,
-      updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.COPY_PASTE,
-      fromCellKey
-    });
-  }
-
-  function onPressTab(e: React.KeyboardEvent<HTMLDivElement>): void {
-    // If we are in a position to leave the grid, stop editing but stay in that cell
-    if (canExitGrid(e, { cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
-      if (selectedPosition.status === 'EDIT') {
-        // closeEditor();
-        return;
-      }
-
-      // Reset the selected position before exiting
-      setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
-      return;
-    }
-
-    e.preventDefault();
-    const tabCellNavigationMode = cellNavigationMode === CellNavigationMode.NONE
-      ? CellNavigationMode.CHANGE_ROW
-      : cellNavigationMode;
-    const nextPosition = getNextPosition('Tab', tabCellNavigationMode, e.shiftKey);
-    selectCell(nextPosition);
   }
 
   function getFrozenColumnsWidth() {
@@ -628,6 +568,7 @@ function DataGrid<R, K extends keyof R, SR>({
           key={key}
           rowIdx={rowIdx}
           row={row}
+          rowHeight={rowHeight}
           viewportColumns={viewportColumns}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
@@ -648,7 +589,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
-    setSelectedPosition({ idx: -1, rowIdx: -1, status: 'SELECT' });
+    setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
     setCopiedPosition(null);
     setDraggedOverRowIdx(undefined);
   }
