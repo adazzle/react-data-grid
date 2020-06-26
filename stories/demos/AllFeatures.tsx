@@ -6,6 +6,8 @@ import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
 
+import './AllFeatures.less';
+
 interface Row {
   id: string;
   avatar: string;
@@ -182,8 +184,8 @@ export default function AllFeatures() {
 
   const handleRowUpdate = useCallback(({ fromRow, toRow, updated, action }: RowsUpdateEvent<Partial<Row>>): void => {
     const newRows = [...rows];
-    let start;
-    let end;
+    let start: number;
+    let end: number;
 
     if (action === UpdateActions.COPY_PASTE) {
       start = toRow;
@@ -238,6 +240,7 @@ export default function AllFeatures() {
               selectedRows={selectedRows}
               onScroll={handleScroll}
               onSelectedRowsChange={setSelectedRows}
+              rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
               enableCellCopyPaste
               enableCellDragAndDrop
             />

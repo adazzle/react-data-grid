@@ -13,6 +13,7 @@
     - `enableCellDragAndDrop`
     - `rows`
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
+    - `rowClass`
   - `column.cellClass(row)` function support:
     - `column = { ..., cellClass(row) { return string; } }`
   - `column.minWidth`
