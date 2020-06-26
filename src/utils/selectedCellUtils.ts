@@ -106,9 +106,8 @@ export function canExitGrid<R, SR>({ cellNavigationMode, columns, rowsCount, sel
     const atFirstCellInRow = idx === 0;
     const atLastRow = rowIdx === rowsCount - 1;
     const atFirstRow = rowIdx === 0;
-    const shift = shiftKey;
 
-    return shift ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
+    return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
   }
 
   return false;
