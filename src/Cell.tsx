@@ -17,6 +17,7 @@ function Cell<R, SR>({
   onDoubleClick,
   onContextMenu,
   onDragOver,
+  style,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   function selectCell(openEditor?: boolean) {
@@ -56,6 +57,7 @@ function Cell<R, SR>({
       ref={ref}
       className={className}
       style={{
+        ...style,
         width: column.width,
         left: column.left
       }}
