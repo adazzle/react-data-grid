@@ -560,6 +560,32 @@ function DataGrid<R, K extends keyof R, SR>({
       : rowIdx > currentRowIdx && currentRowIdx >= draggedOverRowIdx;
   }
 
+  function navigate(key: string, shiftKey: boolean) {
+    let nextPosition = getNextPosition(key, shiftKey, selectedPosition);
+    let mode = cellNavigationMode;
+    if (key === 'Tab') {
+      // If we are in a position to leave the grid, stop editing but stay in that cell
+      if (canExitGrid({ shiftKey, cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+        // Reset the selected position before exiting
+        setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
+        return;
+      }
+
+      mode = cellNavigationMode === CellNavigationMode.NONE
+        ? CellNavigationMode.CHANGE_ROW
+        : cellNavigationMode;
+    }
+
+    nextPosition = getNextSelectedCellPosition<R, SR>({
+      columns,
+      rowsCount: rows.length,
+      cellNavigationMode: mode,
+      nextPosition
+    });
+
+    selectCell(nextPosition);
+  }
+
   function getEditorContainer() {
     if (selectedPosition.mode === 'SELECT') return null;
 
@@ -594,32 +620,6 @@ function DataGrid<R, K extends keyof R, SR>({
         />
       </EditorPortal>
     );
-  }
-
-  function navigate(key: string, shiftKey: boolean) {
-    let nextPosition = getNextPosition(key, shiftKey, selectedPosition);
-    let mode = cellNavigationMode;
-    if (key === 'Tab') {
-      // If we are in a position to leave the grid, stop editing but stay in that cell
-      if (canExitGrid({ shiftKey, cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
-        // Reset the selected position before exiting
-        setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
-        return;
-      }
-
-      mode = cellNavigationMode === CellNavigationMode.NONE
-        ? CellNavigationMode.CHANGE_ROW
-        : cellNavigationMode;
-    }
-
-    nextPosition = getNextSelectedCellPosition<R, SR>({
-      columns,
-      rowsCount: rows.length,
-      cellNavigationMode: mode,
-      nextPosition
-    });
-
-    selectCell(nextPosition);
   }
 
   function getViewportRows() {
@@ -666,7 +666,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
-  if (selectedPosition.idx > columns.length || selectedPosition.rowIdx > rows.length) {
+  if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx >= rows.length) {
     setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
     setCopiedPosition(null);
     setDraggedOverRowIdx(undefined);
