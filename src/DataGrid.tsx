@@ -413,7 +413,11 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function handlePaste() {
-    if (copiedPosition === null || !isCellEditable(selectedPosition)) {
+    if (
+      copiedPosition === null
+      || !isCellEditable(selectedPosition)
+      || (copiedPosition.idx === selectedPosition.idx && copiedPosition.rowIdx === selectedPosition.rowIdx)
+    ) {
       return;
     }
 
