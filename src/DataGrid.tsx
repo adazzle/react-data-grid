@@ -16,9 +16,7 @@ import FilterRow from './FilterRow';
 import Row from './Row';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
-import { legacyCellInput } from './editors/CellInputHandlers';
-import EditorContainer from './editors/EditorContainer';
-import EditorPortal from './editors/EditorPortal';
+import { legacyCellInput, EditorContainer, EditorPortal } from './editors';
 import {
   assertIsValidKey,
   getColumnMetrics,
@@ -340,19 +338,14 @@ function DataGrid<R, K extends keyof R, SR>({
   });
 
   useEffect(() => {
-    const handleDragEnter = (overRowIdx: number) => {
-      setDraggedOverRowIdx(overRowIdx);
-    };
-    return eventBus.subscribe('ROW_DRAG_ENTER', handleDragEnter);
-  }, [eventBus]);
+    if (!enableCellDragAndDrop) return;
+    return eventBus.subscribe('ROW_DRAG_ENTER', setDraggedOverRowIdx);
+  }, [enableCellDragAndDrop, eventBus]);
 
   useEffect(() => {
-    function handleDragStart() {
-      setDraggedOverRowIdx(selectedPosition.rowIdx);
-    }
-
-    return eventBus.subscribe('CELL_DRAG_START', handleDragStart);
-  }, [eventBus, selectedPosition]);
+    if (!enableCellDragAndDrop) return;
+    return eventBus.subscribe('CELL_DRAG_START', () => setDraggedOverRowIdx(selectedPosition.rowIdx));
+  }, [enableCellDragAndDrop, eventBus, selectedPosition]);
 
   useEffect(() => {
     return eventBus.subscribe('CELL_DRAG_END', handleDragEnd);
@@ -665,9 +658,7 @@ function DataGrid<R, K extends keyof R, SR>({
     }
 
     return (
-      <div
-        onKeyDown={handleKeyDown}
-      >
+      <div onKeyDown={handleKeyDown}>
         {rowElements}
         {getEditorContainer()}
       </div>
