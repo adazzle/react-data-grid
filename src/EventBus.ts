@@ -2,11 +2,7 @@ import { Position, SelectRowEvent } from './common/types';
 
 interface EventMap {
   CELL_SELECT: (position: Position, openEditor?: boolean) => void;
-  CELL_DRAG_START: () => void;
-  CELL_DRAG_END: () => void;
-  CELL_DRAG_HANDLE_DOUBLE_CLICK: () => void;
   ROW_SELECT: (event: SelectRowEvent) => void;
-  ROW_DRAG_ENTER: (overRowIdx: number) => void;
 }
 
 type EventName = keyof EventMap;

@@ -15,21 +15,21 @@ function Row<R, SR = unknown>({
   selectedCellIdx,
   copiedCellIdx,
   draggedOverCellIdx,
-  onRowClick,
   row,
   viewportColumns,
+  onRowClick,
+  rowClass,
+  setDraggedOverRowIdx,
   onDragEnter,
   onDragOver,
   onDrop,
-  rowClass,
   top,
-  enableCellDragAndDrop,
   ...props
 }: RowRendererProps<R, SR>) {
   function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
     // Prevent default to allow drop
     event.preventDefault();
-    eventBus.dispatch('ROW_DRAG_ENTER', rowIdx);
+    setDraggedOverRowIdx(rowIdx);
   }
 
   function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -69,7 +69,6 @@ function Row<R, SR = unknown>({
           isDraggedOver={draggedOverCellIdx === column.idx}
           isRowSelected={isRowSelected}
           eventBus={eventBus}
-          enableCellDragAndDrop={enableCellDragAndDrop}
           onRowClick={onRowClick}
         />
       ))}

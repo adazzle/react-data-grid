@@ -23,12 +23,6 @@
   box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
 }
 
-.rdg-cell-mask {
-  position: absolute;
-  pointer-events: none;
-  outline: none;
-}
-
 .rdg-cell-selected {
   box-shadow: inset 0 0 0 2px #66afe9;
   outline: 0;
@@ -41,27 +35,31 @@
 .rdg-cell-drag-handle {
   pointer-events: auto;
   position: absolute;
-  bottom: -5px;
-  right: -4px;
   background: #66afe9;
   width: 8px;
   height: 8px;
   border: 1px solid #fff;
-  border-right: 0px;
-  border-bottom: 0px;
+  border-right: 0;
+  border-bottom: 0;
+  margin-left: -6px;
+  margin-top: -6px;
   cursor: crosshair;
   cursor: -moz-grab;
   cursor: -webkit-grab;
   cursor: grab;
 }
 
-.rdg-cell-selected:hover .rdg-cell-drag-handle {
-  bottom: -8px;
-  right: -7px;
+.rdg-cell-drag-handle-frozen {
+  z-index: 1;
+}
+
+.rdg-cell-drag-handle:hover {
   background: white;
   width: 16px;
   height: 16px;
   border: 1px solid #66afe9;
+  margin-left: -10px;
+  margin-top: -10px;
 }
 
 .rdg-cell-dragged-over {

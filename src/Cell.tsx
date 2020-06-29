@@ -16,7 +16,6 @@ function Cell<R, SR>({
   row,
   rowIdx,
   eventBus,
-  enableCellDragAndDrop,
   onRowClick,
   onClick,
   onDoubleClick,
@@ -47,28 +46,6 @@ function Cell<R, SR>({
 
   function handleDoubleClick() {
     selectCell(true);
-  }
-
-  function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
-    event.dataTransfer.effectAllowed = 'copy';
-    // Setting data is required to make an element draggable in FF
-    const transferData = JSON.stringify({});
-    try {
-      event.dataTransfer.setData('text/plain', transferData);
-    } catch (ex) {
-      // IE only supports 'text' and 'URL' for the 'type' argument
-      event.dataTransfer.setData('text', transferData);
-    }
-    eventBus.dispatch('CELL_DRAG_START');
-  }
-
-  function handleDragEnd() {
-    eventBus.dispatch('CELL_DRAG_END');
-  }
-
-  function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    event.stopPropagation();
-    eventBus.dispatch('CELL_DRAG_HANDLE_DOUBLE_CLICK');
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
@@ -111,15 +88,6 @@ function Cell<R, SR>({
         isRowSelected={isRowSelected}
         onRowSelectionChange={onRowSelectionChange}
       />
-      {enableCellDragAndDrop && isSelected && (
-        <div
-          className="rdg-cell-drag-handle"
-          draggable
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onDoubleClick={handleDragHandleDoubleClick}
-        />
-      )}
     </div>
   );
 }

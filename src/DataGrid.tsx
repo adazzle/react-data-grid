@@ -9,6 +9,7 @@ import React, {
   useCallback,
   createElement
 } from 'react';
+import clsx from 'clsx';
 
 import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
@@ -337,24 +338,6 @@ function DataGrid<R, K extends keyof R, SR>({
     return eventBus.subscribe('CELL_SELECT', selectCell);
   });
 
-  useEffect(() => {
-    if (!enableCellDragAndDrop) return;
-    return eventBus.subscribe('ROW_DRAG_ENTER', setDraggedOverRowIdx);
-  }, [enableCellDragAndDrop, eventBus]);
-
-  useEffect(() => {
-    if (!enableCellDragAndDrop) return;
-    return eventBus.subscribe('CELL_DRAG_START', () => setDraggedOverRowIdx(selectedPosition.rowIdx));
-  }, [enableCellDragAndDrop, eventBus, selectedPosition]);
-
-  useEffect(() => {
-    return eventBus.subscribe('CELL_DRAG_END', handleDragEnd);
-  });
-
-  useEffect(() => {
-    return eventBus.subscribe('CELL_DRAG_HANDLE_DOUBLE_CLICK', handleDragHandleDoubleClick);
-  });
-
   useImperativeHandle(ref, () => ({
     scrollToColumn(idx: number) {
       scrollToCell({ idx });
@@ -423,39 +406,6 @@ function DataGrid<R, K extends keyof R, SR>({
     setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
   }
 
-  function handleDragEnd() {
-    if (typeof draggedOverRowIdx === 'undefined') return;
-
-    const { idx, rowIdx } = selectedPosition;
-    const column = columns[idx];
-    const cellKey = column.key;
-    const value = rows[rowIdx][cellKey as keyof R];
-
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: draggedOverRowIdx,
-      updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.CELL_DRAG
-    });
-
-    setDraggedOverRowIdx(undefined);
-  }
-
-  function handleDragHandleDoubleClick(): void {
-    const column = columns[selectedPosition.idx];
-    const cellKey = column.key;
-    const value = rows[selectedPosition.rowIdx][cellKey as keyof R];
-
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: selectedPosition.rowIdx,
-      toRow: rows.length - 1,
-      updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.COLUMN_FILL
-    });
-  }
-
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
     const value = rows[rowIdx][columns[idx].key as keyof R];
@@ -494,6 +444,55 @@ function DataGrid<R, K extends keyof R, SR>({
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, key, mode: 'EDIT' }));
     }
   }
+
+  function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
+    event.dataTransfer.effectAllowed = 'copy';
+    // Setting data is required to make an element draggable in FF
+    const transferData = JSON.stringify({});
+    try {
+      event.dataTransfer.setData('text/plain', transferData);
+    } catch (ex) {
+      // IE only supports 'text' and 'URL' for the 'type' argument
+      event.dataTransfer.setData('text', transferData);
+    }
+    setDraggedOverRowIdx(selectedPosition.rowIdx);
+  }
+
+  function handleDragEnd() {
+    if (typeof draggedOverRowIdx === 'undefined') return;
+
+    const { idx, rowIdx } = selectedPosition;
+    const column = columns[idx];
+    const cellKey = column.key;
+    const value = rows[rowIdx][cellKey as keyof R];
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: draggedOverRowIdx,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.CELL_DRAG
+    });
+
+    setDraggedOverRowIdx(undefined);
+  }
+
+  function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    event.stopPropagation();
+
+    const column = columns[selectedPosition.idx];
+    const cellKey = column.key;
+    const value = rows[selectedPosition.rowIdx][cellKey as keyof R];
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: selectedPosition.rowIdx,
+      toRow: rows.length - 1,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.COLUMN_FILL
+    });
+  }
+
 
   /**
    * utils
@@ -586,6 +585,25 @@ function DataGrid<R, K extends keyof R, SR>({
     selectCell(nextPosition);
   }
 
+  function getDragHandle() {
+    if (!enableCellDragAndDrop || !isCellEditable(selectedPosition) || selectedPosition.mode === 'EDIT') return null;
+    const { idx, rowIdx } = selectedPosition;
+    const top = (rowIdx * rowHeight) + totalHeaderHeight + rowHeight;
+    const column = columns[idx];
+    const left = column.left + column.width + (column.frozen ? scrollLeft : 0); // TODO: use position: sticky
+
+    return (
+      <div
+        className={clsx('rdg-cell-drag-handle', column.frozen && 'rdg-cell-drag-handle-frozen')}
+        style={{ top, left }}
+        draggable
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDoubleClick={handleDragHandleDoubleClick}
+      />
+    );
+  }
+
   function getEditorContainer() {
     if (selectedPosition.mode === 'SELECT') return null;
 
@@ -652,17 +670,12 @@ function DataGrid<R, K extends keyof R, SR>({
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={rowIdx * rowHeight + totalHeaderHeight}
-          enableCellDragAndDrop={enableCellDragAndDrop}
+          setDraggedOverRowIdx={setDraggedOverRowIdx}
         />
       );
     }
 
-    return (
-      <div onKeyDown={handleKeyDown}>
-        {rowElements}
-        {getEditorContainer()}
-      </div>
-    );
+    return rowElements;
   }
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
@@ -709,7 +722,11 @@ function DataGrid<R, K extends keyof R, SR>({
       {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
         <>
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
-          {viewportWidth > 0 && getViewportRows()}
+          <div onKeyDown={handleKeyDown}>
+            {viewportWidth > 0 && getViewportRows()}
+            {getEditorContainer()}
+          </div>
+          {getDragHandle()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               key={rowIdx}
