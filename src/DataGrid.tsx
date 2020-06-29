@@ -9,7 +9,6 @@ import React, {
   useCallback,
   createElement
 } from 'react';
-import clsx from 'clsx';
 
 import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
@@ -589,16 +588,17 @@ function DataGrid<R, K extends keyof R, SR>({
     selectCell(nextPosition);
   }
 
+  // TODO: Use "position: sticky" and fix drag handle showing on top of frozen columns
   function getDragHandle() {
     if (!enableCellDragAndDrop || !isCellEditable(selectedPosition) || selectedPosition.mode === 'EDIT') return null;
     const { idx, rowIdx } = selectedPosition;
     const top = (rowIdx * rowHeight) + totalHeaderHeight + rowHeight;
     const column = columns[idx];
-    const left = column.left + column.width + (column.frozen ? scrollLeft : 0); // TODO: use position: sticky
+    const left = column.left + column.width + (column.frozen ? scrollLeft : 0);
 
     return (
       <div
-        className={clsx('rdg-cell-drag-handle', column.frozen && 'rdg-cell-drag-handle-frozen')}
+        className="rdg-cell-drag-handle"
         style={{ top, left }}
         draggable
         onDragStart={handleDragStart}
