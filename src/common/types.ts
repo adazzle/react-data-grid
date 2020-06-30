@@ -56,14 +56,6 @@ export interface Position {
   rowIdx: number;
 }
 
-export interface Dimension {
-  width: number;
-  height: number;
-  top: number;
-  left: number;
-  zIndex: number;
-}
-
 export interface Editor<TValue = never> {
   getInputNode: () => Element | Text | undefined | null;
   getValue: () => TValue;

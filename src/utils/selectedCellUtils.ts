@@ -1,30 +1,6 @@
 import { CellNavigationMode } from '../common/enums';
 import { canEdit } from './columnUtils';
-import { CalculatedColumn, Position, Dimension } from '../common/types';
-
-// above unfrozen cells, below frozen cells
-const zCellMask = 1;
-// above frozen cells, below header/filter/summary rows
-const zFrozenCellMask = 2;
-
-interface GetSelectedDimensionsOpts<R, SR> {
-  selectedPosition: Position;
-  columns: readonly CalculatedColumn<R, SR>[];
-  rowHeight: number;
-  scrollLeft: number;
-}
-
-export function getSelectedDimensions<R, SR>({ selectedPosition: { idx, rowIdx }, columns, rowHeight, scrollLeft }: GetSelectedDimensionsOpts<R, SR>): Dimension {
-  if (idx < 0) {
-    return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
-  }
-  const column = columns[idx];
-  const { width } = column;
-  const left = column.frozen ? column.left + scrollLeft : column.left;
-  const top = rowIdx * rowHeight;
-  const zIndex = column.frozen ? zFrozenCellMask : zCellMask;
-  return { width, left, top, height: rowHeight, zIndex };
-}
+import { CalculatedColumn, Position } from '../common/types';
 
 interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
