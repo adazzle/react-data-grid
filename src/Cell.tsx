@@ -2,7 +2,7 @@ import React, { forwardRef, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 import { CellRendererProps } from './common/types';
-import { preventDefault, wrapEvent } from './utils';
+import { wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 
 function Cell<R, SR>({
@@ -20,7 +20,6 @@ function Cell<R, SR>({
   onClick,
   onDoubleClick,
   onContextMenu,
-  onDragOver,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const cellRef = useRef<HTMLDivElement>(null);
@@ -78,7 +77,6 @@ function Cell<R, SR>({
       onClick={wrapEvent(handleClick, onClick)}
       onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
       onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
-      onDragOver={wrapEvent(preventDefault, onDragOver)}
       {...props}
     >
       <column.formatter
@@ -88,6 +86,10 @@ function Cell<R, SR>({
         isRowSelected={isRowSelected}
         onRowSelectionChange={onRowSelectionChange}
       />
+      {isSelected && (
+        // if (!enableCellDragAndDrop || !isCellEditable(selectedPosition) || selectedPosition.mode === 'EDIT') return null;
+        <div className="rdg-cell-drag-handle" />
+      )}
     </div>
   );
 }

@@ -33,29 +33,20 @@
 }
 
 .rdg-cell-drag-handle {
-  pointer-events: auto;
+  cursor: move;
   position: absolute;
-  background: #66afe9;
+  right: 0;
+  bottom: 0;
   width: 8px;
   height: 8px;
-  border: 1px solid #fff;
-  border-right: 0;
-  border-bottom: 0;
-  margin-left: -6px;
-  margin-top: -6px;
-  cursor: crosshair;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-  cursor: grab;
-}
+  background: #66afe9;
 
-.rdg-cell-drag-handle:hover {
-  background: white;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #66afe9;
-  margin-left: -10px;
-  margin-top: -10px;
+  &:hover {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #66afe9;
+    background: #fff;
+  }
 }
 
 .rdg-cell-dragged-over {

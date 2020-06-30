@@ -130,7 +130,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   top: number;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
-  setDraggedOverRowIdx: (overRowIdx: number) => void;
+  setDraggedOverRowIdx?: (overRowIdx: number) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

@@ -9,6 +9,7 @@ import React, {
   useCallback,
   createElement
 } from 'react';
+import clsx from 'clsx';
 
 import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
@@ -238,6 +239,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>({ idx: -1, rowIdx: -1, mode: 'SELECT' });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
+  const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
 
   /**
@@ -335,6 +337,25 @@ function DataGrid<R, K extends keyof R, SR>({
 
   useEffect(() => {
     return eventBus.subscribe('CELL_SELECT', selectCell);
+  });
+
+  useEffect(() => {
+    if (!enableCellDragAndDrop || isDragging || draggedOverRowIdx === undefined) return;
+
+    const { idx, rowIdx } = selectedPosition;
+    const column = columns[idx];
+    const cellKey = column.key;
+    const value = rows[rowIdx][cellKey as keyof R];
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: draggedOverRowIdx,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.CELL_DRAG
+    });
+
+    setDraggedOverRowIdx(undefined);
   });
 
   useImperativeHandle(ref, () => ({
@@ -448,39 +469,34 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
-  function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
-    event.dataTransfer.effectAllowed = 'copy';
-    // Setting data is required to make an element draggable in FF
-    const transferData = JSON.stringify({});
-    try {
-      event.dataTransfer.setData('text/plain', transferData);
-    } catch (ex) {
-      // IE only supports 'text' and 'URL' for the 'type' argument
-      event.dataTransfer.setData('text', transferData);
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    if (!enableCellDragAndDrop) return;
+    const { target } = event;
+    if (!(target instanceof HTMLDivElement && target.className === 'rdg-cell-drag-handle')) return;
+
+    setDragging(true);
+    window.addEventListener('mouseover', onMouseover);
+    window.addEventListener('mouseup', onMouseup);
+
+    function onMouseover(event: MouseEvent) {
+      // Trigger onMouseup in edge cases where we release the mouse button but `mouseup` isn't triggered,
+      // for example when releasing the mouse button outside the iframe the grid is rendered in.
+      // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+      if (event.buttons !== 1) onMouseup();
     }
-    setDraggedOverRowIdx(selectedPosition.rowIdx);
+
+    function onMouseup() {
+      window.removeEventListener('mouseover', onMouseover);
+      window.removeEventListener('mouseup', onMouseup);
+      setDragging(false);
+    }
   }
 
-  function handleDragEnd() {
-    if (typeof draggedOverRowIdx === 'undefined') return;
+  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (!enableCellDragAndDrop) return;
+    const { target } = event;
+    if (!(target instanceof HTMLDivElement && target.className === 'rdg-cell-drag-handle')) return;
 
-    const { idx, rowIdx } = selectedPosition;
-    const column = columns[idx];
-    const cellKey = column.key;
-    const value = rows[rowIdx][cellKey as keyof R];
-
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: draggedOverRowIdx,
-      updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.CELL_DRAG
-    });
-
-    setDraggedOverRowIdx(undefined);
-  }
-
-  function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     event.stopPropagation();
 
     const column = columns[selectedPosition.idx];
@@ -495,7 +511,6 @@ function DataGrid<R, K extends keyof R, SR>({
       action: UpdateActions.COLUMN_FILL
     });
   }
-
 
   /**
    * utils
@@ -554,7 +569,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function isDraggedOver(currentRowIdx: number) {
-    if (typeof draggedOverRowIdx === 'undefined') return;
+    if (draggedOverRowIdx === undefined) return;
     const { rowIdx } = selectedPosition;
 
     return rowIdx < draggedOverRowIdx
@@ -586,26 +601,6 @@ function DataGrid<R, K extends keyof R, SR>({
     });
 
     selectCell(nextPosition);
-  }
-
-  // TODO: Use "position: sticky" and fix drag handle showing on top of frozen columns
-  function getDragHandle() {
-    if (!enableCellDragAndDrop || !isCellEditable(selectedPosition) || selectedPosition.mode === 'EDIT') return null;
-    const { idx, rowIdx } = selectedPosition;
-    const top = (rowIdx * rowHeight) + totalHeaderHeight + rowHeight;
-    const column = columns[idx];
-    const left = column.left + column.width + (column.frozen ? scrollLeft : 0);
-
-    return (
-      <div
-        className="rdg-cell-drag-handle"
-        style={{ top, left }}
-        draggable
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDoubleClick={handleDragHandleDoubleClick}
-      />
-    );
   }
 
   function getEditorContainer() {
@@ -674,7 +669,7 @@ function DataGrid<R, K extends keyof R, SR>({
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={rowIdx * rowHeight + totalHeaderHeight}
-          setDraggedOverRowIdx={setDraggedOverRowIdx}
+          setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
         />
       );
     }
@@ -726,11 +721,15 @@ function DataGrid<R, K extends keyof R, SR>({
       {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
         <>
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
-          <div onKeyDown={handleKeyDown}>
+          <div
+            className={clsx({ 'rdg-viewport-dragging': isDragging })}
+            onKeyDown={handleKeyDown}
+            onMouseDown={handleMouseDown}
+            onDoubleClick={handleDoubleClick}
+          >
             {viewportWidth > 0 && getViewportRows()}
             {getEditorContainer()}
           </div>
-          {getDragHandle()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               key={rowIdx}
