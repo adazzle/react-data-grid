@@ -17,6 +17,7 @@ function Row<R, SR = unknown>({
   draggedOverCellIdx,
   row,
   viewportColumns,
+  dragHandle,
   onRowClick,
   rowClass,
   setDraggedOverRowIdx,
@@ -55,6 +56,7 @@ function Row<R, SR = unknown>({
           isDraggedOver={draggedOverCellIdx === column.idx}
           isRowSelected={isRowSelected}
           eventBus={eventBus}
+          dragHandle={selectedCellIdx === column.idx ? dragHandle : undefined}
           onRowClick={onRowClick}
         />
       ))}

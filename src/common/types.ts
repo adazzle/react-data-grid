@@ -113,6 +113,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isCopied: boolean;
   isDraggedOver: boolean;
   eventBus: EventBus;
+  dragHandle: React.ReactNode;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
@@ -128,6 +129,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   isRowSelected: boolean;
   eventBus: EventBus;
   top: number;
+  dragHandle: React.ReactNode;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;

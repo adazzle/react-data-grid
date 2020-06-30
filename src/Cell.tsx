@@ -16,6 +16,7 @@ function Cell<R, SR>({
   row,
   rowIdx,
   eventBus,
+  dragHandle,
   onRowClick,
   onClick,
   onDoubleClick,
@@ -86,10 +87,7 @@ function Cell<R, SR>({
         isRowSelected={isRowSelected}
         onRowSelectionChange={onRowSelectionChange}
       />
-      {isSelected && (
-        // if (!enableCellDragAndDrop || !isCellEditable(selectedPosition) || selectedPosition.mode === 'EDIT') return null;
-        <div className="rdg-cell-drag-handle" />
-      )}
+      {dragHandle}
     </div>
   );
 }

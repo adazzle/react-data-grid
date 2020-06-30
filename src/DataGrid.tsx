@@ -469,11 +469,7 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
-    if (!enableCellDragAndDrop) return;
-    const { target } = event;
-    if (!(target instanceof HTMLDivElement && target.className === 'rdg-cell-drag-handle')) return;
-
+  function handleMouseDown() {
     setDragging(true);
     window.addEventListener('mouseover', onMouseover);
     window.addEventListener('mouseup', onMouseup);
@@ -493,10 +489,6 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (!enableCellDragAndDrop) return;
-    const { target } = event;
-    if (!(target instanceof HTMLDivElement && target.className === 'rdg-cell-drag-handle')) return;
-
     event.stopPropagation();
 
     const column = columns[selectedPosition.idx];
@@ -639,6 +631,17 @@ function DataGrid<R, K extends keyof R, SR>({
     );
   }
 
+  function getDragHandle() {
+    if (!enableCellDragAndDrop || !isCellEditable(selectedPosition) || selectedPosition.mode === 'EDIT') return null;
+    return (
+      <div
+        className="rdg-cell-drag-handle"
+        onMouseDown={handleMouseDown}
+        onDoubleClick={handleDoubleClick}
+      />
+    );
+  }
+
   function getViewportRows() {
     const rowElements = [];
 
@@ -670,6 +673,7 @@ function DataGrid<R, K extends keyof R, SR>({
           rowClass={rowClass}
           top={rowIdx * rowHeight + totalHeaderHeight}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
+          dragHandle={selectedPosition.rowIdx === rowIdx ? getDragHandle() : undefined}
         />
       );
     }
@@ -724,8 +728,6 @@ function DataGrid<R, K extends keyof R, SR>({
           <div
             className={clsx({ 'rdg-viewport-dragging': isDragging })}
             onKeyDown={handleKeyDown}
-            onMouseDown={handleMouseDown}
-            onDoubleClick={handleDoubleClick}
           >
             {viewportWidth > 0 && getViewportRows()}
             {getEditorContainer()}
