@@ -29,7 +29,7 @@
 }
 
 .rdg-cell-copied {
-  background: rgba(0, 0, 255, 0.2) !important;
+  background-color:#ccccff;
 }
 
 .rdg-cell-drag-handle {
@@ -59,6 +59,12 @@
 }
 
 .rdg-cell-dragged-over {
-  background: rgba(0, 0, 255, 0.2) !important;
-  box-shadow: inset 1px 0 black, inset -1px 0 black;
+  background-color:#ccccff;
+  border-left: 1px dashed black;
+  border-right: 1px dashed black;
+  padding-left: 7px;
+}
+
+.rdg-cell-copied.rdg-cell-dragged-over {
+  background-color:#9999ff;
 }
