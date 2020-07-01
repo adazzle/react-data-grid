@@ -22,7 +22,11 @@ const testProps: CellRendererProps<Row> = {
   lastFrozenColumnIndex: -1,
   row: { id: 1, description: 'Wicklow' },
   isRowSelected: false,
-  eventBus: new EventBus()
+  eventBus: new EventBus(),
+  isSelected: false,
+  isCopied: false,
+  isDraggedOver: false,
+  dragHandle: null
 };
 
 const renderComponent = (extraProps?: PropsWithChildren<Partial<CellRendererProps<Row>>>) => {
@@ -60,7 +64,11 @@ describe('Cell', () => {
       lastFrozenColumnIndex: -1,
       row: helpers.rows[11],
       isRowSelected: false,
-      eventBus: new EventBus()
+      eventBus: new EventBus(),
+      isSelected: false,
+      isCopied: false,
+      isDraggedOver: false,
+      dragHandle: null
     };
 
     it('passes classname property', () => {
