@@ -315,11 +315,11 @@ function DataGrid<R, K extends keyof R, SR>({
       onSelectedRowsChange(newSelectedRows);
     };
 
-    return eventBus.subscribe('ROW_SELECT', handleRowSelectionChange);
+    return eventBus.subscribe('SELECT_ROW', handleRowSelectionChange);
   }, [eventBus, onSelectedRowsChange, rows, rowKey, selectedRows]);
 
   useEffect(() => {
-    return eventBus.subscribe('CELL_SELECT', selectCell);
+    return eventBus.subscribe('SELECT_CELL', selectCell);
   });
 
   useEffect(() => {

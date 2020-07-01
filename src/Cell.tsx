@@ -32,7 +32,7 @@ function Cell<R, SR>({
   }, [isSelected]);
 
   function selectCell(openEditor?: boolean) {
-    eventBus.dispatch('CELL_SELECT', { idx: column.idx, rowIdx }, openEditor);
+    eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
   }
 
   function handleClick() {
@@ -49,7 +49,7 @@ function Cell<R, SR>({
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch('ROW_SELECT', { rowIdx, checked, isShiftClick });
+    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
   }
 
   const { cellClass } = column;
