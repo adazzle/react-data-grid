@@ -26,6 +26,7 @@ import {
   getScrollbarSize,
   getVerticalRangeToRender,
   getViewportColumns,
+  getNextPosition,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
   canExitGrid,
@@ -154,25 +155,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
   rowClass?: (row: R) => string | undefined;
-}
-
-
-function getNextPosition(key: string, shiftKey: boolean, currentPosition: Position) {
-  const { idx, rowIdx } = currentPosition;
-  switch (key) {
-    case 'ArrowUp':
-      return { idx, rowIdx: rowIdx - 1 };
-    case 'ArrowDown':
-      return { idx, rowIdx: rowIdx + 1 };
-    case 'ArrowLeft':
-      return { idx: idx - 1, rowIdx };
-    case 'ArrowRight':
-      return { idx: idx + 1, rowIdx };
-    case 'Tab':
-      return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
-    default:
-      return currentPosition;
-  }
 }
 
 /**
