@@ -206,12 +206,6 @@ function DataGrid<R, K extends keyof R, SR>({
   rowClass
 }: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
   /**
-   * refs
-   * */
-  const gridRef = useRef<HTMLDivElement>(null);
-  const lastSelectedRowIdx = useRef(-1);
-
-  /**
    * states
    */
   const [eventBus] = useState(() => new EventBus());
@@ -223,6 +217,13 @@ function DataGrid<R, K extends keyof R, SR>({
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
+
+  /**
+   * refs
+   * */
+  const gridRef = useRef<HTMLDivElement>(null);
+  const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
+  const lastSelectedRowIdx = useRef(-1);
 
   /**
    * computed values
@@ -322,22 +323,7 @@ function DataGrid<R, K extends keyof R, SR>({
   });
 
   useEffect(() => {
-    if (!enableCellDragAndDrop || isDragging || draggedOverRowIdx === undefined) return;
-
-    const { idx, rowIdx } = selectedPosition;
-    const column = columns[idx];
-    const cellKey = column.key;
-    const value = rows[rowIdx][cellKey as keyof R];
-
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: draggedOverRowIdx,
-      updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.CELL_DRAG
-    });
-
-    setDraggedOverRowIdx(undefined);
+    latestDraggedOverRowIdx.current = draggedOverRowIdx;
   });
 
   useImperativeHandle(ref, () => ({
@@ -451,22 +437,42 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
+  function handleDragEnd() {
+    if (latestDraggedOverRowIdx.current === undefined) return;
+
+    const { idx, rowIdx } = selectedPosition;
+    const column = columns[idx];
+    const cellKey = column.key;
+    const value = rows[rowIdx][cellKey as keyof R];
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: latestDraggedOverRowIdx.current,
+      updated: { [cellKey]: value } as unknown as never,
+      action: UpdateActions.CELL_DRAG
+    });
+
+    setDraggedOverRowIdx(undefined);
+  }
+
   function handleMouseDown() {
     setDragging(true);
-    window.addEventListener('mouseover', onMouseover);
-    window.addEventListener('mouseup', onMouseup);
+    window.addEventListener('mouseover', onMouseOver);
+    window.addEventListener('mouseup', onMouseUp);
 
-    function onMouseover(event: MouseEvent) {
+    function onMouseOver(event: MouseEvent) {
       // Trigger onMouseup in edge cases where we release the mouse button but `mouseup` isn't triggered,
       // for example when releasing the mouse button outside the iframe the grid is rendered in.
       // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
-      if (event.buttons !== 1) onMouseup();
+      if (event.buttons !== 1) onMouseUp();
     }
 
-    function onMouseup() {
-      window.removeEventListener('mouseover', onMouseover);
-      window.removeEventListener('mouseup', onMouseup);
+    function onMouseUp() {
+      window.removeEventListener('mouseover', onMouseOver);
+      window.removeEventListener('mouseup', onMouseUp);
       setDragging(false);
+      handleDragEnd();
     }
   }
 
