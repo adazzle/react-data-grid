@@ -499,7 +499,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
   }
 
-  function isCellEditable(position: Position) {
+  function isCellEditable(position: Position): boolean {
     return isCellWithinBounds(position)
       && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
   }
@@ -516,13 +516,13 @@ function DataGrid<R, K extends keyof R, SR>({
     onSelectedCellChange?.({ ...position });
   }
 
-  function getFrozenColumnsWidth() {
+  function getFrozenColumnsWidth(): number {
     if (lastFrozenColumnIndex === -1) return 0;
     const lastFrozenCol = columns[lastFrozenColumnIndex];
     return lastFrozenCol.left + lastFrozenCol.width;
   }
 
-  function scrollToCell({ idx, rowIdx }: Partial<Position>) {
+  function scrollToCell({ idx, rowIdx }: Partial<Position>): void {
     const { current } = gridRef;
     if (!current) return;
 
@@ -548,8 +548,8 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
-  function isDraggedOver(currentRowIdx: number) {
-    if (draggedOverRowIdx === undefined) return;
+  function isDraggedOver(currentRowIdx: number): boolean {
+    if (draggedOverRowIdx === undefined) return false;
     const { rowIdx } = selectedPosition;
 
     return rowIdx < draggedOverRowIdx
