@@ -25,7 +25,6 @@ function Cell<R, SR>({
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const cellRef = useRef<HTMLDivElement>(null);
-  const isMounted = useRef(false);
   const isSelected = selectedCellProps !== undefined;
   const isEditing = selectedCellProps?.mode === 'EDIT';
   const setFocus = isSelected && !isEditing;
@@ -45,9 +44,7 @@ function Cell<R, SR>({
   );
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-    } else if (setFocus) {
+    if (setFocus) {
       cellRef.current?.focus();
     }
   }, [setFocus]);
