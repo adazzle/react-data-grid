@@ -118,7 +118,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
-  onColumnResize?: (idx: number, width: number) => void;
+  onColumnResize?: (idx: number, width: number, done?: boolean) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
   /** called before cell is set active, returns a boolean to determine whether cell is editable */
@@ -324,12 +324,12 @@ function DataGrid<R, K extends keyof R, SR>({
     onScroll?.(event);
   }
 
-  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
+  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number, done: boolean) => {
     const newColumnWidths = new Map(columnWidths);
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
 
-    onColumnResize?.(column.idx, width);
+    onColumnResize?.(column.idx, width, done);
   }, [columnWidths, onColumnResize]);
 
   function handleRowsUpdate(event: RowsUpdateEvent) {

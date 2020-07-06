@@ -4,7 +4,7 @@ import { CalculatedColumn } from '../common/types';
 export interface ResizableHeaderCellProps<R, SR> {
   children: React.ReactElement<React.ComponentProps<'div'>>;
   column: CalculatedColumn<R, SR>;
-  onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onResize: (column: CalculatedColumn<R, SR>, width: number, done: boolean) => void;
 }
 
 export default function ResizableHeaderCell<R, SR>({
@@ -26,12 +26,13 @@ export default function ResizableHeaderCell<R, SR>({
     }
 
     const onMouseMove = (event: MouseEvent) => {
-      handleResize(event.clientX + offset, currentTarget);
+      handleResize(event.clientX + offset, currentTarget, false);
     };
 
-    const onMouseUp = () => {
+    const onMouseUp = (event: MouseEvent) => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      handleResize(event.clientX + offset, currentTarget, true);
     };
 
     event.preventDefault();
@@ -60,7 +61,7 @@ export default function ResizableHeaderCell<R, SR>({
     const onTouchMove = (event: TouchEvent) => {
       const touch = getTouch(event);
       if (touch) {
-        handleResize(touch.clientX + offset, currentTarget);
+        handleResize(touch.clientX + offset, currentTarget, false);
       }
     };
 
@@ -69,16 +70,19 @@ export default function ResizableHeaderCell<R, SR>({
       if (!touch) return;
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
+      if (touch) {
+        handleResize(touch.clientX + offset, currentTarget, true);
+      }
     };
 
     window.addEventListener('touchmove', onTouchMove);
     window.addEventListener('touchend', onTouchEnd);
   }
 
-  function handleResize(x: number, target: Element) {
+  function handleResize(x: number, target: Element, done: boolean) {
     const width = x - target.getBoundingClientRect().left;
     if (width > 0) {
-      onResize(column, width);
+      onResize(column, width, done);
     }
   }
 
