@@ -616,39 +616,48 @@ function DataGrid<R, K extends keyof R, SR>({
     };
   }
 
+  function getRow(rowIdx: number) {
+    const row = rows[rowIdx];
+    let key: string | number = rowIdx;
+    let isRowSelected = false;
+    if (rowKey !== undefined) {
+      const rowId = row[rowKey];
+      isRowSelected = selectedRows?.has(rowId) ?? false;
+      if (typeof rowId === 'string' || typeof rowId === 'number') {
+        key = rowId;
+      }
+    }
+
+    return (
+      <RowRenderer
+        key={key}
+        rowIdx={rowIdx}
+        row={row}
+        viewportColumns={viewportColumns}
+        lastFrozenColumnIndex={lastFrozenColumnIndex}
+        eventBus={eventBus}
+        isRowSelected={isRowSelected}
+        onRowClick={onRowClick}
+        rowClass={rowClass}
+        top={rowIdx * rowHeight + totalHeaderHeight}
+        copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
+        draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
+        setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
+        selectedCellProps={getSelectedCellProps(rowIdx)}
+      />
+    );
+  }
+
   function getViewportRows() {
     const rowElements = [];
 
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-      const row = rows[rowIdx];
-      let key: string | number = rowIdx;
-      let isRowSelected = false;
-      if (rowKey !== undefined) {
-        const rowId = row[rowKey];
-        isRowSelected = selectedRows?.has(rowId) ?? false;
-        if (typeof rowId === 'string' || typeof rowId === 'number') {
-          key = rowId;
-        }
-      }
+    // Add the row containing the selected cell if not included in the vertical range
+    if (isCellWithinBounds(selectedPosition) && (selectedPosition.rowIdx < rowOverscanStartIdx || selectedPosition.rowIdx > rowOverscanEndIdx)) {
+      rowElements.push(getRow(selectedPosition.rowIdx));
+    }
 
-      rowElements.push(
-        <RowRenderer
-          key={key}
-          rowIdx={rowIdx}
-          row={row}
-          viewportColumns={viewportColumns}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          eventBus={eventBus}
-          isRowSelected={isRowSelected}
-          onRowClick={onRowClick}
-          rowClass={rowClass}
-          top={rowIdx * rowHeight + totalHeaderHeight}
-          copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
-          draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
-          setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
-          selectedCellProps={getSelectedCellProps(rowIdx)}
-        />
-      );
+    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+      rowElements.push(getRow(rowIdx));
     }
 
     return rowElements;
