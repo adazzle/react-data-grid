@@ -1,6 +1,7 @@
 import React, { forwardRef, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
+import { EditorContainer, EditorPortal } from './editors';
 import { CellRendererProps } from './common/types';
 import { wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
@@ -8,7 +9,6 @@ import { useCombinedRefs } from './hooks';
 function Cell<R, SR>({
   className,
   column,
-  isSelected,
   isCopied,
   isDraggedOver,
   isRowSelected,
@@ -16,20 +16,41 @@ function Cell<R, SR>({
   row,
   rowIdx,
   eventBus,
-  dragHandle,
+  selectedCellProps,
   onRowClick,
+  onKeyDown,
   onClick,
   onDoubleClick,
   onContextMenu,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const cellRef = useRef<HTMLDivElement>(null);
+  const isMounted = useRef(false);
+  const isSelected = selectedCellProps !== undefined;
+  const isEditing = selectedCellProps?.mode === 'EDIT';
+  const setFocus = isSelected && !isEditing;
+
+  const { cellClass } = column;
+  className = clsx(
+    'rdg-cell',
+    {
+      'rdg-cell-frozen': column.frozen,
+      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
+      'rdg-cell-selected': isSelected,
+      'rdg-cell-copied': isCopied,
+      'rdg-cell-dragged-over': isDraggedOver
+    },
+    typeof cellClass === 'function' ? cellClass(row) : cellClass,
+    className
+  );
 
   useEffect(() => {
-    if (isSelected) {
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else if (setFocus) {
       cellRef.current?.focus();
     }
-  }, [isSelected]);
+  }, [setFocus]);
 
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
@@ -52,19 +73,40 @@ function Cell<R, SR>({
     eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
   }
 
-  const { cellClass } = column;
-  className = clsx(
-    'rdg-cell',
-    {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
-      'rdg-cell-selected': isSelected,
-      'rdg-cell-copied': isCopied,
-      'rdg-cell-dragged-over': isDraggedOver
-    },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass,
-    className
-  );
+  function getCellContent() {
+    if (selectedCellProps && selectedCellProps.mode === 'EDIT') {
+      const { editorPortalTarget, ...editorProps } = selectedCellProps.editorContainerProps;
+      const { left, top } = cellRef.current!.getBoundingClientRect();
+
+      return (
+        <EditorPortal target={editorPortalTarget}>
+          <EditorContainer<R, SR>
+            {...editorProps}
+            rowIdx={rowIdx}
+            row={row}
+            column={column}
+            left={left}
+            top={top}
+          />
+        </EditorPortal>
+      );
+    }
+
+    return (
+      <>
+        <column.formatter
+          column={column}
+          rowIdx={rowIdx}
+          row={row}
+          isRowSelected={isRowSelected}
+          onRowSelectionChange={onRowSelectionChange}
+        />
+        {selectedCellProps?.dragHandleProps && (
+          <div className="rdg-cell-drag-handle" {...selectedCellProps.dragHandleProps} />
+        )}
+      </>
+    );
+  }
 
   return (
     <div
@@ -75,19 +117,13 @@ function Cell<R, SR>({
         width: column.width,
         left: column.left
       }}
-      onClick={wrapEvent(handleClick, onClick)}
-      onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
-      onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
+      onKeyDown={selectedCellProps?.onKeyDown ? wrapEvent(selectedCellProps.onKeyDown, onKeyDown) : onKeyDown}
+      onClick={isEditing ? onClick : wrapEvent(handleClick, onClick)}
+      onDoubleClick={isEditing ? onDoubleClick : wrapEvent(handleDoubleClick, onDoubleClick)}
+      onContextMenu={isEditing ? onContextMenu : wrapEvent(handleContextMenu, onContextMenu)}
       {...props}
     >
-      <column.formatter
-        column={column}
-        rowIdx={rowIdx}
-        row={row}
-        isRowSelected={isRowSelected}
-        onRowSelectionChange={onRowSelectionChange}
-      />
-      {dragHandle}
+      {getCellContent()}
     </div>
   );
 }

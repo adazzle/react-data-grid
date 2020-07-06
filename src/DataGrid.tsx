@@ -17,7 +17,7 @@ import FilterRow from './FilterRow';
 import Row from './Row';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
-import { legacyCellInput, EditorContainer, EditorPortal } from './editors';
+import { legacyCellInput } from './editors';
 import {
   assertIsValidKey,
   getColumnMetrics,
@@ -43,7 +43,8 @@ import {
   RowRendererProps,
   RowsUpdateEvent,
   SelectRowEvent,
-  CommitEvent
+  CommitEvent,
+  SelectedCellProps
 } from './common/types';
 import { CellNavigationMode, SortDirection, UpdateActions } from './common/enums';
 
@@ -548,15 +549,6 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
-  function isDraggedOver(currentRowIdx: number): boolean {
-    if (draggedOverRowIdx === undefined) return false;
-    const { rowIdx } = selectedPosition;
-
-    return rowIdx < draggedOverRowIdx
-      ? rowIdx < currentRowIdx && currentRowIdx <= draggedOverRowIdx
-      : rowIdx > currentRowIdx && currentRowIdx >= draggedOverRowIdx;
-  }
-
   function navigate(key: string, shiftKey: boolean) {
     let nextPosition = getNextPosition(key, shiftKey, selectedPosition);
     let mode = cellNavigationMode;
@@ -583,51 +575,45 @@ function DataGrid<R, K extends keyof R, SR>({
     selectCell(nextPosition);
   }
 
-  function getEditorContainer() {
-    if (selectedPosition.mode === 'SELECT') return null;
+  function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
+    if (draggedOverRowIdx === undefined) return;
+    const { rowIdx } = selectedPosition;
 
-    const column = columns[selectedPosition.idx];
-    const row = rows[selectedPosition.rowIdx];
-    let editorLeft = 0;
-    let editorTop = 0;
+    const isDraggedOver = rowIdx < draggedOverRowIdx
+      ? rowIdx < currentRowIdx && currentRowIdx <= draggedOverRowIdx
+      : rowIdx > currentRowIdx && currentRowIdx >= draggedOverRowIdx;
 
-    if (gridRef.current !== null) {
-      const { left, top } = gridRef.current.getBoundingClientRect();
-      const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
-      const gridLeft = left + docLeft;
-      const gridTop = top + docTop;
-      editorLeft = gridLeft + column.left - (column.frozen ? 0 : scrollLeft);
-      editorTop = gridTop + totalHeaderHeight + selectedPosition.rowIdx * rowHeight - scrollTop;
-    }
-
-    return (
-      <EditorPortal target={editorPortalTarget}>
-        <EditorContainer<R, SR>
-          firstEditorKeyPress={selectedPosition.key}
-          onCommit={handleCommit}
-          onCommitCancel={() => setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }))}
-          rowIdx={selectedPosition.rowIdx}
-          row={row}
-          rowHeight={rowHeight}
-          column={column}
-          scrollLeft={scrollLeft}
-          scrollTop={scrollTop}
-          left={editorLeft}
-          top={editorTop}
-        />
-      </EditorPortal>
-    );
+    return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getDragHandle() {
-    if (!enableCellDragAndDrop || !isCellEditable(selectedPosition) || selectedPosition.mode === 'EDIT') return null;
-    return (
-      <div
-        className="rdg-cell-drag-handle"
-        onMouseDown={handleMouseDown}
-        onDoubleClick={handleDoubleClick}
-      />
-    );
+  function getSelectedCellProps(rowIdx: number): SelectedCellProps | undefined {
+    if (selectedPosition.rowIdx !== rowIdx) return;
+
+    if (selectedPosition.mode === 'EDIT') {
+      return {
+        mode: 'EDIT',
+        idx: selectedPosition.idx,
+        onKeyDown: handleKeyDown,
+        editorContainerProps: {
+          editorPortalTarget,
+          rowHeight,
+          scrollLeft,
+          scrollTop,
+          firstEditorKeyPress: selectedPosition.key,
+          onCommit: handleCommit,
+          onCommitCancel: () => setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }))
+        }
+      };
+    }
+
+    return {
+      mode: 'SELECT',
+      idx: selectedPosition.idx,
+      onKeyDown: handleKeyDown,
+      dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
+        ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
+        : undefined
+    };
   }
 
   function getViewportRows() {
@@ -652,16 +638,15 @@ function DataGrid<R, K extends keyof R, SR>({
           row={row}
           viewportColumns={viewportColumns}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
-          selectedCellIdx={selectedPosition.rowIdx === rowIdx && selectedPosition.mode === 'SELECT' ? selectedPosition.idx : undefined}
-          copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
-          draggedOverCellIdx={isDraggedOver(rowIdx) ? selectedPosition.idx : undefined}
           eventBus={eventBus}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={rowIdx * rowHeight + totalHeaderHeight}
+          copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
+          draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
-          dragHandle={selectedPosition.rowIdx === rowIdx ? getDragHandle() : undefined}
+          selectedCellProps={getSelectedCellProps(rowIdx)}
         />
       );
     }
@@ -678,7 +663,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   return (
     <div
-      className="rdg"
+      className={clsx('rdg', { 'rdg-viewport-dragging': isDragging })}
       style={{
         width,
         height,
@@ -713,13 +698,7 @@ function DataGrid<R, K extends keyof R, SR>({
       {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
         <>
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
-          <div
-            className={clsx({ 'rdg-viewport-dragging': isDragging })}
-            onKeyDown={handleKeyDown}
-          >
-            {viewportWidth > 0 && getViewportRows()}
-            {getEditorContainer()}
-          </div>
+          {viewportWidth > 0 && getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               key={rowIdx}

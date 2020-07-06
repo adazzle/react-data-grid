@@ -12,12 +12,11 @@ function Row<R, SR = unknown>({
   rowIdx,
   isRowSelected,
   lastFrozenColumnIndex,
-  selectedCellIdx,
   copiedCellIdx,
   draggedOverCellIdx,
   row,
   viewportColumns,
-  dragHandle,
+  selectedCellProps,
   onRowClick,
   rowClass,
   setDraggedOverRowIdx,
@@ -51,12 +50,11 @@ function Row<R, SR = unknown>({
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
-          isSelected={selectedCellIdx === column.idx}
           isCopied={copiedCellIdx === column.idx}
           isDraggedOver={draggedOverCellIdx === column.idx}
           isRowSelected={isRowSelected}
           eventBus={eventBus}
-          dragHandle={selectedCellIdx === column.idx ? dragHandle : undefined}
+          selectedCellProps={selectedCellProps?.idx === column.idx ? selectedCellProps : undefined}
           onRowClick={onRowClick}
         />
       ))}

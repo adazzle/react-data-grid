@@ -95,17 +95,38 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
+export interface SharedEditorContainerProps {
+  editorPortalTarget: Element;
+  firstEditorKeyPress: string | null;
+  scrollLeft: number;
+  scrollTop: number;
+  rowHeight: number;
+  onCommit: (e: CommitEvent) => void;
+  onCommitCancel: () => void;
+}
+
+export type SelectedCellProps = {
+  mode: 'EDIT';
+  idx: number;
+  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  editorContainerProps: SharedEditorContainerProps;
+} | {
+  mode: 'SELECT';
+  idx: number;
+  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+};
+
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
   isRowSelected: boolean;
-  isSelected: boolean;
   isCopied: boolean;
   isDraggedOver: boolean;
   eventBus: EventBus;
-  dragHandle: React.ReactNode;
+  selectedCellProps?: SelectedCellProps;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
@@ -115,13 +136,12 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
   lastFrozenColumnIndex: number;
-  selectedCellIdx?: number;
   copiedCellIdx?: number;
   draggedOverCellIdx?: number;
   isRowSelected: boolean;
   eventBus: EventBus;
   top: number;
-  dragHandle: React.ReactNode;
+  selectedCellProps?: SelectedCellProps;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
