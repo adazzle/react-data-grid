@@ -44,7 +44,7 @@ describe('HeaderCell', () => {
       const { wrapper, props } = setup({}, { resizable: true });
       wrapper.simulate('mousedown', { button: 0, clientX: 0 });
       window.dispatchEvent(new MouseEvent('mousemove', { clientX: 200 }));
-      expect(props.onResize).toHaveBeenCalledWith(props.column, 200);
+      expect(props.onResize).toHaveBeenCalledWith(props.column, 200, false);
     });
   });
 });
