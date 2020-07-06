@@ -221,7 +221,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   /**
    * refs
-   * */
+   */
   const gridRef = useRef<HTMLDivElement>(null);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
