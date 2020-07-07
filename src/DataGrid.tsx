@@ -129,8 +129,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    */
   /** Toggles whether filters row is displayed or not */
   enableFilters?: boolean;
-  /** Toggles whether cells should be autofocused */
-  enableCellAutoFocus?: boolean;
   enableCellCopyPaste?: boolean;
   enableCellDragAndDrop?: boolean;
   cellNavigationMode?: CellNavigationMode;
@@ -184,7 +182,6 @@ function DataGrid<R, K extends keyof R, SR>({
   onCheckCellIsEditable,
   // Toggles and modes
   enableFilters = false,
-  enableCellAutoFocus = true,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
   cellNavigationMode = CellNavigationMode.NONE,
@@ -446,7 +443,6 @@ function DataGrid<R, K extends keyof R, SR>({
               rows={rows}
               rowHeight={rowHeight}
               columns={columns}
-              enableCellAutoFocus={enableCellAutoFocus}
               enableCellCopyPaste={enableCellCopyPaste}
               enableCellDragAndDrop={enableCellDragAndDrop}
               cellNavigationMode={cellNavigationMode}
