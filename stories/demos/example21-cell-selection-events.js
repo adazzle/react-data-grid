@@ -54,7 +54,6 @@ export default class extends React.Component {
           rowsCount={this._rows.length}
           minHeight={500}
           enableCellSelect
-          enableCellAutoFocus={false}
           onSelectedCellChange={this.onSelectedCellChange}
         />
       </Wrapper>
