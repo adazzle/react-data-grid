@@ -217,7 +217,12 @@ function DataGrid<R, K extends keyof R, SR>({
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState>({ idx: -1, rowIdx: -1, mode: 'SELECT' });
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [isDragging, setDragging] = useState(false);
-  const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
+  const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+
+  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
+    setOverRowIdx(rowIdx);
+    latestDraggedOverRowIdx.current = rowIdx;
+  }, []);
 
   /**
    * refs
@@ -321,10 +326,6 @@ function DataGrid<R, K extends keyof R, SR>({
 
   useEffect(() => {
     return eventBus.subscribe('SELECT_CELL', selectCell);
-  });
-
-  useEffect(() => {
-    latestDraggedOverRowIdx.current = draggedOverRowIdx;
   });
 
   useImperativeHandle(ref, () => ({
