@@ -27,7 +27,7 @@ function Cell<R, SR>({
   const cellRef = useRef<HTMLDivElement>(null);
   const isSelected = selectedCellProps !== undefined;
   const isEditing = selectedCellProps?.mode === 'EDIT';
-  const setFocus = isSelected && !isEditing;
+  const shouldFocus = isSelected && !isEditing;
 
   const { cellClass } = column;
   className = clsx(
@@ -44,10 +44,10 @@ function Cell<R, SR>({
   );
 
   useLayoutEffect(() => {
-    if (setFocus) {
+    if (shouldFocus) {
       cellRef.current?.focus();
     }
-  }, [setFocus]);
+  }, [shouldFocus]);
 
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
