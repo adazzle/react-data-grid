@@ -465,7 +465,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (event.button !== 0) return;
+    if (event.buttons !== 1) return;
     setDragging(true);
     window.addEventListener('mouseover', onMouseOver);
     window.addEventListener('mouseup', onMouseUp);
