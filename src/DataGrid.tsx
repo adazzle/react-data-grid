@@ -347,8 +347,14 @@ function DataGrid<R, K extends keyof R, SR>({
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event)) {
       // event.key may be uppercase `C` or `V`
       const lowerCaseKey = event.key.toLowerCase();
-      if (lowerCaseKey === 'c') return handleCopy();
-      if (lowerCaseKey === 'v') return handlePaste();
+      if (lowerCaseKey === 'c') {
+        handleCopy();
+        return;
+      }
+      if (lowerCaseKey === 'v') {
+        handlePaste();
+        return;
+      }
     }
 
     switch (event.key) {
