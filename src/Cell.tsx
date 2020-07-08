@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useEffect, useRef } from 'react';
+import React, { forwardRef, memo, useLayoutEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 import { EditorContainer, EditorPortal } from './editors';
@@ -43,7 +43,7 @@ function Cell<R, SR>({
     className
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (setFocus) {
       cellRef.current?.focus();
     }
@@ -109,7 +109,7 @@ function Cell<R, SR>({
     <div
       ref={useCombinedRefs(cellRef, ref)}
       className={className}
-      tabIndex={isSelected ? 0 : undefined}
+      tabIndex={isSelected ? -1 : undefined}
       style={{
         width: column.width,
         left: column.left
