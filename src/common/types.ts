@@ -105,17 +105,22 @@ export interface SharedEditorContainerProps {
   onCommitCancel: () => void;
 }
 
-export type SelectedCellProps = {
+interface SelectedCellPropsBase {
+  idx: number;
+  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+}
+
+interface SelectedCellPropsEdit extends SelectedCellPropsBase {
   mode: 'EDIT';
-  idx: number;
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   editorContainerProps: SharedEditorContainerProps;
-} | {
+}
+
+interface SelectedCellPropsSelect extends SelectedCellPropsBase {
   mode: 'SELECT';
-  idx: number;
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
-};
+}
+
+export type SelectedCellProps = SelectedCellPropsEdit | SelectedCellPropsSelect;
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
