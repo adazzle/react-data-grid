@@ -110,7 +110,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   row: TRow;
   isRowSelected: boolean;
   eventBus: EventBus;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>, event: React.SyntheticEvent) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -121,7 +121,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   eventBus: EventBus;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>, event: React.SyntheticEvent) => void;
   rowClass?: (row: TRow) => string | undefined;
   top: number;
 }

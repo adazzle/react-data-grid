@@ -23,9 +23,9 @@ function Cell<R, SR>({
     eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
   }
 
-  function handleCellClick() {
+  function handleCellClick(event: React.SyntheticEvent) {
     selectCell();
-    onRowClick?.(rowIdx, row, column);
+    onRowClick?.(rowIdx, row, column, event);
   }
 
   function handleCellContextMenu() {

@@ -114,7 +114,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> {
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
+  onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>, event: React.SyntheticEvent) => void;
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
