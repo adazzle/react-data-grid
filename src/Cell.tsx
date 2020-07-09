@@ -68,6 +68,11 @@ function Cell<R, SR>({
       {...props}
     >
       <column.formatter
+        style={{
+          ...style,
+          width: column.width,
+          left: column.left
+        }}
         column={column}
         rowIdx={rowIdx}
         row={row}

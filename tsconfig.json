@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,7 +15,7 @@
     "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2020",
+    "target": "es5",
     "types": ["jest"]
   },
   "files": [
