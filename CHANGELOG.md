@@ -32,6 +32,7 @@
       <!-- TODO: fill link to storybook -->
       - Check the [Context Menu]() example
     - ⚠️ `enableCellSelect`
+    - ⚠️ `enableCellAutoFocus`
     - ⚠️ `getValidFilterValues`
     - ⚠️ `onCellCopyPaste`
     - ⚠️ `onSelectedCellRangeChange`

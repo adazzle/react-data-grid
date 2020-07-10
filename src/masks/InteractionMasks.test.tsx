@@ -36,7 +36,6 @@ describe('InteractionMasks', () => {
       scrollToCell: jest.fn(),
       onSelectedCellChange,
       onRowsUpdate: jest.fn(),
-      enableCellAutoFocus: false,
       enableCellCopyPaste: true,
       enableCellDragAndDrop: true,
       cellNavigationMode: CellNavigationMode.NONE,
