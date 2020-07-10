@@ -74,7 +74,6 @@ export interface Editor<TValue = never> {
 }
 
 export interface FormatterProps<TRow = any, TSummaryRow = any> {
-  style: React.CSSProperties;
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
