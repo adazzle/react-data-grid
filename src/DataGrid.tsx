@@ -354,9 +354,6 @@ function DataGrid<R, K extends keyof R, SR>({
    * event handlers
    */
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    // if (event.currentTarget !== event.target && selectedPosition.mode === 'SELECT') return;
-    // if (!isCellWithinBounds(selectedPosition)) return;
-
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event) && isCellWithinBounds(selectedPosition)) {
       // event.key may be uppercase `C` or `V`
       const lowerCaseKey = event.key.toLowerCase();
