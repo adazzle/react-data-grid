@@ -23,24 +23,6 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   nextPosition: Position;
 }
 
-export function getNextPosition(key: string, shiftKey: boolean, currentPosition: Position) {
-  const { idx, rowIdx } = currentPosition;
-  switch (key) {
-    case 'ArrowUp':
-      return { idx, rowIdx: rowIdx - 1 };
-    case 'ArrowDown':
-      return { idx, rowIdx: rowIdx + 1 };
-    case 'ArrowLeft':
-      return { idx: idx - 1, rowIdx };
-    case 'ArrowRight':
-      return { idx: idx + 1, rowIdx };
-    case 'Tab':
-      return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
-    default:
-      return currentPosition;
-  }
-}
-
 export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns, rowsCount, nextPosition }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   if (cellNavigationMode !== CellNavigationMode.NONE) {
     const { idx, rowIdx } = nextPosition;

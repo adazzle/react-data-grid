@@ -107,7 +107,7 @@ export interface SharedEditorContainerProps {
 
 interface SelectedCellPropsBase {
   idx: number;
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 interface SelectedCellPropsEdit extends SelectedCellPropsBase {

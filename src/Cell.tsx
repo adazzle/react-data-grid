@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useLayoutEffect, useRef } from 'react';
+import React, { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
 import { EditorContainer, EditorPortal } from './editors';
@@ -27,7 +27,6 @@ function Cell<R, SR>({
   const cellRef = useRef<HTMLDivElement>(null);
   const isSelected = selectedCellProps !== undefined;
   const isEditing = selectedCellProps?.mode === 'EDIT';
-  const shouldFocus = isSelected && !isEditing;
 
   const { cellClass } = column;
   className = clsx(
@@ -42,12 +41,6 @@ function Cell<R, SR>({
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
   );
-
-  useLayoutEffect(() => {
-    if (shouldFocus) {
-      cellRef.current?.focus();
-    }
-  }, [shouldFocus]);
 
   function selectCell(openEditor?: boolean) {
     eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
@@ -109,7 +102,6 @@ function Cell<R, SR>({
     <div
       ref={useCombinedRefs(cellRef, ref)}
       className={className}
-      tabIndex={isSelected ? -1 : undefined}
       style={{
         width: column.width,
         left: column.left
