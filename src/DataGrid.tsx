@@ -383,7 +383,9 @@ function DataGrid<R, K extends keyof R, SR>({
         navigate(event);
         break;
       default:
-        handleCellInput(event);
+        if (isCellWithinBounds(selectedPosition)) {
+          handleCellInput(event);
+        }
         break;
     }
   }
