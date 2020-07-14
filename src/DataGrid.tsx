@@ -227,7 +227,7 @@ function DataGrid<R, K extends keyof R, SR>({
    * refs
    */
   const gridRef = useRef<HTMLDivElement>(null);
-  const rowsContainerRef = useRef<HTMLDivElement>(null);
+  const focusSinkRef = useRef<HTMLDivElement>(null);
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
@@ -300,9 +300,7 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
-    if (document.activeElement !== rowsContainerRef.current) {
-      rowsContainerRef.current!.focus({ preventScroll: true });
-    }
+    focusSinkRef.current!.focus();
   });
 
   useEffect(() => {
@@ -652,7 +650,6 @@ function DataGrid<R, K extends keyof R, SR>({
       return {
         mode: 'EDIT',
         idx: selectedPosition.idx,
-        onKeyDown: handleKeyDown,
         editorContainerProps: {
           editorPortalTarget,
           rowHeight,
@@ -756,17 +753,17 @@ function DataGrid<R, K extends keyof R, SR>({
       {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
         <>
           <div
-            ref={rowsContainerRef}
+            ref={focusSinkRef}
             tabIndex={0}
-            style={{
-              height: Math.max(rows.length * rowHeight, clientHeight),
-              outline: 0,
-              position: 'relative',
-              top: -totalHeaderHeight // Prevents scrolling when grid receives focus via keyboard
-            }}
+            className="rdg-focus-sink"
             onKeyDown={handleKeyDown}
           />
-          {getViewportRows()}
+          <div
+            style={{ height: Math.max(rows.length * rowHeight, clientHeight) }}
+            onKeyDown={handleKeyDown}
+          >
+            {getViewportRows()}
+          </div>
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               key={rowIdx}
