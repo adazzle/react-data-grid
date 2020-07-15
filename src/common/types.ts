@@ -56,14 +56,6 @@ export interface Position {
   rowIdx: number;
 }
 
-export interface Dimension {
-  width: number;
-  height: number;
-  top: number;
-  left: number;
-  zIndex: number;
-}
-
 export interface Editor<TValue = never> {
   getInputNode: () => Element | Text | undefined | null;
   getValue: () => TValue;
@@ -103,13 +95,43 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
+export interface SharedEditorContainerProps {
+  editorPortalTarget: Element;
+  firstEditorKeyPress: string | null;
+  scrollLeft: number;
+  scrollTop: number;
+  rowHeight: number;
+  onCommit: (e: CommitEvent) => void;
+  onCommitCancel: () => void;
+}
+
+interface SelectedCellPropsBase {
+  idx: number;
+  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+}
+
+interface SelectedCellPropsEdit extends SelectedCellPropsBase {
+  mode: 'EDIT';
+  editorContainerProps: SharedEditorContainerProps;
+}
+
+interface SelectedCellPropsSelect extends SelectedCellPropsBase {
+  mode: 'SELECT';
+  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+}
+
+export type SelectedCellProps = SelectedCellPropsEdit | SelectedCellPropsSelect;
+
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
   isRowSelected: boolean;
+  isCopied: boolean;
+  isDraggedOver: boolean;
   eventBus: EventBus;
+  selectedCellProps?: SelectedCellProps;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
@@ -119,11 +141,15 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
   lastFrozenColumnIndex: number;
+  copiedCellIdx?: number;
+  draggedOverCellIdx?: number;
   isRowSelected: boolean;
   eventBus: EventBus;
+  top: number;
+  selectedCellProps?: SelectedCellProps;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
-  top: number;
+  setDraggedOverRowIdx?: (overRowIdx: number) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

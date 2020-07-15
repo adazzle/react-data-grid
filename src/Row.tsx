@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import Cell from './Cell';
 import { RowRendererProps } from './common/types';
-import { preventDefault, wrapEvent } from './utils';
+import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
@@ -12,25 +12,20 @@ function Row<R, SR = unknown>({
   rowIdx,
   isRowSelected,
   lastFrozenColumnIndex,
-  onRowClick,
+  copiedCellIdx,
+  draggedOverCellIdx,
   row,
   viewportColumns,
-  onDragEnter,
-  onDragOver,
-  onDrop,
+  selectedCellProps,
+  onRowClick,
   rowClass,
+  setDraggedOverRowIdx,
+  onMouseEnter,
   top,
   ...props
 }: RowRendererProps<R, SR>) {
-  function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
-    // Prevent default to allow drop
-    event.preventDefault();
-    eventBus.dispatch('DRAG_ENTER', rowIdx);
-  }
-
-  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
+  function handleDragEnter() {
+    setDraggedOverRowIdx?.(rowIdx);
   }
 
   className = clsx(
@@ -41,15 +36,10 @@ function Row<R, SR = unknown>({
     className
   );
 
-  // Regarding onDrop: the default in Firefox is to treat data in dataTransfer as a URL,
-  // and perform navigation on it, even if the data type used is 'text'.
-  // To bypass this, we need to capture and prevent the drop event.
   return (
     <div
       className={className}
-      onDragEnter={wrapEvent(handleDragEnter, onDragEnter)}
-      onDragOver={wrapEvent(handleDragOver, onDragOver)}
-      onDrop={wrapEvent(preventDefault, onDrop)}
+      onMouseEnter={wrapEvent(handleDragEnter, onMouseEnter)}
       style={{ top }}
       {...props}
     >
@@ -60,8 +50,11 @@ function Row<R, SR = unknown>({
           column={column}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
+          isCopied={copiedCellIdx === column.idx}
+          isDraggedOver={draggedOverCellIdx === column.idx}
           isRowSelected={isRowSelected}
           eventBus={eventBus}
+          selectedCellProps={selectedCellProps?.idx === column.idx ? selectedCellProps : undefined}
           onRowClick={onRowClick}
         />
       ))}
