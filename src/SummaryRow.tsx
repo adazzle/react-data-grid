@@ -10,6 +10,7 @@ type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
 >;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
+  'aria-rowindex': number;
   row: SR;
   bottom: number;
 }
@@ -19,10 +20,13 @@ function SummaryRow<R, SR>({
   lastFrozenColumnIndex,
   row,
   viewportColumns,
-  bottom
+  bottom,
+  'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
   return (
     <div
+      role="row"
+      aria-rowindex={ariaRowIndex}
       className={`rdg-row rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} rdg-summary-row`}
       style={{ bottom }}
     >

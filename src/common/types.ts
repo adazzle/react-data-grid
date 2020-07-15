@@ -69,6 +69,7 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  isCellActive?: boolean;
   isRowSelected: boolean;
   onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
 }
@@ -107,6 +108,7 @@ export interface SharedEditorContainerProps {
 
 interface SelectedCellPropsBase {
   idx: number;
+  isFocused?: boolean;
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 

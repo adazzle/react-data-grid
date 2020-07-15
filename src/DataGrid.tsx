@@ -62,7 +62,13 @@ export interface DataGridHandle {
   selectCell: (position: Position, openEditor?: boolean) => void;
 }
 
-export interface DataGridProps<R, K extends keyof R, SR = unknown> {
+type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
+  | 'aria-label'
+  | 'aria-labelledby'
+  | 'aria-describedby'
+>;
+
+export interface DataGridProps<R, K extends keyof R, SR = unknown> extends SharedDivProps {
   /**
    * Grid and data Props
    */
@@ -203,7 +209,11 @@ function DataGrid<R, K extends keyof R, SR>({
   cellNavigationMode = CellNavigationMode.NONE,
   // Miscellaneous
   editorPortalTarget = document.body,
-  rowClass
+  rowClass,
+  // ARIA
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy
 }: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
   /**
    * states
@@ -217,6 +227,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [isFocused, setFocused] = useState(false);
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -236,6 +247,8 @@ function DataGrid<R, K extends keyof R, SR>({
    * computed values
    */
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
+  const headerRowsCount = enableFilters ? 2 : 1;
+  const summaryRowsCount = summaryRows?.length ?? 0;
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
@@ -268,7 +281,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const clientHeight = height
     - 2 // border width
     - totalHeaderHeight
-    - (summaryRows?.length ?? 0) * rowHeight
+    - summaryRowsCount * rowHeight
     - (totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
@@ -666,6 +679,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
+      isFocused,
       onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
         ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
@@ -690,6 +704,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
       rowElements.push(
         <RowRenderer
+          aria-rowindex={headerRowsCount + rowIdx + 1}
           key={key}
           rowIdx={rowIdx}
           row={row}
@@ -720,6 +735,12 @@ function DataGrid<R, K extends keyof R, SR>({
 
   return (
     <div
+      role="grid"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-colcount={columns.length}
+      aria-rowcount={headerRowsCount + rows.length + summaryRowsCount}
       className={clsx('rdg', { 'rdg-viewport-dragging': isDragging })}
       style={{
         width,
@@ -733,6 +754,7 @@ function DataGrid<R, K extends keyof R, SR>({
       onScroll={handleScroll}
     >
       <HeaderRow<R, K, SR>
+        aria-rowindex={1} // aria-rowindex is 1 based
         rowKey={rowKey}
         rows={rows}
         columns={viewportColumns}
@@ -746,6 +768,7 @@ function DataGrid<R, K extends keyof R, SR>({
       />
       {enableFilters && (
         <FilterRow<R, SR>
+          aria-rowindex={2}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           columns={viewportColumns}
           filters={filters}
@@ -759,11 +782,14 @@ function DataGrid<R, K extends keyof R, SR>({
             tabIndex={0}
             className="rdg-focus-sink"
             onKeyDown={handleKeyDown}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
+              aria-rowindex={headerRowsCount + rows.length + rowIdx + 1}
               key={rowIdx}
               rowIdx={rowIdx}
               row={row}

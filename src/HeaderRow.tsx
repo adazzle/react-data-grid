@@ -15,6 +15,7 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
 >;
 
 export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
+  'aria-rowindex': number;
   lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
@@ -31,7 +32,8 @@ function HeaderRow<R, K extends keyof R, SR>({
   onColumnResize,
   sortColumn,
   sortDirection,
-  onSort
+  onSort,
+  'aria-rowindex': ariaRowIndex
 }: HeaderRowProps<R, K, SR>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
@@ -49,7 +51,11 @@ function HeaderRow<R, K extends keyof R, SR>({
   }, [onSelectedRowsChange, rows, rowKey]);
 
   return (
-    <div className="rdg-header-row">
+    <div
+      role="row"
+      aria-rowindex={ariaRowIndex}
+      className="rdg-header-row"
+    >
       {columns.map(column => {
         return (
           <HeaderCell<R, SR>

@@ -88,6 +88,7 @@ function Cell<R, SR>({
           column={column}
           rowIdx={rowIdx}
           row={row}
+          isCellActive={isSelected && selectedCellProps?.isFocused}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
         />
@@ -100,6 +101,9 @@ function Cell<R, SR>({
 
   return (
     <div
+      role="gridcell"
+      aria-colindex={column.idx + 1} // aria-colindex is 1-based
+      aria-selected={isSelected}
       ref={useCombinedRefs(cellRef, ref)}
       className={className}
       style={{

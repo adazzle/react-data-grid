@@ -10,6 +10,7 @@ type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
 >;
 
 export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+  'aria-rowindex': number;
   lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
 }
@@ -18,7 +19,8 @@ function FilterRow<R, SR>({
   columns,
   lastFrozenColumnIndex,
   filters,
-  onFiltersChange
+  onFiltersChange,
+  'aria-rowindex': ariaRowIndex
 }: FilterRowProps<R, SR>) {
   function onChange(key: string, value: unknown) {
     const newFilters: Filters = { ...filters };
@@ -27,7 +29,11 @@ function FilterRow<R, SR>({
   }
 
   return (
-    <div className="rdg-filter-row">
+    <div
+      role="row"
+      aria-rowindex={ariaRowIndex}
+      className="rdg-filter-row"
+    >
       {columns.map(column => {
         const { key } = column;
 
