@@ -18,6 +18,7 @@ function Cell<R, SR>({
   eventBus,
   selectedCellProps,
   onRowClick,
+  onKeyDown,
   onClick,
   onDoubleClick,
   onContextMenu,
@@ -105,6 +106,7 @@ function Cell<R, SR>({
         width: column.width,
         left: column.left
       }}
+      onKeyDown={selectedCellProps ? wrapEvent(selectedCellProps.onKeyDown, onKeyDown) : onKeyDown}
       onClick={isEditing ? onClick : wrapEvent(handleClick, onClick)}
       onDoubleClick={isEditing ? onDoubleClick : wrapEvent(handleDoubleClick, onDoubleClick)}
       onContextMenu={isEditing ? onContextMenu : wrapEvent(handleContextMenu, onContextMenu)}

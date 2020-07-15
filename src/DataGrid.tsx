@@ -650,6 +650,7 @@ function DataGrid<R, K extends keyof R, SR>({
       return {
         mode: 'EDIT',
         idx: selectedPosition.idx,
+        onKeyDown: handleKeyDown,
         editorContainerProps: {
           editorPortalTarget,
           rowHeight,
@@ -665,6 +666,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
+      onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
         ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
         : undefined
@@ -758,12 +760,8 @@ function DataGrid<R, K extends keyof R, SR>({
             className="rdg-focus-sink"
             onKeyDown={handleKeyDown}
           />
-          <div
-            style={{ height: Math.max(rows.length * rowHeight, clientHeight) }}
-            onKeyDown={handleKeyDown}
-          >
-            {getViewportRows()}
-          </div>
+          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
+          {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               key={rowIdx}
