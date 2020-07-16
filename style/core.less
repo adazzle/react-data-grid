@@ -1,4 +1,4 @@
-@import './variables.less';
+@import "./variables.less";
 
 .rdg {
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
@@ -25,4 +25,17 @@
     position: relative;
     z-index: 0;
   }
+}
+
+.rdg-focus-sink {
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  outline: 0;
+}
+
+.rdg-viewport-dragging .rdg-row {
+  cursor: move;
 }

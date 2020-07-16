@@ -1,30 +1,6 @@
 import { CellNavigationMode } from '../common/enums';
 import { canEdit } from './columnUtils';
-import { CalculatedColumn, Position, Dimension } from '../common/types';
-
-// above unfrozen cells, below frozen cells
-const zCellMask = 1;
-// above frozen cells, below header/filter/summary rows
-const zFrozenCellMask = 2;
-
-interface GetSelectedDimensionsOpts<R, SR> {
-  selectedPosition: Position;
-  columns: readonly CalculatedColumn<R, SR>[];
-  rowHeight: number;
-  scrollLeft: number;
-}
-
-export function getSelectedDimensions<R, SR>({ selectedPosition: { idx, rowIdx }, columns, rowHeight, scrollLeft }: GetSelectedDimensionsOpts<R, SR>): Dimension {
-  if (idx < 0) {
-    return { width: 0, left: 0, top: 0, height: rowHeight, zIndex: 1 };
-  }
-  const column = columns[idx];
-  const { width } = column;
-  const left = column.frozen ? column.left + scrollLeft : column.left;
-  const top = rowIdx * rowHeight;
-  const zIndex = column.frozen ? zFrozenCellMask : zCellMask;
-  return { width, left, top, height: rowHeight, zIndex };
-}
+import { CalculatedColumn, Position } from '../common/types';
 
 interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
@@ -95,9 +71,10 @@ interface CanExitGridOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   rowsCount: number;
   selectedPosition: Position;
+  shiftKey: boolean;
 }
 
-export function canExitGrid<R, SR>(event: React.KeyboardEvent, { cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx } }: CanExitGridOpts<R, SR>): boolean {
+export function canExitGrid<R, SR>({ cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx }, shiftKey }: CanExitGridOpts<R, SR>): boolean {
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
   if (cellNavigationMode === CellNavigationMode.NONE || cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
@@ -105,9 +82,8 @@ export function canExitGrid<R, SR>(event: React.KeyboardEvent, { cellNavigationM
     const atFirstCellInRow = idx === 0;
     const atLastRow = rowIdx === rowsCount - 1;
     const atFirstRow = rowIdx === 0;
-    const shift = event.shiftKey === true;
 
-    return shift ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
+    return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
   }
 
   return false;

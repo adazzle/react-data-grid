@@ -1,25 +1,15 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Editor, CommitEvent } from '../common/types';
+import { CalculatedColumn, Editor, Omit, SharedEditorContainerProps } from '../common/types';
 import SimpleTextEditor from './SimpleTextEditor';
 import ClickOutside from './ClickOutside';
-import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, SR> = Pick<InteractionMasksProps<R, SR>,
-  | 'scrollLeft'
-  | 'scrollTop'
-  | 'rowHeight'
->;
-
-export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps<R, SR> {
+export interface EditorContainerProps<R, SR> extends Omit<SharedEditorContainerProps, 'editorPortalTarget'> {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
-  onCommit: (e: CommitEvent) => void;
-  onCommitCancel: () => void;
-  firstEditorKeyPress: string | null;
   top: number;
   left: number;
 }

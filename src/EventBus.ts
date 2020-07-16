@@ -1,9 +1,8 @@
 import { Position, SelectRowEvent } from './common/types';
 
 interface EventMap {
-  SELECT_CELL: (position: Position, enableEditor?: boolean) => void;
+  SELECT_CELL: (position: Position, openEditor?: boolean) => void;
   SELECT_ROW: (event: SelectRowEvent) => void;
-  DRAG_ENTER: (overRowIdx: number) => void;
 }
 
 type EventName = keyof EventMap;
