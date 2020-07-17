@@ -66,7 +66,10 @@ function Cell<R, SR>({
   function getCellContent() {
     if (selectedCellProps && selectedCellProps.mode === 'EDIT') {
       const { editorPortalTarget, ...editorProps } = selectedCellProps.editorContainerProps;
+      const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
       const { left, top } = cellRef.current!.getBoundingClientRect();
+      const gridLeft = left + docLeft;
+      const gridTop = top + docTop;
 
       return (
         <EditorPortal target={editorPortalTarget}>
@@ -75,8 +78,8 @@ function Cell<R, SR>({
             rowIdx={rowIdx}
             row={row}
             column={column}
-            left={left}
-            top={top}
+            left={gridLeft}
+            top={gridTop}
           />
         </EditorPortal>
       );
