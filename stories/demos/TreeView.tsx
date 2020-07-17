@@ -106,14 +106,13 @@ export default function TreeView() {
       {
         key: 'format',
         name: 'format',
-        formatter({ row, isCellActive }) {
+        formatter({ row }) {
           const hasChildren = row.children !== undefined;
           const style = !hasChildren ? { marginLeft: 30 } : undefined;
           return (
             <>
               {hasChildren && (
                 <CellExpanderFormatter
-                  isCellActive={isCellActive}
                   expanded={row.isExpanded === true}
                   onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
                 />
@@ -121,9 +120,8 @@ export default function TreeView() {
               <div className="rdg-cell-value">
                 {!hasChildren && (
                   <ChildRowDeleteButton
-                    isCellActive={isCellActive}
-                    isDeleteSubRowEnabled={allowDelete}
                     onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
+                    isDeleteSubRowEnabled={allowDelete}
                   />
                 )}
                 <div style={style}>
@@ -132,19 +130,19 @@ export default function TreeView() {
               </div>
             </>
           );
-        }
-        // unsafe_onCellInput(event, row) {
-        //   const hasChildren = row.children !== undefined;
-        //   if (event.key === ' ' && hasChildren) {
-        //     event.preventDefault();
-        //     dispatch({ id: row.id, type: 'toggleSubRow' });
-        //   }
+        },
+        unsafe_onCellInput(event, row) {
+          const hasChildren = row.children !== undefined;
+          if (event.key === ' ' && hasChildren) {
+            event.preventDefault();
+            dispatch({ id: row.id, type: 'toggleSubRow' });
+          }
 
-        //   if (event.key === 'Delete' && !hasChildren) {
-        //     event.preventDefault();
-        //     dispatch({ id: row.id, type: 'deleteSubRow' });
-        //   }
-        // }
+          if (event.key === 'Delete' && !hasChildren) {
+            event.preventDefault();
+            dispatch({ id: row.id, type: 'deleteSubRow' });
+          }
+        }
       },
       {
         key: 'position',

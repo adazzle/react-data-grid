@@ -227,7 +227,6 @@ function DataGrid<R, K extends keyof R, SR>({
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-  const [isFocused, setFocused] = useState(false);
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -679,7 +678,6 @@ function DataGrid<R, K extends keyof R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
-      isFocused,
       onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
         ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
@@ -782,8 +780,6 @@ function DataGrid<R, K extends keyof R, SR>({
             tabIndex={0}
             className="rdg-focus-sink"
             onKeyDown={handleKeyDown}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}

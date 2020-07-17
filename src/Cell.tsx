@@ -91,7 +91,6 @@ function Cell<R, SR>({
           column={column}
           rowIdx={rowIdx}
           row={row}
-          isCellActive={isSelected && selectedCellProps?.isFocused}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
         />
