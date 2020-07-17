@@ -8,7 +8,6 @@ type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
 >;
 
 export interface SelectCellFormatterProps extends SharedInputProps {
-  isCellActive?: boolean;
   value: boolean;
   onChange: (value: boolean, isShiftClick: boolean) => void;
 }
