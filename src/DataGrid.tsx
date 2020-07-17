@@ -248,6 +248,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
   const headerRowsCount = enableFilters ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
+  const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
@@ -703,6 +704,7 @@ function DataGrid<R, K extends keyof R, SR>({
       rowElements.push(
         <RowRenderer
           aria-rowindex={headerRowsCount + rowIdx + 1}
+          aria-selected={isSelectable ? isRowSelected : undefined}
           key={key}
           rowIdx={rowIdx}
           row={row}
@@ -737,6 +739,7 @@ function DataGrid<R, K extends keyof R, SR>({
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       aria-describedby={ariaDescribedBy}
+      aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rows.length + summaryRowsCount}
       className={clsx('rdg', { 'rdg-viewport-dragging': isDragging })}

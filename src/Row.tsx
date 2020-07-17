@@ -23,6 +23,7 @@ function Row<R, SR = unknown>({
   onMouseEnter,
   top,
   'aria-rowindex': ariaRowIndex,
+  'aria-selected': ariaSelected,
   ...props
 }: RowRendererProps<R, SR>) {
   function handleDragEnter() {
@@ -41,7 +42,7 @@ function Row<R, SR = unknown>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      aria-selected={isRowSelected}
+      aria-selected={ariaSelected}
       className={className}
       onMouseEnter={wrapEvent(handleDragEnter, onMouseEnter)}
       style={{ top }}
