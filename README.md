@@ -1,9 +1,7 @@
-# react-data-grid [![npm-badge]][npm-url] [![bundlesize-badge]][bundlesize-url] [![ci-badge]][ci-url]
+# react-data-grid [![npm-badge]][npm-url] [![ci-badge]][ci-url]
 
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid
 [npm-url]: https://www.npmjs.com/package/react-data-grid
-[bundlesize-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
-[bundlesize-url]: https://bundlephobia.com/result?p=react-data-grid
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions?query=workflow%3ACI
 
@@ -41,6 +39,8 @@ function App() {
 
 ## Documentation
 
-- [Website](https://adazzle.github.io/react-data-grid/)
+- [Website](https://adazzle.github.io/react-data-grid/canary/)
+  - [Source code](stories)
+- [Old website for react-data-grid v5](https://adazzle.github.io/react-data-grid/)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
