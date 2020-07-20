@@ -15,8 +15,7 @@ describe('HeaderRow', () => {
     onColumnResize() { },
     onSort: jest.fn(),
     sortDirection: 'NONE',
-    allRowsSelected: false,
-    'aria-rowindex': 1
+    allRowsSelected: false
   };
 
   const setup = (testProps?: Partial<HeaderRowProps<Row, 'id', unknown>>) => {
@@ -77,8 +76,7 @@ describe('HeaderRow', () => {
       lastFrozenColumnIndex: 1,
       onSort: jest.fn(),
       allRowsSelected: false,
-      onColumnResize: jest.fn(),
-      'aria-rowindex': 1
+      onColumnResize: jest.fn()
     };
 
     it('passes classname property', () => {
