@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import HeaderCell, { HeaderCellProps } from './HeaderCell';
 import { ValueFormatter } from './formatters';
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn } from './types';
 
 interface Row {
   bla?: string;

@@ -2,7 +2,7 @@ import React, { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
 import { EditorContainer, EditorPortal } from './editors';
-import { CellRendererProps } from './common/types';
+import { CellRendererProps } from './types';
 import { wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 

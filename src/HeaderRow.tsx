@@ -1,7 +1,7 @@
 import React, { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn } from './types';
 import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 

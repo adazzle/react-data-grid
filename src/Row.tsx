@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowRendererProps } from './common/types';
+import { RowRendererProps } from './types';
 import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({

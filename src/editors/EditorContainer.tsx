@@ -1,7 +1,7 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Editor, Omit, SharedEditorContainerProps } from '../common/types';
+import { CalculatedColumn, Editor, Omit, SharedEditorContainerProps } from '../types';
 import { useClickOutside } from '../hooks';
 import SimpleTextEditor from './SimpleTextEditor';
 import { preventDefault } from '../utils';

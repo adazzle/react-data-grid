@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { CalculatedColumn } from '../common/types';
+import { CalculatedColumn } from '../types';
 import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns } from '../utils';
 import { DataGridProps } from '../DataGrid';
 

@@ -1,7 +1,7 @@
 import React, { createElement, memo } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Filters } from './common/types';
+import { CalculatedColumn, Filters } from './types';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,

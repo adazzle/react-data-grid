@@ -1,4 +1,4 @@
-import { CalculatedColumn } from '../common/types';
+import { CalculatedColumn } from '../types';
 
 function getTotalFrozenColumnWidth<R, SR>(columns: readonly CalculatedColumn<R, SR>[], lastFrozenColumnIndex: number): number {
   if (lastFrozenColumnIndex === -1) {

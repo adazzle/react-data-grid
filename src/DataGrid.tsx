@@ -41,8 +41,8 @@ import {
   SelectRowEvent,
   CommitEvent,
   SelectedCellProps
-} from './common/types';
-import { CellNavigationMode, SortDirection, UpdateActions } from './common/enums';
+} from './types';
+import { CellNavigationMode, SortDirection, UpdateActions } from './enums';
 
 interface SelectCellState extends Position {
   mode: 'SELECT';

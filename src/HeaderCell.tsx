@@ -1,11 +1,11 @@
 import React, { createElement } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn } from './types';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
-import { SortDirection } from './common/enums';
+import { SortDirection } from './enums';
 
 function getAriaSort(sortDirection?: SortDirection) {
   switch (sortDirection) {

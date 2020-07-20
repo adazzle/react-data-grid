@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormatterProps } from '../common/types';
+import { FormatterProps } from '../types';
 
 export function SimpleCellFormatter({ row, column }: FormatterProps) {
   const value = row[column.key];

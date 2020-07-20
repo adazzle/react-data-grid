@@ -1,4 +1,4 @@
-import { Column, CalculatedColumn, FormatterProps, Omit } from '../common/types';
+import { Column, CalculatedColumn, FormatterProps, Omit } from '../types';
 import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R, SR> {

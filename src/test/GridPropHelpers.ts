@@ -1,5 +1,5 @@
 import { ValueFormatter, SimpleCellFormatter } from '../formatters';
-import { CalculatedColumn } from '../common/types';
+import { CalculatedColumn } from '../types';
 
 export interface Row {
   id?: number;
