@@ -62,7 +62,13 @@ export interface DataGridHandle {
   selectCell: (position: Position, openEditor?: boolean) => void;
 }
 
-export interface DataGridProps<R, K extends keyof R, SR = unknown> {
+type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
+  | 'aria-label'
+  | 'aria-labelledby'
+  | 'aria-describedby'
+>;
+
+export interface DataGridProps<R, K extends keyof R, SR = unknown> extends SharedDivProps {
   /**
    * Grid and data Props
    */
@@ -203,7 +209,11 @@ function DataGrid<R, K extends keyof R, SR>({
   cellNavigationMode = CellNavigationMode.NONE,
   // Miscellaneous
   editorPortalTarget = document.body,
-  rowClass
+  rowClass,
+  // ARIA
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': ariaDescribedBy
 }: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
   /**
    * states
@@ -236,6 +246,9 @@ function DataGrid<R, K extends keyof R, SR>({
    * computed values
    */
   const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
+  const headerRowsCount = enableFilters ? 2 : 1;
+  const summaryRowsCount = summaryRows?.length ?? 0;
+  const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
@@ -268,7 +281,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const clientHeight = height
     - 2 // border width
     - totalHeaderHeight
-    - (summaryRows?.length ?? 0) * rowHeight
+    - summaryRowsCount * rowHeight
     - (totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
@@ -690,6 +703,8 @@ function DataGrid<R, K extends keyof R, SR>({
 
       rowElements.push(
         <RowRenderer
+          aria-rowindex={headerRowsCount + rowIdx + 1}
+          aria-selected={isSelectable ? isRowSelected : undefined}
           key={key}
           rowIdx={rowIdx}
           row={row}
@@ -720,6 +735,13 @@ function DataGrid<R, K extends keyof R, SR>({
 
   return (
     <div
+      role="grid"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
+      aria-multiselectable={isSelectable ? true : undefined}
+      aria-colcount={columns.length}
+      aria-rowcount={headerRowsCount + rows.length + summaryRowsCount}
       className={clsx('rdg', { 'rdg-viewport-dragging': isDragging })}
       style={{
         width,
@@ -764,6 +786,7 @@ function DataGrid<R, K extends keyof R, SR>({
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
+              aria-rowindex={headerRowsCount + rows.length + rowIdx + 1}
               key={rowIdx}
               rowIdx={rowIdx}
               row={row}

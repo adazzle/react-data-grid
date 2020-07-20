@@ -103,6 +103,9 @@ function Cell<R, SR>({
 
   return (
     <div
+      role="gridcell"
+      aria-colindex={column.idx + 1} // aria-colindex is 1-based
+      aria-selected={isSelected}
       ref={useCombinedRefs(cellRef, ref)}
       className={className}
       style={{

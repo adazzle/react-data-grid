@@ -5,6 +5,18 @@ import { CalculatedColumn } from './common/types';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
+import { SortDirection } from './common/enums';
+
+function getAriaSort(sortDirection?: SortDirection) {
+  switch (sortDirection) {
+    case 'ASC':
+      return 'ascending';
+    case 'DESC':
+      return 'descending';
+    default:
+      return 'none';
+  }
+}
 
 type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
   | 'sortColumn'
@@ -62,6 +74,9 @@ export default function HeaderCell<R, SR>({
 
   cell = (
     <div
+      role="columnheader"
+      aria-colindex={column.idx + 1}
+      aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
       className={className}
       style={style}
     >

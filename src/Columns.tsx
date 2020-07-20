@@ -13,6 +13,7 @@ export const SelectColumn: Column<any, any> = {
   headerRenderer(props) {
     return (
       <SelectCellFormatter
+        aria-label="Select All"
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}
       />
@@ -21,6 +22,7 @@ export const SelectColumn: Column<any, any> = {
   formatter(props) {
     return (
       <SelectCellFormatter
+        aria-label="Select"
         value={props.isRowSelected}
         onChange={props.onRowSelectionChange}
       />

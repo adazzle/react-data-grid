@@ -28,7 +28,12 @@ function SummaryCell<R, SR>({
   );
 
   return (
-    <div className={className} style={{ width, left }}>
+    <div
+      role="gridcell"
+      aria-colindex={column.idx + 1}
+      className={className}
+      style={{ width, left }}
+    >
       {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>
   );

@@ -49,7 +49,11 @@ function HeaderRow<R, K extends keyof R, SR>({
   }, [onSelectedRowsChange, rows, rowKey]);
 
   return (
-    <div className="rdg-header-row">
+    <div
+      role="row"
+      aria-rowindex={1} // aria-rowindex is 1 based
+      className="rdg-header-row"
+    >
       {columns.map(column => {
         return (
           <HeaderCell<R, SR>

@@ -27,7 +27,11 @@ function FilterRow<R, SR>({
   }
 
   return (
-    <div className="rdg-filter-row">
+    <div
+      role="row"
+      aria-rowindex={2}
+      className="rdg-filter-row"
+    >
       {columns.map(column => {
         const { key } = column;
 
