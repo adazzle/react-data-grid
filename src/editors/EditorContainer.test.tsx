@@ -6,7 +6,7 @@ import { mount, MountRendererProps } from 'enzyme';
 import EditorContainer, { EditorContainerProps } from './EditorContainer';
 import SimpleTextEditor from './SimpleTextEditor';
 import { ValueFormatter } from '../formatters';
-import { CalculatedColumn, EditorProps } from '../common/types';
+import { CalculatedColumn, EditorProps } from '../types';
 
 interface Row {
   id: string;

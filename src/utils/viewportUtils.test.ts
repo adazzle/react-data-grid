@@ -3,7 +3,7 @@ import {
   getHorizontalRangeToRender
 } from './viewportUtils';
 import { ValueFormatter } from '../formatters';
-import { CalculatedColumn } from '../common/types';
+import { CalculatedColumn } from '../types';
 
 interface Row {
   [key: string]: React.ReactNode;

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import { CellRendererProps } from './common/types';
+import { CellRendererProps } from './types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'lastFrozenColumnIndex'

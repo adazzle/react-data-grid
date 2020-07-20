@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent } from 'react';
 import { UpdateActions } from './enums';
-import EventBus from '../EventBus';
+import EventBus from './EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 

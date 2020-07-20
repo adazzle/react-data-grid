@@ -1,6 +1,6 @@
 import { getColumnMetrics, getColumnScrollPosition, canEdit } from './columnUtils';
 import { ValueFormatter } from '../formatters';
-import { Column, CalculatedColumn } from '../common/types';
+import { Column, CalculatedColumn } from '../types';
 import { createColumns } from '../test/utils';
 
 describe('getColumnMetrics', () => {

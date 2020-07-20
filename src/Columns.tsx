@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectCellFormatter } from './formatters';
-import { Column } from './common/types';
+import { Column } from './types';
 
 // TODO: fix type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

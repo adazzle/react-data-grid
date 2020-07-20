@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import Cell from './Cell';
 import helpers, { Row } from './test/GridPropHelpers';
 import { SimpleCellFormatter } from './formatters';
-import { CalculatedColumn, CellRendererProps, FormatterProps } from './common/types';
+import { CalculatedColumn, CellRendererProps, FormatterProps } from './types';
 import EventBus from './EventBus';
 
 const defaultColumn: CalculatedColumn<Row> = {
