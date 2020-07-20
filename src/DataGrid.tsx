@@ -769,7 +769,6 @@ function DataGrid<R, K extends keyof R, SR>({
       />
       {enableFilters && (
         <FilterRow<R, SR>
-          aria-rowindex={2}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           columns={viewportColumns}
           filters={filters}
