@@ -13,10 +13,8 @@ function getAriaSort(sortDirection?: SortDirection) {
       return 'ascending';
     case 'DESC':
       return 'descending';
-    case 'NONE':
-      return 'none';
     default:
-      return undefined;
+      return 'none';
   }
 }
 
