@@ -2,8 +2,8 @@ import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, u
 import clsx from 'clsx';
 
 import { CalculatedColumn, Editor, Omit, SharedEditorContainerProps } from '../common/types';
+import { useClickOutside } from '../hooks';
 import SimpleTextEditor from './SimpleTextEditor';
-import ClickOutside from './ClickOutside';
 import { preventDefault } from '../utils';
 
 export interface EditorContainerProps<R, SR> extends Omit<SharedEditorContainerProps, 'editorPortalTarget'> {
@@ -34,6 +34,7 @@ export default function EditorContainer<R, SR>({
   const prevScrollLeft = useRef(scrollLeft);
   const prevScrollTop = useRef(scrollTop);
   const isUnmounting = useRef(false);
+  const onClickCapture = useClickOutside(commit);
 
   const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
 
@@ -171,15 +172,14 @@ export default function EditorContainer<R, SR>({
   });
 
   return (
-    <ClickOutside onClickOutside={commit}>
-      <div
-        className={className}
-        style={{ height: rowHeight, width: column.width, left, top }}
-        onKeyDown={onKeyDown}
-        onContextMenu={preventDefault}
-      >
-        {createEditor()}
-      </div>
-    </ClickOutside>
+    <div
+      className={className}
+      style={{ height: rowHeight, width: column.width, left, top }}
+      onClickCapture={onClickCapture}
+      onKeyDown={onKeyDown}
+      onContextMenu={preventDefault}
+    >
+      {createEditor()}
+    </div>
   );
 }

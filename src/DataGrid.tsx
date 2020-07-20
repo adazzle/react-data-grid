@@ -2,7 +2,6 @@ import React, {
   forwardRef,
   useState,
   useRef,
-  useMemo,
   useLayoutEffect,
   useEffect,
   useImperativeHandle,
@@ -11,6 +10,7 @@ import React, {
 } from 'react';
 import clsx from 'clsx';
 
+import { useGridWidth, useViewportColumns } from './hooks';
 import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -20,12 +20,9 @@ import { ValueFormatter } from './formatters';
 import { legacyCellInput } from './editors';
 import {
   assertIsValidKey,
-  getColumnMetrics,
   getColumnScrollPosition,
-  getHorizontalRangeToRender,
   getScrollbarSize,
   getVerticalRangeToRender,
-  getViewportColumns,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
   canExitGrid,
@@ -219,7 +216,6 @@ function DataGrid<R, K extends keyof R, SR>({
    * states
    */
   const [eventBus] = useState(() => new EventBus());
-  const [gridWidth, setGridWidth] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
@@ -236,7 +232,6 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * refs
    */
-  const gridRef = useRef<HTMLDivElement>(null);
   const focusSinkRef = useRef<HTMLDivElement>(null);
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
@@ -245,37 +240,20 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * computed values
    */
-  const viewportWidth = (width || gridWidth) - 2; // 2 for border width;
+  const [gridRef, gridWidth] = useGridWidth(width);
+  const viewportWidth = gridWidth - 2; // 2 for border width;
   const headerRowsCount = enableFilters ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
-  const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
-    return getColumnMetrics<R, SR>({
-      columns: rawColumns,
-      minColumnWidth,
-      viewportWidth,
-      columnWidths,
-      defaultFormatter
-    });
-  }, [columnWidths, rawColumns, defaultFormatter, minColumnWidth, viewportWidth]);
-
-  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
-    return getHorizontalRangeToRender(
-      columns,
-      lastFrozenColumnIndex,
-      viewportWidth,
-      scrollLeft
-    );
-  }, [scrollLeft, columns, lastFrozenColumnIndex, viewportWidth]);
-
-  const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
-    return getViewportColumns(
-      columns,
-      colOverscanStartIdx,
-      colOverscanEndIdx
-    );
-  }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
+  const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex } = useViewportColumns({
+    columns: rawColumns,
+    minColumnWidth,
+    columnWidths,
+    defaultFormatter,
+    scrollLeft,
+    viewportWidth
+  });
 
   const totalHeaderHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
   const clientHeight = height
@@ -294,21 +272,6 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * effects
    */
-  useLayoutEffect(() => {
-    // Do not calculate the width if width is provided
-    if (typeof width === 'number') return;
-    function onResize() {
-      // Immediately re-render when the component is mounted to get valid columnMetrics.
-      setGridWidth(gridRef.current!.getBoundingClientRect().width);
-    }
-    onResize();
-
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [width]);
-
   useLayoutEffect(() => {
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
