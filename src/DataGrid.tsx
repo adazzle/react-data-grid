@@ -755,7 +755,6 @@ function DataGrid<R, K extends keyof R, SR>({
       onScroll={handleScroll}
     >
       <HeaderRow<R, K, SR>
-        aria-rowindex={1} // aria-rowindex is 1 based
         rowKey={rowKey}
         rows={rows}
         columns={viewportColumns}
