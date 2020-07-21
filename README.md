@@ -45,13 +45,13 @@ See [documentation](https://github.com/browserslist/browserslist)
 
 See [documentation](https://babeljs.io/docs/en/)
 
-- It's important that the config filename be `babel.config.*` instead of `.babelrc.*`, otherwise Babel might not transpile modules under `node_modules`.
+- It's important that the configuration filename be `babel.config.*` instead of `.babelrc.*`, otherwise Babel might not transpile modules under `node_modules`.
 - We recommend polyfilling modern JS features with [core-js](https://www.npmjs.com/package/core-js) by adding the following snippet at the top of your bundle's entry file:
   ```js
   import 'core-js/stable';
   ```
   - Babel's `env` preset, if configured correctly, will transform this import so only the necessary polyfills are included in your bundle.
-- Optional: we also recommend using the `babel-plugin-optimize-clsx` plugin.
+- Optional: we also recommend using the [`babel-plugin-optimize-clsx` plugin](https://www.npmjs.com/package/babel-plugin-optimize-clsx).
 </details>
 
 <details>
@@ -60,11 +60,11 @@ See [documentation](https://babeljs.io/docs/en/)
 ```js
 {
   // ...
-  modules: {
+  module: {
     rules: {
       test: /\.js$/,
       exclude: /node_modules[/\\](?!react-data-grid[/\\]lib)/,
-      use: [{ loader: 'babel-loader' }]
+      use: 'babel-loader'
     }
   }
 }
