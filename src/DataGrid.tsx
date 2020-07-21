@@ -331,11 +331,11 @@ function DataGrid<R, K extends keyof R, SR>({
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event) && isCellWithinBounds(selectedPosition)) {
       // event.key may differ by keyboard input language, so we use event.keyCode instead
       const cKey = 67, vKey = 86;
-      if (event.keyCode == cKey) {
+      if (event.keyCode === cKey) {
         handleCopy();
         return;
       }
-      if (event.keyCode == vKey) {
+      if (event.keyCode === vKey) {
         handlePaste();
         return;
       }
