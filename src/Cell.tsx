@@ -71,18 +71,22 @@ function Cell<R, SR>({
       const gridLeft = left + docLeft;
       const gridTop = top + docTop;
 
-      return (
-        <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R, SR>
-            {...editorProps}
-            rowIdx={rowIdx}
-            row={row}
-            column={column}
-            left={gridLeft}
-            top={gridTop}
-          />
-        </EditorPortal>
+      const editorContainer = (
+        <EditorContainer<R, SR>
+          {...editorProps}
+          rowIdx={rowIdx}
+          row={row}
+          column={column}
+          left={gridLeft}
+          top={gridTop}
+        />
       );
+
+      return column?.unsafe_editorProps?.usePortal !== false ? (
+        <EditorPortal target={editorPortalTarget}>
+          {editorContainer}
+        </EditorPortal>
+      ) : editorContainer;
     }
 
     return (

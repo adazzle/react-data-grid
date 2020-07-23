@@ -131,16 +131,18 @@ export default function TreeView() {
             </>
           );
         },
-        unsafe_onCellInput(event, row) {
-          const hasChildren = row.children !== undefined;
-          if (event.key === ' ' && hasChildren) {
-            event.preventDefault();
-            dispatch({ id: row.id, type: 'toggleSubRow' });
-          }
+        unsafe_editorProps: {
+          onCellInput(event, row) {
+            const hasChildren = row.children !== undefined;
+            if (event.key === ' ' && hasChildren) {
+              event.preventDefault();
+              dispatch({ id: row.id, type: 'toggleSubRow' });
+            }
 
-          if (event.key === 'Delete' && !hasChildren) {
-            event.preventDefault();
-            dispatch({ id: row.id, type: 'deleteSubRow' });
+            if (event.key === 'Delete' && !hasChildren) {
+              event.preventDefault();
+              dispatch({ id: row.id, type: 'deleteSubRow' });
+            }
           }
         }
       },

@@ -427,7 +427,7 @@ function DataGrid<R, K extends keyof R, SR>({
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
     const canOpenEditor = selectedPosition.mode === 'SELECT' && isCellEditable(selectedPosition);
-    const isActivatedByUser = (column.unsafe_onCellInput ?? legacyCellInput)(event, row) === true;
+    const isActivatedByUser = (column?.unsafe_editorProps?.onCellInput ?? legacyCellInput)(event, row) === true;
 
     if (canOpenEditor && (key === 'Enter' || isActivatedByUser)) {
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, key, mode: 'EDIT' }));

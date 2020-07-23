@@ -175,7 +175,7 @@ export default function EditorContainer<R, SR>({
     <div
       className={className}
       style={{ height: rowHeight, width: column.width, left, top }}
-      onClickCapture={onClickCapture}
+      onClickCapture={column?.unsafe_editorProps?.commitOnOutsideClick !== false ? onClickCapture : undefined}
       onKeyDown={onKeyDown}
       onContextMenu={preventDefault}
     >
