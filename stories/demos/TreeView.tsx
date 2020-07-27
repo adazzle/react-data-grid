@@ -131,20 +131,6 @@ export default function TreeView() {
             </>
           );
         }
-        // editor2Props: {
-        //   onCellInput(event, row) {
-        //     const hasChildren = row.children !== undefined;
-        //     if (event.key === ' ' && hasChildren) {
-        //       event.preventDefault();
-        //       dispatch({ id: row.id, type: 'toggleSubRow' });
-        //     }
-
-        //     if (event.key === 'Delete' && !hasChildren) {
-        //       event.preventDefault();
-        //       dispatch({ id: row.id, type: 'deleteSubRow' });
-        //     }
-        //   }
-        // }
       },
       {
         key: 'position',

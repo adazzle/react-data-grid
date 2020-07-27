@@ -231,7 +231,7 @@ export default function CommonFeatures() {
   const countries = useMemo(() => {
     return [...new Set(rows.map(r => r.country))];
   }, [rows]);
-  const columns = useMemo(() => getColumns(countries), countries);
+  const columns = useMemo(() => getColumns(countries), [countries]);
 
   const summaryRows = useMemo(() => {
     const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
