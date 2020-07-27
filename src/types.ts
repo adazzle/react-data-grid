@@ -35,12 +35,12 @@ export interface Column<TRow, TSummaryRow = unknown> {
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
-  unsafe_editorProps?: {
-    usePortal?: boolean;
+  editor2?: React.ComponentType<Editor2Props<any, TRow, TSummaryRow>>;
+  editor2Props?: {
+    createPortal?: boolean;
+    editOnSingleClick?: boolean;
     commitOnOutsideClick?: boolean;
-    // TODO: Should we return an object to make it more powerful?
-    // { isEditable?: boolean, initialInput?: unknown } | undefined
-    onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>, row: TRow) => unknown;
+    onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>) => boolean;
   };
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
@@ -93,6 +93,22 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   onOverrideKeyDown: (e: KeyboardEvent) => void;
 }
 
+interface SharedEditor2Props<TValue> {
+  rowHeight: number;
+  value: TValue;
+  onChange: (value: TValue) => void;
+  onCommit: (closeEditor?: boolean) => void;
+  onCommitCancel: () => void;
+}
+
+export interface Editor2Props<TValue, TRow = any, TSummaryRow = any> extends SharedEditor2Props<TValue> {
+  rowIdx: number;
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  top: number;
+  left: number;
+}
+
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   allRowsSelected: boolean;
@@ -100,7 +116,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface SharedEditorContainerProps {
-  editorPortalTarget: Element;
   firstEditorKeyPress: string | null;
   scrollLeft: number;
   scrollTop: number;
@@ -116,7 +131,9 @@ interface SelectedCellPropsBase {
 
 interface SelectedCellPropsEdit extends SelectedCellPropsBase {
   mode: 'EDIT';
+  editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
+  editor2Props: SharedEditor2Props<unknown>;
 }
 
 interface SelectedCellPropsSelect extends SelectedCellPropsBase {

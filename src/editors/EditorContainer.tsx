@@ -1,12 +1,12 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Editor, Omit, SharedEditorContainerProps } from '../types';
+import { CalculatedColumn, Editor, SharedEditorContainerProps } from '../types';
 import { useClickOutside } from '../hooks';
 import SimpleTextEditor from './SimpleTextEditor';
 import { preventDefault } from '../utils';
 
-export interface EditorContainerProps<R, SR> extends Omit<SharedEditorContainerProps, 'editorPortalTarget'> {
+export interface EditorContainerProps<R, SR> extends SharedEditorContainerProps {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
@@ -77,7 +77,7 @@ export default function EditorContainer<R, SR>({
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }
-    if (key === 'Enter') {
+    if (key === 'Enter' || key === 'F2') {
       return value;
     }
 
@@ -133,7 +133,7 @@ export default function EditorContainer<R, SR>({
   function onKeyDown(e: KeyboardEvent) {
     if (preventDefaultNavigation(e.key)) {
       e.stopPropagation();
-    } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    } else if (['Enter', 'F2', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       commit();
     } else if (e.key === 'Escape') {
       commitCancel();
@@ -175,7 +175,7 @@ export default function EditorContainer<R, SR>({
     <div
       className={className}
       style={{ height: rowHeight, width: column.width, left, top }}
-      onClickCapture={column?.unsafe_editorProps?.commitOnOutsideClick !== false ? onClickCapture : undefined}
+      onClickCapture={onClickCapture}
       onKeyDown={onKeyDown}
       onContextMenu={preventDefault}
     >

@@ -1,4 +1,5 @@
 import React, { forwardRef, memo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 
 import { EditorContainer, EditorPortal } from './editors';
@@ -36,7 +37,8 @@ function Cell<R, SR>({
       'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
       'rdg-cell-selected': isSelected,
       'rdg-cell-copied': isCopied,
-      'rdg-cell-dragged-over': isDraggedOver
+      'rdg-cell-dragged-over': isDraggedOver,
+      'rdg-cell-editing': selectedCellProps?.mode === 'EDIT'
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
@@ -47,7 +49,8 @@ function Cell<R, SR>({
   }
 
   function handleClick() {
-    selectCell();
+    const editOnSingleClick = column.editor2 !== undefined && column.editor2Props?.editOnSingleClick;
+    selectCell(editOnSingleClick);
     onRowClick?.(rowIdx, row, column);
   }
 
@@ -65,28 +68,43 @@ function Cell<R, SR>({
 
   function getCellContent() {
     if (selectedCellProps && selectedCellProps.mode === 'EDIT') {
-      const { editorPortalTarget, ...editorProps } = selectedCellProps.editorContainerProps;
+      const { editorPortalTarget, editorContainerProps, editor2Props } = selectedCellProps;
       const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
       const { left, top } = cellRef.current!.getBoundingClientRect();
       const gridLeft = left + docLeft;
       const gridTop = top + docTop;
 
-      const editorContainer = (
-        <EditorContainer<R, SR>
-          {...editorProps}
-          rowIdx={rowIdx}
-          row={row}
-          column={column}
-          left={gridLeft}
-          top={gridTop}
-        />
-      );
+      if (column.editor2 !== undefined) {
+        const editor2 = (
+          <column.editor2
+            {...editor2Props}
+            rowIdx={rowIdx}
+            row={row}
+            column={column}
+            left={gridLeft}
+            top={gridTop}
+          />
+        );
 
-      return column?.unsafe_editorProps?.usePortal !== false ? (
+        if (column.editor2Props?.createPortal) {
+          return createPortal(editor2Props, editorPortalTarget);
+        }
+
+        return editor2;
+      }
+
+      return (
         <EditorPortal target={editorPortalTarget}>
-          {editorContainer}
+          <EditorContainer<R, SR>
+            {...editorContainerProps}
+            rowIdx={rowIdx}
+            row={row}
+            column={column}
+            left={gridLeft}
+            top={gridTop}
+          />
         </EditorPortal>
-      ) : editorContainer;
+      );
     }
 
     return (

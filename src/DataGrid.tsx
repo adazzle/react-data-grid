@@ -17,7 +17,6 @@ import FilterRow from './FilterRow';
 import Row from './Row';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
-import { legacyCellInput } from './editors';
 import {
   assertIsValidKey,
   getColumnScrollPosition,
@@ -26,7 +25,8 @@ import {
   getNextSelectedCellPosition,
   isSelectedCellEditable,
   canExitGrid,
-  isCtrlKeyHeldDown
+  isCtrlKeyHeldDown,
+  defaultCellInput
 } from './utils';
 
 import {
@@ -223,6 +223,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [editorValue, setEditorValue] = useState<unknown>();
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -344,6 +345,7 @@ function DataGrid<R, K extends keyof R, SR>({
     switch (event.key) {
       case 'Escape':
         setCopiedPosition(null);
+        closeEditor();
         return;
       case 'ArrowUp':
       case 'ArrowDown':
@@ -391,6 +393,24 @@ function DataGrid<R, K extends keyof R, SR>({
     closeEditor();
   }
 
+  function handleCommit2() {
+    const { idx, rowIdx, mode } = selectedPosition;
+    const column = columns[idx];
+    if (mode === 'SELECT' || column.editor2 === undefined) return;
+    const cellKey = column.key;
+
+    onRowsUpdate?.({
+      cellKey,
+      fromRow: rowIdx,
+      toRow: rowIdx,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      updated: { [cellKey]: editorValue } as never,
+      action: UpdateActions.CELL_UPDATE
+    });
+
+    closeEditor();
+  }
+
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
     const value = rows[rowIdx][columns[idx].key as keyof R];
@@ -426,10 +446,29 @@ function DataGrid<R, K extends keyof R, SR>({
     const { key } = event;
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
-    const canOpenEditor = selectedPosition.mode === 'SELECT' && isCellEditable(selectedPosition);
-    const isActivatedByUser = (column?.unsafe_editorProps?.onCellInput ?? legacyCellInput)(event, row) === true;
+    const isUsingEditor2 = column.editor2 !== undefined;
 
-    if (canOpenEditor && (key === 'Enter' || isActivatedByUser)) {
+    if (selectedPosition.mode === 'EDIT') {
+      if (isUsingEditor2 && (key === 'Enter' || key === 'F2')) {
+        handleCommit2();
+      }
+      return;
+    }
+
+    const isActivatedByUser = isUsingEditor2
+      ? defaultCellInput(event) && column.editor2Props?.onCellInput?.(event) !== false
+      : defaultCellInput(event);
+
+    if (isCellEditable(selectedPosition) && isActivatedByUser) {
+      if (isUsingEditor2) {
+        if (key === 'Delete' || key === 'Backspace') {
+          setEditorValue('');
+        } else if (key === 'Enter' || key === 'F2') {
+          setEditorValue(row[column.key as keyof R]);
+        } else {
+          setEditorValue(key);
+        }
+      }
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, key, mode: 'EDIT' }));
     }
   }
@@ -490,6 +529,11 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }
 
+  function handleSort(columnKey: string, direction: SortDirection) {
+    handleCommit2();
+    onSort?.(columnKey, direction);
+  }
+
   /**
    * utils
    */
@@ -504,8 +548,10 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function selectCell(position: Position, enableEditor = false): void {
     if (!isCellWithinBounds(position)) return;
+    handleCommit2();
 
     if (enableEditor && isCellEditable(position)) {
+      setEditorValue(rows[position.rowIdx][columns[position.idx].key as keyof R]);
       setSelectedPosition({ ...position, mode: 'EDIT', key: null });
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
@@ -514,6 +560,8 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function closeEditor() {
+    if (selectedPosition.mode === 'SELECT') return;
+    setEditorValue(undefined);
     setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
   }
 
@@ -627,13 +675,20 @@ function DataGrid<R, K extends keyof R, SR>({
         mode: 'EDIT',
         idx: selectedPosition.idx,
         onKeyDown: handleKeyDown,
+        editorPortalTarget,
         editorContainerProps: {
-          editorPortalTarget,
           rowHeight,
           scrollLeft,
           scrollTop,
           firstEditorKeyPress: selectedPosition.key,
           onCommit: handleCommit,
+          onCommitCancel: closeEditor
+        },
+        editor2Props: {
+          rowHeight,
+          value: editorValue,
+          onChange: setEditorValue,
+          onCommit: handleCommit2,
           onCommitCancel: closeEditor
         }
       };
@@ -727,7 +782,7 @@ function DataGrid<R, K extends keyof R, SR>({
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
-        onSort={onSort}
+        onSort={handleSort}
       />
       {enableFilters && (
         <FilterRow<R, SR>
