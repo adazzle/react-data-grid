@@ -18,8 +18,11 @@ export function SelectEditor<R>({ value, onChange, options, rowHeight }: Editor2
           ...provided,
           height: rowHeight - 1,
           minHeight: 30,
-          padding: 0,
           lineHeight: 'normal'
+        }),
+        dropdownIndicator: (provided) => ({
+          ...provided,
+          height: rowHeight - 1
         })
       }}
       onKeyDown={event => {
