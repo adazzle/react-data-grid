@@ -94,6 +94,9 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
           options={countries.map(c => ({ value: c, label: c }))}
         />
       ),
+      editor2Props: {
+        editOnSingleClick: true
+      },
       resizable: true,
       sortable: true
     },
@@ -230,7 +233,8 @@ export default function CommonFeatures() {
 
   const countries = useMemo(() => {
     return [...new Set(rows.map(r => r.country))].sort();
-  }, [rows]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
   const summaryRows = useMemo(() => {
