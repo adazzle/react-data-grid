@@ -11,9 +11,8 @@ export interface CellExpanderFormatterProps {
 export function CellExpanderFormatter({ isCellSelected, expanded, onCellExpand }: CellExpanderFormatterProps) {
   const iconRef = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
-    if (isCellSelected) {
-      iconRef.current?.focus();
-    }
+    if (!isCellSelected) return;
+    iconRef.current?.focus();
   }, [isCellSelected]);
 
   function handleClick(e: React.MouseEvent<HTMLSpanElement>) {

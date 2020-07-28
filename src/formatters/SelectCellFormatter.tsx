@@ -26,9 +26,8 @@ export function SelectCellFormatter({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {
-    if (isCellSelected) {
-      inputRef.current?.focus();
-    }
+    if (!isCellSelected) return;
+    inputRef.current?.focus();
   }, [isCellSelected]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

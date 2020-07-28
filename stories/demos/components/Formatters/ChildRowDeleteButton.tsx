@@ -9,9 +9,8 @@ export interface ChildRowDeleteButtonProps {
 export function ChildRowDeleteButton({ isCellSelected, onDeleteSubRow, isDeleteSubRowEnabled }: ChildRowDeleteButtonProps) {
   const iconRef = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
-    if (isCellSelected) {
-      iconRef.current?.focus();
-    }
+    if (!isCellSelected) return;
+    iconRef.current?.focus();
   }, [isCellSelected]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
