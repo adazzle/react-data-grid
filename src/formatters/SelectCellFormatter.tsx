@@ -47,7 +47,6 @@ export function SelectCellFormatter({
         disabled={disabled}
         onChange={handleChange}
         checked={value}
-        onClick={e => e.stopPropagation()}
       />
       <div className="rdg-checkbox" />
     </label>
