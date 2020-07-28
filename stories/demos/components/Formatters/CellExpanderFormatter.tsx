@@ -12,7 +12,7 @@ export function CellExpanderFormatter({ isCellSelected, expanded, onCellExpand }
   const iconRef = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
     if (!isCellSelected) return;
-    iconRef.current?.focus();
+    iconRef.current?.focus({ preventScroll: true });
   }, [isCellSelected]);
 
   function handleClick(e: React.MouseEvent<HTMLSpanElement>) {

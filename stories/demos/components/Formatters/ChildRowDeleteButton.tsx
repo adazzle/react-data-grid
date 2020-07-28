@@ -10,7 +10,7 @@ export function ChildRowDeleteButton({ isCellSelected, onDeleteSubRow, isDeleteS
   const iconRef = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
     if (!isCellSelected) return;
-    iconRef.current?.focus();
+    iconRef.current?.focus({ preventScroll: true });
   }, [isCellSelected]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
