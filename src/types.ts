@@ -40,6 +40,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
     createPortal?: boolean;
     editOnSingleClick?: boolean;
     commitOnOutsideClick?: boolean;
+    getInitialValue?: (event: React.KeyboardEvent<HTMLDivElement>, row: TRow) => unknown;
     onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   };
   /** Header renderer for each header cell */
