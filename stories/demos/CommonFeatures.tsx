@@ -94,9 +94,6 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
           options={countries.map(c => ({ value: c, label: c }))}
         />
       ),
-      editor2Options: {
-        editOnSingleClick: true
-      },
       resizable: true,
       sortable: true
     },
