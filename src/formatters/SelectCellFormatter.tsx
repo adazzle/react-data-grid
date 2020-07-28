@@ -1,17 +1,31 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import clsx from 'clsx';
 
-export interface SelectCellFormatterProps {
-  value: boolean;
-  tabIndex?: number;
+type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
+  | 'disabled'
+  | 'tabIndex'
+  | 'aria-label'
+  | 'aria-labelledby'
+>;
+
+export interface SelectCellFormatterProps extends SharedInputProps {
   isCellSelected?: boolean;
-  disabled?: boolean;
+  value: boolean;
   onChange: (value: boolean, isShiftClick: boolean) => void;
 }
 
-export function SelectCellFormatter({ value, tabIndex, isCellSelected, disabled, onChange }: SelectCellFormatterProps) {
+export function SelectCellFormatter({
+  value,
+  tabIndex,
+  isCellSelected,
+  disabled,
+  onChange,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy
+}: SelectCellFormatterProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     if (isCellSelected) {
       inputRef.current?.focus();
     }
@@ -24,6 +38,8 @@ export function SelectCellFormatter({ value, tabIndex, isCellSelected, disabled,
   return (
     <label className={clsx('rdg-checkbox-label', { 'rdg-checkbox-label-disabled': disabled })}>
       <input
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         tabIndex={tabIndex}
         ref={inputRef}
         type="checkbox"
@@ -31,6 +47,7 @@ export function SelectCellFormatter({ value, tabIndex, isCellSelected, disabled,
         disabled={disabled}
         onChange={handleChange}
         checked={value}
+        onClick={e => e.stopPropagation()}
       />
       <div className="rdg-checkbox" />
     </label>
