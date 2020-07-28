@@ -276,6 +276,8 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
+    const column = columns[selectedPosition.idx];
+    if (column.formatterOptions?.focusable) return; // Let the formatter handle focus
     focusSinkRef.current!.focus();
   });
 

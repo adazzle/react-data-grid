@@ -91,6 +91,7 @@ function Cell<R, SR>({
           column={column}
           rowIdx={rowIdx}
           row={row}
+          isCellSelected={isSelected}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
         />
