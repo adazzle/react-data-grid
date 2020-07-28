@@ -40,7 +40,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
     createPortal?: boolean;
     editOnSingleClick?: boolean;
     commitOnOutsideClick?: boolean;
-    onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>) => boolean;
+    onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   };
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;

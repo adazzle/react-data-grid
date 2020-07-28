@@ -359,9 +359,7 @@ function DataGrid<R, K extends keyof R, SR>({
         navigate(event);
         break;
       default:
-        if (isCellWithinBounds(selectedPosition)) {
-          handleCellInput(event);
-        }
+        handleCellInput(event);
         break;
     }
   }
@@ -396,7 +394,7 @@ function DataGrid<R, K extends keyof R, SR>({
   function handleCommit2() {
     const { idx, rowIdx, mode } = selectedPosition;
     const column = columns[idx];
-    if (mode === 'SELECT' || column.editor2 === undefined) return;
+    if (mode === 'SELECT' || column?.editor2 === undefined) return;
     const cellKey = column.key;
 
     onRowsUpdate?.({
@@ -443,6 +441,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (!isCellWithinBounds(selectedPosition)) return;
     const { key } = event;
     const column = columns[selectedPosition.idx];
     const row = rows[selectedPosition.rowIdx];
@@ -455,11 +454,12 @@ function DataGrid<R, K extends keyof R, SR>({
       return;
     }
 
-    const isActivatedByUser = isUsingEditor2
-      ? defaultCellInput(event) && column.editor2Props?.onCellInput?.(event) !== false
-      : defaultCellInput(event);
+    if (isUsingEditor2) {
+      column.editor2Props?.onCellInput?.(event);
+      if (event.isDefaultPrevented()) return;
+    }
 
-    if (isCellEditable(selectedPosition) && isActivatedByUser) {
+    if (isCellEditable(selectedPosition) && defaultCellInput(event)) {
       if (isUsingEditor2) {
         if (key === 'Delete' || key === 'Backspace') {
           setEditorValue('');
@@ -811,6 +811,7 @@ function DataGrid<R, K extends keyof R, SR>({
               bottom={rowHeight * (summaryRows.length - 1 - rowIdx)}
               viewportColumns={viewportColumns}
               lastFrozenColumnIndex={lastFrozenColumnIndex}
+              onClick={handleCommit2}
             />
           ))}
         </>

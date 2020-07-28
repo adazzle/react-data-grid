@@ -229,7 +229,7 @@ export default function CommonFeatures() {
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
 
   const countries = useMemo(() => {
-    return [...new Set(rows.map(r => r.country))];
+    return [...new Set(rows.map(r => r.country))].sort();
   }, [rows]);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
