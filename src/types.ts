@@ -36,7 +36,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
   editor2?: React.ComponentType<Editor2Props<any, TRow, TSummaryRow>>;
-  editor2Props?: {
+  editor2Options?: {
     createPortal?: boolean;
     editOnSingleClick?: boolean;
     commitOnOutsideClick?: boolean;

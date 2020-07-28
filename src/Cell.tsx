@@ -49,7 +49,7 @@ function Cell<R, SR>({
   }
 
   function handleClick() {
-    const editOnSingleClick = column.editor2 !== undefined && column.editor2Props?.editOnSingleClick;
+    const editOnSingleClick = column.editor2 !== undefined && column.editor2Options?.editOnSingleClick;
     selectCell(editOnSingleClick);
     onRowClick?.(rowIdx, row, column);
   }
@@ -86,7 +86,7 @@ function Cell<R, SR>({
           />
         );
 
-        if (column.editor2Props?.createPortal) {
+        if (column.editor2Options?.createPortal) {
           return createPortal(editor2Props, editorPortalTarget);
         }
 
