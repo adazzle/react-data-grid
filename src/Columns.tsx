@@ -23,9 +23,14 @@ export const SelectColumn: Column<any, any> = {
     return (
       <SelectCellFormatter
         aria-label="Select"
+        tabIndex={-1}
+        isCellSelected={props.isCellSelected}
         value={props.isRowSelected}
         onChange={props.onRowSelectionChange}
       />
     );
+  },
+  formatterOptions: {
+    focusable: true
   }
 };
