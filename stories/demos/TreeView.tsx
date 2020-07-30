@@ -106,13 +106,15 @@ export default function TreeView() {
       {
         key: 'format',
         name: 'format',
-        formatter({ row }) {
+        formatterOptions: { focusable: true },
+        formatter({ row, isCellSelected }) {
           const hasChildren = row.children !== undefined;
           const style = !hasChildren ? { marginLeft: 30 } : undefined;
           return (
             <>
               {hasChildren && (
                 <CellExpanderFormatter
+                  isCellSelected={isCellSelected}
                   expanded={row.isExpanded === true}
                   onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
                 />
@@ -120,8 +122,9 @@ export default function TreeView() {
               <div className="rdg-cell-value">
                 {!hasChildren && (
                   <ChildRowDeleteButton
-                    onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
+                    isCellSelected={isCellSelected}
                     isDeleteSubRowEnabled={allowDelete}
+                    onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
                   />
                 )}
                 <div style={style}>

@@ -19,6 +19,8 @@
   - `column.minWidth`
   - `column.maxWidth`
   - `column.headerCellClass`
+  - `column.formatterOptions`
+    - More info in [#2104](https://github.com/adazzle/react-data-grid/pull/2104)
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
 - **Removed:**
@@ -30,7 +32,7 @@
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
       <!-- TODO: fill link to storybook -->
-      - Check the [Context Menu]() example
+      - Check the [Context Menu](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--context-menu) example
     - ⚠️ `enableCellSelect`
     - ⚠️ `enableCellAutoFocus`
     - ⚠️ `getValidFilterValues`
