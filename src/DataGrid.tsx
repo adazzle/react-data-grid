@@ -464,7 +464,7 @@ function DataGrid<R, K extends keyof R, SR>({
         if (key === 'Delete' || key === 'Backspace') {
           setEditorValue('');
         } else if (key === 'Enter' || key === 'F2') {
-          setEditorValue(column.editor2Options?.getInitialValue ? column.editor2Options?.getInitialValue(event, row) : row[column.key as keyof R]);
+          setEditorValue(column.editor2Options?.getInitialValue ? column.editor2Options.getInitialValue(event, row) : row[column.key as keyof R]);
         } else {
           setEditorValue(key);
         }
