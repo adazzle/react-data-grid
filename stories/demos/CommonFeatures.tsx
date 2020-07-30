@@ -287,6 +287,7 @@ export default function CommonFeatures() {
           sortDirection={sortDirection}
           onSort={handleSort}
           summaryRows={summaryRows}
+          groupBy="country"
         />
       )}
     </AutoSizer>

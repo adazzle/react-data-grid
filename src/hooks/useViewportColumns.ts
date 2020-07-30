@@ -12,6 +12,7 @@ interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridPr
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
+  groupBy?: string;
 }
 
 export function useViewportColumns<R, K extends keyof R, SR>({
@@ -20,8 +21,22 @@ export function useViewportColumns<R, K extends keyof R, SR>({
   columnWidths,
   viewportWidth,
   defaultFormatter,
-  scrollLeft
+  scrollLeft,
+  groupBy
 }: ViewportColumnsArgs<R, K, SR>) {
+  rawColumns = useMemo(() => {
+    if (!groupBy) return rawColumns;
+    // TODO: make it generic
+    const selectColumn = rawColumns.find(c => c.key === 'select-row');
+    const groupByColumn = rawColumns.find(c => c.key === groupBy);
+    const remaningColumns = rawColumns.filter(c => c.key !== groupBy && c.key !== 'select-row');
+    return [
+      selectColumn!,
+      { ...groupByColumn!, frozen: true },
+      ...remaningColumns
+    ];
+  }, [groupBy, rawColumns]);
+
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
       columns: rawColumns,

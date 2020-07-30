@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import clsx from 'clsx';
 
 type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
@@ -24,7 +24,6 @@ export function SelectCellFormatter({
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-
   useLayoutEffect(() => {
     if (!isCellSelected) return;
     inputRef.current?.focus();
