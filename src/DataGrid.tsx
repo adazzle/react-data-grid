@@ -450,7 +450,7 @@ function DataGrid<R, K extends keyof R, SR>({
     const isUsingEditor2 = column.editor2 !== undefined;
 
     if (selectedPosition.mode === 'EDIT') {
-      if (isUsingEditor2 && (key === 'Enter' || key === 'F2')) {
+      if (isUsingEditor2 && key === 'Enter') {
         handleCommit2();
       }
       return;
