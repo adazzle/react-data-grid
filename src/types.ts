@@ -41,7 +41,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   editor2?: React.ComponentType<Editor2Props<any, TRow, TSummaryRow>>;
   editor2Options?: {
     createPortal?: boolean;
-    editOnSingleClick?: boolean;
+    singleClickEdit?: boolean;
     commitOnOutsideClick?: boolean;
     getInitialValue?: (event: React.KeyboardEvent<HTMLDivElement>, row: TRow) => unknown;
     onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>) => void;

@@ -49,8 +49,8 @@ function Cell<R, SR>({
   }
 
   function handleClick() {
-    const editOnSingleClick = column.editor2 !== undefined && column.editor2Options?.editOnSingleClick;
-    selectCell(editOnSingleClick);
+    const singleClickEdit = column.editor2 !== undefined && column.editor2Options?.singleClickEdit;
+    selectCell(singleClickEdit);
     onRowClick?.(rowIdx, row, column);
   }
 
