@@ -10,7 +10,7 @@ export function TextEditor<R>({ value, onChange, rowHeight }: TextEditorProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {
-    inputRef.current!.focus();
+    inputRef.current!.focus({ preventScroll: true });
     inputRef.current!.select();
   }, []);
 

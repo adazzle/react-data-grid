@@ -68,9 +68,10 @@ function Cell<R, SR>({
 
   function getCellContent() {
     if (selectedCellProps && selectedCellProps.mode === 'EDIT') {
+      if (cellRef.current === null) return;
       const { editorPortalTarget, editorContainerProps, editor2Props, updatedRow } = selectedCellProps;
       const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
-      const { left, top } = cellRef.current!.getBoundingClientRect();
+      const { left, top } = cellRef.current.getBoundingClientRect();
       const gridLeft = left + docLeft;
       const gridTop = top + docTop;
 
