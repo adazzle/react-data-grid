@@ -77,7 +77,7 @@ export default function EditorContainer<R, SR>({
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }
-    if (key === 'Enter') {
+    if (key === 'Enter' || key === 'F2') {
       return value;
     }
 
@@ -133,7 +133,7 @@ export default function EditorContainer<R, SR>({
   function onKeyDown(e: KeyboardEvent) {
     if (preventDefaultNavigation(e.key)) {
       e.stopPropagation();
-    } else if (['Enter', 'F2', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       commit();
     } else if (e.key === 'Escape') {
       commitCancel();
