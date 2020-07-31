@@ -1,8 +1,14 @@
 import React, { useRef } from 'react';
 import Select, { OptionTypeBase, OptionsType } from 'react-select';
-import { Editor2Props } from '../../../../src/types';
 
-export function SelectEditor<R>({ value, onChange, options, rowHeight }: Editor2Props<string, R> & { options: OptionsType<OptionTypeBase> }) {
+interface SelectEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: OptionsType<OptionTypeBase>;
+  rowHeight: number;
+}
+
+export function SelectEditor<R>({ value, onChange, options, rowHeight }: SelectEditorProps) {
   const selectRef = useRef<Select<OptionTypeBase>>(null);
   return (
     <Select

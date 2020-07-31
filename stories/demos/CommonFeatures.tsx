@@ -90,8 +90,10 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       width: 180,
       editor2: p => (
         <SelectEditor
-          {...p}
+          value={p.row.country}
+          onChange={value => p.onRowUpdate({ ...p.row, country: value })}
           options={countries.map(c => ({ value: c, label: c }))}
+          rowHeight={p.rowHeight}
         />
       ),
       resizable: true,
@@ -101,7 +103,13 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'contact',
       name: 'Contact',
       width: 160,
-      editor2: TextEditor,
+      editor2: p => (
+        <TextEditor
+          value={p.row.contact}
+          onChange={value => p.onRowUpdate({ ...p.row, contact: value })}
+          rowHeight={p.rowHeight}
+        />
+      ),
       resizable: true,
       sortable: true
     },
@@ -298,6 +306,7 @@ export default function CommonFeatures() {
           selectedRows={selectedRows}
           onSelectedRowsChange={setSelectedRows}
           onRowsUpdate={handleRowsUpdate}
+          onRowsUpdate2={setRows}
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={handleSort}

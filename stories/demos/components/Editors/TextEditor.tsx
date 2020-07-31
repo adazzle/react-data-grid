@@ -1,7 +1,12 @@
 import React, { useRef, useLayoutEffect } from 'react';
-import { Editor2Props } from '../../../../src/types';
 
-export function TextEditor<R>({ value, onChange, rowHeight }: Editor2Props<string, R>) {
+interface TextEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  rowHeight: number;
+}
+
+export function TextEditor<R>({ value, onChange, rowHeight }: TextEditorProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {

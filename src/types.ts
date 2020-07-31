@@ -38,7 +38,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
-  editor2?: React.ComponentType<Editor2Props<any, TRow, TSummaryRow>>;
+  editor2?: React.ComponentType<Editor2Props<TRow, TSummaryRow>>;
   editor2Options?: {
     createPortal?: boolean;
     singleClickEdit?: boolean;
@@ -98,18 +98,17 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   onOverrideKeyDown: (e: KeyboardEvent) => void;
 }
 
-interface SharedEditor2Props<TValue> {
+interface SharedEditor2Props<TRow> {
   rowHeight: number;
-  value: TValue;
-  onChange: (value: TValue) => void;
+  onRowUpdate: (row: Readonly<TRow>) => void;
   onCommit: (closeEditor?: boolean) => void;
   onCommitCancel: () => void;
 }
 
-export interface Editor2Props<TValue, TRow = any, TSummaryRow = any> extends SharedEditor2Props<TValue> {
+export interface Editor2Props<TRow, TSummaryRow = unknown> extends SharedEditor2Props<TRow> {
   rowIdx: number;
-  row: TRow;
-  column: CalculatedColumn<TRow, TSummaryRow>;
+  row: Readonly<TRow>;
+  column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
   top: number;
   left: number;
 }
@@ -134,11 +133,12 @@ interface SelectedCellPropsBase {
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-interface SelectedCellPropsEdit extends SelectedCellPropsBase {
+interface SelectedCellPropsEdit<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
+  updatedRow: TRow;
   editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
-  editor2Props: SharedEditor2Props<unknown>;
+  editor2Props: SharedEditor2Props<TRow>;
 }
 
 interface SelectedCellPropsSelect extends SelectedCellPropsBase {
@@ -146,7 +146,7 @@ interface SelectedCellPropsSelect extends SelectedCellPropsBase {
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 
-export type SelectedCellProps = SelectedCellPropsEdit | SelectedCellPropsSelect;
+export type SelectedCellProps<TRow> = SelectedCellPropsEdit<TRow> | SelectedCellPropsSelect;
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
@@ -157,7 +157,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isCopied: boolean;
   isDraggedOver: boolean;
   eventBus: EventBus;
-  selectedCellProps?: SelectedCellProps;
+  selectedCellProps?: SelectedCellProps<TRow>;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
@@ -172,7 +172,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   isRowSelected: boolean;
   eventBus: EventBus;
   top: number;
-  selectedCellProps?: SelectedCellProps;
+  selectedCellProps?: SelectedCellProps<TRow>;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
