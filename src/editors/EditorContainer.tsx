@@ -77,7 +77,7 @@ export default function EditorContainer<R, SR>({
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }
-    if (key === 'Enter' || key === 'F2') {
+    if (key === 'Enter') {
       return value;
     }
 
