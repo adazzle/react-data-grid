@@ -329,7 +329,10 @@ function DataGrid<R, K extends keyof R, SR>({
     selectCell
   }));
 
-  const onClickCapture = useClickOutside(handleCommit2);
+  const onClickCapture = useClickOutside(() => {
+    if (selectedPosition.mode === 'SELECT' || columns[selectedPosition.idx].editor2 === undefined || !columns[selectedPosition.idx].editor2Options?.commitOnOutsideClick) return;
+    handleCommit2();
+  });
 
   /**
    * event handlers
@@ -777,11 +780,7 @@ function DataGrid<R, K extends keyof R, SR>({
       } as unknown as React.CSSProperties}
       ref={gridRef}
       onScroll={handleScroll}
-      onClickCapture={() => {
-        if (selectedPosition.mode === 'SELECT') return;
-        const column = columns[selectedPosition.idx];
-        return column.editor2 !== undefined && column.editor2Options?.commitOnOutsideClick ? onClickCapture : undefined;
-      }}
+      onClickCapture={onClickCapture}
     >
       <HeaderRow<R, K, SR>
         rowKey={rowKey}
