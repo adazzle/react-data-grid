@@ -42,7 +42,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   editor2Options?: {
     createPortal?: boolean;
     singleClickEdit?: boolean;
-    commitOnOutsideClick?: boolean;
+    // commitOnOutsideClick?: boolean; // Do we need this?
     onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>) => void; // Prevent default to cancel editing
   };
   /** Header renderer for each header cell */

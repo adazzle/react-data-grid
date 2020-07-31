@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import clsx from 'clsx';
 
-import { useGridWidth, useViewportColumns, useClickOutside } from './hooks';
+import { useGridWidth, useViewportColumns } from './hooks';
 import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -328,11 +328,6 @@ function DataGrid<R, K extends keyof R, SR>({
     },
     selectCell
   }));
-
-  const onClickCapture = useClickOutside(() => {
-    if (selectedPosition.mode === 'SELECT' || columns[selectedPosition.idx].editor2 === undefined || !columns[selectedPosition.idx].editor2Options?.commitOnOutsideClick) return;
-    handleCommit2();
-  });
 
   /**
    * event handlers
@@ -780,7 +775,6 @@ function DataGrid<R, K extends keyof R, SR>({
       } as unknown as React.CSSProperties}
       ref={gridRef}
       onScroll={handleScroll}
-      onClickCapture={onClickCapture}
     >
       <HeaderRow<R, K, SR>
         rowKey={rowKey}
