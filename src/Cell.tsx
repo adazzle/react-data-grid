@@ -87,7 +87,7 @@ function Cell<R, SR>({
         );
 
         if (column.editor2Options?.createPortal) {
-          return createPortal(editor2Props, editorPortalTarget);
+          return createPortal(editor2, editorPortalTarget);
         }
 
         return editor2;
