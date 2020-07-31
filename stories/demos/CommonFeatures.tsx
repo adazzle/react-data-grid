@@ -94,6 +94,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
           onChange={value => p.onRowUpdate({ ...p.row, country: value })}
           options={countries.map(c => ({ value: c, label: c }))}
           rowHeight={p.rowHeight}
+          menuPortalTarget={p.editorPortalTarget}
         />
       ),
       resizable: true,

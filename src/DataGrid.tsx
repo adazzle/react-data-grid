@@ -158,7 +158,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    * Miscellaneous
    */
   /** The node where the editor portal should mount. */
-  editorPortalTarget?: Element;
+  editorPortalTarget?: HTMLElement;
   rowClass?: (row: R) => string | undefined;
 }
 
@@ -677,7 +677,6 @@ function DataGrid<R, K extends keyof R, SR>({
       return {
         mode: 'EDIT',
         idx: selectedPosition.idx,
-        updatedRow: selectedPosition.updatedRow,
         onKeyDown: handleKeyDown,
         editorPortalTarget,
         editorContainerProps: {
@@ -690,6 +689,8 @@ function DataGrid<R, K extends keyof R, SR>({
         },
         editor2Props: {
           rowHeight,
+          editorPortalTarget,
+          row: selectedPosition.updatedRow,
           onRowUpdate: handleUpdateRow,
           onCommit: handleCommit2,
           onCommitCancel: closeEditor

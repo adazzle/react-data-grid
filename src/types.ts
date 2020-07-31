@@ -99,7 +99,9 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
 }
 
 interface SharedEditor2Props<TRow> {
+  row: Readonly<TRow>;
   rowHeight: number;
+  editorPortalTarget: HTMLElement;
   onRowUpdate: (row: Readonly<TRow>) => void;
   onCommit: (closeEditor?: boolean) => void;
   onCommitCancel: () => void;
@@ -107,7 +109,6 @@ interface SharedEditor2Props<TRow> {
 
 export interface Editor2Props<TRow, TSummaryRow = unknown> extends SharedEditor2Props<TRow> {
   rowIdx: number;
-  row: Readonly<TRow>;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
   top: number;
   left: number;
@@ -135,8 +136,7 @@ interface SelectedCellPropsBase {
 
 interface SelectedCellPropsEdit<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
-  updatedRow: TRow;
-  editorPortalTarget: Element;
+  editorPortalTarget: HTMLElement;
   editorContainerProps: SharedEditorContainerProps;
   editor2Props: SharedEditor2Props<TRow>;
 }
