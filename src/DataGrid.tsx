@@ -90,7 +90,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    * 4. Update all cells under a given cell by double clicking the cell's fill handle.
    */
   onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
-  onRowsUpdate2?: (rows: readonly R[]) => void;
+  onRowsChange?: (rows: R[]) => void;
 
   /**
    * Dimensions props
@@ -176,7 +176,7 @@ function DataGrid<R, K extends keyof R, SR>({
   summaryRows,
   rowKey,
   onRowsUpdate,
-  onRowsUpdate2,
+  onRowsChange,
   // Dimensions props
   width,
   height = 350,
@@ -410,7 +410,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
     const updatedRows = [...rows];
     updatedRows[rowIdx] = selectedPosition.updatedRow;
-    onRowsUpdate2?.(updatedRows);
+    onRowsChange?.(updatedRows);
     closeEditor();
   }
 

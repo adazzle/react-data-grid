@@ -307,7 +307,7 @@ export default function CommonFeatures() {
           selectedRows={selectedRows}
           onSelectedRowsChange={setSelectedRows}
           onRowsUpdate={handleRowsUpdate}
-          onRowsUpdate2={setRows}
+          onRowsChange={setRows}
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={handleSort}
