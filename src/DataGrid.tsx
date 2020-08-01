@@ -529,7 +529,7 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }
 
-  function handleUpdateRow(updatedRow: Readonly<R>) {
+  function handleUpdateRow(row: Readonly<R>) {
     if (selectedPosition.mode === 'SELECT') return;
     setSelectedPosition(p => ({ ...p, row: updatedRow }));
   }
