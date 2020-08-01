@@ -1,7 +1,7 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection, DataGridHandle } from '../../src';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
 import { TextEditor } from './components/Editors/TextEditor';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
@@ -233,7 +233,6 @@ function createRows(): readonly Row[] {
 }
 
 export default function CommonFeatures() {
-  const gridRef = useRef<DataGridHandle>(null);
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
@@ -296,37 +295,25 @@ export default function CommonFeatures() {
     setSort([columnKey, direction]);
   }, []);
 
-  function commitChange() {
-    gridRef.current?.commitChanges();
-  }
-
   return (
-    <>
-      <div style={{ marginBottom: 16 }}>
-        <button onClick={commitChange}>
-          Commit changes
-        </button>
-      </div>
-      <AutoSizer>
-        {({ height, width }) => (
-          <DataGrid
-            ref={gridRef}
-            rowKey="id"
-            columns={columns}
-            rows={sortedRows}
-            width={width}
-            height={height - 40}
-            selectedRows={selectedRows}
-            onSelectedRowsChange={setSelectedRows}
-            onRowsUpdate={handleRowsUpdate}
-            onRowsChange={setRows}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
-            onSort={handleSort}
-            summaryRows={summaryRows}
-          />
-        )}
-      </AutoSizer>
-    </>
+    <AutoSizer>
+      {({ height, width }) => (
+        <DataGrid
+          rowKey="id"
+          columns={columns}
+          rows={sortedRows}
+          width={width}
+          height={height}
+          selectedRows={selectedRows}
+          onSelectedRowsChange={setSelectedRows}
+          onRowsUpdate={handleRowsUpdate}
+          onRowsChange={setRows}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          onSort={handleSort}
+          summaryRows={summaryRows}
+        />
+      )}
+    </AutoSizer>
   );
 }
