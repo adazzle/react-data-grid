@@ -100,7 +100,7 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
 interface SharedEditor2Props<TRow> {
   row: Readonly<TRow>;
   rowHeight: number;
-  editorPortalTarget: HTMLElement;
+  editorPortalTarget: Element;
   onRowUpdate: (row: Readonly<TRow>) => void;
   onCommit: (closeEditor?: boolean) => void;
   onCommitCancel: () => void;
@@ -135,7 +135,7 @@ interface SelectedCellPropsBase {
 
 interface SelectedCellPropsEdit<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
-  editorPortalTarget: HTMLElement;
+  editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
   editor2Props: SharedEditor2Props<TRow>;
 }

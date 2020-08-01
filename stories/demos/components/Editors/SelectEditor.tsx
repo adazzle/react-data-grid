@@ -6,7 +6,7 @@ interface SelectEditorProps {
   onChange: (value: string) => void;
   options: OptionsType<OptionTypeBase>;
   rowHeight: number;
-  menuPortalTarget: HTMLElement;
+  menuPortalTarget: Element;
 }
 
 export function SelectEditor<R>({ value, onChange, options, rowHeight, menuPortalTarget }: SelectEditorProps) {
@@ -19,7 +19,7 @@ export function SelectEditor<R>({ value, onChange, options, rowHeight, menuPorta
       value={options.find(o => o.value === value)}
       onChange={o => onChange(o.value)}
       options={options}
-      menuPortalTarget={menuPortalTarget}
+      menuPortalTarget={menuPortalTarget as HTMLElement}
       styles={{
         control: (provided) => ({
           ...provided,
