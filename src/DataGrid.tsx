@@ -531,7 +531,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function handleUpdateRow(row: Readonly<R>) {
     if (selectedPosition.mode === 'SELECT') return;
-    setSelectedPosition(p => ({ ...p, row: updatedRow }));
+    setSelectedPosition(p => ({ ...p, row }));
   }
 
   function handleSort(columnKey: string, direction: SortDirection) {
