@@ -397,6 +397,13 @@ function DataGrid<R, K extends keyof R, SR>({
     closeEditor();
   }
 
+  function handleRowsChange(row: R) {
+    const updatedRows = [...rows];
+    updatedRows[selectedPosition.rowIdx] = row;
+    onRowsChange?.(updatedRows);
+    closeEditor();
+  }
+
   function handleCommit2() {
     const { idx, rowIdx } = selectedPosition;
     const column = columns[idx];
@@ -408,10 +415,7 @@ function DataGrid<R, K extends keyof R, SR>({
       return;
     }
 
-    const updatedRows = [...rows];
-    updatedRows[rowIdx] = selectedPosition.row;
-    onRowsChange?.(updatedRows);
-    closeEditor();
+    handleRowsChange(selectedPosition.row);
   }
 
   function handleCopy() {
@@ -528,9 +532,21 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }
 
-  function handleUpdateRow(row: Readonly<R>) {
+  function handleUpdateRow(row: Readonly<R>, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
-    setSelectedPosition(p => ({ ...p, row }));
+    if (commitChanges) {
+      handleRowsChange(row);
+    } else {
+      setSelectedPosition(p => ({ ...p, row }));
+    }
+  }
+
+  function handleOnClose(commitChanges?: boolean) {
+    if (selectedPosition.mode === 'SELECT') return;
+    if (commitChanges) {
+      handleRowsChange(selectedPosition.row);
+    }
+    closeEditor();
   }
 
   function handleSort(columnKey: string, direction: SortDirection) {
@@ -691,8 +707,7 @@ function DataGrid<R, K extends keyof R, SR>({
           editorPortalTarget,
           row: selectedPosition.row,
           onRowUpdate: handleUpdateRow,
-          onCommit: handleCommit2,
-          onCommitCancel: closeEditor
+          onClose: handleOnClose
         }
       };
     }

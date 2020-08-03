@@ -91,7 +91,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       editor2: p => (
         <SelectEditor
           value={p.row.country}
-          onChange={value => p.onRowUpdate({ ...p.row, country: value })}
+          onChange={value => p.onRowUpdate({ ...p.row, country: value }, true)}
           options={countries.map(c => ({ value: c, label: c }))}
           rowHeight={p.rowHeight}
           menuPortalTarget={p.editorPortalTarget}

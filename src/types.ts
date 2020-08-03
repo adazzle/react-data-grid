@@ -106,9 +106,8 @@ interface SharedEditor2Props<TRow> {
   row: Readonly<TRow>;
   rowHeight: number;
   editorPortalTarget: Element;
-  onRowUpdate: (row: Readonly<TRow>) => void;
-  onCommit: (closeEditor?: boolean) => void;
-  onCommitCancel: () => void;
+  onRowUpdate: (row: Readonly<TRow>, commitChanges?: boolean) => void;
+  onClose: (commitChanges?: boolean) => void;
 }
 
 export interface Editor2Props<TRow, TSummaryRow = unknown> extends SharedEditor2Props<TRow> {
