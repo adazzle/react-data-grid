@@ -537,7 +537,7 @@ function DataGrid<R, K extends keyof R, SR>({
     if (commitChanges) {
       handleRowsChange(row);
     } else {
-      setSelectedPosition(p => ({ ...p, row }));
+      setSelectedPosition(position => ({ ...position, row }));
     }
   }
 
