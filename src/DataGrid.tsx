@@ -449,20 +449,17 @@ function DataGrid<R, K extends keyof R, SR>({
     if (!isCellWithinBounds(selectedPosition)) return;
     const { key } = event;
     const column = columns[selectedPosition.idx];
-    const isUsingEditor2 = column.editor2 !== undefined;
 
     if (selectedPosition.mode === 'EDIT') {
-      if (isUsingEditor2 && key === 'Enter') {
+      if (column.editor2 !== undefined && key === 'Enter') {
         // Custom editors can listen for the event and stop propagation to prevent commit
         handleCommit2();
       }
       return;
     }
 
-    if (isUsingEditor2) {
-      column.editor2Options?.onCellInput?.(event);
-      if (event.isDefaultPrevented()) return;
-    }
+    column.editorOptions?.onCellInput?.(event);
+    if (event.isDefaultPrevented()) return;
 
     if (isCellEditable(selectedPosition) && defaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({

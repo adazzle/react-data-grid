@@ -49,8 +49,7 @@ function Cell<R, SR>({
   }
 
   function handleClick() {
-    const singleClickEdit = column.editor2 !== undefined && column.editor2Options?.singleClickEdit;
-    selectCell(singleClickEdit);
+    selectCell(column.editorOptions?.editOnClick);
     onRowClick?.(rowIdx, row, column);
   }
 
@@ -86,25 +85,33 @@ function Cell<R, SR>({
           />
         );
 
-        if (column.editor2Options?.createPortal) {
+        if (column.editorOptions?.createPortal) {
           return createPortal(editor2, editorPortalTarget);
         }
 
         return editor2;
       }
 
-      return (
-        <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R, SR>
-            {...editorContainerProps}
-            rowIdx={rowIdx}
-            row={row}
-            column={column}
-            left={gridLeft}
-            top={gridTop}
-          />
-        </EditorPortal>
+      const editor1 = (
+        <EditorContainer<R, SR>
+          {...editorContainerProps}
+          rowIdx={rowIdx}
+          row={row}
+          column={column}
+          left={gridLeft}
+          top={gridTop}
+        />
       );
+
+      if (column.editorOptions?.createPortal !== false) {
+        return (
+          <EditorPortal target={editorPortalTarget}>
+            {editor1}
+          </EditorPortal>
+        );
+      }
+
+      return editor1;
     }
 
     return (
