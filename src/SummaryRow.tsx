@@ -7,12 +7,10 @@ type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
   | 'viewportColumns'
   | 'rowIdx'
   | 'lastFrozenColumnIndex'
-> & Pick<React.HTMLAttributes<HTMLDivElement>,
-  | 'onClick'
-  | 'aria-rowindex'
 >;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
+  'aria-rowindex': number;
   row: SR;
   bottom: number;
 }
@@ -23,7 +21,6 @@ function SummaryRow<R, SR>({
   row,
   viewportColumns,
   bottom,
-  onClick,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
   return (
@@ -32,7 +29,6 @@ function SummaryRow<R, SR>({
       aria-rowindex={ariaRowIndex}
       className={`rdg-row rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} rdg-summary-row`}
       style={{ bottom }}
-      onClick={onClick}
     >
       {viewportColumns.map(column => (
         <SummaryCell<R, SR>

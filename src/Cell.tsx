@@ -1,8 +1,7 @@
 import React, { forwardRef, memo, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 
-import { EditorContainer, EditorPortal } from './editors';
+import { EditorContainer, EditorContainer2, EditorPortal } from './editors';
 import { CellRendererProps } from './types';
 import { wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
@@ -75,8 +74,8 @@ function Cell<R, SR>({
       const gridTop = top + docTop;
 
       if (column.editor2 !== undefined) {
-        const editor2 = (
-          <column.editor2
+        return (
+          <EditorContainer2
             {...editor2Props}
             rowIdx={rowIdx}
             column={column}
@@ -84,15 +83,9 @@ function Cell<R, SR>({
             top={gridTop}
           />
         );
-
-        if (column.editorOptions?.createPortal) {
-          return createPortal(editor2, editorPortalTarget);
-        }
-
-        return editor2;
       }
 
-      const editor1 = (
+      const editor = (
         <EditorContainer<R, SR>
           {...editorContainerProps}
           rowIdx={rowIdx}
@@ -106,12 +99,12 @@ function Cell<R, SR>({
       if (column.editorOptions?.createPortal !== false) {
         return (
           <EditorPortal target={editorPortalTarget}>
-            {editor1}
+            {editor}
           </EditorPortal>
         );
       }
 
-      return editor1;
+      return editor;
     }
 
     return (

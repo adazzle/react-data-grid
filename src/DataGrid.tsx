@@ -462,7 +462,7 @@ function DataGrid<R, K extends keyof R, SR>({
       return;
     }
 
-    column.editorOptions?.onCellInput?.(event);
+    column.editorOptions?.onCellKeyDown?.(event);
     if (event.isDefaultPrevented()) return;
 
     if (isCellEditable(selectedPosition) && defaultCellInput(event)) {
@@ -829,7 +829,6 @@ function DataGrid<R, K extends keyof R, SR>({
               bottom={rowHeight * (summaryRows.length - 1 - rowIdx)}
               viewportColumns={viewportColumns}
               lastFrozenColumnIndex={lastFrozenColumnIndex}
-              onClick={handleCommit2}
             />
           ))}
         </>

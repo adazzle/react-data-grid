@@ -44,11 +44,12 @@ export interface Column<TRow, TSummaryRow = unknown> {
     createPortal?: boolean;
     /** Default: false */
     editOnClick?: boolean;
+    /** Prevent default to cancel editing */
+    onCellKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
     // TODO: Do we need these options
     // editOnDoubleClick?: boolean;
+    /** Default: true for editor1 and false for editor2 */
     // commitOnScroll?: boolean;
-    // commitOnOutsideClick?: boolean;
-    onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>) => void; // Prevent default to cancel editing
   };
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
@@ -137,19 +138,19 @@ interface SelectedCellPropsBase {
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-interface SelectedCellPropsEdit<TRow> extends SelectedCellPropsBase {
+interface SelectedCellEditProps<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
   editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
   editor2Props: SharedEditor2Props<TRow>;
 }
 
-interface SelectedCellPropsSelect extends SelectedCellPropsBase {
+interface SelectedCellSelectProps extends SelectedCellPropsBase {
   mode: 'SELECT';
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 
-export type SelectedCellProps<TRow> = SelectedCellPropsEdit<TRow> | SelectedCellPropsSelect;
+export type SelectedCellProps<TRow> = SelectedCellEditProps<TRow> | SelectedCellSelectProps;
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
