@@ -49,7 +49,7 @@ import { useRef, useEffect } from 'react';
  * To solve this issue onClickCapture event is used.
  */
 
-export function useClickOutside(onClick?: () => void) {
+export function useClickOutside(onClick: () => void) {
   const clickedInsideRef = useRef(false);
   // We need to prevent the `useEffect` from cleaning up between re-renders,
   // as `handleDocumentClick` might otherwise miss valid click events.
