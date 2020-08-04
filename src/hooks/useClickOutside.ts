@@ -54,7 +54,9 @@ export function useClickOutside(onClick: () => void) {
   // We need to prevent the `useEffect` from cleaning up between re-renders,
   // as `handleDocumentClick` might otherwise miss valid click events.
   // To that end we instead access the latest `onClick` prop via a ref.
-  const onClickRef = useRef<() => void>();
+  const onClickRef = useRef((): void => {
+    throw new Error('Cannot call an event handler while rendering.');
+  });
 
   useEffect(() => {
     onClickRef.current = onClick;
@@ -65,7 +67,7 @@ export function useClickOutside(onClick: () => void) {
       if (clickedInsideRef.current) {
         clickedInsideRef.current = false;
       } else {
-        onClickRef.current?.();
+        onClickRef.current();
       }
     }
 
