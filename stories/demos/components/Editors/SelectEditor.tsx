@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import Select, { OptionTypeBase, OptionsType } from 'react-select';
 
 interface SelectEditorProps {
@@ -10,16 +10,17 @@ interface SelectEditorProps {
 }
 
 export function SelectEditor<R>({ value, onChange, options, rowHeight, menuPortalTarget }: SelectEditorProps) {
-  const selectRef = useRef<Select<OptionTypeBase>>(null);
+  const [isMenuOpen, setMenuOpen] = useState(true);
   return (
     <Select
       autoFocus
       defaultMenuIsOpen
-      ref={selectRef}
       value={options.find(o => o.value === value)}
       onChange={o => onChange(o.value)}
       options={options}
       menuPortalTarget={menuPortalTarget as HTMLElement}
+      onMenuOpen={() => setMenuOpen(true)}
+      onMenuClose={() => setMenuOpen(false)}
       styles={{
         control: (provided) => ({
           ...provided,
@@ -33,7 +34,7 @@ export function SelectEditor<R>({ value, onChange, options, rowHeight, menuPorta
         })
       }}
       onKeyDown={event => {
-        if (['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key) && selectRef.current!.getProp('menuIsOpen')) {
+        if (['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key) && isMenuOpen) {
           event.stopPropagation();
         }
 
