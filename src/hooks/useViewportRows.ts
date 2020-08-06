@@ -1,16 +1,26 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { groupBy as lodashGroupBy, Dictionary } from 'lodash';
 
 import { GroupedRow, GroupByDictionary } from '../types';
+import { getVerticalRangeToRender } from '../utils';
 
-interface CalculatedRowsArgs<R, SR> {
+interface ViewportRowsArgs<R, SR> {
   rawRows: readonly R[];
+  rowHeight: number;
+  clientHeight: number;
+  scrollTop: number;
   groupBy?: readonly string[];
+  expandedGroupIds?: Set<unknown>;
 }
 
-export function useViewportRows<R, SR>({ rawRows, groupBy }: CalculatedRowsArgs<R, SR>) {
-  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<string>>(new Set());
-
+export function useViewportRows<R, SR>({
+  rawRows,
+  rowHeight,
+  clientHeight,
+  scrollTop,
+  groupBy,
+  expandedGroupIds
+}: ViewportRowsArgs<R, SR>) {
   const groupedRows = useMemo(() => {
     if (!groupBy || groupBy.length === 0) return;
 
@@ -28,13 +38,13 @@ export function useViewportRows<R, SR>({ rawRows, groupBy }: CalculatedRowsArgs<
     return groupParent(rawRows, groupBy);
   }, [groupBy, rawRows]);
 
-  const [calculatedRows, totalRowCount] = useMemo(() => {
+  const [rows, totalRowCount] = useMemo(() => {
     if (!groupedRows) return [rawRows, rawRows.length];
 
     function expandGroup(groupedRows: GroupByDictionary<R>, level: number): Array<GroupedRow | R> {
       const flattenedRows: Array<R | GroupedRow> = [];
       for (const key in groupedRows) {
-        const isExpanded = expandedGroupIds.has(key);
+        const isExpanded = expandedGroupIds?.has(key) ?? false;
         flattenedRows.push({ key, __isGroup: true, level, isExpanded });
         if (isExpanded) {
           const groupedRow = groupedRows[key];
@@ -51,15 +61,19 @@ export function useViewportRows<R, SR>({ rawRows, groupBy }: CalculatedRowsArgs<
     return [expandGroup(groupedRows, 0), 0];
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  function toggleGroup(key: string) {
-    const newExpandedGroupIds = new Set(expandedGroupIds);
-    if (expandedGroupIds.has(key)) {
-      newExpandedGroupIds.delete(key);
-    } else {
-      newExpandedGroupIds.add(key);
-    }
-    setExpandedGroupIds(newExpandedGroupIds);
-  }
+  const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
+    clientHeight,
+    rowHeight,
+    scrollTop,
+    rows.length
+  );
 
-  return { calculatedRows, totalRowCount, toggleGroup };
+  const viewportRows = rows.slice(rowOverscanStartIdx, rowOverscanEndIdx + 1);
+
+  return {
+    viewportRows,
+    rows,
+    startRowIdx: rowOverscanStartIdx,
+    totalRowCount
+  };
 }

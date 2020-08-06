@@ -32,6 +32,7 @@ export function useViewportColumns<R, K extends keyof R, SR>({
     const groupByColumns: Column<R, SR>[] = rawColumns
       .filter(c => groupBy.includes(c.key))
       .map(f => {
+        // TODO: move the logic to GroupedRow
         const updatedColumn: Column<R, SR> = { ...f };
         updatedColumn.frozen = true;
         updatedColumn.formatter = (p) => {
