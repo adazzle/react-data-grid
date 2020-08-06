@@ -6,18 +6,16 @@ import React, {
   useEffect,
   useImperativeHandle,
   useCallback,
-  createElement,
-  useMemo
+  createElement
 } from 'react';
 import clsx from 'clsx';
-import { groupBy as lodashGroupBy } from 'lodash';
 
-import { useGridWidth, useViewportColumns } from './hooks';
+import { useGridWidth, useViewportColumns, useViewportRows } from './hooks';
 import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
-import GroupedRow from './GroupedRow';
+import GroupedRowRenderer from './GroupedRow';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
 import { legacyCellInput } from './editors';
@@ -29,7 +27,8 @@ import {
   getNextSelectedCellPosition,
   isSelectedCellEditable,
   canExitGrid,
-  isCtrlKeyHeldDown
+  isCtrlKeyHeldDown,
+  isGroupedRow
 } from './utils';
 
 import {
@@ -54,11 +53,6 @@ interface SelectCellState extends Position {
 interface EditCellState extends Position {
   mode: 'EDIT';
   key: string | null;
-}
-
-interface GroupedRow {
-  __isGroup: boolean;
-  key: string;
 }
 
 export interface DataGridHandle {
@@ -129,7 +123,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   onSort?: (columnKey: string, direction: SortDirection) => void;
   filters?: Filters;
   onFiltersChange?: (filters: Filters) => void;
-  groupBy?: string; // TODO: support multiple columns and custom grouping logic
+  groupBy?: readonly string[]; // TODO: support custom grouping logic
 
   /**
    * Custom renderers
@@ -179,7 +173,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
 function DataGrid<R, K extends keyof R, SR>({
   // Grid and data Props
   columns: rawColumns,
-  rows,
+  rows: rawRows,
   summaryRows,
   rowKey,
   onRowsUpdate,
@@ -233,7 +227,6 @@ function DataGrid<R, K extends keyof R, SR>({
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<string>>(new Set());
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -274,25 +267,7 @@ function DataGrid<R, K extends keyof R, SR>({
     - summaryRowsCount * rowHeight
     - (totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
-  const groupedRows = useMemo(() => {
-    if (!groupBy) return;
-    return lodashGroupBy(rows, groupBy);
-  }, [groupBy, rows]);
-
-  const [calculatedRows, totalRowCount] = useMemo(() => {
-    if (!groupedRows) return [rows, rows.length];
-
-    const flattenedRows = [];
-    let rowCount = 0;
-    for (const key in groupedRows) {
-      flattenedRows.push({ key, __isGroup: true });
-      if (expandedGroupIds.has(key)) {
-        flattenedRows.push(...groupedRows[key]);
-      }
-      rowCount = rowCount + groupedRows[key].length + 1;
-    }
-    return [flattenedRows, rowCount];
-  }, [expandedGroupIds, groupedRows, rows]);
+  const { calculatedRows, totalRowCount, toggleGroup } = useViewportRows({ rawRows, groupBy });
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -426,7 +401,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function handleCommit({ cellKey, rowIdx, updated }: CommitEvent) {
     if (groupBy) {
-      rowIdx = rows.indexOf(calculatedRows[rowIdx] as R);
+      rowIdx = rawRows.indexOf(calculatedRows[rowIdx] as R);
     }
     onRowsUpdate?.({
       cellKey,
@@ -441,7 +416,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    const value = rows[rowIdx][columns[idx].key as keyof R];
+    const value = rawRows[rowIdx][columns[idx].key as keyof R];
     setCopiedPosition({ idx, rowIdx, value });
   }
 
@@ -489,7 +464,7 @@ function DataGrid<R, K extends keyof R, SR>({
     const { idx, rowIdx } = selectedPosition;
     const column = columns[idx];
     const cellKey = column.key;
-    const value = rows[rowIdx][cellKey as keyof R];
+    const value = rawRows[rowIdx][cellKey as keyof R];
 
     onRowsUpdate?.({
       cellKey,
@@ -528,12 +503,12 @@ function DataGrid<R, K extends keyof R, SR>({
 
     const column = columns[selectedPosition.idx];
     const cellKey = column.key;
-    const value = rows[selectedPosition.rowIdx][cellKey as keyof R];
+    const value = rawRows[selectedPosition.rowIdx][cellKey as keyof R];
 
     onRowsUpdate?.({
       cellKey,
       fromRow: selectedPosition.rowIdx,
-      toRow: rows.length - 1,
+      toRow: rawRows.length - 1,
       updated: { [cellKey]: value } as unknown as never,
       action: UpdateActions.COLUMN_FILL
     });
@@ -542,9 +517,6 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * utils
    */
-  function isGroupedRow(row: R | GroupedRow): row is GroupedRow {
-    return (row as GroupedRow).__isGroup !== undefined;
-  }
 
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
     return rowIdx >= 0 && rowIdx < calculatedRows.length && idx >= 0 && idx < columns.length;
@@ -552,7 +524,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function isCellEditable(position: Position): boolean {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
+      && isSelectedCellEditable<R, SR>({ columns, rows: rawRows, selectedPosition: position, onCheckCellIsEditable });
   }
 
   function selectCell(position: Position, enableEditor = false): void {
@@ -710,27 +682,20 @@ function DataGrid<R, K extends keyof R, SR>({
       if (isGroupedRow(row)) {
         const { key } = row;
         rowElements.push(
-          <GroupedRow
+          <GroupedRowRenderer
             aria-rowindex={headerRowsCount + rowIdx + 1}
             key={key}
             groupKey={key}
             top={top}
+            columnWidth={row.level}
             width={viewportWidth - getScrollbarSize()}
-            isExpanded={expandedGroupIds.has(key)}
+            isExpanded={row.isExpanded}
             isSelected={selectedPosition.rowIdx === rowIdx}
             onClick={() => {
               setSelectedPosition(({ idx }) => ({ idx: idx === -1 ? 0 : idx, rowIdx, mode: 'SELECT' }));
             }}
             onKeyDown={handleKeyDown}
-            toggleGroup={() => {
-              const newExpandedGroupIds = new Set(expandedGroupIds);
-              if (expandedGroupIds.has(key)) {
-                newExpandedGroupIds.delete(key);
-              } else {
-                newExpandedGroupIds.add(key);
-              }
-              setExpandedGroupIds(newExpandedGroupIds);
-            }}
+            toggleGroup={() => toggleGroup(key)}
           />
         );
         continue;
@@ -801,11 +766,11 @@ function DataGrid<R, K extends keyof R, SR>({
     >
       <HeaderRow<R, K, SR>
         rowKey={rowKey}
-        rows={rows}
+        rows={rawRows}
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
-        allRowsSelected={selectedRows?.size === rows.length}
+        allRowsSelected={selectedRows?.size === rawRows.length}
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
         sortDirection={sortDirection}

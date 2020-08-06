@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
-import { CalculatedColumn } from '../types';
-import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns } from '../utils';
+import { CalculatedColumn, Column } from '../types';
+import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns, canEdit, isGroupedRow } from '../utils';
 import { DataGridProps } from '../DataGrid';
 
 type SharedDataGridProps<R, K extends keyof R, SR> =
@@ -12,7 +12,7 @@ interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridPr
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
-  groupBy?: string;
+  groupBy?: readonly string[];
 }
 
 export function useViewportColumns<R, K extends keyof R, SR>({
@@ -25,17 +25,36 @@ export function useViewportColumns<R, K extends keyof R, SR>({
   groupBy
 }: ViewportColumnsArgs<R, K, SR>) {
   rawColumns = useMemo(() => {
-    if (!groupBy) return rawColumns;
+    if (!groupBy || groupBy.length === 0) return rawColumns;
+
     // TODO: make it generic
     const selectColumn = rawColumns.find(c => c.key === 'select-row');
-    const groupByColumn = rawColumns.find(c => c.key === groupBy);
-    const remaningColumns = rawColumns.filter(c => c.key !== groupBy && c.key !== 'select-row');
+    const groupByColumns: Column<R, SR>[] = rawColumns
+      .filter(c => groupBy.includes(c.key))
+      .map(f => {
+        const updatedColumn: Column<R, SR> = { ...f };
+        updatedColumn.frozen = true;
+        updatedColumn.formatter = (p) => {
+          if (isGroupedRow(p.row)) {
+            const F = f.formatter || defaultFormatter;
+            return <F {...p} />;
+          }
+          return null;
+        };
+        updatedColumn.editable = row => {
+          return isGroupedRow(row) ? false : canEdit(updatedColumn, row);
+        };
+        return updatedColumn;
+      })
+      .sort((c1, c2) => groupBy.findIndex(k => k === c1.key) - groupBy.findIndex(k => k === c2.key));
+
+    const remaningColumns = rawColumns.filter(c => !groupBy.includes(c.key) && c.key !== 'select-row');
     return [
       selectColumn!,
-      { ...groupByColumn!, frozen: true },
+      ...groupByColumns,
       ...remaningColumns
     ];
-  }, [groupBy, rawColumns]);
+  }, [defaultFormatter, groupBy, rawColumns]);
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({

@@ -105,7 +105,7 @@ function clampColumnWidth<R, SR>(
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to decide whether we can be editing from a cell level
-export function canEdit<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
+export function canEdit<R, SR>(column: Column<R, SR>, row: R): boolean {
   if (typeof column.editable === 'function') {
     return column.editable(row);
   }

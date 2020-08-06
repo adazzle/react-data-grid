@@ -11,6 +11,7 @@ interface GroupedRowProps extends SharedDivProps {
   groupKey: string;
   top: number;
   width: number;
+  columnWidth: number;
   isExpanded: boolean;
   isSelected: boolean;
   toggleGroup: () => void;
@@ -21,6 +22,7 @@ export default function GroupedRow({
   groupKey,
   top,
   width,
+  columnWidth,
   isExpanded,
   isSelected,
   onClick,
@@ -50,7 +52,7 @@ export default function GroupedRow({
     >
       <div
         className={clsx('rdg-cell', 'rdg-cell-frozen', { 'rdg-cell-selected': isSelected })}
-        style={{ left: 0, paddingLeft: 8, width }}
+        style={{ left: 0, paddingLeft: 8 + columnWidth, width }}
         onClick={onClick}
         onKeyDown={onKeyDown}
       >
@@ -61,7 +63,7 @@ export default function GroupedRow({
           onClick={toggleGroup}
           onKeyDown={handleKeyDown}
         >
-          {isExpanded ? '\u25BC' : '\u25B6'} {groupKey}
+          {groupKey}{' '}{isExpanded ? '\u25BC' : '\u25B6'}
         </span>
       </div>
     </div>

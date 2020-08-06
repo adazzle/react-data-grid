@@ -214,6 +214,8 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
+const groupBy = ['country', 'area'];
+
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
@@ -287,7 +289,7 @@ export default function CommonFeatures() {
           sortDirection={sortDirection}
           onSort={handleSort}
           summaryRows={summaryRows}
-          groupBy="country"
+          groupBy={groupBy}
         />
       )}
     </AutoSizer>
