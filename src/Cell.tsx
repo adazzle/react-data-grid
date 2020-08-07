@@ -64,42 +64,61 @@ function Cell<R, SR>({
   }
 
   function getCellContent() {
-    if (selectedCellProps && selectedCellProps.mode === 'EDIT') {
-      const { editorPortalTarget, ...editorProps } = selectedCellProps.editorContainerProps;
-      const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
-      const { left, top } = cellRef.current!.getBoundingClientRect();
-      const gridLeft = left + docLeft;
-      const gridTop = top + docTop;
+    let render;
 
-      return (
-        <EditorPortal target={editorPortalTarget}>
-          <EditorContainer<R, SR>
-            {...editorProps}
+    if (selectedCellProps && selectedCellProps.mode === 'SELECT') {
+      render = (
+        <>
+          <column.formatter
+            column={column}
             rowIdx={rowIdx}
             row={row}
-            column={column}
-            left={gridLeft}
-            top={gridTop}
+            isCellSelected={isSelected}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
           />
-        </EditorPortal>
+          {selectedCellProps?.dragHandleProps && (
+            <div className="rdg-cell-drag-handle" {...selectedCellProps.dragHandleProps} />
+          )}
+        </>
       );
     }
 
-    return (
-      <>
-        <column.formatter
-          column={column}
-          rowIdx={rowIdx}
-          row={row}
-          isCellSelected={isSelected}
-          isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
-        />
-        {selectedCellProps?.dragHandleProps && (
-          <div className="rdg-cell-drag-handle" {...selectedCellProps.dragHandleProps} />
-        )}
-      </>
-    );
+    if (selectedCellProps && selectedCellProps.mode === 'EDIT') {
+      const { editorPortalTarget, ...editorProps } = selectedCellProps.editorContainerProps;
+      const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
+      if (cellRef.current) {
+        const { left, top } = cellRef.current.getBoundingClientRect();
+        const gridLeft = left + docLeft;
+        const gridTop = top + docTop;
+        render = (
+          <EditorPortal target={editorPortalTarget}>
+            <EditorContainer<R, SR>
+              {...editorProps}
+              rowIdx={rowIdx}
+              row={row}
+              column={column}
+              left={gridLeft}
+              top={gridTop}
+            />
+          </EditorPortal>
+        );
+      } else {
+        // 未获得 cellRef.current 正常显示表格
+        render = (
+          <column.formatter
+            column={column}
+            rowIdx={rowIdx}
+            row={row}
+            isCellSelected={isSelected}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+          />
+        );
+      }
+    }
+
+    return render;
   }
 
   return (

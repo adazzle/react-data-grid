@@ -119,7 +119,7 @@ interface SelectedCellPropsEdit extends SelectedCellPropsBase {
   editorContainerProps: SharedEditorContainerProps;
 }
 
-interface SelectedCellPropsSelect extends SelectedCellPropsBase {
+export interface SelectedCellPropsSelect extends SelectedCellPropsBase {
   mode: 'SELECT';
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
