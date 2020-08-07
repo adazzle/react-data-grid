@@ -15,7 +15,7 @@ import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
-import GroupedRow from './GroupedRow';
+import GroupRow from './GroupRow';
 import SummaryRow from './SummaryRow';
 import { ValueFormatter } from './formatters';
 import { legacyCellInput } from './editors';
@@ -38,6 +38,7 @@ import {
   FormatterProps,
   Position,
   RowRendererProps,
+  GroupRowRendererProps,
   RowsUpdateEvent,
   SelectRowEvent,
   CommitEvent,
@@ -129,6 +130,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    */
   defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
+  groupRowRenderer?: React.ComponentType<GroupRowRendererProps<R, SR>>;
   emptyRowsRenderer?: React.ComponentType;
 
   /**
@@ -195,6 +197,7 @@ function DataGrid<R, K extends keyof R, SR>({
   // Custom renderers
   defaultFormatter = ValueFormatter,
   rowRenderer: RowRenderer = Row,
+  groupRowRenderer: GroupRowRenderer = GroupRow,
   emptyRowsRenderer,
   // Event props
   onRowClick,
@@ -332,6 +335,28 @@ function DataGrid<R, K extends keyof R, SR>({
 
   useEffect(() => {
     return eventBus.subscribe('SELECT_CELL', selectCell);
+  });
+
+  useEffect(() => {
+    function toggleGroup(expandedGroupId: unknown) {
+      const newExpandedGroupIds = new Set(expandedGroupIds);
+      if (expandedGroupIds.has(expandedGroupId)) {
+        newExpandedGroupIds.delete(expandedGroupId);
+      } else {
+        newExpandedGroupIds.add(expandedGroupId);
+      }
+      setExpandedGroupIds(newExpandedGroupIds);
+    }
+
+    return eventBus.subscribe('TOGGLE_GROUP', toggleGroup);
+  }, [eventBus, expandedGroupIds]);
+
+  useEffect(() => {
+    function selectGroupRow(rowIdx: number) {
+      const idx = selectedPosition.idx === -1 ? 0 : selectedPosition.idx;
+      selectCell({ idx, rowIdx });
+    }
+    return eventBus.subscribe('SELECT_GROUP_ROW', selectGroupRow);
   });
 
   useImperativeHandle(ref, () => ({
@@ -635,16 +660,6 @@ function DataGrid<R, K extends keyof R, SR>({
     selectCell(nextPosition);
   }
 
-  function toggleGroup(key: string) {
-    const newExpandedGroupIds = new Set(expandedGroupIds);
-    if (expandedGroupIds.has(key)) {
-      newExpandedGroupIds.delete(key);
-    } else {
-      newExpandedGroupIds.add(key);
-    }
-    setExpandedGroupIds(newExpandedGroupIds);
-  }
-
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
     if (draggedOverRowIdx === undefined) return;
     const { rowIdx } = selectedPosition;
@@ -692,21 +707,19 @@ function DataGrid<R, K extends keyof R, SR>({
       const top = rowIdx * rowHeight + totalHeaderHeight;
       if (isGroupedRow(row)) {
         const { key } = row;
+        const isSelected = selectedPosition.rowIdx === rowIdx;
         return (
-          <GroupedRow
-            aria-rowindex={headerRowsCount + rowIdx + 1}
-            key={key}
-            groupKey={key}
+          <GroupRowRenderer
+            aria-rowindex={headerRowsCount + rowIdx + 1} // TODO: fix index
+            key={key as string}
+            viewportColumns={viewportColumns}
+            row={row}
+            rowIdx={rowIdx}
             top={top}
-            columnWidth={row.level}
             width={viewportWidth - getScrollbarSize()}
-            isExpanded={row.isExpanded}
-            isSelected={selectedPosition.rowIdx === rowIdx}
-            onClick={() => {
-              setSelectedPosition(({ idx }) => ({ idx: idx === -1 ? 0 : idx, rowIdx, mode: 'SELECT' }));
-            }}
-            onKeyDown={handleKeyDown}
-            toggleGroup={() => toggleGroup(key)}
+            isSelected={isSelected}
+            eventBus={eventBus}
+            onKeyDown={isSelected ? handleKeyDown : undefined}
           />
         );
       }

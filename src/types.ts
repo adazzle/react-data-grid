@@ -157,6 +157,16 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
 }
 
+export interface GroupRowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
+  row: Readonly<GroupRow>;
+  rowIdx: number;
+  top: number;
+  width: number;
+  isSelected: boolean;
+  eventBus: EventBus;
+}
+
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   value: TFilterValue;
@@ -193,9 +203,9 @@ export interface SelectRowEvent {
 
 export type GroupByDictionary<TRow> = Dictionary<TRow[]> | Dictionary<GroupByDictionary<TRow>>;
 
-export interface GroupedRow {
+export interface GroupRow {
   __isGroup: boolean;
-  key: string;
+  key: unknown;
   level: number;
   isExpanded: boolean;
 }

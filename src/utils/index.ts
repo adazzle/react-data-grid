@@ -1,4 +1,4 @@
-import { GroupedRow } from '../types';
+import { GroupRow } from '../types';
 
 export * from './domUtils';
 export * from './columnUtils';
@@ -6,8 +6,8 @@ export * from './viewportUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
-export function isGroupedRow<R>(row: R | GroupedRow): row is GroupedRow {
-  return (row as GroupedRow).__isGroup !== undefined;
+export function isGroupedRow<R>(row: R | GroupRow): row is GroupRow {
+  return (row as GroupRow).__isGroup !== undefined;
 }
 
 export function assertIsValidKey<R>(key: unknown): asserts key is keyof R {

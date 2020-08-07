@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { groupBy as lodashGroupBy, Dictionary } from 'lodash';
 
-import { GroupedRow, GroupByDictionary } from '../types';
+import { GroupRow, GroupByDictionary } from '../types';
 import { getVerticalRangeToRender } from '../utils';
 
 interface ViewportRowsArgs<R, SR> {
@@ -41,13 +41,13 @@ export function useViewportRows<R, SR>({
   const [rows, totalRowCount] = useMemo(() => {
     if (!groupedRows) return [rawRows, rawRows.length];
 
-    function expandGroup(groupedRows: GroupByDictionary<R>, level: number): Array<GroupedRow | R> {
-      const flattenedRows: Array<R | GroupedRow> = [];
-      for (const key in groupedRows) {
+    function expandGroup(rows: GroupByDictionary<R>, level: number): Array<GroupRow | R> {
+      const flattenedRows: Array<R | GroupRow> = [];
+      for (const key in rows) {
         const isExpanded = expandedGroupIds?.has(key) ?? false;
         flattenedRows.push({ key, __isGroup: true, level, isExpanded });
         if (isExpanded) {
-          const groupedRow = groupedRows[key];
+          const groupedRow = rows[key];
           if (Array.isArray(groupedRow)) {
             flattenedRows.push(...groupedRow);
           } else {
