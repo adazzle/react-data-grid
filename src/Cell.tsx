@@ -64,7 +64,16 @@ function Cell<R, SR>({
   }
 
   function getCellContent() {
-    let render;
+    let render = (
+      <column.formatter
+        column={column}
+        rowIdx={rowIdx}
+        row={row}
+        isCellSelected={isSelected}
+        isRowSelected={isRowSelected}
+        onRowSelectionChange={onRowSelectionChange}
+      />
+    );
 
     if (selectedCellProps && selectedCellProps.mode === 'SELECT') {
       render = (
@@ -102,18 +111,6 @@ function Cell<R, SR>({
               top={gridTop}
             />
           </EditorPortal>
-        );
-      } else {
-        // 未获得 cellRef.current 正常显示表格
-        render = (
-          <column.formatter
-            column={column}
-            rowIdx={rowIdx}
-            row={row}
-            isCellSelected={isSelected}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
-          />
         );
       }
     }
