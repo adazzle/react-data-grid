@@ -190,11 +190,6 @@ export interface SelectRowEvent {
   isShiftClick: boolean;
 }
 
-export interface KeyDownEvent {
-  event: React.KeyboardEvent<HTMLDivElement>;
-  selectedPosition: Position;
-}
-
 export interface SortColumn {
   columnKey: string;
   sortDirection: SortDirection;
