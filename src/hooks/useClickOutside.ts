@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 
 /**
  * Detecting outside click on a react component is surprisingly hard.
@@ -49,12 +49,7 @@ import React, { useRef, useEffect } from 'react';
  * To solve this issue onClickCapture event is used.
  */
 
-interface Props {
-  children: React.ReactElement;
-  onClickOutside: () => void;
-}
-
-export default function ClickOutside({ onClickOutside, children }: Props) {
+export function useClickOutside(onClickOutside: () => void) {
   const isClickedInside = useRef(false);
 
   useEffect(() => {
@@ -70,13 +65,9 @@ export default function ClickOutside({ onClickOutside, children }: Props) {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  }, [onClickOutside]);
+  });
 
-  return React.cloneElement(
-    React.Children.only(children), {
-      onClickCapture() {
-        isClickedInside.current = true;
-      }
-    }
-  );
+  return function onClickCapture() {
+    isClickedInside.current = true;
+  };
 }

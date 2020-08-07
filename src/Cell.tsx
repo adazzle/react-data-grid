@@ -2,7 +2,7 @@ import React, { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
 import { EditorContainer, EditorPortal } from './editors';
-import { CellRendererProps } from './common/types';
+import { CellRendererProps } from './types';
 import { wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 
@@ -91,6 +91,7 @@ function Cell<R, SR>({
           column={column}
           rowIdx={rowIdx}
           row={row}
+          isCellSelected={isSelected}
           isRowSelected={isRowSelected}
           onRowSelectionChange={onRowSelectionChange}
         />
@@ -103,6 +104,9 @@ function Cell<R, SR>({
 
   return (
     <div
+      role="gridcell"
+      aria-colindex={column.idx + 1} // aria-colindex is 1-based
+      aria-selected={isSelected}
       ref={useCombinedRefs(cellRef, ref)}
       className={className}
       style={{

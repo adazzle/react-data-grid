@@ -1,10 +1,22 @@
 import React, { createElement } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn, SortColumn } from './types';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
+import { SortDirection } from './enums';
+
+function getAriaSort(sortDirection?: SortDirection) {
+  switch (sortDirection) {
+    case 'ASC':
+      return 'ascending';
+    case 'DESC':
+      return 'descending';
+    default:
+      return 'none';
+  }
+}
 
 type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
   | 'sortColumn'
@@ -27,7 +39,7 @@ export default function HeaderCell<R, SR>({
   allRowsSelected,
   onAllRowsSelectionChange,
   sortColumn,
-  sortDirection,
+  sortDirection = [],
   onSort
 }: HeaderCellProps<R, SR>) {
   function getCell() {
@@ -59,9 +71,13 @@ export default function HeaderCell<R, SR>({
     width: column.width,
     left: column.left
   };
+  const sortDir: SortColumn | undefined = sortDirection.find(ele => ele.columnKey === column.key);
 
   cell = (
     <div
+      role="columnheader"
+      aria-colindex={column.idx + 1}
+      aria-sort={sortColumn === column.key ? getAriaSort(sortDir?.sortDirection) : undefined}
       className={className}
       style={style}
     >

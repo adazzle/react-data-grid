@@ -122,7 +122,6 @@ export default function ColumnsReordering() {
         columns={draggableColumns}
         rows={sortedRows}
         sortColumn={sortColumn}
-        sortDirection={sortDirection}
         onSort={handleSort}
       />
     </DndProvider>

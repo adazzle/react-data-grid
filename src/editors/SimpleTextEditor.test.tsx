@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import SimpleTextEditor from './SimpleTextEditor';
 import { ValueFormatter } from '../formatters';
-import { CalculatedColumn } from '../common/types';
+import { CalculatedColumn } from '../types';
 
 interface Row { text: string }
 

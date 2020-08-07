@@ -1,7 +1,7 @@
 import React, { createElement, memo } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Filters } from './common/types';
+import { CalculatedColumn, Filters } from './types';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
@@ -27,7 +27,11 @@ function FilterRow<R, SR>({
   }
 
   return (
-    <div className="rdg-filter-row">
+    <div
+      role="row"
+      aria-rowindex={2}
+      className="rdg-filter-row"
+    >
       {columns.map(column => {
         const { key } = column;
 

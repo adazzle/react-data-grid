@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent } from 'react';
 import { UpdateActions, SortDirection } from './enums';
-import EventBus from '../EventBus';
+import EventBus from './EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -21,6 +21,9 @@ export interface Column<TRow, TSummaryRow = unknown> {
   summaryCellClass?: string | ((row: TSummaryRow) => string);
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
+  formatterOptions?: {
+    focusable?: boolean;
+  };
   /** Formatter to be used to render the summary cell content */
   summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
@@ -69,6 +72,7 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  isCellSelected: boolean;
   isRowSelected: boolean;
   onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
 }

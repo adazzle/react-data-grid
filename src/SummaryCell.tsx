@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import { CellRendererProps } from './common/types';
+import { CellRendererProps } from './types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'lastFrozenColumnIndex'
@@ -28,7 +28,12 @@ function SummaryCell<R, SR>({
   );
 
   return (
-    <div className={className} style={{ width, left }}>
+    <div
+      role="gridcell"
+      aria-colindex={column.idx + 1}
+      className={className}
+      style={{ width, left }}
+    >
       {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>
   );

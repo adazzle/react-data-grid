@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowRendererProps } from './common/types';
+import { RowRendererProps } from './types';
 import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({
@@ -22,6 +22,8 @@ function Row<R, SR = unknown>({
   setDraggedOverRowIdx,
   onMouseEnter,
   top,
+  'aria-rowindex': ariaRowIndex,
+  'aria-selected': ariaSelected,
   ...props
 }: RowRendererProps<R, SR>) {
   function handleDragEnter() {
@@ -38,6 +40,9 @@ function Row<R, SR = unknown>({
 
   return (
     <div
+      role="row"
+      aria-rowindex={ariaRowIndex}
+      aria-selected={ariaSelected}
       className={className}
       onMouseEnter={wrapEvent(handleDragEnter, onMouseEnter)}
       style={{ top }}

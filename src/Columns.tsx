@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectCellFormatter } from './formatters';
-import { Column } from './common/types';
+import { Column } from './types';
 
 // TODO: fix type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,6 +13,7 @@ export const SelectColumn: Column<any, any> = {
   headerRenderer(props) {
     return (
       <SelectCellFormatter
+        aria-label="Select All"
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}
       />
@@ -21,9 +22,15 @@ export const SelectColumn: Column<any, any> = {
   formatter(props) {
     return (
       <SelectCellFormatter
+        aria-label="Select"
+        tabIndex={-1}
+        isCellSelected={props.isCellSelected}
         value={props.isRowSelected}
         onChange={props.onRowSelectionChange}
       />
     );
+  },
+  formatterOptions: {
+    focusable: true
   }
 };

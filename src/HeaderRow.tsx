@@ -1,7 +1,7 @@
 import React, { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn } from './types';
 import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 
@@ -49,7 +49,11 @@ function HeaderRow<R, K extends keyof R, SR>({
   }, [onSelectedRowsChange, rows, rowKey]);
 
   return (
-    <div className="rdg-header-row">
+    <div
+      role="row"
+      aria-rowindex={1} // aria-rowindex is 1 based
+      className="rdg-header-row"
+    >
       {columns.map(column => {
         return (
           <HeaderCell<R, SR>

@@ -1,6 +1,6 @@
-import { CellNavigationMode } from '../common/enums';
+import { CellNavigationMode } from '../enums';
 import { canEdit } from './columnUtils';
-import { CalculatedColumn, Position } from '../common/types';
+import { CalculatedColumn, Position } from '../types';
 
 interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;

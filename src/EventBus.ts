@@ -1,4 +1,4 @@
-import { Position, SelectRowEvent } from './common/types';
+import { Position, SelectRowEvent } from './types';
 
 interface EventMap {
   SELECT_CELL: (position: Position, openEditor?: boolean) => void;
