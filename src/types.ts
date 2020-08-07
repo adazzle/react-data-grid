@@ -52,6 +52,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   idx: number;
   width: number;
   left: number;
+  rowGroup?: boolean;
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
@@ -159,7 +160,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
 
 export interface GroupRowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  row: Readonly<GroupRow>;
+  row: GroupRow;
   rowIdx: number;
   top: number;
   width: number;

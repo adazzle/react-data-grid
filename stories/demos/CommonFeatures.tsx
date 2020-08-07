@@ -214,7 +214,7 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
-const groupBy = ['country', 'area'];
+const groupBy = ['country', 'transaction'];
 
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);

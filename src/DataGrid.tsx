@@ -123,7 +123,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   onSort?: (columnKey: string, direction: SortDirection) => void;
   filters?: Filters;
   onFiltersChange?: (filters: Filters) => void;
-  groupBy?: readonly string[]; // TODO: support custom grouping logic
+  groupBy?: readonly string[]; // TODO: support custom grouping logic amd totals
 
   /**
    * Custom renderers

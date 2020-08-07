@@ -1,6 +1,7 @@
 import React, { useRef, useLayoutEffect, memo } from 'react';
 import clsx from 'clsx';
 import { GroupRowRendererProps } from './types';
+import { SELECT_COLUMN_KEY } from './Columns';
 
 function GroupedRow<R, SR>({
   'aria-rowindex': ariaRowIndex,
@@ -39,6 +40,8 @@ function GroupedRow<R, SR>({
     }
   }
 
+  const columnIndex = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
+
   return (
     <div
       role="row"
@@ -50,7 +53,7 @@ function GroupedRow<R, SR>({
     >
       <div
         className={clsx('rdg-cell', 'rdg-cell-frozen', { 'rdg-cell-selected': isSelected })}
-        style={{ left: 0, paddingLeft: viewportColumns[row.level + 1].left, width }} // TODO: how to handle checkbox?
+        style={{ left: 0, paddingLeft: viewportColumns[columnIndex].left, width }}
         onKeyDown={onKeyDown}
       >
         <span

@@ -2,10 +2,12 @@ import React from 'react';
 import { SelectCellFormatter } from './formatters';
 import { Column } from './types';
 
+export const SELECT_COLUMN_KEY = 'select-row';
+
 // TODO: fix type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SelectColumn: Column<any, any> = {
-  key: 'select-row',
+  key: SELECT_COLUMN_KEY,
   name: '',
   width: 35,
   maxWidth: 35,

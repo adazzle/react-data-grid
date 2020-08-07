@@ -85,6 +85,8 @@ function Cell<R, SR>({
       );
     }
 
+    if (column.rowGroup) return;
+
     return (
       <>
         <column.formatter
