@@ -124,4 +124,4 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;

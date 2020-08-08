@@ -15,6 +15,7 @@ import ScrollToRow from './demos/ScrollToRow';
 import CellNavigation from './demos/CellNavigation';
 import HeaderFilters from './demos/HeaderFilters';
 import ColumnsReordering from './demos/ColumnsReordering';
+import RowsReordering from './demos/RowsReordering';
 import LegacyGrouping from './demos/LegacyGrouping';
 
 storiesOf('Demos', module)
@@ -29,4 +30,5 @@ storiesOf('Demos', module)
   .add('Cell Navigation', () => <CellNavigation />)
   .add('Header Filters', () => <HeaderFilters />)
   .add('Columns Reordering', () => <ColumnsReordering />)
+  .add('Rows Reordering', () => <RowsReordering />)
   .add('Legacy Grouping', () => <LegacyGrouping />);
