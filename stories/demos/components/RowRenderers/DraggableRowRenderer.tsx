@@ -3,7 +3,7 @@ import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
 import clsx from 'clsx';
 
 import { Row, RowRendererProps } from '../../../../src';
-import { wrapRefs } from '../../../../src/utils';
+import { useCombinedRefs } from '../../../../src/hooks';
 
 import './DraggableRowRenderer.less';
 
@@ -50,7 +50,7 @@ export function DraggableRowRenderer<R, SR = unknown>({
 
   return (
     <Row
-      ref={wrapRefs(drag, drop)}
+      ref={useCombinedRefs(drag, drop)}
       rowIdx={rowIdx}
       isRowSelected={isRowSelected}
       className={className}
