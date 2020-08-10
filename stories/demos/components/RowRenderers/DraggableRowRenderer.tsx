@@ -44,8 +44,10 @@ export function DraggableRowRenderer<R, SR = unknown>({
 
   className = clsx(
     className,
-    { 'rdg-row-dragging': isDragging },
-    { 'rdg-row-over': isOver }
+    {
+      'rdg-row-dragging': isDragging,
+      'rdg-row-over': isOver
+    }
   );
 
   return (
