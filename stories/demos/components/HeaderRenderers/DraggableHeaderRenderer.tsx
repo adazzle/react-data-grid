@@ -2,23 +2,10 @@ import React from 'react';
 import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
 
 import { HeaderRendererProps } from '../../../../src';
-
+import { useCombinedRefs } from '../../../../src/hooks';
 
 interface ColumnDragObject extends DragObjectWithType {
   key: string;
-}
-
-function wrapRefs<T>(...refs: React.Ref<T>[]) {
-  return (handle: T | null) => {
-    for (const ref of refs) {
-      if (typeof ref === 'function') {
-        ref(handle);
-      } else if (ref !== null) {
-        // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31065
-        (ref as React.MutableRefObject<T | null>).current = handle;
-      }
-    }
-  };
 }
 
 export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: HeaderRendererProps<R> & { onColumnsReorder: (sourceKey: string, targetKey: string) => void }) {
@@ -44,7 +31,7 @@ export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: Heade
 
   return (
     <div
-      ref={wrapRefs(drag, drop)}
+      ref={useCombinedRefs(drag, drop)}
       style={{
         opacity: isDragging ? 0.5 : 1,
         backgroundColor: isOver ? '#ececec' : 'inherit',
