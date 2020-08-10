@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, forwardRef } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
@@ -25,7 +25,7 @@ function Row<R, SR = unknown>({
   'aria-rowindex': ariaRowIndex,
   'aria-selected': ariaSelected,
   ...props
-}: RowRendererProps<R, SR>) {
+}: RowRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   function handleDragEnter() {
     setDraggedOverRowIdx?.(rowIdx);
   }
@@ -43,6 +43,7 @@ function Row<R, SR = unknown>({
       role="row"
       aria-rowindex={ariaRowIndex}
       aria-selected={ariaSelected}
+      ref={ref}
       className={className}
       onMouseEnter={wrapEvent(handleDragEnter, onMouseEnter)}
       style={{ top }}
@@ -67,4 +68,4 @@ function Row<R, SR = unknown>({
   );
 }
 
-export default memo(Row) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
