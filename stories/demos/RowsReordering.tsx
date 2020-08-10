@@ -13,7 +13,7 @@ interface Row {
   issueType: string;
 }
 
-function createRows(): Row[] {
+function createRows(): readonly Row[] {
   const rows = [];
   for (let i = 1; i < 500; i++) {
     rows.push({
