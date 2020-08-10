@@ -480,6 +480,13 @@ html {
   font-size: 14px;
 }
 
+.rdg-row-dragging {
+  opacity: 0.5;
+}
+.rdg-row-over {
+  background-color: #ececec;
+}
+
 .rdg-row-expand-icon {
   cursor: pointer;
 }
@@ -495,4 +502,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.2a653045610ae8de7fa9.css.map*/
+/*# sourceMappingURL=0.a80d498f0e53f2a7fbd4.css.map*/
