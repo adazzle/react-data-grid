@@ -69,7 +69,8 @@ export default function HeaderCell<R, SR>({
   });
   const style: React.CSSProperties = {
     width: column.width,
-    left: column.left
+    left: column.left,
+    style: ...(column.style || {})
   };
 
   cell = (
