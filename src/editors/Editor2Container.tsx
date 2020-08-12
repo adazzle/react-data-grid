@@ -7,11 +7,11 @@ import { useClickOutside } from '../hooks';
 export default function Editor2Container<R, SR>({
   row,
   column,
-  onRowUpdate,
+  onRowChange,
   editorPortalTarget,
   ...props
 }: Editor2Props<R, SR>) {
-  const onClickCapture = useClickOutside(() => onRowUpdate(row, true));
+  const onClickCapture = useClickOutside(() => onRowChange(row, true));
   if (column.editor2 === undefined) return null;
 
   const editor = (
@@ -19,7 +19,7 @@ export default function Editor2Container<R, SR>({
       <column.editor2
         row={row}
         column={column}
-        onRowUpdate={onRowUpdate}
+        onRowChange={onRowChange}
         editorPortalTarget={editorPortalTarget}
         {...props}
       />

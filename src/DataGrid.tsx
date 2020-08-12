@@ -398,7 +398,7 @@ function DataGrid<R, K extends keyof R, SR>({
     closeEditor();
   }
 
-  function handleRowChange(row: R) {
+  function handleRowsChange(row: R) {
     const updatedRows = [...rows];
     updatedRows[selectedPosition.rowIdx] = row;
     onRowsChange?.(updatedRows);
@@ -416,7 +416,7 @@ function DataGrid<R, K extends keyof R, SR>({
       return;
     }
 
-    handleRowChange(selectedPosition.row);
+    handleRowsChange(selectedPosition.row);
   }
 
   function handleCopy() {
@@ -533,10 +533,10 @@ function DataGrid<R, K extends keyof R, SR>({
     });
   }
 
-  function handleUpdateRow(row: Readonly<R>, commitChanges?: boolean) {
+  function handleRowChange(row: Readonly<R>, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
-      handleRowChange(row);
+      handleRowsChange(row);
     } else {
       setSelectedPosition(position => ({ ...position, row }));
     }
@@ -545,7 +545,7 @@ function DataGrid<R, K extends keyof R, SR>({
   function handleOnClose(commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
-      handleRowChange(selectedPosition.row);
+      handleRowsChange(selectedPosition.row);
     }
     closeEditor();
   }
@@ -706,7 +706,7 @@ function DataGrid<R, K extends keyof R, SR>({
         editor2Props: {
           rowHeight,
           row: selectedPosition.row,
-          onRowUpdate: handleUpdateRow,
+          onRowChange: handleRowChange,
           onClose: handleOnClose
         }
       };

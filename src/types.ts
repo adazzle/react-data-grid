@@ -106,7 +106,7 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
 export interface SharedEditor2Props<TRow> {
   row: Readonly<TRow>;
   rowHeight: number;
-  onRowUpdate: (row: Readonly<TRow>, commitChanges?: boolean) => void;
+  onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }
 
