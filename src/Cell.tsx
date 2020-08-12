@@ -111,7 +111,8 @@ function Cell<R, SR>({
       className={className}
       style={{
         width: column.width,
-        left: column.left
+        left: column.left,
+        ...(column.style || {})
       }}
       onKeyDown={selectedCellProps ? wrapEvent(selectedCellProps.onKeyDown, onKeyDown) : onKeyDown}
       onClick={isEditing ? onClick : wrapEvent(handleClick, onClick)}
