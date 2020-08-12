@@ -23,6 +23,7 @@ const testProps: CellRendererProps<Row> = {
   row: { id: 1, description: 'Wicklow' },
   isRowSelected: false,
   eventBus: new EventBus(),
+  isSelected: true,
   isCopied: false,
   isDraggedOver: false
 };
@@ -63,6 +64,7 @@ describe('Cell', () => {
       row: helpers.rows[11],
       isRowSelected: false,
       eventBus: new EventBus(),
+      isSelected: true,
       isCopied: false,
       isDraggedOver: false
     };

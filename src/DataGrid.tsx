@@ -40,7 +40,8 @@ import {
   RowsUpdateEvent,
   SelectRowEvent,
   CommitEvent,
-  SelectedCellProps
+  SelectedCellProps,
+  EditCellProps
 } from './types';
 import { CellNavigationMode, SortDirection, UpdateActions } from './enums';
 
@@ -685,7 +686,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getSelectedCellProps(rowIdx: number): SelectedCellProps<R> | undefined {
+  function getSelectedCellProps(rowIdx: number): SelectedCellProps | EditCellProps<R> | undefined {
     if (selectedPosition.rowIdx !== rowIdx) return;
 
     if (selectedPosition.mode === 'EDIT') {
@@ -704,7 +705,6 @@ function DataGrid<R, K extends keyof R, SR>({
         },
         editor2Props: {
           rowHeight,
-          editorPortalTarget,
           row: selectedPosition.row,
           onRowUpdate: handleUpdateRow,
           onClose: handleOnClose

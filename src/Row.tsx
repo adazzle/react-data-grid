@@ -2,7 +2,8 @@ import React, { memo, forwardRef } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowRendererProps } from './types';
+import EditCell from './EditCell';
+import { RowRendererProps, SelectedCellProps } from './types';
 import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({
@@ -49,21 +50,41 @@ function Row<R, SR = unknown>({
       style={{ top }}
       {...props}
     >
-      {viewportColumns.map(column => (
-        <CellRenderer
-          key={column.key}
-          rowIdx={rowIdx}
-          column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          row={row}
-          isCopied={copiedCellIdx === column.idx}
-          isDraggedOver={draggedOverCellIdx === column.idx}
-          isRowSelected={isRowSelected}
-          eventBus={eventBus}
-          selectedCellProps={selectedCellProps?.idx === column.idx ? selectedCellProps : undefined}
-          onRowClick={onRowClick}
-        />
-      ))}
+      {viewportColumns.map(column => {
+        if (selectedCellProps?.mode === 'EDIT' && selectedCellProps.idx === column.idx) {
+          return (
+            <EditCell<R, SR>
+              key={column.key}
+              rowIdx={rowIdx}
+              column={column}
+              lastFrozenColumnIndex={lastFrozenColumnIndex}
+              row={row}
+              onKeyDown={selectedCellProps.onKeyDown}
+              editorPortalTarget={selectedCellProps.editorPortalTarget}
+              editorContainerProps={selectedCellProps.editorContainerProps}
+              editor2Props={selectedCellProps.editor2Props}
+            />
+          );
+        }
+
+        return (
+          <CellRenderer
+            key={column.key}
+            rowIdx={rowIdx}
+            column={column}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
+            row={row}
+            isSelected={selectedCellProps?.idx === column.idx}
+            isCopied={copiedCellIdx === column.idx}
+            isDraggedOver={draggedOverCellIdx === column.idx}
+            isRowSelected={isRowSelected}
+            eventBus={eventBus}
+            dragHandleProps={(selectedCellProps as SelectedCellProps)?.dragHandleProps}
+            onKeyDown={selectedCellProps?.onKeyDown}
+            onRowClick={onRowClick}
+          />
+        );
+      })}
     </div>
   );
 }
