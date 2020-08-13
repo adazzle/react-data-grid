@@ -155,9 +155,9 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
-  isSelected: boolean;
   isCopied: boolean;
   isDraggedOver: boolean;
+  isCellSelected: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;

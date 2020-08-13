@@ -8,7 +8,7 @@ import { useCombinedRefs } from './hooks';
 function Cell<R, SR>({
   className,
   column,
-  isSelected,
+  isCellSelected,
   isCopied,
   isDraggedOver,
   isRowSelected,
@@ -32,7 +32,7 @@ function Cell<R, SR>({
     {
       'rdg-cell-frozen': column.frozen,
       'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
-      'rdg-cell-selected': isSelected,
+      'rdg-cell-selected': isCellSelected,
       'rdg-cell-copied': isCopied,
       'rdg-cell-dragged-over': isDraggedOver
     },
@@ -65,7 +65,7 @@ function Cell<R, SR>({
     <div
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
-      aria-selected={isSelected}
+      aria-selected={isCellSelected}
       ref={useCombinedRefs(cellRef, ref)}
       className={className}
       style={{
@@ -82,7 +82,7 @@ function Cell<R, SR>({
         column={column}
         rowIdx={rowIdx}
         row={row}
-        isCellSelected={isSelected}
+        isCellSelected={isCellSelected}
         isRowSelected={isRowSelected}
         onRowSelectionChange={onRowSelectionChange}
       />
