@@ -10,8 +10,9 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
   | 'onSelectedRowsChange'
   | 'sortColumn'
   | 'sortDirection'
+  | 'onSort'
   | 'rowKey'
-> & Required<Pick<DataGridProps<R, K, SR>, 'onSort'>>;
+>;
 
 export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
   lastFrozenColumnIndex: number;

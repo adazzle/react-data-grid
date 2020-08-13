@@ -52,6 +52,7 @@ interface SelectCellState extends Position {
 interface EditCellState<R> extends Position {
   mode: 'EDIT';
   row: R;
+  originalRow: R;
   key: string | null;
 }
 
@@ -472,7 +473,8 @@ function DataGrid<R, K extends keyof R, SR>({
         rowIdx,
         key,
         mode: 'EDIT',
-        row: rows[rowIdx]
+        row: rows[rowIdx],
+        originalRow: rows[rowIdx]
       }));
     }
   }
@@ -550,11 +552,6 @@ function DataGrid<R, K extends keyof R, SR>({
     closeEditor();
   }
 
-  function handleSort(columnKey: string, direction: SortDirection) {
-    handleCommit2();
-    onSort?.(columnKey, direction);
-  }
-
   /**
    * utils
    */
@@ -572,7 +569,8 @@ function DataGrid<R, K extends keyof R, SR>({
     handleCommit2();
 
     if (enableEditor && isCellEditable(position)) {
-      setSelectedPosition({ ...position, mode: 'EDIT', key: null, row: rows[position.rowIdx] });
+      const row = rows[position.rowIdx];
+      setSelectedPosition({ ...position, mode: 'EDIT', key: null, row, originalRow: row });
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
@@ -769,6 +767,11 @@ function DataGrid<R, K extends keyof R, SR>({
     setDraggedOverRowIdx(undefined);
   }
 
+  if (selectedPosition.mode === 'EDIT' && rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
+    // Discard changes if rows are updated from outside
+    closeEditor();
+  }
+
   return (
     <div
       role="grid"
@@ -800,7 +803,7 @@ function DataGrid<R, K extends keyof R, SR>({
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
-        onSort={handleSort}
+        onSort={onSort}
       />
       {enableFilters && (
         <FilterRow<R, SR>
