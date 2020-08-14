@@ -6,8 +6,8 @@ interface Metrics<R, SR> {
   columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
   viewportWidth: number;
-  defaultResizable?: boolean;
-  defaultSortable?: boolean;
+  defaultResizable: boolean;
+  defaultSortable: boolean;
   defaultFormatter: React.ComponentType<FormatterProps<R, SR>>;
 }
 
