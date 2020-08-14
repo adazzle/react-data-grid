@@ -25,7 +25,7 @@ import {
   isSelectedCellEditable,
   canExitGrid,
   isCtrlKeyHeldDown,
-  defaultCellInput
+  isDefaultCellInput
 } from './utils';
 
 import {
@@ -468,7 +468,7 @@ function DataGrid<R, K extends keyof R, SR>({
     column.editorOptions?.onCellKeyDown?.(event);
     if (event.isDefaultPrevented()) return;
 
-    if (isCellEditable(selectedPosition) && defaultCellInput(event)) {
+    if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,

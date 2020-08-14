@@ -11,6 +11,6 @@ export function isCtrlKeyHeldDown(e: React.KeyboardEvent): boolean {
   return (e.ctrlKey === true || e.metaKey === true) && e.key !== 'Control';
 }
 
-export function defaultCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
+export function isDefaultCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
   return isKeyPrintable(event.keyCode) || ['Enter', 'F2', 'Backspace', 'Delete'].includes(event.key);
 }
