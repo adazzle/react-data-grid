@@ -51,6 +51,8 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   idx: number;
   width: number;
   left: number;
+  resizable: boolean;
+  sortable: boolean;
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 

@@ -14,6 +14,8 @@
     - `rows`
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
     - `rowClass`
+    - `defaultColumnOptions`
+      - ⚠️ This replaces the `minColumnWidth` and `defaultFormatter` props
   - `column.cellClass(row)` function support:
     - `column = { ..., cellClass(row) { return string; } }`
   - `column.minWidth`
@@ -68,6 +70,7 @@
   - ⚠️ `column.getCellActions`
     - Check [#1845](https://github.com/adazzle/react-data-grid/pull/1845) on how to migrate
   - ⚠️ `column.getRowMetaData`
+  - ⚠️ `column.minColumnWidth`
   - ⚠️ `column.filterable`
   - ⚠️ `column.draggable`
   - ⚠️ `cellRangeSelection.{onStart,onUpdate,onEnd}`

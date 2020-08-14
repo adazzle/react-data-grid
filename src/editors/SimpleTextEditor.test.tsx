@@ -14,6 +14,8 @@ describe('SimpleTextEditor', () => {
       name: 'name',
       width: 0,
       left: 0,
+      resizable: false,
+      sortable: false,
       formatter: ValueFormatter
     };
     const fakeBlurCb = jest.fn();

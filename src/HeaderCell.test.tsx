@@ -18,6 +18,8 @@ describe('HeaderCell', () => {
         name: 'bla',
         width: 150,
         left: 300,
+        resizable: false,
+        sortable: false,
         formatter: ValueFormatter,
         ...columnProps
       },

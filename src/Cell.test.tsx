@@ -13,6 +13,8 @@ const defaultColumn: CalculatedColumn<Row> = {
   name: 'Desciption',
   width: 100,
   left: 0,
+  resizable: false,
+  sortable: false,
   formatter: SimpleCellFormatter
 };
 

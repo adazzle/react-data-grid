@@ -9,6 +9,7 @@ export const SelectColumn: Column<any, any> = {
   name: '',
   width: 35,
   maxWidth: 35,
+  resizable: false,
   frozen: true,
   headerRenderer(props) {
     return (
