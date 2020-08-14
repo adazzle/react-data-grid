@@ -10,6 +10,8 @@ function createColumn(index: number): CalculatedColumn<{ [key: string]: React.Re
     idx: index,
     width: 100,
     left: 100 * index,
+    resizable: false,
+    sortable: false,
     formatter: ValueFormatter
   };
 }

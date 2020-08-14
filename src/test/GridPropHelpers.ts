@@ -14,6 +14,8 @@ const columns: CalculatedColumn<Row>[] = [{
   name: 'ID',
   width: 100,
   left: 0,
+  resizable: false,
+  sortable: false,
   formatter: SimpleCellFormatter
 }, {
   idx: 1,
@@ -21,6 +23,8 @@ const columns: CalculatedColumn<Row>[] = [{
   name: 'Title',
   width: 100,
   left: 100,
+  resizable: false,
+  sortable: false,
   formatter: ValueFormatter
 }, {
   idx: 2,
@@ -28,6 +32,8 @@ const columns: CalculatedColumn<Row>[] = [{
   name: 'Count',
   width: 100,
   left: 200,
+  resizable: false,
+  sortable: false,
   formatter: ValueFormatter
 }];
 
