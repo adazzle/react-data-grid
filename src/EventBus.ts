@@ -4,7 +4,7 @@ interface EventMap {
   SELECT_CELL: (position: Position, openEditor?: boolean) => void;
   SELECT_ROW: (event: SelectRowEvent) => void;
   SELECT_GROUP_ROW: (rowIdx: number) => void;
-  TOGGLE_GROUP: (expandedGroupId: unknown) => void;
+  TOGGLE_GROUP: (id: unknown) => void;
 }
 
 type EventName = keyof EventMap;

@@ -26,7 +26,7 @@ function GroupedRow<R, SR>({
   }
 
   function toggleGroup() {
-    eventBus.dispatch('TOGGLE_GROUP', row.key);
+    eventBus.dispatch('TOGGLE_GROUP', row.id);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {

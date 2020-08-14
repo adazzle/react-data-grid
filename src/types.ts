@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KeyboardEvent } from 'react';
-import { Dictionary } from 'lodash';
 import { UpdateActions } from './enums';
 import EventBus from './EventBus';
 
@@ -204,11 +203,16 @@ export interface SelectRowEvent {
   isShiftClick: boolean;
 }
 
+export interface Dictionary<T> {
+  [index: string]: T;
+}
+
 export type GroupByDictionary<TRow> = Dictionary<TRow[]> | Dictionary<GroupByDictionary<TRow>>;
 
 export interface GroupRow {
-  __isGroup: boolean;
+  id: string;
   key: unknown;
   level: number;
   isExpanded: boolean;
+  __isGroup: boolean;
 }

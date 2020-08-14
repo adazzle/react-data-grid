@@ -41,24 +41,31 @@ export function useViewportRows<R, SR>({
   const [rows, totalRowCount] = useMemo(() => {
     if (!groupedRows) return [rawRows, rawRows.length];
 
-    function expandGroup(rows: GroupByDictionary<R>, level: number): Array<GroupRow | R> {
+    function expandGroup(rows: GroupByDictionary<R>, parentKey: string, level: number): Array<GroupRow | R> {
       const flattenedRows: Array<R | GroupRow> = [];
       for (const key in rows) {
-        const isExpanded = expandedGroupIds?.has(key) ?? false;
-        flattenedRows.push({ key, __isGroup: true, level, isExpanded });
+        const id = `${parentKey}__${key}`;
+        const isExpanded = expandedGroupIds?.has(id) ?? false;
+        flattenedRows.push({
+          id,
+          key,
+          level,
+          isExpanded,
+          __isGroup: true
+        });
         if (isExpanded) {
           const groupedRow = rows[key];
           if (Array.isArray(groupedRow)) {
             flattenedRows.push(...groupedRow);
           } else {
-            flattenedRows.push(...expandGroup(groupedRow, level + 1));
+            flattenedRows.push(...expandGroup(groupedRow, key, level + 1));
           }
         }
       }
 
       return flattenedRows;
     }
-    return [expandGroup(groupedRows, 0), 0];
+    return [expandGroup(groupedRows, '', 0), 0];
   }, [expandedGroupIds, groupedRows, rawRows]);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
