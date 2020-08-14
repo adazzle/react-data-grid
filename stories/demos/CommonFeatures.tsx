@@ -48,7 +48,7 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     name: 'ID',
     width: 60,
     frozen: true,
-    sortable: true,
+    resizable: false,
     summaryFormatter() {
       return <strong>Total</strong>;
     }
@@ -59,8 +59,6 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     width: 120,
     editable: true,
     frozen: true,
-    resizable: true,
-    sortable: true,
     summaryFormatter({ row }) {
       return <>{row.totalCount} records</>;
     }
@@ -69,48 +67,36 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     key: 'client',
     name: 'Client',
     width: 220,
-    editable: true,
-    resizable: true,
-    sortable: true
+    editable: true
   },
   {
     key: 'area',
     name: 'Area',
     width: 120,
-    editable: true,
-    resizable: true,
-    sortable: true
+    editable: true
   },
   {
     key: 'country',
     name: 'Country',
     width: 120,
-    editable: true,
-    resizable: true,
-    sortable: true
+    editable: true
   },
   {
     key: 'contact',
     name: 'Contact',
     width: 160,
-    editable: true,
-    resizable: true,
-    sortable: true
+    editable: true
   },
   {
     key: 'assignee',
     name: 'Assignee',
     width: 150,
-    editable: true,
-    resizable: true,
-    sortable: true
+    editable: true
   },
   {
     key: 'progress',
     name: 'Completion',
     width: 110,
-    resizable: true,
-    sortable: true,
     formatter(props) {
       const value = props.row.progress;
       return (
@@ -124,8 +110,6 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     key: 'startTimestamp',
     name: 'Start date',
     width: 100,
-    resizable: true,
-    sortable: true,
     formatter(props) {
       return <TimestampFormatter timestamp={props.row.startTimestamp} />;
     }
@@ -134,8 +118,6 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     key: 'endTimestamp',
     name: 'Deadline',
     width: 100,
-    resizable: true,
-    sortable: true,
     formatter(props) {
       return <TimestampFormatter timestamp={props.row.endTimestamp} />;
     }
@@ -144,37 +126,27 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     key: 'budget',
     name: 'Budget',
     width: 100,
-    resizable: true,
-    sortable: true,
     formatter(props) {
       return <CurrencyFormatter value={props.row.budget} />;
     }
   },
   {
     key: 'transaction',
-    name: 'Transaction type',
-    resizable: true,
-    sortable: true
+    name: 'Transaction type'
   },
   {
     key: 'account',
     name: 'Account',
-    width: 150,
-    resizable: true,
-    sortable: true
+    width: 150
   },
   {
     key: 'version',
     name: 'Version',
-    editable: true,
-    resizable: true,
-    sortable: true
+    editable: true
   },
   {
     key: 'available',
     name: 'Available',
-    resizable: true,
-    sortable: true,
     width: 80,
     formatter(props) {
       return <>{props.row.available ? '✔️' : '❌'}</>;
@@ -280,6 +252,10 @@ export default function CommonFeatures() {
           rows={sortedRows}
           width={width}
           height={height}
+          defaultColumnOptions={{
+            sortable: true,
+            resizable: true
+          }}
           selectedRows={selectedRows}
           onSelectedRowsChange={setSelectedRows}
           onRowsUpdate={handleRowsUpdate}
