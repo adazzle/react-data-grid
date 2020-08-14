@@ -33,6 +33,8 @@ describe('getColumnMetrics', () => {
       viewportWidth,
       minColumnWidth: 50,
       columnWidths: new Map(),
+      defaultResizable: false,
+      defaultSortable: false,
       defaultFormatter: ValueFormatter
     });
 
@@ -48,6 +50,8 @@ describe('getColumnMetrics', () => {
       viewportWidth,
       minColumnWidth: 50,
       columnWidths: new Map(),
+      defaultResizable: false,
+      defaultSortable: false,
       defaultFormatter: ValueFormatter
     });
 
@@ -67,6 +71,8 @@ describe('getColumnMetrics', () => {
       viewportWidth,
       minColumnWidth: 50,
       columnWidths: new Map(),
+      defaultResizable: false,
+      defaultSortable: false,
       defaultFormatter: ValueFormatter
     });
     expect(metrics.columns[0]).toMatchObject(firstFrozenColumn);
@@ -132,6 +138,8 @@ describe('canEdit', () => {
     name: 'ID',
     left: 460,
     width: 150,
+    resizable: false,
+    sortable: false,
     formatter: ValueFormatter
   };
 

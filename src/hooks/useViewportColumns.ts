@@ -4,10 +4,9 @@ import { CalculatedColumn } from '../types';
 import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { SELECT_COLUMN_KEY } from '../Columns';
+import { ValueFormatter } from '../formatters';
 
-type SharedDataGridProps<R, K extends keyof R, SR> =
-  Pick<DataGridProps<R, K, SR>, 'columns'> &
-  Required<Required<Pick<DataGridProps<R, K, SR>, | 'minColumnWidth' | 'defaultFormatter'>>>;
+type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>, 'columns' | 'defaultColumnOptions'>;
 
 interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
   viewportWidth: number;
@@ -18,11 +17,10 @@ interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridPr
 
 export function useViewportColumns<R, K extends keyof R, SR>({
   columns: rawColumns,
-  minColumnWidth,
   columnWidths,
   viewportWidth,
-  defaultFormatter,
   scrollLeft,
+  defaultColumnOptions,
   groupBy
 }: ViewportColumnsArgs<R, K, SR>) {
   rawColumns = useMemo(() => {
@@ -46,15 +44,22 @@ export function useViewportColumns<R, K extends keyof R, SR>({
     return sortedColumns;
   }, [groupBy, rawColumns]);
 
+  const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
+  const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
+  const defaultSortable = defaultColumnOptions?.sortable ?? false;
+  const defaultResizable = defaultColumnOptions?.resizable ?? false;
+
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
       columns: rawColumns,
       minColumnWidth,
       viewportWidth,
       columnWidths,
+      defaultSortable,
+      defaultResizable,
       defaultFormatter
     });
-  }, [columnWidths, rawColumns, defaultFormatter, minColumnWidth, viewportWidth]);
+  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, viewportWidth]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     return getHorizontalRangeToRender(

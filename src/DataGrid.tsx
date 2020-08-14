@@ -17,7 +17,6 @@ import FilterRow from './FilterRow';
 import Row from './Row';
 import GroupRow from './GroupRow';
 import SummaryRow from './SummaryRow';
-import { ValueFormatter } from './formatters';
 import { legacyCellInput } from './editors';
 import {
   assertIsValidKey,
@@ -35,7 +34,6 @@ import {
   CheckCellIsEditableEvent,
   Column,
   Filters,
-  FormatterProps,
   Position,
   RowRendererProps,
   GroupRowRendererProps,
@@ -54,6 +52,13 @@ interface EditCellState extends Position {
   mode: 'EDIT';
   key: string | null;
 }
+
+type DefaultColumnOptions<R, SR> = Pick<Column<R, SR>,
+  | 'formatter'
+  | 'minWidth'
+  | 'resizable'
+  | 'sortable'
+>;
 
 export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
@@ -99,8 +104,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   width?: number;
   /** The height of the grid in pixels */
   height?: number;
-  /** Minimum column width in pixels */
-  minColumnWidth?: number;
   /** The height of each row in pixels */
   rowHeight?: number;
   /** The height of the header row in pixels */
@@ -123,12 +126,12 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   onSort?: (columnKey: string, direction: SortDirection) => void;
   filters?: Filters;
   onFiltersChange?: (filters: Filters) => void;
+  defaultColumnOptions?: DefaultColumnOptions<R, SR>;
   groupBy?: readonly string[]; // TODO: support custom grouping logic amd totals
 
   /**
    * Custom renderers
    */
-  defaultFormatter?: React.ComponentType<FormatterProps<R, SR>>;
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
   groupRowRenderer?: React.ComponentType<GroupRowRendererProps<R, SR>>;
   emptyRowsRenderer?: React.ComponentType;
@@ -181,7 +184,6 @@ function DataGrid<R, K extends keyof R, SR>({
   // Dimensions props
   width,
   height = 350,
-  minColumnWidth = 80,
   rowHeight = 35,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
@@ -193,9 +195,9 @@ function DataGrid<R, K extends keyof R, SR>({
   onSort,
   filters,
   onFiltersChange,
+  defaultColumnOptions,
   groupBy,
   // Custom renderers
-  defaultFormatter = ValueFormatter,
   rowRenderer: RowRenderer = Row,
   groupRowRenderer: GroupRowRenderer = GroupRow,
   emptyRowsRenderer,
@@ -257,12 +259,11 @@ function DataGrid<R, K extends keyof R, SR>({
 
   const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex } = useViewportColumns({
     columns: rawColumns,
-    minColumnWidth,
     columnWidths,
-    defaultFormatter,
     scrollLeft,
     viewportWidth,
-    groupBy
+    groupBy,
+    defaultColumnOptions
   });
 
   const totalHeaderHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
