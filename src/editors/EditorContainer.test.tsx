@@ -42,6 +42,8 @@ const fakeColumn: CalculatedColumn<Row> = {
   key: 'col1',
   width: 100,
   left: 0,
+  resizable: false,
+  sortable: false,
   formatter: ValueFormatter
 };
 

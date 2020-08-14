@@ -51,6 +51,8 @@ describe('getHorizontalRangeToRender', () => {
       name: `col${i}`,
       width: 100,
       left: i * 100,
+      resizable: false,
+      sortable: false,
       formatter: ValueFormatter
     }));
   }
