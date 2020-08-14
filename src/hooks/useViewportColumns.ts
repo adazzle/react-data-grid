@@ -22,8 +22,8 @@ export function useViewportColumns<R, K extends keyof R, SR>({
 }: ViewportColumnsArgs<R, K, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
-  const defaultSortable = defaultColumnOptions?.sortable;
-  const defaultResizable = defaultColumnOptions?.resizable;
+  const defaultSortable = defaultColumnOptions?.sortable ?? false;
+  const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
