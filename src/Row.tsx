@@ -80,8 +80,8 @@ function Row<R, SR = unknown>({
             isCellSelected={isCellSelected}
             isRowSelected={isRowSelected}
             eventBus={eventBus}
-            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps)?.dragHandleProps : undefined}
-            onKeyDown={isCellSelected ? selectedCellProps?.onKeyDown : undefined}
+            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps)!.dragHandleProps : undefined}
+            onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
             onRowClick={onRowClick}
           />
         );
