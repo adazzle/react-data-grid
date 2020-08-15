@@ -5,6 +5,11 @@
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions?query=workflow%3ACI
 
+## Docs
+Visit [this website](https://adazzle.github.io/react-data-grid/canary) for the most recent examples of what you can do with `react-data-grid`.
+
+You can also see the API Docs on our [legacy website](https://adazzle.github.io/react-data-grid/). Note that a lot of the APIs have changed!
+
 ## Install
 
 ```sh
