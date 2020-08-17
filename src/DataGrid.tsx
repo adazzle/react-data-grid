@@ -793,7 +793,7 @@ function DataGrid<R, K extends keyof R, SR>({
             groupBy={groupBy}
             top={top}
             isCellSelected={isSelected}
-            isRowSelected={row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
+            isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
             eventBus={eventBus}
             onKeyDown={isSelected ? handleKeyDown : undefined}
           />
