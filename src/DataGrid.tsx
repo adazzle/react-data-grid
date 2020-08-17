@@ -62,6 +62,7 @@ export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, openEditor?: boolean) => void;
+  deselectCell: () => void;
 }
 
 type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
@@ -324,7 +325,8 @@ function DataGrid<R, K extends keyof R, SR>({
       if (!current) return;
       current.scrollTop = rowIdx * rowHeight;
     },
-    selectCell
+    selectCell,
+    deselectCell
   }));
 
   /**
@@ -514,6 +516,12 @@ function DataGrid<R, K extends keyof R, SR>({
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
     onSelectedCellChange?.({ ...position });
+  }
+
+  function deselectCell(): void {
+    setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
+    setCopiedPosition(null);
+    setDraggedOverRowIdx(undefined);
   }
 
   function closeEditor() {
