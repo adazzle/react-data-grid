@@ -27,6 +27,9 @@ function GroupedRow<R, SR>({
     eventBus.dispatch('TOGGLE_GROUP', row.id);
   }
 
+  function onRowSelectionChange(checked: boolean) {
+    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick: false });
+  }
 
   return (
     <div
@@ -62,6 +65,7 @@ function GroupedRow<R, SR>({
               column={column}
               isCellSelected={isCellSelected}
               isRowSelected={isRowSelected}
+              onRowSelectionChange={onRowSelectionChange}
               toggleGroup={toggleGroup}
             />
           )}

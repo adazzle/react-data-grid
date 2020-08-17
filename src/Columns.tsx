@@ -40,7 +40,7 @@ export const SelectColumn: Column<any, any> = {
         tabIndex={-1}
         isCellSelected={props.isCellSelected}
         value={props.isRowSelected}
-        onChange={() => {}}
+        onChange={props.onRowSelectionChange}
       />
     );
   },

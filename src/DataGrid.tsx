@@ -315,25 +315,32 @@ function DataGrid<R, K extends keyof R, SR>({
       assertIsValidKey(rowKey);
       const newSelectedRows = new Set(selectedRows);
       const row = rows[rowIdx];
-      if (isGroupedRow(row)) return; // TODO: add a checkbox to select the group
-      const rowId = row[rowKey];
-
-      if (checked) {
-        newSelectedRows.add(rowId);
-        const previousRowIdx = lastSelectedRowIdx.current;
-        lastSelectedRowIdx.current = rowIdx;
-        if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-          const step = Math.sign(rowIdx - previousRowIdx);
-          for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-            const row = rows[i];
-            if (!isGroupedRow(row)) {
-              newSelectedRows.add(row[rowKey]);
-            }
+      if (isGroupedRow(row)) {
+        for (const childRow of row.childRows) {
+          if (checked) {
+            newSelectedRows.add(childRow[rowKey]);
+          } else {
+            newSelectedRows.delete(childRow[rowKey]);
           }
         }
       } else {
-        newSelectedRows.delete(rowId);
-        lastSelectedRowIdx.current = -1;
+        const rowId = row[rowKey];
+        if (checked) {
+          newSelectedRows.add(rowId);
+          const previousRowIdx = lastSelectedRowIdx.current;
+          lastSelectedRowIdx.current = rowIdx;
+          if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+            const step = Math.sign(rowIdx - previousRowIdx);
+            for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+              const row = rows[i];
+              if (isGroupedRow(row)) continue;
+              newSelectedRows.add(row[rowKey]);
+            }
+          }
+        } else {
+          newSelectedRows.delete(rowId);
+          lastSelectedRowIdx.current = -1;
+        }
       }
 
       onSelectedRowsChange(newSelectedRows);

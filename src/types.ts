@@ -102,6 +102,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   row: GroupRow<TRow>;
   isCellSelected: boolean;
   isRowSelected: boolean;
+  onRowSelectionChange: (checked: boolean) => void;
   toggleGroup: () => void;
 }
 

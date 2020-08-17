@@ -213,7 +213,7 @@ export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
-  const [groupBy] = useState(['transaction']);
+  const [groupBy] = useState(['country', 'transaction']);
 
   const countries = useMemo(() => {
     return [...new Set(rows.map(r => r.country))].sort();
