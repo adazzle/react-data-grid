@@ -46,6 +46,9 @@
 .rdg-cell-copied.rdg-cell-dragged-over {
   background-color: #9999ff;
 }
+.rdg-cell-editing {
+  padding: 0;
+}
 .rdg-checkbox-label {
   cursor: pointer;
   display: flex;
@@ -502,4 +505,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.a80d498f0e53f2a7fbd4.css.map*/
+/*# sourceMappingURL=0.23bf5fe9dfdb1faf55c0.css.map*/
