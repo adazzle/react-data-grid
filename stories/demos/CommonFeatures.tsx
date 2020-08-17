@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
+import { groupBy as rowGrouper } from 'lodash';
 import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
@@ -128,6 +129,10 @@ const columns: readonly Column<Row, SummaryRow>[] = [
     width: 100,
     formatter(props) {
       return <CurrencyFormatter value={props.row.budget} />;
+    },
+    groupFormatter({ row }) {
+      const totals = row.childRows.reduce((prev, { budget }) => prev + budget, 0);
+      return <CurrencyFormatter value={totals} />;
     }
   },
   {
@@ -186,12 +191,11 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
-const groupBy = ['country', 'transaction'];
-
 export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
+  const [groupBy] = useState(['country', 'transaction']);
 
   const summaryRows = useMemo(() => {
     const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
@@ -266,6 +270,7 @@ export default function CommonFeatures() {
           onSort={handleSort}
           summaryRows={summaryRows}
           groupBy={groupBy}
+          rowGrouper={rowGrouper}
         />
       )}
     </AutoSizer>

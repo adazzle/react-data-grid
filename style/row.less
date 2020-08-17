@@ -32,3 +32,37 @@
     border-top: 2px solid darken(@borderColor, 20%);
   }
 }
+
+.rdg-group-row {
+  > .rdg-cell {
+    border-right-width: 0;
+  }
+
+  > .rdg-cell:last-child,
+  > .rdg-cell-frozen-last {
+    border-right-width: 1px;
+  }
+}
+
+.rdg-group-row-selected {
+  .rdg-cell {
+    box-shadow:
+      inset 0 2px 0 0 @selectedBorderColor,
+      inset 0 -2px 0 0 @selectedBorderColor;
+  }
+
+  .rdg-cell:first-child {
+    box-shadow:
+      inset 0 2px 0 0 @selectedBorderColor,
+      inset 0 -2px 0 0 @selectedBorderColor,
+      inset 2px 0 0 0 @selectedBorderColor;
+  }
+
+  .rdg-cell:last-child {
+    box-shadow:
+      inset 0 2px 0 0 @selectedBorderColor,
+      inset 0 -2px 0 0 @selectedBorderColor,
+      inset -2px 0 0 0 @selectedBorderColor;
+  }
+}
+

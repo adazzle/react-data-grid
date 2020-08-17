@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, memo } from 'react';
+import React, { memo } from 'react';
 import clsx from 'clsx';
 import { GroupRowRendererProps } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
@@ -8,64 +8,65 @@ function GroupedRow<R, SR>({
   viewportColumns,
   row,
   rowIdx,
+  lastFrozenColumnIndex,
   top,
-  width,
-  isSelected,
+  isCellSelected,
+  isRowSelected,
+  groupBy,
   eventBus,
   onKeyDown,
   ...props
 }: GroupRowRendererProps<R, SR>) {
-  const cellRef = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    if (!isSelected) return;
-    cellRef.current?.focus();
-  }, [isSelected]);
+  const level = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
 
   function selectGroup() {
-    eventBus.dispatch('SELECT_GROUP_ROW', rowIdx);
+    eventBus.dispatch('SELECT_CELL', { rowIdx, idx: level });
   }
 
   function toggleGroup() {
     eventBus.dispatch('TOGGLE_GROUP', row.id);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
-    const { key } = event;
-    if (['ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(key)) {
-      event.preventDefault();
-      event.stopPropagation();
-      if (key === ' ' || key === 'Enter') {
-        toggleGroup();
-      }
-    }
-  }
-
-  const columnIndex = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
 
   return (
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className="rdg-row rdg-group-row"
-      style={{ top }}
+      className={clsx('rdg-row rdg-group-row', {
+        'rdg-row-even': rowIdx % 2 === 0,
+        'rdg-row-odd': rowIdx % 2 !== 0,
+        'rdg-group-row-selected': isCellSelected
+      })}
       onClick={selectGroup}
+      onKeyDown={onKeyDown}
+      style={{ top }}
       {...props}
     >
-      <div
-        className={clsx('rdg-cell', 'rdg-cell-frozen', { 'rdg-cell-selected': isSelected })}
-        style={{ left: 0, paddingLeft: viewportColumns[columnIndex].left, width }}
-        onKeyDown={onKeyDown}
-      >
-        <span
-          ref={cellRef}
-          tabIndex={-1}
-          style={{ cursor: 'pointer' }}
-          onClick={toggleGroup}
-          onKeyDown={handleKeyDown}
+      {viewportColumns.map(column => (
+        <div
+          role="gridcell"
+          aria-colindex={column.idx + 1}
+          key={column.key}
+          className={clsx('rdg-cell', {
+            'rdg-cell-frozen': column.frozen,
+            'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+          })}
+          style={{
+            width: column.width,
+            left: column.left
+          }}
         >
-          {row.key}{' '}{row.isExpanded ? '\u25BC' : '\u25B6'}
-        </span>
-      </div>
+          {column.groupFormatter && (groupBy.includes(column.key) ? level === column.idx : true) && (
+            <column.groupFormatter
+              row={row}
+              column={column}
+              isCellSelected={isCellSelected}
+              isRowSelected={isRowSelected}
+              toggleGroup={toggleGroup}
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 }

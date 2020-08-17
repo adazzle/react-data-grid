@@ -6,8 +6,8 @@ export * from './viewportUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
-export function isGroupedRow<R>(row: R | GroupRow): row is GroupRow {
-  return (row as GroupRow).__isGroup !== undefined;
+export function isGroupedRow<R>(row: R | GroupRow<R>): row is GroupRow<R> {
+  return (row as GroupRow<R>).__isGroup !== undefined;
 }
 
 export function assertIsValidKey<R>(key: unknown): asserts key is keyof R {

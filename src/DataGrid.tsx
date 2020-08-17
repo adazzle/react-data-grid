@@ -15,7 +15,7 @@ import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
-import GroupRow from './GroupRow';
+import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
 import { legacyCellInput } from './editors';
 import {
@@ -36,11 +36,11 @@ import {
   Filters,
   Position,
   RowRendererProps,
-  GroupRowRendererProps,
   RowsUpdateEvent,
   SelectRowEvent,
   CommitEvent,
-  SelectedCellProps
+  SelectedCellProps,
+  Dictionary
 } from './types';
 import { CellNavigationMode, SortDirection, UpdateActions } from './enums';
 
@@ -127,13 +127,13 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   filters?: Filters;
   onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
-  groupBy?: readonly string[]; // TODO: support custom grouping logic amd totals
+  groupBy?: readonly string[];
+  rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<R[]>;
 
   /**
    * Custom renderers
    */
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
-  groupRowRenderer?: React.ComponentType<GroupRowRendererProps<R, SR>>;
   emptyRowsRenderer?: React.ComponentType;
 
   /**
@@ -197,9 +197,9 @@ function DataGrid<R, K extends keyof R, SR>({
   onFiltersChange,
   defaultColumnOptions,
   groupBy,
+  rowGrouper,
   // Custom renderers
   rowRenderer: RowRenderer = Row,
-  groupRowRenderer: GroupRowRenderer = GroupRow,
   emptyRowsRenderer,
   // Event props
   onRowClick,
@@ -262,8 +262,9 @@ function DataGrid<R, K extends keyof R, SR>({
     columnWidths,
     scrollLeft,
     viewportWidth,
+    defaultColumnOptions,
     groupBy,
-    defaultColumnOptions
+    rowGrouper
   });
 
   const totalHeaderHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
@@ -276,6 +277,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const { viewportRows, rows, startRowIdx, totalRowCount } = useViewportRows({
     rawRows,
     groupBy,
+    rowGrouper,
     rowHeight,
     clientHeight,
     scrollTop,
@@ -351,14 +353,6 @@ function DataGrid<R, K extends keyof R, SR>({
 
     return eventBus.subscribe('TOGGLE_GROUP', toggleGroup);
   }, [eventBus, expandedGroupIds]);
-
-  useEffect(() => {
-    function selectGroupRow(rowIdx: number) {
-      const idx = selectedPosition.idx === -1 ? 0 : selectedPosition.idx;
-      selectCell({ idx, rowIdx });
-    }
-    return eventBus.subscribe('SELECT_GROUP_ROW', selectGroupRow);
-  });
 
   useImperativeHandle(ref, () => ({
     scrollToColumn(idx: number) {
@@ -707,18 +701,19 @@ function DataGrid<R, K extends keyof R, SR>({
       const rowIdx = startRowIdx + index;
       const top = rowIdx * rowHeight + totalHeaderHeight;
       if (isGroupedRow(row)) {
-        const { key } = row;
         const isSelected = selectedPosition.rowIdx === rowIdx;
         return (
           <GroupRowRenderer
             aria-rowindex={headerRowsCount + rowIdx + 1} // TODO: fix index
-            key={key as string}
+            key={row.id}
             viewportColumns={viewportColumns}
             row={row}
             rowIdx={rowIdx}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
+            groupBy={groupBy!}
             top={top}
-            width={viewportWidth - getScrollbarSize()}
-            isSelected={isSelected}
+            isCellSelected={isSelected}
+            isRowSelected={row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
             eventBus={eventBus}
             onKeyDown={isSelected ? handleKeyDown : undefined}
           />

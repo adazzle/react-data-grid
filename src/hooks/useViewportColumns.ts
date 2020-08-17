@@ -4,15 +4,19 @@ import { CalculatedColumn } from '../types';
 import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { SELECT_COLUMN_KEY } from '../Columns';
-import { ValueFormatter } from '../formatters';
+import { ValueFormatter, ToggleGroupedFormatter } from '../formatters';
 
-type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>, 'columns' | 'defaultColumnOptions'>;
+type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
+  | 'columns'
+  | 'defaultColumnOptions'
+  | 'groupBy'
+  | 'rowGrouper'
+>;
 
 interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
-  groupBy?: readonly string[];
 }
 
 export function useViewportColumns<R, K extends keyof R, SR>({
@@ -21,15 +25,21 @@ export function useViewportColumns<R, K extends keyof R, SR>({
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
-  groupBy
+  groupBy,
+  rowGrouper
 }: ViewportColumnsArgs<R, K, SR>) {
   rawColumns = useMemo(() => {
-    if (!groupBy || groupBy.length === 0) return rawColumns;
+    if (!groupBy || groupBy.length === 0 || !rowGrouper) return rawColumns;
 
     const selectColumn = rawColumns.find(c => c.key === SELECT_COLUMN_KEY);
     const groupByColumns = rawColumns
       .filter(c => groupBy.includes(c.key))
-      .map(c => ({ ...c, frozen: true, rowGroup: true }))
+      .map(c => ({
+        ...c,
+        frozen: true,
+        rowGroup: true,
+        groupFormatter: c.groupFormatter ?? ToggleGroupedFormatter
+      }))
       .sort((c1, c2) => groupBy.findIndex(k => k === c1.key) - groupBy.findIndex(k => k === c2.key));
     const remaningColumns = rawColumns.filter(c => !groupBy.includes(c.key) && c.key !== SELECT_COLUMN_KEY);
     const sortedColumns = [
@@ -42,7 +52,7 @@ export function useViewportColumns<R, K extends keyof R, SR>({
     }
 
     return sortedColumns;
-  }, [groupBy, rawColumns]);
+  }, [groupBy, rowGrouper, rawColumns]);
 
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;

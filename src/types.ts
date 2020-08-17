@@ -26,6 +26,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
   };
   /** Formatter to be used to render the summary cell content */
   summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
+  /** Formatter to be used to render the group cell content */
+  groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
   /** Determines whether column is frozen or not */
@@ -83,6 +85,14 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
 export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
+}
+
+export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  row: GroupRow<TRow>;
+  isCellSelected: boolean;
+  isRowSelected: boolean;
+  toggleGroup: () => void;
 }
 
 export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
@@ -161,11 +171,13 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
 
 export interface GroupRowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  row: GroupRow;
+  row: GroupRow<TRow>;
   rowIdx: number;
+  lastFrozenColumnIndex: number;
+  groupBy: readonly string[];
   top: number;
-  width: number;
-  isSelected: boolean;
+  isCellSelected: boolean;
+  isRowSelected: boolean;
   eventBus: EventBus;
 }
 
@@ -207,12 +219,16 @@ export interface Dictionary<T> {
   [index: string]: T;
 }
 
-export type GroupByDictionary<TRow> = Dictionary<TRow[]> | Dictionary<GroupByDictionary<TRow>>;
+export type GroupByDictionary<TRow> = Dictionary<TRow[]> | Dictionary<{
+  rows: TRow[];
+  groups: GroupByDictionary<TRow>;
+}>;
 
-export interface GroupRow {
+export interface GroupRow<TRow> {
+  __isGroup: true;
+  childRows: TRow[];
   id: string;
   key: unknown;
   level: number;
   isExpanded: boolean;
-  __isGroup: boolean;
 }

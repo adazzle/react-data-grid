@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
-import { groupBy as lodashGroupBy, Dictionary } from 'lodash';
 
-import { GroupRow, GroupByDictionary } from '../types';
+import { GroupRow, GroupByDictionary, Dictionary } from '../types';
 import { getVerticalRangeToRender } from '../utils';
 
 interface ViewportRowsArgs<R, SR> {
@@ -10,6 +9,7 @@ interface ViewportRowsArgs<R, SR> {
   clientHeight: number;
   scrollTop: number;
   groupBy?: readonly string[];
+  rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<R[]>;
   expandedGroupIds?: Set<unknown>;
 }
 
@@ -19,46 +19,52 @@ export function useViewportRows<R, SR>({
   clientHeight,
   scrollTop,
   groupBy,
+  rowGrouper,
   expandedGroupIds
 }: ViewportRowsArgs<R, SR>) {
   const groupedRows = useMemo(() => {
-    if (!groupBy || groupBy.length === 0) return;
+    if (!groupBy || groupBy.length === 0 || !rowGrouper) return;
 
-    function groupParent(rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[]) {
-      const parentGroup = lodashGroupBy(rows, groupByKey);
+    const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[]) => {
+      const parentGroup = rowGrouper(rows, groupByKey);
       if (remainingGroupByKeys.length === 0) return parentGroup;
-      const childGroups: Dictionary<GroupByDictionary<R>> = {};
+      const childGroups: GroupByDictionary<R> = {};
       for (const key in parentGroup) {
-        childGroups[key] = groupParent(parentGroup[key], remainingGroupByKeys);
+        const childRows = parentGroup[key];
+        childGroups[key] = {
+          rows: childRows,
+          groups: groupRows(childRows, remainingGroupByKeys)
+        };
       }
 
       return childGroups;
-    }
+    };
 
-    return groupParent(rawRows, groupBy);
-  }, [groupBy, rawRows]);
+    return groupRows(rawRows, groupBy);
+  }, [groupBy, rowGrouper, rawRows]);
 
-  const [rows, totalRowCount] = useMemo(() => {
+  const [rows, totalRowCount] = useMemo(() => { // TODO: fix totalRowCount
     if (!groupedRows) return [rawRows, rawRows.length];
 
-    function expandGroup(rows: GroupByDictionary<R>, parentKey: string, level: number): Array<GroupRow | R> {
-      const flattenedRows: Array<R | GroupRow> = [];
+    function expandGroup(rows: GroupByDictionary<R>, parentKey: string, level: number): Array<GroupRow<R> | R> {
+      const flattenedRows: Array<R | GroupRow<R>> = [];
       for (const key in rows) {
         const id = `${parentKey}__${key}`;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
+        const group = rows[key];
         flattenedRows.push({
           id,
           key,
           level,
           isExpanded,
+          childRows: Array.isArray(group) ? group : group.rows,
           __isGroup: true
         });
         if (isExpanded) {
-          const groupedRow = rows[key];
-          if (Array.isArray(groupedRow)) {
-            flattenedRows.push(...groupedRow);
+          if (Array.isArray(group)) {
+            flattenedRows.push(...group);
           } else {
-            flattenedRows.push(...expandGroup(groupedRow, key, level + 1));
+            flattenedRows.push(...expandGroup(group.groups, key, level + 1));
           }
         }
       }
