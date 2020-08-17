@@ -8,7 +8,7 @@ interface ViewportRowsArgs<R, SR> {
   rowHeight: number;
   clientHeight: number;
   scrollTop: number;
-  groupBy?: readonly string[];
+  groupBy: readonly string[];
   rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<R[]>;
   expandedGroupIds?: Set<unknown>;
 }
@@ -23,11 +23,13 @@ export function useViewportRows<R, SR>({
   expandedGroupIds
 }: ViewportRowsArgs<R, SR>) {
   const groupedRows = useMemo(() => {
-    if (!groupBy || groupBy.length === 0 || !rowGrouper) return;
+    if (groupBy.length === 0 || !rowGrouper) return;
 
     const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[]) => {
       const parentGroup = rowGrouper(rows, groupByKey);
       if (remainingGroupByKeys.length === 0) return parentGroup;
+
+      // Recursively group each parent group
       const childGroups: GroupByDictionary<R> = {};
       for (const key in parentGroup) {
         const childRows = parentGroup[key];
@@ -46,10 +48,10 @@ export function useViewportRows<R, SR>({
   const [rows, totalRowCount] = useMemo(() => { // TODO: fix totalRowCount
     if (!groupedRows) return [rawRows, rawRows.length];
 
-    function expandGroup(rows: GroupByDictionary<R>, parentKey: string, level: number): Array<GroupRow<R> | R> {
+    const expandGroup = (rows: GroupByDictionary<R>, parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
       const flattenedRows: Array<R | GroupRow<R>> = [];
       for (const key in rows) {
-        const id = `${parentKey}__${key}`;
+        const id = parentKey !== undefined ? `${parentKey}__${key}` : key;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
         const group = rows[key];
         flattenedRows.push({
@@ -70,8 +72,9 @@ export function useViewportRows<R, SR>({
       }
 
       return flattenedRows;
-    }
-    return [expandGroup(groupedRows, '', 0), 0];
+    };
+
+    return [expandGroup(groupedRows, undefined, 0), 0];
   }, [expandedGroupIds, groupedRows, rawRows]);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(

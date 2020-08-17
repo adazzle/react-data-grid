@@ -25,13 +25,19 @@ export function useViewportColumns<R, K extends keyof R, SR>({
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
-  groupBy,
+  groupBy: rawGroupBy,
   rowGrouper
 }: ViewportColumnsArgs<R, K, SR>) {
-  rawColumns = useMemo(() => {
-    if (!groupBy || groupBy.length === 0 || !rowGrouper) return rawColumns;
+  const [sortedColumns, groupBy] = useMemo(() => {
+    if (!rawGroupBy || !rowGrouper) return [rawColumns, []];
+
+    // Find valid groupBy columns
+    const groupBy: readonly string[] = rawGroupBy.filter(g => rawColumns.find(c => c.key === g) !== undefined);
+    if (groupBy.length === 0) return [rawColumns, groupBy];
 
     const selectColumn = rawColumns.find(c => c.key === SELECT_COLUMN_KEY);
+
+    // Move group columns after the select column
     const groupByColumns = rawColumns
       .filter(c => groupBy.includes(c.key))
       .map(c => ({
@@ -51,8 +57,8 @@ export function useViewportColumns<R, K extends keyof R, SR>({
       sortedColumns.unshift(selectColumn);
     }
 
-    return sortedColumns;
-  }, [groupBy, rowGrouper, rawColumns]);
+    return [sortedColumns, groupBy];
+  }, [rawColumns, rawGroupBy, rowGrouper]);
 
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
@@ -61,7 +67,7 @@ export function useViewportColumns<R, K extends keyof R, SR>({
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth } = useMemo(() => {
     return getColumnMetrics<R, SR>({
-      columns: rawColumns,
+      columns: sortedColumns,
       minColumnWidth,
       viewportWidth,
       columnWidths,
@@ -69,7 +75,7 @@ export function useViewportColumns<R, K extends keyof R, SR>({
       defaultResizable,
       defaultFormatter
     });
-  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, viewportWidth]);
+  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, sortedColumns, viewportWidth]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     return getHorizontalRangeToRender(
@@ -88,5 +94,5 @@ export function useViewportColumns<R, K extends keyof R, SR>({
     );
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
-  return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex };
+  return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, groupBy };
 }

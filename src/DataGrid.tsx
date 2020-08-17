@@ -202,7 +202,7 @@ function DataGrid<R, K extends keyof R, SR>({
   filters,
   onFiltersChange,
   defaultColumnOptions,
-  groupBy,
+  groupBy: rawGroupBy,
   rowGrouper,
   // Custom renderers
   rowRenderer: RowRenderer = Row,
@@ -263,13 +263,13 @@ function DataGrid<R, K extends keyof R, SR>({
   const summaryRowsCount = summaryRows?.length ?? 0;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
-  const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex } = useViewportColumns({
+  const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, groupBy } = useViewportColumns({
     columns: rawColumns,
     columnWidths,
     scrollLeft,
     viewportWidth,
     defaultColumnOptions,
-    groupBy,
+    groupBy: rawGroupBy,
     rowGrouper
   });
 
@@ -435,7 +435,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }, [columnWidths, onColumnResize]);
 
   function getRawRowIdx(rowIdx: number) {
-    return groupBy ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
+    return groupBy.length > 0 && rowGrouper ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
   }
 
   function handleCommit({ cellKey, rowIdx, updated }: CommitEvent) {
@@ -790,7 +790,7 @@ function DataGrid<R, K extends keyof R, SR>({
             row={row}
             rowIdx={rowIdx}
             lastFrozenColumnIndex={lastFrozenColumnIndex}
-            groupBy={groupBy!}
+            groupBy={groupBy}
             top={top}
             isCellSelected={isSelected}
             isRowSelected={row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
