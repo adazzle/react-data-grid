@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
-import { GroupRowRendererProps } from './types';
+import { GroupRowRendererProps, CalculatedColumn } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 
 function GroupedRow<R, SR>({
@@ -17,10 +17,12 @@ function GroupedRow<R, SR>({
   onKeyDown,
   ...props
 }: GroupRowRendererProps<R, SR>) {
-  const level = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
+  const { level } = row;
+  // Select is always the first column
+  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
   function selectGroup() {
-    eventBus.dispatch('SELECT_CELL', { rowIdx, idx: level });
+    eventBus.dispatch('SELECT_CELL', { rowIdx, idx });
   }
 
   function toggleGroup() {
@@ -30,6 +32,18 @@ function GroupedRow<R, SR>({
   function onRowSelectionChange(checked: boolean) {
     eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick: false });
   }
+
+  // Expand groupBy column widths
+  const visibleColumns: CalculatedColumn<R, SR>[] = [...viewportColumns];
+  visibleColumns[idx] = { ...visibleColumns[idx] };
+  let colSpan = 0;
+  for (let i = idx + 1; i < visibleColumns.length; i++) {
+    const nextColumn = visibleColumns[i];
+    if (!nextColumn.frozen || (nextColumn.groupFormatter && !groupBy.includes(nextColumn.key))) break;
+    visibleColumns[idx].width += nextColumn.width;
+    colSpan++;
+  }
+  visibleColumns.splice(idx + 1, colSpan);
 
   return (
     <div
@@ -45,7 +59,7 @@ function GroupedRow<R, SR>({
       style={{ top }}
       {...props}
     >
-      {viewportColumns.map(column => (
+      {visibleColumns.map(column => (
         <div
           role="gridcell"
           aria-colindex={column.idx + 1}
@@ -59,7 +73,7 @@ function GroupedRow<R, SR>({
             left: column.left
           }}
         >
-          {column.groupFormatter && (groupBy.includes(column.key) ? level === column.idx : true) && (
+          {column.groupFormatter && (groupBy.includes(column.key) ? idx === column.idx : true) && (
             <column.groupFormatter
               row={row}
               column={column}
