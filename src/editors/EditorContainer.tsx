@@ -1,12 +1,12 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Editor, Omit, SharedEditorContainerProps } from '../types';
+import { CalculatedColumn, Editor, SharedEditorContainerProps } from '../types';
 import { useClickOutside } from '../hooks';
 import SimpleTextEditor from './SimpleTextEditor';
 import { preventDefault } from '../utils';
 
-export interface EditorContainerProps<R, SR> extends Omit<SharedEditorContainerProps, 'editorPortalTarget'> {
+export interface EditorContainerProps<R, SR> extends SharedEditorContainerProps {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
@@ -77,7 +77,7 @@ export default function EditorContainer<R, SR>({
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }
-    if (key === 'Enter') {
+    if (key === 'Enter' || key === 'F2') {
       return value;
     }
 

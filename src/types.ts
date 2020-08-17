@@ -36,11 +36,21 @@ export interface Column<TRow, TSummaryRow = unknown> {
   sortable?: boolean;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
-  // TODO: Should we return an object to make it more powerful?
-  // { isEditable?: boolean, initialInput?: unknown } | undefined
-  unsafe_onCellInput?: (event: React.KeyboardEvent<HTMLDivElement>, row: TRow) => unknown;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
+  editor2?: React.ComponentType<Editor2Props<TRow, TSummaryRow>>;
+  editorOptions?: {
+    /** Default: true for editor1 and false for editor2 */
+    createPortal?: boolean;
+    /** Default: false */
+    editOnClick?: boolean;
+    /** Prevent default to cancel editing */
+    onCellKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    // TODO: Do we need these options
+    // editOnDoubleClick?: boolean;
+    /** Default: true for editor1 and false for editor2 */
+    // commitOnScroll?: boolean;
+  };
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
   /** Component to be used to filter the data of the column */
@@ -95,6 +105,21 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   onOverrideKeyDown: (e: KeyboardEvent) => void;
 }
 
+export interface SharedEditor2Props<TRow> {
+  row: Readonly<TRow>;
+  rowHeight: number;
+  onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
+  onClose: (commitChanges?: boolean) => void;
+}
+
+export interface Editor2Props<TRow, TSummaryRow = unknown> extends SharedEditor2Props<TRow> {
+  rowIdx: number;
+  column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
+  top: number;
+  left: number;
+  editorPortalTarget: Element;
+}
+
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   allRowsSelected: boolean;
@@ -102,7 +127,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface SharedEditorContainerProps {
-  editorPortalTarget: Element;
   firstEditorKeyPress: string | null;
   scrollLeft: number;
   scrollTop: number;
@@ -116,28 +140,29 @@ interface SelectedCellPropsBase {
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-interface SelectedCellPropsEdit extends SelectedCellPropsBase {
+export interface EditCellProps<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
+  editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
+  editor2Props: SharedEditor2Props<TRow>;
 }
 
-interface SelectedCellPropsSelect extends SelectedCellPropsBase {
+export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
-
-export type SelectedCellProps = SelectedCellPropsEdit | SelectedCellPropsSelect;
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   lastFrozenColumnIndex: number;
   row: TRow;
-  isRowSelected: boolean;
   isCopied: boolean;
   isDraggedOver: boolean;
+  isCellSelected: boolean;
+  isRowSelected: boolean;
   eventBus: EventBus;
-  selectedCellProps?: SelectedCellProps;
+  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
 }
 
@@ -152,7 +177,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   isRowSelected: boolean;
   eventBus: EventBus;
   top: number;
-  selectedCellProps?: SelectedCellProps;
+  selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;

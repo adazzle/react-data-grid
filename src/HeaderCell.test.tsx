@@ -25,6 +25,7 @@ describe('HeaderCell', () => {
       },
       lastFrozenColumnIndex: -1,
       onResize: jest.fn(),
+      onSort: jest.fn(),
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       ...overrideProps
