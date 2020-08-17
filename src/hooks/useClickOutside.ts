@@ -49,25 +49,36 @@ import { useRef, useEffect } from 'react';
  * To solve this issue onClickCapture event is used.
  */
 
-export function useClickOutside(onClickOutside: () => void) {
-  const isClickedInside = useRef(false);
+export function useClickOutside(onClick: () => void) {
+  const clickedInsideRef = useRef(false);
+  // We need to prevent the `useEffect` from cleaning up between re-renders,
+  // as `handleDocumentClick` might otherwise miss valid click events.
+  // To that end we instead access the latest `onClick` prop via a ref.
+  const onClickRef = useRef((): void => {
+    throw new Error('Cannot call an event handler while rendering.');
+  });
+
+  useEffect(() => {
+    onClickRef.current = onClick;
+  });
 
   useEffect(() => {
     function handleDocumentClick() {
-      if (isClickedInside.current) {
-        isClickedInside.current = false;
+      if (clickedInsideRef.current) {
+        clickedInsideRef.current = false;
       } else {
-        onClickOutside();
+        onClickRef.current();
       }
     }
 
     document.addEventListener('click', handleDocumentClick);
+
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  });
+  }, []);
 
   return function onClickCapture() {
-    isClickedInside.current = true;
+    clickedInsideRef.current = true;
   };
 }
