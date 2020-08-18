@@ -255,6 +255,8 @@ export interface GroupRow<TRow> {
   childRows: TRow[];
   id: string;
   key: unknown;
-  level: number;
   isExpanded: boolean;
+  level: number;
+  setSize: number;
+  posInSet: number;
 }

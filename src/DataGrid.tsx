@@ -855,13 +855,13 @@ function DataGrid<R, K extends keyof R, SR>({
 
   return (
     <div
-      role="grid"
+      role={hasGroups ? 'treegrid' : 'grid'}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       aria-describedby={ariaDescribedBy}
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
-      aria-rowcount={headerRowsCount + rows.length + summaryRowsCount}
+      aria-rowcount={headerRowsCount + rows.length + summaryRowsCount} // TODO: fix rowcount
       className={clsx('rdg', { 'rdg-viewport-dragging': isDragging })}
       style={{
         width,

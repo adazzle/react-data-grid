@@ -19,7 +19,7 @@ function GroupedRow<R, SR>({
 }: GroupRowRendererProps<R, SR>) {
   const { level } = row;
   // Select is always the first column
-  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
+  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level : level - 1; // aria-level is 1-based
 
   function selectGroup() {
     eventBus.dispatch('SELECT_CELL', { rowIdx, idx });
@@ -48,6 +48,10 @@ function GroupedRow<R, SR>({
   return (
     <div
       role="row"
+      aria-level={level}
+      aria-setSize={row.setSize}
+      aria-posinset={row.posInSet}
+      aria-expanded={row.isExpanded}
       aria-rowindex={ariaRowIndex}
       className={clsx('rdg-row rdg-group-row', {
         'rdg-row-even': rowIdx % 2 === 0,

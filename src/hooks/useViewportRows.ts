@@ -50,16 +50,18 @@ export function useViewportRows<R, SR>({
 
     const expandGroup = (rows: GroupByDictionary<R>, parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
       const flattenedRows: Array<R | GroupRow<R>> = [];
-      for (const key in rows) {
+      Object.keys(rows).forEach((key, index, keys) => {
         const id = parentKey !== undefined ? `${parentKey}__${key}` : key;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
         const group = rows[key];
         flattenedRows.push({
           id,
           key,
-          level,
           isExpanded,
           childRows: Array.isArray(group) ? group : group.rows,
+          level,
+          setSize: keys.length,
+          posInSet: index + 1, // aria-posinset is 1-based
           __isGroup: true
         });
         if (isExpanded) {
@@ -69,12 +71,12 @@ export function useViewportRows<R, SR>({
             flattenedRows.push(...expandGroup(group.groups, key, level + 1));
           }
         }
-      }
+      });
 
       return flattenedRows;
     };
 
-    return [expandGroup(groupedRows, undefined, 0), 0];
+    return [expandGroup(groupedRows, undefined, 1), 0]; // aria-level is 1-based
   }, [expandedGroupIds, groupedRows, rawRows]);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
