@@ -290,6 +290,14 @@ function DataGrid<R, K extends keyof R, SR>({
     expandedGroupIds
   });
 
+  const hasGroups = groupBy.length > 0 && rowGrouper;
+
+  if (hasGroups) {
+    // TODO: finalize if these flags need to be supported on treegrid
+    enableCellDragAndDrop = false;
+    enableCellDragAndDrop = false;
+  }
+
   /**
    * effects
    */
@@ -435,7 +443,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }, [columnWidths, onColumnResize]);
 
   function getRawRowIdx(rowIdx: number) {
-    return groupBy.length > 0 && rowGrouper ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
+    return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
   }
 
   function handleCommit({ cellKey, rowIdx, updated }: CommitEvent) {
@@ -579,7 +587,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
     const column = columns[selectedPosition.idx];
     const cellKey = column.key;
-    const value = rawRows[selectedPosition.rowIdx][cellKey as keyof R]; // TODO: handle grouping
+    const value = rawRows[selectedPosition.rowIdx][cellKey as keyof R];
 
     onRowsUpdate?.({
       cellKey,
