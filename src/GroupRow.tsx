@@ -49,7 +49,7 @@ function GroupedRow<R, SR>({
     <div
       role="row"
       aria-level={level}
-      aria-setSize={row.setSize}
+      aria-setsize={row.setSize}
       aria-posinset={row.posInSet}
       aria-expanded={row.isExpanded}
       aria-rowindex={ariaRowIndex}

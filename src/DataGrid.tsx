@@ -280,7 +280,7 @@ function DataGrid<R, K extends keyof R, SR>({
     - summaryRowsCount * rowHeight
     - (totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
-  const { viewportRows, rows, startRowIdx, totalRowCount } = useViewportRows({
+  const { viewportRows, rows, startRowIdx, rowsCount } = useViewportRows({
     rawRows,
     groupBy,
     rowGrouper,
@@ -861,7 +861,7 @@ function DataGrid<R, K extends keyof R, SR>({
       aria-describedby={ariaDescribedBy}
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
-      aria-rowcount={headerRowsCount + rows.length + summaryRowsCount} // TODO: fix rowcount
+      aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
       className={clsx('rdg', { 'rdg-viewport-dragging': isDragging })}
       style={{
         width,
@@ -906,7 +906,7 @@ function DataGrid<R, K extends keyof R, SR>({
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
-              aria-rowindex={headerRowsCount + totalRowCount + rowIdx + 1}
+              aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
               key={rowIdx}
               rowIdx={rowIdx}
               row={row}

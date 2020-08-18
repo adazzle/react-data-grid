@@ -22,17 +22,20 @@ export function useViewportRows<R, SR>({
   rowGrouper,
   expandedGroupIds
 }: ViewportRowsArgs<R, SR>) {
-  const groupedRows = useMemo(() => {
-    if (groupBy.length === 0 || !rowGrouper) return;
+  const [groupedRows, rowsCount] = useMemo(() => {
+    if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
 
+    let rowsCount = 0;
     const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[]) => {
       const parentGroup = rowGrouper(rows, groupByKey);
+      rowsCount += Object.keys(parentGroup).length;
       if (remainingGroupByKeys.length === 0) return parentGroup;
 
       // Recursively group each parent group
       const childGroups: GroupByDictionary<R> = {};
       for (const key in parentGroup) {
         const childRows = parentGroup[key];
+        rowsCount += childRows.length;
         childGroups[key] = {
           rows: childRows,
           groups: groupRows(childRows, remainingGroupByKeys)
@@ -42,11 +45,11 @@ export function useViewportRows<R, SR>({
       return childGroups;
     };
 
-    return groupRows(rawRows, groupBy);
+    return [groupRows(rawRows, groupBy), rowsCount];
   }, [groupBy, rowGrouper, rawRows]);
 
-  const [rows, totalRowCount] = useMemo(() => { // TODO: fix totalRowCount
-    if (!groupedRows) return [rawRows, rawRows.length];
+  const rows = useMemo(() => {
+    if (!groupedRows) return rawRows;
 
     const expandGroup = (rows: GroupByDictionary<R>, parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
       const flattenedRows: Array<R | GroupRow<R>> = [];
@@ -76,7 +79,7 @@ export function useViewportRows<R, SR>({
       return flattenedRows;
     };
 
-    return [expandGroup(groupedRows, undefined, 1), 0]; // aria-level is 1-based
+    return expandGroup(groupedRows, undefined, 1); // aria-level is 1-based
   }, [expandedGroupIds, groupedRows, rawRows]);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
@@ -92,6 +95,6 @@ export function useViewportRows<R, SR>({
     viewportRows,
     rows,
     startRowIdx: rowOverscanStartIdx,
-    totalRowCount
+    rowsCount
   };
 }
