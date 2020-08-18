@@ -14,10 +14,10 @@ export function ToggleGroupedFormatter<R, SR>({
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     const { key } = event;
-    if (['ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(key)) {
+    if (['ArrowLeft', 'ArrowRight', 'Enter'].includes(key)) {
       event.preventDefault();
       event.stopPropagation();
-      if (key === ' ' || key === 'Enter') {
+      if (key === 'Enter') {
         toggleGroup();
       }
     }

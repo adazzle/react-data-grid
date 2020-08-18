@@ -820,7 +820,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
       return (
         <RowRenderer
-          aria-rowindex={headerRowsCount + rowIdx + 1}
+          aria-rowindex={headerRowsCount + rowIdx + 1} // TODO: fix index
           aria-selected={isSelectable ? isRowSelected : undefined}
           key={key}
           rowIdx={rowIdx}

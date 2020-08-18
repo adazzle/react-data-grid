@@ -25,54 +25,44 @@ export function useViewportRows<R, SR>({
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
 
-    let rowsCount = 0;
-    const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[]) => {
-      const parentGroup = rowGrouper(rows, groupByKey);
-      rowsCount += Object.keys(parentGroup).length;
-      if (remainingGroupByKeys.length === 0) return parentGroup;
-
-      // Recursively group each parent group
-      const childGroups: GroupByDictionary<R> = {};
-      for (const key in parentGroup) {
-        const childRows = parentGroup[key];
-        rowsCount += childRows.length;
-        childGroups[key] = {
-          rows: childRows,
-          groups: groupRows(childRows, remainingGroupByKeys)
-        };
+    const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[]): [GroupByDictionary<R>, number] => {
+      let rowsCount = 0;
+      const groups: GroupByDictionary<R> = {};
+      for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
+        // Recursively group each parent group
+        const [childGroups, childRowsCount] = remainingGroupByKeys.length === 0 ? [childRows, childRows.length] : groupRows(childRows, remainingGroupByKeys);
+        rowsCount += childRowsCount + 1; // 1 for parent row
+        groups[key] = { childRows, childGroups };
       }
 
-      return childGroups;
+      return [groups, rowsCount];
     };
 
-    return [groupRows(rawRows, groupBy), rowsCount];
+    return groupRows(rawRows, groupBy);
   }, [groupBy, rowGrouper, rawRows]);
 
   const rows = useMemo(() => {
     if (!groupedRows) return rawRows;
 
-    const expandGroup = (rows: GroupByDictionary<R>, parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
+    const expandGroup = (rows: GroupByDictionary<R> | R[], parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
+      if (Array.isArray(rows)) return rows;
       const flattenedRows: Array<R | GroupRow<R>> = [];
       Object.keys(rows).forEach((key, index, keys) => {
         const id = parentKey !== undefined ? `${parentKey}__${key}` : key;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
-        const group = rows[key];
+        const { childRows, childGroups } = rows[key];
         flattenedRows.push({
           id,
           key,
           isExpanded,
-          childRows: Array.isArray(group) ? group : group.rows,
+          childRows,
           level,
           setSize: keys.length,
           posInSet: index + 1, // aria-posinset is 1-based
           __isGroup: true
         });
         if (isExpanded) {
-          if (Array.isArray(group)) {
-            flattenedRows.push(...group);
-          } else {
-            flattenedRows.push(...expandGroup(group.groups, key, level + 1));
-          }
+          flattenedRows.push(...expandGroup(childGroups, key, level + 1));
         }
       });
 

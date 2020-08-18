@@ -245,9 +245,9 @@ export interface Dictionary<T> {
   [index: string]: T;
 }
 
-export type GroupByDictionary<TRow> = Dictionary<TRow[]> | Dictionary<{
-  rows: TRow[];
-  groups: GroupByDictionary<TRow>;
+export type GroupByDictionary<TRow> = Dictionary<{
+  childRows: TRow[];
+  childGroups: TRow[] | GroupByDictionary<TRow>;
 }>;
 
 export interface GroupRow<TRow> {
