@@ -281,7 +281,7 @@ function DataGrid<R, K extends keyof R, SR>({
     - summaryRowsCount * rowHeight
     - (totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
-  const { viewportRows, rows, startRowIdx, rowsCount } = useViewportRows({
+  const { rowOverscanStartIdx, rowOverscanEndIdx, rows, rowsCount } = useViewportRows({
     rawRows,
     groupBy,
     rowGrouper,
@@ -620,7 +620,6 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * utils
    */
-
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
     return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
   }
@@ -787,14 +786,15 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function getViewportRows() {
+    const rowElements = [];
     let startRowIndex = 0;
-    return viewportRows.map((row, index) => {
-      const rowIdx = startRowIdx + index;
+    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+      const row = rows[rowIdx];
       const top = rowIdx * rowHeight + totalHeaderHeight;
       if (isGroupedRow(row)) {
         const isSelected = selectedPosition.rowIdx === rowIdx;
         ({ startRowIndex } = row);
-        return (
+        rowElements.push(
           <GroupRowRenderer<R, SR>
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
@@ -817,9 +817,10 @@ function DataGrid<R, K extends keyof R, SR>({
             onKeyDown={isSelected ? handleKeyDown : undefined}
           />
         );
+        continue;
       }
-      startRowIndex++;
 
+      startRowIndex++;
       let key: string | number = hasGroups ? startRowIndex : rowIdx;
       let isRowSelected = false;
       if (rowKey !== undefined) {
@@ -830,7 +831,7 @@ function DataGrid<R, K extends keyof R, SR>({
         }
       }
 
-      return (
+      rowElements.push(
         <RowRenderer
           aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1} // aria-rowindex is 1 based
           aria-selected={isSelectable ? isRowSelected : undefined}
@@ -850,7 +851,9 @@ function DataGrid<R, K extends keyof R, SR>({
           selectedCellProps={getSelectedCellProps(rowIdx)}
         />
       );
-    });
+    }
+
+    return rowElements;
   }
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed

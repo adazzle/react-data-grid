@@ -82,12 +82,10 @@ export function useViewportRows<R, SR>({
     rows.length
   );
 
-  const viewportRows = rows.slice(rowOverscanStartIdx, rowOverscanEndIdx + 1);
-
   return {
-    viewportRows,
+    rowOverscanStartIdx,
+    rowOverscanEndIdx,
     rows,
-    startRowIdx: rowOverscanStartIdx,
     rowsCount
   };
 }
