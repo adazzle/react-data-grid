@@ -332,24 +332,26 @@ function DataGrid<R, K extends keyof R, SR>({
             newSelectedRows.delete(childRow[rowKey]);
           }
         }
-      } else {
-        const rowId = row[rowKey];
-        if (checked) {
-          newSelectedRows.add(rowId);
-          const previousRowIdx = lastSelectedRowIdx.current;
-          lastSelectedRowIdx.current = rowIdx;
-          if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-            const step = Math.sign(rowIdx - previousRowIdx);
-            for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-              const row = rows[i];
-              if (isGroupedRow(row)) continue;
-              newSelectedRows.add(row[rowKey]);
-            }
+        onSelectedRowsChange(newSelectedRows);
+        return;
+      }
+
+      const rowId = row[rowKey];
+      if (checked) {
+        newSelectedRows.add(rowId);
+        const previousRowIdx = lastSelectedRowIdx.current;
+        lastSelectedRowIdx.current = rowIdx;
+        if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+          const step = Math.sign(rowIdx - previousRowIdx);
+          for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+            const row = rows[i];
+            if (isGroupedRow(row)) continue;
+            newSelectedRows.add(row[rowKey]);
           }
-        } else {
-          newSelectedRows.delete(rowId);
-          lastSelectedRowIdx.current = -1;
         }
+      } else {
+        newSelectedRows.delete(rowId);
+        lastSelectedRowIdx.current = -1;
       }
 
       onSelectedRowsChange(newSelectedRows);
@@ -800,7 +802,7 @@ function DataGrid<R, K extends keyof R, SR>({
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
             aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
-            key={row.id} // TODO: id or index?
+            key={row.id}
             id={row.id}
             groupKey={row.key}
             viewportColumns={viewportColumns}
