@@ -483,7 +483,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    const value = rawRows[rowIdx][columns[idx].key as keyof R]; // TODO: handle grouping
+    const value = rawRows[rowIdx][columns[idx].key as keyof R];
     setCopiedPosition({ idx, rowIdx, value });
   }
 
@@ -785,21 +785,31 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function getViewportRows() {
+    // TODO: cleanup rowIndex/rowIdx logic
+    let startRowIndex = 0;
     return viewportRows.map((row, index) => {
       const rowIdx = startRowIdx + index;
       const top = rowIdx * rowHeight + totalHeaderHeight;
       if (isGroupedRow(row)) {
         const isSelected = selectedPosition.rowIdx === rowIdx;
+        ({ startRowIndex } = row);
         return (
-          <GroupRowRenderer
-            aria-rowindex={headerRowsCount + rowIdx + 1} // TODO: fix index
-            key={row.id}
+          <GroupRowRenderer<R, SR>
+            aria-level={row.level + 1} // aria-level is 1-based
+            aria-setsize={row.setSize}
+            aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
+            aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
+            key={row.id} // TODO: id or index?
+            id={row.id}
+            groupKey={row.key}
             viewportColumns={viewportColumns}
-            row={row}
+            childRows={row.childRows}
             rowIdx={rowIdx}
             lastFrozenColumnIndex={lastFrozenColumnIndex}
             groupBy={groupBy}
             top={top}
+            level={row.level}
+            isExpanded={row.isExpanded}
             isCellSelected={isSelected}
             isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
             eventBus={eventBus}
@@ -807,8 +817,9 @@ function DataGrid<R, K extends keyof R, SR>({
           />
         );
       }
+      startRowIndex++;
 
-      let key: string | number = rowIdx;
+      let key: string | number = hasGroups ? startRowIndex : rowIdx;
       let isRowSelected = false;
       if (rowKey !== undefined) {
         const rowId = row[rowKey];
@@ -820,7 +831,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
       return (
         <RowRenderer
-          aria-rowindex={headerRowsCount + rowIdx + 1} // TODO: fix index
+          aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1}
           aria-selected={isSelectable ? isRowSelected : undefined}
           key={key}
           rowIdx={rowIdx}

@@ -98,8 +98,10 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
+  groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
-  row: GroupRow<TRow>;
+  childRows: TRow[];
+  isExpanded: boolean;
   isCellSelected: boolean;
   isRowSelected: boolean;
   onRowSelectionChange: (checked: boolean) => void;
@@ -196,12 +198,16 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
 }
 
 export interface GroupRowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  id: string;
+  groupKey: unknown;
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  row: GroupRow<TRow>;
+  childRows: TRow[];
   rowIdx: number;
   lastFrozenColumnIndex: number;
   groupBy: readonly string[];
   top: number;
+  level: number;
+  isExpanded: boolean;
   isCellSelected: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
@@ -248,6 +254,7 @@ export interface Dictionary<T> {
 export type GroupByDictionary<TRow> = Dictionary<{
   childRows: TRow[];
   childGroups: TRow[] | GroupByDictionary<TRow>;
+  startRowIndex: number;
 }>;
 
 export interface GroupRow<TRow> {
@@ -257,6 +264,7 @@ export interface GroupRow<TRow> {
   key: unknown;
   isExpanded: boolean;
   level: number;
-  setSize: number;
   posInSet: number;
+  setSize: number;
+  startRowIndex: number;
 }

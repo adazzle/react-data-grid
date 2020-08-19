@@ -147,8 +147,8 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       formatter(props) {
         return <CurrencyFormatter value={props.row.budget} />;
       },
-      groupFormatter({ row }) {
-        const totals = row.childRows.reduce((prev, { budget }) => prev + budget, 0);
+      groupFormatter({ childRows }) {
+        const totals = childRows.reduce((prev, { budget }) => prev + budget, 0);
         return <CurrencyFormatter value={totals} />;
       }
     },

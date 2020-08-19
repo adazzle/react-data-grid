@@ -4,29 +4,34 @@ import { GroupRowRendererProps, CalculatedColumn } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 
 function GroupedRow<R, SR>({
-  'aria-rowindex': ariaRowIndex,
+  id,
+  groupKey,
   viewportColumns,
-  row,
+  childRows,
   rowIdx,
   lastFrozenColumnIndex,
   top,
+  level,
+  isExpanded,
   isCellSelected,
   isRowSelected,
   groupBy,
   eventBus,
   onKeyDown,
+  'aria-setsize': ariaSetSize,
+  'aria-posinset': ariaPosInSet,
+  'aria-rowindex': ariaRowIndex,
   ...props
 }: GroupRowRendererProps<R, SR>) {
-  const { level } = row;
   // Select is always the first column
-  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level : level - 1; // aria-level is 1-based
+  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
   function selectGroup() {
     eventBus.dispatch('SELECT_CELL', { rowIdx, idx });
   }
 
   function toggleGroup() {
-    eventBus.dispatch('TOGGLE_GROUP', row.id);
+    eventBus.dispatch('TOGGLE_GROUP', id);
   }
 
   function onRowSelectionChange(checked: boolean) {
@@ -49,10 +54,10 @@ function GroupedRow<R, SR>({
     <div
       role="row"
       aria-level={level}
-      aria-setsize={row.setSize}
-      aria-posinset={row.posInSet}
-      aria-expanded={row.isExpanded}
+      aria-setsize={ariaSetSize}
+      aria-posinset={ariaPosInSet}
       aria-rowindex={ariaRowIndex}
+      aria-expanded={isExpanded}
       className={clsx('rdg-row rdg-group-row', {
         'rdg-row-even': rowIdx % 2 === 0,
         'rdg-row-odd': rowIdx % 2 !== 0,
@@ -79,8 +84,10 @@ function GroupedRow<R, SR>({
         >
           {column.groupFormatter && (groupBy.includes(column.key) ? idx === column.idx : true) && (
             <column.groupFormatter
-              row={row}
+              groupKey={groupKey}
+              childRows={childRows}
               column={column}
+              isExpanded={isExpanded}
               isCellSelected={isCellSelected}
               isRowSelected={isRowSelected}
               onRowSelectionChange={onRowSelectionChange}

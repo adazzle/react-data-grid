@@ -2,7 +2,8 @@ import React, { useRef, useLayoutEffect } from 'react';
 import { GroupFormatterProps } from '../types';
 
 export function ToggleGroupedFormatter<R, SR>({
-  row,
+  groupKey,
+  isExpanded,
   isCellSelected,
   toggleGroup
 }: GroupFormatterProps<R, SR>) {
@@ -31,7 +32,7 @@ export function ToggleGroupedFormatter<R, SR>({
       onClick={toggleGroup}
       onKeyDown={handleKeyDown}
     >
-      {row.key}{' '}{row.isExpanded ? '\u25BC' : '\u25B6'}
+      {groupKey}{' '}{isExpanded ? '\u25BC' : '\u25B6'}
     </span>
   );
 }
