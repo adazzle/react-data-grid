@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import clsx from 'clsx';
 import { GroupRowRendererProps, CalculatedColumn } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
+import GroupCell from './GroupCell';
 
 function GroupedRow<R, SR>({
   id,
@@ -13,9 +14,8 @@ function GroupedRow<R, SR>({
   top,
   level,
   isExpanded,
-  isCellSelected,
+  selectedCellIdx,
   isRowSelected,
-  groupBy,
   eventBus,
   onKeyDown,
   'aria-setsize': ariaSetSize,
@@ -30,21 +30,13 @@ function GroupedRow<R, SR>({
     eventBus.dispatch('SELECT_CELL', { rowIdx, idx });
   }
 
-  function toggleGroup() {
-    eventBus.dispatch('TOGGLE_GROUP', id);
-  }
-
-  function onRowSelectionChange(checked: boolean) {
-    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick: false });
-  }
-
   // Expand groupBy column widths
   const visibleColumns: CalculatedColumn<R, SR>[] = [...viewportColumns];
   visibleColumns[idx] = { ...visibleColumns[idx] };
   let colSpan = 0;
   for (let i = idx + 1; i < visibleColumns.length; i++) {
     const nextColumn = visibleColumns[i];
-    if (!nextColumn.frozen || (nextColumn.groupFormatter && !groupBy.includes(nextColumn.key))) break;
+    if (!nextColumn.frozen || (nextColumn.groupFormatter && !nextColumn.rowGroup)) break;
     visibleColumns[idx].width += nextColumn.width;
     colSpan++;
   }
@@ -61,7 +53,7 @@ function GroupedRow<R, SR>({
       className={clsx('rdg-row rdg-group-row', {
         'rdg-row-even': rowIdx % 2 === 0,
         'rdg-row-odd': rowIdx % 2 !== 0,
-        'rdg-group-row-selected': isCellSelected
+        'rdg-group-row-selected': selectedCellIdx !== undefined
       })}
       onClick={selectGroup}
       onKeyDown={onKeyDown}
@@ -69,32 +61,20 @@ function GroupedRow<R, SR>({
       {...props}
     >
       {visibleColumns.map(column => (
-        <div
-          role="gridcell"
-          aria-colindex={column.idx + 1}
+        <GroupCell<R, SR>
           key={column.key}
-          className={clsx('rdg-cell', {
-            'rdg-cell-frozen': column.frozen,
-            'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
-          })}
-          style={{
-            width: column.width,
-            left: column.left
-          }}
-        >
-          {column.groupFormatter && (groupBy.includes(column.key) ? idx === column.idx : true) && (
-            <column.groupFormatter
-              groupKey={groupKey}
-              childRows={childRows}
-              column={column}
-              isExpanded={isExpanded}
-              isCellSelected={isCellSelected}
-              isRowSelected={isRowSelected}
-              onRowSelectionChange={onRowSelectionChange}
-              toggleGroup={toggleGroup}
-            />
-          )}
-        </div>
+          id={id}
+          rowIdx={rowIdx}
+          groupKey={groupKey}
+          childRows={childRows}
+          isExpanded={isExpanded}
+          isRowSelected={isRowSelected}
+          isCellSelected={selectedCellIdx !== undefined && idx === column.idx} // TODO: fir selectedCell logic
+          eventBus={eventBus}
+          column={column}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          groupColumnIndex={idx}
+        />
       ))}
     </div>
   );

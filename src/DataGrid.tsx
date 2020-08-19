@@ -794,7 +794,6 @@ function DataGrid<R, K extends keyof R, SR>({
       const row = rows[rowIdx];
       const top = rowIdx * rowHeight + totalHeaderHeight;
       if (isGroupedRow(row)) {
-        const isSelected = selectedPosition.rowIdx === rowIdx;
         ({ startRowIndex } = row);
         rowElements.push(
           <GroupRowRenderer<R, SR>
@@ -809,14 +808,13 @@ function DataGrid<R, K extends keyof R, SR>({
             childRows={row.childRows}
             rowIdx={rowIdx}
             lastFrozenColumnIndex={lastFrozenColumnIndex}
-            groupBy={groupBy}
             top={top}
             level={row.level}
             isExpanded={row.isExpanded}
-            isCellSelected={isSelected}
+            selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
             isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
             eventBus={eventBus}
-            onKeyDown={isSelected ? handleKeyDown : undefined}
+            onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
           />
         );
         continue;

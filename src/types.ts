@@ -204,11 +204,10 @@ export interface GroupRowRendererProps<TRow, TSummaryRow = unknown> extends Omit
   childRows: TRow[];
   rowIdx: number;
   lastFrozenColumnIndex: number;
-  groupBy: readonly string[];
   top: number;
   level: number;
+  selectedCellIdx?: number;
   isExpanded: boolean;
-  isCellSelected: boolean;
   isRowSelected: boolean;
   eventBus: EventBus;
 }
