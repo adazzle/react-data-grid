@@ -213,6 +213,7 @@ export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
+  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(new Set());
   const [groupBy] = useState(['country', 'transaction']);
 
   const countries = useMemo(() => {
@@ -296,6 +297,8 @@ export default function CommonFeatures() {
           summaryRows={summaryRows}
           groupBy={groupBy}
           rowGrouper={rowGrouper}
+          expandedGroupIds={expandedGroupIds}
+          onExpandedGroupIdsChange={setExpandedGroupIds}
         />
       )}
     </AutoSizer>

@@ -134,6 +134,8 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
   groupBy?: readonly string[];
   rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<R[]>;
+  expandedGroupIds?: Set<unknown>;
+  onExpandedGroupIdsChange?: (expandedGroupIds: Set<unknown>) => void;
 
   /**
    * Custom renderers
@@ -204,6 +206,8 @@ function DataGrid<R, K extends keyof R, SR>({
   defaultColumnOptions,
   groupBy: rawGroupBy,
   rowGrouper,
+  expandedGroupIds,
+  onExpandedGroupIdsChange,
   // Custom renderers
   rowRenderer: RowRenderer = Row,
   emptyRowsRenderer,
@@ -237,9 +241,6 @@ function DataGrid<R, K extends keyof R, SR>({
   const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-
-  // TODO: change it to props
-  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(new Set());
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -363,17 +364,18 @@ function DataGrid<R, K extends keyof R, SR>({
 
   useEffect(() => {
     function toggleGroup(expandedGroupId: unknown) {
+      if (!onExpandedGroupIdsChange) return;
       const newExpandedGroupIds = new Set(expandedGroupIds);
-      if (expandedGroupIds.has(expandedGroupId)) {
+      if (newExpandedGroupIds.has(expandedGroupId)) {
         newExpandedGroupIds.delete(expandedGroupId);
       } else {
         newExpandedGroupIds.add(expandedGroupId);
       }
-      setExpandedGroupIds(newExpandedGroupIds);
+      onExpandedGroupIdsChange(newExpandedGroupIds);
     }
 
     return eventBus.subscribe('TOGGLE_GROUP', toggleGroup);
-  }, [eventBus, expandedGroupIds]);
+  }, [eventBus, expandedGroupIds, onExpandedGroupIdsChange]);
 
   useImperativeHandle(ref, () => ({
     scrollToColumn(idx: number) {
@@ -785,7 +787,6 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function getViewportRows() {
-    // TODO: cleanup rowIndex/rowIdx logic
     let startRowIndex = 0;
     return viewportRows.map((row, index) => {
       const rowIdx = startRowIdx + index;
@@ -831,7 +832,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
       return (
         <RowRenderer
-          aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1}
+          aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1} // aria-rowindex is 1 based
           aria-selected={isSelectable ? isRowSelected : undefined}
           key={key}
           rowIdx={rowIdx}

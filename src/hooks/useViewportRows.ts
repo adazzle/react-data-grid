@@ -25,15 +25,15 @@ export function useViewportRows<R, SR>({
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
 
-    const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[], startIndex: number): [GroupByDictionary<R>, number] => {
+    const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[], startRowIndex: number): [GroupByDictionary<R>, number] => {
       let groupRowsCount = 0;
       const groups: GroupByDictionary<R> = {};
       for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
         // Recursively group each parent group
         const [childGroups, childRowsCount] = remainingGroupByKeys.length === 0
           ? [childRows, childRows.length]
-          : groupRows(childRows, remainingGroupByKeys, startIndex + groupRowsCount + 1); // 1 for parent row
-        groups[key] = { childRows, childGroups, startRowIndex: startIndex + groupRowsCount };
+          : groupRows(childRows, remainingGroupByKeys, startRowIndex + groupRowsCount + 1); // 1 for parent row
+        groups[key] = { childRows, childGroups, startRowIndex: startRowIndex + groupRowsCount };
         groupRowsCount += childRowsCount + 1; // 1 for parent row
       }
 
