@@ -476,12 +476,15 @@ function DataGrid<R, K extends keyof R, SR>({
     if (
       selectedPosition.mode === 'SELECT'
       || column?.editor2 === undefined
-      || selectedPosition.row === rows[rowIdx]
     ) {
       return;
     }
 
-    handleRowsChange(selectedPosition.row);
+    if (selectedPosition.row === rows[rowIdx]) {
+      closeEditor();
+    } else {
+      handleRowsChange(selectedPosition.row);
+    }
   }
 
   function handleCopy() {
