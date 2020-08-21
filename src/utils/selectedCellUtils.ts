@@ -13,8 +13,7 @@ interface IsSelectedCellEditableOpts<R, SR> {
 export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, onCheckCellIsEditable }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
-  if (column.rowGroup) return false;
-  if (isGroupedRow(row)) return false;
+  if (column.rowGroup || isGroupedRow(row)) return false;
   const isCellEditable = onCheckCellIsEditable ? onCheckCellIsEditable({ row, column, ...selectedPosition }) : true;
   return isCellEditable && canEdit<R, SR>(column, row);
 }

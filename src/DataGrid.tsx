@@ -646,8 +646,7 @@ function DataGrid<R, K extends keyof R, SR>({
   }
 
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
-    const minIdx = isRowWithinBounds(rowIdx) && isGroupedRow(rows[rowIdx]) ? -1 : 0;
-    return isRowWithinBounds(rowIdx) && idx >= minIdx && idx < columns.length;
+    return isRowWithinBounds(rowIdx) && idx >= (isGroupedRow(rows[rowIdx]) ? -1 : 0) && idx < columns.length;
   }
 
   function isCellEditable(position: Position): boolean {
