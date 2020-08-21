@@ -283,8 +283,13 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
-    const column = columns[selectedPosition.idx];
-    if (column.formatterOptions?.focusable) return; // Let the formatter handle focus
+
+    const focusable = columns[selectedPosition.idx]?.formatterOptions?.focusable;
+    const row = rows[selectedPosition.rowIdx];
+    if ((typeof focusable === 'function' && focusable(row)) || focusable === true) {
+      // Let the formatter handle focus
+      return;
+    }
     focusSinkRef.current!.focus();
   });
 
@@ -413,12 +418,15 @@ function DataGrid<R, K extends keyof R, SR>({
     if (
       selectedPosition.mode === 'SELECT'
       || column?.editor2 === undefined
-      || selectedPosition.row === rows[rowIdx]
     ) {
       return;
     }
 
-    handleRowsChange(selectedPosition.row);
+    if (selectedPosition.row === rows[rowIdx]) {
+      closeEditor();
+    } else {
+      handleRowsChange(selectedPosition.row);
+    }
   }
 
   function handleCopy() {
