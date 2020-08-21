@@ -55,13 +55,13 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
     // Every column should have a valid width as this stage
     const width = column.width ?? clampColumnWidth(unallocatedColumnWidth, column, metrics.minColumnWidth);
     const newColumn = {
+      sortable: metrics.defaultSortable,
+      resizable: metrics.defaultResizable,
+      formatter: metrics.defaultFormatter,
       ...column,
       idx,
       width,
-      left,
-      sortable: column.resizable ?? metrics.defaultSortable,
-      resizable: column.resizable ?? metrics.defaultResizable,
-      formatter: column.formatter ?? metrics.defaultFormatter
+      left
     };
     totalWidth += width;
     left += width;

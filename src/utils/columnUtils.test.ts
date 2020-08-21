@@ -1,5 +1,5 @@
 import { getColumnMetrics, getColumnScrollPosition, canEdit } from './columnUtils';
-import { ValueFormatter } from '../formatters';
+import { ValueFormatter, SimpleCellFormatter } from '../formatters';
 import { Column, CalculatedColumn } from '../types';
 import { createColumns } from '../test/utils';
 
@@ -75,9 +75,33 @@ describe('getColumnMetrics', () => {
       defaultSortable: false,
       defaultFormatter: ValueFormatter
     });
+
     expect(metrics.columns[0]).toMatchObject(firstFrozenColumn);
     expect(metrics.columns[1]).toMatchObject(secondFrozenColumn);
     expect(metrics.columns[2]).toMatchObject(thirdFrozenColumn);
+  });
+
+  it('should respect column properties', () => {
+    const columns = [...getInitialColumns().map(col => ({
+      ...col,
+      sortable: true,
+      resizable: false,
+      formatter: ValueFormatter
+    }))];
+
+    const metrics = getColumnMetrics<Row, unknown>({
+      columns,
+      viewportWidth,
+      minColumnWidth: 50,
+      columnWidths: new Map(),
+      defaultResizable: true,
+      defaultSortable: false,
+      defaultFormatter: SimpleCellFormatter
+    });
+
+    expect(metrics.columns[0]).toMatchObject(columns[0]);
+    expect(metrics.columns[1]).toMatchObject(columns[1]);
+    expect(metrics.columns[2]).toMatchObject(columns[2]);
   });
 });
 
