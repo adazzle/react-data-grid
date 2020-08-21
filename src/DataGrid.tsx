@@ -654,19 +654,18 @@ function DataGrid<R, K extends keyof R, SR>({
   function selectRow(key: string) {
     const row = rows[selectedPosition.rowIdx];
     if (isGroupedRow(row) && selectedPosition.idx === -1) {
-      const isRowExpanded = expandedGroupIds?.has(row.id);
       if (
         // If a row is focused, and it is expanded, collaps the current row.
-        (key === 'ArrowLeft' && isRowExpanded)
+        (key === 'ArrowLeft' && row.isExpanded)
         // If a row is focused, and it is collapsed, expand the current row.
-        || (key === 'ArrowRight' && !isRowExpanded)
+        || (key === 'ArrowRight' && !row.isExpanded)
       ) {
         eventBus.dispatch('TOGGLE_GROUP', row.id);
         return true;
       }
 
       // If a row is focused, and it is collapsed, move to the parent row (if there is one).
-      if (key === 'ArrowLeft' && !isRowExpanded && row.level !== 0) {
+      if (key === 'ArrowLeft' && !row.isExpanded && row.level !== 0) {
         let parentRowIdx = -1;
         for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
           const parentRow = rows[i];
@@ -723,6 +722,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
+    const isRowSelected = isRowWithinBounds(rowIdx) && idx === -1;
     switch (key) {
       case 'ArrowUp':
         return { idx, rowIdx: rowIdx - 1 };
@@ -737,11 +737,20 @@ function DataGrid<R, K extends keyof R, SR>({
           return shiftKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: 0, rowIdx: 0 };
         }
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
-      // TODO: fix keyboard support for group row
       case 'Home':
-        return ctrlKey ? { idx: 0, rowIdx: 0 } : { idx: 0, rowIdx };
+        // Move focus to the first row
+        if (isRowSelected) return { idx, rowIdx: 0 };
+        // Move focus to the first cell in the first row
+        if (ctrlKey) return { idx: 0, rowIdx: 0 };
+        // Move focus to the first cell in the row containing focus
+        return { idx: 0, rowIdx };
       case 'End':
-        return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
+        // Move focus to the last row.
+        if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
+        // Move focus to the last cell in the last row
+        if (ctrlKey) return { idx: columns.length - 1, rowIdx: rows.length - 1 };
+        // Moves focus to the last cell in the row that contains focus.
+        return { idx: columns.length - 1, rowIdx };
       case 'PageUp':
         return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
       case 'PageDown':
