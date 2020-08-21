@@ -285,8 +285,10 @@ function DataGrid<R, K extends keyof R, SR>({
     scrollToCell(selectedPosition);
 
     const focusable = columns[selectedPosition.idx]?.formatterOptions?.focusable;
-    const row = rows[selectedPosition.rowIdx];
-    if ((typeof focusable === 'function' && focusable(row)) || focusable === true) {
+    if (
+      (typeof focusable === 'function' && focusable(rows[selectedPosition.rowIdx]))
+      || focusable === true
+    ) {
       // Let the formatter handle focus
       return;
     }
@@ -409,7 +411,6 @@ function DataGrid<R, K extends keyof R, SR>({
     const updatedRows = [...rows];
     updatedRows[selectedPosition.rowIdx] = row;
     onRowsChange?.(updatedRows);
-    closeEditor();
   }
 
   function handleCommit2() {
@@ -422,11 +423,10 @@ function DataGrid<R, K extends keyof R, SR>({
       return;
     }
 
-    if (selectedPosition.row === rows[rowIdx]) {
-      closeEditor();
-    } else {
+    if (selectedPosition.row !== rows[rowIdx]) {
       handleRowsChange(selectedPosition.row);
     }
+    closeEditor();
   }
 
   function handleCopy() {
