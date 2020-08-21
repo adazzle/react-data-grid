@@ -284,9 +284,9 @@ function DataGrid<R, K extends keyof R, SR>({
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
 
-    const formatterOptions = columns[selectedPosition.idx]?.formatterOptions;
+    const focusable = columns[selectedPosition.idx]?.formatterOptions?.focusable;
     const row = rows[selectedPosition.rowIdx];
-    if ((typeof formatterOptions?.focusable === 'function' && formatterOptions?.focusable(row)) || formatterOptions?.focusable === true) {
+    if ((typeof focusable === 'function' && focusable(row)) || focusable === true) {
       // Let the formatter handle focus
       return;
     }
