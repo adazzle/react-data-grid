@@ -50,12 +50,14 @@ export function useViewportRows<R, SR>({
       if (Array.isArray(rows)) return rows;
       const flattenedRows: Array<R | GroupRow<R>> = [];
       Object.keys(rows).forEach((key, posInSet, keys) => {
+        // TODO: should users have control over the gerenated key?
         const id = parentKey !== undefined ? `${parentKey}__${key}` : key;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
         const { childRows, childGroups, startRowIndex } = rows[key];
         flattenedRows.push({
           id,
           key,
+          parentKey,
           isExpanded,
           childRows,
           level,

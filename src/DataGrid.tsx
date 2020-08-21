@@ -307,13 +307,12 @@ function DataGrid<R, K extends keyof R, SR>({
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
 
-    const row = rows[selectedPosition.rowIdx];
-    if (isGroupedRow(row)) return;
-
     // Let the formatter handle focus
-    const column = columns[selectedPosition.idx];
-    if (column.formatterOptions?.focusable) return;
-
+    const formatterOptions = columns[selectedPosition.idx]?.formatterOptions;
+    const row = rows[selectedPosition.rowIdx];
+    if ((typeof formatterOptions?.focusable === 'function' && formatterOptions?.focusable(row)) || formatterOptions?.focusable === true) {
+      return;
+    }
     focusSinkRef.current!.focus();
   });
 
@@ -622,8 +621,13 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * utils
    */
+  function isRowWithinBounds(rowIdx: number) {
+    return rowIdx >= 0 && rowIdx < rows.length;
+  }
+
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
-    return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
+    const minIdx = isRowWithinBounds(rowIdx) && isGroupedRow(rows[rowIdx]) ? -1 : 0;
+    return isRowWithinBounds(rowIdx) && idx >= minIdx && idx < columns.length;
   }
 
   function isCellEditable(position: Position): boolean {
@@ -642,6 +646,39 @@ function DataGrid<R, K extends keyof R, SR>({
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
     onSelectedCellChange?.({ ...position });
+  }
+
+  function selectRow(key: string) {
+    const row = rows[selectedPosition.rowIdx];
+    if (isGroupedRow(row) && selectedPosition.idx === -1) {
+      const isRowExpanded = expandedGroupIds?.has(row.id);
+      if (
+        // If a row is focused, and it is expanded, collaps the current row.
+        (key === 'ArrowLeft' && isRowExpanded)
+        // If a row is focused, and it is collapsed, expand the current row.
+        || (key === 'ArrowRight' && !isRowExpanded)
+      ) {
+        eventBus.dispatch('TOGGLE_GROUP', row.id);
+        return true;
+      }
+
+      // If a row is focused, and it is collapsed, move to the parent row (if there is one).
+      if (key === 'ArrowLeft' && !isRowExpanded && row.level !== 0) {
+        let parentRowIdx = -1;
+        for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
+          const parentRow = rows[i];
+          if (isGroupedRow(parentRow) && parentRow.key === row.parentKey) {
+            parentRowIdx = i;
+            break;
+          }
+        }
+        if (parentRowIdx !== -1) {
+          setSelectedPosition(position => ({ ...position, rowIdx: parentRowIdx }));
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   function closeEditor() {
@@ -714,6 +751,13 @@ function DataGrid<R, K extends keyof R, SR>({
     const { key, shiftKey } = event;
     const ctrlKey = isCtrlKeyHeldDown(event);
     let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
+    if (isRowWithinBounds(nextPosition.rowIdx)) {
+      const row = rows[nextPosition.rowIdx];
+      // Select the first cell when the selected position changes from a group row to regular row
+      if (!isGroupedRow(row) && nextPosition.idx === -1) {
+        nextPosition.idx = 0;
+      }
+    }
     let mode = cellNavigationMode;
     if (key === 'Tab') {
       // If we are in a position to leave the grid, stop editing but stay in that cell
@@ -729,6 +773,9 @@ function DataGrid<R, K extends keyof R, SR>({
 
     // Do not allow focus to leave
     event.preventDefault();
+
+    const isRowSelected = selectRow(key);
+    if (isRowSelected) return;
 
     nextPosition = getNextSelectedCellPosition<R, SR>({
       columns,

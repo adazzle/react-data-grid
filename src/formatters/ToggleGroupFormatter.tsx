@@ -13,26 +13,25 @@ export function ToggleGroupedFormatter<R, SR>({
     cellRef.current?.focus();
   }, [isCellSelected]);
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
-    const { key } = event;
-    if (['ArrowLeft', 'ArrowRight', 'Enter'].includes(key)) {
-      event.preventDefault();
-      event.stopPropagation();
-      if (key === 'Enter') {
-        toggleGroup();
-      }
+  function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
+    if (key === 'Enter') {
+      toggleGroup();
     }
   }
 
   return (
     <span
-      ref={cellRef}
-      tabIndex={-1}
       style={{ cursor: 'pointer' }}
       onClick={toggleGroup}
-      onKeyDown={handleKeyDown}
     >
-      {groupKey}{' '}{isExpanded ? '\u25BC' : '\u25B6'}
+      {groupKey}{' '}
+      <span
+        ref={cellRef}
+        tabIndex={-1}
+        onKeyDown={handleKeyDown}
+      >
+        {isExpanded ? '\u25BC' : '\u25B6'}
+      </span>
     </span>
   );
 }

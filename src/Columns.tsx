@@ -41,6 +41,8 @@ export const SelectColumn: Column<any, any> = {
         isCellSelected={props.isCellSelected}
         value={props.isRowSelected}
         onChange={props.onRowSelectionChange}
+        // Stop propagation to prevent row selection
+        onClick={event => event.stopPropagation()}
       />
     );
   },

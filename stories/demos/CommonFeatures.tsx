@@ -154,7 +154,8 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
     },
     {
       key: 'transaction',
-      name: 'Transaction type'
+      name: 'Transaction type',
+      width: 200
     },
     {
       key: 'account',

@@ -7,7 +7,7 @@ export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
 export function isGroupedRow<R>(row: R | GroupRow<R>): row is GroupRow<R> {
-  return (row as GroupRow<R>).__isGroup !== undefined;
+  return (row as GroupRow<R>).__isGroup === true;
 }
 
 export function assertIsValidKey<R>(key: unknown): asserts key is keyof R {

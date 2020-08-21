@@ -35,12 +35,13 @@
 
 .rdg-group-row {
   > .rdg-cell {
-    border-right-width: 0;
+    // TODO: fix broken border
+    border-right-color: transparent;
   }
 
   > .rdg-cell:last-child,
   > .rdg-cell-frozen-last {
-    border-right-width: 1px;
+    border-right-color: @borderColor;
   }
 }
 

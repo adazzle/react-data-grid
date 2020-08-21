@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { CalculatedColumn } from '../types';
-import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns } from '../utils';
+import { CalculatedColumn, GroupRow } from '../types';
+import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns, isGroupedRow } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import { ValueFormatter, ToggleGroupedFormatter } from '../formatters';
@@ -40,11 +40,19 @@ export function useViewportColumns<R, K extends keyof R, SR>({
     // Move group columns after the select column
     const groupByColumns = rawColumns
       .filter(c => groupBy.includes(c.key))
-      .map(c => ({
+      .map((c, index) => ({
         ...c,
         frozen: true,
         rowGroup: true,
-        groupFormatter: c.groupFormatter ?? ToggleGroupedFormatter
+        groupFormatter: c.groupFormatter ?? ToggleGroupedFormatter,
+        formatterOptions: {
+          focusable(row: R | GroupRow<R>) {
+            if (isGroupedRow(row)) {
+              return row.level === index;
+            }
+            return false;
+          }
+        }
       }))
       .sort((c1, c2) => groupBy.findIndex(k => k === c1.key) - groupBy.findIndex(k => k === c2.key));
     const remaningColumns = rawColumns.filter(c => !groupBy.includes(c.key) && c.key !== SELECT_COLUMN_KEY);

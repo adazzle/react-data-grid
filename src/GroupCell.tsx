@@ -47,7 +47,8 @@ function GroupCell<R, SR>({
       key={column.key}
       className={clsx('rdg-cell', {
         'rdg-cell-frozen': column.frozen,
-        'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+        'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
+        'rdg-cell-selected': isCellSelected
       })}
       style={{
         width: column.width,
