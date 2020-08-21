@@ -307,10 +307,10 @@ function DataGrid<R, K extends keyof R, SR>({
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
 
-    // Let the formatter handle focus
-    const formatterOptions = columns[selectedPosition.idx]?.formatterOptions;
+    const focusable = columns[selectedPosition.idx]?.formatterOptions?.focusable;
     const row = rows[selectedPosition.rowIdx];
-    if ((typeof formatterOptions?.focusable === 'function' && formatterOptions?.focusable(row)) || formatterOptions?.focusable === true) {
+    if ((typeof focusable === 'function' && focusable(row)) || focusable === true) {
+      // Let the formatter handle focus
       return;
     }
     focusSinkRef.current!.focus();
@@ -734,6 +734,7 @@ function DataGrid<R, K extends keyof R, SR>({
           return shiftKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: 0, rowIdx: 0 };
         }
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
+      // TODO: fix keyboard support for group row
       case 'Home':
         return ctrlKey ? { idx: 0, rowIdx: 0 } : { idx: 0, rowIdx };
       case 'End':
