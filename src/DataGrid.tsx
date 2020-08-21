@@ -41,7 +41,8 @@ import {
   CommitEvent,
   SelectedCellProps,
   EditCellProps,
-  Dictionary
+  Dictionary,
+  GroupRow
 } from './types';
 import { CellNavigationMode, SortDirection, UpdateActions } from './enums';
 
@@ -395,9 +396,10 @@ function DataGrid<R, K extends keyof R, SR>({
    * event handlers
    */
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const { key } = event;
     if (enableCellCopyPaste && isCtrlKeyHeldDown(event) && isCellWithinBounds(selectedPosition)) {
-      // event.key may be uppercase `C` or `V`
-      const lowerCaseKey = event.key.toLowerCase();
+      // key may be uppercase `C` or `V`
+      const lowerCaseKey = key.toLowerCase();
       if (lowerCaseKey === 'c') {
         handleCopy();
         return;
@@ -406,6 +408,21 @@ function DataGrid<R, K extends keyof R, SR>({
         handlePaste();
         return;
       }
+    }
+
+    const row = rows[selectedPosition.rowIdx];
+    if (
+      isGroupedRow(row)
+      && selectedPosition.idx === -1
+      && (
+        // Collapse the current row if it is focused and is in expanded state
+        (key === 'ArrowLeft' && row.isExpanded)
+        // Expand the current row if it is focused and is in collapsed state
+        || (key === 'ArrowRight' && !row.isExpanded)
+      )) {
+      event.preventDefault(); // Prevents scrolling
+      eventBus.dispatch('TOGGLE_GROUP', row.id);
+      return;
     }
 
     switch (event.key) {
@@ -651,38 +668,6 @@ function DataGrid<R, K extends keyof R, SR>({
     onSelectedCellChange?.({ ...position });
   }
 
-  function selectRow(key: string) {
-    const row = rows[selectedPosition.rowIdx];
-    if (isGroupedRow(row) && selectedPosition.idx === -1) {
-      if (
-        // If a row is focused, and it is expanded, collaps the current row.
-        (key === 'ArrowLeft' && row.isExpanded)
-        // If a row is focused, and it is collapsed, expand the current row.
-        || (key === 'ArrowRight' && !row.isExpanded)
-      ) {
-        eventBus.dispatch('TOGGLE_GROUP', row.id);
-        return true;
-      }
-
-      // If a row is focused, and it is collapsed, move to the parent row (if there is one).
-      if (key === 'ArrowLeft' && !row.isExpanded && row.level !== 0) {
-        let parentRowIdx = -1;
-        for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
-          const parentRow = rows[i];
-          if (isGroupedRow(parentRow) && parentRow.key === row.parentKey) {
-            parentRowIdx = i;
-            break;
-          }
-        }
-        if (parentRowIdx !== -1) {
-          setSelectedPosition(position => ({ ...position, rowIdx: parentRowIdx }));
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   function closeEditor() {
     if (selectedPosition.mode === 'SELECT') return;
     setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
@@ -722,7 +707,24 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
-    const isRowSelected = isRowWithinBounds(rowIdx) && idx === -1;
+    const isGroupRowSelected = isRowWithinBounds(rowIdx) && idx === -1;
+
+    // If a row is focused, and it is collapsed, move to the parent row (if there is one).
+    if (isGroupRowSelected && key === 'ArrowLeft') {
+      const row = rows[rowIdx] as GroupRow<R>;
+      let parentRowIdx = -1;
+      for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
+        const parentRow = rows[i];
+        if (isGroupedRow(parentRow) && parentRow.key === row.parentKey) {
+          parentRowIdx = i;
+          break;
+        }
+      }
+      if (parentRowIdx !== -1) {
+        return { idx, rowIdx: parentRowIdx };
+      }
+    }
+
     switch (key) {
       case 'ArrowUp':
         return { idx, rowIdx: rowIdx - 1 };
@@ -739,14 +741,14 @@ function DataGrid<R, K extends keyof R, SR>({
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
         // Move focus to the first row
-        if (isRowSelected) return { idx, rowIdx: 0 };
+        if (isGroupRowSelected) return { idx, rowIdx: 0 };
         // Move focus to the first cell in the first row
         if (ctrlKey) return { idx: 0, rowIdx: 0 };
         // Move focus to the first cell in the row containing focus
         return { idx: 0, rowIdx };
       case 'End':
         // Move focus to the last row.
-        if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
+        if (isGroupRowSelected) return { idx, rowIdx: rows.length - 1 };
         // Move focus to the last cell in the last row
         if (ctrlKey) return { idx: columns.length - 1, rowIdx: rows.length - 1 };
         // Moves focus to the last cell in the row that contains focus.
@@ -786,9 +788,6 @@ function DataGrid<R, K extends keyof R, SR>({
 
     // Do not allow focus to leave
     event.preventDefault();
-
-    const isRowSelected = selectRow(key);
-    if (isRowSelected) return;
 
     nextPosition = getNextSelectedCellPosition<R, SR>({
       columns,
