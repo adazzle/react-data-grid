@@ -22,7 +22,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
   formatterOptions?: {
-    focusable?: boolean;
+    focusable?: boolean | ((row: TRow) => boolean);
   };
   /** Formatter to be used to render the summary cell content */
   summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;

@@ -283,8 +283,13 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
-    const column = columns[selectedPosition.idx];
-    if (column.formatterOptions?.focusable) return; // Let the formatter handle focus
+
+    const formatterOptions = columns[selectedPosition.idx]?.formatterOptions;
+    const row = rows[selectedPosition.rowIdx];
+    if ((typeof formatterOptions?.focusable === 'function' && formatterOptions?.focusable(row)) || formatterOptions?.focusable === true) {
+      // Let the formatter handle focus
+      return;
+    }
     focusSinkRef.current!.focus();
   });
 
