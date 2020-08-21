@@ -59,7 +59,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
       idx,
       width,
       left,
-      sortable: column.resizable ?? metrics.defaultSortable,
+      sortable: column.sortable ?? metrics.defaultSortable,
       resizable: column.resizable ?? metrics.defaultResizable,
       formatter: column.formatter ?? metrics.defaultFormatter
     };
