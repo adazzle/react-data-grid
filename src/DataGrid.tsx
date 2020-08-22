@@ -293,6 +293,7 @@ function DataGrid<R, K extends keyof R, SR>({
   });
 
   const hasGroups = groupBy.length > 0 && rowGrouper;
+  const minColIdx = hasGroups ? -1 : 0;
 
   if (hasGroups) {
     // TODO: finalize if these flags need to be supported on treegrid
@@ -412,8 +413,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
     const row = rows[selectedPosition.rowIdx];
     if (
-      isGroupedRow(row)
-      && selectedPosition.idx === -1
+      isGroupRowSelected(row)
       && (
         // Collapse the current row if it is focused and is in expanded state
         (key === 'ArrowLeft' && row.isExpanded)
@@ -641,12 +641,8 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * utils
    */
-  function isRowWithinBounds(rowIdx: number) {
-    return rowIdx >= 0 && rowIdx < rows.length;
-  }
-
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
-    return isRowWithinBounds(rowIdx) && idx >= (isGroupedRow(rows[rowIdx]) ? -1 : 0) && idx < columns.length;
+    return rowIdx >= 0 && rowIdx < rows.length && idx >= minColIdx && idx < columns.length;
   }
 
   function isCellEditable(position: Position): boolean {
@@ -704,13 +700,21 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
+  function isGroupRowSelected(row?: R | GroupRow<R>): row is GroupRow<R> {
+    return row !== undefined && isGroupedRow(row) && selectedPosition.idx === -1;
+  }
+
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
-    const isGroupRowSelected = isRowWithinBounds(rowIdx) && idx === -1;
+    const row = rows[rowIdx];
 
-    // If a row is focused, and it is collapsed, move to the parent row (if there is one).
-    if (isGroupRowSelected && key === 'ArrowLeft') {
-      const row = rows[rowIdx] as GroupRow<R>;
+    // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
+    if (
+      key === 'ArrowLeft'
+      && isGroupRowSelected(row)
+      && !row.isExpanded
+      && row.level !== 0
+    ) {
       let parentRowIdx = -1;
       for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
         const parentRow = rows[i];
@@ -740,14 +744,14 @@ function DataGrid<R, K extends keyof R, SR>({
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
         // Move focus to the first row
-        if (isGroupRowSelected) return { idx, rowIdx: 0 };
+        if (isGroupRowSelected(row)) return { idx, rowIdx: 0 };
         // Move focus to the first cell in the first row
         if (ctrlKey) return { idx: 0, rowIdx: 0 };
         // Move focus to the first cell in the row containing focus
         return { idx: 0, rowIdx };
       case 'End':
         // Move focus to the last row.
-        if (isGroupRowSelected) return { idx, rowIdx: rows.length - 1 };
+        if (isGroupRowSelected(row)) return { idx, rowIdx: rows.length - 1 };
         // Move focus to the last cell in the last row
         if (ctrlKey) return { idx: columns.length - 1, rowIdx: rows.length - 1 };
         // Moves focus to the last cell in the row that contains focus.
@@ -765,13 +769,6 @@ function DataGrid<R, K extends keyof R, SR>({
     const { key, shiftKey } = event;
     const ctrlKey = isCtrlKeyHeldDown(event);
     let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
-    if (isRowWithinBounds(nextPosition.rowIdx)) {
-      const row = rows[nextPosition.rowIdx];
-      // Select the first cell when the selected position changes from a group row to regular row
-      if (!isGroupedRow(row) && nextPosition.idx === -1) {
-        nextPosition.idx = 0;
-      }
-    }
     let mode = cellNavigationMode;
     if (key === 'Tab') {
       // If we are in a position to leave the grid, stop editing but stay in that cell

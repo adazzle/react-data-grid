@@ -30,19 +30,6 @@ function GroupedRow<R, SR>({
     eventBus.dispatch('SELECT_CELL', { rowIdx, idx: -1 });
   }
 
-  // TODO: how to handle this with cell selection?
-  // Expand groupBy column widths
-  // const visibleColumns: CalculatedColumn<R, SR>[] = [...viewportColumns];
-  // visibleColumns[idx] = { ...visibleColumns[idx] };
-  // let colSpan = 0;
-  // for (let i = idx + 1; i < visibleColumns.length; i++) {
-  //   const nextColumn = visibleColumns[i];
-  //   if (!nextColumn.frozen || (nextColumn.groupFormatter && !nextColumn.rowGroup)) break;
-  //   visibleColumns[idx].width += nextColumn.width;
-  //   colSpan++;
-  // }
-  // visibleColumns.splice(idx + 1, colSpan);
-
   return (
     <div
       role="row"
@@ -51,11 +38,12 @@ function GroupedRow<R, SR>({
       aria-posinset={ariaPosInSet}
       aria-rowindex={ariaRowIndex}
       aria-expanded={isExpanded}
-      className={clsx('rdg-row rdg-group-row', {
-        'rdg-row-even': rowIdx % 2 === 0,
-        'rdg-row-odd': rowIdx % 2 !== 0,
-        'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
-      })}
+      className={clsx(
+        'rdg-row',
+        'rdg-group-row',
+        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
+          'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
+        })}
       onClick={selectGroup}
       onKeyDown={onKeyDown}
       style={{ top }}
