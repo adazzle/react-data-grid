@@ -6,7 +6,7 @@ export * from './viewportUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
-export function isGroupedRow<R>(row: R | GroupRow<R>): row is GroupRow<R> {
+export function isGroupRow<R>(row: R | GroupRow<R>): row is GroupRow<R> {
   return (row as GroupRow<R>).__isGroup === true;
 }
 
