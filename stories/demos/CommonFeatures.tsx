@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import { AutoSizer } from 'react-virtualized';
-import { groupBy as rowGrouper } from 'lodash';
 import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
 import { TextEditor } from './components/Editors/TextEditor';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -146,16 +145,11 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       width: 100,
       formatter(props) {
         return <CurrencyFormatter value={props.row.budget} />;
-      },
-      groupFormatter({ childRows }) {
-        const totals = childRows.reduce((prev, { budget }) => prev + budget, 0);
-        return <CurrencyFormatter value={totals} />;
       }
     },
     {
       key: 'transaction',
-      name: 'Transaction type',
-      width: 200
+      name: 'Transaction type'
     },
     {
       key: 'account',
@@ -214,8 +208,6 @@ export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
-  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(new Set());
-  const [groupBy] = useState(['country', 'transaction']);
 
   const countries = useMemo(() => {
     return [...new Set(rows.map(r => r.country))].sort();
@@ -296,10 +288,6 @@ export default function CommonFeatures() {
           sortDirection={sortDirection}
           onSort={handleSort}
           summaryRows={summaryRows}
-          groupBy={groupBy}
-          rowGrouper={rowGrouper}
-          expandedGroupIds={expandedGroupIds}
-          onExpandedGroupIdsChange={setExpandedGroupIds}
         />
       )}
     </AutoSizer>
