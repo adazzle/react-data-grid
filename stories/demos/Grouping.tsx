@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import { groupBy as rowGrouper } from 'lodash';
+import Select from 'react-select';
 import faker from 'faker';
 
 import DataGrid, { Column, Row, SelectColumn } from '../../src';
@@ -9,11 +10,14 @@ interface Row {
   id: number;
   country: string;
   year: number;
+  sport: string;
   athlete: string;
   gold: number;
   silver: number;
   bronze: number;
 }
+
+const sports = ['Swimming', 'Gymnastics', 'Speed Skating', 'Cross Country Skiing', 'Short-Track Speed Skating', 'Diving', 'Cycling', 'Biathlon', 'Alpine Skiing', 'Ski Jumping', 'Nordic Combined', 'Athletics', 'Table Tennis', 'Tennis', 'Synchronized Swimming', 'Shooting', 'Rowing', 'Fencing', 'Equestrian', 'Canoeing', 'Bobsleigh', 'Badminton', 'Archery', 'Wrestling', 'Weightlifting', 'Waterpolo', 'Wrestling', 'Weightlifting'];
 
 const columns: Column<Row>[] = [
   SelectColumn,
@@ -24,6 +28,10 @@ const columns: Column<Row>[] = [
   {
     key: 'year',
     name: 'Year'
+  },
+  {
+    key: 'sport',
+    name: 'Sport'
   },
   {
     key: 'athlete',
@@ -69,6 +77,7 @@ function createRows(): Row[] {
       id: i,
       year: 2015 + faker.random.number(3),
       country: faker.address.country(),
+      sport: sports[faker.random.number(sports.length)],
       athlete: faker.name.findName(),
       gold: faker.random.number(5),
       silver: faker.random.number(5),
@@ -76,33 +85,56 @@ function createRows(): Row[] {
     });
   }
 
-  return rows.sort((r1, r2) => r1.country.localeCompare(r2.country));
+  return rows.sort((r1, r2) => r2.country.localeCompare(r1.country));
 }
+
+const options = [
+  { value: 'country', label: 'Country' },
+  { value: 'year', label: 'Year' },
+  { value: 'sport', label: 'Sport' }
+];
 
 export default function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
-  const [groupBy] = useState(['country', 'year']);
-  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(new Set());
+  const [selectedOptions, setSelectedOptions] = useState([options[0], options[1]]);
+  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(new Set(['United States of America', 'United States of America__2015']));
+
+  const groupBy = useMemo(() => selectedOptions === null ? undefined : selectedOptions.map(o => o.value), [selectedOptions]);
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <DataGrid
-          rowKey="id"
-          columns={columns}
-          rows={rows}
-          height={height}
-          width={width}
-          selectedRows={selectedRows}
-          onSelectedRowsChange={setSelectedRows}
-          groupBy={groupBy}
-          rowGrouper={rowGrouper}
-          expandedGroupIds={expandedGroupIds}
-          onExpandedGroupIdsChange={setExpandedGroupIds}
-          defaultColumnOptions={{ resizable: true }}
+    <>
+      <label style={{ width: 400, marginBottom: 24 }}>
+        Group by
+        <Select
+          value={selectedOptions}
+          onChange={options => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            setSelectedOptions(options as any);
+            setExpandedGroupIds(new Set());
+          }}
+          options={options}
+          isMulti
         />
-      )}
-    </AutoSizer>
+      </label>
+      <AutoSizer>
+        {({ height, width }) => (
+          <DataGrid
+            rowKey="id"
+            columns={columns}
+            rows={rows}
+            height={height - 85}
+            width={width}
+            selectedRows={selectedRows}
+            onSelectedRowsChange={setSelectedRows}
+            groupBy={groupBy}
+            rowGrouper={rowGrouper}
+            expandedGroupIds={expandedGroupIds}
+            onExpandedGroupIdsChange={setExpandedGroupIds}
+            defaultColumnOptions={{ resizable: true }}
+          />
+        )}
+      </AutoSizer>
+    </>
   );
 }
