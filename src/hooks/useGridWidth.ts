@@ -1,16 +1,7 @@
 import { useRef, useState, useLayoutEffect, useMemo } from 'react';
 
 // https://github.com/microsoft/TypeScript/issues/37861
-interface ResizeObserverSize {
-  inlineSize: number;
-}
-
-interface ResizeObserverEntry {
-  target: Element;
-  borderBoxSize?: ResizeObserverSize;
-}
-
-type ResizeObserverCallback = (entries: ResizeObserverEntry[]) => void;
+type ResizeObserverCallback = () => void;
 
 type ResizeObserver = new (callback: ResizeObserverCallback) => {
   observe: (target: Element) => void;
@@ -26,11 +17,8 @@ export function useGridWidth<T>(width?: number): [React.RefObject<HTMLDivElement
       return null;
     }
 
-    return new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      if (entries.length > 0) {
-        const newWidth = entries[0].borderBoxSize?.inlineSize ?? entries[0].target.getBoundingClientRect().width;
-        setGridWidth(newWidth);
-      }
+    return new ResizeObserver(() => {
+      setGridWidth(gridRef.current!.getBoundingClientRect().width);
     });
   }, []);
 
