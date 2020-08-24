@@ -285,8 +285,10 @@ function DataGrid<R, K extends keyof R, SR>({
     scrollToCell(selectedPosition);
 
     const focusable = columns[selectedPosition.idx]?.formatterOptions?.focusable;
-    const row = rows[selectedPosition.rowIdx];
-    if ((typeof focusable === 'function' && focusable(row)) || focusable === true) {
+    if (
+      (typeof focusable === 'function' && focusable(rows[selectedPosition.rowIdx]))
+      || focusable === true
+    ) {
       // Let the formatter handle focus
       return;
     }
@@ -336,7 +338,10 @@ function DataGrid<R, K extends keyof R, SR>({
       current.scrollTop = rowIdx * rowHeight;
     },
     selectCell,
-    commitChanges: handleCommit2
+    commitChanges() {
+      commitEditor2Changes();
+      closeEditor();
+    }
   }));
 
   /**
@@ -405,28 +410,17 @@ function DataGrid<R, K extends keyof R, SR>({
     closeEditor();
   }
 
-  function handleRowsChange(row: R) {
-    const updatedRows = [...rows];
-    updatedRows[selectedPosition.rowIdx] = row;
-    onRowsChange?.(updatedRows);
-    closeEditor();
-  }
-
-  function handleCommit2() {
-    const { idx, rowIdx } = selectedPosition;
-    const column = columns[idx];
+  function commitEditor2Changes() {
     if (
-      selectedPosition.mode === 'SELECT'
-      || column?.editor2 === undefined
-    ) {
+      columns[selectedPosition.idx]?.editor2 === undefined
+      || selectedPosition.mode === 'SELECT'
+      || selectedPosition.row === selectedPosition.originalRow) {
       return;
     }
 
-    if (selectedPosition.row === rows[rowIdx]) {
-      closeEditor();
-    } else {
-      handleRowsChange(selectedPosition.row);
-    }
+    const updatedRows = [...rows];
+    updatedRows[selectedPosition.rowIdx] = selectedPosition.row;
+    onRowsChange?.(updatedRows);
   }
 
   function handleCopy() {
@@ -466,9 +460,10 @@ function DataGrid<R, K extends keyof R, SR>({
     const column = columns[selectedPosition.idx];
 
     if (selectedPosition.mode === 'EDIT') {
-      if (column.editor2 !== undefined && key === 'Enter') {
+      if (key === 'Enter') {
         // Custom editors can listen for the event and stop propagation to prevent commit
-        handleCommit2();
+        commitEditor2Changes();
+        closeEditor();
       }
       return;
     }
@@ -547,16 +542,18 @@ function DataGrid<R, K extends keyof R, SR>({
   function handleRowChange(row: Readonly<R>, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
-      handleRowsChange(row);
+      const updatedRows = [...rows];
+      updatedRows[selectedPosition.rowIdx] = row;
+      onRowsChange?.(updatedRows);
+      closeEditor();
     } else {
       setSelectedPosition(position => ({ ...position, row }));
     }
   }
 
   function handleOnClose(commitChanges?: boolean) {
-    if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
-      handleRowsChange(selectedPosition.row);
+      commitEditor2Changes();
     }
     closeEditor();
   }
@@ -575,7 +572,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function selectCell(position: Position, enableEditor = false): void {
     if (!isCellWithinBounds(position)) return;
-    handleCommit2();
+    commitEditor2Changes();
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx];
