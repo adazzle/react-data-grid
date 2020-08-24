@@ -13,7 +13,7 @@ export function useGridWidth<T>(width?: number): [React.RefObject<HTMLDivElement
   const [gridWidth, setGridWidth] = useState(0);
   const resizeObserver = useMemo(() => {
     const { ResizeObserver } = window as (typeof window & { ResizeObserver?: ResizeObserver });
-    if (typeof width === 'number' || ResizeObserver === undefined) {
+    if (ResizeObserver === undefined) {
       return null;
     }
 
