@@ -18,7 +18,7 @@ type ResizeObserver = new (callback: ResizeObserverCallback) => {
 };
 
 
-const { ResizeObserver } = window as (typeof window & { ResizeObserver: ResizeObserver });
+const { ResizeObserver } = window as (typeof window & { ResizeObserver?: ResizeObserver });
 
 export function useGridWidth<T>(width?: number): [React.RefObject<HTMLDivElement>, number] {
   const gridRef = useRef<HTMLDivElement>(null);
