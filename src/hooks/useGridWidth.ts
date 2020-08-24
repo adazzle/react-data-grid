@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from 'react';
+import { useRef, useState, useLayoutEffect, useMemo } from 'react';
 
 // https://github.com/microsoft/TypeScript/issues/37861
 interface ResizeObserverSize {
@@ -14,15 +14,14 @@ type ResizeObserverCallback = (entries?: ResizeObserverEntry[]) => void;
 
 type ResizeObserver = new (callback: ResizeObserverCallback) => {
   observe: (target: Element) => void;
-  unobserve: (target: Element) => void;
+  disconnect: () => void;
 };
-
-
-const { ResizeObserver } = window as (typeof window & { ResizeObserver?: ResizeObserver });
 
 export function useGridWidth<T>(width?: number): [React.RefObject<HTMLDivElement>, number] {
   const gridRef = useRef<HTMLDivElement>(null);
-  const [resizeObserver] = useState(() => {
+  const [gridWidth, setGridWidth] = useState(0);
+  const resizeObserver = useMemo(() => {
+    const { ResizeObserver } = window as (typeof window & { ResizeObserver?: ResizeObserver });
     if (ResizeObserver === undefined) {
       return null;
     }
@@ -33,8 +32,7 @@ export function useGridWidth<T>(width?: number): [React.RefObject<HTMLDivElement
         setGridWidth(newWidth);
       }
     });
-  });
-  const [gridWidth, setGridWidth] = useState(0);
+  }, []);
 
   useLayoutEffect(() => {
     // Do not calculate the width if width is provided
@@ -44,7 +42,7 @@ export function useGridWidth<T>(width?: number): [React.RefObject<HTMLDivElement
     if (resizeObserver !== null) {
       const node = gridRef.current!;
       resizeObserver.observe(node);
-      return () => resizeObserver.unobserve(node);
+      return () => resizeObserver.disconnect();
     }
 
     function onResize() {
