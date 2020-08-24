@@ -295,8 +295,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const minColIdx = hasGroups ? -1 : 0;
 
   if (hasGroups) {
-    // TODO: finalize if these flags need to be supported on treegrid
-    enableCellDragAndDrop = false;
+    // TODO: finalize if cell drag needs to be supported for treegrid
     enableCellDragAndDrop = false;
   }
 
@@ -409,6 +408,7 @@ function DataGrid<R, K extends keyof R, SR>({
       && isCtrlKeyHeldDown(event)
       && isCellWithinBounds(selectedPosition)
       && !isGroupRow(row)
+      && selectedPosition.idx !== -1
     ) {
       // key may be uppercase `C` or `V`
       const lowerCaseKey = key.toLowerCase();
@@ -506,7 +506,8 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    const value = rawRows[rowIdx][columns[idx].key as keyof R];
+    const rawRowIdx = getRawRowIdx(rowIdx);
+    const value = rawRows[rawRowIdx][columns[idx].key as keyof R];
     setCopiedPosition({ idx, rowIdx, value });
   }
 
@@ -519,17 +520,16 @@ function DataGrid<R, K extends keyof R, SR>({
       return;
     }
 
-    const { rowIdx: toRow } = selectedPosition;
-
+    const fromRow = getRawRowIdx(copiedPosition.rowIdx);
+    const fromCellKey = columns[copiedPosition.idx].key;
+    const toRow = getRawRowIdx(selectedPosition.rowIdx);
     const cellKey = columns[selectedPosition.idx].key;
-    const { rowIdx: fromRow, idx, value } = copiedPosition;
-    const fromCellKey = columns[idx].key;
 
     onRowsUpdate?.({
       cellKey,
       fromRow,
       toRow,
-      updated: { [cellKey]: value } as unknown as never,
+      updated: { [cellKey]: copiedPosition.value } as unknown as never,
       action: UpdateActions.COPY_PASTE,
       fromCellKey
     });
