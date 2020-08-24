@@ -10,7 +10,7 @@ interface ResizeObserverEntry {
   borderBoxSize?: ResizeObserverSize;
 }
 
-type ResizeObserverCallback = (entries?: ResizeObserverEntry[]) => void;
+type ResizeObserverCallback = (entries: ResizeObserverEntry[]) => void;
 
 type ResizeObserver = new (callback: ResizeObserverCallback) => {
   observe: (target: Element) => void;
@@ -26,8 +26,8 @@ export function useGridWidth<T>(width?: number): [React.RefObject<HTMLDivElement
       return null;
     }
 
-    return new ResizeObserver((entries?: ResizeObserverEntry[]) => {
-      if (Array.isArray(entries) && entries.length > 0) {
+    return new ResizeObserver((entries: ResizeObserverEntry[]) => {
+      if (entries.length > 0) {
         const newWidth = entries[0].borderBoxSize?.inlineSize ?? entries[0].target.getBoundingClientRect().width;
         setGridWidth(newWidth);
       }
