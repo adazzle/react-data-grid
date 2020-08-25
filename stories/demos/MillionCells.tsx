@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column, FormatterProps } from '../../src';
 
 interface Row {
@@ -40,16 +39,11 @@ export default function MillionCells() {
   });
 
   return (
-    <AutoSizer>
-      {({ width, height }) => (
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          width={width}
-          height={height}
-          rowHeight={22}
-        />
-      )}
-    </AutoSizer>
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      rowHeight={22}
+      className="fill-grid"
+    />
   );
 }

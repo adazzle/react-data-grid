@@ -24,8 +24,8 @@ export default function NoRows() {
     <DataGrid
       columns={columns}
       rows={rows}
-      width={600}
       emptyRowsRenderer={EmptyRowsRenderer}
+      className="small-grid"
     />
   );
 }
