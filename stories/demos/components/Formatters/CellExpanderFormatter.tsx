@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useFocusRef } from '../../../../src';
+import { useFocusRef } from '../../../../src/hooks';
 import './CellExpanderFormatter.less';
 
 export interface CellExpanderFormatterProps {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFocusRef } from '../../../../src';
+import { useFocusRef } from '../../../../src/hooks';
 
 export interface ChildRowDeleteButtonProps {
   isCellSelected: boolean;
