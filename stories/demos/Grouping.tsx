@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { AutoSizer } from 'react-virtualized';
 import { groupBy as rowGrouper } from 'lodash';
-import Select, { components } from 'react-select';
+import Select, { components, ValueType, OptionsType, Props as SelectProps } from 'react-select';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 
 import DataGrid, { Column, Row, SelectColumn } from '../../src';
+import Option from 'react-select/src/components/Option';
 
 interface Row {
   id: number;
@@ -104,9 +105,9 @@ const SortableMultiValue = SortableElement((props: any) => {
   return <components.MultiValue {...props} innerProps={innerProps} />;
 });
 
-const SortableSelect = SortableContainer(Select);
+const SortableSelect = SortableContainer<SelectProps<Option>>(Select);
 
-const options = [
+const options: OptionsType<Option> = [
   { value: 'country', label: 'Country' },
   { value: 'year', label: 'Year' },
   { value: 'sport', label: 'Sport' },
@@ -116,14 +117,14 @@ const options = [
 export default function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
-  const [selectedOptions, setSelectedOptions] = useState<Option[] | undefined>([options[0], options[1]]);
+  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
   const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(new Set(['United States of America', 'United States of America__2015']));
 
-  const groupBy = useMemo(() => selectedOptions?.map(o => o.value), [selectedOptions]);
+  const groupBy = useMemo(() => Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined, [selectedOptions]);
 
   function onSortEnd({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) {
-    if (!selectedOptions) return;
-    const newOptions = [...selectedOptions];
+    if (!Array.isArray(selectedOptions)) return;
+    const newOptions: Option[] = [...selectedOptions];
     newOptions.splice(newIndex < 0 ? newOptions.length + newIndex : newIndex, 0, newOptions.splice(oldIndex, 1)[0]);
     setSelectedOptions(newOptions);
     setExpandedGroupIds(new Set());
@@ -132,7 +133,7 @@ export default function Grouping() {
   return (
     <>
       <label style={{ width: 400, marginBottom: 24 }}>
-        <b>Group by</b>
+        <b>Group by</b> (drag to sort)
         <SortableSelect
           // react-sortable-hoc props
           axis="xy"
@@ -143,8 +144,7 @@ export default function Grouping() {
           isMulti
           value={selectedOptions}
           onChange={options => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setSelectedOptions(options as any);
+            setSelectedOptions(options);
             setExpandedGroupIds(new Set());
           }}
           options={options}
