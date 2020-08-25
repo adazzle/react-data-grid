@@ -1,5 +1,4 @@
 import { Column, CalculatedColumn, FormatterProps, Omit } from '../types';
-import { getScrollbarSize } from './domUtils';
 
 interface Metrics<R, SR> {
   columns: readonly Column<R, SR>[];
@@ -45,7 +44,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
     }
   }
 
-  const unallocatedWidth = metrics.viewportWidth - allocatedWidths - getScrollbarSize();
+  const unallocatedWidth = metrics.viewportWidth - allocatedWidths;
   const unallocatedColumnWidth = Math.max(
     Math.floor(unallocatedWidth / unassignedColumnsCount),
     metrics.minColumnWidth

@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { AutoSizer } from 'react-virtualized';
 import { groupBy as rowGrouper } from 'lodash';
 import Select, { components, ValueType, OptionsType, Props as SelectProps } from 'react-select';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 
 import DataGrid, { Column, Row, SelectColumn } from '../../src';
+import './Grouping.less';
 import Option from 'react-select/src/components/Option';
 
 interface Row {
@@ -131,8 +131,8 @@ export default function Grouping() {
   }
 
   return (
-    <>
-      <label style={{ width: 400, marginBottom: 24 }}>
+    <div className="grouping-example">
+      <label style={{ width: 400 }}>
         <b>Group by</b> (drag to sort)
         <SortableSelect
           // react-sortable-hoc props
@@ -154,24 +154,18 @@ export default function Grouping() {
           closeMenuOnSelect={false}
         />
       </label>
-      <AutoSizer>
-        {({ height, width }) => (
-          <DataGrid
-            rowKey="id"
-            columns={columns}
-            rows={rows}
-            height={height - 85}
-            width={width}
-            selectedRows={selectedRows}
-            onSelectedRowsChange={setSelectedRows}
-            groupBy={groupBy}
-            rowGrouper={rowGrouper}
-            expandedGroupIds={expandedGroupIds}
-            onExpandedGroupIdsChange={setExpandedGroupIds}
-            defaultColumnOptions={{ resizable: true }}
-          />
-        )}
-      </AutoSizer>
-    </>
+      <DataGrid
+        rowKey="id"
+        columns={columns}
+        rows={rows}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        groupBy={groupBy}
+        rowGrouper={rowGrouper}
+        expandedGroupIds={expandedGroupIds}
+        onExpandedGroupIdsChange={setExpandedGroupIds}
+        defaultColumnOptions={{ resizable: true }}
+      />
+    </div>
   );
 }

@@ -159,7 +159,7 @@ export default function TreeView() {
       <DataGrid
         columns={columns}
         rows={rows}
-        height={500}
+        className="big-grid"
       />
     </>
   );

@@ -51,6 +51,7 @@ See [documentation](https://babeljs.io/docs/en/)
   import 'core-js/stable';
   ```
   - Babel's `env` preset, if configured correctly, will transform this import so only the necessary polyfills are included in your bundle.
+- Polyfilling the [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) API is required for older browsers.
 - Optional: we also recommend using the [`babel-plugin-optimize-clsx` plugin](https://www.npmjs.com/package/babel-plugin-optimize-clsx).
 </details>
 

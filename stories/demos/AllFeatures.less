@@ -1,3 +1,13 @@
+.all-features {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > .rdg {
+    flex: 1;
+  }
+}
+
 .highlight .rdg-cell {
   background-color: #9370DB;
   color: white;
@@ -5,4 +15,16 @@
 
 .highlight:hover .rdg-cell {
   background-color: #800080;
+}
+
+.load-more-rows-tag {
+  width: 180px;
+  padding: 8px 16px;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+
+  color: white;
+  line-height: 35px;
+  background: rgba(0, 0, 0, 0.6);
 }
