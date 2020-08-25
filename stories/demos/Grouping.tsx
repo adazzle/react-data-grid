@@ -6,7 +6,6 @@ import faker from 'faker';
 
 import DataGrid, { Column, Row, SelectColumn } from '../../src';
 import './Grouping.less';
-import Option from 'react-select/src/components/Option';
 
 interface Row {
   id: number;
