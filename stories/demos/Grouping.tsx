@@ -18,6 +18,11 @@ interface Row {
   bronze: number;
 }
 
+interface Option {
+  value: string;
+  label: string;
+}
+
 const sports = ['Swimming', 'Gymnastics', 'Speed Skating', 'Cross Country Skiing', 'Short-Track Speed Skating', 'Diving', 'Cycling', 'Biathlon', 'Alpine Skiing', 'Ski Jumping', 'Nordic Combined', 'Athletics', 'Table Tennis', 'Tennis', 'Synchronized Swimming', 'Shooting', 'Rowing', 'Fencing', 'Equestrian', 'Canoeing', 'Bobsleigh', 'Badminton', 'Archery', 'Wrestling', 'Weightlifting', 'Waterpolo', 'Wrestling', 'Weightlifting'];
 
 const columns: Column<Row>[] = [
@@ -111,15 +116,17 @@ const options = [
 export default function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
-  const [selectedOptions, setSelectedOptions] = useState([options[0], options[1]]);
+  const [selectedOptions, setSelectedOptions] = useState<Option[] | undefined>([options[0], options[1]]);
   const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(new Set(['United States of America', 'United States of America__2015']));
 
-  const groupBy = useMemo(() => selectedOptions === null ? undefined : selectedOptions.map(o => o.value), [selectedOptions]);
+  const groupBy = useMemo(() => selectedOptions?.map(o => o.value), [selectedOptions]);
 
   function onSortEnd({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) {
+    if (!selectedOptions) return;
     const newOptions = [...selectedOptions];
     newOptions.splice(newIndex < 0 ? newOptions.length + newIndex : newIndex, 0, newOptions.splice(oldIndex, 1)[0]);
     setSelectedOptions(newOptions);
+    setExpandedGroupIds(new Set());
   }
 
   return (
@@ -132,7 +139,7 @@ export default function Grouping() {
           onSortEnd={onSortEnd}
           distance={4}
           getHelperDimensions={({ node }) => node.getBoundingClientRect()}
-          // react-select props:
+          // react-select props
           isMulti
           value={selectedOptions}
           onChange={options => {
