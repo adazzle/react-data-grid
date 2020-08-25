@@ -1,5 +1,7 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React from 'react';
 import clsx from 'clsx';
+
+import { useFocusRef } from '../hooks';
 
 type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
   | 'disabled'
@@ -23,12 +25,7 @@ export function SelectCellFormatter({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useLayoutEffect(() => {
-    if (!isCellSelected) return;
-    inputRef.current?.focus();
-  }, [isCellSelected]);
+  const inputRef = useFocusRef<HTMLInputElement>(isCellSelected);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);

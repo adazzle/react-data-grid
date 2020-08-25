@@ -6,3 +6,4 @@ export * from './formatters';
 export { SimpleTextEditor } from './editors';
 export * from './enums';
 export * from './types';
+export { useFocusRef } from './hooks';
