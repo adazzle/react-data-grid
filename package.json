@@ -55,7 +55,6 @@
     "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.8",
     "@types/react-select": "^3.0.15",
-    "@types/react-virtualized": "^9.21.10",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
     "babel-loader": "^8.1.0",
@@ -84,7 +83,6 @@
     "react-dom": "^16.13.1",
     "react-popper": "^2.2.3",
     "react-select": "^3.1.0",
-    "react-virtualized": "^9.21.2",
     "ts-jest": "^26.1.4",
     "ts-loader": "^8.0.2",
     "typescript": "~4.0.2"

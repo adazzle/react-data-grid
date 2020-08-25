@@ -1,6 +1,5 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import { AutoSizer } from 'react-virtualized';
 import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
@@ -222,32 +221,24 @@ export default function AllFeatures() {
   }
 
   return (
-    <>
+    <div className="all-features">
       <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
-      <AutoSizer>
-        {({ height, width }) => (
-          <>
-            <DataGrid
-              ref={gridRef}
-              columns={columns}
-              rows={rows}
-              rowKey="id"
-              onRowsUpdate={handleRowUpdate}
-              onRowClick={handleRowClick}
-              rowHeight={30}
-              width={width}
-              height={height - 40}
-              selectedRows={selectedRows}
-              onScroll={handleScroll}
-              onSelectedRowsChange={setSelectedRows}
-              rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
-              enableCellCopyPaste
-              enableCellDragAndDrop
-            />
-            {isLoading && <div className="load-more-rows-tag" style={{ left: width - 230 }}>Loading more rows...</div>}
-          </>
-        )}
-      </AutoSizer>
-    </>
+      <DataGrid
+        ref={gridRef}
+        columns={columns}
+        rows={rows}
+        rowKey="id"
+        onRowsUpdate={handleRowUpdate}
+        onRowClick={handleRowClick}
+        rowHeight={30}
+        selectedRows={selectedRows}
+        onScroll={handleScroll}
+        onSelectedRowsChange={setSelectedRows}
+        rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
+        enableCellCopyPaste
+        enableCellDragAndDrop
+      />
+      {isLoading && <div className="load-more-rows-tag">Loading more rows...</div>}
+    </div>
   );
 }

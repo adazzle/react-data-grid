@@ -3,6 +3,7 @@
 ## `alpha` to `canary`
 - **Added:**
   - **Props:**
+    - `className`
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
     - `enableFilters`
@@ -34,6 +35,8 @@
   - **Packages:**
     - ⚠️ `react-data-grid-addons`
   - **Props:**
+    - ⚠️ `width`
+    - ⚠️ `height`
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
       <!-- TODO: fill link to storybook -->

@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import clsx from 'clsx';
 
-import { useGridWidth, useViewportColumns } from './hooks';
+import { useGridDimensions, useViewportColumns } from './hooks';
 import EventBus from './EventBus';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -19,7 +19,6 @@ import SummaryRow from './SummaryRow';
 import {
   assertIsValidKey,
   getColumnScrollPosition,
-  getScrollbarSize,
   getVerticalRangeToRender,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
@@ -103,10 +102,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   /**
    * Dimensions props
    */
-  /** The width of the grid in pixels */
-  width?: number;
-  /** The height of the grid in pixels */
-  height?: number;
   /** The height of each row in pixels */
   rowHeight?: number;
   /** The height of the header row in pixels */
@@ -165,6 +160,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    */
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
+  className?: string;
   rowClass?: (row: R) => string | undefined;
 }
 
@@ -184,8 +180,6 @@ function DataGrid<R, K extends keyof R, SR>({
   onRowsUpdate,
   onRowsChange,
   // Dimensions props
-  width,
-  height = 350,
   rowHeight = 35,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
@@ -214,6 +208,7 @@ function DataGrid<R, K extends keyof R, SR>({
   cellNavigationMode = CellNavigationMode.NONE,
   // Miscellaneous
   editorPortalTarget = document.body,
+  className,
   rowClass,
   // ARIA
   'aria-label': ariaLabel,
@@ -248,26 +243,20 @@ function DataGrid<R, K extends keyof R, SR>({
   /**
    * computed values
    */
-  const [gridRef, gridWidth] = useGridWidth(width);
-  const viewportWidth = gridWidth - 2; // 2 for border width;
+  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const headerRowsCount = enableFilters ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
+  const totalHeaderHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
+  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * rowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex } = useViewportColumns({
     columns: rawColumns,
     columnWidths,
     scrollLeft,
-    viewportWidth,
+    viewportWidth: gridWidth,
     defaultColumnOptions
   });
-
-  const totalHeaderHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
-  const clientHeight = height
-    - 2 // border width
-    - totalHeaderHeight
-    - summaryRowsCount * rowHeight
-    - (totalColumnWidth > viewportWidth ? getScrollbarSize() : 0);
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -787,10 +776,8 @@ function DataGrid<R, K extends keyof R, SR>({
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rows.length + summaryRowsCount}
-      className={clsx('rdg', { 'rdg-viewport-dragging': isDragging })}
+      className={clsx('rdg', { 'rdg-viewport-dragging': isDragging }, className)}
       style={{
-        width,
-        height,
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,

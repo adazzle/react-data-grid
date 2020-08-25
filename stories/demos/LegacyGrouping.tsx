@@ -149,8 +149,8 @@ export default function LegacyGrouping() {
     <DataGrid
       columns={columns}
       rows={gridRows}
-      height={650}
       rowRenderer={p => <GroupRowRenderer {...p} onRowExpandToggle={onRowExpandToggle} />}
+      className="big-grid"
     />
   );
 }
