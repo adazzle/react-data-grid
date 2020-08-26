@@ -24,8 +24,7 @@ import {
   isSelectedCellEditable,
   canExitGrid,
   isCtrlKeyHeldDown,
-  isDefaultCellInput,
-  isGroupRow
+  isDefaultCellInput
 } from './utils';
 
 import {
@@ -270,7 +269,7 @@ function DataGrid<R, K extends keyof R, SR>({
     rowGrouper
   });
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx, rows, rowsCount } = useViewportRows({
+  const { rowOverscanStartIdx, rowOverscanEndIdx, rows, rowsCount, isGroupRow } = useViewportRows({
     rawRows,
     groupBy,
     rowGrouper,
@@ -295,15 +294,8 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
+    if (isFormatterFocusable()) return;
 
-    const focusable = columns[selectedPosition.idx]?.formatterOptions?.focusable;
-    if (
-      (typeof focusable === 'function' && focusable(rows[selectedPosition.rowIdx]))
-      || focusable === true
-    ) {
-      // Let the formatter handle focus
-      return;
-    }
     focusSinkRef.current!.focus();
   });
 
@@ -640,7 +632,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function isCellEditable(position: Position): boolean {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable });
+      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable, isGroupRow });
   }
 
   function selectCell(position: Position, enableEditor = false): void {
@@ -778,6 +770,19 @@ function DataGrid<R, K extends keyof R, SR>({
     });
 
     selectCell(nextPosition);
+  }
+
+  function isFormatterFocusable() {
+    const formatterOptions = columns[selectedPosition.idx]?.formatterOptions;
+    const row = rows[selectedPosition.rowIdx];
+    const groupFocusable = formatterOptions?.groupFocusable;
+    const focusable = formatterOptions?.focusable;
+
+    if (isGroupRow(row)) {
+      return (typeof groupFocusable === 'function' && groupFocusable(row)) || groupFocusable === true;
+    }
+
+    return (typeof focusable === 'function' && focusable(row)) || focusable === true;
   }
 
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {

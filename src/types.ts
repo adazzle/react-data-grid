@@ -22,7 +22,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
   formatterOptions?: {
-    focusable?: boolean | ((row: TRow | GroupRow<TRow>) => boolean);
+    focusable?: boolean | ((row: TRow) => boolean);
+    groupFocusable?: boolean | ((row: GroupRow<TRow>) => boolean);
   };
   /** Formatter to be used to render the summary cell content */
   summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
@@ -255,7 +256,6 @@ export type GroupByDictionary<TRow> = Dictionary<{
 }>;
 
 export interface GroupRow<TRow> {
-  __isGroup: true;
   childRows: readonly TRow[];
   id: string;
   key: unknown;

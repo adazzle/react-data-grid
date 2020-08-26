@@ -48,6 +48,7 @@ export const SelectColumn: Column<any, any> = {
     );
   },
   formatterOptions: {
-    focusable: true
+    focusable: true,
+    groupFocusable: true
   }
 };

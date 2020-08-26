@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { CalculatedColumn, GroupRow } from '../types';
-import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns, isGroupRow } from '../utils';
+import { getColumnMetrics, getHorizontalRangeToRender, getViewportColumns } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import { ValueFormatter, ToggleGroupedFormatter } from '../formatters';
@@ -46,11 +46,8 @@ export function useViewportColumns<R, K extends keyof R, SR>({
         rowGroup: true,
         groupFormatter: c.groupFormatter ?? ToggleGroupedFormatter,
         formatterOptions: {
-          focusable(row: R | GroupRow<R>) {
-            if (isGroupRow(row)) {
-              return row.level === index;
-            }
-            return false;
+          groupFocusable(row: GroupRow<R>) {
+            return row.level === index;
           }
         }
       }))

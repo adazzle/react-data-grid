@@ -1,14 +1,8 @@
-import { GroupRow } from '../types';
-
 export * from './domUtils';
 export * from './columnUtils';
 export * from './viewportUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
-
-export function isGroupRow<R>(row: R | GroupRow<R>): row is GroupRow<R> {
-  return (row as GroupRow<R>).__isGroup === true;
-}
 
 export function assertIsValidKey<R>(key: unknown): asserts key is keyof R {
   if (key === undefined) {

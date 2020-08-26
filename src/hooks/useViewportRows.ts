@@ -43,8 +43,9 @@ export function useViewportRows<R, SR>({
     return groupRows(rawRows, groupBy, 0);
   }, [groupBy, rowGrouper, rawRows]);
 
-  const rows = useMemo(() => {
-    if (!groupedRows) return rawRows;
+  const [rows, allGroupRows] = useMemo(() => {
+    const allGroupRows = new Set<unknown>();
+    if (!groupedRows) return [rawRows, allGroupRows];
 
     const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
       if (Array.isArray(rows)) return rows;
@@ -54,7 +55,8 @@ export function useViewportRows<R, SR>({
         const id = parentKey !== undefined ? `${parentKey}__${key}` : key;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
         const { childRows, childGroups, startRowIndex } = (rows as GroupByDictionary<R>)[key]; // TODO: why is it failing?
-        flattenedRows.push({
+
+        const groupRow: GroupRow<R> = {
           id,
           key,
           parentKey,
@@ -63,9 +65,11 @@ export function useViewportRows<R, SR>({
           level,
           posInSet,
           startRowIndex,
-          setSize: keys.length,
-          __isGroup: true
-        });
+          setSize: keys.length
+        };
+        flattenedRows.push(groupRow);
+        allGroupRows.add(groupRow);
+
         if (isExpanded) {
           flattenedRows.push(...expandGroup(childGroups, key, level + 1));
         }
@@ -74,8 +78,12 @@ export function useViewportRows<R, SR>({
       return flattenedRows;
     };
 
-    return expandGroup(groupedRows, undefined, 0);
+    return [expandGroup(groupedRows, undefined, 0), allGroupRows];
   }, [expandedGroupIds, groupedRows, rawRows]);
+
+  const isGroupRow = <R>(row: unknown): row is GroupRow<R> => {
+    return allGroupRows.has(row);
+  };
 
   const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
     clientHeight,
@@ -88,6 +96,7 @@ export function useViewportRows<R, SR>({
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
-    rowsCount
+    rowsCount,
+    isGroupRow
   };
 }
