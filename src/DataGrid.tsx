@@ -701,7 +701,7 @@ function DataGrid<R, K extends keyof R, SR>({
       let parentRowIdx = -1;
       for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
         const parentRow = rows[i];
-        if (isGroupRow(parentRow) && parentRow.key === row.parentKey) {
+        if (isGroupRow(parentRow) && parentRow.id === row.parentId) {
           parentRowIdx = i;
           break;
         }
@@ -848,7 +848,7 @@ function DataGrid<R, K extends keyof R, SR>({
             aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
             key={row.id}
             id={row.id}
-            groupKey={row.key}
+            groupKey={row.groupKey}
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}

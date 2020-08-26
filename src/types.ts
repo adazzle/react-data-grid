@@ -258,8 +258,8 @@ export type GroupByDictionary<TRow> = Dictionary<{
 export interface GroupRow<TRow> {
   childRows: readonly TRow[];
   id: string;
-  key: unknown;
-  parentKey: unknown;
+  parentId: unknown;
+  groupKey: unknown;
   isExpanded: boolean;
   level: number;
   posInSet: number;

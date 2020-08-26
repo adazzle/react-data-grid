@@ -47,19 +47,19 @@ export function useViewportRows<R, SR>({
     const allGroupRows = new Set<unknown>();
     if (!groupedRows) return [rawRows, allGroupRows];
 
-    const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
+    const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentId: string | undefined, level: number): Array<GroupRow<R> | R> => {
       if (Array.isArray(rows)) return rows;
       const flattenedRows: Array<R | GroupRow<R>> = [];
-      Object.keys(rows).forEach((key, posInSet, keys) => {
+      Object.keys(rows).forEach((groupKey, posInSet, keys) => {
         // TODO: should users have control over the gerenated key?
-        const id = parentKey !== undefined ? `${parentKey}__${key}` : key;
+        const id = parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
-        const { childRows, childGroups, startRowIndex } = (rows as GroupByDictionary<R>)[key]; // TODO: why is it failing?
+        const { childRows, childGroups, startRowIndex } = (rows as GroupByDictionary<R>)[groupKey]; // TODO: why is it failing?
 
         const groupRow: GroupRow<R> = {
           id,
-          key,
-          parentKey,
+          parentId,
+          groupKey,
           isExpanded,
           childRows,
           level,
