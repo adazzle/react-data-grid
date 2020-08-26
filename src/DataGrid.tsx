@@ -129,7 +129,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
   groupBy?: readonly string[];
   rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<readonly R[]>;
-  expandedGroupIds?: Set<unknown>;
+  expandedGroupIds?: ReadonlySet<unknown>;
   onExpandedGroupIdsChange?: (expandedGroupIds: Set<unknown>) => void;
 
   /**
