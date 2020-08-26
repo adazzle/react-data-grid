@@ -1,5 +1,6 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React from 'react';
 
+import { useFocusRef } from '../../../../src/hooks';
 import './CellExpanderFormatter.less';
 
 export interface CellExpanderFormatterProps {
@@ -9,11 +10,7 @@ export interface CellExpanderFormatterProps {
 }
 
 export function CellExpanderFormatter({ isCellSelected, expanded, onCellExpand }: CellExpanderFormatterProps) {
-  const iconRef = useRef<HTMLSpanElement>(null);
-  useLayoutEffect(() => {
-    if (!isCellSelected) return;
-    iconRef.current?.focus({ preventScroll: true });
-  }, [isCellSelected]);
+  const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleClick(e: React.MouseEvent<HTMLSpanElement>) {
     e.stopPropagation();
