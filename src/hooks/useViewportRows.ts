@@ -71,7 +71,7 @@ export function useViewportRows<R, SR>({
         allGroupRows.add(groupRow);
 
         if (isExpanded) {
-          flattenedRows.push(...expandGroup(childGroups, key, level + 1));
+          flattenedRows.push(...expandGroup(childGroups, id, level + 1));
         }
       });
 
