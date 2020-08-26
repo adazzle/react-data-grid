@@ -1,5 +1,6 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React from 'react';
 import { GroupFormatterProps } from '../types';
+import { useFocusRef } from '../hooks';
 
 export function ToggleGroupedFormatter<R, SR>({
   groupKey,
@@ -7,11 +8,7 @@ export function ToggleGroupedFormatter<R, SR>({
   isCellSelected,
   toggleGroup
 }: GroupFormatterProps<R, SR>) {
-  const cellRef = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    if (!isCellSelected) return;
-    cellRef.current?.focus();
-  }, [isCellSelected]);
+  const cellRef = useFocusRef<HTMLDivElement>(isCellSelected);
 
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
     if (key === 'Enter') {
