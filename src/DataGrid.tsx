@@ -340,7 +340,7 @@ function DataGrid<R, K extends keyof R, SR>({
     };
 
     return eventBus.subscribe('SELECT_ROW', handleRowSelectionChange);
-  }, [rows, eventBus, onSelectedRowsChange, rowKey, selectedRows]);
+  }, [eventBus, isGroupRow, onSelectedRowsChange, rowKey, rows, selectedRows]);
 
   useEffect(() => {
     return eventBus.subscribe('SELECT_CELL', selectCell);
