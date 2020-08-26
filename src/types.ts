@@ -258,7 +258,7 @@ export type GroupByDictionary<TRow> = Dictionary<{
 
 export interface GroupRow<TRow> {
   __isGroup: true;
-  childRows: TRow[];
+  childRows: readonly TRow[];
   id: string;
   key: unknown;
   parentKey: unknown;
