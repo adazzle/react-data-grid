@@ -1,6 +1,7 @@
 import React from 'react';
 import { SelectCellFormatter } from './formatters';
 import { Column } from './types';
+import { stopPropagation } from './utils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
@@ -42,7 +43,7 @@ export const SelectColumn: Column<any, any> = {
         value={props.isRowSelected}
         onChange={props.onRowSelectionChange}
         // Stop propagation to prevent row selection
-        onClick={event => event.stopPropagation()}
+        onClick={stopPropagation}
       />
     );
   },
