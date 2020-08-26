@@ -834,5 +834,5 @@ function DataGrid<R, K extends keyof R, SR>({
 }
 
 export default forwardRef(
-  DataGrid as React.RefForwardingComponent<DataGridHandle>
-) as <R, K extends keyof R, SR = unknown>(props: DataGridProps<R, K, SR> & { ref?: React.Ref<DataGridHandle> }) => JSX.Element;
+  DataGrid as React.ForwardRefRenderFunction<DataGridHandle>
+) as <R, K extends keyof R, SR = unknown>(props: DataGridProps<R, K, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;

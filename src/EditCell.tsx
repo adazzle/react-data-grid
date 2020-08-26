@@ -113,4 +113,4 @@ function EditCell<R, SR>({
   );
 }
 
-export default forwardRef(EditCell) as <R, SR = unknown>(props: EditCellRendererProps<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
+export default forwardRef(EditCell) as <R, SR = unknown>(props: EditCellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
