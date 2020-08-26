@@ -1,5 +1,6 @@
 .rdg-cell {
   contain: strict;
+  contain: size layout style paint;
   position: absolute;
   height: inherit;
   padding: 0 8px;
@@ -88,6 +89,8 @@
 }
 .rdg {
   contain: strict;
+  contain: size layout style paint;
+  content-visibility: auto;
   height: 350px;
   border: 1px solid #ddd;
   box-sizing: border-box;
@@ -150,6 +153,7 @@
 .rdg-header-row,
 .rdg-filter-row {
   contain: strict;
+  contain: size layout style paint;
   display: flex;
   width: var(--row-width);
   position: -webkit-sticky;
@@ -194,6 +198,7 @@
 }
 .rdg-row {
   contain: strict;
+  contain: size layout style paint;
   display: flex;
   position: absolute;
   left: 0;
@@ -536,4 +541,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.2c8c418e22e40d4c2715.css.map*/
+/*# sourceMappingURL=0.c4fcdb157b2abb5c0852.css.map*/
