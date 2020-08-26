@@ -90,4 +90,4 @@ function Row<R, SR = unknown>({
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
