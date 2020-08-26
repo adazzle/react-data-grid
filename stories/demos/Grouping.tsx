@@ -117,7 +117,7 @@ export default function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
   const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
-  const [expandedGroupIds, setExpandedGroupIds] = useState<Set<unknown>>(() => new Set(['United States of America', 'United States of America__2015']));
+  const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(() => new Set(['United States of America', 'United States of America__2015']));
 
   const groupBy = useMemo(() => Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined, [selectedOptions]);
 

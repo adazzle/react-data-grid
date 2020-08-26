@@ -9,8 +9,8 @@ interface ViewportRowsArgs<R, SR> {
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
-  rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<R[]>;
-  expandedGroupIds?: Set<unknown>;
+  rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<readonly R[]>;
+  expandedGroupIds?: ReadonlySet<unknown>;
 }
 
 export function useViewportRows<R, SR>({
@@ -46,14 +46,14 @@ export function useViewportRows<R, SR>({
   const rows = useMemo(() => {
     if (!groupedRows) return rawRows;
 
-    const expandGroup = (rows: GroupByDictionary<R> | R[], parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
+    const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentKey: string | undefined, level: number): Array<GroupRow<R> | R> => {
       if (Array.isArray(rows)) return rows;
       const flattenedRows: Array<R | GroupRow<R>> = [];
       Object.keys(rows).forEach((key, posInSet, keys) => {
         // TODO: should users have control over the gerenated key?
         const id = parentKey !== undefined ? `${parentKey}__${key}` : key;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
-        const { childRows, childGroups, startRowIndex } = rows[key];
+        const { childRows, childGroups, startRowIndex } = (rows as GroupByDictionary<R>)[key]; // TODO: why is it failing?
         flattenedRows.push({
           id,
           key,

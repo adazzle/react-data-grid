@@ -100,7 +100,7 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
-  childRows: TRow[];
+  childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
   isRowSelected: boolean;
@@ -201,7 +201,7 @@ export interface GroupRowRendererProps<TRow, TSummaryRow = unknown> extends Omit
   id: string;
   groupKey: unknown;
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  childRows: TRow[];
+  childRows: readonly TRow[];
   rowIdx: number;
   lastFrozenColumnIndex: number;
   top: number;
@@ -246,9 +246,7 @@ export interface SelectRowEvent {
   isShiftClick: boolean;
 }
 
-export interface Dictionary<T> {
-  [index: string]: T;
-}
+export type Dictionary<T> = Record<string, T>;
 
 export type GroupByDictionary<TRow> = Dictionary<{
   childRows: readonly TRow[];
