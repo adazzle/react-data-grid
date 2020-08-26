@@ -355,8 +355,9 @@ function DataGrid<R, K extends keyof R, SR>({
   });
 
   useEffect(() => {
-    function toggleGroup(expandedGroupId: unknown) {
-      if (!onExpandedGroupIdsChange) return;
+    if (!onExpandedGroupIdsChange) return;
+
+    const toggleGroup = (expandedGroupId: unknown) => {
       const newExpandedGroupIds = new Set(expandedGroupIds);
       if (newExpandedGroupIds.has(expandedGroupId)) {
         newExpandedGroupIds.delete(expandedGroupId);
@@ -364,7 +365,7 @@ function DataGrid<R, K extends keyof R, SR>({
         newExpandedGroupIds.add(expandedGroupId);
       }
       onExpandedGroupIdsChange(newExpandedGroupIds);
-    }
+    };
 
     return eventBus.subscribe('TOGGLE_GROUP', toggleGroup);
   }, [eventBus, expandedGroupIds, onExpandedGroupIdsChange]);
