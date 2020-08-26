@@ -251,8 +251,8 @@ export interface Dictionary<T> {
 }
 
 export type GroupByDictionary<TRow> = Dictionary<{
-  childRows: TRow[];
-  childGroups: TRow[] | GroupByDictionary<TRow>;
+  childRows: readonly TRow[];
+  childGroups: readonly TRow[] | GroupByDictionary<TRow>;
   startRowIndex: number;
 }>;
 
