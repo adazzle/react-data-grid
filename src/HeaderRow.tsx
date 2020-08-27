@@ -18,7 +18,7 @@ export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGrid
   lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
-  onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onColumnResize: (column: CalculatedColumn<R, SR>, width: number, done: boolean) => void;
 }
 
 function HeaderRow<R, K extends keyof R, SR>({
