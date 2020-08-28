@@ -1,4 +1,4 @@
-import { Column, CalculatedColumn, FormatterProps, GroupRow } from '../types';
+import { Column, CalculatedColumn, FormatterProps } from '../types';
 import { ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
@@ -27,12 +27,9 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
   type IntermediateColumn = Column<R, SR> & { width: number | undefined; rowGroup?: boolean };
-  let columns: IntermediateColumn[] = [];
+  const { rawGroupBy } = metrics;
 
-  // Find valid groupBy columns
-  const groupBy: readonly string[] = metrics.rawGroupBy?.filter(key => metrics.columns.some(c => c.key === key)) ?? [];
-
-  for (const metricsColumn of metrics.columns) {
+  const columns = metrics.columns.map(metricsColumn => {
     let width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth);
 
     if (width === undefined) {
@@ -44,40 +41,42 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
 
     const column: IntermediateColumn = { ...metricsColumn, width };
 
-    if (groupBy.includes(column.key)) {
-      lastFrozenColumnIndex++;
-      const level = groupBy.indexOf(column.key);
+    if (rawGroupBy?.includes(column.key)) {
       column.frozen = true;
       column.rowGroup = true;
-      column.groupFormatter = column.groupFormatter ?? ToggleGroupFormatter;
-      column.formatterOptions = {
-        groupFocusable(row: GroupRow<R>) {
-          return row.level === level;
-        }
-      };
-      columns.push(column);
-    } else if (column.frozen) {
+    }
+
+    if (column.frozen) {
       lastFrozenColumnIndex++;
-      columns.splice(lastFrozenColumnIndex, 0, column);
-    } else {
-      columns.push(column);
     }
-  }
 
-  // Sort groupBy columns
-  if (groupBy.length >= 0) {
-    const selectColumn = columns.find(c => c.key === SELECT_COLUMN_KEY);
-    const groupByColumns = groupBy.map(key => columns.find(c => c.key === key)!);
-    const remaningColumns = columns.filter(c => !groupByColumns.includes(c) && c !== selectColumn);
-    columns = [
-      ...groupByColumns,
-      ...remaningColumns
-    ];
+    return column;
+  });
 
-    if (selectColumn) {
-      columns.unshift(selectColumn);
+  columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
+    // Sort select column first:
+    if (aKey === SELECT_COLUMN_KEY) return -1;
+    if (bKey === SELECT_COLUMN_KEY) return 1;
+
+    // Sort grouped columns second, following the groupBy order:
+    if (rawGroupBy?.includes(aKey)) {
+      if (rawGroupBy.includes(bKey)) {
+        return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
+      }
+      return -1;
     }
-  }
+    if (rawGroupBy?.includes(bKey)) return 1;
+
+    // Sort frozen columns third:
+    if (frozenA) {
+      if (frozenB) return 0;
+      return -1;
+    }
+    if (frozenB) return 1;
+
+    // Sort other columns last:
+    return 0;
+  });
 
   const unallocatedWidth = metrics.viewportWidth - allocatedWidths;
   const unallocatedColumnWidth = Math.max(
@@ -85,6 +84,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
     metrics.minColumnWidth
   );
 
+  const groupBy: string[] = [];
   const calculatedColumns: CalculatedColumn<R, SR>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
     const width = column.width ?? clampColumnWidth(unallocatedColumnWidth, column, metrics.minColumnWidth);
@@ -97,6 +97,14 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
       resizable: column.resizable ?? metrics.defaultResizable,
       formatter: column.formatter ?? metrics.defaultFormatter
     };
+
+    if (newColumn.rowGroup) {
+      const level = groupBy.push(column.key) - 1;
+      newColumn.groupFormatter = column.groupFormatter ?? ToggleGroupFormatter;
+      newColumn.formatterOptions = newColumn.formatterOptions ?? {};
+      newColumn.formatterOptions.groupFocusable = newColumn.formatterOptions.groupFocusable ?? (row => row.level === level);
+    }
+
     totalWidth += width;
     left += width;
     return newColumn;
