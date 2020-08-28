@@ -101,7 +101,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
     if (newColumn.rowGroup) {
       const level = groupBy.push(column.key) - 1;
       newColumn.groupFormatter = column.groupFormatter ?? ToggleGroupFormatter;
-      newColumn.formatterOptions = newColumn.formatterOptions ?? {};
+      newColumn.formatterOptions = { ...newColumn.formatterOptions };
       newColumn.formatterOptions.groupFocusable = newColumn.formatterOptions.groupFocusable ?? (row => row.level === level);
     }
 
