@@ -2,12 +2,17 @@ import React from 'react';
 import { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks';
 
+interface ToggleGroupedFormatterProps<R, SR> extends GroupFormatterProps<R, SR> {
+  icon?: React.ReactNode;
+}
+
 export function ToggleGroupedFormatter<R, SR>({
   groupKey,
   isExpanded,
   isCellSelected,
-  toggleGroup
-}: GroupFormatterProps<R, SR>) {
+  toggleGroup,
+  icon = isExpanded ? '\u25BC' : '\u25B6'
+}: ToggleGroupedFormatterProps<R, SR>) {
   const cellRef = useFocusRef<HTMLDivElement>(isCellSelected);
 
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
@@ -27,7 +32,7 @@ export function ToggleGroupedFormatter<R, SR>({
         tabIndex={-1}
         onKeyDown={handleKeyDown}
       >
-        {isExpanded ? '\u25BC' : '\u25B6'}
+        {icon}
       </span>
     </span>
   );
