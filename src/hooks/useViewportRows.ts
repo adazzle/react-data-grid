@@ -57,7 +57,7 @@ export function useViewportRows<R, SR>({
         // TODO: should users have control over the generated key?
         const id = parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
-        const { childRows, childGroups, startRowIndex } = (rows as GroupByDictionary<R>)[groupKey]; // TODO: why is it failing?
+        const { childRows, childGroups, startRowIndex } = (rows as GroupByDictionary<R>)[groupKey]; // https://github.com/microsoft/TypeScript/issues/17002
 
         const groupRow: GroupRow<R> = {
           id,
