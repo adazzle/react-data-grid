@@ -1,4 +1,4 @@
-import { Column, CalculatedColumn, FormatterProps, Omit, GroupRow } from '../types';
+import { Column, CalculatedColumn, FormatterProps, GroupRow } from '../types';
 import { ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
@@ -26,7 +26,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  type IntermediateColumn = Omit<Column<R, SR>, 'width'> & { width: number | undefined; rowGroup?: boolean };
+  type IntermediateColumn = Column<R, SR> & { width: number | undefined; rowGroup?: boolean };
   let columns: IntermediateColumn[] = [];
 
   // Find valid groupBy columns
@@ -42,20 +42,17 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
       allocatedWidths += width;
     }
 
-    let column: IntermediateColumn = { ...metricsColumn, width };
+    const column: IntermediateColumn = { ...metricsColumn, width };
 
     if (groupBy.includes(column.key)) {
       lastFrozenColumnIndex++;
       const level = groupBy.indexOf(column.key);
-      column = {
-        ...column,
-        frozen: true,
-        rowGroup: true,
-        groupFormatter: column.groupFormatter ?? ToggleGroupFormatter,
-        formatterOptions: {
-          groupFocusable(row: GroupRow<R>) {
-            return row.level === level;
-          }
+      column.frozen = true;
+      column.rowGroup = true;
+      column.groupFormatter = column.groupFormatter ?? ToggleGroupFormatter;
+      column.formatterOptions = {
+        groupFocusable(row: GroupRow<R>) {
+          return row.level === level;
         }
       };
       columns.push(column);
