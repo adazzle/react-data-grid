@@ -30,7 +30,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let columns: IntermediateColumn[] = [];
 
   // Find valid groupBy columns
-  const groupBy: readonly string[] = metrics.rawGroupBy?.filter(key => metrics.columns.find(c => c.key === key) !== undefined) ?? [];
+  const groupBy: readonly string[] = metrics.rawGroupBy?.filter(key => metrics.columns.some(c => c.key === key)) ?? [];
 
   for (const metricsColumn of metrics.columns) {
     let width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth);
