@@ -19,10 +19,7 @@ export function ToggleGroupFormatter<R, SR>({
   }
 
   return (
-    <span
-      style={{ cursor: 'pointer' }}
-      onClick={toggleGroup}
-    >
+    <>
       {groupKey}{' '}
       <span
         ref={cellRef}
@@ -30,6 +27,6 @@ export function ToggleGroupFormatter<R, SR>({
         onKeyDown={handleKeyDown}
         className={isExpanded ? 'caret-expanded' : 'caret-collapsed'}
       />
-    </span>
+    </>
   );
 }

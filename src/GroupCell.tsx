@@ -40,6 +40,9 @@ function GroupCell<R, SR>({
     eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick: false });
   }
 
+  // Only make the cell clickable if the group level matches
+  const isLevelMatching = column.rowGroup && groupColumnIndex === column.idx;
+
   return (
     <div
       role="gridcell"
@@ -52,8 +55,10 @@ function GroupCell<R, SR>({
       })}
       style={{
         width: column.width,
-        left: column.left
+        left: column.left,
+        cursor: isLevelMatching ? 'pointer' : 'default'
       }}
+      onClick={isLevelMatching ? toggleGroup : undefined}
     >
       {column.groupFormatter && (column.rowGroup ? groupColumnIndex === column.idx : true) && (
         <column.groupFormatter
