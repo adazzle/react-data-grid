@@ -283,7 +283,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const minColIdx = hasGroups ? -1 : 0;
 
   if (hasGroups) {
-    // TODO: finalize if cell drag needs to be supported for treegrid
+    // Cell drag is not supported on a treegrid
     enableCellDragAndDrop = false;
   }
 
