@@ -17,6 +17,9 @@ export default {
   coverageReporters: [
     'text'
   ],
+  moduleNameMapper: {
+    '\\.less$': '<rootDir>/jest/fileMock.ts'
+  },
   restoreMocks: true,
   setupFiles: [
     '<rootDir>/jest/setupTests.ts'
