@@ -1,5 +1,5 @@
 import { Column, CalculatedColumn, FormatterProps, Omit, GroupRow } from '../types';
-import { ToggleGroupedFormatter } from '../formatters';
+import { ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
 interface Metrics<R, SR> {
@@ -51,7 +51,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
         ...column,
         frozen: true,
         rowGroup: true,
-        groupFormatter: column.groupFormatter ?? ToggleGroupedFormatter,
+        groupFormatter: column.groupFormatter ?? ToggleGroupFormatter,
         formatterOptions: {
           groupFocusable(row: GroupRow<R>) {
             return row.level === level;
