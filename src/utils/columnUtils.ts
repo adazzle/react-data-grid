@@ -1,4 +1,6 @@
-import { Column, CalculatedColumn, FormatterProps, Omit } from '../types';
+import { Column, CalculatedColumn, FormatterProps, Omit, GroupRow } from '../types';
+import { ToggleGroupedFormatter } from '../formatters';
+import { SELECT_COLUMN_KEY } from '../Columns';
 
 interface Metrics<R, SR> {
   columns: readonly Column<R, SR>[];
@@ -8,12 +10,14 @@ interface Metrics<R, SR> {
   defaultResizable: boolean;
   defaultSortable: boolean;
   defaultFormatter: React.ComponentType<FormatterProps<R, SR>>;
+  rawGroupBy?: readonly string[];
 }
 
 interface ColumnMetrics<TRow, TSummaryRow> {
   columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
   totalColumnWidth: number;
+  groupBy: readonly string[];
 }
 
 export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<R, SR> {
@@ -22,7 +26,11 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Array<Omit<Column<R, SR>, 'width'> & { width: number | undefined }> = [];
+  type IntermediateColumn = Omit<Column<R, SR>, 'width'> & { width: number | undefined; rowGroup?: boolean };
+  let columns: IntermediateColumn[] = [];
+
+  // Find valid groupBy columns
+  const groupBy: readonly string[] = metrics.rawGroupBy?.filter(key => metrics.columns.find(c => c.key === key) !== undefined) ?? [];
 
   for (const metricsColumn of metrics.columns) {
     let width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth);
@@ -34,13 +42,43 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
       allocatedWidths += width;
     }
 
-    const column = { ...metricsColumn, width };
+    let column: IntermediateColumn = { ...metricsColumn, width };
 
-    if (column.frozen) {
+    if (groupBy.includes(column.key)) {
+      lastFrozenColumnIndex++;
+      const level = groupBy.indexOf(column.key);
+      column = {
+        ...column,
+        frozen: true,
+        rowGroup: true,
+        groupFormatter: column.groupFormatter ?? ToggleGroupedFormatter,
+        formatterOptions: {
+          groupFocusable(row: GroupRow<R>) {
+            return row.level === level;
+          }
+        }
+      };
+      columns.push(column);
+    } else if (column.frozen) {
       lastFrozenColumnIndex++;
       columns.splice(lastFrozenColumnIndex, 0, column);
     } else {
       columns.push(column);
+    }
+  }
+
+  // Sort groupBy columns
+  if (groupBy.length >= 0) {
+    const selectColumn = columns.find(c => c.key === SELECT_COLUMN_KEY);
+    const groupByColumns = groupBy.map(key => columns.find(c => c.key === key)!);
+    const remaningColumns = columns.filter(c => !groupByColumns.includes(c) && c !== selectColumn);
+    columns = [
+      ...groupByColumns,
+      ...remaningColumns
+    ];
+
+    if (selectColumn) {
+      columns.unshift(selectColumn);
     }
   }
 
@@ -70,7 +108,8 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   return {
     columns: calculatedColumns,
     lastFrozenColumnIndex,
-    totalColumnWidth: totalWidth
+    totalColumnWidth: totalWidth,
+    groupBy
   };
 }
 
