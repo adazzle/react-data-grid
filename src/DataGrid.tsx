@@ -71,6 +71,7 @@ type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
   | 'aria-label'
   | 'aria-labelledby'
   | 'aria-describedby'
+  | 'className'
 >;
 
 export interface DataGridProps<R, K extends keyof R, SR = unknown> extends SharedDivProps {
@@ -160,7 +161,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    */
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
-  className?: string;
   rowClass?: (row: R) => string | undefined;
 }
 
