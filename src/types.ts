@@ -21,9 +21,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
   summaryCellClass?: string | ((row: TSummaryRow) => string);
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
-  formatterOptions?: {
-    focusable?: boolean | ((row: TRow) => boolean);
-  };
   /** Formatter to be used to render the summary cell content */
   summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
@@ -149,6 +146,7 @@ export interface EditCellProps<TRow> extends SelectedCellPropsBase {
 
 export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
+  onFocus: () => void;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 

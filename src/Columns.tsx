@@ -30,8 +30,5 @@ export const SelectColumn: Column<any, any> = {
         onChange={props.onRowSelectionChange}
       />
     );
-  },
-  formatterOptions: {
-    focusable: true
   }
 };
