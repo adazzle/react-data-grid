@@ -13,6 +13,7 @@ interface Metrics<R, SR> {
 interface ColumnMetrics<TRow, TSummaryRow> {
   columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
+  totalFrozenColumnWidth: number;
   totalColumnWidth: number;
 }
 
@@ -22,6 +23,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
+  let totalFrozenColumnWidth = 0;
   const columns: Array<Omit<Column<R, SR>, 'width'> & { width: number | undefined }> = [];
 
   for (const metricsColumn of metrics.columns) {
@@ -67,9 +69,16 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
     return newColumn;
   });
 
+  if (lastFrozenColumnIndex !== -1) {
+    const lastFrozenColumn = calculatedColumns[lastFrozenColumnIndex];
+    lastFrozenColumn.isLastFrozenColumn = true;
+    totalFrozenColumnWidth = lastFrozenColumn.left + lastFrozenColumn.width;
+  }
+
   return {
     columns: calculatedColumns,
     lastFrozenColumnIndex,
+    totalFrozenColumnWidth,
     totalColumnWidth: totalWidth
   };
 }
