@@ -369,6 +369,10 @@ function DataGrid<R, K extends keyof R, SR>({
     }
   }
 
+  function handleFocus() {
+    isCellFocusable.current = true;
+  }
+
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, scrollLeft } = event.currentTarget;
     setScrollTop(scrollTop);
@@ -705,9 +709,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
-      onFocus() {
-        isCellFocusable.current = true;
-      },
+      onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
         ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
