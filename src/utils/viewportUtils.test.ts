@@ -1,48 +1,43 @@
 /* eslint-disable jest/no-commented-out-tests */
-// import {
-//   getVerticalRangeToRender,
-//   getHorizontalRangeToRender
-// } from './viewportUtils';
-// import { ValueFormatter } from '../formatters';
-// import { CalculatedColumn } from '../types';
+import { getVerticalRangeToRender } from './viewportUtils';
 
 // interface Row {
 //   [key: string]: React.ReactNode;
 // }
 
-// interface VerticalRangeToRenderParams {
-//   height: number;
-//   rowHeight: number;
-//   scrollTop: number;
-//   rowsCount: number;
-// }
+interface VerticalRangeToRenderParams {
+  height: number;
+  rowHeight: number;
+  scrollTop: number;
+  rowsCount: number;
+}
 
-// describe('getVerticalRangeToRender', () => {
-//   function getRange({
-//     height = 500,
-//     rowHeight = 50,
-//     scrollTop = 200,
-//     rowsCount = 1000
-//   }: Partial<VerticalRangeToRenderParams>) {
-//     return getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount);
-//   }
+describe('getVerticalRangeToRender', () => {
+  function getRange({
+    height = 500,
+    rowHeight = 50,
+    scrollTop = 200,
+    rowsCount = 1000
+  }: Partial<VerticalRangeToRenderParams>) {
+    return getVerticalRangeToRender(height, rowHeight, scrollTop, rowsCount);
+  }
 
-//   it('should use rowHeight to calculate the range', () => {
-//     expect(getRange({ rowHeight: 50 })).toStrictEqual([0, 24]);
-//   });
+  it('should use rowHeight to calculate the range', () => {
+    expect(getRange({ rowHeight: 50 })).toStrictEqual([0, 24]);
+  });
 
-//   it('should use height to calculate the range', () => {
-//     expect(getRange({ height: 250 })).toStrictEqual([0, 16]);
-//   });
+  it('should use height to calculate the range', () => {
+    expect(getRange({ height: 250 })).toStrictEqual([0, 16]);
+  });
 
-//   it('should use scrollTop to calculate the range', () => {
-//     expect(getRange({ scrollTop: 500 })).toStrictEqual([0, 24]);
-//   });
+  it('should use scrollTop to calculate the range', () => {
+    expect(getRange({ scrollTop: 500 })).toStrictEqual([0, 24]);
+  });
 
-//   it('should use rowsCount to calculate the range', () => {
-//     expect(getRange({ rowsCount: 5, scrollTop: 0 })).toStrictEqual([0, 4]);
-//   });
-// });
+  it('should use rowsCount to calculate the range', () => {
+    expect(getRange({ rowsCount: 5, scrollTop: 0 })).toStrictEqual([0, 4]);
+  });
+});
 
 // describe('getHorizontalRangeToRender', () => {
 //   function getColumns(): CalculatedColumn<Row, unknown>[] {
