@@ -22,8 +22,6 @@
   - `column.minWidth`
   - `column.maxWidth`
   - `column.headerCellClass`
-  - `column.formatterOptions`
-    - More info in [#2104](https://github.com/adazzle/react-data-grid/pull/2104)
   - `column.editor2`
   - `column.editorOptions`
     - More info in [#2102](https://github.com/adazzle/react-data-grid/pull/2102)
