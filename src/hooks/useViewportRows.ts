@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { GroupRow, GroupByDictionary, Dictionary } from '../types';
-import { getVerticalRangeToRender } from '../utils';
+const RENDER_BACTCH_SIZE = 8;
 
 interface ViewportRowsArgs<R, SR> {
   rawRows: readonly R[];
@@ -83,16 +83,13 @@ export function useViewportRows<R, SR>({
     return [flattenedRows, allGroupRows];
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const isGroupRow = <R>(row: unknown): row is GroupRow<R> => {
-    return allGroupRows.has(row);
-  };
+  const isGroupRow = <R>(row: unknown): row is GroupRow<R> => allGroupRows.has(row);
 
-  const [rowOverscanStartIdx, rowOverscanEndIdx] = getVerticalRangeToRender(
-    clientHeight,
-    rowHeight,
-    scrollTop,
-    rows.length
-  );
+  const overscanThreshold = 4;
+  const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
+  const rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
+  const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
+  const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
 
   return {
     rowOverscanStartIdx,
