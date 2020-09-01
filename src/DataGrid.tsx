@@ -64,7 +64,6 @@ export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, openEditor?: boolean) => void;
-  commitChanges: () => void;
 }
 
 type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
@@ -323,11 +322,7 @@ function DataGrid<R, K extends keyof R, SR>({
       if (!current) return;
       current.scrollTop = rowIdx * rowHeight;
     },
-    selectCell,
-    commitChanges() {
-      commitEditor2Changes();
-      closeEditor();
-    }
+    selectCell
   }));
 
   /**
