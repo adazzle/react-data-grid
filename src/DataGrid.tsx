@@ -239,6 +239,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
+  const isCellFocusable = useRef(false);
 
   /**
    * computed values
@@ -273,12 +274,8 @@ function DataGrid<R, K extends keyof R, SR>({
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
 
-    const focusable = columns[selectedPosition.idx]?.formatterOptions?.focusable;
-    if (
-      (typeof focusable === 'function' && focusable(rows[selectedPosition.rowIdx]))
-      || focusable === true
-    ) {
-      // Let the formatter handle focus
+    if (isCellFocusable.current) {
+      isCellFocusable.current = false;
       return;
     }
     focusSinkRef.current!.focus();
@@ -370,6 +367,10 @@ function DataGrid<R, K extends keyof R, SR>({
         handleCellInput(event);
         break;
     }
+  }
+
+  function handleFocus() {
+    isCellFocusable.current = true;
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
@@ -708,6 +709,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
+      onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
         ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }

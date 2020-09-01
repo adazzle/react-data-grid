@@ -8,6 +8,7 @@ type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
   | 'tabIndex'
   | 'aria-label'
   | 'aria-labelledby'
+  | 'onClick'
 >;
 
 export interface SelectCellFormatterProps extends SharedInputProps {
@@ -21,6 +22,7 @@ export function SelectCellFormatter({
   tabIndex,
   isCellSelected,
   disabled,
+  onClick,
   onChange,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
@@ -42,6 +44,7 @@ export function SelectCellFormatter({
         className="rdg-checkbox-input"
         disabled={disabled}
         onChange={handleChange}
+        onClick={onClick}
         checked={value}
       />
       <div className="rdg-checkbox" />
