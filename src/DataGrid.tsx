@@ -72,6 +72,7 @@ type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
   | 'aria-label'
   | 'aria-labelledby'
   | 'aria-describedby'
+  | 'className'
 >;
 
 export interface DataGridProps<R, K extends keyof R, SR = unknown> extends SharedDivProps {
@@ -165,7 +166,6 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    */
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
-  className?: string;
   rowClass?: (row: R) => string | undefined;
 }
 
@@ -260,7 +260,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * rowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
-  const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, groupBy } = useViewportColumns({
+  const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
     columns: rawColumns,
     columnWidths,
     scrollLeft,
@@ -661,12 +661,6 @@ function DataGrid<R, K extends keyof R, SR>({
     setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
   }
 
-  function getFrozenColumnsWidth(): number {
-    if (lastFrozenColumnIndex === -1) return 0;
-    const lastFrozenCol = columns[lastFrozenColumnIndex];
-    return lastFrozenCol.left + lastFrozenCol.width;
-  }
-
   function scrollToCell({ idx, rowIdx }: Partial<Position>): void {
     const { current } = gridRef;
     if (!current) return;
@@ -674,7 +668,7 @@ function DataGrid<R, K extends keyof R, SR>({
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { clientWidth } = current;
       const { left, width } = columns[idx];
-      const isCellAtLeftBoundary = left < scrollLeft + width + getFrozenColumnsWidth();
+      const isCellAtLeftBoundary = left < scrollLeft + width + totalFrozenColumnWidth;
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary || isCellAtRightBoundary) {
         const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
@@ -848,7 +842,6 @@ function DataGrid<R, K extends keyof R, SR>({
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
             top={top}
             level={row.level}
             isExpanded={row.isExpanded}
@@ -881,7 +874,6 @@ function DataGrid<R, K extends keyof R, SR>({
           rowIdx={rowIdx}
           row={row}
           viewportColumns={viewportColumns}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
           eventBus={eventBus}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
@@ -934,7 +926,6 @@ function DataGrid<R, K extends keyof R, SR>({
         rows={rawRows}
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
-        lastFrozenColumnIndex={lastFrozenColumnIndex}
         allRowsSelected={selectedRows?.size === rawRows.length}
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
@@ -943,7 +934,6 @@ function DataGrid<R, K extends keyof R, SR>({
       />
       {enableFilters && (
         <FilterRow<R, SR>
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
           columns={viewportColumns}
           filters={filters}
           onFiltersChange={onFiltersChange}
@@ -967,7 +957,6 @@ function DataGrid<R, K extends keyof R, SR>({
               row={row}
               bottom={rowHeight * (summaryRows.length - 1 - rowIdx)}
               viewportColumns={viewportColumns}
-              lastFrozenColumnIndex={lastFrozenColumnIndex}
             />
           ))}
         </>

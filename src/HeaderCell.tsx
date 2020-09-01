@@ -27,14 +27,12 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
-  lastFrozenColumnIndex: number;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
-  lastFrozenColumnIndex,
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
@@ -65,7 +63,7 @@ export default function HeaderCell<R, SR>({
 
   const className = clsx('rdg-cell', column.headerCellClass, {
     'rdg-cell-frozen': column.frozen,
-    'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+    'rdg-cell-frozen-last': column.isLastFrozenColumn
   });
   const style: React.CSSProperties = {
     width: column.width,

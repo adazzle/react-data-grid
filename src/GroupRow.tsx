@@ -10,7 +10,6 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
-  lastFrozenColumnIndex,
   top,
   level,
   isExpanded,
@@ -63,7 +62,6 @@ function GroupedRow<R, SR>({
           isCellSelected={selectedCellIdx === column.idx}
           eventBus={eventBus}
           column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
           groupColumnIndex={idx}
         />
       ))}

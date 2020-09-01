@@ -22,7 +22,6 @@ describe('Row', () => {
     row: { key: 'value' },
     cellRenderer: Cell,
     rowIdx: 17,
-    lastFrozenColumnIndex: -1,
     isRowSelected: false,
     eventBus: new EventBus(),
     top: 0

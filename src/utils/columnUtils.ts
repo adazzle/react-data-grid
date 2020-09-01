@@ -16,6 +16,7 @@ interface Metrics<R, SR> {
 interface ColumnMetrics<TRow, TSummaryRow> {
   columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
+  totalFrozenColumnWidth: number;
   totalColumnWidth: number;
   groupBy: readonly string[];
 }
@@ -27,6 +28,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
   type IntermediateColumn = Column<R, SR> & { width: number | undefined; rowGroup?: boolean };
+  let totalFrozenColumnWidth = 0;
   const { rawGroupBy } = metrics;
 
   const columns = metrics.columns.map(metricsColumn => {
@@ -108,9 +110,16 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
     return newColumn;
   });
 
+  if (lastFrozenColumnIndex !== -1) {
+    const lastFrozenColumn = calculatedColumns[lastFrozenColumnIndex];
+    lastFrozenColumn.isLastFrozenColumn = true;
+    totalFrozenColumnWidth = lastFrozenColumn.left + lastFrozenColumn.width;
+  }
+
   return {
     columns: calculatedColumns,
     lastFrozenColumnIndex,
+    totalFrozenColumnWidth,
     totalColumnWidth: totalWidth,
     groupBy
   };

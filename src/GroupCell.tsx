@@ -9,7 +9,6 @@ type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'childRows'
   | 'isExpanded'
   | 'isRowSelected'
-  | 'lastFrozenColumnIndex'
   | 'eventBus'
 >;
 
@@ -24,7 +23,6 @@ function GroupCell<R, SR>({
   rowIdx,
   groupKey,
   childRows,
-  lastFrozenColumnIndex,
   isExpanded,
   isCellSelected,
   isRowSelected,
@@ -50,7 +48,7 @@ function GroupCell<R, SR>({
       key={column.key}
       className={clsx('rdg-cell', {
         'rdg-cell-frozen': column.frozen,
-        'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
+        'rdg-cell-frozen-last': column.isLastFrozenColumn,
         'rdg-cell-selected': isCellSelected
       })}
       style={{

@@ -12,7 +12,6 @@ function Row<R, SR = unknown>({
   eventBus,
   rowIdx,
   isRowSelected,
-  lastFrozenColumnIndex,
   copiedCellIdx,
   draggedOverCellIdx,
   row,
@@ -60,7 +59,6 @@ function Row<R, SR = unknown>({
               key={column.key}
               rowIdx={rowIdx}
               column={column}
-              lastFrozenColumnIndex={lastFrozenColumnIndex}
               row={row}
               onKeyDown={selectedCellProps.onKeyDown}
               editorPortalTarget={selectedCellProps.editorPortalTarget}
@@ -75,7 +73,6 @@ function Row<R, SR = unknown>({
             key={column.key}
             rowIdx={rowIdx}
             column={column}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
             row={row}
             isCopied={copiedCellIdx === column.idx}
             isDraggedOver={draggedOverCellIdx === column.idx}

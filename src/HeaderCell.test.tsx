@@ -23,7 +23,6 @@ describe('HeaderCell', () => {
         formatter: ValueFormatter,
         ...columnProps
       },
-      lastFrozenColumnIndex: -1,
       onResize: jest.fn(),
       onSort: jest.fn(),
       allRowsSelected: false,
