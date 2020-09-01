@@ -21,7 +21,6 @@ const defaultColumn: CalculatedColumn<Row> = {
 const testProps: CellRendererProps<Row> = {
   rowIdx: 0,
   column: defaultColumn,
-  lastFrozenColumnIndex: -1,
   row: { id: 1, description: 'Wicklow' },
   isRowSelected: false,
   eventBus: new EventBus(),
@@ -62,7 +61,6 @@ describe('Cell', () => {
     const requiredProperties: CellRendererProps<Row> = {
       rowIdx: 18,
       column: helpers.columns[0],
-      lastFrozenColumnIndex: -1,
       row: helpers.rows[11],
       isRowSelected: false,
       eventBus: new EventBus(),

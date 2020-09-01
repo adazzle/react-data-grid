@@ -60,6 +60,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   left: number;
   resizable: boolean;
   sortable: boolean;
+  isLastFrozenColumn?: boolean;
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
@@ -153,7 +154,6 @@ export interface SelectedCellProps extends SelectedCellPropsBase {
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
-  lastFrozenColumnIndex: number;
   row: TRow;
   isCopied: boolean;
   isDraggedOver: boolean;
@@ -169,7 +169,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
-  lastFrozenColumnIndex: number;
   copiedCellIdx?: number;
   draggedOverCellIdx?: number;
   isRowSelected: boolean;

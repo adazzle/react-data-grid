@@ -9,7 +9,6 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
 | 'rowIdx'
 | 'row'
 | 'column'
-| 'lastFrozenColumnIndex'
 >;
 
 interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -21,7 +20,6 @@ interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, O
 function EditCell<R, SR>({
   className,
   column,
-  lastFrozenColumnIndex,
   row,
   rowIdx,
   editorPortalTarget,
@@ -44,7 +42,7 @@ function EditCell<R, SR>({
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+      'rdg-cell-frozen-last': column.isLastFrozenColumn
     },
     'rdg-cell-selected',
     'rdg-cell-editing',

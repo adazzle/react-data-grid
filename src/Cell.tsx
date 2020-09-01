@@ -12,7 +12,6 @@ function Cell<R, SR>({
   isCopied,
   isDraggedOver,
   isRowSelected,
-  lastFrozenColumnIndex,
   row,
   rowIdx,
   eventBus,
@@ -32,7 +31,7 @@ function Cell<R, SR>({
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
+      'rdg-cell-frozen-last': column.isLastFrozenColumn,
       'rdg-cell-selected': isCellSelected,
       'rdg-cell-copied': isCopied,
       'rdg-cell-dragged-over': isDraggedOver
