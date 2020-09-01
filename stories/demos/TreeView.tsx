@@ -106,7 +106,6 @@ export default function TreeView() {
       {
         key: 'format',
         name: 'format',
-        formatterOptions: { focusable: true },
         formatter({ row, isCellSelected }) {
           const hasChildren = row.children !== undefined;
           const style = !hasChildren ? { marginLeft: 30 } : undefined;

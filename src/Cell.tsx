@@ -17,6 +17,7 @@ function Cell<R, SR>({
   eventBus,
   dragHandleProps,
   onRowClick,
+  onFocus,
   onKeyDown,
   onClick,
   onDoubleClick,
@@ -71,6 +72,7 @@ function Cell<R, SR>({
         width: column.width,
         left: column.left
       }}
+      onFocus={onFocus}
       onKeyDown={onKeyDown}
       onClick={wrapEvent(handleClick, onClick)}
       onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
