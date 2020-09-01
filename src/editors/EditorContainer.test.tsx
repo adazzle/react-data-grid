@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
+import { waitFor } from '@testing-library/react';
 
 import EditorContainer, { EditorContainerProps } from './EditorContainer';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -206,10 +207,10 @@ describe('EditorContainer', () => {
       expect(props.onCommit).not.toHaveBeenCalled();
     });
 
-    it('should commit if any element outside the editor is clicked', () => {
+    it('should commit if any element outside the editor is clicked', async () => {
       const { props } = innerSetup();
       document.body.click();
-      expect(props.onCommit).toHaveBeenCalled();
+      await waitFor(() => expect(props.onCommit).toHaveBeenCalled());
     });
   });
 
@@ -247,10 +248,10 @@ describe('EditorContainer', () => {
       expect(props.onCommit).not.toHaveBeenCalled();
     });
 
-    it('should commit if any element outside the editor is clicked', () => {
+    it('should commit if any element outside the editor is clicked', async () => {
       const { props } = setup();
       document.body.click();
-      expect(props.onCommit).toHaveBeenCalled();
+      await waitFor(() => expect(props.onCommit).toHaveBeenCalled());
     });
   });
 });
