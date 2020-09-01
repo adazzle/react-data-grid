@@ -21,10 +21,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
   summaryCellClass?: string | ((row: TSummaryRow) => string);
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
-  formatterOptions?: {
-    focusable?: boolean | ((row: TRow) => boolean);
-    groupFocusable?: boolean | ((row: GroupRow<TRow>) => boolean);
-  };
   /** Formatter to be used to render the summary cell content */
   summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
   /** Formatter to be used to render the group cell content */
@@ -164,6 +160,7 @@ export interface EditCellProps<TRow> extends SelectedCellPropsBase {
 
 export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
+  onFocus: () => void;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 

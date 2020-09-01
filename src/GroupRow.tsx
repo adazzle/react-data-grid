@@ -17,6 +17,7 @@ function GroupedRow<R, SR>({
   selectedCellIdx,
   isRowSelected,
   eventBus,
+  onFocus,
   onKeyDown,
   'aria-setsize': ariaSetSize,
   'aria-posinset': ariaPosInSet,
@@ -45,6 +46,7 @@ function GroupedRow<R, SR>({
           'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
         })}
       onClick={selectGroup}
+      onFocus={onFocus}
       onKeyDown={onKeyDown}
       style={{ top }}
       {...props}

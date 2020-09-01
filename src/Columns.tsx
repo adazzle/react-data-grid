@@ -30,6 +30,7 @@ export const SelectColumn: Column<any, any> = {
         tabIndex={-1}
         isCellSelected={props.isCellSelected}
         value={props.isRowSelected}
+        onClick={stopPropagation}
         onChange={props.onRowSelectionChange}
       />
     );
@@ -46,9 +47,5 @@ export const SelectColumn: Column<any, any> = {
         onClick={stopPropagation}
       />
     );
-  },
-  formatterOptions: {
-    focusable: true,
-    groupFocusable: true
   }
 };

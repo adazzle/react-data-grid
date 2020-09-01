@@ -248,6 +248,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
+  const isCellFocusable = useRef(false);
 
   /**
    * computed values
@@ -294,8 +295,11 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
-    if (isFormatterFocusable()) return;
 
+    if (isCellFocusable.current) {
+      isCellFocusable.current = false;
+      return;
+    }
     focusSinkRef.current!.focus();
   });
 
@@ -439,6 +443,10 @@ function DataGrid<R, K extends keyof R, SR>({
         handleCellInput(event);
         break;
     }
+  }
+
+  function handleFocus() {
+    isCellFocusable.current = true;
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
@@ -772,19 +780,6 @@ function DataGrid<R, K extends keyof R, SR>({
     selectCell(nextPosition);
   }
 
-  function isFormatterFocusable() {
-    const formatterOptions = columns[selectedPosition.idx]?.formatterOptions;
-    const row = rows[selectedPosition.rowIdx];
-    const groupFocusable = formatterOptions?.groupFocusable;
-    const focusable = formatterOptions?.focusable;
-
-    if (isGroupRow(row)) {
-      return (typeof groupFocusable === 'function' && groupFocusable(row)) || groupFocusable === true;
-    }
-
-    return (typeof focusable === 'function' && focusable(row)) || focusable === true;
-  }
-
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
     if (draggedOverRowIdx === undefined) return;
     const { rowIdx } = selectedPosition;
@@ -825,6 +820,7 @@ function DataGrid<R, K extends keyof R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
+      onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
         ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
@@ -859,6 +855,7 @@ function DataGrid<R, K extends keyof R, SR>({
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
             isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
             eventBus={eventBus}
+            onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
           />
         );
