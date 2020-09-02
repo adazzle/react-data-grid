@@ -18,6 +18,9 @@
     - `rowClass`
     - `defaultColumnOptions`
       - ⚠️ This replaces the `minColumnWidth` and `defaultFormatter` props
+    - `groupBy`
+    - `rowGrouper`
+      - More info in [#2106](https://github.com/adazzle/react-data-grid/pull/2106)
   - `column.cellClass(row)` function support:
     - `column = { ..., cellClass(row) { return string; } }`
   - `column.minWidth`
@@ -26,6 +29,8 @@
   - `column.editor2`
   - `column.editorOptions`
     - More info in [#2102](https://github.com/adazzle/react-data-grid/pull/2102)
+  - `column.groupFormatter`
+    - More info in [#2106](https://github.com/adazzle/react-data-grid/pull/2106)
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
 - **Removed:**

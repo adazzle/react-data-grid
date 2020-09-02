@@ -1,41 +1,49 @@
 import { useMemo } from 'react';
 
-import { CalculatedColumn } from '../types';
+import { CalculatedColumn, Column } from '../types';
 import { getColumnMetrics } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { ValueFormatter } from '../formatters';
 
-type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>, 'columns' | 'defaultColumnOptions'>;
+type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
+  | 'defaultColumnOptions'
+  | 'rowGrouper'
+>;
 
 interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
+  rawColumns: readonly Column<R, SR>[];
+  rawGroupBy?: readonly string[];
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
 }
 
 export function useViewportColumns<R, K extends keyof R, SR>({
-  columns: rawColumns,
+  rawColumns,
   columnWidths,
   viewportWidth,
   scrollLeft,
-  defaultColumnOptions
+  defaultColumnOptions,
+  rawGroupBy,
+  rowGrouper
 }: ViewportColumnsArgs<R, K, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, lastFrozenColumnIndex, totalColumnWidth, totalFrozenColumnWidth } = useMemo(() => {
+  const { columns, lastFrozenColumnIndex, totalColumnWidth, totalFrozenColumnWidth, groupBy } = useMemo(() => {
     return getColumnMetrics<R, SR>({
-      columns: rawColumns,
+      rawColumns,
       minColumnWidth,
       viewportWidth,
       columnWidths,
       defaultSortable,
       defaultResizable,
-      defaultFormatter
+      defaultFormatter,
+      rawGroupBy: rowGrouper ? rawGroupBy : undefined
     });
-  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, viewportWidth]);
+  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, rawGroupBy, rowGrouper, viewportWidth]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     // get the viewport's left side and right side positions for non-frozen columns
@@ -92,5 +100,5 @@ export function useViewportColumns<R, K extends keyof R, SR>({
     return viewportColumns;
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
-  return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth };
+  return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
 }

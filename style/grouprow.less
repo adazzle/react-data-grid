@@ -1,0 +1,68 @@
+.rdg-group-row > .rdg-cell:not(:last-child):not(.rdg-cell-frozen-last) {
+  border-right: none;
+}
+
+.rdg-group-row-selected {
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: inset 0 0 0 2px @selectedBorderColor;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  > .rdg-cell:first-child {
+    // preserve left border on the first frozen cell after scrolling to the right
+    box-shadow: inset 2px 0 0 0 @selectedBorderColor;
+  }
+}
+
+.rdg-caret-collapsed,
+.rdg-caret-expanded {
+  position: relative;
+  margin-left: 4px;
+  vertical-align: -webkit-baseline-middle;
+  vertical-align: -moz-middle-with-baseline;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+  }
+}
+
+.rdg-caret-collapsed:before {
+  top: 0;
+  left: 0;
+  border-bottom: 6px solid #000;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
+
+.rdg-caret-collapsed:after {
+  left: 2px;
+  top: 2px;
+  border-bottom: 4px solid #fff;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.rdg-caret-expanded:before {
+  top: 0;
+  left: 0;
+  border-top: 6px solid #000;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
+
+.rdg-caret-expanded:after {
+  left: 2px;
+  top: 0;
+  border-top: 4px solid #fff;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}

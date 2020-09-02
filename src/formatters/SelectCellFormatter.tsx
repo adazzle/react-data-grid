@@ -6,9 +6,9 @@ import { useFocusRef } from '../hooks';
 type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
   | 'disabled'
   | 'tabIndex'
+  | 'onClick'
   | 'aria-label'
   | 'aria-labelledby'
-  | 'onClick'
 >;
 
 export interface SelectCellFormatterProps extends SharedInputProps {
@@ -43,9 +43,9 @@ export function SelectCellFormatter({
         type="checkbox"
         className="rdg-checkbox-input"
         disabled={disabled}
+        checked={value}
         onChange={handleChange}
         onClick={onClick}
-        checked={value}
       />
       <div className="rdg-checkbox" />
     </label>

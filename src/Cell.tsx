@@ -79,16 +79,20 @@ function Cell<R, SR>({
       onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
       {...props}
     >
-      <column.formatter
-        column={column}
-        rowIdx={rowIdx}
-        row={row}
-        isCellSelected={isCellSelected}
-        isRowSelected={isRowSelected}
-        onRowSelectionChange={onRowSelectionChange}
-      />
-      {dragHandleProps && (
-        <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+      {!column.rowGroup && (
+        <>
+          <column.formatter
+            column={column}
+            rowIdx={rowIdx}
+            row={row}
+            isCellSelected={isCellSelected}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+          />
+          {dragHandleProps && (
+            <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+          )}
+        </>
       )}
     </div>
   );

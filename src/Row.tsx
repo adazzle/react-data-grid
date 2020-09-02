@@ -32,8 +32,10 @@ function Row<R, SR = unknown>({
 
   className = clsx(
     'rdg-row',
-    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-    { 'rdg-row-selected': isRowSelected },
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
+      'rdg-row-selected': isRowSelected,
+      'rdg-group-row-selected': selectedCellProps?.idx === -1
+    },
     rowClass?.(row),
     className
   );
