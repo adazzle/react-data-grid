@@ -72,6 +72,7 @@ type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
   | 'aria-labelledby'
   | 'aria-describedby'
   | 'className'
+  | 'style'
 >;
 
 export interface DataGridProps<R, K extends keyof R, SR = unknown> extends SharedDivProps {
@@ -217,6 +218,7 @@ function DataGrid<R, K extends keyof R, SR>({
   // Miscellaneous
   editorPortalTarget = document.body,
   className,
+  style,
   rowClass,
   // ARIA
   'aria-label': ariaLabel,
@@ -908,6 +910,7 @@ function DataGrid<R, K extends keyof R, SR>({
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
       className={clsx('rdg', { 'rdg-viewport-dragging': isDragging }, className)}
       style={{
+        ...style,
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
