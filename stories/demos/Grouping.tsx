@@ -76,7 +76,7 @@ const columns: Column<Row>[] = [
   }
 ];
 
-function createRows(): Row[] {
+function createRows(): readonly Row[] {
   const rows: Row[] = [];
   for (let i = 1; i < 10000; i++) {
     rows.push({
