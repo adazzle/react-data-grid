@@ -86,6 +86,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
     metrics.minColumnWidth
   );
 
+  // Filter rawGroupBy and ignore keys that do not match the columns prop
   const groupBy: string[] = [];
   const calculatedColumns: CalculatedColumn<R, SR>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
