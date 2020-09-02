@@ -25,7 +25,7 @@ interface Option {
 
 const sports = ['Swimming', 'Gymnastics', 'Speed Skating', 'Cross Country Skiing', 'Short-Track Speed Skating', 'Diving', 'Cycling', 'Biathlon', 'Alpine Skiing', 'Ski Jumping', 'Nordic Combined', 'Athletics', 'Table Tennis', 'Tennis', 'Synchronized Swimming', 'Shooting', 'Rowing', 'Fencing', 'Equestrian', 'Canoeing', 'Bobsleigh', 'Badminton', 'Archery', 'Wrestling', 'Weightlifting', 'Waterpolo', 'Wrestling', 'Weightlifting'];
 
-const columns: Column<Row>[] = [
+const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
     key: 'country',
