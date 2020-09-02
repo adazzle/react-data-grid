@@ -16,8 +16,6 @@ function GroupedRow<R, SR>({
   selectedCellIdx,
   isRowSelected,
   eventBus,
-  onFocus,
-  onKeyDown,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
@@ -39,8 +37,6 @@ function GroupedRow<R, SR>({
           'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
         })}
       onClick={selectGroup}
-      onFocus={onFocus}
-      onKeyDown={onKeyDown}
       style={{ top }}
       {...props}
     >
