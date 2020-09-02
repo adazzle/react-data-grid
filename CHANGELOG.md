@@ -4,6 +4,7 @@
 - **Added:**
   - **Props:**
     - `className`
+    - `style`
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
     - `enableFilters`
