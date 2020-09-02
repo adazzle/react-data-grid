@@ -262,7 +262,7 @@ function DataGrid<R, K extends keyof R, SR>({
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
-    columns: rawColumns,
+    rawColumns,
     columnWidths,
     scrollLeft,
     viewportWidth: gridWidth,
