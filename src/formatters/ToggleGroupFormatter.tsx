@@ -19,7 +19,7 @@ export function ToggleGroupFormatter<R, SR>({
 
   return (
     <>
-      {groupKey}{' '}
+      {groupKey}
       <span
         ref={cellRef}
         tabIndex={-1}
