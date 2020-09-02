@@ -2,7 +2,6 @@ import React from 'react';
 import { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks';
 
-import './ToggleGroupFormatter.less';
 
 export function ToggleGroupFormatter<R, SR>({
   groupKey,
