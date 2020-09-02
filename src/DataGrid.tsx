@@ -267,7 +267,7 @@ function DataGrid<R, K extends keyof R, SR>({
     scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
-    groupBy: rawGroupBy,
+    rawGroupBy,
     rowGrouper
   });
 
