@@ -60,6 +60,7 @@
   right: 0;
   bottom: 0;
   left: 0;
+  margin-right: 1px;
 }
 .rdg-checkbox-label-disabled {
   cursor: default;
@@ -223,6 +224,65 @@
 }
 .rdg-summary-row > .rdg-cell {
   border-top: 2px solid #aaaaaa;
+}
+.rdg-group-row > .rdg-cell:not(:last-child):not(.rdg-cell-frozen-last) {
+  border-right: none;
+}
+.rdg-group-row-selected::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: inset 0 0 0 2px #66afe9;
+  pointer-events: none;
+  z-index: 2;
+}
+.rdg-group-row-selected > .rdg-cell:first-child {
+  box-shadow: inset 2px 0 0 0 #66afe9;
+}
+.rdg-caret-collapsed,
+.rdg-caret-expanded {
+  position: relative;
+  margin-left: 4px;
+  vertical-align: -webkit-baseline-middle;
+  vertical-align: -moz-middle-with-baseline;
+}
+.rdg-caret-collapsed::before,
+.rdg-caret-expanded::before,
+.rdg-caret-collapsed::after,
+.rdg-caret-expanded::after {
+  content: '';
+  position: absolute;
+}
+.rdg-caret-collapsed:before {
+  top: 0;
+  left: 0;
+  border-bottom: 6px solid #000;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
+.rdg-caret-collapsed:after {
+  left: 2px;
+  top: 2px;
+  border-bottom: 4px solid #fff;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+.rdg-caret-expanded:before {
+  top: 0;
+  left: 0;
+  border-top: 6px solid #000;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
+.rdg-caret-expanded:after {
+  left: 2px;
+  top: 0;
+  border-top: 4px solid #fff;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
 }
 
 body,
@@ -526,19 +586,15 @@ html {
   background-color: #ececec;
 }
 
-.rdg-row-expand-icon {
-  cursor: pointer;
+.grouping-example {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 10px;
 }
-.rdg-row-expand-icon:hover {
-  color: #777;
-}
-.rdg-row-default-group {
-  width: var(--row-width);
-  height: var(--row-height);
-  line-height: var(--row-height);
-  padding: 0 8px;
-  border-bottom: 1px solid #ddd;
+.grouping-example > .rdg {
+  flex: 1;
 }
 
 
-/*# sourceMappingURL=0.c4fcdb157b2abb5c0852.css.map*/
+/*# sourceMappingURL=0.bd59b1a3187c3084b2cb.css.map*/
