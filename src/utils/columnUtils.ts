@@ -3,7 +3,7 @@ import { ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
 interface Metrics<R, SR> {
-  columns: readonly Column<R, SR>[];
+  rawColumns: readonly Column<R, SR>[];
   columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
   viewportWidth: number;
@@ -31,7 +31,7 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let totalFrozenColumnWidth = 0;
   const { rawGroupBy } = metrics;
 
-  const columns = metrics.columns.map(metricsColumn => {
+  const columns = metrics.rawColumns.map(metricsColumn => {
     let width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth);
 
     if (width === undefined) {

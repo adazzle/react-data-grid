@@ -1,30 +1,30 @@
 import { useMemo } from 'react';
 
-import { CalculatedColumn } from '../types';
+import { CalculatedColumn, Column } from '../types';
 import { getColumnMetrics } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { ValueFormatter } from '../formatters';
 
 type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
-  | 'columns'
   | 'defaultColumnOptions'
-  | 'groupBy'
   | 'rowGrouper'
 >;
 
 interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
+  rawColumns: readonly Column<R, SR>[];
+  rawGroupBy?: readonly string[];
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
 }
 
 export function useViewportColumns<R, K extends keyof R, SR>({
-  columns: rawColumns,
+  rawColumns,
   columnWidths,
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
-  groupBy: rawGroupBy,
+  rawGroupBy,
   rowGrouper
 }: ViewportColumnsArgs<R, K, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
@@ -34,7 +34,7 @@ export function useViewportColumns<R, K extends keyof R, SR>({
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth, totalFrozenColumnWidth, groupBy } = useMemo(() => {
     return getColumnMetrics<R, SR>({
-      columns: rawColumns,
+      rawColumns,
       minColumnWidth,
       viewportWidth,
       columnWidths,
