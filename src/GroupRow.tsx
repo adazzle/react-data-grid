@@ -18,9 +18,6 @@ function GroupedRow<R, SR>({
   eventBus,
   onFocus,
   onKeyDown,
-  'aria-setsize': ariaSetSize,
-  'aria-posinset': ariaPosInSet,
-  'aria-rowindex': ariaRowIndex,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
@@ -34,9 +31,6 @@ function GroupedRow<R, SR>({
     <div
       role="row"
       aria-level={level}
-      aria-setsize={ariaSetSize}
-      aria-posinset={ariaPosInSet}
-      aria-rowindex={ariaRowIndex}
       aria-expanded={isExpanded}
       className={clsx(
         'rdg-row',
