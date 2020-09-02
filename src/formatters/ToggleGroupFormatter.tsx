@@ -24,7 +24,7 @@ export function ToggleGroupFormatter<R, SR>({
         ref={cellRef}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
-        className={isExpanded ? 'caret-expanded' : 'caret-collapsed'}
+        className={isExpanded ? 'rdg-caret-expanded' : 'rdg-caret-collapsed'}
       />
     </>
   );
