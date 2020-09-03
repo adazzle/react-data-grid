@@ -26,7 +26,7 @@ export function ToggleGroupFormatter<R, SR>({
       onKeyDown={handleKeyDown}
     >
       {groupKey}
-      <svg viewBox="0 0 14 8" width="14" height="8">
+      <svg viewBox="0 0 14 8" width="14" height="8" className="rdg-caret">
         <path d={d} />
       </svg>
     </span>
