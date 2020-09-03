@@ -242,47 +242,15 @@
 .rdg-group-row-selected > .rdg-cell:first-child {
   box-shadow: inset 2px 0 0 0 #66afe9;
 }
-.rdg-caret-collapsed,
-.rdg-caret-expanded {
-  position: relative;
+.rdg-group-cell-content {
+  outline: none;
+}
+.rdg-group-cell-content > svg {
   margin-left: 4px;
-  vertical-align: -webkit-baseline-middle;
-  vertical-align: -moz-middle-with-baseline;
-}
-.rdg-caret-collapsed::before,
-.rdg-caret-expanded::before,
-.rdg-caret-collapsed::after,
-.rdg-caret-expanded::after {
-  content: '';
-  position: absolute;
-}
-.rdg-caret-collapsed:before {
-  top: 0;
-  left: 0;
-  border-bottom: 6px solid #000;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-}
-.rdg-caret-collapsed:after {
-  left: 2px;
-  top: 2px;
-  border-bottom: 4px solid #fff;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-}
-.rdg-caret-expanded:before {
-  top: 0;
-  left: 0;
-  border-top: 6px solid #000;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-}
-.rdg-caret-expanded:after {
-  left: 2px;
-  top: 0;
-  border-top: 4px solid #fff;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  fill: transparent;
+  vertical-align: middle;
 }
 
 body,
@@ -597,4 +565,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.8eb293722d0d520e0ca3.css.map*/
+/*# sourceMappingURL=0.3141a397e2373a97edcf.css.map*/
