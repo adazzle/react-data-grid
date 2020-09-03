@@ -23,12 +23,16 @@
 
 .rdg-group-cell-content {
   outline: none;
+}
 
-  > svg {
-    margin-left: 4px;
-    stroke: currentColor;
-    stroke-width: 1.5px;
-    fill: transparent;
-    vertical-align: middle;
+.rdg-caret {
+  margin-left: 4px;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  fill: transparent;
+  vertical-align: middle;
+
+  > path {
+    transition: d .1s;
   }
 }
