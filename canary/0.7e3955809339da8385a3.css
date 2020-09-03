@@ -245,12 +245,15 @@
 .rdg-group-cell-content {
   outline: none;
 }
-.rdg-group-cell-content > svg {
+.rdg-caret {
   margin-left: 4px;
   stroke: currentColor;
   stroke-width: 1.5px;
   fill: transparent;
   vertical-align: middle;
+}
+.rdg-caret > path {
+  transition: d 0.1s;
 }
 
 body,
@@ -565,4 +568,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.3141a397e2373a97edcf.css.map*/
+/*# sourceMappingURL=0.7e3955809339da8385a3.css.map*/
