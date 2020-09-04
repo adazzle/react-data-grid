@@ -5,18 +5,28 @@ import { EditorProps, OldEditorProps, Editor } from './types';
 export function wrapOldEditor<TRow, TSummaryRow = unknown>(
   EditorComponent: React.ComponentType<OldEditorProps<TRow[keyof TRow], TRow, TSummaryRow>>
 ): React.ComponentType<EditorProps<TRow, TSummaryRow>> {
-  return (props) => {
+  return ({
+    column,
+    row,
+    // rowIdx,
+    rowHeight,
+    // top,
+    // left,
+    // editorPortalTarget,
+    onRowChange,
+    onClose
+  }) => {
     // @ts-expect-error
     const value = props.row[props.column.key];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const editorRef = useRef<Editor<any>>(null);
 
     function onCommit() {
-      props.onRowChange(editorRef.current!.getValue(), true);
+      onRowChange(editorRef.current!.getValue()[column.key], true);
     }
 
     function onCommitCancel() {
-      props.onClose(false);
+      onClose(false);
     }
 
     function onOverrideKeyDown() {
@@ -26,9 +36,9 @@ export function wrapOldEditor<TRow, TSummaryRow = unknown>(
     return (
       <EditorComponent
         ref={editorRef}
-        column={props.column}
-        row={props.row}
-        height={props.rowHeight}
+        column={column}
+        row={row}
+        height={rowHeight}
         value={value}
         onCommit={onCommit}
         onCommitCancel={onCommitCancel}

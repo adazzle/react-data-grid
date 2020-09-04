@@ -91,6 +91,7 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
   /** The primary key property of each row */
   rowKey?: K;
   /**
+   * @deprecated
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
    * 1. Using the supplied editor of the column. The default editor is the SimpleTextEditor.
