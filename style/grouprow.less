@@ -1,7 +1,14 @@
-.rdg-group-row > .rdg-cell:not(:last-child):not(.rdg-cell-frozen-last) {
-  border-right: none;
+.rdg-group-row {
+  &:not(.rdg-row-selected) {
+    background-color: var(--header-background-color);
+  }
+
+  > .rdg-cell:not(:last-child):not(.rdg-cell-frozen-last) {
+    border-right: none;
+  }
 }
 
+// TODO: rename class
 .rdg-group-row-selected {
   &::after {
     content: "";
