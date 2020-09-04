@@ -1,6 +1,6 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
+import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn, wrapOldEditor } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -100,7 +100,7 @@ export default function AllFeatures() {
     {
       key: 'title',
       name: 'Title',
-      _old_editor: React.forwardRef((props, ref) => <DropDownEditor ref={ref} {...props} options={titles} />),
+      editor: wrapOldEditor(React.forwardRef((props, ref) => <DropDownEditor ref={ref} {...props} options={titles} />)),
       width: 200,
       resizable: true,
       formatter(props) {

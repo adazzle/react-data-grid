@@ -73,6 +73,7 @@ export interface Position {
   rowIdx: number;
 }
 
+/** @deprecated */
 export interface Editor<TValue = never> {
   getInputNode: () => Element | Text | undefined | null;
   getValue: () => TValue;
@@ -107,6 +108,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   toggleGroup: () => void;
 }
 
+/** @deprecated */
 export interface OldEditorProps<TValue, TRow = any, TSummaryRow = any> {
   ref: React.Ref<Editor<{ [key: string]: TValue }>>;
   column: CalculatedColumn<TRow, TSummaryRow>;

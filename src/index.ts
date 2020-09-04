@@ -4,5 +4,6 @@ export { default as Row } from './Row';
 export * from './Columns';
 export * from './formatters';
 export { SimpleTextEditor } from './editors';
+export * from './migration';
 export * from './enums';
 export * from './types';
