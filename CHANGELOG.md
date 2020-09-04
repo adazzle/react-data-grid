@@ -43,7 +43,6 @@
     - ⚠️ `height`
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
-      <!-- TODO: fill link to storybook -->
       - Check the [Context Menu](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--context-menu) example
     - ⚠️ `enableCellSelect`
     - ⚠️ `enableCellAutoFocus`
