@@ -100,7 +100,7 @@ export default function AllFeatures() {
     {
       key: 'title',
       name: 'Title',
-      editor: React.forwardRef((props, ref) => <DropDownEditor ref={ref} {...props} options={titles} />),
+      _old_editor: React.forwardRef((props, ref) => <DropDownEditor ref={ref} {...props} options={titles} />),
       width: 200,
       resizable: true,
       formatter(props) {
