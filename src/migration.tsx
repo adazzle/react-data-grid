@@ -38,8 +38,8 @@ export function wrapOldEditor<TRow, TSummaryRow = unknown>(
     }, [getInputNode]);
 
     function onCommit() {
-      const value = editorRef.current!.getValue()[column.key];
-      const newRow = { ...row, [column.key]: value };
+      const update = editorRef.current!.getValue();
+      const newRow = { ...row, ...update };
       onRowChange(newRow, true);
     }
 
