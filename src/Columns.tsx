@@ -5,7 +5,6 @@ import { stopPropagation } from './utils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
-// TODO: fix type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SelectColumn: Column<any, any> = {
   key: SELECT_COLUMN_KEY,
