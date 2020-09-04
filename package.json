@@ -44,6 +44,7 @@
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
     "@babel/runtime": "^7.11.2",
+    "@juggle/resize-observer": "^3.2.0",
     "@popperjs/core": "^2.4.4",
     "@storybook/react": "^5.3.21",
     "@testing-library/react": "^11.0.1",
