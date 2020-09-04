@@ -154,13 +154,13 @@ describe('canEdit', () => {
 
   it('should return correct booleans', () => {
     const row: Row = { id: 1 };
-    const editor = () => null;
+    const _old_editor = () => null;
 
     expect(canEdit(column, row)).toBe(false);
     expect(canEdit({ ...column, editable: false }, row)).toBe(false);
     expect(canEdit({ ...column, editable: true }, row)).toBe(true);
-    expect(canEdit({ ...column, editor }, row)).toBe(true);
-    expect(canEdit({ ...column, editor, editable: false }, row)).toBe(true);
-    expect(canEdit({ ...column, editor, editable: true }, row)).toBe(true);
+    expect(canEdit({ ...column, _old_editor }, row)).toBe(true);
+    expect(canEdit({ ...column, _old_editor, editable: false }, row)).toBe(true);
+    expect(canEdit({ ...column, _old_editor, editable: true }, row)).toBe(true);
   });
 });
