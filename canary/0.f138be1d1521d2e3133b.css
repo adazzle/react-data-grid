@@ -89,6 +89,7 @@
   border-color: #62b8ff;
 }
 .rdg {
+  --header-background-color: #f9f9f9;
   contain: strict;
   contain: size layout style paint;
   content-visibility: auto;
@@ -159,7 +160,7 @@
   width: var(--row-width);
   position: -webkit-sticky;
   position: sticky;
-  background-color: #f9f9f9;
+  background-color: var(--header-background-color);
   font-weight: bold;
   -webkit-user-select: none;
   user-select: none;
@@ -224,6 +225,9 @@
 }
 .rdg-summary-row > .rdg-cell {
   border-top: 2px solid #aaaaaa;
+}
+.rdg-group-row:not(.rdg-row-selected) {
+  background-color: var(--header-background-color);
 }
 .rdg-group-row > .rdg-cell:not(:last-child):not(.rdg-cell-frozen-last) {
   border-right: none;
@@ -568,4 +572,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.7e3955809339da8385a3.css.map*/
+/*# sourceMappingURL=0.f138be1d1521d2e3133b.css.map*/
