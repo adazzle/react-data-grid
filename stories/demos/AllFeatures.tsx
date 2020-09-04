@@ -101,6 +101,7 @@ export default function AllFeatures() {
       key: 'title',
       name: 'Title',
       editor: wrapOldEditor(React.forwardRef((props, ref) => <DropDownEditor ref={ref} {...props} options={titles} />)),
+      editorOptions: { createPortal: true },
       width: 200,
       resizable: true,
       formatter(props) {
@@ -229,6 +230,7 @@ export default function AllFeatures() {
         rows={rows}
         rowKey="id"
         onRowsUpdate={handleRowUpdate}
+        onRowsChange={setRows}
         onRowClick={handleRowClick}
         rowHeight={30}
         selectedRows={selectedRows}
