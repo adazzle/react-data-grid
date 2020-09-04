@@ -34,6 +34,7 @@ function GroupedRow<R, SR>({
         'rdg-row',
         'rdg-group-row',
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
+          'rdg-row-selected': isRowSelected,
           'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
         })}
       onClick={selectGroup}
