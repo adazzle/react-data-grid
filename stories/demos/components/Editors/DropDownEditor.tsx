@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Editor, EditorProps } from '../../../../src';
+import { Editor, OldEditorProps } from '../../../../src';
 
 interface Option {
   id: string;
@@ -8,7 +8,7 @@ interface Option {
   text: string;
 }
 
-interface DropDownEditorProps<TRow> extends EditorProps<string, TRow, unknown> {
+interface DropDownEditorProps<TRow> extends OldEditorProps<string, TRow, unknown> {
   options: Array<Option | string>;
 }
 

@@ -1,8 +1,8 @@
 import React, { forwardRef, useState, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { EditorContainer, EditorContainer2, EditorPortal } from './editors';
-import { CellRendererProps, SharedEditorContainerProps, SharedEditor2Props } from './types';
+import { OldEditorContainer, EditorContainer, EditorPortal } from './editors';
+import { CellRendererProps, SharedEditorContainerProps, SharedEditorProps } from './types';
 import { useCombinedRefs } from './hooks';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
@@ -14,7 +14,7 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
 interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
-  editor2Props: SharedEditor2Props<R>;
+  editorProps: SharedEditorProps<R>;
 }
 
 function EditCell<R, SR>({
@@ -24,7 +24,7 @@ function EditCell<R, SR>({
   rowIdx,
   editorPortalTarget,
   editorContainerProps,
-  editor2Props,
+  editorProps,
   onKeyDown,
   ...props
 }: EditCellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
@@ -57,10 +57,10 @@ function EditCell<R, SR>({
     const gridLeft = left + docLeft;
     const gridTop = top + docTop;
 
-    if (column.editor2 !== undefined) {
+    if (column.editor !== undefined) {
       return (
-        <EditorContainer2
-          {...editor2Props}
+        <EditorContainer
+          {...editorProps}
           editorPortalTarget={editorPortalTarget}
           rowIdx={rowIdx}
           column={column}
@@ -71,7 +71,7 @@ function EditCell<R, SR>({
     }
 
     const editor = (
-      <EditorContainer<R, SR>
+      <OldEditorContainer<R, SR>
         {...editorContainerProps}
         rowIdx={rowIdx}
         row={row}

@@ -36,11 +36,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor2?: React.ComponentType<Editor2Props<TRow, TSummaryRow>>;
+  editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>>;
   /** @deprecated */
-  _old_editor?: React.ComponentType<EditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
+  _old_editor?: React.ComponentType<OldEditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
   editorOptions?: {
-    /** Default: true for editor1 and false for editor2 */
+    /** Default: true for _old_editor and false for editor */
     createPortal?: boolean;
     /** Default: false */
     editOnClick?: boolean;
@@ -48,7 +48,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
     onCellKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
     // TODO: Do we need these options
     // editOnDoubleClick?: boolean;
-    /** Default: true for editor1 and false for editor2 */
+    /** Default: true for _old_editor and false for editor */
     // commitOnScroll?: boolean;
   };
   /** Header renderer for each header cell */
@@ -107,7 +107,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   toggleGroup: () => void;
 }
 
-export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
+export interface OldEditorProps<TValue, TRow = any, TSummaryRow = any> {
   ref: React.Ref<Editor<{ [key: string]: TValue }>>;
   column: CalculatedColumn<TRow, TSummaryRow>;
   value: TValue;
@@ -118,14 +118,14 @@ export interface EditorProps<TValue, TRow = any, TSummaryRow = any> {
   onOverrideKeyDown: (e: KeyboardEvent) => void;
 }
 
-export interface SharedEditor2Props<TRow> {
+export interface SharedEditorProps<TRow> {
   row: Readonly<TRow>;
   rowHeight: number;
   onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }
 
-export interface Editor2Props<TRow, TSummaryRow = unknown> extends SharedEditor2Props<TRow> {
+export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
   top: number;
@@ -157,7 +157,7 @@ export interface EditCellProps<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
   editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
-  editor2Props: SharedEditor2Props<TRow>;
+  editorProps: SharedEditorProps<TRow>;
 }
 
 export interface SelectedCellProps extends SelectedCellPropsBase {

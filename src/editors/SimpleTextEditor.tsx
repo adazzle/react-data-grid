@@ -1,7 +1,7 @@
 import React from 'react';
-import { Editor, EditorProps } from '../types';
+import { Editor, OldEditorProps } from '../types';
 
-type Props = Pick<EditorProps<string>, 'value' | 'column' | 'onCommit'>;
+type Props = Pick<OldEditorProps<string>, 'value' | 'column' | 'onCommit'>;
 
 export default class SimpleTextEditor extends React.Component<Props> implements Editor<{ [key: string]: string }> {
   private readonly input = React.createRef<HTMLInputElement>();

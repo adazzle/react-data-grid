@@ -1,22 +1,22 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 
-import { Editor2Props } from '../types';
+import { EditorProps } from '../types';
 import { useClickOutside } from '../hooks';
 
-export default function Editor2Container<R, SR>({
+export default function EditorContainer<R, SR>({
   row,
   column,
   onRowChange,
   editorPortalTarget,
   ...props
-}: Editor2Props<R, SR>) {
+}: EditorProps<R, SR>) {
   const onClickCapture = useClickOutside(() => onRowChange(row, true));
-  if (column.editor2 === undefined) return null;
+  if (column.editor === undefined) return null;
 
   const editor = (
     <div onClickCapture={onClickCapture}>
-      <column.editor2
+      <column.editor
         row={row}
         column={column}
         onRowChange={onRowChange}

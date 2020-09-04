@@ -14,7 +14,7 @@ export interface EditorContainerProps<R, SR> extends SharedEditorContainerProps 
   left: number;
 }
 
-export default function EditorContainer<R, SR>({
+export default function OldEditorContainer<R, SR>({
   rowIdx,
   column,
   row,

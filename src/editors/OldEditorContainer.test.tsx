@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
 import { waitFor } from '@testing-library/react';
 
-import EditorContainer, { EditorContainerProps } from './EditorContainer';
+import EditorContainer, { EditorContainerProps } from './OldEditorContainer';
 import SimpleTextEditor from './SimpleTextEditor';
 import { ValueFormatter } from '../formatters';
-import { CalculatedColumn, EditorProps } from '../types';
+import { CalculatedColumn, OldEditorProps } from '../types';
 
 interface Row {
   id: string;
@@ -101,7 +101,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps<string, Row, unknown>> {
+    class TestEditor extends React.Component<OldEditorProps<string, Row, unknown>> {
       getValue() {
         return undefined;
       }
@@ -169,7 +169,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Portal editors', () => {
-    class PortalTestEditor extends React.Component<EditorProps<string, Row, unknown>> {
+    class PortalTestEditor extends React.Component<OldEditorProps<string, Row, unknown>> {
       getValue() {
         return undefined;
       }

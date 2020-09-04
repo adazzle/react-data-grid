@@ -478,9 +478,9 @@ function DataGrid<R, K extends keyof R, SR>({
     closeEditor();
   }
 
-  function commitEditor2Changes() {
+  function commitEditorChanges() {
     if (
-      columns[selectedPosition.idx]?.editor2 === undefined
+      columns[selectedPosition.idx]?.editor === undefined
       || selectedPosition.mode === 'SELECT'
       || selectedPosition.row === selectedPosition.originalRow) {
       return;
@@ -532,7 +532,7 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition.mode === 'EDIT') {
       if (key === 'Enter') {
         // Custom editors can listen for the event and stop propagation to prevent commit
-        commitEditor2Changes();
+        commitEditorChanges();
         closeEditor();
       }
       return;
@@ -623,7 +623,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function handleOnClose(commitChanges?: boolean) {
     if (commitChanges) {
-      commitEditor2Changes();
+      commitEditorChanges();
     }
     closeEditor();
   }
@@ -642,7 +642,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function selectCell(position: Position, enableEditor = false): void {
     if (!isCellWithinBounds(position)) return;
-    commitEditor2Changes();
+    commitEditorChanges();
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
@@ -799,7 +799,7 @@ function DataGrid<R, K extends keyof R, SR>({
           onCommit: handleCommit,
           onCommitCancel: closeEditor
         },
-        editor2Props: {
+        editorProps: {
           rowHeight,
           row: selectedPosition.row,
           onRowChange: handleRowChange,

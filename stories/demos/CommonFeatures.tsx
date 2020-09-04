@@ -81,7 +81,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'country',
       name: 'Country',
       width: 180,
-      editor2: p => (
+      editor: p => (
         <SelectEditor
           value={p.row.country}
           onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
@@ -95,7 +95,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'contact',
       name: 'Contact',
       width: 160,
-      editor2: p => (
+      editor: p => (
         <TextEditor
           value={p.row.contact}
           onChange={value => p.onRowChange({ ...p.row, contact: value })}
