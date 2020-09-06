@@ -3,6 +3,8 @@
 ## `alpha` to `canary`
 - **Added:**
   - **Props:**
+    - `className`
+    - `style`
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
     - `enableFilters`
@@ -16,16 +18,19 @@
     - `rowClass`
     - `defaultColumnOptions`
       - ⚠️ This replaces the `minColumnWidth` and `defaultFormatter` props
+    - `groupBy`
+    - `rowGrouper`
+      - More info in [#2106](https://github.com/adazzle/react-data-grid/pull/2106)
   - `column.cellClass(row)` function support:
     - `column = { ..., cellClass(row) { return string; } }`
   - `column.minWidth`
   - `column.maxWidth`
   - `column.headerCellClass`
-  - `column.formatterOptions`
-    - More info in [#2104](https://github.com/adazzle/react-data-grid/pull/2104)
   - `column.editor2`
   - `column.editorOptions`
     - More info in [#2102](https://github.com/adazzle/react-data-grid/pull/2102)
+  - `column.groupFormatter`
+    - More info in [#2106](https://github.com/adazzle/react-data-grid/pull/2106)
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
 - **Removed:**
@@ -34,9 +39,10 @@
   - **Packages:**
     - ⚠️ `react-data-grid-addons`
   - **Props:**
+    - ⚠️ `width`
+    - ⚠️ `height`
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
-      <!-- TODO: fill link to storybook -->
       - Check the [Context Menu](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--context-menu) example
     - ⚠️ `enableCellSelect`
     - ⚠️ `enableCellAutoFocus`

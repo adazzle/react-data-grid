@@ -12,12 +12,12 @@ function Cell<R, SR>({
   isCopied,
   isDraggedOver,
   isRowSelected,
-  lastFrozenColumnIndex,
   row,
   rowIdx,
   eventBus,
   dragHandleProps,
   onRowClick,
+  onFocus,
   onKeyDown,
   onClick,
   onDoubleClick,
@@ -31,7 +31,7 @@ function Cell<R, SR>({
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex,
+      'rdg-cell-frozen-last': column.isLastFrozenColumn,
       'rdg-cell-selected': isCellSelected,
       'rdg-cell-copied': isCopied,
       'rdg-cell-dragged-over': isDraggedOver
@@ -72,25 +72,30 @@ function Cell<R, SR>({
         width: column.width,
         left: column.left
       }}
+      onFocus={onFocus}
       onKeyDown={onKeyDown}
       onClick={wrapEvent(handleClick, onClick)}
       onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
       onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
       {...props}
     >
-      <column.formatter
-        column={column}
-        rowIdx={rowIdx}
-        row={row}
-        isCellSelected={isCellSelected}
-        isRowSelected={isRowSelected}
-        onRowSelectionChange={onRowSelectionChange}
-      />
-      {dragHandleProps && (
-        <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+      {!column.rowGroup && (
+        <>
+          <column.formatter
+            column={column}
+            rowIdx={rowIdx}
+            row={row}
+            isCellSelected={isCellSelected}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+          />
+          {dragHandleProps && (
+            <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+          )}
+        </>
       )}
     </div>
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

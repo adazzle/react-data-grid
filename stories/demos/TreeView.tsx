@@ -106,7 +106,6 @@ export default function TreeView() {
       {
         key: 'format',
         name: 'format',
-        formatterOptions: { focusable: true },
         formatter({ row, isCellSelected }) {
           const hasChildren = row.children !== undefined;
           const style = !hasChildren ? { marginLeft: 30 } : undefined;
@@ -159,7 +158,7 @@ export default function TreeView() {
       <DataGrid
         columns={columns}
         rows={rows}
-        height={500}
+        className="big-grid"
       />
     </>
   );

@@ -1,5 +1,6 @@
 .rdg-cell {
   contain: strict;
+  contain: size layout style paint;
   position: absolute;
   height: inherit;
   padding: 0 8px;
@@ -24,11 +25,11 @@
 }
 
 .rdg-cell-selected {
-  box-shadow: inset 0 0 0 2px #66afe9;
+  box-shadow: inset 0 0 0 2px @selectedBorderColor;
 }
 
 .rdg-cell-copied {
-  background-color:#ccccff;
+  background-color: #ccccff;
 }
 
 .rdg-cell-drag-handle {
@@ -49,11 +50,11 @@
 }
 
 .rdg-cell-dragged-over {
-  background-color:#ccccff;
+  background-color: #ccccff;
 }
 
 .rdg-cell-copied.rdg-cell-dragged-over {
-  background-color:#9999ff;
+  background-color: #9999ff;
 }
 
 .rdg-cell-editing {

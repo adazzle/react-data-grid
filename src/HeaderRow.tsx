@@ -15,7 +15,6 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
 >;
 
 export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
-  lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
@@ -23,7 +22,6 @@ export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGrid
 
 function HeaderRow<R, K extends keyof R, SR>({
   columns,
-  lastFrozenColumnIndex,
   rows,
   rowKey,
   onSelectedRowsChange,
@@ -59,7 +57,6 @@ function HeaderRow<R, K extends keyof R, SR>({
           <HeaderCell<R, SR>
             key={column.key}
             column={column}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
             onResize={onColumnResize}
             allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}

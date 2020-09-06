@@ -1,0 +1,45 @@
+.rdg-group-row {
+  &:not(.rdg-row-selected) {
+    background-color: var(--header-background-color);
+  }
+
+  > .rdg-cell:not(:last-child):not(.rdg-cell-frozen-last) {
+    border-right: none;
+  }
+}
+
+// TODO: rename class
+.rdg-group-row-selected {
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: inset 0 0 0 2px @selectedBorderColor;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  > .rdg-cell:first-child {
+    // preserve left border on the first frozen cell after scrolling to the right
+    box-shadow: inset 2px 0 0 0 @selectedBorderColor;
+  }
+}
+
+.rdg-group-cell-content {
+  outline: none;
+}
+
+.rdg-caret {
+  margin-left: 4px;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  fill: transparent;
+  vertical-align: middle;
+
+  > path {
+    transition: d .1s;
+  }
+}

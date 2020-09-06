@@ -12,7 +12,6 @@ function Row<R, SR = unknown>({
   eventBus,
   rowIdx,
   isRowSelected,
-  lastFrozenColumnIndex,
   copiedCellIdx,
   draggedOverCellIdx,
   row,
@@ -33,8 +32,10 @@ function Row<R, SR = unknown>({
 
   className = clsx(
     'rdg-row',
-    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-    { 'rdg-row-selected': isRowSelected },
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
+      'rdg-row-selected': isRowSelected,
+      'rdg-group-row-selected': selectedCellProps?.idx === -1
+    },
     rowClass?.(row),
     className
   );
@@ -58,7 +59,6 @@ function Row<R, SR = unknown>({
               key={column.key}
               rowIdx={rowIdx}
               column={column}
-              lastFrozenColumnIndex={lastFrozenColumnIndex}
               row={row}
               onKeyDown={selectedCellProps.onKeyDown}
               editorPortalTarget={selectedCellProps.editorPortalTarget}
@@ -73,14 +73,14 @@ function Row<R, SR = unknown>({
             key={column.key}
             rowIdx={rowIdx}
             column={column}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
             row={row}
             isCopied={copiedCellIdx === column.idx}
             isDraggedOver={draggedOverCellIdx === column.idx}
             isCellSelected={isCellSelected}
             isRowSelected={isRowSelected}
             eventBus={eventBus}
-            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps)!.dragHandleProps : undefined}
+            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
+            onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
             onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
             onRowClick={onRowClick}
           />
@@ -90,4 +90,4 @@ function Row<R, SR = unknown>({
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & { ref?: React.Ref<HTMLDivElement> }) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

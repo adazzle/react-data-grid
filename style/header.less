@@ -3,11 +3,12 @@
 .rdg-header-row,
 .rdg-filter-row {
   contain: strict;
+  contain: size layout style paint;
   display: flex;
   width: var(--row-width);
   position: -webkit-sticky;
   position: sticky;
-  background-color: #f9f9f9;
+  background-color: var(--header-background-color);
   font-weight: bold;
   .user-select();
   z-index: 3;

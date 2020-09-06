@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import { AutoSizer } from 'react-virtualized';
 import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
 import { TextEditor } from './components/Editors/TextEditor';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -268,28 +267,23 @@ export default function CommonFeatures() {
   }, []);
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <DataGrid
-          rowKey="id"
-          columns={columns}
-          rows={sortedRows}
-          width={width}
-          height={height}
-          defaultColumnOptions={{
-            sortable: true,
-            resizable: true
-          }}
-          selectedRows={selectedRows}
-          onSelectedRowsChange={setSelectedRows}
-          onRowsUpdate={handleRowsUpdate}
-          onRowsChange={setRows}
-          sortColumn={sortColumn}
-          sortDirection={sortDirection}
-          onSort={handleSort}
-          summaryRows={summaryRows}
-        />
-      )}
-    </AutoSizer>
+    <DataGrid
+      rowKey="id"
+      columns={columns}
+      rows={sortedRows}
+      defaultColumnOptions={{
+        sortable: true,
+        resizable: true
+      }}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      onRowsUpdate={handleRowsUpdate}
+      onRowsChange={setRows}
+      sortColumn={sortColumn}
+      sortDirection={sortDirection}
+      onSort={handleSort}
+      summaryRows={summaryRows}
+      className="fill-grid"
+    />
   );
 }

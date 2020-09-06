@@ -27,9 +27,9 @@ describe('getColumnMetrics', () => {
   }];
 
   it('should set the unset column widths based on the total width', () => {
-    const columns = getInitialColumns();
+    const rawColumns = getInitialColumns();
     const metrics = getColumnMetrics<Row, unknown>({
-      columns,
+      rawColumns,
       viewportWidth,
       minColumnWidth: 50,
       columnWidths: new Map(),
@@ -44,9 +44,9 @@ describe('getColumnMetrics', () => {
   });
 
   it('should set the column left based on the column widths', () => {
-    const columns = getInitialColumns();
+    const rawColumns = getInitialColumns();
     const metrics = getColumnMetrics<Row, unknown>({
-      columns,
+      rawColumns,
       viewportWidth,
       minColumnWidth: 50,
       columnWidths: new Map(),
@@ -56,7 +56,7 @@ describe('getColumnMetrics', () => {
     });
 
     expect(metrics.columns[0].left).toStrictEqual(0);
-    expect(metrics.columns[1].left).toStrictEqual(columns[0].width);
+    expect(metrics.columns[1].left).toStrictEqual(rawColumns[0].width);
     expect(metrics.columns[2].left).toStrictEqual(180);
   });
 
@@ -64,10 +64,10 @@ describe('getColumnMetrics', () => {
     const firstFrozenColumn: Column<Row> = { key: 'frozenColumn1', name: 'frozenColumn1', frozen: true };
     const secondFrozenColumn: Column<Row> = { key: 'frozenColumn2', name: 'frozenColumn2', frozen: true };
     const thirdFrozenColumn: Column<Row> = { key: 'frozenColumn3', name: 'frozenColumn3', frozen: true };
-    const columns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
-    columns.splice(2, 0, firstFrozenColumn);
+    const rawColumns = [...getInitialColumns(), secondFrozenColumn, thirdFrozenColumn];
+    rawColumns.splice(2, 0, firstFrozenColumn);
     const metrics = getColumnMetrics<Row, unknown>({
-      columns,
+      rawColumns,
       viewportWidth,
       minColumnWidth: 50,
       columnWidths: new Map(),

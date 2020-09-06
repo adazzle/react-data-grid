@@ -1,9 +1,14 @@
 @import "./variables.less";
 
 .rdg {
+  --header-background-color: #f9f9f9;
+
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
   contain: strict;
+  contain: size layout style paint;
+  content-visibility: auto;
+  height: 350px;
   border: 1px solid @borderColor;
   box-sizing: border-box;
   overflow-x: auto;

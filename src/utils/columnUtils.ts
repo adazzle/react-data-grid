@@ -1,20 +1,24 @@
-import { Column, CalculatedColumn, FormatterProps, Omit } from '../types';
-import { getScrollbarSize } from './domUtils';
+import { Column, CalculatedColumn, FormatterProps } from '../types';
+import { ToggleGroupFormatter } from '../formatters';
+import { SELECT_COLUMN_KEY } from '../Columns';
 
 interface Metrics<R, SR> {
-  columns: readonly Column<R, SR>[];
+  rawColumns: readonly Column<R, SR>[];
   columnWidths: ReadonlyMap<string, number>;
   minColumnWidth: number;
   viewportWidth: number;
   defaultResizable: boolean;
   defaultSortable: boolean;
   defaultFormatter: React.ComponentType<FormatterProps<R, SR>>;
+  rawGroupBy?: readonly string[];
 }
 
 interface ColumnMetrics<TRow, TSummaryRow> {
   columns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   lastFrozenColumnIndex: number;
+  totalFrozenColumnWidth: number;
   totalColumnWidth: number;
+  groupBy: readonly string[];
 }
 
 export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<R, SR> {
@@ -23,9 +27,11 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
   let allocatedWidths = 0;
   let unassignedColumnsCount = 0;
   let lastFrozenColumnIndex = -1;
-  const columns: Array<Omit<Column<R, SR>, 'width'> & { width: number | undefined }> = [];
+  type IntermediateColumn = Column<R, SR> & { width: number | undefined; rowGroup?: boolean };
+  let totalFrozenColumnWidth = 0;
+  const { rawGroupBy } = metrics;
 
-  for (const metricsColumn of metrics.columns) {
+  const columns = metrics.rawColumns.map(metricsColumn => {
     let width = getSpecifiedWidth(metricsColumn, metrics.columnWidths, metrics.viewportWidth);
 
     if (width === undefined) {
@@ -35,22 +41,53 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
       allocatedWidths += width;
     }
 
-    const column = { ...metricsColumn, width };
+    const column: IntermediateColumn = { ...metricsColumn, width };
+
+    if (rawGroupBy?.includes(column.key)) {
+      column.frozen = true;
+      column.rowGroup = true;
+    }
 
     if (column.frozen) {
       lastFrozenColumnIndex++;
-      columns.splice(lastFrozenColumnIndex, 0, column);
-    } else {
-      columns.push(column);
     }
-  }
 
-  const unallocatedWidth = metrics.viewportWidth - allocatedWidths - getScrollbarSize();
+    return column;
+  });
+
+  columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
+    // Sort select column first:
+    if (aKey === SELECT_COLUMN_KEY) return -1;
+    if (bKey === SELECT_COLUMN_KEY) return 1;
+
+    // Sort grouped columns second, following the groupBy order:
+    if (rawGroupBy?.includes(aKey)) {
+      if (rawGroupBy.includes(bKey)) {
+        return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
+      }
+      return -1;
+    }
+    if (rawGroupBy?.includes(bKey)) return 1;
+
+    // Sort frozen columns third:
+    if (frozenA) {
+      if (frozenB) return 0;
+      return -1;
+    }
+    if (frozenB) return 1;
+
+    // Sort other columns last:
+    return 0;
+  });
+
+  const unallocatedWidth = metrics.viewportWidth - allocatedWidths;
   const unallocatedColumnWidth = Math.max(
     Math.floor(unallocatedWidth / unassignedColumnsCount),
     metrics.minColumnWidth
   );
 
+  // Filter rawGroupBy and ignore keys that do not match the columns prop
+  const groupBy: string[] = [];
   const calculatedColumns: CalculatedColumn<R, SR>[] = columns.map((column, idx) => {
     // Every column should have a valid width as this stage
     const width = column.width ?? clampColumnWidth(unallocatedColumnWidth, column, metrics.minColumnWidth);
@@ -59,19 +96,33 @@ export function getColumnMetrics<R, SR>(metrics: Metrics<R, SR>): ColumnMetrics<
       idx,
       width,
       left,
-      sortable: column.resizable ?? metrics.defaultSortable,
+      sortable: column.sortable ?? metrics.defaultSortable,
       resizable: column.resizable ?? metrics.defaultResizable,
       formatter: column.formatter ?? metrics.defaultFormatter
     };
+
+    if (newColumn.rowGroup) {
+      groupBy.push(column.key);
+      newColumn.groupFormatter = column.groupFormatter ?? ToggleGroupFormatter;
+    }
+
     totalWidth += width;
     left += width;
     return newColumn;
   });
 
+  if (lastFrozenColumnIndex !== -1) {
+    const lastFrozenColumn = calculatedColumns[lastFrozenColumnIndex];
+    lastFrozenColumn.isLastFrozenColumn = true;
+    totalFrozenColumnWidth = lastFrozenColumn.left + lastFrozenColumn.width;
+  }
+
   return {
     columns: calculatedColumns,
     lastFrozenColumnIndex,
-    totalColumnWidth: totalWidth
+    totalFrozenColumnWidth,
+    totalColumnWidth: totalWidth,
+    groupBy
   };
 }
 
@@ -109,7 +160,7 @@ function clampColumnWidth<R, SR>(
 
 // Logic extented to allow for functions to be passed down in column.editable
 // this allows us to decide whether we can be editing from a cell level
-export function canEdit<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
+export function canEdit<R, SR>(column: Column<R, SR>, row: R): boolean {
   if (typeof column.editable === 'function') {
     return column.editable(row);
   }
