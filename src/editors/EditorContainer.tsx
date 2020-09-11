@@ -81,7 +81,7 @@ export default function EditorContainer<R, SR>({
       return value;
     }
 
-    return key || value;
+    return key ?? value;
   }
 
   function isCaretAtBeginningOfInput(): boolean {

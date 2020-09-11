@@ -526,7 +526,10 @@ const rules = {
   '@typescript-eslint/prefer-includes': 1,
   '@typescript-eslint/prefer-literal-enum-member': 1,
   '@typescript-eslint/prefer-namespace-keyword': 0,
-  '@typescript-eslint/prefer-nullish-coalescing': 0,
+  '@typescript-eslint/prefer-nullish-coalescing': [1, {
+    ignoreConditionalTests: false,
+    ignoreMixedLogicalExpressions: true
+  }],
   '@typescript-eslint/prefer-optional-chain': 1,
   '@typescript-eslint/prefer-readonly': 1,
   '@typescript-eslint/prefer-readonly-parameter-types': 0,

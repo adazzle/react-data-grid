@@ -52,7 +52,7 @@ function EditCell<R, SR>({
 
   function getCellContent() {
     if (dimensions === null) return;
-    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement || document.documentElement;
+    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement ?? document.documentElement;
     const { left, top } = dimensions;
     const gridLeft = left + docLeft;
     const gridTop = top + docTop;
