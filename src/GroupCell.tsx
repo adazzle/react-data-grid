@@ -31,11 +31,11 @@ function GroupCell<R, SR>({
   groupColumnIndex
 }: GroupCellProps<R, SR>) {
   function toggleGroup() {
-    eventBus.dispatch('TOGGLE_GROUP', id);
+    eventBus.dispatch('ToggleGroup', id);
   }
 
   function onRowSelectionChange(checked: boolean) {
-    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick: false });
+    eventBus.dispatch('SelectRow', { rowIdx, checked, isShiftClick: false });
   }
 
   // Only make the cell clickable if the group level matches

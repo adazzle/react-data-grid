@@ -480,8 +480,10 @@ const rules = {
   '@typescript-eslint/member-ordering': 0,
   '@typescript-eslint/method-signature-style': 1,
   '@typescript-eslint/naming-convention': [1,
-    { selector: 'function', format: ['camelCase', 'PascalCase'] },
-    { selector: 'parameter', format: ['camelCase', 'PascalCase'], leadingUnderscore: 'allow' },
+    { selector: 'variable', format: ['camelCase'] },
+    { selector: 'variable', modifiers: ['const'], format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
+    { selector: ['function', 'parameter', 'property'], format: ['camelCase', 'PascalCase'] },
+    // { selector: 'memberLike', format: ['camelCase'] },
     { selector: 'typeLike', format: ['PascalCase'] }
   ],
   '@typescript-eslint/no-base-to-string': 0,

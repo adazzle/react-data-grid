@@ -344,11 +344,11 @@ function DataGrid<R, K extends keyof R, SR>({
       onSelectedRowsChange(newSelectedRows);
     };
 
-    return eventBus.subscribe('SELECT_ROW', handleRowSelectionChange);
+    return eventBus.subscribe('SelectRow', handleRowSelectionChange);
   }, [eventBus, isGroupRow, onSelectedRowsChange, rowKey, rows, selectedRows]);
 
   useEffect(() => {
-    return eventBus.subscribe('SELECT_CELL', selectCell);
+    return eventBus.subscribe('SelectCell', selectCell);
   });
 
   useEffect(() => {
@@ -364,7 +364,7 @@ function DataGrid<R, K extends keyof R, SR>({
       onExpandedGroupIdsChange(newExpandedGroupIds);
     };
 
-    return eventBus.subscribe('TOGGLE_GROUP', toggleGroup);
+    return eventBus.subscribe('ToggleGroup', toggleGroup);
   }, [eventBus, expandedGroupIds, onExpandedGroupIdsChange]);
 
   useImperativeHandle(ref, () => ({
@@ -416,7 +416,7 @@ function DataGrid<R, K extends keyof R, SR>({
         || (key === 'ArrowRight' && !row.isExpanded)
       )) {
       event.preventDefault(); // Prevents scrolling
-      eventBus.dispatch('TOGGLE_GROUP', row.id);
+      eventBus.dispatch('ToggleGroup', row.id);
       return;
     }
 
