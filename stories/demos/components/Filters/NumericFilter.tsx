@@ -23,7 +23,7 @@ export function NumericFilter<R, SR>({ value, column, onChange }: FilterRenderer
   /** Validates the input */
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const result = /[><,0-9-]/.test(event.key);
-    if (result === false) {
+    if (!result) {
       event.preventDefault();
     }
   }

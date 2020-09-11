@@ -509,7 +509,7 @@ const rules = {
   '@typescript-eslint/no-this-alias': 0,
   '@typescript-eslint/no-throw-literal': 0,
   '@typescript-eslint/no-type-alias': 0,
-  '@typescript-eslint/no-unnecessary-boolean-literal-compare': 0,
+  '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
   '@typescript-eslint/no-unnecessary-condition': 0,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
   '@typescript-eslint/no-unnecessary-type-arguments': 0,
@@ -587,6 +587,8 @@ module.exports = {
   reportUnusedDisableDirectives: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    project: './tsconfig.eslint.json',
+    extraFileExtensions: ['.mjs'],
     ecmaVersion: 2020,
     sourceType: 'module'
   },
