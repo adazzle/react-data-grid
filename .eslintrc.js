@@ -483,7 +483,7 @@ const rules = {
     { selector: 'variable', format: ['camelCase'] },
     { selector: 'variable', modifiers: ['const'], format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
     { selector: ['function', 'parameter', 'property'], format: ['camelCase', 'PascalCase'] },
-    // { selector: 'memberLike', format: ['camelCase'] },
+    { selector: 'memberLike', format: ['camelCase'] },
     { selector: 'typeLike', format: ['PascalCase'] }
   ],
   '@typescript-eslint/no-base-to-string': 0,

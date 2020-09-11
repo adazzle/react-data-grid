@@ -26,14 +26,14 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
 }
 
 export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns, rowsCount, nextPosition }: GetNextSelectedCellPositionOpts<R, SR>): Position {
-  if (cellNavigationMode !== CellNavigationMode.NONE) {
+  if (cellNavigationMode !== CellNavigationMode.none) {
     const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
     const isAfterLastColumn = idx === columnsCount;
     const isBeforeFirstColumn = idx === -1;
 
     if (isAfterLastColumn) {
-      if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
+      if (cellNavigationMode === CellNavigationMode.changeRow) {
         const isLastRow = rowIdx === rowsCount - 1;
         if (!isLastRow) {
           return {
@@ -41,14 +41,14 @@ export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns
             rowIdx: rowIdx + 1
           };
         }
-      } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
+      } else if (cellNavigationMode === CellNavigationMode.loopOverRow) {
         return {
           rowIdx,
           idx: 0
         };
       }
     } else if (isBeforeFirstColumn) {
-      if (cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
+      if (cellNavigationMode === CellNavigationMode.changeRow) {
         const isFirstRow = rowIdx === 0;
         if (!isFirstRow) {
           return {
@@ -56,7 +56,7 @@ export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns
             idx: columnsCount - 1
           };
         }
-      } else if (cellNavigationMode === CellNavigationMode.LOOP_OVER_ROW) {
+      } else if (cellNavigationMode === CellNavigationMode.loopOverRow) {
         return {
           rowIdx,
           idx: columnsCount - 1
@@ -79,7 +79,7 @@ interface CanExitGridOpts<R, SR> {
 export function canExitGrid<R, SR>({ cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx }, shiftKey }: CanExitGridOpts<R, SR>): boolean {
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
-  if (cellNavigationMode === CellNavigationMode.NONE || cellNavigationMode === CellNavigationMode.CHANGE_ROW) {
+  if (cellNavigationMode === CellNavigationMode.none || cellNavigationMode === CellNavigationMode.changeRow) {
     const atLastCellInRow = idx === columns.length - 1;
     const atFirstCellInRow = idx === 0;
     const atLastRow = rowIdx === rowsCount - 1;

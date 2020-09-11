@@ -186,7 +186,7 @@ export default function AllFeatures() {
     let start: number;
     let end: number;
 
-    if (action === UpdateActions.COPY_PASTE) {
+    if (action === UpdateActions.copyPaste) {
       start = toRow;
       end = toRow;
     } else {

@@ -214,7 +214,7 @@ function DataGrid<R, K extends keyof R, SR>({
   enableFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
-  cellNavigationMode = CellNavigationMode.NONE,
+  cellNavigationMode = CellNavigationMode.none,
   // Miscellaneous
   editorPortalTarget = document.body,
   className,
@@ -472,7 +472,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: rowIdx,
       toRow: rowIdx,
       updated,
-      action: UpdateActions.CELL_UPDATE
+      action: UpdateActions.cellUpdate
     });
 
     closeEditor();
@@ -517,7 +517,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow,
       toRow,
       updated: { [cellKey]: copiedPosition.value } as unknown as never,
-      action: UpdateActions.COPY_PASTE,
+      action: UpdateActions.copyPaste,
       fromCellKey
     });
   }
@@ -566,7 +566,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: rowIdx,
       toRow: latestDraggedOverRowIdx.current,
       updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.CELL_DRAG
+      action: UpdateActions.cellDrag
     });
 
     setDraggedOverRowIdx(undefined);
@@ -605,7 +605,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: selectedPosition.rowIdx,
       toRow: rawRows.length - 1,
       updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.COLUMN_FILL
+      action: UpdateActions.columnFill
     });
   }
 
@@ -753,8 +753,8 @@ function DataGrid<R, K extends keyof R, SR>({
         return;
       }
 
-      mode = cellNavigationMode === CellNavigationMode.NONE
-        ? CellNavigationMode.CHANGE_ROW
+      mode = cellNavigationMode === CellNavigationMode.none
+        ? CellNavigationMode.changeRow
         : cellNavigationMode;
     }
 

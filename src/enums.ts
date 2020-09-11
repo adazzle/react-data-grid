@@ -1,14 +1,14 @@
 export enum CellNavigationMode {
-  NONE = 'none',
-  CHANGE_ROW = 'changeRow',
-  LOOP_OVER_ROW = 'loopOverRow'
+  none = 'none',
+  changeRow = 'changeRow',
+  loopOverRow = 'loopOverRow'
 }
 
 export enum UpdateActions {
-  CELL_UPDATE = 'CELL_UPDATE',
-  COLUMN_FILL = 'COLUMN_FILL',
-  COPY_PASTE = 'COPY_PASTE',
-  CELL_DRAG = 'CELL_DRAG'
+  cellUpdate = 'CELL_UPDATE',
+  columnFill = 'COLUMN_FILL',
+  copyPaste = 'COPY_PASTE',
+  cellDrag = 'CELL_DRAG'
 }
 
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
