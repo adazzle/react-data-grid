@@ -528,7 +528,7 @@ const rules = {
   '@typescript-eslint/prefer-namespace-keyword': 0,
   '@typescript-eslint/prefer-nullish-coalescing': 0,
   '@typescript-eslint/prefer-optional-chain': 1,
-  '@typescript-eslint/prefer-readonly': 0,
+  '@typescript-eslint/prefer-readonly': 1,
   '@typescript-eslint/prefer-readonly-parameter-types': 0,
   '@typescript-eslint/prefer-reduce-type-parameter': 0,
   '@typescript-eslint/prefer-regexp-exec': 0,

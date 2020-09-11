@@ -41,7 +41,7 @@ import {
   EditCellProps,
   Dictionary
 } from './types';
-import { CellNavigationMode, SortDirection, UpdateActions } from './enums';
+import { CellNavigationMode, SortDirection } from './enums';
 
 interface SelectCellState extends Position {
   mode: 'SELECT';
@@ -214,7 +214,7 @@ function DataGrid<R, K extends keyof R, SR>({
   enableFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
-  cellNavigationMode = CellNavigationMode.none,
+  cellNavigationMode = 'NONE',
   // Miscellaneous
   editorPortalTarget = document.body,
   className,
@@ -472,7 +472,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: rowIdx,
       toRow: rowIdx,
       updated,
-      action: UpdateActions.cellUpdate
+      action: 'CELL_UPDATE'
     });
 
     closeEditor();
@@ -517,7 +517,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow,
       toRow,
       updated: { [cellKey]: copiedPosition.value } as unknown as never,
-      action: UpdateActions.copyPaste,
+      action: 'COPY_PASTE',
       fromCellKey
     });
   }
@@ -566,7 +566,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: rowIdx,
       toRow: latestDraggedOverRowIdx.current,
       updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.cellDrag
+      action: 'CELL_DRAG'
     });
 
     setDraggedOverRowIdx(undefined);
@@ -605,7 +605,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: selectedPosition.rowIdx,
       toRow: rawRows.length - 1,
       updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.columnFill
+      action: 'COLUMN_FILL'
     });
   }
 
@@ -753,8 +753,8 @@ function DataGrid<R, K extends keyof R, SR>({
         return;
       }
 
-      mode = cellNavigationMode === CellNavigationMode.none
-        ? CellNavigationMode.changeRow
+      mode = cellNavigationMode === 'NONE'
+        ? 'CHANGE_ROW'
         : cellNavigationMode;
     }
 

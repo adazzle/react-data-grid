@@ -68,7 +68,7 @@ function createRows(): Row[] {
 
 export default function CellNavigation() {
   const [rows] = useState(createRows);
-  const [cellNavigatioMode, setCellNavigationMode] = useState<CellNavigationMode>(CellNavigationMode.changeRow);
+  const [cellNavigatioMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
   return (
     <>
@@ -78,8 +78,8 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === CellNavigationMode.none}
-            onChange={() => setCellNavigationMode(CellNavigationMode.none)}
+            checked={cellNavigatioMode === 'NONE'}
+            onChange={() => setCellNavigationMode('NONE')}
           />
           None
         </label>
@@ -87,8 +87,8 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === CellNavigationMode.changeRow}
-            onChange={() => setCellNavigationMode(CellNavigationMode.changeRow)}
+            checked={cellNavigatioMode === 'CHANGE_ROW'}
+            onChange={() => setCellNavigationMode('CHANGE_ROW')}
           />
           Change Row
         </label>
@@ -96,8 +96,8 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === CellNavigationMode.loopOverRow}
-            onChange={() => setCellNavigationMode(CellNavigationMode.loopOverRow)}
+            checked={cellNavigatioMode === 'LOOP_OVER_ROW'}
+            onChange={() => setCellNavigationMode('LOOP_OVER_ROW')}
           />
           Loop Over Row
         </label>
