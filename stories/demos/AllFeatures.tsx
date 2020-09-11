@@ -1,6 +1,6 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
+import DataGrid, { Column, SelectColumn, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -186,7 +186,7 @@ export default function AllFeatures() {
     let start: number;
     let end: number;
 
-    if (action === UpdateActions.COPY_PASTE) {
+    if (action === 'COPY_PASTE') {
       start = toRow;
       end = toRow;
     } else {

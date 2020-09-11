@@ -6,7 +6,7 @@ interface TextEditorProps {
   rowHeight: number;
 }
 
-export function TextEditor<R>({ value, onChange, rowHeight }: TextEditorProps) {
+export function TextEditor({ value, onChange, rowHeight }: TextEditorProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {

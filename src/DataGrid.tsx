@@ -41,7 +41,7 @@ import {
   EditCellProps,
   Dictionary
 } from './types';
-import { CellNavigationMode, SortDirection, UpdateActions } from './enums';
+import { CellNavigationMode, SortDirection } from './enums';
 
 interface SelectCellState extends Position {
   mode: 'SELECT';
@@ -214,7 +214,7 @@ function DataGrid<R, K extends keyof R, SR>({
   enableFilters = false,
   enableCellCopyPaste = false,
   enableCellDragAndDrop = false,
-  cellNavigationMode = CellNavigationMode.NONE,
+  cellNavigationMode = 'NONE',
   // Miscellaneous
   editorPortalTarget = document.body,
   className,
@@ -344,11 +344,11 @@ function DataGrid<R, K extends keyof R, SR>({
       onSelectedRowsChange(newSelectedRows);
     };
 
-    return eventBus.subscribe('SELECT_ROW', handleRowSelectionChange);
+    return eventBus.subscribe('SelectRow', handleRowSelectionChange);
   }, [eventBus, isGroupRow, onSelectedRowsChange, rowKey, rows, selectedRows]);
 
   useEffect(() => {
-    return eventBus.subscribe('SELECT_CELL', selectCell);
+    return eventBus.subscribe('SelectCell', selectCell);
   });
 
   useEffect(() => {
@@ -364,7 +364,7 @@ function DataGrid<R, K extends keyof R, SR>({
       onExpandedGroupIdsChange(newExpandedGroupIds);
     };
 
-    return eventBus.subscribe('TOGGLE_GROUP', toggleGroup);
+    return eventBus.subscribe('ToggleGroup', toggleGroup);
   }, [eventBus, expandedGroupIds, onExpandedGroupIdsChange]);
 
   useImperativeHandle(ref, () => ({
@@ -416,7 +416,7 @@ function DataGrid<R, K extends keyof R, SR>({
         || (key === 'ArrowRight' && !row.isExpanded)
       )) {
       event.preventDefault(); // Prevents scrolling
-      eventBus.dispatch('TOGGLE_GROUP', row.id);
+      eventBus.dispatch('ToggleGroup', row.id);
       return;
     }
 
@@ -472,7 +472,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: rowIdx,
       toRow: rowIdx,
       updated,
-      action: UpdateActions.CELL_UPDATE
+      action: 'CELL_UPDATE'
     });
 
     closeEditor();
@@ -517,7 +517,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow,
       toRow,
       updated: { [cellKey]: copiedPosition.value } as unknown as never,
-      action: UpdateActions.COPY_PASTE,
+      action: 'COPY_PASTE',
       fromCellKey
     });
   }
@@ -566,7 +566,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: rowIdx,
       toRow: latestDraggedOverRowIdx.current,
       updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.CELL_DRAG
+      action: 'CELL_DRAG'
     });
 
     setDraggedOverRowIdx(undefined);
@@ -605,7 +605,7 @@ function DataGrid<R, K extends keyof R, SR>({
       fromRow: selectedPosition.rowIdx,
       toRow: rawRows.length - 1,
       updated: { [cellKey]: value } as unknown as never,
-      action: UpdateActions.COLUMN_FILL
+      action: 'COLUMN_FILL'
     });
   }
 
@@ -753,8 +753,8 @@ function DataGrid<R, K extends keyof R, SR>({
         return;
       }
 
-      mode = cellNavigationMode === CellNavigationMode.NONE
-        ? CellNavigationMode.CHANGE_ROW
+      mode = cellNavigationMode === 'NONE'
+        ? 'CHANGE_ROW'
         : cellNavigationMode;
     }
 
