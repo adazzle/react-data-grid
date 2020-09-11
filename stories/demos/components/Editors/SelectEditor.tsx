@@ -9,7 +9,7 @@ interface SelectEditorProps {
   menuPortalTarget: Element;
 }
 
-export function SelectEditor<R>({ value, onChange, options, rowHeight, menuPortalTarget }: SelectEditorProps) {
+export function SelectEditor({ value, onChange, options, rowHeight, menuPortalTarget }: SelectEditorProps) {
   const [isMenuOpen, setMenuOpen] = useState(true);
   return (
     <Select

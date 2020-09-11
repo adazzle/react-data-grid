@@ -4,7 +4,7 @@ import Select, { components, ValueType, OptionsType, Props as SelectProps } from
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 
-import DataGrid, { Column, Row, SelectColumn } from '../../src';
+import DataGrid, { Column, SelectColumn } from '../../src';
 import './Grouping.less';
 
 interface Row {
