@@ -31,7 +31,7 @@ function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEdit
   return (
     <select
       ref={selectRef}
-      className="rdg-select-editor"
+      className="rdg-text-editor"
       defaultValue={value}
       onBlur={onCommit}
       size={options.length}

@@ -7,20 +7,18 @@
   width: var(--row-width);
   height: var(--row-height);
   line-height: var(--row-height);
-  @bg: #fff;
-  background-color: @bg;
+  background-color: var(--background-color);
 
   &:hover {
-    background-color: darken(@bg, 4%);
+    background-color: var(--row-hover-background-color);
   }
 }
 
 .rdg-row-selected {
-  @bg: #dbecfa;
-  background-color: @bg;
+  background-color: var(--row-selected-background-color);
 
   &:hover {
-    background-color: darken(@bg, 4%);
+    background-color: var(--row-selected-hover-background-color);
   }
 }
 
@@ -30,6 +28,6 @@
   z-index: 3;
 
   > .rdg-cell {
-    border-top: 2px solid darken(@borderColor, 20%);
+    border-top: 2px solid var(--summary-border-color);
   }
 }

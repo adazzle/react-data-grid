@@ -1,7 +1,16 @@
-@import "./variables.less";
+@bg: #fff;
+@selectedRow: #dbecfa;
 
 .rdg {
-  --header-background-color: #f9f9f9;
+  --border-color: #ddd;
+  --summary-border-color: #aaa;
+  --selection-color: #66afe9;
+  --font-size: 14px;
+  --background-color: @bg;
+  --header-background-color: darken(@bg, 2.5%);
+  --row-hover-background-color: darken(@bg, 4%);
+  --row-selected-background-color: @selectedRow;
+  --row-selected-hover-background-color: darken(@selectedRow, 4%);
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
@@ -9,13 +18,14 @@
   contain: size layout style paint;
   content-visibility: auto;
   height: 350px;
-  border: 1px solid @borderColor;
+  border: 1px solid var(--border-color);
   box-sizing: border-box;
   overflow-x: auto;
   overflow-y: scroll;
-  .user-select();
-  background-color: #fff;
-  font-size: 14px;
+  -webkit-user-select: none;
+  user-select: none;
+  background-color: var(--background-color);
+  font-size: var(--font-size);
 
   *,
   *::before,

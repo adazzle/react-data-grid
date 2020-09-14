@@ -2,8 +2,7 @@
   position: absolute;
 }
 
-.rdg-text-editor,
-.rdg-select-editor {
+.rdg-text-editor {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -18,9 +17,13 @@
 
   font-size: 14px;
   line-height: 1.2;
-  .placeholder-color(#999);
 
   &:focus {
     border-color: #66afe9;
+  }
+
+  &::placeholder {
+    color: #999;
+    opacity: 1;
   }
 }
