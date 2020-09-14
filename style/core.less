@@ -1,7 +1,16 @@
-@import "./variables.less";
-
 .rdg {
-  --header-background-color: #f9f9f9;
+  @bg: #fff;
+  @selectedRow: #dbecfa;
+  --color: #000;
+  --border-color: #ddd;
+  --summary-border-color: #aaa;
+  --selection-color: #66afe9;
+  --font-size: 14px;
+  --background-color: @bg;
+  --header-background-color: darken(@bg, 2.5%);
+  --row-hover-background-color: darken(@bg, 4%);
+  --row-selected-background-color: @selectedRow;
+  --row-selected-hover-background-color: darken(@selectedRow, 4%);
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
@@ -9,19 +18,34 @@
   contain: size layout style paint;
   content-visibility: auto;
   height: 350px;
-  border: 1px solid @borderColor;
+  border: 1px solid var(--border-color);
   box-sizing: border-box;
   overflow-x: auto;
   overflow-y: scroll;
-  .user-select();
-  background-color: #fff;
-  font-size: 14px;
+  -webkit-user-select: none;
+  user-select: none;
+  background-color: var(--background-color);
+  color: var(--color);
+  font-size: var(--font-size);
 
   *,
   *::before,
   *::after {
     box-sizing: inherit;
   }
+
+  // @media (prefers-color-scheme: dark) {
+  //   @bg: #222;
+  //   @selectedRow: darken(#dbecfa, 50%);
+  //   --color: #ddd;
+  //   --border-color: #444;
+  //   --summary-border-color: #555;
+  //   --background-color: @bg;
+  //   --header-background-color: darken(@bg, 2.5%);
+  //   --row-hover-background-color: darken(@bg, 4%);
+  //   --row-selected-background-color: @selectedRow;
+  //   --row-selected-hover-background-color: darken(@selectedRow, 4%);
+  // }
 }
 
 // set stacking context in safari
