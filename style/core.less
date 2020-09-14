@@ -1,7 +1,7 @@
-@bg: #fff;
-@selectedRow: #dbecfa;
-
 .rdg {
+  @bg: #fff;
+  @selectedRow: #dbecfa;
+  --color: #000;
   --border-color: #ddd;
   --summary-border-color: #aaa;
   --selection-color: #66afe9;
@@ -25,6 +25,7 @@
   -webkit-user-select: none;
   user-select: none;
   background-color: var(--background-color);
+  color: var(--color);
   font-size: var(--font-size);
 
   *,
@@ -32,6 +33,19 @@
   *::after {
     box-sizing: inherit;
   }
+
+  // @media (prefers-color-scheme: dark) {
+  //   @bg: #222;
+  //   @selectedRow: darken(#dbecfa, 50%);
+  //   --color: #ddd;
+  //   --border-color: #444;
+  //   --summary-border-color: #555;
+  //   --background-color: @bg;
+  //   --header-background-color: darken(@bg, 2.5%);
+  //   --row-hover-background-color: darken(@bg, 4%);
+  //   --row-selected-background-color: @selectedRow;
+  //   --row-selected-hover-background-color: darken(@selectedRow, 4%);
+  // }
 }
 
 // set stacking context in safari
