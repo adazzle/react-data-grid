@@ -526,13 +526,16 @@ const rules = {
   '@typescript-eslint/prefer-includes': 1,
   '@typescript-eslint/prefer-literal-enum-member': 1,
   '@typescript-eslint/prefer-namespace-keyword': 0,
-  '@typescript-eslint/prefer-nullish-coalescing': 0,
+  '@typescript-eslint/prefer-nullish-coalescing': [1, {
+    ignoreConditionalTests: false,
+    ignoreMixedLogicalExpressions: true
+  }],
   '@typescript-eslint/prefer-optional-chain': 1,
   '@typescript-eslint/prefer-readonly': 1,
   '@typescript-eslint/prefer-readonly-parameter-types': 0,
-  '@typescript-eslint/prefer-reduce-type-parameter': 0,
-  '@typescript-eslint/prefer-regexp-exec': 0,
-  '@typescript-eslint/prefer-string-starts-ends-with': 0,
+  '@typescript-eslint/prefer-reduce-type-parameter': 1,
+  '@typescript-eslint/prefer-regexp-exec': 1,
+  '@typescript-eslint/prefer-string-starts-ends-with': 1,
   '@typescript-eslint/prefer-ts-expect-error': 1,
   '@typescript-eslint/promise-function-async': 0,
   '@typescript-eslint/require-array-sort-compare': 0,
@@ -576,8 +579,8 @@ const rules = {
   '@typescript-eslint/no-use-before-define': 0,
   '@typescript-eslint/no-useless-constructor': 1,
   '@typescript-eslint/quotes': [1, 'single', { avoidEscape: true }],
-  '@typescript-eslint/require-await': 0,
-  '@typescript-eslint/return-await': 0,
+  '@typescript-eslint/require-await': 2,
+  '@typescript-eslint/return-await': 2,
   '@typescript-eslint/semi': 1,
   '@typescript-eslint/space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }]
 };
