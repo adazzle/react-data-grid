@@ -33,6 +33,9 @@
     - More info in [#2106](https://github.com/adazzle/react-data-grid/pull/2106)
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
+  - Dark mode support
+    - Dark mode is automatically applied following user preference
+    - Light and dark modes can be forced by setting the `rdg-light` or `rdg-dark` class names.
 - **Removed:**
   - **Support:**
     - ⚠️ IE11

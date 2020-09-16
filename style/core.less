@@ -1,16 +1,43 @@
-.rdg {
+.lightTheme() {
   @bg: #fff;
   @selectedRow: #dbecfa;
   --color: #000;
   --border-color: #ddd;
   --summary-border-color: #aaa;
-  --selection-color: #66afe9;
-  --font-size: 14px;
   --background-color: @bg;
   --header-background-color: darken(@bg, 2.5%);
   --row-hover-background-color: darken(@bg, 4%);
   --row-selected-background-color: @selectedRow;
   --row-selected-hover-background-color: darken(@selectedRow, 4%);
+
+  --checkbox-color: #005295;
+  --checkbox-focus-color: lighten(#005295, 40%);
+  --checkbox-disabled-border-color: #ccc;
+  --checkbox-disabled-background-color: #ddd;
+}
+
+.darkTheme() {
+  @bg: #222;
+  @selectedRow: darken(#dbecfa, 50%);
+  --color: #ddd;
+  --border-color: #444;
+  --summary-border-color: #555;
+  --background-color: @bg;
+  --header-background-color: darken(@bg, 2.5%);
+  --row-hover-background-color: darken(@bg, 4%);
+  --row-selected-background-color: @selectedRow;
+  --row-selected-hover-background-color: darken(@selectedRow, 4%);
+
+  --checkbox-color: lighten(#005295, 50%);
+  --checkbox-focus-color: lighten(#005295, 60%);
+  --checkbox-disabled-border-color: #000;
+  --checkbox-disabled-background-color: #333;
+}
+
+.rdg {
+  .lightTheme();
+  --selection-color: #66afe9;
+  --font-size: 14px;
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
@@ -34,18 +61,15 @@
     box-sizing: inherit;
   }
 
-  // @media (prefers-color-scheme: dark) {
-  //   @bg: #222;
-  //   @selectedRow: darken(#dbecfa, 50%);
-  //   --color: #ddd;
-  //   --border-color: #444;
-  //   --summary-border-color: #555;
-  //   --background-color: @bg;
-  //   --header-background-color: darken(@bg, 2.5%);
-  //   --row-hover-background-color: darken(@bg, 4%);
-  //   --row-selected-background-color: @selectedRow;
-  //   --row-selected-hover-background-color: darken(@selectedRow, 4%);
-  // }
+  &.rdg-dark {
+    .darkTheme();
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:not(.rdg-light) {
+      .darkTheme();
+    }
+  }
 }
 
 // set stacking context in safari
