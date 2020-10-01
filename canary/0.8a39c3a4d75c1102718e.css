@@ -172,6 +172,9 @@
 .rdg-editor-container {
   position: absolute;
 }
+.rdg-editor-container2 {
+  display: contents;
+}
 .rdg-text-editor {
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -612,4 +615,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.f721836a2db7c5ad4da3.css.map*/
+/*# sourceMappingURL=0.8a39c3a4d75c1102718e.css.map*/
