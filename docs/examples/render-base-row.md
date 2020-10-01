@@ -13,7 +13,7 @@ Sometimes it is necessary to intercept the default row renderer and customize it
 
 ### Row API
 [Here is the API for the Row component](Row.md)
-All of these props will be passed down from the Canvas component. However, they can be overridden from the custom row renderer. 
+All of these props will be passed down from the Canvas component. However, they can be overridden from the custom row renderer.
 For example, we can override the row height of the row as in this example.
 
 ```javascript
@@ -24,5 +24,5 @@ const CustomRowRenderer = ({renderBaseRow, ...canvasProps}) => {
 ```
 
 ### renderBaseRow prop
-A custom row renderer will be passed a prop called `renderBaseRow` which renders the default row renderer. In this way we can call that function in a custom row renderer and pass it down the components props.  
+A custom row renderer will be passed a prop called `renderBaseRow` which renders the default row renderer. In this way we can call that function in a custom row renderer and pass it down the components props.
 

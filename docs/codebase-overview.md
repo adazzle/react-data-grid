@@ -4,7 +4,7 @@ title: Codebase Overview
 ---
 
 ## Project structure
-The repository is designed in a way to easily add extra features without adding bloat to the main react-data-grid package. As such, we have decided to adopt a monorepository structure, allowing us to publish individual npm packages within the same repository. Each publishable package lives as a separate folder in the `packages` folder. 
+The repository is designed in a way to easily add extra features without adding bloat to the main react-data-grid package. As such, we have decided to adopt a monorepository structure, allowing us to publish individual npm packages within the same repository. Each publishable package lives as a separate folder in the `packages` folder.
 
 Currently there are three packages:
 - [**react-data-grid**](https://www.npmjs.com/package/react-data-grid) the core package of the grid, contains all the core functionality of the project
@@ -29,14 +29,14 @@ After cloning the ReactDataGrid repository, you will see a few top-level folders
 - [**website**](https://github.com/adazzle/react-data-grid/tree/master/website) - Our public documentation site built with [Docusaurus](https://docusaurus.io)
 
 ## Colocated Tests
-We don’t have a top-level directory for unit tests. Instead, we put them into a directory called __tests__ relative to the files that they test. 
+We don’t have a top-level directory for unit tests. Instead, we put them into a directory called __tests__ relative to the files that they test.
 For example, a test for [Cell.js](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid/src/Cell.js) is located in [\_\_tests_\_\/Cell.spec.js](https://github.com/adazzle/react-data-grid/blob/master/packages/react-data-grid/src/__tests__/Cell.spec.js) right next to it.
-This is just a convention however and is not necessary to automatically detect a test. Test running is implemented using [Karma](https://karma-runner.github.io/latest/index.html) Any files with an extension of  ```.spec.js``` will be picked up by Karma when the test command `npm run test` is run.   
+This is just a convention however and is not necessary to automatically detect a test. Test running is implemented using [Karma](https://karma-runner.github.io/latest/index.html) Any files with an extension of  ```.spec.js``` will be picked up by Karma when the test command `npm run test` is run.
 
 ## Packages
 ### react-data-grid
 This is main npm package that contains the ReactDataGrid component.
-Here is the basic top down component heirarchy of the grid
+Here is the basic top down component hierarchy of the grid
 
 ```bash
 ReactDataGrid 'Root API Component to render a data grid'
@@ -64,4 +64,4 @@ Below are the current addons available in the addons package. It is a future goa
  - [Data](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/data) - Functional utilities for row filtering, grouping, sorting, expanding etc that can be used to modify grid rows based on certain input paramaters
  - [ToolsPanel](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/toolspanel) - UI components used for a tool panel above the grid.
  - [Draggable](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/draggable) - Utilities to add drag and drop capability to the grid
- - [Filters](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/filters) - Custom Filters that can be added to the header of the grid 
+ - [Filters](https://github.com/adazzle/react-data-grid/tree/master/packages/react-data-grid-addons/src/filters) - Custom Filters that can be added to the header of the grid

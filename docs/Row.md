@@ -7,70 +7,70 @@ Props
 
 The index of the last overscan column on the grid
 
-**type:** number  
+**type:** number
 
 
 ### `colOverscanStartIdx` (required)
 
 The index of the first overscan column on the grid
 
-**type:** number  
+**type:** number
 
 
 ### `colVisibleEndIdx` (required)
 
 The index of the last visible column on the grid
 
-**type:** number  
+**type:** number
 
 
 ### `colVisibleStartIdx` (required)
 
 The index of the first visible column on the grid
 
-**type:** number  
+**type:** number
 
 
 ### `columns` (required)
 
 Array of columns to render
 
-**type:** union (object|array) 
+**type:** union (object|array)
 
 
 ### `idx` (required)
 
 The index of the row in the grid
 
-**type:** number  
+**type:** number
 
 
 ### `isScrolling` (required)
 
 Flag to determine whether the grid is being scrolled
 
-**type:** bool  
+**type:** bool
 
 
 ### `row` (required)
 
 JS object represeting row data
 
-**type:** object  
+**type:** object
 
 
 ### `cellMetaData`
 
 Object used to listen for cell events
 
-**type:** object  
+**type:** object
 
 
 ### `cellRenderer`
 
 React component used to render cell content
 
-**type:** func  
+**type:** func
 
  **defaultValue:** `Cell`
 
@@ -79,28 +79,28 @@ React component used to render cell content
 
 Array of all rows that have been expanded
 
-**type:** arrayOf [object Object] 
+**type:** arrayOf [object Object]
 
 
 ### `extraClasses`
 
 Space separated list of extra css classes to apply to row
 
-**type:** string  
+**type:** string
 
 
 ### `forceUpdate`
 
 Will force an update to the row if true
 
-**type:** bool  
+**type:** bool
 
 
 ### `height`
 
 The height of the row in pixels
 
-**type:** number  
+**type:** number
 
  **defaultValue:** `35`
 
@@ -109,14 +109,14 @@ The height of the row in pixels
 
 Determines whether row is hovered or not
 
-**type:** bool  
+**type:** bool
 
 
 ### `isSelected`
 
 Determines whether row is selected or not
 
-**type:** bool  
+**type:** bool
 
  **defaultValue:** `false`
 
@@ -125,17 +125,17 @@ Determines whether row is selected or not
 
 Index of last frozen column index
 
-**type:** number  
+**type:** number
 
 
 ### `scrollLeft`
 
 scrollLeft in pixels
 
-**type:** number  
+**type:** number
 
 
 ### `subRowDetails`
 
-**type:** object  
+**type:** object
 

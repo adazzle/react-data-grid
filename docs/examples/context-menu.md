@@ -10,6 +10,6 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 
 Overview
 -----
-To use a context menu on the grid, import the ContextMenu from react-data-grid-addons and then set the contextMenu prop of the grid to this context menu.
+To use a context menu on the grid, import the ContextMenu from `react-data-grid-addons` and then set the contextMenu prop of the grid to this context menu.
 If you need to know the row and column index where the context menu is shown, use the context menu's rowIdx and idx props.
-Credits: the context menu we use is react-contextmenu by Vivek Kumar Bansal.
+Credits: the context menu we use is `react-contextmenu` by Vivek Kumar Bansal.

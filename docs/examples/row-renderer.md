@@ -12,5 +12,5 @@ Overview
 ReactDataGrid is designed to be flexible, and allow you to render your data however you want. This example demonstrates how to use a custom row renderer to display a card view of each contact instead of the standard row with cells.
 
 ### rowRenderer prop
-In order to set a custom row renderer, set the `rowRenderer` prop to be any React component, instance or function. 
+In order to set a custom row renderer, set the `rowRenderer` prop to be any React component, instance or function.
 

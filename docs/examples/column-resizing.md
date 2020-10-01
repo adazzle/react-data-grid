@@ -10,7 +10,7 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 
 Guide
 -----
-To make a given column resizable, set ```column.resizable = true```
-If you need to know when a column has been resized, use the ```onColumnResize``` prop. This will be triggered when a column is
+To make a given column resizable, set `column.resizable = true`
+If you need to know when a column has been resized, use the `onColumnResize` prop. This will be triggered when a column is
 resized and will report the column index and its new width. These can be saved on the back-end and used to restore column widths when
-the component is initialized, by setting ```width``` key in each column.
+the component is initialized, by setting `width` key in each column.

@@ -12,7 +12,7 @@ Overview
 It is possible to subscribe individual columns to any [React Synthetic event](https://reactjs.org/docs/events.html);
 By adding an event object with callbacks for the native React events, you can bind events to a specific column. That will not break the default behaviour of the grid and will run only for the specified column.
 
-Every event callback must respect this standard in order to work correctly: 
+Every event callback must respect this standard in order to work correctly:
 
 ```javascript
 function onXxx(ev :SyntheticEvent, (idx, rowIdx, rowId, column): args)

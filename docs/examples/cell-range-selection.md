@@ -12,12 +12,12 @@ Overview
 -----
 ## Selection Range Events
 ### onStart
-Called on mousedown on a cell. Receives selectedRange (containing topLeft and topRight) as an argument.
+Called on `mousedown` on a cell. Receives `selectedRange` (containing `topLeft` and `topRight`) as an argument.
 
 ### onUpdate
-Called on mouseover on a cell when dragging with the mouse, or when pressing shift+arrowkey. Receives selectedRange (containing topLeft and topRight) as an argument.
+Called on `mouseover` on a cell when dragging with the mouse, or when pressing <kbd>shift+arrowkey</kbd>. Receives `selectedRange` (containing `topLeft` and `topRight`) as an argument.
 
 ### onComplete
-Called on mouseup (anywhere) when dragging with the mouse, or when pressing shift+arrowkey.
+Called on `mouseup` (anywhere) when dragging with the mouse, or when pressing <kbd>shift+arrowkey</kbd>.
 
-Note: altering the selected range with shift+arrowkey will fire both an Updated and Completed event with each keystroke.
+Note: altering the selected range with <kbd>shift+arrowkey</kbd> will fire both an Updated and Completed event with each keystroke.

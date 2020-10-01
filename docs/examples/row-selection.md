@@ -14,11 +14,10 @@ Overview
 Row selection is enabled via the `rowSelection` prop (object).
 
 ### rowSelection prpos
-  | Name | Type | Required | Description
-  | --------- | ---- | ---- | ----------------------------------
-  |enableShiftSelect | bool | false | When toggled, can use the shift key to select rows| 
-onRowsSelected | func | false | Function called whenever rows are selected| 
-onRowsDeselected | func | false | Function called whenever rows are deselected| 
-showCheckbox | bool | false | toggle whether to show a checkbox in first column to select rows| 
-selectBy | union | true | Method by which rows should be selected| 
- 
+| Name | Type | Required | Description |
+| --------- | ---- | ---- | ---------------------------------- |
+| `enableShiftSelect` | bool | false | When toggled, can use the shift key to select rows |
+| `onRowsSelected` | func | false | Function called whenever rows are selected |
+| `onRowsDeselected` | func | false | Function called whenever rows are deselected |
+| `showCheckbox` | bool | false | toggle whether to show a checkbox in first column to select rows |
+| `selectBy` | union | true | Method by which rows should be selected |

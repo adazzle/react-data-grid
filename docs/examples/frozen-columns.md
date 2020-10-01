@@ -10,5 +10,5 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 Guide
 -----
 
-In order to make a column frozen, set ```column.frozen = true```. 
+In order to make a column frozen, set `column.frozen = true`.
 In this example, the first 4 columns have been frozen and will remain in position as you scroll horizontally.

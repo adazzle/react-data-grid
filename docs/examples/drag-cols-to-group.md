@@ -24,10 +24,10 @@ const DraggableContainer = Draggable.Container;
 
   <DraggableContainer>
     <ReactDataGrid {...props}/>
-  </DraggableContainer>    
+  </DraggableContainer>
 ```
 
-### 3. Configure the toolbar 
+### 3. Configure the toolbar
 The toolbar will act as a drag target. Columns can be dragged to the toolbar, and the toolbar will list all the columns that the grid is currently grouped by. Take a look at the source code to see how the toolbar can be configured
 
 

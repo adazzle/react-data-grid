@@ -9,7 +9,7 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 
 Overview
 -----
-Using the `Data.Selectors.getRows` selector from `react-data-grid-addons`, it is easy to group the grid data by columns. 
+Using the `Data.Selectors.getRows` selector from `react-data-grid-addons`, it is easy to group the grid data by columns.
 
 ### Setting the columns to group by
 To display the grid data grouped by columns, pass a `groupBy: String[] `property to the `getRows` selector
@@ -25,4 +25,4 @@ const groupBy = ['col1', 'col3'];
 const groupedRows = Data.Selectors.getRows({rows, groupBy});
 ```
 
-You can now use the `groupedRows` as the source of your grid data 
+You can now use the `groupedRows` as the source of your grid data

@@ -11,4 +11,3 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 Overview
 -----
 This examples demonstrates how single or multiple rows can be dragged to a different positions using components from Draggable React Addons
- 

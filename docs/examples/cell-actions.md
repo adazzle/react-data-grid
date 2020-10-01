@@ -19,7 +19,7 @@ To use the cell action, create a function called getCellActions which will be pa
  * A function called for each rendered cell. Can be used to render custom cell icons each with corresponding action
  * @param Object column - The column of the rendered cell
  * @param Object row - The row of the rendered cell
- * @return Array 
+ * @return Array
  * */
 function getCellActions(column, row) {
 ```

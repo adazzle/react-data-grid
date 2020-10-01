@@ -8,4 +8,4 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 
 Guide
 -----
-In this example, the `AutoComplete` editor is imported from the `react-data-grid-addons` package and configured to to be the editor for the IssueType column. The editor takes a sigle `options` prop which is an array of values of type `{id, title}`. 
+In this example, the `AutoComplete` editor is imported from the `react-data-grid-addons` package and configured to to be the editor for the IssueType column. The editor takes a sigle `options` prop which is an array of values of type `{id, title}`.

@@ -5,7 +5,7 @@ title: Column Sorting
 <iframe src="https://codesandbox.io/embed/54pk3r46o4?autoresize=1&hidenavigation=1&view=preview" style="width:100%; height:600px; border:0; border-radius: 4px; " sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ----
-In the above example, each column is configured to be sortable. When the header cell of a column is clicked, the sort order is toggled between ascending, descending and none. 
+In the above example, each column is configured to be sortable. When the header cell of a column is clicked, the sort order is toggled between ascending, descending and none.
 You can see the code by clicking the blue rectangular Show Editor View button above, and also edit the example in the code editor directly.
 
 Guide

@@ -1543,7 +1543,7 @@
                         },
                         "rowKey": {
                           "name": "string",
-                          "description": "The name of the unoque id property of each row",
+                          "description": "The name of the unique id property of each row",
                           "required": true
                         }
                       },

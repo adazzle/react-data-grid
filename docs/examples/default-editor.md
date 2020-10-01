@@ -8,9 +8,9 @@ sidebar_label: Basic cell editing
 ----
 You can see the code by clicking the blue rectangular Show Editor View button above, and also edit the example in the code editor directly.
 
-Overview 
+Overview
 -----
-Above is an example where editing is enabled on the Title column. Try to edit both individual cells using the keyboard, as well as multiple cells using the mouse to drag or double click the cells drag handle.  
+Above is an example where editing is enabled on the Title column. Try to edit both individual cells using the keyboard, as well as multiple cells using the mouse to drag or double click the cells drag handle.
 
 By default, each cell of ReactDataGrid is readonly. It can be turned on for a given column as described in this article.
 
@@ -25,7 +25,7 @@ When editing is enabled, it is possible to update the values of a cell in the fo
 In order for the cells of a column to be editable, you need to do the following:
 
 1. Set the `editable` property of the column to be true.
-2. Provide an `onGridRowsUpdated` handler function. The below snippet is an example handler that handles all the above update scenarios. 
+2. Provide an `onGridRowsUpdated` handler function. The below snippet is an example handler that handles all the above update scenarios.
 
 ```javascript
   onGridRowsUpdated = ({ fromRow, toRow, updated }) => {

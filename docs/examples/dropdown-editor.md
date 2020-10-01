@@ -8,4 +8,4 @@ You can see the code by clicking the blue rectangular Show Editor View button ab
 
 Guide
 -----
-In this example, the `DropDownEditor` is imported from the `react-data-grid-addons` package and configured to to be the editor for the IssueType column. The editor takes a single `options` prop which is an array of values of type `{id, value}`. 
+In this example, the `DropDownEditor` is imported from the `react-data-grid-addons` package and configured to to be the editor for the IssueType column. The editor takes a single `options` prop which is an array of values of type `{id, value}`.

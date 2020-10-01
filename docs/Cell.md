@@ -5,121 +5,121 @@ Props
 
 ### `cellMetaData` (required)
 
-**type:** object  
+**type:** object
 
 
 ### `column` (required)
 
-**type:** object  
+**type:** object
 
 
 ### `expandableOptions` (required)
 
-**type:** object  
+**type:** object
 
 
 ### `idx` (required)
 
-**type:** number  
+**type:** number
 
 
 ### `rowData` (required)
 
-**type:** object  
+**type:** object
 
 
 ### `rowIdx` (required)
 
-**type:** number  
+**type:** number
 
 
 ### `scrollLeft` (required)
 
-**type:** number  
+**type:** number
 
 
 ### `cellControls`
 
-**type:** any  
+**type:** any
 
 
 ### `children`
 
-**type:** union (arrayOf|node) 
+**type:** union (arrayOf|node)
 
 
 ### `className`
 
-**type:** string  
+**type:** string
 
 
 ### `forceUpdate`
 
-**type:** bool  
+**type:** bool
 
 
 ### `handleDragStart`
 
-**type:** func  
+**type:** func
 
 
 ### `height`
 
-**type:** number  
+**type:** number
 
 
 ### `isCellValueChanging`
 
-**type:** func  
+**type:** func
 
  **defaultValue:** `(value, nextValue) => value !== nextValue`
 
 
 ### `isEditorEnabled`
 
-**type:** bool  
+**type:** bool
 
 
 ### `isExpanded`
 
-**type:** bool  
+**type:** bool
 
  **defaultValue:** `false`
 
 
 ### `isRowSelected`
 
-**type:** bool  
+**type:** bool
 
 
 ### `isScrolling`
 
-**type:** bool  
+**type:** bool
 
 
 ### `isSelected`
 
-**type:** bool  
+**type:** bool
 
 
 ### `selectedColumn`
 
-**type:** object  
+**type:** object
 
 
 ### `tooltip`
 
-**type:** string  
+**type:** string
 
 
 ### `value`
 
-**type:** union (string|number|object|bool) 
+**type:** union (string|number|object|bool)
 
  **defaultValue:** `''`
 
 
 ### `wasPreviouslySelected`
 
-**type:** bool  
+**type:** bool
 
