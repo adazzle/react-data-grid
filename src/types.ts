@@ -16,7 +16,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   minWidth?: number;
   /** Maximum column width in px. */
   maxWidth?: number;
-  cellClass?: string | ((row: TRow) => string);
+  cellClass?: string | ((row: TRow) => string | undefined);
   headerCellClass?: string;
   summaryCellClass?: string | ((row: TSummaryRow) => string);
   /** Formatter to be used to render the cell content */
