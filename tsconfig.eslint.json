@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "include": [
+    "rollup.config.mjs",
     "src/**/*",
     "stories/**/*",
     "jest/**/*",
