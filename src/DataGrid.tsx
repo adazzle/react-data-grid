@@ -301,7 +301,7 @@ function DataGrid<R, K extends keyof R, SR>({
       isCellFocusable.current = false;
       return;
     }
-    focusSinkRef.current!.focus();
+    focusSinkRef.current!.focus({ preventScroll: true });
   });
 
   useEffect(() => {
