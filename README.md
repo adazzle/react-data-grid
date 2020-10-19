@@ -40,7 +40,6 @@ See [documentation](https://github.com/browserslist/browserslist)
     }]
   ]
 }
-
 ```
 
 See [documentation](https://babeljs.io/docs/en/)
