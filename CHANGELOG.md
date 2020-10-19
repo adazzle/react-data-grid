@@ -98,7 +98,7 @@
   - ⚠️ `fromRowData` to `fromRow`
   - ⚠️ `idx` to `rowIdx` in `Row` renderer
 - **Changed:**
-  - ⚠️ Started publishing ES2020/ESM modules instead of ES5/CommonJS modules.
+  - ⚠️ Started publishing ES2019/ESM modules instead of ES5/CommonJS modules.
     - Using [`@babel/preset-env`](https://www.npmjs.com/package/@babel/preset-env) with [`core-js`](https://www.npmjs.com/package/core-js) is recommended to enable compatibility for the browsers your project aims to support.
   - ⚠️ Improved support for summary rows:
     - `summaryRows` types are now independent from `rows`
