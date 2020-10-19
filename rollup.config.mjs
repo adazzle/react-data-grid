@@ -1,4 +1,5 @@
 import nodeResolve from '@rollup/plugin-node-resolve';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 
 export default {
   input: './lib/index.js',
@@ -20,6 +21,7 @@ export default {
     'react-dom'
   ],
   plugins: [
+    sourcemaps(),
     nodeResolve()
   ]
 };
