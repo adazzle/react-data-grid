@@ -13,10 +13,14 @@
     "url": "https://github.com/adazzle/react-data-grid/issues"
   },
   "exports": {
-    "node": {
-      "import": "./lib/bundle.mjs",
-      "require": "./lib/bundle.cjs"
-    }
+    ".": {
+      "node": {
+        "import": "./lib/bundle.mjs",
+        "require": "./lib/bundle.cjs"
+      },
+      "default": "./lib/index.js"
+    },
+    "./dist/": "./dist/"
   },
   "browser": "./lib/index.js",
   "main": "./lib/bundle.cjs",
