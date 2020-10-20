@@ -45,7 +45,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "typecheck": "tsc -p tsconfig.all.json",
     "build-storybook": "build-storybook --quiet",
-    "prepublishOnly": "npm install && npm run build && npm run rollup",
+    "prepublishOnly": "npm install --legacy-peer-deps && npm run build && npm run rollup",
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
