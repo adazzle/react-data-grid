@@ -11,13 +11,13 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '15.x'
     - uses: actions/cache@v2
       with:
         path: ~/.npm
         key: npm-${{ hashFiles('package.json') }}
     - name: npm install
-      run: npm i
+      run: npm i --legacy-peer-deps
     - name: ESLint
       run: npm run eslint
     - name: Typecheck
@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '15.x'
     - uses: actions/cache@v2
       with:
         path: ~/.npm
@@ -42,7 +42,7 @@ jobs:
         key: build-${{ hashFiles('package.json') }}
     - name: Build
       run: |
-        npm i
+        npm i --legacy-peer-deps
         npm run build-storybook
     - name: Set up git user
       if: github.event_name == 'push'
