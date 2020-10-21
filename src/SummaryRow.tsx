@@ -6,7 +6,6 @@ import { RowRendererProps } from './types';
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
   | 'viewportColumns'
   | 'rowIdx'
-  | 'lastFrozenColumnIndex'
 >;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
@@ -17,7 +16,6 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 
 function SummaryRow<R, SR>({
   rowIdx,
-  lastFrozenColumnIndex,
   row,
   viewportColumns,
   bottom,
@@ -34,7 +32,6 @@ function SummaryRow<R, SR>({
         <SummaryCell<R, SR>
           key={column.key}
           column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
           row={row}
         />
       ))}

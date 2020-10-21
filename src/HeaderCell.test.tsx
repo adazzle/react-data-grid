@@ -18,11 +18,13 @@ describe('HeaderCell', () => {
         name: 'bla',
         width: 150,
         left: 300,
+        resizable: false,
+        sortable: false,
         formatter: ValueFormatter,
         ...columnProps
       },
-      lastFrozenColumnIndex: -1,
       onResize: jest.fn(),
+      onSort: jest.fn(),
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       ...overrideProps

@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
+import { waitFor } from '@testing-library/react';
 
 import EditorContainer, { EditorContainerProps } from './EditorContainer';
 import SimpleTextEditor from './SimpleTextEditor';
@@ -42,6 +43,8 @@ const fakeColumn: CalculatedColumn<Row> = {
   key: 'col1',
   width: 100,
   left: 0,
+  resizable: false,
+  sortable: false,
   formatter: ValueFormatter
 };
 
@@ -74,7 +77,7 @@ describe('EditorContainer', () => {
   describe('Basic render tests', () => {
     it('should select the text of the default input when the editor is rendered', () => {
       const { wrapper } = setup();
-      const input = wrapper.find('input').getDOMNode() as HTMLInputElement;
+      const input = wrapper.find('input').getDOMNode<HTMLInputElement>();
       expect(input.selectionStart === 0 && input.selectionEnd === input.value.length).toBe(true);
     });
 
@@ -204,10 +207,10 @@ describe('EditorContainer', () => {
       expect(props.onCommit).not.toHaveBeenCalled();
     });
 
-    it('should commit if any element outside the editor is clicked', () => {
+    it('should commit if any element outside the editor is clicked', async () => {
       const { props } = innerSetup();
       document.body.click();
-      expect(props.onCommit).toHaveBeenCalled();
+      await waitFor(() => expect(props.onCommit).toHaveBeenCalled());
     });
   });
 
@@ -245,10 +248,10 @@ describe('EditorContainer', () => {
       expect(props.onCommit).not.toHaveBeenCalled();
     });
 
-    it('should commit if any element outside the editor is clicked', () => {
+    it('should commit if any element outside the editor is clicked', async () => {
       const { props } = setup();
       document.body.click();
-      expect(props.onCommit).toHaveBeenCalled();
+      await waitFor(() => expect(props.onCommit).toHaveBeenCalled());
     });
   });
 });

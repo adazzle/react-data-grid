@@ -11,7 +11,7 @@
 npm install react-data-grid
 ```
 
-react-data-grid is published as ES2020 modules, you'll probably want to transpile those down to scripts for the browsers you target using [Babel](https://babeljs.io/) and [browserslist](https://github.com/browserslist/browserslist).
+react-data-grid is published as ES2019 modules, you'll probably want to transpile those down to scripts for the browsers you target using [Babel](https://babeljs.io/) and [browserslist](https://github.com/browserslist/browserslist).
 
 <details>
 <summary>Example browserslist configuration file</summary>
@@ -40,7 +40,6 @@ See [documentation](https://github.com/browserslist/browserslist)
     }]
   ]
 }
-
 ```
 
 See [documentation](https://babeljs.io/docs/en/)
@@ -51,6 +50,7 @@ See [documentation](https://babeljs.io/docs/en/)
   import 'core-js/stable';
   ```
   - Babel's `env` preset, if configured correctly, will transform this import so only the necessary polyfills are included in your bundle.
+- Polyfilling the [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) API is required for older browsers.
 - Optional: we also recommend using the [`babel-plugin-optimize-clsx` plugin](https://www.npmjs.com/package/babel-plugin-optimize-clsx).
 </details>
 

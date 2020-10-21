@@ -4,12 +4,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = function({ config, mode }) {
   const isProd = mode === 'PRODUCTION';
-  const MiniCssExtractPluginLoader = {
-    loader: MiniCssExtractPlugin.loader,
-    options: {
-      hmr: !isProd
-    }
-  };
 
   config.resolve.extensions = ['.ts', '.tsx', '.js'];
 
@@ -25,7 +19,7 @@ module.exports = function({ config, mode }) {
     }]
   }, {
     test: /\.less$/,
-    use: [MiniCssExtractPluginLoader, 'css-loader', 'less-loader']
+    use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
   }];
 
   config.plugins.push(new MiniCssExtractPlugin({

@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import { AutoSizer } from 'react-virtualized';
 import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
+import { TextEditor } from './components/Editors/TextEditor';
+import { SelectEditor } from './components/Editors/SelectEditor';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -41,151 +42,139 @@ interface Row {
   available: boolean;
 }
 
-const columns: readonly Column<Row, SummaryRow>[] = [
-  SelectColumn,
-  {
-    key: 'id',
-    name: 'ID',
-    width: 60,
-    frozen: true,
-    sortable: true,
-    summaryFormatter() {
-      return <strong>Total</strong>;
-    }
-  },
-  {
-    key: 'title',
-    name: 'Task',
-    width: 120,
-    editable: true,
-    frozen: true,
-    resizable: true,
-    sortable: true,
-    summaryFormatter({ row }) {
-      return <>{row.totalCount} records</>;
-    }
-  },
-  {
-    key: 'client',
-    name: 'Client',
-    width: 220,
-    editable: true,
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'area',
-    name: 'Area',
-    width: 120,
-    editable: true,
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'country',
-    name: 'Country',
-    width: 120,
-    editable: true,
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'contact',
-    name: 'Contact',
-    width: 160,
-    editable: true,
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'assignee',
-    name: 'Assignee',
-    width: 150,
-    editable: true,
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'progress',
-    name: 'Completion',
-    width: 110,
-    resizable: true,
-    sortable: true,
-    formatter(props) {
-      const value = props.row.progress;
-      return (
-        <>
-          <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
-        </>
-      );
-    }
-  },
-  {
-    key: 'startTimestamp',
-    name: 'Start date',
-    width: 100,
-    resizable: true,
-    sortable: true,
-    formatter(props) {
-      return <TimestampFormatter timestamp={props.row.startTimestamp} />;
-    }
-  },
-  {
-    key: 'endTimestamp',
-    name: 'Deadline',
-    width: 100,
-    resizable: true,
-    sortable: true,
-    formatter(props) {
-      return <TimestampFormatter timestamp={props.row.endTimestamp} />;
-    }
-  },
-  {
-    key: 'budget',
-    name: 'Budget',
-    width: 100,
-    resizable: true,
-    sortable: true,
-    formatter(props) {
-      return <CurrencyFormatter value={props.row.budget} />;
-    }
-  },
-  {
-    key: 'transaction',
-    name: 'Transaction type',
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'account',
-    name: 'Account',
-    width: 150,
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'version',
-    name: 'Version',
-    editable: true,
-    resizable: true,
-    sortable: true
-  },
-  {
-    key: 'available',
-    name: 'Available',
-    resizable: true,
-    sortable: true,
-    width: 80,
-    formatter(props) {
-      return <>{props.row.available ? '✔️' : '❌'}</>;
+function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
+  return [
+    SelectColumn,
+    {
+      key: 'id',
+      name: 'ID',
+      width: 60,
+      frozen: true,
+      resizable: false,
+      summaryFormatter() {
+        return <strong>Total</strong>;
+      }
     },
-    summaryFormatter({ row: { yesCount, totalCount } }) {
-      return (
-        <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>
-      );
+    {
+      key: 'title',
+      name: 'Task',
+      width: 120,
+      editable: true,
+      frozen: true,
+      summaryFormatter({ row }) {
+        return <>{row.totalCount} records</>;
+      }
+    },
+    {
+      key: 'client',
+      name: 'Client',
+      width: 220,
+      editable: true
+    },
+    {
+      key: 'area',
+      name: 'Area',
+      width: 120,
+      editable: true
+    },
+    {
+      key: 'country',
+      name: 'Country',
+      width: 180,
+      editor2: p => (
+        <SelectEditor
+          value={p.row.country}
+          onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
+          options={countries.map(c => ({ value: c, label: c }))}
+          rowHeight={p.rowHeight}
+          menuPortalTarget={p.editorPortalTarget}
+        />
+      )
+    },
+    {
+      key: 'contact',
+      name: 'Contact',
+      width: 160,
+      editor2: p => (
+        <TextEditor
+          value={p.row.contact}
+          onChange={value => p.onRowChange({ ...p.row, contact: value })}
+          rowHeight={p.rowHeight}
+        />
+      )
+    },
+    {
+      key: 'assignee',
+      name: 'Assignee',
+      width: 150,
+      editable: true
+    },
+    {
+      key: 'progress',
+      name: 'Completion',
+      width: 110,
+      formatter(props) {
+        const value = props.row.progress;
+        return (
+          <>
+            <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
+          </>
+        );
+      }
+    },
+    {
+      key: 'startTimestamp',
+      name: 'Start date',
+      width: 100,
+      formatter(props) {
+        return <TimestampFormatter timestamp={props.row.startTimestamp} />;
+      }
+    },
+    {
+      key: 'endTimestamp',
+      name: 'Deadline',
+      width: 100,
+      formatter(props) {
+        return <TimestampFormatter timestamp={props.row.endTimestamp} />;
+      }
+    },
+    {
+      key: 'budget',
+      name: 'Budget',
+      width: 100,
+      formatter(props) {
+        return <CurrencyFormatter value={props.row.budget} />;
+      }
+    },
+    {
+      key: 'transaction',
+      name: 'Transaction type'
+    },
+    {
+      key: 'account',
+      name: 'Account',
+      width: 150
+    },
+    {
+      key: 'version',
+      name: 'Version',
+      editable: true
+    },
+    {
+      key: 'available',
+      name: 'Available',
+      width: 80,
+      formatter(props) {
+        return <>{props.row.available ? '✔️' : '❌'}</>;
+      },
+      summaryFormatter({ row: { yesCount, totalCount } }) {
+        return (
+          <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>
+        );
+      }
     }
-  }
-];
+  ];
+}
 
 function createRows(): readonly Row[] {
   const now = Date.now();
@@ -218,6 +207,12 @@ export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
+
+  const countries = useMemo(() => {
+    return [...new Set(rows.map(r => r.country))].sort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const columns = useMemo(() => getColumns(countries), [countries]);
 
   const summaryRows = useMemo(() => {
     const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
@@ -272,23 +267,23 @@ export default function CommonFeatures() {
   }, []);
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <DataGrid
-          rowKey="id"
-          columns={columns}
-          rows={sortedRows}
-          width={width}
-          height={height}
-          selectedRows={selectedRows}
-          onSelectedRowsChange={setSelectedRows}
-          onRowsUpdate={handleRowsUpdate}
-          sortColumn={sortColumn}
-          sortDirection={sortDirection}
-          onSort={handleSort}
-          summaryRows={summaryRows}
-        />
-      )}
-    </AutoSizer>
+    <DataGrid
+      rowKey="id"
+      columns={columns}
+      rows={sortedRows}
+      defaultColumnOptions={{
+        sortable: true,
+        resizable: true
+      }}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      onRowsUpdate={handleRowsUpdate}
+      onRowsChange={setRows}
+      sortColumn={sortColumn}
+      sortDirection={sortDirection}
+      onSort={handleSort}
+      summaryRows={summaryRows}
+      className="fill-grid"
+    />
   );
 }

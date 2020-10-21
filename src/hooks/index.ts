@@ -1,4 +1,6 @@
 export * from './useCombinedRefs';
 export * from './useClickOutside';
-export * from './useGridWidth';
+export * from './useGridDimensions';
 export * from './useViewportColumns';
+export * from './useViewportRows';
+export * from './useFocusRef';

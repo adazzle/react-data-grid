@@ -20,8 +20,8 @@ function createRows(): Row[] {
       id: i,
       task: `Task ${i}`,
       complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)]
+      priority: ['Critical', 'High', 'Medium', 'Low'][Math.round(Math.random() * 3)],
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.round(Math.random() * 3)]
     });
   }
 
