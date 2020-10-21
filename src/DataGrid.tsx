@@ -383,7 +383,7 @@ function DataGrid<R, K extends keyof R, SR>({
    * event handlers
    */
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const { key } = event;
+    const { key, keyCode } = event;
     const row = rows[selectedPosition.rowIdx];
 
     if (
@@ -393,13 +393,15 @@ function DataGrid<R, K extends keyof R, SR>({
       && !isGroupRow(row)
       && selectedPosition.idx !== -1
     ) {
-      // key may be uppercase `C` or `V`
-      const lowerCaseKey = key.toLowerCase();
-      if (lowerCaseKey === 'c') {
+      // event.key may differ by keyboard input language, so we use event.keyCode instead
+      // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
+      const cKey = 67;
+      const vKey = 86;
+      if (keyCode === cKey) {
         handleCopy();
         return;
       }
-      if (lowerCaseKey === 'v') {
+      if (keyCode === vKey) {
         handlePaste();
         return;
       }
