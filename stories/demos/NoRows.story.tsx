@@ -30,5 +30,5 @@ export function NoRows() {
   );
 }
 
-export default { title: 'Demos' };
-NoRows.story = { name: 'No Rows' };
+export default { title: 'No Rows' };
+NoRows.storyName = 'No Rows';

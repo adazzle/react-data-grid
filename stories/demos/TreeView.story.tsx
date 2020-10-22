@@ -164,5 +164,5 @@ export function TreeView() {
   );
 }
 
-export default { title: 'Demos' };
-TreeView.story = { name: 'Tree View' };
+export default { title: 'Tree View' };
+TreeView.storyName = 'Tree View';

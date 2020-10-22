@@ -111,5 +111,5 @@ export function CellNavigation() {
   );
 }
 
-export default { title: 'Demos' };
-CellNavigation.story = { name: 'Cell Navigation' };
+export default { title: 'Cell Navigation' };
+CellNavigation.storyName = 'Cell Navigation';

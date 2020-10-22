@@ -169,4 +169,5 @@ export function Grouping() {
   );
 }
 
-export default { title: 'Demos' };
+export default { title: 'Grouping' };
+Grouping.storyName = 'Grouping';

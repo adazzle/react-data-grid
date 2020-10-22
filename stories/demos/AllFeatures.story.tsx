@@ -243,5 +243,5 @@ export function AllFeatures() {
   );
 }
 
-export default { title: 'Demos' };
-AllFeatures.story = { name: 'All Features' };
+export default { title: 'All Features' };
+AllFeatures.storyName = 'All Features';

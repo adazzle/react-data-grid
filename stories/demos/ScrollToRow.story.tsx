@@ -56,5 +56,5 @@ export function ScrollToRow() {
   );
 }
 
-export default { title: 'Demos' };
-ScrollToRow.story = { name: 'Scroll To Row' };
+export default { title: 'Scroll To Row' };
+ScrollToRow.storyName = 'Scroll To Row';

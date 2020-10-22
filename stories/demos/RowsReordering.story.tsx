@@ -77,5 +77,5 @@ export function RowsReordering() {
   );
 }
 
-export default { title: 'Demos' };
-RowsReordering.story = { name: 'Rows Reordering' };
+export default { title: 'Rows Reordering' };
+RowsReordering.storyName = 'Rows Reordering';

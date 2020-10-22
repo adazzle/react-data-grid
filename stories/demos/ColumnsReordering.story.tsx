@@ -129,5 +129,5 @@ export function ColumnsReordering() {
   );
 }
 
-export default { title: 'Demos' };
-ColumnsReordering.story = { name: 'Columns Reordering' };
+export default { title: 'Columns Reordering' };
+ColumnsReordering.storyName = 'Columns Reordering';

@@ -95,5 +95,5 @@ export function ContextMenuStory() {
   );
 }
 
-export default { title: 'Demos' };
-ContextMenuStory.story = { name: 'Context Menu' };
+export default { title: 'Context Menu' };
+ContextMenuStory.storyName = 'Context Menu';
