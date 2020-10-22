@@ -1,4 +1,3 @@
-import { createElement } from 'react';
 import clsx from 'clsx';
 
 import { CalculatedColumn } from './types';
@@ -43,7 +42,13 @@ export default function HeaderCell<R, SR>({
   function getCell() {
     if (!column.headerRenderer) return column.name;
 
-    return createElement(column.headerRenderer, { column, allRowsSelected, onAllRowsSelectionChange });
+    return (
+      <column.headerRenderer
+        column={column}
+        allRowsSelected={allRowsSelected}
+        onAllRowsSelectionChange={onAllRowsSelectionChange}
+      />
+    );
   }
 
   let cell = getCell();

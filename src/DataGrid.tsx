@@ -5,8 +5,7 @@ import {
   useLayoutEffect,
   useEffect,
   useImperativeHandle,
-  useCallback,
-  createElement
+  useCallback
 } from 'react';
 import clsx from 'clsx';
 
@@ -203,7 +202,7 @@ function DataGrid<R, K extends keyof R, SR>({
   onExpandedGroupIdsChange,
   // Custom renderers
   rowRenderer: RowRenderer = Row,
-  emptyRowsRenderer,
+  emptyRowsRenderer: EmptyRowsRenderer,
   // Event props
   onRowClick,
   onScroll,
@@ -939,7 +938,7 @@ function DataGrid<R, K extends keyof R, SR>({
           onFiltersChange={onFiltersChange}
         />
       )}
-      {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
+      {rows.length === 0 && EmptyRowsRenderer ? <EmptyRowsRenderer /> : (
         <>
           <div
             ref={focusSinkRef}
