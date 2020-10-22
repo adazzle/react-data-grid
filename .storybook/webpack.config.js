@@ -5,14 +5,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = function({ config, mode }) {
   const isProd = mode === 'PRODUCTION';
 
-  config.resolve.extensions = ['.ts', '.tsx', '.js'];
-
   config.module.rules = [{
     test: /\.tsx?$/,
     exclude: /node_modules/,
     use: [{
       loader: 'babel-loader',
-      options: { cacheDirectory: true }
+      options: { cacheDirectory: !isProd }
     }, {
       loader: 'ts-loader',
       options: { onlyCompileBundledFiles: true }

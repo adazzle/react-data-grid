@@ -113,7 +113,7 @@ const options: OptionsType<Option> = [
   { value: 'athlete', label: 'athlete' }
 ];
 
-export default function Grouping() {
+export function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
   const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
@@ -168,3 +168,5 @@ export default function Grouping() {
     </div>
   );
 }
+
+Grouping.storyName = 'Grouping';

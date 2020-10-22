@@ -203,7 +203,7 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
-export default function CommonFeatures() {
+export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
@@ -287,3 +287,5 @@ export default function CommonFeatures() {
     />
   );
 }
+
+CommonFeatures.storyName = 'Common Features';

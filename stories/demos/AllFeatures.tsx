@@ -74,7 +74,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
   });
 }
 
-export default function AllFeatures() {
+export function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
   const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
   const [isLoading, setIsLoading] = useState(false);
@@ -242,3 +242,5 @@ export default function AllFeatures() {
     </div>
   );
 }
+
+AllFeatures.storyName = 'All Features';
