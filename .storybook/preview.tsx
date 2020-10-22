@@ -1,7 +1,7 @@
 import 'core-js/stable';
 import '../style/index.less';
 import '../stories/index.less';
-import React, { StrictMode } from 'react';
+import { StrictMode } from 'react';
 import { ResizeObserver as Polyfill } from '@juggle/resize-observer';
 import { addDecorator } from '@storybook/react';
 
