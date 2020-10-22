@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useMemo } from 'react';
+import { useState, useReducer, useMemo } from 'react';
 
 import DataGrid, { Column } from '../../src';
 import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';

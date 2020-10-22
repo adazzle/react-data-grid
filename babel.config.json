@@ -9,8 +9,6 @@
   ],
   "plugins": [
     ["@babel/transform-runtime", { "useESModules": true }],
-    "@babel/proposal-nullish-coalescing-operator",
-    "@babel/proposal-optional-chaining",
     "babel-plugin-optimize-clsx"
   ]
 }

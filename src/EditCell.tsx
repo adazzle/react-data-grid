@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useCallback } from 'react';
+import { forwardRef, useState, useCallback } from 'react';
 import clsx from 'clsx';
 
 import { EditorContainer, EditorContainer2, EditorPortal } from './editors';
@@ -6,9 +6,9 @@ import { CellRendererProps, SharedEditorContainerProps, SharedEditor2Props } fro
 import { useCombinedRefs } from './hooks';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
-| 'rowIdx'
-| 'row'
-| 'column'
+  | 'rowIdx'
+  | 'row'
+  | 'column'
 >;
 
 interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {

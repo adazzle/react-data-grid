@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import DataGrid, { Column, FormatterProps } from '../../src';
 
 type Row = undefined;

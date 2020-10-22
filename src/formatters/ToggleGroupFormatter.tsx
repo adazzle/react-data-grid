@@ -1,4 +1,3 @@
-import React from 'react';
 import { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks/useFocusRef';
 

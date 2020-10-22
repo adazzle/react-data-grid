@@ -18,6 +18,7 @@ export default {
   external: [
     'clsx',
     'react',
+    'react/jsx-runtime',
     'react-dom'
   ],
   plugins: [

@@ -1,4 +1,4 @@
-import React, { memo, forwardRef } from 'react';
+import { memo, forwardRef } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';

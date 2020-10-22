@@ -1,4 +1,4 @@
-import React, { createElement, memo } from 'react';
+import { createElement, memo } from 'react';
 import clsx from 'clsx';
 
 import { CalculatedColumn, Filters } from './types';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { mount } from 'enzyme';
 import SimpleTextEditor from './SimpleTextEditor';
 import { ValueFormatter } from '../formatters';

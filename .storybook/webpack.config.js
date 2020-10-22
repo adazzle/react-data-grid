@@ -15,7 +15,7 @@ module.exports = function({ config, mode }) {
       options: { cacheDirectory: true }
     }, {
       loader: 'ts-loader',
-      options: { onlyCompileBundledFiles: true }
+      options: { onlyCompileBundledFiles: true, compilerOptions: { react: 'react-jsxdev' } }
     }]
   }, {
     test: /\.less$/,

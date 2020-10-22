@@ -1,4 +1,3 @@
-import React from 'react';
 import DataGrid, { Column } from '../../src';
 
 function EmptyRowsRenderer() {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
 import { TextEditor } from './components/Editors/TextEditor';

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { mount } from 'enzyme';
 
 import Cell from './Cell';

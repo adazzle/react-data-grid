@@ -1,4 +1,3 @@
-import React from 'react';
 import { HeaderCellProps } from '../HeaderCell';
 import { SortDirection } from '../enums';
 

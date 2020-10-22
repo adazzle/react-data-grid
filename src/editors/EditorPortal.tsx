@@ -1,5 +1,5 @@
-import React, { useState, useLayoutEffect } from 'react';
-import ReactDOM from 'react-dom';
+import { useState, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface Props {
   children: React.ReactNode;
@@ -20,5 +20,5 @@ export default function EditorPortal({ target, children }: Props) {
     return null;
   }
 
-  return ReactDOM.createPortal(children, target);
+  return createPortal(children, target);
 }

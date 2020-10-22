@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
+import { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 
 import { CalculatedColumn, Editor, SharedEditorContainerProps } from '../types';

@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { Component } from 'react';
+import { createPortal } from 'react-dom';
 import { mount, MountRendererProps } from 'enzyme';
 import { waitFor } from '@testing-library/react';
 
@@ -101,7 +101,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Editors', () => {
-    class TestEditor extends React.Component<EditorProps<string, Row, unknown>> {
+    class TestEditor extends Component<EditorProps<string, Row, unknown>> {
       getValue() {
         return undefined;
       }
@@ -169,7 +169,7 @@ describe('EditorContainer', () => {
   });
 
   describe('Custom Portal editors', () => {
-    class PortalTestEditor extends React.Component<EditorProps<string, Row, unknown>> {
+    class PortalTestEditor extends Component<EditorProps<string, Row, unknown>> {
       getValue() {
         return undefined;
       }
@@ -179,7 +179,7 @@ describe('EditorContainer', () => {
       }
 
       render() {
-        return ReactDOM.createPortal(<DefaultEditor />, document.body);
+        return createPortal(<DefaultEditor />, document.body);
       }
     }
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
 import Select, { components, ValueType, OptionsType, Props as SelectProps } from 'react-select';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';

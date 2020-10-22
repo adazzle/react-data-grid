@@ -1,4 +1,3 @@
-import React from 'react';
 import { FormatterProps } from '../types';
 
 export function SimpleCellFormatter({ row, column }: FormatterProps) {

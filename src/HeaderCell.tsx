@@ -1,4 +1,4 @@
-import React, { createElement } from 'react';
+import { createElement } from 'react';
 import clsx from 'clsx';
 
 import { CalculatedColumn } from './types';

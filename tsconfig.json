@@ -4,7 +4,7 @@
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "inlineSources": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": ["esnext", "dom", "dom.iterable"],
     "module": "esnext",
     "moduleResolution": "node",
