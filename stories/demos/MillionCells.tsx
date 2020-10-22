@@ -36,5 +36,4 @@ export function MillionCells() {
   );
 }
 
-export default { title: 'A Million Cells' };
 MillionCells.storyName = 'A Million Cells';

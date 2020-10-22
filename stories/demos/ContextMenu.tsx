@@ -95,5 +95,4 @@ export function ContextMenuStory() {
   );
 }
 
-export default { title: 'Context Menu' };
 ContextMenuStory.storyName = 'Context Menu';

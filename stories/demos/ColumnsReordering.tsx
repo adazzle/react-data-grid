@@ -129,5 +129,4 @@ export function ColumnsReordering() {
   );
 }
 
-export default { title: 'Columns Reordering' };
 ColumnsReordering.storyName = 'Columns Reordering';

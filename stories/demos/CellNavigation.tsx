@@ -111,5 +111,4 @@ export function CellNavigation() {
   );
 }
 
-export default { title: 'Cell Navigation' };
 CellNavigation.storyName = 'Cell Navigation';

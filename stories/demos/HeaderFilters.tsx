@@ -179,5 +179,4 @@ export function HeaderFilters() {
   );
 }
 
-export default { title: 'Header Filters' };
 HeaderFilters.storyName = 'Header Filters';

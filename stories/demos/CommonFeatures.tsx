@@ -288,5 +288,4 @@ export function CommonFeatures() {
   );
 }
 
-export default { title: 'Common Features' };
 CommonFeatures.storyName = 'Common Features';

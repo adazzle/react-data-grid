@@ -156,5 +156,4 @@ export function CellActions() {
   );
 }
 
-export default { title: 'Cell Actions' };
 CellActions.storyName = 'Cell Actions';
