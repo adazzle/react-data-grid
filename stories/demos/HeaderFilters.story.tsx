@@ -30,7 +30,7 @@ function createRows() {
   return rows;
 }
 
-export default function HeaderFilters() {
+export function HeaderFilters() {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filters>({
     task: '',
@@ -178,3 +178,6 @@ export default function HeaderFilters() {
     </div>
   );
 }
+
+export default { title: 'Demos' };
+HeaderFilters.story = { name: 'Header Filters' };

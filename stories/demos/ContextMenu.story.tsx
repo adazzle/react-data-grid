@@ -38,7 +38,7 @@ function RowRenderer(props: RowRendererProps<Row>) {
   );
 }
 
-export default function ContextMenuStory() {
+export function ContextMenuStory() {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 
@@ -94,3 +94,6 @@ export default function ContextMenuStory() {
     </>
   );
 }
+
+export default { title: 'Demos' };
+ContextMenuStory.story = { name: 'Context Menu' };

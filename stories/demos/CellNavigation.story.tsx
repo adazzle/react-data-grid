@@ -66,7 +66,7 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function CellNavigation() {
+export function CellNavigation() {
   const [rows] = useState(createRows);
   const [cellNavigatioMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
@@ -110,3 +110,6 @@ export default function CellNavigation() {
     </>
   );
 }
+
+export default { title: 'Demos' };
+CellNavigation.story = { name: 'Cell Navigation' };
