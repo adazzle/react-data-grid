@@ -143,7 +143,7 @@ const columns: Column<Row>[] = [
   }
 ];
 
-export default function CellActions() {
+export function CellActions() {
   const [rows] = useState(createRows);
 
   return (
@@ -155,3 +155,5 @@ export default function CellActions() {
     />
   );
 }
+
+CellActions.storyName = 'Cell Actions';

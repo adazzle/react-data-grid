@@ -52,7 +52,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function RowsReordering() {
+export function RowsReordering() {
   const [rows, setRows] = useState(createRows);
 
   function onRowReorder(fromIndex: number, toIndex: number) {
@@ -76,3 +76,5 @@ export default function RowsReordering() {
     </DndProvider>
   );
 }
+
+RowsReordering.storyName = 'Rows Reordering';

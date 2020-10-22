@@ -3,12 +3,9 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "files": [
-    "src/index.ts",
-    "stories/index.tsx"
-  ],
   "include": [
-    "jest/**/*",
-    "src/**/*.test.*"
+    "src/**/*",
+    "stories/**/*",
+    "jest/**/*"
   ]
 }
