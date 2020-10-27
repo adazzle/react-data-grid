@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { GroupRow, GroupByDictionary, Dictionary } from '../types';
 const RENDER_BACTCH_SIZE = 8;
 
-interface ViewportRowsArgs<R, SR> {
+interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
   rowHeight: number;
   clientHeight: number;
@@ -13,7 +13,7 @@ interface ViewportRowsArgs<R, SR> {
   expandedGroupIds?: ReadonlySet<unknown>;
 }
 
-export function useViewportRows<R, SR>({
+export function useViewportRows<R>({
   rawRows,
   rowHeight,
   clientHeight,
@@ -21,7 +21,7 @@ export function useViewportRows<R, SR>({
   groupBy,
   rowGrouper,
   expandedGroupIds
-}: ViewportRowsArgs<R, SR>) {
+}: ViewportRowsArgs<R>) {
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
 

@@ -8,7 +8,7 @@ export function isKeyPrintable(keycode: number): boolean {
 }
 
 export function isCtrlKeyHeldDown(e: React.KeyboardEvent): boolean {
-  return (e.ctrlKey === true || e.metaKey === true) && e.key !== 'Control';
+  return (e.ctrlKey || e.metaKey) && e.key !== 'Control';
 }
 
 export function isDefaultCellInput(event: React.KeyboardEvent<HTMLDivElement>) {

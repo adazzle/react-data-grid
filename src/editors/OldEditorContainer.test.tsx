@@ -77,7 +77,7 @@ describe('EditorContainer', () => {
   describe('Basic render tests', () => {
     it('should select the text of the default input when the editor is rendered', () => {
       const { wrapper } = setup();
-      const input = wrapper.find('input').getDOMNode() as HTMLInputElement;
+      const input = wrapper.find('input').getDOMNode<HTMLInputElement>();
       expect(input.selectionStart === 0 && input.selectionEnd === input.value.length).toBe(true);
     });
 

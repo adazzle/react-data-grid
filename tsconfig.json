@@ -14,7 +14,7 @@
     "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2020",
+    "target": "es2019",
     "types": ["jest"]
   },
   "files": [

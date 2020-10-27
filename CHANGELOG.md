@@ -34,6 +34,9 @@
     - More info in [#2106](https://github.com/adazzle/react-data-grid/pull/2106)
   - `scrollToRow` method
     - ⚠️ This replaces the `scrollToRowIndex` prop
+  - Dark mode support
+    - Dark mode is automatically applied following user preference
+    - Light and dark modes can be forced by setting the `rdg-light` or `rdg-dark` class names.
 - **Removed:**
   - **Support:**
     - ⚠️ IE11
@@ -96,7 +99,7 @@
   - ⚠️ `fromRowData` to `fromRow`
   - ⚠️ `idx` to `rowIdx` in `Row` renderer
 - **Changed:**
-  - ⚠️ Started publishing ES2020/ESM modules instead of ES5/CommonJS modules.
+  - ⚠️ Started publishing ES2019/ESM modules instead of ES5/CommonJS modules.
     - Using [`@babel/preset-env`](https://www.npmjs.com/package/@babel/preset-env) with [`core-js`](https://www.npmjs.com/package/core-js) is recommended to enable compatibility for the browsers your project aims to support.
   - ⚠️ Improved support for summary rows:
     - `summaryRows` types are now independent from `rows`

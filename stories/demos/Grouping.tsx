@@ -4,7 +4,7 @@ import Select, { components, ValueType, OptionsType, Props as SelectProps } from
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 
-import DataGrid, { Column, Row, SelectColumn } from '../../src';
+import DataGrid, { Column, SelectColumn } from '../../src';
 import './Grouping.less';
 
 interface Row {
@@ -113,7 +113,7 @@ const options: OptionsType<Option> = [
   { value: 'athlete', label: 'athlete' }
 ];
 
-export default function Grouping() {
+export function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
   const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
@@ -168,3 +168,5 @@ export default function Grouping() {
     </div>
   );
 }
+
+Grouping.storyName = 'Grouping';

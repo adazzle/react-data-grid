@@ -11,7 +11,7 @@
 npm install react-data-grid
 ```
 
-react-data-grid is published as ES2020 modules, you'll probably want to transpile those down to scripts for the browsers you target using [Babel](https://babeljs.io/) and [browserslist](https://github.com/browserslist/browserslist).
+react-data-grid is published as ES2019 modules, you'll probably want to transpile those down to scripts for the browsers you target using [Babel](https://babeljs.io/) and [browserslist](https://github.com/browserslist/browserslist).
 
 <details>
 <summary>Example browserslist configuration file</summary>
@@ -40,7 +40,6 @@ See [documentation](https://github.com/browserslist/browserslist)
     }]
   ]
 }
-
 ```
 
 See [documentation](https://babeljs.io/docs/en/)

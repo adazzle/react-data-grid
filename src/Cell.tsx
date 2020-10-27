@@ -41,7 +41,7 @@ function Cell<R, SR>({
   );
 
   function selectCell(openEditor?: boolean) {
-    eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
+    eventBus.dispatch('SelectCell', { idx: column.idx, rowIdx }, openEditor);
   }
 
   function handleClick() {
@@ -58,7 +58,7 @@ function Cell<R, SR>({
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
+    eventBus.dispatch('SelectRow', { rowIdx, checked, isShiftClick });
   }
 
   return (

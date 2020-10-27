@@ -37,9 +37,9 @@ const columns: CalculatedColumn<Row>[] = [{
   formatter: ValueFormatter
 }];
 
-const _rows: Row[] = [];
+const rows: Row[] = [];
 for (let i = 0; i < 1000; i++) {
-  _rows.push({
+  rows.push({
     id: i,
     title: `Title ${i}`,
     count: i * 1000
@@ -48,7 +48,7 @@ for (let i = 0; i < 1000; i++) {
 
 export default {
   columns,
-  rows: _rows,
+  rows,
   cellMetaData: {
     selected: { idx: 2, rowIdx: 3 },
     dragged: null,
