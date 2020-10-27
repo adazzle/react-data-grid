@@ -856,14 +856,11 @@ function DataGrid<R, SR>({
       }
 
       startRowIndex++;
-      let key: string | number = hasGroups ? startRowIndex : rowIdx;
+      let key: React.Key = hasGroups ? startRowIndex : rowIdx;
       let isRowSelected = false;
       if (typeof rowKeyGetter === 'function') {
-        const rowKey = rowKeyGetter(row);
-        isRowSelected = selectedRows?.has(rowKey) ?? false;
-        if (typeof rowKey === 'string' || typeof rowKey === 'number') {
-          key = rowKey;
-        }
+        key = rowKeyGetter(row);
+        isRowSelected = selectedRows?.has(key) ?? false;
       }
 
       rowElements.push(
