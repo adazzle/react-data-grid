@@ -24,6 +24,10 @@ interface Row {
   sentence: string;
 }
 
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
 faker.locale = 'en_GB';
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
@@ -76,7 +80,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
 
 export function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
-  const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
+  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
   const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
@@ -234,7 +238,7 @@ export function AllFeatures() {
         ref={gridRef}
         columns={columns}
         rows={rows}
-        rowKey="id"
+        rowKeyGetter={rowKeyGetter}
         onRowsUpdate={handleRowUpdate}
         onRowsChange={setRows}
         onRowClick={handleRowClick}

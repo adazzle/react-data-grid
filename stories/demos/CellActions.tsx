@@ -147,7 +147,7 @@ export function CellActions() {
   const [rows] = useState(createRows);
 
   return (
-    <DataGrid<Row, 'id'>
+    <DataGrid
       columns={columns}
       rows={rows}
       rowHeight={55}

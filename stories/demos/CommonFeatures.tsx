@@ -176,6 +176,10 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
   ];
 }
 
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
 function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
@@ -206,7 +210,7 @@ function createRows(): readonly Row[] {
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
-  const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
+  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
     return [...new Set(rows.map(r => r.country))].sort();
@@ -268,7 +272,7 @@ export function CommonFeatures() {
 
   return (
     <DataGrid
-      rowKey="id"
+      rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={sortedRows}
       defaultColumnOptions={{
