@@ -76,6 +76,10 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
 function createRows(): readonly Row[] {
   const rows: Row[] = [];
   for (let i = 1; i < 10000; i++) {
@@ -115,7 +119,7 @@ const options: OptionsType<Option> = [
 
 export function Grouping() {
   const [rows] = useState(createRows);
-  const [selectedRows, setSelectedRows] = useState(() => new Set<number>());
+  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
   const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
   const [expandedGroupIds, setExpandedGroupIds] = useState(() => new Set<unknown>(['United States of America', 'United States of America__2015']));
 
@@ -154,7 +158,7 @@ export function Grouping() {
         />
       </label>
       <DataGrid
-        rowKey="id"
+        rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
         selectedRows={selectedRows}

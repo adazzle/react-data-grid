@@ -7,8 +7,8 @@ import HeaderRow, { HeaderRowProps } from './HeaderRow';
 import HeaderCell from './HeaderCell';
 
 describe('HeaderRow', () => {
-  const defaultProps: HeaderRowProps<Row, 'id', unknown> = {
-    rowKey: 'id',
+  const defaultProps: HeaderRowProps<Row, unknown> = {
+    rowKeyGetter: row => row.id,
     rows: [],
     columns: helpers.columns,
     onColumnResize() { },
@@ -17,8 +17,8 @@ describe('HeaderRow', () => {
     allRowsSelected: false
   };
 
-  const setup = (testProps?: Partial<HeaderRowProps<Row, 'id', unknown>>) => {
-    const props: HeaderRowProps<Row, 'id', unknown> = { ...defaultProps, ...testProps };
+  const setup = (testProps?: Partial<HeaderRowProps<Row, unknown>>) => {
+    const props: HeaderRowProps<Row, unknown> = { ...defaultProps, ...testProps };
     const wrapper = mount(<HeaderRow {...props} />);
     const headerCells = wrapper.find(HeaderCell);
     return { wrapper, headerCells, props };
@@ -64,12 +64,12 @@ describe('HeaderRow', () => {
   });
 
   describe('Rendering HeaderRow component', () => {
-    const renderComponent = (props: HeaderRowProps<Row, 'id', unknown>) => {
+    const renderComponent = (props: HeaderRowProps<Row, unknown>) => {
       return mount(<HeaderRow {...props} />);
     };
 
-    const requiredProps: HeaderRowProps<Row, 'id', unknown> = {
-      rowKey: 'id',
+    const requiredProps: HeaderRowProps<Row, unknown> = {
+      rowKeyGetter: row => row.id,
       rows: [],
       columns: helpers.columns,
       onSort: jest.fn(),

@@ -2,7 +2,7 @@ import { ValueFormatter, SimpleCellFormatter } from '../formatters';
 import { CalculatedColumn } from '../types';
 
 export interface Row {
-  id?: number;
+  id: number;
   title?: string;
   count?: number;
   description?: string;
