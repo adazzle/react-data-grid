@@ -18,7 +18,7 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
+type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
