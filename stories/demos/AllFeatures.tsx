@@ -250,3 +250,5 @@ export function AllFeatures() {
     </div>
   );
 }
+
+AllFeatures.storyName = 'All Features';
