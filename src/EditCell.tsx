@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { OldEditorContainer, EditorContainer, EditorPortal } from './editors';
+import { EditorContainer, EditorPortal } from './editors';
 import { CellRendererProps, SharedEditorContainerProps, SharedEditorProps } from './types';
 import { useCombinedRefs } from './hooks';
 
@@ -69,17 +69,6 @@ function EditCell<R, SR>({
         />
       );
     }
-
-    const editor = (
-      <OldEditorContainer<R, SR>
-        {...editorContainerProps}
-        rowIdx={rowIdx}
-        row={row}
-        column={column}
-        left={gridLeft}
-        top={gridTop}
-      />
-    );
 
     if (column.editorOptions?.createPortal !== false) {
       return (

@@ -37,18 +37,16 @@ export interface Column<TRow, TSummaryRow = unknown> {
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>>;
-  /** @deprecated */
-  oldEditor?: React.ComponentType<OldEditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
   editorOptions?: {
-    /** Default: true for oldEditor and false for editor */
+    /** @default false */
     createPortal?: boolean;
-    /** Default: false */
+    /** @default false */
     editOnClick?: boolean;
     /** Prevent default to cancel editing */
     onCellKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
     // TODO: Do we need these options
     // editOnDoubleClick?: boolean;
-    /** Default: true for oldEditor and false for editor */
+    /** @default false */
     // commitOnScroll?: boolean;
   };
   /** Header renderer for each header cell */
