@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection, SimpleTextEditor } from '../../src';
 import { TextEditor } from './components/Editors/TextEditor';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
@@ -59,8 +59,8 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'title',
       name: 'Task',
       width: 120,
-      editable: true,
       frozen: true,
+      editor: SimpleTextEditor,
       summaryFormatter({ row }) {
         return <>{row.totalCount} records</>;
       }
@@ -69,13 +69,13 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'client',
       name: 'Client',
       width: 220,
-      editable: true
+      editor: SimpleTextEditor
     },
     {
       key: 'area',
       name: 'Area',
       width: 120,
-      editable: true
+      editor: SimpleTextEditor
     },
     {
       key: 'country',
@@ -107,7 +107,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'assignee',
       name: 'Assignee',
       width: 150,
-      editable: true
+      editor: SimpleTextEditor
     },
     {
       key: 'progress',
@@ -158,7 +158,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
     {
       key: 'version',
       name: 'Version',
-      editable: true
+      editor: SimpleTextEditor
     },
     {
       key: 'available',
