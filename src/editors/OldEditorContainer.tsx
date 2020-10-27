@@ -142,9 +142,9 @@ export default function OldEditorContainer<R, SR>({
 
   function createEditor() {
     // return custom column editor or SimpleEditor if none specified
-    if (column._old_editor) {
+    if (column.oldEditor) {
       return (
-        <column._old_editor
+        <column.oldEditor
           ref={editorRef}
           column={column}
           value={getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}

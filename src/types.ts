@@ -38,9 +38,9 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
   editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>>;
   /** @deprecated */
-  _old_editor?: React.ComponentType<OldEditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
+  oldEditor?: React.ComponentType<OldEditorProps<TRow[keyof TRow], TRow, TSummaryRow>>;
   editorOptions?: {
-    /** Default: true for _old_editor and false for editor */
+    /** Default: true for oldEditor and false for editor */
     createPortal?: boolean;
     /** Default: false */
     editOnClick?: boolean;
@@ -48,7 +48,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
     onCellKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
     // TODO: Do we need these options
     // editOnDoubleClick?: boolean;
-    /** Default: true for _old_editor and false for editor */
+    /** Default: true for oldEditor and false for editor */
     // commitOnScroll?: boolean;
   };
   /** Header renderer for each header cell */

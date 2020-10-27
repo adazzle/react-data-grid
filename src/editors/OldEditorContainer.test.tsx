@@ -117,7 +117,7 @@ describe('EditorContainer', () => {
 
     function innerSetup() {
       return setup({
-        column: { ...fakeColumn, key: 'col2', _old_editor: TestEditor }
+        column: { ...fakeColumn, key: 'col2', oldEditor: TestEditor }
       });
     }
 
@@ -186,7 +186,7 @@ describe('EditorContainer', () => {
     function innerSetup() {
       const container = document.createElement('div');
       document.body.appendChild(container);
-      const setupResult = setup({ column: { ...fakeColumn, _old_editor: PortalTestEditor } }, { attachTo: container });
+      const setupResult = setup({ column: { ...fakeColumn, oldEditor: PortalTestEditor } }, { attachTo: container });
       return { container, ...setupResult };
     }
 
