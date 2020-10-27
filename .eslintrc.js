@@ -156,7 +156,7 @@ const rules = {
   'brace-style': 0, // replaced by @typescript-eslint/brace-style
   'camelcase': 0, // replaced by @typescript-eslint/naming-convention
   'capitalized-comments': 0,
-  'comma-dangle': 1,
+  'comma-dangle': 0, // replaced by @typescript-eslint/comma-dangle
   'comma-spacing': 0, // replaced by @typescript-eslint/comma-spacing
   'comma-style': 1,
   'computed-property-spacing': 1,
@@ -254,7 +254,7 @@ const rules = {
   'no-confusing-arrow': 0,
   'no-const-assign': 0,
   'no-dupe-class-members': 0, // replaced by @typescript-eslint/no-dupe-class-members
-  'no-duplicate-imports': 1,
+  'no-duplicate-imports': 0, // replace by @typescript-eslint/no-duplicate-imports
   'no-new-symbol': 0,
   'no-restricted-exports': 0,
   'no-restricted-imports': 0,
@@ -470,6 +470,7 @@ const rules = {
   '@typescript-eslint/ban-tslint-comment': 1,
   '@typescript-eslint/ban-types': 2,
   '@typescript-eslint/class-literal-property-style': 0,
+  '@typescript-eslint/consistent-indexed-object-style': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/2712
   '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
   '@typescript-eslint/consistent-type-imports': [1, { prefer: 'no-type-imports' }],
@@ -552,6 +553,7 @@ const rules = {
   // @typescript-eslint/eslint-plugin Extension Rules
   // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#extension-rules
   '@typescript-eslint/brace-style': [1, '1tbs', { allowSingleLine: true }],
+  '@typescript-eslint/comma-dangle': 1,
   '@typescript-eslint/comma-spacing': 1,
   '@typescript-eslint/default-param-last': 0,
   '@typescript-eslint/dot-notation': 0,
@@ -562,6 +564,7 @@ const rules = {
   '@typescript-eslint/lines-between-class-members': [1, 'always', { exceptAfterSingleLine: true }],
   '@typescript-eslint/no-array-constructor': 2,
   '@typescript-eslint/no-dupe-class-members': 0,
+  '@typescript-eslint/no-duplicate-imports': 1,
   '@typescript-eslint/no-empty-function': 0,
   '@typescript-eslint/no-extra-parens': [1, 'all', {
     nestedBinaryExpressions: false,
