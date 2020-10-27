@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { CalculatedColumn, Filters } from './types';
 import { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
+type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'filters'
   | 'onFiltersChange'
 >;

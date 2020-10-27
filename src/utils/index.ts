@@ -3,9 +3,9 @@ export * from './columnUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
-export function assertIsValidKey<R>(key: unknown): asserts key is keyof R {
-  if (key === undefined) {
-    throw new Error('Please specify the rowKey prop to use selection');
+export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter is (row: R) => React.Key {
+  if (typeof keyGetter !== 'function') {
+    throw new Error('Please specify the rowKeyGetter prop to use selection');
   }
 }
 
