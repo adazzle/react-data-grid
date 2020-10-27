@@ -88,7 +88,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
   summaryRows?: readonly SR[];
-  /** The primary key property of each row */
+  /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
   /**
    * Callback called whenever row data is updated
@@ -346,7 +346,7 @@ function DataGrid<R, SR>({
     };
 
     return eventBus.subscribe('SelectRow', handleRowSelectionChange);
-  }, [eventBus, isGroupRow, onSelectedRowsChange, rowKeyGetter, rows, selectedRows]);
+  });
 
   useEffect(() => {
     return eventBus.subscribe('SelectCell', selectCell);
@@ -859,10 +859,10 @@ function DataGrid<R, SR>({
       let key: string | number = hasGroups ? startRowIndex : rowIdx;
       let isRowSelected = false;
       if (typeof rowKeyGetter === 'function') {
-        const rowId = rowKeyGetter(row);
-        isRowSelected = selectedRows?.has(rowId) ?? false;
-        if (typeof rowId === 'string' || typeof rowId === 'number') {
-          key = rowId;
+        const rowKey = rowKeyGetter(row);
+        isRowSelected = selectedRows?.has(rowKey) ?? false;
+        if (typeof rowKey === 'string' || typeof rowKey === 'number') {
+          key = rowKey;
         }
       }
 
