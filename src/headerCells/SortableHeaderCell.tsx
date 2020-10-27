@@ -1,6 +1,6 @@
 import React from 'react';
 import { HeaderCellProps } from '../HeaderCell';
-import { SortDirection } from '../common/enums';
+import { SortDirection } from '../enums';
 
 const SORT_TEXT = {
   ASC: '\u25B2',
@@ -29,7 +29,7 @@ export default function SortableHeaderCell<R, SR>({
   sortDirection = sortColumn === column.key && sortDirection || 'NONE';
   function onClick() {
     if (!onSort) return;
-    const sortDescendingFirst = column.sortDescendingFirst || false;
+    const { sortDescendingFirst } = column;
     let direction: SortDirection;
     switch (sortDirection) {
       case 'ASC':

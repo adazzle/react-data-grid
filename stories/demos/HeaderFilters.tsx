@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { AutoSizer } from 'react-virtualized';
 import Select from 'react-select';
 import faker from 'faker';
 
@@ -31,7 +30,7 @@ function createRows() {
   return rows;
 }
 
-export default function HeaderFilters() {
+export function HeaderFilters() {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filters>({
     task: '',
@@ -163,24 +162,21 @@ export default function HeaderFilters() {
   }
 
   return (
-    <>
-      <div style={{ marginBottom: 10, textAlign: 'right' }}>
-        <button type="button" onClick={toggleFilters}>Toggle Filters</button>{' '}
+    <div className="header-filters-example">
+      <div className="header-filters-toolbar">
+        <button type="button" onClick={toggleFilters}>Toggle Filters</button>
+        {' '}
         <button type="button" onClick={clearFilters}>Clear Filters</button>
       </div>
-      <AutoSizer>
-        {({ height, width }) => (
-          <DataGrid
-            columns={columns}
-            rows={filteredRows}
-            width={width}
-            height={height - 30}
-            enableFilters={enableFilters}
-            filters={filters}
-            onFiltersChange={setFilters}
-          />
-        )}
-      </AutoSizer>
-    </>
+      <DataGrid
+        columns={columns}
+        rows={filteredRows}
+        enableFilters={enableFilters}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
+    </div>
   );
 }
+
+HeaderFilters.storyName = 'Header Filters';

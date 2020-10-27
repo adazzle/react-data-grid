@@ -1,10 +1,22 @@
 import React, { createElement } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn } from './types';
 import { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
+import { SortDirection } from './enums';
+
+function getAriaSort(sortDirection?: SortDirection) {
+  switch (sortDirection) {
+    case 'ASC':
+      return 'ascending';
+    case 'DESC':
+      return 'descending';
+    default:
+      return 'none';
+  }
+}
 
 type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
   | 'sortColumn'
@@ -15,14 +27,12 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
-  lastFrozenColumnIndex: number;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
-  lastFrozenColumnIndex,
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
@@ -53,7 +63,7 @@ export default function HeaderCell<R, SR>({
 
   const className = clsx('rdg-cell', column.headerCellClass, {
     'rdg-cell-frozen': column.frozen,
-    'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+    'rdg-cell-frozen-last': column.isLastFrozenColumn
   });
   const style: React.CSSProperties = {
     width: column.width,
@@ -62,6 +72,9 @@ export default function HeaderCell<R, SR>({
 
   cell = (
     <div
+      role="columnheader"
+      aria-colindex={column.idx + 1}
+      aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
       className={className}
       style={style}
     >

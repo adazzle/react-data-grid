@@ -1,79 +1,101 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
-import { CellRendererProps } from './common/types';
-import { preventDefault, wrapEvent } from './utils';
+import { CellRendererProps } from './types';
+import { wrapEvent } from './utils';
+import { useCombinedRefs } from './hooks';
 
 function Cell<R, SR>({
   className,
   column,
+  isCellSelected,
+  isCopied,
+  isDraggedOver,
   isRowSelected,
-  lastFrozenColumnIndex,
   row,
   rowIdx,
   eventBus,
+  dragHandleProps,
   onRowClick,
+  onFocus,
+  onKeyDown,
   onClick,
   onDoubleClick,
   onContextMenu,
-  onDragOver,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
-  function selectCell(openEditor?: boolean) {
-    eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
-  }
-
-  function handleCellClick() {
-    selectCell();
-    onRowClick?.(rowIdx, row, column);
-  }
-
-  function handleCellContextMenu() {
-    selectCell();
-  }
-
-  function handleCellDoubleClick() {
-    selectCell(true);
-  }
-
-  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
-  }
+  const cellRef = useRef<HTMLDivElement>(null);
 
   const { cellClass } = column;
   className = clsx(
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+      'rdg-cell-frozen-last': column.isLastFrozenColumn,
+      'rdg-cell-selected': isCellSelected,
+      'rdg-cell-copied': isCopied,
+      'rdg-cell-dragged-over': isDraggedOver
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
   );
 
+  function selectCell(openEditor?: boolean) {
+    eventBus.dispatch('SelectCell', { idx: column.idx, rowIdx }, openEditor);
+  }
+
+  function handleClick() {
+    selectCell(column.editorOptions?.editOnClick);
+    onRowClick?.(rowIdx, row, column);
+  }
+
+  function handleContextMenu() {
+    selectCell();
+  }
+
+  function handleDoubleClick() {
+    selectCell(true);
+  }
+
+  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
+    eventBus.dispatch('SelectRow', { rowIdx, checked, isShiftClick });
+  }
+
   return (
     <div
-      ref={ref}
+      role="gridcell"
+      aria-colindex={column.idx + 1} // aria-colindex is 1-based
+      aria-selected={isCellSelected}
+      ref={useCombinedRefs(cellRef, ref)}
       className={className}
       style={{
         width: column.width,
         left: column.left
       }}
-      onClick={wrapEvent(handleCellClick, onClick)}
-      onDoubleClick={wrapEvent(handleCellDoubleClick, onDoubleClick)}
-      onContextMenu={wrapEvent(handleCellContextMenu, onContextMenu)}
-      onDragOver={wrapEvent(preventDefault, onDragOver)}
+      onFocus={onFocus}
+      onKeyDown={onKeyDown}
+      onClick={wrapEvent(handleClick, onClick)}
+      onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
+      onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
       {...props}
     >
-      <column.formatter
-        column={column}
-        rowIdx={rowIdx}
-        row={row}
-        isRowSelected={isRowSelected}
-        onRowSelectionChange={onRowSelectionChange}
-      />
+      {!column.rowGroup && (
+        <>
+          <column.formatter
+            column={column}
+            rowIdx={rowIdx}
+            row={row}
+            isCellSelected={isCellSelected}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+          />
+          {dragHandleProps && (
+            <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+          )}
+        </>
+      )}
     </div>
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

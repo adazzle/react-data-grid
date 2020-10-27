@@ -1,7 +1,6 @@
 import React, { useState, useReducer } from 'react';
 import { createPortal } from 'react-dom';
 import faker from 'faker';
-import { AutoSizer } from 'react-virtualized';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 
 import DataGrid, { Column, Row as GridRow, RowRendererProps } from '../../src';
@@ -39,7 +38,7 @@ function RowRenderer(props: RowRendererProps<Row>) {
   );
 }
 
-export default function ContextMenuStory() {
+export function ContextMenuStory() {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 
@@ -75,18 +74,13 @@ export default function ContextMenuStory() {
 
   return (
     <>
-      <AutoSizer>
-        {({ height, width }) => (
-          <DataGrid
-            rowKey="id"
-            columns={columns}
-            rows={rows}
-            width={width}
-            height={height}
-            rowRenderer={RowRenderer}
-          />
-        )}
-      </AutoSizer>
+      <DataGrid
+        rowKey="id"
+        columns={columns}
+        rows={rows}
+        rowRenderer={RowRenderer}
+        className="fill-grid"
+      />
       {createPortal(
         <ContextMenu id="grid-context-menu">
           <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
@@ -100,3 +94,5 @@ export default function ContextMenuStory() {
     </>
   );
 }
+
+ContextMenuStory.storyName = 'Context Menu';

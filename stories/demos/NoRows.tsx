@@ -19,13 +19,15 @@ const columns: readonly Column<Row>[] = [
 
 const rows: readonly Row[] = [];
 
-export default function NoRows() {
+export function NoRows() {
   return (
     <DataGrid
       columns={columns}
       rows={rows}
-      width={600}
       emptyRowsRenderer={EmptyRowsRenderer}
+      className="small-grid"
     />
   );
 }
+
+NoRows.storyName = 'No Rows';

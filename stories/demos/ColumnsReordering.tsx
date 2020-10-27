@@ -20,8 +20,8 @@ function createRows(): Row[] {
       id: i,
       task: `Task ${i}`,
       complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor((Math.random() * 3) + 1)],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor((Math.random() * 3) + 1)]
+      priority: ['Critical', 'High', 'Medium', 'Low'][Math.round(Math.random() * 3)],
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.round(Math.random() * 3)]
     });
   }
 
@@ -62,7 +62,7 @@ function createColumns(): Column<Row>[] {
   ];
 }
 
-export default function ColumnsReordering() {
+export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['task', 'NONE']);
@@ -128,3 +128,5 @@ export default function ColumnsReordering() {
     </DndProvider>
   );
 }
+
+ColumnsReordering.storyName = 'Columns Reordering';

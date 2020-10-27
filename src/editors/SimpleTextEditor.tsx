@@ -1,5 +1,5 @@
 import React from 'react';
-import { Editor, EditorProps } from '../common/types';
+import { Editor, EditorProps } from '../types';
 
 type Props = Pick<EditorProps<string>, 'value' | 'column' | 'onCommit'>;
 

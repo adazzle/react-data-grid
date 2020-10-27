@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { AutoSizer } from 'react-virtualized';
 import faker from 'faker';
 
 import DataGrid, { Column } from '../../src';
@@ -144,20 +143,17 @@ const columns: Column<Row>[] = [
   }
 ];
 
-export default function CellActions() {
+export function CellActions() {
   const [rows] = useState(createRows);
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <DataGrid<Row, 'id'>
-          columns={columns}
-          rows={rows}
-          width={width}
-          height={height}
-          rowHeight={55}
-        />
-      )}
-    </AutoSizer>
+    <DataGrid<Row, 'id'>
+      columns={columns}
+      rows={rows}
+      rowHeight={55}
+      className="fill-grid"
+    />
   );
 }
+
+CellActions.storyName = 'Cell Actions';

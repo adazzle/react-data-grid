@@ -1,7 +1,6 @@
 import faker from 'faker';
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, SelectColumn, UpdateActions, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
+import DataGrid, { Column, SelectColumn, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -75,7 +74,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
   });
 }
 
-export default function AllFeatures() {
+export function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
   const [selectedRows, setSelectedRows] = useState(() => new Set<string>());
   const [isLoading, setIsLoading] = useState(false);
@@ -187,7 +186,7 @@ export default function AllFeatures() {
     let start: number;
     let end: number;
 
-    if (action === UpdateActions.COPY_PASTE) {
+    if (action === 'COPY_PASTE') {
       start = toRow;
       end = toRow;
     } else {
@@ -222,32 +221,26 @@ export default function AllFeatures() {
   }
 
   return (
-    <>
+    <div className="all-features">
       <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
-      <AutoSizer>
-        {({ height, width }) => (
-          <>
-            <DataGrid
-              ref={gridRef}
-              columns={columns}
-              rows={rows}
-              rowKey="id"
-              onRowsUpdate={handleRowUpdate}
-              onRowClick={handleRowClick}
-              rowHeight={30}
-              width={width}
-              height={height - 40}
-              selectedRows={selectedRows}
-              onScroll={handleScroll}
-              onSelectedRowsChange={setSelectedRows}
-              rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
-              enableCellCopyPaste
-              enableCellDragAndDrop
-            />
-            {isLoading && <div className="load-more-rows-tag" style={{ left: width - 230 }}>Loading more rows...</div>}
-          </>
-        )}
-      </AutoSizer>
-    </>
+      <DataGrid
+        ref={gridRef}
+        columns={columns}
+        rows={rows}
+        rowKey="id"
+        onRowsUpdate={handleRowUpdate}
+        onRowClick={handleRowClick}
+        rowHeight={30}
+        selectedRows={selectedRows}
+        onScroll={handleScroll}
+        onSelectedRowsChange={setSelectedRows}
+        rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
+        enableCellCopyPaste
+        enableCellDragAndDrop
+      />
+      {isLoading && <div className="load-more-rows-tag">Loading more rows...</div>}
+    </div>
   );
 }
+
+AllFeatures.storyName = 'All Features';

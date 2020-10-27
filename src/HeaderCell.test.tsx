@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import HeaderCell, { HeaderCellProps } from './HeaderCell';
 import { ValueFormatter } from './formatters';
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn } from './types';
 
 interface Row {
   bla?: string;
@@ -18,11 +18,13 @@ describe('HeaderCell', () => {
         name: 'bla',
         width: 150,
         left: 300,
+        resizable: false,
+        sortable: false,
         formatter: ValueFormatter,
         ...columnProps
       },
-      lastFrozenColumnIndex: -1,
       onResize: jest.fn(),
+      onSort: jest.fn(),
       allRowsSelected: false,
       onAllRowsSelectionChange() {},
       ...overrideProps

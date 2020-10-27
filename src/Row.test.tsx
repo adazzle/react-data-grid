@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import Row from './Row';
 import Cell from './Cell';
 import { createColumns } from './test/utils';
-import { RowRendererProps } from './common/types';
+import { RowRendererProps } from './types';
 import EventBus from './EventBus';
 
 type RowType = any;
@@ -22,7 +22,6 @@ describe('Row', () => {
     row: { key: 'value' },
     cellRenderer: Cell,
     rowIdx: 17,
-    lastFrozenColumnIndex: -1,
     isRowSelected: false,
     eventBus: new EventBus(),
     top: 0

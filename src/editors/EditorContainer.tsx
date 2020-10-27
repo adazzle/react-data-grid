@@ -1,25 +1,15 @@
 import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Editor, CommitEvent } from '../common/types';
+import { CalculatedColumn, Editor, SharedEditorContainerProps } from '../types';
+import { useClickOutside } from '../hooks';
 import SimpleTextEditor from './SimpleTextEditor';
-import ClickOutside from './ClickOutside';
-import { InteractionMasksProps } from '../masks/InteractionMasks';
 import { preventDefault } from '../utils';
 
-type SharedInteractionMasksProps<R, SR> = Pick<InteractionMasksProps<R, SR>,
-  | 'scrollLeft'
-  | 'scrollTop'
-  | 'rowHeight'
->;
-
-export interface EditorContainerProps<R, SR> extends SharedInteractionMasksProps<R, SR> {
+export interface EditorContainerProps<R, SR> extends SharedEditorContainerProps {
   rowIdx: number;
   row: R;
   column: CalculatedColumn<R, SR>;
-  onCommit: (e: CommitEvent) => void;
-  onCommitCancel: () => void;
-  firstEditorKeyPress: string | null;
   top: number;
   left: number;
 }
@@ -44,6 +34,7 @@ export default function EditorContainer<R, SR>({
   const prevScrollLeft = useRef(scrollLeft);
   const prevScrollTop = useRef(scrollTop);
   const isUnmounting = useRef(false);
+  const onClickCapture = useClickOutside(commit);
 
   const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
 
@@ -86,11 +77,11 @@ export default function EditorContainer<R, SR>({
     if (key === 'Delete' || key === 'Backspace') {
       return '';
     }
-    if (key === 'Enter') {
+    if (key === 'Enter' || key === 'F2') {
       return value;
     }
 
-    return key || value;
+    return key ?? value;
   }
 
   function isCaretAtBeginningOfInput(): boolean {
@@ -181,15 +172,14 @@ export default function EditorContainer<R, SR>({
   });
 
   return (
-    <ClickOutside onClickOutside={commit}>
-      <div
-        className={className}
-        style={{ height: rowHeight, width: column.width, left, top }}
-        onKeyDown={onKeyDown}
-        onContextMenu={preventDefault}
-      >
-        {createEditor()}
-      </div>
-    </ClickOutside>
+    <div
+      className={className}
+      style={{ height: rowHeight, width: column.width, left, top }}
+      onClickCapture={onClickCapture}
+      onKeyDown={onKeyDown}
+      onContextMenu={preventDefault}
+    >
+      {createEditor()}
+    </div>
   );
 }

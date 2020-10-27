@@ -1,7 +1,7 @@
 import React, { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn } from './common/types';
+import { CalculatedColumn } from './types';
 import { assertIsValidKey } from './utils';
 import { DataGridProps } from './DataGrid';
 
@@ -15,7 +15,6 @@ type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR
 >;
 
 export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
-  lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
@@ -23,7 +22,6 @@ export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGrid
 
 function HeaderRow<R, K extends keyof R, SR>({
   columns,
-  lastFrozenColumnIndex,
   rows,
   rowKey,
   onSelectedRowsChange,
@@ -49,13 +47,16 @@ function HeaderRow<R, K extends keyof R, SR>({
   }, [onSelectedRowsChange, rows, rowKey]);
 
   return (
-    <div className="rdg-header-row">
+    <div
+      role="row"
+      aria-rowindex={1} // aria-rowindex is 1 based
+      className="rdg-header-row"
+    >
       {columns.map(column => {
         return (
           <HeaderCell<R, SR>
             key={column.key}
             column={column}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
             onResize={onColumnResize}
             allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}

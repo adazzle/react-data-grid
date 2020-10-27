@@ -1,7 +1,7 @@
 import React, { createElement, memo } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Filters } from './common/types';
+import { CalculatedColumn, Filters } from './types';
 import { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
@@ -10,13 +10,11 @@ type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
 >;
 
 export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
-  lastFrozenColumnIndex: number;
   columns: readonly CalculatedColumn<R, SR>[];
 }
 
 function FilterRow<R, SR>({
   columns,
-  lastFrozenColumnIndex,
   filters,
   onFiltersChange
 }: FilterRowProps<R, SR>) {
@@ -27,13 +25,17 @@ function FilterRow<R, SR>({
   }
 
   return (
-    <div className="rdg-filter-row">
+    <div
+      role="row"
+      aria-rowindex={2}
+      className="rdg-filter-row"
+    >
       {columns.map(column => {
         const { key } = column;
 
         const className = clsx('rdg-cell', {
           'rdg-cell-frozen': column.frozen,
-          'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+          'rdg-cell-frozen-last': column.isLastFrozenColumn
         });
         const style: React.CSSProperties = {
           width: column.width,
