@@ -1,9 +1,8 @@
-import React, { forwardRef, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { EditorContainer, EditorPortal } from './editors';
+import { EditorContainer } from './editors';
 import { CellRendererProps, SharedEditorContainerProps, SharedEditorProps } from './types';
-import { useCombinedRefs } from './hooks';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
 | 'rowIdx'
@@ -17,7 +16,7 @@ interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, O
   editorProps: SharedEditorProps<R>;
 }
 
-function EditCell<R, SR>({
+export default function EditCell<R, SR>({
   className,
   column,
   row,
@@ -27,7 +26,7 @@ function EditCell<R, SR>({
   editorProps,
   onKeyDown,
   ...props
-}: EditCellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+}: EditCellRendererProps<R, SR>) {
   const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
 
   const cellRef = useCallback(node => {
@@ -57,28 +56,16 @@ function EditCell<R, SR>({
     const gridLeft = left + docLeft;
     const gridTop = top + docTop;
 
-    if (column.editor !== undefined) {
-      return (
-        <EditorContainer
-          {...editorProps}
-          editorPortalTarget={editorPortalTarget}
-          rowIdx={rowIdx}
-          column={column}
-          left={gridLeft}
-          top={gridTop}
-        />
-      );
-    }
-
-    if (column.editorOptions?.createPortal !== false) {
-      return (
-        <EditorPortal target={editorPortalTarget}>
-          {editor}
-        </EditorPortal>
-      );
-    }
-
-    return editor;
+    return (
+      <EditorContainer
+        {...editorProps}
+        editorPortalTarget={editorPortalTarget}
+        rowIdx={rowIdx}
+        column={column}
+        left={gridLeft}
+        top={gridTop}
+      />
+    );
   }
 
   return (
@@ -86,7 +73,7 @@ function EditCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected
-      ref={useCombinedRefs(cellRef, ref)}
+      ref={cellRef}
       className={className}
       style={{
         width: column.width,
@@ -99,5 +86,3 @@ function EditCell<R, SR>({
     </div>
   );
 }
-
-export default forwardRef(EditCell) as <R, SR = unknown>(props: EditCellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

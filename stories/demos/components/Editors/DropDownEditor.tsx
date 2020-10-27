@@ -1,62 +1,34 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Editor, OldEditorProps } from '../../../../src';
+import React, { useRef } from 'react';
 
-interface Option {
-  id: string;
-  title: string;
+interface DropDownEditorProps {
   value: string;
-  text: string;
+  onChange: (value: string) => void;
+  options: readonly string[];
 }
 
-interface DropDownEditorProps<TRow> extends OldEditorProps<string, TRow, unknown> {
-  options: Array<Option | string>;
-}
-
-type DropDownEditorHandle = Editor<{ [key: string]: string }>;
-
-function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>) {
+export default function DropDownEditor({
+  value,
+  onChange,
+  options
+}: DropDownEditorProps) {
   const selectRef = useRef<HTMLSelectElement>(null);
-
-  useImperativeHandle(ref, () => ({
-    getInputNode() {
-      return selectRef.current;
-    },
-    getValue() {
-      return {
-        [column.key]: selectRef.current!.value
-      };
-    }
-  }));
 
   return (
     <select
       ref={selectRef}
       className="rdg-text-editor"
       defaultValue={value}
-      onBlur={onCommit}
+      // onBlur={onCommit}
       size={options.length}
       style={{ maxHeight: 200, height: 'auto', overflowY: 'auto' }}
     >
-      {options.map(name => typeof name === 'string' ? (
+      {options.map(name => (
         <option
           key={name}
           value={name}
-          onClick={onCommit}
-        >
-          {name}
-        </option>
-      ) : (
-        <option
-          key={name.id}
-          value={name.value}
-          title={name.title}
-          onClick={onCommit}
-        >
-          {name.text || name.value}
-        </option>
+          onClick={() => onChange(name)}
+        />
       ))}
     </select>
   );
 }
-
-export default forwardRef(DropDownEditor) as <R>(props: DropDownEditorProps<R> & React.RefAttributes<DropDownEditorHandle>) => JSX.Element;

@@ -100,7 +100,13 @@ export function AllFeatures() {
     {
       key: 'title',
       name: 'Title',
-      editor: wrapOldEditor(React.forwardRef((props, ref) => <DropDownEditor ref={ref} {...props} options={titles} />)),
+      editor: props => (
+        <DropDownEditor
+          value={props.row.title}
+          onChange={title => props.onRowChange({ ...props.row, title }, true)}
+          options={titles}
+        />
+      ),
       editorOptions: { createPortal: true },
       width: 200,
       resizable: true,
@@ -244,5 +250,3 @@ export function AllFeatures() {
     </div>
   );
 }
-
-AllFeatures.storyName = 'All Features';

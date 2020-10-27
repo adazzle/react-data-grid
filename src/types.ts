@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { KeyboardEvent } from 'react';
 import { UpdateActions } from './enums';
 import EventBus from './EventBus';
 
@@ -71,16 +70,6 @@ export interface Position {
   rowIdx: number;
 }
 
-/** @deprecated */
-export interface Editor<TValue = never> {
-  getInputNode: () => Element | Text | undefined | null;
-  getValue: () => TValue;
-  hasResults?: () => boolean;
-  isSelectOpen?: () => boolean;
-  validate?: (value: unknown) => boolean;
-  readonly disableContainerStyles?: boolean;
-}
-
 export interface FormatterProps<TRow = any, TSummaryRow = any> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -104,18 +93,6 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   isRowSelected: boolean;
   onRowSelectionChange: (checked: boolean) => void;
   toggleGroup: () => void;
-}
-
-/** @deprecated */
-export interface OldEditorProps<TValue, TRow = any, TSummaryRow = any> {
-  ref: React.Ref<Editor<{ [key: string]: TValue }>>;
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  value: TValue;
-  row: TRow;
-  height: number;
-  onCommit: () => void;
-  onCommitCancel: () => void;
-  onOverrideKeyDown: (e: KeyboardEvent) => void;
 }
 
 export interface SharedEditorProps<TRow> {

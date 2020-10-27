@@ -1,29 +1,18 @@
 import React from 'react';
-import { Editor, OldEditorProps } from '../types';
+import { EditorProps } from '../types';
 
-type Props = Pick<OldEditorProps<string>, 'value' | 'column' | 'onCommit'>;
-
-export default class SimpleTextEditor extends React.Component<Props> implements Editor<{ [key: string]: string }> {
-  private readonly input = React.createRef<HTMLInputElement>();
-
-  getInputNode() {
-    return this.input.current;
-  }
-
-  getValue() {
-    return {
-      [this.props.column.key]: this.input.current!.value
-    };
-  }
-
-  render() {
-    return (
-      <input
-        className="rdg-text-editor"
-        ref={this.input}
-        defaultValue={this.props.value}
-        onBlur={this.props.onCommit}
-      />
-    );
-  }
+export default function SimpleTextEditor<TRow>({
+  row,
+  column,
+  onRowChange,
+  onClose
+}: EditorProps<TRow>) {
+  return (
+    <input
+      className="rdg-text-editor"
+      value={row[column.key as keyof TRow] as unknown as string}
+      onChange={event => onRowChange({ ...row, [column.key]: event.target.value })}
+      onBlur={() => onClose(true)}
+    />
+  );
 }
