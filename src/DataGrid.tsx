@@ -91,7 +91,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
   /**
-   * @deprecated
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
    * 1. Using the supplied editor of the column. The default editor is the SimpleTextEditor.
