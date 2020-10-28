@@ -5,9 +5,9 @@ import EditorContainer from './editors/EditorContainer';
 import { CellRendererProps, SharedEditorContainerProps, SharedEditorProps } from './types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
-| 'rowIdx'
-| 'row'
-| 'column'
+  | 'rowIdx'
+  | 'row'
+  | 'column'
 >;
 
 interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {

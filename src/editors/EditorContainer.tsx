@@ -8,7 +8,6 @@ export default function EditorContainer<R, SR>({
   row,
   column,
   onRowChange,
-  editorPortalTarget,
   ...props
 }: EditorProps<R, SR>) {
   const onClickCapture = useClickOutside(() => onRowChange(row, true));
@@ -20,14 +19,13 @@ export default function EditorContainer<R, SR>({
         row={row}
         column={column}
         onRowChange={onRowChange}
-        editorPortalTarget={editorPortalTarget}
         {...props}
       />
     </div>
   );
 
   if (column.editorOptions?.createPortal) {
-    return createPortal(editor, editorPortalTarget);
+    return createPortal(editor, props.editorPortalTarget);
   }
 
   return editor;
