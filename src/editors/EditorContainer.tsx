@@ -15,7 +15,7 @@ export default function EditorContainer<R, SR>({
   if (column.editor === undefined) return null;
 
   const editor = (
-    <div className="rdg-editor-container2" onClickCapture={onClickCapture}>
+    <div className="rdg-editor-container" onClickCapture={onClickCapture}>
       <column.editor
         row={row}
         column={column}
