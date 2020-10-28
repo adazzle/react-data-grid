@@ -9,6 +9,7 @@ export default function SimpleTextEditor<TRow>({
 }: EditorProps<TRow>) {
   return (
     <input
+      autoFocus
       className="rdg-text-editor"
       value={row[column.key as keyof TRow] as unknown as string}
       onChange={event => onRowChange({ ...row, [column.key]: event.target.value })}
