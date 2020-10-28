@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
 import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection, SimpleTextEditor } from '../../src';
-import { TextEditor } from './components/Editors/TextEditor';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
@@ -95,13 +94,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'contact',
       name: 'Contact',
       width: 160,
-      editor: p => (
-        <TextEditor
-          value={p.row.contact}
-          onChange={value => p.onRowChange({ ...p.row, contact: value })}
-          rowHeight={p.rowHeight}
-        />
-      )
+      editor: SimpleTextEditor
     },
     {
       key: 'assignee',
