@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditorProps } from '../types';
 
-export default function SimpleTextEditor<TRow>({
+export default function TextEditor<TRow>({
   row,
   column,
   onRowChange,
