@@ -1,33 +1,19 @@
-import React, { useRef } from 'react';
+import React from 'react';
+import { EditorProps } from '../../../../src';
+import { Row } from '../../AllFeatures';
 
-interface DropDownEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  options: readonly string[];
-}
+const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'] as const;
 
-export default function DropDownEditor({
-  value,
-  onChange,
-  options
-}: DropDownEditorProps) {
-  const selectRef = useRef<HTMLSelectElement>(null);
-
+export default function DropDownEditor({ row, onRowChange }: EditorProps<Row>) {
   return (
     <select
-      ref={selectRef}
       className="rdg-text-editor"
-      defaultValue={value}
-      // onBlur={onCommit}
-      size={options.length}
-      style={{ maxHeight: 200, height: 'auto', overflowY: 'auto' }}
+      value={row.title}
+      onChange={event => onRowChange({ ...row, title: event.target.value }, true)}
+      autoFocus
     >
-      {options.map(name => (
-        <option
-          key={name}
-          value={name}
-          onClick={() => onChange(name)}
-        />
+      {titles.map(title => (
+        <option key={title} value={title}>{title}</option>
       ))}
     </select>
   );
