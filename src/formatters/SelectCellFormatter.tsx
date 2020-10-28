@@ -11,7 +11,7 @@ type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
   | 'aria-labelledby'
 >;
 
-export interface SelectCellFormatterProps extends SharedInputProps {
+interface SelectCellFormatterProps extends SharedInputProps {
   isCellSelected?: boolean;
   value: boolean;
   onChange: (value: boolean, isShiftClick: boolean) => void;

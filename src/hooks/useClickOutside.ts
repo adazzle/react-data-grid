@@ -50,7 +50,15 @@ import { useRef, useEffect } from 'react';
  */
 
 export function useClickOutside(onClick: () => void) {
-  const clickedInsideRef = useRef(false);
+  const frameRequestRef = useRef<number | undefined>();
+
+  function cancelAnimationFrameRequest() {
+    if (typeof frameRequestRef.current === 'number') {
+      cancelAnimationFrame(frameRequestRef.current);
+      frameRequestRef.current = undefined;
+    }
+  }
+
   // We need to prevent the `useEffect` from cleaning up between re-renders,
   // as `handleDocumentClick` might otherwise miss valid click events.
   // To that end we instead access the latest `onClick` prop via a ref.
@@ -63,40 +71,23 @@ export function useClickOutside(onClick: () => void) {
   });
 
   useEffect(() => {
-    let animationFrameRequest: number | undefined;
-
-    function cancelAnimationFrameRequest() {
-      if (typeof animationFrameRequest === 'number') {
-        cancelAnimationFrame(animationFrameRequest);
-        animationFrameRequest = undefined;
-      }
+    function onOutsideClick() {
+      frameRequestRef.current = undefined;
+      onClickRef.current();
     }
 
-    function checkOutsideClick() {
-      animationFrameRequest = undefined;
-
-      if (clickedInsideRef.current) {
-        clickedInsideRef.current = false;
-      } else {
-        onClickRef.current();
-      }
-    }
-
-    function handleWindowCaptureClick() {
+    function onWindowCaptureClick() {
       cancelAnimationFrameRequest();
-      clickedInsideRef.current = false;
-      animationFrameRequest = requestAnimationFrame(checkOutsideClick);
+      frameRequestRef.current = requestAnimationFrame(onOutsideClick);
     }
 
-    window.addEventListener('click', handleWindowCaptureClick, { capture: true });
+    window.addEventListener('click', onWindowCaptureClick, { capture: true });
 
     return () => {
-      window.removeEventListener('click', handleWindowCaptureClick, { capture: true });
+      window.removeEventListener('click', onWindowCaptureClick, { capture: true });
       cancelAnimationFrameRequest();
     };
   }, []);
 
-  return function onClickCapture() {
-    clickedInsideRef.current = true;
-  };
+  return cancelAnimationFrameRequest;
 }
