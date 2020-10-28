@@ -1,6 +1,11 @@
 import React from 'react';
 import { EditorProps } from '../types';
 
+function autoFocusAndSelect(input: HTMLInputElement | null) {
+  input?.focus();
+  input?.select();
+}
+
 export default function TextEditor<TRow>({
   row,
   column,
@@ -10,6 +15,7 @@ export default function TextEditor<TRow>({
   return (
     <input
       className="rdg-text-editor"
+      ref={autoFocusAndSelect}
       value={row[column.key as keyof TRow] as unknown as string}
       onChange={event => onRowChange({ ...row, [column.key]: event.target.value })}
       onBlur={() => onClose(true)}
@@ -18,7 +24,6 @@ export default function TextEditor<TRow>({
           event.stopPropagation();
         }
       }}
-      autoFocus
     />
   );
 }
