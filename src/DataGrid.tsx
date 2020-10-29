@@ -93,10 +93,9 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /**
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
-   * 1. Using the supplied editor of the column. The default editor is the SimpleTextEditor.
-   * 2. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
-   * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
-   * 4. Update all cells under a given cell by double clicking the cell's fill handle.
+   * 1. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
+   * 2. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
+   * 3. Update all cells under a given cell by double clicking the cell's fill handle.
    */
   onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
   onRowsChange?: (rows: R[]) => void;
@@ -481,9 +480,9 @@ function DataGrid<R, SR>({
     closeEditor();
   }
 
-  function commitEditor2Changes() {
+  function commitEditorChanges() {
     if (
-      columns[selectedPosition.idx]?.editor2 === undefined
+      columns[selectedPosition.idx]?.editor === undefined
       || selectedPosition.mode === 'SELECT'
       || selectedPosition.row === selectedPosition.originalRow) {
       return;
@@ -535,7 +534,7 @@ function DataGrid<R, SR>({
     if (selectedPosition.mode === 'EDIT') {
       if (key === 'Enter') {
         // Custom editors can listen for the event and stop propagation to prevent commit
-        commitEditor2Changes();
+        commitEditorChanges();
         closeEditor();
       }
       return;
@@ -626,7 +625,7 @@ function DataGrid<R, SR>({
 
   function handleOnClose(commitChanges?: boolean) {
     if (commitChanges) {
-      commitEditor2Changes();
+      commitEditorChanges();
     }
     closeEditor();
   }
@@ -645,7 +644,7 @@ function DataGrid<R, SR>({
 
   function selectCell(position: Position, enableEditor = false): void {
     if (!isCellWithinBounds(position)) return;
-    commitEditor2Changes();
+    commitEditorChanges();
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
@@ -802,7 +801,7 @@ function DataGrid<R, SR>({
           onCommit: handleCommit,
           onCommitCancel: closeEditor
         },
-        editor2Props: {
+        editorProps: {
           rowHeight,
           row: selectedPosition.row,
           onRowChange: handleRowChange,
@@ -963,6 +962,4 @@ function DataGrid<R, SR>({
   );
 }
 
-export default forwardRef(
-  DataGrid as React.ForwardRefRenderFunction<DataGridHandle>
-) as <R, SR = unknown>(props: DataGridProps<R, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;
+export default forwardRef(DataGrid) as <R, SR = unknown>(props: DataGridProps<R, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;

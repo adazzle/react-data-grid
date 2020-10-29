@@ -26,7 +26,8 @@
   - `column.minWidth`
   - `column.maxWidth`
   - `column.headerCellClass`
-  - `column.editor2`
+  - `column.editor`
+    - New API
   - `column.editorOptions`
     - More info in [#2102](https://github.com/adazzle/react-data-grid/pull/2102)
   - `column.groupFormatter`

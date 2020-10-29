@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection } from '../../src';
-import { TextEditor } from './components/Editors/TextEditor';
+import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection, TextEditor } from '../../src';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
@@ -59,8 +58,8 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'title',
       name: 'Task',
       width: 120,
-      editable: true,
       frozen: true,
+      editor: TextEditor,
       summaryFormatter({ row }) {
         return <>{row.totalCount} records</>;
       }
@@ -69,19 +68,19 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'client',
       name: 'Client',
       width: 220,
-      editable: true
+      editor: TextEditor
     },
     {
       key: 'area',
       name: 'Area',
       width: 120,
-      editable: true
+      editor: TextEditor
     },
     {
       key: 'country',
       name: 'Country',
       width: 180,
-      editor2: p => (
+      editor: p => (
         <SelectEditor
           value={p.row.country}
           onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
@@ -95,19 +94,13 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'contact',
       name: 'Contact',
       width: 160,
-      editor2: p => (
-        <TextEditor
-          value={p.row.contact}
-          onChange={value => p.onRowChange({ ...p.row, contact: value })}
-          rowHeight={p.rowHeight}
-        />
-      )
+      editor: TextEditor
     },
     {
       key: 'assignee',
       name: 'Assignee',
       width: 150,
-      editable: true
+      editor: TextEditor
     },
     {
       key: 'progress',
@@ -158,7 +151,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
     {
       key: 'version',
       name: 'Version',
-      editable: true
+      editor: TextEditor
     },
     {
       key: 'available',

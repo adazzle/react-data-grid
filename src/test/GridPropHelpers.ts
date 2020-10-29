@@ -1,4 +1,4 @@
-import { ValueFormatter, SimpleCellFormatter } from '../formatters';
+import { ValueFormatter } from '../formatters';
 import { CalculatedColumn } from '../types';
 
 export interface Row {
@@ -16,7 +16,7 @@ const columns: CalculatedColumn<Row>[] = [{
   left: 0,
   resizable: false,
   sortable: false,
-  formatter: SimpleCellFormatter
+  formatter: ValueFormatter
 }, {
   idx: 1,
   key: 'title',

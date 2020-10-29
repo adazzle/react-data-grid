@@ -146,6 +146,7 @@ describe('canEdit', () => {
   it('should return the result of editable(row)', () => {
     const fnColumn = {
       ...column,
+      editor: () => null,
       editable(row: Row) { return row.id === 1; }
     };
     expect(canEdit(fnColumn, { id: 1 })).toBe(true);
@@ -158,9 +159,9 @@ describe('canEdit', () => {
 
     expect(canEdit(column, row)).toBe(false);
     expect(canEdit({ ...column, editable: false }, row)).toBe(false);
-    expect(canEdit({ ...column, editable: true }, row)).toBe(true);
+    expect(canEdit({ ...column, editable: true }, row)).toBe(false);
     expect(canEdit({ ...column, editor }, row)).toBe(true);
-    expect(canEdit({ ...column, editor, editable: false }, row)).toBe(true);
+    expect(canEdit({ ...column, editor, editable: false }, row)).toBe(false);
     expect(canEdit({ ...column, editor, editable: true }, row)).toBe(true);
   });
 });

@@ -1,13 +1,13 @@
 import faker from 'faker';
-import React, { useState, useMemo, useCallback, useRef } from 'react';
-import DataGrid, { Column, SelectColumn, DataGridHandle, RowsUpdateEvent, CalculatedColumn } from '../../src';
+import React, { useState, useCallback, useRef } from 'react';
+import DataGrid, { Column, SelectColumn, DataGridHandle, RowsUpdateEvent, TextEditor } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
 
 import './AllFeatures.less';
 
-interface Row {
+export interface Row {
   id: string;
   avatar: string;
   email: string;
@@ -30,7 +30,109 @@ function rowKeyGetter(row: Row) {
 
 faker.locale = 'en_GB';
 
-const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
+const columns: readonly Column<Row>[] = [
+  SelectColumn,
+  {
+    key: 'id',
+    name: 'ID',
+    width: 80,
+    resizable: true,
+    frozen: true
+  },
+  {
+    key: 'avatar',
+    name: 'Avatar',
+    width: 40,
+    resizable: true,
+    headerRenderer: () => <ImageFormatter value={faker.image.cats()} />,
+    formatter: ({ row }) => <ImageFormatter value={row.avatar} />
+  },
+  {
+    key: 'title',
+    name: 'Title',
+    width: 200,
+    resizable: true,
+    formatter(props) {
+      return <>{props.row.title}</>;
+    },
+    editor: DropDownEditor,
+    editorOptions: {
+      editOnClick: true
+    }
+  },
+  {
+    key: 'firstName',
+    name: 'First Name',
+    width: 200,
+    resizable: true,
+    frozen: true,
+    editor: TextEditor
+  },
+  {
+    key: 'lastName',
+    name: 'Last Name',
+    width: 200,
+    resizable: true,
+    frozen: true,
+    editor: TextEditor
+  },
+  {
+    key: 'email',
+    name: 'Email',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  },
+  {
+    key: 'street',
+    name: 'Street',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  },
+  {
+    key: 'zipCode',
+    name: 'ZipCode',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  },
+  {
+    key: 'date',
+    name: 'Date',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  },
+  {
+    key: 'bs',
+    name: 'bs',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  },
+  {
+    key: 'catchPhrase',
+    name: 'Catch Phrase',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  },
+  {
+    key: 'companyName',
+    name: 'Company Name',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  },
+  {
+    key: 'sentence',
+    name: 'Sentence',
+    width: 200,
+    resizable: true,
+    editor: TextEditor
+  }
+];
 
 function createFakeRowObjectData(index: number): Row {
   return {
@@ -84,107 +186,6 @@ export function AllFeatures() {
   const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
-  const columns = useMemo((): Column<Row>[] => [
-    SelectColumn,
-    {
-      key: 'id',
-      name: 'ID',
-      width: 80,
-      resizable: true,
-      frozen: true
-    },
-    {
-      key: 'avatar',
-      name: 'Avatar',
-      width: 40,
-      resizable: true,
-      headerRenderer: () => <ImageFormatter value={faker.image.cats()} />,
-      formatter: ({ row }) => <ImageFormatter value={row.avatar} />
-    },
-    {
-      key: 'title',
-      name: 'Title',
-      editor: React.forwardRef((props, ref) => <DropDownEditor ref={ref} {...props} options={titles} />),
-      width: 200,
-      resizable: true,
-      formatter(props) {
-        return <>{props.row.title}</>;
-      }
-    },
-    {
-      key: 'firstName',
-      name: 'First Name',
-      editable: true,
-      width: 200,
-      resizable: true,
-      frozen: true
-    },
-    {
-      key: 'lastName',
-      name: 'Last Name',
-      editable: true,
-      width: 200,
-      resizable: true,
-      frozen: true
-    },
-    {
-      key: 'email',
-      name: 'Email',
-      editable: true,
-      width: 200,
-      resizable: true
-    },
-    {
-      key: 'street',
-      name: 'Street',
-      editable: true,
-      width: 200,
-      resizable: true
-    },
-    {
-      key: 'zipCode',
-      name: 'ZipCode',
-      editable: true,
-      width: 200,
-      resizable: true
-    },
-    {
-      key: 'date',
-      name: 'Date',
-      editable: true,
-      width: 200,
-      resizable: true
-    },
-    {
-      key: 'bs',
-      name: 'bs',
-      editable: true,
-      width: 200,
-      resizable: true
-    },
-    {
-      key: 'catchPhrase',
-      name: 'Catch Phrase',
-      editable: true,
-      width: 200,
-      resizable: true
-    },
-    {
-      key: 'companyName',
-      name: 'Company Name',
-      editable: true,
-      width: 200,
-      resizable: true
-    },
-    {
-      key: 'sentence',
-      name: 'Sentence',
-      editable: true,
-      width: 200,
-      resizable: true
-    }
-  ], []);
-
   const handleRowUpdate = useCallback(({ fromRow, toRow, updated, action }: RowsUpdateEvent<Partial<Row>>): void => {
     const newRows = [...rows];
     let start: number;
@@ -207,12 +208,6 @@ export function AllFeatures() {
 
   const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
-  const handleRowClick = useCallback((rowIdx: number, row: Row, column: CalculatedColumn<Row>) => {
-    if (column.key === 'title') {
-      gridRef.current?.selectCell({ rowIdx, idx: column.idx }, true);
-    }
-  }, []);
-
   async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     if (!isAtBottom(event)) return;
 
@@ -233,7 +228,7 @@ export function AllFeatures() {
         rows={rows}
         rowKeyGetter={rowKeyGetter}
         onRowsUpdate={handleRowUpdate}
-        onRowClick={handleRowClick}
+        onRowsChange={setRows}
         rowHeight={30}
         selectedRows={selectedRows}
         onScroll={handleScroll}
