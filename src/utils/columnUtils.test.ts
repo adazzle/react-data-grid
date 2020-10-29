@@ -1,6 +1,6 @@
-import { getColumnMetrics, getColumnScrollPosition, canEdit } from './columnUtils';
+import { getColumnMetrics, getColumnScrollPosition } from './columnUtils';
 import { ValueFormatter } from '../formatters';
-import { Column, CalculatedColumn } from '../types';
+import { Column } from '../types';
 import { createColumns } from '../test/utils';
 
 describe('getColumnMetrics', () => {
@@ -124,44 +124,5 @@ describe('getColumnScrollPosition', () => {
       const scrollPosition = getColumnScrollPosition(columns, 7, 500, 400);
       expect(scrollPosition).toBe(0);
     });
-  });
-});
-
-describe('canEdit', () => {
-  interface Row {
-    id: number;
-  }
-
-  const column: CalculatedColumn<Row> = {
-    idx: 0,
-    key: 'id',
-    name: 'ID',
-    left: 460,
-    width: 150,
-    resizable: false,
-    sortable: false,
-    formatter: ValueFormatter
-  };
-
-  it('should return the result of editable(row)', () => {
-    const fnColumn = {
-      ...column,
-      editor: () => null,
-      editable(row: Row) { return row.id === 1; }
-    };
-    expect(canEdit(fnColumn, { id: 1 })).toBe(true);
-    expect(canEdit(fnColumn, { id: 0 })).toBe(false);
-  });
-
-  it('should return correct booleans', () => {
-    const row: Row = { id: 1 };
-    const editor = () => null;
-
-    expect(canEdit(column, row)).toBe(false);
-    expect(canEdit({ ...column, editable: false }, row)).toBe(false);
-    expect(canEdit({ ...column, editable: true }, row)).toBe(false);
-    expect(canEdit({ ...column, editor }, row)).toBe(true);
-    expect(canEdit({ ...column, editor, editable: false }, row)).toBe(false);
-    expect(canEdit({ ...column, editor, editable: true }, row)).toBe(true);
   });
 });

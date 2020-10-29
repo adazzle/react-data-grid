@@ -53,6 +53,8 @@
     - ⚠️ `getValidFilterValues`
     - ⚠️ `onCellCopyPaste`
     - ⚠️ `onSelectedCellRangeChange`
+    - ⚠️ `onCheckCellIsEditable`
+      - Use `column.editable` instead.
     - ⚠️ `onGridKeyDown`
     - ⚠️ `onGridKeyUp`
     - ⚠️ `onRowDoubleClick`

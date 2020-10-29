@@ -209,11 +209,6 @@ export interface RowsUpdateEvent<TUpdatedValue = never> {
   fromCellKey?: string;
 }
 
-export interface CheckCellIsEditableEvent<TRow, TSummaryRow> extends Position {
-  row: TRow;
-  column: CalculatedColumn<TRow, TSummaryRow>;
-}
-
 export interface SelectRowEvent {
   rowIdx: number;
   checked: boolean;

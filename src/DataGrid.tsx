@@ -29,7 +29,6 @@ import {
 
 import {
   CalculatedColumn,
-  CheckCellIsEditableEvent,
   Column,
   Filters,
   Position,
@@ -148,8 +147,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   onColumnResize?: (idx: number, width: number) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
-  /** called before cell is set active, returns a boolean to determine whether cell is editable */
-  onCheckCellIsEditable?: (event: CheckCellIsEditableEvent<R, SR>) => boolean;
 
   /**
    * Toggles and modes
@@ -208,7 +205,6 @@ function DataGrid<R, SR>({
   onScroll,
   onColumnResize,
   onSelectedCellChange,
-  onCheckCellIsEditable,
   // Toggles and modes
   enableFilters = false,
   enableCellCopyPaste = false,
@@ -639,7 +635,7 @@ function DataGrid<R, SR>({
 
   function isCellEditable(position: Position): boolean {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, onCheckCellIsEditable, isGroupRow });
+      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, isGroupRow });
   }
 
   function selectCell(position: Position, enableEditor = false): void {
