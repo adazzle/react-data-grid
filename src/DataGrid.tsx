@@ -963,6 +963,4 @@ function DataGrid<R, SR>({
   );
 }
 
-export default forwardRef(
-  DataGrid as React.ForwardRefRenderFunction<DataGridHandle>
-) as <R, SR = unknown>(props: DataGridProps<R, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;
+export default forwardRef(DataGrid) as <R, SR = unknown>(props: DataGridProps<R, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;
