@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UpdateActions } from './enums';
 import EventBus from './EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -183,12 +182,6 @@ export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow =
 }
 
 export type Filters = Record<string, any>;
-
-export interface CommitEvent<TUpdatedValue = never> {
-  cellKey: string;
-  rowIdx: number;
-  updated: TUpdatedValue;
-}
 
 export interface SelectRowEvent {
   rowIdx: number;

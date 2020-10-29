@@ -34,7 +34,6 @@ import {
   Position,
   RowRendererProps,
   SelectRowEvent,
-  CommitEvent,
   SelectedCellProps,
   EditCellProps,
   Dictionary
