@@ -59,9 +59,8 @@ function Row<R, SR = unknown>({
               key={column.key}
               rowIdx={rowIdx}
               column={column}
-              row={row}
+              row={selectedCellProps.editorProps.row}
               onKeyDown={selectedCellProps.onKeyDown}
-              editorPortalTarget={selectedCellProps.editorPortalTarget}
               editorProps={selectedCellProps.editorProps}
             />
           );

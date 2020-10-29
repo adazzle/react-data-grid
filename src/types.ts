@@ -97,6 +97,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
 export interface SharedEditorProps<TRow> {
   row: Readonly<TRow>;
   rowHeight: number;
+  editorPortalTarget: Element;
   onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }
@@ -106,7 +107,6 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
   top: number;
   left: number;
-  editorPortalTarget: Element;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
@@ -122,7 +122,6 @@ interface SelectedCellPropsBase {
 
 export interface EditCellProps<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
-  editorPortalTarget: Element;
   editorProps: SharedEditorProps<TRow>;
 }
 

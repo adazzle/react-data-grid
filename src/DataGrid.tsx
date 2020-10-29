@@ -764,8 +764,8 @@ function DataGrid<R, SR>({
         mode: 'EDIT',
         idx: selectedPosition.idx,
         onKeyDown: handleKeyDown,
-        editorPortalTarget,
         editorProps: {
+          editorPortalTarget,
           rowHeight,
           row: selectedPosition.row,
           onRowChange: handleRowChange,
