@@ -1,5 +1,4 @@
 import { CellNavigationMode } from '../enums';
-import { canEdit } from './columnUtils';
 import { CalculatedColumn, Position, GroupRow } from '../types';
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -12,8 +11,10 @@ interface IsSelectedCellEditableOpts<R, SR> {
 export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, isGroupRow }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
-  if (column.rowGroup === true || isGroupRow(row)) return false;
-  return canEdit<R, SR>(column, row);
+  return column.editor != null
+    && !column.rowGroup
+    && !isGroupRow(row)
+    && (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false;
 }
 
 interface GetNextSelectedCellPositionOpts<R, SR> {
