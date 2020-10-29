@@ -33,7 +33,6 @@ import {
   Filters,
   Position,
   RowRendererProps,
-  RowsUpdateEvent,
   SelectRowEvent,
   CommitEvent,
   SelectedCellProps,
@@ -89,14 +88,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   summaryRows?: readonly SR[];
   /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
-  /**
-   * Callback called whenever row data is updated
-   * When editing is enabled, this callback will be called for the following scenarios
-   * 1. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
-   * 2. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
-   * 3. Update all cells under a given cell by double clicking the cell's fill handle.
-   */
-  onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
   onRowsChange?: (rows: R[]) => void;
 
   /**
@@ -178,7 +169,6 @@ function DataGrid<R, SR>({
   rows: rawRows,
   summaryRows,
   rowKeyGetter,
-  onRowsUpdate,
   onRowsChange,
   // Dimensions props
   rowHeight = 35,
@@ -461,19 +451,6 @@ function DataGrid<R, SR>({
 
   function getRawRowIdx(rowIdx: number) {
     return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
-  }
-
-  function handleCommit({ cellKey, rowIdx, updated }: CommitEvent) {
-    rowIdx = getRawRowIdx(rowIdx);
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: rowIdx,
-      updated,
-      action: 'CELL_UPDATE'
-    });
-
-    closeEditor();
   }
 
   function commitEditorChanges() {
@@ -789,14 +766,6 @@ function DataGrid<R, SR>({
         idx: selectedPosition.idx,
         onKeyDown: handleKeyDown,
         editorPortalTarget,
-        editorContainerProps: {
-          rowHeight,
-          scrollLeft,
-          scrollTop,
-          firstEditorKeyPress: selectedPosition.key,
-          onCommit: handleCommit,
-          onCommitCancel: closeEditor
-        },
         editorProps: {
           rowHeight,
           row: selectedPosition.row,

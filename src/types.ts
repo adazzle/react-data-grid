@@ -116,15 +116,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
-export interface SharedEditorContainerProps {
-  firstEditorKeyPress: string | null;
-  scrollLeft: number;
-  scrollTop: number;
-  rowHeight: number;
-  onCommit: (e: CommitEvent) => void;
-  onCommitCancel: () => void;
-}
-
 interface SelectedCellPropsBase {
   idx: number;
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
@@ -133,7 +124,6 @@ interface SelectedCellPropsBase {
 export interface EditCellProps<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
   editorPortalTarget: Element;
-  editorContainerProps: SharedEditorContainerProps;
   editorProps: SharedEditorProps<TRow>;
 }
 
@@ -198,15 +188,6 @@ export interface CommitEvent<TUpdatedValue = never> {
   cellKey: string;
   rowIdx: number;
   updated: TUpdatedValue;
-}
-
-export interface RowsUpdateEvent<TUpdatedValue = never> {
-  cellKey: string;
-  fromRow: number;
-  toRow: number;
-  updated: TUpdatedValue;
-  action: UpdateActions;
-  fromCellKey?: string;
 }
 
 export interface SelectRowEvent {

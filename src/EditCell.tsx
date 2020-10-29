@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
 import EditorContainer from './editors/EditorContainer';
-import { CellRendererProps, SharedEditorContainerProps, SharedEditorProps } from './types';
+import { CellRendererProps, SharedEditorProps } from './types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'rowIdx'
@@ -12,7 +12,6 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
 
 interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   editorPortalTarget: Element;
-  editorContainerProps: SharedEditorContainerProps;
   editorProps: SharedEditorProps<R>;
 }
 
@@ -22,7 +21,6 @@ export default function EditCell<R, SR>({
   row,
   rowIdx,
   editorPortalTarget,
-  editorContainerProps,
   editorProps,
   onKeyDown,
   ...props
