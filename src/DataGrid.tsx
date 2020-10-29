@@ -93,10 +93,9 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /**
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
-   * 1. Using the supplied editor of the column. The default editor is the SimpleTextEditor.
-   * 2. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
-   * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
-   * 4. Update all cells under a given cell by double clicking the cell's fill handle.
+   * 1. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
+   * 2. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
+   * 3. Update all cells under a given cell by double clicking the cell's fill handle.
    */
   onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
   onRowsChange?: (rows: R[]) => void;
