@@ -26,7 +26,8 @@
   - `column.minWidth`
   - `column.maxWidth`
   - `column.headerCellClass`
-  - `column.editor2`
+  - `column.editor`
+    - New API
   - `column.editorOptions`
     - More info in [#2102](https://github.com/adazzle/react-data-grid/pull/2102)
   - `column.groupFormatter`
@@ -96,6 +97,7 @@
   - ⚠️ `onGridSort` to `onSort`
   - ⚠️ `onGridRowsUpdated` to `onRowsUpdate`
   - ⚠️ `emptyRowsView` to `emptyRowsRenderer`
+  - ⚠️ `rowKey` to `rowKeyGetter`
   - ⚠️ `rowData` to `row`
   - ⚠️ `fromRowData` to `fromRow`
   - ⚠️ `idx` to `rowIdx` in `Row` renderer
@@ -107,7 +109,7 @@
     - Added `column.summaryCellClass` and `column.summaryFormatter` props
     - `column.formatter` isn't used anymore to render summary row cells.
   - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
-  - ⚠️ the `rowKey` prop is now required for row selection.
+  - ⚠️ the `rowKeyGetter` prop is now required for row selection.
   - ⚠️ `column.cellClass` does not affect header cells anymore.
   - ⚠️ `onScroll` will directly pass the UIEvent rather than the scrollLeft and scrollRight only.
 

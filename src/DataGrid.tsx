@@ -18,7 +18,7 @@ import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
 import {
-  assertIsValidKey,
+  assertIsValidKeyGetter,
   getColumnScrollPosition,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
@@ -74,7 +74,7 @@ type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
   | 'style'
 >;
 
-export interface DataGridProps<R, K extends keyof R, SR = unknown> extends SharedDivProps {
+export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /**
    * Grid and data Props
    */
@@ -87,15 +87,14 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
   summaryRows?: readonly SR[];
-  /** The primary key property of each row */
-  rowKey?: K;
+  /** The getter should return a unique key for each row */
+  rowKeyGetter?: (row: R) => React.Key;
   /**
    * Callback called whenever row data is updated
    * When editing is enabled, this callback will be called for the following scenarios
-   * 1. Using the supplied editor of the column. The default editor is the SimpleTextEditor.
-   * 2. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
-   * 3. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
-   * 4. Update all cells under a given cell by double clicking the cell's fill handle.
+   * 1. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
+   * 2. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
+   * 3. Update all cells under a given cell by double clicking the cell's fill handle.
    */
   onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
   onRowsChange?: (rows: R[]) => void;
@@ -114,9 +113,9 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
    * Feature props
    */
   /** Set of selected row keys */
-  selectedRows?: ReadonlySet<R[K]>;
+  selectedRows?: ReadonlySet<React.Key>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?: (selectedRows: Set<R[K]>) => void;
+  onSelectedRowsChange?: (selectedRows: Set<React.Key>) => void;
   /** The key of the column which is currently being sorted */
   sortColumn?: string;
   /** The direction to sort the sortColumn*/
@@ -173,12 +172,12 @@ export interface DataGridProps<R, K extends keyof R, SR = unknown> extends Share
  *
  * <DataGrid columns={columns} rows={rows} />
 */
-function DataGrid<R, K extends keyof R, SR>({
+function DataGrid<R, SR>({
   // Grid and data Props
   columns: rawColumns,
   rows: rawRows,
   summaryRows,
-  rowKey,
+  rowKeyGetter,
   onRowsUpdate,
   onRowsChange,
   // Dimensions props
@@ -220,7 +219,7 @@ function DataGrid<R, K extends keyof R, SR>({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy
-}: DataGridProps<R, K, SR>, ref: React.Ref<DataGridHandle>) {
+}: DataGridProps<R, SR>, ref: React.Ref<DataGridHandle>) {
   /**
    * states
    */
@@ -304,24 +303,25 @@ function DataGrid<R, K extends keyof R, SR>({
     if (!onSelectedRowsChange) return;
 
     const handleRowSelectionChange = ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => {
-      assertIsValidKey(rowKey);
+      assertIsValidKeyGetter(rowKeyGetter);
       const newSelectedRows = new Set(selectedRows);
       const row = rows[rowIdx];
       if (isGroupRow(row)) {
         for (const childRow of row.childRows) {
+          const rowKey = rowKeyGetter(childRow);
           if (checked) {
-            newSelectedRows.add(childRow[rowKey]);
+            newSelectedRows.add(rowKey);
           } else {
-            newSelectedRows.delete(childRow[rowKey]);
+            newSelectedRows.delete(rowKey);
           }
         }
         onSelectedRowsChange(newSelectedRows);
         return;
       }
 
-      const rowId = row[rowKey];
+      const rowKey = rowKeyGetter(row);
       if (checked) {
-        newSelectedRows.add(rowId);
+        newSelectedRows.add(rowKey);
         const previousRowIdx = lastSelectedRowIdx.current;
         lastSelectedRowIdx.current = rowIdx;
         if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
@@ -329,11 +329,11 @@ function DataGrid<R, K extends keyof R, SR>({
           for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
             const row = rows[i];
             if (isGroupRow(row)) continue;
-            newSelectedRows.add(row[rowKey]);
+            newSelectedRows.add(rowKeyGetter(row));
           }
         }
       } else {
-        newSelectedRows.delete(rowId);
+        newSelectedRows.delete(rowKey);
         lastSelectedRowIdx.current = -1;
       }
 
@@ -341,7 +341,7 @@ function DataGrid<R, K extends keyof R, SR>({
     };
 
     return eventBus.subscribe('SelectRow', handleRowSelectionChange);
-  }, [eventBus, isGroupRow, onSelectedRowsChange, rowKey, rows, selectedRows]);
+  });
 
   useEffect(() => {
     return eventBus.subscribe('SelectCell', selectCell);
@@ -476,9 +476,9 @@ function DataGrid<R, K extends keyof R, SR>({
     closeEditor();
   }
 
-  function commitEditor2Changes() {
+  function commitEditorChanges() {
     if (
-      columns[selectedPosition.idx]?.editor2 === undefined
+      columns[selectedPosition.idx]?.editor === undefined
       || selectedPosition.mode === 'SELECT'
       || selectedPosition.row === selectedPosition.originalRow) {
       return;
@@ -530,7 +530,7 @@ function DataGrid<R, K extends keyof R, SR>({
     if (selectedPosition.mode === 'EDIT') {
       if (key === 'Enter') {
         // Custom editors can listen for the event and stop propagation to prevent commit
-        commitEditor2Changes();
+        commitEditorChanges();
         closeEditor();
       }
       return;
@@ -621,7 +621,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function handleOnClose(commitChanges?: boolean) {
     if (commitChanges) {
-      commitEditor2Changes();
+      commitEditorChanges();
     }
     closeEditor();
   }
@@ -640,7 +640,7 @@ function DataGrid<R, K extends keyof R, SR>({
 
   function selectCell(position: Position, enableEditor = false): void {
     if (!isCellWithinBounds(position)) return;
-    commitEditor2Changes();
+    commitEditorChanges();
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
@@ -797,7 +797,7 @@ function DataGrid<R, K extends keyof R, SR>({
           onCommit: handleCommit,
           onCommitCancel: closeEditor
         },
-        editor2Props: {
+        editorProps: {
           rowHeight,
           row: selectedPosition.row,
           onRowChange: handleRowChange,
@@ -841,7 +841,7 @@ function DataGrid<R, K extends keyof R, SR>({
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
-            isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(cr[rowKey!]))}
+            isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)))}
             eventBus={eventBus}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
@@ -851,14 +851,11 @@ function DataGrid<R, K extends keyof R, SR>({
       }
 
       startRowIndex++;
-      let key: string | number = hasGroups ? startRowIndex : rowIdx;
+      let key: React.Key = hasGroups ? startRowIndex : rowIdx;
       let isRowSelected = false;
-      if (rowKey !== undefined) {
-        const rowId = row[rowKey];
-        isRowSelected = selectedRows?.has(rowId) ?? false;
-        if (typeof rowId === 'string' || typeof rowId === 'number') {
-          key = rowId;
-        }
+      if (typeof rowKeyGetter === 'function') {
+        key = rowKeyGetter(row);
+        isRowSelected = selectedRows?.has(key) ?? false;
       }
 
       rowElements.push(
@@ -917,8 +914,8 @@ function DataGrid<R, K extends keyof R, SR>({
       ref={gridRef}
       onScroll={handleScroll}
     >
-      <HeaderRow<R, K, SR>
-        rowKey={rowKey}
+      <HeaderRow<R, SR>
+        rowKeyGetter={rowKeyGetter}
         rows={rawRows}
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
@@ -961,6 +958,4 @@ function DataGrid<R, K extends keyof R, SR>({
   );
 }
 
-export default forwardRef(
-  DataGrid as React.ForwardRefRenderFunction<DataGridHandle>
-) as <R, K extends keyof R, SR = unknown>(props: DataGridProps<R, K, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;
+export default forwardRef(DataGrid) as <R, SR = unknown>(props: DataGridProps<R, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;

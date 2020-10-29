@@ -1,33 +1,32 @@
-import React, { forwardRef, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { EditorContainer, EditorContainer2, EditorPortal } from './editors';
-import { CellRendererProps, SharedEditorContainerProps, SharedEditor2Props } from './types';
-import { useCombinedRefs } from './hooks';
+import EditorContainer from './editors/EditorContainer';
+import { CellRendererProps, SharedEditorContainerProps, SharedEditorProps } from './types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
-| 'rowIdx'
-| 'row'
-| 'column'
+  | 'rowIdx'
+  | 'row'
+  | 'column'
 >;
 
 interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   editorPortalTarget: Element;
   editorContainerProps: SharedEditorContainerProps;
-  editor2Props: SharedEditor2Props<R>;
+  editorProps: SharedEditorProps<R>;
 }
 
-function EditCell<R, SR>({
+export default function EditCell<R, SR>({
   className,
   column,
   row,
   rowIdx,
   editorPortalTarget,
   editorContainerProps,
-  editor2Props,
+  editorProps,
   onKeyDown,
   ...props
-}: EditCellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+}: EditCellRendererProps<R, SR>) {
   const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
 
   const cellRef = useCallback(node => {
@@ -57,39 +56,16 @@ function EditCell<R, SR>({
     const gridLeft = left + docLeft;
     const gridTop = top + docTop;
 
-    if (column.editor2 !== undefined) {
-      return (
-        <EditorContainer2
-          {...editor2Props}
-          editorPortalTarget={editorPortalTarget}
-          rowIdx={rowIdx}
-          column={column}
-          left={gridLeft}
-          top={gridTop}
-        />
-      );
-    }
-
-    const editor = (
-      <EditorContainer<R, SR>
-        {...editorContainerProps}
+    return (
+      <EditorContainer
+        {...editorProps}
+        editorPortalTarget={editorPortalTarget}
         rowIdx={rowIdx}
-        row={row}
         column={column}
         left={gridLeft}
         top={gridTop}
       />
     );
-
-    if (column.editorOptions?.createPortal !== false) {
-      return (
-        <EditorPortal target={editorPortalTarget}>
-          {editor}
-        </EditorPortal>
-      );
-    }
-
-    return editor;
   }
 
   return (
@@ -97,7 +73,7 @@ function EditCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected
-      ref={useCombinedRefs(cellRef, ref)}
+      ref={cellRef}
       className={className}
       style={{
         width: column.width,
@@ -110,5 +86,3 @@ function EditCell<R, SR>({
     </div>
   );
 }
-
-export default forwardRef(EditCell) as <R, SR = unknown>(props: EditCellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

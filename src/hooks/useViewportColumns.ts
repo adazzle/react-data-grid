@@ -5,12 +5,12 @@ import { getColumnMetrics } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { ValueFormatter } from '../formatters';
 
-type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
+type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'defaultColumnOptions'
   | 'rowGrouper'
 >;
 
-interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
+interface ViewportColumnsArgs<R, SR> extends SharedDataGridProps<R, SR> {
   rawColumns: readonly Column<R, SR>[];
   rawGroupBy?: readonly string[];
   viewportWidth: number;
@@ -18,7 +18,7 @@ interface ViewportColumnsArgs<R, K extends keyof R, SR> extends SharedDataGridPr
   columnWidths: ReadonlyMap<string, number>;
 }
 
-export function useViewportColumns<R, K extends keyof R, SR>({
+export function useViewportColumns<R, SR>({
   rawColumns,
   columnWidths,
   viewportWidth,
@@ -26,7 +26,7 @@ export function useViewportColumns<R, K extends keyof R, SR>({
   defaultColumnOptions,
   rawGroupBy,
   rowGrouper
-}: ViewportColumnsArgs<R, K, SR>) {
+}: ViewportColumnsArgs<R, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;

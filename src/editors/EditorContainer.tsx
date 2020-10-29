@@ -1,185 +1,32 @@
-import React, { KeyboardEvent, useRef, useState, useLayoutEffect, useCallback, useEffect } from 'react';
-import clsx from 'clsx';
+import React from 'react';
+import { createPortal } from 'react-dom';
 
-import { CalculatedColumn, Editor, SharedEditorContainerProps } from '../types';
+import { EditorProps } from '../types';
 import { useClickOutside } from '../hooks';
-import SimpleTextEditor from './SimpleTextEditor';
-import { preventDefault } from '../utils';
-
-export interface EditorContainerProps<R, SR> extends SharedEditorContainerProps {
-  rowIdx: number;
-  row: R;
-  column: CalculatedColumn<R, SR>;
-  top: number;
-  left: number;
-}
 
 export default function EditorContainer<R, SR>({
-  rowIdx,
-  column,
   row,
-  rowHeight,
-  left,
-  top,
-  onCommit,
-  onCommitCancel,
-  scrollLeft,
-  scrollTop,
-  firstEditorKeyPress: key
-}: EditorContainerProps<R, SR>) {
-  const editorRef = useRef<Editor>(null);
-  const changeCommitted = useRef(false);
-  const changeCanceled = useRef(false);
-  const [isValid, setValid] = useState(true);
-  const prevScrollLeft = useRef(scrollLeft);
-  const prevScrollTop = useRef(scrollTop);
-  const isUnmounting = useRef(false);
-  const onClickCapture = useClickOutside(commit);
+  column,
+  onRowChange,
+  ...props
+}: EditorProps<R, SR>) {
+  const onClickCapture = useClickOutside(() => onRowChange(row, true));
+  if (column.editor === undefined) return null;
 
-  const getInputNode = useCallback(() => editorRef.current?.getInputNode(), []);
-
-  const commitCancel = useCallback(() => {
-    changeCanceled.current = true;
-    onCommitCancel();
-  }, [onCommitCancel]);
-
-  useLayoutEffect(() => {
-    const inputNode = getInputNode();
-
-    if (inputNode instanceof HTMLElement) {
-      inputNode.focus();
-    }
-    if (inputNode instanceof HTMLInputElement) {
-      inputNode.select();
-    }
-  }, [getInputNode]);
-
-  // close editor when scrolling
-  useEffect(() => {
-    if (scrollLeft !== prevScrollLeft.current || scrollTop !== prevScrollTop.current) {
-      commitCancel();
-    }
-  }, [commitCancel, scrollLeft, scrollTop]);
-
-  useEffect(() => () => {
-    isUnmounting.current = true;
-  }, []);
-
-  // commit changes when editor is closed
-  useEffect(() => () => {
-    if (isUnmounting.current && !changeCommitted.current && !changeCanceled.current) {
-      commit();
-    }
-  });
-
-  function getInitialValue() {
-    const value = row[column.key as keyof R];
-    if (key === 'Delete' || key === 'Backspace') {
-      return '';
-    }
-    if (key === 'Enter' || key === 'F2') {
-      return value;
-    }
-
-    return key ?? value;
-  }
-
-  function isCaretAtBeginningOfInput(): boolean {
-    const inputNode = getInputNode();
-    return inputNode instanceof HTMLInputElement
-      && inputNode.selectionEnd === 0;
-  }
-
-  function isCaretAtEndOfInput(): boolean {
-    const inputNode = getInputNode();
-    return inputNode instanceof HTMLInputElement
-      && inputNode.selectionStart === inputNode.value.length;
-  }
-
-  function editorHasResults(): boolean {
-    return editorRef.current?.hasResults?.() ?? false;
-  }
-
-  function editorIsSelectOpen(): boolean {
-    return editorRef.current?.isSelectOpen?.() ?? false;
-  }
-
-  function isNewValueValid(value: unknown): boolean {
-    const isValid = editorRef.current?.validate?.(value);
-    if (typeof isValid === 'boolean') {
-      setValid(isValid);
-      return isValid;
-    }
-    return true;
-  }
-
-  function preventDefaultNavigation(key: string): boolean {
-    return (key === 'ArrowLeft' && !isCaretAtBeginningOfInput())
-      || (key === 'ArrowRight' && !isCaretAtEndOfInput())
-      || (key === 'Escape' && editorIsSelectOpen())
-      || (['ArrowUp', 'ArrowDown'].includes(key) && editorHasResults());
-  }
-
-  function commit(): void {
-    if (!editorRef.current) return;
-    const updated = editorRef.current.getValue();
-    if (isNewValueValid(updated)) {
-      changeCommitted.current = true;
-      const cellKey = column.key;
-      onCommit({ cellKey, rowIdx, updated });
-    }
-  }
-
-  function onKeyDown(e: KeyboardEvent) {
-    if (preventDefaultNavigation(e.key)) {
-      e.stopPropagation();
-    } else if (['Enter', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-      commit();
-    } else if (e.key === 'Escape') {
-      commitCancel();
-    }
-  }
-
-  function createEditor() {
-    // return custom column editor or SimpleEditor if none specified
-    if (column.editor) {
-      return (
-        <column.editor
-          ref={editorRef}
-          column={column}
-          value={getInitialValue() as R[keyof R & string] & R[keyof R & number] & R[keyof R & symbol]}
-          row={row}
-          height={rowHeight}
-          onCommit={commit}
-          onCommitCancel={commitCancel}
-          onOverrideKeyDown={onKeyDown}
-        />
-      );
-    }
-
-    return (
-      <SimpleTextEditor
-        ref={editorRef as unknown as React.RefObject<SimpleTextEditor>}
+  const editor = (
+    <div className="rdg-editor-container" onClickCapture={onClickCapture}>
+      <column.editor
+        row={row}
         column={column}
-        value={getInitialValue() as string}
-        onCommit={commit}
+        onRowChange={onRowChange}
+        {...props}
       />
-    );
-  }
-
-  const className = clsx('rdg-editor-container', {
-    'rdg-editor-invalid': !isValid
-  });
-
-  return (
-    <div
-      className={className}
-      style={{ height: rowHeight, width: column.width, left, top }}
-      onClickCapture={onClickCapture}
-      onKeyDown={onKeyDown}
-      onContextMenu={preventDefault}
-    >
-      {createEditor()}
     </div>
   );
+
+  if (column.editorOptions?.createPortal) {
+    return createPortal(editor, props.editorPortalTarget);
+  }
+
+  return editor;
 }
