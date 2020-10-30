@@ -1,6 +1,6 @@
 import faker from 'faker';
 import React, { useState, useCallback, useRef } from 'react';
-import DataGrid, { Column, SelectColumn, DataGridHandle, RowsUpdateEvent, TextEditor } from '../../src';
+import DataGrid, { Column, SelectColumn, DataGridHandle, TextEditor, OnFillEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -186,27 +186,19 @@ export function AllFeatures() {
   const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
-  const handleRowUpdate = useCallback(({ fromRow, toRow, updated, action }: RowsUpdateEvent<Partial<Row>>): void => {
-    const newRows = [...rows];
-    let start: number;
-    let end: number;
-
-    if (action === 'COPY_PASTE') {
-      start = toRow;
-      end = toRow;
-    } else {
-      start = Math.min(fromRow, toRow);
-      end = Math.max(fromRow, toRow);
-    }
-
-    for (let i = start; i <= end; i++) {
-      newRows[i] = { ...newRows[i], ...updated };
-    }
-
-    setRows(newRows);
-  }, [rows]);
-
   const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
+
+  const handleFill = useCallback(({ column, sourceRow, targetRows }: OnFillEvent<Row>) => {
+    const sourceValue = sourceRow[column.key as keyof Row];
+    setRows(prevRows => {
+      return prevRows.map(row => {
+        if (targetRows.includes(row)) {
+          return { ...row, [column.key]: sourceValue };
+        }
+        return row;
+      });
+    });
+  }, []);
 
   async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     if (!isAtBottom(event)) return;
@@ -227,8 +219,8 @@ export function AllFeatures() {
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}
-        onRowsUpdate={handleRowUpdate}
         onRowsChange={setRows}
+        onFill={handleFill}
         rowHeight={30}
         selectedRows={selectedRows}
         onScroll={handleScroll}

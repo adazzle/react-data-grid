@@ -187,6 +187,11 @@ export interface SelectRowEvent {
   checked: boolean;
   isShiftClick: boolean;
 }
+export interface OnFillEvent<TRow, TSummaryRow = unknown> {
+  column: Column<TRow, TSummaryRow>;
+  sourceRow: TRow;
+  targetRows: TRow[];
+}
 
 export type Dictionary<T> = Record<string, T>;
 
