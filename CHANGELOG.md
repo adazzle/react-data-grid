@@ -14,8 +14,6 @@
       - ⚠️ This replaces the `enableHeaderFilters` and `column.filterable` props
     - `filters`
     - `onFiltersChange`
-    - `enableCellCopyPaste`
-    - `enableCellDragAndDrop`
     - `rows`
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
     - `rowClass`

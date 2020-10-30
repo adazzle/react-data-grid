@@ -147,8 +147,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    */
   /** Toggles whether filters row is displayed or not */
   enableFilters?: boolean;
-  enableCellCopyPaste?: boolean;
-  enableCellDragAndDrop?: boolean;
   cellNavigationMode?: CellNavigationMode;
 
   /**
@@ -202,8 +200,6 @@ function DataGrid<R, SR>({
   onPaste,
   // Toggles and modes
   enableFilters = false,
-  enableCellCopyPaste = false,
-  enableCellDragAndDrop = false,
   cellNavigationMode = 'NONE',
   // Miscellaneous
   editorPortalTarget = document.body,
@@ -269,10 +265,8 @@ function DataGrid<R, SR>({
   const hasGroups = groupBy.length > 0 && rowGrouper;
   const minColIdx = hasGroups ? -1 : 0;
 
-  if (hasGroups) {
-    // Cell drag is not supported on a treegrid
-    enableCellDragAndDrop = false;
-  }
+  // Cell drag is not supported on a treegrid
+  const enableCellDragAndDrop = hasGroups ? false : onFill !== undefined;
 
   /**
    * effects
@@ -389,7 +383,7 @@ function DataGrid<R, SR>({
     const row = rows[selectedPosition.rowIdx];
 
     if (
-      enableCellCopyPaste
+      onPaste
       && isCtrlKeyHeldDown(event)
       && isCellWithinBounds(selectedPosition)
       && !isGroupRow(row)

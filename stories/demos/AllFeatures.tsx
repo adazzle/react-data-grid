@@ -233,8 +233,6 @@ export function AllFeatures() {
         onScroll={handleScroll}
         onSelectedRowsChange={setSelectedRows}
         rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
-        enableCellCopyPaste
-        enableCellDragAndDrop
       />
       {isLoading && <div className="load-more-rows-tag">Loading more rows...</div>}
     </div>
