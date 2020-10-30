@@ -59,7 +59,7 @@ function Row<R, SR = unknown>({
               key={column.key}
               rowIdx={rowIdx}
               column={column}
-              row={selectedCellProps.editorProps.row}
+              row={row}
               onKeyDown={selectedCellProps.onKeyDown}
               editorProps={selectedCellProps.editorProps}
             />

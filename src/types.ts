@@ -187,6 +187,7 @@ export interface SelectRowEvent {
   checked: boolean;
   isShiftClick: boolean;
 }
+
 export interface FillEvent<TRow> {
   columnKey: string;
   sourceRow: TRow;
