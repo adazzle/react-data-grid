@@ -534,12 +534,15 @@ function DataGrid<R, SR>({
   }
 
   function handleDragEnd() {
-    if (latestDraggedOverRowIdx.current === undefined) return;
+    const overRowIdx = latestDraggedOverRowIdx.current;
+    if (overRowIdx === undefined) return;
 
     const { idx, rowIdx } = selectedPosition;
     const column = columns[idx];
     const sourceRow = rawRows[rowIdx];
-    const targetRows = rawRows.slice(rowIdx + 1, latestDraggedOverRowIdx.current + 1);
+    const targetRows = rowIdx < overRowIdx
+      ? rawRows.slice(rowIdx + 1, overRowIdx + 1)
+      : rawRows.slice(overRowIdx, rowIdx);
 
     onFill?.({ column, sourceRow, targetRows });
     setDraggedOverRowIdx(undefined);
