@@ -495,7 +495,7 @@ function DataGrid<R, SR>({
       sourceRow: copiedCell.row,
       sourceColumnKey: copiedCell.column.key,
       targetRow,
-      targetColumnKey: columns[selectedPosition.idx].key
+      targetColumnKey: columns[idx].key
     });
 
     const updatedRows = [...rawRows];
