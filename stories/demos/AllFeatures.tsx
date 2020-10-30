@@ -188,27 +188,13 @@ export function AllFeatures() {
 
   const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
-  const handleFill = useCallback(({ column, sourceRow, targetRows }: FillEvent<Row>) => {
-    const sourceValue = sourceRow[column.key as keyof Row];
-    setRows(prevRows => {
-      return prevRows.map(row => {
-        if (targetRows.includes(row)) {
-          return { ...row, [column.key]: sourceValue };
-        }
-        return row;
-      });
-    });
-  }, []);
+  function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
+    return targetRows.map(row => ({ ...row, [columnKey as keyof Row]: sourceRow[columnKey as keyof Row] }));
+  }
 
-  const handlePaste = useCallback(({ sourceColumn, sourceRow, targetColumn, targetRow }: PasteEvent<Row>) => {
-    setRows(prevRows => {
-      const newRows = [...prevRows];
-      const targetRowIndex = newRows.indexOf(targetRow);
-      const sourceValue = sourceRow[sourceColumn.key as keyof Row];
-      newRows[targetRowIndex] = { ...newRows[targetRowIndex], [targetColumn.key]: sourceValue };
-      return newRows;
-    });
-  }, []);
+  function handlePaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>): Row {
+    return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
+  }
 
   async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     if (!isAtBottom(event)) return;

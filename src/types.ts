@@ -187,16 +187,16 @@ export interface SelectRowEvent {
   checked: boolean;
   isShiftClick: boolean;
 }
-export interface FillEvent<TRow, TSummaryRow = unknown> {
-  column: Column<TRow, TSummaryRow>;
+export interface FillEvent<TRow> {
+  columnKey: string;
   sourceRow: TRow;
   targetRows: TRow[];
 }
 
-export interface PasteEvent<TRow, TSummaryRow = unknown> {
-  sourceColumn: Column<TRow, TSummaryRow>;
+export interface PasteEvent<TRow> {
+  sourceColumnKey: string;
   sourceRow: TRow;
-  targetColumn: Column<TRow, TSummaryRow>;
+  targetColumnKey: string;
   targetRow: TRow;
 }
 
