@@ -861,7 +861,6 @@ function DataGrid<R, SR>({
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx >= rows.length) {
     setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
-    setCopiedCell(null);
     setDraggedOverRowIdx(undefined);
   }
 
