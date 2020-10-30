@@ -10,7 +10,7 @@
     - `onPaste`
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
-    - `enableFilters`
+    - `enableFilterRow`
       - ⚠️ This replaces the `enableHeaderFilters` and `column.filterable` props
     - `filters`
     - `onFiltersChange`
