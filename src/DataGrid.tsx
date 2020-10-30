@@ -388,6 +388,7 @@ function DataGrid<R, SR>({
       && isCellWithinBounds(selectedPosition)
       && !isGroupRow(row)
       && selectedPosition.idx !== -1
+      && selectedPosition.mode === 'SELECT'
     ) {
       // event.key may differ by keyboard input language, so we use event.keyCode instead
       // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
