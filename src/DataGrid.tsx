@@ -487,7 +487,6 @@ function DataGrid<R, SR>({
       || !onRowsChange
       || copiedCell === null
       || !isCellEditable(selectedPosition)
-      || (copiedCell.column.idx === idx && copiedCell.row === targetRow)
     ) {
       return;
     }
