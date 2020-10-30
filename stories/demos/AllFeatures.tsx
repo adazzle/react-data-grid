@@ -195,6 +195,14 @@ export function AllFeatures() {
   }
 
   function handlePaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>): Row {
+    const incompatibleColumns = ['email', 'zipCode', 'date'];
+    if (
+      sourceColumnKey === 'avatar'
+      || ['id', 'avatar'].includes(targetColumnKey)
+      || ((incompatibleColumns.includes(targetColumnKey) || incompatibleColumns.includes(sourceColumnKey)) && sourceColumnKey !== targetColumnKey)) {
+      return targetRow;
+    }
+
     return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
