@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UpdateActions } from './enums';
 import EventBus from './EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -98,6 +97,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
 export interface SharedEditorProps<TRow> {
   row: Readonly<TRow>;
   rowHeight: number;
+  editorPortalTarget: Element;
   onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }
@@ -107,22 +107,12 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
   top: number;
   left: number;
-  editorPortalTarget: Element;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
-}
-
-export interface SharedEditorContainerProps {
-  firstEditorKeyPress: string | null;
-  scrollLeft: number;
-  scrollTop: number;
-  rowHeight: number;
-  onCommit: (e: CommitEvent) => void;
-  onCommitCancel: () => void;
 }
 
 interface SelectedCellPropsBase {
@@ -132,8 +122,6 @@ interface SelectedCellPropsBase {
 
 export interface EditCellProps<TRow> extends SelectedCellPropsBase {
   mode: 'EDIT';
-  editorPortalTarget: Element;
-  editorContainerProps: SharedEditorContainerProps;
   editorProps: SharedEditorProps<TRow>;
 }
 
@@ -194,25 +182,23 @@ export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow =
 
 export type Filters = Record<string, any>;
 
-export interface CommitEvent<TUpdatedValue = never> {
-  cellKey: string;
-  rowIdx: number;
-  updated: TUpdatedValue;
-}
-
-export interface RowsUpdateEvent<TUpdatedValue = never> {
-  cellKey: string;
-  fromRow: number;
-  toRow: number;
-  updated: TUpdatedValue;
-  action: UpdateActions;
-  fromCellKey?: string;
-}
-
 export interface SelectRowEvent {
   rowIdx: number;
   checked: boolean;
   isShiftClick: boolean;
+}
+
+export interface FillEvent<TRow> {
+  columnKey: string;
+  sourceRow: TRow;
+  targetRows: TRow[];
+}
+
+export interface PasteEvent<TRow> {
+  sourceColumnKey: string;
+  sourceRow: TRow;
+  targetColumnKey: string;
+  targetRow: TRow;
 }
 
 export type Dictionary<T> = Record<string, T>;

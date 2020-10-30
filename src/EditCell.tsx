@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
 import EditorContainer from './editors/EditorContainer';
-import { CellRendererProps, SharedEditorContainerProps, SharedEditorProps } from './types';
+import { CellRendererProps, SharedEditorProps, Omit } from './types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'rowIdx'
@@ -10,9 +10,7 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'column'
 >;
 
-interface EditCellRendererProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  editorPortalTarget: Element;
-  editorContainerProps: SharedEditorContainerProps;
+interface EditCellProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   editorProps: SharedEditorProps<R>;
 }
 
@@ -21,12 +19,9 @@ export default function EditCell<R, SR>({
   column,
   row,
   rowIdx,
-  editorPortalTarget,
-  editorContainerProps,
   editorProps,
-  onKeyDown,
   ...props
-}: EditCellRendererProps<R, SR>) {
+}: EditCellProps<R, SR>) {
   const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
 
   const cellRef = useCallback(node => {
@@ -59,7 +54,6 @@ export default function EditCell<R, SR>({
     return (
       <EditorContainer
         {...editorProps}
-        editorPortalTarget={editorPortalTarget}
         rowIdx={rowIdx}
         column={column}
         left={gridLeft}
@@ -79,7 +73,6 @@ export default function EditCell<R, SR>({
         width: column.width,
         left: column.left
       }}
-      onKeyDown={onKeyDown}
       {...props}
     >
       {getCellContent()}

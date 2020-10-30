@@ -5,14 +5,15 @@
   - **Props:**
     - `className`
     - `style`
+    - `onRowsChange`
+    - `onFill`
+    - `onPaste`
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
     - `enableFilters`
       - ⚠️ This replaces the `enableHeaderFilters` and `column.filterable` props
     - `filters`
     - `onFiltersChange`
-    - `enableCellCopyPaste`
-    - `enableCellDragAndDrop`
     - `rows`
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
     - `rowClass`
@@ -58,6 +59,8 @@
     - ⚠️ `onGridKeyDown`
     - ⚠️ `onGridKeyUp`
     - ⚠️ `onRowDoubleClick`
+    - ⚠️ `onRowsUpdate`
+      - Use `onRowsChange`, `onFill`, and `onPaste` instead.
     - ⚠️ `onHeaderDrop`
     - ⚠️ `draggableHeaderCell`
       - Check [#2007](https://github.com/adazzle/react-data-grid/pull/2007) on how to migrate
@@ -95,7 +98,6 @@
   - ⚠️ `minHeight` to `height`
   - ⚠️ `minWidth` to `width`
   - ⚠️ `onGridSort` to `onSort`
-  - ⚠️ `onGridRowsUpdated` to `onRowsUpdate`
   - ⚠️ `emptyRowsView` to `emptyRowsRenderer`
   - ⚠️ `rowKey` to `rowKeyGetter`
   - ⚠️ `rowData` to `row`

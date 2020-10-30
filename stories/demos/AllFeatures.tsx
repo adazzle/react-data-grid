@@ -1,6 +1,6 @@
 import faker from 'faker';
-import React, { useState, useCallback, useRef } from 'react';
-import DataGrid, { Column, SelectColumn, DataGridHandle, RowsUpdateEvent, TextEditor } from '../../src';
+import React, { useState, useRef } from 'react';
+import DataGrid, { Column, SelectColumn, DataGridHandle, TextEditor, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -186,27 +186,25 @@ export function AllFeatures() {
   const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
-  const handleRowUpdate = useCallback(({ fromRow, toRow, updated, action }: RowsUpdateEvent<Partial<Row>>): void => {
-    const newRows = [...rows];
-    let start: number;
-    let end: number;
+  function handleAddRow({ newRowIndex }: { newRowIndex: number }) {
+    setRows([...rows, createFakeRowObjectData(newRowIndex)]);
+  }
 
-    if (action === 'COPY_PASTE') {
-      start = toRow;
-      end = toRow;
-    } else {
-      start = Math.min(fromRow, toRow);
-      end = Math.max(fromRow, toRow);
+  function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
+    return targetRows.map(row => ({ ...row, [columnKey as keyof Row]: sourceRow[columnKey as keyof Row] }));
+  }
+
+  function handlePaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>): Row {
+    const incompatibleColumns = ['email', 'zipCode', 'date'];
+    if (
+      sourceColumnKey === 'avatar'
+      || ['id', 'avatar'].includes(targetColumnKey)
+      || ((incompatibleColumns.includes(targetColumnKey) || incompatibleColumns.includes(sourceColumnKey)) && sourceColumnKey !== targetColumnKey)) {
+      return targetRow;
     }
 
-    for (let i = start; i <= end; i++) {
-      newRows[i] = { ...newRows[i], ...updated };
-    }
-
-    setRows(newRows);
-  }, [rows]);
-
-  const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
+    return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
+  }
 
   async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     if (!isAtBottom(event)) return;
@@ -227,15 +225,14 @@ export function AllFeatures() {
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}
-        onRowsUpdate={handleRowUpdate}
         onRowsChange={setRows}
+        onFill={handleFill}
+        onPaste={handlePaste}
         rowHeight={30}
         selectedRows={selectedRows}
         onScroll={handleScroll}
         onSelectedRowsChange={setSelectedRows}
         rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
-        enableCellCopyPaste
-        enableCellDragAndDrop
       />
       {isLoading && <div className="load-more-rows-tag">Loading more rows...</div>}
     </div>

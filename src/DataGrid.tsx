@@ -33,12 +33,12 @@ import {
   Filters,
   Position,
   RowRendererProps,
-  RowsUpdateEvent,
   SelectRowEvent,
-  CommitEvent,
   SelectedCellProps,
   EditCellProps,
-  Dictionary
+  Dictionary,
+  FillEvent,
+  PasteEvent
 } from './types';
 import { CellNavigationMode, SortDirection } from './enums';
 
@@ -89,14 +89,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   summaryRows?: readonly SR[];
   /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
-  /**
-   * Callback called whenever row data is updated
-   * When editing is enabled, this callback will be called for the following scenarios
-   * 1. Copy/pasting the value from one cell to another <kbd>CTRL</kbd>+<kbd>C</kbd>, <kbd>CTRL</kbd>+<kbd>V</kbd>
-   * 2. Update multiple cells by dragging the fill handle of a cell up or down to a destination cell.
-   * 3. Update all cells under a given cell by double clicking the cell's fill handle.
-   */
-  onRowsUpdate?: <E extends RowsUpdateEvent>(event: E) => void;
   onRowsChange?: (rows: R[]) => void;
 
   /**
@@ -129,6 +121,8 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<readonly R[]>;
   expandedGroupIds?: ReadonlySet<unknown>;
   onExpandedGroupIdsChange?: (expandedGroupIds: Set<unknown>) => void;
+  onFill?: (event: FillEvent<R>) => R[];
+  onPaste?: (event: PasteEvent<R>) => R;
 
   /**
    * Custom renderers
@@ -153,8 +147,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    */
   /** Toggles whether filters row is displayed or not */
   enableFilters?: boolean;
-  enableCellCopyPaste?: boolean;
-  enableCellDragAndDrop?: boolean;
   cellNavigationMode?: CellNavigationMode;
 
   /**
@@ -178,7 +170,6 @@ function DataGrid<R, SR>({
   rows: rawRows,
   summaryRows,
   rowKeyGetter,
-  onRowsUpdate,
   onRowsChange,
   // Dimensions props
   rowHeight = 35,
@@ -205,10 +196,10 @@ function DataGrid<R, SR>({
   onScroll,
   onColumnResize,
   onSelectedCellChange,
+  onFill,
+  onPaste,
   // Toggles and modes
   enableFilters = false,
-  enableCellCopyPaste = false,
-  enableCellDragAndDrop = false,
   cellNavigationMode = 'NONE',
   // Miscellaneous
   editorPortalTarget = document.body,
@@ -228,14 +219,9 @@ function DataGrid<R, SR>({
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>({ idx: -1, rowIdx: -1, mode: 'SELECT' });
-  const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
+  const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-
-  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
-    setOverRowIdx(rowIdx);
-    latestDraggedOverRowIdx.current = rowIdx;
-  }, []);
 
   /**
    * refs
@@ -279,10 +265,8 @@ function DataGrid<R, SR>({
   const hasGroups = groupBy.length > 0 && rowGrouper;
   const minColIdx = hasGroups ? -1 : 0;
 
-  if (hasGroups) {
-    // Cell drag is not supported on a treegrid
-    enableCellDragAndDrop = false;
-  }
+  // Cell drag is not supported on a treegrid
+  const enableCellDragAndDrop = hasGroups ? false : onFill !== undefined;
 
   /**
    * effects
@@ -376,18 +360,35 @@ function DataGrid<R, SR>({
   }));
 
   /**
-   * event handlers
-   */
+  * callbacks
+  */
+  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
+    const newColumnWidths = new Map(columnWidths);
+    newColumnWidths.set(column.key, width);
+    setColumnWidths(newColumnWidths);
+
+    onColumnResize?.(column.idx, width);
+  }, [columnWidths, onColumnResize]);
+
+  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
+    setOverRowIdx(rowIdx);
+    latestDraggedOverRowIdx.current = rowIdx;
+  }, []);
+
+  /**
+  * event handlers
+  */
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const { key, keyCode } = event;
     const row = rows[selectedPosition.rowIdx];
 
     if (
-      enableCellCopyPaste
+      onPaste
       && isCtrlKeyHeldDown(event)
       && isCellWithinBounds(selectedPosition)
       && !isGroupRow(row)
       && selectedPosition.idx !== -1
+      && selectedPosition.mode === 'SELECT'
     ) {
       // event.key may differ by keyboard input language, so we use event.keyCode instead
       // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
@@ -420,7 +421,7 @@ function DataGrid<R, SR>({
 
     switch (event.key) {
       case 'Escape':
-        setCopiedPosition(null);
+        setCopiedCell(null);
         closeEditor();
         return;
       case 'ArrowUp':
@@ -451,29 +452,8 @@ function DataGrid<R, SR>({
     onScroll?.(event);
   }
 
-  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
-    const newColumnWidths = new Map(columnWidths);
-    newColumnWidths.set(column.key, width);
-    setColumnWidths(newColumnWidths);
-
-    onColumnResize?.(column.idx, width);
-  }, [columnWidths, onColumnResize]);
-
   function getRawRowIdx(rowIdx: number) {
     return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
-  }
-
-  function handleCommit({ cellKey, rowIdx, updated }: CommitEvent) {
-    rowIdx = getRawRowIdx(rowIdx);
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: rowIdx,
-      updated,
-      action: 'CELL_UPDATE'
-    });
-
-    closeEditor();
   }
 
   function commitEditorChanges() {
@@ -491,33 +471,32 @@ function DataGrid<R, SR>({
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    const rawRowIdx = getRawRowIdx(rowIdx);
-    const value = rawRows[rawRowIdx][columns[idx].key as keyof R];
-    setCopiedPosition({ idx, rowIdx, value });
+    setCopiedCell({ row: rawRows[getRawRowIdx(rowIdx)], columnKey: columns[idx].key });
   }
 
   function handlePaste() {
+    const { idx, rowIdx } = selectedPosition;
+    const targetRow = rawRows[getRawRowIdx(rowIdx)];
     if (
-      copiedPosition === null
+      !onPaste
+      || !onRowsChange
+      || copiedCell === null
       || !isCellEditable(selectedPosition)
-      || (copiedPosition.idx === selectedPosition.idx && copiedPosition.rowIdx === selectedPosition.rowIdx)
     ) {
       return;
     }
 
-    const fromRow = getRawRowIdx(copiedPosition.rowIdx);
-    const fromCellKey = columns[copiedPosition.idx].key;
-    const toRow = getRawRowIdx(selectedPosition.rowIdx);
-    const cellKey = columns[selectedPosition.idx].key;
-
-    onRowsUpdate?.({
-      cellKey,
-      fromRow,
-      toRow,
-      updated: { [cellKey]: copiedPosition.value } as unknown as never,
-      action: 'COPY_PASTE',
-      fromCellKey
+    const updatedTargetRow = onPaste({
+      sourceRow: copiedCell.row,
+      sourceColumnKey: copiedCell.columnKey,
+      targetRow,
+      targetColumnKey: columns[idx].key
     });
+
+    const updatedRows = [...rawRows];
+    updatedRows[rowIdx] = updatedTargetRow;
+
+    onRowsChange(updatedRows);
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -552,21 +531,21 @@ function DataGrid<R, SR>({
   }
 
   function handleDragEnd() {
-    if (latestDraggedOverRowIdx.current === undefined) return;
+    const overRowIdx = latestDraggedOverRowIdx.current;
+    if (overRowIdx === undefined || !onFill || !onRowsChange) return;
 
     const { idx, rowIdx } = selectedPosition;
-    const column = columns[idx];
-    const cellKey = column.key;
-    const value = rawRows[rowIdx][cellKey as keyof R];
+    const sourceRow = rawRows[rowIdx];
+    const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
+    const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
+    const targetRows = rawRows.slice(startRowIndex, endRowIndex);
 
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: rowIdx,
-      toRow: latestDraggedOverRowIdx.current,
-      updated: { [cellKey]: value } as unknown as never,
-      action: 'CELL_DRAG'
-    });
-
+    const updatedTargetRows = onFill({ columnKey: columns[idx].key, sourceRow, targetRows });
+    const updatedRows = [...rawRows];
+    for (let i = startRowIndex; i < endRowIndex; i++) {
+      updatedRows[i] = updatedTargetRows[i - startRowIndex];
+    }
+    onRowsChange(updatedRows);
     setDraggedOverRowIdx(undefined);
   }
 
@@ -593,18 +572,18 @@ function DataGrid<R, SR>({
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     event.stopPropagation();
+    if (!onFill || !onRowsChange) return;
 
-    const column = columns[selectedPosition.idx];
-    const cellKey = column.key;
-    const value = rawRows[selectedPosition.rowIdx][cellKey as keyof R];
+    const { idx, rowIdx } = selectedPosition;
+    const sourceRow = rawRows[rowIdx];
+    const targetRows = rawRows.slice(rowIdx + 1);
 
-    onRowsUpdate?.({
-      cellKey,
-      fromRow: selectedPosition.rowIdx,
-      toRow: rawRows.length - 1,
-      updated: { [cellKey]: value } as unknown as never,
-      action: 'COLUMN_FILL'
-    });
+    const updatedTargetRows = onFill({ columnKey: columns[idx].key, sourceRow, targetRows });
+    const updatedRows = [...rawRows];
+    for (let i = rowIdx + 1; i < updatedRows.length; i++) {
+      updatedRows[i] = updatedTargetRows[i - rowIdx - 1];
+    }
+    onRowsChange(updatedRows);
   }
 
   function handleRowChange(row: Readonly<R>, commitChanges?: boolean) {
@@ -788,16 +767,8 @@ function DataGrid<R, SR>({
         mode: 'EDIT',
         idx: selectedPosition.idx,
         onKeyDown: handleKeyDown,
-        editorPortalTarget,
-        editorContainerProps: {
-          rowHeight,
-          scrollLeft,
-          scrollTop,
-          firstEditorKeyPress: selectedPosition.key,
-          onCommit: handleCommit,
-          onCommitCancel: closeEditor
-        },
         editorProps: {
+          editorPortalTarget,
           rowHeight,
           row: selectedPosition.row,
           onRowChange: handleRowChange,
@@ -871,7 +842,7 @@ function DataGrid<R, SR>({
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={top}
-          copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
+          copiedCellIdx={copiedCell?.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
@@ -885,7 +856,6 @@ function DataGrid<R, SR>({
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx >= rows.length) {
     setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
-    setCopiedPosition(null);
     setDraggedOverRowIdx(undefined);
   }
 

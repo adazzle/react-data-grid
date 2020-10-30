@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, Column, RowsUpdateEvent, SortDirection, TextEditor } from '../../src';
+import DataGrid, { SelectColumn, Column, SortDirection, TextEditor } from '../../src';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
@@ -249,16 +249,6 @@ export function CommonFeatures() {
     return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
   }, [rows, sortDirection, sortColumn]);
 
-  const handleRowsUpdate = useCallback(({ fromRow, toRow, updated }: RowsUpdateEvent<Partial<Row>>) => {
-    const newRows = [...sortedRows];
-
-    for (let i = fromRow; i <= toRow; i++) {
-      newRows[i] = { ...newRows[i], ...updated };
-    }
-
-    setRows(newRows);
-  }, [sortedRows]);
-
   const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
     setSort([columnKey, direction]);
   }, []);
@@ -274,7 +264,6 @@ export function CommonFeatures() {
       }}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      onRowsUpdate={handleRowsUpdate}
       onRowsChange={setRows}
       sortColumn={sortColumn}
       sortDirection={sortDirection}
