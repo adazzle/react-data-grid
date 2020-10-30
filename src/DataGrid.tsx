@@ -476,7 +476,7 @@ function DataGrid<R, SR>({
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    setCopiedCell({ row: rawRows[getRawRowIdx(rowIdx)], column: columns[idx] });
+    setCopiedCell({ row: rawRows[getRawRowIdx(rowIdx)], columnKey: columns[idx].key });
   }
 
   function handlePaste() {
@@ -493,7 +493,7 @@ function DataGrid<R, SR>({
 
     const updatedTargetRow = onPaste({
       sourceRow: copiedCell.row,
-      sourceColumnKey: copiedCell.column.key,
+      sourceColumnKey: copiedCell.columnKey,
       targetRow,
       targetColumnKey: columns[idx].key
     });
@@ -847,7 +847,7 @@ function DataGrid<R, SR>({
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={top}
-          copiedCellIdx={copiedCell?.row === row ? copiedCell.column.idx : undefined}
+          copiedCellIdx={copiedCell?.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
