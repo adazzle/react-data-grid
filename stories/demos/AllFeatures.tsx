@@ -1,6 +1,6 @@
 import faker from 'faker';
 import React, { useState, useCallback, useRef } from 'react';
-import DataGrid, { Column, SelectColumn, DataGridHandle, TextEditor, OnFillEvent } from '../../src';
+import DataGrid, { Column, SelectColumn, DataGridHandle, TextEditor, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -188,7 +188,7 @@ export function AllFeatures() {
 
   const handleAddRow = useCallback(({ newRowIndex }: { newRowIndex: number }): void => setRows([...rows, createFakeRowObjectData(newRowIndex)]), [rows]);
 
-  const handleFill = useCallback(({ column, sourceRow, targetRows }: OnFillEvent<Row>) => {
+  const handleFill = useCallback(({ column, sourceRow, targetRows }: FillEvent<Row>) => {
     const sourceValue = sourceRow[column.key as keyof Row];
     setRows(prevRows => {
       return prevRows.map(row => {
@@ -197,6 +197,16 @@ export function AllFeatures() {
         }
         return row;
       });
+    });
+  }, []);
+
+  const handlePaste = useCallback(({ sourceColumn, sourceRow, targetColumn, targetRow }: PasteEvent<Row>) => {
+    setRows(prevRows => {
+      const newRows = [...prevRows];
+      const targetRowIndex = newRows.indexOf(targetRow);
+      const sourceValue = sourceRow[sourceColumn.key as keyof Row];
+      newRows[targetRowIndex] = { ...newRows[targetRowIndex], [targetColumn.key]: sourceValue };
+      return newRows;
     });
   }, []);
 
@@ -221,6 +231,7 @@ export function AllFeatures() {
         rowKeyGetter={rowKeyGetter}
         onRowsChange={setRows}
         onFill={handleFill}
+        onPaste={handlePaste}
         rowHeight={30}
         selectedRows={selectedRows}
         onScroll={handleScroll}

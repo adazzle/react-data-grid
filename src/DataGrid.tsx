@@ -37,7 +37,8 @@ import {
   SelectedCellProps,
   EditCellProps,
   Dictionary,
-  OnFillEvent
+  FillEvent,
+  PasteEvent
 } from './types';
 import { CellNavigationMode, SortDirection } from './enums';
 
@@ -120,7 +121,8 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<readonly R[]>;
   expandedGroupIds?: ReadonlySet<unknown>;
   onExpandedGroupIdsChange?: (expandedGroupIds: Set<unknown>) => void;
-  onFill?: (event: OnFillEvent<R, SR>) => void;
+  onFill?: (event: FillEvent<R, SR>) => void;
+  onPaste?: (event: PasteEvent<R, SR>) => void;
 
   /**
    * Custom renderers
@@ -197,6 +199,7 @@ function DataGrid<R, SR>({
   onColumnResize,
   onSelectedCellChange,
   onFill,
+  onPaste,
   // Toggles and modes
   enableFilters = false,
   enableCellCopyPaste = false,
@@ -220,7 +223,7 @@ function DataGrid<R, SR>({
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>({ idx: -1, rowIdx: -1, mode: 'SELECT' });
-  const [copiedPosition, setCopiedPosition] = useState<Position & { value: unknown } | null>(null);
+  const [copiedCell, setCopiedCell] = useState<{ row: R; column: CalculatedColumn<R, SR> } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
 
@@ -423,7 +426,7 @@ function DataGrid<R, SR>({
 
     switch (event.key) {
       case 'Escape':
-        setCopiedPosition(null);
+        setCopiedCell(null);
         closeEditor();
         return;
       case 'ArrowUp':
@@ -473,33 +476,26 @@ function DataGrid<R, SR>({
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    const rawRowIdx = getRawRowIdx(rowIdx);
-    const value = rawRows[rawRowIdx][columns[idx].key as keyof R];
-    setCopiedPosition({ idx, rowIdx, value });
+    setCopiedCell({ row: rawRows[getRawRowIdx(rowIdx)], column: columns[idx] });
   }
 
   function handlePaste() {
-    // if (
-    //   copiedPosition === null
-    //   || !isCellEditable(selectedPosition)
-    //   || (copiedPosition.idx === selectedPosition.idx && copiedPosition.rowIdx === selectedPosition.rowIdx)
-    // ) {
-    //   return;
-    // }
+    const targetRow = rawRows[getRawRowIdx(selectedPosition.rowIdx)];
+    const targetColumn = columns[selectedPosition.idx];
+    if (
+      copiedCell === null
+      || !isCellEditable(selectedPosition)
+      || (copiedCell.column.idx === selectedPosition.idx && copiedCell.row === targetRow)
+    ) {
+      return;
+    }
 
-    // const fromRow = getRawRowIdx(copiedPosition.rowIdx);
-    // const fromCellKey = columns[copiedPosition.idx].key;
-    // const toRow = getRawRowIdx(selectedPosition.rowIdx);
-    // const cellKey = columns[selectedPosition.idx].key;
-
-    // onRowsUpdate?.({
-    //   cellKey,
-    //   fromRow,
-    //   toRow,
-    //   updated: { [cellKey]: copiedPosition.value } as unknown as never,
-    //   action: 'COPY_PASTE',
-    //   fromCellKey
-    // });
+    onPaste?.({
+      sourceRow: copiedCell.row,
+      sourceColumn: copiedCell.column,
+      targetRow,
+      targetColumn
+    });
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -836,7 +832,7 @@ function DataGrid<R, SR>({
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={top}
-          copiedCellIdx={copiedPosition?.rowIdx === rowIdx ? copiedPosition.idx : undefined}
+          copiedCellIdx={copiedCell?.row === row ? copiedCell.column.idx : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
@@ -850,7 +846,7 @@ function DataGrid<R, SR>({
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx >= rows.length) {
     setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
-    setCopiedPosition(null);
+    setCopiedCell(null);
     setDraggedOverRowIdx(undefined);
   }
 
