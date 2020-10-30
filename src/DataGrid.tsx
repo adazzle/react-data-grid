@@ -146,7 +146,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Toggles and modes
    */
   /** Toggles whether filters row is displayed or not */
-  enableFilters?: boolean;
+  enableFilterRow?: boolean;
   cellNavigationMode?: CellNavigationMode;
 
   /**
@@ -199,7 +199,7 @@ function DataGrid<R, SR>({
   onFill,
   onPaste,
   // Toggles and modes
-  enableFilters = false,
+  enableFilterRow = false,
   cellNavigationMode = 'NONE',
   // Miscellaneous
   editorPortalTarget = document.body,
@@ -236,9 +236,9 @@ function DataGrid<R, SR>({
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const headerRowsCount = enableFilters ? 2 : 1;
+  const headerRowsCount = enableFilterRow ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
-  const totalHeaderHeight = headerRowHeight + (enableFilters ? headerFiltersHeight : 0);
+  const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * rowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
@@ -895,7 +895,7 @@ function DataGrid<R, SR>({
         sortDirection={sortDirection}
         onSort={onSort}
       />
-      {enableFilters && (
+      {enableFilterRow && (
         <FilterRow<R, SR>
           columns={viewportColumns}
           filters={filters}

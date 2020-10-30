@@ -39,7 +39,7 @@ export function HeaderFilters() {
     developer: '',
     complete: ''
   });
-  const [enableFilters, setEnableFilters] = useState(true);
+  const [enableFilterRow, setEnableFilterRow] = useState(true);
 
   const columns = useMemo((): Column<Row>[] => {
     const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
@@ -158,7 +158,7 @@ export function HeaderFilters() {
   }
 
   function toggleFilters() {
-    setEnableFilters(!enableFilters);
+    setEnableFilterRow(!enableFilterRow);
   }
 
   return (
@@ -171,7 +171,7 @@ export function HeaderFilters() {
       <DataGrid
         columns={columns}
         rows={filteredRows}
-        enableFilters={enableFilters}
+        enableFilterRow={enableFilterRow}
         filters={filters}
         onFiltersChange={setFilters}
       />
