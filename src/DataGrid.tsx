@@ -719,6 +719,7 @@ function DataGrid<R, SR>({
   }
 
   function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (selectedPosition.mode === 'EDIT') return;
     const { key, shiftKey } = event;
     const ctrlKey = isCtrlKeyHeldDown(event);
     let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
