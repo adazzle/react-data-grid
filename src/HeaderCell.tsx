@@ -41,25 +41,34 @@ export default function HeaderCell<R, SR>({
   onSort
 }: HeaderCellProps<R, SR>) {
   function getCell() {
-    if (!column.headerRenderer) return column.name;
+    if (column.headerRenderer) {
+      return createElement(column.headerRenderer, {
+        column,
+        sortColumn,
+        sortDirection,
+        onSort,
+        allRowsSelected,
+        onAllRowsSelectionChange
+      });
+    }
 
-    return createElement(column.headerRenderer, { column, allRowsSelected, onAllRowsSelectionChange });
+    if (column.sortable) {
+      return (
+        <SortableHeaderCell
+          column={column}
+          onSort={onSort}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+        >
+          {column.name}
+        </SortableHeaderCell>
+      );
+    }
+
+    return column.name;
   }
 
   let cell = getCell();
-
-  if (column.sortable) {
-    cell = (
-      <SortableHeaderCell
-        column={column}
-        onSort={onSort}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-      >
-        {cell}
-      </SortableHeaderCell>
-    );
-  }
 
   const className = clsx('rdg-cell', column.headerCellClass, {
     'rdg-cell-frozen': column.frozen,
