@@ -470,7 +470,7 @@ const rules = {
   '@typescript-eslint/ban-tslint-comment': 1,
   '@typescript-eslint/ban-types': 2,
   '@typescript-eslint/class-literal-property-style': 0,
-  '@typescript-eslint/consistent-indexed-object-style': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/2712
+  '@typescript-eslint/consistent-indexed-object-style': 1,
   '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
   '@typescript-eslint/consistent-type-imports': [1, { prefer: 'no-type-imports' }],
