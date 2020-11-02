@@ -81,6 +81,13 @@
   }
 }
 
+.rdg-bg {
+  background-image: repeating-linear-gradient(
+    var(--background-color) 0 calc(var(--row-height)),
+    var(--border-color) calc(var(--row-height)) calc(var(--row-height) + 1px)
+  );
+}
+
 .rdg-focus-sink {
   position: sticky;
   top: 0;

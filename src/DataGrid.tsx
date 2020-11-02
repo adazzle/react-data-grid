@@ -172,7 +172,7 @@ function DataGrid<R, SR>({
   rowKeyGetter,
   onRowsChange,
   // Dimensions props
-  rowHeight = 35,
+  rowHeight = 34,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
   // Feature props
@@ -235,6 +235,7 @@ function DataGrid<R, SR>({
   /**
    * computed values
    */
+  rowHeight++;
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const headerRowsCount = enableFilterRow ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
@@ -879,7 +880,7 @@ function DataGrid<R, SR>({
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
-        '--row-height': `${rowHeight}px`
+        '--row-height': `${rowHeight - 1}px`
       } as unknown as React.CSSProperties}
       ref={gridRef}
       onScroll={handleScroll}
@@ -910,7 +911,10 @@ function DataGrid<R, SR>({
             className="rdg-focus-sink"
             onKeyDown={handleKeyDown}
           />
-          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
+          <div
+            className="rdg-bg"
+            style={{ height: Math.max(rows.length * rowHeight - 1, clientHeight) }}
+          />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
