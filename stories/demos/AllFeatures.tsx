@@ -3,7 +3,6 @@ import React, { useState, useRef } from 'react';
 import DataGrid, { Column, SelectColumn, DataGridHandle, TextEditor, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
-import Toolbar from './components/Toolbar/Toolbar';
 
 import './AllFeatures.less';
 
@@ -186,10 +185,6 @@ export function AllFeatures() {
   const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
-  function handleAddRow({ newRowIndex }: { newRowIndex: number }) {
-    setRows([...rows, createFakeRowObjectData(newRowIndex)]);
-  }
-
   function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
     return targetRows.map(row => ({ ...row, [columnKey as keyof Row]: sourceRow[columnKey as keyof Row] }));
   }
@@ -219,7 +214,6 @@ export function AllFeatures() {
 
   return (
     <div className="all-features">
-      <Toolbar onAddRow={handleAddRow} numberOfRows={rows.length} />
       <DataGrid
         ref={gridRef}
         columns={columns}
