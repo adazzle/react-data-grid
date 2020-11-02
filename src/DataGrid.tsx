@@ -842,7 +842,7 @@ function DataGrid<R, SR>({
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={top}
-          copiedCellIdx={copiedCell?.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
+          copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
