@@ -115,7 +115,6 @@
   background-color: var(--background-color);
   color: var(--color);
   font-size: var(--font-size);
-  scroll-behavior: smooth;
 }
 .rdg *,
 .rdg *::before,
@@ -571,4 +570,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.7b11ee4c6018303cd24d.css.map*/
+/*# sourceMappingURL=0.7f8c5ffe46ec8d7f5ec0.css.map*/
