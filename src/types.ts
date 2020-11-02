@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { SortDirection } from './enums';
 import EventBus from './EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -111,6 +112,9 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
+  sortColumn?: string;
+  sortDirection?: SortDirection;
+  onSort?: (columnKey: string, direction: SortDirection) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
