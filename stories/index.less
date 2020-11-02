@@ -23,3 +23,15 @@ body, html {
 .big-grid {
   height: 600px;
 }
+
+:root {
+  @media (prefers-color-scheme: light) {
+    background-color: #fff;
+    color: #111;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #111;
+    color: #fff;
+  }
+}
