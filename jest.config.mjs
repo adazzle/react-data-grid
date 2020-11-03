@@ -18,10 +18,7 @@ export default {
     'text'
   ],
   restoreMocks: true,
-  setupFiles: [
-    '<rootDir>/jest/setupTests.ts'
-  ],
   testMatch: [
-    '<rootDir>/src/**/*.test.*'
+    '<rootDir>/test/**/*.test.*'
   ]
 };
