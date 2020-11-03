@@ -41,7 +41,7 @@
     "rollup": "rollup --config --no-stdin",
     "test": "jest",
     "test:watch": "jest --watch",
-    "eslint": "eslint --ext mjs,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories jest tools",
+    "eslint": "eslint --ext mjs,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories test tools",
     "eslint:fix": "npm run eslint -- --fix",
     "typecheck": "tsc -p tsconfig.all.json",
     "build-storybook": "build-storybook --quiet --no-dll",
