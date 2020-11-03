@@ -235,7 +235,7 @@ const rules = {
   'space-before-blocks': 1,
   'space-before-function-paren': 0, // replaced by @typescript-eslint/space-before-function-paren
   'space-in-parens': 1,
-  'space-infix-ops': 1,
+  'space-infix-ops': 0, // replaced by @typescript-eslint/space-infix-ops
   'space-unary-ops': 1,
   'spaced-comment': 0,
   'switch-colon-spacing': 1,
@@ -515,6 +515,7 @@ const rules = {
   '@typescript-eslint/no-unnecessary-qualifier': 0,
   '@typescript-eslint/no-unnecessary-type-arguments': 1,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
+  '@typescript-eslint/no-unnecessary-type-constraint': 1,
   '@typescript-eslint/no-unsafe-assignment': 0,
   '@typescript-eslint/no-unsafe-call': 0,
   '@typescript-eslint/no-unsafe-member-access': 0,
@@ -585,7 +586,8 @@ const rules = {
   '@typescript-eslint/require-await': 2,
   '@typescript-eslint/return-await': 2,
   '@typescript-eslint/semi': 1,
-  '@typescript-eslint/space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }]
+  '@typescript-eslint/space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }],
+  '@typescript-eslint/space-infix-ops': 1
 };
 
 module.exports = {
