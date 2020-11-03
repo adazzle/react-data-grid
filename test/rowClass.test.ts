@@ -1,6 +1,6 @@
-import { setup } from './utils';
-import { Column } from '../src';
 import { screen } from '@testing-library/react';
+import { Column } from '../src';
+import { setup } from './utils';
 
 interface Row {
   id: number;
