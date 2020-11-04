@@ -16,13 +16,13 @@ describe('ValueFormatter', () => {
     setup({ columns, rows });
     const [cell1, cell2] = getCells();
     expect(cell1).toHaveTextContent('101');
-    expect(cell2).toHaveTextContent('');
+    expect(cell2).toBeEmptyDOMElement();
   });
 
   it('should handle non-object values', () => {
     setup({ columns, rows: [null] });
     const [cell1, cell2] = getCells();
-    expect(cell1).toHaveTextContent('');
-    expect(cell2).toHaveTextContent('');
+    expect(cell1).toBeEmptyDOMElement();
+    expect(cell2).toBeEmptyDOMElement();
   });
 });
