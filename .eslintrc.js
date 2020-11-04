@@ -433,6 +433,16 @@ const rules = {
   'jest/valid-expect-in-promise': 1,
   'jest/valid-title': 2,
 
+  // https://github.com/testing-library/eslint-plugin-jest-dom#supported-rules
+  'jest-dom/prefer-checked': 1,
+  'jest-dom/prefer-empty': 1,
+  'jest-dom/prefer-enabled-disabled': 1,
+  'jest-dom/prefer-focus': 1,
+  'jest-dom/prefer-required': 1,
+  'jest-dom/prefer-to-have-attribute': 1,
+  'jest-dom/prefer-to-have-style': 1,
+  'jest-dom/prefer-to-have-text-content': 1,
+
   // SonarJS rules
   // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
   'sonarjs/no-all-duplicated-branches': 2,
@@ -608,6 +618,7 @@ module.exports = {
     'react',
     'react-hooks',
     'jest',
+    'jest-dom',
     'sonarjs',
     '@typescript-eslint'
   ],
