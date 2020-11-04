@@ -43,6 +43,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
     editOnClick?: boolean;
     /** Prevent default to cancel editing */
     onCellKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    /** Control the default cell navigation behavior while the editor is open */
+    onNavigation?: (event: React.KeyboardEvent<HTMLDivElement>) => boolean;
     // TODO: Do we need these options
     // editOnDoubleClick?: boolean;
     /** @default false */
