@@ -5,7 +5,7 @@ export default {
   preset: 'ts-jest',
   globals: {
     'ts-jest': {
-      tsConfig: {
+      tsconfig: {
         esModuleInterop: true
       }
     }
@@ -18,10 +18,10 @@ export default {
     'text'
   ],
   restoreMocks: true,
-  setupFiles: [
-    '<rootDir>/jest/setupTests.ts'
+  setupFilesAfterEnv: [
+    '@testing-library/jest-dom'
   ],
   testMatch: [
-    '<rootDir>/src/**/*.test.*'
+    '<rootDir>/test/**/*.test.*'
   ]
 };
