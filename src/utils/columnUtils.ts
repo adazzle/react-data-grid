@@ -158,15 +158,6 @@ function clampColumnWidth<R, SR>(
   return width;
 }
 
-// Logic extented to allow for functions to be passed down in column.editable
-// this allows us to decide whether we can be editing from a cell level
-export function canEdit<R, SR>(column: Column<R, SR>, row: R): boolean {
-  if (typeof column.editable === 'function') {
-    return column.editable(row);
-  }
-  return Boolean(column.editor ?? column.editor2 ?? column.editable);
-}
-
 export function getColumnScrollPosition<R, SR>(columns: readonly CalculatedColumn<R, SR>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;
   let frozen = 0;

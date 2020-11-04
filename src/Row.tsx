@@ -61,9 +61,7 @@ function Row<R, SR = unknown>({
               column={column}
               row={row}
               onKeyDown={selectedCellProps.onKeyDown}
-              editorPortalTarget={selectedCellProps.editorPortalTarget}
-              editorContainerProps={selectedCellProps.editorContainerProps}
-              editor2Props={selectedCellProps.editor2Props}
+              editorProps={selectedCellProps.editorProps}
             />
           );
         }

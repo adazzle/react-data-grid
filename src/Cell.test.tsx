@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import Cell from './Cell';
 import helpers, { Row } from './test/GridPropHelpers';
-import { SimpleCellFormatter } from './formatters';
+import { ValueFormatter } from './formatters';
 import { CalculatedColumn, CellRendererProps, FormatterProps } from './types';
 import EventBus from './EventBus';
 
@@ -15,7 +15,7 @@ const defaultColumn: CalculatedColumn<Row> = {
   left: 0,
   resizable: false,
   sortable: false,
-  formatter: SimpleCellFormatter
+  formatter: ValueFormatter
 };
 
 const testProps: CellRendererProps<Row> = {
@@ -34,12 +34,6 @@ const renderComponent = (extraProps?: PropsWithChildren<Partial<CellRendererProp
 };
 
 describe('Cell', () => {
-  it('should render a SimpleCellFormatter with value', () => {
-    const wrapper = renderComponent();
-    const formatter = wrapper.find(SimpleCellFormatter);
-    expect(formatter.props().row[defaultColumn.key]).toStrictEqual('Wicklow');
-  });
-
   it('should render a custom formatter when specified on column', () => {
     const CustomFormatter = (props: FormatterProps) => <div>{props.row[props.column.key]}</div>;
 

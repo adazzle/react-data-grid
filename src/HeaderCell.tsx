@@ -17,7 +17,7 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
+type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
@@ -40,31 +40,36 @@ export default function HeaderCell<R, SR>({
   onSort
 }: HeaderCellProps<R, SR>) {
   function getCell() {
-    if (!column.headerRenderer) return column.name;
+    if (column.headerRenderer) {
+      return (
+        <column.headerRenderer
+          column={column}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          onSort={onSort}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        />
+      );
+    }
 
-    return (
-      <column.headerRenderer
-        column={column}
-        allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={onAllRowsSelectionChange}
-      />
-    );
+    if (column.sortable) {
+      return (
+        <SortableHeaderCell
+          column={column}
+          onSort={onSort}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+        >
+          {column.name}
+        </SortableHeaderCell>
+      );
+    }
+
+    return column.name;
   }
 
   let cell = getCell();
-
-  if (column.sortable) {
-    cell = (
-      <SortableHeaderCell
-        column={column}
-        onSort={onSort}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-      >
-        {cell}
-      </SortableHeaderCell>
-    );
-  }
 
   const className = clsx('rdg-cell', column.headerCellClass, {
     'rdg-cell-frozen': column.frozen,

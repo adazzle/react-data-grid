@@ -5,14 +5,15 @@
   - **Props:**
     - `className`
     - `style`
+    - `onRowsChange`
+    - `onFill`
+    - `onPaste`
     - `onSelectedCellChange`
       - ⚠️ This replaces the `onCellSelected` and `onCellDeSelected` props
-    - `enableFilters`
+    - `enableFilterRow`
       - ⚠️ This replaces the `enableHeaderFilters` and `column.filterable` props
     - `filters`
     - `onFiltersChange`
-    - `enableCellCopyPaste`
-    - `enableCellDragAndDrop`
     - `rows`
       - ⚠️ This replace the `rowGetter` and `rowsCount` props
     - `rowClass`
@@ -26,7 +27,8 @@
   - `column.minWidth`
   - `column.maxWidth`
   - `column.headerCellClass`
-  - `column.editor2`
+  - `column.editor`
+    - New API
   - `column.editorOptions`
     - More info in [#2102](https://github.com/adazzle/react-data-grid/pull/2102)
   - `column.groupFormatter`
@@ -52,9 +54,13 @@
     - ⚠️ `getValidFilterValues`
     - ⚠️ `onCellCopyPaste`
     - ⚠️ `onSelectedCellRangeChange`
+    - ⚠️ `onCheckCellIsEditable`
+      - Use `column.editable` instead.
     - ⚠️ `onGridKeyDown`
     - ⚠️ `onGridKeyUp`
     - ⚠️ `onRowDoubleClick`
+    - ⚠️ `onRowsUpdate`
+      - Use `onRowsChange`, `onFill`, and `onPaste` instead.
     - ⚠️ `onHeaderDrop`
     - ⚠️ `draggableHeaderCell`
       - Check [#2007](https://github.com/adazzle/react-data-grid/pull/2007) on how to migrate
@@ -92,8 +98,8 @@
   - ⚠️ `minHeight` to `height`
   - ⚠️ `minWidth` to `width`
   - ⚠️ `onGridSort` to `onSort`
-  - ⚠️ `onGridRowsUpdated` to `onRowsUpdate`
   - ⚠️ `emptyRowsView` to `emptyRowsRenderer`
+  - ⚠️ `rowKey` to `rowKeyGetter`
   - ⚠️ `rowData` to `row`
   - ⚠️ `fromRowData` to `fromRow`
   - ⚠️ `idx` to `rowIdx` in `Row` renderer
@@ -105,7 +111,7 @@
     - Added `column.summaryCellClass` and `column.summaryFormatter` props
     - `column.formatter` isn't used anymore to render summary row cells.
   - Only visible headers cells are now rendered. [#1837](https://github.com/adazzle/react-data-grid/pull/1837)
-  - ⚠️ the `rowKey` prop is now required for row selection.
+  - ⚠️ the `rowKeyGetter` prop is now required for row selection.
   - ⚠️ `column.cellClass` does not affect header cells anymore.
   - ⚠️ `onScroll` will directly pass the UIEvent rather than the scrollLeft and scrollRight only.
 

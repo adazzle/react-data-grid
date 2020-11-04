@@ -30,6 +30,10 @@ const columns: readonly Column<Row>[] = [
   { key: 'price', name: 'Price' }
 ];
 
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
 function RowRenderer(props: RowRendererProps<Row>) {
   return (
     <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
@@ -75,7 +79,7 @@ export function ContextMenuStory() {
   return (
     <>
       <DataGrid
-        rowKey="id"
+        rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
         rowRenderer={RowRenderer}

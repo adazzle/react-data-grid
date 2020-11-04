@@ -11,5 +11,6 @@ export * from './demos/HeaderFilters';
 export * from './demos/ColumnsReordering';
 export * from './demos/RowsReordering';
 export * from './demos/Grouping';
+export * from './demos/Resizable';
 
 export default { title: 'Demos' };
