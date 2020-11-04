@@ -19,7 +19,7 @@ export default {
   ],
   restoreMocks: true,
   setupFilesAfterEnv: [
-    '<rootDir>/test/setup.ts'
+    '@testing-library/jest-dom'
   ],
   testMatch: [
     '<rootDir>/test/**/*.test.*'
