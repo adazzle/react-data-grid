@@ -1,4 +1,3 @@
-import React from 'react';
 import { Column } from '../../src';
 import { setup, getCells } from '../utils';
 
