@@ -1,4 +1,3 @@
-import React from 'react';
 import DataGrid, { Column, FormatterProps } from '../../src';
 
 type Row = undefined;
