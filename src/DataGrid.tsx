@@ -354,7 +354,10 @@ function DataGrid<R, SR>({
     scrollToRow(rowIdx: number) {
       const { current } = gridRef;
       if (!current) return;
-      current.scrollTop = rowIdx * rowHeight;
+      current.scrollTo({
+        top: rowIdx * rowHeight,
+        behavior: 'smooth'
+      });
     },
     selectCell
   }));

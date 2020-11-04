@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "7.0.0-canary.28",
+  "version": "7.0.0-canary.29",
   "license": "MIT",
   "description": "Excel-like grid component built with React, with editors, keyboard navigation, copy & paste, and the like",
   "keywords": [
@@ -69,8 +69,8 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "@types/react-select": "^3.0.22",
-    "@typescript-eslint/eslint-plugin": "^4.6.0",
-    "@typescript-eslint/parser": "^4.6.0",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-optimize-clsx": "^2.6.1",
     "clean-css": "^4.2.3",
