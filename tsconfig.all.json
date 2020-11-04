@@ -6,6 +6,6 @@
   "include": [
     "src/**/*",
     "stories/**/*",
-    "jest/**/*"
+    "test/**/*"
   ]
 }

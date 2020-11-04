@@ -4,7 +4,7 @@
     "rollup.config.mjs",
     "src/**/*",
     "stories/**/*",
-    "jest/**/*",
+    "test/**/*",
     "tools/**/*"
   ]
 }
