@@ -1,6 +1,5 @@
-import { screen } from '@testing-library/react';
 import { Column } from '../src';
-import { setup } from './utils';
+import { setup, getRows } from './utils';
 
 interface Row {
   id: number;
@@ -9,21 +8,16 @@ interface Row {
 const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
 const rows: readonly Row[] = [{ id: 0 }, { id: 1 }, { id: 2 }];
 
-function getAllRowClassNames() {
-  return screen.getAllByRole('row').slice(1).map(row => row.className);
-}
-
 test('rowClass is undefined', () => {
   setup({
     columns,
     rows,
     rowClass: undefined
   });
-  expect(getAllRowClassNames()).toStrictEqual([
-    'rdg-row rdg-row-even',
-    'rdg-row rdg-row-odd',
-    'rdg-row rdg-row-even'
-  ]);
+  const [row1, row2, row3] = getRows();
+  expect(row1).toHaveClass('rdg-row rdg-row-even', { exact: true });
+  expect(row2).toHaveClass('rdg-row rdg-row-odd', { exact: true });
+  expect(row3).toHaveClass('rdg-row rdg-row-even', { exact: true });
 });
 
 test('rowClass returns a string', () => {
@@ -32,11 +26,10 @@ test('rowClass returns a string', () => {
     rows,
     rowClass: row => `my-row-${row.id}`
   });
-  expect(getAllRowClassNames()).toStrictEqual([
-    'rdg-row rdg-row-even my-row-0',
-    'rdg-row rdg-row-odd my-row-1',
-    'rdg-row rdg-row-even my-row-2'
-  ]);
+  const [row1, row2, row3] = getRows();
+  expect(row1).toHaveClass('rdg-row rdg-row-even my-row-0', { exact: true });
+  expect(row2).toHaveClass('rdg-row rdg-row-odd my-row-1', { exact: true });
+  expect(row3).toHaveClass('rdg-row rdg-row-even my-row-2', { exact: true });
 });
 
 test('rowClass returns undefined', () => {
@@ -45,9 +38,8 @@ test('rowClass returns undefined', () => {
     rows,
     rowClass: () => undefined
   });
-  expect(getAllRowClassNames()).toStrictEqual([
-    'rdg-row rdg-row-even',
-    'rdg-row rdg-row-odd',
-    'rdg-row rdg-row-even'
-  ]);
+  const [row1, row2, row3] = getRows();
+  expect(row1).toHaveClass('rdg-row rdg-row-even', { exact: true });
+  expect(row2).toHaveClass('rdg-row rdg-row-odd', { exact: true });
+  expect(row3).toHaveClass('rdg-row rdg-row-even', { exact: true });
 });

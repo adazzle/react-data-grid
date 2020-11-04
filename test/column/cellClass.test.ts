@@ -1,16 +1,11 @@
-import { screen } from '@testing-library/react';
 import { Column } from '../../src';
-import { setup } from '../utils';
+import { setup, getCells } from '../utils';
 
 interface Row {
   id: number;
 }
 
 const rows: readonly Row[] = [{ id: 0 }, { id: 1 }];
-
-function getAllCellClassNames() {
-  return screen.getAllByRole('gridcell').map(row => row.className);
-}
 
 test('cellClass is undefined', () => {
   const columns: readonly Column<Row>[] = [{
@@ -19,10 +14,9 @@ test('cellClass is undefined', () => {
     cellClass: undefined
   }];
   setup({ columns, rows });
-  expect(getAllCellClassNames()).toStrictEqual([
-    'rdg-cell',
-    'rdg-cell'
-  ]);
+  const [cell1, cell2] = getCells();
+  expect(cell1).toHaveClass('rdg-cell', { exact: true });
+  expect(cell2).toHaveClass('rdg-cell', { exact: true });
 });
 
 test('cellClass is a string', () => {
@@ -32,10 +26,9 @@ test('cellClass is a string', () => {
     cellClass: 'my-cell'
   }];
   setup({ columns, rows });
-  expect(getAllCellClassNames()).toStrictEqual([
-    'rdg-cell my-cell',
-    'rdg-cell my-cell'
-  ]);
+  const [cell1, cell2] = getCells();
+  expect(cell1).toHaveClass('rdg-cell my-cell', { exact: true });
+  expect(cell2).toHaveClass('rdg-cell my-cell', { exact: true });
 });
 
 test('cellClass returns a string', () => {
@@ -45,10 +38,9 @@ test('cellClass returns a string', () => {
     cellClass: row => `my-cell-${row.id}`
   }];
   setup({ columns, rows });
-  expect(getAllCellClassNames()).toStrictEqual([
-    'rdg-cell my-cell-0',
-    'rdg-cell my-cell-1'
-  ]);
+  const [cell1, cell2] = getCells();
+  expect(cell1).toHaveClass('rdg-cell my-cell-0', { exact: true });
+  expect(cell2).toHaveClass('rdg-cell my-cell-1', { exact: true });
 });
 
 test('cellClass returns undefined', () => {
@@ -58,8 +50,7 @@ test('cellClass returns undefined', () => {
     cellClass: () => undefined
   }];
   setup({ columns, rows });
-  expect(getAllCellClassNames()).toStrictEqual([
-    'rdg-cell',
-    'rdg-cell'
-  ]);
+  const [cell1, cell2] = getCells();
+  expect(cell1).toHaveClass('rdg-cell', { exact: true });
+  expect(cell2).toHaveClass('rdg-cell', { exact: true });
 });

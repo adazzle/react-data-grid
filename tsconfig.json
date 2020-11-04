@@ -15,7 +15,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2019",
-    "types": ["jest"]
+    "types": ["jest", "@testing-library/jest-dom"]
   },
   "files": [
     "src/index.ts"
