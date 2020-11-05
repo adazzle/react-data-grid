@@ -231,7 +231,7 @@ function DataGrid<R, SR>({
   const isCellFocusable = useRef(false);
   const selectRowRef = useLatest(selectRow);
   const selectCellRef = useLatest(selectCell);
-  const toggleGroupRef = useLatest(toggleGroup)
+  const toggleGroupRef = useLatest(toggleGroup);
 
   /**
    * computed values
