@@ -20,6 +20,7 @@ import SummaryRow from './SummaryRow';
 import {
   assertIsValidKeyGetter,
   getColumnScrollPosition,
+  onEditorNavigation,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
   canExitGrid,
@@ -722,6 +723,10 @@ function DataGrid<R, SR>({
   }
 
   function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (selectedPosition.mode === 'EDIT') {
+      const onNavigation = columns[selectedPosition.idx].editorOptions?.onNavigation ?? onEditorNavigation;
+      if (!onNavigation(event)) return;
+    }
     const { key, shiftKey } = event;
     const ctrlKey = isCtrlKeyHeldDown(event);
     let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
