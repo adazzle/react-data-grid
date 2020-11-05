@@ -18,7 +18,7 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   isRowSelected: boolean;
   selectCellRef: MutableRefObject<(position: Position, enableEditor?: boolean) => void>;
   selectRowRef: MutableRefObject<({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void>;
-  toggleGroupRef: MutableRefObject<(expandedGroupId: unknown) => void>
+  toggleGroupRef: MutableRefObject<(expandedGroupId: unknown) => void>;
 }
 
 function GroupedRow<R, SR>({
@@ -41,7 +41,7 @@ function GroupedRow<R, SR>({
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
   function selectGroup() {
-    selectCellRef.current({ rowIdx, idx: -1 })
+    selectCellRef.current({ rowIdx, idx: -1 });
   }
 
   return (

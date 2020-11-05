@@ -3,7 +3,6 @@ import React, {
   useState,
   useRef,
   useLayoutEffect,
-  useEffect,
   useImperativeHandle,
   useCallback,
   createElement
@@ -230,9 +229,9 @@ function DataGrid<R, SR>({
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const isCellFocusable = useRef(false);
-  const selectRowRef = useRef(selectRow);
-  const selectCellRef = useRef(selectCell);
-  const toggleGroupRef = useRef(toggleGroup)
+  const selectRowRef = useLatest(selectRow);
+  const selectCellRef = useLatest(selectCell);
+  const toggleGroupRef = useLatest(toggleGroup)
 
   /**
    * computed values
