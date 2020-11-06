@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import clsx from 'clsx';
 
-import { useGridDimensions, useViewportColumns, useViewportRows, useLatest } from './hooks';
+import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
@@ -233,9 +233,9 @@ function DataGrid<R, SR>({
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
-  const selectRowWrapper = useLatest(selectRow);
-  const selectCellWrapper = useLatest(selectCell);
-  const toggleGroupWrapper = useLatest(toggleGroup);
+  const selectRowWrapper = useLatestFunc(selectRow);
+  const selectCellWrapper = useLatestFunc(selectCell);
+  const toggleGroupWrapper = useLatestFunc(toggleGroup);
 
   /**
    * computed values

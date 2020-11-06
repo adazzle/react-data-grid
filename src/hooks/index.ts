@@ -4,4 +4,4 @@ export * from './useGridDimensions';
 export * from './useViewportColumns';
 export * from './useViewportRows';
 export * from './useFocusRef';
-export * from './useLatest';
+export * from './useLatestFunc';
