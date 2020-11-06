@@ -21,8 +21,8 @@ function Row<R, SR = unknown>({
   setDraggedOverRowIdx,
   onMouseEnter,
   top,
-  selectCellRef,
-  selectRowRef,
+  selectCell,
+  selectRow,
   'aria-rowindex': ariaRowIndex,
   'aria-selected': ariaSelected,
   ...props
@@ -81,8 +81,8 @@ function Row<R, SR = unknown>({
             onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
             onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
             onRowClick={onRowClick}
-            selectCellRef={selectCellRef}
-            selectRowRef={selectRowRef}
+            selectCell={selectCell}
+            selectRow={selectRow}
           />
         );
       })}

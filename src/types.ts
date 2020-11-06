@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MutableRefObject } from 'react';
 import { SortDirection } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -147,8 +146,8 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isRowSelected: boolean;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
-  selectCellRef: MutableRefObject<(position: Position, enableEditor?: boolean) => void>;
-  selectRowRef: MutableRefObject<({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void>;
+  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectRow: ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -164,8 +163,8 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
-  selectCellRef: MutableRefObject<(position: Position, enableEditor?: boolean) => void>;
-  selectRowRef: MutableRefObject<({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void>;
+  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectRow: ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

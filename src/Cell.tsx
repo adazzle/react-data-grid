@@ -19,8 +19,8 @@ function Cell<R, SR>({
   onClick,
   onDoubleClick,
   onContextMenu,
-  selectCellRef,
-  selectRowRef,
+  selectCell: selectCellWrapper,
+  selectRow,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const cellRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ function Cell<R, SR>({
   );
 
   function selectCell(openEditor?: boolean) {
-    selectCellRef.current({ idx: column.idx, rowIdx }, openEditor);
+    selectCellWrapper({ idx: column.idx, rowIdx }, openEditor);
   }
 
   function handleClick() {
@@ -57,7 +57,7 @@ function Cell<R, SR>({
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    selectRowRef.current({ rowIdx, checked, isShiftClick });
+    selectRow({ rowIdx, checked, isShiftClick });
   }
 
   return (

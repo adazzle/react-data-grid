@@ -1,10 +1,13 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 
-export function useLatest<T>(value: T) {
-  const ref = useRef<T>(value);
+// https://reactjs.org/docs/hooks-faq.html#what-can-i-do-if-my-effect-dependencies-change-too-often
+export function useLatest<Func extends (...args: any[]) => any>(fn: Func) {
+  const ref = useRef<Func>(fn);
   useEffect(() => {
-    ref.current = value;
+    ref.current = fn;
   });
 
-  return ref;
+  return useCallback((...args: Parameters<Func>) => {
+    ref.current(...args);
+  }, []);
 }

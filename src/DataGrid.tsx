@@ -229,9 +229,13 @@ function DataGrid<R, SR>({
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const isCellFocusable = useRef(false);
-  const selectRowRef = useLatest(selectRow);
-  const selectCellRef = useLatest(selectCell);
-  const toggleGroupRef = useLatest(toggleGroup);
+
+  /**
+   * The identity of the wrapper function is stable so it won't break memoization
+   */
+  const selectRowWrapper = useLatest(selectRow);
+  const selectCellWrapper = useLatest(selectCell);
+  const toggleGroupWrapper = useLatest(toggleGroup);
 
   /**
    * computed values
@@ -810,9 +814,9 @@ function DataGrid<R, SR>({
             isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)))}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
-            selectCellRef={selectCellRef}
-            selectRowRef={selectRowRef}
-            toggleGroupRef={toggleGroupRef}
+            selectCell={selectCellWrapper}
+            selectRow={selectRowWrapper}
+            toggleGroup={toggleGroupWrapper}
           />
         );
         continue;
@@ -842,8 +846,8 @@ function DataGrid<R, SR>({
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
-          selectCellRef={selectCellRef}
-          selectRowRef={selectRowRef}
+          selectCell={selectCellWrapper}
+          selectRow={selectRowWrapper}
         />
       );
     }

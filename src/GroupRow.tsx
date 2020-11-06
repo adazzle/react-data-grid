@@ -1,7 +1,7 @@
-import React, { memo, MutableRefObject } from 'react';
+import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Position, SelectRowEvent } from './types';
+import { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 
@@ -16,9 +16,9 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   selectedCellIdx?: number;
   isExpanded: boolean;
   isRowSelected: boolean;
-  selectCellRef: MutableRefObject<(position: Position, enableEditor?: boolean) => void>;
-  selectRowRef: MutableRefObject<({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void>;
-  toggleGroupRef: MutableRefObject<(expandedGroupId: unknown) => void>;
+  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectRow: ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void;
+  toggleGroup: (expandedGroupId: unknown) => void;
 }
 
 function GroupedRow<R, SR>({
@@ -32,16 +32,16 @@ function GroupedRow<R, SR>({
   isExpanded,
   selectedCellIdx,
   isRowSelected,
-  selectCellRef,
-  selectRowRef,
-  toggleGroupRef,
+  selectCell,
+  selectRow,
+  toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
   function selectGroup() {
-    selectCellRef.current({ rowIdx, idx: -1 });
+    selectCell({ rowIdx, idx: -1 });
   }
 
   return (
@@ -72,8 +72,8 @@ function GroupedRow<R, SR>({
           isCellSelected={selectedCellIdx === column.idx}
           column={column}
           groupColumnIndex={idx}
-          selectRowRef={selectRowRef}
-          toggleGroupRef={toggleGroupRef}
+          selectRow={selectRow}
+          toggleGroup={toggleGroup}
         />
       ))}
     </div>

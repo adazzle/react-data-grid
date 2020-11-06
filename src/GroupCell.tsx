@@ -11,8 +11,8 @@ type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'childRows'
   | 'isExpanded'
   | 'isRowSelected'
-  | 'selectRowRef'
-  | 'toggleGroupRef'
+  | 'selectRow'
+  | 'toggleGroup'
 >;
 
 interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
@@ -31,15 +31,15 @@ function GroupCell<R, SR>({
   isRowSelected,
   column,
   groupColumnIndex,
-  selectRowRef,
-  toggleGroupRef
+  selectRow,
+  toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
   function toggleGroup() {
-    toggleGroupRef.current(id);
+    toggleGroupWrapper(id);
   }
 
   function onRowSelectionChange(checked: boolean) {
-    selectRowRef.current({ rowIdx, checked, isShiftClick: false });
+    selectRow({ rowIdx, checked, isShiftClick: false });
   }
 
   // Only make the cell clickable if the group level matches
