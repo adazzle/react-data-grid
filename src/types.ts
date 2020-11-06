@@ -164,7 +164,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void;
+  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
