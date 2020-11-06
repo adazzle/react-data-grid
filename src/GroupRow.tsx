@@ -17,7 +17,7 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   isExpanded: boolean;
   isRowSelected: boolean;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => void;
+  selectRow: (selectRowEvent: SelectRowEvent) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
