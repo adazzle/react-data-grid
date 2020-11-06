@@ -16,7 +16,6 @@ export {
   HeaderRendererProps,
   CellRendererProps,
   RowRendererProps,
-  GroupRowRendererProps,
   FilterRendererProps,
   Filters,
   SelectRowEvent,

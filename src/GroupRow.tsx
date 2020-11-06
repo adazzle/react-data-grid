@@ -1,8 +1,25 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
-import { GroupRowRendererProps } from './types';
+
+import { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
+
+export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  id: string;
+  groupKey: unknown;
+  viewportColumns: readonly CalculatedColumn<R, SR>[];
+  childRows: readonly R[];
+  rowIdx: number;
+  top: number;
+  level: number;
+  selectedCellIdx?: number;
+  isExpanded: boolean;
+  isRowSelected: boolean;
+  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectRow: (selectRowEvent: SelectRowEvent) => void;
+  toggleGroup: (expandedGroupId: unknown) => void;
+}
 
 function GroupedRow<R, SR>({
   id,
@@ -15,14 +32,16 @@ function GroupedRow<R, SR>({
   isExpanded,
   selectedCellIdx,
   isRowSelected,
-  eventBus,
+  selectCell,
+  selectRow,
+  toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
   function selectGroup() {
-    eventBus.dispatch('SelectCell', { rowIdx, idx: -1 });
+    selectCell({ rowIdx, idx: -1 });
   }
 
   return (
@@ -51,9 +70,10 @@ function GroupedRow<R, SR>({
           isExpanded={isExpanded}
           isRowSelected={isRowSelected}
           isCellSelected={selectedCellIdx === column.idx}
-          eventBus={eventBus}
           column={column}
           groupColumnIndex={idx}
+          selectRow={selectRow}
+          toggleGroup={toggleGroup}
         />
       ))}
     </div>

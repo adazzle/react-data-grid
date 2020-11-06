@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SortDirection } from './enums';
-import EventBus from './EventBus';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -145,9 +144,10 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isDraggedOver: boolean;
   isCellSelected: boolean;
   isRowSelected: boolean;
-  eventBus: EventBus;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -158,26 +158,13 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   copiedCellIdx?: number;
   draggedOverCellIdx?: number;
   isRowSelected: boolean;
-  eventBus: EventBus;
   top: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
-}
-
-export interface GroupRowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  id: string;
-  groupKey: unknown;
-  viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  childRows: readonly TRow[];
-  rowIdx: number;
-  top: number;
-  level: number;
-  selectedCellIdx?: number;
-  isExpanded: boolean;
-  isRowSelected: boolean;
-  eventBus: EventBus;
+  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

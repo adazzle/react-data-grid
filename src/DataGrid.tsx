@@ -3,15 +3,13 @@ import React, {
   useState,
   useRef,
   useLayoutEffect,
-  useEffect,
   useImperativeHandle,
   useCallback,
   createElement
 } from 'react';
 import clsx from 'clsx';
 
-import { useGridDimensions, useViewportColumns, useViewportRows } from './hooks';
-import EventBus from './EventBus';
+import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
@@ -215,7 +213,6 @@ function DataGrid<R, SR>({
   /**
    * states
    */
-  const [eventBus] = useState(() => new EventBus());
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
@@ -232,6 +229,13 @@ function DataGrid<R, SR>({
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const isCellFocusable = useRef(false);
+
+  /**
+   * The identity of the wrapper function is stable so it won't break memoization
+   */
+  const selectRowWrapper = useLatestFunc(selectRow);
+  const selectCellWrapper = useLatestFunc(selectCell);
+  const toggleGroupWrapper = useLatestFunc(toggleGroup);
 
   /**
    * computed values
@@ -284,70 +288,6 @@ function DataGrid<R, SR>({
     focusSinkRef.current!.focus({ preventScroll: true });
   });
 
-  useEffect(() => {
-    if (!onSelectedRowsChange) return;
-
-    const handleRowSelectionChange = ({ rowIdx, checked, isShiftClick }: SelectRowEvent) => {
-      assertIsValidKeyGetter(rowKeyGetter);
-      const newSelectedRows = new Set(selectedRows);
-      const row = rows[rowIdx];
-      if (isGroupRow(row)) {
-        for (const childRow of row.childRows) {
-          const rowKey = rowKeyGetter(childRow);
-          if (checked) {
-            newSelectedRows.add(rowKey);
-          } else {
-            newSelectedRows.delete(rowKey);
-          }
-        }
-        onSelectedRowsChange(newSelectedRows);
-        return;
-      }
-
-      const rowKey = rowKeyGetter(row);
-      if (checked) {
-        newSelectedRows.add(rowKey);
-        const previousRowIdx = lastSelectedRowIdx.current;
-        lastSelectedRowIdx.current = rowIdx;
-        if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-          const step = Math.sign(rowIdx - previousRowIdx);
-          for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-            const row = rows[i];
-            if (isGroupRow(row)) continue;
-            newSelectedRows.add(rowKeyGetter(row));
-          }
-        }
-      } else {
-        newSelectedRows.delete(rowKey);
-        lastSelectedRowIdx.current = -1;
-      }
-
-      onSelectedRowsChange(newSelectedRows);
-    };
-
-    return eventBus.subscribe('SelectRow', handleRowSelectionChange);
-  });
-
-  useEffect(() => {
-    return eventBus.subscribe('SelectCell', selectCell);
-  });
-
-  useEffect(() => {
-    if (!onExpandedGroupIdsChange) return;
-
-    const toggleGroup = (expandedGroupId: unknown) => {
-      const newExpandedGroupIds = new Set(expandedGroupIds);
-      if (newExpandedGroupIds.has(expandedGroupId)) {
-        newExpandedGroupIds.delete(expandedGroupId);
-      } else {
-        newExpandedGroupIds.add(expandedGroupId);
-      }
-      onExpandedGroupIdsChange(newExpandedGroupIds);
-    };
-
-    return eventBus.subscribe('ToggleGroup', toggleGroup);
-  }, [eventBus, expandedGroupIds, onExpandedGroupIdsChange]);
-
   useImperativeHandle(ref, () => ({
     scrollToColumn(idx: number) {
       scrollToCell({ idx });
@@ -382,6 +322,57 @@ function DataGrid<R, SR>({
   /**
   * event handlers
   */
+  function selectRow({ rowIdx, checked, isShiftClick }: SelectRowEvent) {
+    if (!onSelectedRowsChange) return;
+
+    assertIsValidKeyGetter(rowKeyGetter);
+    const newSelectedRows = new Set(selectedRows);
+    const row = rows[rowIdx];
+    if (isGroupRow(row)) {
+      for (const childRow of row.childRows) {
+        const rowKey = rowKeyGetter(childRow);
+        if (checked) {
+          newSelectedRows.add(rowKey);
+        } else {
+          newSelectedRows.delete(rowKey);
+        }
+      }
+      onSelectedRowsChange(newSelectedRows);
+      return;
+    }
+
+    const rowKey = rowKeyGetter(row);
+    if (checked) {
+      newSelectedRows.add(rowKey);
+      const previousRowIdx = lastSelectedRowIdx.current;
+      lastSelectedRowIdx.current = rowIdx;
+      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+        const step = Math.sign(rowIdx - previousRowIdx);
+        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+          const row = rows[i];
+          if (isGroupRow(row)) continue;
+          newSelectedRows.add(rowKeyGetter(row));
+        }
+      }
+    } else {
+      newSelectedRows.delete(rowKey);
+      lastSelectedRowIdx.current = -1;
+    }
+
+    onSelectedRowsChange(newSelectedRows);
+  }
+
+  function toggleGroup(expandedGroupId: unknown) {
+    if (!onExpandedGroupIdsChange) return;
+    const newExpandedGroupIds = new Set(expandedGroupIds);
+    if (newExpandedGroupIds.has(expandedGroupId)) {
+      newExpandedGroupIds.delete(expandedGroupId);
+    } else {
+      newExpandedGroupIds.add(expandedGroupId);
+    }
+    onExpandedGroupIdsChange(newExpandedGroupIds);
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const { key, keyCode } = event;
     const row = rows[selectedPosition.rowIdx];
@@ -419,7 +410,7 @@ function DataGrid<R, SR>({
         || (key === 'ArrowRight' && !row.isExpanded)
       )) {
       event.preventDefault(); // Prevents scrolling
-      eventBus.dispatch('ToggleGroup', row.id);
+      toggleGroup(row.id);
       return;
     }
 
@@ -821,9 +812,11 @@ function DataGrid<R, SR>({
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
             isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)))}
-            eventBus={eventBus}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
+            selectCell={selectCellWrapper}
+            selectRow={selectRowWrapper}
+            toggleGroup={toggleGroupWrapper}
           />
         );
         continue;
@@ -845,7 +838,6 @@ function DataGrid<R, SR>({
           rowIdx={rowIdx}
           row={row}
           viewportColumns={viewportColumns}
-          eventBus={eventBus}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
@@ -854,6 +846,8 @@ function DataGrid<R, SR>({
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
+          selectCell={selectCellWrapper}
+          selectRow={selectRowWrapper}
         />
       );
     }

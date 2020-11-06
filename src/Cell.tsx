@@ -14,12 +14,13 @@ function Cell<R, SR>({
   isRowSelected,
   row,
   rowIdx,
-  eventBus,
   dragHandleProps,
   onRowClick,
   onClick,
   onDoubleClick,
   onContextMenu,
+  selectCell,
+  selectRow,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const cellRef = useRef<HTMLDivElement>(null);
@@ -38,25 +39,25 @@ function Cell<R, SR>({
     className
   );
 
-  function selectCell(openEditor?: boolean) {
-    eventBus.dispatch('SelectCell', { idx: column.idx, rowIdx }, openEditor);
+  function selectCellWrapper(openEditor?: boolean) {
+    selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
   function handleClick() {
-    selectCell(column.editorOptions?.editOnClick);
+    selectCellWrapper(column.editorOptions?.editOnClick);
     onRowClick?.(rowIdx, row, column);
   }
 
   function handleContextMenu() {
-    selectCell();
+    selectCellWrapper();
   }
 
   function handleDoubleClick() {
-    selectCell(true);
+    selectCellWrapper(true);
   }
 
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch('SelectRow', { rowIdx, checked, isShiftClick });
+    selectRow({ rowIdx, checked, isShiftClick });
   }
 
   return (
