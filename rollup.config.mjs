@@ -1,8 +1,11 @@
+import { isAbsolute } from 'path';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import sourcemaps from 'rollup-plugin-sourcemaps';
+import { babel } from '@rollup/plugin-babel';
+
+const extensions = ['.ts', '.tsx'];
 
 export default {
-  input: './lib/index.js',
+  input: './src/index.ts',
   output: [{
     file: './lib/bundle.mjs',
     format: 'es',
@@ -15,13 +18,13 @@ export default {
     sourcemap: true,
     interop: false
   }],
-  external: [
-    'clsx',
-    'react',
-    'react-dom'
-  ],
+  external: id => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
-    sourcemaps(),
-    nodeResolve()
+    babel({
+      babelHelpers: 'runtime',
+      skipPreflightCheck: true,
+      extensions
+    }),
+    nodeResolve({ extensions })
   ]
 };

@@ -1,6 +1,7 @@
 import React, { StrictMode } from 'react';
 import { render, screen } from '@testing-library/react';
-import DataGrid, { DataGridProps } from '../src/';
+import DataGrid from '../src/';
+import type { DataGridProps } from '../src/';
 
 export function setup<R, SR>(props: DataGridProps<R, SR>) {
   return render(

@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, Column, SortDirection, TextEditor } from '../../src';
+import DataGrid, { SelectColumn, TextEditor } from '../../src';
+import type { Column, SortDirection } from '../../src';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);

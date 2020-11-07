@@ -1,6 +1,6 @@
 import React from 'react';
-import { EditorProps } from '../../../../src';
-import { Row } from '../../AllFeatures';
+import type { EditorProps } from '../../../../src';
+import type { Row } from '../../AllFeatures';
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'] as const;
 

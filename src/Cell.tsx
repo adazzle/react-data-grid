@@ -1,7 +1,7 @@
 import React, { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
-import { CellRendererProps } from './types';
+import type { CellRendererProps } from './types';
 import { wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 

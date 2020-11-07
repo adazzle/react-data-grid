@@ -1,6 +1,6 @@
 import React from 'react';
-import { HeaderCellProps } from '../HeaderCell';
-import { SortDirection } from '../enums';
+import type { HeaderCellProps } from '../HeaderCell';
+import type { SortDirection } from '../enums';
 
 const SORT_TEXT = {
   ASC: '\u25B2',

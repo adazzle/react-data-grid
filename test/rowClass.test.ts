@@ -1,4 +1,4 @@
-import { Column } from '../src';
+import type { Column } from '../src';
 import { setup, getRows } from './utils';
 
 interface Row {

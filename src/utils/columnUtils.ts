@@ -1,4 +1,4 @@
-import { Column, CalculatedColumn, FormatterProps } from '../types';
+import type { Column, CalculatedColumn, FormatterProps } from '../types';
 import { ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 

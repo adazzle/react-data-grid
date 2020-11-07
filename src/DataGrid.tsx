@@ -26,7 +26,7 @@ import {
   isDefaultCellInput
 } from './utils';
 
-import {
+import type {
   CalculatedColumn,
   Column,
   Filters,
@@ -39,7 +39,7 @@ import {
   FillEvent,
   PasteEvent
 } from './types';
-import { CellNavigationMode, SortDirection } from './enums';
+import type { CellNavigationMode, SortDirection } from './enums';
 
 interface SelectCellState extends Position {
   mode: 'SELECT';

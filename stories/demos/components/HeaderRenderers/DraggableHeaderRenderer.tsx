@@ -1,7 +1,9 @@
 import React from 'react';
-import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
+import type { DragObjectWithType } from 'react-dnd';
 
-import { HeaderRendererProps, SortableHeaderCell } from '../../../../src';
+import { SortableHeaderCell } from '../../../../src';
+import type { HeaderRendererProps } from '../../../../src';
 import { useCombinedRefs } from '../../../../src/hooks';
 
 interface ColumnDragObject extends DragObjectWithType {

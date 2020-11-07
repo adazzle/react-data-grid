@@ -483,7 +483,7 @@ const rules = {
   '@typescript-eslint/consistent-indexed-object-style': 1,
   '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
-  '@typescript-eslint/consistent-type-imports': [1, { prefer: 'no-type-imports' }],
+  '@typescript-eslint/consistent-type-imports': 1,
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
   '@typescript-eslint/explicit-module-boundary-types': 0,

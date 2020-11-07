@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
+import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 

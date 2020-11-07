@@ -1,10 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
-import Select, { components, ValueType, OptionsType, Props as SelectProps } from 'react-select';
+import Select, { components } from 'react-select';
+import type { ValueType, OptionsType, Props as SelectProps } from 'react-select';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 
-import DataGrid, { Column, SelectColumn } from '../../src';
+import DataGrid, { SelectColumn } from '../../src';
+import type { Column } from '../../src';
 import './Grouping.less';
 
 interface Row {

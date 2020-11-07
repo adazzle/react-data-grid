@@ -1,6 +1,7 @@
 import faker from 'faker';
 import React, { useState, useRef } from 'react';
-import DataGrid, { Column, SelectColumn, DataGridHandle, TextEditor, FillEvent, PasteEvent } from '../../src';
+import DataGrid, { SelectColumn, TextEditor } from '../../src';
+import type { Column, DataGridHandle, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 

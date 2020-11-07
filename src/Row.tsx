@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import Cell from './Cell';
 import EditCell from './EditCell';
-import { RowRendererProps, SelectedCellProps } from './types';
+import type { RowRendererProps, SelectedCellProps } from './types';
 import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({

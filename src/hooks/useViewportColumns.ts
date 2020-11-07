@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { CalculatedColumn, Column } from '../types';
+import type { CalculatedColumn, Column } from '../types';
 import { getColumnMetrics } from '../utils';
-import { DataGridProps } from '../DataGrid';
+import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter } from '../formatters';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,

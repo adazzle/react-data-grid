@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 
-import { EditorProps } from '../types';
+import type { EditorProps } from '../types';
 import { useClickOutside } from '../hooks';
 
 export default function EditorContainer<R, SR>({
