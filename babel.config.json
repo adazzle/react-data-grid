@@ -1,6 +1,7 @@
 {
   "presets": [
     ["@babel/env", {
+      "loose": true,
       "bugfixes": true,
       "shippedProposals": true,
       "corejs": 3,
