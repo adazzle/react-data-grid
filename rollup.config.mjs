@@ -1,6 +1,6 @@
 import { isAbsolute } from 'path';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import { babel } from '@rollup/plugin-babel';
+import nodeResolve from '@rollup/plugin-node-resolve';
 
 const extensions = ['.ts', '.tsx'];
 
