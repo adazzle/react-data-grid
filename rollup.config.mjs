@@ -23,7 +23,11 @@ export default {
     babel({
       babelHelpers: 'runtime',
       skipPreflightCheck: true,
-      extensions
+      extensions,
+      // remove all comments except terser annotations
+      // https://github.com/terser/terser#annotations
+      // https://babeljs.io/docs/en/options#shouldprintcomment
+      shouldPrintComment: comment => /^[@#]__.+__$/.test(comment)
     }),
     nodeResolve({ extensions })
   ]
