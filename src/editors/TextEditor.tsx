@@ -18,11 +18,6 @@ export default function TextEditor<TRow, TSummaryRow = unknown>({
       value={row[column.key as keyof TRow] as unknown as string}
       onChange={event => onRowChange({ ...row, [column.key]: event.target.value })}
       onBlur={() => onClose(true)}
-      onKeyDown={event => {
-        if (/^(Arrow(Left|Right)|Home|End)$/.test(event.key)) {
-          event.stopPropagation();
-        }
-      }}
     />
   );
 }

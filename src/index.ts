@@ -6,4 +6,19 @@ export * from './formatters';
 export { default as TextEditor } from './editors/TextEditor';
 export { default as SortableHeaderCell } from './headerCells/SortableHeaderCell';
 export * from './enums';
-export * from './types';
+export {
+  Column,
+  CalculatedColumn,
+  FormatterProps,
+  SummaryFormatterProps,
+  GroupFormatterProps,
+  EditorProps,
+  HeaderRendererProps,
+  CellRendererProps,
+  RowRendererProps,
+  FilterRendererProps,
+  Filters,
+  SelectRowEvent,
+  FillEvent,
+  PasteEvent
+} from './types';

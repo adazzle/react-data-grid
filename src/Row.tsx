@@ -9,7 +9,6 @@ import { wrapEvent } from './utils';
 function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
   className,
-  eventBus,
   rowIdx,
   isRowSelected,
   copiedCellIdx,
@@ -22,6 +21,8 @@ function Row<R, SR = unknown>({
   setDraggedOverRowIdx,
   onMouseEnter,
   top,
+  selectCell,
+  selectRow,
   'aria-rowindex': ariaRowIndex,
   'aria-selected': ariaSelected,
   ...props
@@ -76,11 +77,12 @@ function Row<R, SR = unknown>({
             isDraggedOver={draggedOverCellIdx === column.idx}
             isCellSelected={isCellSelected}
             isRowSelected={isRowSelected}
-            eventBus={eventBus}
             dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
             onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
             onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
             onRowClick={onRowClick}
+            selectCell={selectCell}
+            selectRow={selectRow}
           />
         );
       })}
