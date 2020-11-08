@@ -253,8 +253,7 @@ function DataGrid<R, SR>({
     scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
-    rawGroupBy,
-    rowGrouper
+    rawGroupBy: rowGrouper ? rawGroupBy : undefined
   });
 
   const { rowOverscanStartIdx, rowOverscanEndIdx, rows, rowsCount, isGroupRow } = useViewportRows({
