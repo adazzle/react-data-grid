@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import faker from 'faker';
 
-import DataGrid, { Column } from '../../src';
+import DataGrid from '../../src';
+import type { Column } from '../../src';
 import { CellActionsFormatter, ImageFormatter } from './components/Formatters';
 
 faker.locale = 'en_GB';

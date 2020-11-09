@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn } from './types';
-import { GroupRowRendererProps } from './GroupRow';
+import type { CalculatedColumn } from './types';
+import type { GroupRowRendererProps } from './GroupRow';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'id'

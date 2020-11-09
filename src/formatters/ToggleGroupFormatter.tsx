@@ -1,5 +1,5 @@
 import React from 'react';
-import { GroupFormatterProps } from '../types';
+import type { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks/useFocusRef';
 
 export function ToggleGroupFormatter<R, SR>({

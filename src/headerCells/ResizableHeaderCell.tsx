@@ -1,5 +1,5 @@
-import React, { cloneElement } from 'react';
-import { CalculatedColumn } from '../types';
+import { cloneElement } from 'react';
+import type { CalculatedColumn } from '../types';
 
 interface ResizableHeaderCellProps<R, SR> {
   children: React.ReactElement<React.ComponentProps<'div'>>;

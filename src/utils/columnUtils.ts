@@ -1,4 +1,4 @@
-import { CalculatedColumn } from '../types';
+import type { CalculatedColumn } from '../types';
 
 export function getColumnScrollPosition<R, SR>(columns: readonly CalculatedColumn<R, SR>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;

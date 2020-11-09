@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormatterProps } from '../types';
+import type { FormatterProps } from '../types';
 
 export function ValueFormatter<R, SR>(props: FormatterProps<R, SR>) {
   try {

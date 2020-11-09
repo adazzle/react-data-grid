@@ -1,9 +1,9 @@
 import React, { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn } from './types';
+import type { CalculatedColumn } from './types';
 import { assertIsValidKeyGetter } from './utils';
-import { DataGridProps } from './DataGrid';
+import type { DataGridProps } from './DataGrid';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'rows'

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectCellFormatter } from './formatters';
-import { Column } from './types';
+import type { Column } from './types';
 import { stopPropagation } from './utils/domUtils';
 
 export const SELECT_COLUMN_KEY = 'select-row';

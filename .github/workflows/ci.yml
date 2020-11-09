@@ -24,6 +24,8 @@ jobs:
       run: npm run typecheck
     - name: Test
       run: npm t -- --coverage --colors
+    - name: Bundle
+      run: npm run build
 
   storybook:
     runs-on: ubuntu-latest

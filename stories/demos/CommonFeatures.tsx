@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, Column, SortDirection, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
 

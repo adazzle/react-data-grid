@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { CalculatedColumn, Column } from '../types';
-import { DataGridProps } from '../DataGrid';
+import type { CalculatedColumn, Column } from '../types';
+import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 

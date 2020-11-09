@@ -1,5 +1,5 @@
 import React from 'react';
-import { Column } from '../../src';
+import type { Column } from '../../src';
 import { setup, getCells } from '../utils';
 
 interface Row {

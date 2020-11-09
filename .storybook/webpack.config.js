@@ -11,9 +11,6 @@ module.exports = function({ config, mode }) {
     use: [{
       loader: 'babel-loader',
       options: { cacheDirectory: !isProd }
-    }, {
-      loader: 'ts-loader',
-      options: { onlyCompileBundledFiles: true }
     }]
   }, {
     test: /\.less$/,

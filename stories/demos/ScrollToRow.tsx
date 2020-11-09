@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import DataGrid, { Column, DataGridHandle } from '../../src';
+import DataGrid from '../../src';
+import type { Column, DataGridHandle } from '../../src';
 
 interface Row {
   id: number;
