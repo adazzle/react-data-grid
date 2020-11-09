@@ -22,9 +22,8 @@
   top: var(--header-row-height);
 }
 
-// TODO: replace this with a pseudo-element once we drop support for Legacy Edge,
-// as `cursor` doesn't work on pseudo-elements on those browsers.
-.rdg-header-cell-resizer {
+.rdg-cell-resizable::after {
+  content: "";
   cursor: col-resize;
   position: absolute;
   top: 0;
