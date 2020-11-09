@@ -1,36 +1,4 @@
-import { Column, CalculatedColumn } from '../types';
-
-export function getSpecifiedWidth<R, SR>(
-  { key, width }: Column<R, SR>,
-  columnWidths: ReadonlyMap<string, number>,
-  viewportWidth: number
-): number | undefined {
-  if (columnWidths.has(key)) {
-    // Use the resized width if available
-    return columnWidths.get(key);
-  }
-  if (typeof width === 'number') {
-    return width;
-  }
-  if (typeof width === 'string' && /^\d+%$/.test(width)) {
-    return Math.floor(viewportWidth * parseInt(width, 10) / 100);
-  }
-  return undefined;
-}
-
-export function clampColumnWidth<R, SR>(
-  width: number,
-  { minWidth, maxWidth }: Column<R, SR>,
-  minColumnWidth: number
-): number {
-  width = Math.max(width, minWidth ?? minColumnWidth);
-
-  if (typeof maxWidth === 'number') {
-    return Math.min(width, maxWidth);
-  }
-
-  return width;
-}
+import { CalculatedColumn } from '../types';
 
 export function getColumnScrollPosition<R, SR>(columns: readonly CalculatedColumn<R, SR>[], idx: number, currentScrollLeft: number, currentClientWidth: number): number {
   let left = 0;

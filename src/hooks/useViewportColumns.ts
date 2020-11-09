@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 
 import { CalculatedColumn, Column } from '../types';
-import { getSpecifiedWidth, clampColumnWidth } from '../utils';
 import { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
@@ -187,4 +186,36 @@ export function useViewportColumns<R, SR>({
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
   return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
+}
+
+export function getSpecifiedWidth<R, SR>(
+  { key, width }: Column<R, SR>,
+  columnWidths: ReadonlyMap<string, number>,
+  viewportWidth: number
+): number | undefined {
+  if (columnWidths.has(key)) {
+    // Use the resized width if available
+    return columnWidths.get(key);
+  }
+  if (typeof width === 'number') {
+    return width;
+  }
+  if (typeof width === 'string' && /^\d+%$/.test(width)) {
+    return Math.floor(viewportWidth * parseInt(width, 10) / 100);
+  }
+  return undefined;
+}
+
+export function clampColumnWidth<R, SR>(
+  width: number,
+  { minWidth, maxWidth }: Column<R, SR>,
+  minColumnWidth: number
+): number {
+  width = Math.max(width, minWidth ?? minColumnWidth);
+
+  if (typeof maxWidth === 'number') {
+    return Math.min(width, maxWidth);
+  }
+
+  return width;
 }
