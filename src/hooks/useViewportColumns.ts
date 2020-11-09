@@ -188,7 +188,7 @@ export function useViewportColumns<R, SR>({
   return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
 }
 
-export function getSpecifiedWidth<R, SR>(
+function getSpecifiedWidth<R, SR>(
   { key, width }: Column<R, SR>,
   columnWidths: ReadonlyMap<string, number>,
   viewportWidth: number
