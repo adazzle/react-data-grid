@@ -71,6 +71,7 @@ export default function HeaderCell<R, SR>({
   let cell = getCell();
 
   const className = clsx('rdg-cell', column.headerCellClass, {
+    'rdg-cell-resizable': column.resizable,
     'rdg-cell-frozen': column.frozen,
     'rdg-cell-frozen-last': column.isLastFrozenColumn
   });

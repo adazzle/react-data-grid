@@ -84,12 +84,6 @@ export default function ResizableHeaderCell<R, SR>({
 
   return cloneElement(children, {
     onMouseDown,
-    onTouchStart,
-    children: (
-      <>
-        {children.props.children}
-        <div className="rdg-header-cell-resizer" />
-      </>
-    )
+    onTouchStart
   });
 }
