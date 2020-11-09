@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import Select from 'react-select';
 import faker from 'faker';
 
-import DataGrid, { Column, Filters } from '../../src';
+import DataGrid from '../../src';
+import type { Column, Filters } from '../../src';
 import { NumericFilter } from './components/Filters';
 import './HeaderFilters.less';
 

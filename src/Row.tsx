@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import Cell from './Cell';
 import EditCell from './EditCell';
-import { RowRendererProps, SelectedCellProps } from './types';
+import type { RowRendererProps, SelectedCellProps } from './types';
 import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({
@@ -21,6 +21,7 @@ function Row<R, SR = unknown>({
   setDraggedOverRowIdx,
   onMouseEnter,
   top,
+  onRowChange,
   selectCell,
   selectRow,
   'aria-rowindex': ariaRowIndex,
@@ -81,6 +82,7 @@ function Row<R, SR = unknown>({
             onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
             onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
             onRowClick={onRowClick}
+            onRowChange={onRowChange}
             selectCell={selectCell}
             selectRow={selectRow}
           />

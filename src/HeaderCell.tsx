@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 
-import { CalculatedColumn } from './types';
-import { HeaderRowProps } from './HeaderRow';
+import type { CalculatedColumn } from './types';
+import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
-import { SortDirection } from './enums';
+import type { SortDirection } from './enums';
 
 function getAriaSort(sortDirection?: SortDirection) {
   switch (sortDirection) {
@@ -72,6 +72,7 @@ export default function HeaderCell<R, SR>({
   let cell = getCell();
 
   const className = clsx('rdg-cell', column.headerCellClass, {
+    'rdg-cell-resizable': column.resizable,
     'rdg-cell-frozen': column.frozen,
     'rdg-cell-frozen-last': column.isLastFrozenColumn
   });

@@ -1,5 +1,5 @@
 import { cloneElement } from 'react';
-import { CalculatedColumn } from '../types';
+import type { CalculatedColumn } from '../types';
 
 interface ResizableHeaderCellProps<R, SR> {
   children: React.ReactElement<React.ComponentProps<'div'>>;
@@ -84,12 +84,6 @@ export default function ResizableHeaderCell<R, SR>({
 
   return cloneElement(children, {
     onMouseDown,
-    onTouchStart,
-    children: (
-      <>
-        {children.props.children}
-        <div className="rdg-header-cell-resizer" />
-      </>
-    )
+    onTouchStart
   });
 }

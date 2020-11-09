@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import DataGrid, { Column, CellNavigationMode } from '../../src';
+import DataGrid from '../../src';
+import type { Column, CellNavigationMode } from '../../src';
 
 interface Row {
   id: number;

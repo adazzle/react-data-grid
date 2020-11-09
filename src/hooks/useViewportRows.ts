@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { GroupRow, GroupByDictionary, Dictionary } from '../types';
+import type { GroupRow, GroupByDictionary, Dictionary } from '../types';
 const RENDER_BACTCH_SIZE = 8;
 
 interface ViewportRowsArgs<R> {

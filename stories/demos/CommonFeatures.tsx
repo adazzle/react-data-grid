@@ -1,6 +1,8 @@
 import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, Column, SortDirection, TextEditor } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import type { Column, SortDirection } from '../../src';
+import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
@@ -157,8 +159,18 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'available',
       name: 'Available',
       width: 80,
-      formatter(props) {
-        return <>{props.row.available ? '✔️' : '❌'}</>;
+      formatter({ row, onRowChange, isCellSelected }) {
+        return (
+          <SelectCellFormatter
+            tabIndex={-1}
+            value={row.available}
+            onChange={() => {
+              onRowChange({ ...row, available: !row.available });
+            }}
+            onClick={stopPropagation}
+            isCellSelected={isCellSelected}
+          />
+        );
       },
       summaryFormatter({ row: { yesCount, totalCount } }) {
         return (

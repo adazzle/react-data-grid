@@ -1,4 +1,4 @@
-import { Column, FilterRendererProps } from '../../../../src';
+import type { Column, FilterRendererProps } from '../../../../src';
 
 enum RuleType {
   number = 1,

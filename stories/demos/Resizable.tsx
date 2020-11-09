@@ -1,4 +1,5 @@
-import DataGrid, { Column, FormatterProps } from '../../src';
+import DataGrid from '../../src';
+import type { Column, FormatterProps } from '../../src';
 
 type Row = undefined;
 const rows: readonly Row[] = Array(100);

@@ -1,4 +1,5 @@
-import DataGrid, { Column } from '../../src';
+import DataGrid from '../../src';
+import type { Column } from '../../src';
 
 function EmptyRowsRenderer() {
   return <div style={{ textAlign: 'center' }}>Nothing to show <span lang="ja" title="ショボーン">(´・ω・`)</span></div>;
