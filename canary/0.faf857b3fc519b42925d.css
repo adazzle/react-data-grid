@@ -214,7 +214,8 @@
   line-height: var(--filter-row-height);
   top: var(--header-row-height);
 }
-.rdg-header-cell-resizer {
+.rdg-cell-resizable::after {
+  content: "";
   cursor: col-resize;
   position: absolute;
   top: 0;
@@ -570,4 +571,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.76299152f4e90119af54.css.map*/
+/*# sourceMappingURL=0.faf857b3fc519b42925d.css.map*/
