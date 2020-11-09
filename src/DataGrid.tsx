@@ -1,11 +1,10 @@
-import React, {
+import {
   forwardRef,
   useState,
   useRef,
   useLayoutEffect,
   useImperativeHandle,
-  useCallback,
-  createElement
+  useCallback
 } from 'react';
 import clsx from 'clsx';
 
@@ -189,7 +188,7 @@ function DataGrid<R, SR>({
   onExpandedGroupIdsChange,
   // Custom renderers
   rowRenderer: RowRenderer = Row,
-  emptyRowsRenderer,
+  emptyRowsRenderer: EmptyRowsRenderer,
   // Event props
   onRowClick,
   onScroll,
@@ -911,7 +910,7 @@ function DataGrid<R, SR>({
           onFiltersChange={onFiltersChange}
         />
       )}
-      {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
+      {rows.length === 0 && EmptyRowsRenderer ? <EmptyRowsRenderer /> : (
         <>
           <div
             ref={focusSinkRef}

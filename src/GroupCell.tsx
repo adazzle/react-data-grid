@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn } from './types';

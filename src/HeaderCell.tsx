@@ -1,4 +1,3 @@
-import React, { createElement } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn } from './types';
@@ -42,14 +41,16 @@ export default function HeaderCell<R, SR>({
 }: HeaderCellProps<R, SR>) {
   function getCell() {
     if (column.headerRenderer) {
-      return createElement(column.headerRenderer, {
-        column,
-        sortColumn,
-        sortDirection,
-        onSort,
-        allRowsSelected,
-        onAllRowsSelectionChange
-      });
+      return (
+        <column.headerRenderer
+          column={column}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          onSort={onSort}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        />
+      );
     }
 
     if (column.sortable) {

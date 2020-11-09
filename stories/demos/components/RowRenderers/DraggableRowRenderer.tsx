@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { DragObjectWithType } from 'react-dnd';
 import clsx from 'clsx';

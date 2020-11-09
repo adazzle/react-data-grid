@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Column, FilterRendererProps } from '../../../../src';
 
 enum RuleType {

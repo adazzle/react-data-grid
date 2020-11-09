@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from 'react';
+import { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';

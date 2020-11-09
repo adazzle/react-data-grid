@@ -1,4 +1,3 @@
-import React from 'react';
 import DataGrid from '../../src';
 import type { Column } from '../../src';
 

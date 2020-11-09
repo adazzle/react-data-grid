@@ -1,4 +1,3 @@
-import React from 'react';
 import type { EditorProps } from '../types';
 
 function autoFocusAndSelect(input: HTMLInputElement | null) {
@@ -6,12 +5,12 @@ function autoFocusAndSelect(input: HTMLInputElement | null) {
   input?.select();
 }
 
-export default function TextEditor<TRow>({
+export default function TextEditor<TRow, TSummaryRow = unknown>({
   row,
   column,
   onRowChange,
   onClose
-}: EditorProps<TRow>) {
+}: EditorProps<TRow, TSummaryRow>) {
   return (
     <input
       className="rdg-text-editor"

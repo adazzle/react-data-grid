@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useMemo } from 'react';
+import { useState, useReducer, useMemo } from 'react';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';

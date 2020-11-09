@@ -257,7 +257,17 @@ const rules = {
   'no-duplicate-imports': 0, // replace by @typescript-eslint/no-duplicate-imports
   'no-new-symbol': 0,
   'no-restricted-exports': 0,
-  'no-restricted-imports': 0,
+  'no-restricted-imports': [1, {
+    "paths": [{
+      "name": "react",
+      "importNames": ["default"],
+      "message": "Use named imports instead."
+    }, {
+      "name": "react-dom",
+      "importNames": ["default"],
+      "message": "Use named imports instead."
+    }]
+  }],
   'no-this-before-super': 0,
   'no-useless-computed-key': [1, { enforceForClassMembers: true }],
   'no-useless-constructor': 0, // replaced by @typescript-eslint/no-useless-constructor
@@ -371,7 +381,7 @@ const rules = {
     afterOpening: 'never',
     beforeClosing: 'never'
   }],
-  'react/jsx-uses-react': 1,
+  'react/jsx-uses-react': 0,
   'react/jsx-uses-vars': 1,
   'react/jsx-wrap-multilines': [1, {
     declaration: 'parens-new-line',

@@ -1,4 +1,4 @@
-import React, { StrictMode } from 'react';
+import { StrictMode } from 'react';
 import { render, screen } from '@testing-library/react';
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';

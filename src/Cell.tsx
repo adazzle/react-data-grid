@@ -1,4 +1,4 @@
-import React, { forwardRef, memo, useRef } from 'react';
+import { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
 import type { CellRendererProps } from './types';

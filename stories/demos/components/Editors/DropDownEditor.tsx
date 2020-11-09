@@ -1,4 +1,3 @@
-import React from 'react';
 import type { EditorProps } from '../../../../src';
 import type { Row } from '../../AllFeatures';
 

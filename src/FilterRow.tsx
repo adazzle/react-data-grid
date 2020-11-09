@@ -1,4 +1,4 @@
-import React, { createElement, memo } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn, Filters } from './types';
@@ -48,11 +48,13 @@ function FilterRow<R, SR>({
             style={style}
             className={className}
           >
-            {column.filterRenderer && createElement(column.filterRenderer, {
-              column,
-              value: filters?.[column.key],
-              onChange: value => onChange(key, value)
-            })}
+            {column.filterRenderer && (
+              <column.filterRenderer
+                column={column}
+                value={filters?.[column.key]}
+                onChange={value => onChange(key, value)}
+              />
+            )}
           </div>
         );
       })}

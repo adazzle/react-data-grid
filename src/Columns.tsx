@@ -1,4 +1,3 @@
-import React from 'react';
 import { SelectCellFormatter } from './formatters';
 import type { Column } from './types';
 import { stopPropagation } from './utils/domUtils';

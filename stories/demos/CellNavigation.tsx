@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import DataGrid from '../../src';
 import type { Column, CellNavigationMode } from '../../src';

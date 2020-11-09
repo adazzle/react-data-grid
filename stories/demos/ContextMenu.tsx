@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import { useState, useReducer } from 'react';
 import { createPortal } from 'react-dom';
 import faker from 'faker';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';

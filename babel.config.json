@@ -11,7 +11,7 @@
         "@babel/proposal-optional-chaining"
       ]
     }],
-    ["@babel/react", { "useSpread": true }],
+    ["@babel/react", { "runtime": "automatic" }],
     "@babel/typescript"
   ],
   "plugins": [

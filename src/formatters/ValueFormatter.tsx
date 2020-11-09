@@ -1,4 +1,3 @@
-import React from 'react';
 import type { FormatterProps } from '../types';
 
 export function ValueFormatter<R, SR>(props: FormatterProps<R, SR>) {
