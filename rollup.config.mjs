@@ -22,7 +22,6 @@ export default {
   plugins: [
     babel({
       babelHelpers: 'runtime',
-      skipPreflightCheck: true,
       extensions,
       // remove all comments except terser annotations
       // https://github.com/terser/terser#annotations
