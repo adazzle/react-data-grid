@@ -206,7 +206,7 @@ function getSpecifiedWidth<R, SR>(
   return undefined;
 }
 
-export function clampColumnWidth<R, SR>(
+function clampColumnWidth<R, SR>(
   width: number,
   { minWidth, maxWidth }: Column<R, SR>,
   minColumnWidth: number
