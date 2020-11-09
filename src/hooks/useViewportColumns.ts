@@ -1,16 +1,11 @@
 import { useMemo } from 'react';
 
 import { CalculatedColumn, Column } from '../types';
-import { getColumnMetrics } from '../utils';
 import { DataGridProps } from '../DataGrid';
-import { ValueFormatter } from '../formatters';
+import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
+import { SELECT_COLUMN_KEY } from '../Columns';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
-  | 'defaultColumnOptions'
-  | 'rowGrouper'
->;
-
-interface ViewportColumnsArgs<R, SR> extends SharedDataGridProps<R, SR> {
+interface ViewportColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
   rawGroupBy?: readonly string[];
   viewportWidth: number;
@@ -24,8 +19,7 @@ export function useViewportColumns<R, SR>({
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
-  rawGroupBy,
-  rowGrouper
+  rawGroupBy
 }: ViewportColumnsArgs<R, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
@@ -33,17 +27,108 @@ export function useViewportColumns<R, SR>({
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
   const { columns, lastFrozenColumnIndex, totalColumnWidth, totalFrozenColumnWidth, groupBy } = useMemo(() => {
-    return getColumnMetrics<R, SR>({
-      rawColumns,
-      minColumnWidth,
-      viewportWidth,
-      columnWidths,
-      defaultSortable,
-      defaultResizable,
-      defaultFormatter,
-      rawGroupBy: rowGrouper ? rawGroupBy : undefined
+    let left = 0;
+    let totalWidth = 0;
+    let allocatedWidths = 0;
+    let unassignedColumnsCount = 0;
+    let lastFrozenColumnIndex = -1;
+    type IntermediateColumn = Column<R, SR> & { width: number | undefined; rowGroup?: boolean };
+    let totalFrozenColumnWidth = 0;
+
+    const columns = rawColumns.map(metricsColumn => {
+      let width = getSpecifiedWidth(metricsColumn, columnWidths, viewportWidth);
+
+      if (width === undefined) {
+        unassignedColumnsCount++;
+      } else {
+        width = clampColumnWidth(width, metricsColumn, minColumnWidth);
+        allocatedWidths += width;
+      }
+
+      const column: IntermediateColumn = { ...metricsColumn, width };
+
+      if (rawGroupBy?.includes(column.key)) {
+        column.frozen = true;
+        column.rowGroup = true;
+      }
+
+      if (column.frozen) {
+        lastFrozenColumnIndex++;
+      }
+
+      return column;
     });
-  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, rawGroupBy, rowGrouper, viewportWidth]);
+
+    columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
+      // Sort select column first:
+      if (aKey === SELECT_COLUMN_KEY) return -1;
+      if (bKey === SELECT_COLUMN_KEY) return 1;
+
+      // Sort grouped columns second, following the groupBy order:
+      if (rawGroupBy?.includes(aKey)) {
+        if (rawGroupBy.includes(bKey)) {
+          return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
+        }
+        return -1;
+      }
+      if (rawGroupBy?.includes(bKey)) return 1;
+
+      // Sort frozen columns third:
+      if (frozenA) {
+        if (frozenB) return 0;
+        return -1;
+      }
+      if (frozenB) return 1;
+
+      // Sort other columns last:
+      return 0;
+    });
+
+    const unallocatedWidth = viewportWidth - allocatedWidths;
+    const unallocatedColumnWidth = Math.max(
+      Math.floor(unallocatedWidth / unassignedColumnsCount),
+      minColumnWidth
+    );
+
+    // Filter rawGroupBy and ignore keys that do not match the columns prop
+    const groupBy: string[] = [];
+    const calculatedColumns: CalculatedColumn<R, SR>[] = columns.map((column, idx) => {
+      // Every column should have a valid width as this stage
+      const width = column.width ?? clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
+      const newColumn = {
+        ...column,
+        idx,
+        width,
+        left,
+        sortable: column.sortable ?? defaultSortable,
+        resizable: column.resizable ?? defaultResizable,
+        formatter: column.formatter ?? defaultFormatter
+      };
+
+      if (newColumn.rowGroup) {
+        groupBy.push(column.key);
+        newColumn.groupFormatter = column.groupFormatter ?? ToggleGroupFormatter;
+      }
+
+      totalWidth += width;
+      left += width;
+      return newColumn;
+    });
+
+    if (lastFrozenColumnIndex !== -1) {
+      const lastFrozenColumn = calculatedColumns[lastFrozenColumnIndex];
+      lastFrozenColumn.isLastFrozenColumn = true;
+      totalFrozenColumnWidth = lastFrozenColumn.left + lastFrozenColumn.width;
+    }
+
+    return {
+      columns: calculatedColumns,
+      lastFrozenColumnIndex,
+      totalFrozenColumnWidth,
+      totalColumnWidth: totalWidth,
+      groupBy
+    };
+  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, rawGroupBy, viewportWidth]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     // get the viewport's left side and right side positions for non-frozen columns
@@ -101,4 +186,36 @@ export function useViewportColumns<R, SR>({
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
   return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
+}
+
+function getSpecifiedWidth<R, SR>(
+  { key, width }: Column<R, SR>,
+  columnWidths: ReadonlyMap<string, number>,
+  viewportWidth: number
+): number | undefined {
+  if (columnWidths.has(key)) {
+    // Use the resized width if available
+    return columnWidths.get(key);
+  }
+  if (typeof width === 'number') {
+    return width;
+  }
+  if (typeof width === 'string' && /^\d+%$/.test(width)) {
+    return Math.floor(viewportWidth * parseInt(width, 10) / 100);
+  }
+  return undefined;
+}
+
+function clampColumnWidth<R, SR>(
+  width: number,
+  { minWidth, maxWidth }: Column<R, SR>,
+  minColumnWidth: number
+): number {
+  width = Math.max(width, minWidth ?? minColumnWidth);
+
+  if (typeof maxWidth === 'number') {
+    return Math.min(width, maxWidth);
+  }
+
+  return width;
 }
