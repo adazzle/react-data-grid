@@ -19,6 +19,7 @@ function Cell<R, SR>({
   onClick,
   onDoubleClick,
   onContextMenu,
+  onRowChange,
   selectCell,
   selectRow,
   ...props
@@ -56,6 +57,10 @@ function Cell<R, SR>({
     selectCellWrapper(true);
   }
 
+  function handleRowChange(newRow: R) {
+    onRowChange(rowIdx, newRow);
+  }
+
   function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
     selectRow({ rowIdx, checked, isShiftClick });
   }
@@ -85,6 +90,7 @@ function Cell<R, SR>({
             isCellSelected={isCellSelected}
             isRowSelected={isRowSelected}
             onRowSelectionChange={onRowSelectionChange}
+            onRowChange={handleRowChange}
           />
           {dragHandleProps && (
             <div className="rdg-cell-drag-handle" {...dragHandleProps} />

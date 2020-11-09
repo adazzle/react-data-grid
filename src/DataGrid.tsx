@@ -235,6 +235,7 @@ function DataGrid<R, SR>({
   const selectRowWrapper = useLatestFunc(selectRow);
   const selectCellWrapper = useLatestFunc(selectCell);
   const toggleGroupWrapper = useLatestFunc(toggleGroup);
+  const handleFormatterRowChangeWrapper = useLatestFunc(handleFormatterRowChange);
 
   /**
    * computed values
@@ -577,7 +578,13 @@ function DataGrid<R, SR>({
     onRowsChange(updatedRows);
   }
 
-  function handleRowChange(row: Readonly<R>, commitChanges?: boolean) {
+  function handleFormatterRowChange(rowIdx: number, row: Readonly<R>) {
+    const newRows = [...rawRows];
+    newRows[rowIdx] = row;
+    onRowsChange?.(newRows);
+  }
+
+  function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
       const updatedRows = [...rawRows];
@@ -766,7 +773,7 @@ function DataGrid<R, SR>({
           editorPortalTarget,
           rowHeight,
           row: selectedPosition.row,
-          onRowChange: handleRowChange,
+          onRowChange: handleEditorRowChange,
           onClose: handleOnClose
         }
       };
@@ -842,6 +849,7 @@ function DataGrid<R, SR>({
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
+          onRowChange={handleFormatterRowChangeWrapper}
           selectCell={selectCellWrapper}
           selectRow={selectRowWrapper}
         />

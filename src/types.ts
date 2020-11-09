@@ -78,6 +78,7 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   isCellSelected: boolean;
   isRowSelected: boolean;
   onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
+  onRowChange: (row: Readonly<TRow>) => void;
 }
 
 export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
@@ -145,6 +146,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isCellSelected: boolean;
   isRowSelected: boolean;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
@@ -160,6 +162,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   isRowSelected: boolean;
   top: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
+  onRowChange: (rowIdx: number, row: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
