@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ReactElement } from 'react';
 import { SortDirection } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<TRow, TSummaryRow = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
-  name: string;
+  name: string | ReactElement;
   /** A unique key to distinguish each column */
   key: string;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
@@ -78,6 +79,7 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   isCellSelected: boolean;
   isRowSelected: boolean;
   onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
+  onRowChange: (row: Readonly<TRow>) => void;
 }
 
 export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
@@ -145,6 +147,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isCellSelected: boolean;
   isRowSelected: boolean;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
@@ -160,6 +163,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   isRowSelected: boolean;
   top: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
+  onRowChange: (rowIdx: number, row: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
