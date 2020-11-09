@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ReactElement } from 'react';
 import { SortDirection } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<TRow, TSummaryRow = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
-  name: string;
+  name: string | ReactElement;
   /** A unique key to distinguish each column */
   key: string;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
