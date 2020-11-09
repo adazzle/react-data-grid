@@ -1,21 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, createContext, useContext } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, Column, SortDirection, TextEditor } from '../../src';
+import DataGrid, { SelectColumn, Column, SortDirection, TextEditor, EditorProps } from '../../src';
 import { SelectEditor } from './components/Editors/SelectEditor';
-
-const dateFormatter = new Intl.DateTimeFormat(navigator.language);
-const currencyFormatter = new Intl.NumberFormat(navigator.language, {
-  style: 'currency',
-  currency: 'eur'
-});
-
-function TimestampFormatter({ timestamp }: { timestamp: number }) {
-  return <>{dateFormatter.format(timestamp)}</>;
-}
-
-function CurrencyFormatter({ value }: { value: number }) {
-  return <>{currencyFormatter.format(value)}</>;
-}
 
 interface SummaryRow {
   id: string;
@@ -41,7 +27,40 @@ interface Row {
   available: boolean;
 }
 
-function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
+const RowsContext = createContext<readonly Row[]>([]);
+
+const dateFormatter = new Intl.DateTimeFormat(navigator.language);
+const currencyFormatter = new Intl.NumberFormat(navigator.language, {
+  style: 'currency',
+  currency: 'eur'
+});
+
+function TimestampFormatter({ timestamp }: { timestamp: number }) {
+  return <>{dateFormatter.format(timestamp)}</>;
+}
+
+function CurrencyFormatter({ value }: { value: number }) {
+  return <>{currencyFormatter.format(value)}</>;
+}
+
+function CountryEditor(p: EditorProps<Row, SummaryRow>) {
+  const rows = useContext(RowsContext);
+  const countries = useMemo(() => {
+    return [...new Set(rows.map(r => r.country))].sort().map(c => ({ value: c, label: c }));
+  }, [rows]);
+
+  return (
+    <SelectEditor
+      value={p.row.country}
+      onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
+      options={countries}
+      rowHeight={p.rowHeight}
+      menuPortalTarget={p.editorPortalTarget}
+    />
+  );
+}
+
+function createColumns(): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
     {
@@ -80,15 +99,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'country',
       name: 'Country',
       width: 180,
-      editor: p => (
-        <SelectEditor
-          value={p.row.country}
-          onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
-          options={countries.map(c => ({ value: c, label: c }))}
-          rowHeight={p.rowHeight}
-          menuPortalTarget={p.editorPortalTarget}
-        />
-      )
+      editor: CountryEditor
     },
     {
       key: 'contact',
@@ -202,14 +213,9 @@ function createRows(): readonly Row[] {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
+  const [columns, setColumns] = useState(createColumns);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
-
-  const countries = useMemo(() => {
-    return [...new Set(rows.map(r => r.country))].sort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const columns = useMemo(() => getColumns(countries), [countries]);
 
   const summaryRows = useMemo(() => {
     const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
@@ -254,23 +260,26 @@ export function CommonFeatures() {
   }, []);
 
   return (
-    <DataGrid
-      rowKeyGetter={rowKeyGetter}
-      columns={columns}
-      rows={sortedRows}
-      defaultColumnOptions={{
-        sortable: true,
-        resizable: true
-      }}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      onRowsChange={setRows}
-      sortColumn={sortColumn}
-      sortDirection={sortDirection}
-      onSort={handleSort}
-      summaryRows={summaryRows}
-      className="fill-grid"
-    />
+    <RowsContext.Provider value={rows}>
+      <DataGrid
+        rowKeyGetter={rowKeyGetter}
+        columns={columns}
+        rows={sortedRows}
+        defaultColumnOptions={{
+          sortable: true,
+          resizable: true
+        }}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        onRowsChange={setRows}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+        onColumnResize={setColumns}
+        summaryRows={summaryRows}
+        className="fill-grid"
+      />
+    </RowsContext.Provider>
   );
 }
 

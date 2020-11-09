@@ -10,12 +10,10 @@ interface ViewportColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'default
   rawGroupBy?: readonly string[];
   viewportWidth: number;
   scrollLeft: number;
-  columnWidths: ReadonlyMap<string, number>;
 }
 
 export function useViewportColumns<R, SR>({
   rawColumns,
-  columnWidths,
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
@@ -36,7 +34,7 @@ export function useViewportColumns<R, SR>({
     let totalFrozenColumnWidth = 0;
 
     const columns = rawColumns.map(metricsColumn => {
-      let width = getSpecifiedWidth(metricsColumn, columnWidths, viewportWidth);
+      let width = getSpecifiedWidth(metricsColumn, viewportWidth);
 
       if (width === undefined) {
         unassignedColumnsCount++;
@@ -128,7 +126,7 @@ export function useViewportColumns<R, SR>({
       totalColumnWidth: totalWidth,
       groupBy
     };
-  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, rawGroupBy, viewportWidth]);
+  }, [defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, rawGroupBy, viewportWidth]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     // get the viewport's left side and right side positions for non-frozen columns
@@ -189,14 +187,9 @@ export function useViewportColumns<R, SR>({
 }
 
 function getSpecifiedWidth<R, SR>(
-  { key, width }: Column<R, SR>,
-  columnWidths: ReadonlyMap<string, number>,
+  { width }: Column<R, SR>,
   viewportWidth: number
 ): number | undefined {
-  if (columnWidths.has(key)) {
-    // Use the resized width if available
-    return columnWidths.get(key);
-  }
   if (typeof width === 'number') {
     return width;
   }

@@ -25,56 +25,58 @@ interface Option {
 
 const sports = ['Swimming', 'Gymnastics', 'Speed Skating', 'Cross Country Skiing', 'Short-Track Speed Skating', 'Diving', 'Cycling', 'Biathlon', 'Alpine Skiing', 'Ski Jumping', 'Nordic Combined', 'Athletics', 'Table Tennis', 'Tennis', 'Synchronized Swimming', 'Shooting', 'Rowing', 'Fencing', 'Equestrian', 'Canoeing', 'Bobsleigh', 'Badminton', 'Archery', 'Wrestling', 'Weightlifting', 'Waterpolo', 'Wrestling', 'Weightlifting'];
 
-const columns: readonly Column<Row>[] = [
-  SelectColumn,
-  {
-    key: 'country',
-    name: 'Country'
-  },
-  {
-    key: 'year',
-    name: 'Year'
-  },
-  {
-    key: 'sport',
-    name: 'Sport'
-  },
-  {
-    key: 'athlete',
-    name: 'Athlete'
-  },
-  {
-    key: 'gold',
-    name: 'Gold',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { gold }) => prev + gold, 0)}</>;
-    }
-  },
-  {
-    key: 'silver',
-    name: 'Silver',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
-    }
-  },
-  {
-    key: 'bronze',
-    name: 'Bronze',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
-    }
-  },
-  {
-    key: 'total',
-    name: 'Total',
-    formatter({ row }) {
-      return <>{row.gold + row.silver + row.bronze}</>;
+function createColumns(): readonly Column<Row>[] {
+  return [
+    SelectColumn,
+    {
+      key: 'country',
+      name: 'Country'
     },
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0)}</>;
+    {
+      key: 'year',
+      name: 'Year'
+    },
+    {
+      key: 'sport',
+      name: 'Sport'
+    },
+    {
+      key: 'athlete',
+      name: 'Athlete'
+    },
+    {
+      key: 'gold',
+      name: 'Gold',
+      groupFormatter({ childRows }) {
+        return <>{childRows.reduce((prev, { gold }) => prev + gold, 0)}</>;
+      }
+    },
+    {
+      key: 'silver',
+      name: 'Silver',
+      groupFormatter({ childRows }) {
+        return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+      }
+    },
+    {
+      key: 'bronze',
+      name: 'Bronze',
+      groupFormatter({ childRows }) {
+        return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+      }
+    },
+    {
+      key: 'total',
+      name: 'Total',
+      formatter({ row }) {
+        return <>{row.gold + row.silver + row.bronze}</>;
+      },
+      groupFormatter({ childRows }) {
+        return <>{childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0)}</>;
+      }
     }
-  }
-];
+  ];
+}
 
 function rowKeyGetter(row: Row) {
   return row.id;
@@ -119,6 +121,7 @@ const options: OptionsType<Option> = [
 
 export function Grouping() {
   const [rows] = useState(createRows);
+  const [columns, setColumns] = useState(createColumns);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
   const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
   const [expandedGroupIds, setExpandedGroupIds] = useState(() => new Set<unknown>(['United States of America', 'United States of America__2015']));
@@ -167,6 +170,7 @@ export function Grouping() {
         rowGrouper={rowGrouper}
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
+        onColumnResize={setColumns}
         defaultColumnOptions={{ resizable: true }}
       />
     </div>

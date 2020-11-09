@@ -29,109 +29,111 @@ function rowKeyGetter(row: Row) {
 
 faker.locale = 'en_GB';
 
-const columns: readonly Column<Row>[] = [
-  SelectColumn,
-  {
-    key: 'id',
-    name: 'ID',
-    width: 80,
-    resizable: true,
-    frozen: true
-  },
-  {
-    key: 'avatar',
-    name: 'Avatar',
-    width: 40,
-    resizable: true,
-    headerRenderer: () => <ImageFormatter value={faker.image.cats()} />,
-    formatter: ({ row }) => <ImageFormatter value={row.avatar} />
-  },
-  {
-    key: 'title',
-    name: 'Title',
-    width: 200,
-    resizable: true,
-    formatter(props) {
-      return <>{props.row.title}</>;
+function createColumns(): readonly Column<Row>[] {
+  return [
+    SelectColumn,
+    {
+      key: 'id',
+      name: 'ID',
+      width: 80,
+      resizable: true,
+      frozen: true
     },
-    editor: DropDownEditor,
-    editorOptions: {
-      editOnClick: true
+    {
+      key: 'avatar',
+      name: 'Avatar',
+      width: 40,
+      resizable: true,
+      headerRenderer: () => <ImageFormatter value={faker.image.cats()} />,
+      formatter: ({ row }) => <ImageFormatter value={row.avatar} />
+    },
+    {
+      key: 'title',
+      name: 'Title',
+      width: 200,
+      resizable: true,
+      formatter(props) {
+        return <>{props.row.title}</>;
+      },
+      editor: DropDownEditor,
+      editorOptions: {
+        editOnClick: true
+      }
+    },
+    {
+      key: 'firstName',
+      name: 'First Name',
+      width: 200,
+      resizable: true,
+      frozen: true,
+      editor: TextEditor
+    },
+    {
+      key: 'lastName',
+      name: 'Last Name',
+      width: 200,
+      resizable: true,
+      frozen: true,
+      editor: TextEditor
+    },
+    {
+      key: 'email',
+      name: 'Email',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
+    },
+    {
+      key: 'street',
+      name: 'Street',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
+    },
+    {
+      key: 'zipCode',
+      name: 'ZipCode',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
+    },
+    {
+      key: 'date',
+      name: 'Date',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
+    },
+    {
+      key: 'bs',
+      name: 'bs',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
+    },
+    {
+      key: 'catchPhrase',
+      name: 'Catch Phrase',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
+    },
+    {
+      key: 'companyName',
+      name: 'Company Name',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
+    },
+    {
+      key: 'sentence',
+      name: 'Sentence',
+      width: 200,
+      resizable: true,
+      editor: TextEditor
     }
-  },
-  {
-    key: 'firstName',
-    name: 'First Name',
-    width: 200,
-    resizable: true,
-    frozen: true,
-    editor: TextEditor
-  },
-  {
-    key: 'lastName',
-    name: 'Last Name',
-    width: 200,
-    resizable: true,
-    frozen: true,
-    editor: TextEditor
-  },
-  {
-    key: 'email',
-    name: 'Email',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  },
-  {
-    key: 'street',
-    name: 'Street',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  },
-  {
-    key: 'zipCode',
-    name: 'ZipCode',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  },
-  {
-    key: 'date',
-    name: 'Date',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  },
-  {
-    key: 'bs',
-    name: 'bs',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  },
-  {
-    key: 'catchPhrase',
-    name: 'Catch Phrase',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  },
-  {
-    key: 'companyName',
-    name: 'Company Name',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  },
-  {
-    key: 'sentence',
-    name: 'Sentence',
-    width: 200,
-    resizable: true,
-    editor: TextEditor
-  }
-];
+  ];
+}
 
 function createFakeRowObjectData(index: number): Row {
   return {
@@ -181,6 +183,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
 
 export function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
+  const [columns, setColumns] = useState(createColumns);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
   const [isLoading, setIsLoading] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
@@ -222,6 +225,7 @@ export function AllFeatures() {
         onRowsChange={setRows}
         onFill={handleFill}
         onPaste={handlePaste}
+        onColumnResize={setColumns}
         rowHeight={30}
         selectedRows={selectedRows}
         onScroll={handleScroll}

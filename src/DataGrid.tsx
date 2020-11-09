@@ -137,7 +137,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
-  onColumnResize?: (idx: number, width: number) => void;
+  onColumnResize?: (columns: Column<R, SR>[]) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
 
@@ -215,7 +215,6 @@ function DataGrid<R, SR>({
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>({ idx: -1, rowIdx: -1, mode: 'SELECT' });
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
@@ -249,7 +248,6 @@ function DataGrid<R, SR>({
 
   const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
     rawColumns,
-    columnWidths,
     scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
@@ -306,12 +304,11 @@ function DataGrid<R, SR>({
   * callbacks
   */
   const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
-    const newColumnWidths = new Map(columnWidths);
-    newColumnWidths.set(column.key, width);
-    setColumnWidths(newColumnWidths);
-
-    onColumnResize?.(column.idx, width);
-  }, [columnWidths, onColumnResize]);
+    if (!onColumnResize) return;
+    const newColumns = [...rawColumns];
+    newColumns[column.idx] = { ...newColumns[column.idx], width };
+    onColumnResize(newColumns);
+  }, [rawColumns, onColumnResize]);
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);

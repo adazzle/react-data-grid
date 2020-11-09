@@ -124,6 +124,7 @@ export function ColumnsReordering() {
         sortColumn={sortColumn}
         sortDirection={sortDirection}
         onSort={handleSort}
+        onColumnResize={setColumns}
       />
     </DndProvider>
   );

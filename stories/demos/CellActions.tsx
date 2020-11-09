@@ -38,8 +38,7 @@ const columns: Column<Row>[] = [
   {
     key: 'id',
     name: 'ID',
-    width: 80,
-    resizable: true
+    width: 80
   },
   {
     key: 'avatar',

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
 import DataGrid, { Column, FormatterProps } from '../../src';
 
 type Row = undefined;
@@ -9,7 +9,7 @@ function CellFormatter(props: FormatterProps<Row>) {
 }
 
 export function MillionCells() {
-  const columns = useMemo((): readonly Column<Row>[] => {
+  const [columns, setColumns] = useState<readonly Column<Row>[]>(() => {
     const columns: Column<Row>[] = [];
 
     for (let i = 0; i < 1000; i++) {
@@ -24,7 +24,7 @@ export function MillionCells() {
     }
 
     return columns;
-  }, []);
+  });
 
   return (
     <DataGrid
@@ -32,6 +32,7 @@ export function MillionCells() {
       rows={rows}
       rowHeight={22}
       className="fill-grid"
+      onColumnResize={setColumns}
     />
   );
 }
