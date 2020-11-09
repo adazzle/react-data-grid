@@ -1,10 +1,9 @@
-import React, { createElement } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn } from './types';
-import { HeaderRowProps } from './HeaderRow';
+import type { CalculatedColumn } from './types';
+import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
-import { SortDirection } from './enums';
+import type { SortDirection } from './enums';
 
 function getAriaSort(sortDirection?: SortDirection) {
   switch (sortDirection) {
@@ -77,14 +76,16 @@ export default function HeaderCell<R, SR>({
 
   function getCell() {
     if (column.headerRenderer) {
-      return createElement(column.headerRenderer, {
-        column,
-        sortColumn,
-        sortDirection,
-        onSort,
-        allRowsSelected,
-        onAllRowsSelectionChange
-      });
+      return (
+        <column.headerRenderer
+          column={column}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          onSort={onSort}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        />
+      );
     }
 
     if (column.sortable) {

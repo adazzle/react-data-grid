@@ -1,4 +1,3 @@
-import React from 'react';
 import './rdg-image.less';
 
 interface Props {

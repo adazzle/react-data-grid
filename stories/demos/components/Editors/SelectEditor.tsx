@@ -1,5 +1,5 @@
-import React from 'react';
-import Select, { OptionTypeBase, OptionsType } from 'react-select';
+import Select from 'react-select';
+import type { OptionTypeBase, OptionsType } from 'react-select';
 
 interface SelectEditorProps {
   value: string;

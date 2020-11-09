@@ -1,7 +1,6 @@
-import React, { memo } from 'react';
-
+import { memo } from 'react';
 import SummaryCell from './SummaryCell';
-import { RowRendererProps } from './types';
+import type { RowRendererProps } from './types';
 
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
   | 'viewportColumns'

@@ -1,8 +1,11 @@
+import { isAbsolute } from 'path';
+import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import sourcemaps from 'rollup-plugin-sourcemaps';
+
+const extensions = ['.ts', '.tsx'];
 
 export default {
-  input: './lib/index.js',
+  input: './src/index.ts',
   output: [{
     file: './lib/bundle.mjs',
     format: 'es',
@@ -15,13 +18,16 @@ export default {
     sourcemap: true,
     interop: false
   }],
-  external: [
-    'clsx',
-    'react',
-    'react-dom'
-  ],
+  external: id => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
-    sourcemaps(),
-    nodeResolve()
+    babel({
+      babelHelpers: 'runtime',
+      extensions,
+      // remove all comments except terser annotations
+      // https://github.com/terser/terser#annotations
+      // https://babeljs.io/docs/en/options#shouldprintcomment
+      shouldPrintComment: comment => /^[@#]__.+__$/.test(comment)
+    }),
+    nodeResolve({ extensions })
   ]
 };

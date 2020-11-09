@@ -1,11 +1,10 @@
-import React, {
+import {
   forwardRef,
   useState,
   useRef,
   useLayoutEffect,
   useImperativeHandle,
-  useCallback,
-  createElement
+  useCallback
 } from 'react';
 import clsx from 'clsx';
 
@@ -26,7 +25,7 @@ import {
   isDefaultCellInput
 } from './utils';
 
-import {
+import type {
   CalculatedColumn,
   Column,
   Filters,
@@ -39,7 +38,7 @@ import {
   FillEvent,
   PasteEvent
 } from './types';
-import { CellNavigationMode, SortDirection } from './enums';
+import type { CellNavigationMode, SortDirection } from './enums';
 
 interface SelectCellState extends Position {
   mode: 'SELECT';
@@ -189,7 +188,7 @@ function DataGrid<R, SR>({
   onExpandedGroupIdsChange,
   // Custom renderers
   rowRenderer: RowRenderer = Row,
-  emptyRowsRenderer,
+  emptyRowsRenderer: EmptyRowsRenderer,
   // Event props
   onRowClick,
   onScroll,
@@ -236,6 +235,7 @@ function DataGrid<R, SR>({
   const selectRowWrapper = useLatestFunc(selectRow);
   const selectCellWrapper = useLatestFunc(selectCell);
   const toggleGroupWrapper = useLatestFunc(toggleGroup);
+  const handleFormatterRowChangeWrapper = useLatestFunc(handleFormatterRowChange);
 
   /**
    * computed values
@@ -580,7 +580,13 @@ function DataGrid<R, SR>({
     onRowsChange(updatedRows);
   }
 
-  function handleRowChange(row: Readonly<R>, commitChanges?: boolean) {
+  function handleFormatterRowChange(rowIdx: number, row: Readonly<R>) {
+    const newRows = [...rawRows];
+    newRows[rowIdx] = row;
+    onRowsChange?.(newRows);
+  }
+
+  function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
       const updatedRows = [...rawRows];
@@ -769,7 +775,7 @@ function DataGrid<R, SR>({
           editorPortalTarget,
           rowHeight,
           row: selectedPosition.row,
-          onRowChange: handleRowChange,
+          onRowChange: handleEditorRowChange,
           onClose: handleOnClose
         }
       };
@@ -845,6 +851,7 @@ function DataGrid<R, SR>({
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           selectedCellProps={getSelectedCellProps(rowIdx)}
+          onRowChange={handleFormatterRowChangeWrapper}
           selectCell={selectCellWrapper}
           selectRow={selectRowWrapper}
         />
@@ -903,7 +910,7 @@ function DataGrid<R, SR>({
           onFiltersChange={onFiltersChange}
         />
       )}
-      {rows.length === 0 && emptyRowsRenderer ? createElement(emptyRowsRenderer) : (
+      {rows.length === 0 && EmptyRowsRenderer ? <EmptyRowsRenderer /> : (
         <>
           <div
             ref={focusSinkRef}

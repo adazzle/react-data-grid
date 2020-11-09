@@ -1,4 +1,5 @@
-import React, { useState, ReactNode } from 'react';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { usePopper } from 'react-popper';
 import { createPortal } from 'react-dom';
