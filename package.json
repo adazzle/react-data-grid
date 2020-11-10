@@ -12,19 +12,20 @@
   "bugs": {
     "url": "https://github.com/adazzle/react-data-grid/issues"
   },
+  "type": "module",
   "exports": {
     ".": {
       "node": {
-        "import": "./lib/bundle.mjs",
+        "import": "./lib/bundle.js",
         "require": "./lib/bundle.cjs"
       },
-      "default": "./lib/bundle.mjs"
+      "default": "./lib/bundle.js"
     },
     "./dist/": "./dist/"
   },
-  "browser": "./lib/bundle.mjs",
+  "browser": "./lib/bundle.js",
   "main": "./lib/bundle.cjs",
-  "module": "./lib/bundle.mjs",
+  "module": "./lib/bundle.js",
   "types": "./lib/index.d.ts",
   "files": [
     "dist",
@@ -37,10 +38,10 @@
   "scripts": {
     "start": "start-storybook --quiet --no-dll -p 6006",
     "build": "rollup --config --no-stdin",
-    "postbuild": "node tools/buildStylesheets.mjs",
+    "postbuild": "node tools/buildStylesheets.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "eslint": "eslint --ext mjs,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories test tools",
+    "eslint": "eslint --ext js,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories test tools",
     "eslint:fix": "npm run eslint -- --fix",
     "typecheck": "tsc -p tsconfig.all.json",
     "build-storybook": "build-storybook --quiet --no-dll",
