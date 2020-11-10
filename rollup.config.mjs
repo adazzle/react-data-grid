@@ -7,7 +7,7 @@ const extensions = ['.ts', '.tsx'];
 export default {
   input: './src/index.ts',
   output: [{
-    file: './lib/bundle.mjs',
+    file: './lib/bundle.js',
     format: 'es',
     preferConst: true,
     sourcemap: true
