@@ -616,7 +616,6 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.eslint.json',
-    extraFileExtensions: ['.mjs'],
     ecmaVersion: 2020,
     sourceType: 'module'
   },
@@ -645,7 +644,7 @@ module.exports = {
       '@typescript-eslint/no-implicit-any-catch': 0
     }
   }, {
-    files: ['*.mjs'],
+    files: ['*.js'],
     env: {
       node: true
     },
