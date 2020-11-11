@@ -14,7 +14,7 @@ type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
   | 'onSort'
 >;
 
-export interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
+interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
   children: React.ReactNode;
 }
 

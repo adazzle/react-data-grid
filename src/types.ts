@@ -198,9 +198,7 @@ export interface PasteEvent<TRow> {
   targetRow: TRow;
 }
 
-export type Dictionary<T> = Record<string, T>;
-
-export type GroupByDictionary<TRow> = Dictionary<{
+export type GroupByDictionary<TRow> = Record<string, {
   childRows: readonly TRow[];
   childGroups: readonly TRow[] | GroupByDictionary<TRow>;
   startRowIndex: number;

@@ -9,7 +9,7 @@ type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'onFiltersChange'
 >;
 
-export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
 }
 
