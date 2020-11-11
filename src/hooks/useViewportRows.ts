@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
+import type { GroupRow, GroupByDictionary } from '../types';
 
-import type { GroupRow, GroupByDictionary, Dictionary } from '../types';
 const RENDER_BACTCH_SIZE = 8;
 
 interface ViewportRowsArgs<R> {
@@ -9,7 +9,7 @@ interface ViewportRowsArgs<R> {
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
-  rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<readonly R[]>;
+  rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
   expandedGroupIds?: ReadonlySet<unknown>;
 }
 
