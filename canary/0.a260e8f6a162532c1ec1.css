@@ -208,6 +208,7 @@
   height: var(--header-row-height);
   line-height: var(--header-row-height);
   top: 0;
+  touch-action: none;
 }
 .rdg-filter-row {
   height: var(--filter-row-height);
@@ -222,11 +223,6 @@
   right: 0;
   bottom: 0;
   width: 10px;
-}
-.rdg-cell .Select {
-  max-height: 30px;
-  font-size: 12px;
-  font-weight: normal;
 }
 .rdg-header-sort-cell {
   cursor: pointer;
@@ -331,6 +327,11 @@ html {
     background-color: #111;
     color: #fff;
   }
+}
+.rdg-cell .Select {
+  max-height: 30px;
+  font-size: 12px;
+  font-weight: normal;
 }
 
 .all-features {
@@ -571,4 +572,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.faf857b3fc519b42925d.css.map*/
+/*# sourceMappingURL=0.a260e8f6a162532c1ec1.css.map*/
