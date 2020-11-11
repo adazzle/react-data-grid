@@ -730,6 +730,7 @@ function DataGrid<R, SR>({
     if (key === 'Tab') {
       // If we are in a position to leave the grid, stop editing but stay in that cell
       if (canExitGrid({ shiftKey, cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+        commitEditorChanges();
         // Allow focus to leave the grid so the next control in the tab order can be focused
         return;
       }
