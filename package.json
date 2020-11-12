@@ -15,10 +15,8 @@
   "type": "module",
   "exports": {
     ".": {
-      "node": {
-        "import": "./lib/bundle.js",
-        "require": "./lib/bundle.cjs"
-      },
+      "module": "./lib/bundle.js",
+      "require": "./lib/bundle.cjs",
       "default": "./lib/bundle.js"
     },
     "./dist/": "./dist/"
