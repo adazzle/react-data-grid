@@ -1,7 +1,3 @@
-export function preventDefault(event: React.SyntheticEvent) {
-  event.preventDefault();
-}
-
 export function stopPropagation(event: React.SyntheticEvent) {
   event.stopPropagation();
 }

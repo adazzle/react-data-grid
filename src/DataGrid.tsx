@@ -34,7 +34,6 @@ import type {
   SelectRowEvent,
   SelectedCellProps,
   EditCellProps,
-  Dictionary,
   FillEvent,
   PasteEvent
 } from './types';
@@ -116,7 +115,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
   groupBy?: readonly string[];
-  rowGrouper?: (rows: readonly R[], columnKey: string) => Dictionary<readonly R[]>;
+  rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
   expandedGroupIds?: ReadonlySet<unknown>;
   onExpandedGroupIdsChange?: (expandedGroupIds: Set<unknown>) => void;
   onFill?: (event: FillEvent<R>) => R[];
@@ -730,6 +729,7 @@ function DataGrid<R, SR>({
     if (key === 'Tab') {
       // If we are in a position to leave the grid, stop editing but stay in that cell
       if (canExitGrid({ shiftKey, cellNavigationMode, columns, rowsCount: rows.length, selectedPosition })) {
+        commitEditorChanges();
         // Allow focus to leave the grid so the next control in the tab order can be focused
         return;
       }

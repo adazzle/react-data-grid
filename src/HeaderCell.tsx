@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import type { CalculatedColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
-import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
 import type { SortDirection } from './enums';
 
 function getAriaSort(sortDirection?: SortDirection) {
@@ -39,6 +38,42 @@ export default function HeaderCell<R, SR>({
   sortDirection,
   onSort
 }: HeaderCellProps<R, SR>) {
+  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse' && event.buttons !== 1) {
+      return;
+    }
+
+    const { currentTarget, pointerId } = event;
+    const { right } = currentTarget.getBoundingClientRect();
+    const offset = right - event.clientX;
+
+    if (offset > 11) { // +1px to account for the border size
+      return;
+    }
+
+    function onPointerMove(event: PointerEvent) {
+      if (event.pointerId !== pointerId) return;
+      if (event.pointerType === 'mouse' && event.buttons !== 1) {
+        onPointerUp();
+        return;
+      }
+      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      if (width > 0) {
+        onResize(column, width);
+      }
+    }
+
+    function onPointerUp() {
+      if (event.pointerId !== pointerId) return;
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+    }
+
+    event.preventDefault();
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+  }
+
   function getCell() {
     if (column.headerRenderer) {
       return (
@@ -69,8 +104,6 @@ export default function HeaderCell<R, SR>({
     return column.name;
   }
 
-  let cell = getCell();
-
   const className = clsx('rdg-cell', column.headerCellClass, {
     'rdg-cell-resizable': column.resizable,
     'rdg-cell-frozen': column.frozen,
@@ -81,28 +114,16 @@ export default function HeaderCell<R, SR>({
     left: column.left
   };
 
-  cell = (
+  return (
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
       aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
       className={className}
       style={style}
+      onPointerDown={column.resizable ? onPointerDown : undefined}
     >
-      {cell}
+      {getCell()}
     </div>
   );
-
-  if (column.resizable) {
-    cell = (
-      <ResizableHeaderCell
-        column={column}
-        onResize={onResize}
-      >
-        {cell as React.ReactElement<React.ComponentProps<'div'>>}
-      </ResizableHeaderCell>
-    );
-  }
-
-  return cell;
 }
