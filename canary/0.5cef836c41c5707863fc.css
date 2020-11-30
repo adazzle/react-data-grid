@@ -342,7 +342,7 @@ html {
   flex: 1;
 }
 .highlight .rdg-cell {
-  background-color: #9370DB;
+  background-color: #9370db;
   color: white;
 }
 .highlight:hover .rdg-cell {
@@ -434,18 +434,18 @@ html {
   vertical-align: middle;
   cursor: pointer;
 }
-.rdg-child-row-action-cross:before,
-.rdg-child-row-action-cross:after {
+.rdg-child-row-action-cross::before,
+.rdg-child-row-action-cross::after {
   content: "";
   position: absolute;
   background: grey;
 }
-.rdg-child-row-action-cross:before {
+.rdg-child-row-action-cross::before {
   left: 21px;
   width: 1px;
   height: 100%;
 }
-.rdg-child-row-action-cross:after {
+.rdg-child-row-action-cross::after {
   top: 50%;
   left: 20px;
   height: 1px;
@@ -519,7 +519,7 @@ html {
 .react-contextmenu-item.react-contextmenu-submenu {
   padding: 0;
 }
-.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item:after {
+.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item::after {
   content: "▶";
   display: inline-block;
   position: absolute;
@@ -571,4 +571,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.2bf7f5c56d73f0fd75c3.css.map*/
+/*# sourceMappingURL=0.5cef836c41c5707863fc.css.map*/

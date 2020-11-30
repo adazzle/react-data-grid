@@ -6,19 +6,25 @@
 
   .sb-show-main.sb-main-centered {
     margin: 0;
-    padding: 1rem;
     display: flex;
-    justify-content: center;
     align-items: center;
     min-height: 100vh;
+  }
+
+  .sb-show-main.sb-main-centered #root {
     box-sizing: border-box;
+    margin: auto;
+    padding: 1rem;
+    max-height: 100%; /* Hack for centering correctly in IE11 */
   }
 
   /* Vertical centering fix for IE11 */
-  .sb-show-main.sb-main-centered:after {
-    content: '';
-    min-height: inherit;
-    font-size: 0;
+  @media screen and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .sb-show-main.sb-main-centered:after {
+      content: '';
+      min-height: inherit;
+      font-size: 0;
+    }
   }
 
   .sb-show-main.sb-main-fullscreen {
@@ -97,11 +103,22 @@
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn('unable to connect to top frame for connecting dev tools');
-  }</script><link href="0.2bf7f5c56d73f0fd75c3.css" rel="stylesheet"><style>#root[hidden],
+  }
+
+  window.onerror = function onerror(message, source, line, column, err) {
+    if (window.CONFIG_TYPE !== 'DEVELOPMENT') return;
+    // eslint-disable-next-line no-var, vars-on-top
+    var error = { message: err.message, name: err.name, stack: err.stack };
+    window.fetch('/runtime-error', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, source, line, column, error, origin: 'preview' }),
+    });
+  };</script><link href="0.5cef836c41c5707863fc.css" rel="stylesheet"><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
       }</style></head><body><div class="sb-nopreview sb-wrapper"><div class="sb-nopreview_main"><h1 class="sb-nopreview_heading sb-heading">No Preview</h1><p>Sorry, but you either have no stories or none are selected somehow.</p><ul><li>Please check the Storybook config.</li><li>Try reloading the page.</li></ul><p>If the problem persists, check the browser console, or the terminal you've run Storybook from.</p></div></div><div class="sb-errordisplay sb-wrapper"><pre id="error-message" class="sb-heading"></pre><pre class="sb-errordisplay_code"><code id="error-stack"></code></pre></div><div id="root"></div><div id="docs-root"></div><script>window['LOGLEVEL'] = "info";
             
         
             
-              window['FRAMEWORK_OPTIONS'] = {};</script><script src="runtime~main.cc48415d8605b3ed4c87.bundle.js"></script><script src="vendors~main.cc48415d8605b3ed4c87.bundle.js"></script><script src="main.cc48415d8605b3ed4c87.bundle.js"></script></body></html>
+              window['FRAMEWORK_OPTIONS'] = {};</script><script src="runtime~main.cc400f64f206dcde15a6.bundle.js"></script><script src="vendors~main.cc400f64f206dcde15a6.bundle.js"></script><script src="main.cc400f64f206dcde15a6.bundle.js"></script></body></html>
