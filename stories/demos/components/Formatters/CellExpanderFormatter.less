@@ -10,20 +10,20 @@
   cursor: pointer;
 }
 
-.rdg-child-row-action-cross:before,
-.rdg-child-row-action-cross:after {
+.rdg-child-row-action-cross::before,
+.rdg-child-row-action-cross::after {
   content: "";
   position: absolute;
   background: grey;
 }
 
-.rdg-child-row-action-cross:before {
+.rdg-child-row-action-cross::before {
   left: 21px;
   width: 1px;
   height: 100%;
 }
 
-.rdg-child-row-action-cross:after {
+.rdg-child-row-action-cross::after {
   top: 50%;
   left: 20px;
   height: 1px;
@@ -33,6 +33,7 @@
 .rdg-child-row-action-cross:hover {
   background: red;
 }
+
 .rdg-child-row-btn {
   cursor: pointer;
   position: absolute;
