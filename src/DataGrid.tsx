@@ -57,6 +57,8 @@ type DefaultColumnOptions<R, SR> = Pick<Column<R, SR>,
   | 'sortable'
 >;
 
+const body = globalThis.document?.body;
+
 export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
@@ -199,7 +201,7 @@ function DataGrid<R, SR>({
   enableFilterRow = false,
   cellNavigationMode = 'NONE',
   // Miscellaneous
-  editorPortalTarget = document.body,
+  editorPortalTarget = body,
   className,
   style,
   rowClass,
