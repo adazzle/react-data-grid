@@ -110,7 +110,7 @@ const SortableMultiValue = SortableElement((props: any) => {
   return <components.MultiValue {...props} innerProps={innerProps} />;
 });
 
-const SortableSelect = SortableContainer<SelectProps<Option>>(Select);
+const SortableSelect = SortableContainer<SelectProps<Option, true>>(Select);
 
 const options: OptionsType<Option> = [
   { value: 'country', label: 'Country' },
@@ -122,7 +122,7 @@ const options: OptionsType<Option> = [
 export function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
-  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
+  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option, true>>([options[0], options[1]]);
   const [expandedGroupIds, setExpandedGroupIds] = useState(() => new Set<unknown>(['United States of America', 'United States of America__2015']));
 
   const groupBy = useMemo(() => Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined, [selectedOptions]);
