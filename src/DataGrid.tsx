@@ -199,7 +199,7 @@ function DataGrid<R, SR>({
   enableFilterRow = false,
   cellNavigationMode = 'NONE',
   // Miscellaneous
-  editorPortalTarget = document.body,
+  editorPortalTarget = globalThis.document?.body,
   className,
   style,
   rowClass,
