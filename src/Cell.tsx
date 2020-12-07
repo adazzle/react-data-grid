@@ -1,4 +1,4 @@
-import { forwardRef, memo, useRef } from 'react';
+import { forwardRef, useRef } from 'react';
 import clsx from 'clsx';
 
 import type { CellRendererProps } from './types';
@@ -101,4 +101,4 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
+export default forwardRef(Cell) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
