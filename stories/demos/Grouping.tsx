@@ -110,6 +110,7 @@ const SortableMultiValue = SortableElement((props: any) => {
   return <components.MultiValue {...props} innerProps={innerProps} />;
 });
 
+// @ts-expect-error
 const SortableSelect = SortableContainer<SelectProps<Option, true>>(Select);
 
 const options: OptionsType<Option> = [
