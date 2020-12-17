@@ -26,9 +26,7 @@ export const rootClass = css`
 
   // set stacking context in safari
   @supports not (contain: strict) {
-    & {
-      position: relative;
-      z-index: 0;
-    }
+    position: relative;
+    z-index: 0;
   }
 `;
