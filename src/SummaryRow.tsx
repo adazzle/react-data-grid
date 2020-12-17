@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { rowClassname, summaryRowClassname } from './styles';
+import { rowClassname, summaryRowClassname } from './style';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
 

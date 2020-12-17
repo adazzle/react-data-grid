@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './styles';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'filters'

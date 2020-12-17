@@ -2,7 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 
 import type { CellRendererProps } from './types';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './styles';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column'>;
 

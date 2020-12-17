@@ -8,7 +8,7 @@ import {
 } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './styles';
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
-import { cellClassname, cellEditingClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './styles';
+import { cellClassname, cellEditingClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 import EditorContainer from './editors/EditorContainer';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
 

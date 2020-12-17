@@ -1,3 +1,4 @@
+import { textEditorClassname } from '../style';
 import type { EditorProps } from '../types';
 
 function autoFocusAndSelect(input: HTMLInputElement | null) {
@@ -13,7 +14,7 @@ export default function TextEditor<TRow, TSummaryRow = unknown>({
 }: EditorProps<TRow, TSummaryRow>) {
   return (
     <input
-      className="rdg-text-editor"
+      className={textEditorClassname}
       ref={autoFocusAndSelect}
       value={row[column.key as keyof TRow] as unknown as string}
       onChange={event => onRowChange({ ...row, [column.key]: event.target.value })}

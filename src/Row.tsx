@@ -1,7 +1,7 @@
 import { memo, forwardRef } from 'react';
 import clsx from 'clsx';
 
-import { rowClassname, rowSelectedClassname } from './styles';
+import { rowClassname, rowSelectedClassname } from './style';
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';

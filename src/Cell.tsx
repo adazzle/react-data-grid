@@ -1,7 +1,7 @@
 import { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
-import { cellClassname, cellCopiedClassname, cellDraggedOverClassname, cellDragHandleClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './styles';
+import { cellClassname, cellCopiedClassname, cellDraggedOverClassname, cellDragHandleClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 import { wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 import type { CellRendererProps } from './types';

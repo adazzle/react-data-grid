@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './styles';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'id'

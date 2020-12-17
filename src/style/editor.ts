@@ -1,9 +1,12 @@
-.rdg-editor-container {
-  display: contents;
-}
+import { css } from '@linaria/core';
 
-.rdg-text-editor {
-  -webkit-appearance: none;
+const editorContainer = css`
+  display: contents;
+`;
+
+export const editorContainerClassname = `rdg-editor-container ${editorContainer}`;
+
+const textEditor = css`
   appearance: none;
 
   box-sizing: border-box;
@@ -27,4 +30,6 @@
     color: #999;
     opacity: 1;
   }
-}
+`;
+
+export const textEditorClassname = `rdg-text-editor ${textEditor}`;
