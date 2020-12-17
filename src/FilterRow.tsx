@@ -3,6 +3,7 @@ import clsx from 'clsx';
 
 import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './styles';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'filters'
@@ -33,9 +34,9 @@ function FilterRow<R, SR>({
       {columns.map(column => {
         const { key } = column;
 
-        const className = clsx('rdg-cell', {
-          'rdg-cell-frozen': column.frozen,
-          'rdg-cell-frozen-last': column.isLastFrozenColumn
+        const className = clsx(cellClassname, {
+          [cellFrozenClassname]: column.frozen,
+          [cellFrozenLastClassname]: column.isLastFrozenColumn
         });
         const style: React.CSSProperties = {
           width: column.width,

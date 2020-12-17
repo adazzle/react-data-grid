@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+import { cell } from './cell';
 
 export const row = css`
   contain: strict;
@@ -32,7 +33,7 @@ const summaryRow = css`
   position: sticky;
   z-index: 3;
 
-  > .rdg-cell {
+  > .${cell} {
     border-top: 2px solid var(--summary-border-color);
   }
 `;

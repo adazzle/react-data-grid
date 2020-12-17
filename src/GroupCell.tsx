@@ -3,6 +3,7 @@ import clsx from 'clsx';
 
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './styles';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'id'
@@ -50,10 +51,10 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       key={column.key}
-      className={clsx('rdg-cell', {
-        'rdg-cell-frozen': column.frozen,
-        'rdg-cell-frozen-last': column.isLastFrozenColumn,
-        'rdg-cell-selected': isCellSelected
+      className={clsx(cellClassname, {
+        [cellFrozenClassname]: column.frozen,
+        [cellFrozenLastClassname]: column.isLastFrozenColumn,
+        [cellSelectedClassname]: isCellSelected
       })}
       style={{
         width: column.width,

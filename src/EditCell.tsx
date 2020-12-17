@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import clsx from 'clsx';
 
+import { cellClassname, cellEditingClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './styles';
 import EditorContainer from './editors/EditorContainer';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
 
@@ -33,13 +34,13 @@ export default function EditCell<R, SR>({
 
   const { cellClass } = column;
   className = clsx(
-    'rdg-cell',
+    cellClassname,
     {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.isLastFrozenColumn
+      [cellFrozenClassname]: column.frozen,
+      [cellFrozenLastClassname]: column.isLastFrozenColumn
     },
-    'rdg-cell-selected',
-    'rdg-cell-editing',
+    [cellSelectedClassname],
+    cellEditingClassname,
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
   );
