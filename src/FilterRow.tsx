@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, filterRowClassname } from './style';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'filters'
@@ -29,7 +29,7 @@ function FilterRow<R, SR>({
     <div
       role="row"
       aria-rowindex={2}
-      className="rdg-filter-row"
+      className={filterRowClassname}
     >
       {columns.map(column => {
         const { key } = column;

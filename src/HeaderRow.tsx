@@ -4,6 +4,7 @@ import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
 import { assertIsValidKeyGetter } from './utils';
 import type { DataGridProps } from './DataGrid';
+import { headerRowClassname } from './style';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'rows'
@@ -50,7 +51,7 @@ function HeaderRow<R, SR>({
     <div
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
-      className="rdg-header-row"
+      className={headerRowClassname}
     >
       {columns.map(column => {
         return (

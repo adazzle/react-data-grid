@@ -1,5 +1,6 @@
 import type { HeaderCellProps } from '../HeaderCell';
 import type { SortDirection } from '../enums';
+import { headerSortCellClassname, headerSortNameClassname } from '../style';
 
 type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
   | 'column'
@@ -46,8 +47,8 @@ export default function SortableHeaderCell<R, SR>({
   }
 
   return (
-    <span className="rdg-header-sort-cell" onClick={onClick}>
-      <span className="rdg-header-sort-name">{children}</span>
+    <span className={headerSortCellClassname} onClick={onClick}>
+      <span className={headerSortNameClassname}>{children}</span>
       <span>{sortText}</span>
     </span>
   );
