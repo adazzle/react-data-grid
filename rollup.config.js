@@ -1,4 +1,6 @@
 import { isAbsolute } from 'path';
+import linaria from '@linaria/rollup';
+import postcss from 'rollup-plugin-postcss';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
@@ -20,6 +22,8 @@ export default {
   }],
   external: id => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
+    linaria(),
+    postcss(),
     babel({
       babelHelpers: 'runtime',
       extensions,

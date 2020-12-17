@@ -12,7 +12,8 @@
       ]
     }],
     ["@babel/react", { "runtime": "automatic" }],
-    "@babel/typescript"
+    "@babel/typescript",
+    "@linaria"
   ],
   "plugins": [
     ["@babel/transform-runtime", { "useESModules": true }],

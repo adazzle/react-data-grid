@@ -8,6 +8,7 @@ import {
 } from 'react';
 import clsx from 'clsx';
 
+import { rootClass } from './coreStyles';
 import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -883,7 +884,7 @@ function DataGrid<R, SR>({
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      className={clsx('rdg', { 'rdg-viewport-dragging': isDragging }, className)}
+      className={clsx('rdg', rootClass, { 'rdg-viewport-dragging': isDragging }, className)}
       style={{
         ...style,
         '--header-row-height': `${headerRowHeight}px`,
