@@ -13,6 +13,11 @@ interface ViewportRowsArgs<R> {
   expandedGroupIds?: ReadonlySet<unknown>;
 }
 
+// https://github.com/microsoft/TypeScript/issues/41808
+function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
+  return Array.isArray(arr);
+}
+
 export function useViewportRows<R>({
   rawRows,
   rowHeight,
@@ -49,7 +54,7 @@ export function useViewportRows<R>({
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
     const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentId: string | undefined, level: number): void => {
-      if (Array.isArray(rows)) {
+      if (isReadonlyArray(rows)) {
         flattenedRows.push(...rows);
         return;
       }

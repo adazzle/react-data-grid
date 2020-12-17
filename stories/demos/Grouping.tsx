@@ -110,6 +110,7 @@ const SortableMultiValue = SortableElement((props: any) => {
   return <components.MultiValue {...props} innerProps={innerProps} />;
 });
 
+// @ts-expect-error
 const SortableSelect = SortableContainer<SelectProps<Option, true>>(Select);
 
 const options: OptionsType<Option> = [
@@ -154,6 +155,7 @@ export function Grouping() {
           }}
           options={options}
           components={{
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             MultiValue: SortableMultiValue
           }}
           closeMenuOnSelect={false}
