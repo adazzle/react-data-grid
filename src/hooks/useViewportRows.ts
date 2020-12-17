@@ -53,7 +53,11 @@ export function useViewportRows<R>({
     if (!groupedRows) return [rawRows, allGroupRows];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
-    const expandGroup = (rows: GroupByDictionary<R>, parentId: string | undefined, level: number): void => {
+    const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentId: string | undefined, level: number): void => {
+      if (isReadonlyArray(rows)) {
+        flattenedRows.push(...rows);
+        return;
+      }
       Object.keys(rows).forEach((groupKey, posInSet, keys) => {
         // TODO: should users have control over the generated key?
         const id = parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
@@ -75,11 +79,7 @@ export function useViewportRows<R>({
         allGroupRows.add(groupRow);
 
         if (isExpanded) {
-          if (isReadonlyArray(childGroups)) {
-            flattenedRows.push(...childGroups);
-          } else {
-            expandGroup(childGroups, id, level + 1);
-          }
+          expandGroup(childGroups, id, level + 1);
         }
       });
     };
