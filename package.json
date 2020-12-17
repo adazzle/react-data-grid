@@ -47,7 +47,6 @@
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
-    "@linaria/core": "^3.0.0-beta.1",
     "clsx": "^1.1.1"
   },
   "devDependencies": {
@@ -59,6 +58,7 @@
     "@babel/runtime": "^7.12.5",
     "@juggle/resize-observer": "^3.2.0",
     "@linaria/babel-preset": "^3.0.0-beta.1",
+    "@linaria/core": "^3.0.0-beta.1",
     "@linaria/rollup": "^3.0.0-beta.1",
     "@linaria/shaker": "^3.0.0-beta.1",
     "@linaria/webpack-loader": "^3.0.0-beta.1",
