@@ -1,6 +1,7 @@
 import { memo, forwardRef } from 'react';
 import clsx from 'clsx';
 
+import { rowClassname, rowSelectedClassname } from './styles';
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
@@ -33,9 +34,9 @@ function Row<R, SR = unknown>({
   }
 
   className = clsx(
-    'rdg-row',
+    rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-      'rdg-row-selected': isRowSelected,
+      [rowSelectedClassname]: isRowSelected,
       'rdg-group-row-selected': selectedCellProps?.idx === -1
     },
     rowClass?.(row),

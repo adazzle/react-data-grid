@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+import { row } from './row';
 
 const lightTheme = `
   --color: #000;
@@ -32,7 +33,7 @@ const darkTheme = `
   --checkbox-disabled-background-color: #333;
 `;
 
-export const rootClass = css`
+const root = css`
   ${lightTheme}
   --selection-color: #66afe9;
   --font-size: 14px;
@@ -74,7 +75,9 @@ export const rootClass = css`
   }
 `;
 
-export const focusSinkClass = css`
+export const rootClassname = `rdg ${root}`;
+
+const focusSink = css`
   position: sticky;
   top: 0;
   left: 0;
@@ -83,8 +86,12 @@ export const focusSinkClass = css`
   outline: 0;
 `;
 
-export const viewportDraggingClass = css`
-  &.rdg-row {
+export const focusSinkClassname = `rdg-focus-sink ${focusSink}`;
+
+const viewportDragging = css`
+  &.${row} {
     cursor: move;
   }
 `;
+
+export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDragging}`;
