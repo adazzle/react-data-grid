@@ -12,7 +12,7 @@ const lightTheme = `
   --row-selected-hover-background-color: #c9e3f8;
 
   --checkbox-color: #005295;
-  --checkbox-focus-color: lighten(#005295, 40%);
+  --checkbox-focus-color: #62b8ff;
   --checkbox-disabled-border-color: #ccc;
   --checkbox-disabled-background-color: #ddd;
 `;
@@ -27,8 +27,8 @@ const darkTheme = `
   --row-selected-background-color: #1a73bc;
   --row-selected-hover-background-color: #1868aa;
 
-  --checkbox-color: lighten(#005295, 50%);
-  --checkbox-focus-color: lighten(#005295, 60%);
+  --checkbox-color: #95cfff;
+  --checkbox-focus-color: #c8e6ff;
   --checkbox-disabled-border-color: #000;
   --checkbox-disabled-background-color: #333;
 `;
