@@ -23,7 +23,7 @@ export default {
   external: id => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
     linaria(),
-    postcss(),
+    postcss({ minimize: true }),
     babel({
       babelHelpers: 'runtime',
       extensions,
