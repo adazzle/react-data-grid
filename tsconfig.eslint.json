@@ -5,7 +5,6 @@
     "rollup.config.js",
     "src/**/*",
     "stories/**/*",
-    "test/**/*",
-    "tools/**/*"
+    "test/**/*"
   ]
 }
