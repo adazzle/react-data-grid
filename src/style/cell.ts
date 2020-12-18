@@ -25,7 +25,7 @@ const cellFrozen = css`
 
 export const cellFrozenClassname = `rdg-cell-frozen ${cellFrozen}`;
 
-const cellFrozenLast = css`
+export const cellFrozenLast = css`
   box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
 `;
 

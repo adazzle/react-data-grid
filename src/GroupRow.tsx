@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import { rowClassname, rowSelectedClassname } from './style';
+import { groupRowClassname, groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
@@ -52,10 +52,10 @@ function GroupedRow<R, SR>({
       aria-expanded={isExpanded}
       className={clsx(
         rowClassname,
-        'rdg-group-row',
+        groupRowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
           [rowSelectedClassname]: isRowSelected,
-          'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
+          [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
         }
       )}
       onClick={selectGroup}

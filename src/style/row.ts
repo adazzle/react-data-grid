@@ -19,7 +19,7 @@ export const row = css`
 
 export const rowClassname = `rdg-row ${row}`;
 
-const rowSelected = css`
+export const rowSelected = css`
   background-color: var(--row-selected-background-color);
 
   &:hover {

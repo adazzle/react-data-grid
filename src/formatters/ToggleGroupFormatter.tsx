@@ -1,5 +1,6 @@
 import type { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks/useFocusRef';
+import { caretClassname, groupCellContentClassname } from '../style';
 
 export function ToggleGroupFormatter<R, SR>({
   groupKey,
@@ -20,12 +21,12 @@ export function ToggleGroupFormatter<R, SR>({
   return (
     <span
       ref={cellRef}
-      className="rdg-group-cell-content"
+      className={groupCellContentClassname}
       tabIndex={-1}
       onKeyDown={handleKeyDown}
     >
       {groupKey}
-      <svg viewBox="0 0 14 8" width="14" height="8" className="rdg-caret">
+      <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname}>
         <path d={d} />
       </svg>
     </span>

@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 
 import { useFocusRef } from '../hooks/useFocusRef';
+import { checkboxClassname, checkboxInputClassname, checkboxLabelClassname, checkboxLabelDisabledClassname } from '../style';
 
 type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
   | 'disabled'
@@ -33,20 +34,20 @@ export function SelectCellFormatter({
   }
 
   return (
-    <label className={clsx('rdg-checkbox-label', { 'rdg-checkbox-label-disabled': disabled })}>
+    <label className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: disabled })}>
       <input
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         tabIndex={tabIndex}
         ref={inputRef}
         type="checkbox"
-        className="rdg-checkbox-input"
+        className={checkboxInputClassname}
         disabled={disabled}
         checked={value}
         onChange={handleChange}
         onClick={onClick}
       />
-      <div className="rdg-checkbox" />
+      <div className={checkboxClassname} />
     </label>
   );
 }
