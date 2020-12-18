@@ -60,6 +60,7 @@ type DefaultColumnOptions<R, SR> = Pick<Column<R, SR>,
 const body = globalThis.document?.body;
 
 export interface DataGridHandle {
+  element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, openEditor?: boolean) => void;
@@ -289,6 +290,7 @@ function DataGrid<R, SR>({
   });
 
   useImperativeHandle(ref, () => ({
+    element: gridRef.current,
     scrollToColumn(idx: number) {
       scrollToCell({ idx });
     },
