@@ -3,6 +3,7 @@ import linaria from '@linaria/rollup';
 import postcss from 'rollup-plugin-postcss';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import pkg from './package.json';
 
 const extensions = ['.ts', '.tsx'];
 
@@ -22,7 +23,13 @@ export default {
   }],
   external: id => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
-    linaria(),
+    linaria({
+      classNameSlug(hash) {
+        // We add the package version as suffix to avoid style conflicts
+        // between multiple versions of RDG on the same page.
+        return `${hash}${pkg.version.replaceAll('.', '')}`;
+      }
+    }),
     postcss({ minimize: true }),
     babel({
       babelHelpers: 'runtime',
