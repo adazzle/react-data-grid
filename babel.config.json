@@ -17,6 +17,6 @@
   ],
   "plugins": [
     ["@babel/transform-runtime", { "useESModules": true }],
-    "babel-plugin-optimize-clsx"
+    "optimize-clsx"
   ]
 }
