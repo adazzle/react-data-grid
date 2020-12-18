@@ -31,14 +31,14 @@
     "*.less"
   ],
   "scripts": {
-    "start": "start-storybook --quiet --no-dll -p 6006",
+    "start": "start-storybook --quiet -p 6006",
     "build": "rollup --config --no-stdin",
     "test": "jest",
     "test:watch": "jest --watch",
     "eslint": "eslint --ext js,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories test tools",
     "eslint:fix": "npm run eslint -- --fix",
     "typecheck": "tsc -p tsconfig.all.json",
-    "build-storybook": "build-storybook --quiet --no-dll",
+    "build-storybook": "build-storybook --quiet",
     "prepublishOnly": "npm install && npm run build && tsc",
     "postpublish": "git push --follow-tags origin HEAD"
   },
