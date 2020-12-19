@@ -83,8 +83,14 @@ export function useViewportColumns<R, SR>({
       // Sort other columns last:
       return 0;
     });
+          
+    // Fix unnecessary horizontal scrollbar in Firefox by checking if the CSS property "scrollbar-width" exists,
+    // and then subtracting it from the unallocatedWidth.
+    const bodyElement = document.querySelector('body');
+    const bodyScrollbarWidth: number = bodyElement && getComputedStyle(bodyElement).scrollbarWidth === 'auto' ? 16 : 0;
+          
 
-    const unallocatedWidth = viewportWidth - allocatedWidths;
+    const unallocatedWidth = viewportWidth - allocatedWidths - bodyScrollbarWidth;
     const unallocatedColumnWidth = Math.max(
       Math.floor(unallocatedWidth / unassignedColumnsCount),
       minColumnWidth
