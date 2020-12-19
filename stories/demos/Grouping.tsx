@@ -4,10 +4,21 @@ import Select, { components } from 'react-select';
 import type { ValueType, OptionsType, Props as SelectProps } from 'react-select';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
+import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import './Grouping.less';
+
+const groupingClassname = css`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 10px;
+
+  > .rdg {
+    flex: 1;
+  }
+`;
 
 interface Row {
   id: number;
@@ -137,7 +148,7 @@ export function Grouping() {
   }
 
   return (
-    <div className="grouping-example">
+    <div className={groupingClassname}>
       <label style={{ width: 400 }}>
         <b>Group by</b> (drag to sort)
         <SortableSelect

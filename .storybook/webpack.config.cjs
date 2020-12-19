@@ -18,9 +18,6 @@ module.exports = function({ config, mode }) {
   }, {
     test: /\.css$/,
     use: [MiniCssExtractPlugin.loader, 'css-loader']
-  }, {
-    test: /\.less$/,
-    use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
   }];
 
   config.plugins.push(new MiniCssExtractPlugin({
