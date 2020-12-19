@@ -88,7 +88,6 @@ export function useViewportColumns<R, SR>({
     // and then subtracting it from the unallocatedWidth.
     const bodyElement = document.querySelector('body');
     const bodyScrollbarWidth: number = bodyElement && getComputedStyle(bodyElement).scrollbarWidth === 'auto' ? 16 : 0;
-          
 
     const unallocatedWidth = viewportWidth - allocatedWidths - bodyScrollbarWidth;
     const unallocatedColumnWidth = Math.max(
