@@ -700,15 +700,17 @@ function DataGrid<R, SR>({
       case 'Home':
         // If row is selected then move focus to the first row
         if (isRowSelected) return { idx, rowIdx: 0 };
-        return ctrlKey ? { idx: 0, rowIdx: 0 } : { idx: 0, rowIdx };
+        return ctrlKey ? { idx, rowIdx: 0 } : { idx: 0, rowIdx };
       case 'End':
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
-        return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
-      case 'PageUp':
-        return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
+        return ctrlKey ? { idx, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
+      case 'PageUp': {
+        const newRowIdx = rowIdx - Math.floor(clientHeight / rowHeight);
+        return { idx, rowIdx: newRowIdx >= 0 ? newRowIdx : 0 };
+      }
       case 'PageDown':
-        return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
+        return { idx, rowIdx: Math.min(rowIdx + Math.floor(clientHeight / rowHeight), rows.length - 1) };
       default:
         return selectedPosition;
     }
