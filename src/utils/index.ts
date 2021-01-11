@@ -1,3 +1,5 @@
+import type { CalculatedColumn } from '../types';
+
 export * from './domUtils';
 export * from './columnUtils';
 export * from './keyboardUtils';
@@ -9,7 +11,7 @@ export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter
   }
 }
 
-export function getCellStyle(column: { key: string; frozen?: boolean; idx: number }): React.CSSProperties {
+export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>): React.CSSProperties {
   return column.frozen
     ? { left: `var(--sticky-left-${column.key})` }
     : { gridColumnStart: column.idx + 1 };
