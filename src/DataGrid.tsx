@@ -236,7 +236,7 @@ function DataGrid<R, SR>({
   const selectRowWrapper = useLatestFunc(selectRow);
   const selectCellWrapper = useLatestFunc(selectCell);
   const toggleGroupWrapper = useLatestFunc(toggleGroup);
-  const handleFormatterRowChangeWrapper = useLatestFunc(handleFormatterRowChange);
+  const handleFormatterRowChangeWrapper = useLatestFunc(updateRows);
 
   /**
    * computed values
@@ -451,6 +451,13 @@ function DataGrid<R, SR>({
     return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
   }
 
+  function updateRows(rowIdx: number, row: R) {
+    if (typeof onRowsChange !== 'function') return;
+    const updatedRows = [...rawRows];
+    updatedRows[rowIdx] = row;
+    onRowsChange(updatedRows);
+  }
+
   function commitEditorChanges() {
     if (
       columns[selectedPosition.idx]?.editor === undefined
@@ -459,9 +466,8 @@ function DataGrid<R, SR>({
       return;
     }
 
-    const updatedRows = [...rawRows];
-    updatedRows[getRawRowIdx(selectedPosition.rowIdx)] = selectedPosition.row;
-    onRowsChange?.(updatedRows);
+    const rowIdx = getRawRowIdx(selectedPosition.rowIdx);
+    updateRows(rowIdx, selectedPosition.row);
   }
 
   function handleCopy() {
@@ -488,10 +494,7 @@ function DataGrid<R, SR>({
       targetColumnKey: columns[idx].key
     });
 
-    const updatedRows = [...rawRows];
-    updatedRows[rowIdx] = updatedTargetRow;
-
-    onRowsChange(updatedRows);
+    updateRows(rowIdx, updatedTargetRow);
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -581,18 +584,10 @@ function DataGrid<R, SR>({
     onRowsChange(updatedRows);
   }
 
-  function handleFormatterRowChange(rowIdx: number, row: Readonly<R>) {
-    const newRows = [...rawRows];
-    newRows[rowIdx] = row;
-    onRowsChange?.(newRows);
-  }
-
   function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
-      const updatedRows = [...rawRows];
-      updatedRows[getRawRowIdx(selectedPosition.rowIdx)] = row;
-      onRowsChange?.(updatedRows);
+      updateRows(getRawRowIdx(selectedPosition.rowIdx), row);
       closeEditor();
     } else {
       setSelectedPosition(position => ({ ...position, row }));
