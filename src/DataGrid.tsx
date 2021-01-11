@@ -236,7 +236,7 @@ function DataGrid<R, SR>({
   const selectRowWrapper = useLatestFunc(selectRow);
   const selectCellWrapper = useLatestFunc(selectCell);
   const toggleGroupWrapper = useLatestFunc(toggleGroup);
-  const handleFormatterRowChangeWrapper = useLatestFunc(updateRows);
+  const handleFormatterRowChangeWrapper = useLatestFunc(updateRow);
 
   /**
    * computed values
@@ -451,7 +451,7 @@ function DataGrid<R, SR>({
     return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
   }
 
-  function updateRows(rowIdx: number, row: R) {
+  function updateRow(rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
     const updatedRows = [...rawRows];
     updatedRows[rowIdx] = row;
@@ -467,7 +467,7 @@ function DataGrid<R, SR>({
     }
 
     const rowIdx = getRawRowIdx(selectedPosition.rowIdx);
-    updateRows(rowIdx, selectedPosition.row);
+    updateRow(rowIdx, selectedPosition.row);
   }
 
   function handleCopy() {
@@ -494,7 +494,7 @@ function DataGrid<R, SR>({
       targetColumnKey: columns[idx].key
     });
 
-    updateRows(rowIdx, updatedTargetRow);
+    updateRow(rowIdx, updatedTargetRow);
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -587,7 +587,7 @@ function DataGrid<R, SR>({
   function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
-      updateRows(getRawRowIdx(selectedPosition.rowIdx), row);
+      updateRow(getRawRowIdx(selectedPosition.rowIdx), row);
       closeEditor();
     } else {
       setSelectedPosition(position => ({ ...position, row }));
