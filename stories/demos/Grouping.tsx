@@ -166,7 +166,6 @@ export function Grouping() {
           }}
           options={options}
           components={{
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             MultiValue: SortableMultiValue
           }}
           closeMenuOnSelect={false}
