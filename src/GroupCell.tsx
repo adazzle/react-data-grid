@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
+import { getCellStyle } from './utils';
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
 
@@ -56,8 +57,7 @@ function GroupCell<R, SR>({
         'rdg-cell-selected': isCellSelected
       })}
       style={{
-        width: column.width,
-        left: column.left,
+        ...getCellStyle(column),
         cursor: isLevelMatching ? 'pointer' : 'default'
       }}
       onClick={isLevelMatching ? toggleGroup : undefined}

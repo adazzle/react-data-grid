@@ -8,3 +8,9 @@ export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter
     throw new Error('Please specify the rowKeyGetter prop to use selection');
   }
 }
+
+export function getCellStyle(column: { key: string; frozen?: boolean; idx: number }): React.CSSProperties {
+  return column.frozen
+    ? { left: `var(--sticky-left-${column.key})` }
+    : { gridColumnStart: column.idx + 1 };
+}

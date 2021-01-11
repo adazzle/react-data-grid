@@ -26,7 +26,7 @@ export function useViewportColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, lastFrozenColumnIndex, totalColumnWidth, totalFrozenColumnWidth, groupBy } = useMemo(() => {
+  const { columns, layoutCssVars, lastFrozenColumnIndex, totalColumnWidth, totalFrozenColumnWidth, groupBy } = useMemo(() => {
     let left = 0;
     let totalWidth = 0;
     let allocatedWidths = 0;
@@ -121,8 +121,18 @@ export function useViewportColumns<R, SR>({
       totalFrozenColumnWidth = lastFrozenColumn.left + lastFrozenColumn.width;
     }
 
+    const layoutCssVars: Record<string, string> = {
+      '--template-columns': calculatedColumns.map(column => `${column.width}px`).join(' ')
+    };
+
+    for (let i = 0; i <= lastFrozenColumnIndex; i++) {
+      const column = calculatedColumns[i];
+      layoutCssVars[`--sticky-left-${column.key}`] = `${column.left}px`;
+    }
+
     return {
       columns: calculatedColumns,
+      layoutCssVars,
       lastFrozenColumnIndex,
       totalFrozenColumnWidth,
       totalColumnWidth: totalWidth,
@@ -185,7 +195,7 @@ export function useViewportColumns<R, SR>({
     return viewportColumns;
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
-  return { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
+  return { columns, viewportColumns, layoutCssVars, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
 }
 
 function getSpecifiedWidth<R, SR>(

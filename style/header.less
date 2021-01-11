@@ -2,7 +2,8 @@
 .rdg-filter-row {
   contain: strict;
   contain: size layout style paint;
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--template-columns);
   width: var(--row-width);
   position: sticky;
   background-color: var(--header-background-color);
@@ -11,14 +12,16 @@
 }
 
 .rdg-header-row {
-  height: var(--header-row-height);
+  grid-template-rows: var(--header-row-height);
+  height: var(--header-row-height); // needed on Firefox
   line-height: var(--header-row-height);
   top: 0;
   touch-action: none;
 }
 
 .rdg-filter-row {
-  height: var(--filter-row-height);
+  grid-template-rows: var(--filter-row-height);
+  height: var(--filter-row-height); // needed on Firefox
   line-height: var(--filter-row-height);
   top: var(--header-row-height);
 }
