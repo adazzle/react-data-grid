@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, Column } from '../types';
+import type { CalculatedColumn, Column, ColumnMetric } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
@@ -26,31 +26,25 @@ export function useViewportColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, layoutCssVars, lastFrozenColumnIndex, totalColumnWidth, totalFrozenColumnWidth, groupBy } = useMemo(() => {
-    let left = 0;
-    let totalWidth = 0;
-    let allocatedWidths = 0;
-    let unassignedColumnsCount = 0;
+  const { columns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+    // Filter rawGroupBy and ignore keys that do not match the columns prop
+    const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
-    type IntermediateColumn = Column<R, SR> & { width: number | undefined; rowGroup?: boolean };
-    let totalFrozenColumnWidth = 0;
 
-    const columns = rawColumns.map(metricsColumn => {
-      let width = getSpecifiedWidth(metricsColumn, columnWidths, viewportWidth);
+    const columns = rawColumns.map(rawColumn => {
+      const isGroup = rawGroupBy?.includes(rawColumn.key);
 
-      if (width === undefined) {
-        unassignedColumnsCount++;
-      } else {
-        width = clampColumnWidth(width, metricsColumn, minColumnWidth);
-        allocatedWidths += width;
-      }
-
-      const column: IntermediateColumn = { ...metricsColumn, width };
-
-      if (rawGroupBy?.includes(column.key)) {
-        column.frozen = true;
-        column.rowGroup = true;
-      }
+      const column: CalculatedColumn<R, SR> = {
+        ...rawColumn,
+        idx: 0,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        frozen: isGroup || rawColumn.frozen || false,
+        isLastFrozenColumn: false,
+        rowGroup: isGroup,
+        sortable: rawColumn.sortable ?? defaultSortable,
+        resizable: rawColumn.resizable ?? defaultResizable,
+        formatter: rawColumn.formatter ?? defaultFormatter
+      };
 
       if (column.frozen) {
         lastFrozenColumnIndex++;
@@ -84,61 +78,84 @@ export function useViewportColumns<R, SR>({
       return 0;
     });
 
-    const unallocatedWidth = viewportWidth - allocatedWidths;
+    columns.forEach((column, idx) => {
+      column.idx = idx;
+
+      if (idx === lastFrozenColumnIndex) {
+        column.isLastFrozenColumn = true;
+      }
+
+      if (column.rowGroup) {
+        groupBy.push(column.key);
+        column.groupFormatter ??= ToggleGroupFormatter;
+      }
+    });
+
+    return {
+      columns,
+      lastFrozenColumnIndex,
+      groupBy
+    };
+  }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
+
+  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo(() => {
+    const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
+    let left = 0;
+    let totalColumnWidth = 0;
+    let totalFrozenColumnWidth = 0;
+    let templateColumns = '';
+    let allocatedWidth = 0;
+    let unassignedColumnsCount = 0;
+
+    for (const column of columns) {
+      let width = getSpecifiedWidth(column, columnWidths, viewportWidth);
+
+      if (width === undefined) {
+        unassignedColumnsCount++;
+      } else {
+        width = clampColumnWidth(width, column, minColumnWidth);
+        allocatedWidth += width;
+        columnMetrics.set(column, { width, left: 0 });
+      }
+    }
+
+    const unallocatedWidth = viewportWidth - allocatedWidth;
     const unallocatedColumnWidth = Math.max(
       Math.floor(unallocatedWidth / unassignedColumnsCount),
       minColumnWidth
     );
 
-    // Filter rawGroupBy and ignore keys that do not match the columns prop
-    const groupBy: string[] = [];
-    const calculatedColumns: CalculatedColumn<R, SR>[] = columns.map((column, idx) => {
-      // Every column should have a valid width as this stage
-      const width = column.width ?? clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
-      const newColumn = {
-        ...column,
-        idx,
-        width,
-        left,
-        sortable: column.sortable ?? defaultSortable,
-        resizable: column.resizable ?? defaultResizable,
-        formatter: column.formatter ?? defaultFormatter
-      };
-
-      if (newColumn.rowGroup) {
-        groupBy.push(column.key);
-        newColumn.groupFormatter = column.groupFormatter ?? ToggleGroupFormatter;
+    for (const column of columns) {
+      let width;
+      if (columnMetrics.has(column)) {
+        const columnMetric = columnMetrics.get(column)!;
+        columnMetric.left = left;
+        ({ width } = columnMetric);
+      } else {
+        width = clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
+        columnMetrics.set(column, { width, left });
       }
-
-      totalWidth += width;
+      totalColumnWidth += width;
       left += width;
-      return newColumn;
-    });
+      templateColumns += `${width}px `;
+    }
 
     if (lastFrozenColumnIndex !== -1) {
-      const lastFrozenColumn = calculatedColumns[lastFrozenColumnIndex];
-      lastFrozenColumn.isLastFrozenColumn = true;
-      totalFrozenColumnWidth = lastFrozenColumn.left + lastFrozenColumn.width;
+      const columnMetric = columnMetrics.get(columns[lastFrozenColumnIndex])!;
+      totalFrozenColumnWidth = columnMetric.left + columnMetric.width;
     }
 
     const layoutCssVars: Record<string, string> = {
-      '--template-columns': calculatedColumns.map(column => `${column.width}px`).join(' ')
+      '--template-columns': templateColumns
     };
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
-      const column = calculatedColumns[i];
-      layoutCssVars[`--sticky-left-${column.key}`] = `${column.left}px`;
+      const column = columns[i];
+      layoutCssVars[`--sticky-left-${column.key}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
-    return {
-      columns: calculatedColumns,
-      layoutCssVars,
-      lastFrozenColumnIndex,
-      totalFrozenColumnWidth,
-      totalColumnWidth: totalWidth,
-      groupBy
-    };
-  }, [columnWidths, defaultFormatter, defaultResizable, defaultSortable, minColumnWidth, rawColumns, rawGroupBy, viewportWidth]);
+    return { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics };
+  }, [columnWidths, columns, viewportWidth, minColumnWidth, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     // get the viewport's left side and right side positions for non-frozen columns
@@ -156,7 +173,7 @@ export function useViewportColumns<R, SR>({
     // get the first visible non-frozen column index
     let colVisibleStartIdx = firstUnfrozenColumnIdx;
     while (colVisibleStartIdx < lastColIdx) {
-      const { left, width } = columns[colVisibleStartIdx];
+      const { left, width } = columnMetrics.get(columns[colVisibleStartIdx])!;
       // if the right side of the columnn is beyond the left side of the available viewport,
       // then it is the first column that's at least partially visible
       if (left + width > viewportLeft) {
@@ -168,7 +185,7 @@ export function useViewportColumns<R, SR>({
     // get the last visible non-frozen column index
     let colVisibleEndIdx = colVisibleStartIdx;
     while (colVisibleEndIdx < lastColIdx) {
-      const { left, width } = columns[colVisibleEndIdx];
+      const { left, width } = columnMetrics.get(columns[colVisibleEndIdx])!;
       // if the right side of the column is beyond or equal to the right side of the available viewport,
       // then it the last column that's at least partially visible, as the previous column's right side is not beyond the viewport.
       if (left + width >= viewportRight) {
@@ -181,7 +198,7 @@ export function useViewportColumns<R, SR>({
     const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
     return [colOverscanStartIdx, colOverscanEndIdx];
-  }, [columns, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth]);
+  }, [columns, columnMetrics, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth]);
 
   const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];
@@ -195,7 +212,7 @@ export function useViewportColumns<R, SR>({
     return viewportColumns;
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
-  return { columns, viewportColumns, layoutCssVars, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
+  return { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
 }
 
 function getSpecifiedWidth<R, SR>(
