@@ -637,7 +637,7 @@ function DataGrid<R, SR>({
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { clientWidth } = current;
       const { left, width } = columnMetrics.get(columns[idx])!;
-      const isCellAtLeftBoundary = left < scrollLeft + width + totalFrozenColumnWidth;
+      const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary) {
         current.scrollLeft = left - totalFrozenColumnWidth;
