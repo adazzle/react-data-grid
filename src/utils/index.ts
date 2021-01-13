@@ -1,7 +1,6 @@
 import type { CalculatedColumn } from '../types';
 
 export * from './domUtils';
-export * from './columnUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
