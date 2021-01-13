@@ -1,8 +1,6 @@
 .rdg-cell {
   contain: strict;
   contain: size layout style paint;
-  position: absolute;
-  height: inherit;
   padding: 0 8px;
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
@@ -196,7 +194,8 @@
 .rdg-filter-row {
   contain: strict;
   contain: size layout style paint;
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--template-columns);
   width: var(--row-width);
   position: sticky;
   background-color: var(--header-background-color);
@@ -204,12 +203,14 @@
   z-index: 3;
 }
 .rdg-header-row {
+  grid-template-rows: var(--header-row-height);
   height: var(--header-row-height);
   line-height: var(--header-row-height);
   top: 0;
   touch-action: none;
 }
 .rdg-filter-row {
+  grid-template-rows: var(--filter-row-height);
   height: var(--filter-row-height);
   line-height: var(--filter-row-height);
   top: var(--header-row-height);
@@ -235,7 +236,9 @@
 .rdg-row {
   contain: strict;
   contain: size layout style paint;
-  display: flex;
+  display: grid;
+  grid-template-rows: var(--row-height);
+  grid-template-columns: var(--template-columns);
   position: absolute;
   left: 0;
   width: var(--row-width);
@@ -571,4 +574,4 @@ html {
 }
 
 
-/*# sourceMappingURL=0.75dd1f77d2d9500f44c4.css.map*/
+/*# sourceMappingURL=0.4109790ae9721aaca693.css.map*/
