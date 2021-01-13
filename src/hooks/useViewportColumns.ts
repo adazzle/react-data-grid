@@ -120,10 +120,7 @@ export function useViewportColumns<R, SR>({
     }
 
     const unallocatedWidth = viewportWidth - allocatedWidth;
-    const unallocatedColumnWidth = Math.max(
-      Math.floor(unallocatedWidth / unassignedColumnsCount),
-      minColumnWidth
-    );
+    const unallocatedColumnWidth = unallocatedWidth / unassignedColumnsCount;
 
     for (const column of columns) {
       let width;
