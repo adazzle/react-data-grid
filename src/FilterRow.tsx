@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
+import { getCellStyle } from './utils';
 import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
 
@@ -32,21 +33,16 @@ function FilterRow<R, SR>({
     >
       {columns.map(column => {
         const { key } = column;
-
         const className = clsx('rdg-cell', {
           'rdg-cell-frozen': column.frozen,
           'rdg-cell-frozen-last': column.isLastFrozenColumn
         });
-        const style: React.CSSProperties = {
-          width: column.width,
-          left: column.left
-        };
 
         return (
           <div
             key={key}
-            style={style}
             className={className}
+            style={getCellStyle(column)}
           >
             {column.filterRenderer && (
               <column.filterRenderer
