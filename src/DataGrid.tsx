@@ -16,7 +16,6 @@ import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
 import {
   assertIsValidKeyGetter,
-  getColumnScrollPosition,
   onEditorNavigation,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
@@ -248,7 +247,7 @@ function DataGrid<R, SR>({
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * rowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
-  const { columns, viewportColumns, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
+  const { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
     rawColumns,
     columnWidths,
     scrollLeft,
@@ -637,12 +636,13 @@ function DataGrid<R, SR>({
 
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { clientWidth } = current;
-      const { left, width } = columns[idx];
-      const isCellAtLeftBoundary = left < scrollLeft + width + totalFrozenColumnWidth;
+      const { left, width } = columnMetrics.get(columns[idx])!;
+      const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
-      if (isCellAtLeftBoundary || isCellAtRightBoundary) {
-        const newScrollLeft = getColumnScrollPosition(columns, idx, scrollLeft, clientWidth);
-        current.scrollLeft = scrollLeft + newScrollLeft;
+      if (isCellAtLeftBoundary) {
+        current.scrollLeft = left - totalFrozenColumnWidth;
+      } else if (isCellAtRightBoundary) {
+        current.scrollLeft = left + width - clientWidth;
       }
     }
 
@@ -884,7 +884,8 @@ function DataGrid<R, SR>({
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
-        '--row-height': `${rowHeight}px`
+        '--row-height': `${rowHeight}px`,
+        ...layoutCssVars
       } as unknown as React.CSSProperties}
       ref={gridRef}
       onScroll={handleScroll}

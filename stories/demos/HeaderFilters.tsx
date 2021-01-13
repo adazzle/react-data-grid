@@ -42,7 +42,7 @@ export function HeaderFilters() {
   });
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
-  const columns = useMemo((): Column<Row>[] => {
+  const columns = useMemo((): readonly Column<Row>[] => {
     const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
       label: d,
       value: d

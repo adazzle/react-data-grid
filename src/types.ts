@@ -58,13 +58,17 @@ export interface Column<TRow, TSummaryRow = unknown> {
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
   idx: number;
-  width: number;
-  left: number;
   resizable: boolean;
   sortable: boolean;
-  isLastFrozenColumn?: boolean;
+  frozen: boolean;
+  isLastFrozenColumn: boolean;
   rowGroup?: boolean;
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
+}
+
+export interface ColumnMetric {
+  width: number;
+  left: number;
 }
 
 export interface Position {
