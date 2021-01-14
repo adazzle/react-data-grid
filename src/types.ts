@@ -185,7 +185,7 @@ export type Filters = Record<string, any>;
 
 export interface RowsChangeData<R, SR = unknown> {
   indexes: number[];
-  column: Column<R, SR>;
+  column: CalculatedColumn<R, SR>;
 }
 
 export interface SelectRowEvent {
