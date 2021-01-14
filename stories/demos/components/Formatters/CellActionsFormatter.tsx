@@ -87,8 +87,6 @@ function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
     [cellActionLastClassname]: isFirst
   });
 
-  const actionButtonClasses = clsx(cellActionButtonClassname);
-
   function onActionIconClick() {
     if (typeof callback === 'function') {
       callback();
@@ -101,7 +99,7 @@ function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
 
   return (
     <div className={cellActionClasses} onMouseLeave={() => setIsOpen(false)}>
-      <div ref={setReference} className={actionButtonClasses} onClick={onActionIconClick}>
+      <div ref={setReference} className={cellActionButtonClassname} onClick={onActionIconClick}>
         {icon}
       </div>
       {isOpen && actions && actions.length && createPortal(
