@@ -88,6 +88,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
   onRowsChange?: (rows: R[]) => void;
+  onRowChange?: (row: R, rowIdx: number) => void;
 
   /**
    * Dimensions props
@@ -169,6 +170,7 @@ function DataGrid<R, SR>({
   summaryRows,
   rowKeyGetter,
   onRowsChange,
+  onRowChange,
   // Dimensions props
   rowHeight = 35,
   headerRowHeight = rowHeight,
@@ -451,10 +453,14 @@ function DataGrid<R, SR>({
   }
 
   function updateRow(rowIdx: number, row: R) {
-    if (typeof onRowsChange !== 'function') return;
-    const updatedRows = [...rawRows];
-    updatedRows[rowIdx] = row;
-    onRowsChange(updatedRows);
+    if (typeof onRowsChange === 'function') {
+      const updatedRows = [...rawRows];
+      updatedRows[rowIdx] = row;
+      onRowsChange(updatedRows);
+    }
+    if (typeof onRowChange === 'function') {
+      onRowChange(row, rowIdx);
+    }
   }
 
   function commitEditorChanges() {
