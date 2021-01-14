@@ -2,7 +2,7 @@ import { forwardRef, memo, useRef } from 'react';
 import clsx from 'clsx';
 
 import { cellClassname, cellCopiedClassname, cellDraggedOverClassname, cellDragHandleClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
-import { wrapEvent } from './utils';
+import { getCellStyle, wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 import type { CellRendererProps } from './types';
 
@@ -73,10 +73,7 @@ function Cell<R, SR>({
       aria-selected={isCellSelected}
       ref={useCombinedRefs(cellRef, ref)}
       className={className}
-      style={{
-        width: column.width,
-        left: column.left
-      }}
+      style={getCellStyle(column)}
       onClick={wrapEvent(handleClick, onClick)}
       onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
       onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}

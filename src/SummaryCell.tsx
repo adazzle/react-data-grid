@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
+import { getCellStyle } from './utils';
 import type { CellRendererProps } from './types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
 
@@ -14,7 +15,7 @@ function SummaryCell<R, SR>({
   column,
   row
 }: SummaryCellProps<R, SR>) {
-  const { summaryFormatter: SummaryFormatter, width, left, summaryCellClass } = column;
+  const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = clsx(
     cellClassname,
     {
@@ -29,7 +30,7 @@ function SummaryCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       className={className}
-      style={{ width, left }}
+      style={getCellStyle(column)}
     >
       {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>

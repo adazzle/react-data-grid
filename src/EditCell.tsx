@@ -3,6 +3,7 @@ import clsx from 'clsx';
 
 import { cellClassname, cellEditingClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 import EditorContainer from './editors/EditorContainer';
+import { getCellStyle } from './utils';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
@@ -70,10 +71,7 @@ export default function EditCell<R, SR>({
       aria-selected
       ref={cellRef}
       className={className}
-      style={{
-        width: column.width,
-        left: column.left
-      }}
+      style={getCellStyle(column)}
       {...props}
     >
       {getCellContent()}

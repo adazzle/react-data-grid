@@ -3,8 +3,8 @@ import { css } from '@linaria/core';
 const headerRowAndFilterRow = css`
   contain: strict;
   contain: size layout style paint;
-  display: flex;
-  width: var(--row-width);
+  display: grid;
+  grid-template-columns: var(--template-columns);
   position: sticky;
   background-color: var(--header-background-color);
   font-weight: bold;
@@ -12,7 +12,8 @@ const headerRowAndFilterRow = css`
 `;
 
 const headerRow = css`
-  height: var(--header-row-height);
+  grid-template-rows: var(--header-row-height);
+  height: var(--header-row-height); // needed on Firefox
   line-height: var(--header-row-height);
   top: 0;
   touch-action: none;
@@ -21,7 +22,8 @@ const headerRow = css`
 export const headerRowClassname = `rdg-header-row ${headerRowAndFilterRow} ${headerRow}`;
 
 const filterRow = css`
-  height: var(--filter-row-height);
+  grid-template-rows: var(--filter-row-height);
+  height: var(--filter-row-height); // needed on Firefox
   line-height: var(--filter-row-height);
   top: var(--header-row-height);
 `;

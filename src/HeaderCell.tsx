@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import type { CalculatedColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
+import { getCellStyle } from './utils';
 import type { SortDirection } from './enums';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellResizableClassname } from './style';
 
@@ -110,10 +111,6 @@ export default function HeaderCell<R, SR>({
     [cellFrozenClassname]: column.frozen,
     [cellFrozenLastClassname]: column.isLastFrozenColumn
   });
-  const style: React.CSSProperties = {
-    width: column.width,
-    left: column.left
-  };
 
   return (
     <div
@@ -121,7 +118,7 @@ export default function HeaderCell<R, SR>({
       aria-colindex={column.idx + 1}
       aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
       className={className}
-      style={style}
+      style={getCellStyle(column)}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}
