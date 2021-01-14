@@ -1,9 +1,10 @@
-import React, { useState, useReducer } from 'react';
+import { useState, useReducer } from 'react';
 import { createPortal } from 'react-dom';
 import faker from 'faker';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 
-import DataGrid, { Column, Row as GridRow, RowRendererProps } from '../../src';
+import DataGrid, { Row as GridRow } from '../../src';
+import type { Column, RowRendererProps } from '../../src';
 import './react-contextmenu.less';
 
 interface Row {

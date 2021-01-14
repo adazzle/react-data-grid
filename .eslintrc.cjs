@@ -235,7 +235,7 @@ const rules = {
   'space-before-blocks': 1,
   'space-before-function-paren': 0, // replaced by @typescript-eslint/space-before-function-paren
   'space-in-parens': 1,
-  'space-infix-ops': 1,
+  'space-infix-ops': 0, // replaced by @typescript-eslint/space-infix-ops
   'space-unary-ops': 1,
   'spaced-comment': 0,
   'switch-colon-spacing': 1,
@@ -257,7 +257,17 @@ const rules = {
   'no-duplicate-imports': 0, // replace by @typescript-eslint/no-duplicate-imports
   'no-new-symbol': 0,
   'no-restricted-exports': 0,
-  'no-restricted-imports': 0,
+  'no-restricted-imports': [1, {
+    "paths": [{
+      "name": "react",
+      "importNames": ["default"],
+      "message": "Use named imports instead."
+    }, {
+      "name": "react-dom",
+      "importNames": ["default"],
+      "message": "Use named imports instead."
+    }]
+  }],
   'no-this-before-super': 0,
   'no-useless-computed-key': [1, { enforceForClassMembers: true }],
   'no-useless-constructor': 0, // replaced by @typescript-eslint/no-useless-constructor
@@ -371,7 +381,7 @@ const rules = {
     afterOpening: 'never',
     beforeClosing: 'never'
   }],
-  'react/jsx-uses-react': 1,
+  'react/jsx-uses-react': 0,
   'react/jsx-uses-vars': 1,
   'react/jsx-wrap-multilines': [1, {
     declaration: 'parens-new-line',
@@ -433,6 +443,16 @@ const rules = {
   'jest/valid-expect-in-promise': 1,
   'jest/valid-title': 2,
 
+  // https://github.com/testing-library/eslint-plugin-jest-dom#supported-rules
+  'jest-dom/prefer-checked': 1,
+  'jest-dom/prefer-empty': 1,
+  'jest-dom/prefer-enabled-disabled': 1,
+  'jest-dom/prefer-focus': 1,
+  'jest-dom/prefer-required': 1,
+  'jest-dom/prefer-to-have-attribute': 1,
+  'jest-dom/prefer-to-have-style': 1,
+  'jest-dom/prefer-to-have-text-content': 1,
+
   // SonarJS rules
   // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
   'sonarjs/no-all-duplicated-branches': 2,
@@ -470,10 +490,10 @@ const rules = {
   '@typescript-eslint/ban-tslint-comment': 1,
   '@typescript-eslint/ban-types': 2,
   '@typescript-eslint/class-literal-property-style': 0,
-  '@typescript-eslint/consistent-indexed-object-style': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/2712
+  '@typescript-eslint/consistent-indexed-object-style': 1,
   '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
-  '@typescript-eslint/consistent-type-imports': [1, { prefer: 'no-type-imports' }],
+  '@typescript-eslint/consistent-type-imports': 1,
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
   '@typescript-eslint/explicit-module-boundary-types': 0,
@@ -515,6 +535,7 @@ const rules = {
   '@typescript-eslint/no-unnecessary-qualifier': 0,
   '@typescript-eslint/no-unnecessary-type-arguments': 1,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
+  '@typescript-eslint/no-unnecessary-type-constraint': 1,
   '@typescript-eslint/no-unsafe-assignment': 0,
   '@typescript-eslint/no-unsafe-call': 0,
   '@typescript-eslint/no-unsafe-member-access': 0,
@@ -585,7 +606,8 @@ const rules = {
   '@typescript-eslint/require-await': 2,
   '@typescript-eslint/return-await': 2,
   '@typescript-eslint/semi': 1,
-  '@typescript-eslint/space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }]
+  '@typescript-eslint/space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }],
+  '@typescript-eslint/space-infix-ops': 1
 };
 
 module.exports = {
@@ -594,7 +616,6 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.eslint.json',
-    extraFileExtensions: ['.mjs'],
     ecmaVersion: 2020,
     sourceType: 'module'
   },
@@ -606,6 +627,7 @@ module.exports = {
     'react',
     'react-hooks',
     'jest',
+    'jest-dom',
     'sonarjs',
     '@typescript-eslint'
   ],
@@ -622,7 +644,7 @@ module.exports = {
       '@typescript-eslint/no-implicit-any-catch': 0
     }
   }, {
-    files: ['*.mjs'],
+    files: ['*.js'],
     env: {
       node: true
     },

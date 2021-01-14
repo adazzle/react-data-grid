@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 
 import { useFocusRef } from '../hooks/useFocusRef';

@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
-import DataGrid, { Column, HeaderRendererProps, SortDirection } from '../../src';
+import DataGrid from '../../src';
+import type { Column, HeaderRendererProps, SortDirection } from '../../src';
 
 interface Row {
   id: number;

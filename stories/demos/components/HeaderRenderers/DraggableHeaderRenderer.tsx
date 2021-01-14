@@ -1,16 +1,21 @@
-import React from 'react';
-import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
+import type { DragObjectWithType } from 'react-dnd';
 
-import { HeaderRendererProps } from '../../../../src';
+import { SortableHeaderCell } from '../../../../src';
+import type { HeaderRendererProps } from '../../../../src';
 import { useCombinedRefs } from '../../../../src/hooks';
 
 interface ColumnDragObject extends DragObjectWithType {
   key: string;
 }
 
-export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: HeaderRendererProps<R> & { onColumnsReorder: (sourceKey: string, targetKey: string) => void }) {
+interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
+  onColumnsReorder: (sourceKey: string, targetKey: string) => void;
+}
+
+export function DraggableHeaderRenderer<R>({ onColumnsReorder, column, sortColumn, sortDirection, onSort }: DraggableHeaderRendererProps<R>) {
   const [{ isDragging }, drag] = useDrag({
-    item: { key: props.column.key, type: 'COLUMN_DRAG' },
+    item: { key: column.key, type: 'COLUMN_DRAG' },
     collect: monitor => ({
       isDragging: !!monitor.isDragging()
     })
@@ -20,7 +25,7 @@ export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: Heade
     accept: 'COLUMN_DRAG',
     drop({ key, type }: ColumnDragObject) {
       if (type === 'COLUMN_DRAG') {
-        onColumnsReorder(key, props.column.key);
+        onColumnsReorder(key, column.key);
       }
     },
     collect: monitor => ({
@@ -38,7 +43,14 @@ export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: Heade
         cursor: 'move'
       }}
     >
-      {props.column.name}
+      <SortableHeaderCell
+        column={column}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={onSort}
+      >
+        {column.name}
+      </SortableHeaderCell>
     </div>
   );
 }

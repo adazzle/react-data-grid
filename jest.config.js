@@ -2,14 +2,6 @@
 // https://jestjs.io/docs/en/configuration.html
 
 export default {
-  preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsConfig: {
-        esModuleInterop: true
-      }
-    }
-  },
   coverageProvider: 'v8',
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}'
@@ -18,10 +10,10 @@ export default {
     'text'
   ],
   restoreMocks: true,
-  setupFiles: [
-    '<rootDir>/jest/setupTests.ts'
+  setupFilesAfterEnv: [
+    '@testing-library/jest-dom'
   ],
   testMatch: [
-    '<rootDir>/src/**/*.test.*'
+    '<rootDir>/test/**/*.test.*'
   ]
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useFocusRef } from '../../../../src/hooks';
 
 export interface ChildRowDeleteButtonProps {

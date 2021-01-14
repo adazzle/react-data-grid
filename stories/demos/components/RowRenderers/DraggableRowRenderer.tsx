@@ -1,8 +1,9 @@
-import React from 'react';
-import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
+import type { DragObjectWithType } from 'react-dnd';
 import clsx from 'clsx';
 
-import { Row, RowRendererProps } from '../../../../src';
+import { Row } from '../../../../src';
+import type { RowRendererProps } from '../../../../src';
 import { useCombinedRefs } from '../../../../src/hooks';
 
 import './DraggableRowRenderer.less';

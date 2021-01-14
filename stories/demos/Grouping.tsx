@@ -1,10 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
-import Select, { components, ValueType, OptionsType, Props as SelectProps } from 'react-select';
+import Select, { components } from 'react-select';
+import type { ValueType, OptionsType, Props as SelectProps } from 'react-select';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 
-import DataGrid, { Column, SelectColumn } from '../../src';
+import DataGrid, { SelectColumn } from '../../src';
+import type { Column } from '../../src';
 import './Grouping.less';
 
 interface Row {
@@ -108,7 +110,8 @@ const SortableMultiValue = SortableElement((props: any) => {
   return <components.MultiValue {...props} innerProps={innerProps} />;
 });
 
-const SortableSelect = SortableContainer<SelectProps<Option>>(Select);
+// @ts-expect-error
+const SortableSelect = SortableContainer<SelectProps<Option, true>>(Select);
 
 const options: OptionsType<Option> = [
   { value: 'country', label: 'Country' },
@@ -120,7 +123,7 @@ const options: OptionsType<Option> = [
 export function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
-  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option>>([options[0], options[1]]);
+  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option, true>>([options[0], options[1]]);
   const [expandedGroupIds, setExpandedGroupIds] = useState(() => new Set<unknown>(['United States of America', 'United States of America__2015']));
 
   const groupBy = useMemo(() => Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined, [selectedOptions]);

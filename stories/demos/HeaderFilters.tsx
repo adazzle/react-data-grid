@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Select from 'react-select';
 import faker from 'faker';
 
-import DataGrid, { Column, Filters } from '../../src';
+import DataGrid from '../../src';
+import type { Column, Filters } from '../../src';
 import { NumericFilter } from './components/Filters';
 import './HeaderFilters.less';
 
@@ -41,7 +42,7 @@ export function HeaderFilters() {
   });
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
-  const columns = useMemo((): Column<Row>[] => {
+  const columns = useMemo((): readonly Column<Row>[] => {
     const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
       label: d,
       value: d

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Select, { OptionTypeBase, OptionsType } from 'react-select';
+import Select from 'react-select';
+import type { OptionTypeBase, OptionsType } from 'react-select';
 
 interface SelectEditorProps {
   value: string;
@@ -10,7 +10,6 @@ interface SelectEditorProps {
 }
 
 export function SelectEditor({ value, onChange, options, rowHeight, menuPortalTarget }: SelectEditorProps) {
-  const [isMenuOpen, setMenuOpen] = useState(true);
   return (
     <Select
       autoFocus
@@ -19,8 +18,6 @@ export function SelectEditor({ value, onChange, options, rowHeight, menuPortalTa
       onChange={o => onChange(o.value)}
       options={options}
       menuPortalTarget={menuPortalTarget as HTMLElement}
-      onMenuOpen={() => setMenuOpen(true)}
-      onMenuClose={() => setMenuOpen(false)}
       styles={{
         control: (provided) => ({
           ...provided,
@@ -32,15 +29,6 @@ export function SelectEditor({ value, onChange, options, rowHeight, menuPortalTa
           ...provided,
           height: rowHeight - 1
         })
-      }}
-      onKeyDown={event => {
-        if (['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key) && isMenuOpen) {
-          event.stopPropagation();
-        }
-
-        if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
-          event.stopPropagation();
-        }
       }}
     />
   );

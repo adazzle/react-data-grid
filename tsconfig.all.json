@@ -1,11 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "emitDeclarationOnly": false,
     "noEmit": true
   },
   "include": [
     "src/**/*",
     "stories/**/*",
-    "jest/**/*"
+    "test/**/*"
   ]
 }
