@@ -4,12 +4,12 @@ import clsx from 'clsx';
 import { getCellStyle } from './utils';
 import type { CalculatedColumn, FilterRendererProps } from './types';
 
-type SharedDataGridProps<R, SR, FR> = Pick<FilterRendererProps<R, SR, FR>,
+type SharedFilterRendererProps<R, SR, FR> = Pick<FilterRendererProps<R, SR, FR>,
   | 'filterRow'
   | 'onFilterRowChange'
 >;
 
-interface FilterRowProps<R, SR, FR> extends SharedDataGridProps<R, SR, FR> {
+interface FilterRowProps<R, SR, FR> extends SharedFilterRendererProps<R, SR, FR> {
   columns: readonly CalculatedColumn<R, SR, FR>[];
 }
 

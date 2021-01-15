@@ -155,7 +155,6 @@ export function HeaderFilters() {
   }, [rows]);
 
   const filteredRows = useMemo(() => {
-    console.log(filterRow.developer);
     return rows.filter(row => {
       if (filterRow.task && !row.task.includes(filterRow.task)) {
         return false;

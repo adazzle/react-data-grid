@@ -12,17 +12,17 @@ interface RowDragObject extends DragObjectWithType {
   index: number;
 }
 
-interface DraggableRowRenderProps<R, SR> extends RowRendererProps<R, SR> {
+interface DraggableRowRenderProps<R, SR, FR> extends RowRendererProps<R, SR, FR> {
   onRowReorder: (sourceIndex: number, targetIndex: number) => void;
 }
 
-export function DraggableRowRenderer<R, SR = unknown>({
+export function DraggableRowRenderer<R, SR = unknown, FR = unknown>({
   rowIdx,
   isRowSelected,
   className,
   onRowReorder,
   ...props
-}: DraggableRowRenderProps<R, SR>) {
+}: DraggableRowRenderProps<R, SR, FR>) {
   const [{ isDragging }, drag] = useDrag({
     item: { index: rowIdx, type: 'ROW_DRAG' },
     collect: monitor => ({
