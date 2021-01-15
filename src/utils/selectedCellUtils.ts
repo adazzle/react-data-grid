@@ -1,14 +1,14 @@
 import type { CellNavigationMode } from '../enums';
 import type { CalculatedColumn, Position, GroupRow } from '../types';
 
-interface IsSelectedCellEditableOpts<R, SR> {
+interface IsSelectedCellEditableOpts<R, SR, FR> {
   selectedPosition: Position;
-  columns: readonly CalculatedColumn<R, SR>[];
+  columns: readonly CalculatedColumn<R, SR, FR>[];
   rows: readonly (R | GroupRow<R>)[];
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
-export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, isGroupRow }: IsSelectedCellEditableOpts<R, SR>): boolean {
+export function isSelectedCellEditable<R, SR, FR>({ selectedPosition, columns, rows, isGroupRow }: IsSelectedCellEditableOpts<R, SR, FR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
   return column.editor != null
@@ -17,14 +17,14 @@ export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows,
     && (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false;
 }
 
-interface GetNextSelectedCellPositionOpts<R, SR> {
+interface GetNextSelectedCellPositionOpts<R, SR, FR> {
   cellNavigationMode: CellNavigationMode;
-  columns: readonly CalculatedColumn<R, SR>[];
+  columns: readonly CalculatedColumn<R, SR, FR>[];
   rowsCount: number;
   nextPosition: Position;
 }
 
-export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns, rowsCount, nextPosition }: GetNextSelectedCellPositionOpts<R, SR>): Position {
+export function getNextSelectedCellPosition<R, SR, FR>({ cellNavigationMode, columns, rowsCount, nextPosition }: GetNextSelectedCellPositionOpts<R, SR, FR>): Position {
   if (cellNavigationMode !== 'NONE') {
     const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
@@ -67,15 +67,15 @@ export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns
   return nextPosition;
 }
 
-interface CanExitGridOpts<R, SR> {
+interface CanExitGridOpts<R, SR, FR> {
   cellNavigationMode: CellNavigationMode;
-  columns: readonly CalculatedColumn<R, SR>[];
+  columns: readonly CalculatedColumn<R, SR, FR>[];
   rowsCount: number;
   selectedPosition: Position;
   shiftKey: boolean;
 }
 
-export function canExitGrid<R, SR>({ cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx }, shiftKey }: CanExitGridOpts<R, SR>): boolean {
+export function canExitGrid<R, SR, FR>({ cellNavigationMode, columns, rowsCount, selectedPosition: { rowIdx, idx }, shiftKey }: CanExitGridOpts<R, SR, FR>): boolean {
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
   if (cellNavigationMode === 'NONE' || cellNavigationMode === 'CHANGE_ROW') {

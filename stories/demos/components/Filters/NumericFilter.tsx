@@ -1,5 +1,3 @@
-import type { Column, FilterRendererProps } from '../../../../src';
-
 enum RuleType {
   number = 1,
   range = 2,
@@ -11,31 +9,18 @@ type Rule =
   | { type: RuleType.range; begin: number; end: number }
   | { type: RuleType.greaterThan | RuleType.lessThan | RuleType.number; value: number };
 
-interface ChangeEvent<R, SR> {
-  filterTerm: Rule[] | null;
-  column: Column<R, SR>;
-  rawValue: string;
-  filterValues: typeof filterValues;
+interface NumericFilterProps {
+  value?: string;
+  onChange: (value: string) => void;
 }
 
-export function NumericFilter<R, SR>({ value, column, onChange }: FilterRendererProps<R, ChangeEvent<R, SR>, SR>) {
+export function NumericFilter({ value, onChange }: NumericFilterProps) {
   /** Validates the input */
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    const result = /[><,0-9-]/.test(event.key);
+    const result = /Arrow|Backspace|[><,0-9-]/.test(event.key);
     if (!result) {
       event.preventDefault();
     }
-  }
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = event.target;
-    const filters = getRules(value);
-    onChange({
-      filterTerm: filters.length > 0 ? filters : null,
-      column,
-      rawValue: value,
-      filterValues
-    });
   }
 
   const tooltipText = 'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
@@ -43,10 +28,10 @@ export function NumericFilter<R, SR>({ value, column, onChange }: FilterRenderer
   return (
     <div className="rdg-filter-container">
       <input
-        value={value?.rawValue ?? ''}
+        value={value}
         className="rdg-filter"
         placeholder="e.g. 3,10-15,>20"
-        onChange={handleChange}
+        onChange={event => onChange(event.target.value)}
         onKeyDown={handleKeyDown}
       />
       <span style={{ paddingLeft: 4, cursor: 'help' }} title={tooltipText}>?</span>
@@ -55,16 +40,8 @@ export function NumericFilter<R, SR>({ value, column, onChange }: FilterRenderer
 }
 
 
-function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
-  if (columnFilter.filterTerm == null) {
-    return true;
-  }
-
-  // implement default filter logic
-  const value = parseInt(row[columnKey] as unknown as string, 10);
-  for (const ruleKey in columnFilter.filterTerm) {
-    const rule = columnFilter.filterTerm[ruleKey];
-
+export function filterNumber(value: number, filter: string) {
+  for (const rule of getRules(filter)) {
     switch (rule.type) {
       case RuleType.number:
         if (rule.value === value) {
@@ -94,11 +71,7 @@ function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: 
   return false;
 }
 
-export function getRules(value: string): Rule[] {
-  if (value === '') {
-    return [];
-  }
-
+function getRules(value: string): Rule[] {
   // handle each value with comma
   return value.split(',').map((str): Rule => {
     // handle dash

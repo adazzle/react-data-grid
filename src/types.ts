@@ -4,7 +4,7 @@ import type { SortDirection } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface Column<TRow, TSummaryRow = unknown> {
+export interface Column<TRow, TSummaryRow = unknown, TFilterRow = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string | ReactElement;
   /** A unique key to distinguish each column */
@@ -19,11 +19,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
   headerCellClass?: string;
   summaryCellClass?: string | ((row: TSummaryRow) => string);
   /** Formatter to be used to render the cell content */
-  formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
+  formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow, TFilterRow>>;
   /** Formatter to be used to render the summary cell content */
-  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
+  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow, TFilterRow>>;
   /** Formatter to be used to render the group cell content */
-  groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
+  groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow, TFilterRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
   /** Determines whether column is frozen or not */
@@ -35,7 +35,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   sortDescendingFirst?: boolean;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>>;
+  editor?: React.ComponentType<EditorProps<TRow, TSummaryRow, TFilterRow>>;
   editorOptions?: {
     /** @default false */
     createPortal?: boolean;
@@ -51,12 +51,12 @@ export interface Column<TRow, TSummaryRow = unknown> {
     // commitOnScroll?: boolean;
   };
   /** Header renderer for each header cell */
-  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
+  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow, TFilterRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, TSummaryRow, TFilterRow>>;
 }
 
-export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+export interface CalculatedColumn<TRow, TSummaryRow = unknown, TFilterRow = unknown> extends Column<TRow, TSummaryRow, TFilterRow> {
   idx: number;
   resizable: boolean;
   sortable: boolean;
@@ -76,9 +76,9 @@ export interface Position {
   rowIdx: number;
 }
 
-export interface FormatterProps<TRow = any, TSummaryRow = any> {
+export interface FormatterProps<TRow = any, TSummaryRow = any, TFilterRow = any> {
   rowIdx: number;
-  column: CalculatedColumn<TRow, TSummaryRow>;
+  column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>;
   row: TRow;
   isCellSelected: boolean;
   isRowSelected: boolean;
@@ -86,14 +86,14 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   onRowChange: (row: Readonly<TRow>) => void;
 }
 
-export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
+export interface SummaryFormatterProps<TSummaryRow, TRow = any, TFilterRow = any> {
+  column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>;
   row: TSummaryRow;
 }
 
-export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
+export interface GroupFormatterProps<TRow, TSummaryRow = unknown, TFilterRow = unknown> {
   groupKey: unknown;
-  column: CalculatedColumn<TRow, TSummaryRow>;
+  column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>;
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
@@ -110,15 +110,15 @@ export interface SharedEditorProps<TRow> {
   onClose: (commitChanges?: boolean) => void;
 }
 
-export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
+export interface EditorProps<TRow, TSummaryRow = unknown, TFilterRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
-  column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
+  column: Readonly<CalculatedColumn<TRow, TSummaryRow, TFilterRow>>;
   top: number;
   left: number;
 }
 
-export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
+export interface HeaderRendererProps<TRow, TSummaryRow = unknown, TFilterRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>;
   sortColumn?: string;
   sortDirection?: SortDirection;
   onSort?: (columnKey: string, direction: SortDirection) => void;
@@ -142,9 +142,9 @@ export interface SelectedCellProps extends SelectedCellPropsBase {
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface CellRendererProps<TRow, TSummaryRow = unknown, TFilterRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
-  column: CalculatedColumn<TRow, TSummaryRow>;
+  column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>;
   row: TRow;
   isCopied: boolean;
   isDraggedOver: boolean;
@@ -152,15 +152,15 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isRowSelected: boolean;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
+export interface RowRendererProps<TRow, TSummaryRow = unknown, TFilterRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow, TFilterRow>[];
   row: TRow;
-  cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
+  cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow, TFilterRow>>;
   rowIdx: number;
   copiedCellIdx?: number;
   draggedOverCellIdx?: number;
@@ -168,20 +168,18 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   top: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowChange: (rowIdx: number, row: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
-export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  value: TFilterValue;
-  onChange: (value: TFilterValue) => void;
+export interface FilterRendererProps<TRow, TSummaryRow = unknown, TFilterRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow, TFilterRow>;
+  filterRow: TFilterRow;
+  onFilterRowChange: (row: TFilterRow) => void;
 }
-
-export type Filters = Record<string, any>;
 
 export interface SelectRowEvent {
   rowIdx: number;

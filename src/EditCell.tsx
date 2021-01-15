@@ -5,24 +5,24 @@ import EditorContainer from './editors/EditorContainer';
 import { getCellStyle } from './utils';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
 
-type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
+type SharedCellRendererProps<R, SR, FR> = Pick<CellRendererProps<R, SR, FR>,
   | 'rowIdx'
   | 'row'
   | 'column'
 >;
 
-interface EditCellProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+interface EditCellProps<R, SR, FR> extends SharedCellRendererProps<R, SR, FR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   editorProps: SharedEditorProps<R>;
 }
 
-export default function EditCell<R, SR>({
+export default function EditCell<R, SR, FR>({
   className,
   column,
   row,
   rowIdx,
   editorProps,
   ...props
-}: EditCellProps<R, SR>) {
+}: EditCellProps<R, SR, FR>) {
   const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
 
   const cellRef = useCallback(node => {

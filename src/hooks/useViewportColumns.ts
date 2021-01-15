@@ -5,22 +5,22 @@ import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
-interface ViewportColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
-  rawColumns: readonly Column<R, SR>[];
+interface ViewportColumnsArgs<R, SR, FR> extends Pick<DataGridProps<R, SR, FR>, 'defaultColumnOptions'> {
+  rawColumns: readonly Column<R, SR, FR>[];
   rawGroupBy?: readonly string[];
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
 }
 
-export function useViewportColumns<R, SR>({
+export function useViewportColumns<R, SR, FR>({
   rawColumns,
   columnWidths,
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
   rawGroupBy
-}: ViewportColumnsArgs<R, SR>) {
+}: ViewportColumnsArgs<R, SR, FR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
@@ -34,7 +34,7 @@ export function useViewportColumns<R, SR>({
     const columns = rawColumns.map(rawColumn => {
       const isGroup = rawGroupBy?.includes(rawColumn.key);
 
-      const column: CalculatedColumn<R, SR> = {
+      const column: CalculatedColumn<R, SR, FR> = {
         ...rawColumn,
         idx: 0,
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -99,7 +99,7 @@ export function useViewportColumns<R, SR>({
   }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
 
   const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo(() => {
-    const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
+    const columnMetrics = new Map<CalculatedColumn<R, SR, FR>, ColumnMetric>();
     let left = 0;
     let totalColumnWidth = 0;
     let totalFrozenColumnWidth = 0;
@@ -197,8 +197,8 @@ export function useViewportColumns<R, SR>({
     return [colOverscanStartIdx, colOverscanEndIdx];
   }, [columns, columnMetrics, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth]);
 
-  const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
-    const viewportColumns: CalculatedColumn<R, SR>[] = [];
+  const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR, FR>[] => {
+    const viewportColumns: CalculatedColumn<R, SR, FR>[] = [];
     for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
       const column = columns[colIdx];
 
@@ -212,8 +212,8 @@ export function useViewportColumns<R, SR>({
   return { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
 }
 
-function getSpecifiedWidth<R, SR>(
-  { key, width }: Column<R, SR>,
+function getSpecifiedWidth<R, SR, FR>(
+  { key, width }: CalculatedColumn<R, SR, FR>,
   columnWidths: ReadonlyMap<string, number>,
   viewportWidth: number
 ): number | undefined {
@@ -230,9 +230,9 @@ function getSpecifiedWidth<R, SR>(
   return undefined;
 }
 
-function clampColumnWidth<R, SR>(
+function clampColumnWidth<R, SR, FR>(
   width: number,
-  { minWidth, maxWidth }: Column<R, SR>,
+  { minWidth, maxWidth }: CalculatedColumn<R, SR, FR>,
   minColumnWidth: number
 ): number {
   width = Math.max(width, minWidth ?? minColumnWidth);

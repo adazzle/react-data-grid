@@ -3,12 +3,12 @@ import { createPortal } from 'react-dom';
 import type { EditorProps } from '../types';
 import { useClickOutside } from '../hooks';
 
-export default function EditorContainer<R, SR>({
+export default function EditorContainer<R, SR, FR>({
   row,
   column,
   onRowChange,
   ...props
-}: EditorProps<R, SR>) {
+}: EditorProps<R, SR, FR>) {
   const onClickCapture = useClickOutside(() => onRowChange(row, true));
   if (column.editor === undefined) return null;
 

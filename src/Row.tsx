@@ -6,7 +6,7 @@ import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
 import { wrapEvent } from './utils';
 
-function Row<R, SR = unknown>({
+function Row<R, SR = unknown, FR = unknown>({
   cellRenderer: CellRenderer = Cell,
   className,
   rowIdx,
@@ -27,7 +27,7 @@ function Row<R, SR = unknown>({
   'aria-rowindex': ariaRowIndex,
   'aria-selected': ariaSelected,
   ...props
-}: RowRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+}: RowRendererProps<R, SR, FR>, ref: React.Ref<HTMLDivElement>) {
   function handleDragEnter() {
     setDraggedOverRowIdx?.(rowIdx);
   }
@@ -57,7 +57,7 @@ function Row<R, SR = unknown>({
         const isCellSelected = selectedCellProps?.idx === column.idx;
         if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
           return (
-            <EditCell<R, SR>
+            <EditCell
               key={column.key}
               rowIdx={rowIdx}
               column={column}
@@ -92,4 +92,4 @@ function Row<R, SR = unknown>({
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR = unknown, FR = unknown>(props: RowRendererProps<R, SR, FR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

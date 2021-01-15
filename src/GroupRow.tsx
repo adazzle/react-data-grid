@@ -5,10 +5,10 @@ import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 
-export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface GroupRowRendererProps<R, SR = unknown, FR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
   groupKey: unknown;
-  viewportColumns: readonly CalculatedColumn<R, SR>[];
+  viewportColumns: readonly CalculatedColumn<R, SR, FR>[];
   childRows: readonly R[];
   rowIdx: number;
   top: number;
@@ -21,7 +21,7 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
-function GroupedRow<R, SR>({
+function GroupedRow<R, SR, FR>({
   id,
   groupKey,
   viewportColumns,
@@ -36,7 +36,7 @@ function GroupedRow<R, SR>({
   selectRow,
   toggleGroup,
   ...props
-}: GroupRowRendererProps<R, SR>) {
+}: GroupRowRendererProps<R, SR, FR>) {
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
@@ -61,7 +61,7 @@ function GroupedRow<R, SR>({
       {...props}
     >
       {viewportColumns.map(column => (
-        <GroupCell<R, SR>
+        <GroupCell
           key={column.key}
           id={id}
           rowIdx={rowIdx}
@@ -80,4 +80,4 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(props: GroupRowRendererProps<R, SR>) => JSX.Element;
+export default memo(GroupedRow) as <R, SR, FR>(props: GroupRowRendererProps<R, SR, FR>) => JSX.Element;

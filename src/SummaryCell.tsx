@@ -4,16 +4,16 @@ import clsx from 'clsx';
 import { getCellStyle } from './utils';
 import type { CellRendererProps } from './types';
 
-type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column'>;
+type SharedCellRendererProps<R, SR, FR> = Pick<CellRendererProps<R, SR, FR>, 'column'>;
 
-interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
+interface SummaryCellProps<R, SR, FR> extends SharedCellRendererProps<R, SR, FR> {
   row: SR;
 }
 
-function SummaryCell<R, SR>({
+function SummaryCell<R, SR, FR>({
   column,
   row
-}: SummaryCellProps<R, SR>) {
+}: SummaryCellProps<R, SR, FR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = clsx(
     'rdg-cell',
@@ -36,4 +36,4 @@ function SummaryCell<R, SR>({
   );
 }
 
-export default memo(SummaryCell) as <R, SR>(props: SummaryCellProps<R, SR>) => JSX.Element;
+export default memo(SummaryCell) as <R, SR, FR>(props: SummaryCellProps<R, SR, FR>) => JSX.Element;

@@ -1,12 +1,12 @@
 import type { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks/useFocusRef';
 
-export function ToggleGroupFormatter<R, SR>({
+export function ToggleGroupFormatter<R, SR, FR>({
   groupKey,
   isExpanded,
   isCellSelected,
   toggleGroup
-}: GroupFormatterProps<R, SR>) {
+}: GroupFormatterProps<R, SR, FR>) {
   const cellRef = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {

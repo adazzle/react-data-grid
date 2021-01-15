@@ -21,7 +21,6 @@ export type {
   CellRendererProps,
   RowRendererProps,
   FilterRendererProps,
-  Filters,
   SelectRowEvent,
   FillEvent,
   PasteEvent

@@ -27,7 +27,6 @@ import {
 import type {
   CalculatedColumn,
   Column,
-  Filters,
   Position,
   RowRendererProps,
   SelectRowEvent,
@@ -49,7 +48,7 @@ interface EditCellState<R> extends Position {
   key: string | null;
 }
 
-type DefaultColumnOptions<R, SR> = Pick<Column<R, SR>,
+type DefaultColumnOptions<R, SR, FR> = Pick<Column<R, SR, FR>,
   | 'formatter'
   | 'minWidth'
   | 'resizable'
@@ -72,12 +71,12 @@ type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
   | 'style'
 >;
 
-export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
+export interface DataGridProps<R, SR = unknown, FR = unknown> extends SharedDivProps {
   /**
    * Grid and data Props
    */
   /** An array of objects representing each column on the grid */
-  columns: readonly Column<R, SR>[];
+  columns: readonly Column<R, SR, FR>[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
@@ -85,9 +84,11 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
   summaryRows?: readonly SR[];
+  filterRow?: FR;
   /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
   onRowsChange?: (rows: R[]) => void;
+  onFilterRowChange?: (filterRow: FR) => void;
 
   /**
    * Dimensions props
@@ -112,9 +113,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   sortDirection?: SortDirection;
   /** Function called whenever grid is sorted*/
   onSort?: (columnKey: string, direction: SortDirection) => void;
-  filters?: Filters;
-  onFiltersChange?: (filters: Filters) => void;
-  defaultColumnOptions?: DefaultColumnOptions<R, SR>;
+  defaultColumnOptions?: DefaultColumnOptions<R, SR, FR>;
   groupBy?: readonly string[];
   rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
   expandedGroupIds?: ReadonlySet<unknown>;
@@ -125,14 +124,14 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /**
    * Custom renderers
    */
-  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
+  rowRenderer?: React.ComponentType<RowRendererProps<R, SR, FR>>;
   emptyRowsRenderer?: React.ComponentType;
 
   /**
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
+  onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR, FR>) => void;
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
@@ -162,13 +161,15 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
  *
  * <DataGrid columns={columns} rows={rows} />
 */
-function DataGrid<R, SR>({
+function DataGrid<R, SR, FR>({
   // Grid and data Props
   columns: rawColumns,
   rows: rawRows,
   summaryRows,
+  filterRow,
   rowKeyGetter,
   onRowsChange,
+  onFilterRowChange,
   // Dimensions props
   rowHeight = 35,
   headerRowHeight = rowHeight,
@@ -179,8 +180,6 @@ function DataGrid<R, SR>({
   sortColumn,
   sortDirection,
   onSort,
-  filters,
-  onFiltersChange,
   defaultColumnOptions,
   groupBy: rawGroupBy,
   rowGrouper,
@@ -208,7 +207,7 @@ function DataGrid<R, SR>({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy
-}: DataGridProps<R, SR>, ref: React.Ref<DataGridHandle>) {
+}: DataGridProps<R, SR, FR>, ref: React.Ref<DataGridHandle>) {
   /**
    * states
    */
@@ -305,7 +304,7 @@ function DataGrid<R, SR>({
   /**
   * callbacks
   */
-  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
+  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR, FR>, width: number) => {
     const newColumnWidths = new Map(columnWidths);
     newColumnWidths.set(column.key, width);
     setColumnWidths(newColumnWidths);
@@ -609,7 +608,7 @@ function DataGrid<R, SR>({
 
   function isCellEditable(position: Position): boolean {
     return isCellWithinBounds(position)
-      && isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, isGroupRow });
+      && isSelectedCellEditable({ columns, rows, selectedPosition: position, isGroupRow });
   }
 
   function selectCell(position: Position, enableEditor = false): void {
@@ -739,7 +738,7 @@ function DataGrid<R, SR>({
     // Do not allow focus to leave
     event.preventDefault();
 
-    nextPosition = getNextSelectedCellPosition<R, SR>({
+    nextPosition = getNextSelectedCellPosition({
       columns,
       rowsCount: rows.length,
       cellNavigationMode: mode,
@@ -798,7 +797,7 @@ function DataGrid<R, SR>({
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         rowElements.push(
-          <GroupRowRenderer<R, SR>
+          <GroupRowRenderer
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
@@ -890,7 +889,7 @@ function DataGrid<R, SR>({
       ref={gridRef}
       onScroll={handleScroll}
     >
-      <HeaderRow<R, SR>
+      <HeaderRow
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
         columns={viewportColumns}
@@ -901,11 +900,11 @@ function DataGrid<R, SR>({
         sortDirection={sortDirection}
         onSort={onSort}
       />
-      {enableFilterRow && (
-        <FilterRow<R, SR>
+      {enableFilterRow && filterRow != null && onFilterRowChange != null && (
+        <FilterRow
           columns={viewportColumns}
-          filters={filters}
-          onFiltersChange={onFiltersChange}
+          filterRow={filterRow}
+          onFilterRowChange={onFilterRowChange}
         />
       )}
       {rows.length === 0 && EmptyRowsRenderer ? <EmptyRowsRenderer /> : (
@@ -919,7 +918,7 @@ function DataGrid<R, SR>({
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
-            <SummaryRow<R, SR>
+            <SummaryRow
               aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
               key={rowIdx}
               rowIdx={rowIdx}
@@ -934,4 +933,4 @@ function DataGrid<R, SR>({
   );
 }
 
-export default forwardRef(DataGrid) as <R, SR = unknown>(props: DataGridProps<R, SR> & React.RefAttributes<DataGridHandle>) => JSX.Element;
+export default forwardRef(DataGrid) as <R, SR = unknown, FR = unknown>(props: DataGridProps<R, SR, FR> & React.RefAttributes<DataGridHandle>) => JSX.Element;

@@ -5,7 +5,7 @@ import { getCellStyle } from './utils';
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
 
-type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
+type SharedGroupRowRendererProps<R, SR, FR> = Pick<GroupRowRendererProps<R, SR, FR>,
   | 'id'
   | 'rowIdx'
   | 'groupKey'
@@ -16,13 +16,13 @@ type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'toggleGroup'
 >;
 
-interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
-  column: CalculatedColumn<R, SR>;
+interface GroupCellProps<R, SR, FR> extends SharedGroupRowRendererProps<R, SR, FR> {
+  column: CalculatedColumn<R, SR, FR>;
   isCellSelected: boolean;
   groupColumnIndex: number;
 }
 
-function GroupCell<R, SR>({
+function GroupCell<R, SR, FR>({
   id,
   rowIdx,
   groupKey,
@@ -34,7 +34,7 @@ function GroupCell<R, SR>({
   groupColumnIndex,
   selectRow,
   toggleGroup: toggleGroupWrapper
-}: GroupCellProps<R, SR>) {
+}: GroupCellProps<R, SR, FR>) {
   function toggleGroup() {
     toggleGroupWrapper(id);
   }
@@ -78,4 +78,4 @@ function GroupCell<R, SR>({
   );
 }
 
-export default memo(GroupCell) as <R, SR>(props: GroupCellProps<R, SR>) => JSX.Element;
+export default memo(GroupCell) as <R, SR, FR>(props: GroupCellProps<R, SR, FR>) => JSX.Element;

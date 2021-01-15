@@ -3,8 +3,8 @@ import Select from 'react-select';
 import faker from 'faker';
 
 import DataGrid from '../../src';
-import type { Column, Filters } from '../../src';
-import { NumericFilter } from './components/Filters';
+import type { Column } from '../../src';
+import { filterNumber, NumericFilter } from './components/Filters';
 import './HeaderFilters.less';
 
 interface Row {
@@ -14,6 +14,14 @@ interface Row {
   issueType: string;
   developer: string;
   complete: number;
+}
+
+export interface FilterRow {
+  task?: string;
+  priority?: string;
+  issueType?: string;
+  developer?: string;
+  complete?: string;
 }
 
 function createRows() {
@@ -33,16 +41,13 @@ function createRows() {
 
 export function HeaderFilters() {
   const [rows] = useState(createRows);
-  const [filters, setFilters] = useState<Filters>({
-    task: '',
+  const [filterRow, setFilterRow] = useState<FilterRow>({
     priority: 'Critical',
-    issueType: 'All',
-    developer: '',
-    complete: ''
+    issueType: 'All'
   });
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
-  const columns = useMemo((): readonly Column<Row>[] => {
+  const columns = useMemo((): readonly Column<Row, unknown, FilterRow>[] => {
     const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
       label: d,
       value: d
@@ -57,12 +62,12 @@ export function HeaderFilters() {
       {
         key: 'task',
         name: 'Title',
-        filterRenderer: p => (
+        filterRenderer: ({ filterRow, onFilterRowChange }) => (
           <div className="rdg-filter-container">
             <input
               className="rdg-filter"
-              value={p.value}
-              onChange={e => p.onChange(e.target.value)}
+              value={filterRow.task}
+              onChange={e => onFilterRowChange({ ...filterRow, task: e.target.value })}
             />
           </div>
         )
@@ -70,9 +75,13 @@ export function HeaderFilters() {
       {
         key: 'priority',
         name: 'Priority',
-        filterRenderer: p => (
+        filterRenderer: ({ filterRow, onFilterRowChange }) => (
           <div className="rdg-filter-container">
-            <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
+            <select
+              className="rdg-filter"
+              value={filterRow.priority}
+              onChange={e => onFilterRowChange({ ...filterRow, priority: e.target.value })}
+            >
               <option value="All">All</option>
               <option value="Critical">Critical</option>
               <option value="High">High</option>
@@ -85,9 +94,13 @@ export function HeaderFilters() {
       {
         key: 'issueType',
         name: 'Issue Type',
-        filterRenderer: p => (
+        filterRenderer: ({ filterRow, onFilterRowChange }) => (
           <div className="rdg-filter-container">
-            <select className="rdg-filter" value={p.value} onChange={e => p.onChange(e.target.value)}>
+            <select
+              className="rdg-filter"
+              value={filterRow.issueType}
+              onChange={e => onFilterRowChange({ ...filterRow, issueType: e.target.value })}
+            >
               <option value="All">All</option>
               <option value="Bug">Bug</option>
               <option value="Improvement">Improvement</option>
@@ -100,11 +113,11 @@ export function HeaderFilters() {
       {
         key: 'developer',
         name: 'Developer',
-        filterRenderer: p => (
+        filterRenderer: ({ filterRow, onFilterRowChange }) => (
           <div className="rdg-filter-container">
             <Select
-              value={p.value}
-              onChange={p.onChange}
+              value={filterRow.developer ? { label: filterRow.developer, value: filterRow.developer } : undefined}
+              onChange={e => onFilterRowChange({ ...filterRow, developer: e!.value })}
               options={developerOptions}
               styles={{
                 option: (provided) => ({
@@ -131,30 +144,43 @@ export function HeaderFilters() {
       {
         key: 'complete',
         name: '% Complete',
-        filterRenderer: NumericFilter
+        filterRenderer: ({ filterRow, onFilterRowChange }) => (
+          <NumericFilter
+            value={filterRow.complete}
+            onChange={value => onFilterRowChange({ ...filterRow, complete: value })}
+          />
+        )
       }
     ];
   }, [rows]);
 
   const filteredRows = useMemo(() => {
-    return rows.filter(r => {
-      return (
-        (filters.task ? r.task.includes(filters.task) : true)
-        && (filters.priority !== 'All' ? r.priority === filters.priority : true)
-        && (filters.issueType !== 'All' ? r.issueType === filters.issueType : true)
-        && (filters.developer ? r.developer === filters.developer.value : true)
-        && (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
-      );
+    console.log(filterRow.developer);
+    return rows.filter(row => {
+      if (filterRow.task && !row.task.includes(filterRow.task)) {
+        return false;
+      }
+      if (filterRow.priority !== 'All' && row.priority !== filterRow.priority) {
+        return false;
+      }
+      if (filterRow.issueType !== 'All' && row.issueType !== filterRow.issueType) {
+        return false;
+      }
+      if (filterRow.developer && row.developer !== filterRow.developer) {
+        return false;
+      }
+      if (filterRow.complete && !filterNumber(row.complete, filterRow.complete)) {
+        return false;
+      }
+
+      return true;
     });
-  }, [rows, filters]);
+  }, [rows, filterRow]);
 
   function clearFilters() {
-    setFilters({
-      task: '',
+    setFilterRow({
       priority: 'All',
-      issueType: 'All',
-      developer: '',
-      complete: ''
+      issueType: 'All'
     });
   }
 
@@ -173,8 +199,8 @@ export function HeaderFilters() {
         columns={columns}
         rows={filteredRows}
         enableFilterRow={enableFilterRow}
-        filters={filters}
-        onFiltersChange={setFilters}
+        filterRow={filterRow}
+        onFilterRowChange={setFilterRow}
       />
     </div>
   );

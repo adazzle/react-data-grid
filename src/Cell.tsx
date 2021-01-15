@@ -5,7 +5,7 @@ import type { CellRendererProps } from './types';
 import { getCellStyle, wrapEvent } from './utils';
 import { useCombinedRefs } from './hooks';
 
-function Cell<R, SR>({
+function Cell<R, SR, FR>({
   className,
   column,
   isCellSelected,
@@ -23,7 +23,7 @@ function Cell<R, SR>({
   selectCell,
   selectRow,
   ...props
-}: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+}: CellRendererProps<R, SR, FR>, ref: React.Ref<HTMLDivElement>) {
   const cellRef = useRef<HTMLDivElement>(null);
 
   const { cellClass } = column;
@@ -98,4 +98,4 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown, FR = unknown>(props: CellRendererProps<R, SR, FR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

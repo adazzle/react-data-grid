@@ -10,7 +10,7 @@ export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter
   }
 }
 
-export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>): React.CSSProperties {
+export function getCellStyle<R, SR, FR>(column: CalculatedColumn<R, SR, FR>): React.CSSProperties {
   return column.frozen
     ? { left: `var(--frozen-left-${column.key})` }
     : { gridColumnStart: column.idx + 1 };

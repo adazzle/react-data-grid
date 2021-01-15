@@ -1,24 +1,24 @@
 import type { HeaderCellProps } from '../HeaderCell';
 import type { SortDirection } from '../enums';
 
-type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
+type SharedHeaderCellProps<R, SR, FR> = Pick<HeaderCellProps<R, SR, FR>,
   | 'column'
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
 >;
 
-interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
+interface Props<R, SR, FR> extends SharedHeaderCellProps<R, SR, FR> {
   children: React.ReactNode;
 }
 
-export default function SortableHeaderCell<R, SR>({
+export default function SortableHeaderCell<R, SR, FR>({
   column,
   onSort,
   sortColumn,
   sortDirection,
   children
-}: Props<R, SR>) {
+}: Props<R, SR, FR>) {
   sortDirection = sortColumn === column.key && sortDirection || 'NONE';
   let sortText = '';
   if (sortDirection === 'ASC') {

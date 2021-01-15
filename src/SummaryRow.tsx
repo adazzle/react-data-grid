@@ -2,24 +2,24 @@ import { memo } from 'react';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
 
-type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
+type SharedRowRendererProps<R, SR, FR> = Pick<RowRendererProps<R, SR, FR>,
   | 'viewportColumns'
   | 'rowIdx'
 >;
 
-interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
+interface SummaryRowProps<R, SR, FR> extends SharedRowRendererProps<R, SR, FR> {
   'aria-rowindex': number;
   row: SR;
   bottom: number;
 }
 
-function SummaryRow<R, SR>({
+function SummaryRow<R, SR, FR>({
   rowIdx,
   row,
   viewportColumns,
   bottom,
   'aria-rowindex': ariaRowIndex
-}: SummaryRowProps<R, SR>) {
+}: SummaryRowProps<R, SR, FR>) {
   return (
     <div
       role="row"
@@ -28,7 +28,7 @@ function SummaryRow<R, SR>({
       style={{ bottom }}
     >
       {viewportColumns.map(column => (
-        <SummaryCell<R, SR>
+        <SummaryCell
           key={column.key}
           column={column}
           row={row}
@@ -38,4 +38,4 @@ function SummaryRow<R, SR>({
   );
 }
 
-export default memo(SummaryRow) as <R, SR>(props: SummaryRowProps<R, SR>) => JSX.Element;
+export default memo(SummaryRow) as <R, SR, FR>(props: SummaryRowProps<R, SR, FR>) => JSX.Element;

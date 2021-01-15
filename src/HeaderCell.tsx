@@ -17,20 +17,20 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
+type SharedHeaderRowProps<R, SR, FR> = Pick<HeaderRowProps<R, SR, FR>,
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
   | 'allRowsSelected'
 >;
 
-export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
-  column: CalculatedColumn<R, SR>;
-  onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+export interface HeaderCellProps<R, SR, FR> extends SharedHeaderRowProps<R, SR, FR> {
+  column: CalculatedColumn<R, SR, FR>;
+  onResize: (column: CalculatedColumn<R, SR, FR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
-export default function HeaderCell<R, SR>({
+export default function HeaderCell<R, SR, FR>({
   column,
   onResize,
   allRowsSelected,
@@ -38,7 +38,7 @@ export default function HeaderCell<R, SR>({
   sortColumn,
   sortDirection,
   onSort
-}: HeaderCellProps<R, SR>) {
+}: HeaderCellProps<R, SR, FR>) {
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
