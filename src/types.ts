@@ -181,6 +181,11 @@ export interface FilterRendererProps<TRow, TSummaryRow = unknown, TFilterRow = u
   onFilterRowChange: (row: TFilterRow) => void;
 }
 
+export interface RowsChangeData<R, SR = unknown, FR = unknown> {
+  indexes: number[];
+  column: CalculatedColumn<R, SR, FR>;
+}
+
 export interface SelectRowEvent {
   rowIdx: number;
   checked: boolean;

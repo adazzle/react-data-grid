@@ -29,6 +29,7 @@ import type {
   Column,
   Position,
   RowRendererProps,
+  RowsChangeData,
   SelectRowEvent,
   SelectedCellProps,
   EditCellProps,
@@ -87,7 +88,7 @@ export interface DataGridProps<R, SR = unknown, FR = unknown> extends SharedDivP
   filterRow?: FR;
   /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
-  onRowsChange?: (rows: R[]) => void;
+  onRowsChange?: (rows: R[], data: RowsChangeData<R, SR, FR>) => void;
   onFilterRowChange?: (filterRow: FR) => void;
 
   /**
@@ -453,7 +454,10 @@ function DataGrid<R, SR, FR>({
     if (typeof onRowsChange !== 'function') return;
     const updatedRows = [...rawRows];
     updatedRows[rowIdx] = row;
-    onRowsChange(updatedRows);
+    onRowsChange(updatedRows, {
+      indexes: [rowIdx],
+      column: columns[selectedPosition.idx]
+    });
   }
 
   function commitEditorChanges() {
@@ -535,13 +539,17 @@ function DataGrid<R, SR, FR>({
     const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
     const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
     const targetRows = rawRows.slice(startRowIndex, endRowIndex);
-
-    const updatedTargetRows = onFill({ columnKey: columns[idx].key, sourceRow, targetRows });
+    const column = columns[idx];
+    const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
     const updatedRows = [...rawRows];
+    const indexes: number[] = [];
+
     for (let i = startRowIndex; i < endRowIndex; i++) {
       updatedRows[i] = updatedTargetRows[i - startRowIndex];
+      indexes.push(i);
     }
-    onRowsChange(updatedRows);
+
+    onRowsChange(updatedRows, { indexes, column });
     setDraggedOverRowIdx(undefined);
   }
 
@@ -573,13 +581,17 @@ function DataGrid<R, SR, FR>({
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rawRows[rowIdx];
     const targetRows = rawRows.slice(rowIdx + 1);
-
-    const updatedTargetRows = onFill({ columnKey: columns[idx].key, sourceRow, targetRows });
+    const column = columns[idx];
+    const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
     const updatedRows = [...rawRows];
+    const indexes: number[] = [];
+
     for (let i = rowIdx + 1; i < updatedRows.length; i++) {
       updatedRows[i] = updatedTargetRows[i - rowIdx - 1];
+      indexes.push(i);
     }
-    onRowsChange(updatedRows);
+
+    onRowsChange(updatedRows, { indexes, column });
   }
 
   function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
