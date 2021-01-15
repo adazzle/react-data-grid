@@ -1,9 +1,17 @@
-# react-data-grid [![npm-badge]][npm-url] [![ci-badge]][ci-url]
+# react-data-grid
+
+[![npm-badge]][npm-url]
+[![type-badge]][npm-url]
+[![size-badge]][size-url]
+[![ci-badge]][ci-url]
 
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid
 [npm-url]: https://www.npmjs.com/package/react-data-grid
+[size-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
+[size-url]: https://bundlephobia.com/result?p=react-data-grid
+[type-badge]: https://img.shields.io/npm/types/react-data-grid
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
-[ci-url]: https://github.com/adazzle/react-data-grid/actions?query=workflow%3ACI
+[ci-url]: https://github.com/adazzle/react-data-grid/actions
 
 ## Install
 
