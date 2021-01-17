@@ -1,7 +1,7 @@
 import faker from 'faker';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
-import type { Column, DataGridHandle, FillEvent, PasteEvent } from '../../src';
+import type { Column, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 
@@ -184,7 +184,6 @@ export function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
   const [isLoading, setIsLoading] = useState(false);
-  const gridRef = useRef<DataGridHandle>(null);
 
   function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
     return targetRows.map(row => ({ ...row, [columnKey as keyof Row]: sourceRow[columnKey as keyof Row] }));
@@ -216,7 +215,6 @@ export function AllFeatures() {
   return (
     <div className="all-features">
       <DataGrid
-        ref={gridRef}
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}
