@@ -32,21 +32,23 @@ export function useViewportColumns<R, SR>({
     let lastFrozenColumnIndex = -1;
 
     const columns = rawColumns.map(rawColumn => {
-      const isGroup = rawGroupBy?.includes(rawColumn.key);
+      const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      const frozen = rowGroup || rawColumn.frozen || false;
 
       const column: CalculatedColumn<R, SR> = {
         ...rawColumn,
         idx: 0,
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        frozen: isGroup || rawColumn.frozen || false,
+        frozen,
         isLastFrozenColumn: false,
-        rowGroup: isGroup,
+        rowGroup,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
-        formatter: rawColumn.formatter ?? defaultFormatter
+        formatter: rawColumn.formatter ?? defaultFormatter,
+        groupFormatter: rawColumn.groupFormatter ?? ToggleGroupFormatter
       };
 
-      if (column.frozen) {
+      if (frozen) {
         lastFrozenColumnIndex++;
       }
 
@@ -81,15 +83,14 @@ export function useViewportColumns<R, SR>({
     columns.forEach((column, idx) => {
       column.idx = idx;
 
-      if (idx === lastFrozenColumnIndex) {
-        column.isLastFrozenColumn = true;
-      }
-
       if (column.rowGroup) {
         groupBy.push(column.key);
-        column.groupFormatter ??= ToggleGroupFormatter;
       }
     });
+
+    if (lastFrozenColumnIndex !== -1) {
+      columns[lastFrozenColumnIndex].isLastFrozenColumn = true;
+    }
 
     return {
       columns,
