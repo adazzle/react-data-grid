@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 import { Row } from '../../../../src';
 import type { RowRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../../src/hooks';
+import { useCombinedRefs } from '../../../useCombinedRefs';
 
 import './DraggableRowRenderer.less';
 
