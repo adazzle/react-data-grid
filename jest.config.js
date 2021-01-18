@@ -10,6 +10,9 @@ export default {
     'text'
   ],
   restoreMocks: true,
+  setupFiles: [
+    './test/setup.ts'
+  ],
   setupFilesAfterEnv: [
     '@testing-library/jest-dom'
   ],

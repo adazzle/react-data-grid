@@ -10,8 +10,7 @@ const rows: readonly Row[] = [{ id: 0 }, { id: 1 }];
 test('cellClass is undefined', () => {
   const columns: readonly Column<Row>[] = [{
     key: 'id',
-    name: 'ID',
-    cellClass: undefined
+    name: 'ID'
   }];
   setup({ columns, rows });
   const [cell1, cell2] = getCells();
