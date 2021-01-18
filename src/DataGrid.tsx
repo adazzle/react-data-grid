@@ -267,7 +267,7 @@ function DataGrid<R, SR>({
     expandedGroupIds
   });
 
-  const hasGroups = groupBy.length > 0 && rowGrouper;
+  const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
 
   // Cell drag is not supported on a treegrid
