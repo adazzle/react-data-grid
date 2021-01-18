@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 
 import { Row } from '../../../../src';
 import type { RowRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../../src/hooks';
+import { useCombinedRefs } from '../../../useCombinedRefs';
 
 const rowDraggingClassname = css`
   opacity: 0.5;

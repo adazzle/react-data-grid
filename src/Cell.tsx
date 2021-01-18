@@ -1,9 +1,8 @@
-import { forwardRef, memo, useRef } from 'react';
+import { forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
 import { cellClassname, cellCopiedClassname, cellDraggedOverClassname, cellDragHandleClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 import { getCellStyle, wrapEvent } from './utils';
-import { useCombinedRefs } from './hooks';
 import type { CellRendererProps } from './types';
 
 function Cell<R, SR>({
@@ -25,8 +24,6 @@ function Cell<R, SR>({
   selectRow,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
-  const cellRef = useRef<HTMLDivElement>(null);
-
   const { cellClass } = column;
   className = clsx(
     cellClassname,
@@ -71,7 +68,7 @@ function Cell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
-      ref={useCombinedRefs(cellRef, ref)}
+      ref={ref}
       className={className}
       style={getCellStyle(column)}
       onClick={wrapEvent(handleClick, onClick)}

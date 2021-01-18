@@ -3,7 +3,7 @@ import type { DragObjectWithType } from 'react-dnd';
 
 import { SortableHeaderCell } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../../src/hooks';
+import { useCombinedRefs } from '../../../useCombinedRefs';
 
 interface ColumnDragObject extends DragObjectWithType {
   key: string;
