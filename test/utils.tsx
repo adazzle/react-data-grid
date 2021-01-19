@@ -22,3 +22,7 @@ export function getCells() {
 export function getHeaderCells() {
   return screen.getAllByRole('columnheader');
 }
+
+export function getSelectedCell() {
+  return document.querySelector<HTMLDivElement>('.rdg-cell-selected');
+}
