@@ -375,13 +375,16 @@ function DataGrid<R, SR>({
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  // Tabbing into the grid should initiate keyboard navigation
   function onGridFocus() {
-    if (selectedPosition.idx === -1) {
+    if (!isCellWithinBounds(selectedPosition)) {
+      // Tabbing into the grid should initiate keyboard navigation
       const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
       if (isCellWithinBounds(initialPosition)) {
         setSelectedPosition(initialPosition);
       }
+    } else {
+      // otherwise if we already have a selected cell, we should scroll back to it when focusing the grid
+      scrollToCell(selectedPosition);
     }
   }
 
