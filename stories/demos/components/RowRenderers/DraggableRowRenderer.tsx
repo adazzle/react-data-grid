@@ -1,12 +1,19 @@
 import { useDrag, useDrop } from 'react-dnd';
 import type { DragObjectWithType } from 'react-dnd';
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
 import { Row } from '../../../../src';
 import type { RowRendererProps } from '../../../../src';
 import { useCombinedRefs } from '../../../useCombinedRefs';
 
-import './DraggableRowRenderer.less';
+const rowDraggingClassname = css`
+  opacity: 0.5;
+`;
+
+const rowOverClassname = css`
+  background-color: #ececec;
+`;
 
 interface RowDragObject extends DragObjectWithType {
   index: number;
@@ -46,8 +53,8 @@ export function DraggableRowRenderer<R, SR = unknown>({
   className = clsx(
     className,
     {
-      'rdg-row-dragging': isDragging,
-      'rdg-row-over': isOver
+      [rowDraggingClassname]: isDragging,
+      [rowOverClassname]: isOver
     }
   );
 

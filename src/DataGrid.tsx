@@ -8,6 +8,7 @@ import {
 } from 'react';
 import clsx from 'clsx';
 
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -905,7 +906,7 @@ function DataGrid<R, SR>({
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      className={clsx('rdg', { 'rdg-viewport-dragging': isDragging }, className)}
+      className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={{
         ...style,
         '--header-row-height': `${headerRowHeight}px`,
@@ -940,7 +941,7 @@ function DataGrid<R, SR>({
           <div
             ref={focusSinkRef}
             tabIndex={0}
-            className="rdg-focus-sink"
+            className={focusSinkClassname}
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />

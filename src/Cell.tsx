@@ -1,8 +1,9 @@
 import { forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
-import type { CellRendererProps } from './types';
+import { cellClassname, cellCopiedClassname, cellDraggedOverClassname, cellDragHandleClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 import { getCellStyle, wrapEvent } from './utils';
+import type { CellRendererProps } from './types';
 
 function Cell<R, SR>({
   className,
@@ -25,13 +26,13 @@ function Cell<R, SR>({
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const { cellClass } = column;
   className = clsx(
-    'rdg-cell',
+    cellClassname,
     {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.isLastFrozenColumn,
-      'rdg-cell-selected': isCellSelected,
-      'rdg-cell-copied': isCopied,
-      'rdg-cell-dragged-over': isDraggedOver
+      [cellFrozenClassname]: column.frozen,
+      [cellFrozenLastClassname]: column.isLastFrozenColumn,
+      [cellSelectedClassname]: isCellSelected,
+      [cellCopiedClassname]: isCopied,
+      [cellDraggedOverClassname]: isDraggedOver
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
@@ -87,7 +88,7 @@ function Cell<R, SR>({
             onRowChange={handleRowChange}
           />
           {dragHandleProps && (
-            <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+            <div className={cellDragHandleClassname} {...dragHandleProps} />
           )}
         </>
       )}
