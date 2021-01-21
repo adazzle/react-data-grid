@@ -2,9 +2,10 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "emitDeclarationOnly": true,
     "forceConsistentCasingInFileNames": true,
-    "inlineSources": true,
-    "jsx": "react",
+    "isolatedModules": true,
+    "jsx": "preserve",
     "lib": ["esnext", "dom", "dom.iterable"],
     "module": "esnext",
     "moduleResolution": "node",
@@ -12,10 +13,9 @@
     "noUnusedLocals": true,
     "outDir": "lib",
     "pretty": true,
-    "sourceMap": true,
     "strict": true,
-    "target": "es2020",
-    "types": ["jest"]
+    "target": "esnext",
+    "types": ["jest", "@testing-library/jest-dom"]
   },
   "files": [
     "src/index.ts"

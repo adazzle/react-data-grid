@@ -1,6 +1,7 @@
-body, html {
-  padding: 0;
-  margin: 0;
+body,
+html {
+  padding: 0 !important;
+  margin: 0 !important;
   font-family: sans-serif;
 }
 
@@ -12,12 +13,32 @@ body, html {
   padding: 8px;
 }
 
-.load-more-rows-tag {
-  line-height: 35px;
-  width: 180px;
-  position: relative;
-  top: -70px;
-  padding: 8px 16px;
-  background: rgba(0,0,0,0.6);
-  color: white;
+.fill-grid {
+  height: 100%;
+}
+
+.small-grid {
+  height: 300px;
+}
+
+.big-grid {
+  height: 600px;
+}
+
+:root {
+  @media (prefers-color-scheme: light) {
+    background-color: #fff;
+    color: #111;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #111;
+    color: #fff;
+  }
+}
+
+.rdg-cell .Select {
+  max-height: 30px;
+  font-size: 12px;
+  font-weight: normal;
 }

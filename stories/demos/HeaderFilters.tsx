@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import { AutoSizer } from 'react-virtualized';
+import { useMemo, useState } from 'react';
 import Select from 'react-select';
 import faker from 'faker';
 
-import DataGrid, { Column, Filters } from '../../src';
+import DataGrid from '../../src';
+import type { Column, Filters } from '../../src';
 import { NumericFilter } from './components/Filters';
 import './HeaderFilters.less';
 
@@ -31,7 +31,7 @@ function createRows() {
   return rows;
 }
 
-export default function HeaderFilters() {
+export function HeaderFilters() {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filters>({
     task: '',
@@ -40,9 +40,9 @@ export default function HeaderFilters() {
     developer: '',
     complete: ''
   });
-  const [enableFilters, setEnableFilters] = useState(true);
+  const [enableFilterRow, setEnableFilterRow] = useState(true);
 
-  const columns = useMemo((): Column<Row>[] => {
+  const columns = useMemo((): readonly Column<Row>[] => {
     const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
       label: d,
       value: d
@@ -159,28 +159,25 @@ export default function HeaderFilters() {
   }
 
   function toggleFilters() {
-    setEnableFilters(!enableFilters);
+    setEnableFilterRow(!enableFilterRow);
   }
 
   return (
-    <>
-      <div style={{ marginBottom: 10, textAlign: 'right' }}>
-        <button type="button" onClick={toggleFilters}>Toggle Filters</button>{' '}
+    <div className="header-filters-example">
+      <div className="header-filters-toolbar">
+        <button type="button" onClick={toggleFilters}>Toggle Filters</button>
+        {' '}
         <button type="button" onClick={clearFilters}>Clear Filters</button>
       </div>
-      <AutoSizer>
-        {({ height, width }) => (
-          <DataGrid
-            columns={columns}
-            rows={filteredRows}
-            width={width}
-            height={height - 30}
-            enableFilters={enableFilters}
-            filters={filters}
-            onFiltersChange={setFilters}
-          />
-        )}
-      </AutoSizer>
-    </>
+      <DataGrid
+        columns={columns}
+        rows={filteredRows}
+        enableFilterRow={enableFilterRow}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
+    </div>
   );
 }
+
+HeaderFilters.storyName = 'Header Filters';

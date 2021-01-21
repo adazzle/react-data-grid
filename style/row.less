@@ -1,34 +1,34 @@
 .rdg-row {
   contain: strict;
-  display: flex;
+  contain: size layout style paint;
+  display: grid;
+  grid-template-rows: var(--row-height);
+  grid-template-columns: var(--template-columns);
   position: absolute;
   left: 0;
   width: var(--row-width);
-  height: var(--row-height);
+  height: var(--row-height); // needed on Firefox
   line-height: var(--row-height);
-  @bg: #fff;
-  background-color: @bg;
+  background-color: var(--background-color);
 
   &:hover {
-    background-color: darken(@bg, 4%);
+    background-color: var(--row-hover-background-color);
   }
 }
 
 .rdg-row-selected {
-  @bg: #dbecfa;
-  background-color: @bg;
+  background-color: var(--row-selected-background-color);
 
   &:hover {
-    background-color: darken(@bg, 4%);
+    background-color: var(--row-selected-hover-background-color);
   }
 }
 
 .rdg-summary-row {
-  position: -webkit-sticky;
   position: sticky;
   z-index: 3;
 
   > .rdg-cell {
-    border-top: 2px solid darken(@borderColor, 20%);
+    border-top: 2px solid var(--summary-border-color);
   }
 }

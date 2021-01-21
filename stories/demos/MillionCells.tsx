@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
-import { AutoSizer } from 'react-virtualized';
-import DataGrid, { Column, FormatterProps } from '../../src';
+import { useMemo } from 'react';
+import DataGrid from '../../src';
+import type { Column, FormatterProps } from '../../src';
 
-interface Row {
-  id: number;
-  [key: string]: unknown; // TODO: remove
-}
+type Row = undefined;
+const rows: readonly Row[] = Array(1000);
 
 function CellFormatter(props: FormatterProps<Row>) {
   return <>{props.column.key}&times;{props.rowIdx}</>;
 }
 
-export default function MillionCells() {
-  const [columns] = useState(() => {
+export function MillionCells() {
+  const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 
     for (let i = 0; i < 1000; i++) {
@@ -27,29 +25,16 @@ export default function MillionCells() {
     }
 
     return columns;
-  });
-
-  const [rows] = useState(() => {
-    const rows: Row[] = [];
-
-    for (let i = 0; i < 1000; i++) {
-      rows.push({ id: i });
-    }
-
-    return rows;
-  });
+  }, []);
 
   return (
-    <AutoSizer>
-      {({ width, height }) => (
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          width={width}
-          height={height}
-          rowHeight={22}
-        />
-      )}
-    </AutoSizer>
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      rowHeight={22}
+      className="fill-grid"
+    />
   );
 }
+
+MillionCells.storyName = 'A Million Cells';

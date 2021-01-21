@@ -1,29 +1,21 @@
-import React from 'react';
-import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
+import type { DragObjectWithType } from 'react-dnd';
 
-import { HeaderRendererProps } from '../../../../src';
-
+import { SortableHeaderCell } from '../../../../src';
+import type { HeaderRendererProps } from '../../../../src';
+import { useCombinedRefs } from '../../../useCombinedRefs';
 
 interface ColumnDragObject extends DragObjectWithType {
   key: string;
 }
 
-function wrapRefs<T>(...refs: React.Ref<T>[]) {
-  return (handle: T | null) => {
-    for (const ref of refs) {
-      if (typeof ref === 'function') {
-        ref(handle);
-      } else if (ref !== null) {
-        // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31065
-        (ref as React.MutableRefObject<T | null>).current = handle;
-      }
-    }
-  };
+interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
+  onColumnsReorder: (sourceKey: string, targetKey: string) => void;
 }
 
-export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: HeaderRendererProps<R> & { onColumnsReorder: (sourceKey: string, targetKey: string) => void }) {
+export function DraggableHeaderRenderer<R>({ onColumnsReorder, column, sortColumn, sortDirection, onSort }: DraggableHeaderRendererProps<R>) {
   const [{ isDragging }, drag] = useDrag({
-    item: { key: props.column.key, type: 'COLUMN_DRAG' },
+    item: { key: column.key, type: 'COLUMN_DRAG' },
     collect: monitor => ({
       isDragging: !!monitor.isDragging()
     })
@@ -33,7 +25,7 @@ export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: Heade
     accept: 'COLUMN_DRAG',
     drop({ key, type }: ColumnDragObject) {
       if (type === 'COLUMN_DRAG') {
-        onColumnsReorder(key, props.column.key);
+        onColumnsReorder(key, column.key);
       }
     },
     collect: monitor => ({
@@ -44,14 +36,21 @@ export function DraggableHeaderRenderer<R>({ onColumnsReorder, ...props }: Heade
 
   return (
     <div
-      ref={wrapRefs(drag, drop)}
+      ref={useCombinedRefs(drag, drop)}
       style={{
         opacity: isDragging ? 0.5 : 1,
         backgroundColor: isOver ? '#ececec' : 'inherit',
         cursor: 'move'
       }}
     >
-      {props.column.name}
+      <SortableHeaderCell
+        column={column}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={onSort}
+      >
+        {column.name}
+      </SortableHeaderCell>
     </div>
   );
 }

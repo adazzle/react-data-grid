@@ -1,72 +1,95 @@
-import React, { memo } from 'react';
+import { memo, forwardRef } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowRendererProps } from './common/types';
-import { preventDefault, wrapEvent } from './utils';
+import EditCell from './EditCell';
+import type { RowRendererProps, SelectedCellProps } from './types';
+import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
   className,
-  eventBus,
   rowIdx,
   isRowSelected,
-  lastFrozenColumnIndex,
-  onRowClick,
+  copiedCellIdx,
+  draggedOverCellIdx,
   row,
   viewportColumns,
-  onDragEnter,
-  onDragOver,
-  onDrop,
+  selectedCellProps,
+  onRowClick,
   rowClass,
+  setDraggedOverRowIdx,
+  onMouseEnter,
   top,
+  onRowChange,
+  selectCell,
+  selectRow,
+  'aria-rowindex': ariaRowIndex,
+  'aria-selected': ariaSelected,
   ...props
-}: RowRendererProps<R, SR>) {
-  function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
-    // Prevent default to allow drop
-    event.preventDefault();
-    eventBus.dispatch('DRAG_ENTER', rowIdx);
-  }
-
-  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
+}: RowRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+  function handleDragEnter() {
+    setDraggedOverRowIdx?.(rowIdx);
   }
 
   className = clsx(
     'rdg-row',
-    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-    { 'rdg-row-selected': isRowSelected },
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
+      'rdg-row-selected': isRowSelected,
+      'rdg-group-row-selected': selectedCellProps?.idx === -1
+    },
     rowClass?.(row),
     className
   );
 
-  // Regarding onDrop: the default in Firefox is to treat data in dataTransfer as a URL,
-  // and perform navigation on it, even if the data type used is 'text'.
-  // To bypass this, we need to capture and prevent the drop event.
   return (
     <div
+      role="row"
+      aria-rowindex={ariaRowIndex}
+      aria-selected={ariaSelected}
+      ref={ref}
       className={className}
-      onDragEnter={wrapEvent(handleDragEnter, onDragEnter)}
-      onDragOver={wrapEvent(handleDragOver, onDragOver)}
-      onDrop={wrapEvent(preventDefault, onDrop)}
+      onMouseEnter={wrapEvent(handleDragEnter, onMouseEnter)}
       style={{ top }}
       {...props}
     >
-      {viewportColumns.map(column => (
-        <CellRenderer
-          key={column.key}
-          rowIdx={rowIdx}
-          column={column}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          row={row}
-          isRowSelected={isRowSelected}
-          eventBus={eventBus}
-          onRowClick={onRowClick}
-        />
-      ))}
+      {viewportColumns.map(column => {
+        const isCellSelected = selectedCellProps?.idx === column.idx;
+        if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
+          return (
+            <EditCell<R, SR>
+              key={column.key}
+              rowIdx={rowIdx}
+              column={column}
+              row={row}
+              onKeyDown={selectedCellProps.onKeyDown}
+              editorProps={selectedCellProps.editorProps}
+            />
+          );
+        }
+
+        return (
+          <CellRenderer
+            key={column.key}
+            rowIdx={rowIdx}
+            column={column}
+            row={row}
+            isCopied={copiedCellIdx === column.idx}
+            isDraggedOver={draggedOverCellIdx === column.idx}
+            isCellSelected={isCellSelected}
+            isRowSelected={isRowSelected}
+            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
+            onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
+            onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
+            onRowClick={onRowClick}
+            onRowChange={onRowChange}
+            selectCell={selectCell}
+            selectRow={selectRow}
+          />
+        );
+      })}
     </div>
   );
 }
 
-export default memo(Row) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

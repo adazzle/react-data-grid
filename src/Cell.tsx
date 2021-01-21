@@ -1,79 +1,104 @@
-import React, { forwardRef, memo } from 'react';
+import { forwardRef, memo } from 'react';
 import clsx from 'clsx';
 
-import { CellRendererProps } from './common/types';
-import { preventDefault, wrapEvent } from './utils';
+import type { CellRendererProps } from './types';
+import { getCellStyle, wrapEvent } from './utils';
 
 function Cell<R, SR>({
   className,
   column,
+  isCellSelected,
+  isCopied,
+  isDraggedOver,
   isRowSelected,
-  lastFrozenColumnIndex,
   row,
   rowIdx,
-  eventBus,
+  dragHandleProps,
   onRowClick,
   onClick,
   onDoubleClick,
   onContextMenu,
-  onDragOver,
+  onRowChange,
+  selectCell,
+  selectRow,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
-  function selectCell(openEditor?: boolean) {
-    eventBus.dispatch('SELECT_CELL', { idx: column.idx, rowIdx }, openEditor);
-  }
-
-  function handleCellClick(event: React.SyntheticEvent) {
-    selectCell();
-    onRowClick?.(rowIdx, row, column, event);
-  }
-
-  function handleCellContextMenu() {
-    selectCell();
-  }
-
-  function handleCellDoubleClick() {
-    selectCell(true);
-  }
-
-  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    eventBus.dispatch('SELECT_ROW', { rowIdx, checked, isShiftClick });
-  }
-
   const { cellClass } = column;
   className = clsx(
     'rdg-cell',
     {
       'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+      'rdg-cell-frozen-last': column.isLastFrozenColumn,
+      'rdg-cell-selected': isCellSelected,
+      'rdg-cell-copied': isCopied,
+      'rdg-cell-dragged-over': isDraggedOver
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
   );
 
+  function selectCellWrapper(openEditor?: boolean) {
+    selectCell({ idx: column.idx, rowIdx }, openEditor);
+  }
+
+<<<<<<< HEAD
+  function handleCellClick(event: React.SyntheticEvent) {
+    selectCell();
+    onRowClick?.(rowIdx, row, column, event);
+=======
+  function handleClick() {
+    selectCellWrapper(column.editorOptions?.editOnClick);
+    onRowClick?.(rowIdx, row, column);
+>>>>>>> upstream/canary
+  }
+
+  function handleContextMenu() {
+    selectCellWrapper();
+  }
+
+  function handleDoubleClick() {
+    selectCellWrapper(true);
+  }
+
+  function handleRowChange(newRow: R) {
+    onRowChange(rowIdx, newRow);
+  }
+
+  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
+    selectRow({ rowIdx, checked, isShiftClick });
+  }
+
   return (
     <div
+      role="gridcell"
+      aria-colindex={column.idx + 1} // aria-colindex is 1-based
+      aria-selected={isCellSelected}
       ref={ref}
       className={className}
-      style={{
-        width: column.width,
-        left: column.left
-      }}
-      onClick={wrapEvent(handleCellClick, onClick)}
-      onDoubleClick={wrapEvent(handleCellDoubleClick, onDoubleClick)}
-      onContextMenu={wrapEvent(handleCellContextMenu, onContextMenu)}
-      onDragOver={wrapEvent(preventDefault, onDragOver)}
+      style={getCellStyle(column)}
+      onClick={wrapEvent(handleClick, onClick)}
+      onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
+      onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
       {...props}
     >
-      <column.formatter
-        column={column}
-        rowIdx={rowIdx}
-        row={row}
-        isRowSelected={isRowSelected}
-        onRowSelectionChange={onRowSelectionChange}
-      />
+      {!column.rowGroup && (
+        <>
+          <column.formatter
+            column={column}
+            rowIdx={rowIdx}
+            row={row}
+            isCellSelected={isCellSelected}
+            isRowSelected={isRowSelected}
+            onRowSelectionChange={onRowSelectionChange}
+            onRowChange={handleRowChange}
+          />
+          {dragHandleProps && (
+            <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+          )}
+        </>
+      )}
     </div>
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;

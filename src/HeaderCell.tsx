@@ -1,12 +1,23 @@
-import React, { createElement } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn } from './common/types';
-import { HeaderRowProps } from './HeaderRow';
+import type { CalculatedColumn } from './types';
+import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
-import ResizableHeaderCell from './headerCells/ResizableHeaderCell';
+import { getCellStyle } from './utils';
+import type { SortDirection } from './enums';
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
+function getAriaSort(sortDirection?: SortDirection) {
+  switch (sortDirection) {
+    case 'ASC':
+      return 'ascending';
+    case 'DESC':
+      return 'descending';
+    default:
+      return 'none';
+  }
+}
+
+type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
@@ -15,14 +26,12 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, never, SR>,
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
-  lastFrozenColumnIndex: number;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
-  lastFrozenColumnIndex,
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
@@ -30,55 +39,88 @@ export default function HeaderCell<R, SR>({
   sortDirection,
   onSort
 }: HeaderCellProps<R, SR>) {
-  function getCell() {
-    if (!column.headerRenderer) return column.name;
+  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse' && event.buttons !== 1) {
+      return;
+    }
 
-    return createElement(column.headerRenderer, { column, allRowsSelected, onAllRowsSelectionChange });
+    const { currentTarget, pointerId } = event;
+    const { right } = currentTarget.getBoundingClientRect();
+    const offset = right - event.clientX;
+
+    if (offset > 11) { // +1px to account for the border size
+      return;
+    }
+
+    function onPointerMove(event: PointerEvent) {
+      if (event.pointerId !== pointerId) return;
+      if (event.pointerType === 'mouse' && event.buttons !== 1) {
+        onPointerUp();
+        return;
+      }
+      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      if (width > 0) {
+        onResize(column, width);
+      }
+    }
+
+    function onPointerUp() {
+      if (event.pointerId !== pointerId) return;
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+    }
+
+    event.preventDefault();
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
   }
 
-  let cell = getCell();
+  function getCell() {
+    if (column.headerRenderer) {
+      return (
+        <column.headerRenderer
+          column={column}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          onSort={onSort}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={onAllRowsSelectionChange}
+        />
+      );
+    }
 
-  if (column.sortable) {
-    cell = (
-      <SortableHeaderCell
-        column={column}
-        onSort={onSort}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-      >
-        {cell}
-      </SortableHeaderCell>
-    );
+    if (column.sortable) {
+      return (
+        <SortableHeaderCell
+          column={column}
+          onSort={onSort}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+        >
+          {column.name}
+        </SortableHeaderCell>
+      );
+    }
+
+    return column.name;
   }
 
   const className = clsx('rdg-cell', column.headerCellClass, {
+    'rdg-cell-resizable': column.resizable,
     'rdg-cell-frozen': column.frozen,
-    'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+    'rdg-cell-frozen-last': column.isLastFrozenColumn
   });
-  const style: React.CSSProperties = {
-    width: column.width,
-    left: column.left
-  };
 
-  cell = (
+  return (
     <div
+      role="columnheader"
+      aria-colindex={column.idx + 1}
+      aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
       className={className}
-      style={style}
+      style={getCellStyle(column)}
+      onPointerDown={column.resizable ? onPointerDown : undefined}
     >
-      {cell}
+      {getCell()}
     </div>
   );
-
-  if (column.resizable) {
-    cell = (
-      <ResizableHeaderCell
-        column={column}
-        onResize={onResize}
-      >
-        {cell as React.ReactElement<React.ComponentProps<'div'>>}
-      </ResizableHeaderCell>
-    );
-  }
-
-  return cell;
 }

@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '15.x'
     - uses: actions/cache@v2
       with:
         path: ~/.npm
@@ -24,6 +24,8 @@ jobs:
       run: npm run typecheck
     - name: Test
       run: npm t -- --coverage --colors
+    - name: Bundle
+      run: npm run build
 
   storybook:
     runs-on: ubuntu-latest
@@ -31,7 +33,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '15.x'
     - uses: actions/cache@v2
       with:
         path: ~/.npm

@@ -1,12 +1,5 @@
-import React from 'react';
-import { HeaderCellProps } from '../HeaderCell';
-import { SortDirection } from '../common/enums';
-
-const SORT_TEXT = {
-  ASC: '\u25B2',
-  DESC: '\u25BC',
-  NONE: ''
-} as const;
+import type { HeaderCellProps } from '../HeaderCell';
+import type { SortDirection } from '../enums';
 
 type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
   | 'column'
@@ -15,7 +8,7 @@ type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
   | 'onSort'
 >;
 
-export interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
+interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
   children: React.ReactNode;
 }
 
@@ -27,9 +20,16 @@ export default function SortableHeaderCell<R, SR>({
   children
 }: Props<R, SR>) {
   sortDirection = sortColumn === column.key && sortDirection || 'NONE';
+  let sortText = '';
+  if (sortDirection === 'ASC') {
+    sortText = '\u25B2';
+  } else if (sortDirection === 'DESC') {
+    sortText = '\u25BC';
+  }
+
   function onClick() {
     if (!onSort) return;
-    const sortDescendingFirst = column.sortDescendingFirst || false;
+    const { sortDescendingFirst } = column;
     let direction: SortDirection;
     switch (sortDirection) {
       case 'ASC':
@@ -48,7 +48,7 @@ export default function SortableHeaderCell<R, SR>({
   return (
     <span className="rdg-header-sort-cell" onClick={onClick}>
       <span className="rdg-header-sort-name">{children}</span>
-      <span>{SORT_TEXT[sortDirection]}</span>
+      <span>{sortText}</span>
     </span>
   );
 }

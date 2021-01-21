@@ -1,61 +1,62 @@
-import React, { useCallback, memo } from 'react';
+import { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
-import { CalculatedColumn } from './common/types';
-import { assertIsValidKey } from './utils';
-import { DataGridProps } from './DataGrid';
+import type { CalculatedColumn } from './types';
+import { assertIsValidKeyGetter } from './utils';
+import type { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, K extends keyof R, SR> = Pick<DataGridProps<R, K, SR>,
+type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'rows'
   | 'onSelectedRowsChange'
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
-  | 'rowKey'
+  | 'rowKeyGetter'
 >;
 
-export interface HeaderRowProps<R, K extends keyof R, SR> extends SharedDataGridProps<R, K, SR> {
-  lastFrozenColumnIndex: number;
+export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
 }
 
-function HeaderRow<R, K extends keyof R, SR>({
+function HeaderRow<R, SR>({
   columns,
-  lastFrozenColumnIndex,
   rows,
-  rowKey,
+  rowKeyGetter,
   onSelectedRowsChange,
   allRowsSelected,
   onColumnResize,
   sortColumn,
   sortDirection,
   onSort
-}: HeaderRowProps<R, K, SR>) {
+}: HeaderRowProps<R, SR>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
 
-    assertIsValidKey(rowKey);
+    assertIsValidKeyGetter(rowKeyGetter);
 
-    const newSelectedRows = new Set<R[K]>();
+    const newSelectedRows = new Set<React.Key>();
     if (checked) {
       for (const row of rows) {
-        newSelectedRows.add(row[rowKey]);
+        newSelectedRows.add(rowKeyGetter(row));
       }
     }
 
     onSelectedRowsChange(newSelectedRows);
-  }, [onSelectedRowsChange, rows, rowKey]);
+  }, [onSelectedRowsChange, rows, rowKeyGetter]);
 
   return (
-    <div className="rdg-header-row">
+    <div
+      role="row"
+      aria-rowindex={1} // aria-rowindex is 1 based
+      className="rdg-header-row"
+    >
       {columns.map(column => {
         return (
           <HeaderCell<R, SR>
             key={column.key}
             column={column}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
             onResize={onColumnResize}
             allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}
@@ -69,4 +70,4 @@ function HeaderRow<R, K extends keyof R, SR>({
   );
 }
 
-export default memo(HeaderRow) as <R, K extends keyof R, SR>(props: HeaderRowProps<R, K, SR>) => JSX.Element;
+export default memo(HeaderRow) as <R, SR>(props: HeaderRowProps<R, SR>) => JSX.Element;

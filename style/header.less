@@ -1,45 +1,39 @@
-@import './variables.less';
-
 .rdg-header-row,
 .rdg-filter-row {
   contain: strict;
-  display: flex;
+  contain: size layout style paint;
+  display: grid;
+  grid-template-columns: var(--template-columns);
   width: var(--row-width);
-  position: -webkit-sticky;
   position: sticky;
-  background-color: #f9f9f9;
+  background-color: var(--header-background-color);
   font-weight: bold;
-  .user-select();
   z-index: 3;
 }
 
 .rdg-header-row {
-  height: var(--header-row-height);
+  grid-template-rows: var(--header-row-height);
+  height: var(--header-row-height); // needed on Firefox
   line-height: var(--header-row-height);
   top: 0;
+  touch-action: none;
 }
 
 .rdg-filter-row {
-  height: var(--filter-row-height);
+  grid-template-rows: var(--filter-row-height);
+  height: var(--filter-row-height); // needed on Firefox
   line-height: var(--filter-row-height);
   top: var(--header-row-height);
 }
 
-// TODO: replace this with a pseudo-element once we drop support for Legacy Edge,
-// as `cursor` doesn't work on pseudo-elements on those browsers.
-.rdg-header-cell-resizer {
+.rdg-cell-resizable::after {
+  content: "";
   cursor: col-resize;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   width: 10px;
-}
-
-.rdg-cell .Select {
-  max-height: 30px;
-  font-size: 12px;
-  font-weight: normal;
 }
 
 .rdg-header-sort-cell {

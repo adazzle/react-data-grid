@@ -1,26 +1,30 @@
 .rdg-editor-container {
-  position: absolute;
+  display: contents;
 }
 
-.rdg-text-editor,
-.rdg-select-editor {
-  -moz-appearance: none;
+.rdg-text-editor {
   -webkit-appearance: none;
   appearance: none;
 
   box-sizing: border-box;
-  width: calc(100% + 1px);
-  height: calc(100% + 1px);
-  padding: 1px 7px 0 7px;
-  margin: -1px 0 0 -1px;
+  width: 100%;
+  height: 100%;
+  padding: 0px 6px 0 6px;
   border: 2px solid #ccc;
-  background-color: #fff;
+  vertical-align: top;
+  color: var(--color);
+  background-color: var(--background-color);
 
-  font-size: 14px;
-  line-height: 1.2;
-  .placeholder-color(#999);
+  font-family: inherit;
+  font-size: var(--font-size);
 
   &:focus {
-    border-color: #66afe9;
+    border-color: var(--selection-color);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #999;
+    opacity: 1;
   }
 }

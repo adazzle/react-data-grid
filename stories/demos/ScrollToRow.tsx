@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import DataGrid, { Column, DataGridHandle } from '../../src';
+import { useState, useRef } from 'react';
+import DataGrid from '../../src';
+import type { Column, DataGridHandle } from '../../src';
 
 interface Row {
   id: number;
@@ -13,7 +14,7 @@ const columns: readonly Column<Row>[] = [
   { key: 'count', name: 'Count' }
 ];
 
-export default function ScrollToRow() {
+export function ScrollToRow() {
   const [rows] = useState(() => {
     const rows: Row[] = [];
 
@@ -55,3 +56,5 @@ export default function ScrollToRow() {
     </>
   );
 }
+
+ScrollToRow.storyName = 'Scroll To Row';

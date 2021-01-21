@@ -1,64 +1,19 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Editor, EditorProps } from '../../../../src';
+import type { EditorProps } from '../../../../src';
+import type { Row } from '../../AllFeatures';
 
-interface Option {
-  id: string;
-  title: string;
-  value: string;
-  text: string;
-}
+const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'] as const;
 
-interface DropDownEditorProps<TRow> extends EditorProps<string, TRow, unknown> {
-  options: Array<Option | string>;
-}
-
-type DropDownEditorHandle = Editor<{ [key: string]: string }>;
-
-function DropDownEditor<TRow>({ column, value, onCommit, options }: DropDownEditorProps<TRow>, ref: React.Ref<DropDownEditorHandle>) {
-  const selectRef = useRef<HTMLSelectElement>(null);
-
-  useImperativeHandle(ref, () => ({
-    getInputNode() {
-      return selectRef.current;
-    },
-    getValue() {
-      return {
-        [column.key]: selectRef.current!.value
-      };
-    }
-  }));
-
+export default function DropDownEditor({ row, onRowChange }: EditorProps<Row>) {
   return (
     <select
-      ref={selectRef}
-      className="rdg-select-editor"
-      defaultValue={value}
-      onBlur={onCommit}
-      size={options.length}
-      style={{ maxHeight: 200, height: 'auto', overflowY: 'auto' }}
+      className="rdg-text-editor"
+      value={row.title}
+      onChange={event => onRowChange({ ...row, title: event.target.value }, true)}
+      autoFocus
     >
-      {options.map(name => typeof name === 'string' ? (
-        <option
-          key={name}
-          value={name}
-          onClick={onCommit}
-        >
-          {name}
-        </option>
-      ) : (
-        <option
-          key={name.id}
-          value={name.value}
-          title={name.title}
-          onClick={onCommit}
-        >
-          {name.text || name.value}
-        </option>
+      {titles.map(title => (
+        <option key={title} value={title}>{title}</option>
       ))}
     </select>
   );
 }
-
-export default forwardRef(
-  DropDownEditor as React.RefForwardingComponent<DropDownEditorHandle>
-) as <R>(props: DropDownEditorProps<R> & { ref?: React.Ref<DropDownEditorHandle> }) => JSX.Element;

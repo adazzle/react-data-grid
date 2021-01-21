@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "jest.config.js",
+    "rollup.config.js",
+    "src/**/*",
+    "stories/**/*",
+    "test/**/*",
+    "tools/**/*"
+  ]
+}

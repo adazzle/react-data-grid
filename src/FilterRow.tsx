@@ -1,22 +1,21 @@
-import React, { createElement, memo } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
-import { CalculatedColumn, Filters } from './common/types';
-import { DataGridProps } from './DataGrid';
+import { getCellStyle } from './utils';
+import type { CalculatedColumn, Filters } from './types';
+import type { DataGridProps } from './DataGrid';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, never, SR>,
+type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'filters'
   | 'onFiltersChange'
 >;
 
-export interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
-  lastFrozenColumnIndex: number;
+interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
 }
 
 function FilterRow<R, SR>({
   columns,
-  lastFrozenColumnIndex,
   filters,
   onFiltersChange
 }: FilterRowProps<R, SR>) {
@@ -27,30 +26,31 @@ function FilterRow<R, SR>({
   }
 
   return (
-    <div className="rdg-filter-row">
+    <div
+      role="row"
+      aria-rowindex={2}
+      className="rdg-filter-row"
+    >
       {columns.map(column => {
         const { key } = column;
-
         const className = clsx('rdg-cell', {
           'rdg-cell-frozen': column.frozen,
-          'rdg-cell-frozen-last': column.idx === lastFrozenColumnIndex
+          'rdg-cell-frozen-last': column.isLastFrozenColumn
         });
-        const style: React.CSSProperties = {
-          width: column.width,
-          left: column.left
-        };
 
         return (
           <div
             key={key}
-            style={style}
             className={className}
+            style={getCellStyle(column)}
           >
-            {column.filterRenderer && createElement(column.filterRenderer, {
-              column,
-              value: filters?.[column.key],
-              onChange: value => onChange(key, value)
-            })}
+            {column.filterRenderer && (
+              <column.filterRenderer
+                column={column}
+                value={filters?.[column.key]}
+                onChange={value => onChange(key, value)}
+              />
+            )}
           </div>
         );
       })}
