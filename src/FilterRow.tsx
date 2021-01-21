@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { getCellStyle } from './utils';
 import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, filterRowClassname } from './style';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'filters'
@@ -29,13 +30,13 @@ function FilterRow<R, SR>({
     <div
       role="row"
       aria-rowindex={2}
-      className="rdg-filter-row"
+      className={filterRowClassname}
     >
       {columns.map(column => {
         const { key } = column;
-        const className = clsx('rdg-cell', {
-          'rdg-cell-frozen': column.frozen,
-          'rdg-cell-frozen-last': column.isLastFrozenColumn
+        const className = clsx(cellClassname, {
+          [cellFrozenClassname]: column.frozen,
+          [cellFrozenLastClassname]: column.isLastFrozenColumn
         });
 
         return (

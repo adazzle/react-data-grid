@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { rowClassname, summaryRowClassname } from './style';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
 
@@ -24,7 +25,7 @@ function SummaryRow<R, SR>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`rdg-row rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} rdg-summary-row`}
+      className={`${rowClassname} rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
       style={{ bottom }}
     >
       {viewportColumns.map(column => (

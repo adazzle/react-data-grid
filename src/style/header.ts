@@ -1,48 +1,31 @@
-.rdg-header-row,
-.rdg-filter-row {
+import { css } from '@linaria/core';
+
+const headerRowAndFilterRow = css`
   contain: strict;
   contain: size layout style paint;
   display: grid;
   grid-template-columns: var(--template-columns);
-  width: var(--row-width);
   position: sticky;
   background-color: var(--header-background-color);
   font-weight: bold;
   z-index: 3;
-}
+`;
 
-.rdg-header-row {
+const headerRow = css`
   grid-template-rows: var(--header-row-height);
   height: var(--header-row-height); // needed on Firefox
   line-height: var(--header-row-height);
   top: 0;
   touch-action: none;
-}
+`;
 
-.rdg-filter-row {
+export const headerRowClassname = `rdg-header-row ${headerRowAndFilterRow} ${headerRow}`;
+
+const filterRow = css`
   grid-template-rows: var(--filter-row-height);
   height: var(--filter-row-height); // needed on Firefox
   line-height: var(--filter-row-height);
   top: var(--header-row-height);
-}
+`;
 
-.rdg-cell-resizable::after {
-  content: "";
-  cursor: col-resize;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 10px;
-}
-
-.rdg-header-sort-cell {
-  cursor: pointer;
-  display: flex;
-}
-
-.rdg-header-sort-name {
-  flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+export const filterRowClassname = `rdg-filter-row ${headerRowAndFilterRow} ${filterRow}`;

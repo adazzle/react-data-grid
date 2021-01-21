@@ -1,7 +1,14 @@
 import { createPortal } from 'react-dom';
+import { css } from '@linaria/core';
 
 import type { EditorProps } from '../types';
 import { useClickOutside } from '../hooks';
+
+const editorContainer = css`
+  display: contents;
+`;
+
+const editorContainerClassname = `rdg-editor-container ${editorContainer}`;
 
 export default function EditorContainer<R, SR>({
   row,
@@ -13,7 +20,7 @@ export default function EditorContainer<R, SR>({
   if (column.editor === undefined) return null;
 
   const editor = (
-    <div className="rdg-editor-container" onClickCapture={onClickCapture}>
+    <div className={editorContainerClassname} onClickCapture={onClickCapture}>
       <column.editor
         row={row}
         column={column}

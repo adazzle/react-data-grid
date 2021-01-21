@@ -1,9 +1,17 @@
 import { useState, useCallback } from 'react';
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 import EditorContainer from './editors/EditorContainer';
 import { getCellStyle } from './utils';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
+
+const cellEditing = css`
+  padding: 0;
+`;
+
+const cellEditingClassname = `rdg-cell-editing ${cellEditing}`;
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'rowIdx'
@@ -34,13 +42,13 @@ export default function EditCell<R, SR>({
 
   const { cellClass } = column;
   className = clsx(
-    'rdg-cell',
+    cellClassname,
     {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.isLastFrozenColumn
+      [cellFrozenClassname]: column.frozen,
+      [cellFrozenLastClassname]: column.isLastFrozenColumn
     },
-    'rdg-cell-selected',
-    'rdg-cell-editing',
+    [cellSelectedClassname],
+    cellEditingClassname,
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
   );

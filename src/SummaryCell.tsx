@@ -3,6 +3,7 @@ import clsx from 'clsx';
 
 import { getCellStyle } from './utils';
 import type { CellRendererProps } from './types';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column'>;
 
@@ -16,10 +17,10 @@ function SummaryCell<R, SR>({
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = clsx(
-    'rdg-cell',
+    cellClassname,
     {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.isLastFrozenColumn
+      [cellFrozenClassname]: column.frozen,
+      [cellFrozenLastClassname]: column.isLastFrozenColumn
     },
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );

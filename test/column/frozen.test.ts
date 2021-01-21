@@ -1,5 +1,6 @@
 import type { Column } from '../../src';
 import { setup, getHeaderCells } from '../utils';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../../src/style';
 
 interface Row {
   col1: number;
@@ -29,10 +30,10 @@ test('frozen column have a specific class, and are stable-sorted before non-froz
   setup({ columns, rows: [] });
   const [cell1, cell2, cell3, cell4] = getHeaderCells();
 
-  expect(cell1).toHaveClass('rdg-cell rdg-cell-frozen', { exact: true });
-  expect(cell2).toHaveClass('rdg-cell rdg-cell-frozen rdg-cell-frozen', { exact: true });
-  expect(cell3).toHaveClass('rdg-cell', { exact: true });
-  expect(cell4).toHaveClass('rdg-cell', { exact: true });
+  expect(cell1).toHaveClass(`${cellClassname} ${cellFrozenClassname}`, { exact: true });
+  expect(cell2).toHaveClass(`${cellClassname} ${cellFrozenClassname} ${cellFrozenLastClassname}`, { exact: true });
+  expect(cell3).toHaveClass(`${cellClassname}`, { exact: true });
+  expect(cell4).toHaveClass(`${cellClassname}`, { exact: true });
 
   expect(cell1).toHaveTextContent('col1');
   expect(cell2).toHaveTextContent('col3');

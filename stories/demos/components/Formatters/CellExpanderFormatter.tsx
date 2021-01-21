@@ -1,5 +1,17 @@
+import { css } from '@linaria/core';
 import { useFocusRef } from '../../../../src/hooks';
-import './CellExpanderFormatter.less';
+
+const cellExpandClassname = css`
+  float: right;
+  display: table;
+  height: 100%;
+
+  > span {
+    display: table-cell;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+`;
 
 export interface CellExpanderFormatterProps {
   isCellSelected: boolean;
@@ -23,7 +35,7 @@ export function CellExpanderFormatter({ isCellSelected, expanded, onCellExpand }
   }
 
   return (
-    <div className="rdg-cell-expand">
+    <div className={cellExpandClassname}>
       <span
         onClick={handleClick}
         onKeyDown={handleKeyDown}

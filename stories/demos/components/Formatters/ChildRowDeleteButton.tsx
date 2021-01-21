@@ -1,4 +1,39 @@
+import { css } from '@linaria/core';
 import { useFocusRef } from '../../../../src/hooks';
+
+const childRowActionCrossClassname = css`
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    background: grey;
+  }
+
+  &::before {
+    left: 21px;
+    width: 1px;
+    height: 100%;
+  }
+
+  &::after {
+    top: 50%;
+    left: 20px;
+    height: 1px;
+    width: 15px;
+  }
+
+  &:hover {
+    background: red;
+  }
+`;
+
+const childRowButtonClassname = css`
+  cursor: pointer;
+  position: absolute;
+  left: 21px;
+  transform: translateX(-50%);
+  filter: grayscale(1);
+`;
 
 export interface ChildRowDeleteButtonProps {
   isCellSelected: boolean;
@@ -18,9 +53,9 @@ export function ChildRowDeleteButton({ isCellSelected, onDeleteSubRow, isDeleteS
 
   return (
     <>
-      <div className="rdg-child-row-action-cross" />
+      <div className={childRowActionCrossClassname} />
       {isDeleteSubRowEnabled && (
-        <div className="rdg-child-row-btn" onClick={onDeleteSubRow}>
+        <div className={childRowButtonClassname} onClick={onDeleteSubRow}>
           <span
             ref={iconRef}
             tabIndex={-1}
