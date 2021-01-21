@@ -44,9 +44,12 @@ export function useViewportColumns<R, SR>({
         rowGroup,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
-        formatter: rawColumn.formatter ?? defaultFormatter,
-        groupFormatter: rawColumn.groupFormatter ?? ToggleGroupFormatter
+        formatter: rawColumn.formatter ?? defaultFormatter
       };
+
+      if (rowGroup) {
+        column.groupFormatter ??= ToggleGroupFormatter;
+      }
 
       if (frozen) {
         lastFrozenColumnIndex++;
