@@ -64,7 +64,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   isLastFrozenColumn: boolean;
   rowGroup: boolean;
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
-  groupFormatter: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
 }
 
 export interface ColumnMetric {

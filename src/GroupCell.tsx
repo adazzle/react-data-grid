@@ -62,7 +62,7 @@ function GroupCell<R, SR>({
       }}
       onClick={isLevelMatching ? toggleGroup : undefined}
     >
-      {(!column.rowGroup || groupColumnIndex === column.idx) && (
+      {(!column.rowGroup || groupColumnIndex === column.idx) && column.groupFormatter && (
         <column.groupFormatter
           groupKey={groupKey}
           childRows={childRows}
