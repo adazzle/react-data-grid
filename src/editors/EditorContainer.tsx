@@ -1,8 +1,14 @@
 import { createPortal } from 'react-dom';
+import { css } from '@linaria/core';
 
 import type { EditorProps } from '../types';
 import { useClickOutside } from '../hooks';
-import { editorContainerClassname } from '../style';
+
+const editorContainer = css`
+  display: contents;
+`;
+
+const editorContainerClassname = `rdg-editor-container ${editorContainer}`;
 
 export default function EditorContainer<R, SR>({
   row,

@@ -1,4 +1,4 @@
-import { textEditorClassname } from '../../../../src/style';
+import { textEditorClassname } from '../../../../src/editors/TextEditor';
 import type { EditorProps } from '../../../../src';
 import type { Row } from '../../AllFeatures';
 

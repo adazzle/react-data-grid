@@ -1,10 +1,17 @@
 import { useState, useCallback } from 'react';
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
-import { cellClassname, cellEditingClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
 import EditorContainer from './editors/EditorContainer';
 import { getCellStyle } from './utils';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
+
+const cellEditing = css`
+  padding: 0;
+`;
+
+const cellEditingClassname = `rdg-cell-editing ${cellEditing}`;
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'rowIdx'

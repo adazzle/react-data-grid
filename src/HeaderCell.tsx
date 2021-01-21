@@ -1,11 +1,26 @@
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
 import type { CalculatedColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle } from './utils';
 import type { SortDirection } from './enums';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellResizableClassname } from './style';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
+
+const cellResizable = css`
+  &::after {
+    content: "";
+    cursor: col-resize;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+  }
+`;
+
+const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
 function getAriaSort(sortDirection?: SortDirection) {
   switch (sortDirection) {

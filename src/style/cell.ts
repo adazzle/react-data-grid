@@ -69,9 +69,3 @@ const cellDraggedOver = css`
 `;
 
 export const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;
-
-const cellEditing = css`
-  padding: 0;
-`;
-
-export const cellEditingClassname = `rdg-cell-editing ${cellEditing}`;

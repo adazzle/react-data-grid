@@ -1,6 +1,26 @@
+import { css } from '@linaria/core';
 import type { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks/useFocusRef';
-import { caretClassname, groupCellContentClassname } from '../style';
+
+const groupCellContent = css`
+  outline: none;
+`;
+
+const groupCellContentClassname = `rdg-group-cell-content ${groupCellContent}`;
+
+const caret = css`
+margin-left: 4px;
+stroke: currentColor;
+stroke-width: 1.5px;
+fill: transparent;
+vertical-align: middle;
+
+> path {
+  transition: d .1s;
+}
+`;
+
+const caretClassname = `rdg-caret ${caret}`;
 
 export function ToggleGroupFormatter<R, SR>({
   groupKey,
