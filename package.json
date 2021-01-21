@@ -62,6 +62,7 @@
     "@storybook/react": "^6.1.11",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
+    "@testing-library/user-event": "^12.6.0",
     "@types/faker": "^5.1.5",
     "@types/jest": "^26.0.19",
     "@types/lodash": "^4.14.165",

@@ -376,6 +376,19 @@ function DataGrid<R, SR>({
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
+  function onGridFocus() {
+    if (!isCellWithinBounds(selectedPosition)) {
+      // Tabbing into the grid should initiate keyboard navigation
+      const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
+      if (isCellWithinBounds(initialPosition)) {
+        setSelectedPosition(initialPosition);
+      }
+    } else {
+      // otherwise if we already have a selected cell, we should scroll back to it when focusing the grid
+      scrollToCell(selectedPosition);
+    }
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const { key, keyCode } = event;
     const row = rows[selectedPosition.rowIdx];
@@ -930,6 +943,7 @@ function DataGrid<R, SR>({
             tabIndex={0}
             className={focusSinkClassname}
             onKeyDown={handleKeyDown}
+            onFocus={onGridFocus}
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
