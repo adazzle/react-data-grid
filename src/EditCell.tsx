@@ -2,9 +2,9 @@ import { useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
+import { cellSelectedClassname } from './style';
 import EditorContainer from './editors/EditorContainer';
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
 
 const cellEditing = css`
@@ -42,11 +42,7 @@ export default function EditCell<R, SR>({
 
   const { cellClass } = column;
   className = clsx(
-    cellClassname,
-    {
-      [cellFrozenClassname]: column.frozen,
-      [cellFrozenLastClassname]: column.isLastFrozenColumn
-    },
+    getCellClassname(column),
     [cellSelectedClassname],
     cellEditingClassname,
     typeof cellClass === 'function' ? cellClass(row) : cellClass,

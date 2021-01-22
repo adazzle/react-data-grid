@@ -1,9 +1,8 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column'>;
 
@@ -17,11 +16,7 @@ function SummaryCell<R, SR>({
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = clsx(
-    cellClassname,
-    {
-      [cellFrozenClassname]: column.frozen,
-      [cellFrozenLastClassname]: column.isLastFrozenColumn
-    },
+    getCellClassname(column),
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
 

@@ -23,7 +23,7 @@ const cellFrozen = css`
 
 export const cellFrozenClassname = `rdg-cell-frozen ${cellFrozen}`;
 
-export const cellFrozenLast = css`
+const cellFrozenLast = css`
   box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
 `;
 
@@ -34,38 +34,3 @@ const cellSelected = css`
 `;
 
 export const cellSelectedClassname = `rdg-cell-selected ${cellSelected}`;
-
-const cellCopied = css`
-  background-color: #ccccff;
-`;
-
-export const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
-
-const cellDragHandle = css`
-  cursor: move;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 8px;
-  height: 8px;
-  background-color: var(--selection-color);
-
-  &:hover {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--selection-color);
-    background-color: var(--background-color);
-  }
-`;
-
-export const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
-
-const cellDraggedOver = css`
-  background-color: #ccccff;
-
-  &.${cellCopied} {
-    background-color: #9999ff;
-  }
-`;
-
-export const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;

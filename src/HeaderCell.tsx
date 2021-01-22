@@ -4,9 +4,8 @@ import { css } from '@linaria/core';
 import type { CalculatedColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { SortDirection } from './enums';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
 
 const cellResizable = css`
   &::after {
@@ -33,11 +32,9 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
-  | 'allRowsSelected'
+type SharedHeaderRowProps<R, SR> = Pick<
+  HeaderRowProps<R, SR>,
+  'sortColumn' | 'sortDirection' | 'onSort' | 'allRowsSelected'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -64,7 +61,8 @@ export default function HeaderCell<R, SR>({
     const { right } = currentTarget.getBoundingClientRect();
     const offset = right - event.clientX;
 
-    if (offset > 11) { // +1px to account for the border size
+    if (offset > 11) {
+      // +1px to account for the border size
       return;
     }
 
@@ -74,7 +72,8 @@ export default function HeaderCell<R, SR>({
         onPointerUp();
         return;
       }
-      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      const width =
+        event.clientX + offset - currentTarget.getBoundingClientRect().left;
       if (width > 0) {
         onResize(column, width);
       }
@@ -121,17 +120,17 @@ export default function HeaderCell<R, SR>({
     return column.name;
   }
 
-  const className = clsx(cellClassname, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable,
-    [cellFrozenClassname]: column.frozen,
-    [cellFrozenLastClassname]: column.isLastFrozenColumn
+  const className = clsx(getCellClassname(column), column.headerCellClass, {
+    [cellResizableClassname]: column.resizable
   });
 
   return (
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
+      aria-sort={
+        sortColumn === column.key ? getAriaSort(sortDirection) : undefined
+      }
       className={className}
       style={getCellStyle(column)}
       onPointerDown={column.resizable ? onPointerDown : undefined}
