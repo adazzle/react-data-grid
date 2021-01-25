@@ -41,15 +41,9 @@ function Cell<R, SR>({
     selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
-<<<<<<< HEAD
   function handleCellClick(event: React.SyntheticEvent) {
-    selectCell();
-    onRowClick?.(rowIdx, row, column, event);
-=======
-  function handleClick() {
     selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(rowIdx, row, column);
->>>>>>> upstream/canary
+    onRowClick?.(rowIdx, row, column, event);
   }
 
   function handleContextMenu() {
