@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import { cellSelectedClassname } from './style';
@@ -41,8 +40,8 @@ export default function EditCell<R, SR>({
   }, []);
 
   const { cellClass } = column;
-  className = clsx(
-    getCellClassname(column),
+  className = getCellClassname(
+    column,
     [cellSelectedClassname],
     cellEditingClassname,
     typeof cellClass === 'function' ? cellClass(row) : cellClass,

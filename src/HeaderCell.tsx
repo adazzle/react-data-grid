@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import type { CalculatedColumn } from './types';
@@ -120,7 +119,7 @@ export default function HeaderCell<R, SR>({
     return column.name;
   }
 
-  const className = clsx(getCellClassname(column), column.headerCellClass, {
+  const className = getCellClassname(column, column.headerCellClass, {
     [cellResizableClassname]: column.resizable
   });
 

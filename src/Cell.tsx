@@ -1,5 +1,4 @@
 import { forwardRef, memo } from 'react';
-import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import { cellSelectedClassname } from './style';
@@ -61,8 +60,8 @@ function Cell<R, SR>({
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const { cellClass } = column;
-  className = clsx(
-    getCellClassname(column),
+  className = getCellClassname(
+    column,
     {
       [cellSelectedClassname]: isCellSelected,
       [cellCopiedClassname]: isCopied,

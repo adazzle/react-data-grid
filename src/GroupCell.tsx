@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn } from './types';
@@ -52,7 +51,7 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       key={column.key}
-      className={clsx(getCellClassname(column), {
+      className={getCellClassname(column, {
         [cellSelectedClassname]: isCellSelected
       })}
       style={{

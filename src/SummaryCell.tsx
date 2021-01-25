@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
@@ -15,8 +14,7 @@ function SummaryCell<R, SR>({
   row
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
-  const className = clsx(
-    getCellClassname(column),
+  const className = getCellClassname(column,
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
 
