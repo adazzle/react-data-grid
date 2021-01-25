@@ -41,7 +41,7 @@ function Cell<R, SR>({
     selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
-  function handleCellClick(event: React.SyntheticEvent) {
+  function handleClick(event: React.SyntheticEvent) {
     selectCellWrapper(column.editorOptions?.editOnClick);
     onRowClick?.(rowIdx, row, column, event);
   }
