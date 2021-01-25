@@ -1,5 +1,10 @@
 # Changelog
 
+## v7.0.0-canary.35
+ - Migrate to css-in-js with linaria ([PR](https://github.com/adazzle/react-data-grid/pull/2256)). RDG now internally uses [linaria](https://github.com/callstack/linaria) to manage styles. The stylesheets are automatically injected and there is no stylesheet to manually import anymore.
+ - Expose data grid root element reference ([PR](https://github.com/adazzle/react-data-grid/pull/2258)).
+ - (Bug fix) Tabbing into the grid should initiate keyboard navigation ([PR](https://github.com/adazzle/react-data-grid/pull/2289)).
+
 ## v7.0.0-canary.34
 - Only show the vertical scrollbar when necessary ([PR](https://github.com/adazzle/react-data-grid/pull/2231))
 - Fix `editorPortalTarget` default value for server-side rendering ([PR](https://github.com/adazzle/react-data-grid/pull/2245))
