@@ -19,11 +19,12 @@ export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>): React.CSSP
     : { gridColumnStart: column.idx + 1 };
 }
 
-export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>): string {
+export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extraClasses: Parameters<typeof clsx>): string {
   return clsx(
     `rdg-cell ${cell}`, {
       [cellFrozenClassname]: column.frozen,
       [cellFrozenLastClassname]: column.isLastFrozenColumn
-    }
+    },
+    ...extraClasses
   );
 }
