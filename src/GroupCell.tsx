@@ -1,10 +1,9 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
+import { cellSelectedClassname } from './style';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'id'
@@ -52,9 +51,7 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       key={column.key}
-      className={clsx(cellClassname, {
-        [cellFrozenClassname]: column.frozen,
-        [cellFrozenLastClassname]: column.isLastFrozenColumn,
+      className={getCellClassname(column, {
         [cellSelectedClassname]: isCellSelected
       })}
       style={{

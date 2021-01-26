@@ -1,12 +1,10 @@
-import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import type { CalculatedColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { SortDirection } from './enums';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from './style';
 
 const cellResizable = css`
   &::after {
@@ -121,10 +119,8 @@ export default function HeaderCell<R, SR>({
     return column.name;
   }
 
-  const className = clsx(cellClassname, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable,
-    [cellFrozenClassname]: column.frozen,
-    [cellFrozenLastClassname]: column.isLastFrozenColumn
+  const className = getCellClassname(column, column.headerCellClass, {
+    [cellResizableClassname]: column.resizable
   });
 
   return (

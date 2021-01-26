@@ -1,9 +1,44 @@
 import { forwardRef, memo } from 'react';
-import clsx from 'clsx';
+import { css } from '@linaria/core';
 
-import { cellClassname, cellCopiedClassname, cellDraggedOverClassname, cellDragHandleClassname, cellFrozenClassname, cellFrozenLastClassname, cellSelectedClassname } from './style';
-import { getCellStyle, wrapEvent } from './utils';
+import { cellSelectedClassname } from './style';
+import { getCellStyle, getCellClassname, wrapEvent } from './utils';
 import type { CellRendererProps } from './types';
+
+const cellCopied = css`
+  background-color: #ccccff;
+`;
+
+const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
+
+const cellDraggedOver = css`
+  background-color: #ccccff;
+
+  &.${cellCopied} {
+    background-color: #9999ff;
+  }
+`;
+
+const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;
+
+const cellDragHandle = css`
+  cursor: move;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--selection-color);
+
+  &:hover {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--selection-color);
+    background-color: var(--background-color);
+  }
+`;
+
+const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
 function Cell<R, SR>({
   className,
@@ -25,11 +60,9 @@ function Cell<R, SR>({
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const { cellClass } = column;
-  className = clsx(
-    cellClassname,
+  className = getCellClassname(
+    column,
     {
-      [cellFrozenClassname]: column.frozen,
-      [cellFrozenLastClassname]: column.isLastFrozenColumn,
       [cellSelectedClassname]: isCellSelected,
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver

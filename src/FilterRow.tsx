@@ -1,10 +1,9 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname, filterRowClassname } from './style';
+import { filterRowClassname } from './style';
 
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'filters'
@@ -34,15 +33,11 @@ function FilterRow<R, SR>({
     >
       {columns.map(column => {
         const { key } = column;
-        const className = clsx(cellClassname, {
-          [cellFrozenClassname]: column.frozen,
-          [cellFrozenLastClassname]: column.isLastFrozenColumn
-        });
 
         return (
           <div
             key={key}
-            className={className}
+            className={getCellClassname(column)}
             style={getCellStyle(column)}
           >
             {column.filterRenderer && (
