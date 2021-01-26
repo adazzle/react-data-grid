@@ -17,6 +17,6 @@
   ],
   "plugins": [
     ["@babel/transform-runtime", { "useESModules": true }],
-    "optimize-clsx"
+    ["optimize-clsx", { "functionNames": ["getCellClassname"] }]
   ]
 }
