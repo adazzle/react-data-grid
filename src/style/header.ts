@@ -5,6 +5,7 @@ const headerRowAndFilterRow = css`
   contain: size layout style paint;
   display: grid;
   grid-template-columns: var(--template-columns);
+  width: var(--row-width);
   position: sticky;
   background-color: var(--header-background-color);
   font-weight: bold;
