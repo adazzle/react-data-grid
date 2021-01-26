@@ -42,7 +42,7 @@ export default function EditCell<R, SR>({
   const { cellClass } = column;
   className = getCellClassname(
     column,
-    [cellSelectedClassname],
+    cellSelectedClassname,
     cellEditingClassname,
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
