@@ -1,8 +1,44 @@
 import { forwardRef, memo } from 'react';
-import clsx from 'clsx';
+import { css } from '@linaria/core';
 
+import { cellSelectedClassname } from './style';
+import { getCellStyle, getCellClassname, wrapEvent } from './utils';
 import type { CellRendererProps } from './types';
-import { getCellStyle, wrapEvent } from './utils';
+
+const cellCopied = css`
+  background-color: #ccccff;
+`;
+
+const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
+
+const cellDraggedOver = css`
+  background-color: #ccccff;
+
+  &.${cellCopied} {
+    background-color: #9999ff;
+  }
+`;
+
+const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;
+
+const cellDragHandle = css`
+  cursor: move;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--selection-color);
+
+  &:hover {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--selection-color);
+    background-color: var(--background-color);
+  }
+`;
+
+const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
 function Cell<R, SR, FR>({
   className,
@@ -24,14 +60,12 @@ function Cell<R, SR, FR>({
   ...props
 }: CellRendererProps<R, SR, FR>, ref: React.Ref<HTMLDivElement>) {
   const { cellClass } = column;
-  className = clsx(
-    'rdg-cell',
+  className = getCellClassname(
+    column,
     {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.isLastFrozenColumn,
-      'rdg-cell-selected': isCellSelected,
-      'rdg-cell-copied': isCopied,
-      'rdg-cell-dragged-over': isDraggedOver
+      [cellSelectedClassname]: isCellSelected,
+      [cellCopiedClassname]: isCopied,
+      [cellDraggedOverClassname]: isDraggedOver
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
@@ -87,7 +121,7 @@ function Cell<R, SR, FR>({
             onRowChange={handleRowChange}
           />
           {dragHandleProps && (
-            <div className="rdg-cell-drag-handle" {...dragHandleProps} />
+            <div className={cellDragHandleClassname} {...dragHandleProps} />
           )}
         </>
       )}

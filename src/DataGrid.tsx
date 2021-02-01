@@ -8,6 +8,7 @@ import {
 } from 'react';
 import clsx from 'clsx';
 
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -372,6 +373,19 @@ function DataGrid<R, SR, FR>({
       newExpandedGroupIds.add(expandedGroupId);
     }
     onExpandedGroupIdsChange(newExpandedGroupIds);
+  }
+
+  function onGridFocus() {
+    if (!isCellWithinBounds(selectedPosition)) {
+      // Tabbing into the grid should initiate keyboard navigation
+      const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
+      if (isCellWithinBounds(initialPosition)) {
+        setSelectedPosition(initialPosition);
+      }
+    } else {
+      // otherwise if we already have a selected cell, we should scroll back to it when focusing the grid
+      scrollToCell(selectedPosition);
+    }
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -891,7 +905,7 @@ function DataGrid<R, SR, FR>({
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      className={clsx('rdg', { 'rdg-viewport-dragging': isDragging }, className)}
+      className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={{
         ...style,
         '--header-row-height': `${headerRowHeight}px`,
@@ -926,8 +940,9 @@ function DataGrid<R, SR, FR>({
           <div
             ref={focusSinkRef}
             tabIndex={0}
-            className="rdg-focus-sink"
+            className={focusSinkClassname}
             onKeyDown={handleKeyDown}
+            onFocus={onGridFocus}
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}

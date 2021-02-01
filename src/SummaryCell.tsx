@@ -1,7 +1,6 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
 
 type SharedCellRendererProps<R, SR, FR> = Pick<CellRendererProps<R, SR, FR>, 'column'>;
@@ -15,12 +14,7 @@ function SummaryCell<R, SR, FR>({
   row
 }: SummaryCellProps<R, SR, FR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
-  const className = clsx(
-    'rdg-cell',
-    {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.isLastFrozenColumn
-    },
+  const className = getCellClassname(column,
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
 

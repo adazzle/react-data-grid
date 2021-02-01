@@ -1,11 +1,38 @@
 import { useMemo, useState } from 'react';
 import Select from 'react-select';
 import faker from 'faker';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
 import { filterNumber, NumericFilter } from './components/Filters';
-import './HeaderFilters.less';
+
+const rootClassname = css`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 10px;
+
+  > .rdg {
+    flex: 1;
+  }
+`;
+
+const toolbarClassname = css`
+  text-align: end;
+`;
+
+const filterContainerClassname = css`
+  display: flex;
+  height: inherit;
+  align-items: center;
+`;
+
+const filterClassname = css`
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+`;
 
 interface Row {
   id: number;
@@ -14,6 +41,14 @@ interface Row {
   issueType: string;
   developer: string;
   complete: number;
+}
+
+export interface FilterRow {
+  task?: string;
+  priority?: string;
+  issueType?: string;
+  developer?: string;
+  complete?: string;
 }
 
 export interface FilterRow {
@@ -63,9 +98,9 @@ export function HeaderFilters() {
         key: 'task',
         name: 'Title',
         filterRenderer: ({ filterRow, onFilterRowChange }) => (
-          <div className="rdg-filter-container">
+          <div className={filterContainerClassname}>
             <input
-              className="rdg-filter"
+              className={filterClassname}
               value={filterRow.task}
               onChange={e => onFilterRowChange({ ...filterRow, task: e.target.value })}
             />
@@ -76,9 +111,9 @@ export function HeaderFilters() {
         key: 'priority',
         name: 'Priority',
         filterRenderer: ({ filterRow, onFilterRowChange }) => (
-          <div className="rdg-filter-container">
+          <div className={filterContainerClassname}>
             <select
-              className="rdg-filter"
+              className={filterClassname}
               value={filterRow.priority}
               onChange={e => onFilterRowChange({ ...filterRow, priority: e.target.value })}
             >
@@ -95,9 +130,9 @@ export function HeaderFilters() {
         key: 'issueType',
         name: 'Issue Type',
         filterRenderer: ({ filterRow, onFilterRowChange }) => (
-          <div className="rdg-filter-container">
+          <div className={filterContainerClassname}>
             <select
-              className="rdg-filter"
+              className={filterClassname}
               value={filterRow.issueType}
               onChange={e => onFilterRowChange({ ...filterRow, issueType: e.target.value })}
             >
@@ -114,7 +149,7 @@ export function HeaderFilters() {
         key: 'developer',
         name: 'Developer',
         filterRenderer: ({ filterRow, onFilterRowChange }) => (
-          <div className="rdg-filter-container">
+          <div className={filterContainerClassname}>
             <Select
               value={filterRow.developer ? { label: filterRow.developer, value: filterRow.developer } : undefined}
               onChange={e => onFilterRowChange({ ...filterRow, developer: e!.value })}
@@ -188,8 +223,8 @@ export function HeaderFilters() {
   }
 
   return (
-    <div className="header-filters-example">
-      <div className="header-filters-toolbar">
+    <div className={rootClassname}>
+      <div className={toolbarClassname}>
         <button type="button" onClick={toggleFilters}>Toggle Filters</button>
         {' '}
         <button type="button" onClick={clearFilters}>Clear Filters</button>

@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 
-import { getCellStyle } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, FilterRendererProps } from './types';
+import { filterRowClassname } from './style';
 
 type SharedFilterRendererProps<R, SR, FR> = Pick<FilterRendererProps<R, SR, FR>,
   | 'filterRow'
@@ -22,19 +22,15 @@ function FilterRow<R, SR, FR>({
     <div
       role="row"
       aria-rowindex={2}
-      className="rdg-filter-row"
+      className={filterRowClassname}
     >
       {columns.map(column => {
         const { key } = column;
-        const className = clsx('rdg-cell', {
-          'rdg-cell-frozen': column.frozen,
-          'rdg-cell-frozen-last': column.isLastFrozenColumn
-        });
 
         return (
           <div
             key={key}
-            className={className}
+            className={getCellClassname(column)}
             style={getCellStyle(column)}
           >
             {column.filterRenderer && (

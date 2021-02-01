@@ -11,10 +11,13 @@ module.exports = function({ config, mode }) {
     use: [{
       loader: 'babel-loader',
       options: { cacheDirectory: !isProd }
+    }, {
+      loader: '@linaria/webpack-loader',
+      options: { sourceMap: !isProd },
     }]
   }, {
-    test: /\.less$/,
-    use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
+    test: /\.css$/,
+    use: [MiniCssExtractPlugin.loader, 'css-loader']
   }];
 
   config.plugins.push(new MiniCssExtractPlugin({
