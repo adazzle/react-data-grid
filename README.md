@@ -104,7 +104,6 @@ See [documentation](https://github.com/rollup/plugins/tree/master/packages/babel
 
 ```jsx
 import DataGrid from 'react-data-grid';
-import 'react-data-grid/dist/react-data-grid.css';
 
 const columns = [
   { key: 'id', name: 'ID' },

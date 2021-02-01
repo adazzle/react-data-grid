@@ -12,10 +12,11 @@
       ]
     }],
     ["@babel/react", { "runtime": "automatic" }],
-    "@babel/typescript"
+    "@babel/typescript",
+    "@linaria"
   ],
   "plugins": [
     ["@babel/transform-runtime", { "useESModules": true }],
-    "babel-plugin-optimize-clsx"
+    ["optimize-clsx", { "functionNames": ["getCellClassname"] }]
   ]
 }

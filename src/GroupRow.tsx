@@ -1,9 +1,10 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
+import { groupRowClassname, groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
+import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
 
 export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
@@ -50,12 +51,13 @@ function GroupedRow<R, SR>({
       aria-level={level}
       aria-expanded={isExpanded}
       className={clsx(
-        'rdg-row',
-        'rdg-group-row',
+        rowClassname,
+        groupRowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-          'rdg-row-selected': isRowSelected,
-          'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
-        })}
+          [rowSelectedClassname]: isRowSelected,
+          [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
+        }
+      )}
       onClick={selectGroup}
       style={{ top }}
       {...props}

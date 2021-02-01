@@ -1,11 +1,32 @@
 import faker from 'faker';
 import { useState } from 'react';
+import { css } from '@linaria/core';
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
 import type { Column, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 
-import './AllFeatures.less';
+const highlightClassname = css`
+.rdg-cell {
+  background-color: #9370db;
+  color: white;
+}
+
+&:hover .rdg-cell {
+  background-color: #800080;
+}
+`;
+
+const loadMoreRowsClassname = css`
+  width: 180px;
+  padding: 8px 16px;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  color: white;
+  line-height: 35px;
+  background: rgba(0, 0, 0, 0.6);
+`;
 
 export interface Row {
   id: string;
@@ -213,7 +234,7 @@ export function AllFeatures() {
   }
 
   return (
-    <div className="all-features">
+    <>
       <DataGrid
         columns={columns}
         rows={rows}
@@ -225,10 +246,11 @@ export function AllFeatures() {
         selectedRows={selectedRows}
         onScroll={handleScroll}
         onSelectedRowsChange={setSelectedRows}
-        rowClass={row => row.id.includes('7') ? 'highlight' : undefined}
+        className="fill-grid"
+        rowClass={row => row.id.includes('7') ? highlightClassname : undefined}
       />
-      {isLoading && <div className="load-more-rows-tag">Loading more rows...</div>}
-    </div>
+      {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>}
+    </>
   );
 }
 

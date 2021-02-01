@@ -1,5 +1,21 @@
+import { css } from '@linaria/core';
 import type { HeaderCellProps } from '../HeaderCell';
 import type { SortDirection } from '../enums';
+
+const headerSortCell = css`
+  cursor: pointer;
+  display: flex;
+`;
+
+const headerSortCellClassname = `rdg-header-sort-cell ${headerSortCell}`;
+
+const headerSortName = css`
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
 type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
   | 'column'
@@ -46,8 +62,8 @@ export default function SortableHeaderCell<R, SR>({
   }
 
   return (
-    <span className="rdg-header-sort-cell" onClick={onClick}>
-      <span className="rdg-header-sort-name">{children}</span>
+    <span className={headerSortCellClassname} onClick={onClick}>
+      <span className={headerSortNameClassname}>{children}</span>
       <span>{sortText}</span>
     </span>
   );
