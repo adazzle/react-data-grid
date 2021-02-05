@@ -1,11 +1,16 @@
-// @ts-expect-error
-window.ResizeObserver ??= function ResizeObserver(callback: () => void) {
-  callback();
+window.ResizeObserver ??= class {
+  callback: ResizeObserverCallback;
 
-  return {
-    observe() {},
-    disconnect() {}
-  };
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback;
+  }
+
+  observe() {
+    this.callback([], this);
+  }
+
+  unobserve() {}
+  disconnect() {}
 };
 
 // patch clientWidth/clientHeight to pretend we're rendering DataGrid at 1080p
