@@ -1,4 +1,5 @@
 import { forwardRef, memo } from 'react';
+import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
 import { cellSelectedClassname } from './style';
@@ -129,4 +130,4 @@ function Cell<R, SR, FR>({
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown, FR = unknown>(props: CellRendererProps<R, SR, FR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown, FR = unknown>(props: CellRendererProps<R, SR, FR> & RefAttributes<HTMLDivElement>) => JSX.Element;

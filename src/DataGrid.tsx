@@ -6,6 +6,7 @@ import {
   useImperativeHandle,
   useCallback
 } from 'react';
+import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
@@ -962,4 +963,4 @@ function DataGrid<R, SR, FR>({
   );
 }
 
-export default forwardRef(DataGrid) as <R, SR = unknown, FR = unknown>(props: DataGridProps<R, SR, FR> & React.RefAttributes<DataGridHandle>) => JSX.Element;
+export default forwardRef(DataGrid) as <R, SR = unknown, FR = unknown>(props: DataGridProps<R, SR, FR> & RefAttributes<DataGridHandle>) => JSX.Element;

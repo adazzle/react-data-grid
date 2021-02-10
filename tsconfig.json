@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "declaration": true,
+    "declarationMap": true,
     "emitDeclarationOnly": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
@@ -11,7 +12,7 @@
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "lib",
+    "outDir": "tmp",
     "pretty": true,
     "strict": true,
     "target": "esnext",
