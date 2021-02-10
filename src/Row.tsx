@@ -1,4 +1,5 @@
 import { memo, forwardRef } from 'react';
+import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
@@ -93,4 +94,4 @@ function Row<R, SR = unknown>({
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>) => JSX.Element;
