@@ -37,7 +37,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "typecheck": "tsc -p tsconfig.all.json",
     "build-storybook": "build-storybook --quiet",
-    "prepublishOnly": "npm install && npm run build && tsc",
+    "prepublishOnly": "npm install && npm run build && tsc && api-extractor run --local --verbose",
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
