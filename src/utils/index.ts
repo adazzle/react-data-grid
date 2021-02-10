@@ -19,7 +19,7 @@ export function getCellStyle<R, SR, FR>(column: CalculatedColumn<R, SR, FR>): Re
     : { gridColumnStart: column.idx + 1 };
 }
 
-export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extraClasses: Parameters<typeof clsx>): string {
+export function getCellClassname<R, SR, FR>(column: CalculatedColumn<R, SR, FR>, ...extraClasses: Parameters<typeof clsx>): string {
   return clsx(
     `rdg-cell ${cell}`, {
       [cellFrozenClassname]: column.frozen,
