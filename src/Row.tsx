@@ -1,5 +1,5 @@
 import { memo, forwardRef } from 'react';
-import type{ RefAttributes } from 'react';
+import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
