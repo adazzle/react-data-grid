@@ -37,9 +37,10 @@ import type {
   SelectedCellProps,
   EditCellProps,
   FillEvent,
-  PasteEvent
+  PasteEvent,
+  CellNavigationMode,
+  SortDirection
 } from './types';
-import type { CellNavigationMode, SortDirection } from './enums';
 
 interface SelectCellState extends Position {
   mode: 'SELECT';
