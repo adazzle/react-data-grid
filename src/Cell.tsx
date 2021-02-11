@@ -3,7 +3,7 @@ import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
 import { cellSelectedClassname } from './style';
-import { getCellStyle, getCellClassname, wrapEvent } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`
@@ -76,17 +76,20 @@ function Cell<R, SR>({
     selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
-  function handleClick() {
+  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
     selectCellWrapper(column.editorOptions?.editOnClick);
     onRowClick?.(rowIdx, row, column);
+    onClick?.(event);
   }
 
-  function handleContextMenu() {
+  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
     selectCellWrapper();
+    onContextMenu?.(event);
   }
 
-  function handleDoubleClick() {
+  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     selectCellWrapper(true);
+    onDoubleClick?.(event);
   }
 
   function handleRowChange(newRow: R) {
@@ -105,9 +108,9 @@ function Cell<R, SR>({
       ref={ref}
       className={className}
       style={getCellStyle(column)}
-      onClick={wrapEvent(handleClick, onClick)}
-      onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
-      onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+      onContextMenu={handleContextMenu}
       {...props}
     >
       {!column.rowGroup && (
