@@ -4,7 +4,8 @@
 export default {
   coverageProvider: 'v8',
   collectCoverageFrom: [
-    'src/**/*.{ts,tsx}'
+    'src/**/*.{ts,tsx}',
+    '!src/types.ts'
   ],
   coverageReporters: [
     'text'
