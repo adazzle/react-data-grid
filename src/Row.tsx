@@ -6,7 +6,6 @@ import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from '.
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
-import { wrapEvent } from './utils';
 
 function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
@@ -30,8 +29,9 @@ function Row<R, SR = unknown>({
   'aria-selected': ariaSelected,
   ...props
 }: RowRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
-  function handleDragEnter() {
+  function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
+    onMouseEnter?.(event);
   }
 
   className = clsx(
@@ -51,7 +51,7 @@ function Row<R, SR = unknown>({
       aria-selected={ariaSelected}
       ref={ref}
       className={className}
-      onMouseEnter={wrapEvent(handleDragEnter, onMouseEnter)}
+      onMouseEnter={handleDragEnter}
       style={{ top }}
       {...props}
     >
