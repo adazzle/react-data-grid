@@ -44,7 +44,7 @@ export function InitialScroll() {
       rows={rows}
       rowHeight={22}
       className="fill-grid"
-      onScroll={(e) => setScroll([e.target.scrollTop, e.target.scrollLeft])}
+      onScroll={(e) => setScroll([(e.target as HTMLDivElement).scrollTop, (e.target as HTMLDivElement).scrollLeft])}
       initialScrollLeft={left}
       initialScrollTop={top}
     />
