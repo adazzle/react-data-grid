@@ -158,6 +158,12 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
   rowClass?: (row: R) => string | undefined;
+
+  /**
+   * Initial scrolling states
+   */
+  initialScrollTop?: number;
+  initialScrollLeft?: number;
 }
 
 /**
@@ -212,13 +218,15 @@ function DataGrid<R, SR>({
   // ARIA
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
-  'aria-describedby': ariaDescribedBy
+  'aria-describedby': ariaDescribedBy,
+  initialScrollTop = 0,
+  initialScrollLeft = 0
 }: DataGridProps<R, SR>, ref: React.Ref<DataGridHandle>) {
   /**
    * states
    */
-  const [scrollTop, setScrollTop] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [scrollTop, setScrollTop] = useState(initialScrollTop);
+  const [scrollLeft, setScrollLeft] = useState(initialScrollLeft);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>({ idx: -1, rowIdx: -1, mode: 'SELECT' });
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
@@ -290,6 +298,20 @@ function DataGrid<R, SR>({
       return;
     }
     focusSinkRef.current!.focus({ preventScroll: true });
+  });
+
+  useLayoutEffect(() => {
+    const { current } = gridRef;
+    if (!current) return;
+    // setTimeout needed for the rendering to finish
+    // do this as soon as everything else has finished
+    setTimeout(() => {
+      current.scrollTo({
+        top: initialScrollTop,
+        left: initialScrollLeft,
+        behavior: 'auto'
+      });
+    });
   });
 
   useImperativeHandle(ref, () => ({
