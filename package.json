@@ -98,7 +98,7 @@
     "react-sortable-hoc": "^1.11.0",
     "rollup": "^2.35.1",
     "rollup-plugin-postcss": "^4.0.0",
-    "typescript": "beta"
+    "typescript": "rc"
   },
   "peerDependencies": {
     "react": "^16.14 || ^17.0",
