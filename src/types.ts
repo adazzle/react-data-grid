@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactElement } from 'react';
-import type { SortDirection } from './enums';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -224,3 +223,6 @@ export interface GroupRow<TRow> {
   setSize: number;
   startRowIndex: number;
 }
+
+export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
+export type SortDirection = 'ASC' | 'DESC' | 'NONE';

@@ -1,5 +1,4 @@
-import type { CellNavigationMode } from '../enums';
-import type { CalculatedColumn, Position, GroupRow } from '../types';
+import type { CalculatedColumn, Position, GroupRow, CellNavigationMode } from '../types';
 
 interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
