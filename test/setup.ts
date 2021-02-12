@@ -59,3 +59,5 @@ Object.defineProperties(Element.prototype, {
     }
   }
 });
+
+export {};
