@@ -2,9 +2,7 @@ import 'core-js/stable';
 import { ResizeObserver as Polyfill } from '@juggle/resize-observer';
 import { css } from '@linaria/core';
 
-if (typeof ResizeObserver === 'undefined') {
-  window.ResizeObserver = Polyfill;
-}
+window.ResizeObserver ??= Polyfill;
 
 css`
 :global() {
