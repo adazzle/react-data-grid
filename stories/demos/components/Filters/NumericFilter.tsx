@@ -43,7 +43,7 @@ export function NumericFilter<R, SR>({ value, column, onChange }: FilterRenderer
   return (
     <div className="rdg-filter-container">
       <input
-        value={value?.rawValue ?? ''}
+        value={value.rawValue}
         className="rdg-filter"
         placeholder="e.g. 3,10-15,>20"
         onChange={handleChange}
@@ -56,10 +56,6 @@ export function NumericFilter<R, SR>({ value, column, onChange }: FilterRenderer
 
 
 function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
-  if (columnFilter.filterTerm == null) {
-    return true;
-  }
-
   // implement default filter logic
   const value = parseInt(row[columnKey] as unknown as string, 10);
   for (const ruleKey in columnFilter.filterTerm) {
@@ -94,7 +90,7 @@ function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: 
   return false;
 }
 
-export function getRules(value: string): Rule[] {
+function getRules(value: string): Rule[] {
   if (value === '') {
     return [];
   }
