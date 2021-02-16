@@ -750,8 +750,6 @@ function DataGrid<R, SR, FR>({
       if (!onNavigation(event)) return;
     }
     const { key, shiftKey } = event;
-    const ctrlKey = isCtrlKeyHeldDown(event);
-    let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
     let mode = cellNavigationMode;
     if (key === 'Tab') {
       // If we are in a position to leave the grid, stop editing but stay in that cell
@@ -769,6 +767,8 @@ function DataGrid<R, SR, FR>({
     // Do not allow focus to leave
     event.preventDefault();
 
+    const ctrlKey = isCtrlKeyHeldDown(event);
+    let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
     nextPosition = getNextSelectedCellPosition({
       columns,
       rowsCount: rows.length,

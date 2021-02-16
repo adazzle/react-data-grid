@@ -13,7 +13,7 @@ type ResizeObserver = new (callback: (entries: readonly ResizeObserverEntry[]) =
   disconnect: () => void;
 };
 
-export function useGridDimensions(): [React.RefObject<HTMLDivElement>, number, number] {
+export function useGridDimensions(): [ref: React.RefObject<HTMLDivElement>, width: number, height: number] {
   const gridRef = useRef<HTMLDivElement>(null);
   const [gridWidth, setGridWidth] = useState(1);
   const [gridHeight, setGridHeight] = useState(1);

@@ -9,15 +9,15 @@ const groupCellContent = css`
 const groupCellContentClassname = `rdg-group-cell-content ${groupCellContent}`;
 
 const caret = css`
-margin-left: 4px;
-stroke: currentColor;
-stroke-width: 1.5px;
-fill: transparent;
-vertical-align: middle;
+  margin-left: 4px;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  fill: transparent;
+  vertical-align: middle;
 
-> path {
-  transition: d .1s;
-}
+  > path {
+    transition: d .1s;
+  }
 `;
 
 const caretClassname = `rdg-caret ${caret}`;
