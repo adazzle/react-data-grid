@@ -9,6 +9,7 @@ export function useGridDimensions() {
     const { ResizeObserver } = window;
 
     // don't break in jest/jsdom and browsers that don't support ResizeObserver
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
     const resizeObserver = new ResizeObserver(() => {
