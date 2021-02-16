@@ -35,7 +35,7 @@ const childRowButtonClassname = css`
   filter: grayscale(1);
 `;
 
-export interface ChildRowDeleteButtonProps {
+interface ChildRowDeleteButtonProps {
   isCellSelected: boolean;
   isDeleteSubRowEnabled: boolean;
   onDeleteSubRow: () => void;

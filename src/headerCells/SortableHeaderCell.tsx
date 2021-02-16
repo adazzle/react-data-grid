@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 import type { HeaderCellProps } from '../HeaderCell';
-import type { SortDirection } from '../enums';
+import type { SortDirection } from '../types';
 
 const headerSortCell = css`
   cursor: pointer;

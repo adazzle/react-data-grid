@@ -1,5 +1,4 @@
-import type { CellNavigationMode } from '../enums';
-import type { CalculatedColumn, Position, GroupRow } from '../types';
+import type { CalculatedColumn, Position, GroupRow, CellNavigationMode } from '../types';
 
 interface IsSelectedCellEditableOpts<R, SR, FR> {
   selectedPosition: Position;
@@ -40,7 +39,7 @@ export function getNextSelectedCellPosition<R, SR, FR>({ cellNavigationMode, col
             rowIdx: rowIdx + 1
           };
         }
-      } else if (cellNavigationMode === 'LOOP_OVER_ROW') {
+      } else {
         return {
           rowIdx,
           idx: 0
@@ -55,7 +54,7 @@ export function getNextSelectedCellPosition<R, SR, FR>({ cellNavigationMode, col
             idx: columnsCount - 1
           };
         }
-      } else if (cellNavigationMode === 'LOOP_OVER_ROW') {
+      } else {
         return {
           rowIdx,
           idx: columnsCount - 1

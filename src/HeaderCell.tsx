@@ -1,10 +1,9 @@
 import { css } from '@linaria/core';
 
-import type { CalculatedColumn } from './types';
+import type { CalculatedColumn, SortDirection } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle, getCellClassname } from './utils';
-import type { SortDirection } from './enums';
 
 const cellResizable = css`
   &::after {

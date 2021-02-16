@@ -36,9 +36,10 @@ import type {
   SelectedCellProps,
   EditCellProps,
   FillEvent,
-  PasteEvent
+  PasteEvent,
+  CellNavigationMode,
+  SortDirection
 } from './types';
-import type { CellNavigationMode, SortDirection } from './enums';
 
 interface SelectCellState extends Position {
   mode: 'SELECT';
@@ -58,6 +59,7 @@ type DefaultColumnOptions<R, SR, FR> = Pick<Column<R, SR, FR>,
   | 'sortable'
 >;
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const body = globalThis.document?.body;
 
 export interface DataGridHandle {
