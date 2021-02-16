@@ -94,7 +94,7 @@ function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: 
   return false;
 }
 
-export function getRules(value: string): Rule[] {
+function getRules(value: string): Rule[] {
   if (value === '') {
     return [];
   }
