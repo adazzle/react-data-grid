@@ -37,13 +37,7 @@ function HeaderRow<R, SR>({
 
     assertIsValidKeyGetter(rowKeyGetter);
 
-    const newSelectedRows = new Set<React.Key>();
-    if (checked) {
-      for (const row of rows) {
-        newSelectedRows.add(rowKeyGetter(row));
-      }
-    }
-
+    const newSelectedRows = new Set<React.Key>(checked ? rows.map(rowKeyGetter) : undefined);
     onSelectedRowsChange(newSelectedRows);
   }, [onSelectedRowsChange, rows, rowKeyGetter]);
 
