@@ -39,7 +39,7 @@ export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns
             rowIdx: rowIdx + 1
           };
         }
-      } else if (cellNavigationMode === 'LOOP_OVER_ROW') {
+      } else {
         return {
           rowIdx,
           idx: 0
@@ -54,7 +54,7 @@ export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns
             idx: columnsCount - 1
           };
         }
-      } else if (cellNavigationMode === 'LOOP_OVER_ROW') {
+      } else {
         return {
           rowIdx,
           idx: columnsCount - 1
