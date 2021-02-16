@@ -13,7 +13,7 @@ const cellExpandClassname = css`
   }
 `;
 
-export interface CellExpanderFormatterProps {
+interface CellExpanderFormatterProps {
   isCellSelected: boolean;
   expanded: boolean;
   onCellExpand: () => void;

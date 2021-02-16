@@ -42,6 +42,7 @@ const rules = {
   'no-unreachable-loop': 1,
   'no-unsafe-finally': 2,
   'no-unsafe-negation': [2, { enforceForOrderingRelations: true }],
+  'no-unsafe-optional-chaining': [2, { disallowArithmeticOperators: true }],
   'no-useless-backreference': 2,
   'require-atomic-updates': 2,
   'use-isnan': [2, { enforceForIndexOf: true }],
@@ -83,7 +84,7 @@ const rules = {
   'no-global-assign': 2,
   'no-implicit-coercion': 0,
   'no-implicit-globals': [2, { lexicalBindings: true }],
-  'no-implied-eval': 2,
+  'no-implied-eval': 0, // replaced by @typescript-eslint/no-implied-eval
   'no-invalid-this': 0, // replaced by @typescript-eslint/no-invalid-this
   'no-iterator': 2,
   'no-labels': 2,
@@ -95,6 +96,7 @@ const rules = {
   'no-new': 2,
   'no-new-func': 2,
   'no-new-wrappers': 2,
+  'no-nonoctal-decimal-escape': 2,
   'no-octal': 2,
   'no-octal-escape': 2,
   'no-param-reassign': 0,
@@ -107,7 +109,7 @@ const rules = {
   'no-self-assign': 2,
   'no-self-compare': 2,
   'no-sequences': 2,
-  'no-throw-literal': 2,
+  'no-throw-literal': 0, // replaced by @typescript-eslint/no-throw-literal
   'no-unmodified-loop-condition': 2,
   'no-unused-expressions': 0, // replaced by @typescript-eslint/no-unused-expressions
   'no-unused-labels': 2,
@@ -215,7 +217,7 @@ const rules = {
   'no-whitespace-before-property': 1,
   'nonblock-statement-body-position': 0,
   'object-curly-newline': [1, { consistent: true, multiline: true }],
-  'object-curly-spacing': [1, 'always'],
+  'object-curly-spacing': 0, // replaced by @typescript-eslint/object-curly-spacing
   'object-property-newline': [1, { allowAllPropertiesOnSameLine: true }],
   'one-var': [1, 'never'],
   'one-var-declaration-per-line': 0,
@@ -258,14 +260,14 @@ const rules = {
   'no-new-symbol': 0,
   'no-restricted-exports': 0,
   'no-restricted-imports': [1, {
-    "paths": [{
-      "name": "react",
-      "importNames": ["default"],
-      "message": "Use named imports instead."
+    paths: [{
+      name: 'react',
+      importNames: ['default'],
+      message: 'Use named imports instead.'
     }, {
-      "name": "react-dom",
-      "importNames": ["default"],
-      "message": "Use named imports instead."
+      name: 'react-dom',
+      importNames: ['default'],
+      message: 'Use named imports instead.'
     }]
   }],
   'no-this-before-super': 0,
@@ -361,8 +363,10 @@ const rules = {
   'react/jsx-key': 0,
   'react/jsx-max-depth': 0,
   'react/jsx-max-props-per-line': [1, { when: 'multiline' }],
+  'react/jsx-newline': 0,
   'react/jsx-no-bind': 0,
   'react/jsx-no-comment-textnodes': 1,
+  'react/jsx-no-constructed-context-values': 2,
   'react/jsx-no-duplicate-props': 0,
   'react/jsx-no-literals': 0,
   'react/jsx-no-script-url': 2,
@@ -448,10 +452,13 @@ const rules = {
   'jest-dom/prefer-empty': 1,
   'jest-dom/prefer-enabled-disabled': 1,
   'jest-dom/prefer-focus': 1,
+  'jest-dom/prefer-in-document': 1,
   'jest-dom/prefer-required': 1,
   'jest-dom/prefer-to-have-attribute': 1,
+  'jest-dom/prefer-to-have-class': 1,
   'jest-dom/prefer-to-have-style': 1,
   'jest-dom/prefer-to-have-text-content': 1,
+  'jest-dom/prefer-to-have-value': 1,
 
   // SonarJS rules
   // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
@@ -509,6 +516,7 @@ const rules = {
   ],
   '@typescript-eslint/no-base-to-string': 0,
   '@typescript-eslint/no-confusing-non-null-assertion': 0,
+  '@typescript-eslint/no-confusing-void-expression': [1, { "ignoreArrowShorthand": true }],
   '@typescript-eslint/no-dynamic-delete': 0,
   '@typescript-eslint/no-empty-interface': 2,
   '@typescript-eslint/no-explicit-any': [2, { fixToUnknown: true }],
@@ -517,7 +525,6 @@ const rules = {
   '@typescript-eslint/no-floating-promises': 0,
   '@typescript-eslint/no-for-in-array': 1,
   '@typescript-eslint/no-implicit-any-catch': 1,
-  '@typescript-eslint/no-implied-eval': 0,
   '@typescript-eslint/no-inferrable-types': 1,
   '@typescript-eslint/no-invalid-void-type': 1,
   '@typescript-eslint/no-misused-new': 2,
@@ -528,10 +535,9 @@ const rules = {
   '@typescript-eslint/no-parameter-properties': 0,
   '@typescript-eslint/no-require-imports': 1,
   '@typescript-eslint/no-this-alias': 0,
-  '@typescript-eslint/no-throw-literal': 0,
   '@typescript-eslint/no-type-alias': 0,
   '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
-  '@typescript-eslint/no-unnecessary-condition': 0,
+  '@typescript-eslint/no-unnecessary-condition': 1,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
   '@typescript-eslint/no-unnecessary-type-arguments': 1,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
@@ -541,6 +547,7 @@ const rules = {
   '@typescript-eslint/no-unsafe-member-access': 0,
   '@typescript-eslint/no-unsafe-return': 1,
   '@typescript-eslint/no-var-requires': 0,
+  '@typescript-eslint/non-nullable-type-assertion-style': 1,
   '@typescript-eslint/prefer-as-const': 1,
   '@typescript-eslint/prefer-enum-initializers': 0,
   '@typescript-eslint/prefer-for-of': 1,
@@ -560,11 +567,12 @@ const rules = {
   '@typescript-eslint/prefer-string-starts-ends-with': 1,
   '@typescript-eslint/prefer-ts-expect-error': 1,
   '@typescript-eslint/promise-function-async': 0,
-  '@typescript-eslint/require-array-sort-compare': 0,
+  '@typescript-eslint/require-array-sort-compare': 1,
   '@typescript-eslint/restrict-plus-operands': 0,
   '@typescript-eslint/restrict-template-expressions': 0,
+  '@typescript-eslint/sort-type-union-intersection-members': 0,
   '@typescript-eslint/strict-boolean-expressions': 0,
-  '@typescript-eslint/switch-exhaustiveness-check': 0,
+  '@typescript-eslint/switch-exhaustiveness-check': 2,
   '@typescript-eslint/triple-slash-reference': [2, { path: 'never', types: 'never', lib: 'never' }],
   '@typescript-eslint/type-annotation-spacing': 1,
   '@typescript-eslint/typedef': 0,
@@ -592,16 +600,19 @@ const rules = {
     ignoreJSX: 'all'
   }],
   '@typescript-eslint/no-extra-semi': 2,
+  '@typescript-eslint/no-implied-eval': 2,
   '@typescript-eslint/no-invalid-this': 0,
   '@typescript-eslint/no-loop-func': 0,
   '@typescript-eslint/no-loss-of-precision': 2,
   '@typescript-eslint/no-magic-numbers': 0,
   '@typescript-eslint/no-redeclare': 2,
   '@typescript-eslint/no-shadow': 0,
+  '@typescript-eslint/no-throw-literal': 2,
   '@typescript-eslint/no-unused-expressions': [2, { allowShortCircuit: true }],
   '@typescript-eslint/no-unused-vars': [1, { ignoreRestSiblings: true }],
   '@typescript-eslint/no-use-before-define': 0,
   '@typescript-eslint/no-useless-constructor': 1,
+  '@typescript-eslint/object-curly-spacing': [1, 'always'],
   '@typescript-eslint/quotes': [1, 'single', { avoidEscape: true }],
   '@typescript-eslint/require-await': 2,
   '@typescript-eslint/return-await': 2,
@@ -640,8 +651,7 @@ module.exports = {
     ],
     rules: {
       'no-undef': 2,
-      'no-use-before-define': [2, { functions: false, classes: false, variables: false }],
-      '@typescript-eslint/no-implicit-any-catch': 0
+      'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
     }
   }, {
     files: ['*.js'],

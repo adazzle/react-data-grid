@@ -218,7 +218,8 @@ export function CommonFeatures() {
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
-    return [...new Set(rows.map(r => r.country))].sort();
+    return [...new Set(rows.map(r => r.country))]
+      .sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);

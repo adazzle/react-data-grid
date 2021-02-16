@@ -60,6 +60,7 @@ type DefaultColumnOptions<R, SR> = Pick<Column<R, SR>,
   | 'sortable'
 >;
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const body = globalThis.document?.body;
 
 export interface DataGridHandle {
