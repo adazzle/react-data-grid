@@ -856,7 +856,7 @@ function DataGrid<R, SR>({
       }
 
       startRowIndex++;
-      let key: K = hasGroups ? startRowIndex : rowIdx;
+      let key = hasGroups ? startRowIndex : rowIdx;
       let isRowSelected = false;
       if (typeof rowKeyGetter === 'function') {
         key = rowKeyGetter(row);
