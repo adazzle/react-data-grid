@@ -78,7 +78,7 @@ type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
   | 'style'
 >;
 
-export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
+export interface DataGridProps<R, SR = unknown, K = React.Key> extends SharedDivProps {
   /**
    * Grid and data Props
    */
@@ -92,7 +92,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    */
   summaryRows?: readonly SR[];
   /** The getter should return a unique key for each row */
-  rowKeyGetter?: (row: R) => React.Key;
+  rowKeyGetter?: (row: R) => K;
   onRowsChange?: (rows: R[], data: RowsChangeData<R, SR>) => void;
 
   /**
@@ -109,9 +109,9 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Feature props
    */
   /** Set of selected row keys */
-  selectedRows?: ReadonlySet<React.Key>;
+  selectedRows?: ReadonlySet<K>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?: (selectedRows: Set<React.Key>) => void;
+  onSelectedRowsChange?: (selectedRows: Set<K>) => void;
   /** The key of the column which is currently being sorted */
   sortColumn?: string;
   /** The direction to sort the sortColumn*/
@@ -856,7 +856,7 @@ function DataGrid<R, SR>({
       }
 
       startRowIndex++;
-      let key: React.Key = hasGroups ? startRowIndex : rowIdx;
+      let key: K = hasGroups ? startRowIndex : rowIdx;
       let isRowSelected = false;
       if (typeof rowKeyGetter === 'function') {
         key = rowKeyGetter(row);
