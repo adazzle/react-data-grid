@@ -27,5 +27,5 @@ export function useGridDimensions(): [ref: React.RefObject<HTMLDivElement>, widt
     };
   }, []);
 
-  return [gridRef, gridWidth, gridHeight] as const;
+  return [gridRef, gridWidth, gridHeight];
 }

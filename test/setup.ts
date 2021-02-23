@@ -1,3 +1,5 @@
+import 'core-js/stable';
+
 window.ResizeObserver ??= class {
   callback: ResizeObserverCallback;
 
@@ -59,5 +61,3 @@ Object.defineProperties(Element.prototype, {
     }
   }
 });
-
-export {};
