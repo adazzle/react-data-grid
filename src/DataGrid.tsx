@@ -118,7 +118,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   sortDirection?: SortDirection;
   /** Function called whenever grid is sorted*/
   onSort?: (columnKey: string, direction: SortDirection) => void;
-  filters?: Filters;
+  filters?: Readonly<Filters>;
   onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
   groupBy?: readonly string[];
@@ -751,8 +751,6 @@ function DataGrid<R, SR>({
       if (!onNavigation(event)) return;
     }
     const { key, shiftKey } = event;
-    const ctrlKey = isCtrlKeyHeldDown(event);
-    let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
     let mode = cellNavigationMode;
     if (key === 'Tab') {
       // If we are in a position to leave the grid, stop editing but stay in that cell
@@ -770,7 +768,9 @@ function DataGrid<R, SR>({
     // Do not allow focus to leave
     event.preventDefault();
 
-    nextPosition = getNextSelectedCellPosition<R, SR>({
+    const ctrlKey = isCtrlKeyHeldDown(event);
+    let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
+    nextPosition = getNextSelectedCellPosition({
       columns,
       rowsCount: rows.length,
       cellNavigationMode: mode,

@@ -1,6 +1,6 @@
 import { useRef, useState, useLayoutEffect } from 'react';
 
-export function useGridDimensions() {
+export function useGridDimensions(): [ref: React.RefObject<HTMLDivElement>, width: number, height: number] {
   const gridRef = useRef<HTMLDivElement>(null);
   const [gridWidth, setGridWidth] = useState(1);
   const [gridHeight, setGridHeight] = useState(1);

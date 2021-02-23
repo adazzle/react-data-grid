@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import type { CalculatedColumn } from '../types';
-import { cell, cellFrozenClassname, cellFrozenLastClassname } from '../style';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
 
 export * from './domUtils';
 export * from './keyboardUtils';
@@ -21,7 +21,7 @@ export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>): React.CSSP
 
 export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extraClasses: Parameters<typeof clsx>): string {
   return clsx(
-    `rdg-cell ${cell}`, {
+    cellClassname, {
       [cellFrozenClassname]: column.frozen,
       [cellFrozenLastClassname]: column.isLastFrozenColumn
     },
