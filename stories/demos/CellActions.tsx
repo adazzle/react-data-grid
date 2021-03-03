@@ -153,7 +153,7 @@ export function CellActions() {
       rows={rows}
       style={{
         '--row-height': '55px'
-      }}
+      } as unknown as React.CSSProperties}
       className="fill-grid"
     />
   );

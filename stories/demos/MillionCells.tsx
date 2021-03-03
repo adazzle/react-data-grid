@@ -33,7 +33,7 @@ export function MillionCells() {
       rows={rows}
       style={{
         '--row-height': '22px'
-      }}
+      } as unknown as React.CSSProperties}
       className="fill-grid"
     />
   );

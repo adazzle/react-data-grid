@@ -238,7 +238,7 @@ export function AllFeatures() {
       <DataGrid
         style={{
           '--row-height': '30px'
-        }}
+        } as unknown as React.CSSProperties}
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}
