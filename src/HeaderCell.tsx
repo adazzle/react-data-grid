@@ -1,8 +1,8 @@
-import { css } from "@linaria/core";
-import SortableHeaderCell from "./headerCells/SortableHeaderCell";
-import type { HeaderRowProps } from "./HeaderRow";
-import type { CalculatedColumn, SortDirection } from "./types";
-import { getCellClassname, getCellStyle } from "./utils";
+import { css } from '@linaria/core';
+import SortableHeaderCell from './headerCells/SortableHeaderCell';
+import type { HeaderRowProps } from './HeaderRow';
+import type { CalculatedColumn, SortDirection } from './types';
+import { getCellClassname, getCellStyle } from './utils';
 
 const cellResizable = css`
   &::after {
@@ -20,18 +20,18 @@ const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
 function getAriaSort(sortDirection?: SortDirection) {
   switch (sortDirection) {
-    case "ASC":
-      return "ascending";
-    case "DESC":
-      return "descending";
+    case 'ASC':
+      return 'ascending';
+    case 'DESC':
+      return 'descending';
     default:
-      return "none";
+      return 'none';
   }
 }
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR>,
-  "sortColumn" | "sortDirection" | "onSort" | "allRowsSelected"
+  'sortColumn' | 'sortDirection' | 'onSort' | 'allRowsSelected'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -47,10 +47,10 @@ export default function HeaderCell<R, SR>({
   onAllRowsSelectionChange,
   sortColumn,
   sortDirection,
-  onSort,
+  onSort
 }: HeaderCellProps<R, SR>) {
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse" && event.buttons !== 1) {
+    if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
     }
 
@@ -65,7 +65,7 @@ export default function HeaderCell<R, SR>({
 
     function onPointerMove(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
-      if (event.pointerType === "mouse" && event.buttons !== 1) {
+      if (event.pointerType === 'mouse' && event.buttons !== 1) {
         onPointerUp(event);
         return;
       }
@@ -78,13 +78,13 @@ export default function HeaderCell<R, SR>({
 
     function onPointerUp(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
     }
 
     event.preventDefault();
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
   }
 
   function getCell() {
@@ -118,7 +118,7 @@ export default function HeaderCell<R, SR>({
   }
 
   const className = getCellClassname(column, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable,
+    [cellResizableClassname]: column.resizable
   });
 
   return (
