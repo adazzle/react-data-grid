@@ -23,7 +23,8 @@ import {
   isSelectedCellEditable,
   canExitGrid,
   isCtrlKeyHeldDown,
-  isDefaultCellInput
+  isDefaultCellInput,
+  getPropertyValue
 } from './utils';
 
 import type {
@@ -96,16 +97,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   onRowsChange?: (rows: R[], data: RowsChangeData<R, SR>) => void;
 
   /**
-   * Dimensions props
-   */
-  /** The height of each row in pixels */
-  rowHeight?: number;
-  /** The height of the header row in pixels */
-  headerRowHeight?: number;
-  /** The height of the header filter row in pixels */
-  headerFiltersHeight?: number;
-
-  /**
    * Feature props
    */
   /** Set of selected row keys */
@@ -175,10 +166,6 @@ function DataGrid<R, SR>({
   summaryRows,
   rowKeyGetter,
   onRowsChange,
-  // Dimensions props
-  rowHeight = 35,
-  headerRowHeight = rowHeight,
-  headerFiltersHeight = 45,
   // Feature props
   selectedRows,
   onSelectedRowsChange,
@@ -247,6 +234,9 @@ function DataGrid<R, SR>({
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const rowHeight = getPropertyValue(gridRef.current, '--row-height');
+  const headerRowHeight = getPropertyValue(gridRef.current, '--header-row-height') || rowHeight;
+  const headerFiltersHeight = getPropertyValue(gridRef.current, '--filter-row-height');
   const headerRowsCount = enableFilterRow ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
@@ -911,11 +901,11 @@ function DataGrid<R, SR>({
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
       className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={{
-        ...style,
-        '--header-row-height': `${headerRowHeight}px`,
-        '--filter-row-height': `${headerFiltersHeight}px`,
+        '--header-row-height': '35px',
+        '--filter-row-height': '45px',
         '--row-width': `${totalColumnWidth}px`,
-        '--row-height': `${rowHeight}px`,
+        '--row-height': '35px',
+        ...style,
         ...layoutCssVars
       } as unknown as React.CSSProperties}
       ref={gridRef}

@@ -236,13 +236,15 @@ export function AllFeatures() {
   return (
     <>
       <DataGrid
+        style={{
+          '--row-height': '30px'
+        }}
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}
         onRowsChange={setRows}
         onFill={handleFill}
         onPaste={handlePaste}
-        rowHeight={30}
         selectedRows={selectedRows}
         onScroll={handleScroll}
         onSelectedRowsChange={setSelectedRows}

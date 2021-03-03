@@ -151,7 +151,9 @@ export function CellActions() {
     <DataGrid
       columns={columns}
       rows={rows}
-      rowHeight={55}
+      style={{
+        '--row-height': '55px'
+      }}
       className="fill-grid"
     />
   );

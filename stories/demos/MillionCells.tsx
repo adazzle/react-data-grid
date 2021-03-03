@@ -31,7 +31,9 @@ export function MillionCells() {
     <DataGrid
       columns={columns}
       rows={rows}
-      rowHeight={22}
+      style={{
+        '--row-height': '22px'
+      }}
       className="fill-grid"
     />
   );

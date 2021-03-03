@@ -28,3 +28,11 @@ export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extr
     ...extraClasses
   );
 }
+
+export function getPropertyValue(element: Element | null, property: string): number {
+  if (element === null) return 0;
+  const value = getComputedStyle(element).getPropertyValue(property);
+  const numberValue = /\d+/.exec(value);
+  if (numberValue === null) return 0;
+  return Number(numberValue[0]);
+}
