@@ -1,6 +1,7 @@
 import { useRef, useState, useLayoutEffect } from 'react';
+import { getPropertyValue } from '../utils';
 
-export function useGridDimensions(): [ref: React.RefObject<HTMLDivElement>, width: number, height: number] {
+export function useGridDimensions() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [gridWidth, setGridWidth] = useState(1);
   const [gridHeight, setGridHeight] = useState(1);
@@ -27,5 +28,18 @@ export function useGridDimensions(): [ref: React.RefObject<HTMLDivElement>, widt
     };
   }, []);
 
-  return [gridRef, gridWidth, gridHeight];
+  const rowHeight = getPropertyValue(gridRef.current, '--row-height');
+  const headerRowHeight = getPropertyValue(gridRef.current, '--header-row-height') || rowHeight;
+  const headerFiltersHeight = getPropertyValue(gridRef.current, '--filter-row-height');
+  const summaryRowHeight = getPropertyValue(gridRef.current, '--summary-row-height') || rowHeight;
+
+  return {
+    gridRef,
+    gridWidth,
+    gridHeight,
+    rowHeight,
+    headerRowHeight,
+    headerFiltersHeight,
+    summaryRowHeight
+  };
 }

@@ -23,8 +23,7 @@ import {
   isSelectedCellEditable,
   canExitGrid,
   isCtrlKeyHeldDown,
-  isDefaultCellInput,
-  getPropertyValue
+  isDefaultCellInput
 } from './utils';
 
 import type {
@@ -233,14 +232,19 @@ function DataGrid<R, SR>({
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const rowHeight = getPropertyValue(gridRef.current, '--row-height');
-  const headerRowHeight = getPropertyValue(gridRef.current, '--header-row-height') || rowHeight;
-  const headerFiltersHeight = getPropertyValue(gridRef.current, '--filter-row-height');
+  const {
+    gridRef,
+    gridWidth,
+    gridHeight,
+    rowHeight,
+    headerRowHeight,
+    headerFiltersHeight,
+    summaryRowHeight
+  } = useGridDimensions();
   const headerRowsCount = enableFilterRow ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
-  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * rowHeight;
+  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
@@ -905,6 +909,7 @@ function DataGrid<R, SR>({
         '--filter-row-height': '45px',
         '--row-width': `${totalColumnWidth}px`,
         '--row-height': '35px',
+        '--summary-row-height': '35px',
         ...style,
         ...layoutCssVars
       } as unknown as React.CSSProperties}
