@@ -139,6 +139,8 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    */
   /** Function called whenever a row is clicked */
   onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
+  /** Function called whenever a row is double clicked */
+  onRowDoubleClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
@@ -197,6 +199,7 @@ function DataGrid<R, SR>({
   emptyRowsRenderer: EmptyRowsRenderer,
   // Event props
   onRowClick,
+  onRowDoubleClick,
   onScroll,
   onColumnResize,
   onSelectedCellChange,
@@ -873,6 +876,7 @@ function DataGrid<R, SR>({
           viewportColumns={viewportColumns}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
           rowClass={rowClass}
           top={top}
           copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}

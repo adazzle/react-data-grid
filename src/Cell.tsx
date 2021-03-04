@@ -52,6 +52,7 @@ function Cell<R, SR>({
   rowIdx,
   dragHandleProps,
   onRowClick,
+  onRowDoubleClick,
   onClick,
   onDoubleClick,
   onContextMenu,
@@ -79,6 +80,7 @@ function Cell<R, SR>({
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
     selectCellWrapper(column.editorOptions?.editOnClick);
     onRowClick?.(rowIdx, row, column);
+
     onClick?.(event);
   }
 
@@ -89,6 +91,8 @@ function Cell<R, SR>({
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     selectCellWrapper(true);
+    onRowDoubleClick?.(rowIdx, row, column);
+
     onDoubleClick?.(event);
   }
 

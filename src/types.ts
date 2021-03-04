@@ -152,6 +152,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowDoubleClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
@@ -168,6 +169,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowChange: (rowIdx: number, row: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowDoubleClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
