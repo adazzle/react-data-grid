@@ -104,7 +104,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   headerRowHeight?: number;
   /** The height of the header filter row in pixels */
   headerFiltersHeight?: number;
-  /** The height of the each summary row in pixels */
+  /** The height of each summary row in pixels */
   summaryRowHeight?: number;
 
   /**
