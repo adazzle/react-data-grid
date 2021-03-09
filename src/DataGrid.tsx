@@ -104,6 +104,8 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   headerRowHeight?: number;
   /** The height of the header filter row in pixels */
   headerFiltersHeight?: number;
+  /** The height of each summary row in pixels */
+  summaryRowHeight?: number;
 
   /**
    * Feature props
@@ -179,6 +181,7 @@ function DataGrid<R, SR>({
   rowHeight = 35,
   headerRowHeight = rowHeight,
   headerFiltersHeight = 45,
+  summaryRowHeight = rowHeight,
   // Feature props
   selectedRows,
   onSelectedRowsChange,
@@ -250,7 +253,7 @@ function DataGrid<R, SR>({
   const headerRowsCount = enableFilterRow ? 2 : 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
-  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * rowHeight;
+  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
@@ -916,6 +919,7 @@ function DataGrid<R, SR>({
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`,
+        '--summary-row-height': `${summaryRowHeight}px`,
         ...layoutCssVars
       } as unknown as React.CSSProperties}
       ref={gridRef}
