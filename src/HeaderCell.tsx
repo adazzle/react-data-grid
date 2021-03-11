@@ -40,12 +40,14 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onResized: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
   onResize,
+  onResized,
   allRowsSelected,
   onAllRowsSelectionChange,
   sortColumn,
@@ -56,7 +58,7 @@ export default function HeaderCell<R, SR>({
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
     }
-    const { currentTarget, pointerId } = event;
+    const { currentTarget } = event;
 
     function onPointerMove(event: PointerEvent) {
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -74,7 +76,7 @@ export default function HeaderCell<R, SR>({
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
       const width = event.clientX - currentTarget.getBoundingClientRect().left;
-      onResize(column, width);
+      onResized(column, width);
     }
 
     event.preventDefault();

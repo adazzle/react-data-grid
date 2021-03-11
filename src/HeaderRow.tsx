@@ -19,6 +19,7 @@ export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onColumnResized: (column: CalculatedColumn<R, SR>, width: number) => void;
 }
 
 function HeaderRow<R, SR>({
@@ -28,6 +29,7 @@ function HeaderRow<R, SR>({
   onSelectedRowsChange,
   allRowsSelected,
   onColumnResize,
+  onColumnResized,
   sortColumn,
   sortDirection,
   onSort
@@ -53,6 +55,7 @@ function HeaderRow<R, SR>({
             key={column.key}
             column={column}
             onResize={onColumnResize}
+            onResized={onColumnResized}
             allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}
             onSort={onSort}

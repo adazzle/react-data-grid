@@ -143,8 +143,10 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
-  /** Called when a column is resized */
+  /** Called while a column is resized */
   onColumnResize?: (idx: number, width: number) => void;
+  /** Called when column resizing is done */
+  onColumnResized?: (idx: number, width: number) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
 
@@ -202,6 +204,7 @@ function DataGrid<R, SR>({
   onRowClick,
   onScroll,
   onColumnResize,
+  onColumnResized,
   onSelectedCellChange,
   onFill,
   onPaste,
@@ -322,6 +325,10 @@ function DataGrid<R, SR>({
 
     onColumnResize?.(column.idx, width);
   }, [columnWidths, onColumnResize]);
+
+  const handleColumnResized = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
+    onColumnResized?.(column.idx, width);
+  }, [onColumnResized]);
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -930,6 +937,7 @@ function DataGrid<R, SR>({
         rows={rawRows}
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
+        onColumnResized={handleColumnResized}
         allRowsSelected={selectedRows?.size === rawRows.length}
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
