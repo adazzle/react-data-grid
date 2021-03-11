@@ -56,31 +56,25 @@ export default function HeaderCell<R, SR>({
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
     }
-
     const { currentTarget, pointerId } = event;
-    const { right } = currentTarget.getBoundingClientRect();
-    const offset = right - event.clientX;
-
-    if (offset > 11) { // +1px to account for the border size
-      return;
-    }
 
     function onPointerMove(event: PointerEvent) {
-      if (event.pointerId !== pointerId) return;
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        onPointerUp();
+        onPointerUp(event);
         return;
       }
-      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      const width = event.clientX - currentTarget.getBoundingClientRect().left;
+
       if (width > 0) {
         onResize(column, width);
       }
     }
 
-    function onPointerUp() {
-      if (event.pointerId !== pointerId) return;
+    function onPointerUp(event: PointerEvent) {
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
+      const width = event.clientX - currentTarget.getBoundingClientRect().left;
+      onResize(column, width);
     }
 
     event.preventDefault();
