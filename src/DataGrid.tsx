@@ -9,20 +9,16 @@ import {
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import {
-  rootClassname,
-  viewportDraggingClassname,
-  focusSinkClassname,
-  rowClassname,
-  summaryRowClassname
-} from './style';
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import {
   useGridDimensions,
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
   useChildren,
-  ColumnsContext
+  ColumnsContext,
+  AriaRowIndexContext,
+  RowPositionContext
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import Row from './Row';
@@ -954,18 +950,17 @@ function DataGrid<R, SR>({
           {getViewportRows()}
           {/* @ts-expect-error */}
           <ColumnsContext.Provider value={viewportColumns}>
-            {summaryRows?.map((child, rowIdx, c) => (
-              <div
-                role="row"
-                aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
+            {summaryRows?.map((child, rowIdx) => (
+              <AriaRowIndexContext.Provider
                 key={rowIdx}
-                className={`${rowClassname} ${summaryRowClassname}`}
-                style={{
-                  bottom: rowHeight * (c.length - 1 - rowIdx)
-                }}
+                value={headerRowsCount + rowsCount + rowIdx + 1}
               >
-                {child}
-              </div>
+                <RowPositionContext.Provider
+                  value={rowHeight * (summaryRows.length - 1 - rowIdx)}
+                >
+                  {child}
+                </RowPositionContext.Provider>
+              </AriaRowIndexContext.Provider>
             ))}
           </ColumnsContext.Provider>
         </>

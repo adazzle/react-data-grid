@@ -6,3 +6,5 @@ export * from './useViewportRows';
 export * from './useFocusRef';
 export * from './useLatestFunc';
 export * from './useChildren';
+export * from './useAriaRowIndex';
+export * from './useRowPosition';
