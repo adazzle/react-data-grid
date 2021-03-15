@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, SummaryRow } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -224,9 +224,8 @@ export function CommonFeatures() {
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
-  const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
-    return [summaryRow];
+  const summaryRow = useMemo((): SummaryRow => {
+    return { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
   }, [rows]);
 
   const sortedRows: readonly Row[] = useMemo(() => {
@@ -281,9 +280,10 @@ export function CommonFeatures() {
       sortColumn={sortColumn}
       sortDirection={sortDirection}
       onSort={handleSort}
-      summaryRows={summaryRows}
       className="fill-grid"
-    />
+    >
+      <SummaryRow row={summaryRow} />
+    </DataGrid>
   );
 }
 

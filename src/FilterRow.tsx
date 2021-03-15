@@ -1,24 +1,22 @@
 import { memo } from 'react';
 
+import type { Filters } from './types';
 import { getCellStyle, getCellClassname } from './utils';
-import type { CalculatedColumn, Filters } from './types';
-import type { DataGridProps } from './DataGrid';
 import { filterRowClassname } from './style';
+import { useColumns } from './hooks';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
-  | 'filters'
-  | 'onFiltersChange'
->;
-
-interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
-  columns: readonly CalculatedColumn<R, SR>[];
+export interface FilterRowProps {
+  /** The height of the header filter row in pixels */
+  height?: number;
+  filters?: Readonly<Filters>;
+  onFiltersChange?: (filters: Filters) => void;
 }
 
 function FilterRow<R, SR>({
-  columns,
   filters,
   onFiltersChange
-}: FilterRowProps<R, SR>) {
+}: FilterRowProps) {
+  const columns = useColumns<R, SR>();
   function onChange(key: string, value: unknown) {
     const newFilters: Filters = { ...filters };
     newFilters[key] = value;
@@ -54,4 +52,4 @@ function FilterRow<R, SR>({
   );
 }
 
-export default memo(FilterRow) as <R, SR>(props: FilterRowProps<R, SR>) => JSX.Element;
+export default memo(FilterRow);

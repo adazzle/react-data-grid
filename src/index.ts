@@ -2,6 +2,8 @@ export { default } from './DataGrid';
 export type { DataGridProps, DataGridHandle } from './DataGrid';
 export { default as Cell } from './Cell';
 export { default as Row } from './Row';
+export { default as FilterRow } from './FilterRow';
+export { default as SummaryRow } from './SummaryRow';
 export * from './Columns';
 export * from './formatters';
 export { default as TextEditor } from './editors/TextEditor';

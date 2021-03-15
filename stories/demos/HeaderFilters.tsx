@@ -3,7 +3,7 @@ import Select from 'react-select';
 import faker from 'faker';
 import { css } from '@linaria/core';
 
-import DataGrid from '../../src';
+import DataGrid, { FilterRow } from '../../src';
 import type { Column, Filters } from '../../src';
 import { NumericFilter } from './components/Filters';
 
@@ -199,10 +199,12 @@ export function HeaderFilters() {
       <DataGrid
         columns={columns}
         rows={filteredRows}
-        enableFilterRow={enableFilterRow}
-        filters={filters}
-        onFiltersChange={setFilters}
-      />
+      >
+        <FilterRow
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
+      </DataGrid>
     </div>
   );
 }

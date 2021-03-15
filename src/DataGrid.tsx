@@ -9,13 +9,24 @@ import {
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
-import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  focusSinkClassname,
+  rowClassname,
+  summaryRowClassname
+} from './style';
+import {
+  useGridDimensions,
+  useViewportColumns,
+  useViewportRows,
+  useLatestFunc,
+  useChildren,
+  ColumnsContext
+} from './hooks';
 import HeaderRow from './HeaderRow';
-import FilterRow from './FilterRow';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
-import SummaryRow from './SummaryRow';
 import {
   assertIsValidKeyGetter,
   onEditorNavigation,
@@ -29,7 +40,6 @@ import {
 import type {
   CalculatedColumn,
   Column,
-  Filters,
   Position,
   RowRendererProps,
   RowsChangeData,
@@ -90,7 +100,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: readonly SR[];
   /** The getter should return a unique key for each row */
   rowKeyGetter?: (row: R) => React.Key;
   onRowsChange?: (rows: R[], data: RowsChangeData<R, SR>) => void;
@@ -102,8 +111,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   rowHeight?: number;
   /** The height of the header row in pixels */
   headerRowHeight?: number;
-  /** The height of the header filter row in pixels */
-  headerFiltersHeight?: number;
   /** The height of each summary row in pixels */
   summaryRowHeight?: number;
 
@@ -120,8 +127,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   sortDirection?: SortDirection;
   /** Function called whenever grid is sorted*/
   onSort?: (columnKey: string, direction: SortDirection) => void;
-  filters?: Readonly<Filters>;
-  onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
   groupBy?: readonly string[];
   rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
@@ -134,7 +139,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Custom renderers
    */
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
-  emptyRowsRenderer?: React.ComponentType;
 
   /**
    * Event props
@@ -151,8 +155,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /**
    * Toggles and modes
    */
-  /** Toggles whether filters row is displayed or not */
-  enableFilterRow?: boolean;
   cellNavigationMode?: CellNavigationMode;
 
   /**
@@ -161,6 +163,8 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element;
   rowClass?: (row: R) => string | undefined;
+
+  children?: React.ReactElement | Array<React.ReactElement>;
 }
 
 /**
@@ -174,13 +178,11 @@ function DataGrid<R, SR>({
   // Grid and data Props
   columns: rawColumns,
   rows: rawRows,
-  summaryRows,
   rowKeyGetter,
   onRowsChange,
   // Dimensions props
   rowHeight = 35,
   headerRowHeight = rowHeight,
-  headerFiltersHeight = 45,
   summaryRowHeight = rowHeight,
   // Feature props
   selectedRows,
@@ -188,8 +190,6 @@ function DataGrid<R, SR>({
   sortColumn,
   sortDirection,
   onSort,
-  filters,
-  onFiltersChange,
   defaultColumnOptions,
   groupBy: rawGroupBy,
   rowGrouper,
@@ -197,7 +197,6 @@ function DataGrid<R, SR>({
   onExpandedGroupIdsChange,
   // Custom renderers
   rowRenderer: RowRenderer = Row,
-  emptyRowsRenderer: EmptyRowsRenderer,
   // Event props
   onRowClick,
   onScroll,
@@ -206,13 +205,13 @@ function DataGrid<R, SR>({
   onFill,
   onPaste,
   // Toggles and modes
-  enableFilterRow = false,
   cellNavigationMode = 'NONE',
   // Miscellaneous
   editorPortalTarget = body,
   className,
   style,
   rowClass,
+  children,
   // ARIA
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
@@ -250,9 +249,11 @@ function DataGrid<R, SR>({
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const headerRowsCount = enableFilterRow ? 2 : 1;
+  const { filterRow, summaryRows, emptyRowsRenderer } = useChildren(children);
+  const headerRowsCount = filterRow ? 2 : 1;
+  const headerFiltersHeight = filterRow?.props.height ?? 45;
   const summaryRowsCount = summaryRows?.length ?? 0;
-  const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
+  const totalHeaderHeight = headerRowHeight + (filterRow ? headerFiltersHeight : 0);
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
@@ -936,14 +937,11 @@ function DataGrid<R, SR>({
         sortDirection={sortDirection}
         onSort={onSort}
       />
-      {enableFilterRow && (
-        <FilterRow<R, SR>
-          columns={viewportColumns}
-          filters={filters}
-          onFiltersChange={onFiltersChange}
-        />
-      )}
-      {rows.length === 0 && EmptyRowsRenderer ? <EmptyRowsRenderer /> : (
+      {/* @ts-expect-error */}
+      <ColumnsContext.Provider value={viewportColumns}>
+        {filterRow}
+      </ColumnsContext.Provider>
+      {rows.length === 0 && emptyRowsRenderer ? emptyRowsRenderer : (
         <>
           <div
             ref={focusSinkRef}
@@ -954,16 +952,22 @@ function DataGrid<R, SR>({
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
-          {summaryRows?.map((row, rowIdx) => (
-            <SummaryRow<R, SR>
-              aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
-              key={rowIdx}
-              rowIdx={rowIdx}
-              row={row}
-              bottom={rowHeight * (summaryRows.length - 1 - rowIdx)}
-              viewportColumns={viewportColumns}
-            />
-          ))}
+          {/* @ts-expect-error */}
+          <ColumnsContext.Provider value={viewportColumns}>
+            {summaryRows?.map((child, rowIdx, c) => (
+              <div
+                role="row"
+                aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
+                key={rowIdx}
+                className={`${rowClassname} ${summaryRowClassname}`}
+                style={{
+                  bottom: rowHeight * (c.length - 1 - rowIdx)
+                }}
+              >
+                {child}
+              </div>
+            ))}
+          </ColumnsContext.Provider>
         </>
       )}
     </div>
