@@ -10,6 +10,7 @@ export const cell = css`
 
   white-space: nowrap;
   overflow: hidden;
+  overflow: clip;
   text-overflow: ellipsis;
 `;
 

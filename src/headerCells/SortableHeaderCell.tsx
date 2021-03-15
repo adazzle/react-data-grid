@@ -12,6 +12,7 @@ const headerSortCellClassname = `rdg-header-sort-cell ${headerSortCell}`;
 const headerSortName = css`
   flex-grow: 1;
   overflow: hidden;
+  overflow: clip;
   text-overflow: ellipsis;
 `;
 
