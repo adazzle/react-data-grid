@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import type { Filters } from './types';
 import { getCellStyle, getCellClassname } from './utils';
 import { filterRowClassname } from './style';
@@ -12,7 +10,7 @@ export interface FilterRowProps {
   onFiltersChange?: (filters: Filters) => void;
 }
 
-function FilterRow<R, SR>({
+export default function FilterRow<R, SR>({
   filters,
   onFiltersChange
 }: FilterRowProps) {
@@ -51,5 +49,3 @@ function FilterRow<R, SR>({
     </div>
   );
 }
-
-export default memo(FilterRow);
