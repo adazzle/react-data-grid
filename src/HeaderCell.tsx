@@ -4,6 +4,7 @@ import type { CalculatedColumn, SortDirection } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle, getCellClassname } from './utils';
+import { useColumnResize } from './hooks';
 
 const cellResizable = css`
   &::after {
@@ -30,28 +31,19 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
-  | 'allRowsSelected'
->;
-
-export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
+export interface HeaderCellProps<R, SR> extends HeaderRowProps {
   column: CalculatedColumn<R, SR>;
-  onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
-  onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
-  onResize,
-  allRowsSelected,
-  onAllRowsSelectionChange,
   sortColumn,
   sortDirection,
-  onSort
+  onSort,
+  onColumnResize
 }: HeaderCellProps<R, SR>) {
+  const onResize = useColumnResize();
+
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
@@ -73,7 +65,8 @@ export default function HeaderCell<R, SR>({
       }
       const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
       if (width > 0) {
-        onResize(column, width);
+        onResize(column.key, width);
+        onColumnResize?.(column.idx, width);
       }
     }
 
@@ -96,8 +89,6 @@ export default function HeaderCell<R, SR>({
           sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={onSort}
-          allRowsSelected={allRowsSelected}
-          onAllRowsSelectionChange={onAllRowsSelectionChange}
         />
       );
     }

@@ -10,6 +10,7 @@ import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import { HeaderRowProvider } from './context';
 import {
   useGridDimensions,
   useViewportColumns,
@@ -20,7 +21,6 @@ import {
   AriaRowIndexContext,
   RowPositionContext
 } from './hooks';
-import HeaderRow from './HeaderRow';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import {
@@ -44,8 +44,7 @@ import type {
   EditCellProps,
   FillEvent,
   PasteEvent,
-  CellNavigationMode,
-  SortDirection
+  CellNavigationMode
 } from './types';
 
 interface SelectCellState extends Position {
@@ -105,8 +104,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    */
   /** The height of each row in pixels */
   rowHeight?: number;
-  /** The height of the header row in pixels */
-  headerRowHeight?: number;
   /** The height of each summary row in pixels */
   summaryRowHeight?: number;
 
@@ -117,12 +114,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   selectedRows?: ReadonlySet<React.Key>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: (selectedRows: Set<React.Key>) => void;
-  /** The key of the column which is currently being sorted */
-  sortColumn?: string;
-  /** The direction to sort the sortColumn*/
-  sortDirection?: SortDirection;
-  /** Function called whenever grid is sorted*/
-  onSort?: (columnKey: string, direction: SortDirection) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
   groupBy?: readonly string[];
   rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
@@ -143,8 +134,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
-  /** Called when a column is resized */
-  onColumnResize?: (idx: number, width: number) => void;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: (position: Position) => void;
 
@@ -178,14 +167,10 @@ function DataGrid<R, SR>({
   onRowsChange,
   // Dimensions props
   rowHeight = 35,
-  headerRowHeight = rowHeight,
   summaryRowHeight = rowHeight,
   // Feature props
   selectedRows,
   onSelectedRowsChange,
-  sortColumn,
-  sortDirection,
-  onSort,
   defaultColumnOptions,
   groupBy: rawGroupBy,
   rowGrouper,
@@ -196,7 +181,6 @@ function DataGrid<R, SR>({
   // Event props
   onRowClick,
   onScroll,
-  onColumnResize,
   onSelectedCellChange,
   onFill,
   onPaste,
@@ -245,7 +229,8 @@ function DataGrid<R, SR>({
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const { filterRow, summaryRows, emptyRowsRenderer } = useChildren(children);
+  const { headerRow, filterRow, summaryRows, emptyRowsRenderer } = useChildren(children);
+  const headerRowHeight = headerRow ? headerRow?.props.height ?? rowHeight : 0;
   const headerRowsCount = filterRow ? 2 : 1;
   const headerFiltersHeight = filterRow?.props.height ?? 45;
   const summaryRowsCount = summaryRows?.length ?? 0;
@@ -312,13 +297,24 @@ function DataGrid<R, SR>({
   /**
   * callbacks
   */
-  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
-    const newColumnWidths = new Map(columnWidths);
-    newColumnWidths.set(column.key, width);
-    setColumnWidths(newColumnWidths);
+  const handleColumnResize = useCallback((columnKey: string, width: number) => {
+    setColumnWidths(columnWidths => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(columnKey, width);
+      return newColumnWidths;
+    });
+  }, []);
 
-    onColumnResize?.(column.idx, width);
-  }, [columnWidths, onColumnResize]);
+  const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
+    if (!onSelectedRowsChange) return;
+
+    assertIsValidKeyGetter(rowKeyGetter);
+
+    const newSelectedRows = new Set<React.Key>(checked ? rows.map(rowKeyGetter) : undefined);
+    onSelectedRowsChange(newSelectedRows);
+  }, [onSelectedRowsChange, rowKeyGetter, rows]);
+
+  const allRowsSelected = selectedRows?.size === rawRows.length;
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -922,19 +918,15 @@ function DataGrid<R, SR>({
       ref={gridRef}
       onScroll={handleScroll}
     >
-      <HeaderRow<R, SR>
-        rowKeyGetter={rowKeyGetter}
-        rows={rawRows}
-        columns={viewportColumns}
-        onColumnResize={handleColumnResize}
-        allRowsSelected={selectedRows?.size === rawRows.length}
-        onSelectedRowsChange={onSelectedRowsChange}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={onSort}
-      />
       {/* @ts-expect-error */}
       <ColumnsContext.Provider value={viewportColumns}>
+        <HeaderRowProvider
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={handleAllRowsSelectionChange}
+          onColumnResize={handleColumnResize}
+        >
+          {headerRow}
+        </HeaderRowProvider>
         {filterRow}
       </ColumnsContext.Provider>
       {rows.length === 0 && emptyRowsRenderer ? emptyRowsRenderer : (

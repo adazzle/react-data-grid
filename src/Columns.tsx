@@ -1,8 +1,22 @@
 import { SelectCellFormatter } from './formatters';
+import { useAllRowsSelected, useAllRowsSelectedChange } from './hooks';
 import type { Column } from './types';
 import { stopPropagation } from './utils/domUtils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
+
+function HeaderRenderer() {
+  const allRowsSelected = useAllRowsSelected();
+  const onAllRowsSelectionChange = useAllRowsSelectedChange();
+
+  return (
+    <SelectCellFormatter
+      aria-label="Select All"
+      value={allRowsSelected}
+      onChange={onAllRowsSelectionChange}
+    />
+  );
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SelectColumn: Column<any, any> = {
@@ -13,15 +27,7 @@ export const SelectColumn: Column<any, any> = {
   resizable: false,
   sortable: false,
   frozen: true,
-  headerRenderer(props) {
-    return (
-      <SelectCellFormatter
-        aria-label="Select All"
-        value={props.allRowsSelected}
-        onChange={props.onAllRowsSelectionChange}
-      />
-    );
-  },
+  headerRenderer: HeaderRenderer,
   formatter(props) {
     return (
       <SelectCellFormatter

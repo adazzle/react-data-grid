@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, SummaryRow } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, HeaderRow, SummaryRow } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -19,7 +19,7 @@ function CurrencyFormatter({ value }: { value: number }) {
   return <>{currencyFormatter.format(value)}</>;
 }
 
-interface SummaryRow {
+interface SR {
   id: string;
   totalCount: number;
   yesCount: number;
@@ -43,7 +43,7 @@ interface Row {
   available: boolean;
 }
 
-function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
+function getColumns(countries: string[]): readonly Column<Row, SR>[] {
   return [
     SelectColumn,
     {
@@ -277,11 +277,13 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortColumn={sortColumn}
-      sortDirection={sortDirection}
-      onSort={handleSort}
       className="fill-grid"
     >
+      <HeaderRow
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+      />
       <SummaryRow row={summaryRow} />
     </DataGrid>
   );

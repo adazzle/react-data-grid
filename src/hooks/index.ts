@@ -8,3 +8,5 @@ export * from './useLatestFunc';
 export * from './useChildren';
 export * from './useAriaRowIndex';
 export * from './useRowPosition';
+export * from './useColumnResize';
+export * from './useHeaderSelection';

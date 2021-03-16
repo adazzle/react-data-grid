@@ -121,8 +121,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   sortColumn?: string;
   sortDirection?: SortDirection;
   onSort?: (columnKey: string, direction: SortDirection) => void;
-  allRowsSelected: boolean;
-  onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 interface SelectedCellPropsBase {
