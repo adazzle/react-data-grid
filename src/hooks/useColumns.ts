@@ -1,12 +1,10 @@
-import { createContext, useContext } from 'react';
+import { useContext } from 'react';
 
 import type { CalculatedColumn } from '../types';
-
-export const ColumnsContext =
-  createContext<readonly CalculatedColumn<unknown>[] | undefined>(undefined);
+import { ViewportColumnsContext } from '../context';
 
 export function useColumns<R, SR>() {
-  const context = useContext(ColumnsContext);
+  const context = useContext(ViewportColumnsContext);
   if (context === undefined) {
     throw new Error('DataGrid compound components cannot be rendered outside the DataGrid component');
   }

@@ -10,14 +10,13 @@ import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
-import { HeaderRowProvider } from './context';
+import { HeaderRowProvider, ViewportColumnsProvider } from './context';
 import {
   useGridDimensions,
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
   useChildren,
-  ColumnsContext,
   AriaRowIndexContext,
   RowPositionContext
 } from './hooks';
@@ -918,8 +917,7 @@ function DataGrid<R, SR>({
       ref={gridRef}
       onScroll={handleScroll}
     >
-      {/* @ts-expect-error */}
-      <ColumnsContext.Provider value={viewportColumns}>
+      <ViewportColumnsProvider viewportColumns={viewportColumns}>
         <HeaderRowProvider
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={handleAllRowsSelectionChange}
@@ -928,7 +926,7 @@ function DataGrid<R, SR>({
           {headerRow}
         </HeaderRowProvider>
         {filterRow}
-      </ColumnsContext.Provider>
+      </ViewportColumnsProvider>
       {rows.length === 0 && emptyRowsRenderer ? emptyRowsRenderer : (
         <>
           <div
@@ -940,8 +938,7 @@ function DataGrid<R, SR>({
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
-          {/* @ts-expect-error */}
-          <ColumnsContext.Provider value={viewportColumns}>
+          <ViewportColumnsProvider viewportColumns={viewportColumns}>
             {summaryRows?.map((child, rowIdx) => (
               <AriaRowIndexContext.Provider
                 key={rowIdx}
@@ -954,7 +951,7 @@ function DataGrid<R, SR>({
                 </RowPositionContext.Provider>
               </AriaRowIndexContext.Provider>
             ))}
-          </ColumnsContext.Provider>
+          </ViewportColumnsProvider>
         </>
       )}
     </div>
