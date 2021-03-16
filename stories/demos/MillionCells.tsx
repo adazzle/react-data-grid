@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import DataGrid from '../../src';
+import DataGrid, { HeaderRow, Viewport } from '../../src';
 import type { Column, FormatterProps } from '../../src';
 
 type Row = undefined;
@@ -30,10 +30,14 @@ export function MillionCells() {
   return (
     <DataGrid
       columns={columns}
-      rows={rows}
-      rowHeight={22}
       className="fill-grid"
-    />
+    >
+      <HeaderRow />
+      <Viewport
+        rows={rows}
+        rowHeight={22}
+      />
+    </DataGrid>
   );
 }
 

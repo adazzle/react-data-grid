@@ -10,3 +10,4 @@ export * from './useAriaRowIndex';
 export * from './useRowPosition';
 export * from './useColumnResize';
 export * from './useHeaderSelection';
+export * from './useViewport';

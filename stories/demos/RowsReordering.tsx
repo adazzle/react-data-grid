@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableRowRenderer } from './components/RowRenderers';
-import DataGrid from '../../src';
+import DataGrid, { HeaderRow, Viewport } from '../../src';
 import type { Column } from '../../src';
 
 interface Row {
@@ -69,11 +69,13 @@ export function RowsReordering() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        rowRenderer={p => <DraggableRowRenderer {...p} onRowReorder={onRowReorder} />}
-      />
+      <DataGrid columns={columns}>
+        <HeaderRow />
+        <Viewport
+          rows={rows}
+          rowRenderer={p => <DraggableRowRenderer {...p} onRowReorder={onRowReorder} />}
+        />
+      </DataGrid>
     </DndProvider>
   );
 }

@@ -1,4 +1,4 @@
-import DataGrid from '../../src';
+import DataGrid, { HeaderRow, Viewport } from '../../src';
 import type { Column, FormatterProps } from '../../src';
 
 type Row = undefined;
@@ -23,10 +23,12 @@ export function ResizableGrid() {
   return (
     <DataGrid
       columns={columns}
-      rows={rows}
       className="fill-grid"
       style={{ resize: 'both' }}
-    />
+    >
+      <HeaderRow />
+      <Viewport rows={rows} />
+    </DataGrid>
   );
 }
 

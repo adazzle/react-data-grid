@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, HeaderRow, SummaryRow } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, HeaderRow, SummaryRow, Viewport } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -267,22 +267,24 @@ export function CommonFeatures() {
 
   return (
     <DataGrid
-      rowKeyGetter={rowKeyGetter}
       columns={columns}
-      rows={sortedRows}
       defaultColumnOptions={{
         sortable: true,
         resizable: true
       }}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      onRowsChange={setRows}
       className="fill-grid"
     >
       <HeaderRow
         sortColumn={sortColumn}
         sortDirection={sortDirection}
         onSort={handleSort}
+      />
+      <Viewport
+        rowKeyGetter={rowKeyGetter}
+        rows={sortedRows}
+        onRowsChange={setRows}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
       />
       <SummaryRow row={summaryRow} />
     </DataGrid>

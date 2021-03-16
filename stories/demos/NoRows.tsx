@@ -1,4 +1,4 @@
-import DataGrid from '../../src';
+import DataGrid, { HeaderRow, Viewport } from '../../src';
 import type { Column } from '../../src';
 
 function EmptyRowsRenderer() {
@@ -23,9 +23,10 @@ export function NoRows() {
   return (
     <DataGrid
       columns={columns}
-      rows={rows}
       className="small-grid"
     >
+      <HeaderRow />
+      <Viewport rows={rows} />
       <EmptyRowsRenderer />
     </DataGrid>
   );

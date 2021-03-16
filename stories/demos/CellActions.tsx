@@ -2,6 +2,7 @@ import { useState } from 'react';
 import faker from 'faker';
 
 import DataGrid from '../../src';
+import { HeaderRow, Viewport } from '../../src';
 import type { Column } from '../../src';
 import { CellActionsFormatter, ImageFormatter } from './components/Formatters';
 
@@ -150,10 +151,14 @@ export function CellActions() {
   return (
     <DataGrid
       columns={columns}
-      rows={rows}
-      rowHeight={55}
       className="fill-grid"
-    />
+    >
+      <HeaderRow />
+      <Viewport
+        rows={rows}
+        rowHeight={55}
+      />
+    </DataGrid>
   );
 }
 
