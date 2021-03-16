@@ -960,7 +960,7 @@ function DataGrid<R, SR>({
               key={rowIdx}
               rowIdx={rowIdx}
               row={row}
-              bottom={rowHeight * (summaryRows.length - 1 - rowIdx)}
+              bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
               viewportColumns={viewportColumns}
             />
           ))}
