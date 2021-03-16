@@ -149,6 +149,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   editorPortalTarget?: Element;
   rowClass?: (row: R) => string | undefined;
 
+  // TODO: type children
   children?: React.ReactElement | Array<React.ReactElement>;
 }
 
@@ -233,7 +234,7 @@ function DataGrid<R, SR>({
   const headerRowsCount = filterRow ? 2 : 1;
   const filterRowHeight = filterRow ? filterRow.props.height ?? DEFAULT_FILTER_ROW_HEIGHT : 0;
   const totalHeaderHeight = headerRowHeight + filterRowHeight;
-  const summaryRowsHeight = summaryRows?.map(s => s.props.height ?? DEFAULT_SUMMARY_ROW_HEIGHT).reduce((p, c) => p + c) ?? 0;
+  const summaryRowsHeight = summaryRows ? summaryRows.map(s => s.props.height ?? DEFAULT_SUMMARY_ROW_HEIGHT).reduce((p, c) => p + c) : 0;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
