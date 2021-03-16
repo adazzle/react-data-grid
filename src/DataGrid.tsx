@@ -316,12 +316,14 @@ function DataGrid<R, SR>({
   * callbacks
   */
   const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
-    const newColumnWidths = new Map(columnWidths);
-    newColumnWidths.set(column.key, width);
-    setColumnWidths(newColumnWidths);
+    setColumnWidths(columnWidths => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(column.key, width);
+      return newColumnWidths;
+    });
 
     onColumnResize?.(column.idx, width);
-  }, [columnWidths, onColumnResize]);
+  }, [onColumnResize]);
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -960,7 +962,7 @@ function DataGrid<R, SR>({
               key={rowIdx}
               rowIdx={rowIdx}
               row={row}
-              bottom={rowHeight * (summaryRows.length - 1 - rowIdx)}
+              bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
               viewportColumns={viewportColumns}
             />
           ))}
