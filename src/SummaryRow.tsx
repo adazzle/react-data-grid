@@ -13,7 +13,7 @@ export interface SummaryRowProps<SR> {
 }
 
 export default function SummaryRow<R, SR>({
-  height,
+  height = DEFAULT_SUMMARY_ROW_HEIGHT,
   row
 }: SummaryRowProps<SR>) {
   const ariaRowIndex = useAriaRowIndex();

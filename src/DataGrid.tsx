@@ -886,16 +886,25 @@ function DataGrid<R, SR>({
   }
 
   function getSummaryRows() {
+    if (!summaryRows) return null;
+    // TODO: add a generic position utility
+    const bottomPosition = new Map<number, number>();
+    for (let i = 0; i < summaryRows.length; i++) {
+      let bottom = 0;
+      for (let j = i + 1; j < summaryRows.length; j++) {
+        bottom += summaryRows[j].props?.height ?? DEFAULT_SUMMARY_ROW_HEIGHT;
+      }
+      bottomPosition.set(i, bottom);
+    }
+
     return (
       <ViewportColumnsProvider viewportColumns={viewportColumns}>
-        {summaryRows?.map((child, rowIdx) => (
+        {summaryRows.map((child, rowIdx) => (
           <AriaRowIndexContext.Provider
             key={rowIdx}
             value={headerRowsCount + rowsCount + rowIdx + 1}
           >
-            <RowPositionContext.Provider
-              value={rowHeight * (summaryRows.length - 1 - rowIdx)}
-            >
+            <RowPositionContext.Provider value={bottomPosition.get(rowIdx)}>
               {child}
             </RowPositionContext.Provider>
           </AriaRowIndexContext.Provider>
