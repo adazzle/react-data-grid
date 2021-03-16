@@ -1,7 +1,11 @@
+import type { CSSProperties } from 'react';
+
 import type { Filters } from './types';
 import { getCellStyle, getCellClassname } from './utils';
 import { filterRowClassname } from './style';
 import { useColumns } from './hooks';
+
+export const DEFAULT_FILTER_ROW_HEIGHT = 45;
 
 export interface FilterRowProps {
   /** The height of the header filter row in pixels */
@@ -11,6 +15,7 @@ export interface FilterRowProps {
 }
 
 export default function FilterRow<R, SR>({
+  height = DEFAULT_FILTER_ROW_HEIGHT,
   filters,
   onFiltersChange
 }: FilterRowProps) {
@@ -26,6 +31,9 @@ export default function FilterRow<R, SR>({
       role="row"
       aria-rowindex={2}
       className={filterRowClassname}
+      style={{
+        '--filter-row-height': `${height}px`
+      } as unknown as CSSProperties}
     >
       {columns.map(column => {
         const { key } = column;

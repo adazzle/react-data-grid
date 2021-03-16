@@ -1,7 +1,11 @@
+import type { CSSProperties } from 'react';
+
 import HeaderCell from './HeaderCell';
 import type { SortDirection } from './types';
 import { headerRowClassname } from './style';
 import { useColumns } from './hooks';
+
+export const DEFAULT_HEADER_ROW_HEIGHT = 35;
 
 export interface HeaderRowProps {
   /** The height of the header row in pixels */
@@ -17,6 +21,7 @@ export interface HeaderRowProps {
 }
 
 export default function HeaderRow<R, SR>({
+  height = DEFAULT_HEADER_ROW_HEIGHT,
   sortColumn,
   sortDirection,
   onSort,
@@ -29,6 +34,9 @@ export default function HeaderRow<R, SR>({
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
       className={headerRowClassname}
+      style={{
+        '--header-row-height': `${height}px`
+      } as unknown as CSSProperties}
     >
       {columns.map(column => {
         return (

@@ -20,6 +20,9 @@ import {
   AriaRowIndexContext,
   RowPositionContext
 } from './hooks';
+import { DEFAULT_HEADER_ROW_HEIGHT } from './HeaderRow';
+import { DEFAULT_FILTER_ROW_HEIGHT } from './FilterRow';
+import { DEFAULT_SUMMARY_ROW_HEIGHT } from './SummaryRow';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import {
@@ -103,8 +106,6 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    */
   /** The height of each row in pixels */
   rowHeight?: number;
-  /** The height of each summary row in pixels */
-  summaryRowHeight?: number;
 
   /**
    * Feature props
@@ -166,7 +167,6 @@ function DataGrid<R, SR>({
   onRowsChange,
   // Dimensions props
   rowHeight = 35,
-  summaryRowHeight = rowHeight,
   // Feature props
   selectedRows,
   onSelectedRowsChange,
@@ -229,12 +229,13 @@ function DataGrid<R, SR>({
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const { headerRow, filterRow, summaryRows, emptyRowsRenderer } = useChildren(children);
-  const headerRowHeight = headerRow ? headerRow?.props.height ?? rowHeight : 0;
+  const headerRowHeight = headerRow ? headerRow.props.height ?? DEFAULT_HEADER_ROW_HEIGHT : 0;
   const headerRowsCount = filterRow ? 2 : 1;
-  const headerFiltersHeight = filterRow?.props.height ?? 45;
+  const filterRowHeight = filterRow ? filterRow.props.height ?? DEFAULT_FILTER_ROW_HEIGHT : 0;
+  const totalHeaderHeight = headerRowHeight + filterRowHeight;
+  const summaryRowsHeight = summaryRows?.map(s => s.props.height ?? DEFAULT_SUMMARY_ROW_HEIGHT).reduce((p, c) => p + c) ?? 0;
   const summaryRowsCount = summaryRows?.length ?? 0;
-  const totalHeaderHeight = headerRowHeight + (filterRow ? headerFiltersHeight : 0);
-  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
+  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
@@ -884,6 +885,25 @@ function DataGrid<R, SR>({
     return rowElements;
   }
 
+  function getSummaryRows() {
+    return (
+      <ViewportColumnsProvider viewportColumns={viewportColumns}>
+        {summaryRows?.map((child, rowIdx) => (
+          <AriaRowIndexContext.Provider
+            key={rowIdx}
+            value={headerRowsCount + rowsCount + rowIdx + 1}
+          >
+            <RowPositionContext.Provider
+              value={rowHeight * (summaryRows.length - 1 - rowIdx)}
+            >
+              {child}
+            </RowPositionContext.Provider>
+          </AriaRowIndexContext.Provider>
+        ))}
+      </ViewportColumnsProvider>
+    );
+  }
+
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx >= rows.length) {
     setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
@@ -907,11 +927,8 @@ function DataGrid<R, SR>({
       className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={{
         ...style,
-        '--header-row-height': `${headerRowHeight}px`,
-        '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`,
-        '--summary-row-height': `${summaryRowHeight}px`,
         ...layoutCssVars
       } as unknown as React.CSSProperties}
       ref={gridRef}
@@ -938,20 +955,7 @@ function DataGrid<R, SR>({
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
-          <ViewportColumnsProvider viewportColumns={viewportColumns}>
-            {summaryRows?.map((child, rowIdx) => (
-              <AriaRowIndexContext.Provider
-                key={rowIdx}
-                value={headerRowsCount + rowsCount + rowIdx + 1}
-              >
-                <RowPositionContext.Provider
-                  value={rowHeight * (summaryRows.length - 1 - rowIdx)}
-                >
-                  {child}
-                </RowPositionContext.Provider>
-              </AriaRowIndexContext.Provider>
-            ))}
-          </ViewportColumnsProvider>
+          {getSummaryRows()}
         </>
       )}
     </div>
