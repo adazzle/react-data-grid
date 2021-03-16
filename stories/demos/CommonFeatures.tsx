@@ -224,7 +224,7 @@ export function CommonFeatures() {
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
-  const summaryRow = useMemo((): SummaryRow => {
+  const summaryRow = useMemo((): SR => {
     return { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
   }, [rows]);
 

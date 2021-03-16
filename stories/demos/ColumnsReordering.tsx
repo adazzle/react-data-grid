@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
-import DataGrid from '../../src';
+import DataGrid, { HeaderRow } from '../../src';
 import type { Column, HeaderRendererProps, SortDirection } from '../../src';
 
 interface Row {
@@ -122,10 +122,13 @@ export function ColumnsReordering() {
       <DataGrid
         columns={draggableColumns}
         rows={sortedRows}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={handleSort}
-      />
+      >
+        <HeaderRow
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          onSort={handleSort}
+        />
+      </DataGrid>
     </DndProvider>
   );
 }
