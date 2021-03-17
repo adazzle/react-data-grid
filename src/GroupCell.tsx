@@ -7,12 +7,9 @@ import { cellSelectedClassname } from './style';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'id'
-  | 'rowIdx'
   | 'groupKey'
   | 'childRows'
   | 'isExpanded'
-  | 'isRowSelected'
-  | 'selectRow'
   | 'toggleGroup'
 >;
 
@@ -24,23 +21,16 @@ interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
 
 function GroupCell<R, SR>({
   id,
-  rowIdx,
   groupKey,
   childRows,
   isExpanded,
   isCellSelected,
-  isRowSelected,
   column,
   groupColumnIndex,
-  selectRow,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
   function toggleGroup() {
     toggleGroupWrapper(id);
-  }
-
-  function onRowSelectionChange(checked: boolean) {
-    selectRow({ rowIdx, checked, isShiftClick: false });
   }
 
   // Only make the cell clickable if the group level matches
@@ -67,8 +57,6 @@ function GroupCell<R, SR>({
           column={column}
           isExpanded={isExpanded}
           isCellSelected={isCellSelected}
-          isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
           toggleGroup={toggleGroup}
         />
       )}

@@ -94,8 +94,6 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  onRowSelectionChange: (checked: boolean) => void;
   toggleGroup: () => void;
 }
 

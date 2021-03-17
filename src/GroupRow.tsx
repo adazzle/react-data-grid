@@ -1,10 +1,11 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import clsx from 'clsx';
 
 import { groupRowClassname, groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
+import { RowSelectionChangeContext, RowSelectionContext } from './hooks';
 
 export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
@@ -38,6 +39,10 @@ function GroupedRow<R, SR>({
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
+  const onRowSelectionChange = useCallback((checked: boolean) => {
+    selectRow({ rowIdx, checked, isShiftClick: false });
+  }, [rowIdx, selectRow]);
+
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
@@ -63,20 +68,21 @@ function GroupedRow<R, SR>({
       {...props}
     >
       {viewportColumns.map(column => (
-        <GroupCell<R, SR>
-          key={column.key}
-          id={id}
-          rowIdx={rowIdx}
-          groupKey={groupKey}
-          childRows={childRows}
-          isExpanded={isExpanded}
-          isRowSelected={isRowSelected}
-          isCellSelected={selectedCellIdx === column.idx}
-          column={column}
-          groupColumnIndex={idx}
-          selectRow={selectRow}
-          toggleGroup={toggleGroup}
-        />
+        <RowSelectionChangeContext.Provider value={onRowSelectionChange}>
+          <RowSelectionContext.Provider value={isRowSelected}>
+            <GroupCell<R, SR>
+              key={column.key}
+              id={id}
+              groupKey={groupKey}
+              childRows={childRows}
+              isExpanded={isExpanded}
+              isCellSelected={selectedCellIdx === column.idx}
+              column={column}
+              groupColumnIndex={idx}
+              toggleGroup={toggleGroup}
+            />
+          </RowSelectionContext.Provider>
+        </RowSelectionChangeContext.Provider>
       ))}
     </div>
   );

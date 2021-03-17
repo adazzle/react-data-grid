@@ -1,6 +1,6 @@
 import { SelectCellFormatter } from './formatters';
 import { useRowSelection, useRowSelectionChange } from './hooks';
-import type { Column, FormatterProps } from './types';
+import type { Column, FormatterProps, GroupFormatterProps } from './types';
 import { stopPropagation } from './utils/domUtils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
@@ -17,6 +17,24 @@ function SelectFormatter(props: FormatterProps) {
       value={isRowSelected}
       onClick={stopPropagation}
       onChange={onRowSelectionChange}
+    />
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function SelectGroupFormatter(props: GroupFormatterProps<any, any>) {
+  const isRowSelected = useRowSelection();
+  const onRowSelectionChange = useRowSelectionChange();
+
+  return (
+    <SelectCellFormatter
+      aria-label="Select Group"
+      tabIndex={-1}
+      isCellSelected={props.isCellSelected}
+      value={isRowSelected}
+      onChange={onRowSelectionChange}
+      // Stop propagation to prevent row selection
+      onClick={stopPropagation}
     />
   );
 }
@@ -40,17 +58,5 @@ export const SelectColumn: Column<any, any> = {
     );
   },
   formatter: SelectFormatter,
-  groupFormatter(props) {
-    return (
-      <SelectCellFormatter
-        aria-label="Select Group"
-        tabIndex={-1}
-        isCellSelected={props.isCellSelected}
-        value={props.isRowSelected}
-        onChange={props.onRowSelectionChange}
-        // Stop propagation to prevent row selection
-        onClick={stopPropagation}
-      />
-    );
-  }
+  groupFormatter: SelectGroupFormatter
 };
