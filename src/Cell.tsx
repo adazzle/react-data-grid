@@ -47,7 +47,6 @@ function Cell<R, SR>({
   isCellSelected,
   isCopied,
   isDraggedOver,
-  isRowSelected,
   row,
   rowIdx,
   dragHandleProps,
@@ -57,7 +56,6 @@ function Cell<R, SR>({
   onContextMenu,
   onRowChange,
   selectCell,
-  selectRow,
   ...props
 }: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
   const { cellClass } = column;
@@ -96,10 +94,6 @@ function Cell<R, SR>({
     onRowChange(rowIdx, newRow);
   }
 
-  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    selectRow({ rowIdx, checked, isShiftClick });
-  }
-
   return (
     <div
       role="gridcell"
@@ -120,8 +114,6 @@ function Cell<R, SR>({
             rowIdx={rowIdx}
             row={row}
             isCellSelected={isCellSelected}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
             onRowChange={handleRowChange}
           />
           {dragHandleProps && (

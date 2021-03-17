@@ -1,8 +1,25 @@
 import { SelectCellFormatter } from './formatters';
-import type { Column } from './types';
+import { useRowSelection, useRowSelectionChange } from './hooks';
+import type { Column, FormatterProps } from './types';
 import { stopPropagation } from './utils/domUtils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
+
+function SelectFormatter(props: FormatterProps) {
+  const isRowSelected = useRowSelection();
+  const onRowSelectionChange = useRowSelectionChange();
+
+  return (
+    <SelectCellFormatter
+      aria-label="Select"
+      tabIndex={-1}
+      isCellSelected={props.isCellSelected}
+      value={isRowSelected}
+      onClick={stopPropagation}
+      onChange={onRowSelectionChange}
+    />
+  );
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SelectColumn: Column<any, any> = {
@@ -22,18 +39,7 @@ export const SelectColumn: Column<any, any> = {
       />
     );
   },
-  formatter(props) {
-    return (
-      <SelectCellFormatter
-        aria-label="Select"
-        tabIndex={-1}
-        isCellSelected={props.isCellSelected}
-        value={props.isRowSelected}
-        onClick={stopPropagation}
-        onChange={props.onRowSelectionChange}
-      />
-    );
-  },
+  formatter: SelectFormatter,
   groupFormatter(props) {
     return (
       <SelectCellFormatter

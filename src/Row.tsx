@@ -1,4 +1,4 @@
-import { memo, forwardRef } from 'react';
+import { memo, forwardRef, useCallback } from 'react';
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
@@ -6,6 +6,7 @@ import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from '.
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
+import { RowSelectionChangeContext, RowSelectionContext } from './hooks';
 
 function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
@@ -29,6 +30,10 @@ function Row<R, SR = unknown>({
   'aria-selected': ariaSelected,
   ...props
 }: RowRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+  const onRowSelectionChange = useCallback((checked: boolean, isShiftClick: boolean) => {
+    selectRow({ rowIdx, checked, isShiftClick });
+  }, [rowIdx, selectRow]);
+
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
     onMouseEnter?.(event);
@@ -71,23 +76,25 @@ function Row<R, SR = unknown>({
         }
 
         return (
-          <CellRenderer
-            key={column.key}
-            rowIdx={rowIdx}
-            column={column}
-            row={row}
-            isCopied={copiedCellIdx === column.idx}
-            isDraggedOver={draggedOverCellIdx === column.idx}
-            isCellSelected={isCellSelected}
-            isRowSelected={isRowSelected}
-            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
-            onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
-            onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
-            onRowClick={onRowClick}
-            onRowChange={onRowChange}
-            selectCell={selectCell}
-            selectRow={selectRow}
-          />
+          <RowSelectionChangeContext.Provider value={onRowSelectionChange}>
+            <RowSelectionContext.Provider value={isRowSelected}>
+              <CellRenderer
+                key={column.key}
+                rowIdx={rowIdx}
+                column={column}
+                row={row}
+                isCopied={copiedCellIdx === column.idx}
+                isDraggedOver={draggedOverCellIdx === column.idx}
+                isCellSelected={isCellSelected}
+                dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
+                onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
+                onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
+                onRowClick={onRowClick}
+                onRowChange={onRowChange}
+                selectCell={selectCell}
+              />
+            </RowSelectionContext.Provider>
+          </RowSelectionChangeContext.Provider>
         );
       })}
     </div>
