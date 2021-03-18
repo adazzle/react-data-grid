@@ -50,34 +50,34 @@ function Row<R, SR = unknown>({
   );
 
   return (
-    <div
-      role="row"
-      aria-rowindex={ariaRowIndex}
-      aria-selected={ariaSelected}
-      ref={ref}
-      className={className}
-      onMouseEnter={handleDragEnter}
-      style={{ top }}
-      {...props}
-    >
-      {viewportColumns.map(column => {
-        const isCellSelected = selectedCellProps?.idx === column.idx;
-        if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
-          return (
-            <EditCell<R, SR>
-              key={column.key}
-              rowIdx={rowIdx}
-              column={column}
-              row={row}
-              onKeyDown={selectedCellProps.onKeyDown}
-              editorProps={selectedCellProps.editorProps}
-            />
-          );
-        }
+    <RowSelectionChangeContext.Provider value={onRowSelectionChange}>
+      <RowSelectionContext.Provider value={isRowSelected}>
+        <div
+          role="row"
+          aria-rowindex={ariaRowIndex}
+          aria-selected={ariaSelected}
+          ref={ref}
+          className={className}
+          onMouseEnter={handleDragEnter}
+          style={{ top }}
+          {...props}
+        >
+          {viewportColumns.map(column => {
+            const isCellSelected = selectedCellProps?.idx === column.idx;
+            if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
+              return (
+                <EditCell<R, SR>
+                  key={column.key}
+                  rowIdx={rowIdx}
+                  column={column}
+                  row={row}
+                  onKeyDown={selectedCellProps.onKeyDown}
+                  editorProps={selectedCellProps.editorProps}
+                />
+              );
+            }
 
-        return (
-          <RowSelectionChangeContext.Provider value={onRowSelectionChange}>
-            <RowSelectionContext.Provider value={isRowSelected}>
+            return (
               <CellRenderer
                 key={column.key}
                 rowIdx={rowIdx}
@@ -93,11 +93,11 @@ function Row<R, SR = unknown>({
                 onRowChange={onRowChange}
                 selectCell={selectCell}
               />
-            </RowSelectionContext.Provider>
-          </RowSelectionChangeContext.Provider>
-        );
-      })}
-    </div>
+            );
+          })}
+        </div>
+      </RowSelectionContext.Provider>
+    </RowSelectionChangeContext.Provider>
   );
 }
 
