@@ -1,7 +1,9 @@
 import { createContext, useContext } from 'react';
 
-export const RowSelectionContext =
+const RowSelectionContext =
   createContext<boolean | undefined>(undefined);
+
+export const RowSelectionProvider = RowSelectionContext.Provider;
 
 export function useRowSelection() {
   const context = useContext(RowSelectionContext);

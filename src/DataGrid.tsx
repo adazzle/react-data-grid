@@ -10,7 +10,7 @@ import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
-import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
+import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc, RowSelectionChangeProvider } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
@@ -853,7 +853,6 @@ function DataGrid<R, SR>({
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectCell={selectCellWrapper}
-            selectRow={selectRowWrapper}
             toggleGroup={toggleGroupWrapper}
           />
         );
@@ -886,7 +885,6 @@ function DataGrid<R, SR>({
           selectedCellProps={getSelectedCellProps(rowIdx)}
           onRowChange={handleFormatterRowChangeWrapper}
           selectCell={selectCellWrapper}
-          selectRow={selectRowWrapper}
         />
       );
     }
@@ -955,7 +953,9 @@ function DataGrid<R, SR>({
             onFocus={onGridFocus}
           />
           <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
-          {getViewportRows()}
+          <RowSelectionChangeProvider value={selectRowWrapper}>
+            {getViewportRows()}
+          </RowSelectionChangeProvider>
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}

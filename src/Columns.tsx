@@ -16,7 +16,9 @@ function SelectFormatter(props: FormatterProps) {
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
       onClick={stopPropagation}
-      onChange={onRowSelectionChange}
+      onChange={(checked, isShiftClick) => {
+        onRowSelectionChange({ rowIdx: props.rowIdx, checked, isShiftClick });
+      }}
     />
   );
 }
@@ -32,7 +34,9 @@ function SelectGroupFormatter(props: GroupFormatterProps<any, any>) {
       tabIndex={-1}
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
-      onChange={onRowSelectionChange}
+      onChange={(checked) => {
+        onRowSelectionChange({ checked, isShiftClick: false, rowIdx: props.rowIdx });
+      }}
       // Stop propagation to prevent row selection
       onClick={stopPropagation}
     />

@@ -1,4 +1,4 @@
-import { memo, forwardRef, useCallback } from 'react';
+import { memo, forwardRef } from 'react';
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
@@ -6,7 +6,7 @@ import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from '.
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
-import { RowSelectionChangeContext, RowSelectionContext } from './hooks';
+import { RowSelectionProvider } from './hooks';
 
 function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
@@ -25,15 +25,10 @@ function Row<R, SR = unknown>({
   top,
   onRowChange,
   selectCell,
-  selectRow,
   'aria-rowindex': ariaRowIndex,
   'aria-selected': ariaSelected,
   ...props
 }: RowRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
-  const onRowSelectionChange = useCallback((checked: boolean, isShiftClick: boolean) => {
-    selectRow({ rowIdx, checked, isShiftClick });
-  }, [rowIdx, selectRow]);
-
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
     onMouseEnter?.(event);
@@ -50,54 +45,52 @@ function Row<R, SR = unknown>({
   );
 
   return (
-    <RowSelectionChangeContext.Provider value={onRowSelectionChange}>
-      <RowSelectionContext.Provider value={isRowSelected}>
-        <div
-          role="row"
-          aria-rowindex={ariaRowIndex}
-          aria-selected={ariaSelected}
-          ref={ref}
-          className={className}
-          onMouseEnter={handleDragEnter}
-          style={{ top }}
-          {...props}
-        >
-          {viewportColumns.map(column => {
-            const isCellSelected = selectedCellProps?.idx === column.idx;
-            if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
-              return (
-                <EditCell<R, SR>
-                  key={column.key}
-                  rowIdx={rowIdx}
-                  column={column}
-                  row={row}
-                  onKeyDown={selectedCellProps.onKeyDown}
-                  editorProps={selectedCellProps.editorProps}
-                />
-              );
-            }
-
+    <RowSelectionProvider value={isRowSelected}>
+      <div
+        role="row"
+        aria-rowindex={ariaRowIndex}
+        aria-selected={ariaSelected}
+        ref={ref}
+        className={className}
+        onMouseEnter={handleDragEnter}
+        style={{ top }}
+        {...props}
+      >
+        {viewportColumns.map(column => {
+          const isCellSelected = selectedCellProps?.idx === column.idx;
+          if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
             return (
-              <CellRenderer
+              <EditCell<R, SR>
                 key={column.key}
                 rowIdx={rowIdx}
                 column={column}
                 row={row}
-                isCopied={copiedCellIdx === column.idx}
-                isDraggedOver={draggedOverCellIdx === column.idx}
-                isCellSelected={isCellSelected}
-                dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
-                onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
-                onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
-                onRowClick={onRowClick}
-                onRowChange={onRowChange}
-                selectCell={selectCell}
+                onKeyDown={selectedCellProps.onKeyDown}
+                editorProps={selectedCellProps.editorProps}
               />
             );
-          })}
-        </div>
-      </RowSelectionContext.Provider>
-    </RowSelectionChangeContext.Provider>
+          }
+
+          return (
+            <CellRenderer
+              key={column.key}
+              rowIdx={rowIdx}
+              column={column}
+              row={row}
+              isCopied={copiedCellIdx === column.idx}
+              isDraggedOver={draggedOverCellIdx === column.idx}
+              isCellSelected={isCellSelected}
+              dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
+              onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
+              onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
+              onRowClick={onRowClick}
+              onRowChange={onRowChange}
+              selectCell={selectCell}
+            />
+          );
+        })}
+      </div>
+    </RowSelectionProvider>
   );
 }
 

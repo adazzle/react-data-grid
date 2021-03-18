@@ -7,6 +7,7 @@ import { cellSelectedClassname } from './style';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
   | 'id'
+  | 'rowIdx'
   | 'groupKey'
   | 'childRows'
   | 'isExpanded'
@@ -21,6 +22,7 @@ interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
 
 function GroupCell<R, SR>({
   id,
+  rowIdx,
   groupKey,
   childRows,
   isExpanded,
@@ -52,6 +54,7 @@ function GroupCell<R, SR>({
     >
       {(!column.rowGroup || groupColumnIndex === column.idx) && column.groupFormatter && (
         <column.groupFormatter
+          rowIdx={rowIdx}
           groupKey={groupKey}
           childRows={childRows}
           column={column}

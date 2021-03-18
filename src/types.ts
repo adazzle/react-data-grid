@@ -89,6 +89,7 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
+  rowIdx: number;
   groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
   childRows: readonly TRow[];
@@ -165,7 +166,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

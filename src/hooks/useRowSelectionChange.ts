@@ -1,7 +1,10 @@
 import { createContext, useContext } from 'react';
+import type { SelectRowEvent } from '../types';
 
 export const RowSelectionChangeContext =
-  createContext<(((checked: boolean, isShiftClick: boolean) => void) | undefined)>(undefined);
+  createContext<(((selectRowEvent: SelectRowEvent) => void) | undefined)>(undefined);
+
+export const RowSelectionChangeProvider = RowSelectionChangeContext.Provider;
 
 export function useRowSelectionChange() {
   const context = useContext(RowSelectionChangeContext);
