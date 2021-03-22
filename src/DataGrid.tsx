@@ -1,11 +1,12 @@
 import clsx from "clsx";
-import {
+import React, {
   forwardRef,
+  MouseEvent,
   useCallback,
   useImperativeHandle,
   useLayoutEffect,
   useRef,
-  useState,
+  useState
 } from "react";
 import type { CellNavigationMode, SortDirection } from "./enums";
 import FilterRow from "./FilterRow";
@@ -15,7 +16,7 @@ import {
   useGridDimensions,
   useLatestFunc,
   useViewportColumns,
-  useViewportRows,
+  useViewportRows
 } from "./hooks";
 import Row from "./Row";
 import SummaryRow from "./SummaryRow";
@@ -30,7 +31,7 @@ import type {
   RowRendererProps,
   RowsChangeData,
   SelectedCellProps,
-  SelectRowEvent,
+  SelectRowEvent
 } from "./types";
 import {
   assertIsValidKeyGetter,
@@ -39,7 +40,7 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   isSelectedCellEditable,
-  onEditorNavigation,
+  onEditorNavigation
 } from "./utils";
 
 interface SelectCellState extends Position {
@@ -63,7 +64,11 @@ const body = globalThis.document?.body;
 export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
-  selectCell: (position: Position, openEditor?: boolean) => void;
+  selectCell: (
+    position: Position,
+    openEditor?: boolean,
+    shiftKey?: boolean
+  ) => void;
 }
 
 type SharedDivProps = Pick<
@@ -137,14 +142,17 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   onRowClick?: (
     rowIdx: number,
     row: R,
-    column: CalculatedColumn<R, SR>
+    column: CalculatedColumn<R, SR>,
+    event?: React.MouseEvent,
   ) => void;
   /** Called when the grid is scrolled */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
   /** Called when a column is resized */
   onColumnResize?: (idx: number, width: number) => void;
   /** Function called whenever selected cell is changed */
-  onSelectedCellChange?: (position: Position) => void;
+  onSelectedCellChange?: (position: Position, shiftKey?: boolean) => void;
+  /** Called when arrow keys are pressed while alt is pressed */
+  onAltArrowKeyPress?: (key: string) => void;
 
   /**
    * Toggles and modes
@@ -201,6 +209,7 @@ function DataGrid<R, SR>(
     onScroll,
     onColumnResize,
     onSelectedCellChange,
+    onAltArrowKeyPress,
     onFill,
     onPaste,
     // Toggles and modes
@@ -692,7 +701,11 @@ function DataGrid<R, SR>(
     );
   }
 
-  function selectCell(position: Position, enableEditor = false): void {
+  function selectCell(
+    position: Position,
+    enableEditor = false,
+    shiftKey = false
+  ): void {
     if (!isCellWithinBounds(position)) return;
     commitEditorChanges();
 
@@ -708,7 +721,7 @@ function DataGrid<R, SR>(
     } else {
       setSelectedPosition({ ...position, mode: "SELECT" });
     }
-    onSelectedCellChange?.({ ...position });
+    onSelectedCellChange?.({ ...position }, shiftKey);
   }
 
   function closeEditor() {
@@ -774,7 +787,12 @@ function DataGrid<R, SR>(
       }
     }
 
-    const handleArrowKeys = (key: string) => {
+    const handleArrowKeyPress = (key: string) => {
+      if (altKey) {
+        onAltArrowKeyPress?.(key);
+        return selectedPosition;
+      }
+
       if (ctrlKey) {
         let colIndexDelta = 0;
         let rowIndexDelta = 0;
@@ -893,7 +911,7 @@ function DataGrid<R, SR>(
           case "ArrowDown":
             return { idx, rowIdx: rowIdx + 1 };
           case "ArrowLeft":
-            return { idx: idx - 1, rowIdx };
+            return { idx: Math.max(idx - 1, 1), rowIdx };
           case "ArrowRight":
             return { idx: idx + 1, rowIdx };
           default:
@@ -907,7 +925,7 @@ function DataGrid<R, SR>(
       case "ArrowDown":
       case "ArrowLeft":
       case "ArrowRight":
-        return handleArrowKeys(key);
+        return handleArrowKeyPress(key);
       case "Tab":
         if (selectedPosition.idx === -1 && selectedPosition.rowIdx === -1) {
           return shiftKey
@@ -1015,7 +1033,7 @@ function DataGrid<R, SR>(
       nextPosition,
     });
 
-    selectCell(nextPosition);
+    selectCell(nextPosition, false, shiftKey);
   }
 
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {

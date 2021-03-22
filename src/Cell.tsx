@@ -1,42 +1,44 @@
-import { forwardRef, memo, useRef } from 'react';
-import clsx from 'clsx';
+import clsx from "clsx";
+import React, { forwardRef, memo, useRef } from "react";
+import { useCombinedRefs } from "./hooks";
+import type { CellRendererProps } from "./types";
+import { getCellStyle, wrapEvent } from "./utils";
 
-import type { CellRendererProps } from './types';
-import { getCellStyle, wrapEvent } from './utils';
-import { useCombinedRefs } from './hooks';
-
-function Cell<R, SR>({
-  className,
-  column,
-  isCellSelected,
-  isCopied,
-  isDraggedOver,
-  isRowSelected,
-  row,
-  rowIdx,
-  dragHandleProps,
-  onRowClick,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
-  onRowChange,
-  selectCell,
-  selectRow,
-  ...props
-}: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+function Cell<R, SR>(
+  {
+    className,
+    column,
+    isCellSelected,
+    isCopied,
+    isDraggedOver,
+    isRowSelected,
+    row,
+    rowIdx,
+    dragHandleProps,
+    onRowClick,
+    onClick,
+    onDoubleClick,
+    onContextMenu,
+    onRowChange,
+    selectCell,
+    selectRow,
+    ...props
+  }: CellRendererProps<R, SR>,
+  ref: React.Ref<HTMLDivElement>
+) {
   const cellRef = useRef<HTMLDivElement>(null);
 
   const { cellClass } = column;
   className = clsx(
-    'rdg-cell',
+    "rdg-cell",
     {
-      'rdg-cell-frozen': column.frozen,
-      'rdg-cell-frozen-last': column.isLastFrozenColumn,
-      'rdg-cell-selected': isCellSelected,
-      'rdg-cell-copied': isCopied,
-      'rdg-cell-dragged-over': isDraggedOver
+      "rdg-cell-frozen": column.frozen,
+      "rdg-cell-frozen-last": column.isLastFrozenColumn,
+      "rdg-cell-selected": isCellSelected,
+      "rdg-cell-copied": isCopied,
+      "rdg-cell-dragged-over": isDraggedOver,
     },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass,
+    typeof cellClass === "function" ? cellClass(row) : cellClass,
     className
   );
 
@@ -44,9 +46,9 @@ function Cell<R, SR>({
     selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
-  function handleClick() {
+  function handleClick(event: React.MouseEvent) {
     selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(rowIdx, row, column);
+    onRowClick?.(rowIdx, row, column, event);
   }
 
   function handleContextMenu() {
@@ -98,4 +100,6 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(
+  props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>
+) => JSX.Element;

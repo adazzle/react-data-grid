@@ -1,11 +1,11 @@
-import { memo } from 'react';
-import clsx from 'clsx';
+import clsx from "clsx";
+import { memo } from "react";
+import { SELECT_COLUMN_KEY } from "./Columns";
+import GroupCell from "./GroupCell";
+import type { CalculatedColumn, Omit, Position, SelectRowEvent } from "./types";
 
-import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
-import { SELECT_COLUMN_KEY } from './Columns';
-import GroupCell from './GroupCell';
-
-export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface GroupRowRendererProps<R, SR = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "style" | "children"> {
   id: string;
   groupKey: unknown;
   viewportColumns: readonly CalculatedColumn<R, SR>[];
@@ -16,7 +16,11 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   selectedCellIdx?: number;
   isExpanded: boolean;
   isRowSelected: boolean;
-  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectCell: (
+    position: Position,
+    enableEditor?: boolean,
+    shiftKey?: boolean
+  ) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
@@ -50,17 +54,19 @@ function GroupedRow<R, SR>({
       aria-level={level}
       aria-expanded={isExpanded}
       className={clsx(
-        'rdg-row',
-        'rdg-group-row',
-        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-          'rdg-row-selected': isRowSelected,
-          'rdg-group-row-selected': selectedCellIdx === -1 // Select row if there is no selected cell
-        })}
+        "rdg-row",
+        "rdg-group-row",
+        `rdg-row-${rowIdx % 2 === 0 ? "even" : "odd"}`,
+        {
+          "rdg-row-selected": isRowSelected,
+          "rdg-group-row-selected": selectedCellIdx === -1, // Select row if there is no selected cell
+        }
+      )}
       onClick={selectGroup}
       style={{ top }}
       {...props}
     >
-      {viewportColumns.map(column => (
+      {viewportColumns.map((column) => (
         <GroupCell<R, SR>
           key={column.key}
           id={id}
@@ -80,4 +86,6 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(props: GroupRowRendererProps<R, SR>) => JSX.Element;
+export default memo(GroupedRow) as <R, SR>(
+  props: GroupRowRendererProps<R, SR>
+) => JSX.Element;
