@@ -1,32 +1,33 @@
-import { memo } from 'react';
+import type { CSSProperties } from 'react';
+
 import { rowClassname, summaryRowClassname } from './style';
+import { useColumns, useAriaRowIndex, useRowPosition } from './hooks';
 import SummaryCell from './SummaryCell';
-import type { RowRendererProps } from './types';
 
-type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
-  | 'viewportColumns'
-  | 'rowIdx'
->;
+export const DEFAULT_SUMMARY_ROW_HEIGHT = 35;
 
-interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
-  'aria-rowindex': number;
+export interface SummaryRowProps<SR> {
+  /** The height of the summary row in pixels */
+  height?: number;
   row: SR;
-  bottom: number;
 }
 
-function SummaryRow<R, SR>({
-  rowIdx,
-  row,
-  viewportColumns,
-  bottom,
-  'aria-rowindex': ariaRowIndex
-}: SummaryRowProps<R, SR>) {
+export default function SummaryRow<R, SR>({
+  height = DEFAULT_SUMMARY_ROW_HEIGHT,
+  row
+}: SummaryRowProps<SR>) {
+  const ariaRowIndex = useAriaRowIndex();
+  const viewportColumns = useColumns<R, SR>();
+  const bottom = useRowPosition();
   return (
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
-      style={{ bottom }}
+      className={`${rowClassname} ${summaryRowClassname}`}
+      style={{
+        bottom,
+        '--summary-row-height': `${height}px`
+      } as unknown as CSSProperties}
     >
       {viewportColumns.map(column => (
         <SummaryCell<R, SR>
@@ -38,5 +39,3 @@ function SummaryRow<R, SR>({
     </div>
   );
 }
-
-export default memo(SummaryRow) as <R, SR>(props: SummaryRowProps<R, SR>) => JSX.Element;

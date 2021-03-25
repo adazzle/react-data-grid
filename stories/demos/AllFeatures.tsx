@@ -1,7 +1,7 @@
 import faker from 'faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
-import DataGrid, { SelectColumn, TextEditor } from '../../src';
+import DataGrid, { HeaderRow, SelectColumn, TextEditor, Viewport } from '../../src';
 import type { Column, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
@@ -237,18 +237,22 @@ export function AllFeatures() {
     <>
       <DataGrid
         columns={columns}
-        rows={rows}
-        rowKeyGetter={rowKeyGetter}
-        onRowsChange={setRows}
-        onFill={handleFill}
-        onPaste={handlePaste}
-        rowHeight={30}
-        selectedRows={selectedRows}
         onScroll={handleScroll}
-        onSelectedRowsChange={setSelectedRows}
         className="fill-grid"
-        rowClass={row => row.id.includes('7') ? highlightClassname : undefined}
-      />
+      >
+        <HeaderRow />
+        <Viewport
+          rows={rows}
+          rowKeyGetter={rowKeyGetter}
+          onRowsChange={setRows}
+          onFill={handleFill}
+          onPaste={handlePaste}
+          rowHeight={30}
+          selectedRows={selectedRows}
+          onSelectedRowsChange={setSelectedRows}
+          rowClass={row => row.id.includes('7') ? highlightClassname : undefined}
+        />
+      </DataGrid>
       {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>}
     </>
   );

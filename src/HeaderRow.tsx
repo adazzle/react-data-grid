@@ -1,68 +1,55 @@
-import { useCallback, memo } from 'react';
+import type { CSSProperties } from 'react';
 
 import HeaderCell from './HeaderCell';
-import type { CalculatedColumn } from './types';
-import { assertIsValidKeyGetter } from './utils';
-import type { DataGridProps } from './DataGrid';
+import type { SortDirection } from './types';
 import { headerRowClassname } from './style';
+import { useColumns } from './hooks';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
-  | 'rows'
-  | 'onSelectedRowsChange'
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
-  | 'rowKeyGetter'
->;
+export const DEFAULT_HEADER_ROW_HEIGHT = 35;
 
-export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
-  columns: readonly CalculatedColumn<R, SR>[];
-  allRowsSelected: boolean;
-  onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+export interface HeaderRowProps {
+  /** The height of the header row in pixels */
+  height?: number;
+  /** The key of the column which is currently being sorted */
+  sortColumn?: string;
+  /** The direction to sort the sortColumn*/
+  sortDirection?: SortDirection;
+  /** Function called whenever grid is sorted*/
+  onSort?: (columnKey: string, direction: SortDirection) => void;
+  /** Called when a column is resized */
+  onColumnResize?: (idx: number, width: number) => void;
 }
 
-function HeaderRow<R, SR>({
-  columns,
-  rows,
-  rowKeyGetter,
-  onSelectedRowsChange,
-  allRowsSelected,
-  onColumnResize,
+export default function HeaderRow<R, SR>({
+  height = DEFAULT_HEADER_ROW_HEIGHT,
   sortColumn,
   sortDirection,
-  onSort
-}: HeaderRowProps<R, SR>) {
-  const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
-    if (!onSelectedRowsChange) return;
-
-    assertIsValidKeyGetter(rowKeyGetter);
-
-    const newSelectedRows = new Set<React.Key>(checked ? rows.map(rowKeyGetter) : undefined);
-    onSelectedRowsChange(newSelectedRows);
-  }, [onSelectedRowsChange, rows, rowKeyGetter]);
+  onSort,
+  onColumnResize
+}: HeaderRowProps) {
+  const columns = useColumns<R, SR>();
 
   return (
     <div
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
       className={headerRowClassname}
+      style={{
+        '--header-row-height': `${height}px`
+      } as unknown as CSSProperties}
     >
       {columns.map(column => {
         return (
           <HeaderCell<R, SR>
             key={column.key}
             column={column}
-            onResize={onColumnResize}
-            allRowsSelected={allRowsSelected}
-            onAllRowsSelectionChange={handleAllRowsSelectionChange}
             onSort={onSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}
+            onColumnResize={onColumnResize}
           />
         );
       })}
     </div>
   );
 }
-
-export default memo(HeaderRow) as <R, SR>(props: HeaderRowProps<R, SR>) => JSX.Element;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import DataGrid from '../../src';
+import DataGrid, { HeaderRow, Viewport } from '../../src';
 import type { Column, CellNavigationMode } from '../../src';
 
 interface Row {
@@ -103,11 +103,13 @@ export function CellNavigation() {
           Loop Over Row
         </label>
       </div>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        cellNavigationMode={cellNavigatioMode}
-      />
+      <DataGrid columns={columns}>
+        <HeaderRow />
+        <Viewport
+          rows={rows}
+          cellNavigationMode={cellNavigatioMode}
+        />
+      </DataGrid>
     </>
   );
 }

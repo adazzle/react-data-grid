@@ -1,7 +1,11 @@
 export { default } from './DataGrid';
 export type { DataGridProps, DataGridHandle } from './DataGrid';
 export { default as Cell } from './Cell';
+export { default as HeaderRow } from './HeaderRow';
 export { default as Row } from './Row';
+export { default as FilterRow } from './FilterRow';
+export { default as SummaryRow } from './SummaryRow';
+export { default as Viewport } from './Viewport';
 export * from './Columns';
 export * from './formatters';
 export { default as TextEditor } from './editors/TextEditor';

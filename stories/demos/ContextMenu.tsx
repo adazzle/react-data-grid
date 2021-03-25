@@ -4,7 +4,7 @@ import faker from 'faker';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 import { css } from '@linaria/core';
 
-import DataGrid, { Row as GridRow } from '../../src';
+import DataGrid, { HeaderRow, Row as GridRow, Viewport } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -162,12 +162,16 @@ export function ContextMenuStory() {
   return (
     <>
       <DataGrid
-        rowKeyGetter={rowKeyGetter}
         columns={columns}
-        rows={rows}
-        rowRenderer={RowRenderer}
         className="fill-grid"
-      />
+      >
+        <HeaderRow />
+        <Viewport
+          rowKeyGetter={rowKeyGetter}
+          rows={rows}
+          rowRenderer={RowRenderer}
+        />
+      </DataGrid>
       {createPortal(
         <ContextMenu id="grid-context-menu">
           <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>

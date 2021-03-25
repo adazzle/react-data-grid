@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, HeaderRow, SummaryRow, Viewport } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -19,7 +19,7 @@ function CurrencyFormatter({ value }: { value: number }) {
   return <>{currencyFormatter.format(value)}</>;
 }
 
-interface SummaryRow {
+interface SR {
   id: string;
   totalCount: number;
   yesCount: number;
@@ -43,7 +43,7 @@ interface Row {
   available: boolean;
 }
 
-function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
+function getColumns(countries: string[]): readonly Column<Row, SR>[] {
   return [
     SelectColumn,
     {
@@ -224,9 +224,8 @@ export function CommonFeatures() {
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
-  const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
-    return [summaryRow];
+  const summaryRow = useMemo((): SR => {
+    return { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
   }, [rows]);
 
   const sortedRows: readonly Row[] = useMemo(() => {
@@ -268,22 +267,27 @@ export function CommonFeatures() {
 
   return (
     <DataGrid
-      rowKeyGetter={rowKeyGetter}
       columns={columns}
-      rows={sortedRows}
       defaultColumnOptions={{
         sortable: true,
         resizable: true
       }}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      onRowsChange={setRows}
-      sortColumn={sortColumn}
-      sortDirection={sortDirection}
-      onSort={handleSort}
-      summaryRows={summaryRows}
       className="fill-grid"
-    />
+    >
+      <HeaderRow
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+      />
+      <Viewport
+        rowKeyGetter={rowKeyGetter}
+        rows={sortedRows}
+        onRowsChange={setRows}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+      />
+      <SummaryRow row={summaryRow} />
+    </DataGrid>
   );
 }
 

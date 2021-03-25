@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
 
@@ -9,7 +7,7 @@ interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
 }
 
-function SummaryCell<R, SR>({
+export default function SummaryCell<R, SR>({
   column,
   row
 }: SummaryCellProps<R, SR>) {
@@ -29,5 +27,3 @@ function SummaryCell<R, SR>({
     </div>
   );
 }
-
-export default memo(SummaryCell) as <R, SR>(props: SummaryCellProps<R, SR>) => JSX.Element;

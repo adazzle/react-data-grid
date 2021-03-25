@@ -6,7 +6,7 @@ import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn } from '../../src';
+import DataGrid, { HeaderRow, SelectColumn, Viewport } from '../../src';
 import type { Column } from '../../src';
 
 const groupingClassname = css`
@@ -172,17 +172,21 @@ export function Grouping() {
         />
       </label>
       <DataGrid
-        rowKeyGetter={rowKeyGetter}
         columns={columns}
-        rows={rows}
-        selectedRows={selectedRows}
-        onSelectedRowsChange={setSelectedRows}
-        groupBy={groupBy}
-        rowGrouper={rowGrouper}
-        expandedGroupIds={expandedGroupIds}
-        onExpandedGroupIdsChange={setExpandedGroupIds}
         defaultColumnOptions={{ resizable: true }}
-      />
+      >
+        <HeaderRow />
+        <Viewport
+          rowKeyGetter={rowKeyGetter}
+          rows={rows}
+          selectedRows={selectedRows}
+          onSelectedRowsChange={setSelectedRows}
+          groupBy={groupBy}
+          rowGrouper={rowGrouper}
+          expandedGroupIds={expandedGroupIds}
+          onExpandedGroupIdsChange={setExpandedGroupIds}
+        />
+      </DataGrid>
     </div>
   );
 }
