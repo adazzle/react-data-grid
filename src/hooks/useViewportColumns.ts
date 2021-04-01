@@ -44,7 +44,8 @@ export function useViewportColumns<R, SR>({
         rowGroup,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
-        formatter: rawColumn.formatter ?? defaultFormatter
+        formatter: rawColumn.formatter ?? defaultFormatter,
+        width: rawColumn.width ?? rawColumn.maxWidth
       };
 
       if (rowGroup) {
