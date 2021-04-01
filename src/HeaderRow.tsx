@@ -19,6 +19,8 @@ export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  rowIndex?: number;
+  topOffset?: number;
 }
 
 function HeaderRow<R, SR>({
@@ -30,7 +32,9 @@ function HeaderRow<R, SR>({
   onColumnResize,
   sortColumn,
   sortDirection,
-  onSort
+  onSort,
+  rowIndex = 1,
+  topOffset = 0
 }: HeaderRowProps<R, SR>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
     if (!onSelectedRowsChange) return;
@@ -50,8 +54,11 @@ function HeaderRow<R, SR>({
   return (
     <div
       role="row"
-      aria-rowindex={1} // aria-rowindex is 1 based
+      aria-rowindex={rowIndex} // aria-rowindex is 1 based
       className={headerRowClassname}
+      style={{
+        top: topOffset
+      }}
     >
       {columns.map(column => {
         return (

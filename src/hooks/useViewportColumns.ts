@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, Column, ColumnMetric } from '../types';
+import type { CalculatedColumn, CalculatedParentColumn, Column, ColumnMetric, ParentColumn } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
 interface ViewportColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
-  rawColumns: readonly Column<R, SR>[];
+  rawColumns: readonly (Column<R, SR> | ParentColumn<R, SR>)[];
   rawGroupBy?: readonly string[];
   viewportWidth: number;
   scrollLeft: number;
@@ -26,15 +26,19 @@ export function useViewportColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+  const { parentColumns, columns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
+    let lastFrozenParentColumnIndex = -1;
 
-    const columns = rawColumns.map(rawColumn => {
+    const columns: CalculatedColumn<R, SR>[] = [];
+    const parentColumns: CalculatedParentColumn<R, SR>[] = [];
+
+    function getColumn(rawColumn: Column<R, SR>, parentFrozen = false) {
       const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      const frozen = rowGroup || rawColumn.frozen || false;
+      const frozen = rowGroup || rawColumn.frozen || parentFrozen || false;
 
       const column: CalculatedColumn<R, SR> = {
         ...rawColumn,
@@ -57,6 +61,34 @@ export function useViewportColumns<R, SR>({
       }
 
       return column;
+    }
+
+    function getParentColumn(rawColumn: ParentColumn<R, SR>) {
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      const frozen = rawColumn.frozen || false;
+
+      const column: CalculatedParentColumn<R, SR> = {
+        ...rawColumn,
+        idx: 0,
+        frozen,
+        isLastFrozenColumn: false,
+        span: rawColumn.children.length
+      };
+
+      if (frozen) {
+        lastFrozenParentColumnIndex++;
+      }
+
+      return column;
+    }
+
+    rawColumns.forEach((rawColumn) => {
+      if ('children' in rawColumn) {
+        parentColumns.push(getParentColumn(rawColumn));
+        columns.push(...rawColumn.children.map(col => getColumn(col, rawColumn.frozen)));
+      } else {
+        columns.push(getColumn(rawColumn));
+      }
     });
 
     columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
@@ -84,6 +116,31 @@ export function useViewportColumns<R, SR>({
       return 0;
     });
 
+    parentColumns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
+      // Sort select column first:
+      if (aKey === SELECT_COLUMN_KEY) return -1;
+      if (bKey === SELECT_COLUMN_KEY) return 1;
+
+      // // Sort grouped columns second, following the groupBy order:
+      // if (rawGroupBy?.includes(aKey)) {
+      //   if (rawGroupBy.includes(bKey)) {
+      //     return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
+      //   }
+      //   return -1;
+      // }
+      // if (rawGroupBy?.includes(bKey)) return 1;
+
+      // Sort frozen columns third:
+      if (frozenA) {
+        if (frozenB) return 0;
+        return -1;
+      }
+      if (frozenB) return 1;
+
+      // Sort other columns last:
+      return 0;
+    });
+
     columns.forEach((column, idx) => {
       column.idx = idx;
 
@@ -92,11 +149,20 @@ export function useViewportColumns<R, SR>({
       }
     });
 
+    parentColumns.forEach((column, idx) => {
+      column.idx = idx;
+    });
+
     if (lastFrozenColumnIndex !== -1) {
       columns[lastFrozenColumnIndex].isLastFrozenColumn = true;
     }
 
+    if (lastFrozenParentColumnIndex !== -1) {
+      parentColumns[lastFrozenParentColumnIndex].isLastFrozenColumn = true;
+    }
+
     return {
+      parentColumns,
       columns,
       lastFrozenColumnIndex,
       groupBy
@@ -214,7 +280,7 @@ export function useViewportColumns<R, SR>({
     return viewportColumns;
   }, [colOverscanEndIdx, colOverscanStartIdx, columns]);
 
-  return { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
+  return { parentColumns, columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy };
 }
 
 function getSpecifiedWidth<R, SR>(

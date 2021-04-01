@@ -4,7 +4,8 @@ import {
   useRef,
   useLayoutEffect,
   useImperativeHandle,
-  useCallback
+  useCallback,
+  useMemo
 } from 'react';
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
@@ -12,6 +13,7 @@ import clsx from 'clsx';
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
+import ParentHeaderRow from './ParentHeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
@@ -39,7 +41,8 @@ import type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
-  SortDirection
+  SortDirection,
+  ParentColumn
 } from './types';
 
 interface SelectCellState extends Position {
@@ -82,7 +85,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Grid and data Props
    */
   /** An array of objects representing each column on the grid */
-  columns: readonly Column<R, SR>[];
+  columns: readonly (Column<R, SR> | ParentColumn<R, SR>)[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
@@ -246,13 +249,16 @@ function DataGrid<R, SR>({
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const headerRowsCount = enableFilterRow ? 2 : 1;
+  const enableParentHeader = useMemo(() => rawColumns.filter(c => 'children' in c).length > 0, [rawColumns]);
+  const parentRowCount = enableParentHeader ? 1 : 0;
+  const filterRowCount = enableFilterRow ? 1 : 0;
+  const headerRowsCount = parentRowCount + filterRowCount + 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
-  const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
+  const totalHeaderHeight = headerRowHeight * (parentRowCount + 1) + (enableFilterRow ? headerFiltersHeight : 0);
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * rowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
-  const { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
+  const { parentColumns, columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
     rawColumns,
     columnWidths,
     scrollLeft,
@@ -821,7 +827,7 @@ function DataGrid<R, SR>({
 
   function getViewportRows() {
     const rowElements = [];
-    let startRowIndex = 0;
+    let startRowIndex = enableParentHeader ? 1 : 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
       const top = rowIdx * rowHeight + totalHeaderHeight;
@@ -920,6 +926,11 @@ function DataGrid<R, SR>({
       ref={gridRef}
       onScroll={handleScroll}
     >
+      {enableParentHeader && (
+        <ParentHeaderRow<R, SR>
+          columns={parentColumns}
+        />
+      )}
       <HeaderRow<R, SR>
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
@@ -930,6 +941,8 @@ function DataGrid<R, SR>({
         sortColumn={sortColumn}
         sortDirection={sortDirection}
         onSort={onSort}
+        rowIndex={enableParentHeader ? 2 : undefined}
+        topOffset={parentRowCount * headerRowHeight}
       />
       {enableFilterRow && (
         <FilterRow<R, SR>

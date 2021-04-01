@@ -8,6 +8,7 @@ export { default as TextEditor } from './editors/TextEditor';
 export { default as SortableHeaderCell } from './headerCells/SortableHeaderCell';
 export type {
   Column,
+  ParentColumn,
   CalculatedColumn,
   FormatterProps,
   SummaryFormatterProps,

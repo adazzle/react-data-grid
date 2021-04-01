@@ -3,6 +3,20 @@ import type { ReactElement } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+export interface ParentColumn<TRow, TSummaryRow = unknown> {
+  /** The name of the column. By default it will be displayed in the header cell */
+  name: string | ReactElement;
+  /** A unique key to distinguish each column */
+  key: string;
+  /** Determines whether a column and all of its children are frozen or not */
+  frozen?: boolean;
+  /** Header renderer for each header cell */
+  parentHeaderRenderer?: React.ComponentType<ParentHeaderRendererProps<TRow, TSummaryRow>>;
+  /** Child columns grouped underneath the parent */
+  children: Omit<Column<TRow, TSummaryRow>, 'frozen'>[];
+  parentHeaderCellClass?: string;
+}
+
 export interface Column<TRow, TSummaryRow = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
   name: string | ReactElement;
@@ -53,6 +67,13 @@ export interface Column<TRow, TSummaryRow = unknown> {
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
   /** Component to be used to filter the data of the column */
   filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
+}
+
+export interface CalculatedParentColumn<TRow, TSummaryRow = unknown> extends ParentColumn<TRow, TSummaryRow> {
+  idx: number;
+  frozen: boolean;
+  isLastFrozenColumn: boolean;
+  span: number;
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
@@ -123,6 +144,10 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onSort?: (columnKey: string, direction: SortDirection) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
+}
+
+export interface ParentHeaderRendererProps<TRow, TSummaryRow = unknown> {
+  column: CalculatedParentColumn<TRow, TSummaryRow>;
 }
 
 interface SelectedCellPropsBase {
