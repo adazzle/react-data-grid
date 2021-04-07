@@ -21,7 +21,7 @@ interface ChangeEvent<R, SR> {
 export function NumericFilter<R, SR>({ value, column, onChange }: FilterRendererProps<R, ChangeEvent<R, SR>, SR>) {
   /** Validates the input */
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    const result = /[><,0-9-]/.test(event.key);
+    const result = /[><,0-9-\bBackspace\b\bDelete\b]/.test(event.key);
     if (!result) {
       event.preventDefault();
     }
