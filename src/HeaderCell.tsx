@@ -88,9 +88,9 @@ export default function HeaderCell<R, SR>({
 
   const sortDirection = sortItems?.get(column.key);
 
-  function onSort(columnKey: string, direction: SortDirection) {
+  function onSort(columnKey: string, direction: SortDirection, isCtrlClick: boolean) {
     if (!onSortItemsChange) return;
-    const newSortedItems = new Map();
+    const newSortedItems = new Map(isCtrlClick ? sortItems ?? [] : []);
     newSortedItems.set(columnKey, direction);
     onSortItemsChange(newSortedItems);
   }

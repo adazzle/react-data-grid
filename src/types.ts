@@ -119,7 +119,7 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   sortDirection?: SortDirection;
-  onSort?: (columnKey: string, direction: SortDirection) => void;
+  onSort?: (columnKey: string, direction: SortDirection, isCtrlClick: boolean) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
