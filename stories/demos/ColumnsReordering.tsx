@@ -4,7 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
 import DataGrid from '../../src';
-import type { Column, HeaderRendererProps, SortDirection } from '../../src';
+import type { Column, HeaderRendererProps, SortColumn } from '../../src';
 
 interface Row {
   id: number;
@@ -66,7 +66,7 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
-  const [sortItems, setSortItems] = useState<ReadonlyMap<string, SortDirection>>(new Map([['task', 'NONE']]));
+  const [sortColumns, setSortItems] = useState<readonly Readonly<SortColumn>[]>([{ columnKey: 'task', direction: 'NONE' }]);
 
   const draggableColumns = useMemo(() => {
     function HeaderRenderer(props: HeaderRendererProps<Row>) {
@@ -94,35 +94,35 @@ export function ColumnsReordering() {
   }, [columns]);
 
   const sortedRows = useMemo((): readonly Row[] => {
-    if (sortItems.size === 0) return rows;
-    const [sortColumn, sortDirection] = [...sortItems][0];
+    if (sortColumns.length === 0) return rows;
+    const { columnKey, direction } = sortColumns[0];
 
-    if (sortDirection === 'NONE') return rows;
+    if (direction === 'NONE') return rows;
 
     let sortedRows: Row[] = [...rows];
 
-    switch (sortColumn) {
+    switch (columnKey) {
       case 'task':
       case 'priority':
       case 'issueType':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
+        sortedRows = sortedRows.sort((a, b) => a[columnKey].localeCompare(b[columnKey]));
         break;
       case 'complete':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
+        sortedRows = sortedRows.sort((a, b) => a[columnKey] - b[columnKey]);
         break;
       default:
     }
 
-    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortItems]);
+    return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
+  }, [rows, sortColumns]);
 
   return (
     <DndProvider backend={HTML5Backend}>
       <DataGrid
         columns={draggableColumns}
         rows={sortedRows}
-        sortItems={sortItems}
-        onSortItemsChange={setSortItems}
+        sortColumns={sortColumns}
+        onSortColumnsChange={setSortItems}
       />
     </DndProvider>
   );

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import faker from 'faker';
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
-import type { Column, SortDirection } from '../../src';
+import type { Column, SortColumn } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
 
@@ -214,7 +214,7 @@ function createRows(): readonly Row[] {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [sortItems, setSortItems] = useState<ReadonlyMap<string, SortDirection>>(new Map([['id', 'NONE']]));
+  const [sortColumns, setSortItems] = useState<readonly Readonly<SortColumn>[]>([{ columnKey: 'id', direction: 'NONE' }]);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
@@ -230,14 +230,14 @@ export function CommonFeatures() {
   }, [rows]);
 
   const sortedRows: readonly Row[] = useMemo(() => {
-    if (sortItems.size === 0) return rows;
-    const [sortColumn, sortDirection] = [...sortItems][0];
+    if (sortColumns.length === 0) return rows;
+    const { columnKey, direction } = sortColumns[0];
 
-    if (sortDirection === 'NONE') return rows;
+    if (direction === 'NONE') return rows;
 
     let sortedRows: Row[] = [...rows];
 
-    switch (sortColumn) {
+    switch (columnKey) {
       case 'assignee':
       case 'title':
       case 'client':
@@ -247,23 +247,23 @@ export function CommonFeatures() {
       case 'transaction':
       case 'account':
       case 'version':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
+        sortedRows = sortedRows.sort((a, b) => a[columnKey].localeCompare(b[columnKey]));
         break;
       case 'available':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
+        sortedRows = sortedRows.sort((a, b) => a[columnKey] === b[columnKey] ? 0 : a[columnKey] ? 1 : -1);
         break;
       case 'id':
       case 'progress':
       case 'startTimestamp':
       case 'endTimestamp':
       case 'budget':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
+        sortedRows = sortedRows.sort((a, b) => a[columnKey] - b[columnKey]);
         break;
       default:
     }
 
-    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortItems]);
+    return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
+  }, [rows, sortColumns]);
 
   return (
     <DataGrid
@@ -277,8 +277,8 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortItems={sortItems}
-      onSortItemsChange={setSortItems}
+      sortColumns={sortColumns}
+      onSortColumnsChange={setSortItems}
       summaryRows={summaryRows}
       className="fill-grid"
     />

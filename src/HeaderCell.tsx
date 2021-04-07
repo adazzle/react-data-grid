@@ -31,8 +31,8 @@ function getAriaSort(sortDirection?: SortDirection) {
 }
 
 type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortItems'
-  | 'onSortItemsChange'
+  | 'sortColumns'
+  | 'onSortColumnsChange'
   | 'allRowsSelected'
 >;
 
@@ -47,8 +47,8 @@ export default function HeaderCell<R, SR>({
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
-  sortItems,
-  onSortItemsChange
+  sortColumns,
+  onSortColumnsChange
 }: HeaderCellProps<R, SR>) {
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -86,13 +86,23 @@ export default function HeaderCell<R, SR>({
     window.addEventListener('pointerup', onPointerUp);
   }
 
-  const sortDirection = sortItems?.get(column.key);
+  const sortDirection = sortColumns?.find(item => item.columnKey === column.key)?.direction;
 
   function onSort(columnKey: string, direction: SortDirection, isCtrlClick: boolean) {
-    if (!onSortItemsChange) return;
-    const newSortedItems = new Map(isCtrlClick ? sortItems ?? [] : []);
-    newSortedItems.set(columnKey, direction);
-    onSortItemsChange(newSortedItems);
+    if (!onSortColumnsChange) return;
+
+    if (isCtrlClick) {
+      const newSortColumns = sortColumns ? [...sortColumns] : [];
+      const itemIndex = newSortColumns.findIndex(item => item.columnKey === columnKey);
+      if (itemIndex !== -1) {
+        newSortColumns[itemIndex] = { columnKey, direction };
+      } else {
+        newSortColumns.push({ columnKey, direction });
+      }
+      onSortColumnsChange(newSortColumns);
+    } else {
+      onSortColumnsChange([{ columnKey, direction }]);
+    }
   }
 
   function getCell() {
