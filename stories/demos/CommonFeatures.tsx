@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import faker from 'faker';
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortDirection } from '../../src';
@@ -214,7 +214,7 @@ function createRows(): readonly Row[] {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
+  const [sortItems, setSortItems] = useState<ReadonlyMap<string, SortDirection>>(new Map([['id', 'NONE']]));
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
@@ -230,6 +230,9 @@ export function CommonFeatures() {
   }, [rows]);
 
   const sortedRows: readonly Row[] = useMemo(() => {
+    if (sortItems.size === 0) return rows;
+    const [sortColumn, sortDirection] = [...sortItems][0];
+
     if (sortDirection === 'NONE') return rows;
 
     let sortedRows: Row[] = [...rows];
@@ -260,11 +263,7 @@ export function CommonFeatures() {
     }
 
     return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortDirection, sortColumn]);
-
-  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
-    setSort([columnKey, direction]);
-  }, []);
+  }, [rows, sortItems]);
 
   return (
     <DataGrid
@@ -278,9 +277,8 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortColumn={sortColumn}
-      sortDirection={sortDirection}
-      onSort={handleSort}
+      sortItems={sortItems}
+      onSortItemsChange={setSortItems}
       summaryRows={summaryRows}
       className="fill-grid"
     />

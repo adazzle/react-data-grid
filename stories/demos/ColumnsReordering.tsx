@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -66,11 +66,7 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
-  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['task', 'NONE']);
-
-  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
-    setSort([columnKey, direction]);
-  }, []);
+  const [sortItems, setSortItems] = useState<ReadonlyMap<string, SortDirection>>(new Map([['task', 'NONE']]));
 
   const draggableColumns = useMemo(() => {
     function HeaderRenderer(props: HeaderRendererProps<Row>) {
@@ -98,6 +94,9 @@ export function ColumnsReordering() {
   }, [columns]);
 
   const sortedRows = useMemo((): readonly Row[] => {
+    if (sortItems.size === 0) return rows;
+    const [sortColumn, sortDirection] = [...sortItems][0];
+
     if (sortDirection === 'NONE') return rows;
 
     let sortedRows: Row[] = [...rows];
@@ -115,16 +114,15 @@ export function ColumnsReordering() {
     }
 
     return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortDirection, sortColumn]);
+  }, [rows, sortItems]);
 
   return (
     <DndProvider backend={HTML5Backend}>
       <DataGrid
         columns={draggableColumns}
         rows={sortedRows}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={handleSort}
+        sortItems={sortItems}
+        onSortItemsChange={setSortItems}
       />
     </DndProvider>
   );

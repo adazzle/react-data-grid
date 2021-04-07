@@ -13,7 +13,7 @@ interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;
 }
 
-export function DraggableHeaderRenderer<R>({ onColumnsReorder, column, sortColumn, sortDirection, onSort }: DraggableHeaderRendererProps<R>) {
+export function DraggableHeaderRenderer<R>({ onColumnsReorder, column, sortDirection, onSort }: DraggableHeaderRendererProps<R>) {
   const [{ isDragging }, drag] = useDrag({
     item: { key: column.key, type: 'COLUMN_DRAG' },
     collect: monitor => ({
@@ -45,7 +45,6 @@ export function DraggableHeaderRenderer<R>({ onColumnsReorder, column, sortColum
     >
       <SortableHeaderCell
         column={column}
-        sortColumn={sortColumn}
         sortDirection={sortDirection}
         onSort={onSort}
       >

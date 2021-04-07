@@ -114,12 +114,9 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   selectedRows?: ReadonlySet<React.Key>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: (selectedRows: Set<React.Key>) => void;
-  /** The key of the column which is currently being sorted */
-  sortColumn?: string;
-  /** The direction to sort the sortColumn*/
-  sortDirection?: SortDirection;
+  sortItems?: ReadonlyMap<string, SortDirection>;
   /** Function called whenever grid is sorted*/
-  onSort?: (columnKey: string, direction: SortDirection) => void;
+  onSortItemsChange?: (sortItems: Map<string, SortDirection>) => void;
   filters?: Readonly<Filters>;
   onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
@@ -185,9 +182,8 @@ function DataGrid<R, SR>({
   // Feature props
   selectedRows,
   onSelectedRowsChange,
-  sortColumn,
-  sortDirection,
-  onSort,
+  sortItems,
+  onSortItemsChange,
   filters,
   onFiltersChange,
   defaultColumnOptions,
@@ -934,9 +930,8 @@ function DataGrid<R, SR>({
         onColumnResize={handleColumnResize}
         allRowsSelected={selectedRows?.size === rawRows.length}
         onSelectedRowsChange={onSelectedRowsChange}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={onSort}
+        sortItems={sortItems}
+        onSortItemsChange={onSortItemsChange}
       />
       {enableFilterRow && (
         <FilterRow<R, SR>

@@ -31,9 +31,8 @@ function getAriaSort(sortDirection?: SortDirection) {
 }
 
 type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
+  | 'sortItems'
+  | 'onSortItemsChange'
   | 'allRowsSelected'
 >;
 
@@ -48,9 +47,8 @@ export default function HeaderCell<R, SR>({
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
-  sortColumn,
-  sortDirection,
-  onSort
+  sortItems,
+  onSortItemsChange
 }: HeaderCellProps<R, SR>) {
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -88,12 +86,20 @@ export default function HeaderCell<R, SR>({
     window.addEventListener('pointerup', onPointerUp);
   }
 
+  const sortDirection = sortItems?.get(column.key);
+
+  function onSort(columnKey: string, direction: SortDirection) {
+    if (!onSortItemsChange) return;
+    const newSortedItems = new Map();
+    newSortedItems.set(columnKey, direction);
+    onSortItemsChange(newSortedItems);
+  }
+
   function getCell() {
     if (column.headerRenderer) {
       return (
         <column.headerRenderer
           column={column}
-          sortColumn={sortColumn}
           sortDirection={sortDirection}
           onSort={onSort}
           allRowsSelected={allRowsSelected}
@@ -107,7 +113,6 @@ export default function HeaderCell<R, SR>({
         <SortableHeaderCell
           column={column}
           onSort={onSort}
-          sortColumn={sortColumn}
           sortDirection={sortDirection}
         >
           {column.name}
@@ -126,7 +131,7 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
+      aria-sort={sortDirection ? getAriaSort(sortDirection) : undefined}
       className={className}
       style={getCellStyle(column)}
       onPointerDown={column.resizable ? onPointerDown : undefined}
