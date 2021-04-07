@@ -212,6 +212,30 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
+function compare(row1: Row, row2: Row, columnKey: string) {
+  switch (columnKey) {
+    case 'assignee':
+    case 'title':
+    case 'client':
+    case 'area':
+    case 'country':
+    case 'contact':
+    case 'transaction':
+    case 'account':
+    case 'version':
+      return row1[columnKey].localeCompare(row2[columnKey]);
+    case 'available':
+      return row1[columnKey] === row2[columnKey] ? 0 : row1[columnKey] ? 1 : -1;
+    case 'id':
+    case 'progress':
+    case 'startTimestamp':
+    case 'endTimestamp':
+    case 'budget':
+      return row1[columnKey] - row2[columnKey];
+    default:
+      return 0;
+  }
+}
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortItems] = useState<readonly Readonly<SortColumn>[]>([{ columnKey: 'id', direction: 'NONE' }]);
@@ -231,38 +255,21 @@ export function CommonFeatures() {
 
   const sortedRows: readonly Row[] = useMemo(() => {
     if (sortColumns.length === 0) return rows;
-    const { columnKey, direction } = sortColumns[0];
 
-    if (direction === 'NONE') return rows;
-
-    let sortedRows: Row[] = [...rows];
-
-    switch (columnKey) {
-      case 'assignee':
-      case 'title':
-      case 'client':
-      case 'area':
-      case 'country':
-      case 'contact':
-      case 'transaction':
-      case 'account':
-      case 'version':
-        sortedRows = sortedRows.sort((a, b) => a[columnKey].localeCompare(b[columnKey]));
-        break;
-      case 'available':
-        sortedRows = sortedRows.sort((a, b) => a[columnKey] === b[columnKey] ? 0 : a[columnKey] ? 1 : -1);
-        break;
-      case 'id':
-      case 'progress':
-      case 'startTimestamp':
-      case 'endTimestamp':
-      case 'budget':
-        sortedRows = sortedRows.sort((a, b) => a[columnKey] - b[columnKey]);
-        break;
-      default:
-    }
-
-    return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
+    const sortedRows: Row[] = [...rows];
+    sortedRows.sort((a, b) => {
+      let result = 0;
+      for (const { columnKey, direction } of sortColumns) {
+        if (direction === 'NONE') continue;
+        result = compare(a, b, columnKey);
+        if (result !== 0) {
+          result = direction === 'DESC' ? -result : result;
+          break;
+        }
+      }
+      return result;
+    });
+    return sortedRows;
   }, [rows, sortColumns]);
 
   return (
