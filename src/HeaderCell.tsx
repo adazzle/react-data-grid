@@ -95,7 +95,11 @@ export default function HeaderCell<R, SR>({
       const newSortColumns = sortColumns ? [...sortColumns] : [];
       const itemIndex = newSortColumns.findIndex(item => item.columnKey === columnKey);
       if (itemIndex !== -1) {
-        newSortColumns[itemIndex] = { columnKey, direction };
+        if (direction === 'NONE') {
+          newSortColumns.splice(itemIndex, 1);
+        } else {
+          newSortColumns[itemIndex] = { columnKey, direction };
+        }
       } else {
         newSortColumns.push({ columnKey, direction });
       }
