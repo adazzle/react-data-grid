@@ -1,10 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import { DataGridExport } from './components/DataGridExport';
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
+import { exportToCsv } from './utils';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -267,26 +267,36 @@ export function CommonFeatures() {
     setSort([columnKey, direction]);
   }, []);
 
+  const gridElement = (
+    <DataGrid
+      rowKeyGetter={rowKeyGetter}
+      columns={columns}
+      rows={sortedRows}
+      defaultColumnOptions={{
+        sortable: true,
+        resizable: true
+      }}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      onRowsChange={setRows}
+      sortColumn={sortColumn}
+      sortDirection={sortDirection}
+      onSort={handleSort}
+      summaryRows={summaryRows}
+      className="fill-grid"
+    />
+  );
+
   return (
-    <DataGridExport>
-      <DataGrid
-        rowKeyGetter={rowKeyGetter}
-        columns={columns}
-        rows={sortedRows}
-        defaultColumnOptions={{
-          sortable: true,
-          resizable: true
-        }}
-        selectedRows={selectedRows}
-        onSelectedRowsChange={setSelectedRows}
-        onRowsChange={setRows}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={handleSort}
-        summaryRows={summaryRows}
-        className="fill-grid"
-      />
-    </DataGridExport>
+    <>
+      <button onClick={() => {
+        exportToCsv(gridElement, 'CommonFeatures.csv');
+      }}
+      >
+        Export
+      </button>
+      {gridElement}
+    </>
   );
 }
 
