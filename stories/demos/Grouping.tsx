@@ -8,7 +8,6 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import { exportToCsv } from './utils';
 
 const groupingClassname = css`
   display: flex;
@@ -19,11 +18,6 @@ const groupingClassname = css`
   > .rdg {
     flex: 1;
   }
-`;
-
-const toolbarClassname = css`
-  display: flex;
-  justify-content: space-between;
 `;
 
 interface Row {
@@ -153,56 +147,42 @@ export function Grouping() {
     setExpandedGroupIds(new Set());
   }
 
-  const gridElement = (
-    <DataGrid
-      rowKeyGetter={rowKeyGetter}
-      columns={columns}
-      rows={rows}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      groupBy={groupBy}
-      rowGrouper={rowGrouper}
-      expandedGroupIds={expandedGroupIds}
-      onExpandedGroupIdsChange={setExpandedGroupIds}
-      defaultColumnOptions={{ resizable: true }}
-    />
-  );
-
   return (
     <div className={groupingClassname}>
-      <div className={toolbarClassname}>
-        <label style={{ width: 400 }}>
-          <b>Group by</b> (drag to sort)
-          <SortableSelect
+      <label style={{ width: 400 }}>
+        <b>Group by</b> (drag to sort)
+        <SortableSelect
           // react-sortable-hoc props
-            axis="xy"
-            onSortEnd={onSortEnd}
-            distance={4}
-            getHelperDimensions={({ node }) => node.getBoundingClientRect()}
-            // react-select props
-            isMulti
-            value={selectedOptions}
-            onChange={options => {
-              setSelectedOptions(options);
-              setExpandedGroupIds(new Set());
-            }}
-            options={options}
-            components={{
-              MultiValue: SortableMultiValue
-            }}
-            closeMenuOnSelect={false}
-          />
-        </label>
-        <div>
-          <button onClick={() => {
-            exportToCsv(gridElement, 'Grouping.csv');
+          axis="xy"
+          onSortEnd={onSortEnd}
+          distance={4}
+          getHelperDimensions={({ node }) => node.getBoundingClientRect()}
+          // react-select props
+          isMulti
+          value={selectedOptions}
+          onChange={options => {
+            setSelectedOptions(options);
+            setExpandedGroupIds(new Set());
           }}
-          >
-            Export
-          </button>
-        </div>
-      </div>
-      {gridElement}
+          options={options}
+          components={{
+            MultiValue: SortableMultiValue
+          }}
+          closeMenuOnSelect={false}
+        />
+      </label>
+      <DataGrid
+        rowKeyGetter={rowKeyGetter}
+        columns={columns}
+        rows={rows}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        groupBy={groupBy}
+        rowGrouper={rowGrouper}
+        expandedGroupIds={expandedGroupIds}
+        onExpandedGroupIdsChange={setExpandedGroupIds}
+        defaultColumnOptions={{ resizable: true }}
+      />
     </div>
   );
 }
