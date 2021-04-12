@@ -92,8 +92,6 @@ export function useViewportRows<R>({
 
   const isGroupRow = <R>(row: unknown): row is GroupRow<R> => allGroupRows.has(row);
 
-  const overscanThreshold = 4;
-
   if (!enableVirtualization) {
     return {
       rowOverscanStartIdx: 0,
@@ -104,6 +102,7 @@ export function useViewportRows<R>({
     };
   }
 
+  const overscanThreshold = 4;
   const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
   const rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
   const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
