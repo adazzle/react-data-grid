@@ -79,9 +79,6 @@ function downloadFile(fileName: string, data: Blob) {
   downloadLink.download = fileName;
   const url = URL.createObjectURL(data);
   downloadLink.href = url;
-  downloadLink.style.display = 'none';
-  document.body.appendChild(downloadLink);
   downloadLink.click();
-  document.body.removeChild(downloadLink);
   URL.revokeObjectURL(url);
 }
