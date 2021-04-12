@@ -204,7 +204,7 @@ export function useViewportColumns<R, SR>({
     const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
     return [colOverscanStartIdx, colOverscanEndIdx];
-  }, [columnMetrics, columns, enableVirtualization, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth]);
+  }, [columnMetrics, columns, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth, enableVirtualization]);
 
   const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];
