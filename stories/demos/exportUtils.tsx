@@ -44,7 +44,7 @@ export function exportToPdf<R, SR>(gridElement: ReactElement<DataGridProps<R, SR
 }
 
 function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) {
-  const grid = document.createElement('content');
+  const grid = document.createElement('div');
   grid.innerHTML = renderToStaticMarkup(cloneElement(gridElement, {
     enableVirtualization: false
   }));
