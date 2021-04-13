@@ -79,7 +79,10 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'client',
       name: 'Client',
       width: 220,
-      editor: TextEditor
+      editor: TextEditor,
+      colSpan({ row, rowType }) {
+        return rowType === 'ROW' && row.id === 2 ? 2 : undefined;
+      }
     },
     {
       key: 'area',

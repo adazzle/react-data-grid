@@ -44,6 +44,8 @@ function Row<R, SR = unknown>({
     className
   );
 
+  let colSpan: number| undefined;
+
   return (
     <div
       role="row"
@@ -56,6 +58,12 @@ function Row<R, SR = unknown>({
       {...props}
     >
       {viewportColumns.map(column => {
+        if (colSpan && colSpan > 1) {
+          colSpan--;
+          return null;
+        }
+        colSpan = typeof column.colSpan === 'function' ? column.colSpan({ row, rowType: 'ROW' }) : column.colSpan;
+
         const isCellSelected = selectedCellProps?.idx === column.idx;
         if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
           return (
@@ -63,6 +71,7 @@ function Row<R, SR = unknown>({
               key={column.key}
               rowIdx={rowIdx}
               column={column}
+              colSpan={colSpan}
               row={row}
               onKeyDown={selectedCellProps.onKeyDown}
               editorProps={selectedCellProps.editorProps}
@@ -75,6 +84,7 @@ function Row<R, SR = unknown>({
             key={column.key}
             rowIdx={rowIdx}
             column={column}
+            colSpan={colSpan}
             row={row}
             isCopied={copiedCellIdx === column.idx}
             isDraggedOver={draggedOverCellIdx === column.idx}

@@ -44,6 +44,7 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 function Cell<R, SR>({
   className,
   column,
+  colSpan,
   isCellSelected,
   isCopied,
   isDraggedOver,
@@ -105,9 +106,10 @@ function Cell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
+      aria-colspan={colSpan}
       ref={ref}
       className={className}
-      style={getCellStyle(column)}
+      style={getCellStyle(column, colSpan)}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}

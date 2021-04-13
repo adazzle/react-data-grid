@@ -13,10 +13,13 @@ export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter
   }
 }
 
-export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>): React.CSSProperties {
+export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>, colSpan?: number): React.CSSProperties {
   return column.frozen
     ? { left: `var(--frozen-left-${column.key})` }
-    : { gridColumnStart: column.idx + 1 };
+    : {
+      gridColumnStart: column.idx + 1,
+      gridColumnEnd: colSpan ? `span ${colSpan}` : undefined
+    };
 }
 
 export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extraClasses: Parameters<typeof clsx>): string {
