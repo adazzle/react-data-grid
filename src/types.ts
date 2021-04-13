@@ -25,7 +25,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
-  colSpan?: number | (({ row, rowType }: { row: TRow; rowType: RowType }) => number | undefined) ;
+  colSpan?: number | ((row: TRow, rowType: RowType) => number | undefined);
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */

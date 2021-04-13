@@ -44,7 +44,7 @@ function Row<R, SR = unknown>({
     className
   );
 
-  let colSpan: number| undefined;
+  let colSpan: number | undefined;
 
   return (
     <div
@@ -62,7 +62,7 @@ function Row<R, SR = unknown>({
           colSpan--;
           return null;
         }
-        colSpan = typeof column.colSpan === 'function' ? column.colSpan({ row, rowType: 'ROW' }) : column.colSpan;
+        colSpan = typeof column.colSpan === 'function' ? column.colSpan(row, 'ROW') : column.colSpan;
 
         const isCellSelected = selectedCellProps?.idx === column.idx;
         if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
