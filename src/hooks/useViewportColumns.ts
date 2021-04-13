@@ -11,6 +11,7 @@ interface ViewportColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'default
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
+  enableVirtualization: boolean;
 }
 
 export function useViewportColumns<R, SR>({
@@ -19,7 +20,8 @@ export function useViewportColumns<R, SR>({
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
-  rawGroupBy
+  rawGroupBy,
+  enableVirtualization
 }: ViewportColumnsArgs<R, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
@@ -159,6 +161,9 @@ export function useViewportColumns<R, SR>({
   }, [columnWidths, columns, viewportWidth, minColumnWidth, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
+    if (!enableVirtualization) {
+      return [0, columns.length - 1];
+    }
     // get the viewport's left side and right side positions for non-frozen columns
     const viewportLeft = scrollLeft + totalFrozenColumnWidth;
     const viewportRight = scrollLeft + viewportWidth;
@@ -199,7 +204,7 @@ export function useViewportColumns<R, SR>({
     const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
     return [colOverscanStartIdx, colOverscanEndIdx];
-  }, [columns, columnMetrics, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth]);
+  }, [columnMetrics, columns, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth, enableVirtualization]);
 
   const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];

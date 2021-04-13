@@ -154,6 +154,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** Toggles whether filters row is displayed or not */
   enableFilterRow?: boolean;
   cellNavigationMode?: CellNavigationMode;
+  enableVirtualization?: boolean;
 
   /**
    * Miscellaneous
@@ -208,6 +209,7 @@ function DataGrid<R, SR>({
   // Toggles and modes
   enableFilterRow = false,
   cellNavigationMode = 'NONE',
+  enableVirtualization = true,
   // Miscellaneous
   editorPortalTarget = body,
   className,
@@ -262,7 +264,8 @@ function DataGrid<R, SR>({
     scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
-    rawGroupBy: rowGrouper ? rawGroupBy : undefined
+    rawGroupBy: rowGrouper ? rawGroupBy : undefined,
+    enableVirtualization
   });
 
   const { rowOverscanStartIdx, rowOverscanEndIdx, rows, rowsCount, isGroupRow } = useViewportRows({
@@ -272,7 +275,8 @@ function DataGrid<R, SR>({
     rowHeight,
     clientHeight,
     scrollTop,
-    expandedGroupIds
+    expandedGroupIds,
+    enableVirtualization
   });
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
