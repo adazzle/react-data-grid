@@ -44,7 +44,8 @@ function Row<R, SR = unknown>({
     className
   );
 
-  let colSpan: number | undefined;
+  let colSpan: number| undefined;
+  let colSpanIdx: number | undefined;
 
   return (
     <div
@@ -58,13 +59,21 @@ function Row<R, SR = unknown>({
       {...props}
     >
       {viewportColumns.map(column => {
+        const isCellSelected = selectedCellProps?.idx === column.idx;
         if (colSpan && colSpan > 1) {
           colSpan--;
+          if (isCellSelected) {
+            const { prevIdx } = selectedCellProps!;
+            selectCell({
+              rowIdx,
+              idx: colSpanIdx! + (column.idx - prevIdx > 0 ? colSpan + 1 : 0)
+            });
+          }
           return null;
         }
         colSpan = typeof column.colSpan === 'function' ? column.colSpan(row, 'ROW') : column.colSpan;
+        colSpanIdx = column.idx;
 
-        const isCellSelected = selectedCellProps?.idx === column.idx;
         if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
           return (
             <EditCell<R, SR>

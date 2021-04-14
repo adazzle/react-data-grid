@@ -81,7 +81,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       width: 220,
       editor: TextEditor,
       colSpan(row, rowType) {
-        return rowType === 'ROW' && row.id === 2 ? 2 : undefined;
+        return rowType === 'ROW' && row.id === 2 ? 4 : undefined;
       }
     },
     {

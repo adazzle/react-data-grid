@@ -808,6 +808,7 @@ function DataGrid<R, SR>({
         mode: 'EDIT',
         idx: selectedPosition.idx,
         onKeyDown: handleKeyDown,
+        prevIdx: prevSelectedPosition.current.idx,
         editorProps: {
           editorPortalTarget,
           rowHeight,
@@ -821,6 +822,7 @@ function DataGrid<R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
+      prevIdx: prevSelectedPosition.current.idx,
       onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)

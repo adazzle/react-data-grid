@@ -128,6 +128,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 
 interface SelectedCellPropsBase {
   idx: number;
+  prevIdx: number;
   onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
