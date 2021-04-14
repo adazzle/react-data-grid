@@ -63,6 +63,8 @@ function Row<R, SR = unknown>({
         if (colSpan && colSpan > 1) {
           colSpan--;
           if (isCellSelected) {
+            // If a cell within the colspan range is selected then move to the
+            // previous or the next cell depending on the navigation direction
             const { prevIdx } = selectedCellProps!;
             selectCell({
               rowIdx,
