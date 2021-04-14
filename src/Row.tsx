@@ -47,6 +47,20 @@ function Row<R, SR = unknown>({
   let colSpan: number| undefined;
   let colSpanIdx: number | undefined;
 
+  function areColSpanColumnsCompatible(startIdx: number, colSpan: number) {
+    const isFrozen = viewportColumns[startIdx].frozen;
+    for (
+      let index = 1;
+      index < colSpan && startIdx + index < viewportColumns.length;
+      index++
+    ) {
+      if (viewportColumns[startIdx + index].frozen !== isFrozen) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   return (
     <div
       role="row"
@@ -75,6 +89,10 @@ function Row<R, SR = unknown>({
         }
         colSpan = typeof column.colSpan === 'function' ? column.colSpan(row, 'ROW') : column.colSpan;
         colSpanIdx = column.idx;
+        if (colSpan && !areColSpanColumnsCompatible(colSpanIdx, colSpan)) {
+          // ignore colSpan if it spans over frozen and regular columns
+          colSpan = undefined;
+        }
 
         if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
           return (
