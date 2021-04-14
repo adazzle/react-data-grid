@@ -25,7 +25,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
-  colSpan?: number | ((row: TRow, rowType: RowType) => number | undefined);
+  colSpan?: number | ((params: ColSpanParams<TRow, TSummaryRow>) => number | undefined);
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */
@@ -229,4 +229,16 @@ export interface GroupRow<TRow> {
 
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
-export type RowType = 'HEADER' | 'FILTER' | 'ROW' | 'GROUP' | 'SUMMARY';
+
+export type ColSpanParams<R, SR> = {
+  type: 'HEADER' | 'FILTER';
+} | {
+  type: 'ROW';
+  row: R;
+} | {
+  type: 'GROUP';
+  row: GroupRow<R>;
+} | {
+  type: 'SUMMARY';
+  row: SR;
+};

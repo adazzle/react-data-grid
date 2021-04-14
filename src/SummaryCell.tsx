@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
 
-type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column'>;
+type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column' | 'colSpan'>;
 
 interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
@@ -11,6 +11,7 @@ interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
 
 function SummaryCell<R, SR>({
   column,
+  colSpan,
   row
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
@@ -23,7 +24,7 @@ function SummaryCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       className={className}
-      style={getCellStyle(column)}
+      style={getCellStyle(column, colSpan)}
     >
       {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>

@@ -80,11 +80,15 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       name: 'Client',
       width: 220,
       editor: TextEditor,
-      colSpan(row, rowType) {
-        if (rowType !== 'ROW') return undefined;
-        if (row.id === 2) return 4;
-        if (row.id === 4) return 2;
-        if (row.id === 6) return 3;
+      colSpan(p) {
+        if (p.type === 'ROW') {
+          if (p.row.id === 2) return 4;
+          if (p.row.id === 4) return 2;
+          if (p.row.id === 6) return 3;
+        }
+        if (p.type === 'SUMMARY') {
+          return 12;
+        }
         return undefined;
       }
     },
@@ -135,8 +139,12 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
     },
     {
       key: 'startTimestamp',
-      name: 'Start date',
+      name: 'Date Range',
       width: 100,
+      colSpan(p) {
+        if (p.type !== 'HEADER') return undefined;
+        return 2;
+      },
       formatter(props) {
         return <TimestampFormatter timestamp={props.row.startTimestamp} />;
       }

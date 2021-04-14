@@ -3,6 +3,7 @@ import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
+import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
@@ -47,20 +48,6 @@ function Row<R, SR = unknown>({
   let colSpan: number| undefined;
   let colSpanIdx: number | undefined;
 
-  function areColSpanColumnsCompatible(startIdx: number, colSpan: number) {
-    const isFrozen = viewportColumns[startIdx].frozen;
-    for (
-      let index = 1;
-      index < colSpan && startIdx + index < viewportColumns.length;
-      index++
-    ) {
-      if (viewportColumns[startIdx + index].frozen !== isFrozen) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   return (
     <div
       role="row"
@@ -87,12 +74,8 @@ function Row<R, SR = unknown>({
           }
           return null;
         }
-        colSpan = typeof column.colSpan === 'function' ? column.colSpan(row, 'ROW') : column.colSpan;
+        colSpan = getColSpan(column, viewportColumns, { type: 'ROW', row });
         colSpanIdx = column.idx;
-        if (colSpan && !areColSpanColumnsCompatible(colSpanIdx, colSpan)) {
-          // ignore colSpan if it spans over frozen and regular columns
-          colSpan = undefined;
-        }
 
         if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
           return (

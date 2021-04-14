@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
-import { assertIsValidKeyGetter } from './utils';
+import { assertIsValidKeyGetter, getColSpan } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { headerRowClassname } from './style';
 
@@ -41,6 +41,7 @@ function HeaderRow<R, SR>({
     onSelectedRowsChange(newSelectedRows);
   }, [onSelectedRowsChange, rows, rowKeyGetter]);
 
+  let colSpan: number| undefined;
   return (
     <div
       role="row"
@@ -48,10 +49,17 @@ function HeaderRow<R, SR>({
       className={headerRowClassname}
     >
       {columns.map(column => {
+        if (colSpan && colSpan > 1) {
+          colSpan--;
+          return null;
+        }
+        colSpan = getColSpan(column, columns, { type: 'HEADER' });
+
         return (
           <HeaderCell<R, SR>
             key={column.key}
             column={column}
+            colSpan={colSpan}
             onResize={onColumnResize}
             allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}

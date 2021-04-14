@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { rowClassname, summaryRowClassname } from './style';
+import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
 
@@ -21,6 +22,8 @@ function SummaryRow<R, SR>({
   bottom,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
+  let colSpan: number| undefined;
+
   return (
     <div
       role="row"
@@ -28,13 +31,21 @@ function SummaryRow<R, SR>({
       className={`${rowClassname} rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
       style={{ bottom }}
     >
-      {viewportColumns.map(column => (
-        <SummaryCell<R, SR>
-          key={column.key}
-          column={column}
-          row={row}
-        />
-      ))}
+      {viewportColumns.map(column => {
+        if (colSpan && colSpan > 1) {
+          colSpan--;
+          return null;
+        }
+        colSpan = getColSpan(column, viewportColumns, { type: 'SUMMARY', row });
+        return (
+          <SummaryCell<R, SR>
+            key={column.key}
+            column={column}
+            colSpan={colSpan}
+            row={row}
+          />
+        );
+      })}
     </div>
   );
 }
