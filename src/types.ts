@@ -236,9 +236,6 @@ export type ColSpanParams<R, SR> = {
   type: 'ROW';
   row: R;
 } | {
-  type: 'GROUP';
-  row: GroupRow<R>;
-} | {
   type: 'SUMMARY';
   row: SR;
 };

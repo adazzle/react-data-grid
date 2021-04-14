@@ -13,6 +13,10 @@ const toolbarClassname = css`
   margin-bottom: 8px;
 `;
 
+const missingClientClassname = css`
+  background-color: #ffb300
+`;
+
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -52,6 +56,8 @@ interface Row {
   available: boolean;
 }
 
+const colSpanRowIds: number[] = [2, 4, 6];
+
 function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
@@ -79,14 +85,24 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'client',
       name: 'Client',
       width: 220,
-      editor: TextEditor,
-      colSpan(p) {
-        if (p.type === 'ROW') {
-          if (p.row.id === 2) return 4;
-          if (p.row.id === 4) return 2;
-          if (p.row.id === 6) return 3;
+      formatter(props) {
+        if (colSpanRowIds.includes(props.row.id)) {
+          return <>Missing Client</>;
         }
-        if (p.type === 'SUMMARY') {
+        return <>{props.row.client}</>;
+      },
+      editable(row) {
+        return !colSpanRowIds.includes(row.id);
+      },
+      editor: TextEditor,
+      cellClass(row) {
+        return colSpanRowIds.includes(row.id) ? missingClientClassname : undefined;
+      },
+      colSpan(props) {
+        if (props.type === 'ROW' && colSpanRowIds.includes(props.row.id)) {
+          return 4;
+        }
+        if (props.type === 'SUMMARY') {
           return 12;
         }
         return undefined;
