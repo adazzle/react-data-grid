@@ -26,6 +26,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
   colSpan?: number | ((params: ColSpanArgs<TRow, TSummaryRow>) => number | undefined);
+  rowSpan?: number | ((params: RowSpanArgs<TRow, TSummaryRow>) => number | undefined);
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */
@@ -233,6 +234,14 @@ export type SortDirection = 'ASC' | 'DESC' | 'NONE';
 export type ColSpanArgs<R, SR> = {
   type: 'HEADER' | 'FILTER';
 } | {
+  type: 'ROW';
+  row: R;
+} | {
+  type: 'SUMMARY';
+  row: SR;
+};
+
+export type RowSpanArgs<R, SR> = {
   type: 'ROW';
   row: R;
 } | {
