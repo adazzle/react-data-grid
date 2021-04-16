@@ -98,12 +98,9 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       cellClass(row) {
         return colSpanRowIds.includes(row.id) ? missingClientClassname : undefined;
       },
-      colSpan(props) {
-        if (props.type === 'ROW' && colSpanRowIds.includes(props.row.id)) {
+      colSpan(args) {
+        if (args.type === 'ROW' && colSpanRowIds.includes(args.row.id)) {
           return 4;
-        }
-        if (props.type === 'SUMMARY') {
-          return 12;
         }
         return undefined;
       }
@@ -157,8 +154,8 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'startTimestamp',
       name: 'Date Range',
       width: 100,
-      colSpan(p) {
-        if (p.type !== 'HEADER') return undefined;
+      colSpan({ type }) {
+        if (type !== 'HEADER') return undefined;
         return 2;
       },
       formatter(props) {

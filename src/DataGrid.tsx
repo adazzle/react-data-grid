@@ -10,7 +10,7 @@ import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
-import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
+import { useGridDimensions, useCalculatedColumns, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
 import Row from './Row';
@@ -258,7 +258,17 @@ function DataGrid<R, SR>({
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
-  const { columns, viewportColumns, layoutCssVars, columnMetrics, totalColumnWidth, lastFrozenColumnIndex, totalFrozenColumnWidth, groupBy } = useViewportColumns({
+  const {
+    columns,
+    colOverscanStartIdx,
+    colOverscanEndIdx,
+    layoutCssVars,
+    columnMetrics,
+    totalColumnWidth,
+    lastFrozenColumnIndex,
+    totalFrozenColumnWidth,
+    groupBy
+  } = useCalculatedColumns({
     rawColumns,
     columnWidths,
     scrollLeft,
@@ -277,6 +287,14 @@ function DataGrid<R, SR>({
     scrollTop,
     expandedGroupIds,
     enableVirtualization
+  });
+
+  const viewportColumns = useViewportColumns({
+    columns,
+    colOverscanStartIdx,
+    colOverscanEndIdx,
+    rows,
+    isGroupRow
   });
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';

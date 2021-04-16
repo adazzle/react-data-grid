@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import type { CalculatedColumn, ColSpanParams } from '../types';
+import type { CalculatedColumn, ColSpanArgs } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
 
 export * from './domUtils';
@@ -36,17 +36,19 @@ export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extr
   );
 }
 
-export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, viewportColumns: readonly CalculatedColumn<R, SR>[], params: ColSpanParams<R, SR>) {
-  const colSpan = typeof column.colSpan === 'function' ? column.colSpan(params) : column.colSpan;
-  if (colSpan && !areColSpanColumnsCompatible(viewportColumns, column.idx, colSpan)) {
+export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, viewportColumns: readonly CalculatedColumn<R, SR>[], args: ColSpanArgs<R, SR>) {
+  const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : column.colSpan;
+  if (colSpan && !areColSpanColumnsCompatible(column, viewportColumns, colSpan)) {
     // ignore colSpan if it spans over frozen and regular columns
     return undefined;
   }
   return colSpan;
 }
 
-function areColSpanColumnsCompatible<R, SR>(viewportColumns: readonly CalculatedColumn<R, SR>[], startIdx: number, colSpan: number) {
-  const isFrozen = viewportColumns[startIdx].frozen;
+function areColSpanColumnsCompatible<R, SR>(column: CalculatedColumn<R, SR>, viewportColumns: readonly CalculatedColumn<R, SR>[], colSpan: number) {
+  const isFrozen = column.frozen;
+  if (!isFrozen) return true;
+  const startIdx = column.idx - viewportColumns[0].idx;
   for (
     let index = 1;
     index < colSpan && startIdx + index < viewportColumns.length;
