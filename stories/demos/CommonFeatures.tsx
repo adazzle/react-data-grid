@@ -314,7 +314,7 @@ export function CommonFeatures() {
       onRowsChange={setRows}
       //sortColumn={sortColumn}
       //sortDirection={sortDirection}
-      sortsConfig = {sorts}
+      sortData = {sorts}
       onSort={handleSort}
       summaryRows={summaryRows}
       className="fill-grid"

@@ -120,7 +120,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** The direction to sort the sortColumn*/
   sortDirection?: SortDirection;
   /**The sorting array used for mult column sorting */
-  sortsConfig?: Sorts[];
+  sortData?: Sorts[];
   /** Function called whenever grid is sorted*/
   onSort?: (columnKey: string, direction: SortDirection, ctrl: boolean) => void;
   filters?: Readonly<Filters>;
@@ -190,7 +190,7 @@ function DataGrid<R, SR>({
   onSelectedRowsChange,
   sortColumn,
   sortDirection,
-  sortsConfig,
+  sortData,
   onSort,
   filters,
   onFiltersChange,
@@ -940,7 +940,7 @@ function DataGrid<R, SR>({
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
-        sortsConfig = {sortsConfig}
+        sortData = {sortData}
         onSort={onSort}
       />
       {enableFilterRow && (

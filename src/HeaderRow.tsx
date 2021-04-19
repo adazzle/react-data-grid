@@ -13,7 +13,7 @@ type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'sortDirection'
   | 'onSort'
   | 'rowKeyGetter'
-  | 'sortsConfig'
+  | 'sortData'
 >;
 
 export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
@@ -31,7 +31,7 @@ function HeaderRow<R, SR>({
   onColumnResize,
   sortColumn,
   sortDirection,
-  sortsConfig,
+  sortData,
   onSort
 }: HeaderRowProps<R, SR>) {
   const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
