@@ -9,7 +9,7 @@ import {
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname, viewportClassname } from './style';
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -834,7 +834,6 @@ function DataGrid<R, SR>({
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
-      const top = rowIdx * rowHeight + totalHeaderHeight;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         rowElements.push(
@@ -849,7 +848,6 @@ function DataGrid<R, SR>({
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
-            top={top}
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
@@ -908,6 +906,15 @@ function DataGrid<R, SR>({
     closeEditor();
   }
 
+  let templateRows = `${headerRowHeight}px`;
+  if (enableFilterRow) {
+    templateRows += ` ${headerFiltersHeight}px`;
+  }
+  templateRows += ` repeat(${rows.length}, ${rowHeight}px)`;
+  if (summaryRows) {
+    templateRows += ` repeat(${summaryRows.length}, ${summaryRowHeight}px)`;
+  }
+
   return (
     <div
       role={hasGroups ? 'treegrid' : 'grid'}
@@ -925,6 +932,7 @@ function DataGrid<R, SR>({
         '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`,
         '--summary-row-height': `${summaryRowHeight}px`,
+        '--template-rows': templateRows,
         ...layoutCssVars
       } as unknown as React.CSSProperties}
       ref={gridRef}
@@ -957,15 +965,8 @@ function DataGrid<R, SR>({
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />
-          <div
-            className={viewportClassname}
-            style={{
-              height: Math.max(rows.length * rowHeight, clientHeight),
-              '--row-count': rows.length
-            } as unknown as React.CSSProperties}
-          >
-            {getViewportRows()}
-          </div>
+          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
+          {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}

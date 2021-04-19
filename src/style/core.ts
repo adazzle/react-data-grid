@@ -38,6 +38,10 @@ const root = css`
   --selection-color: #66afe9;
   --font-size: 14px;
 
+  display: grid;
+  grid-template-columns: var(--template-columns);
+  grid-template-rows: var(--template-rows);
+
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
   contain: strict;
@@ -87,13 +91,6 @@ const focusSink = css`
 `;
 
 export const focusSinkClassname = `rdg-focus-sink ${focusSink}`;
-
-export const viewportClassname = css`
-  display: grid;
-  grid-template-columns: var(--template-columns);
-  grid-template-rows: repeat(var(--row-count), var(--row-height));
-  position: absolute
-`;
 
 const viewportDragging = css`
   &.${row} {

@@ -290,7 +290,7 @@ export function CommonFeatures() {
       sortColumn={sortColumn}
       sortDirection={sortDirection}
       onSort={handleSort}
-      // summaryRows={summaryRows}
+      summaryRows={summaryRows}
       className="fill-grid"
     />
   );

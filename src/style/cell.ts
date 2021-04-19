@@ -12,13 +12,12 @@ export const cell = css`
   overflow: hidden;
   overflow: clip;
   text-overflow: ellipsis;
-  /* height: var(--row-height); // needed on Firefox */
   line-height: var(--row-height);
 `;
 
 export const cellClassname = `rdg-cell ${cell}`;
 
-const cellFrozen = css`
+export const cellFrozen = css`
   position: sticky;
   // Should have a higher value than 0 to show up above unfrozen cells
   z-index: 1;

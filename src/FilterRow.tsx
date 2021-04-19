@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { getCellStyle, getCellClassname } from './utils';
+import { getCellStyle, getCellClassname, getRowStyle } from './utils';
 import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
 import { filterRowClassname } from './style';
@@ -30,6 +30,7 @@ function FilterRow<R, SR>({
       role="row"
       aria-rowindex={2}
       className={filterRowClassname}
+      style={getRowStyle(2)}
     >
       {columns.map(column => {
         const { key } = column;
@@ -38,7 +39,7 @@ function FilterRow<R, SR>({
           <div
             key={key}
             className={getCellClassname(column)}
-            style={getCellStyle(column)}
+            style={{ ...getCellStyle(column) }}
           >
             {column.filterRenderer && (
               <column.filterRenderer

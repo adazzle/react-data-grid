@@ -3,6 +3,7 @@ import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
+import { getRowStyle } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
@@ -51,6 +52,7 @@ function Row<R, SR = unknown>({
       ref={ref}
       className={className}
       onMouseEnter={handleDragEnter}
+      style={getRowStyle(ariaRowIndex!)}
       {...props}
     >
       {viewportColumns.map(column => {

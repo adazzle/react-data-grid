@@ -5,6 +5,7 @@ import { groupRowClassname, groupRowSelectedClassname, rowClassname, rowSelected
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
+import { getRowStyle } from './utils';
 
 export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
@@ -12,7 +13,6 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
-  top: number;
   level: number;
   selectedCellIdx?: number;
   isExpanded: boolean;
@@ -28,7 +28,6 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
-  top,
   level,
   isExpanded,
   selectedCellIdx,
@@ -36,6 +35,7 @@ function GroupedRow<R, SR>({
   selectCell,
   selectRow,
   toggleGroup,
+  'aria-rowindex': ariaRowIndex,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
@@ -58,8 +58,8 @@ function GroupedRow<R, SR>({
           [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
         }
       )}
+      style={getRowStyle(ariaRowIndex!)}
       onClick={selectGroup}
-      style={{ top }}
       {...props}
     >
       {viewportColumns.map(column => (

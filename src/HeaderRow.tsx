@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
-import { assertIsValidKeyGetter } from './utils';
+import { assertIsValidKeyGetter, getRowStyle } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { headerRowClassname } from './style';
 
@@ -46,6 +46,7 @@ function HeaderRow<R, SR>({
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
       className={headerRowClassname}
+      style={getRowStyle(1)}
     >
       {columns.map(column => {
         return (
