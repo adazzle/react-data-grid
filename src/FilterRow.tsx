@@ -39,7 +39,7 @@ function FilterRow<R, SR>({
           <div
             key={key}
             className={getCellClassname(column)}
-            style={{ ...getCellStyle(column) }}
+            style={getCellStyle(column)}
           >
             {column.filterRenderer && (
               <column.filterRenderer
