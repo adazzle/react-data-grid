@@ -27,7 +27,7 @@ function SummaryRow<R, SR>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-summary-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
+      className={`${rowClassname} row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
       style={getRowStyle(ariaRowIndex)}
     >
       {viewportColumns.map(column => (
