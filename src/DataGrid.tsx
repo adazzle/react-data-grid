@@ -834,6 +834,7 @@ function DataGrid<R, SR>({
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
+      const gridRowStart = headerRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         rowElements.push(
@@ -848,6 +849,7 @@ function DataGrid<R, SR>({
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
+            gridRowStart={gridRowStart}
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
@@ -881,6 +883,7 @@ function DataGrid<R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
+          gridRowStart={gridRowStart}
           copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}

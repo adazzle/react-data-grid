@@ -12,6 +12,7 @@ function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
   className,
   rowIdx,
+  gridRowStart,
   isRowSelected,
   copiedCellIdx,
   draggedOverCellIdx,
@@ -52,7 +53,7 @@ function Row<R, SR = unknown>({
       ref={ref}
       className={className}
       onMouseEnter={handleDragEnter}
-      style={getRowStyle(ariaRowIndex!)}
+      style={getRowStyle(gridRowStart)}
       {...props}
     >
       {viewportColumns.map(column => {

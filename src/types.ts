@@ -164,6 +164,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   copiedCellIdx?: number;
   draggedOverCellIdx?: number;
   isRowSelected: boolean;
+  gridRowStart: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowChange: (rowIdx: number, row: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;

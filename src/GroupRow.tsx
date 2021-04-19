@@ -13,6 +13,7 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
+  gridRowStart: number;
   level: number;
   selectedCellIdx?: number;
   isExpanded: boolean;
@@ -28,6 +29,7 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
+  gridRowStart,
   level,
   isExpanded,
   selectedCellIdx,
@@ -35,7 +37,6 @@ function GroupedRow<R, SR>({
   selectCell,
   selectRow,
   toggleGroup,
-  'aria-rowindex': ariaRowIndex,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
@@ -58,7 +59,7 @@ function GroupedRow<R, SR>({
           [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
         }
       )}
-      style={getRowStyle(ariaRowIndex!)}
+      style={getRowStyle(gridRowStart)}
       onClick={selectGroup}
       {...props}
     >
