@@ -38,6 +38,7 @@ const root = css`
   --selection-color: #66afe9;
   --font-size: 14px;
 
+  position: relative;
   display: grid;
   grid-template-columns: var(--template-columns);
   grid-template-rows: var(--template-rows);

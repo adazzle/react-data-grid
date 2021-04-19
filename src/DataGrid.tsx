@@ -913,9 +913,11 @@ function DataGrid<R, SR>({
   if (enableFilterRow) {
     templateRows += ` ${headerFiltersHeight}px`;
   }
-  templateRows += ` repeat(${rows.length}, ${rowHeight}px)`;
-  if (summaryRows) {
-    templateRows += ` repeat(${summaryRows.length}, ${summaryRowHeight}px)`;
+  if (rows.length > 0) {
+    templateRows += ` repeat(${rows.length}, ${rowHeight}px)`;
+  }
+  if (summaryRowsCount > 0) {
+    templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
   }
 
   return (
@@ -932,7 +934,6 @@ function DataGrid<R, SR>({
         ...style,
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
-        '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`,
         '--summary-row-height': `${summaryRowHeight}px`,
         '--template-rows': templateRows,
@@ -941,6 +942,15 @@ function DataGrid<R, SR>({
       ref={gridRef}
       onScroll={handleScroll}
     >
+      <div
+        style={{
+          top: 0,
+          left: 0,
+          height: Math.max(rows.length * rowHeight, clientHeight) + totalHeaderHeight + summaryRowsCount * summaryRowHeight,
+          width: totalColumnWidth,
+          position: 'absolute'
+        }}
+      />
       <HeaderRow<R, SR>
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
@@ -968,7 +978,6 @@ function DataGrid<R, SR>({
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />
-          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
