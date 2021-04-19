@@ -120,7 +120,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   sortColumn?: string;
   sortDirection?: SortDirection;
-  onSort?: (columnKey: string, direction: SortDirection) => void;
+  onSort?: (columnKey: string, direction: SortDirection, ctrl: boolean) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }

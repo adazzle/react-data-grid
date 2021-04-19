@@ -215,7 +215,7 @@ function createRows(): readonly Row[] {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
+  //const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [sorts, updateSorts] = useState<Sorts[]>();
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
@@ -231,11 +231,7 @@ export function CommonFeatures() {
     return [summaryRow];
   }, [rows]);
 
-  const sortedRows: readonly Row[] = useMemo(() => {
-    if (sortDirection === 'NONE') return rows;
-
-    let sortedRows: Row[] = [...rows];
-
+  const getComparator = (sortColumn: string) => {
     switch (sortColumn) {
       case 'assignee':
       case 'title':
@@ -246,26 +242,62 @@ export function CommonFeatures() {
       case 'transaction':
       case 'account':
       case 'version':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
-        break;
+        return function(a:Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn])};
       case 'available':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
-        break;
+        return function(a:Row, b: Row){ return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1};
       case 'id':
       case 'progress':
       case 'startTimestamp':
       case 'endTimestamp':
       case 'budget':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
-        break;
+      return function(a:Row, b: Row) { return a[sortColumn] - b[sortColumn]};
+      
       default:
     }
+  }
+  const sortedRows: readonly Row[] = useMemo(() => {
+    if(sorts.length===0) return rows;
 
-    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortDirection, sortColumn]);
+    let sortedRows: Row[] = [...rows];
 
-  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
-    setSort([columnKey, direction]);
+    // switch (sortColumn) {
+    //   case 'assignee':
+    //   case 'title':
+    //   case 'client':
+    //   case 'area':
+    //   case 'country':
+    //   case 'contact':
+    //   case 'transaction':
+    //   case 'account':
+    //   case 'version':
+    //     sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
+    //     break;
+    //   case 'available':
+    //     sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
+    //     break;
+    //   case 'id':
+    //   case 'progress':
+    //   case 'startTimestamp':
+    //   case 'endTimestamp':
+    //   case 'budget':
+    //     sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
+    //     break;
+    //   default:
+    // }
+
+    //return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
+  }, [rows, sorts]); //sortDirection, sortColumn]);
+
+  const handleSort = useCallback((columnKey: string, direction: SortDirection, ctrl: boolean) => {
+    if(ctrl)
+    {
+      //update sorts array 
+    }
+    else {
+      //clear sorts array
+      //add new sort
+    }
+    //setSort([columnKey, direction]);
   }, []);
 
   return (
@@ -280,8 +312,9 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortColumn={sortColumn}
-      sortDirection={sortDirection}
+      //sortColumn={sortColumn}
+      //sortDirection={sortDirection}
+      sortsConfig = {sorts}
       onSort={handleSort}
       summaryRows={summaryRows}
       className="fill-grid"

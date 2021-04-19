@@ -39,7 +39,8 @@ import type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
-  SortDirection
+  SortDirection,
+  Sorts
 } from './types';
 
 interface SelectCellState extends Position {
@@ -118,8 +119,10 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   sortColumn?: string;
   /** The direction to sort the sortColumn*/
   sortDirection?: SortDirection;
+  /**The sorting array used for mult column sorting */
+  sortsConfig?: Sorts[];
   /** Function called whenever grid is sorted*/
-  onSort?: (columnKey: string, direction: SortDirection) => void;
+  onSort?: (columnKey: string, direction: SortDirection, ctrl: boolean) => void;
   filters?: Readonly<Filters>;
   onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
@@ -187,6 +190,7 @@ function DataGrid<R, SR>({
   onSelectedRowsChange,
   sortColumn,
   sortDirection,
+  sortsConfig,
   onSort,
   filters,
   onFiltersChange,
@@ -936,6 +940,7 @@ function DataGrid<R, SR>({
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
+        sortsConfig = {sortsConfig}
         onSort={onSort}
       />
       {enableFilterRow && (

@@ -44,8 +44,9 @@ export default function SortableHeaderCell<R, SR>({
     sortText = '\u25BC';
   }
 
-  function onClick() {
+  function onClick(e: any) {
     if (!onSort) return;
+    const ctrl = (e.ctrlKey) ? true : false;
     const { sortDescendingFirst } = column;
     let direction: SortDirection;
     switch (sortDirection) {
@@ -59,11 +60,11 @@ export default function SortableHeaderCell<R, SR>({
         direction = sortDescendingFirst ? 'DESC' : 'ASC';
         break;
     }
-    onSort(column.key, direction);
+    onSort(column.key, direction, ctrl);
   }
 
   return (
-    <span className={headerSortCellClassname} onClick={onClick}>
+    <span className={headerSortCellClassname} onClick={e=>onClick(e)}>
       <span className={headerSortNameClassname}>{children}</span>
       <span>{sortText}</span>
     </span>
