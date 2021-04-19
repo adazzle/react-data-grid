@@ -12,6 +12,8 @@ export const cell = css`
   overflow: hidden;
   overflow: clip;
   text-overflow: ellipsis;
+  /* height: var(--row-height); // needed on Firefox */
+  line-height: var(--row-height);
 `;
 
 export const cellClassname = `rdg-cell ${cell}`;

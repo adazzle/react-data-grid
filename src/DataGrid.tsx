@@ -9,7 +9,7 @@ import {
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import { rootClassname, viewportDraggingClassname, focusSinkClassname, viewportClassname } from './style';
 import { useGridDimensions, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -883,7 +883,6 @@ function DataGrid<R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
-          top={top}
           copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
@@ -958,8 +957,15 @@ function DataGrid<R, SR>({
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />
-          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
-          {getViewportRows()}
+          <div
+            className={viewportClassname}
+            style={{
+              height: Math.max(rows.length * rowHeight, clientHeight),
+              '--row-count': rows.length
+            } as unknown as React.CSSProperties}
+          >
+            {getViewportRows()}
+          </div>
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}

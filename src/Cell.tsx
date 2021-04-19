@@ -107,7 +107,7 @@ function Cell<R, SR>({
       aria-selected={isCellSelected}
       ref={ref}
       className={className}
-      style={getCellStyle(column)}
+      style={{ ...getCellStyle(column), gridRowStart: rowIdx + 1 }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}

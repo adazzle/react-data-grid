@@ -21,7 +21,6 @@ function Row<R, SR = unknown>({
   rowClass,
   setDraggedOverRowIdx,
   onMouseEnter,
-  top,
   onRowChange,
   selectCell,
   selectRow,
@@ -52,7 +51,6 @@ function Row<R, SR = unknown>({
       ref={ref}
       className={className}
       onMouseEnter={handleDragEnter}
-      style={{ top }}
       {...props}
     >
       {viewportColumns.map(column => {

@@ -88,6 +88,13 @@ const focusSink = css`
 
 export const focusSinkClassname = `rdg-focus-sink ${focusSink}`;
 
+export const viewportClassname = css`
+  display: grid;
+  grid-template-columns: var(--template-columns);
+  grid-template-rows: repeat(var(--row-count), var(--row-height));
+  position: absolute
+`;
+
 const viewportDragging = css`
   &.${row} {
     cursor: move;
