@@ -224,5 +224,12 @@ export interface GroupRow<TRow> {
   startRowIndex: number;
 }
 
+export interface Sorts {
+  sortColumn: string;
+  direction: SortDirection;
+}
+
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
+
+

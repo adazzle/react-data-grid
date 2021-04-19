@@ -4,6 +4,7 @@ import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../s
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
+import { Sorts } from '../../src/types';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -215,6 +216,7 @@ function createRows(): readonly Row[] {
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
+  const [sorts, updateSorts] = useState<Sorts[]>();
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
