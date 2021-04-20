@@ -801,13 +801,13 @@ function DataGrid<R, SR>({
 
     const ctrlKey = isCtrlKeyHeldDown(event);
     let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
-    nextPosition = getColSpanPosition(nextPosition);
     nextPosition = getNextSelectedCellPosition({
       columns,
       rowsCount: rows.length,
       cellNavigationMode: mode,
       nextPosition
     });
+    nextPosition = getColSpanPosition(nextPosition);
 
     selectCell(nextPosition);
   }
