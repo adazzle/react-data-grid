@@ -4,8 +4,7 @@ import {
   useRef,
   useLayoutEffect,
   useImperativeHandle,
-  useCallback,
-  useEffect
+  useCallback
 } from 'react';
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
@@ -249,7 +248,6 @@ function DataGrid<R, SR>({
   const selectCellWrapper = useLatestFunc(selectCell);
   const toggleGroupWrapper = useLatestFunc(toggleGroup);
   const handleFormatterRowChangeWrapper = useLatestFunc(updateRow);
-  const commitEditorChangesWrapper = useLatestFunc(commitEditorChanges);
 
   /**
    * computed values
@@ -319,8 +317,6 @@ function DataGrid<R, SR>({
     selectCell,
     commitEditorChanges
   }));
-
-  useEffect(() => commitEditorChangesWrapper, [commitEditorChangesWrapper]);
 
   /**
   * callbacks
