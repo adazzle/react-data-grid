@@ -45,8 +45,61 @@ function Row<R, SR = unknown>({
     className
   );
 
-  let colSpan: number| undefined;
-  let colSpanIdx: number | undefined;
+  const cells = [];
+  for (let index = 0; index < viewportColumns.length; index++) {
+    const column = viewportColumns[index];
+    const colSpan = getColSpan(column, viewportColumns, { type: 'ROW', row });
+    if (colSpan && colSpan > 1) {
+      index += colSpan - 1;
+      // If a cell within the colspan range is selected then move to the
+      // previous or the next cell depending on the navigation direction
+      const isColSpanCellSelected = selectedCellProps && selectedCellProps.idx > column.idx && selectedCellProps.idx < column.idx + colSpan;
+      if (isColSpanCellSelected) {
+        const { prevIdx } = selectedCellProps!;
+        selectCell({
+          rowIdx,
+          idx: column.idx + (column.idx - prevIdx >= 0 ? colSpan : 0)
+        });
+      }
+    }
+
+    const isCellSelected = selectedCellProps?.idx === column.idx;
+    if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
+      cells.push(
+        <EditCell<R, SR>
+          key={column.key}
+          rowIdx={rowIdx}
+          column={column}
+          colSpan={colSpan}
+          row={row}
+          onKeyDown={selectedCellProps.onKeyDown}
+          editorProps={selectedCellProps.editorProps}
+        />
+      );
+      continue;
+    }
+
+    cells.push(
+      <CellRenderer
+        key={column.key}
+        rowIdx={rowIdx}
+        column={column}
+        colSpan={colSpan}
+        row={row}
+        isCopied={copiedCellIdx === column.idx}
+        isDraggedOver={draggedOverCellIdx === column.idx}
+        isCellSelected={isCellSelected}
+        isRowSelected={isRowSelected}
+        dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
+        onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
+        onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
+        onRowClick={onRowClick}
+        onRowChange={onRowChange}
+        selectCell={selectCell}
+        selectRow={selectRow}
+      />
+    );
+  }
 
   return (
     <div
@@ -59,59 +112,7 @@ function Row<R, SR = unknown>({
       style={{ top }}
       {...props}
     >
-      {viewportColumns.map(column => {
-        const isCellSelected = selectedCellProps?.idx === column.idx;
-        if (colSpan && colSpan > 1) {
-          colSpan--;
-          if (isCellSelected) {
-            // If a cell within the colspan range is selected then move to the
-            // previous or the next cell depending on the navigation direction
-            const { prevIdx } = selectedCellProps!;
-            selectCell({
-              rowIdx,
-              idx: colSpanIdx! + (column.idx - prevIdx > 0 ? colSpan + 1 : 0)
-            });
-          }
-          return null;
-        }
-        colSpan = getColSpan(column, viewportColumns, { type: 'ROW', row });
-        colSpanIdx = column.idx;
-
-        if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
-          return (
-            <EditCell<R, SR>
-              key={column.key}
-              rowIdx={rowIdx}
-              column={column}
-              colSpan={colSpan}
-              row={row}
-              onKeyDown={selectedCellProps.onKeyDown}
-              editorProps={selectedCellProps.editorProps}
-            />
-          );
-        }
-
-        return (
-          <CellRenderer
-            key={column.key}
-            rowIdx={rowIdx}
-            column={column}
-            colSpan={colSpan}
-            row={row}
-            isCopied={copiedCellIdx === column.idx}
-            isDraggedOver={draggedOverCellIdx === column.idx}
-            isCellSelected={isCellSelected}
-            isRowSelected={isRowSelected}
-            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
-            onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
-            onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
-            onRowClick={onRowClick}
-            onRowChange={onRowChange}
-            selectCell={selectCell}
-            selectRow={selectRow}
-          />
-        );
-      })}
+      {cells}
     </div>
   );
 }
