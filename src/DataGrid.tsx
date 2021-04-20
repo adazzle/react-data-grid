@@ -294,6 +294,8 @@ function DataGrid<R, SR>({
     columns,
     colOverscanStartIdx,
     colOverscanEndIdx,
+    rowOverscanStartIdx,
+    rowOverscanEndIdx,
     rows,
     isGroupRow
   });
