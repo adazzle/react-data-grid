@@ -813,6 +813,7 @@ function DataGrid<R, SR>({
   }
 
   function getColSpanPosition(nextPosition: Position) {
+    if (!isCellWithinBounds(nextPosition)) return nextPosition;
     const row = rows[nextPosition.rowIdx];
     if (isGroupRow(row)) return nextPosition;
     // If a cell within the colspan range is selected then move to the
