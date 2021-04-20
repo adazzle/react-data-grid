@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn, ColSpanArgs } from '../types';
