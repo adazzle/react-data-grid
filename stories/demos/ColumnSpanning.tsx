@@ -9,6 +9,7 @@ const rows: readonly Row[] = [...Array(100).keys()];
 
 const colSpanClassname = css`
   background-color: #ffb300;
+  color: black;
   text-align: center;
 `;
 
