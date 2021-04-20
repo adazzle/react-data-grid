@@ -41,34 +41,36 @@ function HeaderRow<R, SR>({
     onSelectedRowsChange(newSelectedRows);
   }, [onSelectedRowsChange, rows, rowKeyGetter]);
 
-  let colSpan: number| undefined;
+  const cells = [];
+  for (let index = 0; index < columns.length; index++) {
+    const column = columns[index];
+    const colSpan = getColSpan(column, columns, { type: 'HEADER' });
+    if (colSpan && colSpan > 1) {
+      index += colSpan - 1;
+    }
+
+    cells.push(
+      <HeaderCell<R, SR>
+        key={column.key}
+        column={column}
+        colSpan={colSpan}
+        onResize={onColumnResize}
+        allRowsSelected={allRowsSelected}
+        onAllRowsSelectionChange={handleAllRowsSelectionChange}
+        onSort={onSort}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+      />
+    );
+  }
+
   return (
     <div
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
       className={headerRowClassname}
     >
-      {columns.map(column => {
-        if (colSpan && colSpan > 1) {
-          colSpan--;
-          return null;
-        }
-        colSpan = getColSpan(column, columns, { type: 'HEADER' });
-
-        return (
-          <HeaderCell<R, SR>
-            key={column.key}
-            column={column}
-            colSpan={colSpan}
-            onResize={onColumnResize}
-            allRowsSelected={allRowsSelected}
-            onAllRowsSelectionChange={handleAllRowsSelectionChange}
-            onSort={onSort}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
-          />
-        );
-      })}
+      {cells}
     </div>
   );
 }

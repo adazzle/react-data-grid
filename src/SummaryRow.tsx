@@ -22,7 +22,23 @@ function SummaryRow<R, SR>({
   bottom,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
-  let colSpan: number| undefined;
+  const cells = [];
+  for (let index = 0; index < viewportColumns.length; index++) {
+    const column = viewportColumns[index];
+    const colSpan = getColSpan(column, viewportColumns, { type: 'HEADER' });
+    if (colSpan && colSpan > 1) {
+      index += colSpan - 1;
+    }
+
+    cells.push(
+      <SummaryCell<R, SR>
+        key={column.key}
+        column={column}
+        colSpan={colSpan}
+        row={row}
+      />
+    );
+  }
 
   return (
     <div
@@ -31,21 +47,7 @@ function SummaryRow<R, SR>({
       className={`${rowClassname} rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
       style={{ bottom }}
     >
-      {viewportColumns.map(column => {
-        if (colSpan && colSpan > 1) {
-          colSpan--;
-          return null;
-        }
-        colSpan = getColSpan(column, viewportColumns, { type: 'SUMMARY', row });
-        return (
-          <SummaryCell<R, SR>
-            key={column.key}
-            column={column}
-            colSpan={colSpan}
-            row={row}
-          />
-        );
-      })}
+      {cells}
     </div>
   );
 }

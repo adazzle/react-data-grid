@@ -13,10 +13,6 @@ const toolbarClassname = css`
   margin-bottom: 8px;
 `;
 
-const missingClientClassname = css`
-  background-color: #ffb300
-`;
-
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -56,8 +52,6 @@ interface Row {
   available: boolean;
 }
 
-const colSpanRowIds: number[] = [2, 4, 6];
-
 function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
@@ -85,25 +79,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'client',
       name: 'Client',
       width: 220,
-      formatter(props) {
-        if (colSpanRowIds.includes(props.row.id)) {
-          return <>Missing Client</>;
-        }
-        return <>{props.row.client}</>;
-      },
-      editable(row) {
-        return !colSpanRowIds.includes(row.id);
-      },
-      editor: TextEditor,
-      cellClass(row) {
-        return colSpanRowIds.includes(row.id) ? missingClientClassname : undefined;
-      },
-      colSpan(args) {
-        if (args.type === 'ROW' && colSpanRowIds.includes(args.row.id)) {
-          return 4;
-        }
-        return undefined;
-      }
+      editor: TextEditor
     },
     {
       key: 'area',
@@ -152,12 +128,8 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
     },
     {
       key: 'startTimestamp',
-      name: 'Date Range',
+      name: 'Start date',
       width: 100,
-      colSpan({ type }) {
-        if (type !== 'HEADER') return undefined;
-        return 2;
-      },
       formatter(props) {
         return <TimestampFormatter timestamp={props.row.startTimestamp} />;
       }
