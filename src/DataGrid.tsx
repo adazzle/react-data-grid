@@ -23,7 +23,8 @@ import {
   isSelectedCellEditable,
   canExitGrid,
   isCtrlKeyHeldDown,
-  isDefaultCellInput
+  isDefaultCellInput,
+  getColSpan
 } from './utils';
 
 import type {
@@ -797,6 +798,7 @@ function DataGrid<R, SR>({
 
     const ctrlKey = isCtrlKeyHeldDown(event);
     let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
+    nextPosition = getColSpanPosition(nextPosition);
     nextPosition = getNextSelectedCellPosition({
       columns,
       rowsCount: rows.length,
@@ -805,6 +807,23 @@ function DataGrid<R, SR>({
     });
 
     selectCell(nextPosition);
+  }
+
+  function getColSpanPosition(nextPosition: Position) {
+    const row = rows[nextPosition.rowIdx];
+    if (isGroupRow(row)) return nextPosition;
+    // If a cell within the colspan range is selected then move to the
+    // previous or the next cell depending on the navigation direction
+    for (let colIdx = 0; colIdx <= nextPosition.idx; colIdx++) {
+      const column = columns[colIdx];
+      const colSpan = getColSpan<R, SR>(column, columns, { type: 'ROW', row });
+      if (colSpan && nextPosition.idx > column.idx && nextPosition.idx < colSpan + column.idx) {
+        nextPosition.idx = column.idx + (nextPosition.idx - selectedPosition.idx > 0 ? colSpan : 0);
+        break;
+      }
+    }
+
+    return nextPosition;
   }
 
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
@@ -826,7 +845,6 @@ function DataGrid<R, SR>({
         mode: 'EDIT',
         idx: selectedPosition.idx,
         onKeyDown: handleKeyDown,
-        prevIdx: prevSelectedPosition.current.idx,
         editorProps: {
           editorPortalTarget,
           rowHeight,
@@ -840,7 +858,6 @@ function DataGrid<R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
-      prevIdx: prevSelectedPosition.current.idx,
       onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)

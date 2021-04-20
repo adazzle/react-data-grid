@@ -51,16 +51,6 @@ function Row<R, SR = unknown>({
     const colSpan = getColSpan(column, viewportColumns, { type: 'ROW', row });
     if (colSpan !== undefined) {
       index += colSpan - 1;
-      // If a cell within the colspan range is selected then move to the
-      // previous or the next cell depending on the navigation direction
-      const isColSpanCellSelected = selectedCellProps && selectedCellProps.idx > column.idx && selectedCellProps.idx < column.idx + colSpan;
-      if (isColSpanCellSelected) {
-        const { prevIdx } = selectedCellProps!;
-        selectCell({
-          rowIdx,
-          idx: column.idx + (column.idx - prevIdx >= 0 ? colSpan : 0)
-        });
-      }
     }
 
     const isCellSelected = selectedCellProps?.idx === column.idx;
