@@ -15,15 +15,11 @@ export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter
 }
 
 export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>, colSpan?: number): React.CSSProperties {
-  const style: CSSProperties = {
+  return {
     gridColumnStart: column.idx + 1,
-    gridColumnEnd: colSpan ? `span ${colSpan}` : undefined
+    gridColumnEnd: colSpan ? `span ${colSpan}` : undefined,
+    left: column.frozen ? `var(--frozen-left-${column.key})` : undefined
   };
-  if (column.frozen) {
-    style.left = `var(--frozen-left-${column.key})`;
-  }
-
-  return style;
 }
 
 export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extraClasses: Parameters<typeof clsx>): string {
