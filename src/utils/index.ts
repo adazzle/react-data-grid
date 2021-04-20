@@ -35,9 +35,9 @@ export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, viewportColum
   const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : column.colSpan;
   if (
     Number.isInteger(colSpan)
-    && (colSpan as number) > 1
+    && colSpan! > 1
     // ignore colSpan if it spans over both frozen and regular columns
-    && !areColSpanColumnsCompatible(column, viewportColumns, colSpan)
+    && !areColSpanColumnsCompatible(column, viewportColumns, colSpan!)
   ) {
     return undefined;
   }
