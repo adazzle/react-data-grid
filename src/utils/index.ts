@@ -34,9 +34,8 @@ export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extr
 export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, viewportColumns: readonly CalculatedColumn<R, SR>[], args: ColSpanArgs<R, SR>) {
   const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : column.colSpan;
   if (
-    colSpan
-    && colSpan > 1
-    && Number.isInteger(colSpan)
+    Number.isInteger(colSpan)
+    && (colSpan as number) > 1
     // ignore colSpan if it spans over both frozen and regular columns
     && !areColSpanColumnsCompatible(column, viewportColumns, colSpan)
   ) {
