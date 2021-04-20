@@ -36,28 +36,24 @@ export function useViewportColumns<R, SR>({
       }
     };
 
-    // check header
     for (let colIdx = 0; colIdx < colOverscanStartIdx; colIdx++) {
+      // check header
       const column = columns[colIdx];
       const colSpan = getColSpan(column, columns, { type: 'HEADER' });
       updateStartIdx(colIdx, colSpan);
-    }
 
-    // check viewport
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-      const row = rows[rowIdx];
-      if (isGroupRow(row)) continue;
-      for (let colIdx = 0; colIdx < colOverscanStartIdx; colIdx++) {
+      // check viewport
+      for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+        const row = rows[rowIdx];
+        if (isGroupRow(row)) continue;
         const column = columns[colIdx];
         const colSpan = getColSpan(column, columns, { type: 'ROW', row });
         updateStartIdx(colIdx, colSpan);
       }
-    }
 
-    // check summary rows
-    if (summaryRows) {
-      for (const row of summaryRows) {
-        for (let colIdx = 0; colIdx < colOverscanStartIdx; colIdx++) {
+      // check summary rows
+      if (summaryRows) {
+        for (const row of summaryRows) {
           const column = columns[colIdx];
           const colSpan = getColSpan(column, columns, { type: 'SUMMARY', row });
           updateStartIdx(colIdx, colSpan);
