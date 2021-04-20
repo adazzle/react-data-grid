@@ -23,6 +23,7 @@ type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
   | 'sortColumn'
   | 'sortDirection'
   | 'onSort'
+  | 'sortData'
 >;
 
 interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
@@ -34,9 +35,15 @@ export default function SortableHeaderCell<R, SR>({
   onSort,
   sortColumn,
   sortDirection,
+  sortData,
   children
 }: Props<R, SR>) {
-  sortDirection = sortColumn === column.key && sortDirection || 'NONE';
+
+  const index = sortData?.findIndex(sort => sort.sortColumn === column.key);
+  const priority = (index !== undefined) ? index + 1 : -1;
+  sortDirection = (index !== undefined &&  priority > 0) ? sortData?.[index].direction : "NONE";
+  
+  
   let sortText = '';
   if (sortDirection === 'ASC') {
     sortText = '\u25B2';
@@ -46,7 +53,6 @@ export default function SortableHeaderCell<R, SR>({
 
   function onClick(e: any) {
     if (!onSort) return;
-    const ctrl = (e.ctrlKey) ? true : false;
     const { sortDescendingFirst } = column;
     let direction: SortDirection;
     switch (sortDirection) {
@@ -60,12 +66,13 @@ export default function SortableHeaderCell<R, SR>({
         direction = sortDescendingFirst ? 'DESC' : 'ASC';
         break;
     }
-    onSort(column.key, direction, ctrl);
+    onSort(column.key, direction, e.ctrlKey);
   }
 
   return (
     <span className={headerSortCellClassname} onClick={e=>onClick(e)}>
       <span className={headerSortNameClassname}>{children}</span>
+        {sortText && <span>{priority}</span>}
       <span>{sortText}</span>
     </span>
   );

@@ -35,6 +35,7 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
   | 'sortDirection'
   | 'onSort'
   | 'allRowsSelected'
+  | 'sortData'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -50,6 +51,7 @@ export default function HeaderCell<R, SR>({
   onAllRowsSelectionChange,
   sortColumn,
   sortDirection,
+  sortData,
   onSort
 }: HeaderCellProps<R, SR>) {
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -109,6 +111,7 @@ export default function HeaderCell<R, SR>({
           onSort={onSort}
           sortColumn={sortColumn}
           sortDirection={sortDirection}
+          sortData = {sortData}
         >
           {column.name}
         </SortableHeaderCell>

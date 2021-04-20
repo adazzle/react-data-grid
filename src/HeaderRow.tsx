@@ -60,6 +60,7 @@ function HeaderRow<R, SR>({
             onSort={onSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}
+            sortData = {sortData}
           />
         );
       })}

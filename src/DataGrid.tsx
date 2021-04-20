@@ -119,10 +119,10 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   sortColumn?: string;
   /** The direction to sort the sortColumn*/
   sortDirection?: SortDirection;
-  /**The sorting array used for mult column sorting */
+  /**Used for multi column sorting */
   sortData?: Sorts[];
   /** Function called whenever grid is sorted*/
-  onSort?: (columnKey: string, direction: SortDirection, ctrl: boolean) => void;
+  onSort?: (columnKey: string, direction: SortDirection, ctrlClick: boolean) => void;
   filters?: Readonly<Filters>;
   onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;

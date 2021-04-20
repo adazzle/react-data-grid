@@ -216,7 +216,7 @@ function createRows(): readonly Row[] {
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   //const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
-  const [sorts, updateSorts] = useState<Sorts[]>();
+  const [sortData, updateSorts] = useState<Sorts[]>([]);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
@@ -256,49 +256,37 @@ export function CommonFeatures() {
     }
   }
   const sortedRows: readonly Row[] = useMemo(() => {
-    if(sorts.length===0) return rows;
+    if(sortData.length === 0) return rows;
 
     let sortedRows: Row[] = [...rows];
-
-    // switch (sortColumn) {
-    //   case 'assignee':
-    //   case 'title':
-    //   case 'client':
-    //   case 'area':
-    //   case 'country':
-    //   case 'contact':
-    //   case 'transaction':
-    //   case 'account':
-    //   case 'version':
-    //     sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
-    //     break;
-    //   case 'available':
-    //     sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
-    //     break;
-    //   case 'id':
-    //   case 'progress':
-    //   case 'startTimestamp':
-    //   case 'endTimestamp':
-    //   case 'budget':
-    //     sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
-    //     break;
-    //   default:
-    // }
-
+    
     //return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sorts]); //sortDirection, sortColumn]);
+    return sortedRows;
+  }, [rows, sortData]); 
 
-  const handleSort = useCallback((columnKey: string, direction: SortDirection, ctrl: boolean) => {
-    if(ctrl)
-    {
-      //update sorts array 
-    }
-    else {
-      //clear sorts array
-      //add new sort
-    }
-    //setSort([columnKey, direction]);
-  }, []);
+  const onMultiSort = (columnKey: string) => {
+    let newSorts = [...sortData];
+      const index = newSorts.findIndex(sort => sort.sortColumn === columnKey);
+      if(index != -1) //check if sort exists
+      {
+        const sort = newSorts.find(sort => sort.sortColumn === columnKey);
+        sort.direction === 'ASC' ? sort.direction = 'DESC': newSorts.splice(index,1);
+      } 
+      else { //add new sort
+        newSorts = [
+          ...newSorts,
+          {
+            sortColumn: columnKey,
+            direction: 'ASC'
+          }
+        ];
+      }
+      updateSorts([...newSorts]);
+  }
+
+  const handleSort = useCallback((columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
+    ctrlClick ? onMultiSort(columnKey) : updateSorts([{sortColumn:columnKey, direction: direction}]);
+  }, [sortData]);
 
   return (
     <DataGrid
@@ -312,9 +300,7 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      //sortColumn={sortColumn}
-      //sortDirection={sortDirection}
-      sortData = {sorts}
+      sortData = {sortData}
       onSort={handleSort}
       summaryRows={summaryRows}
       className="fill-grid"
