@@ -26,7 +26,7 @@ function SummaryRow<R, SR>({
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
     const colSpan = getColSpan(column, viewportColumns, { type: 'HEADER' });
-    if (colSpan && colSpan > 1) {
+    if (colSpan !== undefined) {
       index += colSpan - 1;
     }
 

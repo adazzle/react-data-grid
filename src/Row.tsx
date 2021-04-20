@@ -49,7 +49,7 @@ function Row<R, SR = unknown>({
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
     const colSpan = getColSpan(column, viewportColumns, { type: 'ROW', row });
-    if (colSpan && colSpan > 1) {
+    if (colSpan !== undefined) {
       index += colSpan - 1;
       // If a cell within the colspan range is selected then move to the
       // previous or the next cell depending on the navigation direction
