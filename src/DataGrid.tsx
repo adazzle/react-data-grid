@@ -69,6 +69,7 @@ export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, openEditor?: boolean) => void;
+  commitEditorChanges: () => void;
 }
 
 type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
@@ -315,7 +316,8 @@ function DataGrid<R, SR>({
         behavior: 'smooth'
       });
     },
-    selectCell
+    selectCell,
+    commitEditorChanges
   }));
 
   useEffect(() => commitEditorChangesWrapper, [commitEditorChangesWrapper]);
