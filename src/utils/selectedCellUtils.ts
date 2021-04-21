@@ -86,9 +86,9 @@ export function getNextSelectedCellPosition<R, SR>({
   if (isGroupRow(row)) return position;
   // If a cell within the colspan range is selected then move to the
   // previous or the next cell depending on the navigation direction
+  const posIdx = position.idx;
   for (const column of colSpanColumns) {
     const colIdx = column.idx;
-    const posIdx = position.idx;
     if (colIdx > posIdx) break;
     const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
     if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
