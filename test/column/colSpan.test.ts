@@ -111,7 +111,7 @@ describe('colSpan', () => {
     function testSelectedCell(expectedRowIdx: number, expectedColIdx: number) {
       const selectedCell = getSelectedCell();
       expect(selectedCell).toHaveAttribute('aria-colindex', `${expectedColIdx + 1}`);
-      expect(selectedCell.parentElement).toHaveAttribute('aria-rowindex', `${expectedRowIdx + 2}`); // +1 to account for the header row
+      expect(selectedCell.parentElement!).toHaveAttribute('aria-rowindex', `${expectedRowIdx + 2}`); // +1 to account for the header row
     }
   });
 });
