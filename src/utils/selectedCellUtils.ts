@@ -88,10 +88,11 @@ export function getNextSelectedCellPosition<R, SR>({
   // previous or the next cell depending on the navigation direction
   for (const column of colSpanColumns) {
     const colIdx = column.idx;
-    if (colIdx > position.idx) break;
+    const posIdx = position.idx;
+    if (colIdx > posIdx) break;
     const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
-    if (colSpan && position.idx > column.idx && position.idx < colSpan + column.idx) {
-      position.idx = column.idx + (position.idx - currentPosition.idx > 0 ? colSpan : 0);
+    if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
+      position.idx = colIdx + (posIdx - currentPosition.idx > 0 ? colSpan : 0);
       break;
     }
   }
