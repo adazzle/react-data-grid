@@ -42,7 +42,7 @@ export function useViewportColumns<R, SR>({
     for (const column of colSpanColumns) {
       // check header row
       const colIdx = column.idx;
-      if (colIdx >= colOverscanStartIdx) break;
+      if (colIdx >= startIdx) break;
       updateStartIdx(colIdx, getColSpan(column, columns, { type: 'HEADER' }));
 
       // check filter row
