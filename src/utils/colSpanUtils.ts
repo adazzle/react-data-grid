@@ -1,7 +1,7 @@
 import type { CalculatedColumn, ColSpanArgs } from '../types';
 
 export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, lastFrozenColumnIndex: number, args: ColSpanArgs<R, SR>) {
-  const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : column.colSpan;
+  const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : null;
   if (
     Number.isInteger(colSpan)
     && colSpan! > 1
