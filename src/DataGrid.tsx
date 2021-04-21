@@ -300,6 +300,7 @@ function DataGrid<R, SR>({
     rowOverscanEndIdx,
     rows,
     summaryRows,
+    enableFilterRow,
     isGroupRow
   });
 
