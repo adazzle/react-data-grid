@@ -67,7 +67,7 @@ export function useViewportColumns<R, SR>({
     }
 
     return startIdx;
-  }, [colOverscanStartIdx, colSpanColumns, columns, enableFilterRow, isGroupRow, rowOverscanEndIdx, rowOverscanStartIdx, rows, summaryRows]);
+  }, [rowOverscanStartIdx, rowOverscanEndIdx, rows, summaryRows, colOverscanStartIdx, columns, colSpanColumns, isGroupRow, enableFilterRow]);
 
   return useMemo((): readonly CalculatedColumn<R, SR>[] => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];
