@@ -41,7 +41,7 @@ export default function SortableHeaderCell<R, SR>({
 
   const index = sortData?.findIndex(sort => sort.sortColumn === column.key);
   const priority = (index !== undefined) ? index + 1 : -1;
-  sortDirection = (index !== undefined &&  priority > 0) ? sortData?.[index].direction : "NONE";
+  sortDirection = (index !== undefined &&  priority > 0) ? sortData?.[index].direction : undefined;
   
   
   let sortText = '';

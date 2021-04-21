@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import faker from 'faker';
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, Row } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -190,7 +190,7 @@ function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 100; i++) {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
@@ -215,7 +215,6 @@ function createRows(): readonly Row[] {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  //const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [sortData, updateSorts] = useState<Sorts[]>([]);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
@@ -256,36 +255,45 @@ export function CommonFeatures() {
     }
   }
   const sortedRows: readonly Row[] = useMemo(() => {
-    if(sortData.length === 0) return rows;
+    if(sortData.length === 0) return [...rows];
 
     let sortedRows: Row[] = [...rows];
-    
-    //return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
+    let compResult = 0;
+    sortedRows.sort((a: Row, b:Row) => {
+      for(const sort of sortData){
+        const comparator = getComparator(sort.sortColumn);
+        compResult = (comparator(a,b));
+        if(compResult !== 0)
+        {
+          compResult = sort.direction === 'ASC' ? compResult : -compResult;
+        }
+      }
+      return compResult;
+    });
     return sortedRows;
   }, [rows, sortData]); 
-
+  
   const onMultiSort = (columnKey: string) => {
     let newSorts = [...sortData];
       const index = newSorts.findIndex(sort => sort.sortColumn === columnKey);
-      if(index != -1) //check if sort exists
+      if(index != -1) 
       {
         const sort = newSorts.find(sort => sort.sortColumn === columnKey);
         sort.direction === 'ASC' ? sort.direction = 'DESC': newSorts.splice(index,1);
       } 
-      else { //add new sort
-        newSorts = [
-          ...newSorts,
-          {
-            sortColumn: columnKey,
-            direction: 'ASC'
-          }
-        ];
+      else { 
+        newSorts.push({sortColumn: columnKey, direction: 'ASC'});
       }
       updateSorts([...newSorts]);
   }
 
   const handleSort = useCallback((columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
-    ctrlClick ? onMultiSort(columnKey) : updateSorts([{sortColumn:columnKey, direction: direction}]);
+    if(ctrlClick){ 
+      onMultiSort(columnKey) 
+    }
+    else { 
+      updateSorts([{sortColumn:columnKey, direction: direction}]);
+    }
   }, [sortData]);
 
   return (

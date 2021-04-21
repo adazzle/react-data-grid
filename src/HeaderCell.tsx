@@ -109,8 +109,6 @@ export default function HeaderCell<R, SR>({
         <SortableHeaderCell
           column={column}
           onSort={onSort}
-          sortColumn={sortColumn}
-          sortDirection={sortDirection}
           sortData = {sortData}
         >
           {column.name}
