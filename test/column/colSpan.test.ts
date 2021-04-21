@@ -20,6 +20,7 @@ describe('colSpan', () => {
             if (key === '2' && args.row === 2) return 3;
             if (key === '4' && args.row === 4) return 6; // Will not work as colspan includes both frozen and regular columns
             if (key === '0' && args.row === 5) return 5;
+            if (key === '12' && args.row === 8) return 3;
             if (key === '6' && args.row < 8) return 2;
           }
           if (args.type === 'HEADER' && key === '8') {
@@ -94,7 +95,19 @@ describe('colSpan', () => {
     testSelectedCell(5, 0);
     userEvent.type(document.activeElement!, '{arrowright}');
     testSelectedCell(5, 5);
-
+    userEvent.tab({ shift: true });
+    userEvent.tab({ shift: true });
+    testSelectedCell(4, 14);
+    userEvent.tab();
+    testSelectedCell(5, 0);
+    userEvent.click(getCellsAtRowIndex(8)[11]);
+    testSelectedCell(8, 11);
+    userEvent.tab();
+    testSelectedCell(8, 12);
+    userEvent.tab();
+    testSelectedCell(9, 0);
+    userEvent.tab({ shift: true });
+    testSelectedCell(8, 12);
 
     function testSelectedCell(expectedRowIdx: number, expectedColIdx: number) {
       const selectedCell = getSelectedCell();
