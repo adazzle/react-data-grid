@@ -35,34 +35,34 @@ export function useViewportColumns<R, SR>({
     let startIdx = colOverscanStartIdx;
 
     const updateStartIdx = (colIdx: number, colSpan: number | undefined) => {
-      if (!colSpan) return;
+      if (!colSpan) return false;
       if ((colIdx + colSpan) > colOverscanStartIdx && colIdx < startIdx) {
         startIdx = colIdx;
+        return true;
       }
+      return false;
     };
 
     for (const column of colSpanColumns) {
       // check header row
       const colIdx = column.idx;
       if (colIdx >= startIdx) break;
-      updateStartIdx(colIdx, getColSpan(column, columns, { type: 'HEADER' }));
+      if (updateStartIdx(colIdx, getColSpan(column, columns, { type: 'HEADER' }))) break;
 
       // check filter row
-      if (enableFilterRow) {
-        updateStartIdx(colIdx, getColSpan(column, columns, { type: 'FILTER' }));
-      }
+      if (enableFilterRow && updateStartIdx(colIdx, getColSpan(column, columns, { type: 'FILTER' }))) break;
 
       // check viewport rows
       for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
         const row = rows[rowIdx];
         if (isGroupRow(row)) continue;
-        updateStartIdx(colIdx, getColSpan(column, columns, { type: 'ROW', row }));
+        if (updateStartIdx(colIdx, getColSpan(column, columns, { type: 'ROW', row }))) break;
       }
 
       // check summary rows
       if (summaryRows !== undefined) {
         for (const row of summaryRows) {
-          updateStartIdx(colIdx, getColSpan(column, columns, { type: 'SUMMARY', row }));
+          if (updateStartIdx(colIdx, getColSpan(column, columns, { type: 'SUMMARY', row }))) break;
         }
       }
     }
