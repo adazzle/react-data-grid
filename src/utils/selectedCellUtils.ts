@@ -42,6 +42,29 @@ export function getNextSelectedCellPosition<R, SR>({
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   const rowsCount = rows.length;
   let position = nextPosition;
+
+  const setColSpan = (moveRight: boolean) => {
+    const row = rows[position.rowIdx];
+    if (!isGroupRow(row)) {
+      // If a cell within the colspan range is selected then move to the
+      // previous or the next cell depending on the navigation direction
+      const posIdx = position.idx;
+      for (const column of colSpanColumns) {
+        const colIdx = column.idx;
+        if (colIdx > posIdx) break;
+        const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
+        if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
+          position.idx = colIdx + (moveRight ? colSpan : 0);
+          break;
+        }
+      }
+    }
+  };
+
+  if (isCellWithinBounds(position)) {
+    setColSpan(position.idx - currentPosition.idx > 0);
+  }
+
   if (cellNavigationMode !== 'NONE') {
     const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
@@ -63,6 +86,7 @@ export function getNextSelectedCellPosition<R, SR>({
           idx: 0
         };
       }
+      setColSpan(true);
     } else if (isBeforeFirstColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
         const isFirstRow = rowIdx === 0;
@@ -79,22 +103,7 @@ export function getNextSelectedCellPosition<R, SR>({
         };
       }
     }
-  }
-
-  if (!isCellWithinBounds(position)) return position;
-  const row = rows[position.rowIdx];
-  if (isGroupRow(row)) return position;
-  // If a cell within the colspan range is selected then move to the
-  // previous or the next cell depending on the navigation direction
-  const posIdx = position.idx;
-  for (const column of colSpanColumns) {
-    const colIdx = column.idx;
-    if (colIdx > posIdx) break;
-    const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
-    if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
-      position.idx = colIdx + (posIdx - currentPosition.idx > 0 ? colSpan : 0);
-      break;
-    }
+    setColSpan(false);
   }
 
   return position;
