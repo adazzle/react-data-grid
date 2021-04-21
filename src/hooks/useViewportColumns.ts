@@ -30,6 +30,8 @@ export function useViewportColumns<R, SR>({
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
   const startIdx = useMemo(() => {
+    if (colOverscanStartIdx === 0) return 0;
+
     let startIdx = colOverscanStartIdx;
 
     const updateStartIdx = (colIdx: number, colSpan: number | undefined) => {
