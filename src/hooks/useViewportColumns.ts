@@ -59,7 +59,7 @@ export function useViewportColumns<R, SR>({
       }
 
       // check summary rows
-      if (summaryRows) {
+      if (summaryRows !== undefined) {
         for (const row of summaryRows) {
           updateStartIdx(colIdx, getColSpan(column, columns, { type: 'SUMMARY', row }));
         }
