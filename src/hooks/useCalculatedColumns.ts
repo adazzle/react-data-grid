@@ -28,7 +28,7 @@ export function useCalculatedColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
@@ -85,11 +85,16 @@ export function useCalculatedColumns<R, SR>({
       return 0;
     });
 
+    const colSpanColumns: CalculatedColumn<R, SR>[] = [];
     columns.forEach((column, idx) => {
       column.idx = idx;
 
       if (column.rowGroup) {
         groupBy.push(column.key);
+      }
+
+      if (column.colSpan) {
+        colSpanColumns.push(column);
       }
     });
 
@@ -99,6 +104,7 @@ export function useCalculatedColumns<R, SR>({
 
     return {
       columns,
+      colSpanColumns,
       lastFrozenColumnIndex,
       groupBy
     };
@@ -129,7 +135,7 @@ export function useCalculatedColumns<R, SR>({
     const unallocatedColumnWidth = unallocatedWidth / unassignedColumnsCount;
 
     for (const column of columns) {
-      let width;
+      let width: number;
       if (columnMetrics.has(column)) {
         const columnMetric = columnMetrics.get(column)!;
         columnMetric.left = left;
@@ -208,6 +214,7 @@ export function useCalculatedColumns<R, SR>({
 
   return {
     columns,
+    colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,

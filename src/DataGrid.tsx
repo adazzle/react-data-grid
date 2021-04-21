@@ -261,6 +261,7 @@ function DataGrid<R, SR>({
 
   const {
     columns,
+    colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
@@ -292,6 +293,7 @@ function DataGrid<R, SR>({
 
   const viewportColumns = useViewportColumns({
     columns,
+    colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
     rowOverscanStartIdx,
@@ -818,8 +820,9 @@ function DataGrid<R, SR>({
     if (isGroupRow(row)) return nextPosition;
     // If a cell within the colspan range is selected then move to the
     // previous or the next cell depending on the navigation direction
-    for (let colIdx = 0; colIdx <= nextPosition.idx; colIdx++) {
-      const column = columns[colIdx];
+    for (const column of colSpanColumns) {
+      const colIdx = column.idx;
+      if (colIdx > nextPosition.idx) break;
       const colSpan = getColSpan<R, SR>(column, columns, { type: 'ROW', row });
       if (colSpan && nextPosition.idx > column.idx && nextPosition.idx < colSpan + column.idx) {
         nextPosition.idx = column.idx + (nextPosition.idx - selectedPosition.idx > 0 ? colSpan : 0);

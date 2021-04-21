@@ -5,6 +5,7 @@ import type { CalculatedColumn, GroupRow } from '../types';
 
 interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
+  colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
   summaryRows: readonly SR[] | undefined;
   colOverscanStartIdx: number;
@@ -16,6 +17,7 @@ interface ViewportColumnsArgs<R, SR> {
 
 export function useViewportColumns<R, SR>({
   columns,
+  colSpanColumns,
   rows,
   summaryRows,
   colOverscanStartIdx,
@@ -36,9 +38,10 @@ export function useViewportColumns<R, SR>({
       }
     };
 
-    for (let colIdx = 0; colIdx < colOverscanStartIdx; colIdx++) {
+    for (const column of colSpanColumns) {
       // check header
-      const column = columns[colIdx];
+      const colIdx = column.idx;
+      if (colIdx >= colOverscanStartIdx) break;
       const colSpan = getColSpan(column, columns, { type: 'HEADER' });
       updateStartIdx(colIdx, colSpan);
 
@@ -62,7 +65,7 @@ export function useViewportColumns<R, SR>({
     }
 
     return startIdx;
-  }, [colOverscanStartIdx, columns, isGroupRow, rowOverscanEndIdx, rowOverscanStartIdx, rows, summaryRows]);
+  }, [colOverscanStartIdx, colSpanColumns, columns, isGroupRow, rowOverscanEndIdx, rowOverscanStartIdx, rows, summaryRows]);
 
   return useMemo((): readonly CalculatedColumn<R, SR>[] => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];
