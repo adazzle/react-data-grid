@@ -1,8 +1,9 @@
 import clsx from 'clsx';
 
-import type { CalculatedColumn, ColSpanArgs } from '../types';
+import type { CalculatedColumn } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
 
+export * from './colSpanUtils';
 export * from './domUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
@@ -29,17 +30,4 @@ export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extr
     },
     ...extraClasses
   );
-}
-
-export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, lastFrozenColumnIndex: number, args: ColSpanArgs<R, SR>) {
-  const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : column.colSpan;
-  if (
-    Number.isInteger(colSpan)
-    && colSpan! > 1
-    // ignore colSpan if it spans over both frozen and regular columns
-    && (!column.frozen || (column.idx + colSpan! - 1) <= lastFrozenColumnIndex)
-  ) {
-    return colSpan;
-  }
-  return undefined;
 }

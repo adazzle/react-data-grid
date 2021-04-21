@@ -23,8 +23,7 @@ import {
   isSelectedCellEditable,
   canExitGrid,
   isCtrlKeyHeldDown,
-  isDefaultCellInput,
-  getColSpan
+  isDefaultCellInput
 } from './utils';
 
 import type {
@@ -804,35 +803,19 @@ function DataGrid<R, SR>({
     event.preventDefault();
 
     const ctrlKey = isCtrlKeyHeldDown(event);
-    let nextPosition = getNextPosition(key, ctrlKey, shiftKey);
-    nextPosition = getNextSelectedCellPosition({
+    const nextPosition = getNextSelectedCellPosition({
       columns,
-      rowsCount: rows.length,
+      colSpanColumns,
+      rows,
+      lastFrozenColumnIndex,
       cellNavigationMode: mode,
-      nextPosition
+      currentPosition: selectedPosition,
+      nextPosition: getNextPosition(key, ctrlKey, shiftKey),
+      isCellWithinBounds,
+      isGroupRow
     });
-    nextPosition = getColSpanPosition(nextPosition);
 
     selectCell(nextPosition);
-  }
-
-  function getColSpanPosition(nextPosition: Position) {
-    if (!isCellWithinBounds(nextPosition)) return nextPosition;
-    const row = rows[nextPosition.rowIdx];
-    if (isGroupRow(row)) return nextPosition;
-    // If a cell within the colspan range is selected then move to the
-    // previous or the next cell depending on the navigation direction
-    for (const column of colSpanColumns) {
-      const colIdx = column.idx;
-      if (colIdx > nextPosition.idx) break;
-      const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
-      if (colSpan && nextPosition.idx > column.idx && nextPosition.idx < colSpan + column.idx) {
-        nextPosition.idx = column.idx + (nextPosition.idx - selectedPosition.idx > 0 ? colSpan : 0);
-        break;
-      }
-    }
-
-    return nextPosition;
   }
 
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
