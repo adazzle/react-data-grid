@@ -165,6 +165,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   rowIdx: number;
   copiedCellIdx?: number;
   draggedOverCellIdx?: number;
+  lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   top: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;

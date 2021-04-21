@@ -296,6 +296,7 @@ function DataGrid<R, SR>({
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
+    lastFrozenColumnIndex,
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
@@ -824,7 +825,7 @@ function DataGrid<R, SR>({
     for (const column of colSpanColumns) {
       const colIdx = column.idx;
       if (colIdx > nextPosition.idx) break;
-      const colSpan = getColSpan<R, SR>(column, columns, { type: 'ROW', row });
+      const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
       if (colSpan && nextPosition.idx > column.idx && nextPosition.idx < colSpan + column.idx) {
         nextPosition.idx = column.idx + (nextPosition.idx - selectedPosition.idx > 0 ? colSpan : 0);
         break;
@@ -932,6 +933,7 @@ function DataGrid<R, SR>({
           copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
           selectedCellProps={getSelectedCellProps(rowIdx)}
           onRowChange={handleFormatterRowChangeWrapper}
           selectCell={selectCellWrapper}
@@ -986,6 +988,7 @@ function DataGrid<R, SR>({
         sortColumn={sortColumn}
         sortDirection={sortDirection}
         onSort={onSort}
+        lastFrozenColumnIndex={lastFrozenColumnIndex}
       />
       {enableFilterRow && (
         <FilterRow<R, SR>
@@ -1013,6 +1016,7 @@ function DataGrid<R, SR>({
               row={row}
               bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
               viewportColumns={viewportColumns}
+              lastFrozenColumnIndex={lastFrozenColumnIndex}
             />
           ))}
         </>

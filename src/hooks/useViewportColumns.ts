@@ -10,6 +10,7 @@ interface ViewportColumnsArgs<R, SR> {
   summaryRows: readonly SR[] | undefined;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
+  lastFrozenColumnIndex: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
   enableFilterRow: boolean;
@@ -23,6 +24,7 @@ export function useViewportColumns<R, SR>({
   summaryRows,
   colOverscanStartIdx,
   colOverscanEndIdx,
+  lastFrozenColumnIndex,
   rowOverscanStartIdx,
   rowOverscanEndIdx,
   enableFilterRow,
@@ -47,28 +49,28 @@ export function useViewportColumns<R, SR>({
       // check header row
       const colIdx = column.idx;
       if (colIdx >= startIdx) break;
-      if (updateStartIdx(colIdx, getColSpan(column, columns, { type: 'HEADER' }))) break;
+      if (updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' }))) break;
 
       // check filter row
-      if (enableFilterRow && updateStartIdx(colIdx, getColSpan(column, columns, { type: 'FILTER' }))) break;
+      if (enableFilterRow && updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'FILTER' }))) break;
 
       // check viewport rows
       for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
         const row = rows[rowIdx];
         if (isGroupRow(row)) continue;
-        if (updateStartIdx(colIdx, getColSpan(column, columns, { type: 'ROW', row }))) break;
+        if (updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row }))) break;
       }
 
       // check summary rows
       if (summaryRows !== undefined) {
         for (const row of summaryRows) {
-          if (updateStartIdx(colIdx, getColSpan(column, columns, { type: 'SUMMARY', row }))) break;
+          if (updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'SUMMARY', row }))) break;
         }
       }
     }
 
     return startIdx;
-  }, [rowOverscanStartIdx, rowOverscanEndIdx, rows, summaryRows, colOverscanStartIdx, columns, colSpanColumns, isGroupRow, enableFilterRow]);
+  }, [rowOverscanStartIdx, rowOverscanEndIdx, rows, summaryRows, colOverscanStartIdx, lastFrozenColumnIndex, colSpanColumns, isGroupRow, enableFilterRow]);
 
   return useMemo((): readonly CalculatedColumn<R, SR>[] => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];

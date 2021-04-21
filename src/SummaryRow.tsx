@@ -13,6 +13,7 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   'aria-rowindex': number;
   row: SR;
   bottom: number;
+  lastFrozenColumnIndex: number;
 }
 
 function SummaryRow<R, SR>({
@@ -20,12 +21,13 @@ function SummaryRow<R, SR>({
   row,
   viewportColumns,
   bottom,
+  lastFrozenColumnIndex,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
   const cells = [];
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
-    const colSpan = getColSpan(column, viewportColumns, { type: 'HEADER' });
+    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
     if (colSpan !== undefined) {
       index += colSpan - 1;
     }

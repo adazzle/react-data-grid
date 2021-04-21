@@ -31,31 +31,15 @@ export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extr
   );
 }
 
-export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, viewportColumns: readonly CalculatedColumn<R, SR>[], args: ColSpanArgs<R, SR>) {
+export function getColSpan<R, SR>(column: CalculatedColumn<R, SR>, lastFrozenColumnIndex: number, args: ColSpanArgs<R, SR>) {
   const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : column.colSpan;
   if (
     Number.isInteger(colSpan)
     && colSpan! > 1
     // ignore colSpan if it spans over both frozen and regular columns
-    && !areColSpanColumnsCompatible(column, viewportColumns, colSpan!)
+    && (!column.frozen || (column.idx + colSpan! - 1) <= lastFrozenColumnIndex)
   ) {
-    return undefined;
+    return colSpan;
   }
-  return colSpan;
-}
-
-function areColSpanColumnsCompatible<R, SR>(column: CalculatedColumn<R, SR>, viewportColumns: readonly CalculatedColumn<R, SR>[], colSpan: number) {
-  const isFrozen = column.frozen;
-  if (!isFrozen) return true;
-  const startIdx = column.idx - viewportColumns[0].idx;
-  for (
-    let index = 1;
-    index < colSpan && startIdx + index < viewportColumns.length;
-    index++
-  ) {
-    if (viewportColumns[startIdx + index].frozen !== isFrozen) {
-      return false;
-    }
-  }
-  return true;
+  return undefined;
 }
