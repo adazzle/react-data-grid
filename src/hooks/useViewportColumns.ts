@@ -34,8 +34,7 @@ export function useViewportColumns<R, SR>({
 
     const updateStartIdx = (colIdx: number, colSpan: number | undefined) => {
       if (!colSpan) return;
-      const newStartIdx = colIdx + colSpan;
-      if (newStartIdx > colOverscanStartIdx && colIdx < startIdx) {
+      if ((colIdx + colSpan) > colOverscanStartIdx && colIdx < startIdx) {
         startIdx = colIdx;
       }
     };
