@@ -27,16 +27,6 @@ describe('colSpan', () => {
             return 3;
           }
           return undefined;
-        },
-        cellClass(row) {
-          if (
-            (key === '0' && row === 5)
-              || (key === '2' && row === 2)
-              || (key === '6' && row < 8)
-          ) {
-            return 'col-span';
-          }
-          return undefined;
         }
       });
     }
