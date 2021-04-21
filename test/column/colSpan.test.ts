@@ -8,7 +8,7 @@ describe('colSpan', () => {
   function setupColSpanGrid() {
     const columns: Column<Row>[] = [];
     type Row = number;
-    const rows: readonly Row[] = [...Array(30).keys()];
+    const rows: readonly Row[] = [...Array(10).keys()];
 
     for (let i = 0; i < 15; i++) {
       const key = String(i);
