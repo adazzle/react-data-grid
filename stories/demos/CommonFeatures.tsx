@@ -292,7 +292,8 @@ export function CommonFeatures() {
       onMultiSort(columnKey) 
     }
     else { 
-      updateSorts([{sortColumn:columnKey, direction: direction}]);
+      if(direction === "NONE") updateSorts([]);
+      else updateSorts([{sortColumn:columnKey, direction: direction}]);
     }
   }, [sortData]);
 
