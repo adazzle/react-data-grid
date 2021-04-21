@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
@@ -13,6 +13,10 @@ export function setup<R, SR>(props: DataGridProps<R, SR>) {
 
 export function getRows() {
   return screen.getAllByRole('row').slice(1);
+}
+
+export function getCellsAtRowIndex(rowIdx: number) {
+  return within(getRows()[rowIdx]).getAllByRole('gridcell');
 }
 
 export function getCells() {

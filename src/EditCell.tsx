@@ -16,6 +16,7 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
   | 'rowIdx'
   | 'row'
   | 'column'
+  | 'colSpan'
 >;
 
 interface EditCellProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -25,6 +26,7 @@ interface EditCellProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<Reac
 export default function EditCell<R, SR>({
   className,
   column,
+  colSpan,
   row,
   rowIdx,
   editorProps,
@@ -73,7 +75,7 @@ export default function EditCell<R, SR>({
       aria-selected
       ref={cellRef}
       className={className}
-      style={getCellStyle(column)}
+      style={getCellStyle(column, colSpan)}
       {...props}
     >
       {getCellContent()}
