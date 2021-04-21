@@ -2,7 +2,7 @@ import { within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
-import { setup, getRows, getHeaderCells, getSelectedCell } from '../utils';
+import { setup, getCellsAtRowIndex, getHeaderCells, getSelectedCell } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid() {
@@ -39,40 +39,39 @@ describe('colSpan', () => {
     expect(getHeaderCells()).toHaveLength(13);
 
     // rows
-    const gridRows = getRows();
-    const getCells = (rowIdx: number) => within(gridRows[rowIdx]).getAllByRole('gridcell');
-    expect(getCells(1)).toHaveLength(14);
+    const row1 = getCellsAtRowIndex(1);
+    expect(row1).toHaveLength(14);
     // 7th-8th cells are merged
-    expect(getCells(1)[6]).toHaveAttribute('aria-colindex', '7');
-    expect(getCells(1)[7]).toHaveAttribute('aria-colindex', '9');
-    expect(getCells(1)[6]).toHaveStyle({
+    expect(row1[6]).toHaveAttribute('aria-colindex', '7');
+    expect(row1[7]).toHaveAttribute('aria-colindex', '9');
+    expect(row1[6]).toHaveStyle({
       'grid-column-start': '7',
       'grid-column-end': 'span 2'
     });
 
     // 3rd-5th, 7th-8th cells are merged
-    expect(getCells(2)).toHaveLength(12);
-    expect(getCells(2)[2]).toHaveAttribute('aria-colindex', '3');
-    expect(getCells(2)[3]).toHaveAttribute('aria-colindex', '6');
-    expect(getCells(2)[2]).toHaveStyle({
+    const row2 = getCellsAtRowIndex(2);
+    expect(row2).toHaveLength(12);
+    expect(row2[2]).toHaveAttribute('aria-colindex', '3');
+    expect(row2[2]).toHaveStyle({
       'grid-column-start': '3',
       'grid-column-end': 'span 3'
     });
-
-    expect(getCells(2)[4]).toHaveAttribute('aria-colindex', '7');
-    expect(getCells(2)[5]).toHaveAttribute('aria-colindex', '9');
-    expect(getCells(2)[4]).toHaveStyle({
+    expect(row2[3]).toHaveAttribute('aria-colindex', '6');
+    expect(row2[4]).toHaveAttribute('aria-colindex', '7');
+    expect(row2[4]).toHaveStyle({
       'grid-column-start': '7',
       'grid-column-end': 'span 2'
     });
+    expect(row2[5]).toHaveAttribute('aria-colindex', '9');
 
-    expect(getCells(4)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
-    expect(getCells(5)).toHaveLength(10);
+    expect(getCellsAtRowIndex(4)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
+    expect(getCellsAtRowIndex(5)).toHaveLength(10);
   });
 
   it('should navigate between merged cells', () => {
     setupColSpanGrid();
-    userEvent.click(within(getRows()[1]).getAllByRole('gridcell')[1]);
+    userEvent.click(getCellsAtRowIndex(1)[1]);
     testSelectedCell(1, 1);
     userEvent.type(document.activeElement!, '{arrowright}');
     testSelectedCell(1, 2);
