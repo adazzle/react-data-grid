@@ -23,7 +23,8 @@ import {
   isSelectedCellEditable,
   canExitGrid,
   isCtrlKeyHeldDown,
-  isDefaultCellInput
+  isDefaultCellInput,
+  getColSpan
 } from './utils';
 
 import type {
@@ -701,7 +702,22 @@ function DataGrid<R, SR>({
 
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
       const { clientWidth } = current;
-      const { left, width } = columnMetrics.get(columns[idx])!;
+      const column = columns[idx];
+      const selectedColumnMetrics = columnMetrics.get(column)!;
+      let { width } = selectedColumnMetrics;
+      const { left } = selectedColumnMetrics;
+      const row = rowIdx !== undefined
+        ? rows[rowIdx]
+        : isCellWithinBounds(selectedPosition)
+          ? rows[selectedPosition.rowIdx]
+          : undefined;
+      if (row !== undefined && !isGroupRow(row)) {
+        const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+        if (colSpan !== undefined) {
+          const colSpanColumnMetrics = columnMetrics.get(columns[column.idx + colSpan - 1])!;
+          width = colSpanColumnMetrics.left - left + colSpanColumnMetrics.width;
+        }
+      }
       const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
       const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary) {
