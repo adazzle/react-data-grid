@@ -70,7 +70,7 @@ export default function HeaderCell<R, SR>({
     function onPointerMove(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        onPointerUp();
+        onPointerUp(event);
         return;
       }
       const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
@@ -79,7 +79,7 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onPointerUp() {
+    function onPointerUp(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
