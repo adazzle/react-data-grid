@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
-import { setup, getCellsAtRowIndex, getHeaderCells, getSelectedCell } from '../utils';
+import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid() {
@@ -72,47 +72,41 @@ describe('colSpan', () => {
   it('should navigate between merged cells', () => {
     setupColSpanGrid();
     userEvent.click(getCellsAtRowIndex(1)[1]);
-    testSelectedCell(1, 1);
+    validateCellPosition(1, 1);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(1, 2);
+    validateCellPosition(2, 1);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(1, 3);
+    validateCellPosition(3, 1);
     userEvent.type(document.activeElement!, '{arrowdown}');
-    testSelectedCell(2, 2);
+    validateCellPosition(2, 2);
     userEvent.type(document.activeElement!, '{arrowleft}');
-    testSelectedCell(2, 1);
+    validateCellPosition(1, 2);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(2, 2);
+    validateCellPosition(2, 2);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(2, 5);
+    validateCellPosition(5, 2);
     userEvent.type(document.activeElement!, '{arrowleft}');
-    testSelectedCell(2, 2);
+    validateCellPosition(2, 2);
     userEvent.type(document.activeElement!, '{arrowdown}');
-    testSelectedCell(3, 2);
+    validateCellPosition(2, 3);
     userEvent.type(document.activeElement!, '{arrowdown}{arrowdown}');
-    testSelectedCell(5, 0);
+    validateCellPosition(0, 5);
     userEvent.type(document.activeElement!, '{arrowLeft}');
-    testSelectedCell(5, 0);
+    validateCellPosition(0, 5);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(5, 5);
+    validateCellPosition(5, 5);
     userEvent.tab({ shift: true });
     userEvent.tab({ shift: true });
-    testSelectedCell(4, 14);
+    validateCellPosition(14, 4);
     userEvent.tab();
-    testSelectedCell(5, 0);
+    validateCellPosition(0, 5);
     userEvent.click(getCellsAtRowIndex(8)[11]);
-    testSelectedCell(8, 11);
+    validateCellPosition(11, 8);
     userEvent.tab();
-    testSelectedCell(8, 12);
+    validateCellPosition(12, 8);
     userEvent.tab();
-    testSelectedCell(9, 0);
+    validateCellPosition(0, 9);
     userEvent.tab({ shift: true });
-    testSelectedCell(8, 12);
-
-    function testSelectedCell(expectedRowIdx: number, expectedColIdx: number) {
-      const selectedCell = getSelectedCell();
-      expect(selectedCell).toHaveAttribute('aria-colindex', `${expectedColIdx + 1}`);
-      expect(selectedCell!.parentElement).toHaveAttribute('aria-rowindex', `${expectedRowIdx + 2}`); // +1 to account for the header row
-    }
+    validateCellPosition(12, 8);
   });
 });
