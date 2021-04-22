@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import type { CalculatedColumn } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
 
+export * from './colSpanUtils';
 export * from './domUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
@@ -18,17 +19,13 @@ export function getRowStyle(rowIdx: number): CSSProperties {
   return { '--grid-row-start': rowIdx } as unknown as CSSProperties;
 }
 
-export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>): CSSProperties {
-  const style: CSSProperties = {
+export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>, colSpan?: number): React.CSSProperties {
+  return {
     gridColumnStart: column.idx + 1,
-    gridRowStart: 'var(--grid-row-start)'
+    gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
+    gridRowStart: 'var(--grid-row-start)',
+    left: column.frozen ? `var(--frozen-left-${column.key})` : undefined
   };
-
-  if (column.frozen) {
-    style.left = `var(--frozen-left-${column.key})`;
-  }
-
-  return style;
 }
 
 export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extraClasses: Parameters<typeof clsx>): string {

@@ -1,3 +1,4 @@
+export * from './useCalculatedColumns';
 export * from './useClickOutside';
 export * from './useGridDimensions';
 export * from './useViewportColumns';
