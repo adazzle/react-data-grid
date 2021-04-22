@@ -28,7 +28,7 @@ function SummaryRow<R, SR>({
   const cells = [];
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
-    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
+    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'SUMMARY', row });
     if (colSpan !== undefined) {
       index += colSpan - 1;
     }
