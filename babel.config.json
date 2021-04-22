@@ -5,11 +5,7 @@
       "bugfixes": true,
       "shippedProposals": true,
       "corejs": 3,
-      "useBuiltIns": "entry",
-      "include": [
-        "@babel/proposal-nullish-coalescing-operator",
-        "@babel/proposal-optional-chaining"
-      ]
+      "useBuiltIns": "entry"
     }],
     ["@babel/react", { "runtime": "automatic" }],
     "@babel/typescript",
