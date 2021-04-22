@@ -705,23 +705,23 @@ function DataGrid<R, SR>({
       if (!isCellWithinBounds({ rowIdx, idx })) return;
       const { clientWidth } = current;
       const column = columns[idx];
-      const selectedColumnMetrics = columnMetrics.get(column)!;
-      let { width } = selectedColumnMetrics;
-      const { left } = selectedColumnMetrics;
+      const { left, width } = columnMetrics.get(column)!;
+      let right = left + width;
       const row = rows[rowIdx];
       if (!isGroupRow(row)) {
         const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
         if (colSpan !== undefined) {
-          const colSpanColumnMetrics = columnMetrics.get(columns[column.idx + colSpan - 1])!;
-          width = colSpanColumnMetrics.left - left + colSpanColumnMetrics.width;
+          const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
+          right = left + width;
         }
       }
+
       const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
-      const isCellAtRightBoundary = left + width > clientWidth + scrollLeft;
+      const isCellAtRightBoundary = right > clientWidth + scrollLeft;
       if (isCellAtLeftBoundary) {
         current.scrollLeft = left - totalFrozenColumnWidth;
       } else if (isCellAtRightBoundary) {
-        current.scrollLeft = left + width - clientWidth;
+        current.scrollLeft = right - clientWidth;
       }
     }
 
