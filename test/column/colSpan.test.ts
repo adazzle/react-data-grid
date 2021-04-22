@@ -1,26 +1,28 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
 import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
-  function setupColSpanGrid() {
+  function setupColSpanGrid(colCount = 15) {
     const columns: Column<Row>[] = [];
     type Row = number;
     const rows: readonly Row[] = [...Array(10).keys()];
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < colCount; i++) {
       const key = String(i);
       columns.push({
         key,
         name: key,
+        width: 80,
         frozen: i < 5,
         colSpan(args) {
           if (args.type === 'ROW') {
             if (key === '2' && args.row === 2) return 3;
             if (key === '4' && args.row === 4) return 6; // Will not work as colspan includes both frozen and regular columns
             if (key === '0' && args.row === 5) return 5;
-            if (key === '12' && args.row === 8) return 3;
+            if (key === `${colCount - 3}` && args.row === 8) return 3;
             if (key === '6' && args.row < 8) return 2;
           }
           if (args.type === 'HEADER' && key === '8') {
@@ -108,5 +110,29 @@ describe('colSpan', () => {
     validateCellPosition(0, 9);
     userEvent.tab({ shift: true });
     validateCellPosition(12, 8);
+  });
+
+  it('should scroll to the merged cell when selected', () => {
+    setupColSpanGrid(30);
+    const grid = screen.getByRole('grid');
+    userEvent.click(getCellsAtRowIndex(8)[23]); // last visible cell (1920/80)
+    navigate(3);
+    expect(grid.scrollLeft).toBe(240);
+    navigate(1);
+    expect(grid.scrollLeft).toBe(480); // should bring the merged cell into view
+    navigate(7);
+    expect(grid.scrollLeft).toBe(0);
+    navigate(7, true);
+    expect(grid.scrollLeft).toBe(480);
+    navigate(27);
+    expect(grid.scrollLeft).toBe(240);
+    navigate(1);
+    expect(grid.scrollLeft).toBe(320); // should only bring 1 cell into view
+
+    function navigate(count: number, shift = false) {
+      for (let i = 0; i < count; i++) {
+        userEvent.tab({ shift });
+      }
+    }
   });
 });
