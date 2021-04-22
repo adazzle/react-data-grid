@@ -30,3 +30,9 @@ export function getHeaderCells() {
 export function getSelectedCell() {
   return document.querySelector<HTMLDivElement>('.rdg-cell-selected');
 }
+
+export function validateCellPosition(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCell();
+  expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
+  expect(cell!.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 2}`);
+}

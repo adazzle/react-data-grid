@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
 import type { Column } from '../src';
-import { setup, getSelectedCell } from './utils';
+import { setup, getSelectedCell, validateCellPosition } from './utils';
 
 type Row = undefined;
 
@@ -16,12 +16,6 @@ const columns: readonly Column<Row>[] = [
   { key: 'col6', name: 'col6' },
   { key: 'col7', name: 'col7' }
 ];
-
-function validateCellPosition(x: number, y: number) {
-  const cell = getSelectedCell();
-  expect(cell).toHaveAttribute('aria-colindex', `${x + 1}`);
-  expect(cell!.parentNode).toHaveAttribute('aria-rowindex', `${y + 2}`);
-}
 
 test('basic keyboard navigation', () => {
   setup({ columns, rows });
