@@ -701,10 +701,8 @@ function DataGrid<R, SR>({
     if (!current) return;
 
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
-      if (rowIdx === undefined) {
-        ({ rowIdx } = selectedPosition);
-        if (!isCellWithinBounds({ rowIdx, idx })) return;
-      }
+      rowIdx ??= selectedPosition.rowIdx;
+      if (!isCellWithinBounds({ rowIdx, idx })) return;
       const { clientWidth } = current;
       const column = columns[idx];
       const selectedColumnMetrics = columnMetrics.get(column)!;
