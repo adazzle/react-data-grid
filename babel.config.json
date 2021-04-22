@@ -16,7 +16,7 @@
     "@linaria"
   ],
   "plugins": [
-    ["@babel/transform-runtime", { "useESModules": true }],
+    "@babel/transform-runtime",
     ["optimize-clsx", { "functionNames": ["getCellClassname"] }]
   ]
 }
