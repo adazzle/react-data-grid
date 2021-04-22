@@ -1,26 +1,28 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
-import { setup, getCellsAtRowIndex, getHeaderCells, getSelectedCell } from '../utils';
+import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
-  function setupColSpanGrid() {
+  function setupColSpanGrid(colCount = 15) {
     const columns: Column<Row>[] = [];
     type Row = number;
     const rows: readonly Row[] = [...Array(10).keys()];
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < colCount; i++) {
       const key = String(i);
       columns.push({
         key,
         name: key,
+        width: 80,
         frozen: i < 5,
         colSpan(args) {
           if (args.type === 'ROW') {
             if (key === '2' && args.row === 2) return 3;
             if (key === '4' && args.row === 4) return 6; // Will not work as colspan includes both frozen and regular columns
             if (key === '0' && args.row === 5) return 5;
-            if (key === '12' && args.row === 8) return 3;
+            if (key === `${colCount - 3}` && args.row === 8) return 3;
             if (key === '6' && args.row < 8) return 2;
           }
           if (args.type === 'HEADER' && key === '8') {
@@ -72,47 +74,68 @@ describe('colSpan', () => {
   it('should navigate between merged cells', () => {
     setupColSpanGrid();
     userEvent.click(getCellsAtRowIndex(1)[1]);
-    testSelectedCell(1, 1);
+    validateCellPosition(1, 1);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(1, 2);
+    validateCellPosition(2, 1);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(1, 3);
+    validateCellPosition(3, 1);
     userEvent.type(document.activeElement!, '{arrowdown}');
-    testSelectedCell(2, 2);
+    validateCellPosition(2, 2);
     userEvent.type(document.activeElement!, '{arrowleft}');
-    testSelectedCell(2, 1);
+    validateCellPosition(1, 2);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(2, 2);
+    validateCellPosition(2, 2);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(2, 5);
+    validateCellPosition(5, 2);
     userEvent.type(document.activeElement!, '{arrowleft}');
-    testSelectedCell(2, 2);
+    validateCellPosition(2, 2);
     userEvent.type(document.activeElement!, '{arrowdown}');
-    testSelectedCell(3, 2);
+    validateCellPosition(2, 3);
     userEvent.type(document.activeElement!, '{arrowdown}{arrowdown}');
-    testSelectedCell(5, 0);
+    validateCellPosition(0, 5);
     userEvent.type(document.activeElement!, '{arrowLeft}');
-    testSelectedCell(5, 0);
+    validateCellPosition(0, 5);
     userEvent.type(document.activeElement!, '{arrowright}');
-    testSelectedCell(5, 5);
+    validateCellPosition(5, 5);
     userEvent.tab({ shift: true });
     userEvent.tab({ shift: true });
-    testSelectedCell(4, 14);
+    validateCellPosition(14, 4);
     userEvent.tab();
-    testSelectedCell(5, 0);
+    validateCellPosition(0, 5);
     userEvent.click(getCellsAtRowIndex(8)[11]);
-    testSelectedCell(8, 11);
+    validateCellPosition(11, 8);
     userEvent.tab();
-    testSelectedCell(8, 12);
+    validateCellPosition(12, 8);
     userEvent.tab();
-    testSelectedCell(9, 0);
+    validateCellPosition(0, 9);
     userEvent.tab({ shift: true });
-    testSelectedCell(8, 12);
+    validateCellPosition(12, 8);
+  });
 
-    function testSelectedCell(expectedRowIdx: number, expectedColIdx: number) {
-      const selectedCell = getSelectedCell();
-      expect(selectedCell).toHaveAttribute('aria-colindex', `${expectedColIdx + 1}`);
-      expect(selectedCell!.parentElement).toHaveAttribute('aria-rowindex', `${expectedRowIdx + 2}`); // +1 to account for the header row
+  it('should scroll to the merged cell when selected', () => {
+    setupColSpanGrid(30);
+    const grid = screen.getByRole('grid');
+    userEvent.click(getCellsAtRowIndex(8)[23]); // last visible cell (1920/80)
+    navigate(3);
+    expect(grid.scrollLeft).toBe(240);
+    navigate(1);
+    expect(grid.scrollLeft).toBe(480); // should bring the merged cell into view
+    validateCellPosition(27, 8);
+    navigate(7);
+    expect(grid.scrollLeft).toBe(0);
+    validateCellPosition(6, 9); // should navigate to the next row
+    navigate(7, true);
+    expect(grid.scrollLeft).toBe(480);
+    validateCellPosition(27, 8); // should navigate to the previous row
+    navigate(27);
+    expect(grid.scrollLeft).toBe(240);
+    navigate(1);
+    expect(grid.scrollLeft).toBe(320); // should only bring 1 cell into view
+
+    function navigate(count: number, shift = false) {
+      for (let i = 0; i < count; i++) {
+        userEvent.tab({ shift });
+      }
     }
   });
 });
