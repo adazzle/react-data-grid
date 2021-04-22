@@ -120,10 +120,13 @@ describe('colSpan', () => {
     expect(grid.scrollLeft).toBe(240);
     navigate(1);
     expect(grid.scrollLeft).toBe(480); // should bring the merged cell into view
+    validateCellPosition(27, 8);
     navigate(7);
     expect(grid.scrollLeft).toBe(0);
+    validateCellPosition(6, 9); // should navigate to the next row
     navigate(7, true);
     expect(grid.scrollLeft).toBe(480);
+    validateCellPosition(27, 8); // should navigate to the previous row
     navigate(27);
     expect(grid.scrollLeft).toBe(240);
     navigate(1);
