@@ -58,13 +58,13 @@ test('basic keyboard navigation', () => {
   validateCellPosition(0, 58);
   fireEvent.keyDown(document.activeElement!, { key: 'PageUp' });
   validateCellPosition(0, 29);
-  fireEvent.keyDown(document.activeElement!, { key: 'End' });
+  userEvent.type(document.activeElement!, '{end}');
   validateCellPosition(6, 29);
-  fireEvent.keyDown(document.activeElement!, { key: 'Home' });
+  userEvent.type(document.activeElement!, '{home}');
   validateCellPosition(0, 29);
-  fireEvent.keyDown(document.activeElement!, { key: 'End', ctrlKey: true });
+  userEvent.type(document.activeElement!, '{ctrl}{end}');
   validateCellPosition(6, 99);
-  fireEvent.keyDown(document.activeElement!, { key: 'Home', ctrlKey: true });
+  userEvent.type(document.activeElement!, '{ctrl}{home}');
   validateCellPosition(0, 0);
 });
 
@@ -80,7 +80,7 @@ test('at-bounds basic keyboard navigation', () => {
   validateCellPosition(0, 0);
   userEvent.type(document.activeElement!, '{arrowleft}');
   validateCellPosition(0, 0);
-  fireEvent.keyDown(document.activeElement!, { key: 'End', ctrlKey: true });
+  userEvent.type(document.activeElement!, '{ctrl}{end}');
   validateCellPosition(6, 99);
   userEvent.type(document.activeElement!, '{arrowdown}');
   validateCellPosition(6, 99);
@@ -88,17 +88,17 @@ test('at-bounds basic keyboard navigation', () => {
   validateCellPosition(6, 99);
 
   // page {up,down}/home/end navigation
-  fireEvent.keyDown(document.activeElement!, { key: 'End' });
+  userEvent.type(document.activeElement!, '{end}');
   validateCellPosition(6, 99);
-  fireEvent.keyDown(document.activeElement!, { key: 'End', ctrlKey: true });
+  userEvent.type(document.activeElement!, '{ctrl}{end}');
   validateCellPosition(6, 99);
   fireEvent.keyDown(document.activeElement!, { key: 'PageDown' });
   validateCellPosition(6, 99);
-  fireEvent.keyDown(document.activeElement!, { key: 'Home', ctrlKey: true });
+  userEvent.type(document.activeElement!, '{ctrl}{home}');
   validateCellPosition(0, 0);
-  fireEvent.keyDown(document.activeElement!, { key: 'Home' });
+  userEvent.type(document.activeElement!, '{home}');
   validateCellPosition(0, 0);
-  fireEvent.keyDown(document.activeElement!, { key: 'Home', ctrlKey: true });
+  userEvent.type(document.activeElement!, '{ctrl}{home}');
   validateCellPosition(0, 0);
   fireEvent.keyDown(document.activeElement!, { key: 'PageUp' });
   validateCellPosition(0, 0);
@@ -109,12 +109,12 @@ test('at-bounds basic keyboard navigation', () => {
 
   // tab at the end of a row selects the first cell on the next row
   userEvent.tab();
-  fireEvent.keyDown(document.activeElement!, { key: 'End' });
+  userEvent.type(document.activeElement!, '{end}');
   userEvent.tab();
   validateCellPosition(0, 1);
 
   // tab at the end of the grid tabs out of the grid
-  fireEvent.keyDown(document.activeElement!, { key: 'End', ctrlKey: true });
+  userEvent.type(document.activeElement!, '{ctrl}{end}');
   userEvent.tab();
   expect(document.body).toHaveFocus();
 });
