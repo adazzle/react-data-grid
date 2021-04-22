@@ -701,17 +701,17 @@ function DataGrid<R, SR>({
     if (!current) return;
 
     if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
+      if (rowIdx === undefined) {
+        ({ rowIdx } = selectedPosition);
+        if (!isCellWithinBounds({ rowIdx, idx })) return;
+      }
       const { clientWidth } = current;
       const column = columns[idx];
       const selectedColumnMetrics = columnMetrics.get(column)!;
       let { width } = selectedColumnMetrics;
       const { left } = selectedColumnMetrics;
-      const row = rowIdx !== undefined
-        ? rows[rowIdx]
-        : isCellWithinBounds(selectedPosition)
-          ? rows[selectedPosition.rowIdx]
-          : undefined;
-      if (row !== undefined && !isGroupRow(row)) {
+      const row = rows[rowIdx];
+      if (!isGroupRow(row)) {
         const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
         if (colSpan !== undefined) {
           const colSpanColumnMetrics = columnMetrics.get(columns[column.idx + colSpan - 1])!;
