@@ -23,6 +23,7 @@ function SummaryCell<R, SR>({
     <div
       role="gridcell"
       aria-colindex={column.idx + 1}
+      aria-colspan={colSpan}
       className={className}
       style={getCellStyle(column, colSpan)}
     >
