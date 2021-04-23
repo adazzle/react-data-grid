@@ -593,7 +593,12 @@ function DataGrid<R, SR>({
     const sourceRow = rawRows[rowIdx];
     const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
     const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
-    const targetRows = rawRows.slice(startRowIndex, endRowIndex);
+    const targetRows: R[] = [];
+    for (let index = startRowIndex; index <= endRowIndex; index++) {
+      if (isCellEditable({ rowIdx: index, idx })) {
+        targetRows.push(rawRows[index]);
+      }
+    }
     const column = columns[idx];
     const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
     const updatedRows = [...rawRows];
