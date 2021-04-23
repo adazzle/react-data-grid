@@ -129,6 +129,7 @@ export default function HeaderCell<R, SR>({
       role="columnheader"
       aria-colindex={column.idx + 1}
       aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
+      aria-colspan={colSpan}
       className={className}
       style={getCellStyle(column, colSpan)}
       onPointerDown={column.resizable ? onPointerDown : undefined}
