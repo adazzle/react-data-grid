@@ -120,7 +120,8 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   sortColumn?: string;
   sortDirection?: SortDirection;
-  onSort?: (columnKey: string, direction: SortDirection, ctrl: boolean) => void;
+  priority? : number;
+  onSort?: (columnKey: string, direction: SortDirection, ctrlClick: boolean) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
@@ -224,12 +225,10 @@ export interface GroupRow<TRow> {
   startRowIndex: number;
 }
 
-export interface Sorts {
-  sortColumn: string;
+export interface SortColumn {
+  columnKey: string;
   direction: SortDirection;
 }
 
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
-
-

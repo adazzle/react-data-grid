@@ -24,5 +24,5 @@ export type {
   PasteEvent,
   CellNavigationMode,
   SortDirection,
-  Sorts
+  SortColumn
 } from './types';

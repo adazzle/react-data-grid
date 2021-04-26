@@ -4,7 +4,7 @@ import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, Row } from '..
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
-import { Sorts } from '../../src/types';
+import { SortColumn } from '../../src/types';
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -190,7 +190,7 @@ function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 100; i++) {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
@@ -215,7 +215,7 @@ function createRows(): readonly Row[] {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [sortData, updateSorts] = useState<Sorts[]>([]);
+  const [sortColumns, setSortColumns] = useState<SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
@@ -254,37 +254,37 @@ export function CommonFeatures() {
       default:
     }
   }
+
   const sortedRows: readonly Row[] = useMemo(() => {
-    if(sortData.length === 0) return [...rows];
+    if(sortColumns.length === 0) return [...rows];
 
     let sortedRows: Row[] = [...rows];
-    let compResult = 0;
     sortedRows.sort((a: Row, b:Row) => {
-      for(const sort of sortData){
-        const comparator = getComparator(sort.sortColumn);
-        compResult = (comparator(a,b));
+      for(const sort of sortColumns){
+        const comparator = getComparator(sort.columnKey);
+        let compResult = (comparator(a,b));
         if(compResult !== 0)
         {
-          compResult = sort.direction === 'ASC' ? compResult : -compResult;
+          return sort.direction === 'ASC' ? compResult : -compResult;
         }
       }
-      return compResult;
+      return 0;
     });
     return sortedRows;
-  }, [rows, sortData]); 
+  }, [rows, sortColumns]); 
   
   const onMultiSort = (columnKey: string) => {
-    let newSorts = [...sortData];
-      const index = newSorts.findIndex(sort => sort.sortColumn === columnKey);
-      if(index != -1) 
+    let newSorts = [...sortColumns];
+      const index = newSorts.findIndex((sort) => sort.columnKey === columnKey);
+      if(index > -1) 
       {
-        const sort = newSorts.find(sort => sort.sortColumn === columnKey);
+        const sort = newSorts.find(sort => sort.columnKey === columnKey);
         sort.direction === 'ASC' ? sort.direction = 'DESC': newSorts.splice(index,1);
       } 
       else { 
-        newSorts.push({sortColumn: columnKey, direction: 'ASC'});
+        newSorts.push({columnKey: columnKey, direction: 'ASC'});
       }
-      updateSorts([...newSorts]);
+      setSortColumns([...newSorts]);
   }
 
   const handleSort = useCallback((columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
@@ -292,10 +292,9 @@ export function CommonFeatures() {
       onMultiSort(columnKey) 
     }
     else { 
-      if(direction === "NONE") updateSorts([]);
-      else updateSorts([{sortColumn:columnKey, direction: direction}]);
+     direction === "NONE" ? setSortColumns([]) : setSortColumns([{columnKey:columnKey, direction: direction}]);
     }
-  }, [sortData]);
+  }, [sortColumns]);
 
   return (
     <DataGrid
@@ -309,7 +308,7 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortData = {sortData}
+      sortColumns = {sortColumns}
       onSort={handleSort}
       summaryRows={summaryRows}
       className="fill-grid"

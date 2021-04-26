@@ -40,7 +40,7 @@ import type {
   PasteEvent,
   CellNavigationMode,
   SortDirection,
-  Sorts
+  SortColumn
 } from './types';
 
 interface SelectCellState extends Position {
@@ -116,11 +116,9 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: (selectedRows: Set<React.Key>) => void;
   /** The key of the column which is currently being sorted */
-  sortColumn?: string;
-  /** The direction to sort the sortColumn*/
   sortDirection?: SortDirection;
   /**Used for multi column sorting */
-  sortData?: Sorts[];
+  sortColumns?: SortColumn[];
   /** Function called whenever grid is sorted*/
   onSort?: (columnKey: string, direction: SortDirection, ctrlClick: boolean) => void;
   filters?: Readonly<Filters>;
@@ -188,9 +186,8 @@ function DataGrid<R, SR>({
   // Feature props
   selectedRows,
   onSelectedRowsChange,
-  sortColumn,
   sortDirection,
-  sortData,
+  sortColumns,
   onSort,
   filters,
   onFiltersChange,
@@ -938,9 +935,8 @@ function DataGrid<R, SR>({
         onColumnResize={handleColumnResize}
         allRowsSelected={selectedRows?.size === rawRows.length}
         onSelectedRowsChange={onSelectedRowsChange}
-        sortColumn={sortColumn}
         sortDirection={sortDirection}
-        sortData = {sortData}
+        sortColumns = {sortColumns}
         onSort={onSort}
       />
       {enableFilterRow && (
