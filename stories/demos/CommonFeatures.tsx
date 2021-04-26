@@ -256,7 +256,7 @@ export function CommonFeatures() {
   }
 
   const sortedRows: readonly Row[] = useMemo(() => {
-    if(sortColumns.length === 0) return [...rows];
+    if(sortColumns.length === 0) return rows;
 
     let sortedRows: Row[] = [...rows];
     sortedRows.sort((a: Row, b:Row) => {
@@ -272,29 +272,6 @@ export function CommonFeatures() {
     });
     return sortedRows;
   }, [rows, sortColumns]); 
-  
-  const onMultiSort = (columnKey: string) => {
-    let newSorts = [...sortColumns];
-      const index = newSorts.findIndex((sort) => sort.columnKey === columnKey);
-      if(index > -1) 
-      {
-        const sort = newSorts.find(sort => sort.columnKey === columnKey);
-        sort.direction === 'ASC' ? sort.direction = 'DESC': newSorts.splice(index,1);
-      } 
-      else { 
-        newSorts.push({columnKey: columnKey, direction: 'ASC'});
-      }
-      setSortColumns([...newSorts]);
-  }
-
-  const handleSort = useCallback((columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
-    if(ctrlClick){ 
-      onMultiSort(columnKey) 
-    }
-    else { 
-     direction === "NONE" ? setSortColumns([]) : setSortColumns([{columnKey:columnKey, direction: direction}]);
-    }
-  }, [sortColumns]);
 
   return (
     <DataGrid
@@ -309,7 +286,7 @@ export function CommonFeatures() {
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
       sortColumns = {sortColumns}
-      onSort={handleSort}
+      onSortColumnsChange={setSortColumns}
       summaryRows={summaryRows}
       className="fill-grid"
     />
