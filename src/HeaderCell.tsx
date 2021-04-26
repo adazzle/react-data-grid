@@ -31,7 +31,6 @@ function getAriaSort(sortDirection?: SortDirection) {
 }
 
 type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortDirection'
   | 'onSort'
   | 'allRowsSelected'
   | 'sortColumns'
@@ -48,7 +47,6 @@ export default function HeaderCell<R, SR>({
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
-  sortDirection,
   sortColumns,
   onSort
 }: HeaderCellProps<R, SR>) {
@@ -87,7 +85,10 @@ export default function HeaderCell<R, SR>({
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
   }
-
+  const sortDirection = sortColumns?.find(item => item.columnKey === column.key)?.direction;
+  const index = sortColumns?.findIndex(sort => sort.columnKey === column.key);
+  const priority = (index !== undefined) ? index + 1 : -1;
+ 
   function getCell() {
     if (column.headerRenderer) {
       return (
@@ -106,7 +107,8 @@ export default function HeaderCell<R, SR>({
         <SortableHeaderCell
           column={column}
           onSort={onSort}
-          sortColumns = {sortColumns}
+          sortDirection = {sortDirection}
+          priority = {priority}
         >
           {column.name}
         </SortableHeaderCell>

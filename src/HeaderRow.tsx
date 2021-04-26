@@ -9,7 +9,6 @@ import { headerRowClassname } from './style';
 type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
   | 'rows'
   | 'onSelectedRowsChange'
-  | 'sortDirection'
   | 'onSort'
   | 'rowKeyGetter'
   | 'sortColumns'
@@ -28,7 +27,6 @@ function HeaderRow<R, SR>({
   onSelectedRowsChange,
   allRowsSelected,
   onColumnResize,
-  sortDirection,
   sortColumns,
   onSort
 }: HeaderRowProps<R, SR>) {
@@ -56,7 +54,6 @@ function HeaderRow<R, SR>({
             allRowsSelected={allRowsSelected}
             onAllRowsSelectionChange={handleAllRowsSelectionChange}
             onSort={onSort}
-            sortDirection={sortDirection}
             sortColumns = {sortColumns}
           />
         );

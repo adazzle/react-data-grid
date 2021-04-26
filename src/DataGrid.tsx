@@ -115,10 +115,8 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   selectedRows?: ReadonlySet<React.Key>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: (selectedRows: Set<React.Key>) => void;
-  /** The key of the column which is currently being sorted */
-  sortDirection?: SortDirection;
   /**Used for multi column sorting */
-  sortColumns?: SortColumn[];
+  sortColumns?: readonly Readonly<SortColumn>[];
   /** Function called whenever grid is sorted*/
   onSort?: (columnKey: string, direction: SortDirection, ctrlClick: boolean) => void;
   filters?: Readonly<Filters>;
@@ -186,7 +184,6 @@ function DataGrid<R, SR>({
   // Feature props
   selectedRows,
   onSelectedRowsChange,
-  sortDirection,
   sortColumns,
   onSort,
   filters,
@@ -935,7 +932,6 @@ function DataGrid<R, SR>({
         onColumnResize={handleColumnResize}
         allRowsSelected={selectedRows?.size === rawRows.length}
         onSelectedRowsChange={onSelectedRowsChange}
-        sortDirection={sortDirection}
         sortColumns = {sortColumns}
         onSort={onSort}
       />
