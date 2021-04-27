@@ -87,8 +87,8 @@ export default function HeaderCell<R, SR>({
   }
   const sortDirection = sortColumns?.find(item => item.columnKey === column.key)?.direction;
   const index = sortColumns?.findIndex(sort => sort.columnKey === column.key);
-  const priority = (index !== undefined) ? index + 1 : -1;
- 
+  const priority = (index !== undefined) ? index + 1 : undefined;
+  
   const onSort = (columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
     if(!onSortColumnsChange) return;
     if(ctrlClick)
