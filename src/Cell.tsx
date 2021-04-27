@@ -107,7 +107,7 @@ function Cell<R, SR>({
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
-      aria-readonly={isCellEditable(column, row) || undefined}
+      aria-readonly={!isCellEditable(column, row) || undefined}
       ref={ref}
       className={className}
       style={getCellStyle(column, colSpan)}
