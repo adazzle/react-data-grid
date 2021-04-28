@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
@@ -15,6 +15,10 @@ export function getRows() {
   return screen.getAllByRole('row').slice(1);
 }
 
+export function getCellsAtRowIndex(rowIdx: number) {
+  return within(getRows()[rowIdx]).getAllByRole('gridcell');
+}
+
 export function getCells() {
   return screen.getAllByRole('gridcell');
 }
@@ -25,4 +29,10 @@ export function getHeaderCells() {
 
 export function getSelectedCell() {
   return document.querySelector<HTMLDivElement>('.rdg-cell-selected');
+}
+
+export function validateCellPosition(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCell();
+  expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
+  expect(cell!.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 2}`);
 }

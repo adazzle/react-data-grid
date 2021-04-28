@@ -11,6 +11,7 @@ interface ViewportRowsArgs<R> {
   groupBy: readonly string[];
   rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
   expandedGroupIds?: ReadonlySet<unknown>;
+  enableVirtualization: boolean;
 }
 
 // https://github.com/microsoft/TypeScript/issues/41808
@@ -25,7 +26,8 @@ export function useViewportRows<R>({
   scrollTop,
   groupBy,
   rowGrouper,
-  expandedGroupIds
+  expandedGroupIds,
+  enableVirtualization
 }: ViewportRowsArgs<R>) {
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
@@ -48,9 +50,9 @@ export function useViewportRows<R>({
     return groupRows(rawRows, groupBy, 0);
   }, [groupBy, rowGrouper, rawRows]);
 
-  const [rows, allGroupRows] = useMemo(() => {
+  const [rows, isGroupRow] = useMemo(() => {
     const allGroupRows = new Set<unknown>();
-    if (!groupedRows) return [rawRows, allGroupRows];
+    if (!groupedRows) return [rawRows, isGroupRow];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
     const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentId: string | undefined, level: number): void => {
@@ -85,10 +87,23 @@ export function useViewportRows<R>({
     };
 
     expandGroup(groupedRows, undefined, 0);
-    return [flattenedRows, allGroupRows];
+    return [flattenedRows, isGroupRow];
+
+    function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
+      return allGroupRows.has(row);
+    }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const isGroupRow = <R>(row: unknown): row is GroupRow<R> => allGroupRows.has(row);
+
+  if (!enableVirtualization) {
+    return {
+      rowOverscanStartIdx: 0,
+      rowOverscanEndIdx: rows.length - 1,
+      rows,
+      rowsCount,
+      isGroupRow
+    };
+  }
 
   const overscanThreshold = 4;
   const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);

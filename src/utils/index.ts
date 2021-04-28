@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import type { CalculatedColumn } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
 
+export * from './colSpanUtils';
 export * from './domUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
@@ -13,10 +14,12 @@ export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter
   }
 }
 
-export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>): React.CSSProperties {
-  return column.frozen
-    ? { left: `var(--frozen-left-${column.key})` }
-    : { gridColumnStart: column.idx + 1 };
+export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>, colSpan?: number): React.CSSProperties {
+  return {
+    gridColumnStart: column.idx + 1,
+    gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
+    left: column.frozen ? `var(--frozen-left-${column.key})` : undefined
+  };
 }
 
 export function getCellClassname<R, SR>(column: CalculatedColumn<R, SR>, ...extraClasses: Parameters<typeof clsx>): string {

@@ -38,12 +38,14 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
+  colSpan?: number;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
+  colSpan,
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
@@ -66,7 +68,7 @@ export default function HeaderCell<R, SR>({
     function onPointerMove(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        onPointerUp();
+        onPointerUp(event);
         return;
       }
       const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
@@ -75,7 +77,7 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onPointerUp() {
+    function onPointerUp(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
@@ -149,8 +151,9 @@ export default function HeaderCell<R, SR>({
       role="columnheader"
       aria-colindex={column.idx + 1}
       aria-sort={sortDirection ? getAriaSort(sortDirection) : undefined}
+      aria-colspan={colSpan}
       className={className}
-      style={getCellStyle(column)}
+      style={getCellStyle(column, colSpan)}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}

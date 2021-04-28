@@ -1,10 +1,19 @@
 import { useState, useCallback, useMemo } from 'react';
+import { css } from '@linaria/core';
 import faker from 'faker';
+
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, Row } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
+import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { SortColumn } from '../../src/types';
+
+const toolbarClassname = css`
+  text-align: right;
+  margin-bottom: 8px;
+`;
+
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -190,7 +199,7 @@ function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 1000; i++) {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
@@ -273,7 +282,7 @@ export function CommonFeatures() {
     return sortedRows;
   }, [rows, sortColumns]); 
 
-  return (
+  const gridElement = (
     <DataGrid
       rowKeyGetter={rowKeyGetter}
       columns={columns}
@@ -290,6 +299,32 @@ export function CommonFeatures() {
       summaryRows={summaryRows}
       className="fill-grid"
     />
+  );
+
+  return (
+    <>
+      <div className={toolbarClassname}>
+        <button onClick={() => {
+          exportToCsv(gridElement, 'CommonFeatures.csv');
+        }}
+        >
+          Export to CSV
+        </button>
+        <button onClick={() => {
+          exportToXlsx(gridElement, 'CommonFeatures.xlsx');
+        }}
+        >
+          Export to XSLX
+        </button>
+        <button onClick={() => {
+          exportToPdf(gridElement, 'CommonFeatures.pdf');
+        }}
+        >
+          Export to PDF
+        </button>
+      </div>
+      {gridElement}
+    </>
   );
 }
 
