@@ -259,8 +259,10 @@ export function CommonFeatures() {
       case 'endTimestamp':
       case 'budget':
         return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]; };
-
       default:
+        throw new Error(
+          `unsupported sortColumn: "${sortColumn}"`
+        );
     }
   };
 
