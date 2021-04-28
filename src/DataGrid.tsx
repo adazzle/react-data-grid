@@ -117,7 +117,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
   onSelectedRowsChange?: (selectedRows: Set<React.Key>) => void;
   /**Used for multi column sorting */
   sortColumns?: readonly Readonly<SortColumn>[];
-  onSortColumnsChange? : (sortColumns: SortColumn[])=> void;
+  onSortColumnsChange?: (sortColumns: SortColumn[]) => void;
   filters?: Readonly<Filters>;
   onFiltersChange?: (filters: Filters) => void;
   defaultColumnOptions?: DefaultColumnOptions<R, SR>;
@@ -978,7 +978,7 @@ function DataGrid<R, SR>({
         onColumnResize={handleColumnResize}
         allRowsSelected={selectedRows?.size === rawRows.length}
         onSelectedRowsChange={onSelectedRowsChange}
-        sortColumns = {sortColumns}
+        sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
       />

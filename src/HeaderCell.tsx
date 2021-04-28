@@ -89,29 +89,24 @@ export default function HeaderCell<R, SR>({
   }
   const sortDirection = sortColumns?.find(item => item.columnKey === column.key)?.direction;
   const index = sortColumns?.findIndex(sort => sort.columnKey === column.key);
-  const priority = (index !== undefined) ? index + 1 : undefined;
-  
+  const priority = index !== undefined ? index + 1 : undefined;
+
   const onSort = (columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
-    if(!onSortColumnsChange) return;
-    if(ctrlClick)
-    {
-      let newSorts = sortColumns ? [...sortColumns]: [];
+    if (!onSortColumnsChange) return;
+    if (ctrlClick) {
+      const newSorts = sortColumns ? [...sortColumns] : [];
       const index = newSorts.findIndex((sort) => sort.columnKey === columnKey);
-      if(index > -1) 
-      {
-        const sort = newSorts?.find(sort => sort.columnKey === columnKey);
-        sort?.direction === 'ASC' ? newSorts[index] = {columnKey, direction} : newSorts.splice(index,1);
-      } 
-      else { 
-        newSorts.push({columnKey: columnKey, direction: direction});
+      if (index > -1) {
+        const sort = newSorts.find(sort => sort.columnKey === columnKey);
+        sort?.direction === 'ASC' ? newSorts[index] = { columnKey, direction } : newSorts.splice(index, 1);
+      } else {
+        newSorts.push({ columnKey, direction });
       }
       onSortColumnsChange([...newSorts]);
+    } else {
+      direction === 'NONE' ? onSortColumnsChange([]) : onSortColumnsChange([{ columnKey, direction }]);
     }
-    else {
-      direction === "NONE" ? onSortColumnsChange([]) : 
-      onSortColumnsChange([{columnKey:columnKey, direction: direction}]);
-    }
-  }
+  };
 
   function getCell() {
     if (column.headerRenderer) {

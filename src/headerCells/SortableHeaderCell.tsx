@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 import type { HeaderRendererProps, SortDirection } from '../types';
-import {MouseEvent} from 'react';
+import type { MouseEvent } from 'react';
 const headerSortCell = css`
   cursor: pointer;
   display: flex;
@@ -30,7 +30,6 @@ export default function SortableHeaderCell<R, SR>({
   priority,
   children
 }: Props<R, SR>) {
-  
   let sortText = '';
   if (sortDirection === 'ASC') {
     sortText = '\u25B2';
@@ -57,9 +56,9 @@ export default function SortableHeaderCell<R, SR>({
   }
 
   return (
-    <span className={headerSortCellClassname} onClick={e=>onClick(e)}>
+    <span className={headerSortCellClassname} onClick={e => onClick(e)}>
       <span className={headerSortNameClassname}>{children}</span>
-        {sortText && <span>{priority}</span>} 
+      {sortText && <span>{priority}</span>}
       <span>{sortText}</span>
     </span>
   );

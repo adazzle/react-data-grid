@@ -1,13 +1,13 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter, Row } from '../../src';
-import type { Column, SortDirection } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import type { Column } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
-import { SortColumn } from '../../src/types';
+import type { SortColumn } from '../../src/types';
 
 const toolbarClassname = css`
   text-align: right;
@@ -250,37 +250,36 @@ export function CommonFeatures() {
       case 'transaction':
       case 'account':
       case 'version':
-        return function(a:Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn])};
+        return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]); };
       case 'available':
-        return function(a:Row, b: Row){ return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1};
+        return function(a: Row, b: Row) { return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1; };
       case 'id':
       case 'progress':
       case 'startTimestamp':
       case 'endTimestamp':
       case 'budget':
-      return function(a:Row, b: Row) { return a[sortColumn] - b[sortColumn]};
-      
+        return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]; };
+
       default:
     }
-  }
+  };
 
   const sortedRows: readonly Row[] = useMemo(() => {
-    if(sortColumns.length === 0) return rows;
+    if (sortColumns.length === 0) return rows;
 
-    let sortedRows: Row[] = [...rows];
-    sortedRows.sort((a: Row, b:Row) => {
-      for(const sort of sortColumns){
+    const sortedRows: Row[] = [...rows];
+    sortedRows.sort((a: Row, b: Row) => {
+      for (const sort of sortColumns) {
         const comparator = getComparator(sort.columnKey);
-        let compResult = (comparator(a,b));
-        if(compResult !== 0)
-        {
+        const compResult = comparator(a, b);
+        if (compResult !== 0) {
           return sort.direction === 'ASC' ? compResult : -compResult;
         }
       }
       return 0;
     });
     return sortedRows;
-  }, [rows, sortColumns]); 
+  }, [rows, sortColumns]);
 
   const gridElement = (
     <DataGrid
@@ -294,7 +293,7 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortColumns = {sortColumns}
+      sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
       summaryRows={summaryRows}
       className="fill-grid"
