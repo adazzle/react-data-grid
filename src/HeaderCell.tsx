@@ -98,14 +98,14 @@ export default function HeaderCell<R, SR>({
       const index = newSorts.findIndex((sort) => sort.columnKey === columnKey);
       if (index > -1) {
         const sort = newSorts.find(sort => sort.columnKey === columnKey);
-        sort?.direction === 'ASC' ? newSorts[index] = { columnKey, direction } : newSorts.splice(index, 1);
+        if (sort?.direction === 'ASC') newSorts[index] = { columnKey, direction };
+        else newSorts.splice(index, 1);
       } else {
         newSorts.push({ columnKey, direction });
       }
       onSortColumnsChange([...newSorts]);
-    } else {
-      direction === 'NONE' ? onSortColumnsChange([]) : onSortColumnsChange([{ columnKey, direction }]);
-    }
+    } else if (direction === 'NONE') onSortColumnsChange([]);
+    else onSortColumnsChange([{ columnKey, direction }]);
   };
 
   function getCell() {
