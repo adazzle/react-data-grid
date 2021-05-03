@@ -40,7 +40,8 @@ import type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
-  SortDirection
+  SortDirection,
+  RowHeightArgs
 } from './types';
 
 interface SelectCellState extends Position {
@@ -100,7 +101,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Dimensions props
    */
   /** The height of each row in pixels */
-  rowHeight?: number;
+  rowHeight?: number | ((args: RowHeightArgs<R>) => number);
   /** The height of the header row in pixels */
   headerRowHeight?: number;
   /** The height of the header filter row in pixels */
@@ -181,9 +182,9 @@ function DataGrid<R, SR>({
   onRowsChange,
   // Dimensions props
   rowHeight = 35,
-  headerRowHeight = rowHeight,
+  headerRowHeight = typeof rowHeight === 'number' ? rowHeight : 35,
   headerFiltersHeight = 45,
-  summaryRowHeight = rowHeight,
+  summaryRowHeight = typeof rowHeight === 'number' ? rowHeight : 35,
   // Feature props
   selectedRows,
   onSelectedRowsChange,
@@ -280,7 +281,16 @@ function DataGrid<R, SR>({
     enableVirtualization
   });
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx, rows, rowsCount, isGroupRow } = useViewportRows({
+  const {
+    rowOverscanStartIdx,
+    rowOverscanEndIdx,
+    rows,
+    rowsCount,
+    totalRowHeight,
+    isGroupRow,
+    getRowTop,
+    getRowHeight
+  } = useViewportRows({
     rawRows,
     groupBy,
     rowGrouper,
@@ -335,7 +345,7 @@ function DataGrid<R, SR>({
       const { current } = gridRef;
       if (!current) return;
       current.scrollTo({
-        top: rowIdx * rowHeight,
+        top: getRowTop(rowIdx),
         behavior: 'smooth'
       });
     },
@@ -726,12 +736,12 @@ function DataGrid<R, SR>({
     }
 
     if (typeof rowIdx === 'number') {
-      if (rowIdx * rowHeight < scrollTop) {
+      if (getRowTop(rowIdx) < scrollTop) {
         // at top boundary, scroll to the row's top
-        current.scrollTop = rowIdx * rowHeight;
-      } else if ((rowIdx + 1) * rowHeight > scrollTop + clientHeight) {
+        current.scrollTop = getRowTop(rowIdx);
+      } else if (getRowTop(rowIdx) + getRowHeight(rowIdx) > scrollTop + clientHeight) {
         // at bottom boundary, scroll the next row's top to the bottom of the viewport
-        current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
+        current.scrollTop = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
       }
     }
   }
@@ -784,10 +794,10 @@ function DataGrid<R, SR>({
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
         return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
-      case 'PageUp':
-        return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
-      case 'PageDown':
-        return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
+      // case 'PageUp':
+      //   return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
+      // case 'PageDown':
+      //   return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
       default:
         return selectedPosition;
     }
@@ -853,7 +863,7 @@ function DataGrid<R, SR>({
         onKeyDown: handleKeyDown,
         editorProps: {
           editorPortalTarget,
-          rowHeight,
+          rowHeight: getRowHeight(selectedPosition.rowIdx),
           row: selectedPosition.row,
           onRowChange: handleEditorRowChange,
           onClose: handleOnClose
@@ -877,7 +887,7 @@ function DataGrid<R, SR>({
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
-      const top = rowIdx * rowHeight + totalHeaderHeight;
+      const top = getRowTop(rowIdx) + totalHeaderHeight;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         rowElements.push(
@@ -893,6 +903,7 @@ function DataGrid<R, SR>({
             childRows={row.childRows}
             rowIdx={rowIdx}
             top={top}
+            height={getRowHeight(rowIdx)}
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
@@ -927,6 +938,7 @@ function DataGrid<R, SR>({
           onRowClick={onRowClick}
           rowClass={rowClass}
           top={top}
+          height={getRowHeight(rowIdx)}
           copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
@@ -968,7 +980,6 @@ function DataGrid<R, SR>({
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
-        '--row-height': `${rowHeight}px`,
         '--summary-row-height': `${summaryRowHeight}px`,
         ...layoutCssVars
       } as unknown as React.CSSProperties}
@@ -1003,7 +1014,7 @@ function DataGrid<R, SR>({
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />
-          <div style={{ height: Math.max(rows.length * rowHeight, clientHeight) }} />
+          <div style={{ height: Math.max(totalRowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>

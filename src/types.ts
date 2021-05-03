@@ -168,6 +168,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   top: number;
+  height: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowChange: (rowIdx: number, row: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
@@ -238,4 +239,12 @@ export type ColSpanArgs<R, SR> = {
 } | {
   type: 'SUMMARY';
   row: SR;
+};
+
+export type RowHeightArgs<R> = {
+  type: 'ROW';
+  row: R;
+} | {
+  type: 'GROUP';
+  row: GroupRow<R>;
 };

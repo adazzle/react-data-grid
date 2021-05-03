@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import type { GroupRow, GroupByDictionary } from '../types';
+import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
 
 const RENDER_BACTCH_SIZE = 8;
 
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
-  rowHeight: number;
+  rowHeight: number | ((args: RowHeightArgs<R>) => number);
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
@@ -94,6 +94,38 @@ export function useViewportRows<R>({
     }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
+  const { getRowTop, getRowHeight, totalRowHeight, rowOffsets } = useMemo(() => {
+    const rowOffsets: number[] = [];
+    if (typeof rowHeight === 'number') {
+      const getRowTop = (rowIdx: number) => rowIdx * rowHeight;
+      const getRowHeight = () => rowHeight;
+      return { getRowTop, getRowHeight, totalRowHeight: rowHeight * rows.length, rowOffsets };
+    }
+
+    const rowHeights = new Map<number, number>();
+    const rowTopMap = new Map<number, number>();
+    let totalRowHeight = 0;
+    rows.forEach((row: R | GroupRow<R>, rowIdx: number) => {
+      const currentRowHeight = isGroupRow(row)
+        ? rowHeight({ type: 'GROUP', row })
+        : rowHeight({ type: 'ROW', row });
+
+      rowTopMap.set(rowIdx, totalRowHeight);
+      totalRowHeight += currentRowHeight;
+      rowHeights.set(rowIdx, currentRowHeight);
+      rowOffsets.push(totalRowHeight);
+    });
+
+    const getRowTop = (rowIdx: number): number => {
+      return rowIdx >= rows.length ? rowTopMap.get(rows.length - 1)! : rowTopMap.get(rowIdx)!;
+    };
+
+    const getRowHeight = (rowIdx: number): number => {
+      return rowHeights.get(rowIdx)!;
+    };
+
+    return { getRowTop, getRowHeight, totalRowHeight, rowOffsets };
+  }, [isGroupRow, rowHeight, rows]);
 
   if (!enableVirtualization) {
     return {
@@ -101,21 +133,57 @@ export function useViewportRows<R>({
       rowOverscanEndIdx: rows.length - 1,
       rows,
       rowsCount,
-      isGroupRow
+      totalRowHeight,
+      isGroupRow,
+      getRowTop,
+      getRowHeight
     };
   }
 
-  const overscanThreshold = 4;
-  const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
-  const rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
-  const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
-  const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
+  const [rowOverscanStartIdx, rowOverscanEndIdx] = useMemo(() => {
+    const overscanThreshold = 4;
+    let rowVisibleStartIdx: number;
+    let rowVisibleEndIdx: number;
+    if (typeof rowHeight === 'number') {
+      rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
+      rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
+    } else {
+      const findRowIdx = (offset: number): number => {
+        let start = 0;
+        let end = rowOffsets.length - 1;
+        while (start <= end) {
+          const middle = start + Math.floor((end - start) / 2);
+          const currentOffset = rowOffsets[middle];
+
+          if (currentOffset === offset) return middle;
+
+          if (currentOffset < offset) {
+            start = middle + 1;
+          } else if (currentOffset > offset) {
+            end = middle - 1;
+          }
+
+          if (start > end) return end;
+        }
+        return 0;
+      };
+
+      rowVisibleStartIdx = findRowIdx(scrollTop);
+      rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
+    }
+    const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
+    const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
+    return [rowOverscanStartIdx, rowOverscanEndIdx];
+  }, [clientHeight, rowHeight, rows.length, scrollTop, rowOffsets]);
 
   return {
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
     rowsCount,
-    isGroupRow
+    totalRowHeight,
+    isGroupRow,
+    getRowTop,
+    getRowHeight
   };
 }
