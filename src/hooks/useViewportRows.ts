@@ -94,11 +94,14 @@ export function useViewportRows<R>({
     }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const { getRowTop, getRowHeight, totalRowHeight, rowPositions } = useMemo(() => {
+  const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
-      const getRowTop = (rowIdx: number) => rowIdx * rowHeight;
-      const getRowHeight = () => rowHeight;
-      return { getRowTop, getRowHeight, totalRowHeight: rowHeight * rows.length, rowPositions: [] };
+      return {
+        totalRowHeight: rowHeight * rows.length,
+        getRowTop: (rowIdx: number) => rowIdx * rowHeight,
+        getRowHeight: () => rowHeight,
+        findRowIdx: (offset: number) => Math.floor(offset / rowHeight)
+      };
     }
 
     const rowPositions: ({ height: number; top: number })[] = [];
@@ -114,18 +117,37 @@ export function useViewportRows<R>({
       totalRowHeight += currentRowHeight;
     });
 
-    const getRowTop = (rowIdx: number): number => {
-      if (rowIdx < 0) {
-        rowIdx = 0;
-      } else if (rowIdx >= rows.length) {
-        rowIdx = rows.length - 1;
+    return {
+      totalRowHeight,
+      getRowTop(rowIdx: number) {
+        if (rowIdx < 0) {
+          rowIdx = 0;
+        } else if (rowIdx >= rows.length) {
+          rowIdx = rows.length - 1;
+        }
+        return rowPositions[rowIdx].top;
+      },
+      getRowHeight: (rowIdx: number) => rowPositions[rowIdx].height,
+      findRowIdx(offset: number) {
+        let start = 0;
+        let end = rowPositions.length - 1;
+        while (start <= end) {
+          const middle = start + Math.floor((end - start) / 2);
+          const currentOffset = rowPositions[middle].top;
+
+          if (currentOffset === offset) return middle;
+
+          if (currentOffset < offset) {
+            start = middle + 1;
+          } else if (currentOffset > offset) {
+            end = middle - 1;
+          }
+
+          if (start > end) return end;
+        }
+        return 0;
       }
-      return rowPositions[rowIdx].top;
     };
-
-    const getRowHeight = (rowIdx: number): number => rowPositions[rowIdx].height;
-
-    return { getRowTop, getRowHeight, totalRowHeight, rowPositions };
   }, [isGroupRow, rowHeight, rows]);
 
   if (!enableVirtualization) {
@@ -137,7 +159,8 @@ export function useViewportRows<R>({
       totalRowHeight,
       isGroupRow,
       getRowTop,
-      getRowHeight
+      getRowHeight,
+      findRowIdx
     };
   }
 
@@ -155,29 +178,7 @@ export function useViewportRows<R>({
     totalRowHeight,
     isGroupRow,
     getRowTop,
-    getRowHeight
+    getRowHeight,
+    findRowIdx
   };
-
-  function findRowIdx(offset: number): number {
-    if (typeof rowHeight === 'number') {
-      return Math.floor(offset / rowHeight);
-    }
-    let start = 0;
-    let end = rowPositions.length - 1;
-    while (start <= end) {
-      const middle = start + Math.floor((end - start) / 2);
-      const currentOffset = rowPositions[middle].top;
-
-      if (currentOffset === offset) return middle;
-
-      if (currentOffset < offset) {
-        start = middle + 1;
-      } else if (currentOffset > offset) {
-        end = middle - 1;
-      }
-
-      if (start > end) return end;
-    }
-    return 0;
-  }
 }

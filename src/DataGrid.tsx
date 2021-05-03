@@ -289,7 +289,8 @@ function DataGrid<R, SR>({
     totalRowHeight,
     isGroupRow,
     getRowTop,
-    getRowHeight
+    getRowHeight,
+    findRowIdx
   } = useViewportRows({
     rawRows,
     groupBy,
@@ -794,17 +795,14 @@ function DataGrid<R, SR>({
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
         return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
-      case 'PageUp':
-        // TODO: handle variable row height
-        if (typeof rowHeight === 'number') {
-          return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
-        }
-        return selectedPosition;
-      case 'PageDown':
-        if (typeof rowHeight === 'number') {
-          return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
-        }
-        return selectedPosition;
+      case 'PageUp': {
+        const newScrollTop = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
+        return { idx, rowIdx: findRowIdx(newScrollTop >= 0 ? newScrollTop : 0) };
+      }
+      case 'PageDown': {
+        const newScrollTop = getRowTop(rowIdx) + clientHeight;
+        return { idx, rowIdx: findRowIdx(newScrollTop <= totalRowHeight ? newScrollTop : totalRowHeight) };
+      }
       default:
         return selectedPosition;
     }
