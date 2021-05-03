@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { css } from '@linaria/core';
 
-import { cellSelectedClassname } from './style';
 import EditorContainer from './editors/EditorContainer';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps, SharedEditorProps, Omit } from './types';
@@ -44,7 +43,6 @@ export default function EditCell<R, SR>({
   const { cellClass } = column;
   className = getCellClassname(
     column,
-    cellSelectedClassname,
     cellEditingClassname,
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
