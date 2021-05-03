@@ -94,40 +94,38 @@ export function useViewportRows<R>({
     }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const { getRowTop, getRowHeight, totalRowHeight, rowOffsets } = useMemo(() => {
-    const rowOffsets: number[] = [];
+  const { getRowTop, getRowHeight, totalRowHeight, rowPositions } = useMemo(() => {
     if (typeof rowHeight === 'number') {
       const getRowTop = (rowIdx: number) => rowIdx * rowHeight;
       const getRowHeight = () => rowHeight;
-      return { getRowTop, getRowHeight, totalRowHeight: rowHeight * rows.length, rowOffsets };
+      return { getRowTop, getRowHeight, totalRowHeight: rowHeight * rows.length, rowPositions: [] };
     }
 
-    const rowHeights = new Map<number, number>();
-    const rowTopMap = new Map<number, number>();
+    const rowPositions: ({ height: number; top: number })[] = [];
     let totalRowHeight = 0;
     // Calcule the height of all the rows upfront. This can cause performance issues
     // and we can consider using a similar approach as react-window
     // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
-    rows.forEach((row: R | GroupRow<R>, rowIdx: number) => {
+    rows.forEach((row: R | GroupRow<R>) => {
       const currentRowHeight = isGroupRow(row)
         ? rowHeight({ type: 'GROUP', row })
         : rowHeight({ type: 'ROW', row });
-
-      rowTopMap.set(rowIdx, totalRowHeight);
+      rowPositions.push({ top: totalRowHeight, height: currentRowHeight });
       totalRowHeight += currentRowHeight;
-      rowHeights.set(rowIdx, currentRowHeight);
-      rowOffsets.push(totalRowHeight);
     });
 
     const getRowTop = (rowIdx: number): number => {
-      return rowIdx >= rows.length ? rowTopMap.get(rows.length - 1)! : rowTopMap.get(rowIdx)!;
+      if (rowIdx < 0) {
+        rowIdx = 0;
+      } else if (rowIdx >= rows.length) {
+        rowIdx = rows.length - 1;
+      }
+      return rowPositions[rowIdx].top;
     };
 
-    const getRowHeight = (rowIdx: number): number => {
-      return rowHeights.get(rowIdx)!;
-    };
+    const getRowHeight = (rowIdx: number): number => rowPositions[rowIdx].height;
 
-    return { getRowTop, getRowHeight, totalRowHeight, rowOffsets };
+    return { getRowTop, getRowHeight, totalRowHeight, rowPositions };
   }, [isGroupRow, rowHeight, rows]);
 
   if (!enableVirtualization) {
@@ -165,10 +163,10 @@ export function useViewportRows<R>({
       return Math.floor(offset / rowHeight);
     }
     let start = 0;
-    let end = rowOffsets.length - 1;
+    let end = rowPositions.length - 1;
     while (start <= end) {
       const middle = start + Math.floor((end - start) / 2);
-      const currentOffset = rowOffsets[middle];
+      const currentOffset = rowPositions[middle].top;
 
       if (currentOffset === offset) return middle;
 
