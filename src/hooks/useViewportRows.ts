@@ -127,42 +127,6 @@ export function useViewportRows<R>({
     return { getRowTop, getRowHeight, totalRowHeight, rowOffsets };
   }, [isGroupRow, rowHeight, rows]);
 
-  const [rowOverscanStartIdx, rowOverscanEndIdx] = useMemo(() => {
-    const overscanThreshold = 4;
-    let rowVisibleStartIdx: number;
-    let rowVisibleEndIdx: number;
-    if (typeof rowHeight === 'number') {
-      rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
-      rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
-    } else {
-      const findRowIdx = (offset: number): number => {
-        let start = 0;
-        let end = rowOffsets.length - 1;
-        while (start <= end) {
-          const middle = start + Math.floor((end - start) / 2);
-          const currentOffset = rowOffsets[middle];
-
-          if (currentOffset === offset) return middle;
-
-          if (currentOffset < offset) {
-            start = middle + 1;
-          } else if (currentOffset > offset) {
-            end = middle - 1;
-          }
-
-          if (start > end) return end;
-        }
-        return 0;
-      };
-
-      rowVisibleStartIdx = findRowIdx(scrollTop);
-      rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
-    }
-    const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
-    const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
-    return [rowOverscanStartIdx, rowOverscanEndIdx];
-  }, [clientHeight, rowHeight, rows.length, scrollTop, rowOffsets]);
-
   if (!enableVirtualization) {
     return {
       rowOverscanStartIdx: 0,
@@ -175,6 +139,39 @@ export function useViewportRows<R>({
       getRowHeight
     };
   }
+
+  const overscanThreshold = 4;
+  let rowVisibleStartIdx: number;
+  let rowVisibleEndIdx: number;
+  if (typeof rowHeight === 'number') {
+    rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
+    rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
+  } else {
+    const findRowIdx = (offset: number): number => {
+      let start = 0;
+      let end = rowOffsets.length - 1;
+      while (start <= end) {
+        const middle = start + Math.floor((end - start) / 2);
+        const currentOffset = rowOffsets[middle];
+
+        if (currentOffset === offset) return middle;
+
+        if (currentOffset < offset) {
+          start = middle + 1;
+        } else if (currentOffset > offset) {
+          end = middle - 1;
+        }
+
+        if (start > end) return end;
+      }
+      return 0;
+    };
+
+    rowVisibleStartIdx = findRowIdx(scrollTop);
+    rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
+  }
+  const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
+  const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
 
   return {
     rowOverscanStartIdx,
