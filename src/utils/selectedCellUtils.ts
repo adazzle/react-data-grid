@@ -11,9 +11,12 @@ interface IsSelectedCellEditableOpts<R, SR> {
 export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, isGroupRow }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
+  return !isGroupRow(row) && isCellEditable(column, row);
+}
+
+export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return column.editor != null
     && !column.rowGroup
-    && !isGroupRow(row)
     && (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false;
 }
 
