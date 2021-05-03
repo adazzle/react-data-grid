@@ -127,19 +127,6 @@ export function useViewportRows<R>({
     return { getRowTop, getRowHeight, totalRowHeight, rowOffsets };
   }, [isGroupRow, rowHeight, rows]);
 
-  if (!enableVirtualization) {
-    return {
-      rowOverscanStartIdx: 0,
-      rowOverscanEndIdx: rows.length - 1,
-      rows,
-      rowsCount,
-      totalRowHeight,
-      isGroupRow,
-      getRowTop,
-      getRowHeight
-    };
-  }
-
   const [rowOverscanStartIdx, rowOverscanEndIdx] = useMemo(() => {
     const overscanThreshold = 4;
     let rowVisibleStartIdx: number;
@@ -175,6 +162,19 @@ export function useViewportRows<R>({
     const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
     return [rowOverscanStartIdx, rowOverscanEndIdx];
   }, [clientHeight, rowHeight, rows.length, scrollTop, rowOffsets]);
+
+  if (!enableVirtualization) {
+    return {
+      rowOverscanStartIdx: 0,
+      rowOverscanEndIdx: rows.length - 1,
+      rows,
+      rowsCount,
+      totalRowHeight,
+      isGroupRow,
+      getRowTop,
+      getRowHeight
+    };
+  }
 
   return {
     rowOverscanStartIdx,
