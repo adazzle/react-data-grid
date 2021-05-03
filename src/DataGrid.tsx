@@ -878,6 +878,7 @@ function DataGrid<R, SR>({
     const rowElements = [];
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+      gridRowStart++;
       const row = rows[rowIdx];
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
@@ -893,7 +894,7 @@ function DataGrid<R, SR>({
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
-            gridRowStart={++gridRowStart}
+            gridRowStart={gridRowStart}
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
@@ -927,7 +928,7 @@ function DataGrid<R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
-          gridRowStart={++gridRowStart}
+          gridRowStart={gridRowStart}
           copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
@@ -969,8 +970,6 @@ function DataGrid<R, SR>({
     templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
   }
 
-  const totalRowHeight = Math.max(rows.length * rowHeight, clientHeight) + headerRowHeight + summaryRowHeight * summaryRowsCount;
-
   return (
     <div
       role={hasGroups ? 'treegrid' : 'grid'}
@@ -987,7 +986,7 @@ function DataGrid<R, SR>({
         '--filter-row-height': `${headerFiltersHeight}px`,
         '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`,
-        '--grid-height': `${totalRowHeight}px`,
+        '--grid-height': `${Math.max(rows.length * rowHeight, clientHeight) + headerRowHeight + summaryRowHeight * summaryRowsCount}px`,
         '--summary-row-height': `${summaryRowHeight}px`,
         '--template-rows': templateRows,
         ...layoutCssVars
