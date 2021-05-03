@@ -794,10 +794,17 @@ function DataGrid<R, SR>({
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
         return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
-      // case 'PageUp':
-      //   return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
-      // case 'PageDown':
-      //   return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
+      case 'PageUp':
+        // TODO: handle variable row height
+        if (typeof rowHeight === 'number') {
+          return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
+        }
+        break;
+      case 'PageDown':
+        if (typeof rowHeight === 'number') {
+          return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
+        }
+        break;
       default:
         return selectedPosition;
     }
