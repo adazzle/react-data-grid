@@ -144,35 +144,8 @@ export function useViewportRows<R>({
   }
 
   const overscanThreshold = 4;
-  let rowVisibleStartIdx: number;
-  let rowVisibleEndIdx: number;
-  if (typeof rowHeight === 'number') {
-    rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
-    rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
-  } else {
-    const findRowIdx = (offset: number): number => {
-      let start = 0;
-      let end = rowOffsets.length - 1;
-      while (start <= end) {
-        const middle = start + Math.floor((end - start) / 2);
-        const currentOffset = rowOffsets[middle];
-
-        if (currentOffset === offset) return middle;
-
-        if (currentOffset < offset) {
-          start = middle + 1;
-        } else if (currentOffset > offset) {
-          end = middle - 1;
-        }
-
-        if (start > end) return end;
-      }
-      return 0;
-    };
-
-    rowVisibleStartIdx = findRowIdx(scrollTop);
-    rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
-  }
+  const rowVisibleStartIdx = findRowIdx(scrollTop);
+  const rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
   const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
   const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
 
@@ -186,4 +159,27 @@ export function useViewportRows<R>({
     getRowTop,
     getRowHeight
   };
+
+  function findRowIdx(offset: number): number {
+    if (typeof rowHeight === 'number') {
+      return Math.floor(offset / rowHeight);
+    }
+    let start = 0;
+    let end = rowOffsets.length - 1;
+    while (start <= end) {
+      const middle = start + Math.floor((end - start) / 2);
+      const currentOffset = rowOffsets[middle];
+
+      if (currentOffset === offset) return middle;
+
+      if (currentOffset < offset) {
+        start = middle + 1;
+      } else if (currentOffset > offset) {
+        end = middle - 1;
+      }
+
+      if (start > end) return end;
+    }
+    return 0;
+  }
 }
