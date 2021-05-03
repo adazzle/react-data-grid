@@ -14,7 +14,6 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   'aria-rowindex': number;
   row: SR;
   bottom: number;
-  gridRowStart: number;
   lastFrozenColumnIndex: number;
 }
 
@@ -23,7 +22,6 @@ function SummaryRow<R, SR>({
   row,
   viewportColumns,
   bottom,
-  gridRowStart,
   lastFrozenColumnIndex,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -51,7 +49,7 @@ function SummaryRow<R, SR>({
       role="row"
       aria-rowindex={ariaRowIndex}
       className={`${rowClassname} row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
-      style={getRowStyle(gridRowStart)}
+      style={getRowStyle(ariaRowIndex)}
     >
       {cells}
     </div>

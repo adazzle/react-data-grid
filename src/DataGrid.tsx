@@ -872,14 +872,12 @@ function DataGrid<R, SR>({
     };
   }
 
-  let gridRowStart = headerRowsCount;
-
   function getViewportRows() {
     const rowElements = [];
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-      gridRowStart++;
       const row = rows[rowIdx];
+      const gridRowStart = headerRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         rowElements.push(
@@ -960,11 +958,7 @@ function DataGrid<R, SR>({
     templateRows += ` ${headerFiltersHeight}px`;
   }
   if (rows.length > 0) {
-    if (rowOverscanStartIdx > 0) {
-      const topHeight = rowHeight * rowOverscanStartIdx;
-      templateRows += ` ${topHeight}px`;
-    }
-    templateRows += ` repeat(${rowOverscanEndIdx - rowOverscanStartIdx + 1}, ${rowHeight}px)`;
+    templateRows += ` repeat(${rows.length}, ${rowHeight}px)`;
   }
   if (summaryRowsCount > 0) {
     templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
@@ -984,9 +978,7 @@ function DataGrid<R, SR>({
         ...style,
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
-        '--row-width': `${totalColumnWidth}px`,
         '--row-height': `${rowHeight}px`,
-        '--grid-height': `${Math.max(rows.length * rowHeight, clientHeight) + headerRowHeight + summaryRowHeight * summaryRowsCount}px`,
         '--summary-row-height': `${summaryRowHeight}px`,
         '--template-rows': templateRows,
         ...layoutCssVars
@@ -994,6 +986,15 @@ function DataGrid<R, SR>({
       ref={gridRef}
       onScroll={handleScroll}
     >
+      <div
+        style={{
+          top: 0,
+          left: 0,
+          height: Math.max(rows.length * rowHeight, clientHeight) + totalHeaderHeight + summaryRowsCount * summaryRowHeight,
+          width: totalColumnWidth,
+          position: 'absolute'
+        }}
+      />
       <HeaderRow<R, SR>
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
@@ -1022,7 +1023,6 @@ function DataGrid<R, SR>({
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />
-          {rowOverscanStartIdx > 0 && <div style={{ gridColumnStart: 1, gridRowStart: ++gridRowStart }} />}
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
@@ -1033,7 +1033,6 @@ function DataGrid<R, SR>({
               bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
               viewportColumns={viewportColumns}
               lastFrozenColumnIndex={lastFrozenColumnIndex}
-              gridRowStart={++gridRowStart}
             />
           ))}
         </>
