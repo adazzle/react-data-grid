@@ -799,12 +799,12 @@ function DataGrid<R, SR>({
         if (typeof rowHeight === 'number') {
           return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
         }
-        break;
+        return selectedPosition;
       case 'PageDown':
         if (typeof rowHeight === 'number') {
           return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
         }
-        break;
+        return selectedPosition;
       default:
         return selectedPosition;
     }
