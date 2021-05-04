@@ -104,17 +104,17 @@ export function useViewportRows<R>({
       };
     }
 
-    const rowPositions: ({ height: number; top: number })[] = [];
     let totalRowHeight = 0;
     // Calcule the height of all the rows upfront. This can cause performance issues
     // and we can consider using a similar approach as react-window
     // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
-    rows.forEach((row: R | GroupRow<R>) => {
+    const rowPositions = rows.map((row: R | GroupRow<R>) => {
       const currentRowHeight = isGroupRow(row)
         ? rowHeight({ type: 'GROUP', row })
         : rowHeight({ type: 'ROW', row });
-      rowPositions.push({ top: totalRowHeight, height: currentRowHeight });
+      const position = { top: totalRowHeight, height: currentRowHeight };
       totalRowHeight += currentRowHeight;
+      return position;
     });
 
     return {
