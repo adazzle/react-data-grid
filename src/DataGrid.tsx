@@ -796,12 +796,12 @@ function DataGrid<R, SR>({
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
         return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
       case 'PageUp': {
-        const newScrollTop = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
-        return { idx, rowIdx: newScrollTop >= 0 ? findRowIdx(newScrollTop) : 0 };
+        const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
+        return { idx, rowIdx: nextRowY > 0 ? findRowIdx(nextRowY) : 0 };
       }
       case 'PageDown': {
-        const newScrollTop = getRowTop(rowIdx) + clientHeight;
-        return { idx, rowIdx: findRowIdx(newScrollTop <= totalRowHeight ? newScrollTop : totalRowHeight) };
+        const nextRowY = getRowTop(rowIdx) + clientHeight;
+        return { idx, rowIdx: nextRowY < totalRowHeight ? findRowIdx(nextRowY) : rows.length - 1 };
       }
       default:
         return selectedPosition;
