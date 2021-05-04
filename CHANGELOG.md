@@ -1,5 +1,9 @@
 # Changelog
 
+## v7.0.0-canary.44
+- Use aria-selected to style selected cell/rows ([PR](https://github.com/adazzle/react-data-grid/pull/2386))
+- Add support for variable row heights ([PR](https://github.com/adazzle/react-data-grid/pull/2384))
+
 ## v7.0.0-canary.43
 - Fix `aria-readonly` ([PR](https://github.com/adazzle/react-data-grid/pull/2380))
 
