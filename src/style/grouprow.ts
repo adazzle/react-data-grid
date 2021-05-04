@@ -2,7 +2,7 @@ import { css } from '@linaria/core';
 import { cell, cellFrozenLast } from './cell';
 
 const groupRow = css`
-  &:not(aria-selected="true") {
+  &:not([aria-selected="true"]) {
     background-color: var(--header-background-color);
   }
 
