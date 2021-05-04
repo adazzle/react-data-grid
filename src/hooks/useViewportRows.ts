@@ -118,15 +118,7 @@ export function useViewportRows<R>({
     });
 
     const validateRowIdx = (rowIdx: number) => {
-      if (rowIdx < 0) {
-        return 0;
-      }
-
-      if (rowIdx >= rows.length) {
-        return rows.length - 1;
-      }
-
-      return rowIdx;
+      return Math.max(0, Math.min(row.length - 1, rowIdx));
     };
 
     return {
