@@ -117,17 +117,22 @@ export function useViewportRows<R>({
       return position;
     });
 
+    const validateRowIdx = (rowIdx: number) => {
+      if (rowIdx < 0) {
+        return 0;
+      }
+
+      if (rowIdx >= rows.length) {
+        return rows.length - 1;
+      }
+
+      return rowIdx;
+    };
+
     return {
       totalRowHeight,
-      getRowTop(rowIdx: number) {
-        if (rowIdx < 0) {
-          rowIdx = 0;
-        } else if (rowIdx >= rows.length) {
-          rowIdx = rows.length - 1;
-        }
-        return rowPositions[rowIdx].top;
-      },
-      getRowHeight: (rowIdx: number) => rowPositions[rowIdx].height,
+      getRowTop: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].top,
+      getRowHeight: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].height,
       findRowIdx(offset: number) {
         let start = 0;
         let end = rowPositions.length - 1;
