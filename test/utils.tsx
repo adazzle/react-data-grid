@@ -28,7 +28,7 @@ export function getHeaderCells() {
 }
 
 export function getSelectedCell() {
-  return screen.getByRole('gridcell', { selected: true });
+  return screen.queryByRole('gridcell', { selected: true });
 }
 
 export function validateCellPosition(columnIdx: number, rowIdx: number) {
