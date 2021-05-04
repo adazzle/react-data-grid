@@ -737,12 +737,14 @@ function DataGrid<R, SR>({
     }
 
     if (typeof rowIdx === 'number') {
-      if (getRowTop(rowIdx) < scrollTop) {
+      const rowTop = getRowTop(rowIdx);
+      const rowHeight = getRowHeight(rowIdx);
+      if (rowTop < scrollTop) {
         // at top boundary, scroll to the row's top
-        current.scrollTop = getRowTop(rowIdx);
-      } else if (getRowTop(rowIdx) + getRowHeight(rowIdx) > scrollTop + clientHeight) {
+        current.scrollTop = rowTop;
+      } else if (rowTop + rowHeight > scrollTop + clientHeight) {
         // at bottom boundary, scroll the next row's top to the bottom of the viewport
-        current.scrollTop = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
+        current.scrollTop = rowTop + rowHeight - clientHeight;
       }
     }
   }
