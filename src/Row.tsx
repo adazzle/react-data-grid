@@ -2,7 +2,7 @@ import { memo, forwardRef } from 'react';
 import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
+import { groupRowSelectedClassname, rowClassname } from './style';
 import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
@@ -40,7 +40,6 @@ function Row<R, SR = unknown>({
   className = clsx(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-      [rowSelectedClassname]: isRowSelected,
       [groupRowSelectedClassname]: selectedCellProps?.idx === -1
     },
     rowClass?.(row),

@@ -2,7 +2,6 @@ import { forwardRef, memo } from 'react';
 import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
-import { cellSelectedClassname } from './style';
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 
@@ -65,7 +64,6 @@ function Cell<R, SR>({
   className = getCellClassname(
     column,
     {
-      [cellSelectedClassname]: isCellSelected,
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },

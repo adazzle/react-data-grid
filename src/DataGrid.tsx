@@ -897,12 +897,14 @@ function DataGrid<R, SR>({
       const top = getRowTop(rowIdx) + totalHeaderHeight;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
+        const isGroupRowSelected = isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)));
         rowElements.push(
           <GroupRowRenderer<R, SR>
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
             aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
+            aria-selected={isSelectable ? isGroupRowSelected : undefined}
             key={row.id}
             id={row.id}
             groupKey={row.groupKey}
@@ -914,7 +916,7 @@ function DataGrid<R, SR>({
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
-            isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)))}
+            isRowSelected={isGroupRowSelected}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectCell={selectCellWrapper}
