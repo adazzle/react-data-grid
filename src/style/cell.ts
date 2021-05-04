@@ -13,7 +13,7 @@ export const cell = css`
   overflow: clip;
   text-overflow: ellipsis;
 
-  &[aria-selected='true'] {
+  &[aria-selected="true"] {
     box-shadow: inset 0 0 0 2px var(--selection-color);
   }
 `;
