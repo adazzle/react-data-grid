@@ -797,7 +797,7 @@ function DataGrid<R, SR>({
         return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
       case 'PageUp': {
         const newScrollTop = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
-        return { idx, rowIdx: findRowIdx(newScrollTop >= 0 ? newScrollTop : 0) };
+        return { idx, rowIdx: newScrollTop >= 0 ? findRowIdx(newScrollTop) : 0 };
       }
       case 'PageDown': {
         const newScrollTop = getRowTop(rowIdx) + clientHeight;
