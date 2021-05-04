@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 
@@ -13,6 +14,7 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   childRows: readonly R[];
   rowIdx: number;
   top: number;
+  height: number;
   level: number;
   selectedCellIdx?: number;
   isExpanded: boolean;
@@ -29,6 +31,7 @@ function GroupedRow<R, SR>({
   childRows,
   rowIdx,
   top,
+  height,
   level,
   isExpanded,
   selectedCellIdx,
@@ -58,7 +61,10 @@ function GroupedRow<R, SR>({
         }
       )}
       onClick={selectGroup}
-      style={{ top }}
+      style={{
+        top,
+        '--row-height': `${height}px`
+      } as unknown as CSSProperties}
       {...props}
     >
       {viewportColumns.map(column => (

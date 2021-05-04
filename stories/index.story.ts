@@ -13,5 +13,6 @@ export * from './demos/ColumnsReordering';
 export * from './demos/RowsReordering';
 export * from './demos/Grouping';
 export * from './demos/Resizable';
+export * from './demos/VariableRowHeight';
 
 export default { title: 'Demos' };
