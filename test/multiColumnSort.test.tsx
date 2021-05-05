@@ -43,21 +43,10 @@ const SortingContainer = ({ newRows, newColumns }: Props) => {
   const getComparator = (sortColumn: string) => {
     switch (sortColumn) {
       case 'assignee':
-      case 'title':
-      case 'client':
       case 'area':
-      case 'country':
-      case 'contact':
       case 'transaction':
-      case 'account':
-      case 'version':
         return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]) as number; };
-      case 'available':
-        return function(a: Row, b: Row) { return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1 as number; };
       case 'id':
-      case 'progress':
-      case 'startTimestamp':
-      case 'endTimestamp':
       case 'budget':
         return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]!; };
       default:
