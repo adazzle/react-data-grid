@@ -1,8 +1,8 @@
 import { memo, forwardRef } from 'react';
-import type { RefAttributes } from 'react';
+import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
+import { groupRowSelectedClassname, rowClassname } from './style';
 import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
@@ -24,6 +24,7 @@ function Row<R, SR = unknown>({
   setDraggedOverRowIdx,
   onMouseEnter,
   top,
+  height,
   onRowChange,
   selectCell,
   selectRow,
@@ -39,7 +40,6 @@ function Row<R, SR = unknown>({
   className = clsx(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-      [rowSelectedClassname]: isRowSelected,
       [groupRowSelectedClassname]: selectedCellProps?.idx === -1
     },
     rowClass?.(row),
@@ -100,7 +100,10 @@ function Row<R, SR = unknown>({
       ref={ref}
       className={className}
       onMouseEnter={handleDragEnter}
-      style={{ top }}
+      style={{
+        top,
+        '--row-height': `${height}px`
+      } as unknown as CSSProperties}
       {...props}
     >
       {cells}

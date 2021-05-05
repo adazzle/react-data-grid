@@ -1,7 +1,8 @@
+import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import { groupRowClassname, groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
+import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
@@ -13,6 +14,7 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   childRows: readonly R[];
   rowIdx: number;
   top: number;
+  height: number;
   level: number;
   selectedCellIdx?: number;
   isExpanded: boolean;
@@ -29,6 +31,7 @@ function GroupedRow<R, SR>({
   childRows,
   rowIdx,
   top,
+  height,
   level,
   isExpanded,
   selectedCellIdx,
@@ -54,12 +57,14 @@ function GroupedRow<R, SR>({
         rowClassname,
         groupRowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-          [rowSelectedClassname]: isRowSelected,
           [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
         }
       )}
       onClick={selectGroup}
-      style={{ top }}
+      style={{
+        top,
+        '--row-height': `${height}px`
+      } as unknown as CSSProperties}
       {...props}
     >
       {viewportColumns.map(column => (

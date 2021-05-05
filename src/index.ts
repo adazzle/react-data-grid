@@ -25,5 +25,6 @@ export type {
   CellNavigationMode,
   SortDirection,
   SortColumn,
-  ColSpanArgs
+  ColSpanArgs,
+  RowHeightArgs
 } from './types';
