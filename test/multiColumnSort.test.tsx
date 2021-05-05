@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { getCellsAtRowIndex, getHeaderCells } from './utils';
 import type { Column, SortColumn } from '../src/types';
-import React, { StrictMode, useMemo, useState } from 'react';
+import { StrictMode, useMemo, useState } from 'react';
 import DataGrid from '../src';
 import { render } from '@testing-library/react';
 
@@ -51,15 +51,15 @@ const SortingContainer = ({ newRows, newColumns }: Props) => {
       case 'transaction':
       case 'account':
       case 'version':
-        return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]); };
+        return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]) as number; };
       case 'available':
-        return function(a: Row, b: Row) { return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1; };
+        return function(a: Row, b: Row) { return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1 as number; };
       case 'id':
       case 'progress':
       case 'startTimestamp':
       case 'endTimestamp':
       case 'budget':
-        return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]; };
+        return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]!; };
       default:
         throw new Error(
           `unsupported sortColumn: "${sortColumn}"`
