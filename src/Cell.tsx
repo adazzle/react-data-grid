@@ -1,4 +1,4 @@
-import { forwardRef, memo } from 'react';
+import { forwardRef, memo, useRef, useLayoutEffect } from 'react';
 import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
@@ -55,11 +55,15 @@ function Cell<R, SR>({
   onClick,
   onDoubleClick,
   onContextMenu,
+  onFocus,
   onRowChange,
   selectCell,
   selectRow,
   ...props
-}: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+}: CellRendererProps<R, SR>) {
+  const cellRef = useRef<HTMLDivElement>(null);
+  const isCellFocusable = useRef(false);
+
   const { cellClass } = column;
   className = getCellClassname(
     column,
@@ -70,6 +74,15 @@ function Cell<R, SR>({
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
   );
+
+  useLayoutEffect(() => {
+    if (!isCellSelected) return;
+    if (isCellFocusable.current) {
+      isCellFocusable.current = false;
+      return;
+    }
+    cellRef.current?.focus({ preventScroll: true });
+  }, [isCellSelected]);
 
   function selectCellWrapper(openEditor?: boolean) {
     selectCell({ idx: column.idx, rowIdx }, openEditor);
@@ -91,6 +104,13 @@ function Cell<R, SR>({
     onDoubleClick?.(event);
   }
 
+  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
+    if (event.target !== cellRef.current) {
+      isCellFocusable.current = true;
+    }
+    onFocus?.(event);
+  }
+
   function handleRowChange(newRow: R) {
     onRowChange(rowIdx, newRow);
   }
@@ -106,12 +126,14 @@ function Cell<R, SR>({
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
       aria-readonly={!isCellEditable(column, row) || undefined}
-      ref={ref}
+      ref={cellRef}
       className={className}
+      tabIndex={isCellSelected ? 0 : -1}
       style={getCellStyle(column, colSpan)}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
+      onFocus={isCellSelected ? handleFocus : undefined}
       {...props}
     >
       {!column.rowGroup && (

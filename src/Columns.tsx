@@ -17,6 +17,7 @@ export const SelectColumn: Column<any, any> = {
     return (
       <SelectCellFormatter
         aria-label="Select All"
+        tabIndex={-1}
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}
       />
