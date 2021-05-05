@@ -45,10 +45,10 @@ const SortingContainer = ({ newRows, newColumns }: Props) => {
       case 'assignee':
       case 'area':
       case 'transaction':
-        return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]) as number; };
+        return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]); };
       case 'id':
       case 'budget':
-        return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]!; };
+        return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]; };
       default:
         throw new Error(
           `unsupported sortColumn: "${sortColumn}"`
