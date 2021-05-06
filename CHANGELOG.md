@@ -1,5 +1,8 @@
 # Changelog
 
+## v7.0.0-canary.46
+- Optimize onRowsChange: only update changed rows ([PR](https://github.com/adazzle/react-data-grid/pull/2390))
+
 ## v7.0.0-canary.45
 - Fixed issue where the scrollbars would flicker in edge cases ([PR](https://github.com/adazzle/react-data-grid/pull/2389))
 
