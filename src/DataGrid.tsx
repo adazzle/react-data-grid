@@ -612,11 +612,16 @@ function DataGrid<R, SR>({
     const indexes: number[] = [];
 
     for (let i = startRowIndex; i < endRowIndex; i++) {
-      updatedRows[i] = updatedTargetRows[i - startRowIndex];
-      indexes.push(i);
+      const targetRowIdx = i - startRowIndex;
+      if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
+        updatedRows[i] = updatedTargetRows[targetRowIdx];
+        indexes.push(i);
+      }
     }
 
-    onRowsChange(updatedRows, { indexes, column });
+    if (indexes.length > 0) {
+      onRowsChange(updatedRows, { indexes, column });
+    }
     setDraggedOverRowIdx(undefined);
   }
 
@@ -661,7 +666,9 @@ function DataGrid<R, SR>({
       }
     }
 
-    onRowsChange(updatedRows, { indexes, column });
+    if (indexes.length > 0) {
+      onRowsChange(updatedRows, { indexes, column });
+    }
   }
 
   function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
