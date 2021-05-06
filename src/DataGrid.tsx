@@ -518,6 +518,7 @@ function DataGrid<R, SR>({
 
   function updateRow(rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
+    if (row === rawRows[rowIdx]) return;
     const updatedRows = [...rawRows];
     updatedRows[rowIdx] = row;
     onRowsChange(updatedRows, {
@@ -611,11 +612,16 @@ function DataGrid<R, SR>({
     const indexes: number[] = [];
 
     for (let i = startRowIndex; i < endRowIndex; i++) {
-      updatedRows[i] = updatedTargetRows[i - startRowIndex];
-      indexes.push(i);
+      const targetRowIdx = i - startRowIndex;
+      if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
+        updatedRows[i] = updatedTargetRows[targetRowIdx];
+        indexes.push(i);
+      }
     }
 
-    onRowsChange(updatedRows, { indexes, column });
+    if (indexes.length > 0) {
+      onRowsChange(updatedRows, { indexes, column });
+    }
     setDraggedOverRowIdx(undefined);
   }
 
@@ -653,11 +659,16 @@ function DataGrid<R, SR>({
     const indexes: number[] = [];
 
     for (let i = rowIdx + 1; i < updatedRows.length; i++) {
-      updatedRows[i] = updatedTargetRows[i - rowIdx - 1];
-      indexes.push(i);
+      const targetRowIdx = i - rowIdx - 1;
+      if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
+        updatedRows[i] = updatedTargetRows[targetRowIdx];
+        indexes.push(i);
+      }
     }
 
-    onRowsChange(updatedRows, { indexes, column });
+    if (indexes.length > 0) {
+      onRowsChange(updatedRows, { indexes, column });
+    }
   }
 
   function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
