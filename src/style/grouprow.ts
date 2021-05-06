@@ -1,9 +1,8 @@
 import { css } from '@linaria/core';
-import { rowSelected } from './row';
 import { cell, cellFrozenLast } from './cell';
 
 const groupRow = css`
-  &:not(.${rowSelected}) {
+  &:not([aria-selected="true"]) {
     background-color: var(--header-background-color);
   }
 

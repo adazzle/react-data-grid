@@ -40,7 +40,8 @@ import type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
-  SortDirection
+  SortDirection,
+  RowHeightArgs
 } from './types';
 
 interface SelectCellState extends Position {
@@ -100,7 +101,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Dimensions props
    */
   /** The height of each row in pixels */
-  rowHeight?: number;
+  rowHeight?: number | ((args: RowHeightArgs<R>) => number);
   /** The height of the header row in pixels */
   headerRowHeight?: number;
   /** The height of the header filter row in pixels */
@@ -181,9 +182,9 @@ function DataGrid<R, SR>({
   onRowsChange,
   // Dimensions props
   rowHeight = 35,
-  headerRowHeight = rowHeight,
+  headerRowHeight = typeof rowHeight === 'number' ? rowHeight : 35,
   headerFiltersHeight = 45,
-  summaryRowHeight = rowHeight,
+  summaryRowHeight = typeof rowHeight === 'number' ? rowHeight : 35,
   // Feature props
   selectedRows,
   onSelectedRowsChange,
@@ -280,7 +281,18 @@ function DataGrid<R, SR>({
     enableVirtualization
   });
 
-  const { rowOverscanStartIdx, rowOverscanEndIdx, rows, rowsCount, isGroupRow } = useViewportRows({
+  const {
+    rowOverscanStartIdx,
+    rowOverscanEndIdx,
+    rows,
+    rowsCount,
+    totalRowHeight,
+    gridTemplateRows,
+    isGroupRow,
+    getRowTop,
+    getRowHeight,
+    findRowIdx
+  } = useViewportRows({
     rawRows,
     groupBy,
     rowGrouper,
@@ -335,7 +347,7 @@ function DataGrid<R, SR>({
       const { current } = gridRef;
       if (!current) return;
       current.scrollTo({
-        top: rowIdx * rowHeight,
+        top: getRowTop(rowIdx),
         behavior: 'smooth'
       });
     },
@@ -507,6 +519,7 @@ function DataGrid<R, SR>({
 
   function updateRow(rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
+    if (row === rawRows[rowIdx]) return;
     const updatedRows = [...rawRows];
     updatedRows[rowIdx] = row;
     onRowsChange(updatedRows, {
@@ -600,11 +613,16 @@ function DataGrid<R, SR>({
     const indexes: number[] = [];
 
     for (let i = startRowIndex; i < endRowIndex; i++) {
-      updatedRows[i] = updatedTargetRows[i - startRowIndex];
-      indexes.push(i);
+      const targetRowIdx = i - startRowIndex;
+      if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
+        updatedRows[i] = updatedTargetRows[targetRowIdx];
+        indexes.push(i);
+      }
     }
 
-    onRowsChange(updatedRows, { indexes, column });
+    if (indexes.length > 0) {
+      onRowsChange(updatedRows, { indexes, column });
+    }
     setDraggedOverRowIdx(undefined);
   }
 
@@ -642,11 +660,16 @@ function DataGrid<R, SR>({
     const indexes: number[] = [];
 
     for (let i = rowIdx + 1; i < updatedRows.length; i++) {
-      updatedRows[i] = updatedTargetRows[i - rowIdx - 1];
-      indexes.push(i);
+      const targetRowIdx = i - rowIdx - 1;
+      if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
+        updatedRows[i] = updatedTargetRows[targetRowIdx];
+        indexes.push(i);
+      }
     }
 
-    onRowsChange(updatedRows, { indexes, column });
+    if (indexes.length > 0) {
+      onRowsChange(updatedRows, { indexes, column });
+    }
   }
 
   function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
@@ -726,12 +749,14 @@ function DataGrid<R, SR>({
     }
 
     if (typeof rowIdx === 'number') {
-      if (rowIdx * rowHeight < scrollTop) {
+      const rowTop = getRowTop(rowIdx);
+      const rowHeight = getRowHeight(rowIdx);
+      if (rowTop < scrollTop) {
         // at top boundary, scroll to the row's top
-        current.scrollTop = rowIdx * rowHeight;
-      } else if ((rowIdx + 1) * rowHeight > scrollTop + clientHeight) {
+        current.scrollTop = rowTop;
+      } else if (rowTop + rowHeight > scrollTop + clientHeight) {
         // at bottom boundary, scroll the next row's top to the bottom of the viewport
-        current.scrollTop = (rowIdx + 1) * rowHeight - clientHeight;
+        current.scrollTop = rowTop + rowHeight - clientHeight;
       }
     }
   }
@@ -784,10 +809,14 @@ function DataGrid<R, SR>({
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
         return ctrlKey ? { idx: columns.length - 1, rowIdx: rows.length - 1 } : { idx: columns.length - 1, rowIdx };
-      case 'PageUp':
-        return { idx, rowIdx: rowIdx - Math.floor(clientHeight / rowHeight) };
-      case 'PageDown':
-        return { idx, rowIdx: rowIdx + Math.floor(clientHeight / rowHeight) };
+      case 'PageUp': {
+        const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
+        return { idx, rowIdx: nextRowY > 0 ? findRowIdx(nextRowY) : 0 };
+      }
+      case 'PageDown': {
+        const nextRowY = getRowTop(rowIdx) + clientHeight;
+        return { idx, rowIdx: nextRowY < totalRowHeight ? findRowIdx(nextRowY) : rows.length - 1 };
+      }
       default:
         return selectedPosition;
     }
@@ -853,7 +882,7 @@ function DataGrid<R, SR>({
         onKeyDown: handleKeyDown,
         editorProps: {
           editorPortalTarget,
-          rowHeight,
+          rowHeight: getRowHeight(selectedPosition.rowIdx),
           row: selectedPosition.row,
           onRowChange: handleEditorRowChange,
           onClose: handleOnClose
@@ -880,12 +909,14 @@ function DataGrid<R, SR>({
       const gridRowStart = headerRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
+        const isGroupRowSelected = isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)));
         rowElements.push(
           <GroupRowRenderer<R, SR>
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
             aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
+            aria-selected={isSelectable ? isGroupRowSelected : undefined}
             key={row.id}
             id={row.id}
             groupKey={row.groupKey}
@@ -896,7 +927,7 @@ function DataGrid<R, SR>({
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
-            isRowSelected={isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)))}
+            isRowSelected={isGroupRowSelected}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectCell={selectCellWrapper}
@@ -958,7 +989,7 @@ function DataGrid<R, SR>({
     templateRows += ` ${headerFiltersHeight}px`;
   }
   if (rows.length > 0) {
-    templateRows += ` repeat(${rows.length}, ${rowHeight}px)`;
+    templateRows += gridTemplateRows;
   }
   if (summaryRowsCount > 0) {
     templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
@@ -978,7 +1009,6 @@ function DataGrid<R, SR>({
         ...style,
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
-        '--row-height': `${rowHeight}px`,
         '--summary-row-height': `${summaryRowHeight}px`,
         '--template-rows': templateRows,
         ...layoutCssVars
@@ -990,7 +1020,7 @@ function DataGrid<R, SR>({
         style={{
           top: 0,
           left: 0,
-          height: Math.max(rows.length * rowHeight, clientHeight) + totalHeaderHeight + summaryRowsCount * summaryRowHeight,
+          height: Math.max(totalRowHeight, clientHeight) + totalHeaderHeight + summaryRowsCount * summaryRowHeight,
           width: totalColumnWidth,
           position: 'absolute'
         }}
