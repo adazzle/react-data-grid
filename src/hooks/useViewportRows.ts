@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import type { GroupRow, GroupByDictionary } from '../types';
+import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
 
 const RENDER_BACTCH_SIZE = 8;
 
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
-  rowHeight: number;
+  rowHeight: number | ((args: RowHeightArgs<R>) => number);
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
@@ -50,9 +50,9 @@ export function useViewportRows<R>({
     return groupRows(rawRows, groupBy, 0);
   }, [groupBy, rowGrouper, rawRows]);
 
-  const [rows, allGroupRows] = useMemo(() => {
+  const [rows, isGroupRow] = useMemo(() => {
     const allGroupRows = new Set<unknown>();
-    if (!groupedRows) return [rawRows, allGroupRows];
+    if (!groupedRows) return [rawRows, isGroupRow];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
     const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentId: string | undefined, level: number): void => {
@@ -87,10 +87,65 @@ export function useViewportRows<R>({
     };
 
     expandGroup(groupedRows, undefined, 0);
-    return [flattenedRows, allGroupRows];
+    return [flattenedRows, isGroupRow];
+
+    function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
+      return allGroupRows.has(row);
+    }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const isGroupRow = <R>(row: unknown): row is GroupRow<R> => allGroupRows.has(row);
+  const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
+    if (typeof rowHeight === 'number') {
+      return {
+        totalRowHeight: rowHeight * rows.length,
+        getRowTop: (rowIdx: number) => rowIdx * rowHeight,
+        getRowHeight: () => rowHeight,
+        findRowIdx: (offset: number) => Math.floor(offset / rowHeight)
+      };
+    }
+
+    let totalRowHeight = 0;
+    // Calcule the height of all the rows upfront. This can cause performance issues
+    // and we can consider using a similar approach as react-window
+    // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
+    const rowPositions = rows.map((row: R | GroupRow<R>) => {
+      const currentRowHeight = isGroupRow(row)
+        ? rowHeight({ type: 'GROUP', row })
+        : rowHeight({ type: 'ROW', row });
+      const position = { top: totalRowHeight, height: currentRowHeight };
+      totalRowHeight += currentRowHeight;
+      return position;
+    });
+
+    const validateRowIdx = (rowIdx: number) => {
+      return Math.max(0, Math.min(rows.length - 1, rowIdx));
+    };
+
+    return {
+      totalRowHeight,
+      getRowTop: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].top,
+      getRowHeight: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].height,
+      findRowIdx(offset: number) {
+        let start = 0;
+        let end = rowPositions.length - 1;
+        while (start <= end) {
+          const middle = start + Math.floor((end - start) / 2);
+          const currentOffset = rowPositions[middle].top;
+
+          if (currentOffset === offset) return middle;
+
+          if (currentOffset < offset) {
+            start = middle + 1;
+          } else if (currentOffset > offset) {
+            end = middle - 1;
+          }
+
+          if (start > end) return end;
+        }
+        return 0;
+      }
+    };
+  }, [isGroupRow, rowHeight, rows]);
 
   if (!enableVirtualization) {
     return {
@@ -98,13 +153,17 @@ export function useViewportRows<R>({
       rowOverscanEndIdx: rows.length - 1,
       rows,
       rowsCount,
-      isGroupRow
+      totalRowHeight,
+      isGroupRow,
+      getRowTop,
+      getRowHeight,
+      findRowIdx
     };
   }
 
   const overscanThreshold = 4;
-  const rowVisibleStartIdx = Math.floor(scrollTop / rowHeight);
-  const rowVisibleEndIdx = Math.min(rows.length - 1, Math.floor((scrollTop + clientHeight) / rowHeight));
+  const rowVisibleStartIdx = findRowIdx(scrollTop);
+  const rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
   const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
   const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
 
@@ -113,6 +172,10 @@ export function useViewportRows<R>({
     rowOverscanEndIdx,
     rows,
     rowsCount,
-    isGroupRow
+    totalRowHeight,
+    isGroupRow,
+    getRowTop,
+    getRowHeight,
+    findRowIdx
   };
 }

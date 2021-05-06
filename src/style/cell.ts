@@ -12,6 +12,10 @@ export const cell = css`
   overflow: hidden;
   overflow: clip;
   text-overflow: ellipsis;
+
+  &[aria-selected="true"] {
+    box-shadow: inset 0 0 0 2px var(--selection-color);
+  }
 `;
 
 export const cellClassname = `rdg-cell ${cell}`;
@@ -29,9 +33,3 @@ export const cellFrozenLast = css`
 `;
 
 export const cellFrozenLastClassname = `rdg-cell-frozen-last ${cellFrozenLast}`;
-
-const cellSelected = css`
-  box-shadow: inset 0 0 0 2px var(--selection-color);
-`;
-
-export const cellSelectedClassname = `rdg-cell-selected ${cellSelected}`;

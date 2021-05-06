@@ -2,8 +2,7 @@ import { forwardRef, memo } from 'react';
 import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
-import { cellSelectedClassname } from './style';
-import { getCellStyle, getCellClassname } from './utils';
+import { getCellStyle, getCellClassname, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`
@@ -44,6 +43,7 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 function Cell<R, SR>({
   className,
   column,
+  colSpan,
   isCellSelected,
   isCopied,
   isDraggedOver,
@@ -64,7 +64,6 @@ function Cell<R, SR>({
   className = getCellClassname(
     column,
     {
-      [cellSelectedClassname]: isCellSelected,
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
@@ -105,9 +104,11 @@ function Cell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
+      aria-colspan={colSpan}
+      aria-readonly={!isCellEditable(column, row) || undefined}
       ref={ref}
       className={className}
-      style={getCellStyle(column)}
+      style={getCellStyle(column, colSpan)}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}

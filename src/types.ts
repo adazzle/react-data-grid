@@ -25,6 +25,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   editable?: boolean | ((row: TRow) => boolean);
+  colSpan?: (args: ColSpanArgs<TRow, TSummaryRow>) => number | undefined;
   /** Determines whether column is frozen or not */
   frozen?: boolean;
   /** Enable resizing of a column */
@@ -144,6 +145,7 @@ export interface SelectedCellProps extends SelectedCellPropsBase {
 export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  colSpan?: number;
   row: TRow;
   isCopied: boolean;
   isDraggedOver: boolean;
@@ -163,8 +165,10 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   rowIdx: number;
   copiedCellIdx?: number;
   draggedOverCellIdx?: number;
+  lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   top: number;
+  height: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowChange: (rowIdx: number, row: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
@@ -226,3 +230,21 @@ export interface GroupRow<TRow> {
 
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
+
+export type ColSpanArgs<R, SR> = {
+  type: 'HEADER' | 'FILTER';
+} | {
+  type: 'ROW';
+  row: R;
+} | {
+  type: 'SUMMARY';
+  row: SR;
+};
+
+export type RowHeightArgs<R> = {
+  type: 'ROW';
+  row: R;
+} | {
+  type: 'GROUP';
+  row: GroupRow<R>;
+};
