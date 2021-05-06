@@ -63,6 +63,7 @@ function Row<R, SR = unknown>({
           column={column}
           colSpan={colSpan}
           row={row}
+          onKeyDown={selectedCellProps.onKeyDown}
           editorProps={selectedCellProps.editorProps}
         />
       );
@@ -81,6 +82,8 @@ function Row<R, SR = unknown>({
         isCellSelected={isCellSelected}
         isRowSelected={isRowSelected}
         dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
+        onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
+        onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
         onRowClick={onRowClick}
         onRowChange={onRowChange}
         selectCell={selectCell}

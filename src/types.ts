@@ -126,15 +126,19 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
-export interface EditCellProps<TRow> {
-  mode: 'EDIT';
+interface SelectedCellPropsBase {
   idx: number;
+  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+}
+
+export interface EditCellProps<TRow> extends SelectedCellPropsBase {
+  mode: 'EDIT';
   editorProps: SharedEditorProps<TRow>;
 }
 
-export interface SelectedCellProps {
+export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
-  idx: number;
+  onFocus: () => void;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 

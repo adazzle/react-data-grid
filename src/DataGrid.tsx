@@ -9,7 +9,7 @@ import {
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname } from './style';
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import { useGridDimensions, useCalculatedColumns, useViewportColumns, useViewportRows, useLatestFunc } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -236,9 +236,11 @@ function DataGrid<R, SR>({
   /**
    * refs
    */
+  const focusSinkRef = useRef<HTMLDivElement>(null);
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
+  const isCellFocusable = useRef(false);
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -327,6 +329,12 @@ function DataGrid<R, SR>({
     if (selectedPosition === prevSelectedPosition.current || selectedPosition.mode === 'EDIT' || !isCellWithinBounds(selectedPosition)) return;
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
+
+    if (isCellFocusable.current) {
+      isCellFocusable.current = false;
+      return;
+    }
+    focusSinkRef.current!.focus({ preventScroll: true });
   });
 
   useImperativeHandle(ref, () => ({
@@ -417,24 +425,20 @@ function DataGrid<R, SR>({
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  // function onGridFocus() {
-  //   if (!isCellWithinBounds(selectedPosition)) {
-  //     // Tabbing into the grid should initiate keyboard navigation
-  //     const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
-  //     if (isCellWithinBounds(initialPosition)) {
-  //       setSelectedPosition(initialPosition);
-  //     }
-  //   } else {
-  //     // otherwise if we already have a selected cell, we should scroll back to it when focusing the grid
-  //     scrollToCell(selectedPosition);
-  //   }
-  // }
+  function onGridFocus() {
+    if (!isCellWithinBounds(selectedPosition)) {
+      // Tabbing into the grid should initiate keyboard navigation
+      const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
+      if (isCellWithinBounds(initialPosition)) {
+        setSelectedPosition(initialPosition);
+      }
+    } else {
+      // otherwise if we already have a selected cell, we should scroll back to it when focusing the grid
+      scrollToCell(selectedPosition);
+    }
+  }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const isCellEvent = event.target instanceof Element
-      && event.target.closest('[role="gridcell"]') !== null;
-    if (!isCellEvent) return;
-
     const { key, keyCode } = event;
     const row = rows[selectedPosition.rowIdx];
 
@@ -495,6 +499,10 @@ function DataGrid<R, SR>({
         handleCellInput(event);
         break;
     }
+  }
+
+  function handleFocus() {
+    isCellFocusable.current = true;
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
@@ -870,6 +878,7 @@ function DataGrid<R, SR>({
       return {
         mode: 'EDIT',
         idx: selectedPosition.idx,
+        onKeyDown: handleKeyDown,
         editorProps: {
           editorPortalTarget,
           rowHeight: getRowHeight(selectedPosition.rowIdx),
@@ -883,6 +892,8 @@ function DataGrid<R, SR>({
     return {
       mode: 'SELECT',
       idx: selectedPosition.idx,
+      onFocus: handleFocus,
+      onKeyDown: handleKeyDown,
       dragHandleProps: enableCellDragAndDrop && isCellEditable(selectedPosition)
         ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
         : undefined
@@ -917,6 +928,7 @@ function DataGrid<R, SR>({
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
             isRowSelected={isGroupRowSelected}
+            onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectCell={selectCellWrapper}
             selectRow={selectRowWrapper}
@@ -982,7 +994,6 @@ function DataGrid<R, SR>({
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      tabIndex={0}
       className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={{
         ...style,
@@ -994,8 +1005,6 @@ function DataGrid<R, SR>({
       } as unknown as React.CSSProperties}
       ref={gridRef}
       onScroll={handleScroll}
-      onKeyDown={handleKeyDown}
-      // onFocus={onGridFocus}
     >
       <HeaderRow<R, SR>
         rowKeyGetter={rowKeyGetter}
@@ -1018,6 +1027,13 @@ function DataGrid<R, SR>({
       )}
       {rows.length === 0 && EmptyRowsRenderer ? <EmptyRowsRenderer /> : (
         <>
+          <div
+            ref={focusSinkRef}
+            tabIndex={0}
+            className={focusSinkClassname}
+            onKeyDown={handleKeyDown}
+            onFocus={onGridFocus}
+          />
           <div style={{ height: Math.max(totalRowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
