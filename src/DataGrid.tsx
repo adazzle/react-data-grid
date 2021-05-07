@@ -1042,7 +1042,7 @@ function DataGrid<R, SR>({
             the cells in the viewport. This adds complexity.
 
             To circumvent this issue we are using an extra div element which is
-            positioned on the left corner of the viewport and it listens for the
+            positioned on the top/left corner of the viewport and it listens for the
             keyboard event and sets the selected cell's position.
           */}
           <div
