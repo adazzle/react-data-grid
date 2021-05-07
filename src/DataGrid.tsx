@@ -1032,7 +1032,7 @@ function DataGrid<R, SR>({
             (https://www.w3.org/TR/wai-aria-practices-1.2/#kbd_roving_tabindex)
             but there are a few issues with this approach
             - onKeyDown/useLayoutEffect on the cell is not fast enough and grid
-              looses focus if tab is pressed and held
+              looses focus if tab is pressed repeatedly
             - All the cells are not rendered so it is possible the focused cell
               is not in the viewport and unmounted and in this case the grid
               does not have any focusable element
