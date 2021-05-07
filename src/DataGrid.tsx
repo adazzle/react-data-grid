@@ -1027,6 +1027,24 @@ function DataGrid<R, SR>({
       )}
       {rows.length === 0 && EmptyRowsRenderer ? <EmptyRowsRenderer /> : (
         <>
+          {/*
+            Ideally the focus should be set on the selected cell
+            (https://www.w3.org/TR/wai-aria-practices-1.2/#kbd_roving_tabindex)
+            but there are a few issues with this approach
+            - onKeyDown/useLayoutEffect on the cell is not fast enough and grid
+              looses focus if tab is pressed repeatedly
+            - All the cells are not rendered so it is possible the focused cell
+              is not in the viewport and unmounted and in this case the grid
+              does not have any focusable element
+
+            This first issue can be solved by setting onKeyDown on the root element
+            but for the second issue we need to render the selected cell along with
+            the cells in the viewport. This adds complexity.
+
+            To circumvent this issue we are using an extra div element which is
+            positioned on the top/left corner of the viewport and it listens for the
+            keyboard event and sets the selected cell's position.
+          */}
           <div
             ref={focusSinkRef}
             tabIndex={0}
