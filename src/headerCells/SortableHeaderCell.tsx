@@ -56,7 +56,7 @@ export default function SortableHeaderCell<R, SR>({
   }
 
   return (
-    <span className={headerSortCellClassname} onClick={e => onClick(e)}>
+    <span className={headerSortCellClassname} onClick={onClick}>
       <span className={headerSortNameClassname}>{children}</span>
       {sortText && <span>{priority}</span>}
       <span>{sortText}</span>
