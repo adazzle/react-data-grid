@@ -41,7 +41,8 @@ import type {
   PasteEvent,
   CellNavigationMode,
   SortDirection,
-  RowHeightArgs
+  RowHeightArgs,
+  ColumnGroup
 } from './types';
 
 interface SelectCellState extends Position {
@@ -85,7 +86,7 @@ export interface DataGridProps<R, SR = unknown> extends SharedDivProps {
    * Grid and data Props
    */
   /** An array of objects representing each column on the grid */
-  columns: readonly Column<R, SR>[];
+  columns: ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>>;
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
@@ -262,6 +263,7 @@ function DataGrid<R, SR>({
 
   const {
     columns,
+    columnGroups,
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,

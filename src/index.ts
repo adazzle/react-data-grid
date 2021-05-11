@@ -9,6 +9,7 @@ export { default as SortableHeaderCell } from './headerCells/SortableHeaderCell'
 export type {
   Column,
   CalculatedColumn,
+  ColumnGroup,
   FormatterProps,
   SummaryFormatterProps,
   GroupFormatterProps,

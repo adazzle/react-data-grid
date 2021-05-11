@@ -71,6 +71,18 @@ export interface ColumnMetric {
   left: number;
 }
 
+export interface ColumnGroup<R, SR> {
+  /** The name of the column group. By default it will be displayed in the header cell */
+  name: string | ReactElement;
+  children: readonly Column<R, SR>[];
+}
+
+export interface CalculatedColumnGroup<R, SR> extends Pick<ColumnGroup<R, SR>, 'name'> {
+  frozen: boolean;
+  colSpan: number;
+  children: readonly CalculatedColumn<R, SR>[];
+}
+
 export interface Position {
   idx: number;
   rowIdx: number;
