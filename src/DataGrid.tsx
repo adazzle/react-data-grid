@@ -80,7 +80,7 @@ type SharedDivProps = Pick<React.HTMLAttributes<HTMLDivElement>,
   | 'style'
 >;
 
-export interface DataGridProps<R, SR = unknown, K = React.Key> extends SharedDivProps {
+export interface DataGridProps<R, SR = unknown, K extends React.Key = React.Key> extends SharedDivProps {
   /**
    * Grid and data Props
    */
