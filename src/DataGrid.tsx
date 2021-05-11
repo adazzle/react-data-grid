@@ -1071,4 +1071,4 @@ function DataGrid<R, SR>({
   );
 }
 
-export default forwardRef(DataGrid) as <R, SR = unknown, Key extends React.ReactKey = React.ReactKey>(props: DataGridProps<R, SR, Key> & RefAttributes<DataGridHandle>) => JSX.Element;
+export default forwardRef(DataGrid) as <R, SR = unknown, Key extends React.Key = React.Key>(props: DataGridProps<R, SR, Key> & RefAttributes<DataGridHandle>) => JSX.Element;
