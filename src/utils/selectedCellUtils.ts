@@ -1,4 +1,5 @@
 import type { CalculatedColumn, Position, GroupRow, CellNavigationMode } from '../types';
+import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
@@ -10,20 +11,63 @@ interface IsSelectedCellEditableOpts<R, SR> {
 export function isSelectedCellEditable<R, SR>({ selectedPosition, columns, rows, isGroupRow }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
+  return !isGroupRow(row) && isCellEditable(column, row);
+}
+
+export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return column.editor != null
     && !column.rowGroup
-    && !isGroupRow(row)
     && (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false;
 }
 
 interface GetNextSelectedCellPositionOpts<R, SR> {
   cellNavigationMode: CellNavigationMode;
   columns: readonly CalculatedColumn<R, SR>[];
-  rowsCount: number;
+  colSpanColumns: readonly CalculatedColumn<R, SR>[];
+  rows: readonly (R | GroupRow<R>)[];
+  currentPosition: Readonly<Position>;
   nextPosition: Position;
+  lastFrozenColumnIndex: number;
+  isCellWithinBounds: (position: Position) => boolean;
+  isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
-export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns, rowsCount, nextPosition }: GetNextSelectedCellPositionOpts<R, SR>): Position {
+export function getNextSelectedCellPosition<R, SR>({
+  cellNavigationMode,
+  columns,
+  colSpanColumns,
+  rows,
+  currentPosition,
+  nextPosition,
+  lastFrozenColumnIndex,
+  isCellWithinBounds,
+  isGroupRow
+}: GetNextSelectedCellPositionOpts<R, SR>): Position {
+  const rowsCount = rows.length;
+  let position = nextPosition;
+
+  const setColSpan = (moveRight: boolean) => {
+    const row = rows[position.rowIdx];
+    if (!isGroupRow(row)) {
+      // If a cell within the colspan range is selected then move to the
+      // previous or the next cell depending on the navigation direction
+      const posIdx = position.idx;
+      for (const column of colSpanColumns) {
+        const colIdx = column.idx;
+        if (colIdx > posIdx) break;
+        const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
+        if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
+          position.idx = colIdx + (moveRight ? colSpan : 0);
+          break;
+        }
+      }
+    }
+  };
+
+  if (isCellWithinBounds(position)) {
+    setColSpan(position.idx - currentPosition.idx > 0);
+  }
+
   if (cellNavigationMode !== 'NONE') {
     const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
@@ -34,36 +78,38 @@ export function getNextSelectedCellPosition<R, SR>({ cellNavigationMode, columns
       if (cellNavigationMode === 'CHANGE_ROW') {
         const isLastRow = rowIdx === rowsCount - 1;
         if (!isLastRow) {
-          return {
+          position = {
             idx: 0,
             rowIdx: rowIdx + 1
           };
         }
       } else {
-        return {
+        position = {
           rowIdx,
           idx: 0
         };
       }
+      setColSpan(true);
     } else if (isBeforeFirstColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
         const isFirstRow = rowIdx === 0;
         if (!isFirstRow) {
-          return {
+          position = {
             rowIdx: rowIdx - 1,
             idx: columnsCount - 1
           };
         }
       } else {
-        return {
+        position = {
           rowIdx,
           idx: columnsCount - 1
         };
       }
     }
+    setColSpan(false);
   }
 
-  return nextPosition;
+  return position;
 }
 
 interface CanExitGridOpts<R, SR> {

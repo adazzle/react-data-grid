@@ -1,5 +1,4 @@
 import { useDrag, useDrop } from 'react-dnd';
-import type { DragObjectWithType } from 'react-dnd';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
@@ -15,10 +14,6 @@ const rowOverClassname = css`
   background-color: #ececec;
 `;
 
-interface RowDragObject extends DragObjectWithType {
-  index: number;
-}
-
 interface DraggableRowRenderProps<R, SR> extends RowRendererProps<R, SR> {
   onRowReorder: (sourceIndex: number, targetIndex: number) => void;
 }
@@ -31,7 +26,8 @@ export function DraggableRowRenderer<R, SR = unknown>({
   ...props
 }: DraggableRowRenderProps<R, SR>) {
   const [{ isDragging }, drag] = useDrag({
-    item: { index: rowIdx, type: 'ROW_DRAG' },
+    type: 'ROW_DRAG',
+    item: { index: rowIdx },
     collect: monitor => ({
       isDragging: monitor.isDragging()
     })
@@ -39,10 +35,8 @@ export function DraggableRowRenderer<R, SR = unknown>({
 
   const [{ isOver }, drop] = useDrop({
     accept: 'ROW_DRAG',
-    drop({ index, type }: RowDragObject) {
-      if (type === 'ROW_DRAG') {
-        onRowReorder(index, rowIdx);
-      }
+    drop({ index }: { index: number }) {
+      onRowReorder(index, rowIdx);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),

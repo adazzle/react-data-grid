@@ -3,8 +3,10 @@ import linaria from '@linaria/rollup';
 import postcss from 'rollup-plugin-postcss';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import stylis from 'stylis';
 import pkg from './package.json';
 
+stylis.set({ prefix: false });
 const extensions = ['.ts', '.tsx'];
 
 export default {
