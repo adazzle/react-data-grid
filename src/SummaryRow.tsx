@@ -1,6 +1,7 @@
 import { memo } from 'react';
+
 import { rowClassname, summaryRowClassname } from './style';
-import { getColSpan } from './utils';
+import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
 
@@ -38,6 +39,7 @@ function SummaryRow<R, SR>({
         column={column}
         colSpan={colSpan}
         row={row}
+        bottom={bottom}
       />
     );
   }
@@ -46,8 +48,8 @@ function SummaryRow<R, SR>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
-      style={{ bottom }}
+      className={`${rowClassname} row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
+      style={getRowStyle(ariaRowIndex)}
     >
       {cells}
     </div>

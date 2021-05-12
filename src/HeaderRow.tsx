@@ -2,7 +2,7 @@ import { useCallback, memo } from 'react';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
-import { assertIsValidKeyGetter, getColSpan } from './utils';
+import { assertIsValidKeyGetter, getColSpan, getRowStyle } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { headerRowClassname } from './style';
 
@@ -71,6 +71,7 @@ function HeaderRow<R, SR>({
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
       className={headerRowClassname}
+      style={getRowStyle(1)}
     >
       {cells}
     </div>

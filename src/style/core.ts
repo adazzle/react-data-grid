@@ -38,6 +38,11 @@ const root = css`
   --selection-color: #66afe9;
   --font-size: 14px;
 
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--template-columns);
+  grid-template-rows: var(--template-rows);
+
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
   contain: strict;

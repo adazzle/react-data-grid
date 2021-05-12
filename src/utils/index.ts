@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn } from '../types';
@@ -14,10 +15,15 @@ export function assertIsValidKeyGetter<R>(keyGetter: unknown): asserts keyGetter
   }
 }
 
+export function getRowStyle(rowIdx: number): CSSProperties {
+  return { '--grid-row-start': rowIdx } as unknown as CSSProperties;
+}
+
 export function getCellStyle<R, SR>(column: CalculatedColumn<R, SR>, colSpan?: number): React.CSSProperties {
   return {
     gridColumnStart: column.idx + 1,
     gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
+    gridRowStart: 'var(--grid-row-start)',
     left: column.frozen ? `var(--frozen-left-${column.key})` : undefined
   };
 }

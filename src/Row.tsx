@@ -1,9 +1,9 @@
 import { memo, forwardRef } from 'react';
-import type { RefAttributes, CSSProperties } from 'react';
+import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { groupRowSelectedClassname, rowClassname } from './style';
-import { getColSpan } from './utils';
+import { getColSpan, getRowStyle } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
@@ -12,6 +12,7 @@ function Row<R, SR = unknown>({
   cellRenderer: CellRenderer = Cell,
   className,
   rowIdx,
+  gridRowStart,
   isRowSelected,
   copiedCellIdx,
   draggedOverCellIdx,
@@ -23,8 +24,6 @@ function Row<R, SR = unknown>({
   rowClass,
   setDraggedOverRowIdx,
   onMouseEnter,
-  top,
-  height,
   onRowChange,
   selectCell,
   selectRow,
@@ -100,10 +99,7 @@ function Row<R, SR = unknown>({
       ref={ref}
       className={className}
       onMouseEnter={handleDragEnter}
-      style={{
-        top,
-        '--row-height': `${height}px`
-      } as unknown as CSSProperties}
+      style={getRowStyle(gridRowStart)}
       {...props}
     >
       {cells}

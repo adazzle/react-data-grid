@@ -287,6 +287,7 @@ function DataGrid<R, SR>({
     rows,
     rowsCount,
     totalRowHeight,
+    gridTemplateRows,
     isGroupRow,
     getRowTop,
     getRowHeight,
@@ -905,7 +906,7 @@ function DataGrid<R, SR>({
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
-      const top = getRowTop(rowIdx) + totalHeaderHeight;
+      const gridRowStart = headerRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected = isSelectable && row.childRows.every(cr => selectedRows?.has(rowKeyGetter!(cr)));
@@ -922,8 +923,7 @@ function DataGrid<R, SR>({
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
-            top={top}
-            height={getRowHeight(rowIdx)}
+            gridRowStart={gridRowStart}
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
@@ -957,8 +957,7 @@ function DataGrid<R, SR>({
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           rowClass={rowClass}
-          top={top}
-          height={getRowHeight(rowIdx)}
+          gridRowStart={gridRowStart}
           copiedCellIdx={copiedCell !== null && copiedCell.row === row ? columns.findIndex(c => c.key === copiedCell.columnKey) : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
@@ -985,6 +984,17 @@ function DataGrid<R, SR>({
     closeEditor();
   }
 
+  let templateRows = `${headerRowHeight}px`;
+  if (enableFilterRow) {
+    templateRows += ` ${headerFiltersHeight}px`;
+  }
+  if (rows.length > 0) {
+    templateRows += gridTemplateRows;
+  }
+  if (summaryRowsCount > 0) {
+    templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
+  }
+
   return (
     <div
       role={hasGroups ? 'treegrid' : 'grid'}
@@ -999,13 +1009,22 @@ function DataGrid<R, SR>({
         ...style,
         '--header-row-height': `${headerRowHeight}px`,
         '--filter-row-height': `${headerFiltersHeight}px`,
-        '--row-width': `${totalColumnWidth}px`,
         '--summary-row-height': `${summaryRowHeight}px`,
+        '--template-rows': templateRows,
         ...layoutCssVars
       } as unknown as React.CSSProperties}
       ref={gridRef}
       onScroll={handleScroll}
     >
+      <div
+        style={{
+          top: 0,
+          left: 0,
+          height: Math.max(totalRowHeight, clientHeight) + totalHeaderHeight + summaryRowsCount * summaryRowHeight,
+          width: totalColumnWidth,
+          position: 'absolute'
+        }}
+      />
       <HeaderRow<R, SR>
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
@@ -1052,7 +1071,6 @@ function DataGrid<R, SR>({
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />
-          <div style={{ height: Math.max(totalRowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>

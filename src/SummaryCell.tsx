@@ -7,12 +7,14 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column' | 
 
 interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
+  bottom: number;
 }
 
 function SummaryCell<R, SR>({
   column,
-  colSpan,
-  row
+  row,
+  bottom,
+  colSpan
 }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = getCellClassname(column,
@@ -25,7 +27,7 @@ function SummaryCell<R, SR>({
       aria-colindex={column.idx + 1}
       aria-colspan={colSpan}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={{ ...getCellStyle(column, colSpan), bottom }}
     >
       {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>

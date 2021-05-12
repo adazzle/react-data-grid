@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 
@@ -6,6 +5,7 @@ import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './st
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
+import { getRowStyle } from './utils';
 
 export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
@@ -13,8 +13,7 @@ export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLA
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
-  top: number;
-  height: number;
+  gridRowStart: number;
   level: number;
   selectedCellIdx?: number;
   isExpanded: boolean;
@@ -30,8 +29,7 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
-  top,
-  height,
+  gridRowStart,
   level,
   isExpanded,
   selectedCellIdx,
@@ -60,11 +58,8 @@ function GroupedRow<R, SR>({
           [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
         }
       )}
+      style={getRowStyle(gridRowStart)}
       onClick={selectGroup}
-      style={{
-        top,
-        '--row-height': `${height}px`
-      } as unknown as CSSProperties}
       {...props}
     >
       {viewportColumns.map(column => (
