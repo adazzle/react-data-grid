@@ -5,9 +5,9 @@ import type { CalculatedColumn, Filters } from './types';
 import type { DataGridProps } from './DataGrid';
 import { filterRowClassname } from './style';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
-  | 'filters'
-  | 'onFiltersChange'
+type SharedDataGridProps<R, SR> = Pick<
+  DataGridProps<R, SR>,
+  'filters' | 'onFiltersChange'
 >;
 
 interface FilterRowProps<R, SR> extends SharedDataGridProps<R, SR> {
@@ -26,12 +26,8 @@ function FilterRow<R, SR>({
   }
 
   return (
-    <div
-      role="row"
-      aria-rowindex={2}
-      className={filterRowClassname}
-    >
-      {columns.map(column => {
+    <div role="row" aria-rowindex={2} className={filterRowClassname}>
+      {columns.map((column) => {
         const { key } = column;
 
         return (
@@ -44,7 +40,7 @@ function FilterRow<R, SR>({
               <column.filterRenderer
                 column={column}
                 value={filters?.[column.key]}
-                onChange={value => onChange(key, value)}
+                onChange={(value) => onChange(key, value)}
               />
             )}
           </div>
@@ -54,4 +50,6 @@ function FilterRow<R, SR>({
   );
 }
 
-export default memo(FilterRow) as <R, SR>(props: FilterRowProps<R, SR>) => JSX.Element;
+export default memo(FilterRow) as <R, SR>(
+  props: FilterRowProps<R, SR>
+) => JSX.Element;

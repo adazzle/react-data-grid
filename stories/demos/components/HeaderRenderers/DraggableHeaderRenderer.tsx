@@ -4,16 +4,21 @@ import { SortableHeaderCell } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
 import { useCombinedRefs } from '../../../useCombinedRefs';
 
-
 interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;
 }
 
-export function DraggableHeaderRenderer<R>({ onColumnsReorder, column, sortColumn, sortDirection, onSort }: DraggableHeaderRendererProps<R>) {
+export function DraggableHeaderRenderer<R>({
+  onColumnsReorder,
+  column,
+  sortColumn,
+  sortDirection,
+  onSort
+}: DraggableHeaderRendererProps<R>) {
   const [{ isDragging }, drag] = useDrag({
     type: 'COLUMN_DRAG',
     item: { key: column.key },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
   });
@@ -23,7 +28,7 @@ export function DraggableHeaderRenderer<R>({ onColumnsReorder, column, sortColum
     drop({ key }: { key: string }) {
       onColumnsReorder(key, column.key);
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
     })

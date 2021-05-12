@@ -16,7 +16,7 @@ const caret = css`
   vertical-align: middle;
 
   > path {
-    transition: d .1s;
+    transition: d 0.1s;
   }
 `;
 

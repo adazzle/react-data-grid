@@ -20,7 +20,9 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
   /** Formatter to be used to render the summary cell content */
-  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
+  summaryFormatter?: React.ComponentType<
+    SummaryFormatterProps<TSummaryRow, TRow>
+  >;
   /** Formatter to be used to render the group cell content */
   groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
@@ -53,10 +55,13 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
+  filterRenderer?: React.ComponentType<
+    FilterRendererProps<TRow, any, TSummaryRow>
+  >;
 }
 
-export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+export interface CalculatedColumn<TRow, TSummaryRow = unknown>
+  extends Column<TRow, TSummaryRow> {
   idx: number;
   resizable: boolean;
   sortable: boolean;
@@ -110,7 +115,8 @@ export interface SharedEditorProps<TRow> {
   onClose: (commitChanges?: boolean) => void;
 }
 
-export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
+export interface EditorProps<TRow, TSummaryRow = unknown>
+  extends SharedEditorProps<TRow> {
   rowIdx: number;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
   top: number;
@@ -139,10 +145,14 @@ export interface EditCellProps<TRow> extends SelectedCellPropsBase {
 export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
   onFocus: () => void;
-  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  dragHandleProps?: Pick<
+    React.HTMLAttributes<HTMLDivElement>,
+    'onMouseDown' | 'onDoubleClick'
+  >;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface CellRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan?: number;
@@ -151,14 +161,22 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   isDraggedOver: boolean;
   isCellSelected: boolean;
   isRowSelected: boolean;
-  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  dragHandleProps?: Pick<
+    React.HTMLAttributes<HTMLDivElement>,
+    'onMouseDown' | 'onDoubleClick'
+  >;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick?: (
+    rowIdx: number,
+    row: TRow,
+    column: CalculatedColumn<TRow, TSummaryRow>
+  ) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface RowRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
@@ -171,14 +189,22 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<Reac
   height: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowChange: (rowIdx: number, row: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick?: (
+    rowIdx: number,
+    row: TRow,
+    column: CalculatedColumn<TRow, TSummaryRow>
+  ) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
-export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
+export interface FilterRendererProps<
+  TRow,
+  TFilterValue = unknown,
+  TSummaryRow = unknown
+> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   value: TFilterValue;
   onChange: (value: TFilterValue) => void;
@@ -210,11 +236,14 @@ export interface PasteEvent<TRow> {
   targetRow: TRow;
 }
 
-export type GroupByDictionary<TRow> = Record<string, {
-  childRows: readonly TRow[];
-  childGroups: readonly TRow[] | GroupByDictionary<TRow>;
-  startRowIndex: number;
-}>;
+export type GroupByDictionary<TRow> = Record<
+  string,
+  {
+    childRows: readonly TRow[];
+    childGroups: readonly TRow[] | GroupByDictionary<TRow>;
+    startRowIndex: number;
+  }
+>;
 
 export interface GroupRow<TRow> {
   childRows: readonly TRow[];
@@ -231,20 +260,25 @@ export interface GroupRow<TRow> {
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
 
-export type ColSpanArgs<R, SR> = {
-  type: 'HEADER' | 'FILTER';
-} | {
-  type: 'ROW';
-  row: R;
-} | {
-  type: 'SUMMARY';
-  row: SR;
-};
+export type ColSpanArgs<R, SR> =
+  | {
+      type: 'HEADER' | 'FILTER';
+    }
+  | {
+      type: 'ROW';
+      row: R;
+    }
+  | {
+      type: 'SUMMARY';
+      row: SR;
+    };
 
-export type RowHeightArgs<R> = {
-  type: 'ROW';
-  row: R;
-} | {
-  type: 'GROUP';
-  row: GroupRow<R>;
-};
+export type RowHeightArgs<R> =
+  | {
+      type: 'ROW';
+      row: R;
+    }
+  | {
+      type: 'GROUP';
+      row: GroupRow<R>;
+    };

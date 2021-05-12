@@ -7,7 +7,7 @@ import { getCellStyle, getCellClassname } from './utils';
 
 const cellResizable = css`
   &::after {
-    content: "";
+    content: '';
     cursor: col-resize;
     position: absolute;
     top: 0;
@@ -30,11 +30,9 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
-  | 'allRowsSelected'
+type SharedHeaderRowProps<R, SR> = Pick<
+  HeaderRowProps<R, SR>,
+  'sortColumn' | 'sortDirection' | 'onSort' | 'allRowsSelected'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -63,7 +61,8 @@ export default function HeaderCell<R, SR>({
     const { right } = currentTarget.getBoundingClientRect();
     const offset = right - event.clientX;
 
-    if (offset > 11) { // +1px to account for the border size
+    if (offset > 11) {
+      // +1px to account for the border size
       return;
     }
 
@@ -73,7 +72,8 @@ export default function HeaderCell<R, SR>({
         onPointerUp(event);
         return;
       }
-      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      const width =
+        event.clientX + offset - currentTarget.getBoundingClientRect().left;
       if (width > 0) {
         onResize(column, width);
       }
@@ -128,7 +128,9 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
+      aria-sort={
+        sortColumn === column.key ? getAriaSort(sortDirection) : undefined
+      }
       aria-colspan={colSpan}
       className={className}
       style={getCellStyle(column, colSpan)}

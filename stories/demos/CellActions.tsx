@@ -57,18 +57,24 @@ const columns: Column<Row>[] = [
         const actions = [
           {
             icon: '🗑️',
-            callback() { alert('Deleting'); }
+            callback() {
+              alert('Deleting');
+            }
           },
           {
             icon: '🔗',
             actions: [
               {
                 text: '✍️ Edit Cell',
-                callback() { alert('Edit Cell'); }
+                callback() {
+                  alert('Edit Cell');
+                }
               },
               {
                 text: '📋 Copy Cell',
-                callback() { alert('Copied'); }
+                callback() {
+                  alert('Copied');
+                }
               }
             ]
           }
@@ -77,9 +83,7 @@ const columns: Column<Row>[] = [
         return (
           <>
             <CellActionsFormatter actions={actions} />
-            <div>
-              {row.county}
-            </div>
+            <div>{row.county}</div>
           </>
         );
       }

@@ -9,7 +9,10 @@ enum RuleType {
 
 type Rule =
   | { type: RuleType.range; begin: number; end: number }
-  | { type: RuleType.greaterThan | RuleType.lessThan | RuleType.number; value: number };
+  | {
+      type: RuleType.greaterThan | RuleType.lessThan | RuleType.number;
+      value: number;
+    };
 
 interface ChangeEvent<R, SR> {
   filterTerm: Rule[] | null;
@@ -18,7 +21,11 @@ interface ChangeEvent<R, SR> {
   filterValues: typeof filterValues;
 }
 
-export function NumericFilter<R, SR>({ value, column, onChange }: FilterRendererProps<R, ChangeEvent<R, SR>, SR>) {
+export function NumericFilter<R, SR>({
+  value,
+  column,
+  onChange
+}: FilterRendererProps<R, ChangeEvent<R, SR>, SR>) {
   /** Validates the input */
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     const result = /[><,0-9-]/.test(event.key);
@@ -38,7 +45,8 @@ export function NumericFilter<R, SR>({ value, column, onChange }: FilterRenderer
     });
   }
 
-  const tooltipText = 'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
+  const tooltipText =
+    'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
 
   return (
     <div className="rdg-filter-container">
@@ -49,13 +57,18 @@ export function NumericFilter<R, SR>({ value, column, onChange }: FilterRenderer
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      <span style={{ paddingLeft: 4, cursor: 'help' }} title={tooltipText}>?</span>
+      <span style={{ paddingLeft: 4, cursor: 'help' }} title={tooltipText}>
+        ?
+      </span>
     </div>
   );
 }
 
-
-function filterValues<R>(row: R, columnFilter: { filterTerm: { [key in string]: Rule } }, columnKey: keyof R) {
+function filterValues<R>(
+  row: R,
+  columnFilter: { filterTerm: { [key in string]: Rule } },
+  columnKey: keyof R
+) {
   // implement default filter logic
   const value = parseInt(row[columnKey] as unknown as string, 10);
   for (const ruleKey in columnFilter.filterTerm) {

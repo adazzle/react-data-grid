@@ -1,8 +1,8 @@
 import { css } from '@linaria/core';
 
 const wrapperClassname = css`
-display: flex;
-justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 `;
 
 const imageCellClassname = css`
@@ -23,7 +23,10 @@ interface Props {
 export function ImageFormatter({ value }: Props) {
   return (
     <div className={wrapperClassname}>
-      <div className={imageCellClassname} style={{ backgroundImage: `url(${value})` }} />
+      <div
+        className={imageCellClassname}
+        style={{ backgroundImage: `url(${value})` }}
+      />
     </div>
   );
 }

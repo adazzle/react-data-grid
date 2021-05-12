@@ -21,8 +21,12 @@ function createRows(): readonly Row[] {
       id: i,
       task: `Task ${i}`,
       complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority: ['Critical', 'High', 'Medium', 'Low'][Math.round(Math.random() * 3)],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.round(Math.random() * 3)]
+      priority: ['Critical', 'High', 'Medium', 'Low'][
+        Math.round(Math.random() * 3)
+      ],
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][
+        Math.round(Math.random() * 3)
+      ]
     });
   }
 
@@ -58,11 +62,7 @@ export function RowsReordering() {
 
   function onRowReorder(fromIndex: number, toIndex: number) {
     const newRows = [...rows];
-    newRows.splice(
-      toIndex,
-      0,
-      newRows.splice(fromIndex, 1)[0]
-    );
+    newRows.splice(toIndex, 0, newRows.splice(fromIndex, 1)[0]);
 
     setRows(newRows);
   }
@@ -72,7 +72,9 @@ export function RowsReordering() {
       <DataGrid
         columns={columns}
         rows={rows}
-        rowRenderer={p => <DraggableRowRenderer {...p} onRowReorder={onRowReorder} />}
+        rowRenderer={(p) => (
+          <DraggableRowRenderer {...p} onRowReorder={onRowReorder} />
+        )}
       />
     </DndProvider>
   );

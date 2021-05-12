@@ -7,7 +7,11 @@ type Row = number;
 const rows: readonly Row[] = [...Array(500).keys()];
 
 function CellFormatter(props: FormatterProps<Row>) {
-  return <>{props.column.key}&times;{props.rowIdx}</>;
+  return (
+    <>
+      {props.column.key}&times;{props.rowIdx}
+    </>
+  );
 }
 
 export function VariableRowHeight() {

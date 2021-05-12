@@ -18,11 +18,9 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
-  | 'column'
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
+type SharedHeaderCellProps<R, SR> = Pick<
+  HeaderCellProps<R, SR>,
+  'column' | 'sortColumn' | 'sortDirection' | 'onSort'
 >;
 
 interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
@@ -36,7 +34,7 @@ export default function SortableHeaderCell<R, SR>({
   sortDirection,
   children
 }: Props<R, SR>) {
-  sortDirection = sortColumn === column.key && sortDirection || 'NONE';
+  sortDirection = (sortColumn === column.key && sortDirection) || 'NONE';
   let sortText = '';
   if (sortDirection === 'ASC') {
     sortText = '\u25B2';

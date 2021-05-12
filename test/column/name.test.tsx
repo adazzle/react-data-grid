@@ -11,13 +11,16 @@ test('name is either a string or an element', () => {
     return <>Fancy</>;
   }
 
-  const columns: readonly Column<Row>[] = [{
-    key: 'id',
-    name: 'ID'
-  }, {
-    key: 'name',
-    name: <Header />
-  }];
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'ID'
+    },
+    {
+      key: 'name',
+      name: <Header />
+    }
+  ];
 
   setup({ columns, rows: [] });
   const [cell1, cell2] = getHeaderCells();

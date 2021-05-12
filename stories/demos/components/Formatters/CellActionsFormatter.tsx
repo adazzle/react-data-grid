@@ -93,21 +93,36 @@ function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
     }
 
     if (actions && actions.length > 0) {
-      setIsOpen(isOpen => !isOpen);
+      setIsOpen((isOpen) => !isOpen);
     }
   }
 
   return (
     <div className={cellActionClasses} onMouseLeave={() => setIsOpen(false)}>
-      <div ref={setReference} className={cellActionButtonClassname} onClick={onActionIconClick}>
+      <div
+        ref={setReference}
+        className={cellActionButtonClassname}
+        onClick={onActionIconClick}
+      >
         {icon}
       </div>
-      {isOpen && actions && actions.length && createPortal(
-        <div ref={setPopper} className={cellActionMenuClassname} style={styles.popper}>
-          {actions.map((action, index) => <span key={index} onClick={action.callback}>{action.text}</span>)}
-        </div>,
-        document.body
-      )}
+      {isOpen &&
+        actions &&
+        actions.length &&
+        createPortal(
+          <div
+            ref={setPopper}
+            className={cellActionMenuClassname}
+            style={styles.popper}
+          >
+            {actions.map((action, index) => (
+              <span key={index} onClick={action.callback}>
+                {action.text}
+              </span>
+            ))}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

@@ -84,7 +84,9 @@ export function useClickOutside(onClick: () => void) {
     window.addEventListener('click', onWindowCaptureClick, { capture: true });
 
     return () => {
-      window.removeEventListener('click', onWindowCaptureClick, { capture: true });
+      window.removeEventListener('click', onWindowCaptureClick, {
+        capture: true
+      });
       cancelAnimationFrameRequest();
     };
   }, []);

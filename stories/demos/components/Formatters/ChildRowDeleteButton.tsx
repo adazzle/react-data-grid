@@ -4,7 +4,7 @@ import { useFocusRef } from '../../../../src/hooks';
 const childRowActionCrossClassname = css`
   &::before,
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     background: grey;
   }
@@ -41,7 +41,11 @@ interface ChildRowDeleteButtonProps {
   onDeleteSubRow: () => void;
 }
 
-export function ChildRowDeleteButton({ isCellSelected, onDeleteSubRow, isDeleteSubRowEnabled }: ChildRowDeleteButtonProps) {
+export function ChildRowDeleteButton({
+  isCellSelected,
+  onDeleteSubRow,
+  isDeleteSubRowEnabled
+}: ChildRowDeleteButtonProps) {
   const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
@@ -56,11 +60,7 @@ export function ChildRowDeleteButton({ isCellSelected, onDeleteSubRow, isDeleteS
       <div className={childRowActionCrossClassname} />
       {isDeleteSubRowEnabled && (
         <div className={childRowButtonClassname} onClick={onDeleteSubRow}>
-          <span
-            ref={iconRef}
-            tabIndex={-1}
-            onKeyDown={handleKeyDown}
-          >
+          <span ref={iconRef} tabIndex={-1} onKeyDown={handleKeyDown}>
             ❌
           </span>
         </div>
