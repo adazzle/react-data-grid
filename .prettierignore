@@ -1,6 +1,5 @@
 node_modules
 package-lock.json
 lib
-.github
 .linaria-cache
 storybook-static
