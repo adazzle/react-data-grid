@@ -1,61 +1,77 @@
 # Changelog
 
 ## v7.0.0-canary.46
+
 - Optimize onRowsChange: only update changed rows ([PR](https://github.com/adazzle/react-data-grid/pull/2390))
 
 ## v7.0.0-canary.45
+
 - Fixed issue where the scrollbars would flicker in edge cases ([PR](https://github.com/adazzle/react-data-grid/pull/2389))
 
 ## v7.0.0-canary.44
+
 - Use aria-selected to style selected cell/rows ([PR](https://github.com/adazzle/react-data-grid/pull/2386))
 - Add support for variable row heights ([PR](https://github.com/adazzle/react-data-grid/pull/2384))
 
 ## v7.0.0-canary.43
+
 - Fix `aria-readonly` ([PR](https://github.com/adazzle/react-data-grid/pull/2380))
 
 ## v7.0.0-canary.42
+
 - Add missing `aria-colspan` ([PR](https://github.com/adazzle/react-data-grid/pull/2374))
 - Add `aria-readonly` to readonly cells ([PR](https://github.com/adazzle/react-data-grid/pull/2379))
 
 ## v7.0.0-canary.41
+
 - Fix summary row colSpan ([PR](https://github.com/adazzle/react-data-grid/pull/2372))
 - HeaderCell: Add missing event parameter to onPointerUp, fix #2305 ([PR](https://github.com/adazzle/react-data-grid/pull/2371))
 
 ## v7.0.0-canary.40
+
 - Add `column.colSpan` prop to merge cells ([PR](https://github.com/adazzle/react-data-grid/pull/2356))
 - Removed prefixed css properties from the generated style file ([PR](https://github.com/adazzle/react-data-grid/pull/2370))
 
 ## v7.0.0-canary.39
+
 - Add `enableVirtualization` prop ([PR](https://github.com/adazzle/react-data-grid/pull/2355)). Grid renders all the rows/columns when it is set to false.
 
 ## v7.0.0-canary.38
+
 - Fix summary row position ([PR](https://github.com/adazzle/react-data-grid/pull/2335))
 
 ## v7.0.0-canary.37
+
 - Add `summaryRowHeight` prop ([PR](https://github.com/adazzle/react-data-grid/pull/2325))
 - Rollup type definitions ([PR](https://github.com/adazzle/react-data-grid/pull/2301))
 
 ## v7.0.0-canary.36
+
 - Fixed column headers not showing when grid is horizontally scrolled ([PR](https://github.com/adazzle/react-data-grid/pull/2297))
 
 ## v7.0.0-canary.35
+
 - Migrate to css-in-js with linaria ([PR](https://github.com/adazzle/react-data-grid/pull/2256)). RDG now internally uses [linaria](https://github.com/callstack/linaria) to manage styles. The stylesheets are automatically injected and there is no stylesheet to manually import anymore.
 - Expose data grid root element reference ([PR](https://github.com/adazzle/react-data-grid/pull/2258)).
 - (Bug fix) Tabbing into the grid should initiate keyboard navigation ([PR](https://github.com/adazzle/react-data-grid/pull/2289)).
 
 ## v7.0.0-canary.34
+
 - Only show the vertical scrollbar when necessary ([PR](https://github.com/adazzle/react-data-grid/pull/2231))
 - Fix `editorPortalTarget` default value for server-side rendering ([PR](https://github.com/adazzle/react-data-grid/pull/2245))
 - Use grid layout for rows, split column metrics from compute columns ([PR](https://github.com/adazzle/react-data-grid/pull/2272)). Resizing columns no longer recreates columns so less re-renders
 - Augment `onRowsChange` with `indexes` and `column` data ([PR](https://github.com/adazzle/react-data-grid/pull/2278))
 
 ## v7.0.0-canary.33
+
 - (Bug) Commit changes before exiting grid ([PR](https://github.com/adazzle/react-data-grid/pull/2224))
 
 ## v7.0.0-canary.32
+
 - Fix importing rdg with webpack 4 ([PR](https://github.com/adazzle/react-data-grid/pull/2221))
 
 ## v7.0.0-canary.31
+
 - (Breaking) Remove some exports from the grid ([PR](https://github.com/adazzle/react-data-grid/pull/2210))
 - Use a pseudo-element for header resizer ([PR](https://github.com/adazzle/react-data-grid/pull/2217))
 - (new) Formatters now receive a new onRowChange prop ([PR](https://github.com/adazzle/react-data-grid/pull/2220))
@@ -64,63 +80,78 @@
 - Use the new jsx runtime ([PR](https://github.com/adazzle/react-data-grid/pull/2184)). The minimum supported react version is 16.14 now.
 
 ## v7.0.0-canary.30
+
 - Forward sorting props to `headerRenderer` ([PR](https://github.com/adazzle/react-data-grid/pull/2204))
 - Disable cell navigation while editing. This behavior can be controlled using the new `column.editorOptions.onNavigation` option ([PR](https://github.com/adazzle/react-data-grid/pull/2196))
 
 ## v7.0.0-canary.29
+
 - Fix crash when `rows` are `undefined` ([PR](https://github.com/adazzle/react-data-grid/pull/2197))
 - Fix a scrolling bug caused by `scroll-behavior: smooth` ([PR](https://github.com/adazzle/react-data-grid/pull/2200))
 
 ## v7.0.0-canary.28
+
 - (Breaking) Removed `onRowsUpdate`, `enableCellCopyPaste`, and `enableCellDragAndDrop` props. Added 2 new props (`onFill` and `onPaste`) ([PR](https://github.com/adazzle/react-data-grid/pull/2194))
 - (Breaking) Rename `enableFilters` to `enableFilterRow` ([PR](https://github.com/adazzle/react-data-grid/pull/2195))
 
 ## v7.0.0-canary.27
+
 - (Breaking) Removed old editor API ([PR](https://github.com/adazzle/react-data-grid/pull/2149))
 - (Breaking) Removed `onCheckCellIsEditable` prop ([PR](https://github.com/adazzle/react-data-grid/pull/2016)). Use `column.editable` instead.
-= (Breaking) Replaced rowKey prop with rowKeyGetter ([PR](https://github.com/adazzle/react-data-grid/pull/2190))
+  = (Breaking) Replaced rowKey prop with rowKeyGetter ([PR](https://github.com/adazzle/react-data-grid/pull/2190))
 
 ## v7.0.0-canary.26
+
 - Fixed Copy & Paste events not working properly in non-English keyboards ([PR](https://github.com/adazzle/react-data-grid/pull/2097))
 
 ## v7.0.0-canary.25
+
 - Added support for webpack 5 ([PR](https://github.com/adazzle/react-data-grid/pull/2178))
 
 ## v7.0.0-canary.24
--  Fixed a bug where grid was getting scrolled on cell focus
+
+- Fixed a bug where grid was getting scrolled on cell focus
 
 ## v7.0.0-canary.23
-- Minor style fixes 
+
+- Minor style fixes
 
 ## v7.0.0-canary.22
+
 - Add Grouping ([PR](https://github.com/adazzle/react-data-grid/pull/2106)). Check the new [example](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--grouping).
 - (Breaking) Removed `height` and `width` props and added new `className` and `style` props. We are now using `ResizeObserver` to calculate all the grid dimensions ([PR](https://github.com/adazzle/react-data-grid/pull/2130))
 - (Breaking) Removed formatterOptions. Grid now handles formatter focus internally so this prop is no longer required ([PR](https://github.com/adazzle/react-data-grid/pull/2138))
 - Added support for React 17
 
 ## v7.0.0-canary.21
+
 - Editor2 bug fixes ([PR](https://github.com/adazzle/react-data-grid/pull/2126))
 - `formatterOptions.focusable` can be a function now so different rows can have different focus behavior for the same column
 - Grid now internally uses `ResizeObserver` API to calculate the available width ([PR](https://github.com/adazzle/react-data-grid/pull/2129))
 
 ## v7.0.0-canary.20
+
 - A new editor api that does not require a ref ([PR](https://github.com/adazzle/react-data-grid/pull/2102))
 - A new `columnDefaultOptions` prop. This replaces `minColumnWidth` and `defaultFormatter` props ([PR](https://github.com/adazzle/react-data-grid/pull/2117))
 
 ## v7.0.0-canary.19
-- Allow setting ref on `Cell/Row` renderers ([PR](https://github.com/adazzle/react-data-grid/pull/2111)) 
+
+- Allow setting ref on `Cell/Row` renderers ([PR](https://github.com/adazzle/react-data-grid/pull/2111))
 
 ## v7.0.0-canary.18
+
 - Accessibility improvements. Added various aria attributes. ([PR](https://github.com/adazzle/react-data-grid/pull/2084))
 - Removed enableCellAutoFocus prop ([PR](https://github.com/adazzle/react-data-grid/pull/2073))
 - Removed InteractionMasks component. This is an internal change to prepare for grouping and it fixes a few selected cell position bugs
 - Improved focus for custom formatters using the new formatterOptions ([PR](https://github.com/adazzle/react-data-grid/pull/2104))
 
 ## v7.0.0-canary.17
+
 - Performance improvements ([PR](https://github.com/adazzle/react-data-grid/pull/2015))
 - A new rowClass prop ([PR](https://github.com/adazzle/react-data-grid/pull/2058))
 
 ## `alpha` to `canary`
+
 - **Added:**
   - **Props:**
     - `className`
@@ -237,6 +268,7 @@
   - ⚠️ The stylesheets are now automatically injected, there is no stylsheet to manually import anymore.
 
 ## `master` to `alpha`
+
 - **Added:**
   - TypeScript declaration files
   - `column.cellContentRenderer`
@@ -291,15 +323,17 @@
   - ⚠️ `AutoComplete` editor
   - ⚠️ `Utils`
 
-
 ## 5.0.5 (Dec 6, 2018)
+
 - **Bugfix:** fix: draggable resizing col jumps to right ([1421](https://github.com/adazzle/react-data-grid/pull/1421))
 - **Bugfix:** Cell Tooltip - Focus Issues ([1422](https://github.com/adazzle/react-data-grid/pull/1422))
 
 ## 6.0.1 (Nov 30, 2018)
+
 - **Bugfix:** Fix formatter exports ([1409](https://github.com/adazzle/react-data-grid/pull/1409))
 
 ## 6.0.0 (Nov 30, 2018)
+
 - **Bugfix:** Fix outside click logic for committing changes ([1404](https://github.com/adazzle/react-data-grid/pull/1404))
 - **TechDebt** Add ESLint Rules ([1396](https://github.com/adazzle/react-data-grid/pull/1396) [1397](https://github.com/adazzle/react-data-grid/pull/1397) [1396](https://github.com/adazzle/react-data-grid/pull/1398) [1399](https://github.com/adazzle/react-data-grid/pull/1399))
 - **TechDebt:** Upgrade build tools to latest versions ([1350](https://github.com/adazzle/react-data-grid/pull/1350))
@@ -308,6 +342,7 @@
 - **TechDebt:** Upgrade build tools to latest versions ([1350](https://github.com/adazzle/react-data-grid/pull/1350))
 
 ## 5.0.4 (Nov 14, 2018)
+
 - **Bugfix:** Custom Formatters Example - Styling Fix ([1364](https://github.com/adazzle/react-data-grid/pull/1364))
 - **Bugfix:** Fix website publishing and remove ImmutableJS dependency ([1366](https://github.com/adazzle/react-data-grid/pull/1366))
 - **Bugfix:** Remove react-data-grid dependency from the addons package ([1354](https://github.com/adazzle/react-data-grid/pull/1354))
@@ -320,12 +355,14 @@
 - **Bugfix:** Cleanup DraggableContainer and fix styles ([1379](https://github.com/adazzle/react-data-grid/pull/1379))
 
 ## 5.0.3 (Nov 1, 2018)
+
 - **Bugfix:** Fix frozen-columns source url ([1355](https://github.com/adazzle/react-data-grid/pull/1355))
 - **TechDebt:** Defining the ref callback as a bound method ([1353](https://github.com/adazzle/react-data-grid/pull/1353))
 - **Bugfix:** Fix cell focusing logic ([1352](https://github.com/adazzle/react-data-grid/pull/1352))
 - **Bugfix:** RDG Tree Cell Expand Styling Issues ([1316](https://github.com/adazzle/react-data-grid/pull/1316))
 
 ## 5.0.2 (Oct 30, 2018)
+
 - **Bugfix:** Fix grouping example ([1311](https://github.com/adazzle/react-data-grid/pull/1311))
 - **Bugfix:** Remove contain layout css ([1346](https://github.com/adazzle/react-data-grid/pull/1346))
 - **Bugfix:** Preserve window scroll position on cell selection ([1349](https://github.com/adazzle/react-data-grid/pull/1346))
@@ -333,30 +370,32 @@
 ## 5.0.1 (Oct 22, 2018)
 
 ### React-Data-Grid
-- **Bugfix:** Fix CopyMask columns ([1289](https://github.com/adazzle/react-data-grid/pull/1272))
 
+- **Bugfix:** Fix CopyMask columns ([1289](https://github.com/adazzle/react-data-grid/pull/1272))
 
 ## 5.0.0 (Oct 22, 2018)
 
 ### React-Data-Grid
+
 - **Feature:** Improve Cell navigation Performance ([1123](https://github.com/adazzle/react-data-grid/pull/1123))
 - **Feature:** Scrolling improvements ([1254](https://github.com/adazzle/react-data-grid/pull/1254))
-- **Feature:** Remove react-data-grid dependency from react-data-grid-addons bundle  ([1272](https://github.com/adazzle/react-data-grid/pull/1272))
-
-
+- **Feature:** Remove react-data-grid dependency from react-data-grid-addons bundle ([1272](https://github.com/adazzle/react-data-grid/pull/1272))
 
 ## 4.0.8 (May 10, 2018)
 
 ### React-Data-Grid
+
 - **Bugfix:** Fix editor refs ([#1183](https://github.com/adazzle/react-data-grid/pull/1183))
 
 ## 4.0.7 (April 19, 2018)
 
 ### React-Data-Grid
+
 - **Feature:** Support `React v16` ([#1116](https://github.com/adazzle/react-data-grid/pull/1116))
 - **Feature:** Set sort column and direction with props ([#649](https://github.com/adazzle/react-data-grid/pull/649))
 - **Bugfix:** Filtering should ignore null values ([#1147](https://github.com/adazzle/react-data-grid/pull/1147))
 - **Bugfix:** Resize column doesnt work on firefox when also draggable ([#1121](https://github.com/adazzle/react-data-grid/pull/1121))
 
 ### React-Data-Grid-Addons
+
 - **Breaking:** Migrate to `react-context-menu 2.9.2` ([#1081](https://github.com/adazzle/react-data-grid/pull/1081))

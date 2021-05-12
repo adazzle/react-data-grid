@@ -13,7 +13,7 @@ export const cell = css`
   overflow: clip;
   text-overflow: ellipsis;
 
-  &[aria-selected="true"] {
+  &[aria-selected='true'] {
     box-shadow: inset 0 0 0 2px var(--selection-color);
   }
 `;
@@ -29,7 +29,7 @@ const cellFrozen = css`
 export const cellFrozenClassname = `rdg-cell-frozen ${cellFrozen}`;
 
 export const cellFrozenLast = css`
-  box-shadow: 2px 0 5px -2px rgba(136, 136, 136, .3);
+  box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
 `;
 
 export const cellFrozenLastClassname = `rdg-cell-frozen-last ${cellFrozenLast}`;

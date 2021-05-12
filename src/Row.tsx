@@ -8,30 +8,33 @@ import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
 
-function Row<R, SR = unknown>({
-  cellRenderer: CellRenderer = Cell,
-  className,
-  rowIdx,
-  isRowSelected,
-  copiedCellIdx,
-  draggedOverCellIdx,
-  lastFrozenColumnIndex,
-  row,
-  viewportColumns,
-  selectedCellProps,
-  onRowClick,
-  rowClass,
-  setDraggedOverRowIdx,
-  onMouseEnter,
-  top,
-  height,
-  onRowChange,
-  selectCell,
-  selectRow,
-  'aria-rowindex': ariaRowIndex,
-  'aria-selected': ariaSelected,
-  ...props
-}: RowRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+function Row<R, SR = unknown>(
+  {
+    cellRenderer: CellRenderer = Cell,
+    className,
+    rowIdx,
+    isRowSelected,
+    copiedCellIdx,
+    draggedOverCellIdx,
+    lastFrozenColumnIndex,
+    row,
+    viewportColumns,
+    selectedCellProps,
+    onRowClick,
+    rowClass,
+    setDraggedOverRowIdx,
+    onMouseEnter,
+    top,
+    height,
+    onRowChange,
+    selectCell,
+    selectRow,
+    'aria-rowindex': ariaRowIndex,
+    'aria-selected': ariaSelected,
+    ...props
+  }: RowRendererProps<R, SR>,
+  ref: React.Ref<HTMLDivElement>
+) {
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
     onMouseEnter?.(event);
@@ -39,7 +42,8 @@ function Row<R, SR = unknown>({
 
   className = clsx(
     rowClassname,
-    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+    {
       [groupRowSelectedClassname]: selectedCellProps?.idx === -1
     },
     rowClass?.(row),
@@ -81,7 +85,9 @@ function Row<R, SR = unknown>({
         isDraggedOver={draggedOverCellIdx === column.idx}
         isCellSelected={isCellSelected}
         isRowSelected={isRowSelected}
-        dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
+        dragHandleProps={
+          isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined
+        }
         onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
         onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
         onRowClick={onRowClick}
@@ -100,10 +106,12 @@ function Row<R, SR = unknown>({
       ref={ref}
       className={className}
       onMouseEnter={handleDragEnter}
-      style={{
-        top,
-        '--row-height': `${height}px`
-      } as unknown as CSSProperties}
+      style={
+        {
+          top,
+          '--row-height': `${height}px`
+        } as unknown as CSSProperties
+      }
       {...props}
     >
       {cells}
@@ -111,4 +119,6 @@ function Row<R, SR = unknown>({
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown>(props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR = unknown>(
+  props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+) => JSX.Element;

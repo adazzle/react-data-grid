@@ -18,7 +18,5 @@
     "target": "esnext",
     "types": ["jest", "@testing-library/jest-dom"]
   },
-  "files": [
-    "src/index.ts"
-  ]
+  "files": ["src/index.ts"]
 }

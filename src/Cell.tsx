@@ -40,26 +40,29 @@ const cellDragHandle = css`
 
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
-function Cell<R, SR>({
-  className,
-  column,
-  colSpan,
-  isCellSelected,
-  isCopied,
-  isDraggedOver,
-  isRowSelected,
-  row,
-  rowIdx,
-  dragHandleProps,
-  onRowClick,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
-  onRowChange,
-  selectCell,
-  selectRow,
-  ...props
-}: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+function Cell<R, SR>(
+  {
+    className,
+    column,
+    colSpan,
+    isCellSelected,
+    isCopied,
+    isDraggedOver,
+    isRowSelected,
+    row,
+    rowIdx,
+    dragHandleProps,
+    onRowClick,
+    onClick,
+    onDoubleClick,
+    onContextMenu,
+    onRowChange,
+    selectCell,
+    selectRow,
+    ...props
+  }: CellRendererProps<R, SR>,
+  ref: React.Ref<HTMLDivElement>
+) {
   const { cellClass } = column;
   className = getCellClassname(
     column,
@@ -125,13 +128,13 @@ function Cell<R, SR>({
             onRowSelectionChange={onRowSelectionChange}
             onRowChange={handleRowChange}
           />
-          {dragHandleProps && (
-            <div className={cellDragHandleClassname} {...dragHandleProps} />
-          )}
+          {dragHandleProps && <div className={cellDragHandleClassname} {...dragHandleProps} />}
         </>
       )}
     </div>
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(
+  props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+) => JSX.Element;

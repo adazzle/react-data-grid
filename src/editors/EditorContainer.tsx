@@ -21,12 +21,7 @@ export default function EditorContainer<R, SR>({
 
   const editor = (
     <div className={editorContainerClassname} onClickCapture={onClickCapture}>
-      <column.editor
-        row={row}
-        column={column}
-        onRowChange={onRowChange}
-        {...props}
-      />
+      <column.editor row={row} column={column} onRowChange={onRowChange} {...props} />
     </div>
   );
 

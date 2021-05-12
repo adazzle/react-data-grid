@@ -4,10 +4,7 @@ import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
 
-type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>,
-  | 'viewportColumns'
-  | 'rowIdx'
->;
+type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   'aria-rowindex': number;
@@ -32,21 +29,16 @@ function SummaryRow<R, SR>({
       index += colSpan - 1;
     }
 
-    cells.push(
-      <SummaryCell<R, SR>
-        key={column.key}
-        column={column}
-        colSpan={colSpan}
-        row={row}
-      />
-    );
+    cells.push(<SummaryCell<R, SR> key={column.key} column={column} colSpan={colSpan} row={row} />);
   }
 
   return (
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
+      className={`${rowClassname} rdg-row-${
+        rowIdx % 2 === 0 ? 'even' : 'odd'
+      } ${summaryRowClassname}`}
       style={{ bottom }}
     >
       {cells}

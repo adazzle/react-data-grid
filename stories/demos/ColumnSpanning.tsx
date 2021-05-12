@@ -14,7 +14,11 @@ const colSpanClassname = css`
 `;
 
 function CellFormatter(props: FormatterProps<Row>) {
-  return <>{props.column.key}&times;{props.rowIdx}</>;
+  return (
+    <>
+      {props.column.key}&times;{props.rowIdx}
+    </>
+  );
 }
 
 export function ColumnSpanning() {
@@ -44,10 +48,10 @@ export function ColumnSpanning() {
         },
         cellClass(row) {
           if (
-            (key === '0' && row === 5)
-            || (key === '2' && row === 2)
-            || (key === '27' && row === 8)
-            || (key === '6' && row < 8)
+            (key === '0' && row === 5) ||
+            (key === '2' && row === 2) ||
+            (key === '27' && row === 8) ||
+            (key === '6' && row < 8)
           ) {
             return colSpanClassname;
           }
@@ -59,14 +63,7 @@ export function ColumnSpanning() {
     return columns;
   }, []);
 
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowHeight={22}
-      className="fill-grid"
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} rowHeight={22} className="fill-grid" />;
 }
 
 ColumnSpanning.storyName = 'Column Spanning';

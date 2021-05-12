@@ -33,7 +33,7 @@ describe('Custom formatter component', () => {
     {
       key: 'id',
       name: 'ID',
-      formatter: props => <>#{props.row.id}</>
+      formatter: (props) => <>#{props.row.id}</>
     },
     {
       key: 'name',

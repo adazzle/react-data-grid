@@ -7,16 +7,22 @@ import autoTable from 'jspdf-autotable';
 
 import type { DataGridProps } from '../../src';
 
-export function exportToCsv<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>, fileName: string) {
+export function exportToCsv<R, SR>(
+  gridElement: ReactElement<DataGridProps<R, SR>>,
+  fileName: string
+) {
   const { head, body, foot } = getGridContent(gridElement);
   const content = [...head, ...body, ...foot]
-    .map(cells => cells.map(serialiseCellValue).join(','))
+    .map((cells) => cells.map(serialiseCellValue).join(','))
     .join('\n');
 
   downloadFile(fileName, new Blob([content], { type: 'text/csv;charset=utf-8;' }));
 }
 
-export function exportToXlsx<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>, fileName: string) {
+export function exportToXlsx<R, SR>(
+  gridElement: ReactElement<DataGridProps<R, SR>>,
+  fileName: string
+) {
   const { head, body, foot } = getGridContent(gridElement);
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet([...head, ...body, ...foot]);
@@ -24,8 +30,10 @@ export function exportToXlsx<R, SR>(gridElement: ReactElement<DataGridProps<R, S
   XLSX.writeFile(wb, fileName);
 }
 
-
-export function exportToPdf<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>, fileName: string) {
+export function exportToPdf<R, SR>(
+  gridElement: ReactElement<DataGridProps<R, SR>>,
+  fileName: string
+) {
   const doc = new jsPDF({
     orientation: 'l',
     unit: 'px'
@@ -45,9 +53,11 @@ export function exportToPdf<R, SR>(gridElement: ReactElement<DataGridProps<R, SR
 
 function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) {
   const grid = document.createElement('div');
-  grid.innerHTML = renderToStaticMarkup(cloneElement(gridElement, {
-    enableVirtualization: false
-  }));
+  grid.innerHTML = renderToStaticMarkup(
+    cloneElement(gridElement, {
+      enableVirtualization: false
+    })
+  );
 
   return {
     head: getRows('.rdg-header-row'),
@@ -56,12 +66,10 @@ function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) 
   };
 
   function getRows(selector: string) {
-    return Array.from(
-      grid.querySelectorAll<HTMLDivElement>(selector)
-    ).map(gridRow => {
-      return Array.from(
-        gridRow.querySelectorAll<HTMLDivElement>('.rdg-cell')
-      ).map(gridCell => gridCell.innerText);
+    return Array.from(grid.querySelectorAll<HTMLDivElement>(selector)).map((gridRow) => {
+      return Array.from(gridRow.querySelectorAll<HTMLDivElement>('.rdg-cell')).map(
+        (gridCell) => gridCell.innerText
+      );
     });
   }
 }

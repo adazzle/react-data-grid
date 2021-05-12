@@ -8,14 +8,17 @@ interface Row {
 }
 
 test('headerCellClass is either undefined or a string', () => {
-  const columns: readonly Column<Row>[] = [{
-    key: 'id',
-    name: 'ID'
-  }, {
-    key: 'name',
-    name: 'Name',
-    headerCellClass: 'my-header'
-  }];
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'ID'
+    },
+    {
+      key: 'name',
+      name: 'Name',
+      headerCellClass: 'my-header'
+    }
+  ];
 
   setup({ columns, rows: [] });
   const [cell1, cell2] = getHeaderCells();

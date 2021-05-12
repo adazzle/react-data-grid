@@ -33,7 +33,7 @@ export function useCalculatedColumns<R, SR>({
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
 
-    const columns = rawColumns.map(rawColumn => {
+    const columns = rawColumns.map((rawColumn) => {
       const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const frozen = rowGroup || rawColumn.frozen || false;
@@ -210,7 +210,15 @@ export function useCalculatedColumns<R, SR>({
     const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
     return [colOverscanStartIdx, colOverscanEndIdx];
-  }, [columnMetrics, columns, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth, enableVirtualization]);
+  }, [
+    columnMetrics,
+    columns,
+    lastFrozenColumnIndex,
+    scrollLeft,
+    totalFrozenColumnWidth,
+    viewportWidth,
+    enableVirtualization
+  ]);
 
   return {
     columns,
@@ -239,7 +247,7 @@ function getSpecifiedWidth<R, SR>(
     return width;
   }
   if (typeof width === 'string' && /^\d+%$/.test(width)) {
-    return Math.floor(viewportWidth * parseInt(width, 10) / 100);
+    return Math.floor((viewportWidth * parseInt(width, 10)) / 100);
   }
   return undefined;
 }

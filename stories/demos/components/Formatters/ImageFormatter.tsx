@@ -1,8 +1,8 @@
 import { css } from '@linaria/core';
 
 const wrapperClassname = css`
-display: flex;
-justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 `;
 
 const imageCellClassname = css`

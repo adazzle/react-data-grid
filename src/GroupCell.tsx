@@ -4,7 +4,8 @@ import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
 
-type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
+type SharedGroupRowRendererProps<R, SR> = Pick<
+  GroupRowRendererProps<R, SR>,
   | 'id'
   | 'rowIdx'
   | 'groupKey'
