@@ -623,6 +623,11 @@ const rules = {
 
 module.exports = {
   root: true,
+  extends: [
+    'prettier',
+    'prettier/@typescript-eslint',
+    'prettier/react'
+  ],
   reportUnusedDisableDirectives: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
