@@ -32,45 +32,63 @@ export function useCalculatedColumns<R, SR>({
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
+    let hasColumnGroups = false;
 
-    const columnGroups: (CalculatedColumn<R, SR> | CalculatedColumnGroup<R, SR>)[] = rawColumns.map(rawColumn => {
-      const getCalculatedColumn = (rawColumn: Column<R, SR>) => {
-        const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        const frozen = rowGroup || rawColumn.frozen || false;
+    const getCalculatedColumn = (rawColumn: Column<R, SR>): CalculatedColumn<R, SR> => {
+      const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      const frozen = rowGroup || rawColumn.frozen || false;
 
-        const column: CalculatedColumn<R, SR> = {
-          ...rawColumn,
-          idx: 0,
-          frozen,
-          isLastFrozenColumn: false,
-          rowGroup,
-          sortable: rawColumn.sortable ?? defaultSortable,
-          resizable: rawColumn.resizable ?? defaultResizable,
-          formatter: rawColumn.formatter ?? defaultFormatter
-        };
-
-        if (rowGroup) {
-          column.groupFormatter ??= ToggleGroupFormatter;
-        }
-
-        if (frozen) {
-          lastFrozenColumnIndex++;
-        }
-
-        return column;
+      const column: CalculatedColumn<R, SR> = {
+        ...rawColumn,
+        idx: 0,
+        frozen,
+        isLastFrozenColumn: false,
+        rowGroup,
+        sortable: rawColumn.sortable ?? defaultSortable,
+        resizable: rawColumn.resizable ?? defaultResizable,
+        formatter: rawColumn.formatter ?? defaultFormatter
       };
 
-      if (isColumnGroup(rawColumn)) {
-        return {
-          name: rawColumn.name,
-          frozen: rawColumn.children.every(c => c.frozen),
-          colSpan: rawColumn.children.length,
-          children: rawColumn.children.map(getCalculatedColumn)
-        };
+      if (rowGroup) {
+        column.groupFormatter ??= ToggleGroupFormatter;
       }
-      return getCalculatedColumn(rawColumn);
+
+      if (frozen) {
+        lastFrozenColumnIndex++;
+      }
+
+      return column;
+    };
+
+    const columnGroups: Array<CalculatedColumn<R, SR> | CalculatedColumnGroup<R, SR>> = [];
+    rawColumns.forEach(rawColumn => {
+      if (isColumnGroup(rawColumn)) {
+        if (rawColumn.children.length === 0) {
+          return;
+        }
+        hasColumnGroups = true;
+        let frozen = true;
+        let rowGroup = true;
+        const childColumns = rawColumn.children.map(childColumn => {
+          const calculatedColumn = getCalculatedColumn(childColumn);
+          frozen = frozen && calculatedColumn.frozen;
+          rowGroup = rowGroup && calculatedColumn.rowGroup;
+          return calculatedColumn;
+        });
+
+        columnGroups.push({
+          name: rawColumn.name,
+          frozen,
+          rowGroup,
+          colSpan: rawColumn.children.length,
+          children: childColumns
+        });
+      } else {
+        columnGroups.push(getCalculatedColumn(rawColumn));
+      }
     });
+
     columnGroups.sort((columnGroupA, columnGroupB) => {
       // TODO: handle column groups containing select or groupBy columns
       if (!isColumnGroup(columnGroupA) && !isColumnGroup(columnGroupB)) {
@@ -104,7 +122,9 @@ export function useCalculatedColumns<R, SR>({
       return 0;
     });
 
-    const columns = columnGroups.flatMap(column => isColumnGroup(column) ? column.children : column);
+    const columns = hasColumnGroups
+      ? columnGroups.flatMap(column => isColumnGroup(column) ? column.children : column)
+      : columnGroups as CalculatedColumn<R, SR>[];
 
     const colSpanColumns: CalculatedColumn<R, SR>[] = [];
     columns.forEach((column, idx) => {

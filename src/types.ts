@@ -79,6 +79,7 @@ export interface ColumnGroup<R, SR> {
 
 export interface CalculatedColumnGroup<R, SR> extends Pick<ColumnGroup<R, SR>, 'name'> {
   frozen: boolean;
+  rowGroup: boolean;
   colSpan: number;
   children: readonly CalculatedColumn<R, SR>[];
 }
