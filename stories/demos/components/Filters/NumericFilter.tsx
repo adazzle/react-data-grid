@@ -9,10 +9,7 @@ enum RuleType {
 
 type Rule =
   | { type: RuleType.range; begin: number; end: number }
-  | {
-      type: RuleType.greaterThan | RuleType.lessThan | RuleType.number;
-      value: number;
-    };
+  | { type: RuleType.greaterThan | RuleType.lessThan | RuleType.number; value: number };
 
 interface ChangeEvent<R, SR> {
   filterTerm: Rule[] | null;

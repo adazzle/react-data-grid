@@ -77,10 +77,7 @@ export function useViewportColumns<R, SR>({
           if (
             updateStartIdx(
               colIdx,
-              getColSpan(column, lastFrozenColumnIndex, {
-                type: 'SUMMARY',
-                row
-              })
+              getColSpan(column, lastFrozenColumnIndex, { type: 'SUMMARY', row })
             )
           ) {
             break;

@@ -45,11 +45,7 @@ export function useViewportRows<R>({
           remainingGroupByKeys.length === 0
             ? [childRows, childRows.length]
             : groupRows(childRows, remainingGroupByKeys, startRowIndex + groupRowsCount + 1); // 1 for parent row
-        groups[key] = {
-          childRows,
-          childGroups,
-          startRowIndex: startRowIndex + groupRowsCount
-        };
+        groups[key] = { childRows, childGroups, startRowIndex: startRowIndex + groupRowsCount };
         groupRowsCount += childRowsCount + 1; // 1 for parent row
       }
 

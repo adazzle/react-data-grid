@@ -92,10 +92,7 @@ function deleteSubRow(rows: Row[], id: string): Row[] {
   const { children } = newRows[parentRowIndex];
   if (children) {
     const newChildren = children.filter((sr) => sr.id !== id);
-    newRows[parentRowIndex] = {
-      ...newRows[parentRowIndex],
-      children: newChildren
-    };
+    newRows[parentRowIndex] = { ...newRows[parentRowIndex], children: newChildren };
   }
 
   return newRows;

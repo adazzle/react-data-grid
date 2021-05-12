@@ -45,9 +45,7 @@ function HeaderRow<R, SR>({
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
-    const colSpan = getColSpan(column, lastFrozenColumnIndex, {
-      type: 'HEADER'
-    });
+    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
     if (colSpan !== undefined) {
       index += colSpan - 1;
     }

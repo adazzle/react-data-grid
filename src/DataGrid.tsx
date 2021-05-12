@@ -445,11 +445,7 @@ function DataGrid<R, SR>(
   function onGridFocus() {
     if (!isCellWithinBounds(selectedPosition)) {
       // Tabbing into the grid should initiate keyboard navigation
-      const initialPosition: SelectCellState = {
-        idx: 0,
-        rowIdx: 0,
-        mode: 'SELECT'
-      };
+      const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
       if (isCellWithinBounds(initialPosition)) {
         setSelectedPosition(initialPosition);
       }
@@ -562,10 +558,7 @@ function DataGrid<R, SR>(
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    setCopiedCell({
-      row: rawRows[getRawRowIdx(rowIdx)],
-      columnKey: columns[idx].key
-    });
+    setCopiedCell({ row: rawRows[getRawRowIdx(rowIdx)], columnKey: columns[idx].key });
   }
 
   function handlePaste() {
@@ -626,11 +619,7 @@ function DataGrid<R, SR>(
     const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
     const targetRows = rawRows.slice(startRowIndex, endRowIndex);
     const column = columns[idx];
-    const updatedTargetRows = onFill({
-      columnKey: column.key,
-      sourceRow,
-      targetRows
-    });
+    const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
     const updatedRows = [...rawRows];
     const indexes: number[] = [];
 
@@ -677,11 +666,7 @@ function DataGrid<R, SR>(
     const sourceRow = rawRows[rowIdx];
     const targetRows = rawRows.slice(rowIdx + 1);
     const column = columns[idx];
-    const updatedTargetRows = onFill({
-      columnKey: column.key,
-      sourceRow,
-      targetRows
-    });
+    const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
     const updatedRows = [...rawRows];
     const indexes: number[] = [];
 
@@ -725,12 +710,7 @@ function DataGrid<R, SR>(
   function isCellEditable(position: Position): boolean {
     return (
       isCellWithinBounds(position) &&
-      isSelectedCellEditable<R, SR>({
-        columns,
-        rows,
-        selectedPosition: position,
-        isGroupRow
-      })
+      isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, isGroupRow })
     );
   }
 
@@ -740,13 +720,7 @@ function DataGrid<R, SR>(
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
-      setSelectedPosition({
-        ...position,
-        mode: 'EDIT',
-        key: null,
-        row,
-        originalRow: row
-      });
+      setSelectedPosition({ ...position, mode: 'EDIT', key: null, row, originalRow: row });
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
@@ -771,10 +745,7 @@ function DataGrid<R, SR>(
       let right = left + width;
       const row = rows[rowIdx];
       if (!isGroupRow(row)) {
-        const colSpan = getColSpan(column, lastFrozenColumnIndex, {
-          type: 'ROW',
-          row
-        });
+        const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
         if (colSpan !== undefined) {
           const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
           right = left + width;
@@ -861,10 +832,7 @@ function DataGrid<R, SR>(
       }
       case 'PageDown': {
         const nextRowY = getRowTop(rowIdx) + clientHeight;
-        return {
-          idx,
-          rowIdx: nextRowY < totalRowHeight ? findRowIdx(nextRowY) : rows.length - 1
-        };
+        return { idx, rowIdx: nextRowY < totalRowHeight ? findRowIdx(nextRowY) : rows.length - 1 };
       }
       default:
         return selectedPosition;

@@ -35,9 +35,7 @@ test('frozen column have a specific class, and are stable-sorted before non-froz
   setup({ columns, rows: [] });
   const [cell1, cell2, cell3, cell4] = getHeaderCells();
 
-  expect(cell1).toHaveClass(`${cellClassname} ${cellFrozenClassname}`, {
-    exact: true
-  });
+  expect(cell1).toHaveClass(`${cellClassname} ${cellFrozenClassname}`, { exact: true });
   expect(cell2).toHaveClass(`${cellClassname} ${cellFrozenClassname} ${cellFrozenLastClassname}`, {
     exact: true
   });

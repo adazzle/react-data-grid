@@ -163,12 +163,7 @@ export function useCalculatedColumns<R, SR>({
       layoutCssVars[`--frozen-left-${column.key}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
-    return {
-      layoutCssVars,
-      totalColumnWidth,
-      totalFrozenColumnWidth,
-      columnMetrics
-    };
+    return { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics };
   }, [columnWidths, columns, viewportWidth, minColumnWidth, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {

@@ -53,10 +53,7 @@ function Row<R, SR = unknown>(
   const cells = [];
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
-    const colSpan = getColSpan(column, lastFrozenColumnIndex, {
-      type: 'ROW',
-      row
-    });
+    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     if (colSpan !== undefined) {
       index += colSpan - 1;
     }

@@ -230,10 +230,7 @@ export function AllFeatures() {
       return targetRow;
     }
 
-    return {
-      ...targetRow,
-      [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row]
-    };
+    return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
   async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
