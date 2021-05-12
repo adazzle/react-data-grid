@@ -53,8 +53,9 @@ export function useViewportColumns<R, SR>({
           colIdx,
           getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' })
         )
-      )
+      ) {
         break;
+      }
 
       // check filter row
       if (
@@ -63,8 +64,9 @@ export function useViewportColumns<R, SR>({
           colIdx,
           getColSpan(column, lastFrozenColumnIndex, { type: 'FILTER' })
         )
-      )
+      ) {
         break;
+      }
 
       // check viewport rows
       for (
@@ -79,8 +81,9 @@ export function useViewportColumns<R, SR>({
             colIdx,
             getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row })
           )
-        )
+        ) {
           break;
+        }
       }
 
       // check summary rows
@@ -94,8 +97,9 @@ export function useViewportColumns<R, SR>({
                 row
               })
             )
-          )
+          ) {
             break;
+          }
         }
       }
     }
