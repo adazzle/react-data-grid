@@ -20,9 +20,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Formatter to be used to render the cell content */
   formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
   /** Formatter to be used to render the summary cell content */
-  summaryFormatter?: React.ComponentType<
-    SummaryFormatterProps<TSummaryRow, TRow>
-  >;
+  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
   /** Formatter to be used to render the group cell content */
   groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
@@ -55,13 +53,10 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<
-    FilterRendererProps<TRow, any, TSummaryRow>
-  >;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
 }
 
-export interface CalculatedColumn<TRow, TSummaryRow = unknown>
-  extends Column<TRow, TSummaryRow> {
+export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
   idx: number;
   resizable: boolean;
   sortable: boolean;
@@ -115,8 +110,7 @@ export interface SharedEditorProps<TRow> {
   onClose: (commitChanges?: boolean) => void;
 }
 
-export interface EditorProps<TRow, TSummaryRow = unknown>
-  extends SharedEditorProps<TRow> {
+export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
   top: number;
@@ -145,10 +139,7 @@ export interface EditCellProps<TRow> extends SelectedCellPropsBase {
 export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
   onFocus: () => void;
-  dragHandleProps?: Pick<
-    React.HTMLAttributes<HTMLDivElement>,
-    'onMouseDown' | 'onDoubleClick'
-  >;
+  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown>
@@ -161,16 +152,9 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown>
   isDraggedOver: boolean;
   isCellSelected: boolean;
   isRowSelected: boolean;
-  dragHandleProps?: Pick<
-    React.HTMLAttributes<HTMLDivElement>,
-    'onMouseDown' | 'onDoubleClick'
-  >;
+  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onRowClick?: (
-    rowIdx: number,
-    row: TRow,
-    column: CalculatedColumn<TRow, TSummaryRow>
-  ) => void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
@@ -189,22 +173,14 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   height: number;
   selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
   onRowChange: (rowIdx: number, row: TRow) => void;
-  onRowClick?: (
-    rowIdx: number,
-    row: TRow,
-    column: CalculatedColumn<TRow, TSummaryRow>
-  ) => void;
+  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
-export interface FilterRendererProps<
-  TRow,
-  TFilterValue = unknown,
-  TSummaryRow = unknown
-> {
+export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   value: TFilterValue;
   onChange: (value: TFilterValue) => void;

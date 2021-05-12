@@ -5,8 +5,7 @@ export function getColSpan<R, SR>(
   lastFrozenColumnIndex: number,
   args: ColSpanArgs<R, SR>
 ) {
-  const colSpan =
-    typeof column.colSpan === 'function' ? column.colSpan(args) : 1;
+  const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : 1;
   if (
     Number.isInteger(colSpan) &&
     colSpan! > 1 &&

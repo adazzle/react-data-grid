@@ -1,9 +1,4 @@
-import type {
-  CalculatedColumn,
-  Position,
-  GroupRow,
-  CellNavigationMode
-} from '../types';
+import type { CalculatedColumn, Position, GroupRow, CellNavigationMode } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -24,16 +19,11 @@ export function isSelectedCellEditable<R, SR>({
   return !isGroupRow(row) && isCellEditable(column, row);
 }
 
-export function isCellEditable<R, SR>(
-  column: CalculatedColumn<R, SR>,
-  row: R
-): boolean {
+export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return (
     column.editor != null &&
     !column.rowGroup &&
-    (typeof column.editable === 'function'
-      ? column.editable(row)
-      : column.editable) !== false
+    (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false
   );
 }
 
@@ -155,9 +145,7 @@ export function canExitGrid<R, SR>({
     const atLastRow = rowIdx === rowsCount - 1;
     const atFirstRow = rowIdx === 0;
 
-    return shiftKey
-      ? atFirstCellInRow && atFirstRow
-      : atLastCellInRow && atLastRow;
+    return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
   }
 
   return false;

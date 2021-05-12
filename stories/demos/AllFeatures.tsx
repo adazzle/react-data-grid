@@ -206,11 +206,7 @@ export function AllFeatures() {
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleFill({
-    columnKey,
-    sourceRow,
-    targetRows
-  }: FillEvent<Row>): Row[] {
+  function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
     return targetRows.map((row) => ({
       ...row,
       [columnKey as keyof Row]: sourceRow[columnKey as keyof Row]
@@ -265,13 +261,9 @@ export function AllFeatures() {
         onScroll={handleScroll}
         onSelectedRowsChange={setSelectedRows}
         className="fill-grid"
-        rowClass={(row) =>
-          row.id.includes('7') ? highlightClassname : undefined
-        }
+        rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
       />
-      {isLoading && (
-        <div className={loadMoreRowsClassname}>Loading more rows...</div>
-      )}
+      {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>}
     </>
   );
 }

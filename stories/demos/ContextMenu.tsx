@@ -1,12 +1,7 @@
 import { useState, useReducer } from 'react';
 import { createPortal } from 'react-dom';
 import faker from 'faker';
-import {
-  ContextMenu,
-  MenuItem,
-  SubMenu,
-  ContextMenuTrigger
-} from 'react-contextmenu';
+import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 import { css } from '@linaria/core';
 
 import DataGrid, { Row as GridRow } from '../../src';
@@ -80,8 +75,7 @@ css`
       padding: 0;
     }
 
-    .react-contextmenu-item.react-contextmenu-submenu
-      > .react-contextmenu-item::after {
+    .react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item::after {
       content: '▶';
       display: inline-block;
       position: absolute;
@@ -125,10 +119,7 @@ function rowKeyGetter(row: Row) {
 
 function RowRenderer(props: RowRendererProps<Row>) {
   return (
-    <ContextMenuTrigger
-      id="grid-context-menu"
-      collect={() => ({ rowIdx: props.rowIdx })}
-    >
+    <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
       <GridRow {...props} />
     </ContextMenuTrigger>
   );
@@ -136,29 +127,17 @@ function RowRenderer(props: RowRendererProps<Row>) {
 
 export function ContextMenuStory() {
   const [rows, setRows] = useState(createRows);
-  const [nextId, setNextId] = useReducer(
-    (id: number) => id + 1,
-    rows[rows.length - 1].id + 1
-  );
+  const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 
-  function onRowDelete(
-    e: React.MouseEvent<HTMLDivElement>,
-    { rowIdx }: { rowIdx: number }
-  ) {
+  function onRowDelete(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
     setRows([...rows.slice(0, rowIdx), ...rows.slice(rowIdx + 1)]);
   }
 
-  function onRowInsertAbove(
-    e: React.MouseEvent<HTMLDivElement>,
-    { rowIdx }: { rowIdx: number }
-  ) {
+  function onRowInsertAbove(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
     insertRow(rowIdx);
   }
 
-  function onRowInsertBelow(
-    e: React.MouseEvent<HTMLDivElement>,
-    { rowIdx }: { rowIdx: number }
-  ) {
+  function onRowInsertBelow(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
     insertRow(rowIdx + 1);
   }
 
@@ -169,11 +148,7 @@ export function ContextMenuStory() {
       price: faker.commerce.price()
     };
 
-    setRows([
-      ...rows.slice(0, insertRowIdx),
-      newRow,
-      ...rows.slice(insertRowIdx)
-    ]);
+    setRows([...rows.slice(0, insertRowIdx), newRow, ...rows.slice(insertRowIdx)]);
     setNextId();
   }
 

@@ -2,12 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
-import {
-  setup,
-  getCellsAtRowIndex,
-  getHeaderCells,
-  validateCellPosition
-} from '../utils';
+import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {

@@ -48,39 +48,24 @@ export function useViewportColumns<R, SR>({
       // check header row
       const colIdx = column.idx;
       if (colIdx >= startIdx) break;
-      if (
-        updateStartIdx(
-          colIdx,
-          getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' })
-        )
-      ) {
+      if (updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' }))) {
         break;
       }
 
       // check filter row
       if (
         enableFilterRow &&
-        updateStartIdx(
-          colIdx,
-          getColSpan(column, lastFrozenColumnIndex, { type: 'FILTER' })
-        )
+        updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'FILTER' }))
       ) {
         break;
       }
 
       // check viewport rows
-      for (
-        let rowIdx = rowOverscanStartIdx;
-        rowIdx <= rowOverscanEndIdx;
-        rowIdx++
-      ) {
+      for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
         const row = rows[rowIdx];
         if (isGroupRow(row)) continue;
         if (
-          updateStartIdx(
-            colIdx,
-            getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row })
-          )
+          updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row }))
         ) {
           break;
         }

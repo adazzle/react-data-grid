@@ -1,11 +1,7 @@
 import { useState, useMemo } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
 import Select, { components } from 'react-select';
-import type {
-  ValueType,
-  OptionsType,
-  Props as SelectProps
-} from 'react-select';
+import type { ValueType, OptionsType, Props as SelectProps } from 'react-select';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 import { css } from '@linaria/core';
@@ -117,14 +113,7 @@ const columns: readonly Column<Row>[] = [
       return <>{row.gold + row.silver + row.bronze}</>;
     },
     groupFormatter({ childRows }) {
-      return (
-        <>
-          {childRows.reduce(
-            (prev, row) => prev + row.gold + row.silver + row.bronze,
-            0
-          )}
-        </>
-      );
+      return <>{childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0)}</>;
     }
   }
 ];
@@ -174,32 +163,21 @@ const options: OptionsType<Option> = [
 export function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
-  const [selectedOptions, setSelectedOptions] = useState<
-    ValueType<Option, true>
-  >([options[0], options[1]]);
+  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option, true>>([
+    options[0],
+    options[1]
+  ]);
   const [expandedGroupIds, setExpandedGroupIds] = useState(
-    () =>
-      new Set<unknown>([
-        'United States of America',
-        'United States of America__2015'
-      ])
+    () => new Set<unknown>(['United States of America', 'United States of America__2015'])
   );
 
   const groupBy = useMemo(
     () =>
-      Array.isArray(selectedOptions)
-        ? selectedOptions.map((o: Option) => o.value)
-        : undefined,
+      Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined,
     [selectedOptions]
   );
 
-  function onSortEnd({
-    oldIndex,
-    newIndex
-  }: {
-    oldIndex: number;
-    newIndex: number;
-  }) {
+  function onSortEnd({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) {
     if (!Array.isArray(selectedOptions)) return;
     const newOptions: Option[] = [...selectedOptions];
     newOptions.splice(

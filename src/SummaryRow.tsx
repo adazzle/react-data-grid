@@ -4,10 +4,7 @@ import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
 
-type SharedRowRendererProps<R, SR> = Pick<
-  RowRendererProps<R, SR>,
-  'viewportColumns' | 'rowIdx'
->;
+type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   'aria-rowindex': number;
@@ -35,14 +32,7 @@ function SummaryRow<R, SR>({
       index += colSpan - 1;
     }
 
-    cells.push(
-      <SummaryCell<R, SR>
-        key={column.key}
-        column={column}
-        colSpan={colSpan}
-        row={row}
-      />
-    );
+    cells.push(<SummaryCell<R, SR> key={column.key} column={column} colSpan={colSpan} row={row} />);
   }
 
   return (
@@ -59,6 +49,4 @@ function SummaryRow<R, SR>({
   );
 }
 
-export default memo(SummaryRow) as <R, SR>(
-  props: SummaryRowProps<R, SR>
-) => JSX.Element;
+export default memo(SummaryRow) as <R, SR>(props: SummaryRowProps<R, SR>) => JSX.Element;

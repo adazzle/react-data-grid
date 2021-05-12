@@ -50,12 +50,8 @@ function createRows() {
       id: i,
       task: `Task ${i}`,
       complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority: ['Critical', 'High', 'Medium', 'Low'][
-        Math.floor(Math.random() * 4)
-      ],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][
-        Math.floor(Math.random() * 4)
-      ],
+      priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
       developer: faker.name.findName()
     });
   }
@@ -74,9 +70,7 @@ export function HeaderFilters() {
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
   const columns = useMemo((): readonly Column<Row>[] => {
-    const developerOptions = Array.from(
-      new Set(rows.map((r) => r.developer))
-    ).map((d) => ({
+    const developerOptions = Array.from(new Set(rows.map((r) => r.developer))).map((d) => ({
       label: d,
       value: d
     }));
@@ -182,13 +176,9 @@ export function HeaderFilters() {
       return (
         (filters.task ? r.task.includes(filters.task) : true) &&
         (filters.priority !== 'All' ? r.priority === filters.priority : true) &&
-        (filters.issueType !== 'All'
-          ? r.issueType === filters.issueType
-          : true) &&
+        (filters.issueType !== 'All' ? r.issueType === filters.issueType : true) &&
         (filters.developer ? r.developer === filters.developer.value : true) &&
-        (filters.complete
-          ? filters.complete.filterValues(r, filters.complete, 'complete')
-          : true)
+        (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
       );
     });
   }, [rows, filters]);

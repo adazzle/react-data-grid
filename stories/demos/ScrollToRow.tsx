@@ -41,10 +41,7 @@ export function ScrollToRow() {
           value={value}
           onChange={(event) => setValue(event.target.value)}
         />
-        <button
-          type="button"
-          onClick={() => gridRef.current!.scrollToRow(Number(value))}
-        >
+        <button type="button" onClick={() => gridRef.current!.scrollToRow(Number(value))}>
           Scroll to row
         </button>
       </div>

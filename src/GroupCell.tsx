@@ -58,23 +58,20 @@ function GroupCell<R, SR>({
       }}
       onClick={isLevelMatching ? toggleGroup : undefined}
     >
-      {(!column.rowGroup || groupColumnIndex === column.idx) &&
-        column.groupFormatter && (
-          <column.groupFormatter
-            groupKey={groupKey}
-            childRows={childRows}
-            column={column}
-            isExpanded={isExpanded}
-            isCellSelected={isCellSelected}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
-            toggleGroup={toggleGroup}
-          />
-        )}
+      {(!column.rowGroup || groupColumnIndex === column.idx) && column.groupFormatter && (
+        <column.groupFormatter
+          groupKey={groupKey}
+          childRows={childRows}
+          column={column}
+          isExpanded={isExpanded}
+          isCellSelected={isCellSelected}
+          isRowSelected={isRowSelected}
+          onRowSelectionChange={onRowSelectionChange}
+          toggleGroup={toggleGroup}
+        />
+      )}
     </div>
   );
 }
 
-export default memo(GroupCell) as <R, SR>(
-  props: GroupCellProps<R, SR>
-) => JSX.Element;
+export default memo(GroupCell) as <R, SR>(props: GroupCellProps<R, SR>) => JSX.Element;

@@ -31,8 +31,7 @@ export default function EditCell<R, SR>({
   editorProps,
   ...props
 }: EditCellProps<R, SR>) {
-  const [dimensions, setDimensions] =
-    useState<{ left: number; top: number } | null>(null);
+  const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
 
   const cellRef = useCallback((node) => {
     if (node !== null) {

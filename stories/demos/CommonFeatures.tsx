@@ -2,11 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
-import DataGrid, {
-  SelectColumn,
-  TextEditor,
-  SelectCellFormatter
-} from '../../src';
+import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
@@ -97,9 +93,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       editor: (p) => (
         <SelectEditor
           value={p.row.country}
-          onChange={(value) =>
-            p.onRowChange({ ...p.row, country: value }, true)
-          }
+          onChange={(value) => p.onRowChange({ ...p.row, country: value }, true)}
           options={countries.map((c) => ({ value: c, label: c }))}
           rowHeight={p.rowHeight}
           menuPortalTarget={p.editorPortalTarget}
@@ -126,8 +120,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         const value = props.row.progress;
         return (
           <>
-            <progress max={100} value={value} style={{ width: 50 }} />{' '}
-            {Math.round(value)}%
+            <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
           </>
         );
       }
@@ -227,15 +220,11 @@ function createRows(): readonly Row[] {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<
-    [string, SortDirection]
-  >(['id', 'NONE']);
+  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
 
   const countries = useMemo(() => {
-    return [...new Set(rows.map((r) => r.country))].sort(
-      new Intl.Collator().compare
-    );
+    return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
@@ -264,9 +253,7 @@ export function CommonFeatures() {
       case 'transaction':
       case 'account':
       case 'version':
-        sortedRows = sortedRows.sort((a, b) =>
-          a[sortColumn].localeCompare(b[sortColumn])
-        );
+        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
         break;
       case 'available':
         sortedRows = sortedRows.sort((a, b) =>
@@ -286,12 +273,9 @@ export function CommonFeatures() {
     return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
   }, [rows, sortDirection, sortColumn]);
 
-  const handleSort = useCallback(
-    (columnKey: string, direction: SortDirection) => {
-      setSort([columnKey, direction]);
-    },
-    []
-  );
+  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
+    setSort([columnKey, direction]);
+  }, []);
 
   const gridElement = (
     <DataGrid

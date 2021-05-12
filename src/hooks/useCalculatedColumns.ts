@@ -5,8 +5,7 @@ import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
-interface CalculatedColumnsArgs<R, SR>
-  extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
+interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
   rawGroupBy?: readonly string[];
   viewportWidth: number;
@@ -29,103 +28,89 @@ export function useCalculatedColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } =
-    useMemo(() => {
-      // Filter rawGroupBy and ignore keys that do not match the columns prop
-      const groupBy: string[] = [];
-      let lastFrozenColumnIndex = -1;
+  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+    // Filter rawGroupBy and ignore keys that do not match the columns prop
+    const groupBy: string[] = [];
+    let lastFrozenColumnIndex = -1;
 
-      const columns = rawColumns.map((rawColumn) => {
-        const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        const frozen = rowGroup || rawColumn.frozen || false;
+    const columns = rawColumns.map((rawColumn) => {
+      const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      const frozen = rowGroup || rawColumn.frozen || false;
 
-        const column: CalculatedColumn<R, SR> = {
-          ...rawColumn,
-          idx: 0,
-          frozen,
-          isLastFrozenColumn: false,
-          rowGroup,
-          sortable: rawColumn.sortable ?? defaultSortable,
-          resizable: rawColumn.resizable ?? defaultResizable,
-          formatter: rawColumn.formatter ?? defaultFormatter
-        };
+      const column: CalculatedColumn<R, SR> = {
+        ...rawColumn,
+        idx: 0,
+        frozen,
+        isLastFrozenColumn: false,
+        rowGroup,
+        sortable: rawColumn.sortable ?? defaultSortable,
+        resizable: rawColumn.resizable ?? defaultResizable,
+        formatter: rawColumn.formatter ?? defaultFormatter
+      };
 
-        if (rowGroup) {
-          column.groupFormatter ??= ToggleGroupFormatter;
-        }
-
-        if (frozen) {
-          lastFrozenColumnIndex++;
-        }
-
-        return column;
-      });
-
-      columns.sort(
-        ({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
-          // Sort select column first:
-          if (aKey === SELECT_COLUMN_KEY) return -1;
-          if (bKey === SELECT_COLUMN_KEY) return 1;
-
-          // Sort grouped columns second, following the groupBy order:
-          if (rawGroupBy?.includes(aKey)) {
-            if (rawGroupBy.includes(bKey)) {
-              return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
-            }
-            return -1;
-          }
-          if (rawGroupBy?.includes(bKey)) return 1;
-
-          // Sort frozen columns third:
-          if (frozenA) {
-            if (frozenB) return 0;
-            return -1;
-          }
-          if (frozenB) return 1;
-
-          // Sort other columns last:
-          return 0;
-        }
-      );
-
-      const colSpanColumns: CalculatedColumn<R, SR>[] = [];
-      columns.forEach((column, idx) => {
-        column.idx = idx;
-
-        if (column.rowGroup) {
-          groupBy.push(column.key);
-        }
-
-        if (column.colSpan !== undefined) {
-          colSpanColumns.push(column);
-        }
-      });
-
-      if (lastFrozenColumnIndex !== -1) {
-        columns[lastFrozenColumnIndex].isLastFrozenColumn = true;
+      if (rowGroup) {
+        column.groupFormatter ??= ToggleGroupFormatter;
       }
 
-      return {
-        columns,
-        colSpanColumns,
-        lastFrozenColumnIndex,
-        groupBy
-      };
-    }, [
-      rawColumns,
-      defaultFormatter,
-      defaultResizable,
-      defaultSortable,
-      rawGroupBy
-    ]);
+      if (frozen) {
+        lastFrozenColumnIndex++;
+      }
 
-  const {
-    layoutCssVars,
-    totalColumnWidth,
-    totalFrozenColumnWidth,
-    columnMetrics
-  } = useMemo(() => {
+      return column;
+    });
+
+    columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
+      // Sort select column first:
+      if (aKey === SELECT_COLUMN_KEY) return -1;
+      if (bKey === SELECT_COLUMN_KEY) return 1;
+
+      // Sort grouped columns second, following the groupBy order:
+      if (rawGroupBy?.includes(aKey)) {
+        if (rawGroupBy.includes(bKey)) {
+          return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
+        }
+        return -1;
+      }
+      if (rawGroupBy?.includes(bKey)) return 1;
+
+      // Sort frozen columns third:
+      if (frozenA) {
+        if (frozenB) return 0;
+        return -1;
+      }
+      if (frozenB) return 1;
+
+      // Sort other columns last:
+      return 0;
+    });
+
+    const colSpanColumns: CalculatedColumn<R, SR>[] = [];
+    columns.forEach((column, idx) => {
+      column.idx = idx;
+
+      if (column.rowGroup) {
+        groupBy.push(column.key);
+      }
+
+      if (column.colSpan !== undefined) {
+        colSpanColumns.push(column);
+      }
+    });
+
+    if (lastFrozenColumnIndex !== -1) {
+      columns[lastFrozenColumnIndex].isLastFrozenColumn = true;
+    }
+
+    return {
+      columns,
+      colSpanColumns,
+      lastFrozenColumnIndex,
+      groupBy
+    };
+  }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
+
+  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo(() => {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalColumnWidth = 0;
@@ -156,11 +141,7 @@ export function useCalculatedColumns<R, SR>({
         columnMetric.left = left;
         ({ width } = columnMetric);
       } else {
-        width = clampColumnWidth(
-          unallocatedColumnWidth,
-          column,
-          minColumnWidth
-        );
+        width = clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
         columnMetrics.set(column, { width, left });
       }
       totalColumnWidth += width;
@@ -179,9 +160,7 @@ export function useCalculatedColumns<R, SR>({
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
-      layoutCssVars[`--frozen-left-${column.key}`] = `${
-        columnMetrics.get(column)!.left
-      }px`;
+      layoutCssVars[`--frozen-left-${column.key}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
     return {
@@ -190,18 +169,9 @@ export function useCalculatedColumns<R, SR>({
       totalFrozenColumnWidth,
       columnMetrics
     };
-  }, [
-    columnWidths,
-    columns,
-    viewportWidth,
-    minColumnWidth,
-    lastFrozenColumnIndex
-  ]);
+  }, [columnWidths, columns, viewportWidth, minColumnWidth, lastFrozenColumnIndex]);
 
-  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [
-    number,
-    number
-  ] => {
+  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
       return [0, columns.length - 1];
     }
@@ -210,10 +180,7 @@ export function useCalculatedColumns<R, SR>({
     const viewportRight = scrollLeft + viewportWidth;
     // get first and last non-frozen column indexes
     const lastColIdx = columns.length - 1;
-    const firstUnfrozenColumnIdx = Math.min(
-      lastFrozenColumnIndex + 1,
-      lastColIdx
-    );
+    const firstUnfrozenColumnIdx = Math.min(lastFrozenColumnIndex + 1, lastColIdx);
 
     // skip rendering non-frozen columns if the frozen columns cover the entire viewport
     if (viewportLeft >= viewportRight) {
@@ -244,10 +211,7 @@ export function useCalculatedColumns<R, SR>({
       colVisibleEndIdx++;
     }
 
-    const colOverscanStartIdx = Math.max(
-      firstUnfrozenColumnIdx,
-      colVisibleStartIdx - 1
-    );
+    const colOverscanStartIdx = Math.max(firstUnfrozenColumnIdx, colVisibleStartIdx - 1);
     const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
     return [colOverscanStartIdx, colOverscanEndIdx];

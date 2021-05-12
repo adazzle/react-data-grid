@@ -128,9 +128,7 @@ function Cell<R, SR>(
             onRowSelectionChange={onRowSelectionChange}
             onRowChange={handleRowChange}
           />
-          {dragHandleProps && (
-            <div className={cellDragHandleClassname} {...dragHandleProps} />
-          )}
+          {dragHandleProps && <div className={cellDragHandleClassname} {...dragHandleProps} />}
         </>
       )}
     </div>

@@ -2,10 +2,7 @@ import { useState, useReducer, useMemo } from 'react';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import {
-  CellExpanderFormatter,
-  ChildRowDeleteButton
-} from './components/Formatters';
+import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
 
 interface Row {
   id: string;
@@ -143,9 +140,7 @@ export function TreeView() {
                 <CellExpanderFormatter
                   isCellSelected={isCellSelected}
                   expanded={row.isExpanded === true}
-                  onCellExpand={() =>
-                    dispatch({ id: row.id, type: 'toggleSubRow' })
-                  }
+                  onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
                 />
               )}
               <div className="rdg-cell-value">
@@ -153,9 +148,7 @@ export function TreeView() {
                   <ChildRowDeleteButton
                     isCellSelected={isCellSelected}
                     isDeleteSubRowEnabled={allowDelete}
-                    onDeleteSubRow={() =>
-                      dispatch({ id: row.id, type: 'deleteSubRow' })
-                    }
+                    onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
                   />
                 )}
                 <div style={style}>{row.format}</div>

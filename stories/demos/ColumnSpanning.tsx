@@ -63,14 +63,7 @@ export function ColumnSpanning() {
     return columns;
   }, []);
 
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowHeight={22}
-      className="fill-grid"
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} rowHeight={22} className="fill-grid" />;
 }
 
 ColumnSpanning.storyName = 'Column Spanning';

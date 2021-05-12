@@ -45,8 +45,7 @@ export function NumericFilter<R, SR>({
     });
   }
 
-  const tooltipText =
-    'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
+  const tooltipText = 'Input Methods: Range (x-y), Greater Than (>x), Less Than (<y)';
 
   return (
     <div className="rdg-filter-container">

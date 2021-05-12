@@ -544,10 +544,7 @@ const rules = {
   ],
   '@typescript-eslint/no-base-to-string': 0,
   '@typescript-eslint/no-confusing-non-null-assertion': 0,
-  '@typescript-eslint/no-confusing-void-expression': [
-    1,
-    { ignoreArrowShorthand: true }
-  ],
+  '@typescript-eslint/no-confusing-void-expression': [1, { ignoreArrowShorthand: true }],
   '@typescript-eslint/no-dynamic-delete': 0,
   '@typescript-eslint/no-empty-interface': 2,
   '@typescript-eslint/no-explicit-any': [2, { fixToUnknown: true }],
@@ -607,10 +604,7 @@ const rules = {
   '@typescript-eslint/sort-type-union-intersection-members': 0,
   '@typescript-eslint/strict-boolean-expressions': 0,
   '@typescript-eslint/switch-exhaustiveness-check': 2,
-  '@typescript-eslint/triple-slash-reference': [
-    2,
-    { path: 'never', types: 'never', lib: 'never' }
-  ],
+  '@typescript-eslint/triple-slash-reference': [2, { path: 'never', types: 'never', lib: 'never' }],
   '@typescript-eslint/type-annotation-spacing': 1,
   '@typescript-eslint/typedef': 0,
   '@typescript-eslint/unbound-method': 0,
@@ -631,11 +625,7 @@ const rules = {
   ], // https://github.com/typescript-eslint/typescript-eslint/issues/455
   '@typescript-eslint/init-declarations': 0,
   '@typescript-eslint/keyword-spacing': 1,
-  '@typescript-eslint/lines-between-class-members': [
-    1,
-    'always',
-    { exceptAfterSingleLine: true }
-  ],
+  '@typescript-eslint/lines-between-class-members': [1, 'always', { exceptAfterSingleLine: true }],
   '@typescript-eslint/no-array-constructor': 2,
   '@typescript-eslint/no-dupe-class-members': 0,
   '@typescript-eslint/no-duplicate-imports': 1,
@@ -686,24 +676,13 @@ module.exports = {
   env: {
     es6: true
   },
-  plugins: [
-    'node',
-    'react',
-    'react-hooks',
-    'jest',
-    'jest-dom',
-    'sonarjs',
-    '@typescript-eslint'
-  ],
+  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
   overrides: [
     {
       files: ['*.js', '*.jsx', '*.cjs', '*.mjs'],
       rules: {
         'no-undef': 2,
-        'no-use-before-define': [
-          2,
-          { functions: false, classes: false, variables: false }
-        ]
+        'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
       }
     },
     {

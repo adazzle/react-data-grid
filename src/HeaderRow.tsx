@@ -8,12 +8,7 @@ import { headerRowClassname } from './style';
 
 type SharedDataGridProps<R, SR> = Pick<
   DataGridProps<R, SR>,
-  | 'rows'
-  | 'onSelectedRowsChange'
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
-  | 'rowKeyGetter'
+  'rows' | 'onSelectedRowsChange' | 'sortColumn' | 'sortDirection' | 'onSort' | 'rowKeyGetter'
 >;
 
 export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
@@ -41,9 +36,7 @@ function HeaderRow<R, SR>({
 
       assertIsValidKeyGetter(rowKeyGetter);
 
-      const newSelectedRows = new Set<React.Key>(
-        checked ? rows.map(rowKeyGetter) : undefined
-      );
+      const newSelectedRows = new Set<React.Key>(checked ? rows.map(rowKeyGetter) : undefined);
       onSelectedRowsChange(newSelectedRows);
     },
     [onSelectedRowsChange, rows, rowKeyGetter]
@@ -85,6 +78,4 @@ function HeaderRow<R, SR>({
   );
 }
 
-export default memo(HeaderRow) as <R, SR>(
-  props: HeaderRowProps<R, SR>
-) => JSX.Element;
+export default memo(HeaderRow) as <R, SR>(props: HeaderRowProps<R, SR>) => JSX.Element;

@@ -30,10 +30,7 @@ Object.defineProperties(HTMLDivElement.prototype, {
 });
 
 // Basic scroll polyfill
-const scrollStates = new WeakMap<
-  Element,
-  { scrollTop: number; scrollLeft: number }
->();
+const scrollStates = new WeakMap<Element, { scrollTop: number; scrollLeft: number }>();
 
 function getScrollState(div: Element) {
   if (scrollStates.has(div)) {

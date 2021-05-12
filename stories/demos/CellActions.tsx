@@ -151,14 +151,7 @@ const columns: Column<Row>[] = [
 export function CellActions() {
   const [rows] = useState(createRows);
 
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowHeight={55}
-      className="fill-grid"
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} rowHeight={55} className="fill-grid" />;
 }
 
 CellActions.storyName = 'Cell Actions';

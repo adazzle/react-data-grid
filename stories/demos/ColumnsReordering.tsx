@@ -21,12 +21,8 @@ function createRows(): Row[] {
       id: i,
       task: `Task ${i}`,
       complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority: ['Critical', 'High', 'Medium', 'Low'][
-        Math.round(Math.random() * 3)
-      ],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][
-        Math.round(Math.random() * 3)
-      ]
+      priority: ['Critical', 'High', 'Medium', 'Low'][Math.round(Math.random() * 3)],
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.round(Math.random() * 3)]
     });
   }
 
@@ -70,25 +66,18 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
-  const [[sortColumn, sortDirection], setSort] = useState<
-    [string, SortDirection]
-  >(['task', 'NONE']);
+  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>([
+    'task',
+    'NONE'
+  ]);
 
-  const handleSort = useCallback(
-    (columnKey: string, direction: SortDirection) => {
-      setSort([columnKey, direction]);
-    },
-    []
-  );
+  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
+    setSort([columnKey, direction]);
+  }, []);
 
   const draggableColumns = useMemo(() => {
     function HeaderRenderer(props: HeaderRendererProps<Row>) {
-      return (
-        <DraggableHeaderRenderer
-          {...props}
-          onColumnsReorder={handleColumnsReorder}
-        />
-      );
+      return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
     }
 
     function handleColumnsReorder(sourceKey: string, targetKey: string) {
@@ -120,9 +109,7 @@ export function ColumnsReordering() {
       case 'task':
       case 'priority':
       case 'issueType':
-        sortedRows = sortedRows.sort((a, b) =>
-          a[sortColumn].localeCompare(b[sortColumn])
-        );
+        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
         break;
       case 'complete':
         sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);

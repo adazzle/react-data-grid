@@ -52,9 +52,7 @@ export function isCtrlKeyHeldDown(e: React.KeyboardEvent): boolean {
   return (e.ctrlKey || e.metaKey) && e.key !== 'Control';
 }
 
-export function isDefaultCellInput(
-  event: React.KeyboardEvent<HTMLDivElement>
-): boolean {
+export function isDefaultCellInput(event: React.KeyboardEvent<HTMLDivElement>): boolean {
   return !nonInputKeys.has(event.key);
 }
 
@@ -64,10 +62,7 @@ export function isDefaultCellInput(
  *   - The editor must be an <input>, a <textarea>, or a <select> element.
  *   - The editor element must be the only immediate child of the editor container/a label.
  */
-export function onEditorNavigation({
-  key,
-  target
-}: React.KeyboardEvent<HTMLDivElement>): boolean {
+export function onEditorNavigation({ key, target }: React.KeyboardEvent<HTMLDivElement>): boolean {
   if (
     key === 'Tab' &&
     (target instanceof HTMLInputElement ||

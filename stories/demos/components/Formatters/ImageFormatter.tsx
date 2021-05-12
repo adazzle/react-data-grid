@@ -23,10 +23,7 @@ interface Props {
 export function ImageFormatter({ value }: Props) {
   return (
     <div className={wrapperClassname}>
-      <div
-        className={imageCellClassname}
-        style={{ backgroundImage: `url(${value})` }}
-      />
+      <div className={imageCellClassname} style={{ backgroundImage: `url(${value})` }} />
     </div>
   );
 }

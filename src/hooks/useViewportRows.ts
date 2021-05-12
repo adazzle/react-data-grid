@@ -9,10 +9,7 @@ interface ViewportRowsArgs<R> {
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
-  rowGrouper?: (
-    rows: readonly R[],
-    columnKey: string
-  ) => Record<string, readonly R[]>;
+  rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
   expandedGroupIds?: ReadonlySet<unknown>;
   enableVirtualization: boolean;
 }
@@ -42,18 +39,12 @@ export function useViewportRows<R>({
     ): [GroupByDictionary<R>, number] => {
       let groupRowsCount = 0;
       const groups: GroupByDictionary<R> = {};
-      for (const [key, childRows] of Object.entries(
-        rowGrouper(rows, groupByKey)
-      )) {
+      for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
         // Recursively group each parent group
         const [childGroups, childRowsCount] =
           remainingGroupByKeys.length === 0
             ? [childRows, childRows.length]
-            : groupRows(
-                childRows,
-                remainingGroupByKeys,
-                startRowIndex + groupRowsCount + 1
-              ); // 1 for parent row
+            : groupRows(childRows, remainingGroupByKeys, startRowIndex + groupRowsCount + 1); // 1 for parent row
         groups[key] = {
           childRows,
           childGroups,
@@ -84,8 +75,7 @@ export function useViewportRows<R>({
       }
       Object.keys(rows).forEach((groupKey, posInSet, keys) => {
         // TODO: should users have control over the generated key?
-        const id =
-          parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
+        const id = parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
         const isExpanded = expandedGroupIds?.has(id) ?? false;
         const { childRows, childGroups, startRowIndex } = rows[groupKey];
 
@@ -117,60 +107,58 @@ export function useViewportRows<R>({
     }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } =
-    useMemo(() => {
-      if (typeof rowHeight === 'number') {
-        return {
-          totalRowHeight: rowHeight * rows.length,
-          getRowTop: (rowIdx: number) => rowIdx * rowHeight,
-          getRowHeight: () => rowHeight,
-          findRowIdx: (offset: number) => Math.floor(offset / rowHeight)
-        };
-      }
-
-      let totalRowHeight = 0;
-      // Calcule the height of all the rows upfront. This can cause performance issues
-      // and we can consider using a similar approach as react-window
-      // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
-      const rowPositions = rows.map((row: R | GroupRow<R>) => {
-        const currentRowHeight = isGroupRow(row)
-          ? rowHeight({ type: 'GROUP', row })
-          : rowHeight({ type: 'ROW', row });
-        const position = { top: totalRowHeight, height: currentRowHeight };
-        totalRowHeight += currentRowHeight;
-        return position;
-      });
-
-      const validateRowIdx = (rowIdx: number) => {
-        return Math.max(0, Math.min(rows.length - 1, rowIdx));
-      };
-
+  const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
+    if (typeof rowHeight === 'number') {
       return {
-        totalRowHeight,
-        getRowTop: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].top,
-        getRowHeight: (rowIdx: number) =>
-          rowPositions[validateRowIdx(rowIdx)].height,
-        findRowIdx(offset: number) {
-          let start = 0;
-          let end = rowPositions.length - 1;
-          while (start <= end) {
-            const middle = start + Math.floor((end - start) / 2);
-            const currentOffset = rowPositions[middle].top;
-
-            if (currentOffset === offset) return middle;
-
-            if (currentOffset < offset) {
-              start = middle + 1;
-            } else if (currentOffset > offset) {
-              end = middle - 1;
-            }
-
-            if (start > end) return end;
-          }
-          return 0;
-        }
+        totalRowHeight: rowHeight * rows.length,
+        getRowTop: (rowIdx: number) => rowIdx * rowHeight,
+        getRowHeight: () => rowHeight,
+        findRowIdx: (offset: number) => Math.floor(offset / rowHeight)
       };
-    }, [isGroupRow, rowHeight, rows]);
+    }
+
+    let totalRowHeight = 0;
+    // Calcule the height of all the rows upfront. This can cause performance issues
+    // and we can consider using a similar approach as react-window
+    // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
+    const rowPositions = rows.map((row: R | GroupRow<R>) => {
+      const currentRowHeight = isGroupRow(row)
+        ? rowHeight({ type: 'GROUP', row })
+        : rowHeight({ type: 'ROW', row });
+      const position = { top: totalRowHeight, height: currentRowHeight };
+      totalRowHeight += currentRowHeight;
+      return position;
+    });
+
+    const validateRowIdx = (rowIdx: number) => {
+      return Math.max(0, Math.min(rows.length - 1, rowIdx));
+    };
+
+    return {
+      totalRowHeight,
+      getRowTop: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].top,
+      getRowHeight: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].height,
+      findRowIdx(offset: number) {
+        let start = 0;
+        let end = rowPositions.length - 1;
+        while (start <= end) {
+          const middle = start + Math.floor((end - start) / 2);
+          const currentOffset = rowPositions[middle].top;
+
+          if (currentOffset === offset) return middle;
+
+          if (currentOffset < offset) {
+            start = middle + 1;
+          } else if (currentOffset > offset) {
+            end = middle - 1;
+          }
+
+          if (start > end) return end;
+        }
+        return 0;
+      }
+    };
+  }, [isGroupRow, rowHeight, rows]);
 
   if (!enableVirtualization) {
     return {
@@ -188,19 +176,14 @@ export function useViewportRows<R>({
 
   const overscanThreshold = 4;
   const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = Math.min(
-    rows.length - 1,
-    findRowIdx(scrollTop + clientHeight)
-  );
+  const rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
   const rowOverscanStartIdx = Math.max(
     0,
-    Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) *
-      RENDER_BACTCH_SIZE
+    Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
   );
   const rowOverscanEndIdx = Math.min(
     rows.length - 1,
-    Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) *
-      RENDER_BACTCH_SIZE
+    Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
   );
 
   return {

@@ -2,11 +2,7 @@ import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import {
-  groupRowClassname,
-  groupRowSelectedClassname,
-  rowClassname
-} from './style';
+import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
@@ -95,6 +91,4 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(
-  props: GroupRowRendererProps<R, SR>
-) => JSX.Element;
+export default memo(GroupedRow) as <R, SR>(props: GroupRowRendererProps<R, SR>) => JSX.Element;

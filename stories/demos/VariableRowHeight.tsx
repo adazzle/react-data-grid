@@ -32,14 +32,7 @@ export function VariableRowHeight() {
     return columns;
   }, []);
 
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowHeight={rowHeight}
-      className="fill-grid"
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} rowHeight={rowHeight} className="fill-grid" />;
 }
 
 function rowHeight() {
