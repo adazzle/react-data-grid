@@ -21,6 +21,8 @@ jobs:
       run: npm i
     - name: ESLint
       run: npm run eslint
+    - name: Prettier
+      run: npm run prettier:check
     - name: Typecheck
       run: npm run typecheck
     - name: Test
