@@ -339,8 +339,9 @@ function DataGrid<R, SR>(
       selectedPosition === prevSelectedPosition.current ||
       selectedPosition.mode === 'EDIT' ||
       !isCellWithinBounds(selectedPosition)
-    )
+    ) {
       return;
+    }
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
 
