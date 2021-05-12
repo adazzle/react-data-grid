@@ -1,5 +1,6 @@
-node_modules
-package-lock.json
-lib
-.linaria-cache
-storybook-static
+/.linaria-cache
+/coverage
+/lib
+/node_modules
+/package-lock.json
+/storybook-static
