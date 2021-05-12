@@ -55,12 +55,9 @@ const checkboxLabelDisabled = css`
 
 const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
 
-type SharedInputProps = Pick<React.InputHTMLAttributes<HTMLInputElement>,
-  | 'disabled'
-  | 'tabIndex'
-  | 'onClick'
-  | 'aria-label'
-  | 'aria-labelledby'
+type SharedInputProps = Pick<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'disabled' | 'tabIndex' | 'onClick' | 'aria-label' | 'aria-labelledby'
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {

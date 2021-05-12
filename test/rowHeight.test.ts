@@ -40,7 +40,7 @@ test('rowHeight is number', () => {
 });
 
 test('rowHeight is function', () => {
-  setupGrid((args) => args.type === 'ROW' ? [40, 60, 80][args.row % 3] : 40);
+  setupGrid((args) => (args.type === 'ROW' ? [40, 60, 80][args.row % 3] : 40));
 
   const rows = getRows();
   expect(rows[0]).toHaveStyle({ '--row-height': '40px' });

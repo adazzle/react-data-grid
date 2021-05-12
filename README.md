@@ -32,6 +32,7 @@ last 2 safari versions
 ```
 
 See [documentation](https://github.com/browserslist/browserslist)
+
 </details>
 
 <details>
@@ -40,12 +41,15 @@ See [documentation](https://github.com/browserslist/browserslist)
 ```json
 {
   "presets": [
-    ["@babel/env", {
-      "bugfixes": true,
-      "shippedProposals": true,
-      "corejs": 3,
-      "useBuiltIns": "entry"
-    }]
+    [
+      "@babel/env",
+      {
+        "bugfixes": true,
+        "shippedProposals": true,
+        "corejs": 3,
+        "useBuiltIns": "entry"
+      }
+    ]
   ]
 }
 ```
@@ -78,6 +82,7 @@ See [documentation](https://babeljs.io/docs/en/)
 ```
 
 See [documentation](https://github.com/babel/babel-loader)
+
 </details>
 
 <details>
@@ -88,16 +93,14 @@ See [documentation](https://github.com/babel/babel-loader)
   // ...
   plugins: {
     babel({
-      include: [
-        './src/**/*',
-        './node_modules/react-data-grid/lib/**/*'
-      ]
-    })
+      include: ['./src/**/*', './node_modules/react-data-grid/lib/**/*']
+    });
   }
 }
 ```
 
 See [documentation](https://github.com/rollup/plugins/tree/master/packages/babel)
+
 </details>
 
 ## Usage
@@ -116,12 +119,7 @@ const rows = [
 ];
 
 function App() {
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} />;
 }
 ```
 

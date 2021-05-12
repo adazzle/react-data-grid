@@ -36,7 +36,36 @@ interface Option {
   label: string;
 }
 
-const sports = ['Swimming', 'Gymnastics', 'Speed Skating', 'Cross Country Skiing', 'Short-Track Speed Skating', 'Diving', 'Cycling', 'Biathlon', 'Alpine Skiing', 'Ski Jumping', 'Nordic Combined', 'Athletics', 'Table Tennis', 'Tennis', 'Synchronized Swimming', 'Shooting', 'Rowing', 'Fencing', 'Equestrian', 'Canoeing', 'Bobsleigh', 'Badminton', 'Archery', 'Wrestling', 'Weightlifting', 'Waterpolo', 'Wrestling', 'Weightlifting'];
+const sports = [
+  'Swimming',
+  'Gymnastics',
+  'Speed Skating',
+  'Cross Country Skiing',
+  'Short-Track Speed Skating',
+  'Diving',
+  'Cycling',
+  'Biathlon',
+  'Alpine Skiing',
+  'Ski Jumping',
+  'Nordic Combined',
+  'Athletics',
+  'Table Tennis',
+  'Tennis',
+  'Synchronized Swimming',
+  'Shooting',
+  'Rowing',
+  'Fencing',
+  'Equestrian',
+  'Canoeing',
+  'Bobsleigh',
+  'Badminton',
+  'Archery',
+  'Wrestling',
+  'Weightlifting',
+  'Waterpolo',
+  'Wrestling',
+  'Weightlifting'
+];
 
 const columns: readonly Column<Row>[] = [
   SelectColumn,
@@ -134,15 +163,28 @@ const options: OptionsType<Option> = [
 export function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
-  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option, true>>([options[0], options[1]]);
-  const [expandedGroupIds, setExpandedGroupIds] = useState(() => new Set<unknown>(['United States of America', 'United States of America__2015']));
+  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option, true>>([
+    options[0],
+    options[1]
+  ]);
+  const [expandedGroupIds, setExpandedGroupIds] = useState(
+    () => new Set<unknown>(['United States of America', 'United States of America__2015'])
+  );
 
-  const groupBy = useMemo(() => Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined, [selectedOptions]);
+  const groupBy = useMemo(
+    () =>
+      Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined,
+    [selectedOptions]
+  );
 
   function onSortEnd({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) {
     if (!Array.isArray(selectedOptions)) return;
     const newOptions: Option[] = [...selectedOptions];
-    newOptions.splice(newIndex < 0 ? newOptions.length + newIndex : newIndex, 0, newOptions.splice(oldIndex, 1)[0]);
+    newOptions.splice(
+      newIndex < 0 ? newOptions.length + newIndex : newIndex,
+      0,
+      newOptions.splice(oldIndex, 1)[0]
+    );
     setSelectedOptions(newOptions);
     setExpandedGroupIds(new Set());
   }
@@ -160,7 +202,7 @@ export function Grouping() {
           // react-select props
           isMulti
           value={selectedOptions}
-          onChange={options => {
+          onChange={(options) => {
             setSelectedOptions(options);
             setExpandedGroupIds(new Set());
           }}

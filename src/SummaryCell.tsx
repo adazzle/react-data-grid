@@ -9,13 +9,10 @@ interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
 }
 
-function SummaryCell<R, SR>({
-  column,
-  colSpan,
-  row
-}: SummaryCellProps<R, SR>) {
+function SummaryCell<R, SR>({ column, colSpan, row }: SummaryCellProps<R, SR>) {
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
-  const className = getCellClassname(column,
+  const className = getCellClassname(
+    column,
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
 

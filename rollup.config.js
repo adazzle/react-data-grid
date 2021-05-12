@@ -11,19 +11,22 @@ const extensions = ['.ts', '.tsx'];
 
 export default {
   input: './src/index.ts',
-  output: [{
-    file: './lib/bundle.js',
-    format: 'es',
-    preferConst: true,
-    sourcemap: true
-  }, {
-    file: './lib/bundle.cjs',
-    format: 'cjs',
-    preferConst: true,
-    sourcemap: true,
-    interop: false
-  }],
-  external: id => !id.startsWith('.') && !isAbsolute(id),
+  output: [
+    {
+      file: './lib/bundle.js',
+      format: 'es',
+      preferConst: true,
+      sourcemap: true
+    },
+    {
+      file: './lib/bundle.cjs',
+      format: 'cjs',
+      preferConst: true,
+      sourcemap: true,
+      interop: false
+    }
+  ],
+  external: (id) => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
     linaria({
       classNameSlug(hash) {
@@ -39,7 +42,7 @@ export default {
       // remove all comments except terser annotations
       // https://github.com/terser/terser#annotations
       // https://babeljs.io/docs/en/options#shouldprintcomment
-      shouldPrintComment: comment => /^[@#]__.+__$/.test(comment)
+      shouldPrintComment: (comment) => /^[@#]__.+__$/.test(comment)
     }),
     nodeResolve({ extensions })
   ]

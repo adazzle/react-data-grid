@@ -11,14 +11,14 @@ const cellEditing = css`
 
 const cellEditingClassname = `rdg-cell-editing ${cellEditing}`;
 
-type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>,
-  | 'rowIdx'
-  | 'row'
-  | 'column'
-  | 'colSpan'
+type SharedCellRendererProps<R, SR> = Pick<
+  CellRendererProps<R, SR>,
+  'rowIdx' | 'row' | 'column' | 'colSpan'
 >;
 
-interface EditCellProps<R, SR> extends SharedCellRendererProps<R, SR>, Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+interface EditCellProps<R, SR>
+  extends SharedCellRendererProps<R, SR>,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   editorProps: SharedEditorProps<R>;
 }
 
@@ -33,7 +33,7 @@ export default function EditCell<R, SR>({
 }: EditCellProps<R, SR>) {
   const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
 
-  const cellRef = useCallback(node => {
+  const cellRef = useCallback((node) => {
     if (node !== null) {
       const { left, top } = node.getBoundingClientRect();
       setDimensions({ left, top });
@@ -50,7 +50,8 @@ export default function EditCell<R, SR>({
 
   function getCellContent() {
     if (dimensions === null) return;
-    const { scrollTop: docTop, scrollLeft: docLeft } = document.scrollingElement ?? document.documentElement;
+    const { scrollTop: docTop, scrollLeft: docLeft } =
+      document.scrollingElement ?? document.documentElement;
     const { left, top } = dimensions;
     const gridLeft = left + docLeft;
     const gridTop = top + docTop;

@@ -32,13 +32,11 @@ export function useCalculatedColumns<R, SR>({
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
-    let hasColumnGroups = false;
 
     const getCalculatedColumn = (rawColumn: Column<R, SR>): CalculatedColumn<R, SR> => {
       const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const frozen = rowGroup || rawColumn.frozen || false;
-
       const column: CalculatedColumn<R, SR> = {
         ...rawColumn,
         idx: 0,
@@ -49,11 +47,9 @@ export function useCalculatedColumns<R, SR>({
         resizable: rawColumn.resizable ?? defaultResizable,
         formatter: rawColumn.formatter ?? defaultFormatter
       };
-
       if (rowGroup) {
         column.groupFormatter ??= ToggleGroupFormatter;
       }
-
       if (frozen) {
         lastFrozenColumnIndex++;
       }
@@ -67,7 +63,6 @@ export function useCalculatedColumns<R, SR>({
         if (rawColumn.children.length === 0) {
           return;
         }
-        hasColumnGroups = true;
         let frozen = true;
         let rowGroup = true;
         const childColumns = rawColumn.children.map(childColumn => {
@@ -117,15 +112,11 @@ export function useCalculatedColumns<R, SR>({
         return -1;
       }
       if (frozenB) return 1;
-
       // Sort other columns last:
       return 0;
     });
 
-    const columns = hasColumnGroups
-      ? columnGroups.flatMap(column => isColumnGroup(column) ? column.children : column)
-      : columnGroups as CalculatedColumn<R, SR>[];
-
+    const columns = columnGroups.flatMap(column => isColumnGroup(column) ? column.children : column);
     const colSpanColumns: CalculatedColumn<R, SR>[] = [];
     columns.forEach((column, idx) => {
       column.idx = idx;
@@ -252,7 +243,15 @@ export function useCalculatedColumns<R, SR>({
     const colOverscanEndIdx = Math.min(lastColIdx, colVisibleEndIdx + 1);
 
     return [colOverscanStartIdx, colOverscanEndIdx];
-  }, [columnMetrics, columns, lastFrozenColumnIndex, scrollLeft, totalFrozenColumnWidth, viewportWidth, enableVirtualization]);
+  }, [
+    columnMetrics,
+    columns,
+    lastFrozenColumnIndex,
+    scrollLeft,
+    totalFrozenColumnWidth,
+    viewportWidth,
+    enableVirtualization
+  ]);
 
   return {
     columns,
@@ -282,7 +281,7 @@ function getSpecifiedWidth<R, SR>(
     return width;
   }
   if (typeof width === 'string' && /^\d+%$/.test(width)) {
-    return Math.floor(viewportWidth * parseInt(width, 10) / 100);
+    return Math.floor((viewportWidth * parseInt(width, 10)) / 100);
   }
   return undefined;
 }

@@ -1,12 +1,15 @@
 {
   "presets": [
-    ["@babel/env", {
-      "loose": true,
-      "bugfixes": true,
-      "shippedProposals": true,
-      "corejs": 3,
-      "useBuiltIns": "entry"
-    }],
+    [
+      "@babel/env",
+      {
+        "loose": true,
+        "bugfixes": true,
+        "shippedProposals": true,
+        "corejs": 3,
+        "useBuiltIns": "entry"
+      }
+    ],
     ["@babel/react", { "runtime": "automatic" }],
     "@babel/typescript",
     "@linaria"

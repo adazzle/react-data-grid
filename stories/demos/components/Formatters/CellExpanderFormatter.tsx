@@ -19,7 +19,11 @@ interface CellExpanderFormatterProps {
   onCellExpand: () => void;
 }
 
-export function CellExpanderFormatter({ isCellSelected, expanded, onCellExpand }: CellExpanderFormatterProps) {
+export function CellExpanderFormatter({
+  isCellSelected,
+  expanded,
+  onCellExpand
+}: CellExpanderFormatterProps) {
   const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleClick(e: React.MouseEvent<HTMLSpanElement>) {
@@ -36,14 +40,8 @@ export function CellExpanderFormatter({ isCellSelected, expanded, onCellExpand }
 
   return (
     <div className={cellExpandClassname}>
-      <span
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-      >
-        <span
-          ref={iconRef}
-          tabIndex={-1}
-        >
+      <span onClick={handleClick} onKeyDown={handleKeyDown}>
+        <span ref={iconRef} tabIndex={-1}>
           {expanded ? '\u25BC' : '\u25B6'}
         </span>
       </span>

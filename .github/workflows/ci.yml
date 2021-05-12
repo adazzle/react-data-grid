@@ -8,70 +8,72 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-        check-latest: true
-    - uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: npm-${{ hashFiles('package.json') }}
-    - name: npm install
-      run: npm i
-    - name: ESLint
-      run: npm run eslint
-    - name: Typecheck
-      run: npm run typecheck
-    - name: Test
-      run: npm t -- --coverage --colors
-    - name: Bundle
-      run: npm run build
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          check-latest: true
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package.json') }}
+      - name: npm install
+        run: npm i
+      - name: ESLint
+        run: npm run eslint
+      - name: Prettier
+        run: npm run prettier:check
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test
+        run: npm t -- --coverage --colors
+      - name: Bundle
+        run: npm run build
 
   storybook:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-        check-latest: true
-    - uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: npm-${{ hashFiles('package.json') }}
-    - uses: actions/cache@v2
-      with:
-        path: node_modules/.cache
-        key: build-${{ hashFiles('package.json') }}
-    - name: Build
-      run: |
-        npm i
-        npm run build-storybook
-    - name: Set up git user
-      if: github.event_name == 'push'
-      run: |
-        git config --global user.email 'action@github.com'
-        git config --global user.name 'GitHub Action'
-    - name: Deploy master
-      if: github.ref == 'refs/heads/master'
-      run: |
-        git fetch origin gh-pages
-        git worktree add gh-pages gh-pages
-        git rm -r .
-        git checkout gh-pages -- canary
-        mv ../storybook-static/* .
-        git add .
-        git commit --allow-empty -m "master storybook deployment"
-        git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
-    - name: Deploy canary
-      if: github.ref == 'refs/heads/canary'
-      run: |
-        git fetch origin gh-pages
-        git worktree add gh-pages gh-pages
-        cd gh-pages
-        git rm -r --ignore-unmatch canary
-        mv ../storybook-static canary
-        git add canary
-        git commit --allow-empty -m "canary storybook deployment"
-        git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          check-latest: true
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package.json') }}
+      - uses: actions/cache@v2
+        with:
+          path: node_modules/.cache
+          key: build-${{ hashFiles('package.json') }}
+      - name: Build
+        run: |
+          npm i
+          npm run build-storybook
+      - name: Set up git user
+        if: github.event_name == 'push'
+        run: |
+          git config --global user.email 'action@github.com'
+          git config --global user.name 'GitHub Action'
+      - name: Deploy master
+        if: github.ref == 'refs/heads/master'
+        run: |
+          git fetch origin gh-pages
+          git worktree add gh-pages gh-pages
+          git rm -r .
+          git checkout gh-pages -- canary
+          mv ../storybook-static/* .
+          git add .
+          git commit --allow-empty -m "master storybook deployment"
+          git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
+      - name: Deploy canary
+        if: github.ref == 'refs/heads/canary'
+        run: |
+          git fetch origin gh-pages
+          git worktree add gh-pages gh-pages
+          cd gh-pages
+          git rm -r --ignore-unmatch canary
+          mv ../storybook-static canary
+          git add canary
+          git commit --allow-empty -m "canary storybook deployment"
+          git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
