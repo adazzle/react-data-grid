@@ -19,7 +19,7 @@ const cellResizable = css`
 
 const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
-function getAriaSort(sortDirection?: SortDirection) {
+function getAriaSort(sortDirection: SortDirection | undefined) {
   switch (sortDirection) {
     case 'ASC':
       return 'ascending';
@@ -37,7 +37,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
-  colSpan?: number;
+  colSpan: number | undefined;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }

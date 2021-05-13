@@ -1,0 +1,7 @@
+comment:
+  layout: 'reach, diff, files'
+  require_changes: true
+
+parsers:
+  javascript:
+    enable_partials: yes

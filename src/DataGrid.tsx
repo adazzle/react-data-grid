@@ -16,7 +16,8 @@ import {
   useCalculatedColumns,
   useViewportColumns,
   useViewportRows,
-  useLatestFunc
+  useLatestFunc,
+  RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import FilterRow from './FilterRow';
@@ -978,7 +979,6 @@ function DataGrid<R, SR>(
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectCell={selectCellWrapper}
-            selectRow={selectRowWrapper}
             toggleGroup={toggleGroupWrapper}
           />
         );
@@ -1017,7 +1017,6 @@ function DataGrid<R, SR>(
           selectedCellProps={getSelectedCellProps(rowIdx)}
           onRowChange={handleFormatterRowChangeWrapper}
           selectCell={selectCellWrapper}
-          selectRow={selectRowWrapper}
         />
       );
     }
@@ -1111,7 +1110,9 @@ function DataGrid<R, SR>(
             onFocus={onGridFocus}
           />
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
-          {getViewportRows()}
+          <RowSelectionChangeProvider value={selectRowWrapper}>
+            {getViewportRows()}
+          </RowSelectionChangeProvider>
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
               aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}

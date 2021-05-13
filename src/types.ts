@@ -81,8 +81,6 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
   onRowChange: (row: Readonly<TRow>) => void;
 }
 
@@ -92,13 +90,12 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
+  rowIdx: number;
   groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  onRowSelectionChange: (checked: boolean) => void;
   toggleGroup: () => void;
 }
 
@@ -119,9 +116,9 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
-  sortColumn?: string;
-  sortDirection?: SortDirection;
-  onSort?: (columnKey: string, direction: SortDirection) => void;
+  sortColumn: string | undefined;
+  sortDirection: SortDirection | undefined;
+  onSort: ((columnKey: string, direction: SortDirection) => void) | undefined;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
@@ -139,24 +136,28 @@ export interface EditCellProps<TRow> extends SelectedCellPropsBase {
 export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
   onFocus: () => void;
-  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  dragHandleProps:
+    | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
+    | undefined;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
-  colSpan?: number;
+  colSpan: number | undefined;
   row: TRow;
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  dragHandleProps:
+    | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
+    | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick:
+    | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
+    | undefined;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -165,19 +166,20 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
-  copiedCellIdx?: number;
-  draggedOverCellIdx?: number;
+  copiedCellIdx: number | undefined;
+  draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   top: number;
   height: number;
-  selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
+  selectedCellProps: EditCellProps<TRow> | SelectedCellProps | undefined;
   onRowChange: (rowIdx: number, row: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
-  rowClass?: (row: TRow) => string | undefined;
-  setDraggedOverRowIdx?: (overRowIdx: number) => void;
+  onRowClick:
+    | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
+    | undefined;
+  rowClass: ((row: TRow) => string | undefined) | undefined;
+  setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

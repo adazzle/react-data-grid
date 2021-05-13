@@ -7,6 +7,7 @@ import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
+import { RowSelectionProvider } from './hooks';
 
 function Row<R, SR = unknown>(
   {
@@ -28,9 +29,6 @@ function Row<R, SR = unknown>(
     height,
     onRowChange,
     selectCell,
-    selectRow,
-    'aria-rowindex': ariaRowIndex,
-    'aria-selected': ariaSelected,
     ...props
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
@@ -84,7 +82,6 @@ function Row<R, SR = unknown>(
         isCopied={copiedCellIdx === column.idx}
         isDraggedOver={draggedOverCellIdx === column.idx}
         isCellSelected={isCellSelected}
-        isRowSelected={isRowSelected}
         dragHandleProps={
           isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined
         }
@@ -93,29 +90,28 @@ function Row<R, SR = unknown>(
         onRowClick={onRowClick}
         onRowChange={onRowChange}
         selectCell={selectCell}
-        selectRow={selectRow}
       />
     );
   }
 
   return (
-    <div
-      role="row"
-      aria-rowindex={ariaRowIndex}
-      aria-selected={ariaSelected}
-      ref={ref}
-      className={className}
-      onMouseEnter={handleDragEnter}
-      style={
-        {
-          top,
-          '--row-height': `${height}px`
-        } as unknown as CSSProperties
-      }
-      {...props}
-    >
-      {cells}
-    </div>
+    <RowSelectionProvider value={isRowSelected}>
+      <div
+        role="row"
+        ref={ref}
+        className={className}
+        onMouseEnter={handleDragEnter}
+        style={
+          {
+            top,
+            '--row-height': `${height}px`
+          } as unknown as CSSProperties
+        }
+        {...props}
+      >
+        {cells}
+      </div>
+    </RowSelectionProvider>
   );
 }
 
