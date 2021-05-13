@@ -71,6 +71,12 @@ type DefaultColumnOptions<R, SR> = Pick<
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const body = globalThis.document?.body;
 
+const initialPosition: SelectCellState = {
+  idx: -1,
+  rowIdx: -1,
+  mode: 'SELECT'
+};
+
 export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
@@ -235,11 +241,8 @@ function DataGrid<R, SR>(
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
-  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>({
-    idx: -1,
-    rowIdx: -1,
-    mode: 'SELECT'
-  });
+  const [selectedPosition, setSelectedPosition] =
+    useState<SelectCellState | EditCellState<R>>(initialPosition);
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
@@ -1011,7 +1014,7 @@ function DataGrid<R, SR>(
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx >= rows.length) {
-    setSelectedPosition({ idx: -1, rowIdx: -1, mode: 'SELECT' });
+    setSelectedPosition(initialPosition);
     setDraggedOverRowIdx(undefined);
   }
 
