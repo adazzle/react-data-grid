@@ -4,7 +4,8 @@ import {
   useRef,
   useLayoutEffect,
   useImperativeHandle,
-  useCallback
+  useCallback,
+  useMemo
 } from 'react';
 import type { RefAttributes } from 'react';
 import clsx from 'clsx';
@@ -273,6 +274,16 @@ function DataGrid<R, SR>(
   const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
+
+  const allRowsSelected = useMemo((): boolean => {
+    // no rows to select = explicitely unchecked
+    return (
+      rawRows.length !== 0 &&
+      selectedRows !== undefined &&
+      rowKeyGetter !== undefined &&
+      rawRows.every((row) => selectedRows.has(rowKeyGetter(row)))
+    );
+  }, [rawRows, selectedRows, rowKeyGetter]);
 
   const {
     columns,
@@ -1054,7 +1065,7 @@ function DataGrid<R, SR>(
         rows={rawRows}
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
-        allRowsSelected={selectedRows?.size === rawRows.length}
+        allRowsSelected={allRowsSelected}
         onSelectedRowsChange={onSelectedRowsChange}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
