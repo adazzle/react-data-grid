@@ -24,8 +24,7 @@ function SelectFormatter(props: FormatterProps) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SelectGroupFormatter(props: GroupFormatterProps<any, any>) {
-  const isRowSelected = useRowSelection();
-  const onRowSelectionChange = useRowSelectionChange();
+  const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (
     <SelectCellFormatter
