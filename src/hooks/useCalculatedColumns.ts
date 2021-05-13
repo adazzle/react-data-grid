@@ -8,7 +8,7 @@ import { floor, max, min } from '../utils';
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
-  rawGroupBy?: readonly string[];
+  rawGroupBy: readonly string[] | undefined;
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;

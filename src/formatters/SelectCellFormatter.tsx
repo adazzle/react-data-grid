@@ -61,7 +61,7 @@ type SharedInputProps = Pick<
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {
-  isCellSelected?: boolean;
+  isCellSelected: boolean;
   value: boolean;
   onChange: (value: boolean, isShiftClick: boolean) => void;
 }

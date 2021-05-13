@@ -54,6 +54,7 @@ export const SelectColumn: Column<any, any> = {
     return (
       <SelectCellFormatter
         aria-label="Select All"
+        isCellSelected={false}
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}
       />
