@@ -1,0 +1,3 @@
+comment:
+  layout: 'reach, diff, files'
+  require_changes: true
