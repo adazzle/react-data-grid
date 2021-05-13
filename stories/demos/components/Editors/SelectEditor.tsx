@@ -9,13 +9,19 @@ interface SelectEditorProps {
   menuPortalTarget: Element;
 }
 
-export function SelectEditor({ value, onChange, options, rowHeight, menuPortalTarget }: SelectEditorProps) {
+export function SelectEditor({
+  value,
+  onChange,
+  options,
+  rowHeight,
+  menuPortalTarget
+}: SelectEditorProps) {
   return (
     <Select
       autoFocus
       defaultMenuIsOpen
-      value={options.find(o => o.value === value)}
-      onChange={o => onChange(o.value)}
+      value={options.find((o) => o.value === value)}
+      onChange={(o) => onChange(o.value)}
       options={options}
       menuPortalTarget={menuPortalTarget as HTMLElement}
       styles={{

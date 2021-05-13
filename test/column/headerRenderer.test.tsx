@@ -11,14 +11,17 @@ test('headerRenderer is either undefined or a component', () => {
     return <>Fancy! {column.name}</>;
   }
 
-  const columns: readonly Column<Row>[] = [{
-    key: 'id',
-    name: 'ID'
-  }, {
-    key: 'name',
-    name: 'Name',
-    headerRenderer: Header
-  }];
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'ID'
+    },
+    {
+      key: 'name',
+      name: 'Name',
+      headerRenderer: Header
+    }
+  ];
 
   setup({ columns, rows: [] });
   const [cell1, cell2] = getHeaderCells();

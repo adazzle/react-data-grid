@@ -7,7 +7,11 @@ type Row = number;
 const rows: readonly Row[] = [...Array(500).keys()];
 
 function CellFormatter(props: FormatterProps<Row>) {
-  return <>{props.column.key}&times;{props.rowIdx}</>;
+  return (
+    <>
+      {props.column.key}&times;{props.rowIdx}
+    </>
+  );
 }
 
 export function VariableRowHeight() {
@@ -28,14 +32,7 @@ export function VariableRowHeight() {
     return columns;
   }, []);
 
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowHeight={rowHeight}
-      className="fill-grid"
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} rowHeight={rowHeight} className="fill-grid" />;
 }
 
 function rowHeight() {

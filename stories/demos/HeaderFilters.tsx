@@ -70,7 +70,7 @@ export function HeaderFilters() {
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
   const columns = useMemo((): readonly Column<Row>[] => {
-    const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
+    const developerOptions = Array.from(new Set(rows.map((r) => r.developer))).map((d) => ({
       label: d,
       value: d
     }));
@@ -84,12 +84,12 @@ export function HeaderFilters() {
       {
         key: 'task',
         name: 'Title',
-        filterRenderer: p => (
+        filterRenderer: (p) => (
           <div className={filterContainerClassname}>
             <input
               className={filterClassname}
               value={p.value}
-              onChange={e => p.onChange(e.target.value)}
+              onChange={(e) => p.onChange(e.target.value)}
             />
           </div>
         )
@@ -97,9 +97,13 @@ export function HeaderFilters() {
       {
         key: 'priority',
         name: 'Priority',
-        filterRenderer: p => (
+        filterRenderer: (p) => (
           <div className={filterContainerClassname}>
-            <select className={filterClassname} value={p.value} onChange={e => p.onChange(e.target.value)}>
+            <select
+              className={filterClassname}
+              value={p.value}
+              onChange={(e) => p.onChange(e.target.value)}
+            >
               <option value="All">All</option>
               <option value="Critical">Critical</option>
               <option value="High">High</option>
@@ -112,9 +116,13 @@ export function HeaderFilters() {
       {
         key: 'issueType',
         name: 'Issue Type',
-        filterRenderer: p => (
+        filterRenderer: (p) => (
           <div className={filterContainerClassname}>
-            <select className={filterClassname} value={p.value} onChange={e => p.onChange(e.target.value)}>
+            <select
+              className={filterClassname}
+              value={p.value}
+              onChange={(e) => p.onChange(e.target.value)}
+            >
               <option value="All">All</option>
               <option value="Bug">Bug</option>
               <option value="Improvement">Improvement</option>
@@ -127,7 +135,7 @@ export function HeaderFilters() {
       {
         key: 'developer',
         name: 'Developer',
-        filterRenderer: p => (
+        filterRenderer: (p) => (
           <div className={filterContainerClassname}>
             <Select
               value={p.value}
@@ -164,13 +172,13 @@ export function HeaderFilters() {
   }, [rows]);
 
   const filteredRows = useMemo(() => {
-    return rows.filter(r => {
+    return rows.filter((r) => {
       return (
-        (filters.task ? r.task.includes(filters.task) : true)
-        && (filters.priority !== 'All' ? r.priority === filters.priority : true)
-        && (filters.issueType !== 'All' ? r.issueType === filters.issueType : true)
-        && (filters.developer ? r.developer === filters.developer.value : true)
-        && (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
+        (filters.task ? r.task.includes(filters.task) : true) &&
+        (filters.priority !== 'All' ? r.priority === filters.priority : true) &&
+        (filters.issueType !== 'All' ? r.issueType === filters.issueType : true) &&
+        (filters.developer ? r.developer === filters.developer.value : true) &&
+        (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
       );
     });
   }, [rows, filters]);
@@ -192,9 +200,12 @@ export function HeaderFilters() {
   return (
     <div className={rootClassname}>
       <div className={toolbarClassname}>
-        <button type="button" onClick={toggleFilters}>Toggle Filters</button>
-        {' '}
-        <button type="button" onClick={clearFilters}>Clear Filters</button>
+        <button type="button" onClick={toggleFilters}>
+          Toggle Filters
+        </button>{' '}
+        <button type="button" onClick={clearFilters}>
+          Clear Filters
+        </button>
       </div>
       <DataGrid
         columns={columns}

@@ -7,7 +7,8 @@ import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
 
-export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface GroupRowRendererProps<R, SR = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
   groupKey: unknown;
   viewportColumns: readonly CalculatedColumn<R, SR>[];
@@ -56,18 +57,21 @@ function GroupedRow<R, SR>({
       className={clsx(
         rowClassname,
         groupRowClassname,
-        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
+        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+        {
           [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
         }
       )}
       onClick={selectGroup}
-      style={{
-        top,
-        '--row-height': `${height}px`
-      } as unknown as CSSProperties}
+      style={
+        {
+          top,
+          '--row-height': `${height}px`
+        } as unknown as CSSProperties
+      }
       {...props}
     >
-      {viewportColumns.map(column => (
+      {viewportColumns.map((column) => (
         <GroupCell<R, SR>
           key={column.key}
           id={id}

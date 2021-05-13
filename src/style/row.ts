@@ -18,7 +18,7 @@ export const row = css`
     background-color: var(--row-hover-background-color);
   }
 
-  &[aria-selected="true"] {
+  &[aria-selected='true'] {
     background-color: var(--row-selected-background-color);
 
     &:hover {

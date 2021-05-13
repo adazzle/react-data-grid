@@ -32,9 +32,30 @@ function createRows(): Row[] {
       position: 'Run of site',
       price,
       children: [
-        { id: `${id}-0`, parentId: id, name: `supplier ${i}`, format: '728x90', position: 'run of site', price: price / 2 },
-        { id: `${id}-1`, parentId: id, name: `supplier ${i}`, format: '480x600', position: 'run of site', price: price * 0.25 },
-        { id: `${id}-2`, parentId: id, name: `supplier ${i}`, format: '328x70', position: 'run of site', price: price * 0.25 }
+        {
+          id: `${id}-0`,
+          parentId: id,
+          name: `supplier ${i}`,
+          format: '728x90',
+          position: 'run of site',
+          price: price / 2
+        },
+        {
+          id: `${id}-1`,
+          parentId: id,
+          name: `supplier ${i}`,
+          format: '480x600',
+          position: 'run of site',
+          price: price * 0.25
+        },
+        {
+          id: `${id}-2`,
+          parentId: id,
+          name: `supplier ${i}`,
+          format: '328x70',
+          position: 'run of site',
+          price: price * 0.25
+        }
       ],
       isExpanded: false
     };
@@ -44,7 +65,7 @@ function createRows(): Row[] {
 }
 
 function toggleSubRow(rows: Row[], id: string): Row[] {
-  const rowIndex = rows.findIndex(r => r.id === id);
+  const rowIndex = rows.findIndex((r) => r.id === id);
   const row = rows[rowIndex];
   const { children } = row;
   if (!children) return rows;
@@ -60,17 +81,17 @@ function toggleSubRow(rows: Row[], id: string): Row[] {
 }
 
 function deleteSubRow(rows: Row[], id: string): Row[] {
-  const row = rows.find(r => r.id === id);
+  const row = rows.find((r) => r.id === id);
   if (!row || !row.parentId) return rows;
 
   // Remove sub row from flattened rows.
-  const newRows = rows.filter(r => r.id !== id);
+  const newRows = rows.filter((r) => r.id !== id);
 
   // Remove sub row from parent row.
-  const parentRowIndex = newRows.findIndex(r => r.id === row.parentId);
+  const parentRowIndex = newRows.findIndex((r) => r.id === row.parentId);
   const { children } = newRows[parentRowIndex];
   if (children) {
-    const newChildren = children.filter(sr => sr.id !== id);
+    const newChildren = children.filter((sr) => sr.id !== id);
     newRows[parentRowIndex] = { ...newRows[parentRowIndex], children: newChildren };
   }
 
@@ -127,9 +148,7 @@ export function TreeView() {
                     onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
                   />
                 )}
-                <div style={style}>
-                  {row.format}
-                </div>
+                <div style={style}>{row.format}</div>
               </div>
             </>
           );
@@ -156,11 +175,7 @@ export function TreeView() {
           onChange={() => setAllowDelete(!allowDelete)}
         />
       </label>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        className="big-grid"
-      />
+      <DataGrid columns={columns} rows={rows} className="big-grid" />
     </>
   );
 }

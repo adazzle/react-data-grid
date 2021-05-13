@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { ceil, floor, max, min } from '../utils';
 import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
 
 const RENDER_BACTCH_SIZE = 8;
@@ -32,14 +33,19 @@ export function useViewportRows<R>({
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
 
-    const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[], startRowIndex: number): [GroupByDictionary<R>, number] => {
+    const groupRows = (
+      rows: readonly R[],
+      [groupByKey, ...remainingGroupByKeys]: readonly string[],
+      startRowIndex: number
+    ): [GroupByDictionary<R>, number] => {
       let groupRowsCount = 0;
       const groups: GroupByDictionary<R> = {};
       for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
         // Recursively group each parent group
-        const [childGroups, childRowsCount] = remainingGroupByKeys.length === 0
-          ? [childRows, childRows.length]
-          : groupRows(childRows, remainingGroupByKeys, startRowIndex + groupRowsCount + 1); // 1 for parent row
+        const [childGroups, childRowsCount] =
+          remainingGroupByKeys.length === 0
+            ? [childRows, childRows.length]
+            : groupRows(childRows, remainingGroupByKeys, startRowIndex + groupRowsCount + 1); // 1 for parent row
         groups[key] = { childRows, childGroups, startRowIndex: startRowIndex + groupRowsCount };
         groupRowsCount += childRowsCount + 1; // 1 for parent row
       }
@@ -55,7 +61,11 @@ export function useViewportRows<R>({
     if (!groupedRows) return [rawRows, isGroupRow];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
-    const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentId: string | undefined, level: number): void => {
+    const expandGroup = (
+      rows: GroupByDictionary<R> | readonly R[],
+      parentId: string | undefined,
+      level: number
+    ): void => {
       if (isReadonlyArray(rows)) {
         flattenedRows.push(...rows);
         return;
@@ -100,7 +110,7 @@ export function useViewportRows<R>({
         totalRowHeight: rowHeight * rows.length,
         getRowTop: (rowIdx: number) => rowIdx * rowHeight,
         getRowHeight: () => rowHeight,
-        findRowIdx: (offset: number) => Math.floor(offset / rowHeight)
+        findRowIdx: (offset: number) => floor(offset / rowHeight)
       };
     }
 
@@ -118,7 +128,7 @@ export function useViewportRows<R>({
     });
 
     const validateRowIdx = (rowIdx: number) => {
-      return Math.max(0, Math.min(rows.length - 1, rowIdx));
+      return max(0, min(rows.length - 1, rowIdx));
     };
 
     return {
@@ -129,7 +139,7 @@ export function useViewportRows<R>({
         let start = 0;
         let end = rowPositions.length - 1;
         while (start <= end) {
-          const middle = start + Math.floor((end - start) / 2);
+          const middle = start + floor((end - start) / 2);
           const currentOffset = rowPositions[middle].top;
 
           if (currentOffset === offset) return middle;
@@ -163,9 +173,15 @@ export function useViewportRows<R>({
 
   const overscanThreshold = 4;
   const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
-  const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
-  const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
+  const rowVisibleEndIdx = min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
+  const rowOverscanStartIdx = max(
+    0,
+    floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
+  );
+  const rowOverscanEndIdx = min(
+    rows.length - 1,
+    ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
+  );
 
   return {
     rowOverscanStartIdx,

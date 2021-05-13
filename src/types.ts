@@ -142,7 +142,8 @@ export interface SelectedCellProps extends SelectedCellPropsBase {
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface CellRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan?: number;
@@ -158,7 +159,8 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<Rea
   selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface RowRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
@@ -210,11 +212,14 @@ export interface PasteEvent<TRow> {
   targetRow: TRow;
 }
 
-export type GroupByDictionary<TRow> = Record<string, {
-  childRows: readonly TRow[];
-  childGroups: readonly TRow[] | GroupByDictionary<TRow>;
-  startRowIndex: number;
-}>;
+export type GroupByDictionary<TRow> = Record<
+  string,
+  {
+    childRows: readonly TRow[];
+    childGroups: readonly TRow[] | GroupByDictionary<TRow>;
+    startRowIndex: number;
+  }
+>;
 
 export interface GroupRow<TRow> {
   childRows: readonly TRow[];
@@ -231,20 +236,9 @@ export interface GroupRow<TRow> {
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
 
-export type ColSpanArgs<R, SR> = {
-  type: 'HEADER' | 'FILTER';
-} | {
-  type: 'ROW';
-  row: R;
-} | {
-  type: 'SUMMARY';
-  row: SR;
-};
+export type ColSpanArgs<R, SR> =
+  | { type: 'HEADER' | 'FILTER' }
+  | { type: 'ROW'; row: R }
+  | { type: 'SUMMARY'; row: SR };
 
-export type RowHeightArgs<R> = {
-  type: 'ROW';
-  row: R;
-} | {
-  type: 'GROUP';
-  row: GroupRow<R>;
-};
+export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
