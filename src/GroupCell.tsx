@@ -6,12 +6,7 @@ import type { GroupRowRendererProps } from './GroupRow';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<
   GroupRowRendererProps<R, SR>,
-  | 'id'
-  | 'rowIdx'
-  | 'groupKey'
-  | 'childRows'
-  | 'isExpanded'
-  | 'toggleGroup'
+  'id' | 'rowIdx' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup'
 >;
 
 interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
