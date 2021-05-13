@@ -3,9 +3,9 @@ import { memo } from 'react';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { cellSelectedClassname } from './style';
 
-type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
+type SharedGroupRowRendererProps<R, SR> = Pick<
+  GroupRowRendererProps<R, SR>,
   | 'id'
   | 'rowIdx'
   | 'groupKey'
@@ -43,9 +43,7 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       key={column.key}
-      className={getCellClassname(column, {
-        [cellSelectedClassname]: isCellSelected
-      })}
+      className={getCellClassname(column)}
       style={{
         ...getCellStyle(column),
         cursor: isLevelMatching ? 'pointer' : 'default'

@@ -7,7 +7,7 @@ import { getCellStyle, getCellClassname } from './utils';
 
 const cellResizable = css`
   &::after {
-    content: "";
+    content: '';
     cursor: col-resize;
     position: absolute;
     top: 0;
@@ -30,21 +30,21 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
-  | 'allRowsSelected'
+type SharedHeaderRowProps<R, SR> = Pick<
+  HeaderRowProps<R, SR>,
+  'sortColumn' | 'sortDirection' | 'onSort' | 'allRowsSelected'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
+  colSpan?: number;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
+  colSpan,
   onResize,
   allRowsSelected,
   onAllRowsSelectionChange,
@@ -61,14 +61,15 @@ export default function HeaderCell<R, SR>({
     const { right } = currentTarget.getBoundingClientRect();
     const offset = right - event.clientX;
 
-    if (offset > 11) { // +1px to account for the border size
+    if (offset > 11) {
+      // +1px to account for the border size
       return;
     }
 
     function onPointerMove(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        onPointerUp();
+        onPointerUp(event);
         return;
       }
       const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
@@ -77,7 +78,7 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onPointerUp() {
+    function onPointerUp(event: PointerEvent) {
       if (event.pointerId !== pointerId) return;
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
@@ -127,8 +128,9 @@ export default function HeaderCell<R, SR>({
       role="columnheader"
       aria-colindex={column.idx + 1}
       aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
+      aria-colspan={colSpan}
       className={className}
-      style={getCellStyle(column)}
+      style={getCellStyle(column, colSpan)}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}

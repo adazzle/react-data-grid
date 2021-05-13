@@ -2,8 +2,7 @@ import { forwardRef, memo } from 'react';
 import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
-import { cellSelectedClassname } from './style';
-import { getCellStyle, getCellClassname } from './utils';
+import { getCellStyle, getCellClassname, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`
@@ -41,28 +40,31 @@ const cellDragHandle = css`
 
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
-function Cell<R, SR>({
-  className,
-  column,
-  isCellSelected,
-  isCopied,
-  isDraggedOver,
-  row,
-  rowIdx,
-  dragHandleProps,
-  onRowClick,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
-  onRowChange,
-  selectCell,
-  ...props
-}: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+function Cell<R, SR>(
+  {
+    className,
+    column,
+    colSpan,
+    isCellSelected,
+    isCopied,
+    isDraggedOver,
+    row,
+    rowIdx,
+    dragHandleProps,
+    onRowClick,
+    onClick,
+    onDoubleClick,
+    onContextMenu,
+    onRowChange,
+    selectCell,
+    ...props
+  }: CellRendererProps<R, SR>,
+  ref: React.Ref<HTMLDivElement>
+) {
   const { cellClass } = column;
   className = getCellClassname(
     column,
     {
-      [cellSelectedClassname]: isCellSelected,
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
@@ -99,9 +101,11 @@ function Cell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
+      aria-colspan={colSpan}
+      aria-readonly={!isCellEditable(column, row) || undefined}
       ref={ref}
       className={className}
-      style={getCellStyle(column)}
+      style={getCellStyle(column, colSpan)}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
@@ -116,13 +120,13 @@ function Cell<R, SR>({
             isCellSelected={isCellSelected}
             onRowChange={handleRowChange}
           />
-          {dragHandleProps && (
-            <div className={cellDragHandleClassname} {...dragHandleProps} />
-          )}
+          {dragHandleProps && <div className={cellDragHandleClassname} {...dragHandleProps} />}
         </>
       )}
     </div>
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Cell)) as <R, SR = unknown>(
+  props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+) => JSX.Element;

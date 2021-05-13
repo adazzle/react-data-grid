@@ -1,19 +1,22 @@
+import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import { groupRowClassname, groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
+import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, Omit } from './types';
 import { RowSelectionProvider } from './hooks';
 
-export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface GroupRowRendererProps<R, SR = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
   groupKey: unknown;
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
   top: number;
+  height: number;
   level: number;
   selectedCellIdx?: number;
   isExpanded: boolean;
@@ -29,6 +32,7 @@ function GroupedRow<R, SR>({
   childRows,
   rowIdx,
   top,
+  height,
   level,
   isExpanded,
   selectedCellIdx,
@@ -53,16 +57,21 @@ function GroupedRow<R, SR>({
         className={clsx(
           rowClassname,
           groupRowClassname,
-          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-            [rowSelectedClassname]: isRowSelected,
+          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+          {
             [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
           }
         )}
         onClick={selectGroup}
-        style={{ top }}
+        style={
+          {
+            top,
+            '--row-height': `${height}px`
+          } as unknown as CSSProperties
+        }
         {...props}
       >
-        {viewportColumns.map(column => (
+        {viewportColumns.map((column) => (
           <GroupCell<R, SR>
             key={column.key}
             id={id}

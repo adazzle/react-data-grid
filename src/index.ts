@@ -23,5 +23,7 @@ export type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
-  SortDirection
+  SortDirection,
+  ColSpanArgs,
+  RowHeightArgs
 } from './types';
