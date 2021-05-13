@@ -29,8 +29,6 @@ function Row<R, SR = unknown>(
     height,
     onRowChange,
     selectCell,
-    'aria-rowindex': ariaRowIndex,
-    'aria-selected': ariaSelected,
     ...props
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
@@ -100,8 +98,6 @@ function Row<R, SR = unknown>(
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
-        aria-rowindex={ariaRowIndex}
-        aria-selected={ariaSelected}
         ref={ref}
         className={className}
         onMouseEnter={handleDragEnter}
