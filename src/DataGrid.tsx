@@ -277,10 +277,12 @@ function DataGrid<R, SR>(
 
   const allRowsSelected = useMemo((): boolean => {
     // no rows to select = explicitely unchecked
+    const { length } = rawRows;
     return (
-      rawRows.length !== 0 &&
+      length !== 0 &&
       selectedRows !== undefined &&
       rowKeyGetter !== undefined &&
+      selectedRows.size >= length &&
       rawRows.every((row) => selectedRows.has(rowKeyGetter(row)))
     );
   }, [rawRows, selectedRows, rowKeyGetter]);
