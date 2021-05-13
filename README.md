@@ -3,6 +3,7 @@
 [![npm-badge]][npm-url]
 [![type-badge]][npm-url]
 [![size-badge]][size-url]
+[![codecov-badge]][codecov-url]
 [![ci-badge]][ci-url]
 
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid
@@ -10,6 +11,8 @@
 [size-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
 [size-url]: https://bundlephobia.com/result?p=react-data-grid
 [type-badge]: https://img.shields.io/npm/types/react-data-grid
+[codecov-badge]: https://codecov.io/gh/adazzle/react-data-grid/branch/canary/graph/badge.svg?token=cvrRSWiz0Q
+[codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions
 
