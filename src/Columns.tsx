@@ -1,13 +1,12 @@
 import { SelectCellFormatter } from './formatters';
-import { useRowSelection, useRowSelectionChange } from './hooks';
+import { useRowSelection } from './hooks';
 import type { Column, FormatterProps, GroupFormatterProps } from './types';
 import { stopPropagation } from './utils/domUtils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
 function SelectFormatter(props: FormatterProps) {
-  const isRowSelected = useRowSelection();
-  const onRowSelectionChange = useRowSelectionChange();
+  const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (
     <SelectCellFormatter
