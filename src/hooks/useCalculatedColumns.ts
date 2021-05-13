@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, CalculatedColumnGroup, Column, ColumnGroup, ColumnMetric } from '../types';
+import type {
+  CalculatedColumn,
+  CalculatedColumnGroup,
+  Column,
+  ColumnGroup,
+  ColumnMetric
+} from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
@@ -8,7 +14,7 @@ import { floor, max, min } from '../utils';
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>>;
-  rawGroupBy?: readonly string[];
+  rawGroupBy: readonly string[] | undefined;
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
@@ -59,14 +65,14 @@ export function useCalculatedColumns<R, SR>({
     };
 
     const columnGroups: Array<CalculatedColumn<R, SR> | CalculatedColumnGroup<R, SR>> = [];
-    rawColumns.forEach(rawColumn => {
+    rawColumns.forEach((rawColumn) => {
       if (isColumnGroup(rawColumn)) {
         if (rawColumn.children.length === 0) {
           return;
         }
         let frozen = true;
         let rowGroup = true;
-        const childColumns = rawColumn.children.map(childColumn => {
+        const childColumns = rawColumn.children.map((childColumn) => {
           const calculatedColumn = getCalculatedColumn(childColumn);
           frozen = frozen && calculatedColumn.frozen;
           rowGroup = rowGroup && calculatedColumn.rowGroup;
@@ -117,7 +123,9 @@ export function useCalculatedColumns<R, SR>({
       return 0;
     });
 
-    const columns = columnGroups.flatMap(column => isColumnGroup(column) ? column.children : column);
+    const columns = columnGroups.flatMap((column) =>
+      isColumnGroup(column) ? column.children : column
+    );
     const colSpanColumns: CalculatedColumn<R, SR>[] = [];
     columns.forEach((column, idx) => {
       column.idx = idx;
@@ -301,6 +309,8 @@ function clampColumnWidth<R, SR>(
   return width;
 }
 
-function isColumnGroup<R, SR>(column: Column<R, SR> | ColumnGroup<R, SR>): column is ColumnGroup<R, SR> {
+function isColumnGroup<R, SR>(
+  column: Column<R, SR> | ColumnGroup<R, SR>
+): column is ColumnGroup<R, SR> {
   return 'children' in column;
 }

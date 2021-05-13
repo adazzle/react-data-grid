@@ -25,10 +25,11 @@ jobs:
         run: npm run prettier:check
       - name: Typecheck
         run: npm run typecheck
-      - name: Test
-        run: npm t -- --coverage --colors
       - name: Bundle
         run: npm run build
+      - name: Test
+        run: npm t -- --coverage --colors
+      - uses: codecov/codecov-action@v1
 
   storybook:
     runs-on: ubuntu-latest
