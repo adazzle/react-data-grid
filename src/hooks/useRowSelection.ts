@@ -13,7 +13,7 @@ function useSelection() {
   return context;
 }
 
-export const RowSelectionChangeContext =
+const RowSelectionChangeContext =
   createContext<((selectRowEvent: SelectRowEvent) => void) | undefined>(undefined);
 
 export const RowSelectionChangeProvider = RowSelectionChangeContext.Provider;
