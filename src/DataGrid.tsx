@@ -30,7 +30,9 @@ import {
   canExitGrid,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
-  getColSpan
+  getColSpan,
+  max,
+  sign
 } from './utils';
 
 import type {
@@ -417,7 +419,7 @@ function DataGrid<R, SR>(
       const previousRowIdx = lastSelectedRowIdx.current;
       lastSelectedRowIdx.current = rowIdx;
       if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-        const step = Math.sign(rowIdx - previousRowIdx);
+        const step = sign(rowIdx - previousRowIdx);
         for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
           const row = rows[i];
           if (isGroupRow(row)) continue;
@@ -1092,7 +1094,7 @@ function DataGrid<R, SR>(
             onKeyDown={handleKeyDown}
             onFocus={onGridFocus}
           />
-          <div style={{ height: Math.max(totalRowHeight, clientHeight) }} />
+          <div style={{ height: max(totalRowHeight, clientHeight) }} />
           {getViewportRows()}
           {summaryRows?.map((row, rowIdx) => (
             <SummaryRow<R, SR>
