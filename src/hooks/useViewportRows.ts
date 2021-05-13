@@ -10,8 +10,8 @@ interface ViewportRowsArgs<R> {
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
-  rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
-  expandedGroupIds?: ReadonlySet<unknown>;
+  rowGrouper: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | undefined;
+  expandedGroupIds: ReadonlySet<unknown> | undefined;
   enableVirtualization: boolean;
 }
 

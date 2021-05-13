@@ -18,7 +18,7 @@ export interface GroupRowRendererProps<R, SR = unknown>
   top: number;
   height: number;
   level: number;
-  selectedCellIdx?: number;
+  selectedCellIdx: number | undefined;
   isExpanded: boolean;
   isRowSelected: boolean;
   selectCell: (position: Position, enableEditor?: boolean) => void;
