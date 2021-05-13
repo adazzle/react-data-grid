@@ -5,7 +5,8 @@ import clsx from 'clsx';
 import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
+import type { CalculatedColumn, Position, Omit } from './types';
+import { RowSelectionProvider } from './hooks';
 
 export interface GroupRowRendererProps<R, SR = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -21,7 +22,6 @@ export interface GroupRowRendererProps<R, SR = unknown>
   isExpanded: boolean;
   isRowSelected: boolean;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
@@ -38,7 +38,6 @@ function GroupedRow<R, SR>({
   selectedCellIdx,
   isRowSelected,
   selectCell,
-  selectRow,
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
@@ -50,44 +49,44 @@ function GroupedRow<R, SR>({
   }
 
   return (
-    <div
-      role="row"
-      aria-level={level}
-      aria-expanded={isExpanded}
-      className={clsx(
-        rowClassname,
-        groupRowClassname,
-        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-        {
-          [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
+    <RowSelectionProvider value={isRowSelected}>
+      <div
+        role="row"
+        aria-level={level}
+        aria-expanded={isExpanded}
+        className={clsx(
+          rowClassname,
+          groupRowClassname,
+          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+          {
+            [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
+          }
+        )}
+        onClick={selectGroup}
+        style={
+          {
+            top,
+            '--row-height': `${height}px`
+          } as unknown as CSSProperties
         }
-      )}
-      onClick={selectGroup}
-      style={
-        {
-          top,
-          '--row-height': `${height}px`
-        } as unknown as CSSProperties
-      }
-      {...props}
-    >
-      {viewportColumns.map((column) => (
-        <GroupCell<R, SR>
-          key={column.key}
-          id={id}
-          rowIdx={rowIdx}
-          groupKey={groupKey}
-          childRows={childRows}
-          isExpanded={isExpanded}
-          isRowSelected={isRowSelected}
-          isCellSelected={selectedCellIdx === column.idx}
-          column={column}
-          groupColumnIndex={idx}
-          selectRow={selectRow}
-          toggleGroup={toggleGroup}
-        />
-      ))}
-    </div>
+        {...props}
+      >
+        {viewportColumns.map((column) => (
+          <GroupCell<R, SR>
+            key={column.key}
+            id={id}
+            rowIdx={rowIdx}
+            groupKey={groupKey}
+            childRows={childRows}
+            isExpanded={isExpanded}
+            isCellSelected={selectedCellIdx === column.idx}
+            column={column}
+            groupColumnIndex={idx}
+            toggleGroup={toggleGroup}
+          />
+        ))}
+      </div>
+    </RowSelectionProvider>
   );
 }
 

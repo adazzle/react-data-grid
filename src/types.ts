@@ -81,8 +81,6 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
   onRowChange: (row: Readonly<TRow>) => void;
 }
 
@@ -92,13 +90,12 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
+  rowIdx: number;
   groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  onRowSelectionChange: (checked: boolean) => void;
   toggleGroup: () => void;
 }
 
@@ -151,12 +148,10 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown>
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  isRowSelected: boolean;
   dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -177,7 +172,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   rowClass?: (row: TRow) => string | undefined;
   setDraggedOverRowIdx?: (overRowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
