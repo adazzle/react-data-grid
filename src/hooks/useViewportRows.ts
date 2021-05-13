@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { ceil, floor, max, min } from '../utils';
 import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
 
 const RENDER_BACTCH_SIZE = 8;
@@ -109,7 +110,7 @@ export function useViewportRows<R>({
         totalRowHeight: rowHeight * rows.length,
         getRowTop: (rowIdx: number) => rowIdx * rowHeight,
         getRowHeight: () => rowHeight,
-        findRowIdx: (offset: number) => Math.floor(offset / rowHeight)
+        findRowIdx: (offset: number) => floor(offset / rowHeight)
       };
     }
 
@@ -127,7 +128,7 @@ export function useViewportRows<R>({
     });
 
     const validateRowIdx = (rowIdx: number) => {
-      return Math.max(0, Math.min(rows.length - 1, rowIdx));
+      return max(0, min(rows.length - 1, rowIdx));
     };
 
     return {
@@ -138,7 +139,7 @@ export function useViewportRows<R>({
         let start = 0;
         let end = rowPositions.length - 1;
         while (start <= end) {
-          const middle = start + Math.floor((end - start) / 2);
+          const middle = start + floor((end - start) / 2);
           const currentOffset = rowPositions[middle].top;
 
           if (currentOffset === offset) return middle;
@@ -172,14 +173,14 @@ export function useViewportRows<R>({
 
   const overscanThreshold = 4;
   const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
-  const rowOverscanStartIdx = Math.max(
+  const rowVisibleEndIdx = min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
+  const rowOverscanStartIdx = max(
     0,
-    Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
+    floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
   );
-  const rowOverscanEndIdx = Math.min(
+  const rowOverscanEndIdx = min(
     rows.length - 1,
-    Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
+    ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE
   );
 
   return {

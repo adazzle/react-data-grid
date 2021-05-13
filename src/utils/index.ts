@@ -8,6 +8,8 @@ export * from './domUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
+export const { min, max, floor, ceil, sign } = Math;
+
 export function assertIsValidKeyGetter<R>(
   keyGetter: unknown
 ): asserts keyGetter is (row: R) => React.Key {
