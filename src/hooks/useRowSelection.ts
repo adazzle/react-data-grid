@@ -10,7 +10,7 @@ const RowSelectionChangeContext =
 
 export const RowSelectionChangeProvider = RowSelectionChangeContext.Provider;
 
-export function useRowSelection(): readonly [boolean, (selectRowEvent: SelectRowEvent) => void] {
+export function useRowSelection(): [boolean, (selectRowEvent: SelectRowEvent) => void] {
   const rowSelectionContext = useContext(RowSelectionContext);
   const rowSelectionChangeContext = useContext(RowSelectionChangeContext);
 
