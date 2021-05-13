@@ -10,6 +10,7 @@ export { useRowSelection } from './hooks';
 export type {
   Column,
   CalculatedColumn,
+  ColumnGroup,
   FormatterProps,
   SummaryFormatterProps,
   GroupFormatterProps,
