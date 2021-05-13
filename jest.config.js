@@ -4,7 +4,7 @@
 export default {
   coverageProvider: 'v8',
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/types.ts'],
-  coverageReporters: ['text'],
+  coverageReporters: ['cobertura'],
   restoreMocks: true,
   setupFiles: ['./test/setup.ts'],
   setupFilesAfterEnv: ['@testing-library/jest-dom'],
