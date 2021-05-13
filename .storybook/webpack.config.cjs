@@ -1,6 +1,9 @@
 'use strict';
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const stylis = require('stylis');
+
+stylis.set({ prefix: false });
 
 module.exports = function ({ config, mode }) {
   const isProd = mode === 'PRODUCTION';
