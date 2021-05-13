@@ -1,8 +1,5 @@
 import 'core-js/stable';
-import { ResizeObserver as Polyfill } from '@juggle/resize-observer';
 import { css } from '@linaria/core';
-
-window.ResizeObserver ??= Polyfill;
 
 css`
   :global() {
