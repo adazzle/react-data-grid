@@ -1,7 +1,7 @@
 import { SelectCellFormatter } from './formatters';
 import { useRowSelection } from './hooks';
 import type { Column, FormatterProps, GroupFormatterProps } from './types';
-import { stopPropagation } from './utils/domUtils';
+import { stopPropagation } from './utils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
