@@ -7,7 +7,7 @@ import {
   useCallback,
   useMemo
 } from 'react';
-import type { RefAttributes } from 'react';
+import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
@@ -91,8 +91,7 @@ type SharedDivProps = Pick<
   'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'className' | 'style'
 >;
 
-export interface DataGridProps<R, SR = unknown, K extends React.Key = React.Key>
-  extends SharedDivProps {
+export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
   /**
    * Grid and data Props
    */
@@ -185,7 +184,7 @@ export interface DataGridProps<R, SR = unknown, K extends React.Key = React.Key>
  *
  * <DataGrid columns={columns} rows={rows} />
  */
-function DataGrid<R, SR, K extends React.Key>(
+function DataGrid<R, SR, K extends Key>(
   {
     // Grid and data Props
     columns: rawColumns,
@@ -1145,6 +1144,6 @@ function DataGrid<R, SR, K extends React.Key>(
   );
 }
 
-export default forwardRef(DataGrid) as <R, SR = unknown, K extends React.Key = React.Key>(
+export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
 ) => JSX.Element;
