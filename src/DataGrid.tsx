@@ -128,8 +128,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
   /**Used for multi column sorting */
-  sortColumns?: readonly Readonly<SortColumn>[];
-  onSortColumnsChange?: (sortColumns: SortColumn[]) => void;
+  sortColumns?: readonly Readonly<SortColumn>[] | null;
+  onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
   filters?: Readonly<Filters> | null;
   onFiltersChange?: ((filters: Filters) => void) | null;
   defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
