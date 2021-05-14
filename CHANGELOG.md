@@ -1,5 +1,14 @@
 # Changelog
 
+## v7.0.0-canary.47
+
+- Added a third, optional generic on `<DataGrid />` to specify the row key type. ([PR](https://github.com/adazzle/react-data-grid/pull/2311))
+- Added the `useRowSelection` hook for custom cell renderers to access `isRowSelected` and `onRowSelectionChange`. ([PR](https://github.com/adazzle/react-data-grid/pull/2338))
+- `HeaderRendererProps.allRowsSelected` tweaks, affecting the `SelectColumn`: ([PR](https://github.com/adazzle/react-data-grid/pull/2402))
+  - It will now be `false` when `rows.length === 0` instead of `true`.
+  - `selectedRows` must contain all the row keys for `allRowsSelected` to be `true`, instead of naively comparing the `size` and `length`.
+- Optional props on `<DataGrid />` can now also be `null` in addition to `undefined`. ([PR](https://github.com/adazzle/react-data-grid/pull/2406))
+
 ## v7.0.0-canary.46
 
 - Optimize onRowsChange: only update changed rows ([PR](https://github.com/adazzle/react-data-grid/pull/2390))
