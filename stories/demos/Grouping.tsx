@@ -162,7 +162,7 @@ const options: OptionsType<Option> = [
 
 export function Grouping() {
   const [rows] = useState(createRows);
-  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [selectedOptions, setSelectedOptions] = useState<ValueType<Option, true>>([
     options[0],
     options[1]
