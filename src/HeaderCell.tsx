@@ -90,6 +90,7 @@ export default function HeaderCell<R, SR>({
   const sortDirection = sortColumns?.find(item => item.columnKey === column.key)?.direction;
   const index = sortColumns?.findIndex(sort => sort.columnKey === column.key);
   const priority = index !== undefined ? index + 1 : undefined;
+  const multiSorts = sortColumns ? sortColumns.length > 1 : false;
 
   const onSort = (columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
     if (!onSortColumnsChange) return;
@@ -112,6 +113,7 @@ export default function HeaderCell<R, SR>({
         <column.headerRenderer
           column={column}
           sortDirection={sortDirection}
+          priority={multiSorts ? priority : undefined}
           onSort={onSort}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
@@ -125,7 +127,7 @@ export default function HeaderCell<R, SR>({
           column={column}
           onSort={onSort}
           sortDirection={sortDirection}
-          priority={priority}
+          priority={multiSorts ? priority : undefined}
         >
           {column.name}
         </SortableHeaderCell>
@@ -143,7 +145,7 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-sort={sortDirection ? getAriaSort(sortDirection) : undefined}
+      aria-sort={!multiSorts ? getAriaSort(sortDirection): undefined}
       aria-colspan={colSpan}
       className={className}
       style={getCellStyle(column, colSpan)}

@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event';
-import { getCellsAtRowIndex, getHeaderCells } from './utils';
+import { getCellsAtColumn, getHeaderCells } from './utils';
 import type { Column, SortColumn } from '../src/types';
 import { StrictMode, useMemo, useState } from 'react';
 import DataGrid from '../src';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 interface Row {
   id: number;
@@ -98,37 +98,40 @@ function setupNewGrid(props: Props) {
   );
 }
 
-test('single column sort', () => {
+test('single column sort', async () => {
   setupNewGrid({ newRows, newColumns });
+  const grid = await screen.findByRole('grid');
+  const assigneeColumn = getCellsAtColumn({ grid, name: 'assignee' });
 
   //Sort by Assignee - ASC
   userEvent.click(getHeaderCells()[2].firstElementChild!);
-
-  expect(getCellsAtRowIndex(0)[2]).toHaveTextContent('Brad Braun');
-  expect(getCellsAtRowIndex(1)[2]).toHaveTextContent('Janice Stehr');
-  expect(getCellsAtRowIndex(2)[2]).toHaveTextContent('Keith McGlynn');
+  expect(assigneeColumn[0]).toHaveTextContent('Brad Braun');
+  expect(assigneeColumn[1]).toHaveTextContent('Janice Stehr');
+  expect(assigneeColumn[2]).toHaveTextContent('Keith McGlynn');
 });
 
-test('multi column sort', () => {
+test('multi column sort', async () => {
   setupNewGrid({ newRows, newColumns });
+  const grid = await screen.findByRole('grid');
+  const areaColumn = getCellsAtColumn({ grid, name: 'area' });
+  const transactionColumn = getCellsAtColumn({ grid, name: 'transaction' });
+  const budgetColumn = getCellsAtColumn({ grid, name: 'budget' });
 
   //Sort by Area - ASC, Transaction - ASC, Budget - ASC
   userEvent.click(getHeaderCells()[1].firstElementChild!);
   userEvent.click(getHeaderCells()[4].firstElementChild!, { ctrlKey: true });
   userEvent.click(getHeaderCells()[3].firstElementChild!, { ctrlKey: true });
 
-  expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('Accountability');
-  expect(getCellsAtRowIndex(0)[2]).toHaveTextContent('Luther Larkin');
-  expect(getCellsAtRowIndex(0)[3]).toHaveTextContent('1522');
-  expect(getCellsAtRowIndex(0)[4]).toHaveTextContent('deposit');
+  expect(areaColumn[0]).toHaveTextContent('Accountability');
+  expect(areaColumn[1]).toHaveTextContent('Accountability');
+  expect(areaColumn[2]).toHaveTextContent('Accountability');
 
-  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('Accountability');
-  expect(getCellsAtRowIndex(1)[2]).toHaveTextContent('Keith McGlynn');
-  expect(getCellsAtRowIndex(1)[3]).toHaveTextContent('2508');
-  expect(getCellsAtRowIndex(1)[4]).toHaveTextContent('deposit');
+  expect(transactionColumn[0]).toHaveTextContent('deposit');
+  expect(transactionColumn[1]).toHaveTextContent('deposit');
+  expect(transactionColumn[2]).toHaveTextContent('invoice');
 
-  expect(getCellsAtRowIndex(2)[1]).toHaveTextContent('Accountability');
-  expect(getCellsAtRowIndex(2)[2]).toHaveTextContent('Michael Abshire');
-  expect(getCellsAtRowIndex(2)[3]).toHaveTextContent('5252');
-  expect(getCellsAtRowIndex(2)[4]).toHaveTextContent('invoice');
+  expect(budgetColumn[0]).toHaveTextContent('1522');
+  expect(budgetColumn[1]).toHaveTextContent('2508');
+  expect(budgetColumn[2]).toHaveTextContent('5252');
+
 });
