@@ -81,8 +81,6 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  onRowSelectionChange: (checked: boolean, isShiftClick: boolean) => void;
   onRowChange: (row: Readonly<TRow>) => void;
 }
 
@@ -92,13 +90,12 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
+  rowIdx: number;
   groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  onRowSelectionChange: (checked: boolean) => void;
   toggleGroup: () => void;
 }
 
@@ -119,9 +116,9 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
-  sortDirection?: SortDirection;
+  sortDirection?: SortDirection | undefined | null;
   priority?: number;
-  onSort?: (columnKey: string, direction: SortDirection, ctrlClick: boolean) => void;
+  onSort?: (columnKey: string, direction: SortDirection, ctrlClick: boolean) => void | undefined | null;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
@@ -139,43 +136,52 @@ export interface EditCellProps<TRow> extends SelectedCellPropsBase {
 export interface SelectedCellProps extends SelectedCellPropsBase {
   mode: 'SELECT';
   onFocus: () => void;
-  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  dragHandleProps:
+    | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
+    | undefined;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface CellRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
-  colSpan?: number;
+  colSpan: number | undefined;
   row: TRow;
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  isRowSelected: boolean;
-  dragHandleProps?: Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>;
+  dragHandleProps:
+    | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
+    | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  onRowClick:
+    | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
+    | undefined
+    | null;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface RowRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
   rowIdx: number;
-  copiedCellIdx?: number;
-  draggedOverCellIdx?: number;
+  copiedCellIdx: number | undefined;
+  draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   top: number;
   height: number;
-  selectedCellProps?: EditCellProps<TRow> | SelectedCellProps;
+  selectedCellProps: EditCellProps<TRow> | SelectedCellProps | undefined;
   onRowChange: (rowIdx: number, row: TRow) => void;
-  onRowClick?: (rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void;
-  rowClass?: (row: TRow) => string | undefined;
-  setDraggedOverRowIdx?: (overRowIdx: number) => void;
+  onRowClick:
+    | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
+    | undefined
+    | null;
+  rowClass: ((row: TRow) => string | undefined | null) | undefined | null;
+  setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
@@ -210,11 +216,14 @@ export interface PasteEvent<TRow> {
   targetRow: TRow;
 }
 
-export type GroupByDictionary<TRow> = Record<string, {
-  childRows: readonly TRow[];
-  childGroups: readonly TRow[] | GroupByDictionary<TRow>;
-  startRowIndex: number;
-}>;
+export type GroupByDictionary<TRow> = Record<
+  string,
+  {
+    childRows: readonly TRow[];
+    childGroups: readonly TRow[] | GroupByDictionary<TRow>;
+    startRowIndex: number;
+  }
+>;
 
 export interface GroupRow<TRow> {
   childRows: readonly TRow[];
@@ -236,20 +245,9 @@ export interface SortColumn {
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
 
-export type ColSpanArgs<R, SR> = {
-  type: 'HEADER' | 'FILTER';
-} | {
-  type: 'ROW';
-  row: R;
-} | {
-  type: 'SUMMARY';
-  row: SR;
-};
+export type ColSpanArgs<R, SR> =
+  | { type: 'HEADER' | 'FILTER' }
+  | { type: 'ROW'; row: R }
+  | { type: 'SUMMARY'; row: SR };
 
-export type RowHeightArgs<R> = {
-  type: 'ROW';
-  row: R;
-} | {
-  type: 'GROUP';
-  row: GroupRow<R>;
-};
+export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };

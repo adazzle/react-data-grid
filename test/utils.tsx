@@ -6,7 +6,7 @@ import type { DataGridProps } from '../src/';
 
 type Name = ByRoleOptions['name'];
 
-export function setup<R, SR>(props: DataGridProps<R, SR>) {
+export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
     <StrictMode>
       <DataGrid {...props} />

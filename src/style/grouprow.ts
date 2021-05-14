@@ -2,7 +2,7 @@ import { css } from '@linaria/core';
 import { cell, cellFrozenLast } from './cell';
 
 const groupRow = css`
-  &:not([aria-selected="true"]) {
+  &:not([aria-selected='true']) {
     background-color: var(--header-background-color);
   }
 
@@ -15,7 +15,7 @@ export const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 const groupRowSelected = css`
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     right: 0;

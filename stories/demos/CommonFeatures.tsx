@@ -14,7 +14,6 @@ const toolbarClassname = css`
   margin-bottom: 8px;
 `;
 
-
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
   style: 'currency',
@@ -92,11 +91,11 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'country',
       name: 'Country',
       width: 180,
-      editor: p => (
+      editor: (p) => (
         <SelectEditor
           value={p.row.country}
-          onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
-          options={countries.map(c => ({ value: c, label: c }))}
+          onChange={(value) => p.onRowChange({ ...p.row, country: value }, true)}
+          options={countries.map((c) => ({ value: c, label: c }))}
           rowHeight={p.rowHeight}
           menuPortalTarget={p.editorPortalTarget}
         />
@@ -183,9 +182,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         );
       },
       summaryFormatter({ row: { yesCount, totalCount } }) {
-        return (
-          <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>
-        );
+        return <>{`${Math.floor((100 * yesCount) / totalCount)}% ✔️`}</>;
       }
     }
   ];
@@ -225,17 +222,20 @@ function createRows(): readonly Row[] {
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<SortColumn[]>([]);
-  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const countries = useMemo(() => {
-    return [...new Set(rows.map(r => r.country))]
-      .sort(new Intl.Collator().compare);
+    return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
   const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
+    const summaryRow: SummaryRow = {
+      id: 'total_0',
+      totalCount: rows.length,
+      yesCount: rows.filter((r) => r.available).length
+    };
     return [summaryRow];
   }, [rows]);
 
@@ -305,21 +305,24 @@ export function CommonFeatures() {
   return (
     <>
       <div className={toolbarClassname}>
-        <button onClick={() => {
-          exportToCsv(gridElement, 'CommonFeatures.csv');
-        }}
+        <button
+          onClick={() => {
+            exportToCsv(gridElement, 'CommonFeatures.csv');
+          }}
         >
           Export to CSV
         </button>
-        <button onClick={() => {
-          exportToXlsx(gridElement, 'CommonFeatures.xlsx');
-        }}
+        <button
+          onClick={() => {
+            exportToXlsx(gridElement, 'CommonFeatures.xlsx');
+          }}
         >
           Export to XSLX
         </button>
-        <button onClick={() => {
-          exportToPdf(gridElement, 'CommonFeatures.pdf');
-        }}
+        <button
+          onClick={() => {
+            exportToPdf(gridElement, 'CommonFeatures.pdf');
+          }}
         >
           Export to PDF
         </button>

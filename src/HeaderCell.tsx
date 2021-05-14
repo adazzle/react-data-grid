@@ -7,7 +7,7 @@ import { getCellStyle, getCellClassname } from './utils';
 
 const cellResizable = css`
   &::after {
-    content: "";
+    content: '';
     cursor: col-resize;
     position: absolute;
     top: 0;
@@ -19,7 +19,7 @@ const cellResizable = css`
 
 const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
-function getAriaSort(sortDirection?: SortDirection) {
+function getAriaSort(sortDirection: SortDirection | undefined | null) {
   switch (sortDirection) {
     case 'ASC':
       return 'ascending';
@@ -30,7 +30,7 @@ function getAriaSort(sortDirection?: SortDirection) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
+type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR, React.Key>,
   | 'onSortColumnsChange'
   | 'allRowsSelected'
   | 'sortColumns'
@@ -38,7 +38,7 @@ type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
-  colSpan?: number;
+  colSpan: number | undefined;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
@@ -61,7 +61,8 @@ export default function HeaderCell<R, SR>({
     const { right } = currentTarget.getBoundingClientRect();
     const offset = right - event.clientX;
 
-    if (offset > 11) { // +1px to account for the border size
+    if (offset > 11) {
+      // +1px to account for the border size
       return;
     }
 

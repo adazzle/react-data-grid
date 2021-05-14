@@ -28,7 +28,7 @@ export function DraggableRowRenderer<R, SR = unknown>({
   const [{ isDragging }, drag] = useDrag({
     type: 'ROW_DRAG',
     item: { index: rowIdx },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
   });
@@ -38,19 +38,16 @@ export function DraggableRowRenderer<R, SR = unknown>({
     drop({ index }: { index: number }) {
       onRowReorder(index, rowIdx);
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
     })
   });
 
-  className = clsx(
-    className,
-    {
-      [rowDraggingClassname]: isDragging,
-      [rowOverClassname]: isOver
-    }
-  );
+  className = clsx(className, {
+    [rowDraggingClassname]: isDragging,
+    [rowOverClassname]: isOver
+  });
 
   return (
     <Row

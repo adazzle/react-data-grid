@@ -3,6 +3,7 @@
 [![npm-badge]][npm-url]
 [![type-badge]][npm-url]
 [![size-badge]][size-url]
+[![codecov-badge]][codecov-url]
 [![ci-badge]][ci-url]
 
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid
@@ -10,6 +11,8 @@
 [size-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
 [size-url]: https://bundlephobia.com/result?p=react-data-grid
 [type-badge]: https://img.shields.io/npm/types/react-data-grid
+[codecov-badge]: https://codecov.io/gh/adazzle/react-data-grid/branch/canary/graph/badge.svg?token=cvrRSWiz0Q
+[codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions
 
@@ -32,6 +35,7 @@ last 2 safari versions
 ```
 
 See [documentation](https://github.com/browserslist/browserslist)
+
 </details>
 
 <details>
@@ -40,12 +44,15 @@ See [documentation](https://github.com/browserslist/browserslist)
 ```json
 {
   "presets": [
-    ["@babel/env", {
-      "bugfixes": true,
-      "shippedProposals": true,
-      "corejs": 3,
-      "useBuiltIns": "entry"
-    }]
+    [
+      "@babel/env",
+      {
+        "bugfixes": true,
+        "shippedProposals": true,
+        "corejs": 3,
+        "useBuiltIns": "entry"
+      }
+    ]
   ]
 }
 ```
@@ -78,6 +85,7 @@ See [documentation](https://babeljs.io/docs/en/)
 ```
 
 See [documentation](https://github.com/babel/babel-loader)
+
 </details>
 
 <details>
@@ -88,16 +96,14 @@ See [documentation](https://github.com/babel/babel-loader)
   // ...
   plugins: {
     babel({
-      include: [
-        './src/**/*',
-        './node_modules/react-data-grid/lib/**/*'
-      ]
-    })
+      include: ['./src/**/*', './node_modules/react-data-grid/lib/**/*']
+    });
   }
 }
 ```
 
 See [documentation](https://github.com/rollup/plugins/tree/master/packages/babel)
+
 </details>
 
 ## Usage
@@ -116,12 +122,7 @@ const rows = [
 ];
 
 function App() {
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} />;
 }
 ```
 
