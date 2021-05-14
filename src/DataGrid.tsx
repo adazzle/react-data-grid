@@ -294,8 +294,8 @@ function DataGrid<R, SR, K extends React.Key>(
     const { length } = rawRows;
     return (
       length !== 0 &&
-      selectedRows !== undefined &&
-      rowKeyGetter !== undefined &&
+      selectedRows != null &&
+      rowKeyGetter != null &&
       selectedRows.size >= length &&
       rawRows.every((row) => selectedRows.has(rowKeyGetter(row)))
     );
