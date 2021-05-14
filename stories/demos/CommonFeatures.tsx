@@ -221,7 +221,7 @@ function createRows(): readonly Row[] {
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
-  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const countries = useMemo(() => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);

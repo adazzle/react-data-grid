@@ -203,7 +203,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
 
 export function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
-  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
   const [isLoading, setIsLoading] = useState(false);
 
   function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {

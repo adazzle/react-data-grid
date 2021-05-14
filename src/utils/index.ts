@@ -10,9 +10,9 @@ export * from './selectedCellUtils';
 
 export const { min, max, floor, ceil, sign } = Math;
 
-export function assertIsValidKeyGetter<R>(
+export function assertIsValidKeyGetter<R, K extends React.Key>(
   keyGetter: unknown
-): asserts keyGetter is (row: R) => React.Key {
+): asserts keyGetter is (row: R) => K {
   if (typeof keyGetter !== 'function') {
     throw new Error('Please specify the rowKeyGetter prop to use selection');
   }

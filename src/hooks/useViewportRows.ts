@@ -10,8 +10,11 @@ interface ViewportRowsArgs<R> {
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
-  rowGrouper: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | undefined;
-  expandedGroupIds: ReadonlySet<unknown> | undefined;
+  rowGrouper:
+    | ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>)
+    | undefined
+    | null;
+  expandedGroupIds: ReadonlySet<unknown> | undefined | null;
   enableVirtualization: boolean;
 }
 
@@ -31,7 +34,7 @@ export function useViewportRows<R>({
   enableVirtualization
 }: ViewportRowsArgs<R>) {
   const [groupedRows, rowsCount] = useMemo(() => {
-    if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
+    if (groupBy.length === 0 || rowGrouper == null) return [undefined, rawRows.length];
 
     const groupRows = (
       rows: readonly R[],

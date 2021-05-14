@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
-export function setup<R, SR>(props: DataGridProps<R, SR>) {
+export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
     <StrictMode>
       <DataGrid {...props} />
