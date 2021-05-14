@@ -14,12 +14,30 @@ interface Row {
 }
 const newRows: readonly Row[] = [
   { id: 8, area: 'Creative', assignee: 'Phillip Kiehn', budget: 6877, transaction: 'invoice' },
-  { id: 1, area: 'Accountability', assignee: 'Keith McGlynn', budget: 2508, transaction: 'deposit' },
+  {
+    id: 1,
+    area: 'Accountability',
+    assignee: 'Keith McGlynn',
+    budget: 2508,
+    transaction: 'deposit'
+  },
   { id: 5, area: 'Brand', assignee: 'Brad Braun', budget: 8014, transaction: 'invoice' },
   { id: 7, area: 'Brand', assignee: 'Janice Stehr', budget: 10913, transaction: 'payment' },
   { id: 4, area: 'Accounts', assignee: 'Lynee Sawyer', budget: 3211, transaction: 'invoice' },
-  { id: 2, area: 'Accountability', assignee: 'Michael Abshire', budget: 5252, transaction: 'invoice' },
-  { id: 3, area: 'Accountability', assignee: 'Luther Larkin', budget: 1522, transaction: 'deposit' },
+  {
+    id: 2,
+    area: 'Accountability',
+    assignee: 'Michael Abshire',
+    budget: 5252,
+    transaction: 'invoice'
+  },
+  {
+    id: 3,
+    area: 'Accountability',
+    assignee: 'Luther Larkin',
+    budget: 1522,
+    transaction: 'deposit'
+  },
   { id: 6, area: 'Brand', assignee: 'Tony Reinger', budget: 700, transaction: 'invoice' }
 ];
 
@@ -45,14 +63,16 @@ const SortingContainer = ({ newRows, newColumns }: Props) => {
       case 'assignee':
       case 'area':
       case 'transaction':
-        return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]); };
+        return function (a: Row, b: Row) {
+          return a[sortColumn].localeCompare(b[sortColumn]);
+        };
       case 'id':
       case 'budget':
-        return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]; };
+        return function (a: Row, b: Row) {
+          return a[sortColumn] - b[sortColumn];
+        };
       default:
-        throw new Error(
-          `unsupported sortColumn: "${sortColumn}"`
-        );
+        throw new Error(`unsupported sortColumn: "${sortColumn}"`);
     }
   };
   const sortedRows: readonly Row[] = useMemo(() => {
@@ -91,9 +111,7 @@ const SortingContainer = ({ newRows, newColumns }: Props) => {
 function setupNewGrid(props: Props) {
   return render(
     <StrictMode>
-      <SortingContainer
-        {...props}
-      />
+      <SortingContainer {...props} />
     </StrictMode>
   );
 }
@@ -133,5 +151,4 @@ test('multi column sort', async () => {
   expect(budgetColumn[0]).toHaveTextContent('1522');
   expect(budgetColumn[1]).toHaveTextContent('2508');
   expect(budgetColumn[2]).toHaveTextContent('5252');
-
 });

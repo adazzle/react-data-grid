@@ -17,8 +17,10 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-
-type SharedHeaderCellProps<R, SR> = Pick<HeaderRendererProps<R, SR>, 'column' | 'sortDirection' | 'onSort' | 'priority'>;
+type SharedHeaderCellProps<R, SR> = Pick<
+  HeaderRendererProps<R, SR>,
+  'column' | 'sortDirection' | 'onSort' | 'priority'
+>;
 interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
   children: React.ReactNode;
 }

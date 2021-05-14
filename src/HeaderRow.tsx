@@ -6,12 +6,9 @@ import { assertIsValidKeyGetter, getColSpan } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { headerRowClassname } from './style';
 
-type SharedDataGridProps<R, SR, K extends React.Key> = Pick<DataGridProps<R, SR, K>,
-  | 'rows'
-  | 'onSelectedRowsChange'
-  | 'rowKeyGetter'
-  | 'sortColumns'
-  | 'onSortColumnsChange'
+type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
+  DataGridProps<R, SR, K>,
+  'rows' | 'onSelectedRowsChange' | 'rowKeyGetter' | 'sortColumns' | 'onSortColumnsChange'
 >;
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {

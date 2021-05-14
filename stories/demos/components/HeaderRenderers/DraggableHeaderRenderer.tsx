@@ -42,11 +42,7 @@ export function DraggableHeaderRenderer<R>({
         cursor: 'move'
       }}
     >
-      <SortableHeaderCell
-        column={column}
-        sortDirection={sortDirection}
-        onSort={onSort}
-      >
+      <SortableHeaderCell column={column} sortDirection={sortDirection} onSort={onSort}>
         {column.name}
       </SortableHeaderCell>
     </div>

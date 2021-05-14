@@ -118,7 +118,11 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   sortDirection?: SortDirection | undefined | null;
   priority?: number;
-  onSort?: (columnKey: string, direction: SortDirection, ctrlClick: boolean) => void | undefined | null;
+  onSort?: (
+    columnKey: string,
+    direction: SortDirection,
+    ctrlClick: boolean
+  ) => void | undefined | null;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }

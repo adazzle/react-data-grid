@@ -250,19 +250,23 @@ export function CommonFeatures() {
       case 'transaction':
       case 'account':
       case 'version':
-        return function(a: Row, b: Row) { return a[sortColumn].localeCompare(b[sortColumn]); };
+        return function (a: Row, b: Row) {
+          return a[sortColumn].localeCompare(b[sortColumn]);
+        };
       case 'available':
-        return function(a: Row, b: Row) { return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1; };
+        return function (a: Row, b: Row) {
+          return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1;
+        };
       case 'id':
       case 'progress':
       case 'startTimestamp':
       case 'endTimestamp':
       case 'budget':
-        return function(a: Row, b: Row) { return a[sortColumn] - b[sortColumn]; };
+        return function (a: Row, b: Row) {
+          return a[sortColumn] - b[sortColumn];
+        };
       default:
-        throw new Error(
-          `unsupported sortColumn: "${sortColumn}"`
-        );
+        throw new Error(`unsupported sortColumn: "${sortColumn}"`);
     }
   };
 

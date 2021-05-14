@@ -30,10 +30,9 @@ function getAriaSort(sortDirection: SortDirection | undefined | null) {
   }
 }
 
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR, React.Key>,
-  | 'onSortColumnsChange'
-  | 'allRowsSelected'
-  | 'sortColumns'
+type SharedHeaderRowProps<R, SR> = Pick<
+  HeaderRowProps<R, SR, React.Key>,
+  'onSortColumnsChange' | 'allRowsSelected' | 'sortColumns'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -88,8 +87,8 @@ export default function HeaderCell<R, SR>({
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
   }
-  const sortDirection = sortColumns?.find(item => item.columnKey === column.key)?.direction;
-  const index = sortColumns?.findIndex(sort => sort.columnKey === column.key);
+  const sortDirection = sortColumns?.find((item) => item.columnKey === column.key)?.direction;
+  const index = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const priority = index !== undefined ? index + 1 : undefined;
   const multiSorts = sortColumns ? sortColumns.length > 1 : false;
 
@@ -146,7 +145,7 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-sort={!multiSorts ? getAriaSort(sortDirection): undefined}
+      aria-sort={!multiSorts ? getAriaSort(sortDirection) : undefined}
       aria-colspan={colSpan}
       className={className}
       style={getCellStyle(column, colSpan)}

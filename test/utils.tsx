@@ -47,18 +47,12 @@ export function getColumnIndex(cell: HTMLElement) {
   return Number(cell.getAttribute('aria-colindex')) - 1;
 }
 
-export function getCellsAtColumn({
-  grid,
-  name
-}: {
-  grid: HTMLElement;
-  name: Name;
-}) {
+export function getCellsAtColumn({ grid, name }: { grid: HTMLElement; name: Name }) {
   const headerCell = within(grid).getByRole('columnheader', { name }, { hidden: true });
   const index = getColumnIndex(headerCell);
   const rows = getRows();
-  return rows.map(row => {
+  return rows.map((row) => {
     const cells = within(row).getAllByRole('gridcell', { hidden: true });
-    return cells.find(c => getColumnIndex(c) === index);
+    return cells.find((c) => getColumnIndex(c) === index);
   });
 }

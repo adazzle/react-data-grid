@@ -66,8 +66,9 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
-  const [sortColumns, setSortColumns] = useState<readonly Readonly<SortColumn>[]>([{ columnKey: 'task', direction: 'NONE' }]);
-
+  const [sortColumns, setSortColumns] = useState<readonly Readonly<SortColumn>[]>([
+    { columnKey: 'task', direction: 'NONE' }
+  ]);
 
   const draggableColumns = useMemo(() => {
     function HeaderRenderer(props: HeaderRendererProps<Row>) {
