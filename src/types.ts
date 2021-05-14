@@ -122,7 +122,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
     columnKey: string,
     direction: SortDirection,
     ctrlClick: boolean
-  ) => void | undefined | null;
+  ) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
