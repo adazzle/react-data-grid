@@ -103,78 +103,78 @@ export interface DataGridProps<R, SR = unknown, K extends React.Key = React.Key>
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: readonly SR[];
+  summaryRows?: readonly SR[] | null;
   /** The getter should return a unique key for each row */
-  rowKeyGetter?: (row: R) => K;
-  onRowsChange?: (rows: R[], data: RowsChangeData<R, SR>) => void;
+  rowKeyGetter?: ((row: R) => K) | null;
+  onRowsChange?: ((rows: R[], data: RowsChangeData<R, SR>) => void) | null;
 
   /**
    * Dimensions props
    */
   /** The height of each row in pixels */
-  rowHeight?: number | ((args: RowHeightArgs<R>) => number);
+  rowHeight?: number | ((args: RowHeightArgs<R>) => number) | null;
   /** The height of the header row in pixels */
-  headerRowHeight?: number;
+  headerRowHeight?: number | null;
   /** The height of the header filter row in pixels */
-  headerFiltersHeight?: number;
+  headerFiltersHeight?: number | null;
   /** The height of each summary row in pixels */
-  summaryRowHeight?: number;
+  summaryRowHeight?: number | null;
 
   /**
    * Feature props
    */
   /** Set of selected row keys */
-  selectedRows?: ReadonlySet<K>;
+  selectedRows?: ReadonlySet<K> | null;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?: (selectedRows: Set<K>) => void;
+  onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
   /** The key of the column which is currently being sorted */
-  sortColumn?: string;
+  sortColumn?: string | null;
   /** The direction to sort the sortColumn*/
-  sortDirection?: SortDirection;
+  sortDirection?: SortDirection | null;
   /** Function called whenever grid is sorted*/
-  onSort?: (columnKey: string, direction: SortDirection) => void;
-  filters?: Readonly<Filters>;
-  onFiltersChange?: (filters: Filters) => void;
-  defaultColumnOptions?: DefaultColumnOptions<R, SR>;
-  groupBy?: readonly string[];
-  rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
-  expandedGroupIds?: ReadonlySet<unknown>;
-  onExpandedGroupIdsChange?: (expandedGroupIds: Set<unknown>) => void;
-  onFill?: (event: FillEvent<R>) => R[];
-  onPaste?: (event: PasteEvent<R>) => R;
+  onSort?: ((columnKey: string, direction: SortDirection) => void) | null;
+  filters?: Readonly<Filters> | null;
+  onFiltersChange?: ((filters: Filters) => void) | null;
+  defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
+  groupBy?: readonly string[] | null;
+  rowGrouper?: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | null;
+  expandedGroupIds?: ReadonlySet<unknown> | null;
+  onExpandedGroupIdsChange?: ((expandedGroupIds: Set<unknown>) => void) | null;
+  onFill?: ((event: FillEvent<R>) => R[]) | null;
+  onPaste?: ((event: PasteEvent<R>) => R) | null;
 
   /**
    * Custom renderers
    */
-  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>>;
-  emptyRowsRenderer?: React.ComponentType;
+  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>> | null;
+  emptyRowsRenderer?: React.ComponentType | null;
 
   /**
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void;
+  onRowClick?: ((rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void) | null;
   /** Called when the grid is scrolled */
-  onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
+  onScroll?: ((event: React.UIEvent<HTMLDivElement>) => void) | null;
   /** Called when a column is resized */
-  onColumnResize?: (idx: number, width: number) => void;
+  onColumnResize?: ((idx: number, width: number) => void) | null;
   /** Function called whenever selected cell is changed */
-  onSelectedCellChange?: (position: Position) => void;
+  onSelectedCellChange?: ((position: Position) => void) | null;
 
   /**
    * Toggles and modes
    */
   /** Toggles whether filters row is displayed or not */
-  enableFilterRow?: boolean;
-  cellNavigationMode?: CellNavigationMode;
-  enableVirtualization?: boolean;
+  enableFilterRow?: boolean | null;
+  cellNavigationMode?: CellNavigationMode | null;
+  enableVirtualization?: boolean | null;
 
   /**
    * Miscellaneous
    */
   /** The node where the editor portal should mount. */
-  editorPortalTarget?: Element;
-  rowClass?: (row: R) => string | undefined;
+  editorPortalTarget?: Element | null;
+  rowClass?: ((row: R) => string | undefined | null) | null;
 }
 
 /**
@@ -184,7 +184,7 @@ export interface DataGridProps<R, SR = unknown, K extends React.Key = React.Key>
  *
  * <DataGrid columns={columns} rows={rows} />
  */
-function DataGrid<R, SR>(
+function DataGrid<R, SR, K extends React.Key>(
   {
     // Grid and data Props
     columns: rawColumns,
@@ -193,10 +193,10 @@ function DataGrid<R, SR>(
     rowKeyGetter,
     onRowsChange,
     // Dimensions props
-    rowHeight = 35,
-    headerRowHeight = typeof rowHeight === 'number' ? rowHeight : 35,
-    headerFiltersHeight = 45,
-    summaryRowHeight = typeof rowHeight === 'number' ? rowHeight : 35,
+    rowHeight,
+    headerRowHeight,
+    headerFiltersHeight,
+    summaryRowHeight: rawSummaryRowHeight,
     // Feature props
     selectedRows,
     onSelectedRowsChange,
@@ -211,7 +211,7 @@ function DataGrid<R, SR>(
     expandedGroupIds,
     onExpandedGroupIdsChange,
     // Custom renderers
-    rowRenderer: RowRenderer = Row,
+    rowRenderer,
     emptyRowsRenderer: EmptyRowsRenderer,
     // Event props
     onRowClick,
@@ -221,11 +221,11 @@ function DataGrid<R, SR>(
     onFill,
     onPaste,
     // Toggles and modes
-    enableFilterRow = false,
-    cellNavigationMode = 'NONE',
-    enableVirtualization = true,
+    enableFilterRow,
+    cellNavigationMode: rawCellNavigationMode,
+    enableVirtualization,
     // Miscellaneous
-    editorPortalTarget = body,
+    editorPortalTarget: rawEditorPortalTarget,
     className,
     style,
     rowClass,
@@ -233,9 +233,22 @@ function DataGrid<R, SR>(
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy
-  }: DataGridProps<R, SR>,
+  }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
+  /**
+   * defaults
+   */
+  rowHeight ??= 35;
+  headerRowHeight ??= typeof rowHeight === 'number' ? rowHeight : 35;
+  headerFiltersHeight ??= 45;
+  const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
+  const RowRenderer = rowRenderer ?? Row;
+  enableFilterRow ??= false;
+  const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
+  enableVirtualization ??= true;
+  const editorPortalTarget = rawEditorPortalTarget ?? body;
+
   /**
    * states
    */
@@ -273,7 +286,7 @@ function DataGrid<R, SR>(
   const summaryRowsCount = summaryRows?.length ?? 0;
   const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
   const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
-  const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
+  const isSelectable = selectedRows != null && onSelectedRowsChange != null;
 
   const {
     columns,
@@ -335,7 +348,7 @@ function DataGrid<R, SR>(
   const minColIdx = hasGroups ? -1 : 0;
 
   // Cell drag is not supported on a treegrid
-  const enableCellDragAndDrop = hasGroups ? false : onFill !== undefined;
+  const enableCellDragAndDrop = hasGroups ? false : onFill != null;
 
   /**
    * effects
@@ -401,7 +414,7 @@ function DataGrid<R, SR>(
   function selectRow({ rowIdx, checked, isShiftClick }: SelectRowEvent) {
     if (!onSelectedRowsChange) return;
 
-    assertIsValidKeyGetter(rowKeyGetter);
+    assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
     const row = rows[rowIdx];
     if (isGroupRow(row)) {
@@ -973,11 +986,13 @@ function DataGrid<R, SR>(
       }
 
       startRowIndex++;
-      let key: React.Key = hasGroups ? startRowIndex : rowIdx;
+      let key;
       let isRowSelected = false;
       if (typeof rowKeyGetter === 'function') {
         key = rowKeyGetter(row);
         isRowSelected = selectedRows?.has(key) ?? false;
+      } else {
+        key = hasGroups ? startRowIndex : rowIdx;
       }
 
       rowElements.push(
@@ -1048,7 +1063,7 @@ function DataGrid<R, SR>(
       ref={gridRef}
       onScroll={handleScroll}
     >
-      <HeaderRow<R, SR>
+      <HeaderRow<R, SR, K>
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
         columns={viewportColumns}
@@ -1117,6 +1132,6 @@ function DataGrid<R, SR>(
   );
 }
 
-export default forwardRef(DataGrid) as <R, SR = unknown, Key extends React.Key = React.Key>(
-  props: DataGridProps<R, SR, Key> & RefAttributes<DataGridHandle>
+export default forwardRef(DataGrid) as <R, SR = unknown, K extends React.Key = React.Key>(
+  props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
 ) => JSX.Element;

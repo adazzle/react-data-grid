@@ -116,9 +116,9 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
-  sortColumn: string | undefined;
-  sortDirection: SortDirection | undefined;
-  onSort: ((columnKey: string, direction: SortDirection) => void) | undefined;
+  sortColumn: string | undefined | null;
+  sortDirection: SortDirection | undefined | null;
+  onSort: ((columnKey: string, direction: SortDirection) => void) | undefined | null;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
@@ -156,7 +156,8 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown>
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick:
     | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
-    | undefined;
+    | undefined
+    | null;
   selectCell: (position: Position, enableEditor?: boolean) => void;
 }
 
@@ -176,8 +177,9 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   onRowChange: (rowIdx: number, row: TRow) => void;
   onRowClick:
     | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
-    | undefined;
-  rowClass: ((row: TRow) => string | undefined) | undefined;
+    | undefined
+    | null;
+  rowClass: ((row: TRow) => string | undefined | null) | undefined | null;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (position: Position, enableEditor?: boolean) => void;
 }

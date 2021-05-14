@@ -6,19 +6,19 @@ import { assertIsValidKeyGetter, getColSpan } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { headerRowClassname } from './style';
 
-type SharedDataGridProps<R, SR> = Pick<
-  DataGridProps<R, SR>,
+type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
+  DataGridProps<R, SR, K>,
   'rows' | 'onSelectedRowsChange' | 'sortColumn' | 'sortDirection' | 'onSort' | 'rowKeyGetter'
 >;
 
-export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   lastFrozenColumnIndex: number;
 }
 
-function HeaderRow<R, SR>({
+function HeaderRow<R, SR, K extends React.Key>({
   columns,
   rows,
   rowKeyGetter,
@@ -29,14 +29,14 @@ function HeaderRow<R, SR>({
   sortDirection,
   onSort,
   lastFrozenColumnIndex
-}: HeaderRowProps<R, SR>) {
+}: HeaderRowProps<R, SR, K>) {
   const handleAllRowsSelectionChange = useCallback(
     (checked: boolean) => {
       if (!onSelectedRowsChange) return;
 
-      assertIsValidKeyGetter(rowKeyGetter);
+      assertIsValidKeyGetter<R, K>(rowKeyGetter);
 
-      const newSelectedRows = new Set<React.Key>(checked ? rows.map(rowKeyGetter) : undefined);
+      const newSelectedRows = new Set<K>(checked ? rows.map(rowKeyGetter) : undefined);
       onSelectedRowsChange(newSelectedRows);
     },
     [onSelectedRowsChange, rows, rowKeyGetter]
@@ -76,4 +76,6 @@ function HeaderRow<R, SR>({
   );
 }
 
-export default memo(HeaderRow) as <R, SR>(props: HeaderRowProps<R, SR>) => JSX.Element;
+export default memo(HeaderRow) as <R, SR, K extends React.Key>(
+  props: HeaderRowProps<R, SR, K>
+) => JSX.Element;
