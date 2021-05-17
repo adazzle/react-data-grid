@@ -40,7 +40,6 @@ export default function SortableHeaderCell<R, SR>({
   }
 
   function onClick(event: MouseEvent<HTMLSpanElement>) {
-    if (!onSort) return;
     const { sortDescendingFirst } = column;
     let direction: SortDirection;
     switch (sortDirection) {
