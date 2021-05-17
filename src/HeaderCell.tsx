@@ -87,8 +87,9 @@ export default function HeaderCell<R, SR>({
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
   }
-  const sortDirection = sortColumns?.find((item) => item.columnKey === column.key)?.direction;
   const index = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
+  const sortDirection =
+    index !== undefined && index > -1 ? sortColumns?.[index].direction : undefined;
   const priority = index !== undefined ? index + 1 : undefined;
   const multiSorts = sortColumns ? sortColumns.length > 1 : false;
 
@@ -96,13 +97,15 @@ export default function HeaderCell<R, SR>({
     if (!onSortColumnsChange) return;
     if (ctrlClick) {
       const newSorts = sortColumns ? [...sortColumns] : [];
-      if (index! > -1) {
-        if (sortDirection === 'ASC') newSorts[index!] = { columnKey, direction };
-        else newSorts.splice(index!, 1);
-      } else {
-        newSorts.push({ columnKey, direction });
+      if (index) {
+        if (index > -1) {
+          if (sortDirection === 'ASC') newSorts[index!] = { columnKey, direction };
+          else newSorts.splice(index!, 1);
+        } else {
+          newSorts.push({ columnKey, direction });
+        }
+        onSortColumnsChange([...newSorts]);
       }
-      onSortColumnsChange([...newSorts]);
     } else if (direction === 'NONE') onSortColumnsChange([]);
     else onSortColumnsChange([{ columnKey, direction }]);
   };
