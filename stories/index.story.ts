@@ -8,9 +8,11 @@ export * from './demos/ContextMenu';
 export * from './demos/ScrollToRow';
 export * from './demos/CellNavigation';
 export * from './demos/HeaderFilters';
+export * from './demos/ColumnSpanning';
 export * from './demos/ColumnsReordering';
 export * from './demos/RowsReordering';
 export * from './demos/Grouping';
 export * from './demos/Resizable';
+export * from './demos/VariableRowHeight';
 
 export default { title: 'Demos' };

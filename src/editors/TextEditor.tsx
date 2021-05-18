@@ -34,18 +34,18 @@ function autoFocusAndSelect(input: HTMLInputElement | null) {
   input?.select();
 }
 
-export default function TextEditor<TRow, TSummaryRow = unknown>({
+export default function TextEditor<TRow, TSummaryRow, TFilterRow>({
   row,
   column,
   onRowChange,
   onClose
-}: EditorProps<TRow, TSummaryRow>) {
+}: EditorProps<TRow, TSummaryRow, TFilterRow>) {
   return (
     <input
       className={textEditorClassname}
       ref={autoFocusAndSelect}
       value={row[column.key as keyof TRow] as unknown as string}
-      onChange={event => onRowChange({ ...row, [column.key]: event.target.value })}
+      onChange={(event) => onRowChange({ ...row, [column.key]: event.target.value })}
       onBlur={() => onClose(true)}
     />
   );

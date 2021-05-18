@@ -3,17 +3,10 @@ import { memo } from 'react';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { cellSelectedClassname } from './style';
 
-type SharedGroupRowRendererProps<R, SR, FR> = Pick<GroupRowRendererProps<R, SR, FR>,
-  | 'id'
-  | 'rowIdx'
-  | 'groupKey'
-  | 'childRows'
-  | 'isExpanded'
-  | 'isRowSelected'
-  | 'selectRow'
-  | 'toggleGroup'
+type SharedGroupRowRendererProps<R, SR, FR> = Pick<
+  GroupRowRendererProps<R, SR, FR>,
+  'id' | 'rowIdx' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup'
 >;
 
 interface GroupCellProps<R, SR, FR> extends SharedGroupRowRendererProps<R, SR, FR> {
@@ -29,18 +22,12 @@ function GroupCell<R, SR, FR>({
   childRows,
   isExpanded,
   isCellSelected,
-  isRowSelected,
   column,
   groupColumnIndex,
-  selectRow,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR, FR>) {
   function toggleGroup() {
     toggleGroupWrapper(id);
-  }
-
-  function onRowSelectionChange(checked: boolean) {
-    selectRow({ rowIdx, checked, isShiftClick: false });
   }
 
   // Only make the cell clickable if the group level matches
@@ -51,9 +38,7 @@ function GroupCell<R, SR, FR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       key={column.key}
-      className={getCellClassname(column, {
-        [cellSelectedClassname]: isCellSelected
-      })}
+      className={getCellClassname(column)}
       style={{
         ...getCellStyle(column),
         cursor: isLevelMatching ? 'pointer' : 'default'
@@ -62,13 +47,12 @@ function GroupCell<R, SR, FR>({
     >
       {(!column.rowGroup || groupColumnIndex === column.idx) && column.groupFormatter && (
         <column.groupFormatter
+          rowIdx={rowIdx}
           groupKey={groupKey}
           childRows={childRows}
           column={column}
           isExpanded={isExpanded}
           isCellSelected={isCellSelected}
-          isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
           toggleGroup={toggleGroup}
         />
       )}

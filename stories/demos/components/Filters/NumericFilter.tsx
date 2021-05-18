@@ -10,7 +10,7 @@ type Rule =
   | { type: RuleType.greaterThan | RuleType.lessThan | RuleType.number; value: number };
 
 interface NumericFilterProps {
-  value?: string;
+  value: string | undefined;
   onChange: (value: string) => void;
 }
 
@@ -31,14 +31,15 @@ export function NumericFilter({ value, onChange }: NumericFilterProps) {
         value={value}
         className="rdg-filter"
         placeholder="e.g. 3,10-15,>20"
-        onChange={event => onChange(event.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <span style={{ paddingLeft: 4, cursor: 'help' }} title={tooltipText}>?</span>
+      <span style={{ paddingLeft: 4, cursor: 'help' }} title={tooltipText}>
+        ?
+      </span>
     </div>
   );
 }
-
 
 export function filterNumber(value: number, filter: string) {
   for (const rule of getRules(filter)) {

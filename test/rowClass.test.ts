@@ -25,7 +25,7 @@ test('rowClass returns a string', () => {
   setup({
     columns,
     rows,
-    rowClass: row => `my-row-${row.id}`
+    rowClass: (row) => `my-row-${row.id}`
   });
   const [row1, row2, row3] = getRows();
   expect(row1).toHaveClass(`${rowClassname} rdg-row-even my-row-0`, { exact: true });

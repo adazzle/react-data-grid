@@ -1,6 +1,6 @@
 import { useRef, useLayoutEffect } from 'react';
 
-export function useFocusRef<T extends HTMLOrSVGElement>(isCellSelected: boolean | undefined) {
+export function useFocusRef<T extends HTMLOrSVGElement>(isCellSelected: boolean) {
   const ref = useRef<T>(null);
   useLayoutEffect(() => {
     if (!isCellSelected) return;

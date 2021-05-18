@@ -1,34 +1,38 @@
 import { memo, forwardRef } from 'react';
-import type { RefAttributes } from 'react';
+import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import { groupRowSelectedClassname, rowClassname, rowSelectedClassname } from './style';
+import { groupRowSelectedClassname, rowClassname } from './style';
+import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
+import { RowSelectionProvider } from './hooks';
 
-function Row<R, SR = unknown, FR = unknown>({
-  cellRenderer: CellRenderer = Cell,
-  className,
-  rowIdx,
-  isRowSelected,
-  copiedCellIdx,
-  draggedOverCellIdx,
-  row,
-  viewportColumns,
-  selectedCellProps,
-  onRowClick,
-  rowClass,
-  setDraggedOverRowIdx,
-  onMouseEnter,
-  top,
-  onRowChange,
-  selectCell,
-  selectRow,
-  'aria-rowindex': ariaRowIndex,
-  'aria-selected': ariaSelected,
-  ...props
-}: RowRendererProps<R, SR, FR>, ref: React.Ref<HTMLDivElement>) {
+function Row<R, SR, FR>(
+  {
+    cellRenderer: CellRenderer = Cell,
+    className,
+    rowIdx,
+    isRowSelected,
+    copiedCellIdx,
+    draggedOverCellIdx,
+    lastFrozenColumnIndex,
+    row,
+    viewportColumns,
+    selectedCellProps,
+    onRowClick,
+    rowClass,
+    setDraggedOverRowIdx,
+    onMouseEnter,
+    top,
+    height,
+    onRowChange,
+    selectCell,
+    ...props
+  }: RowRendererProps<R, SR, FR>,
+  ref: React.Ref<HTMLDivElement>
+) {
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
     onMouseEnter?.(event);
@@ -36,62 +40,81 @@ function Row<R, SR = unknown, FR = unknown>({
 
   className = clsx(
     rowClassname,
-    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-      [rowSelectedClassname]: isRowSelected,
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+    {
       [groupRowSelectedClassname]: selectedCellProps?.idx === -1
     },
     rowClass?.(row),
     className
   );
 
-  return (
-    <div
-      role="row"
-      aria-rowindex={ariaRowIndex}
-      aria-selected={ariaSelected}
-      ref={ref}
-      className={className}
-      onMouseEnter={handleDragEnter}
-      style={{ top }}
-      {...props}
-    >
-      {viewportColumns.map(column => {
-        const isCellSelected = selectedCellProps?.idx === column.idx;
-        if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
-          return (
-            <EditCell
-              key={column.key}
-              rowIdx={rowIdx}
-              column={column}
-              row={row}
-              onKeyDown={selectedCellProps.onKeyDown}
-              editorProps={selectedCellProps.editorProps}
-            />
-          );
-        }
+  const cells = [];
+  for (let index = 0; index < viewportColumns.length; index++) {
+    const column = viewportColumns[index];
+    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+    if (colSpan !== undefined) {
+      index += colSpan - 1;
+    }
 
-        return (
-          <CellRenderer
-            key={column.key}
-            rowIdx={rowIdx}
-            column={column}
-            row={row}
-            isCopied={copiedCellIdx === column.idx}
-            isDraggedOver={draggedOverCellIdx === column.idx}
-            isCellSelected={isCellSelected}
-            isRowSelected={isRowSelected}
-            dragHandleProps={isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined}
-            onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
-            onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
-            onRowClick={onRowClick}
-            onRowChange={onRowChange}
-            selectCell={selectCell}
-            selectRow={selectRow}
-          />
-        );
-      })}
-    </div>
+    const isCellSelected = selectedCellProps?.idx === column.idx;
+    if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
+      cells.push(
+        <EditCell
+          key={column.key}
+          rowIdx={rowIdx}
+          column={column}
+          colSpan={colSpan}
+          row={row}
+          onKeyDown={selectedCellProps.onKeyDown}
+          editorProps={selectedCellProps.editorProps}
+        />
+      );
+      continue;
+    }
+
+    cells.push(
+      <CellRenderer
+        key={column.key}
+        rowIdx={rowIdx}
+        column={column}
+        colSpan={colSpan}
+        row={row}
+        isCopied={copiedCellIdx === column.idx}
+        isDraggedOver={draggedOverCellIdx === column.idx}
+        isCellSelected={isCellSelected}
+        dragHandleProps={
+          isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined
+        }
+        onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
+        onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
+        onRowClick={onRowClick}
+        onRowChange={onRowChange}
+        selectCell={selectCell}
+      />
+    );
+  }
+
+  return (
+    <RowSelectionProvider value={isRowSelected}>
+      <div
+        role="row"
+        ref={ref}
+        className={className}
+        onMouseEnter={handleDragEnter}
+        style={
+          {
+            top,
+            '--row-height': `${height}px`
+          } as unknown as CSSProperties
+        }
+        {...props}
+      >
+        {cells}
+      </div>
+    </RowSelectionProvider>
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown, FR = unknown>(props: RowRendererProps<R, SR, FR> & RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(forwardRef(Row)) as <R, SR, FR>(
+  props: RowRendererProps<R, SR, FR> & RefAttributes<HTMLDivElement>
+) => JSX.Element;

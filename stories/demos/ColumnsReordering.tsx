@@ -66,7 +66,10 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
-  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['task', 'NONE']);
+  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>([
+    'task',
+    'NONE'
+  ]);
 
   const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
     setSort([columnKey, direction]);
@@ -78,8 +81,8 @@ export function ColumnsReordering() {
     }
 
     function handleColumnsReorder(sourceKey: string, targetKey: string) {
-      const sourceColumnIndex = columns.findIndex(c => c.key === sourceKey);
-      const targetColumnIndex = columns.findIndex(c => c.key === targetKey);
+      const sourceColumnIndex = columns.findIndex((c) => c.key === sourceKey);
+      const targetColumnIndex = columns.findIndex((c) => c.key === targetKey);
       const reorderedColumns = [...columns];
 
       reorderedColumns.splice(
@@ -91,7 +94,7 @@ export function ColumnsReordering() {
       setColumns(reorderedColumns);
     }
 
-    return columns.map(c => {
+    return columns.map((c) => {
       if (c.key === 'id') return c;
       return { ...c, headerRenderer: HeaderRenderer };
     });

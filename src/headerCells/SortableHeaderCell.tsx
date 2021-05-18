@@ -12,16 +12,15 @@ const headerSortCellClassname = `rdg-header-sort-cell ${headerSortCell}`;
 const headerSortName = css`
   flex-grow: 1;
   overflow: hidden;
+  overflow: clip;
   text-overflow: ellipsis;
 `;
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-type SharedHeaderCellProps<R, SR, FR> = Pick<HeaderCellProps<R, SR, FR>,
-  | 'column'
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
+type SharedHeaderCellProps<R, SR, FR> = Pick<
+  HeaderCellProps<R, SR, FR>,
+  'column' | 'sortColumn' | 'sortDirection' | 'onSort'
 >;
 
 interface Props<R, SR, FR> extends SharedHeaderCellProps<R, SR, FR> {
@@ -35,7 +34,7 @@ export default function SortableHeaderCell<R, SR, FR>({
   sortDirection,
   children
 }: Props<R, SR, FR>) {
-  sortDirection = sortColumn === column.key && sortDirection || 'NONE';
+  sortDirection = (sortColumn === column.key && sortDirection) || 'NONE';
   let sortText = '';
   if (sortDirection === 'ASC') {
     sortText = '\u25B2';

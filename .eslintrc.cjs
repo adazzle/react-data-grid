@@ -1,5 +1,7 @@
 'use strict';
 
+const ignoreRules = require('eslint-config-prettier').rules;
+
 const rules = {
   // Possible Errors
   // https://eslint.org/docs/rules/#possible-errors
@@ -54,15 +56,15 @@ const rules = {
   'array-callback-return': [2, { checkForEach: true }],
   'block-scoped-var': 2,
   'class-methods-use-this': 0,
-  'complexity': 0,
+  complexity: 0,
   'consistent-return': 0,
-  'curly': [2, 'multi-line'],
+  curly: [2, 'multi-line'],
   'default-case': 2,
   'default-case-last': 2,
   'default-param-last': 0, // replaced by @typescript-eslint/default-param-last
   'dot-location': [1, 'property'],
   'dot-notation': 1,
-  'eqeqeq': [2, 'always', { null: 'ignore' }],
+  eqeqeq: [2, 'always', { null: 'ignore' }],
   'grouped-accessor-pairs': 1,
   'guard-for-in': 0,
   'max-classes-per-file': 0,
@@ -124,16 +126,16 @@ const rules = {
   'prefer-named-capture-group': 0,
   'prefer-promise-reject-errors': [2, { allowEmptyReject: true }],
   'prefer-regex-literals': 1,
-  'radix': 2,
+  radix: 2,
   'require-await': 2,
   'require-unicode-regexp': 0,
   'vars-on-top': 0,
   'wrap-iife': [2, 'inside', { functionPrototypeMethods: true }],
-  'yoda': 0,
+  yoda: 0,
 
   // Strict Mode
   // https://eslint.org/docs/rules/#strict-mode
-  'strict': 2,
+  strict: 2,
 
   // Variables
   // https://eslint.org/docs/rules/#variables
@@ -156,7 +158,7 @@ const rules = {
   'array-element-newline': [1, 'consistent'],
   'block-spacing': 1,
   'brace-style': 0, // replaced by @typescript-eslint/brace-style
-  'camelcase': 0, // replaced by @typescript-eslint/naming-convention
+  camelcase: 0, // replaced by @typescript-eslint/naming-convention
   'capitalized-comments': 0,
   'comma-dangle': 0, // replaced by @typescript-eslint/comma-dangle
   'comma-spacing': 0, // replaced by @typescript-eslint/comma-spacing
@@ -174,7 +176,7 @@ const rules = {
   'id-length': 0,
   'id-match': 0,
   'implicit-arrow-linebreak': 0,
-  'indent': 0, // replaced by @typescript-eslint/indent
+  indent: 0, // replaced by @typescript-eslint/indent
   'jsx-quotes': 1,
   'key-spacing': 1,
   'keyword-spacing': 0, // replaced by @typescript-eslint/keyword-spacing
@@ -228,8 +230,8 @@ const rules = {
   'prefer-exponentiation-operator': 1,
   'prefer-object-spread': 1,
   'quote-props': [1, 'as-needed'],
-  'quotes': 0, // replaced by @typescript-eslint/quotes
-  'semi': 0, // replaced by @typescript-eslint/semi
+  quotes: 0, // replaced by @typescript-eslint/quotes
+  semi: 0, // replaced by @typescript-eslint/semi
   'semi-spacing': 1,
   'semi-style': 1,
   'sort-keys': 0,
@@ -259,17 +261,23 @@ const rules = {
   'no-duplicate-imports': 0, // replace by @typescript-eslint/no-duplicate-imports
   'no-new-symbol': 0,
   'no-restricted-exports': 0,
-  'no-restricted-imports': [1, {
-    paths: [{
-      name: 'react',
-      importNames: ['default'],
-      message: 'Use named imports instead.'
-    }, {
-      name: 'react-dom',
-      importNames: ['default'],
-      message: 'Use named imports instead.'
-    }]
-  }],
+  'no-restricted-imports': [
+    1,
+    {
+      paths: [
+        {
+          name: 'react',
+          importNames: ['default'],
+          message: 'Use named imports instead.'
+        },
+        {
+          name: 'react-dom',
+          importNames: ['default'],
+          message: 'Use named imports instead.'
+        }
+      ]
+    }
+  ],
   'no-this-before-super': 0,
   'no-useless-computed-key': [1, { enforceForClassMembers: true }],
   'no-useless-constructor': 0, // replaced by @typescript-eslint/no-useless-constructor
@@ -379,23 +387,29 @@ const rules = {
   'react/jsx-props-no-spreading': 0,
   'react/jsx-sort-default-props': 0,
   'react/jsx-sort-props': 0,
-  'react/jsx-tag-spacing': [1, {
-    closingSlash: 'never',
-    beforeSelfClosing: 'always',
-    afterOpening: 'never',
-    beforeClosing: 'never'
-  }],
+  'react/jsx-tag-spacing': [
+    1,
+    {
+      closingSlash: 'never',
+      beforeSelfClosing: 'always',
+      afterOpening: 'never',
+      beforeClosing: 'never'
+    }
+  ],
   'react/jsx-uses-react': 0,
   'react/jsx-uses-vars': 1,
-  'react/jsx-wrap-multilines': [1, {
-    declaration: 'parens-new-line',
-    assignment: 'parens-new-line',
-    return: 'parens-new-line',
-    arrow: 'parens-new-line',
-    condition: 'parens-new-line',
-    logical: 'parens-new-line',
-    prop: 'parens-new-line'
-  }],
+  'react/jsx-wrap-multilines': [
+    1,
+    {
+      declaration: 'parens-new-line',
+      assignment: 'parens-new-line',
+      return: 'parens-new-line',
+      arrow: 'parens-new-line',
+      condition: 'parens-new-line',
+      logical: 'parens-new-line',
+      prop: 'parens-new-line'
+    }
+  ],
 
   // React Hooks
   // https://www.npmjs.com/package/eslint-plugin-react-hooks
@@ -423,10 +437,13 @@ const rules = {
   'jest/no-jest-import': 1,
   'jest/no-large-snapshots': 0,
   'jest/no-mocks-import': 1,
-  'jest/no-restricted-matchers': [1, {
-    toBeTruthy: 'Use toBe(true) instead.',
-    toBeFalsy: 'Use toBe(false) instead.'
-  }],
+  'jest/no-restricted-matchers': [
+    1,
+    {
+      toBeTruthy: 'Use toBe(true) instead.',
+      toBeFalsy: 'Use toBe(false) instead.'
+    }
+  ],
   'jest/no-standalone-expect': 2,
   'jest/no-test-prefixes': 0,
   'jest/no-test-return-statement': 0,
@@ -498,7 +515,10 @@ const rules = {
   '@typescript-eslint/ban-types': 2,
   '@typescript-eslint/class-literal-property-style': 0,
   '@typescript-eslint/consistent-indexed-object-style': 1,
-  '@typescript-eslint/consistent-type-assertions': [2, { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
+  '@typescript-eslint/consistent-type-assertions': [
+    2,
+    { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }
+  ],
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
   '@typescript-eslint/consistent-type-imports': 1,
   '@typescript-eslint/explicit-function-return-type': 0,
@@ -507,16 +527,24 @@ const rules = {
   '@typescript-eslint/member-delimiter-style': 1,
   '@typescript-eslint/member-ordering': 0,
   '@typescript-eslint/method-signature-style': 1,
-  '@typescript-eslint/naming-convention': [1,
+  '@typescript-eslint/naming-convention': [
+    1,
     { selector: 'variable', format: ['camelCase'] },
-    { selector: 'variable', modifiers: ['const'], format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
-    { selector: ['function', 'parameter', 'property'], format: ['camelCase', 'PascalCase'] },
+    {
+      selector: 'variable',
+      modifiers: ['const'],
+      format: ['camelCase', 'PascalCase', 'UPPER_CASE']
+    },
+    {
+      selector: ['function', 'parameter', 'property'],
+      format: ['camelCase', 'PascalCase']
+    },
     { selector: 'memberLike', format: ['camelCase'] },
     { selector: 'typeLike', format: ['PascalCase'] }
   ],
   '@typescript-eslint/no-base-to-string': 0,
   '@typescript-eslint/no-confusing-non-null-assertion': 0,
-  '@typescript-eslint/no-confusing-void-expression': [1, { "ignoreArrowShorthand": true }],
+  '@typescript-eslint/no-confusing-void-expression': [1, { ignoreArrowShorthand: true }],
   '@typescript-eslint/no-dynamic-delete': 0,
   '@typescript-eslint/no-empty-interface': 2,
   '@typescript-eslint/no-explicit-any': [2, { fixToUnknown: true }],
@@ -555,10 +583,13 @@ const rules = {
   '@typescript-eslint/prefer-includes': 1,
   '@typescript-eslint/prefer-literal-enum-member': 1,
   '@typescript-eslint/prefer-namespace-keyword': 0,
-  '@typescript-eslint/prefer-nullish-coalescing': [1, {
-    ignoreConditionalTests: false,
-    ignoreMixedLogicalExpressions: true
-  }],
+  '@typescript-eslint/prefer-nullish-coalescing': [
+    1,
+    {
+      ignoreConditionalTests: false,
+      ignoreMixedLogicalExpressions: true
+    }
+  ],
   '@typescript-eslint/prefer-optional-chain': 1,
   '@typescript-eslint/prefer-readonly': 1,
   '@typescript-eslint/prefer-readonly-parameter-types': 0,
@@ -587,7 +618,11 @@ const rules = {
   '@typescript-eslint/default-param-last': 0,
   '@typescript-eslint/dot-notation': 0,
   '@typescript-eslint/func-call-spacing': 1,
-  '@typescript-eslint/indent': [1, 2, { SwitchCase: 1, ignoredNodes: ['TSTypeParameterInstantiation'] }], // https://github.com/typescript-eslint/typescript-eslint/issues/455
+  '@typescript-eslint/indent': [
+    1,
+    2,
+    { SwitchCase: 1, ignoredNodes: ['TSTypeParameterInstantiation'] }
+  ], // https://github.com/typescript-eslint/typescript-eslint/issues/455
   '@typescript-eslint/init-declarations': 0,
   '@typescript-eslint/keyword-spacing': 1,
   '@typescript-eslint/lines-between-class-members': [1, 'always', { exceptAfterSingleLine: true }],
@@ -595,10 +630,14 @@ const rules = {
   '@typescript-eslint/no-dupe-class-members': 0,
   '@typescript-eslint/no-duplicate-imports': 1,
   '@typescript-eslint/no-empty-function': 0,
-  '@typescript-eslint/no-extra-parens': [1, 'all', {
-    nestedBinaryExpressions: false,
-    ignoreJSX: 'all'
-  }],
+  '@typescript-eslint/no-extra-parens': [
+    1,
+    'all',
+    {
+      nestedBinaryExpressions: false,
+      ignoreJSX: 'all'
+    }
+  ],
   '@typescript-eslint/no-extra-semi': 2,
   '@typescript-eslint/no-implied-eval': 2,
   '@typescript-eslint/no-invalid-this': 0,
@@ -617,8 +656,12 @@ const rules = {
   '@typescript-eslint/require-await': 2,
   '@typescript-eslint/return-await': 2,
   '@typescript-eslint/semi': 1,
-  '@typescript-eslint/space-before-function-paren': [1, { anonymous: 'never', named: 'never', asyncArrow: 'always' }],
-  '@typescript-eslint/space-infix-ops': 1
+  '@typescript-eslint/space-before-function-paren': [
+    1,
+    { anonymous: 'never', named: 'never', asyncArrow: 'always' }
+  ],
+  '@typescript-eslint/space-infix-ops': 1,
+  ...ignoreRules
 };
 
 module.exports = {
@@ -633,87 +676,77 @@ module.exports = {
   env: {
     es6: true
   },
-  plugins: [
-    'node',
-    'react',
-    'react-hooks',
-    'jest',
-    'jest-dom',
-    'sonarjs',
-    '@typescript-eslint'
+  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
+  overrides: [
+    {
+      files: ['*.js', '*.jsx', '*.cjs', '*.mjs'],
+      rules: {
+        'no-undef': 2,
+        'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
+      }
+    },
+    {
+      files: ['*.js'],
+      env: {
+        node: true
+      },
+      globals: {
+        __dirname: 'off',
+        __filename: 'off',
+        exports: 'off',
+        module: 'off',
+        require: 'off'
+      },
+      rules: {
+        // Possible Errors
+        'no-console': 0,
+        // Best Practices
+        'default-param-last': 2,
+        // https://github.com/mysticatea/eslint-plugin-node#-rules
+        // Possible Errors
+        'node/handle-callback-err': 0,
+        'node/no-callback-literal': 0,
+        'node/no-exports-assign': 0,
+        'node/no-extraneous-import': 0,
+        'node/no-extraneous-require': 0,
+        'node/no-missing-import': 0,
+        'node/no-missing-require': 0,
+        'node/no-new-require': 2,
+        'node/no-path-concat': 1,
+        'node/no-process-exit': 0,
+        'node/no-unpublished-bin': 0,
+        'node/no-unpublished-import': 0,
+        'node/no-unpublished-require': 0,
+        'node/no-unsupported-features/es-builtins': 0,
+        'node/no-unsupported-features/es-syntax': 0,
+        'node/no-unsupported-features/node-builtins': 0,
+        'node/process-exit-as-throw': 0,
+        'node/shebang': 2,
+
+        // Best Practices
+        'node/no-deprecated-api': 0,
+
+        // Stylistic Issues
+        'node/callback-return': 0,
+        'node/exports-style': 0,
+        'node/file-extension-in-import': 0,
+        'node/global-require': 1,
+        'node/no-mixed-requires': 0,
+        'node/no-process-env': 0,
+        'node/no-restricted-import': 0,
+        'node/no-restricted-require': 0,
+        'node/no-sync': 0,
+        'node/prefer-global/buffer': 1,
+        'node/prefer-global/console': 1,
+        'node/prefer-global/process': 1,
+        'node/prefer-global/text-decoder': 1,
+        'node/prefer-global/text-encoder': 1,
+        'node/prefer-global/url-search-params': 1,
+        'node/prefer-global/url': 1,
+        'node/prefer-promises/dns': 1,
+        'node/prefer-promises/fs': 1
+      }
+    }
   ],
-  overrides: [{
-    files: [
-      '*.js',
-      '*.jsx',
-      '*.cjs',
-      '*.mjs'
-    ],
-    rules: {
-      'no-undef': 2,
-      'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
-    }
-  }, {
-    files: ['*.js'],
-    env: {
-      node: true
-    },
-    globals: {
-      __dirname: 'off',
-      __filename: 'off',
-      exports: 'off',
-      module: 'off',
-      require: 'off'
-    },
-    rules: {
-      // Possible Errors
-      'no-console': 0,
-      // Best Practices
-      'default-param-last': 2,
-      // https://github.com/mysticatea/eslint-plugin-node#-rules
-      // Possible Errors
-      'node/handle-callback-err': 0,
-      'node/no-callback-literal': 0,
-      'node/no-exports-assign': 0,
-      'node/no-extraneous-import': 0,
-      'node/no-extraneous-require': 0,
-      'node/no-missing-import': 0,
-      'node/no-missing-require': 0,
-      'node/no-new-require': 2,
-      'node/no-path-concat': 1,
-      'node/no-process-exit': 0,
-      'node/no-unpublished-bin': 0,
-      'node/no-unpublished-import': 0,
-      'node/no-unpublished-require': 0,
-      'node/no-unsupported-features/es-builtins': 0,
-      'node/no-unsupported-features/es-syntax': 0,
-      'node/no-unsupported-features/node-builtins': 0,
-      'node/process-exit-as-throw': 0,
-      'node/shebang': 2,
-
-      // Best Practices
-      'node/no-deprecated-api': 0,
-
-      // Stylistic Issues
-      'node/callback-return': 0,
-      'node/exports-style': 0,
-      'node/file-extension-in-import': 0,
-      'node/global-require': 1,
-      'node/no-mixed-requires': 0,
-      'node/no-process-env': 0,
-      'node/no-restricted-import': 0,
-      'node/no-restricted-require': 0,
-      'node/no-sync': 0,
-      'node/prefer-global/buffer': 1,
-      'node/prefer-global/console': 1,
-      'node/prefer-global/process': 1,
-      'node/prefer-global/text-decoder': 1,
-      'node/prefer-global/text-encoder': 1,
-      'node/prefer-global/url-search-params': 1,
-      'node/prefer-global/url': 1,
-      'node/prefer-promises/dns': 1,
-      'node/prefer-promises/fs': 1
-    }
-  }],
   rules
 };

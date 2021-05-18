@@ -1,9 +1,17 @@
 import { useState, useCallback, useMemo } from 'react';
+import { css } from '@linaria/core';
 import faker from 'faker';
+
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
+import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
+
+const toolbarClassname = css`
+  text-align: right;
+  margin-bottom: 8px;
+`;
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -82,11 +90,11 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'country',
       name: 'Country',
       width: 180,
-      editor: p => (
+      editor: (p) => (
         <SelectEditor
           value={p.row.country}
-          onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
-          options={countries.map(c => ({ value: c, label: c }))}
+          onChange={(value) => p.onRowChange({ ...p.row, country: value }, true)}
+          options={countries.map((c) => ({ value: c, label: c }))}
           rowHeight={p.rowHeight}
           menuPortalTarget={p.editorPortalTarget}
         />
@@ -173,9 +181,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         );
       },
       summaryFormatter({ row: { yesCount, totalCount } }) {
-        return (
-          <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>
-        );
+        return <>{`${Math.floor((100 * yesCount) / totalCount)}% ✔️`}</>;
       }
     }
   ];
@@ -215,17 +221,20 @@ function createRows(): readonly Row[] {
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
-  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const countries = useMemo(() => {
-    return [...new Set(rows.map(r => r.country))]
-      .sort(new Intl.Collator().compare);
+    return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
   const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
+    const summaryRow: SummaryRow = {
+      id: 'total_0',
+      totalCount: rows.length,
+      yesCount: rows.filter((r) => r.available).length
+    };
     return [summaryRow];
   }, [rows]);
 
@@ -247,7 +256,9 @@ export function CommonFeatures() {
         sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
         break;
       case 'available':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
+        sortedRows = sortedRows.sort((a, b) =>
+          a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1
+        );
         break;
       case 'id':
       case 'progress':
@@ -266,7 +277,7 @@ export function CommonFeatures() {
     setSort([columnKey, direction]);
   }, []);
 
-  return (
+  const gridElement = (
     <DataGrid
       rowKeyGetter={rowKeyGetter}
       columns={columns}
@@ -284,6 +295,35 @@ export function CommonFeatures() {
       summaryRows={summaryRows}
       className="fill-grid"
     />
+  );
+
+  return (
+    <>
+      <div className={toolbarClassname}>
+        <button
+          onClick={() => {
+            exportToCsv(gridElement, 'CommonFeatures.csv');
+          }}
+        >
+          Export to CSV
+        </button>
+        <button
+          onClick={() => {
+            exportToXlsx(gridElement, 'CommonFeatures.xlsx');
+          }}
+        >
+          Export to XSLX
+        </button>
+        <button
+          onClick={() => {
+            exportToPdf(gridElement, 'CommonFeatures.pdf');
+          }}
+        >
+          Export to PDF
+        </button>
+      </div>
+      {gridElement}
+    </>
   );
 }
 

@@ -9,11 +9,13 @@ export default function DropDownEditor({ row, onRowChange }: EditorProps<Row>) {
     <select
       className={textEditorClassname}
       value={row.title}
-      onChange={event => onRowChange({ ...row, title: event.target.value }, true)}
+      onChange={(event) => onRowChange({ ...row, title: event.target.value }, true)}
       autoFocus
     >
-      {titles.map(title => (
-        <option key={title} value={title}>{title}</option>
+      {titles.map((title) => (
+        <option key={title} value={title}>
+          {title}
+        </option>
       ))}
     </select>
   );

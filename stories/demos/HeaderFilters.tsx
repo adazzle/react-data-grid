@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { filterNumber, NumericFilter } from './components/Filters';
+import { NumericFilter, filterNumber } from './components/Filters';
 
 const rootClassname = css`
   display: flex;
@@ -51,14 +51,6 @@ export interface FilterRow {
   complete?: string;
 }
 
-export interface FilterRow {
-  task?: string;
-  priority?: string;
-  issueType?: string;
-  developer?: string;
-  complete?: string;
-}
-
 function createRows() {
   const rows: Row[] = [];
   for (let i = 1; i < 500; i++) {
@@ -83,7 +75,7 @@ export function HeaderFilters() {
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
   const columns = useMemo((): readonly Column<Row, unknown, FilterRow>[] => {
-    const developerOptions = Array.from(new Set(rows.map(r => r.developer))).map(d => ({
+    const developerOptions = Array.from(new Set(rows.map((r) => r.developer))).map((d) => ({
       label: d,
       value: d
     }));
@@ -102,7 +94,7 @@ export function HeaderFilters() {
             <input
               className={filterClassname}
               value={filterRow.task}
-              onChange={e => onFilterRowChange({ ...filterRow, task: e.target.value })}
+              onChange={(event) => onFilterRowChange({ ...filterRow, task: event.target.value })}
             />
           </div>
         )
@@ -115,7 +107,9 @@ export function HeaderFilters() {
             <select
               className={filterClassname}
               value={filterRow.priority}
-              onChange={e => onFilterRowChange({ ...filterRow, priority: e.target.value })}
+              onChange={(event) =>
+                onFilterRowChange({ ...filterRow, priority: event.target.value })
+              }
             >
               <option value="All">All</option>
               <option value="Critical">Critical</option>
@@ -134,7 +128,9 @@ export function HeaderFilters() {
             <select
               className={filterClassname}
               value={filterRow.issueType}
-              onChange={e => onFilterRowChange({ ...filterRow, issueType: e.target.value })}
+              onChange={(event) =>
+                onFilterRowChange({ ...filterRow, issueType: event.target.value })
+              }
             >
               <option value="All">All</option>
               <option value="Bug">Bug</option>
@@ -151,8 +147,12 @@ export function HeaderFilters() {
         filterRenderer: ({ filterRow, onFilterRowChange }) => (
           <div className={filterContainerClassname}>
             <Select
-              value={filterRow.developer ? { label: filterRow.developer, value: filterRow.developer } : undefined}
-              onChange={e => onFilterRowChange({ ...filterRow, developer: e!.value })}
+              value={
+                filterRow.developer
+                  ? { label: filterRow.developer, value: filterRow.developer }
+                  : undefined
+              }
+              onChange={(event) => onFilterRowChange({ ...filterRow, developer: event!.value })}
               options={developerOptions}
               styles={{
                 option: (provided) => ({
@@ -182,7 +182,7 @@ export function HeaderFilters() {
         filterRenderer: ({ filterRow, onFilterRowChange }) => (
           <NumericFilter
             value={filterRow.complete}
-            onChange={value => onFilterRowChange({ ...filterRow, complete: value })}
+            onChange={(value) => onFilterRowChange({ ...filterRow, complete: value })}
           />
         )
       }
@@ -190,7 +190,7 @@ export function HeaderFilters() {
   }, [rows]);
 
   const filteredRows = useMemo(() => {
-    return rows.filter(row => {
+    return rows.filter((row) => {
       if (filterRow.task && !row.task.includes(filterRow.task)) {
         return false;
       }
@@ -225,9 +225,12 @@ export function HeaderFilters() {
   return (
     <div className={rootClassname}>
       <div className={toolbarClassname}>
-        <button type="button" onClick={toggleFilters}>Toggle Filters</button>
-        {' '}
-        <button type="button" onClick={clearFilters}>Clear Filters</button>
+        <button type="button" onClick={toggleFilters}>
+          Toggle Filters
+        </button>{' '}
+        <button type="button" onClick={clearFilters}>
+          Clear Filters
+        </button>
       </div>
       <DataGrid
         columns={columns}

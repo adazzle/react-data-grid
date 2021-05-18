@@ -1,22 +1,21 @@
 {
   "presets": [
-    ["@babel/env", {
-      "loose": true,
-      "bugfixes": true,
-      "shippedProposals": true,
-      "corejs": 3,
-      "useBuiltIns": "entry",
-      "include": [
-        "@babel/proposal-nullish-coalescing-operator",
-        "@babel/proposal-optional-chaining"
-      ]
-    }],
+    [
+      "@babel/env",
+      {
+        "loose": true,
+        "bugfixes": true,
+        "shippedProposals": true,
+        "corejs": 3,
+        "useBuiltIns": "entry"
+      }
+    ],
     ["@babel/react", { "runtime": "automatic" }],
     "@babel/typescript",
     "@linaria"
   ],
   "plugins": [
-    ["@babel/transform-runtime", { "useESModules": true }],
+    "@babel/transform-runtime",
     ["optimize-clsx", { "functionNames": ["getCellClassname"] }]
   ]
 }

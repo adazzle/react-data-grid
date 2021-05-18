@@ -1,11 +1,48 @@
 import { SelectCellFormatter } from './formatters';
-import type { Column } from './types';
-import { stopPropagation } from './utils/domUtils';
+import { useRowSelection } from './hooks';
+import type { Column, FormatterProps, GroupFormatterProps } from './types';
+import { stopPropagation } from './utils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
+function SelectFormatter(props: FormatterProps) {
+  const [isRowSelected, onRowSelectionChange] = useRowSelection();
+
+  return (
+    <SelectCellFormatter
+      aria-label="Select"
+      tabIndex={-1}
+      isCellSelected={props.isCellSelected}
+      value={isRowSelected}
+      onClick={stopPropagation}
+      onChange={(checked, isShiftClick) => {
+        onRowSelectionChange({ rowIdx: props.rowIdx, checked, isShiftClick });
+      }}
+    />
+  );
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const SelectColumn: Column<any, any> = {
+function SelectGroupFormatter(props: GroupFormatterProps<any, any, any>) {
+  const [isRowSelected, onRowSelectionChange] = useRowSelection();
+
+  return (
+    <SelectCellFormatter
+      aria-label="Select Group"
+      tabIndex={-1}
+      isCellSelected={props.isCellSelected}
+      value={isRowSelected}
+      onChange={(checked) => {
+        onRowSelectionChange({ checked, isShiftClick: false, rowIdx: props.rowIdx });
+      }}
+      // Stop propagation to prevent row selection
+      onClick={stopPropagation}
+    />
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const SelectColumn: Column<any, any, any> = {
   key: SELECT_COLUMN_KEY,
   name: '',
   width: 35,
@@ -17,34 +54,12 @@ export const SelectColumn: Column<any, any> = {
     return (
       <SelectCellFormatter
         aria-label="Select All"
+        isCellSelected={false}
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}
       />
     );
   },
-  formatter(props) {
-    return (
-      <SelectCellFormatter
-        aria-label="Select"
-        tabIndex={-1}
-        isCellSelected={props.isCellSelected}
-        value={props.isRowSelected}
-        onClick={stopPropagation}
-        onChange={props.onRowSelectionChange}
-      />
-    );
-  },
-  groupFormatter(props) {
-    return (
-      <SelectCellFormatter
-        aria-label="Select Group"
-        tabIndex={-1}
-        isCellSelected={props.isCellSelected}
-        value={props.isRowSelected}
-        onChange={props.onRowSelectionChange}
-        // Stop propagation to prevent row selection
-        onClick={stopPropagation}
-      />
-    );
-  }
+  formatter: SelectFormatter,
+  groupFormatter: SelectGroupFormatter
 };

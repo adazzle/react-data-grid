@@ -4,9 +4,9 @@ import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, FilterRendererProps } from './types';
 import { filterRowClassname } from './style';
 
-type SharedFilterRendererProps<R, SR, FR> = Pick<FilterRendererProps<R, SR, FR>,
-  | 'filterRow'
-  | 'onFilterRowChange'
+type SharedFilterRendererProps<R, SR, FR> = Pick<
+  FilterRendererProps<R, SR, FR>,
+  'filterRow' | 'onFilterRowChange'
 >;
 
 interface FilterRowProps<R, SR, FR> extends SharedFilterRendererProps<R, SR, FR> {
@@ -19,30 +19,18 @@ function FilterRow<R, SR, FR>({
   onFilterRowChange
 }: FilterRowProps<R, SR, FR>) {
   return (
-    <div
-      role="row"
-      aria-rowindex={2}
-      className={filterRowClassname}
-    >
-      {columns.map(column => {
-        const { key } = column;
-
-        return (
-          <div
-            key={key}
-            className={getCellClassname(column)}
-            style={getCellStyle(column)}
-          >
-            {column.filterRenderer && (
-              <column.filterRenderer
-                column={column}
-                filterRow={filterRow}
-                onFilterRowChange={onFilterRowChange}
-              />
-            )}
-          </div>
-        );
-      })}
+    <div role="row" aria-rowindex={2} className={filterRowClassname}>
+      {columns.map((column) => (
+        <div key={column.key} className={getCellClassname(column)} style={getCellStyle(column)}>
+          {column.filterRenderer && (
+            <column.filterRenderer
+              column={column}
+              filterRow={filterRow}
+              onFilterRowChange={onFilterRowChange}
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 }
