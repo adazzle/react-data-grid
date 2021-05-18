@@ -99,8 +99,8 @@ export default function HeaderCell<R, SR>({
       const newSorts = sortColumns ? [...sortColumns] : [];
       if (index !== undefined) {
         if (index > -1) {
-          if (sortDirection === 'ASC') newSorts[index!] = { columnKey, direction };
-          else newSorts.splice(index!, 1);
+          if (sortDirection === 'ASC') newSorts[index] = { columnKey, direction };
+          else newSorts.splice(index, 1);
         } else {
           newSorts.push({ columnKey, direction });
         }
