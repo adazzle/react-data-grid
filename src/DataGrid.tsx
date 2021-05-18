@@ -50,7 +50,8 @@ import type {
   PasteEvent,
   CellNavigationMode,
   SortDirection,
-  RowHeightArgs
+  RowHeightArgs,
+  SelectCellFn
 } from './types';
 
 interface SelectCellState extends Position {
@@ -82,7 +83,7 @@ export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
-  selectCell: (position: Position, openEditor?: boolean) => void;
+  selectCell: SelectCellFn;
 }
 
 type SharedDivProps = Pick<
@@ -577,7 +578,7 @@ function DataGrid<R, SR, FR, K extends Key>(
 
   function commitEditorChanges() {
     if (
-      columns[selectedPosition.idx]?.editor === undefined ||
+      columns[selectedPosition.idx]?.editor == null ||
       selectedPosition.mode === 'SELECT' ||
       selectedPosition.row === selectedPosition.originalRow
     ) {
@@ -746,7 +747,7 @@ function DataGrid<R, SR, FR, K extends Key>(
     );
   }
 
-  function selectCell(position: Position, enableEditor = false): void {
+  function selectCell(position: Position, enableEditor?: boolean | null): void {
     if (!isCellWithinBounds(position)) return;
     commitEditorChanges();
 

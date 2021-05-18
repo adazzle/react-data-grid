@@ -95,7 +95,7 @@ export function useCalculatedColumns<R, SR, FR>({
         groupBy.push(column.key);
       }
 
-      if (column.colSpan !== undefined) {
+      if (column.colSpan != null) {
         colSpanColumns.push(column);
       }
     });
