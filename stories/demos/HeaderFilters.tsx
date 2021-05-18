@@ -4,7 +4,7 @@ import faker from 'faker';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, Filters } from '../../src';
+import type { Column } from '../../src';
 import { NumericFilter } from './components/Filters';
 
 const rootClassname = css`
@@ -23,9 +23,16 @@ const toolbarClassname = css`
 `;
 
 const filterContainerClassname = css`
-  display: flex;
-  height: inherit;
-  align-items: center;
+  line-height: 35px;
+  padding: 0;
+
+  > div {
+    padding: 0 8px;
+
+    &::first-child {
+      border-bottom: 1px solid var(--border-color);
+    }
+  }
 `;
 
 const filterClassname = css`
@@ -60,7 +67,7 @@ function createRows() {
 
 export function HeaderFilters() {
   const [rows] = useState(createRows);
-  const [filters, setFilters] = useState<Filters>({
+  const [filters, setFilters] = useState({
     task: '',
     priority: 'Critical',
     issueType: 'All',
@@ -84,83 +91,114 @@ export function HeaderFilters() {
       {
         key: 'task',
         name: 'Title',
-        filterRenderer: (p) => (
-          <div className={filterContainerClassname}>
-            <input
-              className={filterClassname}
-              value={p.value}
-              onChange={(e) => p.onChange(e.target.value)}
-            />
-          </div>
+        headerCellClass: filterContainerClassname,
+        headerRenderer: ({ column }) => (
+          <>
+            <div>{column.name}</div>
+            <div>
+              <input
+                className={filterClassname}
+                value={filters.task}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    task: e.target.value
+                  })
+                }
+              />
+            </div>
+          </>
         )
       },
       {
         key: 'priority',
         name: 'Priority',
-        filterRenderer: (p) => (
-          <div className={filterContainerClassname}>
-            <select
-              className={filterClassname}
-              value={p.value}
-              onChange={(e) => p.onChange(e.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Critical">Critical</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
-          </div>
+        headerCellClass: filterContainerClassname,
+        headerRenderer: ({ column }) => (
+          <>
+            <div>{column.name}</div>
+            <div>
+              <select
+                className={filterClassname}
+                value={filters.priority}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    priority: e.target.value
+                  })
+                }
+              >
+                <option value="All">All</option>
+                <option value="Critical">Critical</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </>
         )
       },
       {
         key: 'issueType',
         name: 'Issue Type',
-        filterRenderer: (p) => (
-          <div className={filterContainerClassname}>
-            <select
-              className={filterClassname}
-              value={p.value}
-              onChange={(e) => p.onChange(e.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Bug">Bug</option>
-              <option value="Improvement">Improvement</option>
-              <option value="Epic">Epic</option>
-              <option value="Story">Story</option>
-            </select>
-          </div>
+        headerCellClass: filterContainerClassname,
+        headerRenderer: ({ column }) => (
+          <>
+            <div>{column.name}</div>
+            <div>
+              <select
+                className={filterClassname}
+                value={filters.issueType}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    issueType: e.target.value
+                  })
+                }
+              >
+                <option value="All">All</option>
+                <option value="Bug">Bug</option>
+                <option value="Improvement">Improvement</option>
+                <option value="Epic">Epic</option>
+                <option value="Story">Story</option>
+              </select>
+            </div>
+          </>
         )
       },
       {
         key: 'developer',
         name: 'Developer',
-        filterRenderer: (p) => (
-          <div className={filterContainerClassname}>
-            <Select
-              value={p.value}
-              onChange={p.onChange}
-              options={developerOptions}
-              styles={{
-                option: (provided) => ({
-                  ...provided,
-                  padding: 10
-                }),
-                control: (provided) => ({
-                  ...provided,
-                  height: 30,
-                  minHeight: 30,
-                  padding: 0,
-                  lineHeight: 'normal'
-                }),
-                container: (provided) => ({
-                  ...provided,
-                  width: '100%'
-                })
-              }}
-              menuPortalTarget={document.body}
-            />
-          </div>
+        headerCellClass: filterContainerClassname,
+        headerRenderer: ({ column }) => (
+          <>
+            <div>{column.name}</div>
+            <div>
+              <Select
+                // value={filters.developer}
+                // onChange={p.onChange}
+                options={developerOptions}
+                styles={{
+                  option: (provided) => ({
+                    ...provided,
+                    padding: 10
+                  }),
+                  control: (provided) => ({
+                    ...provided,
+                    height: 30,
+                    minHeight: 30,
+                    padding: 0,
+                    lineHeight: 'normal'
+                  }),
+                  container: (provided) => ({
+                    ...provided,
+                    width: '100%'
+                  })
+                }}
+                menuPortalTarget={document.body}
+              />
+            </div>
+          </>
         )
       },
       {
@@ -169,7 +207,7 @@ export function HeaderFilters() {
         filterRenderer: NumericFilter
       }
     ];
-  }, [rows]);
+  }, [filters, rows]);
 
   const filteredRows = useMemo(() => {
     return rows.filter((r) => {
@@ -207,13 +245,7 @@ export function HeaderFilters() {
           Clear Filters
         </button>
       </div>
-      <DataGrid
-        columns={columns}
-        rows={filteredRows}
-        enableFilterRow={enableFilterRow}
-        filters={filters}
-        onFiltersChange={setFilters}
-      />
+      <DataGrid columns={columns} rows={filteredRows} headerRowHeight={70} />
     </div>
   );
 }
