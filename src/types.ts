@@ -9,51 +9,51 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** A unique key to distinguish each column */
   key: string;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
-  width?: number | string;
+  width?: number | string | null;
   /** Minimum column width in px. */
-  minWidth?: number;
+  minWidth?: number | null;
   /** Maximum column width in px. */
-  maxWidth?: number;
-  cellClass?: string | ((row: TRow) => string | undefined);
-  headerCellClass?: string;
-  summaryCellClass?: string | ((row: TSummaryRow) => string);
+  maxWidth?: number | null;
+  cellClass?: string | ((row: TRow) => string | undefined | null) | null;
+  headerCellClass?: string | null;
+  summaryCellClass?: string | ((row: TSummaryRow) => string) | null;
   /** Formatter to be used to render the cell content */
-  formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
+  formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>> | null;
   /** Formatter to be used to render the summary cell content */
-  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>;
+  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>> | null;
   /** Formatter to be used to render the group cell content */
-  groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>;
+  groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>> | null;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
-  editable?: boolean | ((row: TRow) => boolean);
-  colSpan?: (args: ColSpanArgs<TRow, TSummaryRow>) => number | undefined;
+  editable?: boolean | ((row: TRow) => boolean) | null;
+  colSpan?: ((args: ColSpanArgs<TRow, TSummaryRow>) => number | undefined | null) | null;
   /** Determines whether column is frozen or not */
-  frozen?: boolean;
+  frozen?: boolean | null;
   /** Enable resizing of a column */
-  resizable?: boolean;
+  resizable?: boolean | null;
   /** Enable sorting of a column */
-  sortable?: boolean;
+  sortable?: boolean | null;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
-  sortDescendingFirst?: boolean;
+  sortDescendingFirst?: boolean | null;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>>;
+  editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>> | null;
   editorOptions?: {
     /** @default false */
-    createPortal?: boolean;
+    createPortal?: boolean | null;
     /** @default false */
-    editOnClick?: boolean;
+    editOnClick?: boolean | null;
     /** Prevent default to cancel editing */
-    onCellKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    onCellKeyDown?: ((event: React.KeyboardEvent<HTMLDivElement>) => void) | null;
     /** Control the default cell navigation behavior while the editor is open */
-    onNavigation?: (event: React.KeyboardEvent<HTMLDivElement>) => boolean;
+    onNavigation?: ((event: React.KeyboardEvent<HTMLDivElement>) => boolean) | null;
     // TODO: Do we need these options
-    // editOnDoubleClick?: boolean;
+    // editOnDoubleClick?: boolean | null;
     /** @default false */
-    // commitOnScroll?: boolean;
-  };
+    // commitOnScroll?: boolean | null;
+  } | null;
   /** Header renderer for each header cell */
-  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>;
+  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>> | null;
   /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>>;
+  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>> | null;
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
@@ -141,6 +141,8 @@ export interface SelectedCellProps extends SelectedCellPropsBase {
     | undefined;
 }
 
+export type SelectCellFn = (position: Position, enableEditor?: boolean | null) => void;
+
 export interface CellRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
@@ -158,7 +160,7 @@ export interface CellRendererProps<TRow, TSummaryRow = unknown>
     | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
     | undefined
     | null;
-  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectCell: SelectCellFn;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -181,7 +183,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
     | null;
   rowClass: ((row: TRow) => string | undefined | null) | undefined | null;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
-  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectCell: SelectCellFn;
 }
 
 export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {

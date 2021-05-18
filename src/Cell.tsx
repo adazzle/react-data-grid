@@ -72,7 +72,7 @@ function Cell<R, SR>(
     className
   );
 
-  function selectCellWrapper(openEditor?: boolean) {
+  function selectCellWrapper(openEditor?: boolean | null) {
     selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
