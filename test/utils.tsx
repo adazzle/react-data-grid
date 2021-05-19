@@ -19,6 +19,10 @@ export function getRows() {
   return screen.getAllByRole('row').slice(1);
 }
 
+export function queryRows() {
+  return screen.queryAllByRole('row').slice(1);
+}
+
 export function getCellsAtRowIndex(rowIdx: number) {
   return document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`);
 }
@@ -27,8 +31,16 @@ export function getCells() {
   return screen.getAllByRole('gridcell');
 }
 
+export function queryCells() {
+  return screen.queryAllByRole('gridcell');
+}
+
 export function getHeaderCells() {
   return screen.getAllByRole('columnheader');
+}
+
+export function queryHeaderCells() {
+  return screen.queryAllByRole('columnheader');
 }
 
 export function getSelectedCell() {

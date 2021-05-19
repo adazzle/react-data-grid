@@ -1,5 +1,15 @@
 import type { Column } from '../src';
-import { getCells, getCellsAtRowIndex, getGrid, getHeaderCells, getRows, setup } from './utils';
+import {
+  getCells,
+  getCellsAtRowIndex,
+  getGrid,
+  getHeaderCells,
+  getRows,
+  queryCells,
+  queryHeaderCells,
+  queryRows,
+  setup
+} from './utils';
 
 const rowHeight = 35;
 
@@ -137,12 +147,18 @@ test('zero columns', () => {
   setupGrid(true, 0, 100);
 
   assertHeightFill(100 * rowHeight);
+  expect(queryHeaderCells()).toHaveLength(0);
+  expect(queryCells()).toHaveLength(0);
+  expect(getRows()).toHaveLength(41);
 });
 
 test('zero rows', () => {
   setupGrid(true, 20, 0);
 
   assertHeightFill(1080 - rowHeight);
+  expect(getHeaderCells()).toHaveLength(18);
+  expect(queryCells()).toHaveLength(0);
+  expect(queryRows()).toHaveLength(0);
 });
 
 test('zero rows + 2 summary rows', () => {
