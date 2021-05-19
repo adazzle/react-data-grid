@@ -54,7 +54,7 @@ interface Filter extends Omit<Row, 'id' | 'complete'> {
 }
 
 // Context is needed to read filter values otherwise columns are
-// re-created when filters are changed and filter looses focus
+// re-created when filters are changed and filter loses focus
 const FilterContext = createContext<Filter | undefined>(undefined);
 
 function createRows() {
