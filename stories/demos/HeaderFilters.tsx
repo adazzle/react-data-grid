@@ -53,26 +53,12 @@ interface Row {
 
 interface Filter extends Omit<Row, 'id' | 'complete'> {
   complete?: number;
+  enabled: boolean;
 }
 
 // Context is needed to read filter values otherwise columns are
 // re-created when filters are changed and filter loses focus
 const FilterContext = createContext<Filter | undefined>(undefined);
-
-function createRows() {
-  const rows: Row[] = [];
-  for (let i = 1; i < 500; i++) {
-    rows.push({
-      id: i,
-      task: `Task ${i}`,
-      complete: Math.min(100, Math.round(Math.random() * 110)),
-      priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
-      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
-      developer: faker.name.findName()
-    });
-  }
-  return rows;
-}
 
 export function HeaderFilters() {
   const [rows] = useState(createRows);
@@ -81,9 +67,9 @@ export function HeaderFilters() {
     priority: 'Critical',
     issueType: 'All',
     developer: '',
-    complete: undefined
+    complete: undefined,
+    enabled: true
   });
-  const [enableFilterRow, setEnableFilterRow] = useState(true);
 
   const developerOptions = useMemo(
     () =>
@@ -105,7 +91,7 @@ export function HeaderFilters() {
         key: 'task',
         name: 'Title',
         headerRenderer: (p) => (
-          <FilterRenderer {...p} enableFilterRow={enableFilterRow}>
+          <FilterRenderer {...p}>
             {(filters) => (
               <input
                 className={filterClassname}
@@ -125,7 +111,7 @@ export function HeaderFilters() {
         key: 'priority',
         name: 'Priority',
         headerRenderer: (p) => (
-          <FilterRenderer {...p} enableFilterRow={enableFilterRow}>
+          <FilterRenderer {...p}>
             {(filters) => (
               <select
                 className={filterClassname}
@@ -151,7 +137,7 @@ export function HeaderFilters() {
         key: 'issueType',
         name: 'Issue Type',
         headerRenderer: (p) => (
-          <FilterRenderer {...p} enableFilterRow={enableFilterRow}>
+          <FilterRenderer {...p}>
             {(filters) => (
               <select
                 className={filterClassname}
@@ -177,7 +163,7 @@ export function HeaderFilters() {
         key: 'developer',
         name: 'Developer',
         headerRenderer: (p) => (
-          <FilterRenderer {...p} enableFilterRow={enableFilterRow}>
+          <FilterRenderer {...p}>
             {(filters) => (
               <>
                 <input
@@ -200,7 +186,7 @@ export function HeaderFilters() {
         key: 'complete',
         name: '% Complete',
         headerRenderer: (p) => (
-          <FilterRenderer {...p} enableFilterRow={enableFilterRow}>
+          <FilterRenderer {...p}>
             {(filters) => (
               <input
                 type="number"
@@ -220,7 +206,7 @@ export function HeaderFilters() {
         )
       }
     ];
-  }, [enableFilterRow]);
+  }, []);
 
   const filteredRows = useMemo(() => {
     return rows.filter((r) => {
@@ -242,12 +228,16 @@ export function HeaderFilters() {
       priority: 'All',
       issueType: 'All',
       developer: '',
-      complete: undefined
+      complete: undefined,
+      enabled: true
     });
   }
 
   function toggleFilters() {
-    setEnableFilterRow(!enableFilterRow);
+    setFilters({
+      ...filters,
+      enabled: !filters.enabled
+    });
   }
 
   return (
@@ -262,10 +252,10 @@ export function HeaderFilters() {
       </div>
       <FilterContext.Provider value={filters}>
         <DataGrid
-          className={enableFilterRow ? filterContainerClassname : undefined}
+          className={filters.enabled ? filterContainerClassname : undefined}
           columns={columns}
           rows={filteredRows}
-          headerRowHeight={enableFilterRow ? 70 : undefined}
+          headerRowHeight={filters.enabled ? 70 : undefined}
         />
         <datalist id="developers">
           {developerOptions.map(({ label, value }) => (
@@ -281,17 +271,30 @@ export function HeaderFilters() {
 
 function FilterRenderer<R, SR>({
   column,
-  enableFilterRow,
   children
 }: HeaderRendererProps<R, SR> & {
-  enableFilterRow: boolean;
   children: (filters: Filter) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;
   return (
     <>
       <div>{column.name}</div>
-      {enableFilterRow && <div>{children(filters)}</div>}
+      {filters.enabled && <div>{children(filters)}</div>}
     </>
   );
+}
+
+function createRows() {
+  const rows: Row[] = [];
+  for (let i = 1; i < 500; i++) {
+    rows.push({
+      id: i,
+      task: `Task ${i}`,
+      complete: Math.min(100, Math.round(Math.random() * 110)),
+      priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
+      issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
+      developer: faker.name.findName()
+    });
+  }
+  return rows;
 }
