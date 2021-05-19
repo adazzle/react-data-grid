@@ -12,7 +12,7 @@ export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>
 }
 
 export function getGrid() {
-  return document.querySelector<HTMLDivElement>('.rdg');
+  return document.querySelector<HTMLDivElement>('.rdg')!;
 }
 
 export function getRows() {
@@ -24,7 +24,9 @@ function getRowByIndex(rowIdx: number) {
 }
 
 export function getCellsAtRowIndex(rowIdx: number) {
-  return within(getRowByIndex(rowIdx)).getAllByRole('gridcell');
+  const row = getRowByIndex(rowIdx);
+  expect(row).toBeInTheDocument();
+  return within(row!).getAllByRole('gridcell');
 }
 
 export function getCells() {
