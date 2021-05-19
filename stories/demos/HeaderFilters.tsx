@@ -1,11 +1,10 @@
-import { useMemo, useState } from 'react';
-import Select from 'react-select';
+import { createContext, useContext, useMemo, useState } from 'react';
 import faker from 'faker';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { NumericFilter } from './components/Filters';
+import type { HeaderRendererProps, Omit } from '../../src/types';
 
 const rootClassname = css`
   display: flex;
@@ -29,7 +28,7 @@ const filterContainerClassname = css`
   > div {
     padding: 0 8px;
 
-    &::first-child {
+    &:first-child {
       border-bottom: 1px solid var(--border-color);
     }
   }
@@ -50,6 +49,14 @@ interface Row {
   complete: number;
 }
 
+interface Filter extends Omit<Row, 'id' | 'complete'> {
+  complete?: number;
+}
+
+// Context is needed to read filter values otherwise columns are
+// re-created when filters are changed and filter looses focus
+const FilterContext = createContext<Filter | undefined>(undefined);
+
 function createRows() {
   const rows: Row[] = [];
   for (let i = 1; i < 500; i++) {
@@ -67,12 +74,12 @@ function createRows() {
 
 export function HeaderFilters() {
   const [rows] = useState(createRows);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filter>({
     task: '',
     priority: 'Critical',
     issueType: 'All',
     developer: '',
-    complete: ''
+    complete: undefined
   });
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
@@ -92,10 +99,9 @@ export function HeaderFilters() {
         key: 'task',
         name: 'Title',
         headerCellClass: filterContainerClassname,
-        headerRenderer: ({ column }) => (
-          <>
-            <div>{column.name}</div>
-            <div>
+        headerRenderer: (p) => (
+          <FilterRenderer {...p}>
+            {(filters) => (
               <input
                 className={filterClassname}
                 value={filters.task}
@@ -106,18 +112,17 @@ export function HeaderFilters() {
                   })
                 }
               />
-            </div>
-          </>
+            )}
+          </FilterRenderer>
         )
       },
       {
         key: 'priority',
         name: 'Priority',
         headerCellClass: filterContainerClassname,
-        headerRenderer: ({ column }) => (
-          <>
-            <div>{column.name}</div>
-            <div>
+        headerRenderer: (p) => (
+          <FilterRenderer {...p}>
+            {(filters) => (
               <select
                 className={filterClassname}
                 value={filters.priority}
@@ -134,18 +139,17 @@ export function HeaderFilters() {
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
               </select>
-            </div>
-          </>
+            )}
+          </FilterRenderer>
         )
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         headerCellClass: filterContainerClassname,
-        headerRenderer: ({ column }) => (
-          <>
-            <div>{column.name}</div>
-            <div>
+        headerRenderer: (p) => (
+          <FilterRenderer {...p}>
+            {(filters) => (
               <select
                 className={filterClassname}
                 value={filters.issueType}
@@ -162,52 +166,65 @@ export function HeaderFilters() {
                 <option value="Epic">Epic</option>
                 <option value="Story">Story</option>
               </select>
-            </div>
-          </>
+            )}
+          </FilterRenderer>
         )
       },
       {
         key: 'developer',
         name: 'Developer',
         headerCellClass: filterContainerClassname,
-        headerRenderer: ({ column }) => (
-          <>
-            <div>{column.name}</div>
-            <div>
-              <Select
-                // value={filters.developer}
-                // onChange={p.onChange}
-                options={developerOptions}
-                styles={{
-                  option: (provided) => ({
-                    ...provided,
-                    padding: 10
-                  }),
-                  control: (provided) => ({
-                    ...provided,
-                    height: 30,
-                    minHeight: 30,
-                    padding: 0,
-                    lineHeight: 'normal'
-                  }),
-                  container: (provided) => ({
-                    ...provided,
-                    width: '100%'
-                  })
-                }}
-                menuPortalTarget={document.body}
-              />
-            </div>
-          </>
+        headerRenderer: (p) => (
+          <FilterRenderer {...p}>
+            {(filters) => (
+              <>
+                <input
+                  className={filterClassname}
+                  value={filters.developer}
+                  onChange={(e) =>
+                    setFilters({
+                      ...filters,
+                      developer: e.target.value
+                    })
+                  }
+                  list="developers"
+                />
+                <datalist id="developers">
+                  {developerOptions.map(({ label, value }) => (
+                    <option value={value}>{label}</option>
+                  ))}
+                </datalist>
+              </>
+            )}
+          </FilterRenderer>
         )
       },
       {
         key: 'complete',
         name: '% Complete',
-        filterRenderer: NumericFilter
+        headerCellClass: filterContainerClassname,
+        headerRenderer: (p) => (
+          <FilterRenderer {...p}>
+            {(filters) => (
+              <input
+                type="number"
+                className={filterClassname}
+                value={filters.complete}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    complete: Number.isFinite(e.target.valueAsNumber)
+                      ? e.target.valueAsNumber
+                      : undefined
+                  })
+                }
+              />
+            )}
+          </FilterRenderer>
+        )
       }
     ];
-  }, [filters, rows]);
+  }, [rows]);
 
   const filteredRows = useMemo(() => {
     return rows.filter((r) => {
@@ -215,8 +232,8 @@ export function HeaderFilters() {
         (filters.task ? r.task.includes(filters.task) : true) &&
         (filters.priority !== 'All' ? r.priority === filters.priority : true) &&
         (filters.issueType !== 'All' ? r.issueType === filters.issueType : true) &&
-        (filters.developer ? r.developer === filters.developer.value : true) &&
-        (filters.complete ? filters.complete.filterValues(r, filters.complete, 'complete') : true)
+        (filters.developer ? r.developer.startsWith(filters.developer) : true) &&
+        (filters.complete !== undefined ? r.complete >= filters.complete : true)
       );
     });
   }, [rows, filters]);
@@ -227,7 +244,7 @@ export function HeaderFilters() {
       priority: 'All',
       issueType: 'All',
       developer: '',
-      complete: ''
+      complete: undefined
     });
   }
 
@@ -245,9 +262,22 @@ export function HeaderFilters() {
           Clear Filters
         </button>
       </div>
-      <DataGrid columns={columns} rows={filteredRows} headerRowHeight={70} />
+      <FilterContext.Provider value={filters}>
+        <DataGrid columns={columns} rows={filteredRows} headerRowHeight={70} />
+      </FilterContext.Provider>
     </div>
   );
 }
 
-HeaderFilters.storyName = 'Header Filters';
+function FilterRenderer<R, SR>({
+  column,
+  children
+}: HeaderRendererProps<R, SR> & { children: (filters: Filter) => React.ReactElement }) {
+  const filters = useContext(FilterContext)!;
+  return (
+    <>
+      <div>{column.name}</div>
+      <div>{children(filters)}</div>
+    </>
+  );
+}
