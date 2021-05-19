@@ -234,10 +234,10 @@ export function HeaderFilters() {
   }
 
   function toggleFilters() {
-    setFilters({
+    setFilters(filters => ({
       ...filters,
       enabled: !filters.enabled
-    });
+    }));
   }
 
   return (
