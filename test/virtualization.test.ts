@@ -133,16 +133,22 @@ xtest('virtualization is enabled with 2 summary rows', () => {
   assertHeightFill(100 * rowHeight);
 });
 
-xtest('zero columns', () => {
+test('zero columns', () => {
   setupGrid(true, 0, 100);
 
   assertHeightFill(100 * rowHeight);
 });
 
-xtest('zero rows', () => {
+test('zero rows', () => {
   setupGrid(true, 20, 0);
 
-  assertHeightFill(0 * rowHeight);
+  assertHeightFill(1080 - rowHeight);
+});
+
+test('zero rows + 2 summary rows', () => {
+  setupGrid(true, 20, 0, 0, 2);
+
+  assertHeightFill(1080 - rowHeight * 3);
 });
 
 xtest('virtualization is enable with not enough columns or rows to virtualize', () => {
