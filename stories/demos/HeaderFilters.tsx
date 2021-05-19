@@ -199,7 +199,7 @@ export function HeaderFilters() {
                     />
                     <datalist id="developers">
                       {developerOptions.map(({ label, value }) => (
-                        <option value={value}>{label}</option>
+                        <option key={value} value={value}>{label}</option>
                       ))}
                     </datalist>
                   </>
