@@ -949,7 +949,7 @@ function DataGrid<R, SR, K extends Key>(
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
-      const top = getRowTop(rowIdx) + headerRowHeight!;
+      const top = getRowTop(rowIdx) + headerRowHeight;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected =
