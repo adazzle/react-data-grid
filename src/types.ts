@@ -232,6 +232,9 @@ export interface GroupRow<TRow> {
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
 
-export type ColSpanArgs<R, SR> = { type: 'ROW'; row: R } | { type: 'SUMMARY'; row: SR };
+export type ColSpanArgs<R, SR> =
+  | { type: 'HEADER' }
+  | { type: 'ROW'; row: R }
+  | { type: 'SUMMARY'; row: SR };
 
 export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
