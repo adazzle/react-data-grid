@@ -21,8 +21,10 @@ const toolbarClassname = css`
   text-align: end;
 `;
 
+const filterColumnClassName = 'filter-cell';
+
 const filterContainerClassname = css`
-  .rdg-header-row .rdg-cell:not(:first-child) {
+  .rdg-header-row .${filterColumnClassName} {
     line-height: 35px;
     padding: 0;
 
@@ -90,6 +92,7 @@ export function HeaderFilters() {
       {
         key: 'task',
         name: 'Title',
+        headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
           <FilterRenderer {...p}>
             {(filters) => (
@@ -110,6 +113,7 @@ export function HeaderFilters() {
       {
         key: 'priority',
         name: 'Priority',
+        headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
           <FilterRenderer {...p}>
             {(filters) => (
@@ -136,6 +140,7 @@ export function HeaderFilters() {
       {
         key: 'issueType',
         name: 'Issue Type',
+        headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
           <FilterRenderer {...p}>
             {(filters) => (
@@ -162,6 +167,7 @@ export function HeaderFilters() {
       {
         key: 'developer',
         name: 'Developer',
+        headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
           <FilterRenderer {...p}>
             {(filters) => (
@@ -185,6 +191,7 @@ export function HeaderFilters() {
       {
         key: 'complete',
         name: '% Complete',
+        headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
           <FilterRenderer {...p}>
             {(filters) => (
