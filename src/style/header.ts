@@ -10,10 +10,10 @@ const headerRow = css`
   line-height: var(--header-row-height);
   width: var(--row-width);
   position: sticky;
+  top: 0;
   background-color: var(--header-background-color);
   font-weight: bold;
   z-index: 3;
-  top: 0;
   touch-action: none;
 `;
 
