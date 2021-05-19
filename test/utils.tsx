@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
@@ -19,14 +19,8 @@ export function getRows() {
   return screen.getAllByRole('row').slice(1);
 }
 
-function getRowByIndex(rowIdx: number) {
-  return document.querySelector<HTMLDivElement>(`.rdg-row[aria-rowindex="${rowIdx + 2}"]`);
-}
-
 export function getCellsAtRowIndex(rowIdx: number) {
-  const row = getRowByIndex(rowIdx);
-  expect(row).toBeInTheDocument();
-  return within(row!).getAllByRole('gridcell');
+  return document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`);
 }
 
 export function getCells() {

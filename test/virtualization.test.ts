@@ -33,7 +33,7 @@ function assertHeightFill(height: number) {
 }
 
 function assertElements(
-  elements: readonly HTMLElement[],
+  elements: ArrayLike<HTMLElement>,
   attribute: string,
   count: number,
   startIdx: number,
