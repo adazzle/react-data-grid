@@ -234,7 +234,7 @@ export function HeaderFilters() {
   }
 
   function toggleFilters() {
-    setFilters(filters => ({
+    setFilters((filters) => ({
       ...filters,
       enabled: !filters.enabled
     }));
@@ -257,14 +257,14 @@ export function HeaderFilters() {
           rows={filteredRows}
           headerRowHeight={filters.enabled ? 70 : undefined}
         />
-        <datalist id="developers">
-          {developerOptions.map(({ label, value }) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </datalist>
       </FilterContext.Provider>
+      <datalist id="developers">
+        {developerOptions.map(({ label, value }) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
+      </datalist>
     </div>
   );
 }
