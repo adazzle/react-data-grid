@@ -24,7 +24,7 @@ const toolbarClassname = css`
 const filterColumnClassName = 'filter-cell';
 
 const filterContainerClassname = css`
-  .rdg-header-row .${filterColumnClassName} {
+  .${filterColumnClassName} {
     line-height: 35px;
     padding: 0;
 
