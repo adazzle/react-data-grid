@@ -92,6 +92,7 @@ export default function HeaderCell<R, SR>({
     index !== undefined && index > -1 ? sortColumns?.[index].direction : undefined;
   const priority = index !== undefined ? index + 1 : undefined;
   const multiSorts = sortColumns ? sortColumns.length > 1 : false;
+  const sorted = priority ? priority > 0 : false;
 
   const onSort = (columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
     if (!onSortColumnsChange) return;
@@ -116,7 +117,7 @@ export default function HeaderCell<R, SR>({
         <column.headerRenderer
           column={column}
           sortDirection={sortDirection}
-          priority={multiSorts ? priority : undefined}
+          priority={multiSorts && sorted ? priority : undefined}
           onSort={onSort}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
@@ -130,7 +131,7 @@ export default function HeaderCell<R, SR>({
           column={column}
           onSort={onSort}
           sortDirection={sortDirection}
-          priority={multiSorts ? priority : undefined}
+          priority={multiSorts && sorted ? priority : undefined}
         >
           {column.name}
         </SortableHeaderCell>
