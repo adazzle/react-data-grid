@@ -20,7 +20,6 @@ import {
   RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
-import FilterRow from './FilterRow';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
@@ -40,7 +39,6 @@ import {
 import type {
   CalculatedColumn,
   Column,
-  Filters,
   Position,
   RowRendererProps,
   RowsChangeData,
@@ -50,8 +48,14 @@ import type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
+<<<<<<< HEAD
   SortColumn,
   RowHeightArgs
+=======
+  SortDirection,
+  RowHeightArgs,
+  SelectCellFn
+>>>>>>> 76c5bb9b4ebc1fd5997549b5ffef4feed96a2e0a
 } from './types';
 
 interface SelectCellState extends Position {
@@ -83,7 +87,7 @@ export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
-  selectCell: (position: Position, openEditor?: boolean) => void;
+  selectCell: SelectCellFn;
 }
 
 type SharedDivProps = Pick<
@@ -115,8 +119,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rowHeight?: number | ((args: RowHeightArgs<R>) => number) | null;
   /** The height of the header row in pixels */
   headerRowHeight?: number | null;
-  /** The height of the header filter row in pixels */
-  headerFiltersHeight?: number | null;
   /** The height of each summary row in pixels */
   summaryRowHeight?: number | null;
 
@@ -127,11 +129,20 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   selectedRows?: ReadonlySet<K> | null;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
+<<<<<<< HEAD
   /**Used for multi column sorting */
   sortColumns?: readonly Readonly<SortColumn>[] | null;
   onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
   filters?: Readonly<Filters> | null;
   onFiltersChange?: ((filters: Filters) => void) | null;
+=======
+  /** The key of the column which is currently being sorted */
+  sortColumn?: string | null;
+  /** The direction to sort the sortColumn*/
+  sortDirection?: SortDirection | null;
+  /** Function called whenever grid is sorted*/
+  onSort?: ((columnKey: string, direction: SortDirection) => void) | null;
+>>>>>>> 76c5bb9b4ebc1fd5997549b5ffef4feed96a2e0a
   defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
   groupBy?: readonly string[] | null;
   rowGrouper?: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | null;
@@ -161,8 +172,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Toggles and modes
    */
-  /** Toggles whether filters row is displayed or not */
-  enableFilterRow?: boolean | null;
   cellNavigationMode?: CellNavigationMode | null;
   enableVirtualization?: boolean | null;
 
@@ -191,16 +200,13 @@ function DataGrid<R, SR, K extends Key>(
     onRowsChange,
     // Dimensions props
     rowHeight,
-    headerRowHeight,
-    headerFiltersHeight,
+    headerRowHeight: rawHeaderRowHeight,
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
     selectedRows,
     onSelectedRowsChange,
     sortColumns,
     onSortColumnsChange,
-    filters,
-    onFiltersChange,
     defaultColumnOptions,
     groupBy: rawGroupBy,
     rowGrouper,
@@ -217,7 +223,6 @@ function DataGrid<R, SR, K extends Key>(
     onFill,
     onPaste,
     // Toggles and modes
-    enableFilterRow,
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
     // Miscellaneous
@@ -236,11 +241,9 @@ function DataGrid<R, SR, K extends Key>(
    * defaults
    */
   rowHeight ??= 35;
-  headerRowHeight ??= typeof rowHeight === 'number' ? rowHeight : 35;
-  headerFiltersHeight ??= 45;
+  const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const RowRenderer = rowRenderer ?? Row;
-  enableFilterRow ??= false;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
   const editorPortalTarget = rawEditorPortalTarget ?? body;
@@ -278,10 +281,9 @@ function DataGrid<R, SR, K extends Key>(
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const headerRowsCount = enableFilterRow ? 2 : 1;
+  const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
-  const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
-  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
+  const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
 
   const allRowsSelected = useMemo((): boolean => {
@@ -348,7 +350,6 @@ function DataGrid<R, SR, K extends Key>(
     rowOverscanEndIdx,
     rows,
     summaryRows,
-    enableFilterRow,
     isGroupRow
   });
 
@@ -573,7 +574,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function commitEditorChanges() {
     if (
-      columns[selectedPosition.idx]?.editor === undefined ||
+      columns[selectedPosition.idx]?.editor == null ||
       selectedPosition.mode === 'SELECT' ||
       selectedPosition.row === selectedPosition.originalRow
     ) {
@@ -742,7 +743,7 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
-  function selectCell(position: Position, enableEditor = false): void {
+  function selectCell(position: Position, enableEditor?: boolean | null): void {
     if (!isCellWithinBounds(position)) return;
     commitEditorChanges();
 
@@ -960,7 +961,7 @@ function DataGrid<R, SR, K extends Key>(
     let startRowIndex = 0;
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
-      const top = getRowTop(rowIdx) + totalHeaderHeight;
+      const top = getRowTop(rowIdx) + headerRowHeight;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected =
@@ -1062,7 +1063,6 @@ function DataGrid<R, SR, K extends Key>(
         {
           ...style,
           '--header-row-height': `${headerRowHeight}px`,
-          '--filter-row-height': `${headerFiltersHeight}px`,
           '--row-width': `${totalColumnWidth}px`,
           '--summary-row-height': `${summaryRowHeight}px`,
           ...layoutCssVars
@@ -1082,13 +1082,6 @@ function DataGrid<R, SR, K extends Key>(
         onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
       />
-      {enableFilterRow && (
-        <FilterRow<R, SR>
-          columns={viewportColumns}
-          filters={filters}
-          onFiltersChange={onFiltersChange}
-        />
-      )}
       {rows.length === 0 && EmptyRowsRenderer ? (
         <EmptyRowsRenderer />
       ) : (

@@ -17,7 +17,7 @@ export default function EditorContainer<R, SR>({
   ...props
 }: EditorProps<R, SR>) {
   const onClickCapture = useClickOutside(() => onRowChange(row, true));
-  if (column.editor === undefined) return null;
+  if (column.editor == null) return null;
 
   const editor = (
     <div className={editorContainerClassname} onClickCapture={onClickCapture}>

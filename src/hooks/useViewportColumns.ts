@@ -13,7 +13,6 @@ interface ViewportColumnsArgs<R, SR> {
   lastFrozenColumnIndex: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
-  enableFilterRow: boolean;
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
@@ -27,7 +26,6 @@ export function useViewportColumns<R, SR>({
   lastFrozenColumnIndex,
   rowOverscanStartIdx,
   rowOverscanEndIdx,
-  enableFilterRow,
   isGroupRow
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
@@ -49,14 +47,6 @@ export function useViewportColumns<R, SR>({
       const colIdx = column.idx;
       if (colIdx >= startIdx) break;
       if (updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' }))) {
-        break;
-      }
-
-      // check filter row
-      if (
-        enableFilterRow &&
-        updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'FILTER' }))
-      ) {
         break;
       }
 
@@ -95,8 +85,7 @@ export function useViewportColumns<R, SR>({
     colOverscanStartIdx,
     lastFrozenColumnIndex,
     colSpanColumns,
-    isGroupRow,
-    enableFilterRow
+    isGroupRow
   ]);
 
   return useMemo((): readonly CalculatedColumn<R, SR>[] => {
