@@ -151,10 +151,16 @@ test('zero rows + 2 summary rows', () => {
   assertHeightFill(1080 - rowHeight * 3);
 });
 
-xtest('virtualization is enable with not enough columns or rows to virtualize', () => {
+test('virtualization is enable with not enough columns or rows to virtualize', () => {
   setupGrid(true, 5, 5);
 
-  assertHeightFill(5 * rowHeight);
+  assertHeightFill(1080 - rowHeight);
+
+  assertHeaderCells(5, 0, 4);
+  assertRows(5, 0, 4);
+
+  const cells = getCells();
+  expect(cells).toHaveLength(5 * 5);
 });
 
 test('enableVirtualization is disabled', () => {
