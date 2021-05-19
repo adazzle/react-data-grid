@@ -11,12 +11,20 @@ export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>
   );
 }
 
+export function getGrid() {
+  return document.querySelector<HTMLDivElement>('.rdg');
+}
+
 export function getRows() {
   return screen.getAllByRole('row').slice(1);
 }
 
+function getRowByIndex(rowIdx: number) {
+  return document.querySelector<HTMLDivElement>(`.rdg-row[aria-rowindex="${rowIdx + 2}"]`);
+}
+
 export function getCellsAtRowIndex(rowIdx: number) {
-  return within(getRows()[rowIdx]).getAllByRole('gridcell');
+  return within(getRowByIndex(rowIdx)).getAllByRole('gridcell');
 }
 
 export function getCells() {
