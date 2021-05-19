@@ -229,7 +229,7 @@ function DataGrid<R, SR, K extends Key>(
    * defaults
    */
   rowHeight ??= 35;
-  headerRowHeight ??= typeof rowHeight === 'number' ? rowHeight : 35;
+  const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const RowRenderer = rowRenderer ?? Row;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
