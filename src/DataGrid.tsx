@@ -187,7 +187,7 @@ function DataGrid<R, SR, K extends Key>(
     onRowsChange,
     // Dimensions props
     rowHeight,
-    headerRowHeight,
+    headerRowHeight: rawHeaderRowHeight,
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
     selectedRows,
