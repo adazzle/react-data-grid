@@ -48,14 +48,9 @@ import type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
-<<<<<<< HEAD
   SortColumn,
-  RowHeightArgs
-=======
-  SortDirection,
   RowHeightArgs,
   SelectCellFn
->>>>>>> 76c5bb9b4ebc1fd5997549b5ffef4feed96a2e0a
 } from './types';
 
 interface SelectCellState extends Position {
@@ -129,20 +124,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   selectedRows?: ReadonlySet<K> | null;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
-<<<<<<< HEAD
   /**Used for multi column sorting */
   sortColumns?: readonly Readonly<SortColumn>[] | null;
   onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
-  filters?: Readonly<Filters> | null;
-  onFiltersChange?: ((filters: Filters) => void) | null;
-=======
-  /** The key of the column which is currently being sorted */
-  sortColumn?: string | null;
-  /** The direction to sort the sortColumn*/
-  sortDirection?: SortDirection | null;
-  /** Function called whenever grid is sorted*/
-  onSort?: ((columnKey: string, direction: SortDirection) => void) | null;
->>>>>>> 76c5bb9b4ebc1fd5997549b5ffef4feed96a2e0a
   defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
   groupBy?: readonly string[] | null;
   rowGrouper?: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | null;
