@@ -17,8 +17,6 @@ export type {
   HeaderRendererProps,
   CellRendererProps,
   RowRendererProps,
-  FilterRendererProps,
-  Filters,
   RowsChangeData,
   SelectRowEvent,
   FillEvent,

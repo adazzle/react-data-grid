@@ -52,8 +52,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
   } | null;
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>> | null;
-  /** Component to be used to filter the data of the column */
-  filterRenderer?: React.ComponentType<FilterRendererProps<TRow, any, TSummaryRow>> | null;
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
@@ -186,14 +184,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   selectCell: SelectCellFn;
 }
 
-export interface FilterRendererProps<TRow, TFilterValue = unknown, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  value: TFilterValue;
-  onChange: (value: TFilterValue) => void;
-}
-
-export type Filters = Record<string, any>;
-
 export interface RowsChangeData<R, SR = unknown> {
   indexes: number[];
   column: CalculatedColumn<R, SR>;
@@ -243,7 +233,7 @@ export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC' | 'NONE';
 
 export type ColSpanArgs<R, SR> =
-  | { type: 'HEADER' | 'FILTER' }
+  | { type: 'HEADER' }
   | { type: 'ROW'; row: R }
   | { type: 'SUMMARY'; row: SR };
 
