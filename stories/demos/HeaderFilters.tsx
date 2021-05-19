@@ -84,6 +84,7 @@ export function HeaderFilters() {
   const [enableFilterRow, setEnableFilterRow] = useState(true);
 
   const columns = useMemo((): readonly Column<Row>[] => {
+    const headerCellClass = enableFilterRow ? filterContainerClassname : undefined;
     const developerOptions = Array.from(new Set(rows.map((r) => r.developer))).map((d) => ({
       label: d,
       value: d
@@ -98,133 +99,143 @@ export function HeaderFilters() {
       {
         key: 'task',
         name: 'Title',
-        headerCellClass: filterContainerClassname,
-        headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
-              <input
-                className={filterClassname}
-                value={filters.task}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    task: e.target.value
-                  })
-                }
-              />
-            )}
-          </FilterRenderer>
-        )
+        headerCellClass,
+        headerRenderer: enableFilterRow
+          ? (p) => (
+              <FilterRenderer {...p}>
+                {(filters) => (
+                  <input
+                    className={filterClassname}
+                    value={filters.task}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        task: e.target.value
+                      })
+                    }
+                  />
+                )}
+              </FilterRenderer>
+            )
+          : undefined
       },
       {
         key: 'priority',
         name: 'Priority',
-        headerCellClass: filterContainerClassname,
-        headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
-              <select
-                className={filterClassname}
-                value={filters.priority}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    priority: e.target.value
-                  })
-                }
-              >
-                <option value="All">All</option>
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            )}
-          </FilterRenderer>
-        )
+        headerCellClass,
+        headerRenderer: enableFilterRow
+          ? (p) => (
+              <FilterRenderer {...p}>
+                {(filters) => (
+                  <select
+                    className={filterClassname}
+                    value={filters.priority}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        priority: e.target.value
+                      })
+                    }
+                  >
+                    <option value="All">All</option>
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                )}
+              </FilterRenderer>
+            )
+          : undefined
       },
       {
         key: 'issueType',
         name: 'Issue Type',
-        headerCellClass: filterContainerClassname,
-        headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
-              <select
-                className={filterClassname}
-                value={filters.issueType}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    issueType: e.target.value
-                  })
-                }
-              >
-                <option value="All">All</option>
-                <option value="Bug">Bug</option>
-                <option value="Improvement">Improvement</option>
-                <option value="Epic">Epic</option>
-                <option value="Story">Story</option>
-              </select>
-            )}
-          </FilterRenderer>
-        )
+        headerCellClass,
+        headerRenderer: enableFilterRow
+          ? (p) => (
+              <FilterRenderer {...p}>
+                {(filters) => (
+                  <select
+                    className={filterClassname}
+                    value={filters.issueType}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        issueType: e.target.value
+                      })
+                    }
+                  >
+                    <option value="All">All</option>
+                    <option value="Bug">Bug</option>
+                    <option value="Improvement">Improvement</option>
+                    <option value="Epic">Epic</option>
+                    <option value="Story">Story</option>
+                  </select>
+                )}
+              </FilterRenderer>
+            )
+          : undefined
       },
       {
         key: 'developer',
         name: 'Developer',
-        headerCellClass: filterContainerClassname,
-        headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
-              <>
-                <input
-                  className={filterClassname}
-                  value={filters.developer}
-                  onChange={(e) =>
-                    setFilters({
-                      ...filters,
-                      developer: e.target.value
-                    })
-                  }
-                  list="developers"
-                />
-                <datalist id="developers">
-                  {developerOptions.map(({ label, value }) => (
-                    <option value={value}>{label}</option>
-                  ))}
-                </datalist>
-              </>
-            )}
-          </FilterRenderer>
-        )
+        headerCellClass,
+        headerRenderer: enableFilterRow
+          ? (p) => (
+              <FilterRenderer {...p}>
+                {(filters) => (
+                  <>
+                    <input
+                      className={filterClassname}
+                      value={filters.developer}
+                      onChange={(e) =>
+                        setFilters({
+                          ...filters,
+                          developer: e.target.value
+                        })
+                      }
+                      list="developers"
+                    />
+                    <datalist id="developers">
+                      {developerOptions.map(({ label, value }) => (
+                        <option value={value}>{label}</option>
+                      ))}
+                    </datalist>
+                  </>
+                )}
+              </FilterRenderer>
+            )
+          : undefined
       },
       {
         key: 'complete',
         name: '% Complete',
-        headerCellClass: filterContainerClassname,
-        headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
-              <input
-                type="number"
-                className={filterClassname}
-                value={filters.complete}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    complete: Number.isFinite(e.target.valueAsNumber)
-                      ? e.target.valueAsNumber
-                      : undefined
-                  })
-                }
-              />
-            )}
-          </FilterRenderer>
-        )
+        headerCellClass,
+        headerRenderer: enableFilterRow
+          ? (p) => (
+              <FilterRenderer {...p}>
+                {(filters) => (
+                  <input
+                    type="number"
+                    className={filterClassname}
+                    value={filters.complete}
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        complete: Number.isFinite(e.target.valueAsNumber)
+                          ? e.target.valueAsNumber
+                          : undefined
+                      })
+                    }
+                  />
+                )}
+              </FilterRenderer>
+            )
+          : undefined
       }
     ];
-  }, [rows]);
+  }, [enableFilterRow, rows]);
 
   const filteredRows = useMemo(() => {
     return rows.filter((r) => {
@@ -232,7 +243,9 @@ export function HeaderFilters() {
         (filters.task ? r.task.includes(filters.task) : true) &&
         (filters.priority !== 'All' ? r.priority === filters.priority : true) &&
         (filters.issueType !== 'All' ? r.issueType === filters.issueType : true) &&
-        (filters.developer ? r.developer.startsWith(filters.developer) : true) &&
+        (filters.developer
+          ? r.developer.toLowerCase().startsWith(filters.developer.toLowerCase())
+          : true) &&
         (filters.complete !== undefined ? r.complete >= filters.complete : true)
       );
     });
@@ -263,7 +276,11 @@ export function HeaderFilters() {
         </button>
       </div>
       <FilterContext.Provider value={filters}>
-        <DataGrid columns={columns} rows={filteredRows} headerRowHeight={70} />
+        <DataGrid
+          columns={columns}
+          rows={filteredRows}
+          headerRowHeight={enableFilterRow ? 70 : undefined}
+        />
       </FilterContext.Provider>
     </div>
   );
