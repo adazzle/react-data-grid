@@ -1,5 +1,5 @@
 import 'core-js/stable';
-import { act } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 
 window.ResizeObserver ??= class {
   callback: ResizeObserverCallback;

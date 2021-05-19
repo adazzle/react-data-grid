@@ -57,7 +57,7 @@ function assertCells(rowIdx: number, count: number, startIdx: number, endIdx: nu
 }
 
 test('virtualization is enabled', () => {
-  const { unmount } = setupGrid(true, 30, 100);
+  setupGrid(true, 30, 100);
 
   const grid = getGrid();
 
@@ -113,8 +113,6 @@ test('virtualization is enabled', () => {
   grid.scrollLeft = parseInt(grid.style.getPropertyValue('--row-width'), 10) - 1920;
   assertHeaderCells(17, 13, 29);
   assertCells(64, 17, 13, 29);
-
-  unmount();
 });
 
 xtest('virtualization is enabled with 4 frozen columns', () => {
