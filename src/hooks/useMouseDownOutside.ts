@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react';
 
 /**
  * Detecting outside click on a react component is surprisingly hard.
- * A general approach is to have a global click handler on the document
+ * A general approach is to have a global click handler on the window
  * which checks if the click target is inside the editor container or
  * not using editorContainer.contains(e.target). This approach works well
  * until portals are used for editors. Portals render children into a DOM
@@ -37,22 +37,21 @@ import { useRef, useEffect } from 'react';
  * in the DOM tree. This means a click handler can be attached on the window
  * and on the editor container. The editor container can set a flag to notify
  * that the click was inside the editor and the window click handler can use
- * this flag to call onClickOutside. This approach however has a few caveats
+ * this flag to call onOutsideMouseDown. This approach however has a few caveats
  * - Click handler on the window is set using window.addEventListener
- * - Click handler on the editor container is set using onClick prop
+ * - Click handler on the editor container is set using onMouseDownCapture prop
  *
  * This means if a child component inside the editor calls e.stopPropagation
  * then the click handler on the editor container will not be called whereas
  * the document click handler will be called.
  * https://github.com/facebook/react/issues/12518
  *
- * To solve this issue onClickCapture event is used.
+ * To solve this issue onMousedownCapture event is used.
  */
-
-export function useClickOutside(onClick: () => void) {
+export function useMouseDownOutside(onMouseDown: () => void) {
   const frameRequestRef = useRef<number | undefined>();
 
-  function cancelAnimationFrameRequest() {
+  function cancelFrameRequest() {
     if (typeof frameRequestRef.current === 'number') {
       cancelAnimationFrame(frameRequestRef.current);
       frameRequestRef.current = undefined;
@@ -60,34 +59,34 @@ export function useClickOutside(onClick: () => void) {
   }
 
   // We need to prevent the `useEffect` from cleaning up between re-renders,
-  // as `handleDocumentClick` might otherwise miss valid click events.
-  // To that end we instead access the latest `onClick` prop via a ref.
-  const onClickRef = useRef((): void => {
+  // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
+  // To that end we instead access the latest `onMouseDown` prop via a ref.
+  const onMouseDownRef = useRef((): void => {
     throw new Error('Cannot call an event handler while rendering.');
   });
 
   useEffect(() => {
-    onClickRef.current = onClick;
+    onMouseDownRef.current = onMouseDown;
   });
 
   useEffect(() => {
-    function onOutsideClick() {
+    function onOutsideMouseDown() {
       frameRequestRef.current = undefined;
-      onClickRef.current();
+      onMouseDownRef.current();
     }
 
-    function onWindowCaptureClick() {
-      cancelAnimationFrameRequest();
-      frameRequestRef.current = requestAnimationFrame(onOutsideClick);
+    function onWindowCaptureMouseDown() {
+      cancelFrameRequest();
+      frameRequestRef.current = requestAnimationFrame(onOutsideMouseDown);
     }
 
-    window.addEventListener('click', onWindowCaptureClick, { capture: true });
+    addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
 
     return () => {
-      window.removeEventListener('click', onWindowCaptureClick, { capture: true });
-      cancelAnimationFrameRequest();
+      removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
+      cancelFrameRequest();
     };
   }, []);
 
-  return cancelAnimationFrameRequest;
+  return cancelFrameRequest;
 }
