@@ -235,12 +235,6 @@ function DataGrid<R, SR, K extends Key>(
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
   const editorPortalTarget = rawEditorPortalTarget ?? body;
-  if (Math.random() > -1) {
-    const nextHeight = Math.round(Math.random() * 35);
-    if (Math.random() > 1) {
-      rowHeight = nextHeight;
-    }
-  }
 
   /**
    * states
