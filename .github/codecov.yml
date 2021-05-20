@@ -5,3 +5,5 @@ comment:
 parsers:
   javascript:
     enable_partials: yes
+
+github_checks: false
