@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 
 import type { EditorProps } from '../types';
-import { useClickOutside } from '../hooks';
+import { useMouseDownOutside } from '../hooks';
 
 const editorContainer = css`
   display: contents;
@@ -16,11 +16,11 @@ export default function EditorContainer<R, SR>({
   onRowChange,
   ...props
 }: EditorProps<R, SR>) {
-  const onClickCapture = useClickOutside(() => onRowChange(row, true));
+  const onMouseDownCapture = useMouseDownOutside(() => onRowChange(row, true));
   if (column.editor == null) return null;
 
   const editor = (
-    <div className={editorContainerClassname} onClickCapture={onClickCapture}>
+    <div className={editorContainerClassname} onMouseDownCapture={onMouseDownCapture}>
       <column.editor row={row} column={column} onRowChange={onRowChange} {...props} />
     </div>
   );
