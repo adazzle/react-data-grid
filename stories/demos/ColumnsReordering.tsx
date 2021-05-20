@@ -72,7 +72,7 @@ export function ColumnsReordering() {
   const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
   }, []);
-  
+
   const draggableColumns = useMemo(() => {
     function HeaderRenderer(props: HeaderRendererProps<Row>) {
       return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
