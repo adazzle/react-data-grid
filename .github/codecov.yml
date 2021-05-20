@@ -1,6 +1,6 @@
 comment:
   layout: 'diff, files'
-  require_changes: true
+  require_changes: false
 
 parsers:
   javascript:
