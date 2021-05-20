@@ -1,5 +1,5 @@
 comment:
-  layout: 'reach, diff, files'
+  layout: 'diff, files'
   require_changes: true
 
 parsers:
