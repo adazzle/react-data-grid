@@ -15,6 +15,3 @@ comment:
 parsers:
   javascript:
     enable_partials: yes
-
-# https://docs.codecov.io/docs/github-checks
-github_checks: false
