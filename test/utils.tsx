@@ -24,7 +24,9 @@ export function queryRows() {
 }
 
 export function getCellsAtRowIndex(rowIdx: number) {
-  return document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`);
+  return Array.from(
+    document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`)
+  );
 }
 
 export function getCells() {

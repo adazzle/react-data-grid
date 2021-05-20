@@ -22,7 +22,7 @@ function setupGrid(
 ) {
   const columns: Column<unknown>[] = [];
   const rows = Array(rowCount);
-  const summaryRows = Array(summaryRowCount);
+  const summaryRows = Array(summaryRowCount).fill(null);
 
   for (let i = 0; i < columnCount; i++) {
     const key = String(i);
@@ -43,7 +43,7 @@ function assertHeightFill(height: number) {
 }
 
 function assertElements(
-  elements: ArrayLike<HTMLElement>,
+  elements: HTMLElement[],
   attribute: string,
   count: number,
   startIdx: number,
@@ -54,16 +54,40 @@ function assertElements(
   expect(elements[elements.length - 1]).toHaveAttribute(attribute, String(endIdx));
 }
 
+function assertIndexes(
+  cells: HTMLElement[],
+  expectedIndexes: number[],
+  attribute: string,
+  indexOffset: number
+) {
+  const actualIndexes = cells.map(
+    (cell) => parseInt(cell.getAttribute(attribute), 10) - indexOffset
+  );
+  expect(actualIndexes).toStrictEqual(expectedIndexes);
+}
+
 function assertHeaderCells(count: number, startIdx: number, endIdx: number) {
   assertElements(getHeaderCells(), 'aria-colindex', count, startIdx + 1, endIdx + 1);
+}
+
+function assertHeaderCellIndexes(indexes: number[]) {
+  assertIndexes(getHeaderCells(), indexes, 'aria-colindex', 1);
 }
 
 function assertRows(count: number, startIdx: number, endIdx: number) {
   assertElements(getRows(), 'aria-rowindex', count, startIdx + 2, endIdx + 2);
 }
 
+function assertRowIndexes(indexes: number[]) {
+  assertIndexes(getRows(), indexes, 'aria-rowindex', 2);
+}
+
 function assertCells(rowIdx: number, count: number, startIdx: number, endIdx: number) {
   assertElements(getCellsAtRowIndex(rowIdx + 2), 'aria-colindex', count, startIdx + 1, endIdx + 1);
+}
+
+function assertCellIndexes(rowIdx: number, indexes: number[]) {
+  assertIndexes(getCellsAtRowIndex(rowIdx + 2), indexes, 'aria-colindex', 1);
 }
 
 test('virtualization is enabled', () => {
@@ -125,22 +149,70 @@ test('virtualization is enabled', () => {
   assertCells(64, 17, 13, 29);
 });
 
-xtest('virtualization is enabled with 4 frozen columns', () => {
-  setupGrid(true, 20, 100, 4);
+test('virtualization is enabled with 4 frozen columns', () => {
+  setupGrid(true, 30, 30, 4);
 
-  assertHeightFill(100 * rowHeight);
+  const grid = getGrid();
+
+  assertHeightFill(30 * rowHeight);
+
+  let indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+  assertHeaderCellIndexes(indexes);
+  assertCellIndexes(0, indexes);
+
+  grid.scrollLeft = 1000;
+  indexes = [0, 1, 2, 3, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+  assertHeaderCellIndexes(indexes);
+  assertCellIndexes(0, indexes);
+
+  // max left = row width - grid width
+  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--row-width'), 10) - 1920;
+  indexes = [0, 1, 2, 3, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
+  assertHeaderCellIndexes(indexes);
+  assertCellIndexes(0, indexes);
 });
 
-xtest('virtualization is enabled with all columns frozen', () => {
-  setupGrid(true, 20, 100, 0, 20);
+test('virtualization is enabled with all columns frozen', () => {
+  setupGrid(true, 30, 30, 30);
 
-  assertHeightFill(100 * rowHeight);
+  const grid = getGrid();
+
+  assertHeightFill(30 * rowHeight);
+
+  const indexes = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+    26, 27, 28, 29
+  ];
+  assertHeaderCellIndexes(indexes);
+  assertCellIndexes(0, indexes);
+
+  grid.scrollLeft = 1000;
+  assertHeaderCellIndexes(indexes);
+  assertCellIndexes(0, indexes);
+
+  // max left = row width - grid width
+  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--row-width'), 10) - 1920;
+  assertHeaderCellIndexes(indexes);
+  assertCellIndexes(0, indexes);
 });
 
-xtest('virtualization is enabled with 2 summary rows', () => {
-  setupGrid(true, 20, 100, 0, 2);
+test('virtualization is enabled with 2 summary rows', () => {
+  setupGrid(true, 1, 100, 0, 2);
+
+  const grid = getGrid();
 
   assertHeightFill(100 * rowHeight);
+
+  assertRowIndexes([
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+    26, 27, 28, 29, 30, 31, 32, 100, 101
+  ]);
+
+  grid.scrollTop = 1000;
+  assertRowIndexes([
+    24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 100, 101
+  ]);
 });
 
 test('zero columns', () => {
