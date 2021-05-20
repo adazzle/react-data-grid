@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -69,7 +69,10 @@ export function ColumnsReordering() {
   const [sortColumns, setSortColumns] = useState<readonly Readonly<SortColumn>[]>([
     { columnKey: 'task', direction: 'NONE' }
   ]);
-
+  const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
+    setSortColumns(sortColumns.slice(-1));
+  }, []);
+  
   const draggableColumns = useMemo(() => {
     function HeaderRenderer(props: HeaderRendererProps<Row>) {
       return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
@@ -123,7 +126,7 @@ export function ColumnsReordering() {
         columns={draggableColumns}
         rows={sortedRows}
         sortColumns={sortColumns}
-        onSortColumnsChange={setSortColumns}
+        onSortColumnsChange={onSortColumnsChange}
       />
     </DndProvider>
   );

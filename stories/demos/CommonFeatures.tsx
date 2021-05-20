@@ -3,11 +3,10 @@ import { css } from '@linaria/core';
 import faker from 'faker';
 
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
-import type { Column } from '../../src';
+import type { Column, SortColumn } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { SelectEditor } from './components/Editors/SelectEditor';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
-import type { SortColumn } from '../../src/types';
 
 const toolbarClassname = css`
   text-align: right;
@@ -219,9 +218,41 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
+type Comparator = (a: Row, b: Row) => number;
+function getComparator(sortColumn: string): Comparator {
+  switch (sortColumn) {
+    case 'assignee':
+    case 'title':
+    case 'client':
+    case 'area':
+    case 'country':
+    case 'contact':
+    case 'transaction':
+    case 'account':
+    case 'version':
+      return (a, b) => {
+        return a[sortColumn].localeCompare(b[sortColumn]);
+      };
+    case 'available':
+      return (a, b) => {
+        return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1;
+      };
+    case 'id':
+    case 'progress':
+    case 'startTimestamp':
+    case 'endTimestamp':
+    case 'budget':
+      return (a, b) => {
+        return a[sortColumn] - b[sortColumn];
+      };
+    default:
+      throw new Error(`unsupported sortColumn: "${sortColumn}"`);
+  }
+}
+
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+  const [sortColumns, setSortColumns] = useState<readonly Readonly<SortColumn>[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const countries = useMemo(() => {
@@ -239,42 +270,11 @@ export function CommonFeatures() {
     return [summaryRow];
   }, [rows]);
 
-  const getComparator = (sortColumn: string) => {
-    switch (sortColumn) {
-      case 'assignee':
-      case 'title':
-      case 'client':
-      case 'area':
-      case 'country':
-      case 'contact':
-      case 'transaction':
-      case 'account':
-      case 'version':
-        return function (a: Row, b: Row) {
-          return a[sortColumn].localeCompare(b[sortColumn]);
-        };
-      case 'available':
-        return function (a: Row, b: Row) {
-          return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1;
-        };
-      case 'id':
-      case 'progress':
-      case 'startTimestamp':
-      case 'endTimestamp':
-      case 'budget':
-        return function (a: Row, b: Row) {
-          return a[sortColumn] - b[sortColumn];
-        };
-      default:
-        throw new Error(`unsupported sortColumn: "${sortColumn}"`);
-    }
-  };
-
-  const sortedRows: readonly Row[] = useMemo(() => {
+  const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
 
-    const sortedRows: Row[] = [...rows];
-    sortedRows.sort((a: Row, b: Row) => {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
       for (const sort of sortColumns) {
         const comparator = getComparator(sort.columnKey);
         const compResult = comparator(a, b);
