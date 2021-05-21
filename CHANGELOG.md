@@ -1,5 +1,14 @@
 # Changelog
 
+## v7.0.0-canary.48
+
+- Fixed an edge case where clicking outside the grid wouldn't close and commit an open editor quickly enough, resulting in the previous rows state being used by parent components in `click` handlers. ([PR](https://github.com/adazzle/react-data-grid/pull/2415))
+- Support for filters has been removed, along with: ([PR](https://github.com/adazzle/react-data-grid/pull/2412))
+  - The `<DataGrid />` props: `headerFiltersHeight`, `filters`, `onFiltersChange`, `enableFilterRow`
+  - `Column.filterRenderer`
+  - The exports: `FilterRendererProps`, `Filters`
+- Optional `Column` props can now also be `null` in addition to `undefined`. ([PR](https://github.com/adazzle/react-data-grid/pull/2409))
+
 ## v7.0.0-canary.47
 
 - Added a third, optional generic on `<DataGrid />` to specify the row key type. ([PR](https://github.com/adazzle/react-data-grid/pull/2311))
