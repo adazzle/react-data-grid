@@ -83,11 +83,11 @@ function assertRowIndexes(indexes: number[]) {
 }
 
 function assertCells(rowIdx: number, count: number, startIdx: number, endIdx: number) {
-  assertElements(getCellsAtRowIndex(rowIdx + 2), 'aria-colindex', count, startIdx + 1, endIdx + 1);
+  assertElements(getCellsAtRowIndex(rowIdx), 'aria-colindex', count, startIdx + 1, endIdx + 1);
 }
 
 function assertCellIndexes(rowIdx: number, indexes: number[]) {
-  assertIndexes(getCellsAtRowIndex(rowIdx + 2), indexes, 'aria-colindex', 1);
+  assertIndexes(getCellsAtRowIndex(rowIdx), indexes, 'aria-colindex', 1);
 }
 
 test('virtualization is enabled', () => {

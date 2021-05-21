@@ -12,7 +12,7 @@ export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>
 }
 
 export function getGrid() {
-  return document.getByRole('grid');
+  return screen.getByRole('grid');
 }
 
 export function getRows() {
