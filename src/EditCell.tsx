@@ -9,8 +9,7 @@ const cellEditing = css`
   padding: 0;
 `;
 
-// TODO: remove 1 of the two classes
-const cellEditingClassname = `rdg-cell-editing rdg-editor-container ${cellEditing}`;
+const cellEditingClassname = `rdg-editor-container ${cellEditing}`;
 
 type SharedCellRendererProps<R, SR> = Pick<
   CellRendererProps<R, SR>,
