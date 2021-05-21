@@ -8,7 +8,7 @@ import GroupCell from './GroupCell';
 import type { CalculatedColumn, Position, Omit } from './types';
 import { RowSelectionProvider } from './hooks';
 
-export interface GroupRowRendererProps<R, SR = unknown>
+export interface GroupRowRendererProps<R, SR>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
   groupKey: unknown;
@@ -72,7 +72,7 @@ function GroupedRow<R, SR>({
         {...props}
       >
         {viewportColumns.map((column) => (
-          <GroupCell<R, SR>
+          <GroupCell
             key={column.key}
             id={id}
             rowIdx={rowIdx}

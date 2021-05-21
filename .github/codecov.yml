@@ -1,7 +1,17 @@
+# https://docs.codecov.io/docs/commit-status
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch: off
+
+# https://docs.codecov.io/docs/pull-request-comments
 comment:
-  layout: 'reach, diff, files'
+  layout: 'diff, files'
   require_changes: true
 
+# https://docs.codecov.io/docs/node
 parsers:
   javascript:
     enable_partials: yes

@@ -1,4 +1,5 @@
 import 'core-js/stable';
+import { act } from 'react-dom/test-utils';
 
 window.ResizeObserver ??= class {
   callback: ResizeObserverCallback;
@@ -48,7 +49,9 @@ Object.defineProperties(Element.prototype, {
     },
     set(this: Element, value: number) {
       getScrollState(this).scrollTop = value;
-      this.dispatchEvent(new Event('scroll'));
+      act(() => {
+        this.dispatchEvent(new Event('scroll'));
+      });
     }
   },
   scrollLeft: {
@@ -57,7 +60,9 @@ Object.defineProperties(Element.prototype, {
     },
     set(this: Element, value: number) {
       getScrollState(this).scrollLeft = value;
-      this.dispatchEvent(new Event('scroll'));
+      act(() => {
+        this.dispatchEvent(new Event('scroll'));
+      });
     }
   }
 });
