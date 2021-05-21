@@ -105,7 +105,7 @@ export default function HeaderCell<R, SR>({
             if (sortDirection === 'DESC') newSorts[index] = { columnKey, direction };
             else newSorts.splice(index, 1);
           } else if (sortDirection === 'ASC') newSorts[index] = { columnKey, direction };
-            else newSorts.splice(index, 1);
+          else newSorts.splice(index, 1);
         } else {
           newSorts.push({ columnKey, direction });
         }
