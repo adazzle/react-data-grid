@@ -104,23 +104,20 @@ export default function HeaderCell<R, SR>({
           if (sortDescendingFirst) {
             if (sortDirection === 'DESC') newSorts[index] = { columnKey, direction };
             else newSorts.splice(index, 1);
-          } else {
-            if (sortDirection === 'ASC') newSorts[index] = { columnKey, direction };
+          } else if (sortDirection === 'ASC') newSorts[index] = { columnKey, direction };
             else newSorts.splice(index, 1);
-          }
         } else {
           newSorts.push({ columnKey, direction });
         }
+
         onSortColumnsChange([...newSorts]);
       }
     } else if (sortDirection === 'DESC') {
-      sortDescendingFirst
-        ? onSortColumnsChange([{ columnKey, direction }])
-        : onSortColumnsChange([]);
+      if (sortDescendingFirst) onSortColumnsChange([{ columnKey, direction }]);
+      else onSortColumnsChange([]);
     } else if (sortDirection === 'ASC') {
-      sortDescendingFirst
-        ? onSortColumnsChange([])
-        : onSortColumnsChange([{ columnKey, direction }]);
+      if (sortDescendingFirst) onSortColumnsChange([]);
+      else onSortColumnsChange([{ columnKey, direction }]);
     } else onSortColumnsChange([{ columnKey, direction }]);
   };
 
