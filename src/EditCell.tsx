@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import { useMouseDownOutside } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
-import type { CellRendererProps, SharedEditorProps } from './types';
+import type { CellRendererProps, EditorProps } from './types';
 
 const cellEditing = css`
   padding: 0;
@@ -11,13 +11,9 @@ const cellEditing = css`
 
 const cellEditingClassname = `rdg-editor-container ${cellEditing}`;
 
-type SharedCellRendererProps<R, SR> = Pick<
-  CellRendererProps<R, SR>,
-  'rowIdx' | 'row' | 'column' | 'colSpan'
->;
+type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
-interface EditCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
-  editorProps: SharedEditorProps<R>;
+interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {
   onKeyDown: Required<React.HTMLAttributes<HTMLDivElement>>['onKeyDown'];
 }
 
@@ -26,10 +22,12 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   rowIdx,
+  onRowChange,
+  onClose,
   onKeyDown,
-  editorProps
+  editorPortalTarget
 }: EditCellProps<R, SR>) {
-  const onMouseDownCapture = useMouseDownOutside(() => editorProps.onRowChange(row, true));
+  const onMouseDownCapture = useMouseDownOutside(() => onRowChange(row, true));
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -40,10 +38,19 @@ export default function EditCell<R, SR>({
 
   let content;
   if (column.editor != null) {
-    content = <column.editor {...editorProps} rowIdx={rowIdx} column={column} />;
+    content = (
+      <column.editor
+        column={column}
+        row={row}
+        rowIdx={rowIdx}
+        onRowChange={onRowChange}
+        onClose={onClose}
+        editorPortalTarget={editorPortalTarget}
+      />
+    );
 
     if (column.editorOptions?.createPortal) {
-      content = createPortal(content, editorProps.editorPortalTarget);
+      content = createPortal(content, editorPortalTarget);
     }
   }
 

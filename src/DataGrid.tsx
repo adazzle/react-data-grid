@@ -924,7 +924,6 @@ function DataGrid<R, SR, K extends Key>(
         onKeyDown: handleKeyDown,
         editorProps: {
           editorPortalTarget,
-          rowHeight: getRowHeight(selectedPosition.rowIdx),
           row: selectedPosition.row,
           onRowChange: handleEditorRowChange,
           onClose: handleOnClose
