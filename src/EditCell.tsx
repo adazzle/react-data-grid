@@ -33,7 +33,7 @@ export default function EditCell<R, SR>({
 }: EditCellProps<R, SR>) {
   const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
 
-  const cellRef = useCallback((node) => {
+  const cellRef = useCallback((node: HTMLDivElement | null) => {
     if (node !== null) {
       const { left, top } = node.getBoundingClientRect();
       setDimensions({ left, top });
