@@ -62,7 +62,7 @@ export function getNextSelectedCellPosition<R, SR>({
       for (const column of colSpanColumns) {
         const colIdx = column.idx;
         if (colIdx > posIdx) break;
-        const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
+        const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
         if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
           position.idx = colIdx + (moveRight ? colSpan : 0);
           break;
