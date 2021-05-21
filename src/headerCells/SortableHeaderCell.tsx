@@ -42,17 +42,9 @@ export default function SortableHeaderCell<R, SR>({
   function onClick(event: MouseEvent<HTMLSpanElement>) {
     const { sortDescendingFirst } = column;
     let direction: SortDirection;
-    switch (sortDirection) {
-      case 'ASC':
-        direction = sortDescendingFirst ? 'NONE' : 'DESC';
-        break;
-      case 'DESC':
-        direction = sortDescendingFirst ? 'ASC' : 'NONE';
-        break;
-      default:
-        direction = sortDescendingFirst ? 'DESC' : 'ASC';
-        break;
-    }
+    if (sortDirection === 'ASC' && !sortDescendingFirst) direction = 'DESC';
+    else if (sortDirection === 'DESC' && sortDescendingFirst) direction = 'ASC';
+    else direction = sortDescendingFirst ? 'DESC' : 'ASC';
     onSort(column.key, direction, event.ctrlKey);
   }
 

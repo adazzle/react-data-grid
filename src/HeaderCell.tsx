@@ -26,7 +26,7 @@ function getAriaSort(sortDirection: SortDirection | undefined | null) {
     case 'DESC':
       return 'descending';
     default:
-      return 'none';
+      return undefined;
   }
 }
 
@@ -93,6 +93,7 @@ export default function HeaderCell<R, SR>({
   const priority = index !== undefined ? index + 1 : undefined;
   const multiSorts = sortColumns ? sortColumns.length > 1 : false;
   const sorted = priority ? priority > 0 : false;
+  const { sortDescendingFirst } = column;
 
   const onSort = (columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
     if (!onSortColumnsChange) return;
@@ -100,15 +101,27 @@ export default function HeaderCell<R, SR>({
       const newSorts = sortColumns ? [...sortColumns] : [];
       if (index !== undefined) {
         if (index > -1) {
-          if (sortDirection === 'ASC') newSorts[index] = { columnKey, direction };
-          else newSorts.splice(index, 1);
+          if (sortDescendingFirst) {
+            if (sortDirection === 'DESC') newSorts[index] = { columnKey, direction };
+            else newSorts.splice(index, 1);
+          } else {
+            if (sortDirection === 'ASC') newSorts[index] = { columnKey, direction };
+            else newSorts.splice(index, 1);
+          }
         } else {
           newSorts.push({ columnKey, direction });
         }
         onSortColumnsChange([...newSorts]);
       }
-    } else if (direction === 'NONE') onSortColumnsChange([]);
-    else onSortColumnsChange([{ columnKey, direction }]);
+    } else if (sortDirection === 'DESC') {
+      sortDescendingFirst
+        ? onSortColumnsChange([{ columnKey, direction }])
+        : onSortColumnsChange([]);
+    } else if (sortDirection === 'ASC') {
+      sortDescendingFirst
+        ? onSortColumnsChange([])
+        : onSortColumnsChange([{ columnKey, direction }]);
+    } else onSortColumnsChange([{ columnKey, direction }]);
   };
 
   function getCell() {
