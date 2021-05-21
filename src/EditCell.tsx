@@ -1,70 +1,57 @@
-import { useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 
-import EditorContainer from './editors/EditorContainer';
+import { useMouseDownOutside } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
-import type { CellRendererProps, SharedEditorProps, Omit } from './types';
+import type { CellRendererProps, EditorProps } from './types';
 
 const cellEditing = css`
   padding: 0;
 `;
 
-const cellEditingClassname = `rdg-cell-editing ${cellEditing}`;
+const cellEditingClassname = `rdg-editor-container ${cellEditing}`;
 
-type SharedCellRendererProps<R, SR> = Pick<
-  CellRendererProps<R, SR>,
-  'rowIdx' | 'row' | 'column' | 'colSpan'
->;
+type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
-interface EditCellProps<R, SR>
-  extends SharedCellRendererProps<R, SR>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  editorProps: SharedEditorProps<R>;
+interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {
+  onKeyDown: Required<React.HTMLAttributes<HTMLDivElement>>['onKeyDown'];
 }
 
 export default function EditCell<R, SR>({
-  className,
   column,
   colSpan,
   row,
   rowIdx,
-  editorProps,
-  ...props
+  onRowChange,
+  onClose,
+  onKeyDown,
+  editorPortalTarget
 }: EditCellProps<R, SR>) {
-  const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
-
-  const cellRef = useCallback((node: HTMLDivElement | null) => {
-    if (node !== null) {
-      const { left, top } = node.getBoundingClientRect();
-      setDimensions({ left, top });
-    }
-  }, []);
+  const onMouseDownCapture = useMouseDownOutside(() => onRowChange(row, true));
 
   const { cellClass } = column;
-  className = getCellClassname(
+  const className = getCellClassname(
     column,
     cellEditingClassname,
-    typeof cellClass === 'function' ? cellClass(row) : cellClass,
-    className
+    typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
-  function getCellContent() {
-    if (dimensions === null) return;
-    const { scrollTop: docTop, scrollLeft: docLeft } =
-      document.scrollingElement ?? document.documentElement;
-    const { left, top } = dimensions;
-    const gridLeft = left + docLeft;
-    const gridTop = top + docTop;
-
-    return (
-      <EditorContainer
-        {...editorProps}
-        rowIdx={rowIdx}
+  let content;
+  if (column.editor != null) {
+    content = (
+      <column.editor
         column={column}
-        left={gridLeft}
-        top={gridTop}
+        row={row}
+        rowIdx={rowIdx}
+        onRowChange={onRowChange}
+        onClose={onClose}
+        editorPortalTarget={editorPortalTarget}
       />
     );
+
+    if (column.editorOptions?.createPortal) {
+      content = createPortal(content, editorPortalTarget);
+    }
   }
 
   return (
@@ -72,12 +59,12 @@ export default function EditCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected
-      ref={cellRef}
       className={className}
       style={getCellStyle(column, colSpan)}
-      {...props}
+      onKeyDown={onKeyDown}
+      onMouseDownCapture={onMouseDownCapture}
     >
-      {getCellContent()}
+      {content}
     </div>
   );
 }

@@ -96,9 +96,8 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   toggleGroup: () => void;
 }
 
-export interface SharedEditorProps<TRow> {
+interface SharedEditorProps<TRow> {
   row: Readonly<TRow>;
-  rowHeight: number;
   editorPortalTarget: Element;
   onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
@@ -107,8 +106,6 @@ export interface SharedEditorProps<TRow> {
 export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
-  top: number;
-  left: number;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
@@ -164,7 +161,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
-  cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
+  cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>> | null;
   rowIdx: number;
   copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
