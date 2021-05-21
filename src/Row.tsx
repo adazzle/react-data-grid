@@ -9,7 +9,7 @@ import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
 import { RowSelectionProvider } from './hooks';
 
-function Row<R, SR = unknown>(
+function Row<R, SR>(
   {
     cellRenderer: CellRenderer = Cell,
     className,
@@ -115,6 +115,6 @@ function Row<R, SR = unknown>(
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown>(
+export default memo(forwardRef(Row)) as <R, SR>(
   props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;

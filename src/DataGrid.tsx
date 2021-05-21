@@ -727,7 +727,7 @@ function DataGrid<R, SR, K extends Key>(
   function isCellEditable(position: Position): boolean {
     return (
       isCellWithinBounds(position) &&
-      isSelectedCellEditable<R, SR>({ columns, rows, selectedPosition: position, isGroupRow })
+      isSelectedCellEditable({ columns, rows, selectedPosition: position, isGroupRow })
     );
   }
 
@@ -955,7 +955,7 @@ function DataGrid<R, SR, K extends Key>(
         const isGroupRowSelected =
           isSelectable && row.childRows.every((cr) => selectedRows?.has(rowKeyGetter!(cr)));
         rowElements.push(
-          <GroupRowRenderer<R, SR>
+          <GroupRowRenderer
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
@@ -1059,7 +1059,7 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
     >
-      <HeaderRow<R, SR, K>
+      <HeaderRow
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
         columns={viewportColumns}
@@ -1105,7 +1105,7 @@ function DataGrid<R, SR, K extends Key>(
             {getViewportRows()}
           </RowSelectionChangeProvider>
           {summaryRows?.map((row, rowIdx) => (
-            <SummaryRow<R, SR>
+            <SummaryRow
               aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
               key={rowIdx}
               rowIdx={rowIdx}
