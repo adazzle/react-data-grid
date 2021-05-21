@@ -95,7 +95,6 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
           value={p.row.country}
           onChange={(value) => p.onRowChange({ ...p.row, country: value }, true)}
           options={countries.map((c) => ({ value: c, label: c }))}
-          rowHeight={p.rowHeight}
           menuPortalTarget={p.editorPortalTarget}
         />
       )
