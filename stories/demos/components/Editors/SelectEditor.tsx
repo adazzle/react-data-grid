@@ -20,7 +20,7 @@ export function SelectEditor({ value, onChange, options, menuPortalTarget }: Sel
       styles={{
         control: (provided) => ({
           ...provided,
-          height: 'var(--row-height)',
+          height: 'calc(var(--row-height) - 1px)',
           minHeight: 30,
           lineHeight: 'normal'
         }),
