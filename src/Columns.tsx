@@ -5,7 +5,7 @@ import { stopPropagation } from './utils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
-function SelectFormatter(props: FormatterProps) {
+function SelectFormatter(props: FormatterProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (
@@ -22,8 +22,7 @@ function SelectFormatter(props: FormatterProps) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function SelectGroupFormatter(props: GroupFormatterProps<any, any>) {
+function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (

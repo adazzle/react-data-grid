@@ -18,7 +18,7 @@ interface DraggableRowRenderProps<R, SR> extends RowRendererProps<R, SR> {
   onRowReorder: (sourceIndex: number, targetIndex: number) => void;
 }
 
-export function DraggableRowRenderer<R, SR = unknown>({
+export function DraggableRowRenderer<R, SR>({
   rowIdx,
   isRowSelected,
   className,

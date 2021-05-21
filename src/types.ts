@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactElement } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -74,7 +73,7 @@ export interface Position {
   rowIdx: number;
 }
 
-export interface FormatterProps<TRow = any, TSummaryRow = any> {
+export interface FormatterProps<TRow, TSummaryRow = unknown> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
@@ -82,7 +81,7 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   onRowChange: (row: Readonly<TRow>) => void;
 }
 
-export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
+export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
 }
@@ -141,7 +140,7 @@ export interface SelectedCellProps extends SelectedCellPropsBase {
 
 export type SelectCellFn = (position: Position, enableEditor?: boolean | null) => void;
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown>
+export interface CellRendererProps<TRow, TSummaryRow>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
