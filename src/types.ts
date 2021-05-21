@@ -107,8 +107,6 @@ export interface SharedEditorProps<TRow> {
 export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
-  top: number;
-  left: number;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {

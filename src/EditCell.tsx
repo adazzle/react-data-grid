@@ -1,4 +1,3 @@
-import { useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 
@@ -31,15 +30,7 @@ export default function EditCell<R, SR>({
   onKeyDown,
   editorProps
 }: EditCellProps<R, SR>) {
-  const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
   const onMouseDownCapture = useMouseDownOutside(() => editorProps.onRowChange(row, true));
-
-  const cellRef = useCallback((node: HTMLDivElement | null) => {
-    if (node !== null) {
-      const { left, top } = node.getBoundingClientRect();
-      setDimensions({ left, top });
-    }
-  }, []);
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -49,20 +40,8 @@ export default function EditCell<R, SR>({
   );
 
   let content;
-  if (dimensions !== null && column.editor != null) {
-    const doc = document.scrollingElement ?? document.documentElement;
-    const gridLeft = dimensions.left + doc.scrollLeft;
-    const gridTop = dimensions.top + doc.scrollTop;
-
-    content = (
-      <column.editor
-        {...editorProps}
-        rowIdx={rowIdx}
-        column={column}
-        left={gridLeft}
-        top={gridTop}
-      />
-    );
+  if (column.editor != null) {
+    content = <column.editor {...editorProps} rowIdx={rowIdx} column={column} />;
 
     if (column.editorOptions?.createPortal) {
       content = createPortal(content, editorProps.editorPortalTarget);
@@ -74,7 +53,6 @@ export default function EditCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected
-      ref={cellRef}
       className={className}
       style={getCellStyle(column, colSpan)}
       onKeyDown={onKeyDown}
