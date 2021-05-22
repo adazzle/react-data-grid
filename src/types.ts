@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactElement } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -74,7 +73,7 @@ export interface Position {
   rowIdx: number;
 }
 
-export interface FormatterProps<TRow = any, TSummaryRow = any> {
+export interface FormatterProps<TRow, TSummaryRow = unknown> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
@@ -82,7 +81,7 @@ export interface FormatterProps<TRow = any, TSummaryRow = any> {
   onRowChange: (row: Readonly<TRow>) => void;
 }
 
-export interface SummaryFormatterProps<TSummaryRow, TRow = any> {
+export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
 }
@@ -97,9 +96,8 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   toggleGroup: () => void;
 }
 
-export interface SharedEditorProps<TRow> {
+interface SharedEditorProps<TRow> {
   row: Readonly<TRow>;
-  rowHeight: number;
   editorPortalTarget: Element;
   onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
@@ -108,8 +106,6 @@ export interface SharedEditorProps<TRow> {
 export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
-  top: number;
-  left: number;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
@@ -141,7 +137,7 @@ export interface SelectedCellProps extends SelectedCellPropsBase {
 
 export type SelectCellFn = (position: Position, enableEditor?: boolean | null) => void;
 
-export interface CellRendererProps<TRow, TSummaryRow = unknown>
+export interface CellRendererProps<TRow, TSummaryRow>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -165,7 +161,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
-  cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>>;
+  cellRenderer?: React.ComponentType<CellRendererProps<TRow, TSummaryRow>> | null;
   rowIdx: number;
   copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;

@@ -9,9 +9,9 @@ import EditCell from './EditCell';
 import type { RowRendererProps, SelectedCellProps } from './types';
 import { RowSelectionProvider } from './hooks';
 
-function Row<R, SR = unknown>(
+function Row<R, SR>(
   {
-    cellRenderer: CellRenderer = Cell,
+    cellRenderer,
     className,
     rowIdx,
     isRowSelected,
@@ -48,7 +48,9 @@ function Row<R, SR = unknown>(
     className
   );
 
+  const CellRenderer = cellRenderer ?? Cell;
   const cells = [];
+
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
@@ -59,14 +61,13 @@ function Row<R, SR = unknown>(
     const isCellSelected = selectedCellProps?.idx === column.idx;
     if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
       cells.push(
-        <EditCell<R, SR>
+        <EditCell
           key={column.key}
           rowIdx={rowIdx}
           column={column}
           colSpan={colSpan}
-          row={row}
           onKeyDown={selectedCellProps.onKeyDown}
-          editorProps={selectedCellProps.editorProps}
+          {...selectedCellProps.editorProps}
         />
       );
       continue;
@@ -115,6 +116,6 @@ function Row<R, SR = unknown>(
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR = unknown>(
+export default memo(forwardRef(Row)) as <R, SR>(
   props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
