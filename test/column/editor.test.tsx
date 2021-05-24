@@ -1,5 +1,5 @@
 import { StrictMode, useMemo, useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { TextEditor } from '../../src';
@@ -48,15 +48,13 @@ describe('Editor', () => {
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('1');
   });
 
-  // TODO: fix act warnings
   it('should commit changes and close editor when clicked outside', async () => {
     render(<EditorTest />);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
     userEvent.type(document.activeElement!, '2222');
     userEvent.click(screen.getByText('outside'));
-    await completeEventLoop();
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    await waitForElementToBeRemoved(screen.queryByLabelText('col1-editor'));
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('2222');
   });
 
@@ -211,10 +209,4 @@ function EditorTest({ editable, editorOptions }: Pick<Column<Row>, 'editorOption
       <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />
     </StrictMode>
   );
-}
-
-function completeEventLoop() {
-  return new Promise((resolve) => {
-    requestAnimationFrame(resolve);
-  });
 }
