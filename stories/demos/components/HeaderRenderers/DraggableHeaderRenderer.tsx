@@ -44,7 +44,6 @@ export function DraggableHeaderRenderer<R>({
       }}
     >
       <SortableHeaderCell
-        column={column}
         sortDirection={sortDirection}
         onSort={onSort}
         priority={priority}
