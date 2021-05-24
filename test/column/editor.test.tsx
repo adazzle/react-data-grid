@@ -14,10 +14,13 @@ interface Row {
 describe('Editor', () => {
   it('should open editor on double click', () => {
     render(<EditorTest />);
+    userEvent.click(getCellsAtRowIndex(0)[0]);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
     userEvent.type(document.activeElement!, '2');
     userEvent.tab();
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('2');
   });
 
@@ -155,23 +158,11 @@ function EditorTest({ editable, editorOptions }: Pick<Column<Row>, 'editorOption
     return [
       {
         col1: 1,
-        col2: 'a1',
-        col3: 'b1',
-        col4: 'c1',
-        col5: 'd1',
-        col6: 'e1',
-        col7: 'f1',
-        col8: 'g1'
+        col2: 'a1'
       },
       {
         col1: 2,
-        col2: 'a2',
-        col3: 'b2',
-        col4: 'c2',
-        col5: 'd2',
-        col6: 'e2',
-        col7: 'f2',
-        col8: 'g2'
+        col2: 'a2'
       }
     ];
   });
