@@ -111,7 +111,7 @@ describe('Editor', () => {
         />
       );
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      expect(document.querySelector('input').parentElement).toBe(document.body);
+      expect(document.querySelector('input')!.parentElement).toBe(document.body);
     });
 
     it('should not open editor if onCellKeyDown prevents the default event', () => {
