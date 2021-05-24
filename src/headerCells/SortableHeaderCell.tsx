@@ -38,7 +38,7 @@ export default function SortableHeaderCell<R, SR>({
   }
 
   return (
-    <span className={headerSortCellClassname} onClick={e=>onSort(e.ctrlKey)}>
+    <span className={headerSortCellClassname} onClick={(e) => onSort(e.ctrlKey)}>
       <span className={headerSortNameClassname}>{children}</span>
       <span>
         {sortText}

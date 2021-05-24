@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { CalculatedColumn, SortColumn} from './types';
+import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle, getCellClassname } from './utils';
@@ -83,7 +83,6 @@ export default function HeaderCell<R, SR>({
   const priority = sortColumn !== undefined && sortColumns!.length > 1 ? sortIndex! + 1 : undefined;
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
-  
 
   const onSort = (ctrlClick: boolean) => {
     if (onSortColumnsChange == null) return;
@@ -120,8 +119,7 @@ export default function HeaderCell<R, SR>({
         onSortColumnsChange(nextSortColumn ? [nextSortColumn] : []);
       }
     }
-  }
-
+  };
 
   function getCell() {
     if (column.headerRenderer) {
@@ -139,11 +137,7 @@ export default function HeaderCell<R, SR>({
 
     if (column.sortable) {
       return (
-        <SortableHeaderCell
-          onSort={onSort}
-          sortDirection={sortDirection}
-          priority={priority}
-        >
+        <SortableHeaderCell onSort={onSort} sortDirection={sortDirection} priority={priority}>
           {column.name}
         </SortableHeaderCell>
       );
