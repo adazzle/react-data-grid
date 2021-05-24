@@ -44,10 +44,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
     onCellKeyDown?: ((event: React.KeyboardEvent<HTMLDivElement>) => void) | null;
     /** Control the default cell navigation behavior while the editor is open */
     onNavigation?: ((event: React.KeyboardEvent<HTMLDivElement>) => boolean) | null;
-    // TODO: Do we need these options
-    // editOnDoubleClick?: boolean | null;
-    /** @default false */
-    // commitOnScroll?: boolean | null;
   } | null;
   /** Header renderer for each header cell */
   headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>> | null;
