@@ -13,6 +13,28 @@ const toolbarClassname = css`
   margin-bottom: 8px;
 `;
 
+const dialogContainerClassname = css`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.1);
+
+  > dialog {
+    width: 300px;
+    > input {
+      width: 100%;
+    }
+
+    > menu {
+      text-align: right;
+    }
+  }
+`;
+
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
   style: 'currency',
@@ -122,6 +144,29 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
             <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
           </>
         );
+      },
+      editor({ row, onRowChange, onClose }) {
+        return (
+          <div className={dialogContainerClassname}>
+            <dialog open>
+              <input
+                autoFocus
+                type="range"
+                min="0"
+                max="100"
+                value={row.progress}
+                onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
+              />
+              <menu>
+                <button onClick={() => onClose()}>Cancel</button>
+                <button onClick={() => onClose(true)}>Save</button>
+              </menu>
+            </dialog>
+          </div>
+        );
+      },
+      editorOptions: {
+        createPortal: true
       }
     },
     {
