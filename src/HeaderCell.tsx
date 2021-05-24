@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { CalculatedColumn, SortDirection } from './types';
+import type { CalculatedColumn, SortColumn} from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle, getCellClassname } from './utils';
@@ -18,17 +18,6 @@ const cellResizable = css`
 `;
 
 const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
-
-function getAriaSort(sortDirection: SortDirection | undefined | null) {
-  switch (sortDirection) {
-    case 'ASC':
-      return 'ascending';
-    case 'DESC':
-      return 'descending';
-    default:
-      return undefined;
-  }
-}
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
@@ -87,39 +76,52 @@ export default function HeaderCell<R, SR>({
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
   }
-  const index = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
-  const sortDirection =
-    index !== undefined && index > -1 ? sortColumns?.[index].direction : undefined;
-  const priority = index !== undefined ? index + 1 : undefined;
-  const multiSorts = sortColumns ? sortColumns.length > 1 : false;
-  const sorted = priority ? priority > 0 : false;
-  const { sortDescendingFirst } = column;
+  const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
+  const sortColumn =
+    sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
+  const sortDirection = sortColumn?.direction;
+  const priority = sortColumn !== undefined && sortColumns!.length > 1 ? sortIndex! + 1 : undefined;
+  const ariaSort =
+    sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
+  
 
-  const onSort = (columnKey: string, direction: SortDirection, ctrlClick: boolean) => {
-    if (!onSortColumnsChange) return;
-    if (ctrlClick) {
-      const newSorts = sortColumns ? [...sortColumns] : [];
-      if (index !== undefined) {
-        if (index > -1) {
-          if (sortDescendingFirst) {
-            if (sortDirection === 'DESC') newSorts[index] = { columnKey, direction };
-            else newSorts.splice(index, 1);
-          } else if (sortDirection === 'ASC') newSorts[index] = { columnKey, direction };
-          else newSorts.splice(index, 1);
-        } else {
-          newSorts.push({ columnKey, direction });
-        }
-
-        onSortColumnsChange([...newSorts]);
+  const onSort = (ctrlClick: boolean) => {
+    if (onSortColumnsChange == null) return;
+    const { sortDescendingFirst } = column;
+    if (sortColumn === undefined) {
+      // not currently sorted
+      const nextSort: SortColumn = {
+        columnKey: column.key,
+        direction: sortDescendingFirst ? 'DESC' : 'ASC'
+      };
+      onSortColumnsChange(sortColumns && ctrlClick ? [...sortColumns, nextSort] : [nextSort]);
+    } else {
+      let nextSortColumn: SortColumn | undefined;
+      if (
+        (sortDescendingFirst && sortDirection === 'DESC') ||
+        (!sortDescendingFirst && sortDirection === 'ASC')
+      ) {
+        nextSortColumn = {
+          columnKey: column.key,
+          direction: sortDirection === 'ASC' ? 'DESC' : 'ASC'
+        };
       }
-    } else if (sortDirection === 'DESC') {
-      if (sortDescendingFirst) onSortColumnsChange([{ columnKey, direction }]);
-      else onSortColumnsChange([]);
-    } else if (sortDirection === 'ASC') {
-      if (sortDescendingFirst) onSortColumnsChange([]);
-      else onSortColumnsChange([{ columnKey, direction }]);
-    } else onSortColumnsChange([{ columnKey, direction }]);
-  };
+      if (ctrlClick) {
+        const nextSortColumns = [...sortColumns!];
+        if (nextSortColumn) {
+          // swap direction
+          nextSortColumns[sortIndex!] = nextSortColumn;
+        } else {
+          // remove sort
+          nextSortColumns.splice(sortIndex!, 1);
+        }
+        onSortColumnsChange(nextSortColumns);
+      } else {
+        onSortColumnsChange(nextSortColumn ? [nextSortColumn] : []);
+      }
+    }
+  }
+
 
   function getCell() {
     if (column.headerRenderer) {
@@ -127,7 +129,7 @@ export default function HeaderCell<R, SR>({
         <column.headerRenderer
           column={column}
           sortDirection={sortDirection}
-          priority={multiSorts && sorted ? priority : undefined}
+          priority={priority}
           onSort={onSort}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
@@ -138,10 +140,9 @@ export default function HeaderCell<R, SR>({
     if (column.sortable) {
       return (
         <SortableHeaderCell
-          column={column}
           onSort={onSort}
           sortDirection={sortDirection}
-          priority={multiSorts && sorted ? priority : undefined}
+          priority={priority}
         >
           {column.name}
         </SortableHeaderCell>
@@ -159,7 +160,7 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-sort={!multiSorts ? getAriaSort(sortDirection) : undefined}
+      aria-sort={ariaSort}
       aria-colspan={colSpan}
       className={className}
       style={getCellStyle(column, colSpan)}

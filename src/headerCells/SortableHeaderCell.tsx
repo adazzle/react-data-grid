@@ -1,6 +1,5 @@
 import { css } from '@linaria/core';
-import type { HeaderRendererProps, SortDirection } from '../types';
-import type { MouseEvent } from 'react';
+import type { HeaderRendererProps } from '../types';
 const headerSortCell = css`
   cursor: pointer;
   display: flex;
@@ -19,14 +18,13 @@ const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
 type SharedHeaderCellProps<R, SR> = Pick<
   HeaderRendererProps<R, SR>,
-  'column' | 'sortDirection' | 'onSort' | 'priority'
+  'sortDirection' | 'onSort' | 'priority'
 >;
 interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
   children: React.ReactNode;
 }
 
 export default function SortableHeaderCell<R, SR>({
-  column,
   onSort,
   sortDirection,
   priority,
@@ -39,17 +37,8 @@ export default function SortableHeaderCell<R, SR>({
     sortText = '\u25BC';
   }
 
-  function onClick(event: MouseEvent<HTMLSpanElement>) {
-    const { sortDescendingFirst } = column;
-    let direction: SortDirection;
-    if (sortDirection === 'ASC' && !sortDescendingFirst) direction = 'DESC';
-    else if (sortDirection === 'DESC' && sortDescendingFirst) direction = 'ASC';
-    else direction = sortDescendingFirst ? 'DESC' : 'ASC';
-    onSort(column.key, direction, event.ctrlKey);
-  }
-
   return (
-    <span className={headerSortCellClassname} onClick={onClick}>
+    <span className={headerSortCellClassname} onClick={e=>onSort(e.ctrlKey)}>
       <span className={headerSortNameClassname}>{children}</span>
       <span>
         {sortText}
