@@ -151,7 +151,7 @@ describe('Editor', () => {
 });
 
 function EditorTest({ editable, editorOptions }: Pick<Column<Row>, 'editorOptions' | 'editable'>) {
-  const [rows, setRows] = useState<readonly Row[]>(() => {
+  const [rows, setRows] = useState((): readonly Row[] => {
     return [
       {
         col1: 1,
