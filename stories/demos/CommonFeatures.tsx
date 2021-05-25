@@ -344,30 +344,40 @@ export function CommonFeatures() {
   return (
     <>
       <div className={toolbarClassname}>
-        <button
-          onClick={() => {
-            exportToCsv(gridElement, 'CommonFeatures.csv');
-          }}
-        >
+        <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
           Export to CSV
-        </button>
-        <button
-          onClick={() => {
-            exportToXlsx(gridElement, 'CommonFeatures.xlsx');
-          }}
-        >
+        </ExportButton>
+        <ExportButton onExport={() => exportToXlsx(gridElement, 'CommonFeatures.xlsx')}>
           Export to XSLX
-        </button>
-        <button
-          onClick={() => {
-            exportToPdf(gridElement, 'CommonFeatures.pdf');
-          }}
-        >
+        </ExportButton>
+        <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
           Export to PDF
-        </button>
+        </ExportButton>
       </div>
       {gridElement}
     </>
+  );
+}
+
+function ExportButton({
+  onExport,
+  children
+}: {
+  onExport: () => Promise<unknown>;
+  children: React.ReactChild;
+}) {
+  const [exporting, setExporting] = useState(false);
+  return (
+    <button
+      disabled={exporting}
+      onClick={async () => {
+        setExporting(true);
+        await onExport();
+        setExporting(false);
+      }}
+    >
+      {exporting ? 'Exporting' : children}
+    </button>
   );
 }
 
