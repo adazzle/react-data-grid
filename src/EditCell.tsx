@@ -6,6 +6,20 @@ import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps, EditorProps } from './types';
 
+/*
+ * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
+ * i.e. on the window during the capture phase, and at their death, i.e. on the window during the bubble phase.
+ *
+ * We schedule a check at the birth of the event, cancel the check when the event reaches the "inside" container,
+ * and trigger the "outside" callback when the event bubbles back up to the window.
+ *
+ * The event can be `stopPropagation()`ed halfway through, so they may not always bubble back up to the window,
+ * so an alternative check must be used. The check must happen after the event can reach the "inside" container,
+ * and not before it run to completion. `requestAnimationFrame` is the best way we know how to achieve this.
+ *
+ * We must also rely on React's event capturing/bubbling to handle elements rendered in a portal.
+ */
+
 const cellEditing = css`
   padding: 0;
 `;
