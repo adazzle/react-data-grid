@@ -1,7 +1,8 @@
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 
-import { useMouseDownOutside } from './hooks';
+import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps, EditorProps } from './types';
 
@@ -27,7 +28,31 @@ export default function EditCell<R, SR>({
   onKeyDown,
   editorPortalTarget
 }: EditCellProps<R, SR>) {
-  const onMouseDownCapture = useMouseDownOutside(() => onRowChange(row, true));
+  const frameRequestRef = useRef<number | undefined>();
+
+  // We need to prevent the `useEffect` from cleaning up between re-renders,
+  // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
+  // To that end we instead access the latest props via useLatestFunc.
+  const commitOnOutsideMouseDown = useLatestFunc(() => {
+    onRowChange(row, true);
+  });
+
+  function cancelFrameRequest() {
+    cancelAnimationFrame(frameRequestRef.current!);
+  }
+
+  useEffect(() => {
+    function onWindowCaptureMouseDown() {
+      frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
+    }
+
+    addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
+
+    return () => {
+      removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
+      cancelFrameRequest();
+    };
+  }, [commitOnOutsideMouseDown]);
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -62,7 +87,7 @@ export default function EditCell<R, SR>({
       className={className}
       style={getCellStyle(column, colSpan)}
       onKeyDown={onKeyDown}
-      onMouseDownCapture={onMouseDownCapture}
+      onMouseDownCapture={cancelFrameRequest}
     >
       {content}
     </div>
