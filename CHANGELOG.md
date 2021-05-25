@@ -285,7 +285,7 @@
   - ⚠️ `onScroll` will directly pass the UIEvent rather than the scrollLeft and scrollRight only.
   - ⚠️ The stylesheets are now automatically injected, there is no stylsheet to manually import anymore.
 
-## `master` to `alpha`
+## `main` to `alpha`
 
 - **Added:**
   - TypeScript declaration files
