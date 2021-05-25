@@ -86,28 +86,28 @@ describe('Editor', () => {
     it('should be editable if an editor is specified and editable is undefined/null', () => {
       render(<EditorTest />);
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      expect(document.querySelector('input')).toBeInTheDocument();
+      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
     });
 
     it('should be editable if an editor is specified and editable is set to true', () => {
       render(<EditorTest editable />);
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      expect(document.querySelector('input')).toBeInTheDocument();
+      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
     });
 
     it('should not be editable if editable is false', () => {
       render(<EditorTest editable={false} />);
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      expect(document.querySelector('input')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     });
 
     it('should not be editable if editable function returns false', () => {
       render(<EditorTest editable={(row) => row.col1 === 2} />);
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      expect(document.querySelector('input')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
 
       userEvent.dblClick(getCellsAtRowIndex(1)[1]);
-      expect(document.querySelector('input')).toBeInTheDocument();
+      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
     });
   });
 
@@ -123,7 +123,7 @@ describe('Editor', () => {
       userEvent.click(getCellsAtRowIndex(0)[0]);
       expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
       userEvent.click(getCellsAtRowIndex(0)[1]);
-      expect(document.querySelector('input')).toBeInTheDocument();
+      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
     });
 
     it('should render the editor in a portal if createPortal is true', async () => {
@@ -161,7 +161,7 @@ describe('Editor', () => {
       userEvent.type(document.activeElement!, 'yz{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
       userEvent.type(document.activeElement!, 'x');
-      expect(document.querySelector('input')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     });
 
     it('should prevent navigation if onNavigation returns false', () => {
