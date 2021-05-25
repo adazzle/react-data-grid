@@ -135,7 +135,7 @@ describe('Editor', () => {
         />
       );
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      const editor = screen.queryByLabelText('col2-editor');
+      const editor = screen.queryByLabelText('col2-editor')!;
       expect(editor.parentElement).toBe(document.body);
       // clicking in a portal does not count as an outside click
       userEvent.click(editor);
@@ -245,7 +245,7 @@ function EditorTest({ editable, editorOptions, onSave }: EditorTestProps) {
       >
         outside
       </div>
-      <button type="button" onClick={() => onSave(rows)}>
+      <button type="button" onClick={() => onSave?.(rows)}>
         save
       </button>
       <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />
