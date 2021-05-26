@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [main, alpha, canary]
+    branches: [main]
   pull_request:
 
 jobs:
@@ -67,8 +67,8 @@ jobs:
       #     git add .
       #     git commit --allow-empty -m "main storybook deployment"
       #     git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
-      - name: Deploy canary
-        if: github.ref == 'refs/heads/canary'
+      - name: Deploy main
+        if: github.ref == 'refs/heads/main'
         run: |
           git fetch origin gh-pages
           git worktree add gh-pages gh-pages
@@ -76,5 +76,5 @@ jobs:
           git rm -r --ignore-unmatch canary
           mv ../storybook-static canary
           git add canary
-          git commit --allow-empty -m "canary storybook deployment"
+          git commit --allow-empty -m "beta storybook deployment"
           git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
