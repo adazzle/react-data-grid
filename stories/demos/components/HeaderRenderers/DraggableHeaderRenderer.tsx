@@ -11,9 +11,9 @@ interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
 export function DraggableHeaderRenderer<R>({
   onColumnsReorder,
   column,
-  sortColumn,
   sortDirection,
-  onSort
+  onSort,
+  priority
 }: DraggableHeaderRendererProps<R>) {
   const [{ isDragging }, drag] = useDrag({
     type: 'COLUMN_DRAG',
@@ -43,12 +43,7 @@ export function DraggableHeaderRenderer<R>({
         cursor: 'move'
       }}
     >
-      <SortableHeaderCell
-        column={column}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={onSort}
-      >
+      <SortableHeaderCell sortDirection={sortDirection} onSort={onSort} priority={priority}>
         {column.name}
       </SortableHeaderCell>
     </div>

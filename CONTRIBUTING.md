@@ -3,7 +3,7 @@
 For maintainers only.
 
 - `cd` to the root of the repo.
-- Checkout the branch you wish to publish. `master`, `alpha`, or `canary`
+- Checkout the branch you wish to publish. `main`, `alpha`, or `canary`
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Update the changelog, if necessary, and commit.
 - Login to the `adazzle` npm account if you haven't already done so:
