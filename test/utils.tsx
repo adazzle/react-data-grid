@@ -1,10 +1,7 @@
 import { StrictMode } from 'react';
-import type { ByRoleOptions } from '@testing-library/react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
-
-type Name = ByRoleOptions['name'];
 
 export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
@@ -60,4 +57,3 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 2}`);
 }
-
