@@ -5,8 +5,8 @@ import faker from 'faker';
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortDirection } from '../../src';
 import { stopPropagation } from '../../src/utils';
-import { SelectEditor } from './components/Editors/SelectEditor';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
+import { textEditorClassname } from '../../src/editors/TextEditor';
 
 const toolbarClassname = css`
   text-align: right;
@@ -113,13 +113,20 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       name: 'Country',
       width: 180,
       editor: (p) => (
-        <SelectEditor
+        <select
+          autoFocus
+          className={textEditorClassname}
           value={p.row.country}
-          onChange={(value) => p.onRowChange({ ...p.row, country: value }, true)}
-          options={countries.map((c) => ({ value: c, label: c }))}
-          menuPortalTarget={p.editorPortalTarget}
-        />
-      )
+          onChange={(e) => p.onRowChange({ ...p.row, country: e.target.value }, true)}
+        >
+          {countries.map((country) => (
+            <option key={country}>{country}</option>
+          ))}
+        </select>
+      ),
+      editorOptions: {
+        editOnClick: true
+      }
     },
     {
       key: 'contact',
