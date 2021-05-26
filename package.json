@@ -31,6 +31,7 @@
   "scripts": {
     "start": "start-storybook --quiet -p 6006",
     "build": "rollup --config --no-stdin",
+    "build:types": "tsc && api-extractor run --local --verbose",
     "test": "jest",
     "test:watch": "jest --watch",
     "eslint": "eslint --ext js,ts,tsx --max-warnings 0 -f codeframe --cache --color src stories test",
@@ -39,7 +40,7 @@
     "prettier:format": "prettier --write .",
     "typecheck": "tsc -p tsconfig.all.json",
     "build-storybook": "build-storybook --quiet",
-    "prepublishOnly": "npm install && npm run build && tsc && api-extractor run --local --verbose",
+    "prepublishOnly": "npm install && npm run build && npm run build:types",
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
@@ -104,7 +105,7 @@
     "react-sortable-hoc": "^2.0.0",
     "rollup": "^2.50.1",
     "rollup-plugin-postcss": "^4.0.0",
-    "typescript": "~4.2.4",
+    "typescript": "~4.3.2",
     "xlsx": "^0.17.0"
   },
   "peerDependencies": {
