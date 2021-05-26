@@ -38,7 +38,7 @@ function setup() {
 test('single column sort', () => {
   setup();
   userEvent.click(getHeaderCells()[1].firstElementChild!);
-  expect(JSON.parse(screen.getByTestId('sortColumnsValue').textContent)).toStrictEqual([
+  expect(JSON.parse(screen.getByTestId('sortColumnsValue')!.textContent!)).toStrictEqual([
     { columnKey: 'direction', direction: 'ASC' }
   ]);
 });
@@ -47,7 +47,7 @@ test('multi column sort', () => {
   setup();
   userEvent.click(getHeaderCells()[0].firstElementChild!);
   userEvent.click(getHeaderCells()[1].firstElementChild!, { ctrlKey: true });
-  expect(JSON.parse(screen.getByTestId('sortColumnsValue').textContent)).toStrictEqual([
+  expect(JSON.parse(screen.getByTestId('sortColumnsValue')!.textContent!)).toStrictEqual([
     { columnKey: 'columnKey', direction: 'ASC' },
     { columnKey: 'direction', direction: 'ASC' }
   ]);
