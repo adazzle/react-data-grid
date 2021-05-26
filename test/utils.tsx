@@ -61,16 +61,3 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 2}`);
 }
 
-export function getColumnIndex(cell: HTMLElement) {
-  return Number(cell.getAttribute('aria-colindex')) - 1;
-}
-
-export function getCellsAtColumn({ grid, name }: { grid: HTMLElement; name: Name }) {
-  const headerCell = within(grid).getByRole('columnheader', { name }, { hidden: true });
-  const index = getColumnIndex(headerCell);
-  const rows = getRows();
-  return rows.map((row) => {
-    const cells = within(row).getAllByRole('gridcell', { hidden: true });
-    return cells.find((c) => getColumnIndex(c) === index);
-  });
-}
