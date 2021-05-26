@@ -48,7 +48,7 @@ import type {
   FillEvent,
   PasteEvent,
   CellNavigationMode,
-  SortDirection,
+  SortColumn,
   RowHeightArgs,
   SelectCellFn
 } from './types';
@@ -124,12 +124,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   selectedRows?: ReadonlySet<K> | null;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
-  /** The key of the column which is currently being sorted */
-  sortColumn?: string | null;
-  /** The direction to sort the sortColumn*/
-  sortDirection?: SortDirection | null;
-  /** Function called whenever grid is sorted*/
-  onSort?: ((columnKey: string, direction: SortDirection) => void) | null;
+  /**Used for multi column sorting */
+  sortColumns?: readonly Readonly<SortColumn>[] | null;
+  onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
   defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
   groupBy?: readonly string[] | null;
   rowGrouper?: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | null;
@@ -192,9 +189,8 @@ function DataGrid<R, SR, K extends Key>(
     // Feature props
     selectedRows,
     onSelectedRowsChange,
-    sortColumn,
-    sortDirection,
-    onSort,
+    sortColumns,
+    onSortColumnsChange,
     defaultColumnOptions,
     groupBy: rawGroupBy,
     rowGrouper,
@@ -1065,9 +1061,8 @@ function DataGrid<R, SR, K extends Key>(
         onColumnResize={handleColumnResize}
         allRowsSelected={allRowsSelected}
         onSelectedRowsChange={onSelectedRowsChange}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={onSort}
+        sortColumns={sortColumns}
+        onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
       />
       {rows.length === 0 && EmptyRowsRenderer ? (

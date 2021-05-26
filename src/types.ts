@@ -106,9 +106,9 @@ export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorPr
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
-  sortColumn: string | undefined | null;
-  sortDirection: SortDirection | undefined | null;
-  onSort: ((columnKey: string, direction: SortDirection) => void) | undefined | null;
+  sortDirection: SortDirection | undefined;
+  priority: number | undefined;
+  onSort: (ctrlClick: boolean) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
@@ -221,8 +221,13 @@ export interface GroupRow<TRow> {
   startRowIndex: number;
 }
 
+export interface SortColumn {
+  columnKey: string;
+  direction: SortDirection;
+}
+
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
-export type SortDirection = 'ASC' | 'DESC' | 'NONE';
+export type SortDirection = 'ASC' | 'DESC';
 
 export type ColSpanArgs<R, SR> =
   | { type: 'HEADER' }

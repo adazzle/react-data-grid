@@ -1,9 +1,9 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
-import type { Column, SortDirection } from '../../src';
+import type { Column, SortColumn } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/TextEditor';
@@ -269,9 +269,41 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
+type Comparator = (a: Row, b: Row) => number;
+function getComparator(sortColumn: string): Comparator {
+  switch (sortColumn) {
+    case 'assignee':
+    case 'title':
+    case 'client':
+    case 'area':
+    case 'country':
+    case 'contact':
+    case 'transaction':
+    case 'account':
+    case 'version':
+      return (a, b) => {
+        return a[sortColumn].localeCompare(b[sortColumn]);
+      };
+    case 'available':
+      return (a, b) => {
+        return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1;
+      };
+    case 'id':
+    case 'progress':
+    case 'startTimestamp':
+    case 'endTimestamp':
+    case 'budget':
+      return (a, b) => {
+        return a[sortColumn] - b[sortColumn];
+      };
+    default:
+      throw new Error(`unsupported sortColumn: "${sortColumn}"`);
+  }
+}
+
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
+  const [sortColumns, setSortColumns] = useState<readonly Readonly<SortColumn>[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const countries = useMemo(() => {
@@ -289,44 +321,22 @@ export function CommonFeatures() {
     return [summaryRow];
   }, [rows]);
 
-  const sortedRows: readonly Row[] = useMemo(() => {
-    if (sortDirection === 'NONE') return rows;
+  const sortedRows = useMemo((): readonly Row[] => {
+    if (sortColumns.length === 0) return rows;
 
-    let sortedRows: Row[] = [...rows];
-
-    switch (sortColumn) {
-      case 'assignee':
-      case 'title':
-      case 'client':
-      case 'area':
-      case 'country':
-      case 'contact':
-      case 'transaction':
-      case 'account':
-      case 'version':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
-        break;
-      case 'available':
-        sortedRows = sortedRows.sort((a, b) =>
-          a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1
-        );
-        break;
-      case 'id':
-      case 'progress':
-      case 'startTimestamp':
-      case 'endTimestamp':
-      case 'budget':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
-        break;
-      default:
-    }
-
-    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortDirection, sortColumn]);
-
-  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
-    setSort([columnKey, direction]);
-  }, []);
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      for (const sort of sortColumns) {
+        const comparator = getComparator(sort.columnKey);
+        const compResult = comparator(a, b);
+        if (compResult !== 0) {
+          return sort.direction === 'ASC' ? compResult : -compResult;
+        }
+      }
+      return 0;
+    });
+    return sortedRows;
+  }, [rows, sortColumns]);
 
   const gridElement = (
     <DataGrid
@@ -340,9 +350,8 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortColumn={sortColumn}
-      sortDirection={sortDirection}
-      onSort={handleSort}
+      sortColumns={sortColumns}
+      onSortColumnsChange={setSortColumns}
       summaryRows={summaryRows}
       className="fill-grid"
     />
