@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { getCellsAtColumn, getHeaderCells } from './utils';
+import { getHeaderCells } from './utils';
 import type { Column, SortColumn } from '../src/types';
 import { StrictMode, useState } from 'react';
 import DataGrid from '../src';
