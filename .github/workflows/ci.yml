@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [master, alpha, canary]
+    branches: [main, alpha, canary]
   pull_request:
 
 jobs:
@@ -56,17 +56,17 @@ jobs:
         run: |
           git config --global user.email 'action@github.com'
           git config --global user.name 'GitHub Action'
-      - name: Deploy master
-        if: github.ref == 'refs/heads/master'
-        run: |
-          git fetch origin gh-pages
-          git worktree add gh-pages gh-pages
-          git rm -r .
-          git checkout gh-pages -- canary
-          mv ../storybook-static/* .
-          git add .
-          git commit --allow-empty -m "master storybook deployment"
-          git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
+      # - name: Deploy main
+      #   if: github.ref == 'refs/heads/main'
+      #   run: |
+      #     git fetch origin gh-pages
+      #     git worktree add gh-pages gh-pages
+      #     git rm -r .
+      #     git checkout gh-pages -- canary
+      #     mv ../storybook-static/* .
+      #     git add .
+      #     git commit --allow-empty -m "main storybook deployment"
+      #     git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
       - name: Deploy canary
         if: github.ref == 'refs/heads/canary'
         run: |
