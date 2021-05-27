@@ -257,6 +257,7 @@ function DataGrid<R, SR, K extends Key>(
    * The identity of the wrapper function is stable so it won't break memoization
    */
   const selectRowWrapper = useLatestFunc(selectRow);
+  const selectAllRowsWrapper = useLatestFunc(selectAllRows);
   const selectCellWrapper = useLatestFunc(selectCell);
   const toggleGroupWrapper = useLatestFunc(toggleGroup);
   const handleFormatterRowChangeWrapper = useLatestFunc(updateRow);
@@ -439,6 +440,24 @@ function DataGrid<R, SR, K extends Key>(
     } else {
       newSelectedRows.delete(rowKey);
       lastSelectedRowIdx.current = -1;
+    }
+
+    onSelectedRowsChange(newSelectedRows);
+  }
+
+  function selectAllRows(checked: boolean) {
+    if (!onSelectedRowsChange) return;
+
+    assertIsValidKeyGetter<R, K>(rowKeyGetter);
+    const newSelectedRows = new Set(selectedRows);
+
+    for (const row of rawRows) {
+      const rowKey = rowKeyGetter(row);
+      if (checked) {
+        newSelectedRows.add(rowKey);
+      } else {
+        newSelectedRows.delete(rowKey);
+      }
     }
 
     onSelectedRowsChange(newSelectedRows);
@@ -1055,12 +1074,10 @@ function DataGrid<R, SR, K extends Key>(
       onScroll={handleScroll}
     >
       <HeaderRow
-        rowKeyGetter={rowKeyGetter}
-        rows={rawRows}
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
         allRowsSelected={allRowsSelected}
-        onSelectedRowsChange={onSelectedRowsChange}
+        onAllRowsSelectionChange={selectAllRowsWrapper}
         sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
