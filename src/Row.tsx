@@ -11,7 +11,6 @@ import { RowSelectionProvider } from './hooks';
 
 function Row<R, SR>(
   {
-    cellRenderer,
     className,
     rowIdx,
     isRowSelected,
@@ -48,7 +47,6 @@ function Row<R, SR>(
     className
   );
 
-  const CellRenderer = cellRenderer ?? Cell;
   const cells = [];
 
   for (let index = 0; index < viewportColumns.length; index++) {
@@ -74,7 +72,7 @@ function Row<R, SR>(
     }
 
     cells.push(
-      <CellRenderer
+      <Cell
         key={column.key}
         rowIdx={rowIdx}
         column={column}

@@ -1,4 +1,4 @@
-import { forwardRef, memo } from 'react';
+import { memo } from 'react';
 import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
@@ -40,56 +40,45 @@ const cellDragHandle = css`
 
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
-function Cell<R, SR>(
-  {
-    className,
-    column,
-    colSpan,
-    isCellSelected,
-    isCopied,
-    isDraggedOver,
-    row,
-    rowIdx,
-    dragHandleProps,
-    onRowClick,
-    onClick,
-    onDoubleClick,
-    onContextMenu,
-    onRowChange,
-    selectCell,
-    ...props
-  }: CellRendererProps<R, SR>,
-  ref: React.Ref<HTMLDivElement>
-) {
+function Cell<R, SR>({
+  column,
+  colSpan,
+  isCellSelected,
+  isCopied,
+  isDraggedOver,
+  row,
+  rowIdx,
+  dragHandleProps,
+  onRowClick,
+  onRowChange,
+  selectCell,
+  ...props
+}: CellRendererProps<R, SR>) {
   const { cellClass } = column;
-  className = getCellClassname(
+  const className = getCellClassname(
     column,
     {
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass,
-    className
+    typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
   function selectCellWrapper(openEditor?: boolean | null) {
     selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
-  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleClick() {
     selectCellWrapper(column.editorOptions?.editOnClick);
     onRowClick?.(rowIdx, row, column);
-    onClick?.(event);
   }
 
-  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+  function handleContextMenu() {
     selectCellWrapper();
-    onContextMenu?.(event);
   }
 
-  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleDoubleClick() {
     selectCellWrapper(true);
-    onDoubleClick?.(event);
   }
 
   function handleRowChange(newRow: R) {
@@ -103,7 +92,6 @@ function Cell<R, SR>(
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
       aria-readonly={!isCellEditable(column, row) || undefined}
-      ref={ref}
       className={className}
       style={getCellStyle(column, colSpan)}
       onClick={handleClick}
@@ -127,6 +115,6 @@ function Cell<R, SR>(
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR>(
+export default memo(Cell) as <R, SR>(
   props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
