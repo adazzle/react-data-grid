@@ -3,6 +3,7 @@ import { css } from '@linaria/core';
 export const cell = css`
   contain: strict;
   contain: size layout style paint;
+  grid-row-start: 1;
   padding: 0 8px;
   border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
