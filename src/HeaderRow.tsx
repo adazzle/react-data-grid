@@ -1,46 +1,33 @@
-import { useCallback, memo } from 'react';
+import { memo } from 'react';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
-import { assertIsValidKeyGetter, getColSpan } from './utils';
+import { getColSpan } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { headerRowClassname } from './style';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
-  'rows' | 'onSelectedRowsChange' | 'rowKeyGetter' | 'sortColumns' | 'onSortColumnsChange'
+  'sortColumns' | 'onSortColumnsChange'
 >;
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
+  onAllRowsSelectionChange: (checked: boolean) => void;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   lastFrozenColumnIndex: number;
 }
 
 function HeaderRow<R, SR, K extends React.Key>({
   columns,
-  rows,
-  rowKeyGetter,
-  onSelectedRowsChange,
   allRowsSelected,
+  onAllRowsSelectionChange,
   onColumnResize,
   sortColumns,
   onSortColumnsChange,
   lastFrozenColumnIndex
 }: HeaderRowProps<R, SR, K>) {
-  const handleAllRowsSelectionChange = useCallback(
-    (checked: boolean) => {
-      if (!onSelectedRowsChange) return;
-
-      assertIsValidKeyGetter<R, K>(rowKeyGetter);
-
-      const newSelectedRows = new Set<K>(checked ? rows.map(rowKeyGetter) : undefined);
-      onSelectedRowsChange(newSelectedRows);
-    },
-    [onSelectedRowsChange, rows, rowKeyGetter]
-  );
-
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
@@ -56,7 +43,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         colSpan={colSpan}
         onResize={onColumnResize}
         allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={handleAllRowsSelectionChange}
+        onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
       />
