@@ -41,7 +41,6 @@ const cellDragHandle = css`
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
 function Cell<R, SR>({
-  className,
   column,
   colSpan,
   isCellSelected,
@@ -51,42 +50,35 @@ function Cell<R, SR>({
   rowIdx,
   dragHandleProps,
   onRowClick,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
   onRowChange,
   selectCell,
   ...props
 }: CellRendererProps<R, SR>) {
   const { cellClass } = column;
-  className = getCellClassname(
+  const className = getCellClassname(
     column,
     {
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass,
-    className
+    typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
   function selectCellWrapper(openEditor?: boolean | null) {
     selectCell({ idx: column.idx, rowIdx }, openEditor);
   }
 
-  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleClick() {
     selectCellWrapper(column.editorOptions?.editOnClick);
     onRowClick?.(rowIdx, row, column);
-    onClick?.(event);
   }
 
-  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+  function handleContextMenu() {
     selectCellWrapper();
-    onContextMenu?.(event);
   }
 
-  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleDoubleClick() {
     selectCellWrapper(true);
-    onDoubleClick?.(event);
   }
 
   function handleRowChange(newRow: R) {
