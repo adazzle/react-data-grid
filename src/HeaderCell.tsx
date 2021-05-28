@@ -21,14 +21,13 @@ const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
-  'onSortColumnsChange' | 'allRowsSelected' | 'sortColumns'
+  'onSortColumnsChange' | 'allRowsSelected' | 'onAllRowsSelectionChange' | 'sortColumns'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
-  onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
 export default function HeaderCell<R, SR>({
