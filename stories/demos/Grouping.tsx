@@ -1,8 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
-import Select, { components } from 'react-select';
-import type { ValueType, OptionsType, Props as SelectProps } from 'react-select';
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import faker from 'faker';
 import { css } from '@linaria/core';
 
@@ -13,11 +10,17 @@ const groupingClassname = css`
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 10px;
+  gap: 8px;
 
   > .rdg {
     flex: 1;
   }
+`;
+
+const optionsClassname = css`
+  display: flex;
+  gap: 8px;
+  text-transform: capitalize;
 `;
 
 interface Row {
@@ -29,11 +32,6 @@ interface Row {
   gold: number;
   silver: number;
   bronze: number;
-}
-
-interface Option {
-  value: string;
-  label: string;
 }
 
 const sports = [
@@ -140,86 +138,58 @@ function createRows(): readonly Row[] {
   return rows.sort((r1, r2) => r2.country.localeCompare(r1.country));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SortableMultiValue = SortableElement((props: any) => {
-  const onMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-  const innerProps = { onMouseDown };
-  return <components.MultiValue {...props} innerProps={innerProps} />;
-});
-
-// @ts-expect-error
-const SortableSelect = SortableContainer<SelectProps<Option, true>>(Select);
-
-const options: OptionsType<Option> = [
-  { value: 'country', label: 'Country' },
-  { value: 'year', label: 'Year' },
-  { value: 'sport', label: 'Sport' },
-  { value: 'athlete', label: 'athlete' }
-];
+const options = ['country', 'year', 'sport', 'athlete'] as const;
 
 export function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
-  const [selectedOptions, setSelectedOptions] = useState<ValueType<Option, true>>([
+  const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([
     options[0],
     options[1]
   ]);
-  const [expandedGroupIds, setExpandedGroupIds] = useState(
+  const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
     () => new Set<unknown>(['United States of America', 'United States of America__2015'])
   );
 
-  const groupBy = useMemo(
-    () =>
-      Array.isArray(selectedOptions) ? selectedOptions.map((o: Option) => o.value) : undefined,
-    [selectedOptions]
-  );
-
-  function onSortEnd({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) {
-    if (!Array.isArray(selectedOptions)) return;
-    const newOptions: Option[] = [...selectedOptions];
-    newOptions.splice(
-      newIndex < 0 ? newOptions.length + newIndex : newIndex,
-      0,
-      newOptions.splice(oldIndex, 1)[0]
-    );
-    setSelectedOptions(newOptions);
+  function toggleOption(option: string, enabled: boolean) {
+    const index = selectedOptions.indexOf(option);
+    if (enabled) {
+      if (index === -1) {
+        setSelectedOptions((options) => [...options, option]);
+      }
+    } else if (index !== -1) {
+      setSelectedOptions((options) => {
+        const newOptions = [...options];
+        newOptions.splice(index, 1);
+        return newOptions;
+      });
+    }
     setExpandedGroupIds(new Set());
   }
 
   return (
     <div className={groupingClassname}>
-      <label style={{ width: 400 }}>
-        <b>Group by</b> (drag to sort)
-        <SortableSelect
-          // react-sortable-hoc props
-          axis="xy"
-          onSortEnd={onSortEnd}
-          distance={4}
-          getHelperDimensions={({ node }) => node.getBoundingClientRect()}
-          // react-select props
-          isMulti
-          value={selectedOptions}
-          onChange={(options) => {
-            setSelectedOptions(options);
-            setExpandedGroupIds(new Set());
-          }}
-          options={options}
-          components={{
-            MultiValue: SortableMultiValue
-          }}
-          closeMenuOnSelect={false}
-        />
-      </label>
+      <b>Group by columns:</b>
+      <div className={optionsClassname}>
+        {options.map((option) => (
+          <label key={option}>
+            <input
+              type="checkbox"
+              checked={selectedOptions.includes(option)}
+              onChange={(event) => toggleOption(option, event.target.checked)}
+            />{' '}
+            {option}
+          </label>
+        ))}
+      </div>
+
       <DataGrid
-        rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
+        rowKeyGetter={rowKeyGetter}
         selectedRows={selectedRows}
         onSelectedRowsChange={setSelectedRows}
-        groupBy={groupBy}
+        groupBy={selectedOptions}
         rowGrouper={rowGrouper}
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
