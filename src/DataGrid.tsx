@@ -962,7 +962,11 @@ function DataGrid<R, SR, K extends Key>(
   function getViewportRows() {
     const rowElements = [];
     let startRowIndex = 0;
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+    const length = rowOverscanEndIdx - rowOverscanStartIdx;
+    const offset = rowOverscanEndIdx % length;
+    const startOffset = (length - offset) % length;
+    for (let idx = 0; idx < length; idx++) {
+      const rowIdx = ((startOffset + idx) % length) + rowOverscanStartIdx;
       const row = rows[rowIdx];
       const top = getRowTop(rowIdx) + headerRowHeight;
       if (isGroupRow(row)) {
@@ -976,7 +980,7 @@ function DataGrid<R, SR, K extends Key>(
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
             aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
             aria-selected={isSelectable ? isGroupRowSelected : undefined}
-            key={row.id}
+            key={idx}
             id={row.id}
             groupKey={row.groupKey}
             viewportColumns={viewportColumns}
@@ -1011,7 +1015,7 @@ function DataGrid<R, SR, K extends Key>(
         <RowRenderer
           aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1} // aria-rowindex is 1 based
           aria-selected={isSelectable ? isRowSelected : undefined}
-          key={key}
+          key={idx}
           rowIdx={rowIdx}
           row={row}
           viewportColumns={viewportColumns}
