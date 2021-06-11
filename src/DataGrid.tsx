@@ -980,7 +980,7 @@ function DataGrid<R, SR, K extends Key>(
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
             aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
             aria-selected={isSelectable ? isGroupRowSelected : undefined}
-            key={idx}
+            key={row.id}
             id={row.id}
             groupKey={row.groupKey}
             viewportColumns={viewportColumns}
@@ -1015,7 +1015,7 @@ function DataGrid<R, SR, K extends Key>(
         <RowRenderer
           aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1} // aria-rowindex is 1 based
           aria-selected={isSelectable ? isRowSelected : undefined}
-          key={idx}
+          key={key}
           rowIdx={rowIdx}
           row={row}
           viewportColumns={viewportColumns}
