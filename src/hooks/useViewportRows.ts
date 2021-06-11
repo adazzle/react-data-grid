@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
-import { ceil, floor, max, min } from '../utils';
+import { floor, max, min } from '../utils';
 import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
-
-const RENDER_BATCH_SIZE = 8;
 
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
@@ -176,15 +174,9 @@ export function useViewportRows<R>({
 
   const overscanThreshold = 4;
   const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
-  const rowOverscanStartIdx = max(
-    0,
-    floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BATCH_SIZE) * RENDER_BATCH_SIZE
-  );
-  const rowOverscanEndIdx = min(
-    rows.length - 1,
-    ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BATCH_SIZE) * RENDER_BATCH_SIZE
-  );
+  const rowVisibleEndIdx = findRowIdx(scrollTop + clientHeight);
+  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
+  const rowOverscanEndIdx = min(rows.length - 1, rowVisibleEndIdx + overscanThreshold);
 
   return {
     rowOverscanStartIdx,
