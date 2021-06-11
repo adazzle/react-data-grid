@@ -58,7 +58,7 @@ ReactDOM.render = (element: React.ReactElement, container: Container) => {
   let root = nodes.get(container);
   if (!root) {
     //@ts-expect-error
-    root = ReactDOM.createRoot(rootNode);
+    root = ReactDOM.createRoot(container);
     nodes.set(container, root);
   }
   root.render(element);
