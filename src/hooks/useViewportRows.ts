@@ -172,15 +172,21 @@ export function useViewportRows<R>({
     };
   }
 
-  const overscanThreshold = 4;
-  const rowVisibleStartIdx = findRowIdx(scrollTop);
+  const overscanThreshold = 2;
   // TODO: replace 35 by minimum dynamic row height
-  const maxVisibleRowsCount = ceil(clientHeight / (typeof rowHeight === 'number' ? rowHeight : 35));
-  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
-  const rowOverscanEndIdx = min(
-    rows.length - 1,
-    rowVisibleStartIdx + maxVisibleRowsCount + overscanThreshold
-  );
+  const visibleRowsCount =
+    ceil(clientHeight / (typeof rowHeight === 'number' ? rowHeight : 35)) + overscanThreshold * 2;
+  const rowVisibleStartIdx = findRowIdx(scrollTop);
+  const maxEndIdx = rows.length;
+
+  let rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
+  let rowOverscanEndIdx;
+  if (rowOverscanStartIdx + visibleRowsCount > maxEndIdx) {
+    rowOverscanStartIdx = max(0, maxEndIdx - visibleRowsCount);
+    rowOverscanEndIdx = maxEndIdx;
+  } else {
+    rowOverscanEndIdx = rowOverscanStartIdx + visibleRowsCount;
+  }
 
   return {
     rowOverscanStartIdx,
