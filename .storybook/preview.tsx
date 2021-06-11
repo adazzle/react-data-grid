@@ -1,5 +1,6 @@
 import 'core-js/stable';
 import { css } from '@linaria/core';
+import ReactDOM, { Container } from 'react-dom';
 
 css`
   :global() {
@@ -49,3 +50,27 @@ css`
     }
   }
 `;
+
+// https://github.com/storybookjs/storybook/issues/10543#issuecomment-650646374
+const nodes = new Map();
+//@ts-expect-error
+ReactDOM.render = (element: React.ReactElement, container: Container) => {
+  let root = nodes.get(container);
+  if (!root) {
+    //@ts-expect-error
+    root = ReactDOM.createRoot(rootNode);
+    nodes.set(container, root);
+  }
+  root.render(element);
+};
+
+ReactDOM.unmountComponentAtNode = (container: Element | DocumentFragment) => {
+  const root = nodes.get(container);
+  if (root) {
+    root.unmount();
+    return true;
+  } else {
+    console.error("ReactDOM injection: can't unmount the given component");
+    return false;
+  }
+};
