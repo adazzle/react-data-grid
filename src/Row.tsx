@@ -1,4 +1,4 @@
-import { memo, forwardRef, useEffect } from 'react';
+import { memo, forwardRef } from 'react';
 import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
@@ -46,13 +46,6 @@ function Row<R, SR>(
     rowClass?.(row),
     className
   );
-
-  useEffect(() => {
-    console.log('mount!');
-    return () => {
-      console.log('unmount!');
-    };
-  }, []);
 
   const cells = [];
 
