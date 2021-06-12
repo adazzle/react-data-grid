@@ -962,7 +962,11 @@ function DataGrid<R, SR, K extends Key>(
   function getViewportRows() {
     const rowElements = [];
     let startRowIndex = 0;
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+    const length = rowOverscanEndIdx - rowOverscanStartIdx;
+    const offset = rowOverscanEndIdx % length;
+    const startOffset = (length - offset) % length;
+    for (let idx = 0; idx < length; idx++) {
+      const rowIdx = ((startOffset + idx) % length) + rowOverscanStartIdx;
       const row = rows[rowIdx];
       const top = getRowTop(rowIdx) + headerRowHeight;
       if (isGroupRow(row)) {

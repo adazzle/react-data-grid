@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { ceil, floor, max, min } from '../utils';
 import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
 
-const RENDER_BATCH_SIZE = 8;
-
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
   rowHeight: number | ((args: RowHeightArgs<R>) => number);
@@ -174,17 +172,21 @@ export function useViewportRows<R>({
     };
   }
 
-  const overscanThreshold = 4;
+  const overscanThreshold = 2;
+  // TODO: replace 35 by minimum dynamic row height
+  const visibleRowsCount =
+    ceil(clientHeight / (typeof rowHeight === 'number' ? rowHeight : 35)) + overscanThreshold * 2;
   const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
-  const rowOverscanStartIdx = max(
-    0,
-    floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BATCH_SIZE) * RENDER_BATCH_SIZE
-  );
-  const rowOverscanEndIdx = min(
-    rows.length - 1,
-    ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BATCH_SIZE) * RENDER_BATCH_SIZE
-  );
+  const maxEndIdx = rows.length;
+
+  let rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
+  let rowOverscanEndIdx;
+  if (rowOverscanStartIdx + visibleRowsCount > maxEndIdx) {
+    rowOverscanStartIdx = max(0, maxEndIdx - visibleRowsCount);
+    rowOverscanEndIdx = maxEndIdx;
+  } else {
+    rowOverscanEndIdx = rowOverscanStartIdx + visibleRowsCount;
+  }
 
   return {
     rowOverscanStartIdx,
