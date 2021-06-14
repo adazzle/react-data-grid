@@ -27,7 +27,7 @@ test('rowHeight is number', () => {
   expect(rows[0]).toHaveStyle({ '--row-height': '40px' });
   expect(rows[1]).toHaveStyle({ '--row-height': '40px' });
   expect(rows[2]).toHaveStyle({ '--row-height': '40px' });
-  expect(getRows()).toHaveLength(33);
+  expect(getRows()).toHaveLength(31);
 
   userEvent.tab();
   const grid = screen.getByRole('grid');
@@ -47,7 +47,7 @@ test('rowHeight is function', () => {
   expect(rows[1]).toHaveStyle({ '--row-height': '60px' });
   expect(rows[2]).toHaveStyle({ '--row-height': '80px' });
   expect(rows[3]).toHaveStyle({ '--row-height': '40px' });
-  expect(rows).toHaveLength(25);
+  expect(rows).toHaveLength(22);
 
   userEvent.tab();
   const grid = screen.getByRole('grid');
