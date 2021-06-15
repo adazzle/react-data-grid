@@ -1,4 +1,5 @@
 import { useRef, useState, useLayoutEffect } from 'react';
+import { flushSync } from 'react-dom';
 
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
@@ -20,11 +21,13 @@ export function useGridDimensions(): [
       // Get dimensions without scrollbars.
       // The dimensions given by the callback entries in Firefox do not substract the scrollbar sizes.
       const { clientWidth, clientHeight } = gridRef.current!;
-      // TODO: remove once fixed upstream
-      // we reduce width by 1px here to avoid layout issues in Chrome
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-      setGridWidth(clientWidth - (devicePixelRatio % 0.5 === 0 ? 0 : 1));
-      setGridHeight(clientHeight);
+      flushSync(() => {
+        // TODO: remove once fixed upstream
+        // we reduce width by 1px here to avoid layout issues in Chrome
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
+        setGridWidth(clientWidth - (devicePixelRatio % 0.5 === 0 ? 0 : 1));
+        setGridHeight(clientHeight);
+      });
     });
 
     resizeObserver.observe(gridRef.current!);
