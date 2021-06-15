@@ -238,8 +238,9 @@ function DataGrid<R, SR, K extends Key>(
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
-  const [selectedPosition, setSelectedPosition] =
-    useState<SelectCellState | EditCellState<R>>(initialPosition);
+  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
+    initialPosition
+  );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
@@ -256,11 +257,11 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
-  const selectRowWrapper = useLatestFunc(selectRow);
-  const selectAllRowsWrapper = useLatestFunc(selectAllRows);
-  const selectCellWrapper = useLatestFunc(selectCell);
-  const toggleGroupWrapper = useLatestFunc(toggleGroup);
-  const handleFormatterRowChangeWrapper = useLatestFunc(updateRow);
+  const selectRowLatest = useLatestFunc(selectRow);
+  const selectAllRowsLatest = useLatestFunc(selectAllRows);
+  const selectCellLatest = useLatestFunc(selectCell);
+  const toggleGroupLatest = useLatestFunc(toggleGroup);
+  const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
 
   /**
    * computed values
@@ -989,8 +990,8 @@ function DataGrid<R, SR, K extends Key>(
             isRowSelected={isGroupRowSelected}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
-            selectCell={selectCellWrapper}
-            toggleGroup={toggleGroupWrapper}
+            selectCell={selectCellLatest}
+            toggleGroup={toggleGroupLatest}
           />
         );
         continue;
@@ -1028,8 +1029,8 @@ function DataGrid<R, SR, K extends Key>(
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           selectedCellProps={getSelectedCellProps(rowIdx)}
-          onRowChange={handleFormatterRowChangeWrapper}
-          selectCell={selectCellWrapper}
+          onRowChange={handleFormatterRowChangeLatest}
+          selectCell={selectCellLatest}
         />
       );
     }
@@ -1077,7 +1078,7 @@ function DataGrid<R, SR, K extends Key>(
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
         allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={selectAllRowsWrapper}
+        onAllRowsSelectionChange={selectAllRowsLatest}
         sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
@@ -1112,7 +1113,7 @@ function DataGrid<R, SR, K extends Key>(
             onFocus={onGridFocus}
           />
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
-          <RowSelectionChangeProvider value={selectRowWrapper}>
+          <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
           </RowSelectionChangeProvider>
           {summaryRows?.map((row, rowIdx) => (

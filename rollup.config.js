@@ -26,7 +26,7 @@ export default {
       interop: false
     }
   ],
-  external: (id) => !id.startsWith('.') && !isAbsolute(id),
+  external: (id) => !id.startsWith('.') && !id.startsWith('@linaria:') && !isAbsolute(id),
   plugins: [
     linaria({
       classNameSlug(hash) {
