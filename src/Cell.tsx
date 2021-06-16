@@ -47,7 +47,6 @@ function Cell<R, SR>({
   isCopied,
   isDraggedOver,
   row,
-  rowIdx,
   dragHandleProps,
   onRowClick,
   onRowChange,
@@ -65,12 +64,12 @@ function Cell<R, SR>({
   );
 
   function selectCellWrapper(openEditor?: boolean | null) {
-    selectCell({ idx: column.idx, rowIdx }, openEditor);
+    selectCell(column, openEditor);
   }
 
   function handleClick() {
     selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(rowIdx, row, column);
+    onRowClick(column);
   }
 
   function handleContextMenu() {
@@ -79,10 +78,6 @@ function Cell<R, SR>({
 
   function handleDoubleClick() {
     selectCellWrapper(true);
-  }
-
-  function handleRowChange(newRow: R) {
-    onRowChange(rowIdx, newRow);
   }
 
   return (
@@ -103,10 +98,9 @@ function Cell<R, SR>({
         <>
           <column.formatter
             column={column}
-            rowIdx={rowIdx}
             row={row}
             isCellSelected={isCellSelected}
-            onRowChange={handleRowChange}
+            onRowChange={onRowChange}
           />
           {dragHandleProps && <div className={cellDragHandleClassname} {...dragHandleProps} />}
         </>

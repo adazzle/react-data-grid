@@ -6,12 +6,12 @@ const RowSelectionContext = createContext<boolean | undefined>(undefined);
 export const RowSelectionProvider = RowSelectionContext.Provider;
 
 const RowSelectionChangeContext = createContext<
-  ((selectRowEvent: SelectRowEvent) => void) | undefined
+  (<R>(selectRowEvent: SelectRowEvent<R>) => void) | undefined
 >(undefined);
 
 export const RowSelectionChangeProvider = RowSelectionChangeContext.Provider;
 
-export function useRowSelection(): [boolean, (selectRowEvent: SelectRowEvent) => void] {
+export function useRowSelection<R>(): [boolean, (selectRowEvent: SelectRowEvent<R>) => void] {
   const rowSelectionContext = useContext(RowSelectionContext);
   const rowSelectionChangeContext = useContext(RowSelectionChangeContext);
 

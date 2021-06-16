@@ -21,7 +21,7 @@ export interface GroupRowRendererProps<R, SR>
   selectedCellIdx: number | undefined;
   isExpanded: boolean;
   isRowSelected: boolean;
-  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectCell: (position: Position) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
@@ -75,7 +75,6 @@ function GroupedRow<R, SR>({
           <GroupCell
             key={column.key}
             id={id}
-            rowIdx={rowIdx}
             groupKey={groupKey}
             childRows={childRows}
             isExpanded={isExpanded}

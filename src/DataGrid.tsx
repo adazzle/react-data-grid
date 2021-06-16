@@ -406,12 +406,11 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * event handlers
    */
-  function selectRow({ rowIdx, checked, isShiftClick }: SelectRowEvent) {
+  function selectRow({ row, checked, isShiftClick }: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
 
     assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
-    const row = rows[rowIdx];
     if (isGroupRow(row)) {
       for (const childRow of row.childRows) {
         const rowKey = rowKeyGetter(childRow);
@@ -429,6 +428,7 @@ function DataGrid<R, SR, K extends Key>(
     if (checked) {
       newSelectedRows.add(rowKey);
       const previousRowIdx = lastSelectedRowIdx.current;
+      const rowIdx = rows.indexOf(row);
       lastSelectedRowIdx.current = rowIdx;
       if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
         const step = sign(rowIdx - previousRowIdx);

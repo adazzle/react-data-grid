@@ -70,7 +70,6 @@ export interface Position {
 }
 
 export interface FormatterProps<TRow, TSummaryRow = unknown> {
-  rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
@@ -83,7 +82,6 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
-  rowIdx: number;
   groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
   childRows: readonly TRow[];
@@ -100,7 +98,6 @@ interface SharedEditorProps<TRow> {
 }
 
 export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
-  rowIdx: number;
   column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
 }
 
@@ -135,7 +132,6 @@ export type SelectCellFn = (position: Position, enableEditor?: boolean | null) =
 
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  rowIdx: number;
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -145,12 +141,9 @@ export interface CellRendererProps<TRow, TSummaryRow>
   dragHandleProps:
     | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
     | undefined;
-  onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onRowClick:
-    | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
-    | undefined
-    | null;
-  selectCell: SelectCellFn;
+  onRowChange: (newRow: TRow) => void;
+  onRowClick: (column: CalculatedColumn<TRow, TSummaryRow>) => void;
+  selectCell: (column: CalculatedColumn<TRow, TSummaryRow>, enableEditor?: boolean | null) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -165,7 +158,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   top: number;
   height: number;
   selectedCellProps: EditCellProps<TRow> | SelectedCellProps | undefined;
-  onRowChange: (rowIdx: number, row: TRow) => void;
+  onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick:
     | ((rowIdx: number, row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
     | undefined
@@ -180,8 +173,8 @@ export interface RowsChangeData<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
 }
 
-export interface SelectRowEvent {
-  rowIdx: number;
+export interface SelectRowEvent<TRow> {
+  row: TRow;
   checked: boolean;
   isShiftClick: boolean;
 }
