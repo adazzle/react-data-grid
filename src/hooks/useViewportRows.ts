@@ -57,7 +57,10 @@ export function useViewportRows<R>({
     return groupRows(rawRows, groupBy, 0);
   }, [groupBy, rowGrouper, rawRows]);
 
-  const [rows, isGroupRow] = useMemo(() => {
+  const [rows, isGroupRow] = useMemo((): [
+    ReadonlyArray<R | GroupRow<R>>,
+    (row: R | GroupRow<R>) => row is GroupRow<R>
+  ] => {
     const allGroupRows = new Set<unknown>();
     if (!groupedRows) return [rawRows, isGroupRow];
 
