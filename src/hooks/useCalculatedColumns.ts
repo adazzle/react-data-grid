@@ -29,7 +29,12 @@ export function useCalculatedColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo((): {
+    columns: readonly CalculatedColumn<R, SR>[];
+    colSpanColumns: readonly CalculatedColumn<R, SR>[];
+    lastFrozenColumnIndex: number;
+    groupBy: readonly string[];
+  } => {
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
@@ -111,7 +116,12 @@ export function useCalculatedColumns<R, SR>({
     };
   }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
 
-  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo(() => {
+  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+    layoutCssVars: Readonly<Record<string, string>>;
+    totalColumnWidth: number;
+    totalFrozenColumnWidth: number;
+    columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
+  } => {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalColumnWidth = 0;
