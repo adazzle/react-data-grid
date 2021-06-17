@@ -64,12 +64,12 @@ function Cell<R, SR>({
   );
 
   function selectCellWrapper(openEditor?: boolean | null) {
-    selectCell(column, openEditor);
+    selectCell(row, column, openEditor);
   }
 
   function handleClick() {
     selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick(column);
+    onRowClick?.(row, column);
   }
 
   function handleContextMenu() {

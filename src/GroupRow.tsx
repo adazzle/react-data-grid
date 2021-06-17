@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import type { CalculatedColumn, Position, Omit } from './types';
+import type { CalculatedColumn, Omit } from './types';
 import { RowSelectionProvider } from './hooks';
 
 export interface GroupRowRendererProps<R, SR>
@@ -21,7 +21,7 @@ export interface GroupRowRendererProps<R, SR>
   selectedCellIdx: number | undefined;
   isExpanded: boolean;
   isRowSelected: boolean;
-  selectCell: (position: Position) => void;
+  selectGroup: (rowIdx: number) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
@@ -37,15 +37,15 @@ function GroupedRow<R, SR>({
   isExpanded,
   selectedCellIdx,
   isRowSelected,
-  selectCell,
+  selectGroup,
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
-  function selectGroup() {
-    selectCell({ rowIdx, idx: -1 });
+  function handleSelectGroup() {
+    selectGroup(rowIdx);
   }
 
   return (
@@ -62,7 +62,7 @@ function GroupedRow<R, SR>({
             [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
           }
         )}
-        onClick={selectGroup}
+        onClick={handleSelectGroup}
         style={
           {
             top,

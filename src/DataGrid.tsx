@@ -50,7 +50,7 @@ import type {
   CellNavigationMode,
   SortColumn,
   RowHeightArgs,
-  SelectCellFn
+  RowClickFn
 } from './types';
 
 interface SelectCellState extends Position {
@@ -82,7 +82,7 @@ export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
-  selectCell: SelectCellFn;
+  selectCell: (position: Position, enableEditor?: boolean | null) => void;
 }
 
 type SharedDivProps = Pick<
@@ -145,7 +145,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: ((rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  onRowClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
   /** Called when the grid is scrolled */
   onScroll?: ((event: React.UIEvent<HTMLDivElement>) => void) | null;
   /** Called when a column is resized */
@@ -255,15 +255,6 @@ function DataGrid<R, SR, K extends Key>(
   const isCellFocusable = useRef(false);
 
   /**
-   * The identity of the wrapper function is stable so it won't break memoization
-   */
-  const selectRowLatest = useLatestFunc(selectRow);
-  const selectAllRowsLatest = useLatestFunc(selectAllRows);
-  const selectCellLatest = useLatestFunc(selectCell);
-  const toggleGroupLatest = useLatestFunc(toggleGroup);
-  const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-
-  /**
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
@@ -344,6 +335,23 @@ function DataGrid<R, SR, K extends Key>(
 
   // Cell drag is not supported on a treegrid
   const enableCellDragAndDrop = hasGroups ? false : onFill != null;
+
+  /**
+   * The identity of the wrapper function is stable so it won't break memoization
+   */
+  const selectRowLatest = useLatestFunc(selectRow);
+  const selectAllRowsLatest = useLatestFunc(selectAllRows);
+  const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
+  const selectCellLatest = useLatestFunc(
+    (row: R, column: CalculatedColumn<R, SR>, enableEditor: boolean | undefined | null) => {
+      const rowIdx = rows.indexOf(row);
+      selectCell({ rowIdx, idx: column.idx }, enableEditor);
+    }
+  );
+  const selectGroupLatest = useLatestFunc((rowIdx: number) => {
+    selectCell({ rowIdx, idx: -1 });
+  });
+  const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   /**
    * effects
@@ -990,7 +998,7 @@ function DataGrid<R, SR, K extends Key>(
             isRowSelected={isGroupRowSelected}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
-            selectCell={selectCellLatest}
+            selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
           />
         );

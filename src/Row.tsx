@@ -32,19 +32,9 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
-  const handleRowClick = useLatestFunc((column: CalculatedColumn<R, SR>) => {
-    onRowClick?.(rowIdx, row, column);
-  });
-
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
   });
-
-  const handleSelectCell = useLatestFunc(
-    (column: CalculatedColumn<R, SR>, enableEditor: boolean | undefined | null) => {
-      selectCell({ idx: column.idx, rowIdx }, enableEditor);
-    }
-  );
 
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
@@ -98,9 +88,9 @@ function Row<R, SR>(
         }
         onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
         onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
-        onRowClick={handleRowClick}
+        onRowClick={onRowClick}
         onRowChange={handleRowChange}
-        selectCell={handleSelectCell}
+        selectCell={selectCell}
       />
     );
   }
