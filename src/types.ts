@@ -84,6 +84,7 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   groupKey: unknown;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: GroupRow<TRow>;
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;

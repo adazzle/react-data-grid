@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { getCellStyle, getCellClassname } from './utils';
-import type { CalculatedColumn } from './types';
+import type { CalculatedColumn, GroupRow } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<
@@ -11,6 +11,7 @@ type SharedGroupRowRendererProps<R, SR> = Pick<
 
 interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
   column: CalculatedColumn<R, SR>;
+  row: GroupRow<R>;
   isCellSelected: boolean;
   groupColumnIndex: number;
 }
@@ -22,6 +23,7 @@ function GroupCell<R, SR>({
   isExpanded,
   isCellSelected,
   column,
+  row,
   groupColumnIndex,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
@@ -49,6 +51,7 @@ function GroupCell<R, SR>({
           groupKey={groupKey}
           childRows={childRows}
           column={column}
+          row={row}
           isExpanded={isExpanded}
           isCellSelected={isCellSelected}
           toggleGroup={toggleGroup}

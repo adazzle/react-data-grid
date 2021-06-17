@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import type { CalculatedColumn, Omit } from './types';
+import type { CalculatedColumn, GroupRow, Omit } from './types';
 import { RowSelectionProvider } from './hooks';
 
 export interface GroupRowRendererProps<R, SR>
@@ -15,6 +15,7 @@ export interface GroupRowRendererProps<R, SR>
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
+  row: GroupRow<R>;
   top: number;
   height: number;
   level: number;
@@ -31,6 +32,7 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
+  row,
   top,
   height,
   level,
@@ -80,6 +82,7 @@ function GroupedRow<R, SR>({
             isExpanded={isExpanded}
             isCellSelected={selectedCellIdx === column.idx}
             column={column}
+            row={row}
             groupColumnIndex={idx}
             toggleGroup={toggleGroup}
           />

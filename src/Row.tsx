@@ -7,7 +7,7 @@ import EditCell from './EditCell';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan } from './utils';
 import { groupRowSelectedClassname, rowClassname } from './style';
-import type { CalculatedColumn, RowRendererProps, SelectedCellProps } from './types';
+import type { RowRendererProps, SelectedCellProps } from './types';
 
 function Row<R, SR>(
   {

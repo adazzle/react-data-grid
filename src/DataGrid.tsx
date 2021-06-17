@@ -49,8 +49,7 @@ import type {
   PasteEvent,
   CellNavigationMode,
   SortColumn,
-  RowHeightArgs,
-  RowClickFn
+  RowHeightArgs
 } from './types';
 
 interface SelectCellState extends Position {
@@ -990,6 +989,7 @@ function DataGrid<R, SR, K extends Key>(
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
+            row={row}
             top={top}
             height={getRowHeight(rowIdx)}
             level={row.level}
