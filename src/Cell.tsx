@@ -49,6 +49,7 @@ function Cell<R, SR>({
   row,
   dragHandleProps,
   onRowClick,
+  onRowDoubleClick,
   onRowChange,
   selectCell,
   ...props
@@ -78,6 +79,7 @@ function Cell<R, SR>({
 
   function handleDoubleClick() {
     selectCellWrapper(true);
+    onRowDoubleClick?.(row, column);
   }
 
   return (

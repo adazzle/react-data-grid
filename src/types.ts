@@ -136,7 +136,11 @@ type SelectCellFn<R, SR> = (
 ) => void;
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  extends Pick<
+      RowRendererProps<TRow, TSummaryRow>,
+      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
+    >,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -147,8 +151,6 @@ export interface CellRendererProps<TRow, TSummaryRow>
     | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
     | undefined;
   onRowChange: (newRow: TRow) => void;
-  onRowClick: ((row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void) | undefined | null;
-  selectCell: SelectCellFn<TRow, TSummaryRow>;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -165,6 +167,10 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   selectedCellProps: EditCellProps<TRow> | SelectedCellProps | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick: ((row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void) | undefined | null;
+  onRowDoubleClick:
+    | ((row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void)
+    | undefined
+    | null;
   rowClass: ((row: TRow) => string | undefined | null) | undefined | null;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: SelectCellFn<TRow, TSummaryRow>;
