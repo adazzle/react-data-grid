@@ -21,6 +21,7 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellProps,
     onRowClick,
+    onRowDoubleClick,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -87,6 +88,7 @@ function Row<R, SR>(
         onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
         onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
         onRowClick={onRowClick}
+        onRowDoubleClick={onRowDoubleClick}
         onRowChange={onRowChange}
         selectCell={selectCell}
       />

@@ -145,7 +145,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: ((rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  onRowClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  /** Function called whenever a row is double clicked */
+  onRowDoubleClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
   /** Called when the grid is scrolled */
   onScroll?: ((event: React.UIEvent<HTMLDivElement>) => void) | null;
   /** Called when a column is resized */
@@ -201,6 +203,7 @@ function DataGrid<R, SR, K extends Key>(
     emptyRowsRenderer: EmptyRowsRenderer,
     // Event props
     onRowClick,
+    onRowDoubleClick,
     onScroll,
     onColumnResize,
     onSelectedCellChange,
@@ -1017,6 +1020,7 @@ function DataGrid<R, SR, K extends Key>(
           viewportColumns={viewportColumns}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
           rowClass={rowClass}
           top={top}
           height={getRowHeight(rowIdx)}
