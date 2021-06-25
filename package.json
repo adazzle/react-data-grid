@@ -56,7 +56,7 @@
     "@linaria/babel-preset": "^3.0.0-beta.4",
     "@linaria/core": "^3.0.0-beta.4",
     "@linaria/rollup": "^3.0.0-beta.6",
-    "@linaria/shaker": "^3.0.0-beta.5",
+    "@linaria/shaker": "^3.0.0-beta.7",
     "@linaria/webpack-loader": "^3.0.0-beta.6",
     "@microsoft/api-extractor": "^7.16.1",
     "@popperjs/core": "^2.9.2",
