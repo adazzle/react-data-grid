@@ -72,7 +72,7 @@
     "@types/lodash": "^4.14.170",
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.8",
-    "@typescript-eslint/eslint-plugin": "^4.26.1",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-optimize-clsx": "^2.6.2",
