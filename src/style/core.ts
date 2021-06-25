@@ -38,6 +38,8 @@ const root = css`
   --selection-color: #66afe9;
   --font-size: 14px;
 
+  color-scheme: var(--color-scheme, light dark);
+
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
   contain: strict;
@@ -65,7 +67,12 @@ const root = css`
   }
 
   &.rdg-dark {
+    --color-scheme: dark;
     ${darkTheme}
+  }
+
+  &.rdg-light {
+    --color-scheme: light;
   }
 
   @media (prefers-color-scheme: dark) {
