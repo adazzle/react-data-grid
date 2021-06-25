@@ -78,7 +78,7 @@
     "babel-plugin-optimize-clsx": "^2.6.1",
     "core-js": "^3.14.0",
     "css-loader": "^5.2.6",
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-jest-dom": "^3.9.0",
