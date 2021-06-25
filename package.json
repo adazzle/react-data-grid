@@ -91,7 +91,7 @@
     "jspdf": "^2.3.1",
     "jspdf-autotable": "^3.5.14",
     "lodash": "^4.17.21",
-    "mini-css-extract-plugin": "^1.6.0",
+    "mini-css-extract-plugin": "^1.6.1",
     "postcss": "^8.3.5",
     "prettier": "2.3.1",
     "react": "^17.0.2",
