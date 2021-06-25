@@ -87,7 +87,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-sonarjs": "^0.8.0-125",
     "faker": "^5.5.3",
-    "jest": "^27.0.4",
+    "jest": "^27.0.5",
     "jspdf": "^2.3.1",
     "jspdf-autotable": "^3.5.14",
     "lodash": "^4.17.21",
