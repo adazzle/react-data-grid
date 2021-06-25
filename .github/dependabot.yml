@@ -6,6 +6,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    versioning-strategy: increase
 
   - package-ecosystem: 'github-actions'
     directory: '/'
