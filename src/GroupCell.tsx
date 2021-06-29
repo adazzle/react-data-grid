@@ -38,6 +38,7 @@ function GroupCell<R, SR>({
     <div
       role="gridcell"
       aria-colindex={column.idx + 1}
+      aria-selected={isCellSelected}
       key={column.key}
       className={getCellClassname(column)}
       style={{
