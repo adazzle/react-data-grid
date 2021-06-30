@@ -44,81 +44,66 @@ export function getNextSelectedCellPosition<R, SR>({
   columns,
   colSpanColumns,
   rows,
-  currentPosition,
+  currentPosition: { idx: currentIdx },
   nextPosition,
   lastFrozenColumnIndex,
   isCellWithinBounds,
   isGroupRow
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   const rowsCount = rows.length;
+  let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
-  const setColSpan = (position: Position, moveRight: boolean): Position => {
-    const row = rows[position.rowIdx];
+  const setColSpan = (posIdx: number, moveRight: boolean) => {
+    const row = rows[nextRowIdx];
     if (!isGroupRow(row)) {
       // If a cell within the colspan range is selected then move to the
       // previous or the next cell depending on the navigation direction
-      const posIdx = position.idx;
       for (const column of colSpanColumns) {
         const colIdx = column.idx;
         if (colIdx > posIdx) break;
         const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
         if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
-          return {
-            rowIdx: position.rowIdx,
-            idx: colIdx + (moveRight ? colSpan : 0)
-          };
+          return colIdx + (moveRight ? colSpan : 0);
         }
       }
     }
-    return position;
+    return posIdx;
   };
 
-  let position = nextPosition;
-  if (isCellWithinBounds(position)) {
-    position = setColSpan(position, position.idx - currentPosition.idx > 0);
+  if (isCellWithinBounds(nextPosition)) {
+    nextIdx = setColSpan(nextIdx, nextIdx - currentIdx > 0);
   }
 
   if (cellNavigationMode !== 'NONE') {
-    const { idx, rowIdx } = position;
     const columnsCount = columns.length;
-    const isAfterLastColumn = idx === columnsCount;
-    const isBeforeFirstColumn = idx === -1;
+    const isAfterLastColumn = nextIdx === columnsCount;
+    const isBeforeFirstColumn = nextIdx === -1;
 
     if (isAfterLastColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isLastRow = rowIdx === rowsCount - 1;
+        const isLastRow = nextRowIdx === rowsCount - 1;
         if (!isLastRow) {
-          position = {
-            idx: 0,
-            rowIdx: rowIdx + 1
-          };
+          nextIdx = 0;
+          nextRowIdx += 1;
         }
       } else {
-        position = {
-          rowIdx,
-          idx: 0
-        };
+        nextIdx = 0;
       }
     } else if (isBeforeFirstColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isFirstRow = rowIdx === 0;
+        const isFirstRow = nextRowIdx === 0;
         if (!isFirstRow) {
-          position = {
-            rowIdx: rowIdx - 1,
-            idx: columnsCount - 1
-          };
+          nextRowIdx -= 1;
+          nextIdx = columnsCount - 1;
         }
       } else {
-        position = {
-          rowIdx,
-          idx: columnsCount - 1
-        };
+        nextIdx = columnsCount - 1;
       }
-      position = setColSpan(position, false);
+      nextIdx = setColSpan(nextIdx, false);
     }
   }
 
-  return position;
+  return { idx: nextIdx, rowIdx: nextRowIdx };
 }
 
 interface CanExitGridOpts<R, SR> {
