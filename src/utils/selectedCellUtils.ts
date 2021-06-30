@@ -63,15 +63,15 @@ export function getNextSelectedCellPosition<R, SR>({
         if (colIdx > posIdx) break;
         const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
         if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
-          return colIdx + (moveRight ? colSpan : 0);
+          nextIdx = colIdx + (moveRight ? colSpan : 0);
+          break;
         }
       }
     }
-    return posIdx;
   };
 
   if (isCellWithinBounds(nextPosition)) {
-    nextIdx = setColSpan(nextIdx, nextIdx - currentIdx > 0);
+    setColSpan(nextIdx, nextIdx - currentIdx > 0);
   }
 
   if (cellNavigationMode !== 'NONE') {
@@ -99,7 +99,7 @@ export function getNextSelectedCellPosition<R, SR>({
       } else {
         nextIdx = columnsCount - 1;
       }
-      nextIdx = setColSpan(nextIdx, false);
+      setColSpan(nextIdx, false);
     }
   }
 
