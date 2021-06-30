@@ -6,7 +6,7 @@ type GroupByDictionary<TRow> = Record<
   string,
   {
     childRows: readonly TRow[];
-    childGroups: readonly TRow[] | GroupByDictionary<TRow>;
+    childGroups: readonly TRow[] | Readonly<GroupByDictionary<TRow>>;
     startRowIndex: number;
   }
 >;
