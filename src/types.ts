@@ -170,7 +170,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
 }
 
 export interface RowsChangeData<R, SR = unknown> {
-  indexes: readonly number[];
+  indexes: number[];
   column: CalculatedColumn<R, SR>;
 }
 
