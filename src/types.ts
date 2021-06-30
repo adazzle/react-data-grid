@@ -65,8 +65,8 @@ export interface ColumnMetric {
 }
 
 export interface Position {
-  idx: number;
-  rowIdx: number;
+  readonly idx: number;
+  readonly rowIdx: number;
 }
 
 export interface FormatterProps<TRow, TSummaryRow = unknown> {
@@ -74,7 +74,7 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
-  onRowChange: (row: Readonly<TRow>) => void;
+  onRowChange: (row: TRow) => void;
 }
 
 export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
@@ -93,15 +93,15 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
 }
 
 interface SharedEditorProps<TRow> {
-  row: Readonly<TRow>;
+  row: TRow;
   editorPortalTarget: Element;
-  onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
+  onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }
 
 export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
-  column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
+  column: CalculatedColumn<TRow, TSummaryRow>;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
@@ -175,7 +175,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
 }
 
 export interface RowsChangeData<R, SR = unknown> {
-  indexes: number[];
+  indexes: readonly number[];
   column: CalculatedColumn<R, SR>;
 }
 
@@ -208,20 +208,20 @@ export type GroupByDictionary<TRow> = Record<
 >;
 
 export interface GroupRow<TRow> {
-  childRows: readonly TRow[];
-  id: string;
-  parentId: unknown;
-  groupKey: unknown;
-  isExpanded: boolean;
-  level: number;
-  posInSet: number;
-  setSize: number;
-  startRowIndex: number;
+  readonly childRows: readonly TRow[];
+  readonly id: string;
+  readonly parentId: unknown;
+  readonly groupKey: unknown;
+  readonly isExpanded: boolean;
+  readonly level: number;
+  readonly posInSet: number;
+  readonly setSize: number;
+  readonly startRowIndex: number;
 }
 
 export interface SortColumn {
-  columnKey: string;
-  direction: SortDirection;
+  readonly columnKey: string;
+  readonly direction: SortDirection;
 }
 
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';

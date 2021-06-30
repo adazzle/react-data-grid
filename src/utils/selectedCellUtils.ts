@@ -32,7 +32,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  currentPosition: Readonly<Position>;
+  currentPosition: Position;
   nextPosition: Position;
   lastFrozenColumnIndex: number;
   isCellWithinBounds: (position: Position) => boolean;
