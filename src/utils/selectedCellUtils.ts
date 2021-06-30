@@ -51,9 +51,8 @@ export function getNextSelectedCellPosition<R, SR>({
   isGroupRow
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   const rowsCount = rows.length;
-  let position = nextPosition;
 
-  const setColSpan = (moveRight: boolean) => {
+  const setColSpan = (position: Position, moveRight: boolean): Position => {
     const row = rows[position.rowIdx];
     if (!isGroupRow(row)) {
       // If a cell within the colspan range is selected then move to the
@@ -64,22 +63,23 @@ export function getNextSelectedCellPosition<R, SR>({
         if (colIdx > posIdx) break;
         const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
         if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
-          position = {
+          return {
             ...position,
             idx: colIdx + (moveRight ? colSpan : 0)
           };
-          break;
         }
       }
     }
+    return position;
   };
 
+  let position = nextPosition;
   if (isCellWithinBounds(position)) {
-    setColSpan(position.idx - currentPosition.idx > 0);
+    position = setColSpan(position, position.idx - currentPosition.idx > 0);
   }
 
   if (cellNavigationMode !== 'NONE') {
-    const { idx, rowIdx } = nextPosition;
+    const { idx, rowIdx } = position;
     const columnsCount = columns.length;
     const isAfterLastColumn = idx === columnsCount;
     const isBeforeFirstColumn = idx === -1;
@@ -99,7 +99,6 @@ export function getNextSelectedCellPosition<R, SR>({
           idx: 0
         };
       }
-      setColSpan(true);
     } else if (isBeforeFirstColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
         const isFirstRow = rowIdx === 0;
@@ -115,8 +114,8 @@ export function getNextSelectedCellPosition<R, SR>({
           idx: columnsCount - 1
         };
       }
+      position = setColSpan(position, false);
     }
-    setColSpan(false);
   }
 
   return position;
