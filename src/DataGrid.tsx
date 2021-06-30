@@ -54,14 +54,14 @@ import type {
 } from './types';
 
 interface SelectCellState extends Position {
-  mode: 'SELECT';
+  readonly mode: 'SELECT';
 }
 
 interface EditCellState<R> extends Position {
-  mode: 'EDIT';
-  row: R;
-  originalRow: R;
-  key: string | null;
+  readonly mode: 'EDIT';
+  readonly row: R;
+  readonly originalRow: R;
+  readonly key: string | null;
 }
 
 type DefaultColumnOptions<R, SR> = Pick<

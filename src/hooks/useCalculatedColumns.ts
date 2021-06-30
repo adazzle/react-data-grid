@@ -1,10 +1,15 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, Column, ColumnMetric } from '../types';
+import type { CalculatedColumn, Column } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import { floor, max, min } from '../utils';
+
+interface ColumnMetric {
+  width: number;
+  left: number;
+}
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];

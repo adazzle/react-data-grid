@@ -59,11 +59,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
-export interface ColumnMetric {
-  width: number;
-  left: number;
-}
-
 export interface Position {
   readonly idx: number;
   readonly rowIdx: number;
@@ -197,15 +192,6 @@ export interface PasteEvent<TRow> {
   targetColumnKey: string;
   targetRow: TRow;
 }
-
-export type GroupByDictionary<TRow> = Record<
-  string,
-  {
-    childRows: readonly TRow[];
-    childGroups: readonly TRow[] | GroupByDictionary<TRow>;
-    startRowIndex: number;
-  }
->;
 
 export interface GroupRow<TRow> {
   readonly childRows: readonly TRow[];
