@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 import { floor, max, min } from '../utils';
 import type { GroupRow, RowHeightArgs } from '../types';
 
-type GroupByDictionary<TRow> = Record<
+type GroupByDictionary<TRow> = Readonly<Record<
   string,
   {
-    childRows: readonly TRow[];
-    childGroups: readonly TRow[] | Readonly<GroupByDictionary<TRow>>;
-    startRowIndex: number;
+    readonly childRows: readonly TRow[];
+    readonly childGroups: readonly TRow[] | GroupByDictionary<TRow>;
+    readonly startRowIndex: number;
   }
->;
+>>;
 
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
