@@ -55,7 +55,7 @@ export function getNextSelectedCellPosition<R, SR>({
 
   const setColSpan = (posIdx: number, moveRight: boolean) => {
     const row = rows[nextRowIdx];
-    if (!isGroupRow(row)) {
+    if (isGroupRow(row)) return;
       // If a cell within the colspan range is selected then move to the
       // previous or the next cell depending on the navigation direction
       for (const column of colSpanColumns) {
