@@ -54,14 +54,14 @@ import type {
 } from './types';
 
 interface SelectCellState extends Position {
-  mode: 'SELECT';
+  readonly mode: 'SELECT';
 }
 
 interface EditCellState<R> extends Position {
-  mode: 'EDIT';
-  row: R;
-  originalRow: R;
-  key: string | null;
+  readonly mode: 'EDIT';
+  readonly row: R;
+  readonly originalRow: R;
+  readonly key: string | null;
 }
 
 type DefaultColumnOptions<R, SR> = Pick<
@@ -125,7 +125,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
   /**Used for multi column sorting */
-  sortColumns?: readonly Readonly<SortColumn>[] | null;
+  sortColumns?: readonly SortColumn[] | null;
   onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
   defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
   groupBy?: readonly string[] | null;
@@ -719,7 +719,7 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
+  function handleEditorRowChange(row: R, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
       updateRow(getRawRowIdx(selectedPosition.rowIdx), row);

@@ -32,7 +32,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  currentPosition: Readonly<Position>;
+  currentPosition: Position;
   nextPosition: Position;
   lastFrozenColumnIndex: number;
   isCellWithinBounds: (position: Position) => boolean;
@@ -44,79 +44,65 @@ export function getNextSelectedCellPosition<R, SR>({
   columns,
   colSpanColumns,
   rows,
-  currentPosition,
+  currentPosition: { idx: currentIdx },
   nextPosition,
   lastFrozenColumnIndex,
   isCellWithinBounds,
   isGroupRow
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   const rowsCount = rows.length;
-  let position = nextPosition;
+  let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
   const setColSpan = (moveRight: boolean) => {
-    const row = rows[position.rowIdx];
-    if (!isGroupRow(row)) {
-      // If a cell within the colspan range is selected then move to the
-      // previous or the next cell depending on the navigation direction
-      const posIdx = position.idx;
-      for (const column of colSpanColumns) {
-        const colIdx = column.idx;
-        if (colIdx > posIdx) break;
-        const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
-        if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
-          position.idx = colIdx + (moveRight ? colSpan : 0);
-          break;
-        }
+    const row = rows[nextRowIdx];
+    if (isGroupRow(row)) return;
+    // If a cell within the colspan range is selected then move to the
+    // previous or the next cell depending on the navigation direction
+    for (const column of colSpanColumns) {
+      const colIdx = column.idx;
+      if (colIdx > nextIdx) break;
+      const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+      if (colSpan && nextIdx > colIdx && nextIdx < colSpan + colIdx) {
+        nextIdx = colIdx + (moveRight ? colSpan : 0);
+        break;
       }
     }
   };
 
-  if (isCellWithinBounds(position)) {
-    setColSpan(position.idx - currentPosition.idx > 0);
+  if (isCellWithinBounds(nextPosition)) {
+    setColSpan(nextIdx - currentIdx > 0);
   }
 
   if (cellNavigationMode !== 'NONE') {
-    const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
-    const isAfterLastColumn = idx === columnsCount;
-    const isBeforeFirstColumn = idx === -1;
+    const isAfterLastColumn = nextIdx === columnsCount;
+    const isBeforeFirstColumn = nextIdx === -1;
 
     if (isAfterLastColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isLastRow = rowIdx === rowsCount - 1;
+        const isLastRow = nextRowIdx === rowsCount - 1;
         if (!isLastRow) {
-          position = {
-            idx: 0,
-            rowIdx: rowIdx + 1
-          };
+          nextIdx = 0;
+          nextRowIdx += 1;
         }
       } else {
-        position = {
-          rowIdx,
-          idx: 0
-        };
+        nextIdx = 0;
       }
-      setColSpan(true);
     } else if (isBeforeFirstColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isFirstRow = rowIdx === 0;
+        const isFirstRow = nextRowIdx === 0;
         if (!isFirstRow) {
-          position = {
-            rowIdx: rowIdx - 1,
-            idx: columnsCount - 1
-          };
+          nextRowIdx -= 1;
+          nextIdx = columnsCount - 1;
         }
       } else {
-        position = {
-          rowIdx,
-          idx: columnsCount - 1
-        };
+        nextIdx = columnsCount - 1;
       }
+      setColSpan(false);
     }
-    setColSpan(false);
   }
 
-  return position;
+  return { idx: nextIdx, rowIdx: nextRowIdx };
 }
 
 interface CanExitGridOpts<R, SR> {

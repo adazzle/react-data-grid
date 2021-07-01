@@ -4,69 +4,64 @@ export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface Column<TRow, TSummaryRow = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
-  name: string | ReactElement;
+  readonly name: string | ReactElement;
   /** A unique key to distinguish each column */
-  key: string;
+  readonly key: string;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
-  width?: number | string | null;
+  readonly width?: number | string | null;
   /** Minimum column width in px. */
-  minWidth?: number | null;
+  readonly minWidth?: number | null;
   /** Maximum column width in px. */
-  maxWidth?: number | null;
-  cellClass?: string | ((row: TRow) => string | undefined | null) | null;
-  headerCellClass?: string | null;
-  summaryCellClass?: string | ((row: TSummaryRow) => string) | null;
+  readonly maxWidth?: number | null;
+  readonly cellClass?: string | ((row: TRow) => string | undefined | null) | null;
+  readonly headerCellClass?: string | null;
+  readonly summaryCellClass?: string | ((row: TSummaryRow) => string) | null;
   /** Formatter to be used to render the cell content */
-  formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>> | null;
+  readonly formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>> | null;
   /** Formatter to be used to render the summary cell content */
-  summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>> | null;
+  readonly summaryFormatter?: React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>> | null;
   /** Formatter to be used to render the group cell content */
-  groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>> | null;
+  readonly groupFormatter?: React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>> | null;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
-  editable?: boolean | ((row: TRow) => boolean) | null;
-  colSpan?: ((args: ColSpanArgs<TRow, TSummaryRow>) => number | undefined | null) | null;
+  readonly editable?: boolean | ((row: TRow) => boolean) | null;
+  readonly colSpan?: ((args: ColSpanArgs<TRow, TSummaryRow>) => number | undefined | null) | null;
   /** Determines whether column is frozen or not */
-  frozen?: boolean | null;
+  readonly frozen?: boolean | null;
   /** Enable resizing of a column */
-  resizable?: boolean | null;
+  readonly resizable?: boolean | null;
   /** Enable sorting of a column */
-  sortable?: boolean | null;
+  readonly sortable?: boolean | null;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
-  sortDescendingFirst?: boolean | null;
+  readonly sortDescendingFirst?: boolean | null;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>> | null;
-  editorOptions?: {
+  readonly editor?: React.ComponentType<EditorProps<TRow, TSummaryRow>> | null;
+  readonly editorOptions?: {
     /** @default false */
-    createPortal?: boolean | null;
+    readonly createPortal?: boolean | null;
     /** @default false */
-    editOnClick?: boolean | null;
+    readonly editOnClick?: boolean | null;
     /** Prevent default to cancel editing */
-    onCellKeyDown?: ((event: React.KeyboardEvent<HTMLDivElement>) => void) | null;
+    readonly onCellKeyDown?: ((event: React.KeyboardEvent<HTMLDivElement>) => void) | null;
     /** Control the default cell navigation behavior while the editor is open */
-    onNavigation?: ((event: React.KeyboardEvent<HTMLDivElement>) => boolean) | null;
+    readonly onNavigation?: ((event: React.KeyboardEvent<HTMLDivElement>) => boolean) | null;
   } | null;
   /** Header renderer for each header cell */
-  headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>> | null;
+  readonly headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>> | null;
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
-  idx: number;
-  resizable: boolean;
-  sortable: boolean;
-  frozen: boolean;
-  isLastFrozenColumn: boolean;
-  rowGroup: boolean;
-  formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
-}
-
-export interface ColumnMetric {
-  width: number;
-  left: number;
+  readonly idx: number;
+  readonly resizable: boolean;
+  readonly sortable: boolean;
+  readonly frozen: boolean;
+  readonly isLastFrozenColumn: boolean;
+  readonly rowGroup: boolean;
+  readonly formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
 export interface Position {
-  idx: number;
-  rowIdx: number;
+  readonly idx: number;
+  readonly rowIdx: number;
 }
 
 export interface FormatterProps<TRow, TSummaryRow = unknown> {
@@ -74,7 +69,7 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
-  onRowChange: (row: Readonly<TRow>) => void;
+  onRowChange: (row: TRow) => void;
 }
 
 export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
@@ -93,15 +88,15 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
 }
 
 interface SharedEditorProps<TRow> {
-  row: Readonly<TRow>;
+  row: TRow;
   editorPortalTarget: Element;
-  onRowChange: (row: Readonly<TRow>, commitChanges?: boolean) => void;
+  onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }
 
 export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
   rowIdx: number;
-  column: Readonly<CalculatedColumn<TRow, TSummaryRow>>;
+  column: CalculatedColumn<TRow, TSummaryRow>;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
@@ -198,30 +193,21 @@ export interface PasteEvent<TRow> {
   targetRow: TRow;
 }
 
-export type GroupByDictionary<TRow> = Record<
-  string,
-  {
-    childRows: readonly TRow[];
-    childGroups: readonly TRow[] | GroupByDictionary<TRow>;
-    startRowIndex: number;
-  }
->;
-
 export interface GroupRow<TRow> {
-  childRows: readonly TRow[];
-  id: string;
-  parentId: unknown;
-  groupKey: unknown;
-  isExpanded: boolean;
-  level: number;
-  posInSet: number;
-  setSize: number;
-  startRowIndex: number;
+  readonly childRows: readonly TRow[];
+  readonly id: string;
+  readonly parentId: unknown;
+  readonly groupKey: unknown;
+  readonly isExpanded: boolean;
+  readonly level: number;
+  readonly posInSet: number;
+  readonly setSize: number;
+  readonly startRowIndex: number;
 }
 
 export interface SortColumn {
-  columnKey: string;
-  direction: SortDirection;
+  readonly columnKey: string;
+  readonly direction: SortDirection;
 }
 
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
