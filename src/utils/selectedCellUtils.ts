@@ -56,22 +56,21 @@ export function getNextSelectedCellPosition<R, SR>({
   const setColSpan = (moveRight: boolean) => {
     const row = rows[nextRowIdx];
     if (isGroupRow(row)) return;
-      // If a cell within the colspan range is selected then move to the
-      // previous or the next cell depending on the navigation direction
-      for (const column of colSpanColumns) {
-        const colIdx = column.idx;
-        if (colIdx > posIdx) break;
-        const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
-        if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
-          nextIdx = colIdx + (moveRight ? colSpan : 0);
-          break;
-        }
+    // If a cell within the colspan range is selected then move to the
+    // previous or the next cell depending on the navigation direction
+    for (const column of colSpanColumns) {
+      const colIdx = column.idx;
+      if (colIdx > nextIdx) break;
+      const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+      if (colSpan && nextIdx > colIdx && nextIdx < colSpan + colIdx) {
+        nextIdx = colIdx + (moveRight ? colSpan : 0);
+        break;
       }
     }
   };
 
   if (isCellWithinBounds(nextPosition)) {
-    setColSpan(nextIdx, nextIdx - currentIdx > 0);
+    setColSpan(nextIdx - currentIdx > 0);
   }
 
   if (cellNavigationMode !== 'NONE') {
@@ -99,7 +98,7 @@ export function getNextSelectedCellPosition<R, SR>({
       } else {
         nextIdx = columnsCount - 1;
       }
-      setColSpan(nextIdx, false);
+      setColSpan(false);
     }
   }
 
