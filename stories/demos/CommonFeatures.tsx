@@ -303,7 +303,7 @@ function getComparator(sortColumn: string): Comparator {
 
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [sortColumns, setSortColumns] = useState<readonly Readonly<SortColumn>[]>([]);
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const countries = useMemo(() => {
