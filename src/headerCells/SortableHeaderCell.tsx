@@ -43,7 +43,7 @@ export default function SortableHeaderCell<R, SR>({
   children
 }: Props<R, SR>) {
   return (
-    <span className={headerSortCellClassname} onClick={(e) => onSort(e.ctrlKey)}>
+    <span className={headerSortCellClassname} onClick={(e) => onSort(e.ctrlKey || e.metaKey)}>
       <span className={headerSortNameClassname}>{children}</span>
       <span>
         {sortDirection !== undefined && (
