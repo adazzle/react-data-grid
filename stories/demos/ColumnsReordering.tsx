@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
-import DataGrid from '../../src';
+import DataGrid, { SelectColumn } from '../../src';
 import type { Column, HeaderRendererProps, SortColumn } from '../../src';
 
 interface Row {
@@ -14,6 +14,9 @@ interface Row {
   issueType: string;
 }
 
+function rowKeyGetter(row: Row) {
+  return row.id.toString();
+}
 function createRows(): Row[] {
   const rows = [];
   for (let i = 1; i < 500; i++) {
@@ -31,6 +34,7 @@ function createRows(): Row[] {
 
 function createColumns(): Column<Row>[] {
   return [
+    SelectColumn,
     {
       key: 'id',
       name: 'ID',
@@ -66,16 +70,13 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
   }, []);
 
   const draggableColumns = useMemo(() => {
-    function HeaderRenderer(props: HeaderRendererProps<Row>) {
-      return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
-    }
-
     function handleColumnsReorder(sourceKey: string, targetKey: string) {
       const sourceColumnIndex = columns.findIndex((c) => c.key === sourceKey);
       const targetColumnIndex = columns.findIndex((c) => c.key === targetKey);
@@ -91,8 +92,19 @@ export function ColumnsReordering() {
     }
 
     return columns.map((c) => {
-      if (c.key === 'id') return c;
-      return { ...c, headerRenderer: HeaderRenderer };
+      if (['select-row', 'id'].includes(c.key)) return c;
+      return {
+        ...c,
+        headerRenderer: (props: HeaderRendererProps<Row>) => {
+          return (
+            <DraggableHeaderRenderer
+              {...props}
+              headerRenderer={c.headerRenderer}
+              onColumnsReorder={handleColumnsReorder}
+            />
+          );
+        }
+      };
     });
   }, [columns]);
 
@@ -121,7 +133,10 @@ export function ColumnsReordering() {
       <DataGrid
         columns={draggableColumns}
         rows={sortedRows}
+        rowKeyGetter={rowKeyGetter}
         sortColumns={sortColumns}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
         onSortColumnsChange={onSortColumnsChange}
       />
     </DndProvider>

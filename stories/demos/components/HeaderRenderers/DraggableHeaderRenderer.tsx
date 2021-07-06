@@ -1,20 +1,19 @@
 import { useDrag, useDrop } from 'react-dnd';
+import { useRefComposer } from 'react-ref-composer';
+import React from 'react';
 
 import { SortableHeaderCell } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../useCombinedRefs';
 
-interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
+export interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
+  headerRenderer?: React.ComponentType<HeaderRendererProps<R>> | null;
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;
 }
 
-export function DraggableHeaderRenderer<R>({
-  onColumnsReorder,
-  column,
-  sortDirection,
-  onSort,
-  priority
-}: DraggableHeaderRendererProps<R>) {
+export function DraggableHeaderRenderer<R>(props: DraggableHeaderRendererProps<R>) {
+  const { headerRenderer, ...rest } = props;
+  const { onColumnsReorder, column, sortDirection, onSort, priority } = rest;
+
   const [{ isDragging }, drag] = useDrag({
     type: 'COLUMN_DRAG',
     item: { key: column.key },
@@ -34,9 +33,11 @@ export function DraggableHeaderRenderer<R>({
     })
   });
 
+  const composeRefs = useRefComposer();
+
   return (
     <div
-      ref={useCombinedRefs(drag, drop)}
+      ref={composeRefs(drag, drop)}
       style={{
         opacity: isDragging ? 0.5 : 1,
         backgroundColor: isOver ? '#ececec' : 'inherit',
@@ -44,7 +45,7 @@ export function DraggableHeaderRenderer<R>({
       }}
     >
       <SortableHeaderCell sortDirection={sortDirection} onSort={onSort} priority={priority}>
-        {column.name}
+        {headerRenderer ? React.createElement(headerRenderer, rest) : column.name}
       </SortableHeaderCell>
     </div>
   );
