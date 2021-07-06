@@ -1,5 +1,4 @@
 import { useRef, useState, useLayoutEffect } from 'react';
-import { flushSync } from 'react-dom';
 
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
@@ -28,7 +27,7 @@ export function useGridDimensions(): [
       setGridHeight(clientHeight);
     }
 
-    flushSync(saveDimensions);
+    saveDimensions();
     const resizeObserver = new ResizeObserver(saveDimensions);
     resizeObserver.observe(gridRef.current!);
 
