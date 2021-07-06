@@ -52,3 +52,13 @@ test('multi column sort', () => {
     { columnKey: 'direction', direction: 'ASC' }
   ]);
 });
+
+test('multi column sort with metakey', () => {
+  setup();
+  userEvent.click(getHeaderCells()[0].firstElementChild!);
+  userEvent.click(getHeaderCells()[1].firstElementChild!, { metaKey: true });
+  expect(JSON.parse(screen.getByTestId('sortColumnsValue')!.textContent!)).toStrictEqual([
+    { columnKey: 'columnKey', direction: 'ASC' },
+    { columnKey: 'direction', direction: 'ASC' }
+  ]);
+});
