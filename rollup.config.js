@@ -2,6 +2,7 @@ import { isAbsolute } from 'path';
 import linaria from '@linaria/rollup';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import cssnano from 'cssnano';
 import stylis from 'stylis';
 import pkg from './package.json';
 
@@ -45,9 +46,9 @@ export default {
 
         return null;
       },
-      intro() {
-        const css = JSON.stringify(cssList.join(''));
-        return `const _css_ = ${css}`;
+      async intro() {
+        const result = await cssnano().process(cssList.join(''));
+        return `const _css_ = ${JSON.stringify(result.css)};`;
       }
     },
     babel({
