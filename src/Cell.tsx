@@ -50,6 +50,7 @@ function Cell<R, SR>({
   rowIdx,
   dragHandleProps,
   onRowClick,
+  onRowDoubleClick,
   onRowChange,
   selectCell,
   ...props
@@ -70,7 +71,7 @@ function Cell<R, SR>({
 
   function handleClick() {
     selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(rowIdx, row, column);
+    onRowClick?.(row, column);
   }
 
   function handleContextMenu() {
@@ -79,6 +80,7 @@ function Cell<R, SR>({
 
   function handleDoubleClick() {
     selectCellWrapper(true);
+    onRowDoubleClick?.(row, column);
   }
 
   function handleRowChange(newRow: R) {

@@ -32,6 +32,8 @@ css`
     }
 
     :root {
+      color-scheme: light dark;
+
       @media (prefers-color-scheme: light) {
         background-color: #fff;
         color: #111;

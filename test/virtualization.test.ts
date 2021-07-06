@@ -98,55 +98,55 @@ test('virtualization is enabled', () => {
   assertHeightFill(100 * rowHeight);
 
   assertHeaderCells(18, 0, 17);
-  assertRows(41, 0, 40);
+  assertRows(34, 0, 33);
   assertCells(0, 18, 0, 17);
 
   grid.scrollTop = 249;
-  assertRows(41, 0, 40);
+  assertRows(38, 3, 40);
 
   grid.scrollTop = 250;
-  assertRows(49, 0, 48);
+  assertRows(39, 3, 41);
 
   grid.scrollTop = 419;
-  assertRows(49, 0, 48);
+  assertRows(39, 7, 45);
 
   grid.scrollTop = 420;
-  assertRows(41, 8, 48);
+  assertRows(38, 8, 45);
 
   grid.scrollTop = 529;
-  assertRows(41, 8, 48);
+  assertRows(38, 11, 48);
 
   grid.scrollTop = 530;
-  assertRows(49, 8, 56);
+  assertRows(39, 11, 49);
 
   grid.scrollTop = 1000;
-  assertRows(41, 24, 64);
+  assertRows(39, 24, 62);
 
   // scroll height = header height + row height * row count
   // max top = scroll height - grid height
   grid.scrollTop = rowHeight + rowHeight * 100 - 1080;
-  assertRows(36, 64, 99);
+  assertRows(34, 66, 99);
 
   grid.scrollLeft = 90;
   assertHeaderCells(18, 0, 17);
-  assertCells(64, 18, 0, 17);
+  assertCells(66, 18, 0, 17);
 
   grid.scrollLeft = 91;
   assertHeaderCells(19, 0, 18);
-  assertCells(64, 19, 0, 18);
+  assertCells(66, 19, 0, 18);
 
   grid.scrollLeft = 209;
   assertHeaderCells(19, 0, 18);
-  assertCells(64, 19, 0, 18);
+  assertCells(66, 19, 0, 18);
 
   grid.scrollLeft = 210;
   assertHeaderCells(18, 1, 18);
-  assertCells(64, 18, 1, 18);
+  assertCells(66, 18, 1, 18);
 
   // max left = row width - grid width
   grid.scrollLeft = parseInt(grid.style.getPropertyValue('--row-width'), 10) - 1920;
   assertHeaderCells(17, 13, 29);
-  assertCells(64, 17, 13, 29);
+  assertCells(66, 17, 13, 29);
 });
 
 test('virtualization is enabled with 4 frozen columns', () => {
@@ -205,13 +205,13 @@ test('virtualization is enabled with 2 summary rows', () => {
 
   assertRowIndexes([
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-    26, 27, 28, 29, 30, 31, 32, 100, 101
+    26, 27, 28, 29, 30, 31, 100, 101
   ]);
 
   grid.scrollTop = 1000;
   assertRowIndexes([
     24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 100, 101
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 100, 101
   ]);
 });
 
@@ -221,7 +221,7 @@ test('zero columns', () => {
   assertHeightFill(100 * rowHeight);
   expect(queryHeaderCells()).toHaveLength(0);
   expect(queryCells()).toHaveLength(0);
-  expect(getRows()).toHaveLength(41);
+  expect(getRows()).toHaveLength(34);
 });
 
 test('zero rows', () => {

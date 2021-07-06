@@ -54,14 +54,14 @@ import type {
 } from './types';
 
 interface SelectCellState extends Position {
-  mode: 'SELECT';
+  readonly mode: 'SELECT';
 }
 
 interface EditCellState<R> extends Position {
-  mode: 'EDIT';
-  row: R;
-  originalRow: R;
-  key: string | null;
+  readonly mode: 'EDIT';
+  readonly row: R;
+  readonly originalRow: R;
+  readonly key: string | null;
 }
 
 type DefaultColumnOptions<R, SR> = Pick<
@@ -125,7 +125,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
   /**Used for multi column sorting */
-  sortColumns?: readonly Readonly<SortColumn>[] | null;
+  sortColumns?: readonly SortColumn[] | null;
   onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
   defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
   groupBy?: readonly string[] | null;
@@ -145,7 +145,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: ((rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  onRowClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  /** Function called whenever a row is double clicked */
+  onRowDoubleClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
   /** Called when the grid is scrolled */
   onScroll?: ((event: React.UIEvent<HTMLDivElement>) => void) | null;
   /** Called when a column is resized */
@@ -201,6 +203,7 @@ function DataGrid<R, SR, K extends Key>(
     emptyRowsRenderer: EmptyRowsRenderer,
     // Event props
     onRowClick,
+    onRowDoubleClick,
     onScroll,
     onColumnResize,
     onSelectedCellChange,
@@ -716,7 +719,7 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function handleEditorRowChange(row: Readonly<R>, commitChanges?: boolean) {
+  function handleEditorRowChange(row: R, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
       updateRow(getRawRowIdx(selectedPosition.rowIdx), row);
@@ -1017,6 +1020,7 @@ function DataGrid<R, SR, K extends Key>(
           viewportColumns={viewportColumns}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
           rowClass={rowClass}
           top={top}
           height={getRowHeight(rowIdx)}

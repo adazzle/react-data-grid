@@ -66,7 +66,7 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
-  const [sortColumns, setSortColumns] = useState<readonly Readonly<SortColumn>[]>([]);
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
   }, []);
