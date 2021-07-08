@@ -44,7 +44,8 @@
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
-    "clsx": "^1.1.1"
+    "clsx": "^1.1.1",
+    "react-ref-composer": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
