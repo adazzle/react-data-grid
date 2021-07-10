@@ -38,7 +38,6 @@ export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
-  rowIdx,
   onRowChange,
   onClose,
   onKeyDown,
@@ -83,7 +82,6 @@ export default function EditCell<R, SR>({
       <column.editor
         column={column}
         row={row}
-        rowIdx={rowIdx}
         onRowChange={onRowChange}
         onClose={onClose}
         editorPortalTarget={editorPortalTarget}

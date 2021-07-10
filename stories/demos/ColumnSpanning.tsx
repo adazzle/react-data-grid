@@ -16,7 +16,7 @@ const colSpanClassname = css`
 function CellFormatter(props: FormatterProps<Row>) {
   return (
     <>
-      {props.column.key}&times;{props.rowIdx}
+      {props.column.key}&times;{props.row}
     </>
   );
 }

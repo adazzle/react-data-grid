@@ -49,8 +49,7 @@ import type {
   PasteEvent,
   CellNavigationMode,
   SortColumn,
-  RowHeightArgs,
-  SelectCellFn
+  RowHeightArgs
 } from './types';
 
 interface SelectCellState extends Position {
@@ -82,7 +81,7 @@ export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
-  selectCell: SelectCellFn;
+  selectCell: (position: Position, enableEditor?: boolean | null) => void;
 }
 
 type SharedDivProps = Pick<
@@ -258,15 +257,6 @@ function DataGrid<R, SR, K extends Key>(
   const isCellFocusable = useRef(false);
 
   /**
-   * The identity of the wrapper function is stable so it won't break memoization
-   */
-  const selectRowLatest = useLatestFunc(selectRow);
-  const selectAllRowsLatest = useLatestFunc(selectAllRows);
-  const selectCellLatest = useLatestFunc(selectCell);
-  const toggleGroupLatest = useLatestFunc(toggleGroup);
-  const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-
-  /**
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
@@ -349,6 +339,23 @@ function DataGrid<R, SR, K extends Key>(
   const enableCellDragAndDrop = hasGroups ? false : onFill != null;
 
   /**
+   * The identity of the wrapper function is stable so it won't break memoization
+   */
+  const selectRowLatest = useLatestFunc(selectRow);
+  const selectAllRowsLatest = useLatestFunc(selectAllRows);
+  const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
+  const selectCellLatest = useLatestFunc(
+    (row: R, column: CalculatedColumn<R, SR>, enableEditor: boolean | undefined | null) => {
+      const rowIdx = rows.indexOf(row);
+      selectCell({ rowIdx, idx: column.idx }, enableEditor);
+    }
+  );
+  const selectGroupLatest = useLatestFunc((rowIdx: number) => {
+    selectCell({ rowIdx, idx: -1 });
+  });
+  const toggleGroupLatest = useLatestFunc(toggleGroup);
+
+  /**
    * effects
    */
   useLayoutEffect(() => {
@@ -409,12 +416,11 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * event handlers
    */
-  function selectRow({ rowIdx, checked, isShiftClick }: SelectRowEvent) {
+  function selectRow({ row, checked, isShiftClick }: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
 
     assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
-    const row = rows[rowIdx];
     if (isGroupRow(row)) {
       for (const childRow of row.childRows) {
         const rowKey = rowKeyGetter(childRow);
@@ -432,6 +438,7 @@ function DataGrid<R, SR, K extends Key>(
     if (checked) {
       newSelectedRows.add(rowKey);
       const previousRowIdx = lastSelectedRowIdx.current;
+      const rowIdx = rows.indexOf(row);
       lastSelectedRowIdx.current = rowIdx;
       if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
         const step = sign(rowIdx - previousRowIdx);
@@ -985,6 +992,7 @@ function DataGrid<R, SR, K extends Key>(
             viewportColumns={viewportColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
+            row={row}
             top={top}
             height={getRowHeight(rowIdx)}
             level={row.level}
@@ -993,7 +1001,7 @@ function DataGrid<R, SR, K extends Key>(
             isRowSelected={isGroupRowSelected}
             onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
-            selectCell={selectCellLatest}
+            selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
           />
         );
