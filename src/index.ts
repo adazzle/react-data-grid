@@ -26,3 +26,10 @@ export type {
   ColSpanArgs,
   RowHeightArgs
 } from './types';
+
+if (typeof document === 'object') {
+  const style = document.createElement('style');
+  // @ts-expect-error `_css_` is added to the bundle by rollup
+  style.textContent = _css_;
+  document.head.append(style);
+}

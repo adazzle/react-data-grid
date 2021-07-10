@@ -1,12 +1,13 @@
 import { isAbsolute } from 'path';
 import linaria from '@linaria/rollup';
-import postcss from 'rollup-plugin-postcss';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import cssnano from 'cssnano';
 import stylis from 'stylis';
 import pkg from './package.json';
 
 stylis.set({ prefix: false });
+const cssList = [];
 const extensions = ['.ts', '.tsx'];
 
 export default {
@@ -35,7 +36,21 @@ export default {
         return `${hash}${pkg.version.replaceAll('.', '')}`;
       }
     }),
-    postcss({ minimize: true }),
+    {
+      name: 'css',
+      transform(code, filename) {
+        if (filename.endsWith('.css')) {
+          cssList.push(code);
+          return '';
+        }
+
+        return null;
+      },
+      async intro() {
+        const result = await cssnano().process(cssList.join(''));
+        return `const _css_ = ${JSON.stringify(result.css)};`;
+      }
+    },
     babel({
       babelHelpers: 'runtime',
       extensions,
