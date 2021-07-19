@@ -6,7 +6,7 @@ import { groupRowSelectedClassname, rowClassname } from './style';
 import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
-import type { RowRendererProps, SelectedCellProps } from './types';
+import type { EditCellProps, RowRendererProps } from './types';
 import { RowSelectionProvider } from './hooks';
 
 function Row<R, SR>(
@@ -57,19 +57,16 @@ function Row<R, SR>(
       index += colSpan - 1;
     }
 
-    const isCellSelected = selectedCellProps?.idx === column.idx;
-    if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
-      cells.push(
-        <EditCell
-          key={column.key}
-          rowIdx={rowIdx}
-          column={column}
-          colSpan={colSpan}
-          onKeyDown={selectedCellProps.onKeyDown}
-          {...selectedCellProps.editorProps}
-        />
-      );
-      continue;
+    let isCellSelected = false;
+    let dragHandleProps;
+    let onFocus;
+    let onKeyDown;
+
+    if (selectedCellProps !== undefined) {
+      isCellSelected = selectedCellProps.idx === column.idx;
+      if (isCellSelected && selectedCellProps.mode === 'SELECT') {
+        ({ dragHandleProps, onFocus, onKeyDown } = selectedCellProps);
+      }
     }
 
     cells.push(
@@ -82,17 +79,28 @@ function Row<R, SR>(
         isCopied={copiedCellIdx === column.idx}
         isDraggedOver={draggedOverCellIdx === column.idx}
         isCellSelected={isCellSelected}
-        dragHandleProps={
-          isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined
-        }
-        onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
-        onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
+        dragHandleProps={dragHandleProps}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
         onRowClick={onRowClick}
         onRowDoubleClick={onRowDoubleClick}
         onRowChange={onRowChange}
         selectCell={selectCell}
       />
     );
+
+    if (isCellSelected && selectedCellProps!.mode === 'EDIT') {
+      cells.push(
+        <EditCell
+          key={column.key}
+          rowIdx={rowIdx}
+          column={column}
+          colSpan={colSpan}
+          onKeyDown={(selectedCellProps as EditCellProps<R>).onKeyDown}
+          {...(selectedCellProps as EditCellProps<R>).editorProps}
+        />
+      );
+    }
   }
 
   return (
