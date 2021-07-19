@@ -1,6 +1,15 @@
 import { useMemo } from 'react';
 import { floor, max, min } from '../utils';
-import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
+import type { GroupRow, RowHeightArgs } from '../types';
+
+type GroupByDictionary<TRow> = Record<
+  string,
+  {
+    readonly childRows: readonly TRow[];
+    readonly childGroups: readonly TRow[] | Readonly<GroupByDictionary<TRow>>;
+    readonly startRowIndex: number;
+  }
+>;
 
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
@@ -38,7 +47,7 @@ export function useViewportRows<R>({
       rows: readonly R[],
       [groupByKey, ...remainingGroupByKeys]: readonly string[],
       startRowIndex: number
-    ): [GroupByDictionary<R>, number] => {
+    ): [Readonly<GroupByDictionary<R>>, number] => {
       let groupRowsCount = 0;
       const groups: GroupByDictionary<R> = {};
       for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
@@ -57,7 +66,10 @@ export function useViewportRows<R>({
     return groupRows(rawRows, groupBy, 0);
   }, [groupBy, rowGrouper, rawRows]);
 
-  const [rows, isGroupRow] = useMemo(() => {
+  const [rows, isGroupRow] = useMemo((): [
+    ReadonlyArray<R | GroupRow<R>>,
+    (row: R | GroupRow<R>) => row is GroupRow<R>
+  ] => {
     const allGroupRows = new Set<unknown>();
     if (!groupedRows) return [rawRows, isGroupRow];
 

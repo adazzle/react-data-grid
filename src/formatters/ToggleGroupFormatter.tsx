@@ -46,7 +46,7 @@ export function ToggleGroupFormatter<R, SR>({
       onKeyDown={handleKeyDown}
     >
       {groupKey}
-      <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname}>
+      <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname} aria-hidden>
         <path d={d} />
       </svg>
     </span>

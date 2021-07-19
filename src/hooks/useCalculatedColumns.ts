@@ -1,10 +1,19 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, Column, ColumnMetric } from '../types';
+import type { CalculatedColumn, Column } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import { floor, max, min } from '../utils';
+
+type Mutable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
+
+interface ColumnMetric {
+  width: number;
+  left: number;
+}
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
@@ -29,7 +38,12 @@ export function useCalculatedColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo((): {
+    columns: readonly CalculatedColumn<R, SR>[];
+    colSpanColumns: readonly CalculatedColumn<R, SR>[];
+    lastFrozenColumnIndex: number;
+    groupBy: readonly string[];
+  } => {
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
@@ -39,7 +53,7 @@ export function useCalculatedColumns<R, SR>({
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const frozen = rowGroup || rawColumn.frozen || false;
 
-      const column: CalculatedColumn<R, SR> = {
+      const column: Mutable<CalculatedColumn<R, SR>> = {
         ...rawColumn,
         idx: 0,
         frozen,
@@ -111,7 +125,12 @@ export function useCalculatedColumns<R, SR>({
     };
   }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
 
-  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo(() => {
+  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+    layoutCssVars: Readonly<Record<string, string>>;
+    totalColumnWidth: number;
+    totalFrozenColumnWidth: number;
+    columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
+  } => {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalColumnWidth = 0;
