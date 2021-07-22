@@ -91,13 +91,7 @@ export default function EditCell<R, SR>({
       content = (
         <>
           {createPortal(content, editorPortalTarget)}
-          <column.formatter
-            column={column}
-            rowIdx={rowIdx}
-            row={row}
-            isCellSelected
-            onRowChange={onRowChange}
-          />
+          <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
         </>
       );
     }
