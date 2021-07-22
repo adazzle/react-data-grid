@@ -26,8 +26,6 @@ const cellEditing = css`
   padding: 0;
 `;
 
-const cellEditingClassname = 'rdg-editor-container';
-
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {
@@ -73,8 +71,8 @@ export default function EditCell<R, SR>({
   const { cellClass } = column;
   const className = getCellClassname(
     column,
-    cellEditingClassname,
-    column.editorOptions?.createPortal && cellEditing,
+    'rdg-editor-container',
+    !column.editorOptions?.createPortal && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
