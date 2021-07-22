@@ -69,26 +69,6 @@ function Row<R, SR>(
       }
     }
 
-    cells.push(
-      <Cell
-        key={column.key}
-        rowIdx={rowIdx}
-        column={column}
-        colSpan={colSpan}
-        row={row}
-        isCopied={copiedCellIdx === column.idx}
-        isDraggedOver={draggedOverCellIdx === column.idx}
-        isCellSelected={isCellSelected}
-        dragHandleProps={dragHandleProps}
-        onFocus={onFocus}
-        onKeyDown={onKeyDown}
-        onRowClick={onRowClick}
-        onRowDoubleClick={onRowDoubleClick}
-        onRowChange={onRowChange}
-        selectCell={selectCell}
-      />
-    );
-
     if (isCellSelected && selectedCellProps!.mode === 'EDIT') {
       cells.push(
         <EditCell
@@ -98,6 +78,26 @@ function Row<R, SR>(
           colSpan={colSpan}
           onKeyDown={(selectedCellProps as EditCellProps<R>).onKeyDown}
           {...(selectedCellProps as EditCellProps<R>).editorProps}
+        />
+      );
+    } else {
+      cells.push(
+        <Cell
+          key={column.key}
+          rowIdx={rowIdx}
+          column={column}
+          colSpan={colSpan}
+          row={row}
+          isCopied={copiedCellIdx === column.idx}
+          isDraggedOver={draggedOverCellIdx === column.idx}
+          isCellSelected={isCellSelected}
+          dragHandleProps={dragHandleProps}
+          onFocus={onFocus}
+          onKeyDown={onKeyDown}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
+          onRowChange={onRowChange}
+          selectCell={selectCell}
         />
       );
     }
