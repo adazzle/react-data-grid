@@ -52,6 +52,7 @@ function Row<R, SR>(
 
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
+    const { idx } = column;
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     if (colSpan !== undefined) {
       index += colSpan - 1;
@@ -63,7 +64,7 @@ function Row<R, SR>(
     let onKeyDown;
 
     if (selectedCellProps !== undefined) {
-      isCellSelected = selectedCellProps.idx === column.idx;
+      isCellSelected = selectedCellProps.idx === idx;
       if (isCellSelected && selectedCellProps.mode === 'SELECT') {
         ({ dragHandleProps, onFocus, onKeyDown } = selectedCellProps);
       }
@@ -88,8 +89,8 @@ function Row<R, SR>(
           column={column}
           colSpan={colSpan}
           row={row}
-          isCopied={copiedCellIdx === column.idx}
-          isDraggedOver={draggedOverCellIdx === column.idx}
+          isCopied={copiedCellIdx === idx}
+          isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandleProps={dragHandleProps}
           onFocus={onFocus}
