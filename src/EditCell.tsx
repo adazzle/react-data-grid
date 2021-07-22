@@ -26,8 +26,6 @@ const cellEditing = css`
   padding: 0;
 `;
 
-const cellEditingClassname = `rdg-editor-container ${cellEditing}`;
-
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {
@@ -73,7 +71,8 @@ export default function EditCell<R, SR>({
   const { cellClass } = column;
   const className = getCellClassname(
     column,
-    cellEditingClassname,
+    'rdg-editor-container',
+    !column.editorOptions?.createPortal && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
@@ -91,7 +90,18 @@ export default function EditCell<R, SR>({
     );
 
     if (column.editorOptions?.createPortal) {
-      content = createPortal(content, editorPortalTarget);
+      content = (
+        <>
+          {createPortal(content, editorPortalTarget)}
+          <column.formatter
+            column={column}
+            rowIdx={rowIdx}
+            row={row}
+            isCellSelected
+            onRowChange={onRowChange}
+          />
+        </>
+      );
     }
   }
 
@@ -99,6 +109,7 @@ export default function EditCell<R, SR>({
     <div
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
+      aria-colspan={colSpan}
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}

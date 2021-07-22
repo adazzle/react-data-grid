@@ -6,7 +6,7 @@ import { groupRowSelectedClassname, rowClassname } from './style';
 import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
-import type { RowRendererProps, SelectedCellProps } from './types';
+import type { EditCellProps, RowRendererProps } from './types';
 import { RowSelectionProvider } from './hooks';
 
 function Row<R, SR>(
@@ -52,47 +52,56 @@ function Row<R, SR>(
 
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
+    const { idx } = column;
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     if (colSpan !== undefined) {
       index += colSpan - 1;
     }
 
-    const isCellSelected = selectedCellProps?.idx === column.idx;
-    if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
+    let isCellSelected = false;
+    let dragHandleProps;
+    let onFocus;
+    let onKeyDown;
+
+    if (selectedCellProps !== undefined) {
+      isCellSelected = selectedCellProps.idx === idx;
+      if (isCellSelected && selectedCellProps.mode === 'SELECT') {
+        ({ dragHandleProps, onFocus, onKeyDown } = selectedCellProps);
+      }
+    }
+
+    if (isCellSelected && selectedCellProps!.mode === 'EDIT') {
       cells.push(
         <EditCell
           key={column.key}
           rowIdx={rowIdx}
           column={column}
           colSpan={colSpan}
-          onKeyDown={selectedCellProps.onKeyDown}
-          {...selectedCellProps.editorProps}
+          onKeyDown={(selectedCellProps as EditCellProps<R>).onKeyDown}
+          {...(selectedCellProps as EditCellProps<R>).editorProps}
         />
       );
-      continue;
+    } else {
+      cells.push(
+        <Cell
+          key={column.key}
+          rowIdx={rowIdx}
+          column={column}
+          colSpan={colSpan}
+          row={row}
+          isCopied={copiedCellIdx === idx}
+          isDraggedOver={draggedOverCellIdx === idx}
+          isCellSelected={isCellSelected}
+          dragHandleProps={dragHandleProps}
+          onFocus={onFocus}
+          onKeyDown={onKeyDown}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
+          onRowChange={onRowChange}
+          selectCell={selectCell}
+        />
+      );
     }
-
-    cells.push(
-      <Cell
-        key={column.key}
-        rowIdx={rowIdx}
-        column={column}
-        colSpan={colSpan}
-        row={row}
-        isCopied={copiedCellIdx === column.idx}
-        isDraggedOver={draggedOverCellIdx === column.idx}
-        isCellSelected={isCellSelected}
-        dragHandleProps={
-          isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined
-        }
-        onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
-        onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
-        onRowClick={onRowClick}
-        onRowDoubleClick={onRowDoubleClick}
-        onRowChange={onRowChange}
-        selectCell={selectCell}
-      />
-    );
   }
 
   return (
