@@ -36,7 +36,6 @@ export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
-  rowIdx,
   onRowChange,
   onClose,
   onKeyDown,
@@ -82,7 +81,6 @@ export default function EditCell<R, SR>({
       <column.editor
         column={column}
         row={row}
-        rowIdx={rowIdx}
         onRowChange={onRowChange}
         onClose={onClose}
         editorPortalTarget={editorPortalTarget}
@@ -93,13 +91,7 @@ export default function EditCell<R, SR>({
       content = (
         <>
           {createPortal(content, editorPortalTarget)}
-          <column.formatter
-            column={column}
-            rowIdx={rowIdx}
-            row={row}
-            isCellSelected
-            onRowChange={onRowChange}
-          />
+          <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
         </>
       );
     }

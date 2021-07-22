@@ -2,12 +2,12 @@ import { memo, forwardRef } from 'react';
 import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import { groupRowSelectedClassname, rowClassname } from './style';
-import { getColSpan } from './utils';
 import Cell from './Cell';
 import EditCell from './EditCell';
+import { RowSelectionProvider, useLatestFunc } from './hooks';
+import { getColSpan } from './utils';
+import { groupRowSelectedClassname, rowClassname } from './style';
 import type { EditCellProps, RowRendererProps } from './types';
-import { RowSelectionProvider } from './hooks';
 
 function Row<R, SR>(
   {
@@ -33,6 +33,10 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
+  const handleRowChange = useLatestFunc((newRow: R) => {
+    onRowChange(rowIdx, newRow);
+  });
+
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
     onMouseEnter?.(event);
@@ -74,7 +78,6 @@ function Row<R, SR>(
       cells.push(
         <EditCell
           key={column.key}
-          rowIdx={rowIdx}
           column={column}
           colSpan={colSpan}
           onKeyDown={(selectedCellProps as EditCellProps<R>).onKeyDown}
@@ -85,7 +88,6 @@ function Row<R, SR>(
       cells.push(
         <Cell
           key={column.key}
-          rowIdx={rowIdx}
           column={column}
           colSpan={colSpan}
           row={row}
@@ -97,7 +99,7 @@ function Row<R, SR>(
           onKeyDown={onKeyDown}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
-          onRowChange={onRowChange}
+          onRowChange={handleRowChange}
           selectCell={selectCell}
         />
       );

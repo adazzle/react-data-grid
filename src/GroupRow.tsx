@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import type { CalculatedColumn, Position, Omit } from './types';
+import type { CalculatedColumn, GroupRow, Omit } from './types';
 import { RowSelectionProvider } from './hooks';
 
 export interface GroupRowRendererProps<R, SR>
@@ -15,13 +15,14 @@ export interface GroupRowRendererProps<R, SR>
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
+  row: GroupRow<R>;
   top: number;
   height: number;
   level: number;
   selectedCellIdx: number | undefined;
   isExpanded: boolean;
   isRowSelected: boolean;
-  selectCell: (position: Position, enableEditor?: boolean) => void;
+  selectGroup: (rowIdx: number) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
@@ -31,21 +32,22 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
+  row,
   top,
   height,
   level,
   isExpanded,
   selectedCellIdx,
   isRowSelected,
-  selectCell,
+  selectGroup,
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
-  function selectGroup() {
-    selectCell({ rowIdx, idx: -1 });
+  function handleSelectGroup() {
+    selectGroup(rowIdx);
   }
 
   return (
@@ -62,7 +64,7 @@ function GroupedRow<R, SR>({
             [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
           }
         )}
-        onClick={selectGroup}
+        onClick={handleSelectGroup}
         style={
           {
             top,
@@ -75,12 +77,12 @@ function GroupedRow<R, SR>({
           <GroupCell
             key={column.key}
             id={id}
-            rowIdx={rowIdx}
             groupKey={groupKey}
             childRows={childRows}
             isExpanded={isExpanded}
             isCellSelected={selectedCellIdx === column.idx}
             column={column}
+            row={row}
             groupColumnIndex={idx}
             toggleGroup={toggleGroup}
           />

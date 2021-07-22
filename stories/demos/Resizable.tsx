@@ -1,13 +1,13 @@
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
 
-type Row = undefined;
-const rows: readonly Row[] = Array(100);
+type Row = number;
+const rows: readonly Row[] = [...Array(100).keys()];
 
 function CellFormatter(props: FormatterProps<Row>) {
   return (
     <>
-      {props.column.key}&times;{props.rowIdx}
+      {props.column.key}&times;{props.row}
     </>
   );
 }

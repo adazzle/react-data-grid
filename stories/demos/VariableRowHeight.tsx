@@ -9,7 +9,7 @@ const rows: readonly Row[] = [...Array(500).keys()];
 function CellFormatter(props: FormatterProps<Row>) {
   return (
     <>
-      {props.column.key}&times;{props.rowIdx}
+      {props.column.key}&times;{props.row}
     </>
   );
 }
