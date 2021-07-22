@@ -180,7 +180,7 @@ export function useCalculatedColumns<R, SR>({
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
-      layoutCssVars[`--frozen-left-${column.key}`] = `${columnMetrics.get(column)!.left}px`;
+      layoutCssVars[`--frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
     return { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics };
