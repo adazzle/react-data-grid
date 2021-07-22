@@ -73,9 +73,8 @@ export default function EditCell<R, SR>({
   const { cellClass } = column;
   const className = getCellClassname(
     column,
-    column.editorOptions?.createPortal
-      ? cellEditingClassname
-      : `${cellEditingClassname} ${cellEditing}`,
+    cellEditingClassname,
+    column.editorOptions?.createPortal && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
@@ -97,15 +96,13 @@ export default function EditCell<R, SR>({
         <>
           {createPortal(content, editorPortalTarget)}
           {!column.rowGroup && (
-            <>
-              <column.formatter
-                column={column}
-                rowIdx={rowIdx}
-                row={row}
-                isCellSelected
-                onRowChange={onRowChange}
-              />
-            </>
+            <column.formatter
+              column={column}
+              rowIdx={rowIdx}
+              row={row}
+              isCellSelected
+              onRowChange={onRowChange}
+            />
           )}
         </>
       );
