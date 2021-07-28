@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
-import type { CalculatedColumn } from './types';
+import type { CalculatedColumn, FillEvent } from './types';
 import type { DataGridProps, SelectCellState, EditCellState } from './DataGrid';
 
 const cellDragHandle = css`
@@ -23,10 +23,11 @@ const cellDragHandle = css`
 
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
-interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange' | 'onFill'> {
+interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   columns: readonly CalculatedColumn<R, SR>[];
   selectedPosition: SelectCellState | EditCellState<R>;
   draggedOverRowIdx: number | undefined;
+  onFill: (event: FillEvent<R>) => R[];
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: (overRowIdx: number | undefined) => void;
 }
@@ -69,7 +70,7 @@ export default function DragHandle<R, SR>({
 
   function handleDragEnd() {
     const overRowIdx = latestDraggedOverRowIdx.current;
-    if (overRowIdx === undefined || !onFill || !onRowsChange) return;
+    if (overRowIdx === undefined || !onRowsChange) return;
 
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];
@@ -97,7 +98,7 @@ export default function DragHandle<R, SR>({
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     event.stopPropagation();
-    if (!onFill || !onRowsChange) return;
+    if (!onRowsChange) return;
 
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];

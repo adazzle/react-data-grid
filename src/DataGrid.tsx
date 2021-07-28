@@ -344,9 +344,6 @@ function DataGrid<R, SR, K extends Key>(
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
 
-  // Cell drag is not supported on a treegrid
-  const enableCellDragAndDrop = hasGroups ? false : onFill != null;
-
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
@@ -902,7 +899,8 @@ function DataGrid<R, SR, K extends Key>(
       onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       selectedCellDragHandle:
-        enableCellDragAndDrop && isCellEditable(selectedPosition) ? (
+        // Cell drag is not supported on a treegrid
+        !hasGroups && onFill != null ? (
           <DragHandle
             rows={rawRows}
             columns={columns}
