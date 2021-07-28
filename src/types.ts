@@ -106,24 +106,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onAllRowsSelectionChange: (checked: boolean) => void;
 }
 
-interface SelectedCellPropsBase {
-  idx: number;
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-}
-
-export interface EditCellProps<TRow> extends SelectedCellPropsBase {
-  mode: 'EDIT';
-  editorProps: SharedEditorProps<TRow>;
-}
-
-export interface SelectedCellProps extends SelectedCellPropsBase {
-  mode: 'SELECT';
-  onFocus: () => void;
-  dragHandleProps:
-    | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
-    | undefined;
-}
-
 type SelectCellFn<R, SR> = (
   row: R,
   column: CalculatedColumn<R, SR>,
@@ -142,9 +124,7 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  dragHandleProps:
-    | Pick<React.HTMLAttributes<HTMLDivElement>, 'onMouseDown' | 'onDoubleClick'>
-    | undefined;
+  dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (newRow: TRow) => void;
 }
 
@@ -153,13 +133,15 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   rowIdx: number;
+  selectedCellIdx?: number;
   copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   top: number;
   height: number;
-  selectedCellProps: EditCellProps<TRow> | SelectedCellProps | undefined;
+  selectedCellEditor?: ReactElement<EditorProps<TRow>>;
+  selectedCellDragHandle?: ReactElement<React.HTMLAttributes<HTMLDivElement>>;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick: ((row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void) | undefined | null;
   onRowDoubleClick:
