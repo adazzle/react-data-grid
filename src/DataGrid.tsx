@@ -954,8 +954,9 @@ function DataGrid<R, SR, K extends Key>(
     if (selectedPosition.rowIdx !== rowIdx) return;
 
     if (selectedPosition.mode === 'EDIT') {
+      const row = rows[selectedPosition.rowIdx];
+      if (isGroupRow(row)) return;
       const column = columns[selectedPosition.idx];
-      const row = rows[selectedPosition.rowIdx] as R;
       const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
       return {
