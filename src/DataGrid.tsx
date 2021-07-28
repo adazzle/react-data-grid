@@ -23,6 +23,8 @@ import HeaderRow from './HeaderRow';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
+import EditCell from './EditCell';
+import DragHandle from './DragHandle';
 import {
   assertIsValidKeyGetter,
   onEditorNavigation,
@@ -43,8 +45,6 @@ import type {
   RowRendererProps,
   RowsChangeData,
   SelectRowEvent,
-  SelectedCellProps,
-  EditCellProps,
   FillEvent,
   PasteEvent,
   CellNavigationMode,
@@ -67,6 +67,16 @@ type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'formatter' | 'minWidth' | 'resizable' | 'sortable'
 >;
+
+type SelectedCellProps<R, SR> =
+  | Pick<
+      RowRendererProps<R, SR>,
+      'selectedCellIdx' | 'onKeyDown' | 'onFocus' | 'selectedCellEditor'
+    >
+  | Pick<
+      RowRendererProps<R, SR>,
+      'selectedCellIdx' | 'onKeyDown' | 'onFocus' | 'selectedCellDragHandle'
+    >;
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const body = globalThis.document?.body;
@@ -940,32 +950,41 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getSelectedCellProps(rowIdx: number): SelectedCellProps | EditCellProps<R> | undefined {
+  function getSelectedCellProps(rowIdx: number): SelectedCellProps<R, SR> | undefined {
     if (selectedPosition.rowIdx !== rowIdx) return;
 
     if (selectedPosition.mode === 'EDIT') {
+      const { idx, row } = selectedPosition;
+      const column = columns[idx];
+      const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+
       return {
-        mode: 'EDIT',
-        idx: selectedPosition.idx,
+        selectedCellIdx: idx,
+        onFocus: handleFocus,
         onKeyDown: handleKeyDown,
-        editorProps: {
-          editorPortalTarget,
-          row: selectedPosition.row,
-          onRowChange: handleEditorRowChange,
-          onClose: handleOnClose
-        }
+        selectedCellEditor: (
+          <EditCell
+            key={column.key}
+            column={column}
+            colSpan={colSpan}
+            row={row}
+            editorPortalTarget={editorPortalTarget}
+            onKeyDown={handleKeyDown}
+            onRowChange={handleEditorRowChange}
+            onClose={handleOnClose}
+          />
+        )
       };
     }
 
     return {
-      mode: 'SELECT',
-      idx: selectedPosition.idx,
+      selectedCellIdx: selectedPosition.idx,
       onFocus: handleFocus,
       onKeyDown: handleKeyDown,
-      dragHandleProps:
-        enableCellDragAndDrop && isCellEditable(selectedPosition)
-          ? { onMouseDown: handleMouseDown, onDoubleClick: handleDoubleClick }
-          : undefined
+      selectedCellDragHandle:
+        enableCellDragAndDrop && isCellEditable(selectedPosition) ? (
+          <DragHandle onMouseDown={handleMouseDown} onDoubleClick={handleDoubleClick} />
+        ) : undefined
     };
   }
 
@@ -1040,9 +1059,9 @@ function DataGrid<R, SR, K extends Key>(
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
-          selectedCellProps={getSelectedCellProps(rowIdx)}
           onRowChange={handleFormatterRowChangeLatest}
           selectCell={selectCellLatest}
+          {...getSelectedCellProps(rowIdx)}
         />
       );
     }

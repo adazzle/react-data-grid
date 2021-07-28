@@ -3,23 +3,26 @@ import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import EditCell from './EditCell';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan } from './utils';
 import { groupRowSelectedClassname, rowClassname } from './style';
-import type { EditCellProps, RowRendererProps } from './types';
+import type { RowRendererProps } from './types';
 
 function Row<R, SR>(
   {
     className,
     rowIdx,
+    selectedCellIdx,
     isRowSelected,
     copiedCellIdx,
     draggedOverCellIdx,
     lastFrozenColumnIndex,
     row,
     viewportColumns,
-    selectedCellProps,
+    selectedCellEditor,
+    selectedCellDragHandle,
+    onFocus,
+    onKeyDown,
     onRowClick,
     onRowDoubleClick,
     rowClass,
@@ -46,7 +49,7 @@ function Row<R, SR>(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     {
-      [groupRowSelectedClassname]: selectedCellProps?.idx === -1
+      [groupRowSelectedClassname]: selectedCellIdx === -1
     },
     rowClass?.(row),
     className
@@ -62,28 +65,10 @@ function Row<R, SR>(
       index += colSpan - 1;
     }
 
-    let isCellSelected = false;
-    let dragHandleProps;
-    let onFocus;
-    let onKeyDown;
+    const isCellSelected = selectedCellIdx === idx;
 
-    if (selectedCellProps !== undefined) {
-      isCellSelected = selectedCellProps.idx === idx;
-      if (isCellSelected && selectedCellProps.mode === 'SELECT') {
-        ({ dragHandleProps, onFocus, onKeyDown } = selectedCellProps);
-      }
-    }
-
-    if (isCellSelected && selectedCellProps!.mode === 'EDIT') {
-      cells.push(
-        <EditCell
-          key={column.key}
-          column={column}
-          colSpan={colSpan}
-          onKeyDown={(selectedCellProps as EditCellProps<R>).onKeyDown}
-          {...(selectedCellProps as EditCellProps<R>).editorProps}
-        />
-      );
+    if (isCellSelected && selectedCellEditor) {
+      cells.push(selectedCellEditor);
     } else {
       cells.push(
         <Cell
@@ -94,9 +79,9 @@ function Row<R, SR>(
           isCopied={copiedCellIdx === idx}
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
-          dragHandleProps={dragHandleProps}
-          onFocus={onFocus}
-          onKeyDown={onKeyDown}
+          dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
+          onFocus={isCellSelected ? onFocus : undefined}
+          onKeyDown={isCellSelected ? onKeyDown : undefined}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
           onRowChange={handleRowChange}
