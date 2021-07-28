@@ -17,7 +17,7 @@ function TestGrid() {
     <>
       <DataGrid
         columns={columns}
-        rows={sortColumns}
+        rows={[]}
         defaultColumnOptions={{ sortable: true }}
         sortColumns={sortColumns}
         onSortColumnsChange={setSortColumns}
