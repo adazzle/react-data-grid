@@ -966,6 +966,7 @@ function DataGrid<R, SR, K extends Key>(
         onKeyDown: handleKeyDown,
         selectedCellEditor: (
           <EditCell
+            key={column.key}
             column={column}
             colSpan={colSpan}
             row={selectedPosition.row}
