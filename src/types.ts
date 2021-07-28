@@ -140,8 +140,8 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   isRowSelected: boolean;
   top: number;
   height: number;
-  selectedCellEditor?: ReactElement<EditorProps<TRow>>;
-  selectedCellDragHandle?: ReactElement<React.HTMLAttributes<HTMLDivElement>>;
+  selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
+  selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick: ((row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void) | undefined | null;
   onRowDoubleClick:
