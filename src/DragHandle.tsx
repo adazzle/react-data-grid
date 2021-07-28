@@ -24,7 +24,7 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   columns: readonly CalculatedColumn<R, SR>[];
-  selectedPosition: SelectCellState | EditCellState<R>;
+  selectedPosition: SelectCellState;
   onFill: (event: FillEvent<R>) => R[];
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: React.Dispatch<React.SetStateAction<number | undefined>>;
