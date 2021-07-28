@@ -61,8 +61,6 @@ export default function DragHandle<R, SR>({
   }
 
   function handleDragEnd() {
-    if (!onRowsChange) return;
-
     setDraggedOverRowIdx((overRowIdx) => {
       if (overRowIdx === undefined) return undefined;
 
@@ -85,7 +83,7 @@ export default function DragHandle<R, SR>({
       }
 
       if (indexes.length > 0) {
-        onRowsChange(updatedRows, { indexes, column });
+        onRowsChange?.(updatedRows, { indexes, column });
       }
 
       return undefined;
@@ -94,8 +92,6 @@ export default function DragHandle<R, SR>({
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     event.stopPropagation();
-    if (!onRowsChange) return;
-
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];
     const targetRows = rows.slice(rowIdx + 1);
@@ -113,7 +109,7 @@ export default function DragHandle<R, SR>({
     }
 
     if (indexes.length > 0) {
-      onRowsChange(updatedRows, { indexes, column });
+      onRowsChange?.(updatedRows, { indexes, column });
     }
   }
 
