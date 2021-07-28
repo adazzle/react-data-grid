@@ -954,14 +954,12 @@ function DataGrid<R, SR, K extends Key>(
     if (selectedPosition.rowIdx !== rowIdx) return;
 
     if (selectedPosition.mode === 'EDIT') {
-      const column = columns[selectedPosition.idx];
-      const colSpan = getColSpan(column, lastFrozenColumnIndex, {
-        type: 'ROW',
-        row: selectedPosition.row
-      });
+      const { idx, row } = selectedPosition;
+      const column = columns[idx];
+      const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
       return {
-        selectedCellIdx: selectedPosition.idx,
+        selectedCellIdx: idx,
         onFocus: handleFocus,
         onKeyDown: handleKeyDown,
         selectedCellEditor: (
@@ -969,7 +967,7 @@ function DataGrid<R, SR, K extends Key>(
             key={column.key}
             column={column}
             colSpan={colSpan}
-            row={selectedPosition.row}
+            row={row}
             editorPortalTarget={editorPortalTarget}
             onKeyDown={handleKeyDown}
             onRowChange={handleEditorRowChange}
