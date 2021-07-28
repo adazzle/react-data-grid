@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import type { CalculatedColumn, FillEvent } from './types';
@@ -26,27 +25,20 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   columns: readonly CalculatedColumn<R, SR>[];
   selectedPosition: SelectCellState | EditCellState<R>;
-  draggedOverRowIdx: number | undefined;
   onFill: (event: FillEvent<R>) => R[];
   setDragging: (isDragging: boolean) => void;
-  setDraggedOverRowIdx: (overRowIdx: number | undefined) => void;
+  setDraggedOverRowIdx: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
 export default function DragHandle<R, SR>({
   rows,
   columns,
   selectedPosition,
-  draggedOverRowIdx,
   onRowsChange,
   onFill,
   setDragging,
   setDraggedOverRowIdx
 }: Props<R, SR>) {
-  const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
-  useEffect(() => {
-    latestDraggedOverRowIdx.current = draggedOverRowIdx;
-  });
-
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (event.buttons !== 1) return;
     setDragging(true);
@@ -69,31 +61,35 @@ export default function DragHandle<R, SR>({
   }
 
   function handleDragEnd() {
-    const overRowIdx = latestDraggedOverRowIdx.current;
-    if (overRowIdx === undefined || !onRowsChange) return;
+    if (!onRowsChange) return;
 
-    const { idx, rowIdx } = selectedPosition;
-    const sourceRow = rows[rowIdx];
-    const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
-    const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
-    const targetRows = rows.slice(startRowIndex, endRowIndex);
-    const column = columns[idx];
-    const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
-    const updatedRows = [...rows];
-    const indexes: number[] = [];
+    setDraggedOverRowIdx((overRowIdx) => {
+      if (overRowIdx === undefined) return undefined;
 
-    for (let i = startRowIndex; i < endRowIndex; i++) {
-      const targetRowIdx = i - startRowIndex;
-      if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
-        updatedRows[i] = updatedTargetRows[targetRowIdx];
-        indexes.push(i);
+      const { idx, rowIdx } = selectedPosition;
+      const sourceRow = rows[rowIdx];
+      const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
+      const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
+      const targetRows = rows.slice(startRowIndex, endRowIndex);
+      const column = columns[idx];
+      const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
+      const updatedRows = [...rows];
+      const indexes: number[] = [];
+
+      for (let i = startRowIndex; i < endRowIndex; i++) {
+        const targetRowIdx = i - startRowIndex;
+        if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
+          updatedRows[i] = updatedTargetRows[targetRowIdx];
+          indexes.push(i);
+        }
       }
-    }
 
-    if (indexes.length > 0) {
-      onRowsChange(updatedRows, { indexes, column });
-    }
-    setDraggedOverRowIdx(undefined);
+      if (indexes.length > 0) {
+        onRowsChange(updatedRows, { indexes, column });
+      }
+
+      return undefined;
+    });
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
