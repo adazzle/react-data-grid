@@ -951,7 +951,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getSelectedCellProps(rowIdx: number): SelectedCellProps<R, SR> | undefined {
-    if (selectedPosition.rowIdx !== rowIdx) return undefined;
+    if (selectedPosition.rowIdx !== rowIdx) return;
 
     if (selectedPosition.mode === 'EDIT') {
       const column = columns[selectedPosition.idx];
@@ -966,9 +966,9 @@ function DataGrid<R, SR, K extends Key>(
           <EditCell
             column={column}
             colSpan={colSpan}
-            onKeyDown={handleKeyDown}
-            editorPortalTarget={editorPortalTarget}
             row={selectedPosition.row}
+            editorPortalTarget={editorPortalTarget}
+            onKeyDown={handleKeyDown}
             onRowChange={handleEditorRowChange}
             onClose={handleOnClose}
           />
