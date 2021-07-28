@@ -56,7 +56,7 @@ export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
 }
 
-export interface EditCellState<R> extends Position {
+interface EditCellState<R> extends Position {
   readonly mode: 'EDIT';
   readonly row: R;
   readonly originalRow: R;
