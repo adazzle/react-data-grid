@@ -131,7 +131,7 @@ test('should set aria-attributes', () => {
   setup(['year', 'country']);
 
   const groupCell1 = screen.getByRole('gridcell', { name: '2020' });
-  const groupRow1 = groupCell1.parentElement;
+  const groupRow1 = groupCell1.parentElement!;
   expect(groupRow1).toHaveAttribute('aria-level', '1');
   expect(groupRow1).toHaveAttribute('aria-setsize', '3');
   expect(groupRow1).toHaveAttribute('aria-posinset', '1');
@@ -139,7 +139,7 @@ test('should set aria-attributes', () => {
   expect(groupRow1).toHaveAttribute('aria-expanded', 'false');
 
   const groupCell2 = screen.getByRole('gridcell', { name: '2021' });
-  const groupRow2 = groupCell2.parentElement;
+  const groupRow2 = groupCell2.parentElement!;
   expect(groupRow2).toHaveAttribute('aria-level', '1');
   expect(groupRow2).toHaveAttribute('aria-setsize', '3');
   expect(groupRow2).toHaveAttribute('aria-posinset', '2');
@@ -150,7 +150,7 @@ test('should set aria-attributes', () => {
   expect(groupRow2).toHaveAttribute('aria-expanded', 'true');
 
   const groupCell3 = screen.getByRole('gridcell', { name: 'Canada' });
-  const groupRow3 = groupCell3.parentElement;
+  const groupRow3 = groupCell3.parentElement!;
   expect(groupRow3).toHaveAttribute('aria-level', '2');
   expect(groupRow3).toHaveAttribute('aria-setsize', '2');
   expect(groupRow3).toHaveAttribute('aria-posinset', '2');
@@ -174,7 +174,7 @@ test('should select rows in a group', () => {
   expect(screen.queryAllByRole('row', { selected: true })).toHaveLength(0);
 
   // select parent row
-  userEvent.click(within(groupCell1.parentElement).getByLabelText('Select Group'));
+  userEvent.click(within(groupCell1.parentElement!).getByLabelText('Select Group'));
   let selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);
   expect(selectedRows[0]).toHaveAttribute('aria-rowindex', '5');
@@ -191,7 +191,7 @@ test('should select rows in a group', () => {
   expect(selectedRows[0]).toHaveAttribute('aria-rowindex', '6');
 
   // select child group
-  userEvent.click(within(groupCell2.parentElement).getByLabelText('Select Group'));
+  userEvent.click(within(groupCell2.parentElement!).getByLabelText('Select Group'));
   selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);
 });
