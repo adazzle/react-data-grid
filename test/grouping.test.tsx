@@ -28,7 +28,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-const rows: Row[] = [
+const rows: readonly Row[] = [
   {
     id: 1,
     country: 'USA',
