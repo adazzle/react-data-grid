@@ -183,7 +183,6 @@ test('should select rows in a group', () => {
   expect(selectedRows[3]).toHaveAttribute('aria-rowindex', '9');
 
   // unselecting child should unselect the parant row
-  //   userEvent.click(selectedRows[3].children[0]);
   userEvent.click(within(selectedRows[3]).getByLabelText('Select'));
   selectedRows = screen.getAllByRole('row', { selected: true });
   // eslint-disable-next-line jest-dom/prefer-in-document
