@@ -3,7 +3,7 @@ import { groupBy as rowGrouper } from 'lodash';
 import type { Column } from '../src';
 import DataGrid, { SelectColumn } from '../src';
 import { render, screen, within } from '@testing-library/react';
-import { getGrid, queryGrid, getRows, queryTreeGrid, getTreeGrid } from './utils';
+import { getGrid, queryGrid, getRows, queryTreeGrid, getTreeGrid, getHeaderCells } from './utils';
 import userEvent from '@testing-library/user-event';
 
 interface Row {
@@ -15,16 +15,16 @@ interface Row {
 const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
+    key: 'sport',
+    name: 'Sport'
+  },
+  {
     key: 'country',
     name: 'Country'
   },
   {
     key: 'year',
     name: 'Year'
-  },
-  {
-    key: 'sport',
-    name: 'Sport'
   }
 ];
 
@@ -84,10 +84,15 @@ function setup(groupBy?: string[]) {
   );
 }
 
+function getHeaderCellsContent() {
+  return getHeaderCells().map((cell) => cell.textContent);
+}
+
 test('should not group if groupBy is not specified', () => {
   setup();
   expect(queryTreeGrid()).not.toBeInTheDocument();
   expect(getGrid()).toHaveAttribute('aria-rowcount', '5');
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Sport', 'Country', 'Year']);
   expect(getRows()).toHaveLength(4);
 });
 
@@ -101,24 +106,32 @@ test('should group by single column', () => {
   setup(['country']);
   expect(queryGrid()).not.toBeInTheDocument();
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Sport', 'Year']);
   expect(getRows()).toHaveLength(2);
 });
 
 test('should group by multiple columns', () => {
   setup(['country', 'year']);
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '11');
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Year', 'Sport']);
   expect(getRows()).toHaveLength(2);
+});
+
+test('should ignore duplicate groupBy columns', () => {
+  setup(['year', 'year', 'year']);
+  expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '8');
+  expect(getRows()).toHaveLength(3);
 });
 
 test('should use groupBy order while grouping', () => {
   setup(['year', 'country']);
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '12');
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Year', 'Country', 'Sport']);
   expect(getRows()).toHaveLength(3);
 });
 
 test('should toggle group when group cell is clicked', () => {
   setup(['year']);
-  expect(getRows()).toHaveLength(3);
   expect(getRows()).toHaveLength(3);
   const groupCell = screen.getByRole('gridcell', { name: '2021' });
   userEvent.click(groupCell);
