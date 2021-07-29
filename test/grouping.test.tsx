@@ -110,7 +110,7 @@ test('should group by multiple columns', () => {
   expect(getRows()).toHaveLength(2);
 });
 
-test('should use column order while grouping', () => {
+test('should use groupBy order while grouping', () => {
   setup(['year', 'country']);
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '12');
   expect(getRows()).toHaveLength(3);
