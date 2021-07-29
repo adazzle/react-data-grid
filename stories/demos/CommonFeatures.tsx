@@ -1,9 +1,39 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { css } from '@linaria/core';
 import faker from 'faker';
+
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
-import type { Column, SortDirection } from '../../src';
+import type { Column, SortColumn } from '../../src';
 import { stopPropagation } from '../../src/utils';
-import { SelectEditor } from './components/Editors/SelectEditor';
+import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
+import { textEditorClassname } from '../../src/editors/TextEditor';
+
+const toolbarClassname = css`
+  text-align: right;
+  margin-bottom: 8px;
+`;
+
+const dialogContainerClassname = css`
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.1);
+
+  > dialog {
+    width: 300px;
+    > input {
+      width: 100%;
+    }
+
+    > menu {
+      text-align: right;
+    }
+  }
+`;
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language);
 const currencyFormatter = new Intl.NumberFormat(navigator.language, {
@@ -82,15 +112,21 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       key: 'country',
       name: 'Country',
       width: 180,
-      editor: p => (
-        <SelectEditor
+      editor: (p) => (
+        <select
+          autoFocus
+          className={textEditorClassname}
           value={p.row.country}
-          onChange={value => p.onRowChange({ ...p.row, country: value }, true)}
-          options={countries.map(c => ({ value: c, label: c }))}
-          rowHeight={p.rowHeight}
-          menuPortalTarget={p.editorPortalTarget}
-        />
-      )
+          onChange={(e) => p.onRowChange({ ...p.row, country: e.target.value }, true)}
+        >
+          {countries.map((country) => (
+            <option key={country}>{country}</option>
+          ))}
+        </select>
+      ),
+      editorOptions: {
+        editOnClick: true
+      }
     },
     {
       key: 'contact',
@@ -115,6 +151,29 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
             <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
           </>
         );
+      },
+      editor({ row, onRowChange, onClose }) {
+        return (
+          <div className={dialogContainerClassname}>
+            <dialog open>
+              <input
+                autoFocus
+                type="range"
+                min="0"
+                max="100"
+                value={row.progress}
+                onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
+              />
+              <menu>
+                <button onClick={() => onClose()}>Cancel</button>
+                <button onClick={() => onClose(true)}>Save</button>
+              </menu>
+            </dialog>
+          </div>
+        );
+      },
+      editorOptions: {
+        createPortal: true
       }
     },
     {
@@ -173,9 +232,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         );
       },
       summaryFormatter({ row: { yesCount, totalCount } }) {
-        return (
-          <>{`${Math.floor(100 * yesCount / totalCount)}% ✔️`}</>
-        );
+        return <>{`${Math.floor((100 * yesCount) / totalCount)}% ✔️`}</>;
       }
     }
   ];
@@ -212,60 +269,76 @@ function createRows(): readonly Row[] {
   return rows;
 }
 
+type Comparator = (a: Row, b: Row) => number;
+function getComparator(sortColumn: string): Comparator {
+  switch (sortColumn) {
+    case 'assignee':
+    case 'title':
+    case 'client':
+    case 'area':
+    case 'country':
+    case 'contact':
+    case 'transaction':
+    case 'account':
+    case 'version':
+      return (a, b) => {
+        return a[sortColumn].localeCompare(b[sortColumn]);
+      };
+    case 'available':
+      return (a, b) => {
+        return a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1;
+      };
+    case 'id':
+    case 'progress':
+    case 'startTimestamp':
+    case 'endTimestamp':
+    case 'budget':
+      return (a, b) => {
+        return a[sortColumn] - b[sortColumn];
+      };
+    default:
+      throw new Error(`unsupported sortColumn: "${sortColumn}"`);
+  }
+}
+
 export function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
-  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['id', 'NONE']);
-  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const countries = useMemo(() => {
-    return [...new Set(rows.map(r => r.country))].sort();
+    return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns = useMemo(() => getColumns(countries), [countries]);
 
   const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = { id: 'total_0', totalCount: rows.length, yesCount: rows.filter(r => r.available).length };
+    const summaryRow: SummaryRow = {
+      id: 'total_0',
+      totalCount: rows.length,
+      yesCount: rows.filter((r) => r.available).length
+    };
     return [summaryRow];
   }, [rows]);
 
-  const sortedRows: readonly Row[] = useMemo(() => {
-    if (sortDirection === 'NONE') return rows;
+  const sortedRows = useMemo((): readonly Row[] => {
+    if (sortColumns.length === 0) return rows;
 
-    let sortedRows: Row[] = [...rows];
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      for (const sort of sortColumns) {
+        const comparator = getComparator(sort.columnKey);
+        const compResult = comparator(a, b);
+        if (compResult !== 0) {
+          return sort.direction === 'ASC' ? compResult : -compResult;
+        }
+      }
+      return 0;
+    });
+    return sortedRows;
+  }, [rows, sortColumns]);
 
-    switch (sortColumn) {
-      case 'assignee':
-      case 'title':
-      case 'client':
-      case 'area':
-      case 'country':
-      case 'contact':
-      case 'transaction':
-      case 'account':
-      case 'version':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
-        break;
-      case 'available':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] === b[sortColumn] ? 0 : a[sortColumn] ? 1 : -1);
-        break;
-      case 'id':
-      case 'progress':
-      case 'startTimestamp':
-      case 'endTimestamp':
-      case 'budget':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
-        break;
-      default:
-    }
-
-    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortDirection, sortColumn]);
-
-  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
-    setSort([columnKey, direction]);
-  }, []);
-
-  return (
+  const gridElement = (
     <DataGrid
       rowKeyGetter={rowKeyGetter}
       columns={columns}
@@ -277,12 +350,50 @@ export function CommonFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       onRowsChange={setRows}
-      sortColumn={sortColumn}
-      sortDirection={sortDirection}
-      onSort={handleSort}
+      sortColumns={sortColumns}
+      onSortColumnsChange={setSortColumns}
       summaryRows={summaryRows}
       className="fill-grid"
     />
+  );
+
+  return (
+    <>
+      <div className={toolbarClassname}>
+        <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
+          Export to CSV
+        </ExportButton>
+        <ExportButton onExport={() => exportToXlsx(gridElement, 'CommonFeatures.xlsx')}>
+          Export to XSLX
+        </ExportButton>
+        <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
+          Export to PDF
+        </ExportButton>
+      </div>
+      {gridElement}
+    </>
+  );
+}
+
+function ExportButton({
+  onExport,
+  children
+}: {
+  onExport: () => Promise<unknown>;
+  children: React.ReactChild;
+}) {
+  const [exporting, setExporting] = useState(false);
+  return (
+    <button
+      disabled={exporting}
+      onClick={async () => {
+        setExporting(true);
+        await onExport();
+        setExporting(false);
+      }}
+    >
+      {exporting ? 'Exporting' : children}
+    </button>
   );
 }
 

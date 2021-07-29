@@ -39,20 +39,13 @@ export function ScrollToRow() {
           style={{ width: 50 }}
           type="number"
           value={value}
-          onChange={event => setValue(event.target.value)}
+          onChange={(event) => setValue(event.target.value)}
         />
-        <button
-          type="button"
-          onClick={() => gridRef.current!.scrollToRow(Number(value))}
-        >
+        <button type="button" onClick={() => gridRef.current!.scrollToRow(Number(value))}>
           Scroll to row
         </button>
       </div>
-      <DataGrid
-        ref={gridRef}
-        columns={columns}
-        rows={rows}
-      />
+      <DataGrid ref={gridRef} columns={columns} rows={rows} />
     </>
   );
 }

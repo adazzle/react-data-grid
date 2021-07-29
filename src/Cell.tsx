@@ -1,8 +1,8 @@
-import { forwardRef, memo } from 'react';
+import { memo } from 'react';
+import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
-import { cellSelectedClassname } from './style';
-import { getCellStyle, getCellClassname, wrapEvent } from './utils';
+import { getCellStyle, getCellClassname, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`
@@ -21,63 +21,37 @@ const cellDraggedOver = css`
 
 const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;
 
-const cellDragHandle = css`
-  cursor: move;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 8px;
-  height: 8px;
-  background-color: var(--selection-color);
-
-  &:hover {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--selection-color);
-    background-color: var(--background-color);
-  }
-`;
-
-const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
-
 function Cell<R, SR>({
-  className,
   column,
+  colSpan,
   isCellSelected,
   isCopied,
   isDraggedOver,
-  isRowSelected,
   row,
-  rowIdx,
-  dragHandleProps,
+  dragHandle,
   onRowClick,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
+  onRowDoubleClick,
   onRowChange,
   selectCell,
-  selectRow,
   ...props
-}: CellRendererProps<R, SR>, ref: React.Ref<HTMLDivElement>) {
+}: CellRendererProps<R, SR>) {
   const { cellClass } = column;
-  className = getCellClassname(
+  const className = getCellClassname(
     column,
     {
-      [cellSelectedClassname]: isCellSelected,
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass,
-    className
+    typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
-  function selectCellWrapper(openEditor?: boolean) {
-    selectCell({ idx: column.idx, rowIdx }, openEditor);
+  function selectCellWrapper(openEditor?: boolean | null) {
+    selectCell(row, column, openEditor);
   }
 
   function handleClick() {
     selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(rowIdx, row, column);
+    onRowClick?.(row, column);
   }
 
   function handleContextMenu() {
@@ -86,14 +60,7 @@ function Cell<R, SR>({
 
   function handleDoubleClick() {
     selectCellWrapper(true);
-  }
-
-  function handleRowChange(newRow: R) {
-    onRowChange(rowIdx, newRow);
-  }
-
-  function onRowSelectionChange(checked: boolean, isShiftClick: boolean) {
-    selectRow({ rowIdx, checked, isShiftClick });
+    onRowDoubleClick?.(row, column);
   }
 
   return (
@@ -101,32 +68,30 @@ function Cell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
-      ref={ref}
+      aria-colspan={colSpan}
+      aria-readonly={!isCellEditable(column, row) || undefined}
       className={className}
-      style={getCellStyle(column)}
-      onClick={wrapEvent(handleClick, onClick)}
-      onDoubleClick={wrapEvent(handleDoubleClick, onDoubleClick)}
-      onContextMenu={wrapEvent(handleContextMenu, onContextMenu)}
+      style={getCellStyle(column, colSpan)}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+      onContextMenu={handleContextMenu}
       {...props}
     >
       {!column.rowGroup && (
         <>
           <column.formatter
             column={column}
-            rowIdx={rowIdx}
             row={row}
             isCellSelected={isCellSelected}
-            isRowSelected={isRowSelected}
-            onRowSelectionChange={onRowSelectionChange}
-            onRowChange={handleRowChange}
+            onRowChange={onRowChange}
           />
-          {dragHandleProps && (
-            <div className={cellDragHandleClassname} {...dragHandleProps} />
-          )}
+          {dragHandle}
         </>
       )}
     </div>
   );
 }
 
-export default memo(forwardRef(Cell)) as <R, SR = unknown>(props: CellRendererProps<R, SR> & React.RefAttributes<HTMLDivElement>) => JSX.Element;
+export default memo(Cell) as <R, SR>(
+  props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+) => JSX.Element;

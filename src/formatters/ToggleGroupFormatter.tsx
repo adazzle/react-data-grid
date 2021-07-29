@@ -9,15 +9,15 @@ const groupCellContent = css`
 const groupCellContentClassname = `rdg-group-cell-content ${groupCellContent}`;
 
 const caret = css`
-margin-left: 4px;
-stroke: currentColor;
-stroke-width: 1.5px;
-fill: transparent;
-vertical-align: middle;
+  margin-left: 4px;
+  stroke: currentColor;
+  stroke-width: 1.5px;
+  fill: transparent;
+  vertical-align: middle;
 
-> path {
-  transition: d .1s;
-}
+  > path {
+    transition: d 0.1s;
+  }
 `;
 
 const caretClassname = `rdg-caret ${caret}`;
@@ -46,7 +46,7 @@ export function ToggleGroupFormatter<R, SR>({
       onKeyDown={handleKeyDown}
     >
       {groupKey}
-      <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname}>
+      <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname} aria-hidden>
         <path d={d} />
       </svg>
     </span>

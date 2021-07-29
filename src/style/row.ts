@@ -17,23 +17,24 @@ export const row = css`
   &:hover {
     background-color: var(--row-hover-background-color);
   }
+
+  &[aria-selected='true'] {
+    background-color: var(--row-selected-background-color);
+
+    &:hover {
+      background-color: var(--row-selected-hover-background-color);
+    }
+  }
 `;
 
 export const rowClassname = `rdg-row ${row}`;
 
-export const rowSelected = css`
-  background-color: var(--row-selected-background-color);
-
-  &:hover {
-    background-color: var(--row-selected-hover-background-color);
-  }
-`;
-
-export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
-
 const summaryRow = css`
   position: sticky;
   z-index: 3;
+  grid-template-rows: var(--summary-row-height);
+  height: var(--summary-row-height); // needed on Firefox
+  line-height: var(--summary-row-height);
 
   > .${cell} {
     border-top: 2px solid var(--summary-border-color);

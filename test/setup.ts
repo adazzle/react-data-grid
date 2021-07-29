@@ -1,11 +1,19 @@
-// @ts-expect-error
-window.ResizeObserver ??= function ResizeObserver(callback: () => void) {
-  callback();
+import 'core-js/stable';
+import { act } from 'react-dom/test-utils';
 
-  return {
-    observe() {},
-    disconnect() {}
-  };
+window.ResizeObserver ??= class {
+  callback: ResizeObserverCallback;
+
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback;
+  }
+
+  observe() {
+    this.callback([], this);
+  }
+
+  unobserve() {}
+  disconnect() {}
 };
 
 // patch clientWidth/clientHeight to pretend we're rendering DataGrid at 1080p
@@ -41,7 +49,9 @@ Object.defineProperties(Element.prototype, {
     },
     set(this: Element, value: number) {
       getScrollState(this).scrollTop = value;
-      this.dispatchEvent(new Event('scroll'));
+      act(() => {
+        this.dispatchEvent(new Event('scroll'));
+      });
     }
   },
   scrollLeft: {
@@ -50,7 +60,9 @@ Object.defineProperties(Element.prototype, {
     },
     set(this: Element, value: number) {
       getScrollState(this).scrollLeft = value;
-      this.dispatchEvent(new Event('scroll'));
+      act(() => {
+        this.dispatchEvent(new Event('scroll'));
+      });
     }
   }
 });

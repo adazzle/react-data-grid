@@ -1,46 +1,34 @@
 import { memo } from 'react';
 
 import { getCellStyle, getCellClassname } from './utils';
-import type { CalculatedColumn } from './types';
+import type { CalculatedColumn, GroupRow } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { cellSelectedClassname } from './style';
 
-type SharedGroupRowRendererProps<R, SR> = Pick<GroupRowRendererProps<R, SR>,
-  | 'id'
-  | 'rowIdx'
-  | 'groupKey'
-  | 'childRows'
-  | 'isExpanded'
-  | 'isRowSelected'
-  | 'selectRow'
-  | 'toggleGroup'
+type SharedGroupRowRendererProps<R, SR> = Pick<
+  GroupRowRendererProps<R, SR>,
+  'id' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup'
 >;
 
 interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
   column: CalculatedColumn<R, SR>;
+  row: GroupRow<R>;
   isCellSelected: boolean;
   groupColumnIndex: number;
 }
 
 function GroupCell<R, SR>({
   id,
-  rowIdx,
   groupKey,
   childRows,
   isExpanded,
   isCellSelected,
-  isRowSelected,
   column,
+  row,
   groupColumnIndex,
-  selectRow,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
   function toggleGroup() {
     toggleGroupWrapper(id);
-  }
-
-  function onRowSelectionChange(checked: boolean) {
-    selectRow({ rowIdx, checked, isShiftClick: false });
   }
 
   // Only make the cell clickable if the group level matches
@@ -50,10 +38,9 @@ function GroupCell<R, SR>({
     <div
       role="gridcell"
       aria-colindex={column.idx + 1}
+      aria-selected={isCellSelected}
       key={column.key}
-      className={getCellClassname(column, {
-        [cellSelectedClassname]: isCellSelected
-      })}
+      className={getCellClassname(column)}
       style={{
         ...getCellStyle(column),
         cursor: isLevelMatching ? 'pointer' : 'default'
@@ -65,10 +52,9 @@ function GroupCell<R, SR>({
           groupKey={groupKey}
           childRows={childRows}
           column={column}
+          row={row}
           isExpanded={isExpanded}
           isCellSelected={isCellSelected}
-          isRowSelected={isRowSelected}
-          onRowSelectionChange={onRowSelectionChange}
           toggleGroup={toggleGroup}
         />
       )}

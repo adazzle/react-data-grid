@@ -1,11 +1,15 @@
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
 
-type Row = undefined;
-const rows: readonly Row[] = Array(100);
+type Row = number;
+const rows: readonly Row[] = [...Array(100).keys()];
 
 function CellFormatter(props: FormatterProps<Row>) {
-  return <>{props.column.key}&times;{props.rowIdx}</>;
+  return (
+    <>
+      {props.column.key}&times;{props.row}
+    </>
+  );
 }
 
 const columns: Column<Row>[] = [];
@@ -21,12 +25,7 @@ for (let i = 0; i < 50; i++) {
 
 export function ResizableGrid() {
   return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      className="fill-grid"
-      style={{ resize: 'both' }}
-    />
+    <DataGrid columns={columns} rows={rows} className="fill-grid" style={{ resize: 'both' }} />
   );
 }
 

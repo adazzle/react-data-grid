@@ -1,51 +1,54 @@
-import { useCallback, memo } from 'react';
+import { memo } from 'react';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
-import { assertIsValidKeyGetter } from './utils';
+import { getColSpan } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { headerRowClassname } from './style';
 
-type SharedDataGridProps<R, SR> = Pick<DataGridProps<R, SR>,
-  | 'rows'
-  | 'onSelectedRowsChange'
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
-  | 'rowKeyGetter'
+type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
+  DataGridProps<R, SR, K>,
+  'sortColumns' | 'onSortColumnsChange'
 >;
 
-export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
+  onAllRowsSelectionChange: (checked: boolean) => void;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  lastFrozenColumnIndex: number;
 }
 
-function HeaderRow<R, SR>({
+function HeaderRow<R, SR, K extends React.Key>({
   columns,
-  rows,
-  rowKeyGetter,
-  onSelectedRowsChange,
   allRowsSelected,
+  onAllRowsSelectionChange,
   onColumnResize,
-  sortColumn,
-  sortDirection,
-  onSort
-}: HeaderRowProps<R, SR>) {
-  const handleAllRowsSelectionChange = useCallback((checked: boolean) => {
-    if (!onSelectedRowsChange) return;
-
-    assertIsValidKeyGetter(rowKeyGetter);
-
-    const newSelectedRows = new Set<React.Key>();
-    if (checked) {
-      for (const row of rows) {
-        newSelectedRows.add(rowKeyGetter(row));
-      }
+  sortColumns,
+  onSortColumnsChange,
+  lastFrozenColumnIndex
+}: HeaderRowProps<R, SR, K>) {
+  const cells = [];
+  for (let index = 0; index < columns.length; index++) {
+    const column = columns[index];
+    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
+    if (colSpan !== undefined) {
+      index += colSpan - 1;
     }
 
-    onSelectedRowsChange(newSelectedRows);
-  }, [onSelectedRowsChange, rows, rowKeyGetter]);
+    cells.push(
+      <HeaderCell<R, SR>
+        key={column.key}
+        column={column}
+        colSpan={colSpan}
+        onResize={onColumnResize}
+        allRowsSelected={allRowsSelected}
+        onAllRowsSelectionChange={onAllRowsSelectionChange}
+        onSortColumnsChange={onSortColumnsChange}
+        sortColumns={sortColumns}
+      />
+    );
+  }
 
   return (
     <div
@@ -53,22 +56,11 @@ function HeaderRow<R, SR>({
       aria-rowindex={1} // aria-rowindex is 1 based
       className={headerRowClassname}
     >
-      {columns.map(column => {
-        return (
-          <HeaderCell<R, SR>
-            key={column.key}
-            column={column}
-            onResize={onColumnResize}
-            allRowsSelected={allRowsSelected}
-            onAllRowsSelectionChange={handleAllRowsSelectionChange}
-            onSort={onSort}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
-          />
-        );
-      })}
+      {cells}
     </div>
   );
 }
 
-export default memo(HeaderRow) as <R, SR>(props: HeaderRowProps<R, SR>) => JSX.Element;
+export default memo(HeaderRow) as <R, SR, K extends React.Key>(
+  props: HeaderRowProps<R, SR, K>
+) => JSX.Element;
