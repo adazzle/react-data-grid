@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { CalculatedColumn, FillEvent } from './types';
+import type { CalculatedColumn, FillEvent, Position } from './types';
 import type { DataGridProps, SelectCellState } from './DataGrid';
 
 const cellDragHandle = css`
@@ -25,6 +25,7 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   columns: readonly CalculatedColumn<R, SR>[];
   selectedPosition: SelectCellState;
+  isCellEditable: (position: Position) => boolean;
   onFill: (event: FillEvent<R>) => R[];
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: React.Dispatch<React.SetStateAction<number | undefined>>;
@@ -34,6 +35,7 @@ export default function DragHandle<R, SR>({
   rows,
   columns,
   selectedPosition,
+  isCellEditable,
   onRowsChange,
   onFill,
   setDragging,
@@ -94,12 +96,18 @@ export default function DragHandle<R, SR>({
     event.stopPropagation();
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];
-    const targetRows = rows.slice(rowIdx + 1);
+    const targetRows: R[] = [];
+    for (let i = rowIdx + 1; i < rows.length; i++) {
+      if (isCellEditable({ rowIdx: i, idx })) {
+        targetRows.push(rows[i]);
+      }
+    }
     const column = columns[idx];
     const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
     const updatedRows = [...rows];
     const indexes: number[] = [];
 
+    // TODO: fix index
     for (let i = rowIdx + 1; i < updatedRows.length; i++) {
       const targetRowIdx = i - rowIdx - 1;
       if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
