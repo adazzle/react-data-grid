@@ -84,7 +84,7 @@ function setup(groupBy?: string[]) {
   );
 }
 
-test('should not group if column is not specified', () => {
+test('should not group if groupBy is not specified', () => {
   setup();
   expect(queryTreeGrid()).not.toBeInTheDocument();
   expect(getGrid()).toHaveAttribute('aria-rowcount', '5');
