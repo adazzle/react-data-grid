@@ -77,7 +77,7 @@ function TestGrid({ groupBy }: { groupBy?: string[] }) {
 }
 
 function setup(groupBy?: string[]) {
-  return render(
+  render(
     <StrictMode>
       <TestGrid groupBy={groupBy} />
     </StrictMode>
