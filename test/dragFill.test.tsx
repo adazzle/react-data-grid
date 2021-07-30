@@ -66,11 +66,8 @@ function DragFillTest({ allowDragFill = true }: { allowDragFill?: boolean }) {
     ];
   }, []);
 
-  function onFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
-    return targetRows.map((row) => ({
-      ...row,
-      [columnKey as keyof Row]: sourceRow[columnKey as keyof Row]
-    }));
+  function onFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
+    return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
   }
 
   return (
