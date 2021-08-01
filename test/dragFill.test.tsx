@@ -1,4 +1,4 @@
-import { StrictMode, useMemo, useState } from 'react';
+import { StrictMode, useState } from 'react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
@@ -11,20 +11,29 @@ interface Row {
   col2: string;
 }
 
-test('should not allow dragFill if onFill is undefined', () => {
-  render(<DragFillTest allowDragFill={false} />);
-  userEvent.click(getCellsAtRowIndex(0)[1]);
-  expect(document.querySelector('.rdg-cell-drag-handle')).not.toBeInTheDocument();
-});
+const columns: readonly Column<Row>[] = [
+  {
+    key: 'col1',
+    name: 'Col1',
+    editable: false
+  },
+  {
+    key: 'col2',
+    name: 'Col2',
+    editable: (row) => row.col1 !== 4,
+    editor() {
+      return null;
+    }
+  }
+];
 
-test('should allow dragFill if onFill is specified', () => {
-  render(<DragFillTest />);
-  userEvent.click(getCellsAtRowIndex(0)[1]);
-  userEvent.dblClick(document.querySelector('.rdg-cell-drag-handle')!);
-  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a1');
-  expect(getCellsAtRowIndex(2)[1]).toHaveTextContent('a1');
-  expect(getCellsAtRowIndex(3)[1]).toHaveTextContent('a4'); // readonly cell
-});
+function setup(allowDragFill = true) {
+  render(
+    <StrictMode>
+      <DragFillTest allowDragFill={allowDragFill} />
+    </StrictMode>
+  );
+}
 
 function DragFillTest({ allowDragFill = true }: { allowDragFill?: boolean }) {
   const [rows, setRows] = useState((): readonly Row[] => {
@@ -48,36 +57,31 @@ function DragFillTest({ allowDragFill = true }: { allowDragFill?: boolean }) {
     ];
   });
 
-  const columns = useMemo((): readonly Column<Row>[] => {
-    return [
-      {
-        key: 'col1',
-        name: 'Col1',
-        editable: false
-      },
-      {
-        key: 'col2',
-        name: 'Col2',
-        editable: (row) => row.col1 !== 4,
-        editor() {
-          return null;
-        }
-      }
-    ];
-  }, []);
-
   function onFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
   }
 
   return (
-    <StrictMode>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        onRowsChange={setRows}
-        onFill={allowDragFill ? onFill : undefined}
-      />
-    </StrictMode>
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      onRowsChange={setRows}
+      onFill={allowDragFill ? onFill : undefined}
+    />
   );
 }
+
+test('should not allow dragFill if onFill is undefined', () => {
+  setup(false);
+  userEvent.click(getCellsAtRowIndex(0)[1]);
+  expect(document.querySelector('.rdg-cell-drag-handle')).not.toBeInTheDocument();
+});
+
+test('should allow dragFill if onFill is specified', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(0)[1]);
+  userEvent.dblClick(document.querySelector('.rdg-cell-drag-handle')!);
+  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a1');
+  expect(getCellsAtRowIndex(2)[1]).toHaveTextContent('a1');
+  expect(getCellsAtRowIndex(3)[1]).toHaveTextContent('a4'); // readonly cell
+});
