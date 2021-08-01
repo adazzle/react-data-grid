@@ -1,4 +1,4 @@
-import { StrictMode, useMemo, useState } from 'react';
+import { StrictMode, useState } from 'react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
@@ -11,49 +11,23 @@ interface Row {
   col2: string;
 }
 
+const columns: readonly Column<Row>[] = [
+  {
+    key: 'col1',
+    name: 'Col1',
+    editable: false
+  },
+  {
+    key: 'col2',
+    name: 'Col2',
+    editable: (row) => row.col1 !== 3,
+    editor() {
+      return null;
+    }
+  }
+];
+
 const copyCellClassName = 'rdg-cell-copied';
-
-test('should not allow copy/paste if onPaste is undefined', () => {
-  render(<CopyPasteTest allowCopyPaste={false} />);
-  userEvent.click(getCellsAtRowIndex(0)[1]);
-  copySelectedCell();
-  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
-  pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a2');
-});
-
-test('should allow copy/paste if onPaste is specified', () => {
-  render(<CopyPasteTest />);
-  userEvent.click(getCellsAtRowIndex(0)[1]);
-  copySelectedCell();
-  expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
-  pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a1');
-});
-
-test('should not allow paste on readonly cells', () => {
-  render(<CopyPasteTest />);
-  userEvent.click(getCellsAtRowIndex(1)[1]);
-  copySelectedCell();
-  expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
-  pasteSelectedCell();
-  expect(getCellsAtRowIndex(2)[1]).toHaveTextContent('a3');
-});
-
-test('should cancel copy/paste on escape', () => {
-  render(<CopyPasteTest />);
-  userEvent.click(getCellsAtRowIndex(0)[1]);
-  copySelectedCell();
-  expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{escape}');
-  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
-  pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a2');
-});
 
 function CopyPasteTest({ allowCopyPaste = true }: { allowCopyPaste?: boolean }) {
   const [rows, setRows] = useState((): readonly Row[] => {
@@ -73,36 +47,24 @@ function CopyPasteTest({ allowCopyPaste = true }: { allowCopyPaste?: boolean }) 
     ];
   });
 
-  const columns = useMemo((): readonly Column<Row>[] => {
-    return [
-      {
-        key: 'col1',
-        name: 'Col1',
-        editable: false
-      },
-      {
-        key: 'col2',
-        name: 'Col2',
-        editable: (row) => row.col1 !== 3,
-        editor() {
-          return null;
-        }
-      }
-    ];
-  }, []);
-
   function onPaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>) {
     return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
   return (
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      onRowsChange={setRows}
+      onPaste={allowCopyPaste ? onPaste : undefined}
+    />
+  );
+}
+
+function setup(allowCopyPaste = true) {
+  render(
     <StrictMode>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        onRowsChange={setRows}
-        onPaste={allowCopyPaste ? onPaste : undefined}
-      />
+      <CopyPasteTest allowCopyPaste={allowCopyPaste} />
     </StrictMode>
   );
 }
@@ -120,3 +82,45 @@ function pasteSelectedCell() {
     ctrlKey: true
   });
 }
+
+test('should not allow copy/paste if onPaste is undefined', () => {
+  setup(false);
+  userEvent.click(getCellsAtRowIndex(0)[1]);
+  copySelectedCell();
+  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
+  userEvent.type(document.activeElement!, '{arrowdown}');
+  pasteSelectedCell();
+  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a2');
+});
+
+test('should allow copy/paste if onPaste is specified', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(0)[1]);
+  copySelectedCell();
+  expect(getSelectedCell()).toHaveClass(copyCellClassName);
+  userEvent.type(document.activeElement!, '{arrowdown}');
+  pasteSelectedCell();
+  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a1');
+});
+
+test('should not allow paste on readonly cells', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(1)[1]);
+  copySelectedCell();
+  expect(getSelectedCell()).toHaveClass(copyCellClassName);
+  userEvent.type(document.activeElement!, '{arrowdown}');
+  pasteSelectedCell();
+  expect(getCellsAtRowIndex(2)[1]).toHaveTextContent('a3');
+});
+
+test('should cancel copy/paste on escape', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(0)[1]);
+  copySelectedCell();
+  expect(getSelectedCell()).toHaveClass(copyCellClassName);
+  userEvent.type(document.activeElement!, '{escape}');
+  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
+  userEvent.type(document.activeElement!, '{arrowdown}');
+  pasteSelectedCell();
+  expect(getCellsAtRowIndex(1)[1]).toHaveTextContent('a2');
+});
