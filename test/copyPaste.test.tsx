@@ -7,40 +7,36 @@ import { fireEvent, render } from '@testing-library/react';
 import { getCellsAtRowIndex, getSelectedCell } from './utils';
 
 interface Row {
-  col1: number;
-  col2: string;
+  col: string;
 }
 
 const columns: readonly Column<Row>[] = [
   {
-    key: 'col2',
-    name: 'Col2',
-    editable: (row) => row.col1 !== 3,
+    key: 'col',
+    name: 'Col',
+    editable: (row) => row.col !== 'a3',
     editor() {
       return null;
     }
   }
 ];
 
+const initialRows: readonly Row[] = [
+  {
+    col: 'a1'
+  },
+  {
+    col: 'a2'
+  },
+  {
+    col: 'a3'
+  }
+];
+
 const copyCellClassName = 'rdg-cell-copied';
 
 function CopyPasteTest({ allowCopyPaste = true }: { allowCopyPaste?: boolean }) {
-  const [rows, setRows] = useState((): readonly Row[] => {
-    return [
-      {
-        col1: 1,
-        col2: 'a1'
-      },
-      {
-        col1: 2,
-        col2: 'a2'
-      },
-      {
-        col1: 3,
-        col2: 'a3'
-      }
-    ];
-  });
+  const [rows, setRows] = useState(initialRows);
 
   function onPaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>) {
     return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
@@ -106,6 +102,16 @@ test('should not allow paste on readonly cells', () => {
   userEvent.type(document.activeElement!, '{arrowdown}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
+});
+
+test('should allow copying a readonly cell, and pasting the value into a writable cell', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(2)[0]);
+  copySelectedCell();
+  expect(getSelectedCell()).toHaveClass(copyCellClassName);
+  userEvent.type(document.activeElement!, '{arrowup}');
+  pasteSelectedCell();
+  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a3');
 });
 
 test('should cancel copy/paste on escape', () => {
