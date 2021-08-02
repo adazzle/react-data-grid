@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, FillEvent } from '../src';
-import { render } from '@testing-library/react';
-import { getCellsAtRowIndex } from './utils';
+import { fireEvent, render } from '@testing-library/react';
+import { getCellsAtRowIndex, getRows } from './utils';
 
 interface Row {
   col: string;
@@ -61,17 +61,53 @@ function DragFillTest({ allowDragFill = true }: { allowDragFill?: boolean }) {
   );
 }
 
+function getDragHandle() {
+  return document.querySelector('.rdg-cell-drag-handle');
+}
+
 test('should not allow dragFill if onFill is undefined', () => {
   setup(false);
   userEvent.click(getCellsAtRowIndex(0)[0]);
-  expect(document.querySelector('.rdg-cell-drag-handle')).not.toBeInTheDocument();
+  expect(getDragHandle()).not.toBeInTheDocument();
 });
 
 test('should allow dragFill if onFill is specified', () => {
   setup();
   userEvent.click(getCellsAtRowIndex(0)[0]);
-  userEvent.dblClick(document.querySelector('.rdg-cell-drag-handle')!);
+  userEvent.dblClick(getDragHandle()!);
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
+});
+
+test('should update single row using mouse', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(0)[0]);
+  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
+  fireEvent.mouseEnter(getRows()[1]);
+  fireEvent.mouseUp(window);
+  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
+  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
+});
+
+test('should update multiple rows using mouse', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(0)[0]);
+  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
+  fireEvent.mouseEnter(getRows()[3]);
+  fireEvent.mouseUp(window);
+  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
+  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
+  expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
+});
+
+test('should allow drag up using mouse', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(3)[0]);
+  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
+  fireEvent.mouseEnter(getRows()[0]);
+  fireEvent.mouseUp(window);
+  expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('a4');
+  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a4');
+  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a4');
 });
