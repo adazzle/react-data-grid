@@ -255,13 +255,14 @@ function DataGrid<R, SR, K extends Key>(
   );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
-  const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
+  const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
 
   /**
    * refs
    */
   const focusSinkRef = useRef<HTMLDivElement>(null);
   const prevSelectedPosition = useRef(selectedPosition);
+  const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const isCellFocusable = useRef(false);
 
@@ -413,6 +414,11 @@ function DataGrid<R, SR, K extends Key>(
     },
     [onColumnResize]
   );
+
+  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
+    setOverRowIdx(rowIdx);
+    latestDraggedOverRowIdx.current = rowIdx;
+  }, []);
 
   /**
    * event handlers
@@ -906,6 +912,7 @@ function DataGrid<R, SR, K extends Key>(
             columns={columns}
             selectedPosition={selectedPosition}
             isCellEditable={isCellEditable}
+            latestDraggedOverRowIdx={latestDraggedOverRowIdx}
             onRowsChange={onRowsChange}
             onFill={onFill}
             setDragging={setDragging}
