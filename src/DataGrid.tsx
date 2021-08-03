@@ -906,6 +906,7 @@ function DataGrid<R, SR, K extends Key>(
             columns={columns}
             selectedPosition={selectedPosition}
             isCellEditable={isCellEditable}
+            draggedOverRowIdx={draggedOverRowIdx}
             onRowsChange={onRowsChange}
             onFill={onFill}
             setDragging={setDragging}

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import type { CalculatedColumn, FillEvent, Position } from './types';
@@ -25,22 +26,29 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   columns: readonly CalculatedColumn<R, SR>[];
   selectedPosition: SelectCellState;
+  draggedOverRowIdx: number | undefined;
   isCellEditable: (position: Position) => boolean;
   onFill: (event: FillEvent<R>) => R;
   setDragging: (isDragging: boolean) => void;
-  setDraggedOverRowIdx: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setDraggedOverRowIdx: (overRowIdx: number | undefined) => void;
 }
 
 export default function DragHandle<R, SR>({
   rows,
   columns,
   selectedPosition,
+  draggedOverRowIdx,
   isCellEditable,
   onRowsChange,
   onFill,
   setDragging,
   setDraggedOverRowIdx
 }: Props<R, SR>) {
+  const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
+  useEffect(() => {
+    latestDraggedOverRowIdx.current = draggedOverRowIdx;
+  });
+
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (event.buttons !== 1) return;
     setDragging(true);
@@ -63,15 +71,14 @@ export default function DragHandle<R, SR>({
   }
 
   function handleDragEnd() {
-    setDraggedOverRowIdx((overRowIdx) => {
-      if (overRowIdx === undefined) return undefined;
+    const overRowIdx = latestDraggedOverRowIdx.current;
+    if (overRowIdx === undefined) return;
 
-      const { rowIdx } = selectedPosition;
-      const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
-      const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
-      updateRows(startRowIndex, endRowIndex);
-      return undefined;
-    });
+    const { rowIdx } = selectedPosition;
+    const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
+    const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
+    updateRows(startRowIndex, endRowIndex);
+    setDraggedOverRowIdx(undefined);
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
