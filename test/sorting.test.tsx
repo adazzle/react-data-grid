@@ -37,7 +37,7 @@ function setup() {
 }
 
 function testSortColumns(expectedValue: readonly SortColumn[]) {
-  expect(JSON.parse(screen.getByTestId('sortColumnsValue')!.textContent!)).toStrictEqual(
+  expect(JSON.parse(screen.getByTestId('sortColumnsValue').textContent!)).toStrictEqual(
     expectedValue
   );
 }
