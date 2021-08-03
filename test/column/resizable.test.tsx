@@ -6,10 +6,10 @@ const pointerId = 1;
 
 // https://github.com/jsdom/jsdom/issues/2527
 class PointerEvent extends Event {
-  pointerId: number;
-  pointerType: string;
-  clientX: number;
-  buttons: number;
+  pointerId: number | undefined;
+  pointerType: string | undefined;
+  clientX: number | undefined;
+  buttons: number | undefined;
 
   constructor(
     type: string,
