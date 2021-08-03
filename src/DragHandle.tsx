@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { CalculatedColumn, FillEvent } from './types';
+import type { CalculatedColumn, FillEvent, Position } from './types';
 import type { DataGridProps, SelectCellState } from './DataGrid';
 
 const cellDragHandle = css`
@@ -25,7 +25,8 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   columns: readonly CalculatedColumn<R, SR>[];
   selectedPosition: SelectCellState;
-  onFill: (event: FillEvent<R>) => R[];
+  isCellEditable: (position: Position) => boolean;
+  onFill: (event: FillEvent<R>) => R;
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
@@ -34,6 +35,7 @@ export default function DragHandle<R, SR>({
   rows,
   columns,
   selectedPosition,
+  isCellEditable,
   onRowsChange,
   onFill,
   setDragging,
@@ -64,47 +66,32 @@ export default function DragHandle<R, SR>({
     setDraggedOverRowIdx((overRowIdx) => {
       if (overRowIdx === undefined) return undefined;
 
-      const { idx, rowIdx } = selectedPosition;
-      const sourceRow = rows[rowIdx];
+      const { rowIdx } = selectedPosition;
       const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
       const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
-      const targetRows = rows.slice(startRowIndex, endRowIndex);
-      const column = columns[idx];
-      const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
-      const updatedRows = [...rows];
-      const indexes: number[] = [];
-
-      for (let i = startRowIndex; i < endRowIndex; i++) {
-        const targetRowIdx = i - startRowIndex;
-        if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
-          updatedRows[i] = updatedTargetRows[targetRowIdx];
-          indexes.push(i);
-        }
-      }
-
-      if (indexes.length > 0) {
-        onRowsChange?.(updatedRows, { indexes, column });
-      }
-
+      updateRows(startRowIndex, endRowIndex);
       return undefined;
     });
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     event.stopPropagation();
+    updateRows(selectedPosition.rowIdx + 1, rows.length);
+  }
+
+  function updateRows(startRowIdx: number, endRowIdx: number) {
     const { idx, rowIdx } = selectedPosition;
-    const sourceRow = rows[rowIdx];
-    const targetRows = rows.slice(rowIdx + 1);
     const column = columns[idx];
-    const updatedTargetRows = onFill({ columnKey: column.key, sourceRow, targetRows });
+    const sourceRow = rows[rowIdx];
     const updatedRows = [...rows];
     const indexes: number[] = [];
-
-    for (let i = rowIdx + 1; i < updatedRows.length; i++) {
-      const targetRowIdx = i - rowIdx - 1;
-      if (updatedRows[i] !== updatedTargetRows[targetRowIdx]) {
-        updatedRows[i] = updatedTargetRows[targetRowIdx];
-        indexes.push(i);
+    for (let i = startRowIdx; i < endRowIdx; i++) {
+      if (isCellEditable({ rowIdx: i, idx })) {
+        const updatedRow = onFill({ columnKey: column.key, sourceRow, targetRow: rows[i] });
+        if (updatedRow !== rows[i]) {
+          updatedRows[i] = updatedRow;
+          indexes.push(i);
+        }
       }
     }
 

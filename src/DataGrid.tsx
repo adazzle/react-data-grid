@@ -141,7 +141,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rowGrouper?: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | null;
   expandedGroupIds?: ReadonlySet<unknown> | null;
   onExpandedGroupIdsChange?: ((expandedGroupIds: Set<unknown>) => void) | null;
-  onFill?: ((event: FillEvent<R>) => R[]) | null;
+  onFill?: ((event: FillEvent<R>) => R) | null;
   onPaste?: ((event: PasteEvent<R>) => R) | null;
 
   /**
@@ -905,6 +905,7 @@ function DataGrid<R, SR, K extends Key>(
             rows={rawRows}
             columns={columns}
             selectedPosition={selectedPosition}
+            isCellEditable={isCellEditable}
             onRowsChange={onRowsChange}
             onFill={onFill}
             setDragging={setDragging}

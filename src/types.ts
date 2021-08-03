@@ -167,7 +167,7 @@ export interface SelectRowEvent<TRow> {
 export interface FillEvent<TRow> {
   columnKey: string;
   sourceRow: TRow;
-  targetRows: TRow[];
+  targetRow: TRow;
 }
 
 export interface PasteEvent<TRow> {
