@@ -64,11 +64,11 @@ test('multi column sort', () => {
 
   // aria-sort is only added for single sort
   expect(headerCell1).not.toHaveAttribute('aria-sort');
-  expect(headerCell1).toHaveTextContent('colA1'); // priority
+  expect(headerCell1).toHaveTextContent('1'); // priority
   expect(headerCell2).not.toHaveAttribute('aria-sort');
-  expect(headerCell2).toHaveTextContent('colB2');
+  expect(headerCell2).toHaveTextContent('2');
   expect(headerCell3).not.toHaveAttribute('aria-sort');
-  expect(headerCell3).toHaveTextContent('colC3');
+  expect(headerCell3).toHaveTextContent('3');
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colB', direction: 'ASC' },
@@ -86,7 +86,7 @@ test('multi column sort', () => {
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colC', direction: 'ASC' }
   ]);
-  expect(headerCell3).toHaveTextContent('colC2');
+  expect(headerCell3).toHaveTextContent('2');
 
   // clicking on a column without ctrlKey should remove multisort
   userEvent.click(headerCell2.firstElementChild!);
