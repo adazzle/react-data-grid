@@ -29,7 +29,7 @@ function TestGrid() {
 }
 
 function setup() {
-  return render(
+  render(
     <StrictMode>
       <TestGrid />
     </StrictMode>
