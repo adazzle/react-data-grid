@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import type { CalculatedColumn, FillEvent, Position } from './types';
@@ -26,7 +25,7 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   columns: readonly CalculatedColumn<R, SR>[];
   selectedPosition: SelectCellState;
-  draggedOverRowIdx: number | undefined;
+  latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
   isCellEditable: (position: Position) => boolean;
   onFill: (event: FillEvent<R>) => R;
   setDragging: (isDragging: boolean) => void;
@@ -37,18 +36,13 @@ export default function DragHandle<R, SR>({
   rows,
   columns,
   selectedPosition,
-  draggedOverRowIdx,
+  latestDraggedOverRowIdx,
   isCellEditable,
   onRowsChange,
   onFill,
   setDragging,
   setDraggedOverRowIdx
 }: Props<R, SR>) {
-  const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
-  useEffect(() => {
-    latestDraggedOverRowIdx.current = draggedOverRowIdx;
-  });
-
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (event.buttons !== 1) return;
     setDragging(true);
