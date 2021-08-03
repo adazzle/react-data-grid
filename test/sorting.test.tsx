@@ -7,8 +7,9 @@ import { render, screen } from '@testing-library/react';
 
 const columns: readonly Column<unknown>[] = [
   { key: 'colA', name: 'colA' },
-  { key: 'colB', name: 'colB' },
-  { key: 'colC', name: 'colC' }
+  { key: 'colB', name: 'colB', sortDescendingFirst: true },
+  { key: 'colC', name: 'colC' },
+  { key: 'colD', name: 'colD', sortable: false }
 ];
 
 function TestGrid() {
@@ -42,17 +43,25 @@ function testSortColumns(expectedValue: readonly SortColumn[]) {
   );
 }
 
+test('should not sort if sortable is false', () => {
+  setup();
+  const headerCell = getHeaderCells()[3];
+  userEvent.click(headerCell);
+  expect(headerCell).not.toHaveAttribute('aria-sort');
+  testSortColumns([]);
+});
+
 test('single column sort', () => {
   setup();
-  const headerCell = getHeaderCells()[1];
+  const headerCell = getHeaderCells()[0];
   userEvent.click(headerCell.firstElementChild!);
   expect(headerCell).toHaveAttribute('aria-sort', 'ascending');
   // priority is not shown for single sort
   expect(headerCell).not.toHaveTextContent('1');
-  testSortColumns([{ columnKey: 'colB', direction: 'ASC' }]);
+  testSortColumns([{ columnKey: 'colA', direction: 'ASC' }]);
   userEvent.click(headerCell.firstElementChild!);
   expect(headerCell).toHaveAttribute('aria-sort', 'descending');
-  testSortColumns([{ columnKey: 'colB', direction: 'DESC' }]);
+  testSortColumns([{ columnKey: 'colA', direction: 'DESC' }]);
   userEvent.click(headerCell.firstElementChild!);
   expect(headerCell).not.toHaveAttribute('aria-sort');
   testSortColumns([]);
@@ -74,14 +83,14 @@ test('multi column sort', () => {
   expect(headerCell3).toHaveTextContent('3');
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
-    { columnKey: 'colB', direction: 'ASC' },
+    { columnKey: 'colB', direction: 'DESC' },
     { columnKey: 'colC', direction: 'ASC' }
   ]);
 
   userEvent.click(headerCell2.firstElementChild!, { ctrlKey: true });
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
-    { columnKey: 'colB', direction: 'DESC' },
+    { columnKey: 'colB', direction: 'ASC' },
     { columnKey: 'colC', direction: 'ASC' }
   ]);
   userEvent.click(headerCell2.firstElementChild!, { ctrlKey: true });
@@ -93,7 +102,7 @@ test('multi column sort', () => {
 
   // clicking on a column without ctrlKey should remove multisort
   userEvent.click(headerCell2.firstElementChild!);
-  testSortColumns([{ columnKey: 'colB', direction: 'ASC' }]);
+  testSortColumns([{ columnKey: 'colB', direction: 'DESC' }]);
   expect(headerCell2).toHaveAttribute('aria-sort');
   expect(headerCell2).not.toHaveTextContent('2');
 });
@@ -105,6 +114,6 @@ test('multi column sort with metakey', () => {
   userEvent.click(headerCell2.firstElementChild!, { metaKey: true });
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
-    { columnKey: 'colB', direction: 'ASC' }
+    { columnKey: 'colB', direction: 'DESC' }
   ]);
 });
