@@ -5,7 +5,7 @@ import { StrictMode, useState } from 'react';
 import DataGrid from '../src';
 import { render, screen } from '@testing-library/react';
 
-const columns: readonly Column<SortColumn>[] = [
+const columns: readonly Column<unknown>[] = [
   { key: 'colA', name: 'colA' },
   { key: 'colB', name: 'colB' },
   { key: 'colC', name: 'colC' }
