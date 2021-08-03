@@ -53,6 +53,9 @@ test('single column sort', () => {
   userEvent.click(headerCell.firstElementChild!);
   expect(headerCell).toHaveAttribute('aria-sort', 'descending');
   testSortColumns([{ columnKey: 'colB', direction: 'DESC' }]);
+  userEvent.click(headerCell.firstElementChild!);
+  expect(headerCell).not.toHaveAttribute('aria-sort');
+  testSortColumns([]);
 });
 
 test('multi column sort', () => {
