@@ -104,7 +104,7 @@ test('should not resize column if cursor offset is not within the allowed range'
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
 });
 
-test('should resize column if cursor offset is not within the allowed range', () => {
+test('should resize column if cursor offset is within the allowed range', () => {
   setup({ columns, rows: [] });
   const [, col1] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
