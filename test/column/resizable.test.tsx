@@ -90,48 +90,40 @@ const columns: readonly Column<Row>[] = [
 
 test('should not resize column if resizable is not specified', () => {
   setup({ columns, rows: [] });
-  const [column] = getHeaderCells();
+  const [col1] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
-  resize({ column, clientXStart: 95, clientXEnd: 200, rect: { right: 100, left: 0 } });
+  resize({ column: col1, clientXStart: 95, clientXEnd: 200, rect: { right: 100, left: 0 } });
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
 });
 
 test('should not resize column if cursor offset is not within the allowed range', () => {
   setup({ columns, rows: [] });
-  const [, col1] = getHeaderCells();
+  const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
-  resize({ column: col1, clientXStart: 288, clientXEnd: 250, rect: { right: 300, left: 100 } });
+  resize({ column: col2, clientXStart: 288, clientXEnd: 250, rect: { right: 300, left: 100 } });
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
 });
 
 test('should resize column if cursor offset is within the allowed range', () => {
   setup({ columns, rows: [] });
-  const [, col1] = getHeaderCells();
+  const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
-  resize({ column: col1, clientXStart: 289, clientXEnd: 250, rect: { right: 300, left: 100 } });
+  resize({ column: col2, clientXStart: 289, clientXEnd: 250, rect: { right: 300, left: 100 } });
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 161px' });
-});
-
-test('should resize column if resizable is true', () => {
-  setup({ columns, rows: [] });
-  const [, col1] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
-  resize({ column: col1, clientXStart: 295, clientXEnd: 400, rect: { right: 300, left: 100 } });
-  expect(getGrid()).toHaveStyle({ '--template-columns': '100px 305px' });
 });
 
 test('should use the maxWidth if specified', () => {
   setup({ columns, rows: [] });
-  const [, col1] = getHeaderCells();
+  const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
-  resize({ column: col1, clientXStart: 295, clientXEnd: 1000, rect: { right: 300, left: 100 } });
+  resize({ column: col2, clientXStart: 295, clientXEnd: 1000, rect: { right: 300, left: 100 } });
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 400px' });
 });
 
 test('should use the minWidth if specified', () => {
   setup({ columns, rows: [] });
-  const [, col1] = getHeaderCells();
+  const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 200px' });
-  resize({ column: col1, clientXStart: 295, clientXEnd: 100, rect: { right: 300, left: 100 } });
+  resize({ column: col2, clientXStart: 295, clientXEnd: 100, rect: { right: 300, left: 100 } });
   expect(getGrid()).toHaveStyle({ '--template-columns': '100px 100px' });
 });
