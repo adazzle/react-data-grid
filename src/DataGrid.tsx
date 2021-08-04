@@ -629,11 +629,10 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (!isCellWithinBounds(selectedPosition)) return;
+    if (!isCellWithinBounds(selectedPosition) || selectedPosition.idx === -1) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
     const { key } = event;
-    const column = columns[selectedPosition.idx];
 
     if (selectedPosition.mode === 'EDIT') {
       if (key === 'Enter') {
@@ -644,6 +643,7 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
+    const column = columns[selectedPosition.idx];
     column.editorOptions?.onCellKeyDown?.(event);
     if (event.isDefaultPrevented()) return;
 
