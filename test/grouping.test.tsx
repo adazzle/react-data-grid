@@ -3,8 +3,17 @@ import { groupBy as rowGrouper } from 'lodash';
 import type { Column } from '../src';
 import DataGrid, { SelectColumn } from '../src';
 import { render, screen, within } from '@testing-library/react';
-import { getGrid, queryGrid, getRows, queryTreeGrid, getTreeGrid, getHeaderCells } from './utils';
+import {
+  getGrid,
+  queryGrid,
+  getRows,
+  queryTreeGrid,
+  getTreeGrid,
+  getHeaderCells,
+  getCellsAtRowIndex
+} from './utils';
 import userEvent from '@testing-library/user-event';
+import type { Position } from '../src/types';
 
 interface Row {
   id: number;
@@ -60,19 +69,24 @@ function TestGrid({ groupBy }: { groupBy?: string[] }) {
   const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
     () => new Set<unknown>([])
   );
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
 
   return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowKeyGetter={rowKeyGetter}
-      groupBy={groupBy}
-      rowGrouper={rowGrouper}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      expandedGroupIds={expandedGroupIds}
-      onExpandedGroupIdsChange={setExpandedGroupIds}
-    />
+    <>
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        rowKeyGetter={rowKeyGetter}
+        groupBy={groupBy}
+        rowGrouper={rowGrouper}
+        onSelectedCellChange={setSelectedPosition}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        expandedGroupIds={expandedGroupIds}
+        onExpandedGroupIdsChange={setExpandedGroupIds}
+      />
+      <div data-testid="selectedPosition">{JSON.stringify(selectedPosition)}</div>
+    </>
   );
 }
 
@@ -206,4 +220,60 @@ test('should select rows in a group', () => {
   userEvent.click(within(groupCell2.parentElement!).getByLabelText('Select Group'));
   selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);
+});
+
+test('cell navigation in a treegrid', () => {
+  setup(['country', 'year']);
+  expect(getRows()).toHaveLength(2);
+
+  // expand group
+  const groupCell1 = screen.getByRole('gridcell', { name: 'USA' });
+  userEvent.click(groupCell1);
+  const groupCell2 = screen.getByRole('gridcell', { name: '2021' });
+  userEvent.click(groupCell2);
+
+  // select cell
+  userEvent.click(getCellsAtRowIndex(4)[1]);
+  expect(getCellsAtRowIndex(4)[1]).toHaveAttribute('aria-selected', 'true');
+
+  // select the previous cell
+  userEvent.type(document.activeElement!, '{arrowleft}');
+  expect(getCellsAtRowIndex(4)[1]).toHaveAttribute('aria-selected', 'false');
+  expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'true');
+
+  // if the first cell is selected then arrowleft should select the row
+  userEvent.type(document.activeElement!, '{arrowleft}');
+  expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'false');
+  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
+    rowIdx: 3,
+    idx: -1
+  });
+
+  // if the row is selected then arrowright should select the first cell on the same row
+  userEvent.type(document.activeElement!, '{arrowright}');
+  expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'true');
+
+  userEvent.type(document.activeElement!, '{arrowleft}{arrowup}');
+
+  expect(getRows()).toHaveLength(5);
+
+  // left arrow should collapse the group
+  userEvent.type(document.activeElement!, '{arrowleft}');
+  expect(getRows()).toHaveLength(4);
+
+  // right arrow should expand the group
+  userEvent.type(document.activeElement!, '{arrowright}');
+  expect(getRows()).toHaveLength(5);
+
+  // left arrow on a collapsed group should select the parent group
+  userEvent.type(document.activeElement!, '{arrowleft}{arrowleft}');
+  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
+    rowIdx: 0,
+    idx: -1
+  });
+
+  // collpase parent group
+  userEvent.type(document.activeElement!, '{arrowleft}');
+  expect(screen.queryByRole('gridcell', { name: '2021' })).not.toBeInTheDocument();
+  expect(getRows()).toHaveLength(2);
 });
