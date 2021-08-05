@@ -23,7 +23,9 @@ import type { CellRendererProps, EditorProps } from './types';
  */
 
 const cellEditing = css`
-  padding: 0;
+  &.rdg-cell {
+    padding: 0;
+  }
 `;
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
