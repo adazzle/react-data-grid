@@ -18,18 +18,12 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function RowSelectionTest({
-  initialRows,
-  setRowKeyGetter
-}: {
-  initialRows: readonly Row[];
-  setRowKeyGetter: boolean;
-}) {
+function RowSelectionTest({ initialRows }: { initialRows: readonly Row[] }) {
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(new Set());
 
   return (
     <DataGrid
-      rowKeyGetter={setRowKeyGetter ? rowKeyGetter : undefined}
+      rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={initialRows}
       selectedRows={selectedRows}
@@ -38,10 +32,10 @@ function RowSelectionTest({
   );
 }
 
-function setup(setRowKeyGetter = true, initialRows = defaultRows) {
+function setup(initialRows = defaultRows) {
   render(
     <StrictMode>
-      <RowSelectionTest initialRows={initialRows} setRowKeyGetter={setRowKeyGetter} />
+      <RowSelectionTest initialRows={initialRows} />
     </StrictMode>
   );
 }
@@ -103,7 +97,7 @@ test('select/deselect all rows when header checkbox is clicked', () => {
 });
 
 test('header checkbox is not checked when there are no rows', () => {
-  setup(true, []);
+  setup([]);
   expect(screen.getByLabelText('Select All')).not.toBeChecked();
 });
 

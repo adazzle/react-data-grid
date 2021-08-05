@@ -34,7 +34,7 @@ test('rowHeight is number', () => {
   expect(grid.scrollTop).toBe(0);
 
   // Go to the last cell
-  userEvent.type(document.activeElement!, '{ctrl}{end}');
+  userEvent.keyboard('{ctrl}{end}');
   // scrollTop = 2000 (totalRowHeight) + 40(headerRowHeight)- 1080(clientHeight)
   expect(grid.scrollTop).toBe(960);
 });
@@ -54,7 +54,7 @@ test('rowHeight is function', () => {
   expect(grid.scrollTop).toBe(0);
 
   // Go to the last cell
-  userEvent.type(document.activeElement!, '{ctrl}{end}');
+  userEvent.keyboard('{ctrl}{end}');
   // scrollTop = 2980 (totalRowHeight) + 35(headerRowHeight)- 1080(clientHeight)
   expect(grid.scrollTop).toBe(1935);
 });

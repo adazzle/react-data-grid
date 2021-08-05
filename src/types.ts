@@ -15,7 +15,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly maxWidth?: number | null;
   readonly cellClass?: string | ((row: TRow) => string | undefined | null) | null;
   readonly headerCellClass?: string | null;
-  readonly summaryCellClass?: string | ((row: TSummaryRow) => string) | null;
+  readonly summaryCellClass?: string | ((row: TSummaryRow) => string | undefined | null) | null;
   /** Formatter to be used to render the cell content */
   readonly formatter?: React.ComponentType<FormatterProps<TRow, TSummaryRow>> | null;
   /** Formatter to be used to render the summary cell content */

@@ -154,6 +154,23 @@ test('should toggle group when group cell is clicked', () => {
   expect(getRows()).toHaveLength(3);
 });
 
+test('should toggle group using keyboard', () => {
+  setup(['year']);
+  expect(getRows()).toHaveLength(3);
+  const groupCell = screen.getByRole('gridcell', { name: '2021' });
+  userEvent.click(groupCell);
+  expect(getRows()).toHaveLength(5);
+  // clicking on the group cell selects the row
+  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
+    rowIdx: 1,
+    idx: -1
+  });
+  userEvent.keyboard('{arrowright}{arrowright}{enter}');
+  expect(getRows()).toHaveLength(3);
+  userEvent.keyboard('{enter}');
+  expect(getRows()).toHaveLength(5);
+});
+
 test('should set aria-attributes', () => {
   setup(['year', 'country']);
 
@@ -237,12 +254,12 @@ test('cell navigation in a treegrid', () => {
   expect(getCellsAtRowIndex(4)[1]).toHaveAttribute('aria-selected', 'true');
 
   // select the previous cell
-  userEvent.type(document.activeElement!, '{arrowleft}');
+  userEvent.keyboard('{arrowleft}');
   expect(getCellsAtRowIndex(4)[1]).toHaveAttribute('aria-selected', 'false');
   expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'true');
 
   // if the first cell is selected then arrowleft should select the row
-  userEvent.type(document.activeElement!, '{arrowleft}');
+  userEvent.keyboard('{arrowleft}');
   expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'false');
   expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
     rowIdx: 3,
@@ -250,30 +267,30 @@ test('cell navigation in a treegrid', () => {
   });
 
   // if the row is selected then arrowright should select the first cell on the same row
-  userEvent.type(document.activeElement!, '{arrowright}');
+  userEvent.keyboard('{arrowright}');
   expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'true');
 
-  userEvent.type(document.activeElement!, '{arrowleft}{arrowup}');
+  userEvent.keyboard('{arrowleft}{arrowup}');
 
   expect(getRows()).toHaveLength(5);
 
   // left arrow should collapse the group
-  userEvent.type(document.activeElement!, '{arrowleft}');
+  userEvent.keyboard('{arrowleft}');
   expect(getRows()).toHaveLength(4);
 
   // right arrow should expand the group
-  userEvent.type(document.activeElement!, '{arrowright}');
+  userEvent.keyboard('{arrowright}');
   expect(getRows()).toHaveLength(5);
 
   // left arrow on a collapsed group should select the parent group
-  userEvent.type(document.activeElement!, '{arrowleft}{arrowleft}');
+  userEvent.keyboard('{arrowleft}{arrowleft}');
   expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
     rowIdx: 0,
     idx: -1
   });
 
   // collpase parent group
-  userEvent.type(document.activeElement!, '{arrowleft}');
+  userEvent.keyboard('{arrowleft}');
   expect(screen.queryByRole('gridcell', { name: '2021' })).not.toBeInTheDocument();
   expect(getRows()).toHaveLength(2);
 });

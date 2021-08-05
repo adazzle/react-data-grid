@@ -79,7 +79,7 @@ test('should not allow copy/paste if onPaste is undefined', () => {
   userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
   expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
+  userEvent.keyboard('{arrowdown}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
 });
@@ -89,7 +89,7 @@ test('should allow copy/paste if onPaste is specified', () => {
   userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
   expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
+  userEvent.keyboard('{arrowdown}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
 });
@@ -99,7 +99,7 @@ test('should not allow paste on readonly cells', () => {
   userEvent.click(getCellsAtRowIndex(1)[0]);
   copySelectedCell();
   expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
+  userEvent.keyboard('{arrowdown}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
 });
@@ -109,7 +109,7 @@ test('should allow copying a readonly cell, and pasting the value into a writabl
   userEvent.click(getCellsAtRowIndex(2)[0]);
   copySelectedCell();
   expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowup}');
+  userEvent.keyboard('{arrowup}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a3');
 });
@@ -119,9 +119,9 @@ test('should cancel copy/paste on escape', () => {
   userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
   expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{escape}');
+  userEvent.keyboard('{escape}');
   expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  userEvent.type(document.activeElement!, '{arrowdown}');
+  userEvent.keyboard('{arrowdown}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
 });
