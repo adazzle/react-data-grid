@@ -60,14 +60,6 @@ function toggleSelection(rowIdx: number, shiftKey = false) {
   userEvent.click(within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select'), { shiftKey });
 }
 
-// https://github.com/testing-library/react-testing-library/issues/624
-test.skip('row selection should throw error if rowKeyGetter is not specified', () => {
-  setup(false);
-  expect(() => {
-    userEvent.click(within(getCellsAtRowIndex(0)[0]).getByLabelText('Select'));
-  }).toThrow();
-});
-
 test('toggle selection when checkbox is clicked', () => {
   setup();
   toggleSelection(0);
