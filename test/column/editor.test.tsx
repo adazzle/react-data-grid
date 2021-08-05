@@ -28,7 +28,7 @@ describe('Editor', () => {
     render(<EditorTest />);
     userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-    userEvent.type(document.activeElement!, '{enter}');
+    userEvent.keyboard('{enter}');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
     userEvent.type(document.activeElement!, '3');
     userEvent.tab();
