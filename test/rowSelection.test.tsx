@@ -18,36 +18,45 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-const initialRows: readonly Row[] = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const defaultRows: readonly Row[] = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 function rowKeyGetter(row: Row) {
   return row.id;
 }
 
 function RowSelectionTest({
-  rows,
+  initialRows,
   setRowKeyGetter
 }: {
-  rows: readonly Row[];
+  initialRows: readonly Row[];
   setRowKeyGetter: boolean;
 }) {
+  const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(new Set());
 
+  function filterRows() {
+    setRows(rows.length === 3 ? [rows[1]] : initialRows);
+  }
+
   return (
-    <DataGrid
-      rowKeyGetter={setRowKeyGetter ? rowKeyGetter : undefined}
-      columns={columns}
-      rows={rows}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-    />
+    <>
+      <button onClick={filterRows}>Filter</button>
+      <DataGrid
+        rowKeyGetter={setRowKeyGetter ? rowKeyGetter : undefined}
+        columns={columns}
+        rows={rows}
+        onRowsChange={setRows}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+      />
+    </>
   );
 }
 
-function setup(setRowKeyGetter = true, rows = initialRows) {
+function setup(setRowKeyGetter = true, initialRows = defaultRows) {
   render(
     <StrictMode>
-      <RowSelectionTest rows={rows} setRowKeyGetter={setRowKeyGetter} />
+      <RowSelectionTest initialRows={initialRows} setRowKeyGetter={setRowKeyGetter} />
     </StrictMode>
   );
 }
@@ -111,6 +120,30 @@ test('select/deselect all rows when header checkbox is clicked', () => {
 test('header checkbox is not selected when there are no rows', () => {
   setup(true, []);
   expect(screen.getByLabelText('Select All')).not.toBeChecked();
+});
+
+test('header checkbox should only toggle provided rows', () => {
+  setup();
+  const headerCheckbox = screen.getByLabelText('Select All');
+  const filterButton = screen.getByRole('button', { name: 'Filter' });
+  expect(headerCheckbox).not.toBeChecked();
+  expect(getRows()).toHaveLength(3);
+  userEvent.click(headerCheckbox);
+
+  testSelection(0, true);
+  testSelection(1, true);
+  testSelection(2, true);
+
+  userEvent.click(filterButton);
+  expect(getRows()).toHaveLength(1);
+  expect(headerCheckbox).toBeChecked();
+  userEvent.click(headerCheckbox);
+  userEvent.click(filterButton);
+
+  testSelection(0, true);
+  testSelection(1, false);
+  testSelection(2, true);
+  expect(headerCheckbox).not.toBeChecked();
 });
 
 test('select rows using shift click', () => {
