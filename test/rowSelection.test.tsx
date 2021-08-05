@@ -18,13 +18,19 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-const rows: Row[] = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const initialRows: readonly Row[] = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function RowSelectionTest({ setRowKeyGetter }: { setRowKeyGetter: boolean }) {
+function RowSelectionTest({
+  rows,
+  setRowKeyGetter
+}: {
+  rows: readonly Row[];
+  setRowKeyGetter: boolean;
+}) {
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(new Set());
 
   return (
@@ -38,10 +44,10 @@ function RowSelectionTest({ setRowKeyGetter }: { setRowKeyGetter: boolean }) {
   );
 }
 
-function setup(setRowKeyGetter = true) {
+function setup(setRowKeyGetter = true, rows = initialRows) {
   render(
     <StrictMode>
-      <RowSelectionTest setRowKeyGetter={setRowKeyGetter} />
+      <RowSelectionTest rows={rows} setRowKeyGetter={setRowKeyGetter} />
     </StrictMode>
   );
 }
@@ -54,13 +60,15 @@ function toggleSelection(rowIdx: number, shiftKey = false) {
   userEvent.click(within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select'), { shiftKey });
 }
 
-// test('row selection should throw error if rowKeyGetter is not specified', () => {
-//   setup(false);
-//   userEvent.click(within(getCellsAtRowIndex(0)[0]).getByLabelText('Select'));
-//   //   expect(queryGrid()).not.toBeInTheDocument();
-// });
+// https://github.com/testing-library/react-testing-library/issues/624
+test.skip('row selection should throw error if rowKeyGetter is not specified', () => {
+  setup(false);
+  expect(() => {
+    userEvent.click(within(getCellsAtRowIndex(0)[0]).getByLabelText('Select'));
+  }).toThrow();
+});
 
-test('select row when checkbox is clicked', () => {
+test('toggle selection when checkbox is clicked', () => {
   setup();
   toggleSelection(0);
   testSelection(0, true);
@@ -71,6 +79,16 @@ test('select row when checkbox is clicked', () => {
   testSelection(0, false);
   toggleSelection(1);
   testSelection(1, false);
+});
+
+test('toggle selection using keyboard', () => {
+  setup();
+  testSelection(0, false);
+  userEvent.click(getCellsAtRowIndex(0)[0]);
+  userEvent.keyboard('{space}');
+  testSelection(0, true);
+  userEvent.keyboard('{space}');
+  testSelection(0, false);
 });
 
 test('select/deselect all rows when header checkbox is clicked', () => {
@@ -94,14 +112,9 @@ test('select/deselect all rows when header checkbox is clicked', () => {
   testSelection(2, false);
 });
 
-test('toggle selection using keyboard', () => {
-  setup();
-  testSelection(0, false);
-  userEvent.click(getCellsAtRowIndex(0)[0]);
-  userEvent.keyboard('{space}');
-  testSelection(0, true);
-  userEvent.keyboard('{space}');
-  testSelection(0, false);
+test('header checkbox is not selected when there are no rows', () => {
+  setup(true, []);
+  expect(screen.getByLabelText('Select All')).not.toBeChecked();
 });
 
 test('select rows using shift click', () => {
