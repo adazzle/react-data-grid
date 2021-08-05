@@ -10,13 +10,7 @@ interface Row {
   id: number;
 }
 
-const columns: readonly Column<Row>[] = [
-  SelectColumn,
-  {
-    key: 'id',
-    name: 'id'
-  }
-];
+const columns: readonly Column<Row>[] = [SelectColumn];
 
 const defaultRows: readonly Row[] = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
