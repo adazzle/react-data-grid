@@ -87,6 +87,10 @@ test('toggle selection using keyboard', () => {
   userEvent.click(getCellsAtRowIndex(0)[0]);
   userEvent.keyboard('{space}');
   testSelection(0, true);
+  userEvent.keyboard('{arrowdown}');
+  userEvent.keyboard('{space}');
+  testSelection(1, true);
+  userEvent.keyboard('{arrowup}');
   userEvent.keyboard('{space}');
   testSelection(0, false);
 });
