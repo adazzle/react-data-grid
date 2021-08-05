@@ -167,23 +167,14 @@ test('extra keys are preserved when updating the selectedRows Set', () => {
   );
 
   const headerCheckbox = screen.getByLabelText('Select All');
-  expect(headerCheckbox).not.toBeChecked();
 
   toggleSelection(1);
   expect(set).toStrictEqual(new Set([...initialSet, 2]));
 
   userEvent.click(headerCheckbox);
-  expect(headerCheckbox).toBeChecked();
-  testSelection(0, true);
-  testSelection(1, true);
-  testSelection(2, true);
   expect(set).toStrictEqual(new Set([...initialSet, 1, 2, 3]));
 
   userEvent.click(headerCheckbox);
-  expect(headerCheckbox).not.toBeChecked();
-  testSelection(0, false);
-  testSelection(1, false);
-  testSelection(2, false);
   expect(set).toStrictEqual(initialSet);
 
   toggleSelection(1);
