@@ -21,12 +21,19 @@ const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
-  'onSortColumnsChange' | 'allRowsSelected' | 'onAllRowsSelectionChange' | 'sortColumns'
+  | 'onSortColumnsChange'
+  | 'allRowsSelected'
+  | 'onAllRowsSelectionChange'
+  | 'sortColumns'
+  | 'onKeyDown'
+  | 'onFocus'
+  | 'selectCell'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
+  isCellSelected: boolean;
   onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
 }
 
@@ -34,10 +41,14 @@ export default function HeaderCell<R, SR>({
   column,
   colSpan,
   onResize,
+  isCellSelected,
   allRowsSelected,
   onAllRowsSelectionChange,
   sortColumns,
-  onSortColumnsChange
+  onSortColumnsChange,
+  onKeyDown,
+  onFocus,
+  selectCell
 }: HeaderCellProps<R, SR>) {
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -129,6 +140,7 @@ export default function HeaderCell<R, SR>({
           priority={priority}
           onSort={onSort}
           allRowsSelected={allRowsSelected}
+          isCellSelected={isCellSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
         />
       );
@@ -153,10 +165,16 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
+      aria-selected={isCellSelected}
       aria-sort={ariaSort}
       aria-colspan={colSpan}
       className={className}
       style={getCellStyle(column, colSpan)}
+      onKeyDown={onKeyDown}
+      onFocus={onFocus}
+      onClick={() => {
+        selectCell(column);
+      }}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}

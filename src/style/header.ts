@@ -15,6 +15,14 @@ const headerRow = css`
   font-weight: bold;
   z-index: 3;
   touch-action: none;
+
+  &[aria-selected='true'] {
+    background-color: var(--row-selected-background-color);
+
+    &:hover {
+      background-color: var(--row-selected-hover-background-color);
+    }
+  }
 `;
 
 export const headerRowClassname = `rdg-header-row ${headerRow}`;

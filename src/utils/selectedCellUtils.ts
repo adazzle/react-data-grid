@@ -108,7 +108,7 @@ export function getNextSelectedCellPosition<R, SR>({
 interface CanExitGridOpts<R, SR> {
   cellNavigationMode: CellNavigationMode;
   columns: readonly CalculatedColumn<R, SR>[];
-  rowsCount: number;
+  maxRowIdx: number;
   selectedPosition: Position;
   shiftKey: boolean;
 }
@@ -116,7 +116,7 @@ interface CanExitGridOpts<R, SR> {
 export function canExitGrid<R, SR>({
   cellNavigationMode,
   columns,
-  rowsCount,
+  maxRowIdx,
   selectedPosition: { rowIdx, idx },
   shiftKey
 }: CanExitGridOpts<R, SR>): boolean {
@@ -125,8 +125,8 @@ export function canExitGrid<R, SR>({
   if (cellNavigationMode === 'NONE' || cellNavigationMode === 'CHANGE_ROW') {
     const atLastCellInRow = idx === columns.length - 1;
     const atFirstCellInRow = idx === 0;
-    const atLastRow = rowIdx === rowsCount - 1;
-    const atFirstRow = rowIdx === 0;
+    const atLastRow = rowIdx === maxRowIdx;
+    const atFirstRow = rowIdx === -1;
 
     return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
   }

@@ -11,12 +11,16 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   'sortColumns' | 'onSortColumnsChange'
 >;
 
-export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
+export interface HeaderRowProps<R, SR, K extends React.Key>
+  extends SharedDataGridProps<R, SR, K>,
+    Pick<React.HTMLAttributes<HTMLDivElement>, 'onKeyDown' | 'onFocus'> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  selectCell: (column: CalculatedColumn<R, SR>) => void;
   lastFrozenColumnIndex: number;
+  selectedColIdx: number | undefined;
 }
 
 function HeaderRow<R, SR, K extends React.Key>({
@@ -26,7 +30,11 @@ function HeaderRow<R, SR, K extends React.Key>({
   onColumnResize,
   sortColumns,
   onSortColumnsChange,
-  lastFrozenColumnIndex
+  lastFrozenColumnIndex,
+  selectedColIdx,
+  selectCell,
+  onKeyDown,
+  onFocus
 }: HeaderRowProps<R, SR, K>) {
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
@@ -41,11 +49,15 @@ function HeaderRow<R, SR, K extends React.Key>({
         key={column.key}
         column={column}
         colSpan={colSpan}
+        isCellSelected={selectedColIdx === column.idx}
         onResize={onColumnResize}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
+        onKeyDown={selectedColIdx === column.idx ? onKeyDown : undefined}
+        onFocus={selectedColIdx === column.idx ? onFocus : undefined}
+        selectCell={selectCell}
       />
     );
   }
