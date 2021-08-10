@@ -104,6 +104,15 @@ export function CellNavigation() {
           />
           Loop Over Row
         </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            checked={cellNavigatioMode === 'LOOP_OVER_COLUMN'}
+            onChange={() => setCellNavigationMode('LOOP_OVER_COLUMN')}
+          />
+          Loop Over Column
+        </label>
       </div>
       <DataGrid columns={columns} rows={rows} cellNavigationMode={cellNavigatioMode} />
     </>

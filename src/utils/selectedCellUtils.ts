@@ -51,6 +51,7 @@ export function getNextSelectedCellPosition<R, SR>({
   isGroupRow
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   const rowsCount = rows.length;
+  const columnsCount = columns.length;
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
   const setColSpan = (moveRight: boolean) => {
@@ -73,8 +74,17 @@ export function getNextSelectedCellPosition<R, SR>({
     setColSpan(nextIdx - currentIdx > 0);
   }
 
+  if (cellNavigationMode === 'LOOP_OVER_COLUMN') {
+    if (nextRowIdx + 1 === rowsCount) {
+      nextRowIdx = 0;
+      nextIdx = currentIdx;
+    } else {
+      nextRowIdx += 1;
+      nextIdx = currentIdx;
+    }
+  }
+
   if (cellNavigationMode !== 'NONE') {
-    const columnsCount = columns.length;
     const isAfterLastColumn = nextIdx === columnsCount;
     const isBeforeFirstColumn = nextIdx === -1;
 
