@@ -835,19 +835,27 @@ function DataGrid<R, SR, K extends Key>(
     event.preventDefault();
 
     const ctrlKey = isCtrlKeyHeldDown(event);
-    const nextPosition = getNextSelectedCellPosition({
+    const nextPosition = getNextPosition(key, ctrlKey, shiftKey);
+    if (
+      nextPosition.rowIdx === selectedPosition.rowIdx &&
+      nextPosition.idx === selectedPosition.idx
+    ) {
+      return;
+    }
+
+    const nextSelectedCellPosition = getNextSelectedCellPosition({
       columns,
       colSpanColumns,
       rows,
       lastFrozenColumnIndex,
       cellNavigationMode: mode,
       currentPosition: selectedPosition,
-      nextPosition: getNextPosition(key, ctrlKey, shiftKey),
+      nextPosition,
       isCellWithinBounds,
       isGroupRow
     });
 
-    selectCell(nextPosition);
+    selectCell(nextSelectedCellPosition);
   }
 
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
