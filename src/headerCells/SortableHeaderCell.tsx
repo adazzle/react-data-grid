@@ -80,6 +80,3 @@ export default function SortableHeaderCell<R, SR>({
     </span>
   );
 }
-
-
-function isMultiSortKey(event: )
