@@ -56,12 +56,16 @@ export default function SortableHeaderCell<R, SR>({
     }
   }
 
+  function handleClick(event: React.MouseEvent<HTMLSpanElement>) {
+    onSort(event.ctrlKey || event.metaKey);
+  }
+
   return (
     <span
       ref={ref}
-      className={headerSortCellClassname}
-      onClick={(e) => onSort(e.ctrlKey || e.metaKey)}
       tabIndex={-1}
+      className={headerSortCellClassname}
+      onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       <span className={headerSortNameClassname}>{children}</span>
@@ -76,3 +80,6 @@ export default function SortableHeaderCell<R, SR>({
     </span>
   );
 }
+
+
+function isMultiSortKey(event: )

@@ -98,7 +98,7 @@ export default function HeaderCell<R, SR>({
     [cellResizableClassname]: column.resizable
   });
 
-  const onSort = (ctrlClick: boolean) => {
+  function onSort(ctrlClick: boolean) {
     if (onSortColumnsChange == null) return;
     const { sortDescendingFirst } = column;
     if (sortColumn === undefined) {
@@ -133,7 +133,7 @@ export default function HeaderCell<R, SR>({
         onSortColumnsChange(nextSortColumn ? [nextSortColumn] : []);
       }
     }
-  };
+  }
 
   function onClick() {
     selectCell(column);
