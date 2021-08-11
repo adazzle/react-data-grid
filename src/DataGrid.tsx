@@ -522,33 +522,33 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const { key, keyCode } = event;
+    const { rowIdx } = selectedPosition;
 
-    if (isCellWithinEditBounds(selectedPosition)) {
-      const row = rows[selectedPosition.rowIdx];
-
-      if (
-        onPaste &&
-        isCtrlKeyHeldDown(event) &&
-        !isGroupRow(row) &&
-        selectedPosition.idx !== -1 &&
-        selectedPosition.mode === 'SELECT'
-      ) {
-        // event.key may differ by keyboard input language, so we use event.keyCode instead
-        // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
-        const cKey = 67;
-        const vKey = 86;
-        if (keyCode === cKey) {
-          handleCopy();
-          return;
-        }
-        if (keyCode === vKey) {
-          handlePaste();
-          return;
-        }
+    if (
+      onPaste &&
+      isCtrlKeyHeldDown(event) &&
+      isCellWithinEditBounds(selectedPosition) &&
+      !isGroupRow(rows[rowIdx]) &&
+      selectedPosition.mode === 'SELECT'
+    ) {
+      // event.key may differ by keyboard input language, so we use event.keyCode instead
+      // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
+      const cKey = 67;
+      const vKey = 86;
+      if (keyCode === cKey) {
+        handleCopy();
+        return;
       }
+      if (keyCode === vKey) {
+        handlePaste();
+        return;
+      }
+    }
+
+    if (isViewportRowIdx(rowIdx)) {
+      const row = rows[rowIdx];
 
       if (
-        isCellWithinSelectionBounds(selectedPosition) &&
         isGroupRow(row) &&
         selectedPosition.idx === -1 &&
         // Collapse the current group row if it is focused and is in expanded state
@@ -700,8 +700,12 @@ function DataGrid<R, SR, K extends Key>(
     return rowIdx >= minRowIdx && rowIdx <= maxRowIdx && idx >= minColIdx && idx < columns.length;
   }
 
+  function isViewportRowIdx(rowIdx: number) {
+    return rowIdx >= 0 && rowIdx < rows.length;
+  }
+
   function isCellWithinEditBounds({ idx, rowIdx }: Position): boolean {
-    return rowIdx >= 0 && rowIdx < rows.length && idx >= 0 && idx < columns.length;
+    return isViewportRowIdx(rowIdx) && idx >= 0 && idx < columns.length;
   }
 
   function isCellEditable(position: Position): boolean {
@@ -764,7 +768,7 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    if (typeof rowIdx === 'number' && rowIdx >= 0 && rowIdx < rows.length) {
+    if (typeof rowIdx === 'number' && isViewportRowIdx(rowIdx)) {
       const rowTop = getRowTop(rowIdx);
       const rowHeight = getRowHeight(rowIdx);
       if (rowTop < scrollTop) {
