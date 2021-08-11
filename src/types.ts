@@ -103,8 +103,8 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   priority: number | undefined;
   onSort: (ctrlClick: boolean) => void;
   allRowsSelected: boolean;
-  isCellSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
+  isCellSelected: boolean;
 }
 
 type SelectCellFn<R, SR> = (

@@ -21,10 +21,10 @@ const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
+  | 'sortColumns'
   | 'onSortColumnsChange'
   | 'allRowsSelected'
   | 'onAllRowsSelectionChange'
-  | 'sortColumns'
   | 'onKeyDown'
   | 'onFocus'
   | 'selectCell'
@@ -94,6 +94,10 @@ export default function HeaderCell<R, SR>({
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
 
+  const className = getCellClassname(column, column.headerCellClass, {
+    [cellResizableClassname]: column.resizable
+  });
+
   const onSort = (ctrlClick: boolean) => {
     if (onSortColumnsChange == null) return;
     const { sortDescendingFirst } = column;
@@ -131,6 +135,10 @@ export default function HeaderCell<R, SR>({
     }
   };
 
+  function onClick() {
+    selectCell(column);
+  }
+
   function getCell() {
     if (column.headerRenderer) {
       return (
@@ -140,15 +148,20 @@ export default function HeaderCell<R, SR>({
           priority={priority}
           onSort={onSort}
           allRowsSelected={allRowsSelected}
-          isCellSelected={isCellSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
+          isCellSelected={isCellSelected}
         />
       );
     }
 
     if (column.sortable) {
       return (
-        <SortableHeaderCell onSort={onSort} sortDirection={sortDirection} priority={priority}>
+        <SortableHeaderCell
+          onSort={onSort}
+          sortDirection={sortDirection}
+          priority={priority}
+          isCellSelected={isCellSelected}
+        >
           {column.name}
         </SortableHeaderCell>
       );
@@ -156,10 +169,6 @@ export default function HeaderCell<R, SR>({
 
     return column.name;
   }
-
-  const className = getCellClassname(column, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable
-  });
 
   return (
     <div
@@ -172,9 +181,7 @@ export default function HeaderCell<R, SR>({
       style={getCellStyle(column, colSpan)}
       onKeyDown={onKeyDown}
       onFocus={onFocus}
-      onClick={() => {
-        selectCell(column);
-      }}
+      onClick={onClick}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}

@@ -44,19 +44,21 @@ function HeaderRow<R, SR, K extends React.Key>({
       index += colSpan - 1;
     }
 
+    const isCellSelected = selectedColIdx === column.idx;
+
     cells.push(
       <HeaderCell<R, SR>
         key={column.key}
         column={column}
         colSpan={colSpan}
-        isCellSelected={selectedColIdx === column.idx}
+        isCellSelected={isCellSelected}
         onResize={onColumnResize}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
-        onKeyDown={selectedColIdx === column.idx ? onKeyDown : undefined}
-        onFocus={selectedColIdx === column.idx ? onFocus : undefined}
+        onKeyDown={isCellSelected ? onKeyDown : undefined}
+        onFocus={isCellSelected ? onFocus : undefined}
         selectCell={selectCell}
       />
     );

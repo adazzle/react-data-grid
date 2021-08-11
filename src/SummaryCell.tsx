@@ -3,11 +3,13 @@ import { memo } from 'react';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
 
-type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column' | 'colSpan'>;
+type SharedCellRendererProps<R, SR> = Pick<
+  CellRendererProps<R, SR>,
+  'column' | 'colSpan' | 'isCellSelected'
+>;
 
 interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
-  isCellSelected: boolean;
 }
 
 function SummaryCell<R, SR>({ column, colSpan, row, isCellSelected }: SummaryCellProps<R, SR>) {

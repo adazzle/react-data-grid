@@ -274,6 +274,7 @@ function DataGrid<R, SR, K extends Key>(
   const summaryRowsCount = summaryRows?.length ?? 0;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
+  const isHeaderRowSelected = selectedPosition.rowIdx === -1;
 
   const allRowsSelected = useMemo((): boolean => {
     // no rows to select = explicitely unchecked
@@ -1070,9 +1071,9 @@ function DataGrid<R, SR, K extends Key>(
         sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
-        selectedColIdx={selectedPosition.rowIdx === -1 ? selectedPosition.idx : undefined}
-        onKeyDown={selectedPosition.rowIdx === -1 ? handleKeyDown : undefined}
-        onFocus={selectedPosition.rowIdx === -1 ? handleFocus : undefined}
+        selectedColIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
+        onKeyDown={isHeaderRowSelected ? handleKeyDown : undefined}
+        onFocus={isHeaderRowSelected ? handleFocus : undefined}
         selectCell={selectHeaderCellLatest}
       />
       {rows.length === 0 && EmptyRowsRenderer ? (

@@ -17,11 +17,7 @@ const headerRow = css`
   touch-action: none;
 
   &[aria-selected='true'] {
-    background-color: var(--row-selected-background-color);
-
-    &:hover {
-      background-color: var(--row-selected-hover-background-color);
-    }
+    box-shadow: inset 0 0 0 2px var(--selection-color);
   }
 `;
 
