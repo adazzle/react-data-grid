@@ -632,7 +632,7 @@ function DataGrid<R, SR, K extends Key>(
     if (!isCellWithinBounds(selectedPosition) || selectedPosition.idx === -1) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
-    const { key } = event;
+    const { key, shiftKey } = event;
 
     if (selectedPosition.mode === 'EDIT') {
       if (key === 'Enter') {
@@ -640,6 +640,16 @@ function DataGrid<R, SR, K extends Key>(
         commitEditorChanges();
         closeEditor();
       }
+      return;
+    }
+
+    // Select the row on Shift + Space
+    if (isSelectable && shiftKey && key === ' ') {
+      assertIsValidKeyGetter<R, K>(rowKeyGetter);
+      const rowKey = rowKeyGetter(row);
+      selectRow({ row, checked: !selectedRows!.has(rowKey), isShiftClick: false });
+      // do not scroll
+      event.preventDefault();
       return;
     }
 
