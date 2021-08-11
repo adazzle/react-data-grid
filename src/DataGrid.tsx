@@ -69,14 +69,8 @@ type DefaultColumnOptions<R, SR> = Pick<
 >;
 
 type SelectedCellProps<R, SR> =
-  | Pick<
-      RowRendererProps<R, SR>,
-      'selectedCellIdx' | 'onKeyDown' | 'onFocus' | 'selectedCellEditor'
-    >
-  | Pick<
-      RowRendererProps<R, SR>,
-      'selectedCellIdx' | 'onKeyDown' | 'onFocus' | 'selectedCellDragHandle'
-    >;
+  | Pick<RowRendererProps<R, SR>, 'selectedCellIdx' | 'onKeyDown' | 'selectedCellEditor'>
+  | Pick<RowRendererProps<R, SR>, 'selectedCellIdx' | 'onKeyDown' | 'selectedCellDragHandle'>;
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const body = globalThis.document?.body;
@@ -420,6 +414,10 @@ function DataGrid<R, SR, K extends Key>(
     latestDraggedOverRowIdx.current = rowIdx;
   }, []);
 
+  const handleFocus = useCallback(() => {
+    isCellFocusable.current = true;
+  }, []);
+
   /**
    * event handlers
    */
@@ -565,10 +563,6 @@ function DataGrid<R, SR, K extends Key>(
         handleCellInput(event);
         break;
     }
-  }
-
-  function handleFocus() {
-    isCellFocusable.current = true;
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
@@ -883,7 +877,6 @@ function DataGrid<R, SR, K extends Key>(
 
       return {
         selectedCellIdx: idx,
-        onFocus: handleFocus,
         onKeyDown: handleKeyDown,
         selectedCellEditor: (
           <EditCell
@@ -902,7 +895,6 @@ function DataGrid<R, SR, K extends Key>(
 
     return {
       selectedCellIdx: selectedPosition.idx,
-      onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       selectedCellDragHandle:
         // Cell drag is not supported on a treegrid
@@ -952,7 +944,7 @@ function DataGrid<R, SR, K extends Key>(
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
             isRowSelected={isGroupRowSelected}
-            onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
+            onFocus={handleFocus}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
@@ -995,6 +987,7 @@ function DataGrid<R, SR, K extends Key>(
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           onRowChange={handleFormatterRowChangeLatest}
           selectCell={selectCellLatest}
+          onFocus={handleFocus}
           {...getSelectedCellProps(rowIdx)}
         />
       );
