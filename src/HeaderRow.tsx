@@ -58,7 +58,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
         onKeyDown={isCellSelected ? onKeyDown : undefined}
-        onFocus={isCellSelected ? onFocus : undefined}
+        onFocus={onFocus}
         selectCell={selectCell}
       />
     );

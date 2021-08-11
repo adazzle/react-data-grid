@@ -435,6 +435,10 @@ function DataGrid<R, SR, K extends Key>(
     latestDraggedOverRowIdx.current = rowIdx;
   }, []);
 
+  const handleFocus = useCallback(() => {
+    isCellFocusable.current = true;
+  }, []);
+
   /**
    * event handlers
    */
@@ -582,10 +586,6 @@ function DataGrid<R, SR, K extends Key>(
         handleCellInput(event);
         break;
     }
-  }
-
-  function handleFocus() {
-    isCellFocusable.current = true;
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
@@ -979,7 +979,7 @@ function DataGrid<R, SR, K extends Key>(
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
             isRowSelected={isGroupRowSelected}
-            onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
+            onFocus={handleFocus}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
@@ -1076,7 +1076,7 @@ function DataGrid<R, SR, K extends Key>(
         lastFrozenColumnIndex={lastFrozenColumnIndex}
         selectedColIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         onKeyDown={isHeaderRowSelected ? handleKeyDown : undefined}
-        onFocus={isHeaderRowSelected ? handleFocus : undefined}
+        onFocus={handleFocus}
         selectCell={selectHeaderCellLatest}
       />
       {rows.length === 0 && EmptyRowsRenderer ? (
@@ -1126,7 +1126,7 @@ function DataGrid<R, SR, K extends Key>(
                 lastFrozenColumnIndex={lastFrozenColumnIndex}
                 selectedColIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                 onKeyDown={isSummaryRowSelected ? handleKeyDown : undefined}
-                onFocus={isSummaryRowSelected ? handleFocus : undefined}
+                onFocus={handleFocus}
                 selectCell={selectSummaryCellLatest}
               />
             );

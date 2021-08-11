@@ -46,7 +46,7 @@ function SummaryRow<R, SR>({
         row={row}
         isCellSelected={isCellSelected}
         onKeyDown={isCellSelected ? onKeyDown : undefined}
-        onFocus={isCellSelected ? onFocus : undefined}
+        onFocus={onFocus}
         selectCell={selectCell}
       />
     );
