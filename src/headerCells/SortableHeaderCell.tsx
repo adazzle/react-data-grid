@@ -52,6 +52,8 @@ export default function SortableHeaderCell<R, SR>({
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {
+      // stop propagation to prevent scrolling
+      event.preventDefault();
       onSort(event.ctrlKey || event.metaKey);
     }
   }
