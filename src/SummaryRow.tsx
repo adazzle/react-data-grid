@@ -2,16 +2,18 @@ import { memo } from 'react';
 import { rowClassname, summaryRowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
-import type { RowRendererProps } from './types';
+import type { CalculatedColumn, RowRendererProps } from './types';
 
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
-interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
-  'aria-rowindex': number;
+interface SummaryRowProps<R, SR>
+  extends SharedRowRendererProps<R, SR>,
+    Pick<React.HTMLAttributes<HTMLDivElement>, 'onKeyDown' | 'onFocus' | 'aria-rowindex'> {
   row: SR;
   bottom: number;
   lastFrozenColumnIndex: number;
   selectedColIdx: number | undefined;
+  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
 
 function SummaryRow<R, SR>({
@@ -21,6 +23,9 @@ function SummaryRow<R, SR>({
   bottom,
   lastFrozenColumnIndex,
   selectedColIdx,
+  onKeyDown,
+  onFocus,
+  selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
   const cells = [];
@@ -31,13 +36,18 @@ function SummaryRow<R, SR>({
       index += colSpan - 1;
     }
 
+    const isCellSelected = selectedColIdx === column.idx;
+
     cells.push(
       <SummaryCell<R, SR>
         key={column.key}
         column={column}
         colSpan={colSpan}
         row={row}
-        isCellSelected={selectedColIdx === column.idx}
+        isCellSelected={isCellSelected}
+        onKeyDown={isCellSelected ? onKeyDown : undefined}
+        onFocus={isCellSelected ? onFocus : undefined}
+        selectCell={selectCell}
       />
     );
   }

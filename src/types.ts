@@ -107,12 +107,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   isCellSelected: boolean;
 }
 
-type SelectCellFn<R, SR> = (
-  row: R,
-  column: CalculatedColumn<R, SR>,
-  enableEditor?: boolean | null
-) => void;
-
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
       RowRendererProps<TRow, TSummaryRow>,
@@ -151,7 +145,11 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
     | null;
   rowClass: ((row: TRow) => string | undefined | null) | undefined | null;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
-  selectCell: SelectCellFn<TRow, TSummaryRow>;
+  selectCell: (
+    row: TRow,
+    column: CalculatedColumn<TRow, TSummaryRow>,
+    enableEditor?: boolean | null
+  ) => void;
 }
 
 export interface RowsChangeData<R, SR = unknown> {

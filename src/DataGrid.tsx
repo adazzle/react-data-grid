@@ -35,7 +35,8 @@ import {
   isDefaultCellInput,
   getColSpan,
   max,
-  sign
+  sign,
+  getSelectedCellColSpan
 } from './utils';
 
 import type {
@@ -354,7 +355,7 @@ function DataGrid<R, SR, K extends Key>(
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectCellLatest = useLatestFunc(
+  const selectViewportCellLatest = useLatestFunc(
     (row: R, column: CalculatedColumn<R, SR>, enableEditor: boolean | undefined | null) => {
       const rowIdx = rows.indexOf(row);
       selectCell({ rowIdx, idx: column.idx }, enableEditor);
@@ -366,6 +367,13 @@ function DataGrid<R, SR, K extends Key>(
   const selectHeaderCellLatest = useLatestFunc((column: CalculatedColumn<R, SR>) => {
     selectCell({ rowIdx: -1, idx: column.idx });
   });
+  const selectSummaryCellLatest = useLatestFunc(
+    (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
+      if (!summaryRows) return;
+      const rowIdx = summaryRows.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
+      selectCell({ rowIdx, idx: column.idx });
+    }
+  );
   const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   /**
@@ -733,28 +741,18 @@ function DataGrid<R, SR, K extends Key>(
       const { left, width } = columnMetrics.get(column)!;
       let right = left + width;
 
-      const setColSpan = (colSpan: number | undefined) => {
-        if (colSpan !== undefined) {
-          const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
-          right = left + width;
-        }
-      };
+      const colSpan = getSelectedCellColSpan({
+        rows,
+        summaryRows,
+        rowIdx,
+        lastFrozenColumnIndex,
+        column,
+        isGroupRow
+      });
 
-      if (rowIdx === -1) {
-        const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
-        setColSpan(colSpan);
-      } else if (rowIdx >= 0 && rowIdx < rows.length) {
-        const row = rows[rowIdx];
-        if (!isGroupRow(row)) {
-          const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
-          setColSpan(colSpan);
-        }
-      } else if (summaryRows) {
-        const colSpan = getColSpan(column, lastFrozenColumnIndex, {
-          type: 'SUMMARY',
-          row: summaryRows[rowIdx]
-        });
-        setColSpan(colSpan);
+      if (colSpan !== undefined) {
+        const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
+        right = left + width;
       }
 
       const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
@@ -874,6 +872,7 @@ function DataGrid<R, SR, K extends Key>(
       columns,
       colSpanColumns,
       rows,
+      summaryRows,
       lastFrozenColumnIndex,
       cellNavigationMode: mode,
       currentPosition: selectedPosition,
@@ -1018,7 +1017,7 @@ function DataGrid<R, SR, K extends Key>(
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           onRowChange={handleFormatterRowChangeLatest}
-          selectCell={selectCellLatest}
+          selectCell={selectViewportCellLatest}
           {...getSelectedCellProps(rowIdx)}
         />
       );
@@ -1109,22 +1108,25 @@ function DataGrid<R, SR, K extends Key>(
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
           </RowSelectionChangeProvider>
-          {summaryRows?.map((row, rowIdx) => (
-            <SummaryRow
-              aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
-              key={rowIdx}
-              rowIdx={rowIdx}
-              row={row}
-              bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
-              viewportColumns={viewportColumns}
-              lastFrozenColumnIndex={lastFrozenColumnIndex}
-              selectedColIdx={
-                selectedPosition.rowIdx === headerRowsCount + rowsCount + rowIdx - 1
-                  ? selectedPosition.idx
-                  : undefined
-              }
-            />
-          ))}
+          {summaryRows?.map((row, rowIdx) => {
+            const isSummaryRowSelected =
+              selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
+            return (
+              <SummaryRow
+                aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
+                key={rowIdx}
+                rowIdx={rowIdx}
+                row={row}
+                bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
+                viewportColumns={viewportColumns}
+                lastFrozenColumnIndex={lastFrozenColumnIndex}
+                selectedColIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                onKeyDown={isSummaryRowSelected ? handleKeyDown : undefined}
+                onFocus={isSummaryRowSelected ? handleFocus : undefined}
+                selectCell={selectSummaryCellLatest}
+              />
+            );
+          })}
         </>
       )}
     </div>

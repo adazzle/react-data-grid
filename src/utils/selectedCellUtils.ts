@@ -32,6 +32,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
+  summaryRows: readonly SR[] | null | undefined;
   currentPosition: Position;
   nextPosition: Position;
   lastFrozenColumnIndex: number;
@@ -39,11 +40,48 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
+export function getSelectedCellColSpan<R, SR>({
+  rows,
+  summaryRows,
+  rowIdx,
+  lastFrozenColumnIndex,
+  column,
+  isGroupRow
+}: Pick<
+  GetNextSelectedCellPositionOpts<R, SR>,
+  'rows' | 'summaryRows' | 'isGroupRow' | 'lastFrozenColumnIndex'
+> & {
+  rowIdx: number;
+  column: CalculatedColumn<R, SR>;
+}) {
+  if (rowIdx === -1) {
+    return getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
+  }
+
+  if (rowIdx >= 0 && rowIdx < rows.length) {
+    const row = rows[rowIdx];
+    if (!isGroupRow(row)) {
+      return getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+    }
+    return undefined;
+  }
+
+  if (summaryRows) {
+    return getColSpan(column, lastFrozenColumnIndex, {
+      type: 'SUMMARY',
+      row: summaryRows[rowIdx]
+    });
+  }
+
+  return undefined;
+}
+
 export function getNextSelectedCellPosition<R, SR>({
   cellNavigationMode,
   columns,
   colSpanColumns,
   rows,
+  summaryRows,
   currentPosition: { idx: currentIdx },
   nextPosition,
   lastFrozenColumnIndex,
@@ -54,14 +92,24 @@ export function getNextSelectedCellPosition<R, SR>({
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
   const setColSpan = (moveRight: boolean) => {
-    const row = rows[nextRowIdx];
-    if (isGroupRow(row)) return;
+    if (nextRowIdx >= 0 && nextRowIdx < rows.length) {
+      const row = rows[nextRowIdx];
+      if (isGroupRow(row)) return;
+    }
     // If a cell within the colspan range is selected then move to the
     // previous or the next cell depending on the navigation direction
     for (const column of colSpanColumns) {
       const colIdx = column.idx;
       if (colIdx > nextIdx) break;
-      const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+      const colSpan = getSelectedCellColSpan({
+        rows,
+        summaryRows,
+        rowIdx: nextRowIdx,
+        lastFrozenColumnIndex,
+        column,
+        isGroupRow
+      });
+
       if (colSpan && nextIdx > colIdx && nextIdx < colSpan + colIdx) {
         nextIdx = colIdx + (moveRight ? colSpan : 0);
         break;
