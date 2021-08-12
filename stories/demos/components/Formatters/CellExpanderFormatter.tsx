@@ -26,11 +26,6 @@ export function CellExpanderFormatter({
 }: CellExpanderFormatterProps) {
   const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
 
-  function handleClick(e: React.MouseEvent<HTMLSpanElement>) {
-    e.stopPropagation();
-    onCellExpand();
-  }
-
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
@@ -40,7 +35,7 @@ export function CellExpanderFormatter({
 
   return (
     <div className={cellExpandClassname}>
-      <span onClick={handleClick} onKeyDown={handleKeyDown}>
+      <span onClick={onCellExpand} onKeyDown={handleKeyDown}>
         <span ref={iconRef} tabIndex={-1}>
           {expanded ? '\u25BC' : '\u25B6'}
         </span>

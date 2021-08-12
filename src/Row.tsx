@@ -80,7 +80,7 @@ function Row<R, SR>(
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onFocus={isCellSelected ? onFocus : undefined}
+          onFocus={onFocus}
           onKeyDown={isCellSelected ? onKeyDown : undefined}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}

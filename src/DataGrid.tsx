@@ -69,14 +69,8 @@ type DefaultColumnOptions<R, SR> = Pick<
 >;
 
 type SelectedCellProps<R, SR> =
-  | Pick<
-      RowRendererProps<R, SR>,
-      'selectedCellIdx' | 'onKeyDown' | 'onFocus' | 'selectedCellEditor'
-    >
-  | Pick<
-      RowRendererProps<R, SR>,
-      'selectedCellIdx' | 'onKeyDown' | 'onFocus' | 'selectedCellDragHandle'
-    >;
+  | Pick<RowRendererProps<R, SR>, 'selectedCellIdx' | 'onKeyDown' | 'selectedCellEditor'>
+  | Pick<RowRendererProps<R, SR>, 'selectedCellIdx' | 'onKeyDown' | 'selectedCellDragHandle'>;
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const body = globalThis.document?.body;
@@ -420,6 +414,10 @@ function DataGrid<R, SR, K extends Key>(
     latestDraggedOverRowIdx.current = rowIdx;
   }, []);
 
+  const handleFocus = useCallback(() => {
+    isCellFocusable.current = true;
+  }, []);
+
   /**
    * event handlers
    */
@@ -565,10 +563,6 @@ function DataGrid<R, SR, K extends Key>(
         handleCellInput(event);
         break;
     }
-  }
-
-  function handleFocus() {
-    isCellFocusable.current = true;
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
@@ -796,11 +790,6 @@ function DataGrid<R, SR, K extends Key>(
       case 'ArrowRight':
         return { idx: idx + 1, rowIdx };
       case 'Tab':
-        if (selectedPosition.idx === -1 && selectedPosition.rowIdx === -1) {
-          return shiftKey
-            ? { idx: columns.length - 1, rowIdx: rows.length - 1 }
-            : { idx: 0, rowIdx: 0 };
-        }
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
         // If row is selected then move focus to the first row
@@ -856,19 +845,27 @@ function DataGrid<R, SR, K extends Key>(
     event.preventDefault();
 
     const ctrlKey = isCtrlKeyHeldDown(event);
-    const nextPosition = getNextSelectedCellPosition({
+    const nextPosition = getNextPosition(key, ctrlKey, shiftKey);
+    if (
+      nextPosition.rowIdx === selectedPosition.rowIdx &&
+      nextPosition.idx === selectedPosition.idx
+    ) {
+      return;
+    }
+
+    const nextSelectedCellPosition = getNextSelectedCellPosition({
       columns,
       colSpanColumns,
       rows,
       lastFrozenColumnIndex,
       cellNavigationMode: mode,
       currentPosition: selectedPosition,
-      nextPosition: getNextPosition(key, ctrlKey, shiftKey),
+      nextPosition,
       isCellWithinBounds,
       isGroupRow
     });
 
-    selectCell(nextPosition);
+    selectCell(nextSelectedCellPosition);
   }
 
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
@@ -893,7 +890,6 @@ function DataGrid<R, SR, K extends Key>(
 
       return {
         selectedCellIdx: idx,
-        onFocus: handleFocus,
         onKeyDown: handleKeyDown,
         selectedCellEditor: (
           <EditCell
@@ -912,7 +908,6 @@ function DataGrid<R, SR, K extends Key>(
 
     return {
       selectedCellIdx: selectedPosition.idx,
-      onFocus: handleFocus,
       onKeyDown: handleKeyDown,
       selectedCellDragHandle:
         // Cell drag is not supported on a treegrid
@@ -962,7 +957,7 @@ function DataGrid<R, SR, K extends Key>(
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
             isRowSelected={isGroupRowSelected}
-            onFocus={selectedPosition.rowIdx === rowIdx ? handleFocus : undefined}
+            onFocus={handleFocus}
             onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
@@ -1005,6 +1000,7 @@ function DataGrid<R, SR, K extends Key>(
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           onRowChange={handleFormatterRowChangeLatest}
           selectCell={selectCellLatest}
+          onFocus={handleFocus}
           {...getSelectedCellProps(rowIdx)}
         />
       );

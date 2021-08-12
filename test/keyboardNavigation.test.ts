@@ -1,14 +1,15 @@
 import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
 import type { Column } from '../src';
-import { setup, getSelectedCell, validateCellPosition } from './utils';
+import { SelectColumn } from '../src';
+import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex } from './utils';
 
 type Row = undefined;
 
 const rows: readonly Row[] = Array(100);
 
 const columns: readonly Column<Row>[] = [
-  { key: 'col1', name: 'col1' },
+  SelectColumn,
   { key: 'col2', name: 'col2' },
   { key: 'col3', name: 'col3' },
   { key: 'col4', name: 'col4' },
@@ -90,14 +91,20 @@ test('at-bounds basic keyboard navigation', () => {
   validateCellPosition(6, 99);
   userEvent.keyboard('{ctrl}{home}');
   validateCellPosition(0, 0);
+  validateCheckboxHasFocus();
   userEvent.keyboard('{home}');
+  validateCheckboxHasFocus();
   validateCellPosition(0, 0);
   userEvent.keyboard('{ctrl}{home}');
+  validateCheckboxHasFocus();
   validateCellPosition(0, 0);
   fireEvent.keyDown(document.activeElement!, { key: 'PageUp' });
   validateCellPosition(0, 0);
 
   // shift+tab tabs out of the grid
+  userEvent.tab({ shift: true });
+  // TODO: remove when focus and selection are separated
+  // focusSink recieves focus and we need to press shift tab again to exit the grid
   userEvent.tab({ shift: true });
   expect(document.body).toHaveFocus();
 
@@ -112,3 +119,7 @@ test('at-bounds basic keyboard navigation', () => {
   userEvent.tab();
   expect(document.body).toHaveFocus();
 });
+
+function validateCheckboxHasFocus() {
+  expect(getCellsAtRowIndex(0)[0].querySelector('input')).toHaveFocus();
+}
