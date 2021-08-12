@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { fireEvent } from '@testing-library/react';
 import type { Column } from '../src';
 import { SelectColumn } from '../src';
-import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex } from './utils';
+import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex, getGrid } from './utils';
 
 type Row = undefined;
 
@@ -118,6 +118,27 @@ test('at-bounds basic keyboard navigation', () => {
   userEvent.keyboard('{ctrl}{end}');
   userEvent.tab();
   expect(document.body).toHaveFocus();
+});
+
+test('navigation when selected cell not in the viewport', () => {
+  setup({ columns, rows });
+
+  // tab into the grid
+  userEvent.tab();
+
+  // TODO: this does not work with formatters that sets the focus
+  userEvent.tab();
+  validateCellPosition(1, 0);
+
+  const grid = getGrid();
+  const queryFirstRow = () => document.querySelector<HTMLDivElement>(`[aria-rowindex="2"]`);
+  const rowHeight = 35;
+  expect(queryFirstRow()).toBeInTheDocument();
+  grid.scrollTop = rowHeight + rowHeight * 100 - 1080;
+  expect(queryFirstRow()).not.toBeInTheDocument();
+
+  userEvent.keyboard('{arrowdown}');
+  validateCellPosition(1, 1);
 });
 
 function validateCheckboxHasFocus() {
