@@ -9,12 +9,7 @@ type Row = undefined;
 const rows: readonly Row[] = Array(100);
 
 const columns: readonly Column<Row>[] = [
-  {
-    ...SelectColumn,
-    headerRenderer() {
-      return null;
-    }
-  },
+  SelectColumn,
   { key: 'col2', name: 'col2' },
   { key: 'col3', name: 'col3' },
   { key: 'col4', name: 'col4' },
