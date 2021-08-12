@@ -46,7 +46,7 @@ export function ChildRowDeleteButton({
   onDeleteSubRow,
   isDeleteSubRowEnabled
 }: ChildRowDeleteButtonProps) {
-  const iconRef = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === 'Enter') {
@@ -60,7 +60,7 @@ export function ChildRowDeleteButton({
       <div className={childRowActionCrossClassname} />
       {isDeleteSubRowEnabled && (
         <div className={childRowButtonClassname} onClick={onDeleteSubRow}>
-          <span ref={iconRef} tabIndex={-1} onKeyDown={handleKeyDown}>
+          <span ref={ref} tabIndex={tabIndex} onKeyDown={handleKeyDown}>
             ❌
           </span>
         </div>
