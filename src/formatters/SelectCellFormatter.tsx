@@ -68,7 +68,6 @@ interface SelectCellFormatterProps extends SharedInputProps {
 
 export function SelectCellFormatter({
   value,
-  tabIndex,
   isCellSelected,
   disabled,
   onClick,
@@ -87,9 +86,9 @@ export function SelectCellFormatter({
       <input
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        tabIndex={tabIndex}
         ref={inputRef}
         type="checkbox"
+        tabIndex={isCellSelected ? 0 : -1}
         className={checkboxInputClassname}
         disabled={disabled}
         checked={value}

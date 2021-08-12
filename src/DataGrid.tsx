@@ -474,7 +474,9 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function onGridFocus() {
+  function onGridFocus({ target }: React.FocusEvent<HTMLDivElement>) {
+    // Do not scroll if clicked within the grid
+    if (gridRef.current !== target && gridRef.current!.contains(target)) return;
     if (!isCellWithinBounds(selectedPosition)) {
       // Tabbing into the grid should initiate keyboard navigation
       const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
@@ -869,6 +871,17 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
+  function getGridTabIndex() {
+    const { idx, rowIdx } = selectedPosition;
+    return isCellWithinBounds(selectedPosition) &&
+      idx >= colOverscanStartIdx &&
+      idx <= colOverscanEndIdx &&
+      rowIdx >= rowOverscanStartIdx &&
+      rowIdx <= rowOverscanEndIdx
+      ? -1
+      : 0;
+  }
+
   function getDragHandle(rowIdx: number) {
     if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'EDIT') return;
     return !hasGroups && onFill != null ? (
@@ -1011,7 +1024,7 @@ function DataGrid<R, SR, K extends Key>(
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      tabIndex={isCellWithinBounds(selectedPosition) ? -1 : 0}
+      tabIndex={getGridTabIndex()}
       className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={
         {

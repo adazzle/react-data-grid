@@ -1,4 +1,5 @@
 export * from './useCalculatedColumns';
+export * from './useCombinedRefs';
 export * from './useFocusRef';
 export * from './useGridDimensions';
 export * from './useLatestFunc';

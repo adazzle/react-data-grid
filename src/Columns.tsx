@@ -11,7 +11,6 @@ function SelectFormatter(props: FormatterProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select"
-      tabIndex={-1}
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
       onClick={stopPropagation}
@@ -28,7 +27,6 @@ function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select Group"
-      tabIndex={-1}
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
       onChange={(checked) => {
@@ -53,7 +51,6 @@ export const SelectColumn: Column<any, any> = {
     return (
       <SelectCellFormatter
         aria-label="Select All"
-        tabIndex={-1}
         isCellSelected={false}
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}

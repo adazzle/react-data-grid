@@ -36,7 +36,7 @@ function Cell<R, SR>({
   selectCell,
   ...props
 }: CellRendererProps<R, SR>) {
-  const { ref, tabIndex, isFocused, onFocus, onBlur } = useRovingRef(isCellSelected);
+  const { ref, tabIndex, onFocus } = useRovingRef(isCellSelected);
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -81,7 +81,6 @@ function Cell<R, SR>({
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
       onFocus={onFocus}
-      onBlur={onBlur}
       {...props}
     >
       {!column.rowGroup && (
@@ -89,7 +88,7 @@ function Cell<R, SR>({
           <column.formatter
             column={column}
             row={row}
-            isCellSelected={isFocused}
+            isCellSelected={isCellSelected}
             onRowChange={onRowChange}
           />
           {dragHandle}

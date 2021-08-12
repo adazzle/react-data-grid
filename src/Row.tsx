@@ -3,7 +3,7 @@ import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowSelectionProvider, useLatestFunc, useFocusRef } from './hooks';
+import { RowSelectionProvider, useLatestFunc, useFocusRef, useCombinedRefs } from './hooks';
 import { getColSpan } from './utils';
 import { groupRowSelectedClassname, rowClassname } from './style';
 import type { RowRendererProps } from './types';
@@ -35,7 +35,7 @@ function Row<R, SR>(
   ref: React.Ref<HTMLDivElement>
 ) {
   const isRowFocused = selectedCellIdx === -1;
-  const rowRef = useFocusRef<HTMLDivElement>(isRowFocused);
+  const rowRef = useCombinedRefs(ref, useFocusRef<HTMLDivElement>(isRowFocused));
 
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);

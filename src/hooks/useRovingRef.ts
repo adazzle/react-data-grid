@@ -1,28 +1,23 @@
-import { useRef, useLayoutEffect, useState } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 
 export function useRovingRef(isSelected: boolean) {
   const ref = useRef<HTMLDivElement>(null);
-  // TODO: profile to check if this can cause performance issues
-  const [isFocused, setFocus] = useState(false);
+  const isChildFocusable = useRef(false);
 
   useLayoutEffect(() => {
-    if (!isSelected) return;
+    if (!isSelected || isChildFocusable.current) return;
     ref.current?.focus({ preventScroll: true });
   }, [isSelected]);
 
-  function onFocus() {
-    setFocus(true);
-  }
-
-  function onBlur() {
-    setFocus(false);
+  function onFocus(event: React.FocusEvent<HTMLDivElement>) {
+    if (event.target !== ref.current) {
+      isChildFocusable.current = true;
+    }
   }
 
   return {
     ref,
-    tabIndex: isSelected ? 0 : -1,
-    isFocused,
-    onFocus,
-    onBlur
+    tabIndex: isSelected && !isChildFocusable.current ? 0 : -1,
+    onFocus
   };
 }
