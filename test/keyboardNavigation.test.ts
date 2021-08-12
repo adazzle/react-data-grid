@@ -120,7 +120,7 @@ test('at-bounds basic keyboard navigation', () => {
   expect(document.body).toHaveFocus();
 });
 
-test('navigation when selected cell not in the view port', () => {
+test('navigation when selected cell not in the viewport', () => {
   setup({ columns, rows });
 
   // tab into the grid
