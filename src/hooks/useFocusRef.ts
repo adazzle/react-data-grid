@@ -7,5 +7,8 @@ export function useFocusRef<T extends HTMLOrSVGElement>(isSelected: boolean) {
     ref.current?.focus({ preventScroll: true });
   }, [isSelected]);
 
-  return ref;
+  return {
+    ref,
+    tabIndex: isSelected ? 0 : -1
+  };
 }

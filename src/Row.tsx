@@ -35,7 +35,7 @@ function Row<R, SR>(
   ref: React.Ref<HTMLDivElement>
 ) {
   const isRowFocused = selectedCellIdx === -1;
-  const rowRef = useCombinedRefs(ref, useFocusRef<HTMLDivElement>(isRowFocused));
+  const { ref: rowRef, tabIndex } = useFocusRef<HTMLDivElement>(isRowFocused);
 
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
@@ -94,8 +94,8 @@ function Row<R, SR>(
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
-        ref={rowRef}
-        tabIndex={isRowFocused ? 0 : -1}
+        ref={useCombinedRefs(ref, rowRef)}
+        tabIndex={tabIndex}
         className={className}
         onMouseEnter={handleDragEnter}
         style={

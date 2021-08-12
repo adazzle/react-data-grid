@@ -44,7 +44,7 @@ function GroupedRow<R, SR>({
   ...props
 }: GroupRowRendererProps<R, SR>) {
   const isRowFocused = selectedCellIdx === -1;
-  const ref = useFocusRef<HTMLDivElement>(isRowFocused);
+  const { ref, tabIndex } = useFocusRef<HTMLDivElement>(isRowFocused);
 
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
@@ -60,7 +60,7 @@ function GroupedRow<R, SR>({
         aria-level={level}
         aria-expanded={isExpanded}
         ref={ref}
-        tabIndex={isRowFocused ? 0 : -1}
+        tabIndex={tabIndex}
         className={clsx(
           rowClassname,
           groupRowClassname,
