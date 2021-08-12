@@ -35,6 +35,23 @@ describe('Editor', () => {
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
   });
 
+  it('should commit changes on enter if the editor is rendered in a portal', () => {
+    render(
+      <EditorTest
+        editorOptions={{
+          createPortal: true
+        }}
+      />
+    );
+    userEvent.click(getCellsAtRowIndex(0)[0]);
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    userEvent.keyboard('{enter}');
+    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
+    userEvent.type(document.activeElement!, '3');
+    userEvent.tab();
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
+  });
+
   it('should open editor when user types', () => {
     render(<EditorTest />);
     userEvent.click(getCellsAtRowIndex(0)[0]);
