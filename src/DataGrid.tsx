@@ -883,8 +883,16 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getDragHandle(rowIdx: number) {
-    if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'EDIT') return;
-    return !hasGroups && onFill != null ? (
+    if (
+      selectedPosition.rowIdx !== rowIdx ||
+      selectedPosition.mode === 'EDIT' ||
+      hasGroups || // drag fill is not supported when grouping is enabled
+      onFill == null
+    ) {
+      return;
+    }
+
+    return (
       <DragHandle
         rows={rawRows}
         columns={columns}
@@ -896,7 +904,7 @@ function DataGrid<R, SR, K extends Key>(
         setDragging={setDragging}
         setDraggedOverRowIdx={setDraggedOverRowIdx}
       />
-    ) : undefined;
+    );
   }
 
   function getCellEditor(rowIdx: number) {
