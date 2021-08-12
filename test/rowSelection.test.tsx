@@ -10,7 +10,13 @@ interface Row {
   id: number;
 }
 
-const columns: readonly Column<Row>[] = [SelectColumn];
+const columns: readonly Column<Row>[] = [
+  SelectColumn,
+  {
+    key: 'name',
+    name: 'Name'
+  }
+];
 
 const defaultRows: readonly Row[] = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
@@ -185,4 +191,15 @@ test('select rows using shift click', () => {
   testSelection(0, true);
   testSelection(1, true);
   testSelection(2, true);
+});
+
+test('select rows using shift space', () => {
+  setup();
+  userEvent.click(getCellsAtRowIndex(0)[1]);
+  userEvent.keyboard('{shift}{space}');
+  testSelection(0, true);
+  userEvent.keyboard('{space}');
+  testSelection(0, true);
+  userEvent.keyboard('{shift}{space}');
+  testSelection(0, false);
 });
