@@ -30,15 +30,30 @@ describe('Editor', () => {
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     userEvent.keyboard('{enter}');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    userEvent.type(document.activeElement!, '3');
-    userEvent.tab();
+    userEvent.keyboard('3{enter}');
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
+  });
+
+  it('should commit changes on enter if the editor is rendered in a portal', () => {
+    render(
+      <EditorTest
+        editorOptions={{
+          createPortal: true
+        }}
+      />
+    );
+    userEvent.click(getCellsAtRowIndex(0)[0]);
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    userEvent.keyboard('{enter}');
+    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
+    userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
   });
 
   it('should open editor when user types', () => {
     render(<EditorTest />);
     userEvent.click(getCellsAtRowIndex(0)[0]);
-    userEvent.type(document.activeElement!, '123{enter}');
+    userEvent.keyboard('123{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1123$/);
   });
 
@@ -46,7 +61,7 @@ describe('Editor', () => {
     render(<EditorTest />);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    userEvent.type(document.activeElement!, '2222{escape}');
+    userEvent.keyboard('2222{escape}');
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1$/);
   });
@@ -55,7 +70,7 @@ describe('Editor', () => {
     render(<EditorTest />);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    userEvent.type(document.activeElement!, '2222');
+    userEvent.keyboard('2222');
     userEvent.click(screen.getByText('outside'));
     await waitForElementToBeRemoved(screen.queryByLabelText('col1-editor'));
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12222$/);
@@ -65,7 +80,7 @@ describe('Editor', () => {
     const onSave = jest.fn();
     render(<EditorTest onSave={onSave} />);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    userEvent.type(document.activeElement!, '234');
+    userEvent.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = screen.getByRole('button', { name: 'save' });
     fireEvent.mouseDown(saveButton);
@@ -158,9 +173,9 @@ describe('Editor', () => {
         />
       );
       userEvent.click(getCellsAtRowIndex(0)[1]);
-      userEvent.type(document.activeElement!, 'yz{enter}');
+      userEvent.keyboard('yz{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
-      userEvent.type(document.activeElement!, 'x');
+      userEvent.keyboard('x');
       expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     });
 
@@ -175,7 +190,7 @@ describe('Editor', () => {
         />
       );
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      userEvent.type(document.activeElement!, 'a{arrowleft}b{arrowright}c{arrowdown}'); // should commit changes on arrowdown
+      userEvent.keyboard('a{arrowleft}b{arrowright}c{arrowdown}'); // should commit changes on arrowdown
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
     });
   });
