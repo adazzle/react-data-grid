@@ -35,7 +35,8 @@ const darkTheme = `
 
 const root = css`
   ${lightTheme}
-  --selection-color: #66afe9;
+  --selection-color: #66e2e9;
+  --focus-color: #66afe9;
   --font-size: 14px;
 
   color-scheme: var(--color-scheme, light dark);
@@ -83,17 +84,6 @@ const root = css`
 `;
 
 export const rootClassname = `rdg ${root}`;
-
-const focusSink = css`
-  position: sticky;
-  top: 0;
-  left: 0;
-  height: 0;
-  width: 0;
-  outline: 0;
-`;
-
-export const focusSinkClassname = `rdg-focus-sink ${focusSink}`;
 
 const viewportDragging = css`
   &.${row} {
