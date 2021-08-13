@@ -641,7 +641,7 @@ function DataGrid<R, SR, K extends Key>(
     if (isSelectable && shiftKey && key === ' ') {
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
       const rowKey = rowKeyGetter(row);
-      selectRow({ row, checked: !selectedRows!.has(rowKey), isShiftClick: false });
+      selectRow({ row, checked: !selectedRows.has(rowKey), isShiftClick: false });
       // do not scroll
       event.preventDefault();
       return;
@@ -936,7 +936,7 @@ function DataGrid<R, SR, K extends Key>(
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected =
-          isSelectable && row.childRows.every((cr) => selectedRows?.has(rowKeyGetter!(cr)));
+          isSelectable && row.childRows.every((cr) => selectedRows.has(rowKeyGetter!(cr)));
         rowElements.push(
           <GroupRowRenderer
             aria-level={row.level + 1} // aria-level is 1-based
