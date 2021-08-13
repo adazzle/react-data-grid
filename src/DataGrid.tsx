@@ -49,7 +49,8 @@ import type {
   PasteEvent,
   CellNavigationMode,
   SortColumn,
-  RowHeightArgs
+  RowHeightArgs,
+  Maybe
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -105,71 +106,71 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: readonly SR[] | null;
+  summaryRows?: Maybe<readonly SR[]>;
   /** The getter should return a unique key for each row */
-  rowKeyGetter?: ((row: R) => K) | null;
-  onRowsChange?: ((rows: R[], data: RowsChangeData<R, SR>) => void) | null;
+  rowKeyGetter?: Maybe<(row: R) => K>;
+  onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>;
 
   /**
    * Dimensions props
    */
   /** The height of each row in pixels */
-  rowHeight?: number | ((args: RowHeightArgs<R>) => number) | null;
+  rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
   /** The height of the header row in pixels */
-  headerRowHeight?: number | null;
+  headerRowHeight?: Maybe<number>;
   /** The height of each summary row in pixels */
-  summaryRowHeight?: number | null;
+  summaryRowHeight?: Maybe<number>;
 
   /**
    * Feature props
    */
   /** Set of selected row keys */
-  selectedRows?: ReadonlySet<K> | null;
+  selectedRows?: Maybe<ReadonlySet<K>>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
+  onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>;
   /**Used for multi column sorting */
-  sortColumns?: readonly SortColumn[] | null;
-  onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
-  defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
-  groupBy?: readonly string[] | null;
-  rowGrouper?: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | null;
-  expandedGroupIds?: ReadonlySet<unknown> | null;
-  onExpandedGroupIdsChange?: ((expandedGroupIds: Set<unknown>) => void) | null;
-  onFill?: ((event: FillEvent<R>) => R) | null;
-  onPaste?: ((event: PasteEvent<R>) => R) | null;
+  sortColumns?: Maybe<readonly SortColumn[]>;
+  onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
+  defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>;
+  groupBy?: Maybe<readonly string[]>;
+  rowGrouper?: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>;
+  expandedGroupIds?: Maybe<ReadonlySet<unknown>>;
+  onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>;
+  onFill?: Maybe<(event: FillEvent<R>) => R>;
+  onPaste?: Maybe<(event: PasteEvent<R>) => R>;
 
   /**
    * Custom renderers
    */
-  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>> | null;
-  emptyRowsRenderer?: React.ComponentType | null;
+  rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
+  emptyRowsRenderer?: Maybe<React.ComponentType>;
 
   /**
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
-  onRowDoubleClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Called when the grid is scrolled */
-  onScroll?: ((event: React.UIEvent<HTMLDivElement>) => void) | null;
+  onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
-  onColumnResize?: ((idx: number, width: number) => void) | null;
+  onColumnResize?: Maybe<(idx: number, width: number) => void>;
   /** Function called whenever selected cell is changed */
-  onSelectedCellChange?: ((position: Position) => void) | null;
+  onSelectedCellChange?: Maybe<(position: Position) => void>;
 
   /**
    * Toggles and modes
    */
-  cellNavigationMode?: CellNavigationMode | null;
-  enableVirtualization?: boolean | null;
+  cellNavigationMode?: Maybe<CellNavigationMode>;
+  enableVirtualization?: Maybe<boolean>;
 
   /**
    * Miscellaneous
    */
   /** The node where the editor portal should mount. */
-  editorPortalTarget?: Element | null;
-  rowClass?: ((row: R) => string | undefined | null) | null;
+  editorPortalTarget?: Maybe<Element>;
+  rowClass?: Maybe<(row: R) => Maybe<string>>;
 }
 
 /**
@@ -346,7 +347,7 @@ function DataGrid<R, SR, K extends Key>(
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectCellLatest = useLatestFunc(
-    (row: R, column: CalculatedColumn<R, SR>, enableEditor: boolean | undefined | null) => {
+    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       const rowIdx = rows.indexOf(row);
       selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
