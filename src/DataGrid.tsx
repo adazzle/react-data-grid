@@ -14,7 +14,8 @@ import {
   rootClassname,
   viewportDraggingClassname,
   cell as cellClassname,
-  row as rowClassname
+  row as rowClassname,
+  focusSinkClassname
 } from './style';
 import {
   useGridDimensions,
@@ -479,9 +480,7 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function onGridFocus({ target }: React.FocusEvent<HTMLDivElement>) {
-    // Do not scroll if clicked within the grid
-    if (gridRef.current !== target && gridRef.current!.contains(target)) return;
+  function onGridFocus() {
     if (!isCellWithinBounds(selectedPosition)) {
       // Tabbing into the grid should initiate keyboard navigation
       const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
@@ -1063,7 +1062,6 @@ function DataGrid<R, SR, K extends Key>(
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      tabIndex={isCellWithinBounds(selectedPosition) ? undefined : 0}
       className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={
         {
@@ -1077,7 +1075,6 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
-      onFocus={onGridFocus}
     >
       <HeaderRow
         columns={viewportColumns}
@@ -1092,6 +1089,15 @@ function DataGrid<R, SR, K extends Key>(
         <EmptyRowsRenderer />
       ) : (
         <>
+          {/* 
+            An extra div needed to set the initial focus on the grid 
+            when there is no selected cell. This can be remove when we
+            set the first header cell as selected and allow cell
+            navigation on the header and summary row
+           */}
+          {!isCellWithinBounds(selectedPosition) && (
+            <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
+          )}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
