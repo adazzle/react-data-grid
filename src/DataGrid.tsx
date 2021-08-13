@@ -1090,7 +1090,7 @@ function DataGrid<R, SR, K extends Key>(
       ) : (
         <>
           {/* 
-            An extra div needed to set the initial focus on the grid 
+            An extra div is needed to set the initial focus on the grid 
             when there is no selected cell. This can be remove when we
             set the first header cell as selected and allow cell
             navigation on the header and summary row
