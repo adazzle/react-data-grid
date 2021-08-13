@@ -873,8 +873,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function getGridTabIndex() {
     const { idx, rowIdx } = selectedPosition;
-    return isCellWithinBounds(selectedPosition) &&
-      (idx <= lastFrozenColumnIndex || idx >= colOverscanStartIdx) &&
+    return (idx <= lastFrozenColumnIndex || idx >= colOverscanStartIdx) &&
       idx <= colOverscanEndIdx &&
       rowIdx >= rowOverscanStartIdx &&
       rowIdx <= rowOverscanEndIdx
