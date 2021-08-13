@@ -32,6 +32,7 @@ describe('Editor', () => {
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
     userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
   });
 
   it('should commit changes on enter if the editor is rendered in a portal', () => {
@@ -42,12 +43,16 @@ describe('Editor', () => {
         }}
       />
     );
-    userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    userEvent.click(getCellsAtRowIndex(0)[1]);
+    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     userEvent.keyboard('{enter}');
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    userEvent.keyboard('3{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
+    expect(screen.getByLabelText('col2-editor')).toHaveValue('a1');
+    userEvent.keyboard('23');
+    // The cell value should update as the editor value is changed
+    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
+    userEvent.keyboard('{enter}');
+    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
+    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
   });
 
   it('should open editor when user types', () => {
