@@ -35,8 +35,7 @@ const darkTheme = `
 
 const root = css`
   ${lightTheme}
-  --selection-color: #66e2e9;
-  --focus-color: #66afe9;
+  --selection-color: #66afe9;
   --font-size: 14px;
 
   color-scheme: var(--color-scheme, light dark);
