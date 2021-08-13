@@ -121,24 +121,37 @@ test('at-bounds basic keyboard navigation', () => {
 });
 
 test('navigation when selected cell not in the viewport', () => {
+  const columns: Column<Row>[] = [SelectColumn];
+  for (let i = 0; i < 99; i++) {
+    columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
+  }
   setup({ columns, rows });
-
-  // tab into the grid
   userEvent.tab();
-
-  // TODO: this does not work with formatters that sets the focus
-  userEvent.tab();
-  validateCellPosition(1, 0);
+  validateCellPosition(0, 0);
 
   const grid = getGrid();
-  const rowHeight = 35;
-  expect(getCellsAtRowIndex(0)).toHaveLength(7);
-  grid.scrollTop = rowHeight + rowHeight * 100 - 1080;
-  expect(getCellsAtRowIndex(0)).toHaveLength(1);
+  userEvent.keyboard('{ctrl}{end}');
+  validateCellPosition(99, 99);
+  expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
 
+  grid.scrollTop = 0;
+  expect(getCellsAtRowIndex(99)).toHaveLength(1);
+  userEvent.keyboard('{arrowup}');
+  validateCellPosition(99, 98);
+  expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
+
+  grid.scrollLeft = 0;
   userEvent.keyboard('{arrowdown}');
-  validateCellPosition(1, 1);
-  expect(getCellsAtRowIndex(0)).toHaveLength(7);
+  validateCellPosition(99, 99);
+
+  userEvent.keyboard('{home}');
+  userEvent.keyboard(
+    '{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
+  );
+  validateCellPosition(7, 99);
+  grid.scrollLeft = 2000;
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(6, 99);
 });
 
 function validateCheckboxHasFocus() {

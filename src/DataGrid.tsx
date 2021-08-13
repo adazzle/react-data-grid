@@ -1063,7 +1063,7 @@ function DataGrid<R, SR, K extends Key>(
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      tabIndex={isCellWithinBounds(selectedPosition) ? -1 : 0}
+      tabIndex={isCellWithinBounds(selectedPosition) ? undefined : 0}
       className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={
         {
