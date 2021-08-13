@@ -491,7 +491,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
-    const isCellEvent = event.target.closest('[role="gridcell"]') !== null;
+    const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = minColIdx === -1 && event.target.getAttribute('role') === 'row';
     if (!isCellEvent && !isRowEvent) return;
 
