@@ -494,11 +494,11 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest(`.${cellClassname}`) !== null;
     const isRowEvent = hasGroups && event.target.classList.contains(rowClassname);
-    if (!isCellEvent && !isRowEvent) return;
+    if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
 
     const { key, keyCode } = event;
     const row = rows[selectedPosition.rowIdx];
