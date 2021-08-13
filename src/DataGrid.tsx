@@ -876,16 +876,6 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getGridTabIndex() {
-    const { idx, rowIdx } = selectedPosition;
-    return (idx <= lastFrozenColumnIndex || idx >= colOverscanStartIdx) &&
-      idx <= colOverscanEndIdx &&
-      rowIdx >= rowOverscanStartIdx &&
-      rowIdx <= rowOverscanEndIdx
-      ? -1
-      : 0;
-  }
-
   function getDragHandle(rowIdx: number) {
     if (
       selectedPosition.rowIdx !== rowIdx ||
@@ -935,7 +925,44 @@ function DataGrid<R, SR, K extends Key>(
   function getViewportRows() {
     const rowElements = [];
     let startRowIndex = 0;
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+
+    const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
+    const startRowIdx =
+      isCellWithinBounds(selectedPosition) && selectedRowIdx < rowOverscanStartIdx
+        ? rowOverscanStartIdx - 1
+        : rowOverscanStartIdx;
+    const endRowIdx =
+      isCellWithinBounds(selectedPosition) && selectedRowIdx > rowOverscanEndIdx
+        ? rowOverscanEndIdx + 1
+        : rowOverscanEndIdx;
+
+    for (let viewportRowIdx = startRowIdx; viewportRowIdx <= endRowIdx; viewportRowIdx++) {
+      const isRowOutsideViewport =
+        viewportRowIdx === rowOverscanStartIdx - 1 || viewportRowIdx === rowOverscanEndIdx + 1;
+      const rowIdx = isRowOutsideViewport ? selectedRowIdx : viewportRowIdx;
+
+      let rowColumns = viewportColumns;
+      if (isRowOutsideViewport) {
+        // if the row is outside the viewport then only render the selected cell
+        rowColumns = [columns[selectedIdx]];
+      } else if (
+        // if the row is within the viewport and cell is not, add the selected column to viewport columns
+        selectedRowIdx === rowIdx &&
+        viewportColumns.length > lastFrozenColumnIndex + 1 && // there are non frozen columns
+        ((selectedIdx > lastFrozenColumnIndex &&
+          selectedIdx < viewportColumns[lastFrozenColumnIndex + 1].idx) ||
+          selectedIdx > viewportColumns[viewportColumns.length - 1].idx)
+      ) {
+        rowColumns =
+          selectedIdx > viewportColumns[viewportColumns.length - 1].idx
+            ? [...viewportColumns, columns[selectedIdx]]
+            : [
+                ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+                columns[selectedIdx],
+                ...viewportColumns.slice(lastFrozenColumnIndex + 1)
+              ];
+      }
+
       const row = rows[rowIdx];
       const top = getRowTop(rowIdx) + headerRowHeight;
       if (isGroupRow(row)) {
@@ -952,7 +979,7 @@ function DataGrid<R, SR, K extends Key>(
             key={row.id}
             id={row.id}
             groupKey={row.groupKey}
-            viewportColumns={viewportColumns}
+            viewportColumns={rowColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
             row={row}
@@ -960,7 +987,7 @@ function DataGrid<R, SR, K extends Key>(
             height={getRowHeight(rowIdx)}
             level={row.level}
             isExpanded={row.isExpanded}
-            selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
+            selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
             isRowSelected={isGroupRowSelected}
             selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
@@ -986,7 +1013,7 @@ function DataGrid<R, SR, K extends Key>(
           key={key}
           rowIdx={rowIdx}
           row={row}
-          viewportColumns={viewportColumns}
+          viewportColumns={rowColumns}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
@@ -998,7 +1025,7 @@ function DataGrid<R, SR, K extends Key>(
               ? columns.findIndex((c) => c.key === copiedCell.columnKey)
               : undefined
           }
-          selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
+          selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
@@ -1036,7 +1063,7 @@ function DataGrid<R, SR, K extends Key>(
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      tabIndex={getGridTabIndex()}
+      tabIndex={isCellWithinBounds(selectedPosition) ? -1 : 0}
       className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={
         {

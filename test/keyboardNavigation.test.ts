@@ -131,14 +131,14 @@ test('navigation when selected cell not in the viewport', () => {
   validateCellPosition(1, 0);
 
   const grid = getGrid();
-  const queryFirstRow = () => document.querySelector<HTMLDivElement>(`[aria-rowindex="2"]`);
   const rowHeight = 35;
-  expect(queryFirstRow()).toBeInTheDocument();
+  expect(getCellsAtRowIndex(0)).toHaveLength(7);
   grid.scrollTop = rowHeight + rowHeight * 100 - 1080;
-  expect(queryFirstRow()).not.toBeInTheDocument();
+  expect(getCellsAtRowIndex(0)).toHaveLength(1);
 
   userEvent.keyboard('{arrowdown}');
   validateCellPosition(1, 1);
+  expect(getCellsAtRowIndex(0)).toHaveLength(7);
 });
 
 function validateCheckboxHasFocus() {
