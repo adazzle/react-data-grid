@@ -103,9 +103,6 @@ test('at-bounds basic keyboard navigation', () => {
 
   // shift+tab tabs out of the grid
   userEvent.tab({ shift: true });
-  // TODO: remove when focus and selection are separated
-  // focusSink recieves focus and we need to press shift tab again to exit the grid
-  userEvent.tab({ shift: true });
   expect(document.body).toHaveFocus();
 
   // tab at the end of a row selects the first cell on the next row
