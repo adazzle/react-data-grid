@@ -481,16 +481,13 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function onGridFocus() {
-    if (!isCellWithinBounds(selectedPosition)) {
-      // Tabbing into the grid should initiate keyboard navigation
-      const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
-      if (isCellWithinBounds(initialPosition)) {
-        setSelectedPosition(initialPosition);
-      }
-    } else {
-      // otherwise if we already have a selected cell, we should scroll back to it when focusing the grid
-      scrollToCell(selectedPosition);
+    if (isCellWithinBounds(selectedPosition)) return;
+    // Tabbing into the grid should initiate keyboard navigation
+    const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
+    if (isCellWithinBounds(initialPosition)) {
+      setSelectedPosition(initialPosition);
     }
+    // otherwise browser automatically scrolls to the selected cell
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
@@ -1090,10 +1087,8 @@ function DataGrid<R, SR, K extends Key>(
       ) : (
         <>
           {/* 
-            An extra div is needed to set the initial focus on the grid 
-            when there is no selected cell. This can be remove when we
-            set the first header cell as selected and allow cell
-            navigation on the header and summary row
+            An extra div is needed initially to set the focus 
+            on the grid when there is no selected cell.
            */}
           {!isCellWithinBounds(selectedPosition) && (
             <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />

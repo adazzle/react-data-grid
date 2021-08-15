@@ -1,23 +1,36 @@
-import { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect, useState } from 'react';
 
 export function useRovingRef(isSelected: boolean) {
   const ref = useRef<HTMLDivElement>(null);
-  const isChildFocusable = useRef(false);
+  const isChildFocused = useRef(false);
+  const [, forceRender] = useState({});
 
   useLayoutEffect(() => {
-    if (!isSelected || isChildFocusable.current) return;
-    ref.current?.focus({ preventScroll: true });
+    if (!isSelected) {
+      isChildFocused.current = false;
+      return;
+    }
+
+    if (isChildFocused.current) {
+      // When the child is focused, we need to rerender
+      // the cell again so tabIndex is updated to -1
+      forceRender({});
+      return;
+    }
+    ref.current?.focus();
   }, [isSelected]);
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
     if (event.target !== ref.current) {
-      isChildFocusable.current = true;
+      isChildFocused.current = true;
     }
   }
 
+  const isFocused = isSelected && !isChildFocused.current;
+
   return {
     ref,
-    tabIndex: isSelected && !isChildFocusable.current ? 0 : -1,
+    tabIndex: isFocused ? 0 : -1,
     onFocus
   };
 }
