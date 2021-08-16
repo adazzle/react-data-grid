@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-const headerRow = css`
+export const headerRow = css`
   contain: strict;
   contain: size layout style paint;
   display: grid;
@@ -15,6 +15,7 @@ const headerRow = css`
   font-weight: bold;
   z-index: 3;
   touch-action: none;
+  outline: none;
 
   &[aria-selected='true'] {
     box-shadow: inset 0 0 0 2px var(--selection-color);

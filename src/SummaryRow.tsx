@@ -1,8 +1,11 @@
 import { memo } from 'react';
+import clsx from 'clsx';
+
 import { rowClassname, summaryRowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
+import { useRovingRowRef } from './hooks';
 
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
@@ -12,7 +15,7 @@ interface SummaryRowProps<R, SR>
   row: SR;
   bottom: number;
   lastFrozenColumnIndex: number;
-  selectedColIdx: number | undefined;
+  selectedCellIdx: number | undefined;
   selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
 
@@ -22,10 +25,11 @@ function SummaryRow<R, SR>({
   viewportColumns,
   bottom,
   lastFrozenColumnIndex,
-  selectedColIdx,
+  selectedCellIdx,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
+  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
   const cells = [];
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
@@ -34,7 +38,7 @@ function SummaryRow<R, SR>({
       index += colSpan - 1;
     }
 
-    const isCellSelected = selectedColIdx === column.idx;
+    const isCellSelected = selectedCellIdx === column.idx;
 
     cells.push(
       <SummaryCell<R, SR>
@@ -52,9 +56,14 @@ function SummaryRow<R, SR>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-row-${
-        rowIdx % 2 === 0 ? 'even' : 'odd'
-      } ${summaryRowClassname}`}
+      ref={ref}
+      tabIndex={tabIndex}
+      className={clsx(
+        rowClassname,
+        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+        summaryRowClassname,
+        className
+      )}
       style={{ bottom }}
     >
       {cells}

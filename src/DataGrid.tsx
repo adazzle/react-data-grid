@@ -15,6 +15,7 @@ import {
   viewportDraggingClassname,
   cell as cellClassname,
   row as rowClassname,
+  headerRow as headerRowClassname,
   focusSinkClassname
 } from './style';
 import {
@@ -506,10 +507,12 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
-    if (!(event.target instanceof Element)) return;
-    const isCellEvent = event.target.closest(`.${cellClassname}`) !== null;
-    const isRowEvent = hasGroups && event.target.classList.contains(rowClassname);
-    if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
+    const { target } = event;
+    if (!(target instanceof Element)) return;
+    const isCellEvent = target.closest(`.${cellClassname}`) !== null;
+    const isRowEvent = hasGroups && target.classList.contains(rowClassname);
+    const isHeaderRowEvent = target.classList.contains(headerRowClassname);
+    if (!isCellEvent && !isRowEvent && !isHeaderRowEvent && !isEditorPortalEvent) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
@@ -1113,7 +1116,7 @@ function DataGrid<R, SR, K extends Key>(
         sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
-        selectedColIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
+        selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         selectCell={selectHeaderCellLatest}
       />
       {rows.length === 0 && EmptyRowsRenderer ? (
@@ -1143,7 +1146,7 @@ function DataGrid<R, SR, K extends Key>(
                 bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
                 viewportColumns={viewportColumns}
                 lastFrozenColumnIndex={lastFrozenColumnIndex}
-                selectedColIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                 selectCell={selectSummaryCellLatest}
               />
             );

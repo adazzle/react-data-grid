@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, CellRendererProps } from './types';
-import { useRovingRef } from './hooks';
+import { useRovingCellRef } from './hooks';
 
 interface SharedCellRendererProps<R, SR>
   extends Pick<CellRendererProps<R, SR>, 'column' | 'colSpan' | 'isCellSelected'> {
@@ -20,7 +20,7 @@ function SummaryCell<R, SR>({
   isCellSelected,
   selectCell
 }: SummaryCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingRef(isCellSelected);
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = getCellClassname(
     column,
