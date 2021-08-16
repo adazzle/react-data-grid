@@ -939,23 +939,18 @@ function DataGrid<R, SR, K extends Key>(
       const rowIdx = isRowOutsideViewport ? selectedRowIdx : viewportRowIdx;
 
       let rowColumns = viewportColumns;
+      const selectedColumn = columns[selectedIdx];
       if (isRowOutsideViewport) {
         // if the row is outside the viewport then only render the selected cell
-        rowColumns = [columns[selectedIdx]];
-      } else if (
+        rowColumns = [selectedColumn];
+      } else if (selectedRowIdx === rowIdx && !viewportColumns.includes(selectedColumn)) {
         // if the row is within the viewport and cell is not, add the selected column to viewport columns
-        selectedRowIdx === rowIdx &&
-        viewportColumns.length > lastFrozenColumnIndex + 1 && // there are non frozen columns
-        ((selectedIdx > lastFrozenColumnIndex &&
-          selectedIdx < viewportColumns[lastFrozenColumnIndex + 1].idx) ||
-          selectedIdx > viewportColumns[viewportColumns.length - 1].idx)
-      ) {
         rowColumns =
           selectedIdx > viewportColumns[viewportColumns.length - 1].idx
-            ? [...viewportColumns, columns[selectedIdx]]
+            ? [...viewportColumns, selectedColumn]
             : [
                 ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
-                columns[selectedIdx],
+                selectedColumn,
                 ...viewportColumns.slice(lastFrozenColumnIndex + 1)
               ];
       }
