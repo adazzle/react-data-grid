@@ -2,7 +2,7 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import { SortableHeaderCell } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../useCombinedRefs';
+import { useCombinedRefs } from '../../../../src/hooks';
 
 interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;

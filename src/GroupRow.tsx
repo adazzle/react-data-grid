@@ -6,7 +6,7 @@ import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './st
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
-import { RowSelectionProvider } from './hooks';
+import { RowSelectionProvider, useFocusRef } from './hooks';
 
 export interface GroupRowRendererProps<R, SR>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -43,6 +43,9 @@ function GroupedRow<R, SR>({
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
+  const isRowFocused = selectedCellIdx === -1;
+  const { ref, tabIndex } = useFocusRef<HTMLDivElement>(isRowFocused);
+
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
@@ -56,12 +59,14 @@ function GroupedRow<R, SR>({
         role="row"
         aria-level={level}
         aria-expanded={isExpanded}
+        ref={ref}
+        tabIndex={tabIndex}
         className={clsx(
           rowClassname,
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
           {
-            [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
+            [groupRowSelectedClassname]: isRowFocused // Select row if there is no selected cell
           }
         )}
         onClick={handleSelectGroup}

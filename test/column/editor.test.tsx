@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { getCellsAtRowIndex } from '../utils';
+import { getCellsAtRowIndex, getGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -100,6 +100,26 @@ describe('Editor', () => {
       { col1: 1234, col2: 'a1' },
       { col1: 2, col2: 'a2' }
     ]);
+  });
+
+  it('should scroll to the editor if selected cell is not in the viewport', () => {
+    const rows: Row[] = [];
+    for (let i = 0; i < 99; i++) {
+      rows.push({ col1: i, col2: `${i}` });
+    }
+
+    render(<EditorTest gridRows={rows} />);
+    userEvent.click(getCellsAtRowIndex(0)[0]);
+    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+
+    const grid = getGrid();
+    grid.scrollTop = 2000;
+    expect(getCellsAtRowIndex(0)).toHaveLength(1);
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    userEvent.keyboard('123');
+    expect(screen.getByLabelText('col1-editor')).toHaveValue(123);
+    userEvent.keyboard('{enter}');
+    expect(getCellsAtRowIndex(0)).toHaveLength(2);
   });
 
   describe('editable', () => {
@@ -203,21 +223,22 @@ describe('Editor', () => {
 
 interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
   onSave?: (rows: readonly Row[]) => void;
+  gridRows?: readonly Row[];
 }
 
-function EditorTest({ editable, editorOptions, onSave }: EditorTestProps) {
-  const [rows, setRows] = useState((): readonly Row[] => {
-    return [
-      {
-        col1: 1,
-        col2: 'a1'
-      },
-      {
-        col1: 2,
-        col2: 'a2'
-      }
-    ];
-  });
+const initialRows: readonly Row[] = [
+  {
+    col1: 1,
+    col2: 'a1'
+  },
+  {
+    col1: 2,
+    col2: 'a2'
+  }
+];
+
+function EditorTest({ editable, editorOptions, onSave, gridRows = initialRows }: EditorTestProps) {
+  const [rows, setRows] = useState(gridRows);
 
   const columns = useMemo((): readonly Column<Row>[] => {
     return [

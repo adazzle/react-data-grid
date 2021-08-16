@@ -3,7 +3,7 @@ import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowSelectionProvider, useLatestFunc } from './hooks';
+import { RowSelectionProvider, useLatestFunc, useFocusRef, useCombinedRefs } from './hooks';
 import { getColSpan } from './utils';
 import { groupRowSelectedClassname, rowClassname } from './style';
 import type { RowRendererProps } from './types';
@@ -21,8 +21,6 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
-    onFocus,
-    onKeyDown,
     onRowClick,
     onRowDoubleClick,
     rowClass,
@@ -36,6 +34,9 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
+  const isRowFocused = selectedCellIdx === -1;
+  const { ref: rowRef, tabIndex } = useFocusRef<HTMLDivElement>(isRowFocused);
+
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
   });
@@ -49,7 +50,7 @@ function Row<R, SR>(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     {
-      [groupRowSelectedClassname]: selectedCellIdx === -1
+      [groupRowSelectedClassname]: isRowFocused
     },
     rowClass?.(row),
     className
@@ -80,8 +81,6 @@ function Row<R, SR>(
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onFocus={onFocus}
-          onKeyDown={isCellSelected ? onKeyDown : undefined}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
           onRowChange={handleRowChange}
@@ -95,7 +94,8 @@ function Row<R, SR>(
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
-        ref={ref}
+        ref={useCombinedRefs(ref, rowRef)}
+        tabIndex={tabIndex}
         className={className}
         onMouseEnter={handleDragEnter}
         style={

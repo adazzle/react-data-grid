@@ -133,15 +133,15 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   rowIdx: number;
-  selectedCellIdx?: number;
+  selectedCellIdx: number | undefined;
   copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   top: number;
   height: number;
-  selectedCellEditor?: ReactElement<EditorProps<TRow>>;
-  selectedCellDragHandle?: ReactElement<React.HTMLAttributes<HTMLDivElement>>;
+  selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
+  selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick: ((row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void) | undefined | null;
   onRowDoubleClick:

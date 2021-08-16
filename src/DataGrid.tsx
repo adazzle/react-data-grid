@@ -10,7 +10,13 @@ import {
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  cell as cellClassname,
+  row as rowClassname,
+  focusSinkClassname
+} from './style';
 import {
   useGridDimensions,
   useCalculatedColumns,
@@ -67,10 +73,6 @@ type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'formatter' | 'minWidth' | 'resizable' | 'sortable'
 >;
-
-type SelectedCellProps<R, SR> =
-  | Pick<RowRendererProps<R, SR>, 'selectedCellIdx' | 'onKeyDown' | 'selectedCellEditor'>
-  | Pick<RowRendererProps<R, SR>, 'selectedCellIdx' | 'onKeyDown' | 'selectedCellDragHandle'>;
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const body = globalThis.document?.body;
@@ -254,11 +256,9 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * refs
    */
-  const focusSinkRef = useRef<HTMLDivElement>(null);
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
-  const isCellFocusable = useRef(false);
 
   /**
    * computed values
@@ -369,12 +369,6 @@ function DataGrid<R, SR, K extends Key>(
     }
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
-
-    if (isCellFocusable.current) {
-      isCellFocusable.current = false;
-      return;
-    }
-    focusSinkRef.current!.focus({ preventScroll: true });
   });
 
   useImperativeHandle(ref, () => ({
@@ -412,10 +406,6 @@ function DataGrid<R, SR, K extends Key>(
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
     latestDraggedOverRowIdx.current = rowIdx;
-  }, []);
-
-  const handleFocus = useCallback(() => {
-    isCellFocusable.current = true;
   }, []);
 
   /**
@@ -491,19 +481,21 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function onGridFocus() {
-    if (!isCellWithinBounds(selectedPosition)) {
-      // Tabbing into the grid should initiate keyboard navigation
-      const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
-      if (isCellWithinBounds(initialPosition)) {
-        setSelectedPosition(initialPosition);
-      }
-    } else {
-      // otherwise if we already have a selected cell, we should scroll back to it when focusing the grid
-      scrollToCell(selectedPosition);
+    if (isCellWithinBounds(selectedPosition)) return;
+    // Tabbing into the grid should initiate keyboard navigation
+    const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
+    if (isCellWithinBounds(initialPosition)) {
+      setSelectedPosition(initialPosition);
     }
+    // otherwise browser automatically scrolls to the selected cell
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
+    if (!(event.target instanceof Element)) return;
+    const isCellEvent = event.target.closest(`.${cellClassname}`) !== null;
+    const isRowEvent = hasGroups && event.target.classList.contains(rowClassname);
+    if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
+
     const { key, keyCode } = event;
     const row = rows[selectedPosition.rowIdx];
 
@@ -880,57 +872,93 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getSelectedCellProps(rowIdx: number): SelectedCellProps<R, SR> | undefined {
-    if (selectedPosition.rowIdx !== rowIdx) return;
-
-    if (selectedPosition.mode === 'EDIT') {
-      const { idx, row } = selectedPosition;
-      const column = columns[idx];
-      const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
-
-      return {
-        selectedCellIdx: idx,
-        onKeyDown: handleKeyDown,
-        selectedCellEditor: (
-          <EditCell
-            key={column.key}
-            column={column}
-            colSpan={colSpan}
-            row={row}
-            editorPortalTarget={editorPortalTarget}
-            onKeyDown={handleKeyDown}
-            onRowChange={handleEditorRowChange}
-            onClose={handleOnClose}
-          />
-        )
-      };
+  function getDragHandle(rowIdx: number) {
+    if (
+      selectedPosition.rowIdx !== rowIdx ||
+      selectedPosition.mode === 'EDIT' ||
+      hasGroups || // drag fill is not supported when grouping is enabled
+      onFill == null
+    ) {
+      return;
     }
 
-    return {
-      selectedCellIdx: selectedPosition.idx,
-      onKeyDown: handleKeyDown,
-      selectedCellDragHandle:
-        // Cell drag is not supported on a treegrid
-        !hasGroups && onFill != null ? (
-          <DragHandle
-            rows={rawRows}
-            columns={columns}
-            selectedPosition={selectedPosition}
-            isCellEditable={isCellEditable}
-            latestDraggedOverRowIdx={latestDraggedOverRowIdx}
-            onRowsChange={onRowsChange}
-            onFill={onFill}
-            setDragging={setDragging}
-            setDraggedOverRowIdx={setDraggedOverRowIdx}
-          />
-        ) : undefined
-    };
+    return (
+      <DragHandle
+        rows={rawRows}
+        columns={columns}
+        selectedPosition={selectedPosition}
+        isCellEditable={isCellEditable}
+        latestDraggedOverRowIdx={latestDraggedOverRowIdx}
+        onRowsChange={onRowsChange}
+        onFill={onFill}
+        setDragging={setDragging}
+        setDraggedOverRowIdx={setDraggedOverRowIdx}
+      />
+    );
+  }
+
+  function getCellEditor(rowIdx: number) {
+    if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'SELECT') return;
+
+    const { idx, row } = selectedPosition;
+    const column = columns[idx];
+    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+
+    return (
+      <EditCell
+        key={column.key}
+        column={column}
+        colSpan={colSpan}
+        row={row}
+        editorPortalTarget={editorPortalTarget}
+        onKeyDown={handleKeyDown}
+        onRowChange={handleEditorRowChange}
+        onClose={handleOnClose}
+      />
+    );
   }
 
   function getViewportRows() {
     const rowElements = [];
     let startRowIndex = 0;
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+
+    const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
+    const cellIsWithinBounds = isCellWithinBounds(selectedPosition);
+    const startRowIdx =
+      cellIsWithinBounds && selectedRowIdx < rowOverscanStartIdx
+        ? rowOverscanStartIdx - 1
+        : rowOverscanStartIdx;
+    const endRowIdx =
+      cellIsWithinBounds && selectedRowIdx > rowOverscanEndIdx
+        ? rowOverscanEndIdx + 1
+        : rowOverscanEndIdx;
+
+    for (let viewportRowIdx = startRowIdx; viewportRowIdx <= endRowIdx; viewportRowIdx++) {
+      const isRowOutsideViewport =
+        viewportRowIdx === rowOverscanStartIdx - 1 || viewportRowIdx === rowOverscanEndIdx + 1;
+      const rowIdx = isRowOutsideViewport ? selectedRowIdx : viewportRowIdx;
+
+      let rowColumns = viewportColumns;
+      const selectedColumn = columns[selectedIdx];
+      // selectedIdx can be -1 if grouping is enabled
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (selectedColumn !== undefined) {
+        if (isRowOutsideViewport) {
+          // if the row is outside the viewport then only render the selected cell
+          rowColumns = [selectedColumn];
+        } else if (selectedRowIdx === rowIdx && !viewportColumns.includes(selectedColumn)) {
+          // if the row is within the viewport and cell is not, add the selected column to viewport columns
+          rowColumns =
+            selectedIdx > viewportColumns[viewportColumns.length - 1].idx
+              ? [...viewportColumns, selectedColumn]
+              : [
+                  ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+                  selectedColumn,
+                  ...viewportColumns.slice(lastFrozenColumnIndex + 1)
+                ];
+        }
+      }
+
       const row = rows[rowIdx];
       const top = getRowTop(rowIdx) + headerRowHeight;
       if (isGroupRow(row)) {
@@ -947,7 +975,7 @@ function DataGrid<R, SR, K extends Key>(
             key={row.id}
             id={row.id}
             groupKey={row.groupKey}
-            viewportColumns={viewportColumns}
+            viewportColumns={rowColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
             row={row}
@@ -955,10 +983,8 @@ function DataGrid<R, SR, K extends Key>(
             height={getRowHeight(rowIdx)}
             level={row.level}
             isExpanded={row.isExpanded}
-            selectedCellIdx={selectedPosition.rowIdx === rowIdx ? selectedPosition.idx : undefined}
+            selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
             isRowSelected={isGroupRowSelected}
-            onFocus={handleFocus}
-            onKeyDown={selectedPosition.rowIdx === rowIdx ? handleKeyDown : undefined}
             selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
           />
@@ -983,7 +1009,7 @@ function DataGrid<R, SR, K extends Key>(
           key={key}
           rowIdx={rowIdx}
           row={row}
-          viewportColumns={viewportColumns}
+          viewportColumns={rowColumns}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
@@ -995,13 +1021,14 @@ function DataGrid<R, SR, K extends Key>(
               ? columns.findIndex((c) => c.key === copiedCell.columnKey)
               : undefined
           }
+          selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           onRowChange={handleFormatterRowChangeLatest}
           selectCell={selectCellLatest}
-          onFocus={handleFocus}
-          {...getSelectedCellProps(rowIdx)}
+          selectedCellDragHandle={getDragHandle(rowIdx)}
+          selectedCellEditor={getCellEditor(rowIdx)}
         />
       );
     }
@@ -1044,6 +1071,7 @@ function DataGrid<R, SR, K extends Key>(
       }
       ref={gridRef}
       onScroll={handleScroll}
+      onKeyDown={handleKeyDown}
     >
       <HeaderRow
         columns={viewportColumns}
@@ -1058,31 +1086,13 @@ function DataGrid<R, SR, K extends Key>(
         <EmptyRowsRenderer />
       ) : (
         <>
-          {/*
-            Ideally the focus should be set on the selected cell
-            (https://www.w3.org/TR/wai-aria-practices-1.2/#kbd_roving_tabindex)
-            but there are a few issues with this approach
-            - onKeyDown/useLayoutEffect on the cell is not fast enough and grid
-              looses focus if tab is pressed repeatedly
-            - All the cells are not rendered so it is possible the focused cell
-              is not in the viewport and unmounted and in this case the grid
-              does not have any focusable element
-
-            This first issue can be solved by setting onKeyDown on the root element
-            but for the second issue we need to render the selected cell along with
-            the cells in the viewport. This adds complexity.
-
-            To circumvent this issue we are using an extra div element which is
-            positioned on the top/left corner of the viewport and it listens for the
-            keyboard event and sets the selected cell's position.
-          */}
-          <div
-            ref={focusSinkRef}
-            tabIndex={0}
-            className={focusSinkClassname}
-            onKeyDown={handleKeyDown}
-            onFocus={onGridFocus}
-          />
+          {/* 
+            An extra div is needed initially to set the focus 
+            on the grid when there is no selected cell.
+           */}
+          {!isCellWithinBounds(selectedPosition) && (
+            <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
+          )}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}

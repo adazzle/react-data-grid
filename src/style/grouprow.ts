@@ -14,6 +14,8 @@ const groupRow = css`
 export const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 const groupRowSelected = css`
+  outline: none;
+
   &::after {
     content: '';
     position: absolute;
