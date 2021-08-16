@@ -141,9 +141,8 @@ test('navigation when selected cell not in the viewport', () => {
   userEvent.keyboard('{arrowdown}');
   validateCellPosition(99, 99);
 
-  userEvent.keyboard('{home}');
   userEvent.keyboard(
-    '{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
+    '{home}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
   );
   validateCellPosition(7, 99);
   grid.scrollLeft = 2000;
