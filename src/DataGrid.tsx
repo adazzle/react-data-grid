@@ -939,25 +939,29 @@ function DataGrid<R, SR, K extends Key>(
       const rowIdx = isRowOutsideViewport ? selectedRowIdx : viewportRowIdx;
 
       let rowColumns = viewportColumns;
-      if (isRowOutsideViewport) {
-        // if the row is outside the viewport then only render the selected cell
-        rowColumns = [columns[selectedIdx]];
-      } else if (
-        // if the row is within the viewport and cell is not, add the selected column to viewport columns
-        selectedRowIdx === rowIdx &&
-        viewportColumns.length > lastFrozenColumnIndex + 1 && // there are non frozen columns
-        ((selectedIdx > lastFrozenColumnIndex &&
-          selectedIdx < viewportColumns[lastFrozenColumnIndex + 1].idx) ||
-          selectedIdx > viewportColumns[viewportColumns.length - 1].idx)
-      ) {
-        rowColumns =
-          selectedIdx > viewportColumns[viewportColumns.length - 1].idx
-            ? [...viewportColumns, columns[selectedIdx]]
-            : [
-                ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
-                columns[selectedIdx],
-                ...viewportColumns.slice(lastFrozenColumnIndex + 1)
-              ];
+      const selectedColumn = columns[selectedIdx];
+      // selectedIdx can be -1 if grouping is enabled
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (selectedColumn !== undefined) {
+        if (isRowOutsideViewport) {
+          // if the row is outside the viewport then only render the selected cell
+          rowColumns = [selectedColumn];
+        } else if (
+          selectedRowIdx === rowIdx &&
+          // selectedIdx can be outside the viewport range
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          viewportColumns[selectedIdx] === undefined
+        ) {
+          // if the row is within the viewport and cell is not, add the selected column to viewport columns
+          rowColumns =
+            selectedIdx > viewportColumns[viewportColumns.length - 1].idx
+              ? [...viewportColumns, selectedColumn]
+              : [
+                  ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+                  selectedColumn,
+                  ...viewportColumns.slice(lastFrozenColumnIndex + 1)
+                ];
+        }
       }
 
       const row = rows[rowIdx];
