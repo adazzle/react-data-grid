@@ -28,6 +28,10 @@ const groupRowSelected = css`
 
   &:focus {
     outline: none;
+
+    &::after {
+      box-shadow: inset 0 0 0 2px var(--focus-color);
+    }
   }
 
   > .${cell}:first-child {

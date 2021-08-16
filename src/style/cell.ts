@@ -19,6 +19,7 @@ export const cell = css`
 
   &:focus {
     outline: none;
+    box-shadow: inset 0 0 0 2px var(--focus-color);
   }
 `;
 
