@@ -946,12 +946,7 @@ function DataGrid<R, SR, K extends Key>(
         if (isRowOutsideViewport) {
           // if the row is outside the viewport then only render the selected cell
           rowColumns = [selectedColumn];
-        } else if (
-          selectedRowIdx === rowIdx &&
-          // selectedIdx can be outside the viewport range
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          viewportColumns[selectedIdx] === undefined
-        ) {
+        } else if (selectedRowIdx === rowIdx && !viewportColumns.includes(selectedColumn)) {
           // if the row is within the viewport and cell is not, add the selected column to viewport columns
           rowColumns =
             selectedIdx > viewportColumns[viewportColumns.length - 1].idx
