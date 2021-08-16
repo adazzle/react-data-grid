@@ -1,9 +1,11 @@
 import { useRef, useLayoutEffect, useState } from 'react';
 
+// https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
 export function useRovingRef(isSelected: boolean) {
   const ref = useRef<HTMLDivElement>(null);
+  // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
   const isChildFocused = useRef(false);
-  const [, forceRender] = useState({});
+  const [, forceRender] = useState<Record<string, never>>({});
 
   useLayoutEffect(() => {
     if (!isSelected) {
