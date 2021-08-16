@@ -81,7 +81,7 @@ const body = globalThis.document?.body;
 
 const initialPosition: SelectCellState = {
   idx: -1,
-  rowIdx: -1,
+  rowIdx: -2,
   mode: 'SELECT'
 };
 
@@ -341,7 +341,7 @@ function DataGrid<R, SR, K extends Key>(
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
-  const minRowIdx = -1;
+  const minRowIdx = -1; // change in to 0?
   const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
 
   /**
@@ -499,7 +499,7 @@ function DataGrid<R, SR, K extends Key>(
   function onGridFocus() {
     if (isCellWithinSelectionBounds(selectedPosition)) return;
     // Tabbing into the grid should initiate keyboard navigation
-    const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
+    const initialPosition: SelectCellState = { idx: 0, rowIdx: -1, mode: 'SELECT' };
     if (isCellWithinSelectionBounds(initialPosition)) {
       setSelectedPosition(initialPosition);
     }
