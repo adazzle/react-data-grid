@@ -15,11 +15,11 @@ export const cell = css`
 
   &[aria-selected='true'] {
     box-shadow: inset 0 0 0 2px var(--selection-color);
-  }
 
-  &:focus {
-    outline: none;
-    box-shadow: inset 0 0 0 2px var(--focus-color);
+    &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--focus-color);
+    }
   }
 `;
 
