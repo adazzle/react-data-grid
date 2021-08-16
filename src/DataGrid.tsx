@@ -923,12 +923,13 @@ function DataGrid<R, SR, K extends Key>(
     let startRowIndex = 0;
 
     const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
+    const cellIsWithinBounds = isCellWithinBounds(selectedPosition);
     const startRowIdx =
-      isCellWithinBounds(selectedPosition) && selectedRowIdx < rowOverscanStartIdx
+      cellIsWithinBounds && selectedRowIdx < rowOverscanStartIdx
         ? rowOverscanStartIdx - 1
         : rowOverscanStartIdx;
     const endRowIdx =
-      isCellWithinBounds(selectedPosition) && selectedRowIdx > rowOverscanEndIdx
+      cellIsWithinBounds && selectedRowIdx > rowOverscanEndIdx
         ? rowOverscanEndIdx + 1
         : rowOverscanEndIdx;
 
