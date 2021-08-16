@@ -12,6 +12,7 @@ export const cell = css`
   overflow: hidden;
   overflow: clip;
   text-overflow: ellipsis;
+  outline: none;
 
   &[aria-selected='true'] {
     box-shadow: inset 0 0 0 2px var(--selection-color);

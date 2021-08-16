@@ -8,7 +8,7 @@ type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColu
 
 interface SummaryRowProps<R, SR>
   extends SharedRowRendererProps<R, SR>,
-    Pick<React.HTMLAttributes<HTMLDivElement>, 'onKeyDown' | 'onFocus' | 'aria-rowindex'> {
+    Pick<React.HTMLAttributes<HTMLDivElement>, 'aria-rowindex'> {
   row: SR;
   bottom: number;
   lastFrozenColumnIndex: number;
@@ -23,8 +23,6 @@ function SummaryRow<R, SR>({
   bottom,
   lastFrozenColumnIndex,
   selectedColIdx,
-  onKeyDown,
-  onFocus,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -45,8 +43,6 @@ function SummaryRow<R, SR>({
         colSpan={colSpan}
         row={row}
         isCellSelected={isCellSelected}
-        onKeyDown={isCellSelected ? onKeyDown : undefined}
-        onFocus={onFocus}
         selectCell={selectCell}
       />
     );

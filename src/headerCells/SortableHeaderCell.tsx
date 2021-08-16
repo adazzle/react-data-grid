@@ -48,7 +48,7 @@ export default function SortableHeaderCell<R, SR>({
   children,
   isCellSelected
 }: Props<R, SR>) {
-  const ref = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {
@@ -65,7 +65,7 @@ export default function SortableHeaderCell<R, SR>({
   return (
     <span
       ref={ref}
-      tabIndex={-1}
+      tabIndex={tabIndex}
       className={headerSortCellClassname}
       onClick={handleClick}
       onKeyDown={handleKeyDown}

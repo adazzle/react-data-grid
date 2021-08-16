@@ -2,12 +2,10 @@ import { memo } from 'react';
 
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, CellRendererProps } from './types';
+import { useRovingRef } from './hooks';
 
 interface SharedCellRendererProps<R, SR>
-  extends Pick<
-    CellRendererProps<R, SR>,
-    'column' | 'colSpan' | 'isCellSelected' | 'onKeyDown' | 'onFocus'
-  > {
+  extends Pick<CellRendererProps<R, SR>, 'column' | 'colSpan' | 'isCellSelected'> {
   selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
 
@@ -20,10 +18,9 @@ function SummaryCell<R, SR>({
   colSpan,
   row,
   isCellSelected,
-  onKeyDown,
-  onFocus,
   selectCell
 }: SummaryCellProps<R, SR>) {
+  const { ref, tabIndex, onFocus } = useRovingRef(isCellSelected);
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = getCellClassname(
     column,
@@ -40,11 +37,12 @@ function SummaryCell<R, SR>({
       aria-colindex={column.idx + 1}
       aria-colspan={colSpan}
       aria-selected={isCellSelected}
+      ref={ref}
+      tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
-      onKeyDown={onKeyDown}
-      onFocus={onFocus}
       onClick={onClick}
+      onFocus={onFocus}
     >
       {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
     </div>

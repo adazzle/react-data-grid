@@ -11,9 +11,7 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   'sortColumns' | 'onSortColumnsChange'
 >;
 
-export interface HeaderRowProps<R, SR, K extends React.Key>
-  extends SharedDataGridProps<R, SR, K>,
-    Pick<React.HTMLAttributes<HTMLDivElement>, 'onKeyDown' | 'onFocus'> {
+export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
@@ -32,9 +30,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   onSortColumnsChange,
   lastFrozenColumnIndex,
   selectedColIdx,
-  selectCell,
-  onKeyDown,
-  onFocus
+  selectCell
 }: HeaderRowProps<R, SR, K>) {
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
@@ -57,8 +53,6 @@ function HeaderRow<R, SR, K extends React.Key>({
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
-        onKeyDown={isCellSelected ? onKeyDown : undefined}
-        onFocus={onFocus}
         selectCell={selectCell}
       />
     );
