@@ -172,6 +172,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element | null;
   rowClass?: ((row: R) => string | undefined | null) | null;
+  'data-testid'?: string;
 }
 
 /**
@@ -225,7 +226,8 @@ function DataGrid<R, SR, K extends Key>(
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
-    'aria-describedby': ariaDescribedBy
+    'aria-describedby': ariaDescribedBy,
+    'data-testid': testId
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
@@ -1072,6 +1074,7 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
+      data-testid={testId}
     >
       <HeaderRow
         columns={viewportColumns}
@@ -1086,8 +1089,8 @@ function DataGrid<R, SR, K extends Key>(
         <EmptyRowsRenderer />
       ) : (
         <>
-          {/* 
-            An extra div is needed initially to set the focus 
+          {/*
+            An extra div is needed initially to set the focus
             on the grid when there is no selected cell.
            */}
           {!isCellWithinBounds(selectedPosition) && (
