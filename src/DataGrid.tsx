@@ -376,7 +376,6 @@ function DataGrid<R, SR, K extends Key>(
    */
   useLayoutEffect(() => {
     if (
-      // !isGridFocused.current ||
       selectedPosition === prevSelectedPosition.current ||
       selectedPosition.mode === 'EDIT' ||
       !isCellWithinSelectionBounds(selectedPosition)
