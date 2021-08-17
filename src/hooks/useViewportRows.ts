@@ -13,6 +13,7 @@ type GroupByDictionary<TRow> = Record<
 
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
+  rawFrozenRows: readonly R[] | undefined | null;
   rowHeight: number | ((args: RowHeightArgs<R>) => number);
   clientHeight: number;
   scrollTop: number;
@@ -31,7 +32,8 @@ function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
 }
 
 export function useViewportRows<R>({
-  rawRows,
+  rawRows: allRawRows,
+  rawFrozenRows,
   rowHeight,
   clientHeight,
   scrollTop,
@@ -40,6 +42,19 @@ export function useViewportRows<R>({
   expandedGroupIds,
   enableVirtualization
 }: ViewportRowsArgs<R>) {
+  const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
+  const [rawRows, frozenRows] = useMemo((): [readonly R[], readonly R[] | undefined] => {
+    if (hasGroups || !rawFrozenRows) return [allRawRows, undefined];
+    const frozenRowSet = new Set(rawFrozenRows);
+    return [allRawRows.filter((row) => !frozenRowSet.has(row)), rawFrozenRows];
+  }, [rawFrozenRows, hasGroups, allRawRows]);
+
+  const totalFrozenRowHeight = useMemo(() => {
+    if (!frozenRows) return 0;
+    if (typeof rowHeight === 'number') return frozenRows.length * rowHeight;
+    return frozenRows.reduce((height, row) => height + rowHeight({ type: 'ROW', row }), 0);
+  }, [frozenRows, rowHeight]);
+
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || rowGrouper == null) return [undefined, rawRows.length];
 
@@ -117,17 +132,17 @@ export function useViewportRows<R>({
     }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
+  const { totalNonFrozenRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
       return {
-        totalRowHeight: rowHeight * rows.length,
+        totalNonFrozenRowHeight: rowHeight * rows.length,
         getRowTop: (rowIdx: number) => rowIdx * rowHeight,
         getRowHeight: () => rowHeight,
         findRowIdx: (offset: number) => floor(offset / rowHeight)
       };
     }
 
-    let totalRowHeight = 0;
+    let totalNonFrozenRowHeight = 0;
     // Calcule the height of all the rows upfront. This can cause performance issues
     // and we can consider using a similar approach as react-window
     // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
@@ -135,8 +150,8 @@ export function useViewportRows<R>({
       const currentRowHeight = isGroupRow(row)
         ? rowHeight({ type: 'GROUP', row })
         : rowHeight({ type: 'ROW', row });
-      const position = { top: totalRowHeight, height: currentRowHeight };
-      totalRowHeight += currentRowHeight;
+      const position = { top: totalNonFrozenRowHeight, height: currentRowHeight };
+      totalNonFrozenRowHeight += currentRowHeight;
       return position;
     });
 
@@ -145,7 +160,7 @@ export function useViewportRows<R>({
     };
 
     return {
-      totalRowHeight,
+      totalNonFrozenRowHeight,
       getRowTop: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].top,
       getRowHeight: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].height,
       findRowIdx(offset: number) {
@@ -170,35 +185,34 @@ export function useViewportRows<R>({
     };
   }, [isGroupRow, rowHeight, rows]);
 
-  if (!enableVirtualization) {
-    return {
-      rowOverscanStartIdx: 0,
-      rowOverscanEndIdx: rows.length - 1,
-      rows,
-      rowsCount,
-      totalRowHeight,
-      isGroupRow,
-      getRowTop,
-      getRowHeight,
-      findRowIdx
-    };
+  function getRawRowIdx(rowIdx: number) {
+    return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
   }
 
-  const overscanThreshold = 4;
-  const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = findRowIdx(scrollTop + clientHeight);
-  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
-  const rowOverscanEndIdx = min(rows.length - 1, rowVisibleEndIdx + overscanThreshold);
+  let rowOverscanStartIdx = 0;
+  let rowOverscanEndIdx = rows.length - 1;
+
+  if (enableVirtualization) {
+    const overscanThreshold = 4;
+    const rowVisibleStartIdx = findRowIdx(scrollTop);
+    const rowVisibleEndIdx = findRowIdx(scrollTop + clientHeight - totalFrozenRowHeight);
+    rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
+    rowOverscanEndIdx = min(rows.length - 1, rowVisibleEndIdx + overscanThreshold);
+  }
 
   return {
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
-    rowsCount,
-    totalRowHeight,
+    frozenRows,
+    rowsCount: frozenRows ? rowsCount + frozenRows.length : rowsCount,
+    totalNonFrozenRowHeight,
+    totalFrozenRowHeight,
+    hasGroups,
     isGroupRow,
     getRowTop,
     getRowHeight,
+    getRawRowIdx,
     findRowIdx
   };
 }

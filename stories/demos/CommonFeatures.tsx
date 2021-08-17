@@ -343,6 +343,7 @@ export function CommonFeatures() {
       rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={sortedRows}
+      frozenRows={[sortedRows[0], sortedRows[1]]}
       defaultColumnOptions={{
         sortable: true,
         resizable: true

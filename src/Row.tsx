@@ -27,6 +27,7 @@ function Row<R, SR>(
     setDraggedOverRowIdx,
     onMouseEnter,
     top,
+    bottom,
     height,
     onRowChange,
     selectCell,
@@ -90,6 +91,19 @@ function Row<R, SR>(
     }
   }
 
+  const style =
+    bottom === undefined
+      ? {
+          top,
+          '--row-height': `${height}px`
+        }
+      : {
+          bottom,
+          position: 'sticky',
+          zIndex: 1,
+          '--row-height': `${height}px`
+        };
+
   return (
     <RowSelectionProvider value={isRowSelected}>
       <div
@@ -98,12 +112,7 @@ function Row<R, SR>(
         tabIndex={tabIndex}
         className={className}
         onMouseEnter={handleDragEnter}
-        style={
-          {
-            top,
-            '--row-height': `${height}px`
-          } as unknown as CSSProperties
-        }
+        style={style as unknown as CSSProperties}
         {...props}
       >
         {cells}

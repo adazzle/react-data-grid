@@ -103,6 +103,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   columns: readonly Column<R, SR>[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
+  frozenRows?: readonly R[] | null;
   /**
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
@@ -186,6 +187,7 @@ function DataGrid<R, SR, K extends Key>(
     // Grid and data Props
     columns: rawColumns,
     rows: rawRows,
+    frozenRows: rawFrozenRows,
     summaryRows,
     rowKeyGetter,
     onRowsChange,
@@ -266,7 +268,7 @@ function DataGrid<R, SR, K extends Key>(
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
-  const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
+  let clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
 
   const allRowsSelected = useMemo((): boolean => {
@@ -306,14 +308,19 @@ function DataGrid<R, SR, K extends Key>(
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
+    frozenRows,
     rowsCount,
-    totalRowHeight,
+    totalNonFrozenRowHeight,
+    totalFrozenRowHeight,
+    hasGroups,
     isGroupRow,
     getRowTop,
     getRowHeight,
+    getRawRowIdx,
     findRowIdx
   } = useViewportRows({
     rawRows,
+    rawFrozenRows,
     groupBy,
     rowGrouper,
     rowHeight,
@@ -336,8 +343,10 @@ function DataGrid<R, SR, K extends Key>(
     isGroupRow
   });
 
-  const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
+  const maxColIdx = columns.length - 1;
+  const maxRowIdx = rows.length + (frozenRows?.length ?? 0) - 1;
+  clientHeight -= totalFrozenRowHeight;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -347,7 +356,10 @@ function DataGrid<R, SR, K extends Key>(
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectCellLatest = useLatestFunc(
     (row: R, column: CalculatedColumn<R, SR>, enableEditor: boolean | undefined | null) => {
-      const rowIdx = rows.indexOf(row);
+      let rowIdx = rows.indexOf(row);
+      if (rowIdx === -1 && frozenRows) {
+        rowIdx = frozenRows.indexOf(row) + rows.length;
+      }
       selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
   );
@@ -564,10 +576,6 @@ function DataGrid<R, SR, K extends Key>(
     onScroll?.(event);
   }
 
-  function getRawRowIdx(rowIdx: number) {
-    return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
-  }
-
   function updateRow(rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
     if (row === rawRows[rowIdx]) return;
@@ -676,7 +684,7 @@ function DataGrid<R, SR, K extends Key>(
    * utils
    */
   function isCellWithinBounds({ idx, rowIdx }: Position): boolean {
-    return rowIdx >= 0 && rowIdx < rows.length && idx >= minColIdx && idx < columns.length;
+    return rowIdx >= 0 && rowIdx <= maxRowIdx && idx >= minColIdx && idx <= maxColIdx;
   }
 
   function isCellEditable(position: Position): boolean {
@@ -789,17 +797,18 @@ function DataGrid<R, SR, K extends Key>(
         return ctrlKey ? { idx: 0, rowIdx: 0 } : { idx: 0, rowIdx };
       case 'End':
         // If row is selected then move focus to the last row.
-        if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
-        return ctrlKey
-          ? { idx: columns.length - 1, rowIdx: rows.length - 1 }
-          : { idx: columns.length - 1, rowIdx };
+        if (isRowSelected) return { idx, rowIdx: maxRowIdx };
+        return ctrlKey ? { idx: maxColIdx, rowIdx: maxRowIdx } : { idx: maxColIdx, rowIdx };
       case 'PageUp': {
         const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
         return { idx, rowIdx: nextRowY > 0 ? findRowIdx(nextRowY) : 0 };
       }
       case 'PageDown': {
         const nextRowY = getRowTop(rowIdx) + clientHeight;
-        return { idx, rowIdx: nextRowY < totalRowHeight ? findRowIdx(nextRowY) : rows.length - 1 };
+        return {
+          idx,
+          rowIdx: nextRowY < totalNonFrozenRowHeight ? findRowIdx(nextRowY) : maxRowIdx
+        };
       }
       default:
         return selectedPosition;
@@ -821,7 +830,7 @@ function DataGrid<R, SR, K extends Key>(
           shiftKey,
           cellNavigationMode,
           columns,
-          rowsCount: rows.length,
+          rowsCount: maxRowIdx + 1,
           selectedPosition
         })
       ) {
@@ -929,7 +938,7 @@ function DataGrid<R, SR, K extends Key>(
         ? rowOverscanStartIdx - 1
         : rowOverscanStartIdx;
     const endRowIdx =
-      cellIsWithinBounds && selectedRowIdx > rowOverscanEndIdx
+      cellIsWithinBounds && selectedRowIdx > rowOverscanEndIdx && selectedRowIdx < rows.length
         ? rowOverscanEndIdx + 1
         : rowOverscanEndIdx;
 
@@ -1015,6 +1024,7 @@ function DataGrid<R, SR, K extends Key>(
           onRowDoubleClick={onRowDoubleClick}
           rowClass={rowClass}
           top={top}
+          bottom={undefined}
           height={getRowHeight(rowIdx)}
           copiedCellIdx={
             copiedCell !== null && copiedCell.row === row
@@ -1033,11 +1043,54 @@ function DataGrid<R, SR, K extends Key>(
       );
     }
 
+    frozenRows?.forEach((row, frozenRowIdx) => {
+      const rowIdx = headerRowsCount + frozenRowIdx + rows.length;
+      let key;
+      let isRowSelected = false;
+      if (typeof rowKeyGetter === 'function') {
+        key = rowKeyGetter(row);
+        isRowSelected = selectedRows?.has(key) ?? false;
+      } else {
+        key = rowIdx;
+      }
+
+      rowElements.push(
+        <RowRenderer
+          aria-rowindex={rowIdx + 1} // aria-rowindex is 1 based
+          aria-selected={isSelectable ? isRowSelected : undefined}
+          key={key}
+          rowIdx={rowIdx}
+          row={row}
+          viewportColumns={viewportColumns}
+          isRowSelected={isRowSelected}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
+          rowClass={rowClass}
+          top={undefined}
+          bottom={(frozenRows.length - frozenRowIdx) * 35}
+          height={getRowHeight(rowIdx)}
+          copiedCellIdx={
+            copiedCell !== null && copiedCell.row === row
+              ? columns.findIndex((c) => c.key === copiedCell.columnKey)
+              : undefined
+          }
+          selectedCellIdx={rowIdx === selectedPosition.idx ? selectedPosition.idx : undefined}
+          draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
+          setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          onRowChange={handleFormatterRowChangeLatest}
+          selectCell={selectCellLatest}
+          selectedCellDragHandle={getDragHandle(rowIdx)}
+          selectedCellEditor={getCellEditor(rowIdx)}
+        />
+      );
+    });
+
     return rowElements;
   }
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
-  if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx >= rows.length) {
+  if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition(initialPosition);
     setDraggedOverRowIdx(undefined);
   }
@@ -1082,7 +1135,7 @@ function DataGrid<R, SR, K extends Key>(
         onSortColumnsChange={onSortColumnsChange}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
       />
-      {rows.length === 0 && EmptyRowsRenderer ? (
+      {maxRowIdx === 0 && EmptyRowsRenderer ? (
         <EmptyRowsRenderer />
       ) : (
         <>
@@ -1093,7 +1146,7 @@ function DataGrid<R, SR, K extends Key>(
           {!isCellWithinBounds(selectedPosition) && (
             <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
           )}
-          <div style={{ height: max(totalRowHeight, clientHeight) }} />
+          <div style={{ height: max(totalNonFrozenRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
           </RowSelectionChangeProvider>
