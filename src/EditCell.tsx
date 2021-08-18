@@ -24,7 +24,7 @@ import { viewportCellClassname } from './style';
  */
 
 const cellEditing = css`
-  &.rdg-cell {
+  &.${viewportCellClassname} {
     padding: 0;
   }
 `;
