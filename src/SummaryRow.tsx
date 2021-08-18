@@ -1,7 +1,6 @@
 import { memo } from 'react';
-import { css } from '@linaria/core';
 
-import { row as rowClassname, cell as cellClassname } from './style';
+import { row as rowClassname, summaryRowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
@@ -14,20 +13,6 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   bottom: number;
   lastFrozenColumnIndex: number;
 }
-
-const summaryRow = css`
-  position: sticky;
-  z-index: 3;
-  grid-template-rows: var(--summary-row-height);
-  height: var(--summary-row-height); // needed on Firefox
-  line-height: var(--summary-row-height);
-
-  > .${cellClassname} {
-    border-top: 2px solid var(--summary-border-color);
-  }
-`;
-
-const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
