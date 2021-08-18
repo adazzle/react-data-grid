@@ -1,9 +1,11 @@
 import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
 import {
-  groupRowClassname,
+  cell,
+  cellFrozenLast,
   groupRowSelectedClassname,
   row as rowClassname,
   viewportRowClassname
@@ -30,6 +32,18 @@ export interface GroupRowRendererProps<R, SR>
   selectGroup: (rowIdx: number) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
+
+const groupRow = css`
+  &:not([aria-selected='true']) {
+    background-color: var(--header-background-color);
+  }
+
+  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+    border-right: none;
+  }
+`;
+
+const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 function GroupedRow<R, SR>({
   id,

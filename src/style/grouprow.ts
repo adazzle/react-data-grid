@@ -1,17 +1,5 @@
 import { css } from '@linaria/core';
-import { cell, cellFrozenLast } from './cell';
-
-const groupRow = css`
-  &:not([aria-selected='true']) {
-    background-color: var(--header-background-color);
-  }
-
-  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
-    border-right: none;
-  }
-`;
-
-export const groupRowClassname = `rdg-group-row ${groupRow}`;
+import { cell } from './cell';
 
 const groupRowSelected = css`
   outline: none;
