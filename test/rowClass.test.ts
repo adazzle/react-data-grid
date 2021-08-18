@@ -1,6 +1,8 @@
 import type { Column } from '../src';
-import { rowClassname } from '../src/style';
+import { row, viewportRowClassname } from '../src/style';
 import { setup, getRows } from './utils';
+
+const rowClassname = `${row} ${viewportRowClassname}`;
 
 interface Row {
   id: number;

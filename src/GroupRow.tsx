@@ -2,7 +2,12 @@ import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
+import {
+  groupRowClassname,
+  groupRowSelectedClassname,
+  row as rowClassname,
+  viewportRowClassname
+} from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
@@ -63,6 +68,7 @@ function GroupedRow<R, SR>({
         tabIndex={tabIndex}
         className={clsx(
           rowClassname,
+          viewportRowClassname,
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
           {

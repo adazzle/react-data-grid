@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { rowClassname, summaryRowClassname } from './style';
+
+import { row as rowClassname, summaryRowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';

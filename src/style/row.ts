@@ -27,7 +27,7 @@ export const row = css`
   }
 `;
 
-export const rowClassname = `rdg-row ${row}`;
+export const viewportRowClassname = `rdg-row`;
 
 const summaryRow = css`
   position: sticky;

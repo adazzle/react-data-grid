@@ -19,7 +19,7 @@ export const cell = css`
   }
 `;
 
-export const cellClassname = `rdg-cell ${cell}`;
+export const viewportCellClassname = `rdg-cell`;
 
 const cellFrozen = css`
   position: sticky;

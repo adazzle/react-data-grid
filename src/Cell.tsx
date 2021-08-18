@@ -5,6 +5,7 @@ import { css } from '@linaria/core';
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 import { useRovingRef } from './hooks';
+import { viewportCellClassname } from './style';
 
 const cellCopied = css`
   background-color: #ccccff;
@@ -41,6 +42,7 @@ function Cell<R, SR>({
   const { cellClass } = column;
   const className = getCellClassname(
     column,
+    viewportCellClassname,
     {
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver

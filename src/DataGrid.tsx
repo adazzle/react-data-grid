@@ -13,8 +13,8 @@ import clsx from 'clsx';
 import {
   rootClassname,
   viewportDraggingClassname,
-  cell as cellClassname,
-  row as rowClassname,
+  viewportCellClassname,
+  viewportRowClassname,
   focusSinkClassname
 } from './style';
 import {
@@ -494,8 +494,8 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
     if (!(event.target instanceof Element)) return;
-    const isCellEvent = event.target.closest(`.${cellClassname}`) !== null;
-    const isRowEvent = hasGroups && event.target.classList.contains(rowClassname);
+    const isCellEvent = event.target.closest(`.${viewportCellClassname}`) !== null;
+    const isRowEvent = hasGroups && event.target.classList.contains(viewportRowClassname);
     if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
 
     const { key, keyCode } = event;

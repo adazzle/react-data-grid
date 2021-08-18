@@ -1,6 +1,13 @@
 import type { Column } from '../../src';
 import { setup, getHeaderCells } from '../utils';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../../src/style';
+import {
+  cell,
+  viewportCellClassname,
+  cellFrozenClassname,
+  cellFrozenLastClassname
+} from '../../src/style';
+
+const cellClassname = `${cell} ${viewportCellClassname}`;
 
 interface Row {
   col1: number;

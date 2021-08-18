@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 import type { CalculatedColumn } from '../types';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
+import { cell as cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
 
 export * from './colSpanUtils';
 export * from './domUtils';
