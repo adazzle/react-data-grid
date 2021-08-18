@@ -1,11 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps, EditorProps } from './types';
-import { viewportCellClassname } from './style';
+import { viewportCellClassname, editCellClassname } from './style';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -22,12 +21,6 @@ import { viewportCellClassname } from './style';
  *
  * We must also rely on React's event capturing/bubbling to handle elements rendered in a portal.
  */
-
-const cellEditing = css`
-  &.rdg-cell {
-    padding: 0;
-  }
-`;
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
@@ -75,7 +68,7 @@ export default function EditCell<R, SR>({
     column,
     viewportCellClassname,
     'rdg-editor-container',
-    !column.editorOptions?.createPortal && cellEditing,
+    !column.editorOptions?.createPortal && editCellClassname,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
