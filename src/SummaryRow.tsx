@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
-import { row as rowClassname, cell as cellClassname } from './style';
+import { row, cell } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
@@ -22,12 +22,12 @@ const summaryRow = css`
   height: var(--summary-row-height); // needed on Firefox
   line-height: var(--summary-row-height);
 
-  > .${cellClassname} {
+  > .${cell} {
     border-top: 2px solid var(--summary-border-color);
   }
 `;
 
-const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
+const summaryRowClassname = `${row} rdg-summary-row ${summaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
@@ -52,9 +52,7 @@ function SummaryRow<R, SR>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-row-${
-        rowIdx % 2 === 0 ? 'even' : 'odd'
-      } ${summaryRowClassname}`}
+      className={`rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
       style={{ bottom }}
     >
       {cells}
