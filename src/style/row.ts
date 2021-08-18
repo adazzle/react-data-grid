@@ -50,5 +50,4 @@ const rowSelected = css`
   }
 `;
 
-// TODO: rename class
 export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
