@@ -6,7 +6,7 @@ import { css } from '@linaria/core';
 import {
   cell,
   cellFrozenLast,
-  groupRowSelectedClassname,
+  rowSelectedClassname,
   row as rowClassname,
   viewportRowClassname
 } from './style';
@@ -86,7 +86,7 @@ function GroupedRow<R, SR>({
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
           {
-            [groupRowSelectedClassname]: isRowFocused // Select row if there is no selected cell
+            [rowSelectedClassname]: isRowFocused // Select row if there is no selected cell
           }
         )}
         onClick={handleSelectGroup}
