@@ -1,5 +1,4 @@
 import { css } from '@linaria/core';
-import { cell } from './cell';
 
 export const row = css`
   contain: strict;
@@ -28,17 +27,3 @@ export const row = css`
 `;
 
 export const viewportRowClassname = 'rdg-row';
-
-const summaryRow = css`
-  position: sticky;
-  z-index: 3;
-  grid-template-rows: var(--summary-row-height);
-  height: var(--summary-row-height); // needed on Firefox
-  line-height: var(--summary-row-height);
-
-  > .${cell} {
-    border-top: 2px solid var(--summary-border-color);
-  }
-`;
-
-export const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
