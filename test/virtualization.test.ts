@@ -10,7 +10,7 @@ import {
   queryRows,
   setup
 } from './utils';
-import { focusSinkClassname } from '../src/DataGrid';
+import { focusSinkClassname } from '../src/style';
 
 const rowHeight = 35;
 
