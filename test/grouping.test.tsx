@@ -38,6 +38,17 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'year',
     name: 'Year'
+  },
+  {
+    key: 'id',
+    name: 'Id',
+    formatter(props) {
+      function onClick() {
+        props.onRowChange({ ...props.row, id: props.row.id + 10 });
+      }
+
+      return <button onClick={onClick}>value: {props.row.id}</button>;
+    }
   }
 ];
 
@@ -125,7 +136,7 @@ test('should not group if groupBy is not specified', () => {
   setup();
   expect(queryTreeGrid()).not.toBeInTheDocument();
   expect(getGrid()).toHaveAttribute('aria-rowcount', '5');
-  expect(getHeaderCellsContent()).toStrictEqual(['', 'Sport', 'Country', 'Year']);
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Sport', 'Country', 'Year', 'Id']);
   expect(getRows()).toHaveLength(4);
 });
 
@@ -139,14 +150,14 @@ test('should group by single column', () => {
   setup(['country']);
   expect(queryGrid()).not.toBeInTheDocument();
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
-  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Sport', 'Year']);
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Sport', 'Year', 'Id']);
   expect(getRows()).toHaveLength(2);
 });
 
 test('should group by multiple columns', () => {
   setup(['country', 'year']);
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '11');
-  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Year', 'Sport']);
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Year', 'Sport', 'Id']);
   expect(getRows()).toHaveLength(2);
 });
 
@@ -159,7 +170,7 @@ test('should ignore duplicate groupBy columns', () => {
 test('should use groupBy order while grouping', () => {
   setup(['year', 'country']);
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '12');
-  expect(getHeaderCellsContent()).toStrictEqual(['', 'Year', 'Country', 'Sport']);
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Year', 'Country', 'Sport', 'Id']);
   expect(getRows()).toHaveLength(3);
 });
 
@@ -331,4 +342,14 @@ test('copy/paste when grouping is enabled', () => {
   expect(getSelectedCell()).toHaveTextContent('Canada');
   pasteSelectedCell();
   expect(getSelectedCell()).toHaveTextContent('USA');
+});
+
+test('update row using formatter', () => {
+  setup(['year']);
+  userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
+  userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
+  userEvent.keyboard('{arrowright}{arrowright}');
+  expect(getSelectedCell()).toHaveTextContent('value: 2');
+  userEvent.click(screen.getByText('value: 2'));
+  expect(getSelectedCell()).toHaveTextContent('value: 12');
 });
