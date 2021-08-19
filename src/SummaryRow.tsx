@@ -1,7 +1,8 @@
 import { memo } from 'react';
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
-import { rowClassname, summaryRowClassname } from './style';
+import { cell, rowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
@@ -18,6 +19,20 @@ interface SummaryRowProps<R, SR>
   selectedCellIdx: number | undefined;
   selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
+
+const summaryRow = css`
+  position: sticky;
+  z-index: 3;
+  grid-template-rows: var(--summary-row-height);
+  height: var(--summary-row-height); // needed on Firefox
+  line-height: var(--summary-row-height);
+
+  > .${cell} {
+    border-top: 2px solid var(--summary-border-color);
+  }
+`;
+
+const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,

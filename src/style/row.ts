@@ -29,16 +29,25 @@ export const row = css`
 
 export const rowClassname = `rdg-row ${row}`;
 
-const summaryRow = css`
-  position: sticky;
-  z-index: 3;
-  grid-template-rows: var(--summary-row-height);
-  height: var(--summary-row-height); // needed on Firefox
-  line-height: var(--summary-row-height);
+const rowSelected = css`
+  outline: none;
 
-  > .${cell} {
-    border-top: 2px solid var(--summary-border-color);
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: inset 0 0 0 2px var(--selection-color);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  > .${cell}:first-child {
+    // preserve left border on the first frozen cell after scrolling to the right
+    box-shadow: inset 2px 0 0 0 var(--selection-color);
   }
 `;
 
-export const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
+export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;

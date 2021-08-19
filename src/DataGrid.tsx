@@ -10,14 +10,7 @@ import {
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import {
-  rootClassname,
-  viewportDraggingClassname,
-  cell as cellClassname,
-  row as rowClassname,
-  headerRow as headerRowClassname,
-  focusSinkClassname
-} from './style';
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
 import {
   useGridDimensions,
   useCalculatedColumns,
@@ -508,12 +501,10 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
-    const { target } = event;
-    if (!(target instanceof Element)) return;
-    const isCellEvent = target.closest(`.${cellClassname}`) !== null;
-    const isRowEvent = hasGroups && target.classList.contains(rowClassname);
-    const isHeaderRowEvent = target.classList.contains(headerRowClassname);
-    if (!isCellEvent && !isRowEvent && !isHeaderRowEvent && !isEditorPortalEvent) return;
+    if (!(event.target instanceof Element)) return;
+    const isCellEvent = event.target.closest('.rdg-row > .rdg-cell') !== null;
+    const isRowEvent = hasGroups && event.target.matches('.rdg-row');
+    if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
