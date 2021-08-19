@@ -1,13 +1,38 @@
-import { groupRowSelectedClassname } from '../style';
+import { css } from '@linaria/core';
+
+import { cell } from '../style';
 import { useFocusRef } from './useFocusRef';
 
+const rowSelected = css`
+  outline: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: inset 0 0 0 2px var(--selection-color);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  > .${cell}:first-child {
+    // preserve left border on the first frozen cell after scrolling to the right
+    box-shadow: inset 2px 0 0 0 var(--selection-color);
+  }
+`;
+
+export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
+
 export function useRovingRowRef(selectedCellIdx: number | undefined) {
-  const isFocused = selectedCellIdx === -1;
-  const { ref, tabIndex } = useFocusRef<HTMLDivElement>(isFocused);
+  const isSelected = selectedCellIdx === -1;
+  const { ref, tabIndex } = useFocusRef<HTMLDivElement>(isSelected);
 
   return {
     ref,
     tabIndex,
-    className: isFocused ? groupRowSelectedClassname : undefined
+    className: isSelected ? rowSelectedClassname : undefined
   };
 }

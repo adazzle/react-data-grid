@@ -331,6 +331,7 @@ function DataGrid<R, SR, K extends Key>(
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
+  const maxColIdx = columns.length - 1;
   const minRowIdx = -1; // change in to 0?
   const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
 
@@ -497,8 +498,9 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
     if (!(event.target instanceof Element)) return;
-    const isCellEvent = event.target.closest('.rdg-row > .rdg-cell') !== null;
-    const isRowEvent = hasGroups && event.target.matches('.rdg-row');
+    const isCellEvent =
+      event.target.closest('.rdg-row > .rdg-cell, .rdg-header-row > .rdg-cell') !== null;
+    const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
     if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
 
     const { key, keyCode } = event;
@@ -525,7 +527,7 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    if (isViewportRowIdx(rowIdx)) {
+    if (isRowIdxWithinViewportBounds(rowIdx)) {
       const row = rows[rowIdx];
 
       if (
@@ -683,16 +685,20 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * utils
    */
-  function isCellWithinSelectionBounds({ idx, rowIdx }: Position): boolean {
-    return rowIdx >= minRowIdx && rowIdx <= maxRowIdx && idx >= minColIdx && idx < columns.length;
+  function isColIdxWithinSelectionBounds(idx: number) {
+    return idx >= minColIdx && idx <= maxColIdx;
   }
 
-  function isViewportRowIdx(rowIdx: number) {
+  function isRowIdxWithinViewportBounds(rowIdx: number) {
     return rowIdx >= 0 && rowIdx < rows.length;
   }
 
+  function isCellWithinSelectionBounds({ idx, rowIdx }: Position): boolean {
+    return rowIdx >= minRowIdx && rowIdx <= maxRowIdx && isColIdxWithinSelectionBounds(idx);
+  }
+
   function isCellWithinViewportBounds({ idx, rowIdx }: Position): boolean {
-    return isViewportRowIdx(rowIdx) && idx >= 0 && idx < columns.length;
+    return isRowIdxWithinViewportBounds(rowIdx) && isColIdxWithinSelectionBounds(idx);
   }
 
   function isCellEditable(position: Position): boolean {
@@ -755,7 +761,7 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    if (typeof rowIdx === 'number' && isViewportRowIdx(rowIdx)) {
+    if (typeof rowIdx === 'number' && isRowIdxWithinViewportBounds(rowIdx)) {
       const rowTop = getRowTop(rowIdx);
       const rowHeight = getRowHeight(rowIdx);
       if (rowTop < scrollTop) {
@@ -812,9 +818,7 @@ function DataGrid<R, SR, K extends Key>(
       case 'End':
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
-        return ctrlKey
-          ? { idx: columns.length - 1, rowIdx: maxRowIdx }
-          : { idx: columns.length - 1, rowIdx };
+        return ctrlKey ? { idx: maxColIdx, rowIdx: maxRowIdx } : { idx: maxColIdx, rowIdx };
       case 'PageUp': {
         const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
         return { idx, rowIdx: nextRowY > 0 ? findRowIdx(nextRowY) : 0 };
@@ -1060,7 +1064,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
-  if (selectedPosition.idx >= columns.length || selectedPosition.rowIdx > maxRowIdx) {
+  if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition(initialPosition);
     setDraggedOverRowIdx(undefined);
   }
