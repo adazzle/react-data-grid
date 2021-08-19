@@ -39,7 +39,7 @@ export function NoRows() {
     <DataGrid
       columns={columns}
       rows={rows}
-      emptyRowsRenderer={EmptyRowsRenderer}
+      noRowsFallback={<EmptyRowsRenderer />}
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       rowKeyGetter={rowKeyGetter}

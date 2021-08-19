@@ -136,12 +136,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onPaste?: ((event: PasteEvent<R>) => R) | null;
 
   /**
-   * Custom renderers
-   */
-  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>> | null;
-  emptyRowsRenderer?: React.ComponentType | null;
-
-  /**
    * Event props
    */
   /** Function called whenever a row is clicked */
@@ -164,6 +158,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
+  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>> | null;
+  noRowsFallback?: React.ReactNode;
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element | null;
   rowClass?: ((row: R) => string | undefined | null) | null;
@@ -199,9 +195,6 @@ function DataGrid<R, SR, K extends Key>(
     rowGrouper,
     expandedGroupIds,
     onExpandedGroupIdsChange,
-    // Custom renderers
-    rowRenderer,
-    emptyRowsRenderer: EmptyRowsRenderer,
     // Event props
     onRowClick,
     onRowDoubleClick,
@@ -214,6 +207,8 @@ function DataGrid<R, SR, K extends Key>(
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
     // Miscellaneous
+    rowRenderer,
+    noRowsFallback,
     editorPortalTarget: rawEditorPortalTarget,
     className,
     style,
@@ -1113,8 +1108,8 @@ function DataGrid<R, SR, K extends Key>(
         selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         selectCell={selectHeaderCellLatest}
       />
-      {rows.length === 0 && EmptyRowsRenderer ? (
-        <EmptyRowsRenderer />
+      {rows.length === 0 && noRowsFallback ? (
+        noRowsFallback
       ) : (
         <>
           {/*
