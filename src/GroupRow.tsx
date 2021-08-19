@@ -3,7 +3,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast, rowSelectedClassname, row, viewportRowClassname } from './style';
+import { cell, cellFrozenLast, rowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
@@ -37,7 +37,7 @@ const groupRow = css`
   }
 `;
 
-const groupRowClassname = `${row} ${viewportRowClassname} rdg-group-row ${groupRow}`;
+const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 function GroupedRow<R, SR>({
   id,
@@ -74,9 +74,14 @@ function GroupedRow<R, SR>({
         aria-expanded={isExpanded}
         ref={ref}
         tabIndex={tabIndex}
-        className={clsx(groupRowClassname, `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-          [rowSelectedClassname]: isRowFocused // Select row if there is no selected cell
-        })}
+        className={clsx(
+          rowClassname,
+          groupRowClassname,
+          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+          {
+            [rowSelectedClassname]: isRowFocused // Select row if there is no selected cell
+          }
+        )}
         onClick={handleSelectGroup}
         style={
           {

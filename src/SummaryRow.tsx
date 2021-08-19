@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
-import { row, cell } from './style';
+import { cell, rowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
@@ -27,7 +27,7 @@ const summaryRow = css`
   }
 `;
 
-const summaryRowClassname = `${row} rdg-summary-row ${summaryRow}`;
+const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
@@ -52,7 +52,9 @@ function SummaryRow<R, SR>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'} ${summaryRowClassname}`}
+      className={`${rowClassname} rdg-row-${
+        rowIdx % 2 === 0 ? 'even' : 'odd'
+      } ${summaryRowClassname}`}
       style={{ bottom }}
     >
       {cells}

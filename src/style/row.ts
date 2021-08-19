@@ -27,7 +27,7 @@ export const row = css`
   }
 `;
 
-export const viewportRowClassname = 'rdg-row';
+export const rowClassname = `rdg-row ${row}`;
 
 const rowSelected = css`
   outline: none;

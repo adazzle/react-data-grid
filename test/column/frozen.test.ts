@@ -1,10 +1,6 @@
 import type { Column } from '../../src';
 import { setup, getHeaderCells } from '../utils';
-import {
-  cell as cellClassname,
-  cellFrozenClassname,
-  cellFrozenLastClassname
-} from '../../src/style';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../../src/style';
 
 interface Row {
   col1: number;
