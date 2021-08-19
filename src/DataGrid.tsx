@@ -846,7 +846,8 @@ function DataGrid<R, SR, K extends Key>(
         canExitGrid({
           shiftKey,
           cellNavigationMode,
-          columns,
+          maxColIdx,
+          minRowIdx,
           maxRowIdx,
           selectedPosition
         })
