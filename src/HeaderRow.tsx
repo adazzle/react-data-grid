@@ -1,10 +1,10 @@
 import { memo } from 'react';
+import { css } from '@linaria/core';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
 import { getColSpan } from './utils';
 import type { DataGridProps } from './DataGrid';
-import { headerRowClassname } from './style';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
@@ -18,6 +18,25 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   lastFrozenColumnIndex: number;
 }
+
+const headerRow = css`
+  contain: strict;
+  contain: size layout style paint;
+  display: grid;
+  grid-template-columns: var(--template-columns);
+  grid-template-rows: var(--header-row-height);
+  height: var(--header-row-height); // needed on Firefox
+  line-height: var(--header-row-height);
+  width: var(--row-width);
+  position: sticky;
+  top: 0;
+  background-color: var(--header-background-color);
+  font-weight: bold;
+  z-index: 3;
+  touch-action: none;
+`;
+
+const headerRowClassname = `rdg-header-row ${headerRow}`;
 
 function HeaderRow<R, SR, K extends React.Key>({
   columns,

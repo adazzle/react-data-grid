@@ -1,8 +1,9 @@
 import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
-import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
+import { cell, cellFrozenLast, rowSelectedClassname, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
@@ -25,6 +26,18 @@ export interface GroupRowRendererProps<R, SR>
   selectGroup: (rowIdx: number) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
+
+const groupRow = css`
+  &:not([aria-selected='true']) {
+    background-color: var(--header-background-color);
+  }
+
+  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+    border-right: none;
+  }
+`;
+
+const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 function GroupedRow<R, SR>({
   id,
@@ -66,7 +79,7 @@ function GroupedRow<R, SR>({
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
           {
-            [groupRowSelectedClassname]: isRowFocused // Select row if there is no selected cell
+            [rowSelectedClassname]: isRowFocused // Select row if there is no selected cell
           }
         )}
         onClick={handleSelectGroup}

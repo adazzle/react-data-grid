@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Cell from './Cell';
 import { RowSelectionProvider, useLatestFunc, useFocusRef, useCombinedRefs } from './hooks';
 import { getColSpan } from './utils';
-import { groupRowSelectedClassname, rowClassname } from './style';
+import { rowSelectedClassname, rowClassname } from './style';
 import type { RowRendererProps } from './types';
 
 function Row<R, SR>(
@@ -50,7 +50,7 @@ function Row<R, SR>(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     {
-      [groupRowSelectedClassname]: isRowFocused
+      [rowSelectedClassname]: isRowFocused
     },
     rowClass?.(row),
     className
