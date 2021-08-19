@@ -1,6 +1,7 @@
 import { StrictMode, useState } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
 import type { Column } from '../src';
+import { TextEditor } from '../src';
 import DataGrid, { SelectColumn } from '../src';
 import { render, screen, within } from '@testing-library/react';
 import {
@@ -10,10 +11,13 @@ import {
   queryTreeGrid,
   getTreeGrid,
   getHeaderCells,
-  getCellsAtRowIndex
+  getCellsAtRowIndex,
+  getSelectedCell,
+  copySelectedCell,
+  pasteSelectedCell
 } from './utils';
 import userEvent from '@testing-library/user-event';
-import type { Position } from '../src/types';
+import type { FillEvent, PasteEvent, Position } from '../src/types';
 
 interface Row {
   id: number;
@@ -29,7 +33,8 @@ const columns: readonly Column<Row>[] = [
   },
   {
     key: 'country',
-    name: 'Country'
+    name: 'Country',
+    editor: TextEditor
   },
   {
     key: 'year',
@@ -37,7 +42,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-const rows: readonly Row[] = [
+const initialRows: readonly Row[] = [
   {
     id: 1,
     country: 'USA',
@@ -65,11 +70,23 @@ function rowKeyGetter(row: Row) {
 }
 
 function TestGrid({ groupBy }: { groupBy?: string[] }) {
+  const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
     () => new Set<unknown>([])
   );
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+
+  function onFill(event: FillEvent<Row>) {
+    return event.targetRow;
+  }
+
+  function onPaste(event: PasteEvent<Row>) {
+    return {
+      ...event.targetRow,
+      [event.targetColumnKey]: event.sourceRow[event.sourceColumnKey as keyof Row]
+    };
+  }
 
   return (
     <>
@@ -84,6 +101,9 @@ function TestGrid({ groupBy }: { groupBy?: string[] }) {
         onSelectedRowsChange={setSelectedRows}
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
+        onRowsChange={setRows}
+        onFill={onFill}
+        onPaste={onPaste}
       />
       <div data-testid="selectedPosition">{JSON.stringify(selectedPosition)}</div>
     </>
@@ -293,4 +313,23 @@ test('cell navigation in a treegrid', () => {
   userEvent.keyboard('{arrowleft}');
   expect(screen.queryByRole('gridcell', { name: '2021' })).not.toBeInTheDocument();
   expect(getRows()).toHaveLength(2);
+});
+
+test('onFill is not supported when grouping is enabled', () => {
+  setup(['year']);
+  userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
+  userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
+  expect(document.querySelector('.rdg-cell-drag-handle')).not.toBeInTheDocument();
+});
+
+test('copy/paste when grouping is enabled', () => {
+  setup(['year']);
+  userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
+  userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
+  copySelectedCell();
+  expect(getSelectedCell()).toHaveClass('rdg-cell-copied');
+  userEvent.keyboard('{arrowdown}');
+  expect(getSelectedCell()).toHaveTextContent('Canada');
+  pasteSelectedCell();
+  expect(getSelectedCell()).toHaveTextContent('USA');
 });
