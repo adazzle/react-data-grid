@@ -5,6 +5,7 @@ import { css } from '@linaria/core';
 import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps, EditorProps } from './types';
+
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
  * i.e. on the window during the capture phase, and at their death, i.e. on the window during the bubble phase.
