@@ -219,6 +219,32 @@ describe('Editor', () => {
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
     });
   });
+
+  it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
+    const column: Column<unknown> = {
+      key: 'col',
+      name: 'Column',
+      editor() {
+        return <input value="123" readOnly autoFocus />;
+      }
+    };
+
+    render(
+      <>
+        <input value="abc" readOnly />
+        <DataGrid columns={[column]} rows={[{}]} />
+      </>
+    );
+
+    userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    const editorInput = screen.getByDisplayValue('123');
+    const outerInput = screen.getByDisplayValue('abc');
+    expect(editorInput).toHaveFocus();
+    userEvent.click(outerInput);
+    expect(outerInput).toHaveFocus();
+    await waitForElementToBeRemoved(editorInput);
+    expect(outerInput).toHaveFocus();
+  });
 });
 
 interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
