@@ -174,6 +174,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element | null;
   rowClass?: ((row: R) => string | undefined | null) | null;
+  'data-testid'?: string;
 }
 
 /**
@@ -227,7 +228,8 @@ function DataGrid<R, SR, K extends Key>(
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
-    'aria-describedby': ariaDescribedBy
+    'aria-describedby': ariaDescribedBy,
+    'data-testid': testId
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
@@ -589,11 +591,12 @@ function DataGrid<R, SR, K extends Key>(
 
   function updateRow(rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
-    if (row === rawRows[rowIdx]) return;
+    const rawRowIdx = getRawRowIdx(rowIdx);
+    if (row === rawRows[rawRowIdx]) return;
     const updatedRows = [...rawRows];
-    updatedRows[rowIdx] = row;
+    updatedRows[rawRowIdx] = row;
     onRowsChange(updatedRows, {
-      indexes: [rowIdx],
+      indexes: [rawRowIdx],
       column: columns[selectedPosition.idx]
     });
   }
@@ -607,8 +610,7 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
-    const rowIdx = getRawRowIdx(selectedPosition.rowIdx);
-    updateRow(rowIdx, selectedPosition.row);
+    updateRow(selectedPosition.rowIdx, selectedPosition.row);
   }
 
   function handleCopy() {
@@ -617,11 +619,12 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handlePaste() {
-    const { idx, rowIdx } = selectedPosition;
-    const targetRow = rawRows[getRawRowIdx(rowIdx)];
     if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
       return;
     }
+
+    const { idx, rowIdx } = selectedPosition;
+    const targetRow = rawRows[getRawRowIdx(rowIdx)];
 
     const updatedTargetRow = onPaste({
       sourceRow: copiedCell.row,
@@ -677,7 +680,7 @@ function DataGrid<R, SR, K extends Key>(
   function handleEditorRowChange(row: R, commitChanges?: boolean) {
     if (selectedPosition.mode === 'SELECT') return;
     if (commitChanges) {
-      updateRow(getRawRowIdx(selectedPosition.rowIdx), row);
+      updateRow(selectedPosition.rowIdx, row);
       closeEditor();
     } else {
       setSelectedPosition((position) => ({ ...position, row }));
@@ -1106,6 +1109,7 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
+      data-testid={testId}
     >
       <HeaderRow
         columns={viewportColumns}
@@ -1122,8 +1126,8 @@ function DataGrid<R, SR, K extends Key>(
         <EmptyRowsRenderer />
       ) : (
         <>
-          {/* 
-            An extra div is needed initially to set the focus 
+          {/*
+            An extra div is needed initially to set the focus
             on the grid when there is no selected cell.
            */}
           {!isCellWithinSelectionBounds(selectedPosition) && (
