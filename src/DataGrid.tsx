@@ -158,7 +158,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Miscellaneous
    */
   rowRenderer?: React.ComponentType<RowRendererProps<R, SR>> | null;
-  noRowsFallback?: React.ReactNode | null;
+  noRowsFallback?: React.ReactNode;
   /** The node where the editor portal should mount. */
   editorPortalTarget?: Element | null;
   rowClass?: ((row: R) => string | undefined | null) | null;
