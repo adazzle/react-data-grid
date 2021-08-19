@@ -1,8 +1,7 @@
 import { StrictMode, useState } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
 import type { Column } from '../src';
-import { TextEditor } from '../src';
-import DataGrid, { SelectColumn } from '../src';
+import DataGrid, { SelectColumn, TextEditor } from '../src';
 import { render, screen, within } from '@testing-library/react';
 import {
   getGrid,
