@@ -125,7 +125,7 @@ test('grid enter/exit', () => {
 
   // shift+tab should select the last selected cell
   userEvent.click(document.body);
-  userEvent.tab();
+  userEvent.tab({ shift: true });
   userEvent.keyboard('{arrowup}');
   validateCellPosition(0, 2);
 
