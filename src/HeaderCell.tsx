@@ -61,6 +61,8 @@ export default function HeaderCell<R, SR>({
     function onPointerMove(event: PointerEvent) {
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
         // handle case where the pointer `up`'d outside an iframe
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=606896
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=693494
         onPointerUp();
         return;
       }
