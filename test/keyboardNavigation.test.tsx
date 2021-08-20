@@ -1,17 +1,12 @@
 import userEvent from '@testing-library/user-event';
-import { fireEvent } from '@testing-library/react';
 import type { Column } from '../src';
 import { SelectColumn } from '../src';
 import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex, getGrid } from './utils';
 
 type Row = undefined;
-interface SummaryRow {
-  readonly id: number;
-}
 
 const rows: readonly Row[] = Array(100);
-
-const summaryRows: readonly SummaryRow[] = [{ id: 1 }, { id: 2 }];
+const summaryRows: readonly Row[] = [undefined, undefined];
 
 const columns: readonly Column<Row>[] = [
   SelectColumn,
@@ -52,11 +47,11 @@ test('keyboard navigation', () => {
   validateCellPosition(0, 0);
 
   // page {up,down}
-  fireEvent.keyDown(document.activeElement!, { key: 'PageDown' });
+  userEvent.keyboard('{PageDown}');
   validateCellPosition(0, 27);
-  fireEvent.keyDown(document.activeElement!, { key: 'PageDown' });
+  userEvent.keyboard('{PageDown}');
   validateCellPosition(0, 54);
-  fireEvent.keyDown(document.activeElement!, { key: 'PageUp' });
+  userEvent.keyboard('{PageUp}');
   validateCellPosition(0, 27);
 
   // home/end navigation
@@ -74,7 +69,7 @@ test('keyboard navigation', () => {
   validateCellPosition(6, 99);
   userEvent.keyboard('{ctrl}{end}');
   validateCellPosition(6, 99);
-  fireEvent.keyDown(document.activeElement!, { key: 'PageDown' });
+  userEvent.keyboard('{PageDown}');
   validateCellPosition(6, 99);
   userEvent.keyboard('{ctrl}{home}');
   validateCellPosition(0, 0);
@@ -82,7 +77,7 @@ test('keyboard navigation', () => {
   validateCellPosition(0, 0);
   userEvent.keyboard('{ctrl}{home}');
   validateCellPosition(0, 0);
-  fireEvent.keyDown(document.activeElement!, { key: 'PageUp' });
+  userEvent.keyboard('{PageUp}');
   validateCellPosition(0, 0);
 
   // tab at the end of a row selects the first cell on the next row
