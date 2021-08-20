@@ -4,7 +4,7 @@ import { setup, getHeaderCells, getGrid } from '../utils';
 
 const pointerId = 1;
 
-// https://github.com/jsdom/jsdom/issues/2527
+// TODO: https://github.com/jsdom/jsdom/issues/2527
 class PointerEvent extends Event {
   pointerId: number | undefined;
   pointerType: string | undefined;

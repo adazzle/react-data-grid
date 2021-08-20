@@ -1,4 +1,4 @@
-# https://docs.codecov.io/docs/commit-status
+# https://docs.codecov.com/docs/commit-status
 coverage:
   status:
     project:
@@ -6,12 +6,12 @@ coverage:
         informational: true
     patch: off
 
-# https://docs.codecov.io/docs/pull-request-comments
+# https://docs.codecov.com/docs/pull-request-comments
 comment:
   layout: 'diff, files'
   require_changes: true
 
-# https://docs.codecov.io/docs/node
+# https://docs.codecov.com/docs/node
 parsers:
   javascript:
     enable_partials: yes
