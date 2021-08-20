@@ -25,7 +25,7 @@ interface ViewportRowsArgs<R> {
   enableVirtualization: boolean;
 }
 
-// https://github.com/microsoft/TypeScript/issues/41808
+// TODO: https://github.com/microsoft/TypeScript/issues/41808
 function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
   return Array.isArray(arr);
 }
@@ -130,7 +130,7 @@ export function useViewportRows<R>({
     let totalRowHeight = 0;
     // Calcule the height of all the rows upfront. This can cause performance issues
     // and we can consider using a similar approach as react-window
-    // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
+    // https://github.com/bvaughn/react-window/blob/b0a470cc264e9100afcaa1b78ed59d88f7914ad4/src/VariableSizeList.js#L68
     const rowPositions = rows.map((row: R | GroupRow<R>) => {
       const currentRowHeight = isGroupRow(row)
         ? rowHeight({ type: 'GROUP', row })
