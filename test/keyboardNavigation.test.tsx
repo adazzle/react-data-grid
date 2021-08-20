@@ -142,7 +142,7 @@ test('navigation with focusable formatter', () => {
 
   // cell should not set tabIndex to 0 if it contains a focusable formatter
   expect(getSelectedCell()).toHaveAttribute('tabIndex', '-1');
-  const checkbox = getSelectedCell().querySelector('input');
+  const checkbox = getSelectedCell()!.querySelector('input');
   expect(checkbox).toHaveFocus();
   expect(checkbox).toHaveAttribute('tabIndex', '0');
 
