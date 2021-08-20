@@ -37,7 +37,6 @@ const headerRow = css`
   background-color: var(--header-background-color);
   font-weight: bold;
   z-index: 3;
-  touch-action: none;
   outline: none;
 
   &[aria-selected='true'] {
@@ -76,7 +75,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         column={column}
         colSpan={colSpan}
         isCellSelected={isCellSelected}
-        onResize={onColumnResize}
+        onColumnResize={onColumnResize}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
