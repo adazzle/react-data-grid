@@ -335,7 +335,7 @@ function DataGrid<R, SR, K extends Key>(
   const minRowIdx = -1; // change in to 0?
   const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
-  const selectedCellIsWithiViewportBounds = isCellWithinViewportBounds(selectedPosition);
+  const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -508,7 +508,7 @@ function DataGrid<R, SR, K extends Key>(
     const { rowIdx } = selectedPosition;
 
     if (
-      selectedCellIsWithiViewportBounds &&
+      selectedCellIsWithinViewportBounds &&
       onPaste != null &&
       isCtrlKeyHeldDown(event) &&
       !isGroupRow(rows[rowIdx]) &&
@@ -626,7 +626,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (!selectedCellIsWithiViewportBounds) return;
+    if (!selectedCellIsWithinViewportBounds) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
     const { key, shiftKey } = event;
@@ -957,11 +957,11 @@ function DataGrid<R, SR, K extends Key>(
 
     const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
     const startRowIdx =
-      selectedCellIsWithiViewportBounds && selectedRowIdx < rowOverscanStartIdx
+      selectedCellIsWithinViewportBounds && selectedRowIdx < rowOverscanStartIdx
         ? rowOverscanStartIdx - 1
         : rowOverscanStartIdx;
     const endRowIdx =
-      selectedCellIsWithiViewportBounds && selectedRowIdx > rowOverscanEndIdx
+      selectedCellIsWithinViewportBounds && selectedRowIdx > rowOverscanEndIdx
         ? rowOverscanEndIdx + 1
         : rowOverscanEndIdx;
 
