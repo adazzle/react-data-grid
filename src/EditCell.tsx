@@ -31,7 +31,7 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {
-  onKeyDown: Required<React.HTMLAttributes<HTMLDivElement>>['onKeyDown'];
+  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent: boolean) => void;
 }
 
 export default function EditCell<R, SR>({
@@ -99,6 +99,10 @@ export default function EditCell<R, SR>({
     }
   }
 
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    onKeyDown(event, true);
+  }
+
   return (
     <div
       role="gridcell"
@@ -107,7 +111,7 @@ export default function EditCell<R, SR>({
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}
-      onKeyDown={onKeyDown}
+      onKeyDown={column.editorOptions?.createPortal ? handleKeyDown : undefined}
       onMouseDownCapture={cancelFrameRequest}
     >
       {content}

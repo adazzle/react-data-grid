@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
-import { fireEvent, render } from '@testing-library/react';
-import { getCellsAtRowIndex, getSelectedCell } from './utils';
+import { render } from '@testing-library/react';
+import { getCellsAtRowIndex, getSelectedCell, copySelectedCell, pasteSelectedCell } from './utils';
 
 interface Row {
   col: string;
@@ -58,20 +58,6 @@ function setup(allowCopyPaste = true) {
       <CopyPasteTest allowCopyPaste={allowCopyPaste} />
     </StrictMode>
   );
-}
-
-function copySelectedCell() {
-  fireEvent.keyDown(document.activeElement!, {
-    keyCode: '67',
-    ctrlKey: true
-  });
-}
-
-function pasteSelectedCell() {
-  fireEvent.keyDown(document.activeElement!, {
-    keyCode: '86',
-    ctrlKey: true
-  });
 }
 
 test('should not allow copy/paste if onPaste is undefined', () => {

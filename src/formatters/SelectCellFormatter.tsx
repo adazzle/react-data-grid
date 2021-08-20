@@ -68,7 +68,6 @@ interface SelectCellFormatterProps extends SharedInputProps {
 
 export function SelectCellFormatter({
   value,
-  tabIndex,
   isCellSelected,
   disabled,
   onClick,
@@ -76,7 +75,7 @@ export function SelectCellFormatter({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
-  const inputRef = useFocusRef<HTMLInputElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
@@ -87,9 +86,9 @@ export function SelectCellFormatter({
       <input
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        tabIndex={tabIndex}
-        ref={inputRef}
+        ref={ref}
         type="checkbox"
+        tabIndex={tabIndex}
         className={checkboxInputClassname}
         disabled={disabled}
         checked={value}
