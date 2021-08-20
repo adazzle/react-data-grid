@@ -330,6 +330,7 @@ function DataGrid<R, SR, K extends Key>(
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
+  const selectedCellIsWithinBounds = isCellWithinBounds(selectedPosition);
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -353,9 +354,9 @@ function DataGrid<R, SR, K extends Key>(
    */
   useLayoutEffect(() => {
     if (
+      !selectedCellIsWithinBounds ||
       selectedPosition === prevSelectedPosition.current ||
-      selectedPosition.mode === 'EDIT' ||
-      !isCellWithinBounds(selectedPosition)
+      selectedPosition.mode === 'EDIT'
     ) {
       return;
     }
@@ -473,7 +474,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function onGridFocus() {
-    if (isCellWithinBounds(selectedPosition)) return;
+    if (selectedCellIsWithinBounds) return;
     // Tabbing into the grid should initiate keyboard navigation
     const initialPosition: SelectCellState = { idx: 0, rowIdx: 0, mode: 'SELECT' };
     if (isCellWithinBounds(initialPosition)) {
@@ -492,9 +493,9 @@ function DataGrid<R, SR, K extends Key>(
     const row = rows[selectedPosition.rowIdx];
 
     if (
-      onPaste &&
+      selectedCellIsWithinBounds &&
+      onPaste != null &&
       isCtrlKeyHeldDown(event) &&
-      isCellWithinBounds(selectedPosition) &&
       !isGroupRow(row) &&
       selectedPosition.idx !== -1 &&
       selectedPosition.mode === 'SELECT'
@@ -514,7 +515,7 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     if (
-      isCellWithinBounds(selectedPosition) &&
+      selectedCellIsWithinBounds &&
       isGroupRow(row) &&
       selectedPosition.idx === -1 &&
       // Collapse the current group row if it is focused and is in expanded state
@@ -608,7 +609,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (!isCellWithinBounds(selectedPosition) || selectedPosition.idx === -1) return;
+    if (!selectedCellIsWithinBounds || selectedPosition.idx === -1) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
     const { key, shiftKey } = event;
@@ -742,7 +743,7 @@ function DataGrid<R, SR, K extends Key>(
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
     const row = rows[rowIdx];
-    const isRowSelected = isCellWithinBounds(selectedPosition) && idx === -1;
+    const isRowSelected = selectedCellIsWithinBounds && idx === -1;
 
     // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
     if (
@@ -916,13 +917,12 @@ function DataGrid<R, SR, K extends Key>(
     let startRowIndex = 0;
 
     const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
-    const cellIsWithinBounds = isCellWithinBounds(selectedPosition);
     const startRowIdx =
-      cellIsWithinBounds && selectedRowIdx < rowOverscanStartIdx
+      selectedCellIsWithinBounds && selectedRowIdx < rowOverscanStartIdx
         ? rowOverscanStartIdx - 1
         : rowOverscanStartIdx;
     const endRowIdx =
-      cellIsWithinBounds && selectedRowIdx > rowOverscanEndIdx
+      selectedCellIsWithinBounds && selectedRowIdx > rowOverscanEndIdx
         ? rowOverscanEndIdx + 1
         : rowOverscanEndIdx;
 
@@ -1084,7 +1084,7 @@ function DataGrid<R, SR, K extends Key>(
             An extra div is needed initially to set the focus
             on the grid when there is no selected cell.
            */}
-          {!isCellWithinBounds(selectedPosition) && (
+          {!selectedCellIsWithinBounds && (
             <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
           )}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
