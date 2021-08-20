@@ -33,7 +33,6 @@ const headerRow = css`
   background-color: var(--header-background-color);
   font-weight: bold;
   z-index: 3;
-  touch-action: none;
 `;
 
 const headerRowClassname = `rdg-header-row ${headerRow}`;
@@ -60,7 +59,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         key={column.key}
         column={column}
         colSpan={colSpan}
-        onResize={onColumnResize}
+        onColumnResize={onColumnResize}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
