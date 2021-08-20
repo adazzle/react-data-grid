@@ -74,6 +74,7 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
 export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
+  isCellSelected: boolean;
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {

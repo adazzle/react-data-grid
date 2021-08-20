@@ -44,7 +44,9 @@ function SummaryCell<R, SR>({
       onClick={onClick}
       onFocus={onFocus}
     >
-      {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
+      {SummaryFormatter && (
+        <SummaryFormatter column={column} row={row} isCellSelected={isCellSelected} />
+      )}
     </div>
   );
 }

@@ -335,6 +335,7 @@ function DataGrid<R, SR, K extends Key>(
   const minRowIdx = -1; // change in to 0?
   const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
+  const selectedCellIsWithiViewportBounds = isCellWithinViewportBounds(selectedPosition);
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -488,7 +489,6 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function onGridFocus() {
-    if (selectedCellIsWithinSelectionBounds) return;
     // Tabbing into the grid should initiate keyboard navigation
     const initialPosition: SelectCellState = { idx: 0, rowIdx: -1, mode: 'SELECT' };
     if (isCellWithinSelectionBounds(initialPosition)) {
@@ -508,9 +508,9 @@ function DataGrid<R, SR, K extends Key>(
     const { rowIdx } = selectedPosition;
 
     if (
+      selectedCellIsWithiViewportBounds &&
       onPaste != null &&
       isCtrlKeyHeldDown(event) &&
-      isCellWithinViewportBounds(selectedPosition) &&
       !isGroupRow(rows[rowIdx]) &&
       selectedPosition.mode === 'SELECT'
     ) {
@@ -626,7 +626,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (!isCellWithinViewportBounds(selectedPosition)) return;
+    if (!selectedCellIsWithiViewportBounds) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
     const { key, shiftKey } = event;
@@ -821,10 +821,12 @@ function DataGrid<R, SR, K extends Key>(
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
         return ctrlKey ? { idx: maxColIdx, rowIdx: maxRowIdx } : { idx: maxColIdx, rowIdx };
       case 'PageUp': {
+        if (selectedPosition.rowIdx === minRowIdx) return selectedPosition;
         const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
         return { idx, rowIdx: nextRowY > 0 ? findRowIdx(nextRowY) : 0 };
       }
       case 'PageDown': {
+        if (selectedPosition.rowIdx >= rows.length) return selectedPosition;
         const nextRowY = getRowTop(rowIdx) + clientHeight;
         return { idx, rowIdx: nextRowY < totalRowHeight ? findRowIdx(nextRowY) : rows.length - 1 };
       }
@@ -878,6 +880,8 @@ function DataGrid<R, SR, K extends Key>(
       colSpanColumns,
       rows,
       summaryRows,
+      minRowIdx,
+      maxRowIdx,
       lastFrozenColumnIndex,
       cellNavigationMode: mode,
       currentPosition: selectedPosition,
@@ -952,13 +956,12 @@ function DataGrid<R, SR, K extends Key>(
     let startRowIndex = 0;
 
     const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
-    const cellIsWithinBounds = isCellWithinViewportBounds(selectedPosition);
     const startRowIdx =
-      cellIsWithinBounds && selectedRowIdx < rowOverscanStartIdx
+      selectedCellIsWithiViewportBounds && selectedRowIdx < rowOverscanStartIdx
         ? rowOverscanStartIdx - 1
         : rowOverscanStartIdx;
     const endRowIdx =
-      cellIsWithinBounds && selectedRowIdx > rowOverscanEndIdx
+      selectedCellIsWithiViewportBounds && selectedRowIdx > rowOverscanEndIdx
         ? rowOverscanEndIdx + 1
         : rowOverscanEndIdx;
 

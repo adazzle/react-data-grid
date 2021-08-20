@@ -33,6 +33,8 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
   summaryRows: readonly SR[] | null | undefined;
+  minRowIdx: number;
+  maxRowIdx: number;
   currentPosition: Position;
   nextPosition: Position;
   lastFrozenColumnIndex: number;
@@ -82,13 +84,14 @@ export function getNextSelectedCellPosition<R, SR>({
   colSpanColumns,
   rows,
   summaryRows,
+  minRowIdx,
+  maxRowIdx,
   currentPosition: { idx: currentIdx },
   nextPosition,
   lastFrozenColumnIndex,
   isCellWithinBounds,
   isGroupRow
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
-  const rowsCount = rows.length;
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
   const setColSpan = (moveRight: boolean) => {
@@ -128,7 +131,7 @@ export function getNextSelectedCellPosition<R, SR>({
 
     if (isAfterLastColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isLastRow = nextRowIdx === rowsCount - 1;
+        const isLastRow = nextRowIdx === maxRowIdx;
         if (!isLastRow) {
           nextIdx = 0;
           nextRowIdx += 1;
@@ -138,7 +141,7 @@ export function getNextSelectedCellPosition<R, SR>({
       }
     } else if (isBeforeFirstColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isFirstRow = nextRowIdx === 0;
+        const isFirstRow = nextRowIdx === minRowIdx;
         if (!isFirstRow) {
           nextRowIdx -= 1;
           nextIdx = columnsCount - 1;
