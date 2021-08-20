@@ -288,7 +288,7 @@ function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   children
 }: HeaderRendererProps<R, SR> & {
   children: (args: {
-    ref: React.MutableRefObject<T>;
+    ref: React.RefObject<T>;
     tabIndex: number;
     filters: Filter;
   }) => React.ReactElement;
