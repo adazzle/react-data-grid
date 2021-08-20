@@ -74,7 +74,6 @@ export default function HeaderCell<R, SR>({
     }
 
     function onPointerUp() {
-      currentTarget.releasePointerCapture(pointerId);
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('pointerup', onPointerUp);
     }
