@@ -334,6 +334,7 @@ function DataGrid<R, SR, K extends Key>(
   const maxColIdx = columns.length - 1;
   const minRowIdx = -1; // change in to 0?
   const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
+  const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -367,9 +368,9 @@ function DataGrid<R, SR, K extends Key>(
    */
   useLayoutEffect(() => {
     if (
+      !selectedCellIsWithinSelectionBounds ||
       selectedPosition === prevSelectedPosition.current ||
-      selectedPosition.mode === 'EDIT' ||
-      !isCellWithinSelectionBounds(selectedPosition)
+      selectedPosition.mode === 'EDIT'
     ) {
       return;
     }
@@ -487,7 +488,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function onGridFocus() {
-    if (isCellWithinSelectionBounds(selectedPosition)) return;
+    if (selectedCellIsWithinSelectionBounds) return;
     // Tabbing into the grid should initiate keyboard navigation
     const initialPosition: SelectCellState = { idx: 0, rowIdx: -1, mode: 'SELECT' };
     if (isCellWithinSelectionBounds(initialPosition)) {
@@ -507,7 +508,7 @@ function DataGrid<R, SR, K extends Key>(
     const { rowIdx } = selectedPosition;
 
     if (
-      onPaste &&
+      onPaste != null &&
       isCtrlKeyHeldDown(event) &&
       isCellWithinViewportBounds(selectedPosition) &&
       !isGroupRow(rows[rowIdx]) &&
@@ -777,7 +778,7 @@ function DataGrid<R, SR, K extends Key>(
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
     const row = rows[rowIdx];
-    const isRowSelected = isCellWithinSelectionBounds(selectedPosition) && idx === -1;
+    const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
 
     // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
     if (
@@ -1121,7 +1122,7 @@ function DataGrid<R, SR, K extends Key>(
             An extra div is needed initially to set the focus
             on the grid when there is no selected cell.
            */}
-          {!isCellWithinSelectionBounds(selectedPosition) && (
+          {!selectedCellIsWithinSelectionBounds && (
             <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
           )}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
