@@ -44,6 +44,45 @@ export default function HeaderCell<R, SR>({
   sortColumns,
   onSortColumnsChange
 }: HeaderCellProps<R, SR>) {
+  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse' && event.buttons !== 1) {
+      return;
+    }
+
+    const { currentTarget, pointerId } = event;
+    const { right } = currentTarget.getBoundingClientRect();
+    const offset = right - event.clientX;
+
+    if (offset > 11) {
+      // +1px to account for the border size
+      return;
+    }
+
+    function onPointerMove(event: PointerEvent) {
+      if (event.pointerType === 'mouse' && event.buttons !== 1) {
+        // handle case where the pointer `up`'d outside an iframe
+        onPointerUp();
+        return;
+      }
+
+      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      if (width > 0) {
+        onColumnResize(column, width);
+      }
+    }
+
+    function onPointerUp() {
+      currentTarget.releasePointerCapture(pointerId);
+      currentTarget.removeEventListener('pointermove', onPointerMove);
+      currentTarget.removeEventListener('pointerup', onPointerUp);
+    }
+
+    event.preventDefault();
+    currentTarget.setPointerCapture(pointerId);
+    currentTarget.addEventListener('pointermove', onPointerMove);
+    currentTarget.addEventListener('pointerup', onPointerUp);
+  }
+
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
@@ -88,45 +127,6 @@ export default function HeaderCell<R, SR>({
       }
     }
   };
-
-  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === 'mouse' && event.buttons !== 1) {
-      return;
-    }
-
-    const { currentTarget, pointerId } = event;
-    const { right } = currentTarget.getBoundingClientRect();
-    const offset = right - event.clientX;
-
-    if (offset > 11) {
-      // +1px to account for the border size
-      return;
-    }
-
-    function onPointerMove(event: PointerEvent) {
-      if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        // handle case where the pointer `up`'d outside an iframe
-        onPointerUp();
-        return;
-      }
-
-      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
-      if (width > 0) {
-        onColumnResize(column, width);
-      }
-    }
-
-    function onPointerUp() {
-      currentTarget.releasePointerCapture(pointerId);
-      currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('pointerup', onPointerUp);
-    }
-
-    event.preventDefault();
-    currentTarget.setPointerCapture(pointerId);
-    currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('pointerup', onPointerUp);
-  }
 
   function getCell() {
     if (column.headerRenderer) {
