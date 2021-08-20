@@ -103,19 +103,17 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
-    let frameRequest: number;
-
     function onPointerMove(event: PointerEvent) {
-      // `pointermove` events can trigger more than once per frame,
-      // leading to poor performance.
-      cancelAnimationFrame(frameRequest);
+      if (event.pointerType === 'mouse' && event.buttons !== 1) {
+        // handle case where the pointer `up`'d outside an iframe
+        onPointerUp();
+        return;
+      }
 
-      frameRequest = requestAnimationFrame(() => {
-        const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
-        if (width > 0) {
-          onColumnResize(column, width);
-        }
-      });
+      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      if (width > 0) {
+        onColumnResize(column, width);
+      }
     }
 
     function onPointerUp() {
