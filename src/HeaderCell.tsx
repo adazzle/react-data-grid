@@ -6,6 +6,8 @@ import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle, getCellClassname } from './utils';
 
 const cellResizable = css`
+  touch-action: none;
+
   &::after {
     content: '';
     cursor: col-resize;
@@ -21,19 +23,22 @@ const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
-  'onSortColumnsChange' | 'allRowsSelected' | 'onAllRowsSelectionChange' | 'sortColumns'
+  | 'sortColumns'
+  | 'onSortColumnsChange'
+  | 'allRowsSelected'
+  | 'onAllRowsSelectionChange'
+  | 'onColumnResize'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
-  onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
 }
 
 export default function HeaderCell<R, SR>({
   column,
   colSpan,
-  onResize,
+  onColumnResize,
   allRowsSelected,
   onAllRowsSelectionChange,
   sortColumns,
@@ -54,27 +59,31 @@ export default function HeaderCell<R, SR>({
     }
 
     function onPointerMove(event: PointerEvent) {
-      if (event.pointerId !== pointerId) return;
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        onPointerUp(event);
+        // handle case where the pointer `up`'d outside an iframe
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=606896
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=693494
+        onPointerUp();
         return;
       }
+
       const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
       if (width > 0) {
-        onResize(column, width);
+        onColumnResize(column, width);
       }
     }
 
-    function onPointerUp(event: PointerEvent) {
-      if (event.pointerId !== pointerId) return;
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
+    function onPointerUp() {
+      currentTarget.removeEventListener('pointermove', onPointerMove);
+      currentTarget.removeEventListener('pointerup', onPointerUp);
     }
 
     event.preventDefault();
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
+    currentTarget.setPointerCapture(pointerId);
+    currentTarget.addEventListener('pointermove', onPointerMove);
+    currentTarget.addEventListener('pointerup', onPointerUp);
   }
+
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
