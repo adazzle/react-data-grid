@@ -112,8 +112,7 @@ test('grid enter/exit', () => {
   userEvent.tab();
   validateCellPosition(0, 0);
 
-  userEvent.keyboard('{arrowdown}');
-  userEvent.keyboard('{arrowdown}');
+  userEvent.keyboard('{arrowdown}{arrowdown}');
   validateCellPosition(0, 2);
 
   // tab should select the last selected cell
