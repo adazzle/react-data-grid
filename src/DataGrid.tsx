@@ -147,7 +147,12 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onColumnResize?: ((idx: number, width: number) => void) | null;
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: ((position: Position) => void) | null;
-
+  onKeyDown?:
+    | ((
+        event: React.KeyboardEvent<HTMLDivElement>,
+        options: { readonly mode: 'SELECT' | 'EDIT' }
+      ) => boolean)
+    | null;
   /**
    * Toggles and modes
    */
@@ -202,6 +207,7 @@ function DataGrid<R, SR, K extends Key>(
     onSelectedCellChange,
     onFill,
     onPaste,
+    onKeyDown,
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
@@ -483,6 +489,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
+    if (onKeyDown?.(event, { mode: selectedPosition.mode }) === false) return;
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-row:not(.rdg-summary-row) > .rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row:not(.rdg-summary-row)');
@@ -800,11 +807,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (selectedPosition.mode === 'EDIT') {
-      const onNavigation =
-        columns[selectedPosition.idx].editorOptions?.onNavigation ?? onEditorNavigation;
-      if (!onNavigation(event)) return;
-    }
+    if (selectedPosition.mode === 'EDIT' && !onKeyDown && !onEditorNavigation(event)) return;
     const { key, shiftKey } = event;
     let mode = cellNavigationMode;
     if (key === 'Tab') {

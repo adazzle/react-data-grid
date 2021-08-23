@@ -354,6 +354,9 @@ export function CommonFeatures() {
       onSortColumnsChange={setSortColumns}
       summaryRows={summaryRows}
       className="fill-grid"
+      onKeyDown={(event, { mode }) => {
+        if ((mode === 'SELECT' && event.key === 'Tab') || event.key === 'x') return false;
+      }}
     />
   );
 
