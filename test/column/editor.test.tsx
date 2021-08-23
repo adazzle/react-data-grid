@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@test
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
-import type { Column, DataGridProps } from '../../src';
+import type { Column } from '../../src';
 import { getCellsAtRowIndex, getGrid } from '../utils';
 
 interface Row {
@@ -207,9 +207,9 @@ describe('Editor', () => {
     it('should prevent navigation if onNavigation returns false', () => {
       render(
         <EditorTest
-          onKeyDown={(event) => {
-            if (event.key === 'ArrowDown') {
-              event.preventDefault();
+          editorOptions={{
+            onNavigation(event) {
+              return event.key === 'ArrowDown';
             }
           }}
         />
@@ -247,9 +247,7 @@ describe('Editor', () => {
   });
 });
 
-interface EditorTestProps
-  extends Pick<Column<Row>, 'editorOptions' | 'editable'>,
-    Pick<DataGridProps<Row>, 'onKeyDown'> {
+interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
 }
@@ -265,13 +263,7 @@ const initialRows: readonly Row[] = [
   }
 ];
 
-function EditorTest({
-  editable,
-  editorOptions,
-  onSave,
-  gridRows = initialRows,
-  onKeyDown
-}: EditorTestProps) {
+function EditorTest({ editable, editorOptions, onSave, gridRows = initialRows }: EditorTestProps) {
   const [rows, setRows] = useState(gridRows);
 
   const columns = useMemo((): readonly Column<Row>[] => {
@@ -323,7 +315,7 @@ function EditorTest({
       <button type="button" onClick={() => onSave?.(rows)}>
         save
       </button>
-      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} onKeyDown={onKeyDown} />
+      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />
     </StrictMode>
   );
 }

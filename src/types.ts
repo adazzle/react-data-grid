@@ -42,6 +42,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly editOnClick?: boolean | null;
     /** Prevent default to cancel editing */
     readonly onCellKeyDown?: ((event: React.KeyboardEvent<HTMLDivElement>) => void) | null;
+    /** Control the default cell navigation behavior while the editor is open */
+    readonly onNavigation?: ((event: React.KeyboardEvent<HTMLDivElement>) => boolean) | null;
   } | null;
   /** Header renderer for each header cell */
   readonly headerRenderer?: React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>> | null;

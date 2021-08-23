@@ -806,7 +806,11 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (selectedPosition.mode === 'EDIT' && !onKeyDown && !onEditorNavigation(event)) return;
+    if (selectedPosition.mode === 'EDIT') {
+      const onNavigation =
+        columns[selectedPosition.idx].editorOptions?.onNavigation ?? onEditorNavigation;
+      if (!onNavigation(event)) return;
+    }
     const { key, shiftKey } = event;
     let mode = cellNavigationMode;
     if (key === 'Tab') {
