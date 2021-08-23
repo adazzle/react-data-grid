@@ -148,10 +148,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Function called whenever selected cell is changed */
   onSelectedCellChange?: ((position: Position) => void) | null;
   onKeyDown?:
-    | ((
-        event: React.KeyboardEvent<HTMLDivElement>,
-        options: { readonly mode: 'SELECT' | 'EDIT' }
-      ) => boolean)
+    | ((event: KeyboardEvent, options: { readonly mode: 'SELECT' | 'EDIT' }) => void)
     | null;
   /**
    * Toggles and modes
@@ -489,7 +486,9 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
-    if (onKeyDown?.(event, { mode: selectedPosition.mode }) === false) return;
+    const keyboardEvent = new KeyboardEvent('Custom', event.nativeEvent);
+    onKeyDown?.(keyboardEvent, { mode: selectedPosition.mode });
+    if (keyboardEvent.defaultPrevented) return;
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-row:not(.rdg-summary-row) > .rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row:not(.rdg-summary-row)');

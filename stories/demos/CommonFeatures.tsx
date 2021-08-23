@@ -355,7 +355,9 @@ export function CommonFeatures() {
       summaryRows={summaryRows}
       className="fill-grid"
       onKeyDown={(event, { mode }) => {
-        if ((mode === 'SELECT' && event.key === 'Tab') || event.key === 'x') return false;
+        if (mode === 'SELECT' && event.key === 'Tab') {
+          event.preventDefault();
+        }
       }}
     />
   );

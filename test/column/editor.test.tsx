@@ -205,7 +205,15 @@ describe('Editor', () => {
     });
 
     it('should prevent navigation if onNavigation returns false', () => {
-      render(<EditorTest onKeyDown={(event) => event.key === 'ArrowDown'} />);
+      render(
+        <EditorTest
+          onKeyDown={(event) => {
+            if (event.key === 'ArrowDown') {
+              event.preventDefault();
+            }
+          }}
+        />
+      );
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       userEvent.keyboard('a{arrowleft}b{arrowright}c{arrowdown}'); // should commit changes on arrowdown
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
