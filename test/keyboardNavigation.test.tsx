@@ -296,8 +296,8 @@ test('reset selected cell when row is removed', () => {
   );
 
   userEvent.tab();
-  userEvent.keyboard('{arrowdown}{arrowright}');
-  validateCellPosition(1, 1);
+  userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
+  validateCellPosition(1, 2);
 
   rerender(
     <StrictMode>
