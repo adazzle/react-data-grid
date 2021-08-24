@@ -86,10 +86,7 @@ export const rootClassname = `rdg ${root}`;
 
 export const focusSinkClassname = css`
   position: sticky;
-  top: 0;
-  left: 0;
-  height: 0;
-  width: 0;
+  inset: 0;
   outline: 0;
 `;
 
