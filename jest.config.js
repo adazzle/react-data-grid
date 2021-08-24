@@ -1,7 +1,6 @@
 // https://jestjs.io/docs/configuration
 
 export default {
-  coverageProvider: 'v8',
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/types.ts'],
   coverageReporters: ['json'],
   restoreMocks: true,
