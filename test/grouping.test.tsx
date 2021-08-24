@@ -269,7 +269,7 @@ test('should select rows in a group', () => {
   expect(selectedRows).toHaveLength(4);
 });
 
-test.only('cell navigation in a treegrid', () => {
+test('cell navigation in a treegrid', () => {
   setup(['country', 'year']);
   expect(getRows()).toHaveLength(2);
 
