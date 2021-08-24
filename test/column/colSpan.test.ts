@@ -6,8 +6,8 @@ import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from 
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {
-    const columns: Column<Row>[] = [];
     type Row = number;
+    const columns: Column<Row, Row>[] = [];
     const rows: readonly Row[] = [...Array(10).keys()];
 
     for (let i = 0; i < colCount; i++) {
@@ -28,11 +28,14 @@ describe('colSpan', () => {
           if (args.type === 'HEADER' && key === '8') {
             return 3;
           }
+          if (args.type === 'SUMMARY' && key === '7') {
+            return 2;
+          }
           return undefined;
         }
       });
     }
-    setup({ columns, rows });
+    setup({ columns, rows, summaryRows: [123] });
   }
 
   it('should merges cells', () => {
@@ -72,6 +75,9 @@ describe('colSpan', () => {
 
     expect(getCellsAtRowIndex(4)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
     expect(getCellsAtRowIndex(5)).toHaveLength(10);
+
+    // summary row
+    expect(getCellsAtRowIndex(10)).toHaveLength(14);
   });
 
   it('should navigate between merged cells', () => {
