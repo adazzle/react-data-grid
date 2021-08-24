@@ -1,6 +1,8 @@
+import { StrictMode } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Column } from '../src';
-import { SelectColumn } from '../src';
+import DataGrid, { SelectColumn } from '../src';
 import { useFocusRef } from '../src/hooks';
 import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex, getGrid } from './utils';
 
@@ -149,25 +151,31 @@ test('navigation with focusable formatter', () => {
 });
 
 test('navigation when header and summary rows have focusable elements', () => {
+  function Test({ id, isCellSelected }: { id: string; isCellSelected: boolean }) {
+    const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
+
+    return <input ref={ref} tabIndex={tabIndex} id={id} />;
+  }
+
   const columns: readonly Column<Row>[] = [
     {
       key: 'col2',
       name: 'col2',
       headerRenderer(p) {
-        return <TestComponent id="header-filter1" isCellSelected={p.isCellSelected} />;
+        return <Test id="header-filter1" isCellSelected={p.isCellSelected} />;
       },
       summaryFormatter(p) {
-        return <TestComponent id="summary-formatter1" isCellSelected={p.isCellSelected} />;
+        return <Test id="summary-formatter1" isCellSelected={p.isCellSelected} />;
       }
     },
     {
       key: 'col3',
       name: 'col3',
       headerRenderer(p) {
-        return <TestComponent id="header-filter2" isCellSelected={p.isCellSelected} />;
+        return <Test id="header-filter2" isCellSelected={p.isCellSelected} />;
       },
       summaryFormatter(p) {
-        return <TestComponent id="summary-formatter2" isCellSelected={p.isCellSelected} />;
+        return <Test id="summary-formatter2" isCellSelected={p.isCellSelected} />;
       }
     }
   ];
@@ -240,8 +248,62 @@ test('navigation when selected cell not in the viewport', () => {
   validateCellPosition(6, 100);
 });
 
-function TestComponent({ id, isCellSelected }: { id: string; isCellSelected: boolean }) {
-  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
+test('reset selected cell when column is removed', () => {
+  const columns: readonly Column<Row>[] = [
+    { key: '1', name: '1' },
+    { key: '2', name: '2' }
+  ];
+  const rows = [undefined, undefined];
 
-  return <input ref={ref} tabIndex={tabIndex} id={id} />;
-}
+  function Test({ columns }: { columns: readonly Column<Row>[] }) {
+    return <DataGrid columns={columns} rows={rows} />;
+  }
+
+  const { rerender } = render(
+    <StrictMode>
+      <Test columns={columns} />
+    </StrictMode>
+  );
+
+  userEvent.tab();
+  userEvent.keyboard('{arrowdown}{arrowright}');
+  validateCellPosition(1, 1);
+
+  rerender(
+    <StrictMode>
+      <Test columns={[columns[0]]} />
+    </StrictMode>
+  );
+
+  expect(getSelectedCell()).not.toBeInTheDocument();
+});
+
+test('reset selected cell when row is removed', () => {
+  const columns: readonly Column<Row>[] = [
+    { key: '1', name: '1' },
+    { key: '2', name: '2' }
+  ];
+  const rows = [undefined, undefined];
+
+  function Test({ rows }: { rows: readonly undefined[] }) {
+    return <DataGrid columns={columns} rows={rows} />;
+  }
+
+  const { rerender } = render(
+    <StrictMode>
+      <Test rows={rows} />
+    </StrictMode>
+  );
+
+  userEvent.tab();
+  userEvent.keyboard('{arrowdown}{arrowright}');
+  validateCellPosition(1, 1);
+
+  rerender(
+    <StrictMode>
+      <Test rows={[rows[0]]} />
+    </StrictMode>
+  );
+
+  expect(getSelectedCell()).not.toBeInTheDocument();
+});
