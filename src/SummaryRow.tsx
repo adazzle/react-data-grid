@@ -10,9 +10,8 @@ import { useRovingRowRef } from './hooks';
 
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
-interface SummaryRowProps<R, SR>
-  extends SharedRowRendererProps<R, SR>,
-    Pick<React.HTMLAttributes<HTMLDivElement>, 'aria-rowindex'> {
+interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
+  'aria-rowindex': number;
   row: SR;
   bottom: number;
   lastFrozenColumnIndex: number;

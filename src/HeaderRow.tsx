@@ -67,14 +67,12 @@ function HeaderRow<R, SR, K extends React.Key>({
       index += colSpan - 1;
     }
 
-    const isCellSelected = selectedCellIdx === column.idx;
-
     cells.push(
       <HeaderCell<R, SR>
         key={column.key}
         column={column}
         colSpan={colSpan}
-        isCellSelected={isCellSelected}
+        isCellSelected={selectedCellIdx === column.idx}
         onColumnResize={onColumnResize}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
