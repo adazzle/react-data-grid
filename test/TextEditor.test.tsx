@@ -27,7 +27,7 @@ test('TextEditor', () => {
   );
 
   userEvent.dblClick(getCells()[0]);
-  let input = screen.getByRole('textbox') as HTMLInputElement;
+  let input: HTMLInputElement | null = screen.getByRole('textbox') as HTMLInputElement;
   expect(input).toHaveClass('rdg-text-editor');
   // input value is row[column.key]
   expect(input).toHaveValue(initialRows[0].name);
