@@ -1,6 +1,8 @@
+import { StrictMode } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { Column } from '../src';
-import { SelectColumn } from '../src';
+import DataGrid, { SelectColumn } from '../src';
 import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex, getGrid } from './utils';
 
 type Row = undefined;
@@ -236,4 +238,64 @@ test('navigation when selected cell not in the viewport', () => {
   grid.scrollLeft = 2000;
   userEvent.keyboard('{arrowleft}');
   validateCellPosition(6, 99);
+});
+
+test('reset selected cell when column is removed', () => {
+  const columns: readonly Column<Row>[] = [
+    { key: '1', name: '1' },
+    { key: '2', name: '2' }
+  ];
+  const rows = [undefined, undefined];
+
+  function Test({ columns }: { columns: readonly Column<Row>[] }) {
+    return <DataGrid columns={columns} rows={rows} />;
+  }
+
+  const { rerender } = render(
+    <StrictMode>
+      <Test columns={columns} />
+    </StrictMode>
+  );
+
+  userEvent.tab();
+  userEvent.keyboard('{arrowdown}{arrowright}');
+  validateCellPosition(1, 1);
+
+  rerender(
+    <StrictMode>
+      <Test columns={[columns[0]]} />
+    </StrictMode>
+  );
+
+  expect(getSelectedCell()).not.toBeInTheDocument();
+});
+
+test('reset selected cell when row is removed', () => {
+  const columns: readonly Column<Row>[] = [
+    { key: '1', name: '1' },
+    { key: '2', name: '2' }
+  ];
+  const rows = [undefined, undefined];
+
+  function Test({ rows }: { rows: readonly undefined[] }) {
+    return <DataGrid columns={columns} rows={rows} />;
+  }
+
+  const { rerender } = render(
+    <StrictMode>
+      <Test rows={rows} />
+    </StrictMode>
+  );
+
+  userEvent.tab();
+  userEvent.keyboard('{arrowdown}{arrowright}');
+  validateCellPosition(1, 1);
+
+  rerender(
+    <StrictMode>
+      <Test rows={[rows[0]]} />
+    </StrictMode>
+  );
+
+  expect(getSelectedCell()).not.toBeInTheDocument();
 });
