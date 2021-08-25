@@ -1103,7 +1103,7 @@ function DataGrid<R, SR, K extends Key>(
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
       className={clsx(
         rootClassname,
-        { [viewportDraggingClassname]: isDragging, [viewportHeightClassname]: rows.length },
+        { [viewportDraggingClassname]: isDragging, [viewportHeightClassname]: rows.length !== 0 },
         className
       )}
       style={
