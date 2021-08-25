@@ -255,7 +255,7 @@ test('toggling selection of row groups', () => {
   );
 
   userEvent.tab();
-  userEvent.keyboard('{arrowright}{enter}{arrowdown}{arrowright}{enter}');
+  userEvent.keyboard('{arrowdown}{arrowright}{enter}{arrowdown}{arrowright}{enter}');
   expect(getRows()).toHaveLength(6);
 
   userEvent.keyboard('{arrowdown}{arrowleft}{arrowleft}{space}');
