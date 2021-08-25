@@ -1,4 +1,5 @@
 import { StrictMode, useState } from 'react';
+import { groupBy as rowGrouper } from 'lodash';
 import { render, within, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -53,6 +54,8 @@ function testSelection(rowIdx: number, isSelected: boolean) {
 function toggleSelection(rowIdx: number, shiftKey = false) {
   userEvent.click(within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select'), { shiftKey });
 }
+
+// function toggleGroupSelection
 
 test('toggle selection when checkbox is clicked', () => {
   setup();
@@ -182,6 +185,109 @@ test('extra keys are preserved when updating the selectedRows Set', () => {
 
   toggleSelection(1);
   expect(set).toStrictEqual(initialSet);
+});
+
+test('toggling selection of row groups', () => {
+  interface Row {
+    year: number;
+    month: number;
+    code: string;
+  }
+
+  const columns: readonly Column<Row>[] = [
+    SelectColumn,
+    {
+      key: 'year',
+      name: 'Year'
+    },
+    {
+      key: 'month',
+      name: 'Month'
+    },
+    {
+      key: 'code',
+      name: 'Code'
+    }
+  ];
+
+  const rows: readonly Row[] = [
+    { year: 2020, month: 1, code: 'a' },
+    { year: 2020, month: 1, code: 'b' },
+    { year: 2020, month: 2, code: 'c' },
+    { year: 2021, month: 1, code: 'd' }
+  ];
+
+  function rowKeyGetter(row: Row) {
+    return row.code;
+  }
+
+  const initialSet = new Set(['!', '?']);
+  let set = initialSet;
+
+  function Test() {
+    const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(initialSet);
+    const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
+      () => new Set<unknown>([])
+    );
+
+    function onSelectedRowsChange(selectedRows: Set<string>) {
+      setSelectedRows(selectedRows);
+      set = selectedRows;
+    }
+
+    return (
+      <DataGrid
+        rowKeyGetter={rowKeyGetter}
+        columns={columns}
+        rows={rows}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={onSelectedRowsChange}
+        groupBy={['year', 'month']}
+        rowGrouper={rowGrouper}
+        expandedGroupIds={expandedGroupIds}
+        onExpandedGroupIdsChange={setExpandedGroupIds}
+      />
+    );
+  }
+
+  render(
+    <StrictMode>
+      <Test />
+    </StrictMode>
+  );
+
+  userEvent.tab();
+  userEvent.keyboard('{arrowright}{enter}{arrowdown}{arrowright}{enter}');
+  expect(getRows()).toHaveLength(6);
+
+  userEvent.keyboard('{arrowdown}{arrowleft}{arrowleft}{space}');
+  expect(set).toStrictEqual(new Set([...initialSet, 'a']));
+  testSelection(0, false);
+  testSelection(1, false);
+  testSelection(2, true);
+  testSelection(3, false);
+
+  userEvent.keyboard('{arrowup}{space}');
+  expect(set).toStrictEqual(new Set([...initialSet, 'a', 'b']));
+  testSelection(0, false);
+  testSelection(1, true);
+  testSelection(2, true);
+  testSelection(3, true);
+
+  userEvent.keyboard('{space}');
+  expect(set).toStrictEqual(initialSet);
+  testSelection(0, false);
+  testSelection(1, false);
+  testSelection(2, false);
+  testSelection(3, false);
+
+  userEvent.keyboard('{arrowup}{space}');
+  expect(set).toStrictEqual(new Set([...initialSet, 'a', 'b', 'c']));
+  testSelection(0, true);
+  testSelection(1, true);
+  testSelection(2, true);
+  testSelection(3, true);
+  testSelection(4, true);
 });
 
 test('select rows using shift click', () => {
