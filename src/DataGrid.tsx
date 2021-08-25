@@ -499,8 +499,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
     if (!(event.target instanceof Element)) return;
-    const isCellEvent =
-      event.target.closest('.rdg-row > .rdg-cell, .rdg-header-row > .rdg-cell') !== null;
+    const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
     if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
 
