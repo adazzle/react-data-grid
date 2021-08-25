@@ -822,7 +822,7 @@ function DataGrid<R, SR, K extends Key>(
       case 'Home':
         // If row is selected then move focus to the first row
         if (isRowSelected) return { idx, rowIdx: 0 };
-        return ctrlKey ? { idx: 0, rowIdx: minRowIdx } : { idx: 0, rowIdx };
+        return { idx: 0, rowIdx: ctrlKey ? minRowIdx : rowIdx };
       case 'End':
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
