@@ -1,5 +1,4 @@
 import { StrictMode, useState } from 'react';
-import { groupBy as rowGrouper } from 'lodash';
 import { render, within, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
