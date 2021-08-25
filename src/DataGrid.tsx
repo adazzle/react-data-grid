@@ -826,7 +826,7 @@ function DataGrid<R, SR, K extends Key>(
       case 'End':
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: rows.length - 1 };
-        return ctrlKey ? { idx: maxColIdx, rowIdx: maxRowIdx } : { idx: maxColIdx, rowIdx };
+        return { idx: maxColIdx, rowIdx: ctrlKey ? maxRowIdx : rowIdx };
       case 'PageUp': {
         if (selectedPosition.rowIdx === minRowIdx) return selectedPosition;
         const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
