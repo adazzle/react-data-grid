@@ -117,3 +117,14 @@ test('multi column sort with metakey', () => {
     { columnKey: 'colB', direction: 'DESC' }
   ]);
 });
+
+test('multi column sort with keyboard', () => {
+  setup();
+  const [headerCell1] = getHeaderCells();
+  userEvent.click(headerCell1.firstElementChild!);
+  userEvent.keyboard('{space}{arrowright}{ctrl}{enter}');
+  testSortColumns([
+    { columnKey: 'colA', direction: 'DESC' },
+    { columnKey: 'colB', direction: 'DESC' }
+  ]);
+});
