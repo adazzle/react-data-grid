@@ -3,11 +3,11 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast, rowSelectedClassname, rowClassname } from './style';
+import { cell, cellFrozenLast, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
-import { RowSelectionProvider, useFocusRef } from './hooks';
+import { RowSelectionProvider, useRovingRowRef } from './hooks';
 
 export interface GroupRowRendererProps<R, SR>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -56,8 +56,7 @@ function GroupedRow<R, SR>({
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
-  const isRowFocused = selectedCellIdx === -1;
-  const { ref, tabIndex } = useFocusRef<HTMLDivElement>(isRowFocused);
+  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
 
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
@@ -78,9 +77,7 @@ function GroupedRow<R, SR>({
           rowClassname,
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-          {
-            [rowSelectedClassname]: isRowFocused // Select row if there is no selected cell
-          }
+          className
         )}
         onClick={handleSelectGroup}
         style={

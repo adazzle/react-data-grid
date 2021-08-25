@@ -51,9 +51,11 @@ export const SelectColumn: Column<any, any> = {
     return (
       <SelectCellFormatter
         aria-label="Select All"
-        isCellSelected={false}
+        isCellSelected={props.isCellSelected}
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}
+        // Stop propagation to prevent row selection
+        onClick={stopPropagation}
       />
     );
   },

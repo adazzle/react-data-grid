@@ -218,7 +218,6 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       formatter({ row, onRowChange, isCellSelected }) {
         return (
           <SelectCellFormatter
-            tabIndex={-1}
             value={row.available}
             onChange={() => {
               onRowChange({ ...row, available: !row.available });
