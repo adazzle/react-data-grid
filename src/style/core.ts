@@ -43,6 +43,8 @@ const root = css`
   grid-template-columns: var(--template-columns);
   grid-template-rows: var(--template-rows);
 
+  color-scheme: var(--color-scheme, light dark);
+
   // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
   // We set a stacking context so internal elements don't render on top of external components.
   contain: strict;
@@ -70,7 +72,12 @@ const root = css`
   }
 
   &.rdg-dark {
+    --color-scheme: dark;
     ${darkTheme}
+  }
+
+  &.rdg-light {
+    --color-scheme: light;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -82,16 +89,11 @@ const root = css`
 
 export const rootClassname = `rdg ${root}`;
 
-const focusSink = css`
+export const focusSinkClassname = css`
   position: sticky;
-  top: 0;
-  left: 0;
-  height: 0;
-  width: 0;
+  inset: 0;
   outline: 0;
 `;
-
-export const focusSinkClassname = `rdg-focus-sink ${focusSink}`;
 
 const viewportDragging = css`
   &.${row} {

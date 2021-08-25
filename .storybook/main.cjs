@@ -3,5 +3,8 @@ module.exports = {
   reactOptions: {
     fastRefresh: true,
     strictMode: true
+  },
+  typescript: {
+    reactDocgen: false
   }
 };

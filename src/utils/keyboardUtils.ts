@@ -63,8 +63,15 @@ export function isDefaultCellInput(event: React.KeyboardEvent<HTMLDivElement>): 
  *   - The editor element must be the only immediate child of the editor container/a label.
  */
 export function onEditorNavigation({ key, target }: React.KeyboardEvent<HTMLDivElement>): boolean {
-  if (key === 'Tab' && (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement)) {
-    return target.matches('.rdg-editor-container > :only-child, .rdg-editor-container > label:only-child > :only-child');
+  if (
+    key === 'Tab' &&
+    (target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement)
+  ) {
+    return target.matches(
+      '.rdg-editor-container > :only-child, .rdg-editor-container > label:only-child > :only-child'
+    );
   }
   return false;
 }

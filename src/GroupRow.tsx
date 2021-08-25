@@ -1,27 +1,42 @@
 import { memo } from 'react';
 import clsx from 'clsx';
+import { css } from '@linaria/core';
 
-import { groupRowClassname, groupRowSelectedClassname, rowClassname } from './style';
+import { cell, cellFrozenLast, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import type { CalculatedColumn, Position, SelectRowEvent, Omit } from './types';
+import type { CalculatedColumn, GroupRow, Omit } from './types';
+import { RowSelectionProvider, useRovingRowRef } from './hooks';
 import { getRowStyle } from './utils';
 
-export interface GroupRowRendererProps<R, SR = unknown> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+export interface GroupRowRendererProps<R, SR>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   id: string;
   groupKey: unknown;
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
+  row: GroupRow<R>;
   gridRowStart: number;
   level: number;
-  selectedCellIdx?: number;
+  selectedCellIdx: number | undefined;
   isExpanded: boolean;
   isRowSelected: boolean;
-  selectCell: (position: Position, enableEditor?: boolean) => void;
-  selectRow: (selectRowEvent: SelectRowEvent) => void;
+  selectGroup: (rowIdx: number) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
+
+const groupRow = css`
+  &:not([aria-selected='true']) {
+    background-color: var(--header-background-color);
+  }
+
+  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+    border-right: none;
+  }
+`;
+
+const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 function GroupedRow<R, SR>({
   id,
@@ -29,56 +44,59 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
+  row,
   gridRowStart,
   level,
   isExpanded,
   selectedCellIdx,
   isRowSelected,
-  selectCell,
-  selectRow,
+  selectGroup,
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
+  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
+
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
-  function selectGroup() {
-    selectCell({ rowIdx, idx: -1 });
+  function handleSelectGroup() {
+    selectGroup(rowIdx);
   }
 
   return (
-    <div
-      role="row"
-      aria-level={level}
-      aria-expanded={isExpanded}
-      className={clsx(
-        rowClassname,
-        groupRowClassname,
-        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`, {
-          [groupRowSelectedClassname]: selectedCellIdx === -1 // Select row if there is no selected cell
-        }
-      )}
-      style={getRowStyle(gridRowStart)}
-      onClick={selectGroup}
-      {...props}
-    >
-      {viewportColumns.map(column => (
-        <GroupCell<R, SR>
-          key={column.key}
-          id={id}
-          rowIdx={rowIdx}
-          groupKey={groupKey}
-          childRows={childRows}
-          isExpanded={isExpanded}
-          isRowSelected={isRowSelected}
-          isCellSelected={selectedCellIdx === column.idx}
-          column={column}
-          groupColumnIndex={idx}
-          selectRow={selectRow}
-          toggleGroup={toggleGroup}
-        />
-      ))}
-    </div>
+    <RowSelectionProvider value={isRowSelected}>
+      <div
+        role="row"
+        aria-level={level}
+        aria-expanded={isExpanded}
+        ref={ref}
+        tabIndex={tabIndex}
+        className={clsx(
+          rowClassname,
+          groupRowClassname,
+          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+          className
+        )}
+        onClick={handleSelectGroup}
+        style={getRowStyle(gridRowStart)}
+        {...props}
+      >
+        {viewportColumns.map((column) => (
+          <GroupCell
+            key={column.key}
+            id={id}
+            groupKey={groupKey}
+            childRows={childRows}
+            isExpanded={isExpanded}
+            isCellSelected={selectedCellIdx === column.idx}
+            column={column}
+            row={row}
+            groupColumnIndex={idx}
+            toggleGroup={toggleGroup}
+          />
+        ))}
+      </div>
+    </RowSelectionProvider>
   );
 }
 

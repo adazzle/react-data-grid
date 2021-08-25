@@ -4,7 +4,7 @@ import { css } from '@linaria/core';
 
 import { Row } from '../../../../src';
 import type { RowRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../useCombinedRefs';
+import { useCombinedRefs } from '../../../../src/hooks';
 
 const rowDraggingClassname = css`
   opacity: 0.5;
@@ -18,7 +18,7 @@ interface DraggableRowRenderProps<R, SR> extends RowRendererProps<R, SR> {
   onRowReorder: (sourceIndex: number, targetIndex: number) => void;
 }
 
-export function DraggableRowRenderer<R, SR = unknown>({
+export function DraggableRowRenderer<R, SR>({
   rowIdx,
   isRowSelected,
   className,
@@ -28,7 +28,7 @@ export function DraggableRowRenderer<R, SR = unknown>({
   const [{ isDragging }, drag] = useDrag({
     type: 'ROW_DRAG',
     item: { index: rowIdx },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
   });
@@ -38,19 +38,16 @@ export function DraggableRowRenderer<R, SR = unknown>({
     drop({ index }: { index: number }) {
       onRowReorder(index, rowIdx);
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
     })
   });
 
-  className = clsx(
-    className,
-    {
-      [rowDraggingClassname]: isDragging,
-      [rowOverClassname]: isOver
-    }
-  );
+  className = clsx(className, {
+    [rowDraggingClassname]: isDragging,
+    [rowOverClassname]: isOver
+  });
 
   return (
     <Row

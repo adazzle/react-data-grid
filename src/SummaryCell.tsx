@@ -1,9 +1,13 @@
 import { memo } from 'react';
 
 import { getCellStyle, getCellClassname } from './utils';
-import type { CellRendererProps } from './types';
+import type { CalculatedColumn, CellRendererProps } from './types';
+import { useRovingCellRef } from './hooks';
 
-type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'column' | 'colSpan'>;
+interface SharedCellRendererProps<R, SR>
+  extends Pick<CellRendererProps<R, SR>, 'column' | 'colSpan' | 'isCellSelected'> {
+  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
+}
 
 interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
@@ -12,24 +16,39 @@ interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
 
 function SummaryCell<R, SR>({
   column,
+  colSpan,
   row,
   bottom,
-  colSpan
+  isCellSelected,
+  selectCell
 }: SummaryCellProps<R, SR>) {
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
-  const className = getCellClassname(column,
+  const className = getCellClassname(
+    column,
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
+
+  function onClick() {
+    selectCell(row, column);
+  }
 
   return (
     <div
       role="gridcell"
       aria-colindex={column.idx + 1}
       aria-colspan={colSpan}
+      aria-selected={isCellSelected}
+      ref={ref}
+      tabIndex={tabIndex}
       className={className}
       style={{ ...getCellStyle(column, colSpan), bottom }}
+      onClick={onClick}
+      onFocus={onFocus}
     >
-      {SummaryFormatter && <SummaryFormatter column={column} row={row} />}
+      {SummaryFormatter && (
+        <SummaryFormatter column={column} row={row} isCellSelected={isCellSelected} />
+      )}
     </div>
   );
 }

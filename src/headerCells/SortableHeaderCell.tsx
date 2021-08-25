@@ -1,10 +1,14 @@
 import { css } from '@linaria/core';
-import type { HeaderCellProps } from '../HeaderCell';
-import type { SortDirection } from '../types';
+import { useFocusRef } from '../hooks';
+import type { HeaderRendererProps } from '../types';
 
 const headerSortCell = css`
   cursor: pointer;
   display: flex;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const headerSortCellClassname = `rdg-header-sort-cell ${headerSortCell}`;
@@ -18,11 +22,19 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-type SharedHeaderCellProps<R, SR> = Pick<HeaderCellProps<R, SR>,
-  | 'column'
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
+const arrow = css`
+  fill: currentColor;
+
+  > path {
+    transition: d 0.1s;
+  }
+`;
+
+const arrowClassname = `rdg-sort-arrow ${arrow}`;
+
+type SharedHeaderCellProps<R, SR> = Pick<
+  HeaderRendererProps<R, SR>,
+  'sortDirection' | 'onSort' | 'priority' | 'isCellSelected'
 >;
 
 interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
@@ -30,42 +42,43 @@ interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
 }
 
 export default function SortableHeaderCell<R, SR>({
-  column,
   onSort,
-  sortColumn,
   sortDirection,
-  children
+  priority,
+  children,
+  isCellSelected
 }: Props<R, SR>) {
-  sortDirection = sortColumn === column.key && sortDirection || 'NONE';
-  let sortText = '';
-  if (sortDirection === 'ASC') {
-    sortText = '\u25B2';
-  } else if (sortDirection === 'DESC') {
-    sortText = '\u25BC';
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
+    if (event.key === ' ' || event.key === 'Enter') {
+      // stop propagation to prevent scrolling
+      event.preventDefault();
+      onSort(event.ctrlKey || event.metaKey);
+    }
   }
 
-  function onClick() {
-    if (!onSort) return;
-    const { sortDescendingFirst } = column;
-    let direction: SortDirection;
-    switch (sortDirection) {
-      case 'ASC':
-        direction = sortDescendingFirst ? 'NONE' : 'DESC';
-        break;
-      case 'DESC':
-        direction = sortDescendingFirst ? 'ASC' : 'NONE';
-        break;
-      default:
-        direction = sortDescendingFirst ? 'DESC' : 'ASC';
-        break;
-    }
-    onSort(column.key, direction);
+  function handleClick(event: React.MouseEvent<HTMLSpanElement>) {
+    onSort(event.ctrlKey || event.metaKey);
   }
 
   return (
-    <span className={headerSortCellClassname} onClick={onClick}>
+    <span
+      ref={ref}
+      tabIndex={tabIndex}
+      className={headerSortCellClassname}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+    >
       <span className={headerSortNameClassname}>{children}</span>
-      <span>{sortText}</span>
+      <span>
+        {sortDirection !== undefined && (
+          <svg viewBox="0 0 12 8" width="12" height="8" className={arrowClassname} aria-hidden>
+            <path d={sortDirection === 'ASC' ? 'M0 8 6 0 12 8' : 'M0 0 6 8 12 0'} />
+          </svg>
+        )}
+        {priority}
+      </span>
     </span>
   );
 }

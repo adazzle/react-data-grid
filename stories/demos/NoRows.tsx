@@ -1,8 +1,16 @@
-import DataGrid from '../../src';
+import { useState } from 'react';
+import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
 
 function EmptyRowsRenderer() {
-  return <div style={{ textAlign: 'center' }}>Nothing to show <span lang="ja" title="ショボーン">(´・ω・`)</span></div>;
+  return (
+    <div style={{ textAlign: 'center' }}>
+      Nothing to show{' '}
+      <span lang="ja" title="ショボーン">
+        (´・ω・`)
+      </span>
+    </div>
+  );
 }
 
 interface Row {
@@ -12,6 +20,7 @@ interface Row {
 }
 
 const columns: readonly Column<Row>[] = [
+  SelectColumn,
   { key: 'id', name: 'ID' },
   { key: 'title', name: 'Title' },
   { key: 'count', name: 'Count' }
@@ -19,12 +28,21 @@ const columns: readonly Column<Row>[] = [
 
 const rows: readonly Row[] = [];
 
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
 export function NoRows() {
+  const [selectedRows, onSelectedRowsChange] = useState((): ReadonlySet<number> => new Set());
+
   return (
     <DataGrid
       columns={columns}
       rows={rows}
-      emptyRowsRenderer={EmptyRowsRenderer}
+      noRowsFallback={<EmptyRowsRenderer />}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={onSelectedRowsChange}
+      rowKeyGetter={rowKeyGetter}
       className="small-grid"
     />
   );

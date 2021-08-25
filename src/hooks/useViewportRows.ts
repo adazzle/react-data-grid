@@ -1,7 +1,15 @@
 import { useMemo } from 'react';
-import type { GroupRow, GroupByDictionary, RowHeightArgs } from '../types';
+import { floor, max, min } from '../utils';
+import type { GroupRow, RowHeightArgs } from '../types';
 
-const RENDER_BACTCH_SIZE = 8;
+type GroupByDictionary<TRow> = Record<
+  string,
+  {
+    readonly childRows: readonly TRow[];
+    readonly childGroups: readonly TRow[] | Readonly<GroupByDictionary<TRow>>;
+    readonly startRowIndex: number;
+  }
+>;
 
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
@@ -9,12 +17,15 @@ interface ViewportRowsArgs<R> {
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
-  rowGrouper?: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
-  expandedGroupIds?: ReadonlySet<unknown>;
+  rowGrouper:
+    | ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>)
+    | undefined
+    | null;
+  expandedGroupIds: ReadonlySet<unknown> | undefined | null;
   enableVirtualization: boolean;
 }
 
-// https://github.com/microsoft/TypeScript/issues/41808
+// TODO: https://github.com/microsoft/TypeScript/issues/41808
 function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
   return Array.isArray(arr);
 }
@@ -30,16 +41,21 @@ export function useViewportRows<R>({
   enableVirtualization
 }: ViewportRowsArgs<R>) {
   const [groupedRows, rowsCount] = useMemo(() => {
-    if (groupBy.length === 0 || !rowGrouper) return [undefined, rawRows.length];
+    if (groupBy.length === 0 || rowGrouper == null) return [undefined, rawRows.length];
 
-    const groupRows = (rows: readonly R[], [groupByKey, ...remainingGroupByKeys]: readonly string[], startRowIndex: number): [GroupByDictionary<R>, number] => {
+    const groupRows = (
+      rows: readonly R[],
+      [groupByKey, ...remainingGroupByKeys]: readonly string[],
+      startRowIndex: number
+    ): [Readonly<GroupByDictionary<R>>, number] => {
       let groupRowsCount = 0;
       const groups: GroupByDictionary<R> = {};
       for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
         // Recursively group each parent group
-        const [childGroups, childRowsCount] = remainingGroupByKeys.length === 0
-          ? [childRows, childRows.length]
-          : groupRows(childRows, remainingGroupByKeys, startRowIndex + groupRowsCount + 1); // 1 for parent row
+        const [childGroups, childRowsCount] =
+          remainingGroupByKeys.length === 0
+            ? [childRows, childRows.length]
+            : groupRows(childRows, remainingGroupByKeys, startRowIndex + groupRowsCount + 1); // 1 for parent row
         groups[key] = { childRows, childGroups, startRowIndex: startRowIndex + groupRowsCount };
         groupRowsCount += childRowsCount + 1; // 1 for parent row
       }
@@ -50,12 +66,19 @@ export function useViewportRows<R>({
     return groupRows(rawRows, groupBy, 0);
   }, [groupBy, rowGrouper, rawRows]);
 
-  const [rows, isGroupRow] = useMemo(() => {
+  const [rows, isGroupRow] = useMemo((): [
+    ReadonlyArray<R | GroupRow<R>>,
+    (row: R | GroupRow<R>) => row is GroupRow<R>
+  ] => {
     const allGroupRows = new Set<unknown>();
     if (!groupedRows) return [rawRows, isGroupRow];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
-    const expandGroup = (rows: GroupByDictionary<R> | readonly R[], parentId: string | undefined, level: number): void => {
+    const expandGroup = (
+      rows: GroupByDictionary<R> | readonly R[],
+      parentId: string | undefined,
+      level: number
+    ): void => {
       if (isReadonlyArray(rows)) {
         flattenedRows.push(...rows);
         return;
@@ -101,7 +124,7 @@ export function useViewportRows<R>({
         gridTemplateRows: ` repeat(${rows.length}, ${rowHeight}px)`,
         getRowTop: (rowIdx: number) => rowIdx * rowHeight,
         getRowHeight: () => rowHeight,
-        findRowIdx: (offset: number) => Math.floor(offset / rowHeight)
+        findRowIdx: (offset: number) => floor(offset / rowHeight)
       };
     }
 
@@ -109,7 +132,7 @@ export function useViewportRows<R>({
     let gridTemplateRows = ' ';
     // Calcule the height of all the rows upfront. This can cause performance issues
     // and we can consider using a similar approach as react-window
-    // https://github.com/bvaughn/react-window/blob/master/src/VariableSizeList.js#L68
+    // https://github.com/bvaughn/react-window/blob/b0a470cc264e9100afcaa1b78ed59d88f7914ad4/src/VariableSizeList.js#L68
     const rowPositions = rows.map((row: R | GroupRow<R>) => {
       const currentRowHeight = isGroupRow(row)
         ? rowHeight({ type: 'GROUP', row })
@@ -121,7 +144,7 @@ export function useViewportRows<R>({
     });
 
     const validateRowIdx = (rowIdx: number) => {
-      return Math.max(0, Math.min(rows.length - 1, rowIdx));
+      return max(0, min(rows.length - 1, rowIdx));
     };
 
     return {
@@ -133,7 +156,7 @@ export function useViewportRows<R>({
         let start = 0;
         let end = rowPositions.length - 1;
         while (start <= end) {
-          const middle = start + Math.floor((end - start) / 2);
+          const middle = start + floor((end - start) / 2);
           const currentOffset = rowPositions[middle].top;
 
           if (currentOffset === offset) return middle;
@@ -168,9 +191,9 @@ export function useViewportRows<R>({
 
   const overscanThreshold = 4;
   const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = Math.min(rows.length - 1, findRowIdx(scrollTop + clientHeight));
-  const rowOverscanStartIdx = Math.max(0, Math.floor((rowVisibleStartIdx - overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
-  const rowOverscanEndIdx = Math.min(rows.length - 1, Math.ceil((rowVisibleEndIdx + overscanThreshold) / RENDER_BACTCH_SIZE) * RENDER_BACTCH_SIZE);
+  const rowVisibleEndIdx = findRowIdx(scrollTop + clientHeight);
+  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
+  const rowOverscanEndIdx = min(rows.length - 1, rowVisibleEndIdx + overscanThreshold);
 
   return {
     rowOverscanStartIdx,

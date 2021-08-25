@@ -7,14 +7,14 @@ import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 
 const highlightClassname = css`
-.rdg-cell {
-  background-color: #9370db;
-  color: white;
-}
+  .rdg-cell {
+    background-color: #9370db;
+    color: white;
+  }
 
-&:hover .rdg-cell {
-  background-color: #800080;
-}
+  &:hover .rdg-cell {
+    background-color: #800080;
+  }
 `;
 
 const loadMoreRowsClassname = css`
@@ -190,7 +190,7 @@ function isAtBottom(event: React.UIEvent<HTMLDivElement>): boolean {
 }
 
 function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const newRows: Row[] = [];
 
     for (let i = 0; i < newRowsCount; i++) {
@@ -203,19 +203,27 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
 
 export function AllFeatures() {
   const [rows, setRows] = useState(() => createRows(2000));
-  const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
-    return targetRows.map(row => ({ ...row, [columnKey as keyof Row]: sourceRow[columnKey as keyof Row] }));
+  function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
+    return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
   }
 
-  function handlePaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>): Row {
+  function handlePaste({
+    sourceColumnKey,
+    sourceRow,
+    targetColumnKey,
+    targetRow
+  }: PasteEvent<Row>): Row {
     const incompatibleColumns = ['email', 'zipCode', 'date'];
     if (
-      sourceColumnKey === 'avatar'
-      || ['id', 'avatar'].includes(targetColumnKey)
-      || ((incompatibleColumns.includes(targetColumnKey) || incompatibleColumns.includes(sourceColumnKey)) && sourceColumnKey !== targetColumnKey)) {
+      sourceColumnKey === 'avatar' ||
+      ['id', 'avatar'].includes(targetColumnKey) ||
+      ((incompatibleColumns.includes(targetColumnKey) ||
+        incompatibleColumns.includes(sourceColumnKey)) &&
+        sourceColumnKey !== targetColumnKey)
+    ) {
       return targetRow;
     }
 
@@ -247,7 +255,7 @@ export function AllFeatures() {
         onScroll={handleScroll}
         onSelectedRowsChange={setSelectedRows}
         className="fill-grid"
-        rowClass={row => row.id.includes('7') ? highlightClassname : undefined}
+        rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
       />
       {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>}
     </>

@@ -1,37 +1,48 @@
 import { cloneElement } from 'react';
 import type { ReactElement } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import XLSX from 'xlsx';
-import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 import type { DataGridProps } from '../../src';
 
-export function exportToCsv<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>, fileName: string) {
-  const { head, body, foot } = getGridContent(gridElement);
+export async function exportToCsv<R, SR>(
+  gridElement: ReactElement<DataGridProps<R, SR>>,
+  fileName: string
+) {
+  const { head, body, foot } = await getGridContent(gridElement);
   const content = [...head, ...body, ...foot]
-    .map(cells => cells.map(serialiseCellValue).join(','))
+    .map((cells) => cells.map(serialiseCellValue).join(','))
     .join('\n');
 
   downloadFile(fileName, new Blob([content], { type: 'text/csv;charset=utf-8;' }));
 }
 
-export function exportToXlsx<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>, fileName: string) {
-  const { head, body, foot } = getGridContent(gridElement);
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet([...head, ...body, ...foot]);
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
-  XLSX.writeFile(wb, fileName);
+export async function exportToXlsx<R, SR>(
+  gridElement: ReactElement<DataGridProps<R, SR>>,
+  fileName: string
+) {
+  const [{ utils, writeFile }, { head, body, foot }] = await Promise.all([
+    import('xlsx'),
+    getGridContent(gridElement)
+  ]);
+  const wb = utils.book_new();
+  const ws = utils.aoa_to_sheet([...head, ...body, ...foot]);
+  utils.book_append_sheet(wb, ws, 'Sheet 1');
+  writeFile(wb, fileName);
 }
 
-
-export function exportToPdf<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>, fileName: string) {
+export async function exportToPdf<R, SR>(
+  gridElement: ReactElement<DataGridProps<R, SR>>,
+  fileName: string
+) {
+  const [{ jsPDF }, autoTable, { head, body, foot }] = await Promise.all([
+    import('jspdf'),
+    (await import('jspdf-autotable')).default,
+    await getGridContent(gridElement)
+  ]);
   const doc = new jsPDF({
     orientation: 'l',
     unit: 'px'
   });
 
-  const { head, body, foot } = getGridContent(gridElement);
   autoTable(doc, {
     head,
     body,
@@ -43,11 +54,14 @@ export function exportToPdf<R, SR>(gridElement: ReactElement<DataGridProps<R, SR
   doc.save(fileName);
 }
 
-function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) {
+async function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) {
+  const { renderToStaticMarkup } = await import('react-dom/server');
   const grid = document.createElement('div');
-  grid.innerHTML = renderToStaticMarkup(cloneElement(gridElement, {
-    enableVirtualization: false
-  }));
+  grid.innerHTML = renderToStaticMarkup(
+    cloneElement(gridElement, {
+      enableVirtualization: false
+    })
+  );
 
   return {
     head: getRows('.rdg-header-row'),
@@ -56,12 +70,10 @@ function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) 
   };
 
   function getRows(selector: string) {
-    return Array.from(
-      grid.querySelectorAll<HTMLDivElement>(selector)
-    ).map(gridRow => {
-      return Array.from(
-        gridRow.querySelectorAll<HTMLDivElement>('.rdg-cell')
-      ).map(gridCell => gridCell.innerText);
+    return Array.from(grid.querySelectorAll<HTMLDivElement>(selector)).map((gridRow) => {
+      return Array.from(gridRow.querySelectorAll<HTMLDivElement>('.rdg-cell')).map(
+        (gridCell) => gridCell.innerText
+      );
     });
   }
 }

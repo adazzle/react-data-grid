@@ -2,11 +2,15 @@ import { useMemo } from 'react';
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
 
-type Row = undefined;
-const rows: readonly Row[] = Array(1000);
+type Row = number;
+const rows: readonly Row[] = [...Array(1000).keys()];
 
 function CellFormatter(props: FormatterProps<Row>) {
-  return <>{props.column.key}&times;{props.rowIdx}</>;
+  return (
+    <>
+      {props.column.key}&times;{props.row}
+    </>
+  );
 }
 
 export function MillionCells() {
@@ -27,14 +31,7 @@ export function MillionCells() {
     return columns;
   }, []);
 
-  return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowHeight={22}
-      className="fill-grid"
-    />
-  );
+  return <DataGrid columns={columns} rows={rows} rowHeight={22} className="fill-grid" />;
 }
 
 MillionCells.storyName = 'A Million Cells';

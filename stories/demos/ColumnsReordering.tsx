@@ -1,10 +1,10 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
 import DataGrid from '../../src';
-import type { Column, HeaderRendererProps, SortDirection } from '../../src';
+import type { Column, HeaderRendererProps, SortColumn } from '../../src';
 
 interface Row {
   id: number;
@@ -66,10 +66,9 @@ function createColumns(): Column<Row>[] {
 export function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
-  const [[sortColumn, sortDirection], setSort] = useState<[string, SortDirection]>(['task', 'NONE']);
-
-  const handleSort = useCallback((columnKey: string, direction: SortDirection) => {
-    setSort([columnKey, direction]);
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+  const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
+    setSortColumns(sortColumns.slice(-1));
   }, []);
 
   const draggableColumns = useMemo(() => {
@@ -78,8 +77,8 @@ export function ColumnsReordering() {
     }
 
     function handleColumnsReorder(sourceKey: string, targetKey: string) {
-      const sourceColumnIndex = columns.findIndex(c => c.key === sourceKey);
-      const targetColumnIndex = columns.findIndex(c => c.key === targetKey);
+      const sourceColumnIndex = columns.findIndex((c) => c.key === sourceKey);
+      const targetColumnIndex = columns.findIndex((c) => c.key === targetKey);
       const reorderedColumns = [...columns];
 
       reorderedColumns.splice(
@@ -91,40 +90,39 @@ export function ColumnsReordering() {
       setColumns(reorderedColumns);
     }
 
-    return columns.map(c => {
+    return columns.map((c) => {
       if (c.key === 'id') return c;
       return { ...c, headerRenderer: HeaderRenderer };
     });
   }, [columns]);
 
   const sortedRows = useMemo((): readonly Row[] => {
-    if (sortDirection === 'NONE') return rows;
+    if (sortColumns.length === 0) return rows;
+    const { columnKey, direction } = sortColumns[0];
 
     let sortedRows: Row[] = [...rows];
 
-    switch (sortColumn) {
+    switch (columnKey) {
       case 'task':
       case 'priority':
       case 'issueType':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn].localeCompare(b[sortColumn]));
+        sortedRows = sortedRows.sort((a, b) => a[columnKey].localeCompare(b[columnKey]));
         break;
       case 'complete':
-        sortedRows = sortedRows.sort((a, b) => a[sortColumn] - b[sortColumn]);
+        sortedRows = sortedRows.sort((a, b) => a[columnKey] - b[columnKey]);
         break;
       default:
     }
-
-    return sortDirection === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortDirection, sortColumn]);
+    return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
+  }, [rows, sortColumns]);
 
   return (
     <DndProvider backend={HTML5Backend}>
       <DataGrid
         columns={draggableColumns}
         rows={sortedRows}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSort={handleSort}
+        sortColumns={sortColumns}
+        onSortColumnsChange={onSortColumnsChange}
       />
     </DndProvider>
   );

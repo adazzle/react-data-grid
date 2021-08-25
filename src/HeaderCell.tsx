@@ -1,13 +1,16 @@
 import { css } from '@linaria/core';
 
-import type { CalculatedColumn, SortDirection } from './types';
+import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle, getCellClassname } from './utils';
+import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
+  touch-action: none;
+
   &::after {
-    content: "";
+    content: '';
     cursor: col-resize;
     position: absolute;
     top: 0;
@@ -19,41 +22,46 @@ const cellResizable = css`
 
 const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
 
-function getAriaSort(sortDirection?: SortDirection) {
-  switch (sortDirection) {
-    case 'ASC':
-      return 'ascending';
-    case 'DESC':
-      return 'descending';
-    default:
-      return 'none';
-  }
-}
-
-type SharedHeaderRowProps<R, SR> = Pick<HeaderRowProps<R, SR>,
-  | 'sortColumn'
-  | 'sortDirection'
-  | 'onSort'
+type SharedHeaderRowProps<R, SR> = Pick<
+  HeaderRowProps<R, SR, React.Key>,
+  | 'sortColumns'
+  | 'onSortColumnsChange'
   | 'allRowsSelected'
+  | 'onAllRowsSelectionChange'
+  | 'selectCell'
+  | 'onColumnResize'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
-  colSpan?: number;
-  onResize: (column: CalculatedColumn<R, SR>, width: number) => void;
-  onAllRowsSelectionChange: (checked: boolean) => void;
+  colSpan: number | undefined;
+  isCellSelected: boolean;
 }
 
 export default function HeaderCell<R, SR>({
   column,
   colSpan,
-  onResize,
+  isCellSelected,
+  onColumnResize,
   allRowsSelected,
   onAllRowsSelectionChange,
-  sortColumn,
-  sortDirection,
-  onSort
+  sortColumns,
+  onSortColumnsChange,
+  selectCell
 }: HeaderCellProps<R, SR>) {
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
+  const sortColumn =
+    sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
+  const sortDirection = sortColumn?.direction;
+  const priority = sortColumn !== undefined && sortColumns!.length > 1 ? sortIndex! + 1 : undefined;
+  const ariaSort =
+    sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
+
+  const className = getCellClassname(column, column.headerCellClass, {
+    [cellResizableClassname]: column.resizable
+  });
+
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
@@ -63,31 +71,76 @@ export default function HeaderCell<R, SR>({
     const { right } = currentTarget.getBoundingClientRect();
     const offset = right - event.clientX;
 
-    if (offset > 11) { // +1px to account for the border size
+    if (offset > 11) {
+      // +1px to account for the border size
       return;
     }
 
     function onPointerMove(event: PointerEvent) {
-      if (event.pointerId !== pointerId) return;
       if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        onPointerUp(event);
+        // handle case where the pointer `up`'d outside an iframe
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=606896
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=693494
+        onPointerUp();
         return;
       }
+
       const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
       if (width > 0) {
-        onResize(column, width);
+        onColumnResize(column, width);
       }
     }
 
-    function onPointerUp(event: PointerEvent) {
-      if (event.pointerId !== pointerId) return;
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
+    function onPointerUp() {
+      currentTarget.removeEventListener('pointermove', onPointerMove);
+      currentTarget.removeEventListener('pointerup', onPointerUp);
     }
 
     event.preventDefault();
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
+    currentTarget.setPointerCapture(pointerId);
+    currentTarget.addEventListener('pointermove', onPointerMove);
+    currentTarget.addEventListener('pointerup', onPointerUp);
+  }
+
+  function onSort(ctrlClick: boolean) {
+    if (onSortColumnsChange == null) return;
+    const { sortDescendingFirst } = column;
+    if (sortColumn === undefined) {
+      // not currently sorted
+      const nextSort: SortColumn = {
+        columnKey: column.key,
+        direction: sortDescendingFirst ? 'DESC' : 'ASC'
+      };
+      onSortColumnsChange(sortColumns && ctrlClick ? [...sortColumns, nextSort] : [nextSort]);
+    } else {
+      let nextSortColumn: SortColumn | undefined;
+      if (
+        (sortDescendingFirst && sortDirection === 'DESC') ||
+        (!sortDescendingFirst && sortDirection === 'ASC')
+      ) {
+        nextSortColumn = {
+          columnKey: column.key,
+          direction: sortDirection === 'ASC' ? 'DESC' : 'ASC'
+        };
+      }
+      if (ctrlClick) {
+        const nextSortColumns = [...sortColumns!];
+        if (nextSortColumn) {
+          // swap direction
+          nextSortColumns[sortIndex!] = nextSortColumn;
+        } else {
+          // remove sort
+          nextSortColumns.splice(sortIndex!, 1);
+        }
+        onSortColumnsChange(nextSortColumns);
+      } else {
+        onSortColumnsChange(nextSortColumn ? [nextSortColumn] : []);
+      }
+    }
+  }
+
+  function onClick() {
+    selectCell(column);
   }
 
   function getCell() {
@@ -95,11 +148,12 @@ export default function HeaderCell<R, SR>({
       return (
         <column.headerRenderer
           column={column}
-          sortColumn={sortColumn}
           sortDirection={sortDirection}
+          priority={priority}
           onSort={onSort}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={onAllRowsSelectionChange}
+          isCellSelected={isCellSelected}
         />
       );
     }
@@ -107,10 +161,10 @@ export default function HeaderCell<R, SR>({
     if (column.sortable) {
       return (
         <SortableHeaderCell
-          column={column}
           onSort={onSort}
-          sortColumn={sortColumn}
           sortDirection={sortDirection}
+          priority={priority}
+          isCellSelected={isCellSelected}
         >
           {column.name}
         </SortableHeaderCell>
@@ -120,18 +174,19 @@ export default function HeaderCell<R, SR>({
     return column.name;
   }
 
-  const className = getCellClassname(column, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable
-  });
-
   return (
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-sort={sortColumn === column.key ? getAriaSort(sortDirection) : undefined}
+      aria-selected={isCellSelected}
+      aria-sort={ariaSort}
       aria-colspan={colSpan}
+      ref={ref}
+      tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
+      onFocus={onFocus}
+      onClick={onClick}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}

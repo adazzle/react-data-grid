@@ -1,5 +1,4 @@
 import { css } from '@linaria/core';
-import { cell } from './cell';
 
 export const row = css`
   display: contents;
@@ -9,7 +8,7 @@ export const row = css`
     background-color: var(--row-hover-background-color);
   }
 
-  &[aria-selected="true"] {
+  &[aria-selected='true'] {
     background-color: var(--row-selected-background-color);
 
     &:hover {
@@ -19,13 +18,3 @@ export const row = css`
 `;
 
 export const rowClassname = `rdg-row ${row}`;
-
-const summaryRow = css`
-  z-index: 3;
-  > .${cell} {
-    position: sticky;
-    border-top: 2px solid var(--summary-border-color);
-  }
-`;
-
-export const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
