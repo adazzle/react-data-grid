@@ -55,8 +55,6 @@ function toggleSelection(rowIdx: number, shiftKey = false) {
   userEvent.click(within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select'), { shiftKey });
 }
 
-// function toggleGroupSelection
-
 test('toggle selection when checkbox is clicked', () => {
   setup();
   toggleSelection(0);
