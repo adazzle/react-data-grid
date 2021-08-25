@@ -28,14 +28,14 @@ describe('colSpan', () => {
           if (args.type === 'HEADER' && key === '8') {
             return 3;
           }
-          if (args.type === 'SUMMARY' && key === '7') {
+          if (args.type === 'SUMMARY' && key === '7' && args.row === 1) {
             return 2;
           }
           return undefined;
         }
       });
     }
-    setup({ columns, rows, summaryRows: [123] });
+    setup({ columns, rows, summaryRows: [1, 2] });
   }
 
   it('should merges cells', () => {
@@ -78,10 +78,24 @@ describe('colSpan', () => {
 
     // summary row
     expect(getCellsAtRowIndex(10)).toHaveLength(14);
+    expect(getCellsAtRowIndex(11)).toHaveLength(15);
   });
 
   it('should navigate between merged cells', () => {
     setupColSpanGrid();
+    // header row
+    userEvent.click(getHeaderCells()[7]);
+    validateCellPosition(7, 0);
+    userEvent.keyboard('{arrowright}');
+    validateCellPosition(8, 0);
+    userEvent.keyboard('{arrowright}');
+    validateCellPosition(11, 0);
+    userEvent.keyboard('{arrowright}');
+    validateCellPosition(12, 0);
+    userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
+    validateCellPosition(7, 0);
+
+    // viewport rows
     userEvent.click(getCellsAtRowIndex(1)[1]);
     validateCellPosition(1, 2);
     userEvent.keyboard('{arrowright}');
@@ -119,6 +133,18 @@ describe('colSpan', () => {
     validateCellPosition(0, 10);
     userEvent.tab({ shift: true });
     validateCellPosition(12, 9);
+
+    // summary rows
+    userEvent.click(getCellsAtRowIndex(10)[6]);
+    validateCellPosition(6, 11);
+    userEvent.keyboard('{arrowright}');
+    validateCellPosition(7, 11);
+    userEvent.keyboard('{arrowright}');
+    validateCellPosition(9, 11);
+    userEvent.keyboard('{arrowright}');
+    validateCellPosition(10, 11);
+    userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
+    validateCellPosition(6, 11);
   });
 
   it('should scroll to the merged cell when selected', () => {
