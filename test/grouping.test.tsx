@@ -264,9 +264,16 @@ test('should select rows in a group', () => {
   expect(selectedRows[0]).toHaveAttribute('aria-rowindex', '6');
 
   // select child group
-  userEvent.click(within(groupCell2.parentElement!).getByLabelText('Select Group'));
+  const checkbox = within(groupCell2.parentElement!).getByLabelText('Select Group');
+  userEvent.click(checkbox);
   selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);
+
+  // unselect child group
+  userEvent.click(checkbox);
+  selectedRows = screen.getAllByRole('row', { selected: true });
+  // eslint-disable-next-line jest-dom/prefer-in-document
+  expect(selectedRows).toHaveLength(1);
 });
 
 test('cell navigation in a treegrid', () => {
