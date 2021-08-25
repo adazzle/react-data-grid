@@ -126,19 +126,34 @@ test('should cancel copy/paste on escape', () => {
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
 });
 
+test('should not allow copy on header or summary cells', () => {
+  setup();
+  userEvent.tab();
+  copySelectedCell();
+  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
+  userEvent.keyboard('{arrowdown}');
+  pasteSelectedCell();
+  expect(getSelectedCell()).toHaveTextContent('a1');
+  expect(onPasteSpy).not.toHaveBeenCalled();
+  userEvent.keyboard('{ctrl}{end}');
+  copySelectedCell();
+  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
+  userEvent.keyboard('{arrowup}');
+  pasteSelectedCell();
+  expect(getSelectedCell()).toHaveTextContent('a3');
+  expect(onPasteSpy).not.toHaveBeenCalled();
+});
+
 test('should not allow paste on header or summary cells', () => {
   setup();
   userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
-  expect(getSelectedCell()).toHaveClass(copyCellClassName);
   userEvent.keyboard('{arrowup}');
   pasteSelectedCell();
-  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
   expect(getSelectedCell()).toHaveTextContent('Col');
   expect(onPasteSpy).not.toHaveBeenCalled();
   userEvent.keyboard('{ctrl}{end}');
   pasteSelectedCell();
-  expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
   expect(getSelectedCell()).toHaveTextContent('s1');
   expect(onPasteSpy).not.toHaveBeenCalled();
 });

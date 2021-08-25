@@ -357,8 +357,7 @@ function DataGrid<R, SR, K extends Key>(
   });
   const selectSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      if (!summaryRows) return;
-      const rowIdx = summaryRows.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
+      const rowIdx = summaryRows!.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
       selectCell({ rowIdx, idx: column.idx });
     }
   );
