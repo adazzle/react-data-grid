@@ -71,7 +71,7 @@ export function getSelectedCellColSpan<R, SR>({
   if (summaryRows) {
     return getColSpan(column, lastFrozenColumnIndex, {
       type: 'SUMMARY',
-      row: summaryRows[rowIdx]
+      row: summaryRows[rowIdx - rows.length]
     });
   }
 
