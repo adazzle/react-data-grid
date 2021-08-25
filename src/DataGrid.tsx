@@ -10,7 +10,12 @@ import {
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  focusSinkClassname,
+  viewportHeightClassname
+} from './style';
 import {
   useGridDimensions,
   useCalculatedColumns,
@@ -1096,13 +1101,18 @@ function DataGrid<R, SR, K extends Key>(
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
+      className={clsx(
+        rootClassname,
+        { [viewportDraggingClassname]: isDragging, [viewportHeightClassname]: rows.length },
+        className
+      )}
       style={
         {
           ...style,
           '--header-row-height': `${headerRowHeight}px`,
           '--row-width': `${totalColumnWidth}px`,
           '--summary-row-height': `${summaryRowHeight}px`,
+          '--total-row-height': `${max(totalRowHeight, clientHeight) - 3}px`,
           ...layoutCssVars
         } as unknown as React.CSSProperties
       }
@@ -1133,7 +1143,6 @@ function DataGrid<R, SR, K extends Key>(
           {!selectedCellIsWithinSelectionBounds && (
             <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
           )}
-          <div style={{ height: max(totalRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
           </RowSelectionChangeProvider>

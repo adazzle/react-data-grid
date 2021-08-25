@@ -82,6 +82,14 @@ const root = css`
   }
 `;
 
+export const viewportHeightClassname = css`
+  &::before {
+    content: '';
+    display: inline-block;
+    height: var(--total-row-height);
+  }
+`;
+
 export const rootClassname = `rdg ${root}`;
 
 export const focusSinkClassname = css`
