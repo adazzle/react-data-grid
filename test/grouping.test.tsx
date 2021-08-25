@@ -328,6 +328,18 @@ test('cell navigation in a treegrid', () => {
     idx: -1
   });
 
+  userEvent.keyboard('{end}');
+  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
+    rowIdx: 3,
+    idx: -1
+  });
+
+  userEvent.keyboard('{home}');
+  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
+    rowIdx: 0,
+    idx: -1
+  });
+
   // collpase parent group
   userEvent.keyboard('{arrowleft}');
   expect(screen.queryByRole('gridcell', { name: '2021' })).not.toBeInTheDocument();
