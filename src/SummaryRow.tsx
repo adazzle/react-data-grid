@@ -1,10 +1,12 @@
 import { memo } from 'react';
+import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import { cell, rowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
-import type { RowRendererProps } from './types';
+import type { CalculatedColumn, RowRendererProps } from './types';
+import { useRovingRowRef } from './hooks';
 
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
@@ -13,6 +15,8 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   row: SR;
   bottom: number;
   lastFrozenColumnIndex: number;
+  selectedCellIdx: number | undefined;
+  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
 
 const summaryRow = css`
@@ -35,8 +39,11 @@ function SummaryRow<R, SR>({
   viewportColumns,
   bottom,
   lastFrozenColumnIndex,
+  selectedCellIdx,
+  selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
+  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
   const cells = [];
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
@@ -45,16 +52,32 @@ function SummaryRow<R, SR>({
       index += colSpan - 1;
     }
 
-    cells.push(<SummaryCell<R, SR> key={column.key} column={column} colSpan={colSpan} row={row} />);
+    const isCellSelected = selectedCellIdx === column.idx;
+
+    cells.push(
+      <SummaryCell<R, SR>
+        key={column.key}
+        column={column}
+        colSpan={colSpan}
+        row={row}
+        isCellSelected={isCellSelected}
+        selectCell={selectCell}
+      />
+    );
   }
 
   return (
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-row-${
-        rowIdx % 2 === 0 ? 'even' : 'odd'
-      } ${summaryRowClassname}`}
+      ref={ref}
+      tabIndex={tabIndex}
+      className={clsx(
+        rowClassname,
+        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+        summaryRowClassname,
+        className
+      )}
       style={{ bottom }}
     >
       {cells}

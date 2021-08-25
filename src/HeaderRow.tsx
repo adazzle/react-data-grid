@@ -1,10 +1,12 @@
 import { memo } from 'react';
+import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
 import { getColSpan } from './utils';
 import type { DataGridProps } from './DataGrid';
+import { useRovingRowRef } from './hooks';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
@@ -16,7 +18,9 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  selectCell: (column: CalculatedColumn<R, SR>) => void;
   lastFrozenColumnIndex: number;
+  selectedCellIdx: number | undefined;
 }
 
 const headerRow = css`
@@ -33,6 +37,11 @@ const headerRow = css`
   background-color: var(--header-background-color);
   font-weight: bold;
   z-index: 3;
+  outline: none;
+
+  &[aria-selected='true'] {
+    box-shadow: inset 0 0 0 2px var(--selection-color);
+  }
 `;
 
 const headerRowClassname = `rdg-header-row ${headerRow}`;
@@ -44,8 +53,12 @@ function HeaderRow<R, SR, K extends React.Key>({
   onColumnResize,
   sortColumns,
   onSortColumnsChange,
-  lastFrozenColumnIndex
+  lastFrozenColumnIndex,
+  selectedCellIdx,
+  selectCell
 }: HeaderRowProps<R, SR, K>) {
+  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
+
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
@@ -59,11 +72,13 @@ function HeaderRow<R, SR, K extends React.Key>({
         key={column.key}
         column={column}
         colSpan={colSpan}
+        isCellSelected={selectedCellIdx === column.idx}
         onColumnResize={onColumnResize}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
+        selectCell={selectCell}
       />
     );
   }
@@ -72,7 +87,9 @@ function HeaderRow<R, SR, K extends React.Key>({
     <div
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
-      className={headerRowClassname}
+      ref={ref}
+      tabIndex={tabIndex}
+      className={clsx(headerRowClassname, className)}
     >
       {cells}
     </div>

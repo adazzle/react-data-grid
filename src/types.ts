@@ -74,6 +74,7 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
 export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
+  isCellSelected: boolean;
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
@@ -104,13 +105,8 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   onSort: (ctrlClick: boolean) => void;
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
+  isCellSelected: boolean;
 }
-
-type SelectCellFn<R, SR> = (
-  row: R,
-  column: CalculatedColumn<R, SR>,
-  enableEditor?: boolean | null
-) => void;
 
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
@@ -150,7 +146,11 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
     | null;
   rowClass: ((row: TRow) => string | undefined | null) | undefined | null;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
-  selectCell: SelectCellFn<TRow, TSummaryRow>;
+  selectCell: (
+    row: TRow,
+    column: CalculatedColumn<TRow, TSummaryRow>,
+    enableEditor?: boolean | null
+  ) => void;
 }
 
 export interface RowsChangeData<R, SR = unknown> {

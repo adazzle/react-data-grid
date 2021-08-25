@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { useRovingRef } from './hooks';
+import { useRovingCellRef } from './hooks';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<
   GroupRowRendererProps<R, SR>,
@@ -28,7 +28,7 @@ function GroupCell<R, SR>({
   groupColumnIndex,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingRef(isCellSelected);
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   function toggleGroup() {
     toggleGroupWrapper(id);
