@@ -1110,6 +1110,12 @@ function DataGrid<R, SR, K extends Key>(
           '--header-row-height': `${headerRowHeight}px`,
           '--summary-row-height': `${summaryRowHeight}px`,
           '--template-rows': templateRows,
+          '--total-row-height': `${
+            Math.max(totalRowHeight, clientHeight) +
+            headerRowHeight +
+            summaryRowsCount * summaryRowHeight
+          }px`,
+          '--total-column-width': `${totalColumnWidth}px`,
           ...layoutCssVars
         } as unknown as React.CSSProperties
       }
@@ -1118,18 +1124,6 @@ function DataGrid<R, SR, K extends Key>(
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
-      <div
-        style={{
-          top: 0,
-          left: 0,
-          height:
-            Math.max(totalRowHeight, clientHeight) +
-            headerRowHeight +
-            summaryRowsCount * summaryRowHeight,
-          width: totalColumnWidth,
-          position: 'absolute'
-        }}
-      />
       <HeaderRow
         columns={viewportColumns}
         onColumnResize={handleColumnResize}

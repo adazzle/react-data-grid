@@ -71,6 +71,15 @@ const root = css`
     box-sizing: inherit;
   }
 
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--total-row-height);
+    width: var(--total-column-width);
+  }
+
   &.rdg-dark {
     --color-scheme: dark;
     ${darkTheme}
