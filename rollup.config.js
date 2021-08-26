@@ -35,7 +35,7 @@ export default {
         return `${hash}${pkg.version.replaceAll('.', '')}`;
       }
     }),
-    postcss({ minimize: true }),
+    postcss({ minimize: true, inject: { insertAt: 'top' } }),
     babel({
       babelHelpers: 'runtime',
       extensions,

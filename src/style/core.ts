@@ -84,16 +84,11 @@ const root = css`
 
 export const rootClassname = `rdg ${root}`;
 
-const focusSink = css`
+export const focusSinkClassname = css`
   position: sticky;
-  top: 0;
-  left: 0;
-  height: 0;
-  width: 0;
+  inset: 0;
   outline: 0;
 `;
-
-export const focusSinkClassname = `rdg-focus-sink ${focusSink}`;
 
 const viewportDragging = css`
   &.${row} {

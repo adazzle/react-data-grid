@@ -8,10 +8,7 @@ const checkboxLabel = css`
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   margin-right: 1px; // align checkbox in row group cell
 `;
 
@@ -57,7 +54,7 @@ const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLa
 
 type SharedInputProps = Pick<
   React.InputHTMLAttributes<HTMLInputElement>,
-  'disabled' | 'tabIndex' | 'onClick' | 'aria-label' | 'aria-labelledby'
+  'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {
@@ -68,7 +65,6 @@ interface SelectCellFormatterProps extends SharedInputProps {
 
 export function SelectCellFormatter({
   value,
-  tabIndex,
   isCellSelected,
   disabled,
   onClick,
@@ -76,7 +72,7 @@ export function SelectCellFormatter({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
-  const inputRef = useFocusRef<HTMLInputElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
@@ -87,9 +83,9 @@ export function SelectCellFormatter({
       <input
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        tabIndex={tabIndex}
-        ref={inputRef}
+        ref={ref}
         type="checkbox"
+        tabIndex={tabIndex}
         className={checkboxInputClassname}
         disabled={disabled}
         checked={value}

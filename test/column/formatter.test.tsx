@@ -1,3 +1,8 @@
+import { StrictMode, useState } from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+import DataGrid from '../../src';
 import type { Column } from '../../src';
 import { setup, getCells } from '../utils';
 
@@ -49,5 +54,36 @@ describe('Custom formatter component', () => {
     const [cell1, cell2] = getCells();
     expect(cell1).toHaveTextContent('#101');
     expect(cell2).toHaveTextContent('No name');
+  });
+
+  it('can update rows', () => {
+    const column: Column<Row> = {
+      key: 'test',
+      name: 'test',
+      formatter(props) {
+        function onClick() {
+          props.onRowChange({ id: props.row.id + 1 });
+        }
+
+        return <button onClick={onClick}>value: {props.row.id}</button>;
+      }
+    };
+
+    function Test() {
+      const [rows, setRows] = useState<readonly Row[]>([{ id: 1 }]);
+
+      return <DataGrid columns={[column]} rows={rows} onRowsChange={setRows} />;
+    }
+
+    render(
+      <StrictMode>
+        <Test />
+      </StrictMode>
+    );
+
+    const [cell] = getCells();
+    expect(cell).toHaveTextContent('value: 1');
+    userEvent.click(screen.getByRole('button'));
+    expect(cell).toHaveTextContent('value: 2');
   });
 });

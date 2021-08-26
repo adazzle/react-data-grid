@@ -31,7 +31,7 @@ jobs:
           npm run build:types
       - name: Test
         run: npm t -- --coverage --colors
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
 
   storybook:
     runs-on: ubuntu-latest

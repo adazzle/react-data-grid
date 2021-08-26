@@ -5,6 +5,7 @@ import { css } from '@linaria/core';
 import DataGrid from '../../src';
 import type { Column } from '../../src';
 import type { HeaderRendererProps, Omit } from '../../src/types';
+import { useFocusRef } from '../../src/hooks';
 
 const rootClassname = css`
   display: flex;
@@ -94,9 +95,10 @@ export function HeaderFilters() {
         name: 'Title',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
+          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+            {({ filters, ...rest }) => (
               <input
+                {...rest}
                 className={filterClassname}
                 value={filters.task}
                 onChange={(e) =>
@@ -115,9 +117,10 @@ export function HeaderFilters() {
         name: 'Priority',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
+          <FilterRenderer<Row, unknown, HTMLSelectElement> {...p}>
+            {({ filters, ...rest }) => (
               <select
+                {...rest}
                 className={filterClassname}
                 value={filters.priority}
                 onChange={(e) =>
@@ -142,9 +145,10 @@ export function HeaderFilters() {
         name: 'Issue Type',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
+          <FilterRenderer<Row, unknown, HTMLSelectElement> {...p}>
+            {({ filters, ...rest }) => (
               <select
+                {...rest}
                 className={filterClassname}
                 value={filters.issueType}
                 onChange={(e) =>
@@ -169,10 +173,11 @@ export function HeaderFilters() {
         name: 'Developer',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
+          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+            {({ filters, ...rest }) => (
               <>
                 <input
+                  {...rest}
                   className={filterClassname}
                   value={filters.developer}
                   onChange={(e) =>
@@ -193,9 +198,10 @@ export function HeaderFilters() {
         name: '% Complete',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer {...p}>
-            {(filters) => (
+          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+            {({ filters, ...rest }) => (
               <input
+                {...rest}
                 type="number"
                 className={filterClassname}
                 value={filters.complete}
@@ -276,17 +282,23 @@ export function HeaderFilters() {
   );
 }
 
-function FilterRenderer<R, SR>({
+function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
+  isCellSelected,
   column,
   children
 }: HeaderRendererProps<R, SR> & {
-  children: (filters: Filter) => React.ReactElement;
+  children: (args: {
+    ref: React.RefObject<T>;
+    tabIndex: number;
+    filters: Filter;
+  }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;
+  const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
   return (
     <>
       <div>{column.name}</div>
-      {filters.enabled && <div>{children(filters)}</div>}
+      {filters.enabled && <div>{children({ ref, tabIndex, filters })}</div>}
     </>
   );
 }

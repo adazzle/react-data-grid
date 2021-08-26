@@ -9,10 +9,10 @@
 [npm-badge]: https://img.shields.io/npm/v/react-data-grid
 [npm-url]: https://www.npmjs.com/package/react-data-grid
 [size-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
-[size-url]: https://bundlephobia.com/result?p=react-data-grid
+[size-url]: https://bundlephobia.com/package/react-data-grid
 [type-badge]: https://img.shields.io/npm/types/react-data-grid
 [codecov-badge]: https://codecov.io/gh/adazzle/react-data-grid/branch/main/graph/badge.svg?token=cvrRSWiz0Q
-[codecov-url]: https://codecov.io/gh/adazzle/react-data-grid
+[codecov-url]: https://app.codecov.io/gh/adazzle/react-data-grid/branch/main
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions
 
@@ -22,7 +22,7 @@
 npm install react-data-grid
 ```
 
-react-data-grid is published as ES2019 modules, you'll probably want to transpile those down to scripts for the browsers you target using [Babel](https://babeljs.io/) and [browserslist](https://github.com/browserslist/browserslist).
+react-data-grid is published as ES2020 modules, you'll probably want to transpile those down to scripts for the browsers you target using [Babel](https://babeljs.io/) and [browserslist](https://github.com/browserslist/browserslist/blob/main/README.md).
 
 <details>
 <summary>Example browserslist configuration file</summary>
@@ -34,7 +34,7 @@ last 2 firefox versions
 last 2 safari versions
 ```
 
-See [documentation](https://github.com/browserslist/browserslist)
+See [documentation](https://github.com/browserslist/browserslist/blob/main/README.md)
 
 </details>
 
@@ -84,7 +84,7 @@ See [documentation](https://babeljs.io/docs/en/)
 }
 ```
 
-See [documentation](https://github.com/babel/babel-loader)
+See [documentation](https://github.com/babel/babel-loader/blob/main/README.md)
 
 </details>
 
@@ -102,7 +102,7 @@ See [documentation](https://github.com/babel/babel-loader)
 }
 ```
 
-See [documentation](https://github.com/rollup/plugins/tree/master/packages/babel)
+See [documentation](https://github.com/rollup/plugins/blob/master/packages/babel/README.md)
 
 </details>
 
