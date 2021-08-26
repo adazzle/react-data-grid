@@ -8,10 +8,7 @@ const checkboxLabel = css`
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   margin-right: 1px; // align checkbox in row group cell
 `;
 
@@ -57,7 +54,7 @@ const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLa
 
 type SharedInputProps = Pick<
   React.InputHTMLAttributes<HTMLInputElement>,
-  'disabled' | 'tabIndex' | 'onClick' | 'aria-label' | 'aria-labelledby'
+  'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {

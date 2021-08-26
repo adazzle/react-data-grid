@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
-import { useRovingRef } from './hooks';
+import { useRovingCellRef } from './hooks';
 
 const cellCopied = css`
   background-color: #ccccff;
@@ -35,7 +35,7 @@ function Cell<R, SR>({
   selectCell,
   ...props
 }: CellRendererProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingRef(isCellSelected);
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   const { cellClass } = column;
   const className = getCellClassname(

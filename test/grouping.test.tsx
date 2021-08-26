@@ -264,9 +264,16 @@ test('should select rows in a group', () => {
   expect(selectedRows[0]).toHaveAttribute('aria-rowindex', '6');
 
   // select child group
-  userEvent.click(within(groupCell2.parentElement!).getByLabelText('Select Group'));
+  const checkbox = within(groupCell2.parentElement!).getByLabelText('Select Group');
+  userEvent.click(checkbox);
   selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);
+
+  // unselect child group
+  userEvent.click(checkbox);
+  selectedRows = screen.getAllByRole('row', { selected: true });
+  // eslint-disable-next-line jest-dom/prefer-in-document
+  expect(selectedRows).toHaveLength(1);
 });
 
 test('cell navigation in a treegrid', () => {
@@ -275,13 +282,21 @@ test('cell navigation in a treegrid', () => {
 
   // expand group
   const groupCell1 = screen.getByRole('gridcell', { name: 'USA' });
+  expect(document.body).toHaveFocus();
+  expect(getRows()[0]).toHaveAttribute('tabIndex', '-1');
   userEvent.click(groupCell1);
+  expect(getRows()[0]).toHaveFocus();
+  expect(getRows()[0]).toHaveAttribute('tabIndex', '0');
   const groupCell2 = screen.getByRole('gridcell', { name: '2021' });
   userEvent.click(groupCell2);
+  expect(getRows()[0]).toHaveAttribute('tabIndex', '-1');
+  expect(getRows()[2]).toHaveFocus();
+  expect(getRows()[2]).toHaveAttribute('tabIndex', '0');
 
   // select cell
   userEvent.click(getCellsAtRowIndex(4)[1]);
   expect(getCellsAtRowIndex(4)[1]).toHaveAttribute('aria-selected', 'true');
+  expect(getRows()[2]).toHaveAttribute('tabIndex', '-1');
 
   // select the previous cell
   userEvent.keyboard('{arrowleft}');
@@ -295,6 +310,7 @@ test('cell navigation in a treegrid', () => {
     rowIdx: 3,
     idx: -1
   });
+  expect(getRows()[3]).toHaveFocus();
 
   // if the row is selected then arrowright should select the first cell on the same row
   userEvent.keyboard('{arrowright}');
@@ -314,6 +330,18 @@ test('cell navigation in a treegrid', () => {
 
   // left arrow on a collapsed group should select the parent group
   userEvent.keyboard('{arrowleft}{arrowleft}');
+  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
+    rowIdx: 0,
+    idx: -1
+  });
+
+  userEvent.keyboard('{end}');
+  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
+    rowIdx: 3,
+    idx: -1
+  });
+
+  userEvent.keyboard('{home}');
   expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
     rowIdx: 0,
     idx: -1

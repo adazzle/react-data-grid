@@ -3,9 +3,9 @@ import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowSelectionProvider, useLatestFunc, useFocusRef, useCombinedRefs } from './hooks';
+import { RowSelectionProvider, useLatestFunc, useCombinedRefs, useRovingRowRef } from './hooks';
 import { getColSpan } from './utils';
-import { rowSelectedClassname, rowClassname } from './style';
+import { rowClassname } from './style';
 import type { RowRendererProps } from './types';
 
 function Row<R, SR>(
@@ -34,8 +34,7 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
-  const isRowFocused = selectedCellIdx === -1;
-  const { ref: rowRef, tabIndex } = useFocusRef<HTMLDivElement>(isRowFocused);
+  const { ref: rowRef, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
 
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
@@ -49,9 +48,7 @@ function Row<R, SR>(
   className = clsx(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-    {
-      [rowSelectedClassname]: isRowFocused
-    },
+    rovingClassName,
     rowClass?.(row),
     className
   );
