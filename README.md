@@ -133,3 +133,35 @@ function App() {
 - [Old website for react-data-grid v5](https://adazzle.github.io/react-data-grid/)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
+
+## API
+
+### Components
+
+#### `<DataGrid />`
+
+#### `<TextEditor />`
+
+#### `<Row />`
+
+#### `<SortableHeaderCell />`
+
+#### `<ValueFormatter />`
+
+#### `<SelectCellFormatter />`
+
+#### `<ToggleGroupFormatter />`
+
+### Hooks
+
+#### `useRowSelection()`
+
+### Other
+
+#### `SelectColumn`
+
+#### `SELECT_COLUMN_KEY`
+
+### Types
+
+#### `Column`
