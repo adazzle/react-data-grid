@@ -83,14 +83,14 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onPointerUp() {
+    function onLostPointerCapture() {
       currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('pointerup', onPointerUp);
+      currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('pointerup', onPointerUp);
+    currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
   }
 
   function onSort(ctrlClick: boolean) {
