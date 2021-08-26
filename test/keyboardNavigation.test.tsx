@@ -93,6 +93,76 @@ test('keyboard navigation', () => {
   validateCellPosition(6, 0);
 });
 
+test('cellNavigationMode="NONE"', () => {
+  setup({ columns, rows, summaryRows, cellNavigationMode: 'NONE' });
+
+  // pressing arrowleft on the leftmost cell does nothing
+  userEvent.tab();
+  userEvent.keyboard('{arrowdown}');
+  validateCellPosition(0, 1);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(0, 1);
+
+  // pressing arrowright on the rightmost cell does nothing
+  userEvent.keyboard('{end}');
+  validateCellPosition(6, 1);
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(6, 1);
+
+  // pressing tab on the rightmost cell navigates to the leftmost cell on the next row
+  userEvent.tab();
+  validateCellPosition(0, 2);
+
+  // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the previous row
+  userEvent.tab({ shift: true });
+  validateCellPosition(6, 1);
+});
+
+test('cellNavigationMode="CHANGE_ROW"', () => {
+  setup({ columns, rows, summaryRows, cellNavigationMode: 'CHANGE_ROW' });
+
+  // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the previous row
+  userEvent.tab();
+  userEvent.keyboard('{arrowdown}');
+  validateCellPosition(0, 1);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(6, 0);
+
+  // pressing arrowright on the rightmost cell navigates to the leftmost cell on the next row
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(0, 1);
+
+  // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the previous row
+  userEvent.tab({ shift: true });
+  validateCellPosition(6, 0);
+
+  // pressing tab on the rightmost cell navigates to the leftmost cell on the next row
+  userEvent.tab();
+  validateCellPosition(0, 1);
+});
+
+test('cellNavigationMode="LOOP_OVER_ROW"', () => {
+  setup({ columns, rows, summaryRows, cellNavigationMode: 'LOOP_OVER_ROW' });
+
+  // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the same row
+  userEvent.tab();
+  validateCellPosition(0, 0);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(6, 0);
+
+  // pressing arrowright on the rightmost cell navigates to the leftmost cell on the same row
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(0, 0);
+
+  // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the same row
+  userEvent.tab({ shift: true });
+  validateCellPosition(6, 0);
+
+  // pressing tab on the rightmost cell navigates to the leftmost cell on the same row
+  userEvent.tab();
+  validateCellPosition(0, 0);
+});
+
 test('grid enter/exit', () => {
   setup({ columns, rows: Array(5), summaryRows });
 

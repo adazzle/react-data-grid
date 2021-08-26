@@ -153,7 +153,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Toggles and modes
    */
+  /** @default 'NONE' */
   cellNavigationMode?: Maybe<CellNavigationMode>;
+  /** @default true */
   enableVirtualization?: Maybe<boolean>;
 
   /**

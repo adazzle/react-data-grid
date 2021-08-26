@@ -25,8 +25,10 @@ const summaryRow = css`
   grid-template-rows: var(--summary-row-height);
   height: var(--summary-row-height); // needed on Firefox
   line-height: var(--summary-row-height);
+`;
 
-  > .${cell} {
+const summaryRowBorderClassname = css`
+  & > .${cell} {
     border-top: 2px solid var(--summary-border-color);
   }
 `;
@@ -76,6 +78,7 @@ function SummaryRow<R, SR>({
         rowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
+        { [summaryRowBorderClassname]: rowIdx === 0 },
         className
       )}
       style={{ bottom }}
