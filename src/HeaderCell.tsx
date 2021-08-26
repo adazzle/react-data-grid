@@ -77,14 +77,6 @@ export default function HeaderCell<R, SR>({
     }
 
     function onPointerMove(event: PointerEvent) {
-      if (event.pointerType === 'mouse' && event.buttons !== 1) {
-        // handle case where the pointer `up`'d outside an iframe
-        // https://bugs.chromium.org/p/chromium/issues/detail?id=606896
-        // https://bugs.chromium.org/p/chromium/issues/detail?id=693494
-        onPointerUp();
-        return;
-      }
-
       const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
       if (width > 0) {
         onColumnResize(column, width);
@@ -96,7 +88,6 @@ export default function HeaderCell<R, SR>({
       currentTarget.removeEventListener('pointerup', onPointerUp);
     }
 
-    event.preventDefault();
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
     currentTarget.addEventListener('pointerup', onPointerUp);
