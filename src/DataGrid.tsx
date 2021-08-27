@@ -491,12 +491,9 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function onGridFocus() {
-    // Tabbing into the grid should initiate keyboard navigation
-    const initialPosition: SelectCellState = { idx: 0, rowIdx: -1, mode: 'SELECT' };
-    if (isCellWithinSelectionBounds(initialPosition)) {
-      setSelectedPosition(initialPosition);
-    }
-    // otherwise browser automatically scrolls to the selected cell
+    // Tabbing into the grid should initiate keyboard navigation if there is no selected cell
+    // Select the first header cell
+    setSelectedPosition({ idx: 0, rowIdx: -1, mode: 'SELECT' });
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
