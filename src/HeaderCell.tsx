@@ -36,7 +36,7 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
   isCellSelected: boolean;
-  shouldFocusGrid: boolean | undefined;
+  shouldFocusGrid: boolean;
 }
 
 export default function HeaderCell<R, SR>({
