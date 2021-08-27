@@ -30,13 +30,13 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onAllRowsSelectionChange'
   | 'selectCell'
   | 'onColumnResize'
+  | 'shouldFocusGrid'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
   isCellSelected: boolean;
-  shouldFocusGrid: boolean;
 }
 
 export default function HeaderCell<R, SR>({
