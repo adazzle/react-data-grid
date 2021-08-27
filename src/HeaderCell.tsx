@@ -30,6 +30,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onAllRowsSelectionChange'
   | 'selectCell'
   | 'onColumnResize'
+  | 'shouldFocusGrid'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -47,7 +48,8 @@ export default function HeaderCell<R, SR>({
   onAllRowsSelectionChange,
   sortColumns,
   onSortColumnsChange,
-  selectCell
+  selectCell,
+  shouldFocusGrid
 }: HeaderCellProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
@@ -131,7 +133,15 @@ export default function HeaderCell<R, SR>({
   }
 
   function onClick() {
-    selectCell(column);
+    selectCell(column.idx);
+  }
+
+  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
+    onFocus(event);
+    if (shouldFocusGrid) {
+      // Select the first header cell if there is no selected cell
+      selectCell(0);
+    }
   }
 
   function getCell() {
@@ -173,10 +183,11 @@ export default function HeaderCell<R, SR>({
       aria-sort={ariaSort}
       aria-colspan={colSpan}
       ref={ref}
-      tabIndex={tabIndex}
+      // set the tabIndex to 0 when there is no selected cell so grid can receive focus
+      tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
-      onFocus={onFocus}
+      onFocus={handleFocus}
       onClick={onClick}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >

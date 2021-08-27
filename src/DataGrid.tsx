@@ -10,7 +10,7 @@ import {
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import { rootClassname, viewportDraggingClassname } from './style';
 import {
   useGridDimensions,
   useCalculatedColumns,
@@ -355,8 +355,8 @@ function DataGrid<R, SR, K extends Key>(
   const selectGroupLatest = useLatestFunc((rowIdx: number) => {
     selectCell({ rowIdx, idx: -1 });
   });
-  const selectHeaderCellLatest = useLatestFunc((column: CalculatedColumn<R, SR>) => {
-    selectCell({ rowIdx: -1, idx: column.idx });
+  const selectHeaderCellLatest = useLatestFunc((idx: number) => {
+    selectCell({ rowIdx: -1, idx });
   });
   const selectSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
@@ -488,15 +488,6 @@ function DataGrid<R, SR, K extends Key>(
       newExpandedGroupIds.add(expandedGroupId);
     }
     onExpandedGroupIdsChange(newExpandedGroupIds);
-  }
-
-  function onGridFocus() {
-    // Tabbing into the grid should initiate keyboard navigation
-    const initialPosition: SelectCellState = { idx: 0, rowIdx: -1, mode: 'SELECT' };
-    if (isCellWithinSelectionBounds(initialPosition)) {
-      setSelectedPosition(initialPosition);
-    }
-    // otherwise browser automatically scrolls to the selected cell
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
@@ -1124,18 +1115,12 @@ function DataGrid<R, SR, K extends Key>(
         lastFrozenColumnIndex={lastFrozenColumnIndex}
         selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         selectCell={selectHeaderCellLatest}
+        shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
       />
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
       ) : (
         <>
-          {/*
-            An extra div is needed initially to set the focus
-            on the grid when there is no selected cell.
-           */}
-          {!selectedCellIsWithinSelectionBounds && (
-            <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
-          )}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
