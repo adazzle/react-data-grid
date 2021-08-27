@@ -180,6 +180,7 @@ export default function HeaderCell<R, SR>({
       aria-sort={ariaSort}
       aria-colspan={colSpan}
       ref={ref}
+      // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={onGridFocus ? 0 : tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
