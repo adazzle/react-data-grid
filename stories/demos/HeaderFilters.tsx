@@ -63,6 +63,18 @@ interface Filter extends Omit<Row, 'id' | 'complete'> {
 // re-created when filters are changed and filter loses focus
 const FilterContext = createContext<Filter | undefined>(undefined);
 
+function inputStopPropagation(event: React.KeyboardEvent<HTMLInputElement>) {
+  if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+    event.stopPropagation();
+  }
+}
+
+function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+    event.stopPropagation();
+  }
+}
+
 export function HeaderFilters() {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filter>({
@@ -107,6 +119,7 @@ export function HeaderFilters() {
                     task: e.target.value
                   })
                 }
+                onKeyDown={inputStopPropagation}
               />
             )}
           </FilterRenderer>
@@ -129,6 +142,7 @@ export function HeaderFilters() {
                     priority: e.target.value
                   })
                 }
+                onKeyDown={selectStopPropagation}
               >
                 <option value="All">All</option>
                 <option value="Critical">Critical</option>
@@ -157,6 +171,7 @@ export function HeaderFilters() {
                     issueType: e.target.value
                   })
                 }
+                onKeyDown={selectStopPropagation}
               >
                 <option value="All">All</option>
                 <option value="Bug">Bug</option>
@@ -186,6 +201,7 @@ export function HeaderFilters() {
                       developer: e.target.value
                     })
                   }
+                  onKeyDown={inputStopPropagation}
                   list="developers"
                 />
               </>
@@ -213,6 +229,7 @@ export function HeaderFilters() {
                       : undefined
                   })
                 }
+                onKeyDown={inputStopPropagation}
               />
             )}
           </FilterRenderer>
@@ -295,6 +312,7 @@ function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
 }) {
   const filters = useContext(FilterContext)!;
   const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
+
   return (
     <>
       <div>{column.name}</div>
