@@ -81,7 +81,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
         selectCell={selectCell}
-        shouldFocusGrid={index === 0 ? shouldFocusGrid : undefined}
+        shouldFocusGrid={shouldFocusGrid && index === 0}
       />
     );
   }
