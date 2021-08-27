@@ -18,10 +18,10 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
-  selectCell: (column: CalculatedColumn<R, SR>) => void;
+  selectCell: (columnIdx: number) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
-  onGridFocus: (() => void) | undefined;
+  shouldFocusGrid: boolean;
 }
 
 const headerRow = css`
@@ -57,7 +57,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   selectCell,
-  onGridFocus
+  shouldFocusGrid
 }: HeaderRowProps<R, SR, K>) {
   const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
 
@@ -81,7 +81,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
         selectCell={selectCell}
-        onGridFocus={index === 0 ? onGridFocus : undefined}
+        shouldFocusGrid={index === 0 ? shouldFocusGrid : undefined}
       />
     );
   }

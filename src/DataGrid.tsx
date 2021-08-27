@@ -355,8 +355,8 @@ function DataGrid<R, SR, K extends Key>(
   const selectGroupLatest = useLatestFunc((rowIdx: number) => {
     selectCell({ rowIdx, idx: -1 });
   });
-  const selectHeaderCellLatest = useLatestFunc((column: CalculatedColumn<R, SR>) => {
-    selectCell({ rowIdx: -1, idx: column.idx });
+  const selectHeaderCellLatest = useLatestFunc((idx: number) => {
+    selectCell({ rowIdx: -1, idx });
   });
   const selectSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
@@ -488,12 +488,6 @@ function DataGrid<R, SR, K extends Key>(
       newExpandedGroupIds.add(expandedGroupId);
     }
     onExpandedGroupIdsChange(newExpandedGroupIds);
-  }
-
-  function onGridFocus() {
-    // Tabbing into the grid should initiate keyboard navigation if there is no selected cell
-    // Select the first header cell
-    setSelectedPosition({ idx: 0, rowIdx: -1, mode: 'SELECT' });
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
@@ -1121,7 +1115,7 @@ function DataGrid<R, SR, K extends Key>(
         lastFrozenColumnIndex={lastFrozenColumnIndex}
         selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         selectCell={selectHeaderCellLatest}
-        onGridFocus={!selectedCellIsWithinSelectionBounds ? onGridFocus : undefined}
+        shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
       />
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
