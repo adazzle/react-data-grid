@@ -53,6 +53,7 @@ const root = css`
   background-color: var(--background-color);
   color: var(--color);
   font-size: var(--font-size);
+  direction: ltr;
 
   // set stacking context in safari
   @supports not (contain: strict) {
