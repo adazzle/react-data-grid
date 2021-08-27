@@ -30,6 +30,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onAllRowsSelectionChange'
   | 'selectCell'
   | 'onColumnResize'
+  | 'onGridFocus'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -47,7 +48,8 @@ export default function HeaderCell<R, SR>({
   onAllRowsSelectionChange,
   sortColumns,
   onSortColumnsChange,
-  selectCell
+  selectCell,
+  onGridFocus
 }: HeaderCellProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
@@ -134,6 +136,11 @@ export default function HeaderCell<R, SR>({
     selectCell(column);
   }
 
+  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
+    onFocus(event);
+    onGridFocus?.();
+  }
+
   function getCell() {
     if (column.headerRenderer) {
       return (
@@ -173,10 +180,10 @@ export default function HeaderCell<R, SR>({
       aria-sort={ariaSort}
       aria-colspan={colSpan}
       ref={ref}
-      tabIndex={tabIndex}
+      tabIndex={onGridFocus ? 0 : tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
-      onFocus={onFocus}
+      onFocus={handleFocus}
       onClick={onClick}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >

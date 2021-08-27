@@ -21,6 +21,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   selectCell: (column: CalculatedColumn<R, SR>) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
+  onGridFocus: (() => void) | undefined;
 }
 
 const headerRow = css`
@@ -55,7 +56,8 @@ function HeaderRow<R, SR, K extends React.Key>({
   onSortColumnsChange,
   lastFrozenColumnIndex,
   selectedCellIdx,
-  selectCell
+  selectCell,
+  onGridFocus
 }: HeaderRowProps<R, SR, K>) {
   const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
 
@@ -79,6 +81,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
         selectCell={selectCell}
+        onGridFocus={index === 0 ? onGridFocus : undefined}
       />
     );
   }

@@ -10,7 +10,7 @@ import {
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import { rootClassname, viewportDraggingClassname } from './style';
 import {
   useGridDimensions,
   useCalculatedColumns,
@@ -1124,18 +1124,12 @@ function DataGrid<R, SR, K extends Key>(
         lastFrozenColumnIndex={lastFrozenColumnIndex}
         selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         selectCell={selectHeaderCellLatest}
+        onGridFocus={!selectedCellIsWithinSelectionBounds ? onGridFocus : undefined}
       />
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
       ) : (
         <>
-          {/*
-            An extra div is needed initially to set the focus
-            on the grid when there is no selected cell.
-           */}
-          {!selectedCellIsWithinSelectionBounds && (
-            <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
-          )}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
