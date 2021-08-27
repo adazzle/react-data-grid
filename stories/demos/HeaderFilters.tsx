@@ -69,7 +69,7 @@ function inputStopPropagation(event: React.KeyboardEvent<HTMLInputElement>) {
   }
 }
 
-function selectStopPropagation(event: React.KeyboardEvent<HTMLInputElement>) {
+function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
     event.stopPropagation();
   }
