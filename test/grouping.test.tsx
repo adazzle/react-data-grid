@@ -79,7 +79,7 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function TestGrid({ groupBy }: { groupBy?: string[] }) {
+function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(

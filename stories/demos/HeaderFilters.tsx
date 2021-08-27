@@ -55,7 +55,7 @@ interface Row {
 }
 
 interface Filter extends Omit<Row, 'id' | 'complete'> {
-  complete?: number;
+  complete: number | undefined;
   enabled: boolean;
 }
 

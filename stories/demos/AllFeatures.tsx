@@ -184,9 +184,8 @@ function createRows(numberOfRows: number): Row[] {
   return rows;
 }
 
-function isAtBottom(event: React.UIEvent<HTMLDivElement>): boolean {
-  const target = event.target as HTMLDivElement;
-  return target.clientHeight + target.scrollTop === target.scrollHeight;
+function isAtBottom({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean {
+  return currentTarget.clientHeight + currentTarget.scrollTop === currentTarget.scrollHeight;
 }
 
 function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
