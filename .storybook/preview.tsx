@@ -1,4 +1,3 @@
-import 'core-js/stable';
 import { css } from '@linaria/core';
 
 css`

@@ -1,4 +1,3 @@
-import 'core-js/stable';
 import { act } from 'react-dom/test-utils';
 
 window.ResizeObserver ??= class {
