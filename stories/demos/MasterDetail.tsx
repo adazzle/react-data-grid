@@ -126,6 +126,7 @@ export function MasterDetailStory() {
       onRowsChange={onRowsChange}
       rowHeight={(args) => (args.type === 'ROW' && args.row.type === 'DETAIL' ? 300 : 35)}
       className="fill-grid"
+      enableVirtualization={false}
     />
   );
 }
