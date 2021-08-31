@@ -29,7 +29,7 @@ interface ProductRow {
 
 function createDepartments(): readonly DepartmentRow[] {
   const departments: DepartmentRow[] = [];
-  for (let i = 1; i < 50; i++) {
+  for (let i = 1; i < 30; i++) {
     departments.push({
       type: 'MASTER',
       id: i,
@@ -124,7 +124,8 @@ export function MasterDetailStory() {
       columns={departmentColumns}
       rows={rows}
       onRowsChange={onRowsChange}
-      rowHeight={(args) => (args.type === 'ROW' && args.row.type === 'DETAIL' ? 300 : 35)}
+      headerRowHeight={45}
+      rowHeight={(args) => (args.type === 'ROW' && args.row.type === 'DETAIL' ? 300 : 45)}
       className="fill-grid"
       enableVirtualization={false}
     />
