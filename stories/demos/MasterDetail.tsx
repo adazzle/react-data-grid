@@ -131,12 +131,12 @@ export function MasterDetailStory() {
 }
 
 function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSelected: boolean }) {
-  const ref = useRef<DataGridHandle>(null);
+  const gridRef = useRef<DataGridHandle>(null);
   const [selectedPosition, setSelectedPosition] = useState<Position>({ idx: -1, rowIdx: -2 });
   useEffect(() => {
     if (!isCellSelected) return;
-    ref
-      .current!.element.querySelector<HTMLDivElement>('[tabindex="0"]')
+    gridRef
+      .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
       .focus({ preventScroll: true });
   }, [isCellSelected]);
   const products = getProducts(parentId);
@@ -162,7 +162,7 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
   return (
     <div onKeyDown={onKeyDown}>
       <DataGrid
-        ref={ref}
+        ref={gridRef}
         rows={products}
         columns={productColumns}
         rowKeyGetter={rowKeyGetter}
