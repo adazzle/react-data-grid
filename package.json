@@ -75,7 +75,6 @@
     "@typescript-eslint/parser": "^4.28.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-optimize-clsx": "^2.6.2",
-    "core-js": "^3.15.1",
     "css-loader": "^5.2.6",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
