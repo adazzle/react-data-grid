@@ -20,11 +20,13 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 }
 
 const summaryRow = css`
-  position: sticky;
-  z-index: 3;
-  grid-template-rows: var(--summary-row-height);
-  height: var(--summary-row-height); // needed on Firefox
-  line-height: var(--summary-row-height);
+  &.rdg-row {
+    position: sticky;
+    z-index: 3;
+    grid-template-rows: var(--summary-row-height);
+    height: var(--summary-row-height); // needed on Firefox
+    line-height: var(--summary-row-height);
+  }
 `;
 
 const summaryRowBorderClassname = css`
