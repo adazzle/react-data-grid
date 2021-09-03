@@ -67,4 +67,3 @@ Object.defineProperties(Element.prototype, {
 });
 
 Element.prototype.setPointerCapture ??= () => {};
-Element.prototype.releasePointerCapture ??= () => {};
