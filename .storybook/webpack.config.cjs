@@ -1,9 +1,6 @@
 'use strict';
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const stylis = require('stylis');
-
-stylis.set({ prefix: false });
 
 module.exports = function ({ config, mode }) {
   const isProd = mode === 'PRODUCTION';
@@ -19,13 +16,24 @@ module.exports = function ({ config, mode }) {
         },
         {
           loader: '@linaria/webpack-loader',
-          options: { sourceMap: !isProd }
+          options: { preprocessor: 'none', sourceMap: !isProd }
         }
       ]
     },
     {
       test: /\.css$/,
-      use: [MiniCssExtractPlugin.loader, 'css-loader']
+      use: [
+        MiniCssExtractPlugin.loader,
+        'css-loader',
+        {
+          loader: 'postcss-loader',
+          options: {
+            postcssOptions: {
+              plugins: ['postcss-nested']
+            }
+          }
+        }
+      ]
     }
   ];
 
