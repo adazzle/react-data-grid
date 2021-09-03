@@ -23,7 +23,7 @@ export function useGridDimensions(): [
       // TODO: remove once fixed upstream
       // we reduce width by 1px here to avoid layout issues in Chrome
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-      setGridWidth(clientWidth - (devicePixelRatio % 0.5 === 0 ? 0 : 1));
+      setGridWidth(clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1));
       setGridHeight(clientHeight);
     });
 

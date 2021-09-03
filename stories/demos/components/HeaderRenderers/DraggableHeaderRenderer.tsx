@@ -2,7 +2,7 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import { SortableHeaderCell } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../useCombinedRefs';
+import { useCombinedRefs } from '../../../../src/hooks';
 
 interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;
@@ -13,7 +13,8 @@ export function DraggableHeaderRenderer<R>({
   column,
   sortDirection,
   onSort,
-  priority
+  priority,
+  isCellSelected
 }: DraggableHeaderRendererProps<R>) {
   const [{ isDragging }, drag] = useDrag({
     type: 'COLUMN_DRAG',
@@ -39,11 +40,16 @@ export function DraggableHeaderRenderer<R>({
       ref={useCombinedRefs(drag, drop)}
       style={{
         opacity: isDragging ? 0.5 : 1,
-        backgroundColor: isOver ? '#ececec' : 'inherit',
+        backgroundColor: isOver ? '#ececec' : undefined,
         cursor: 'move'
       }}
     >
-      <SortableHeaderCell sortDirection={sortDirection} onSort={onSort} priority={priority}>
+      <SortableHeaderCell
+        sortDirection={sortDirection}
+        onSort={onSort}
+        priority={priority}
+        isCellSelected={isCellSelected}
+      >
         {column.name}
       </SortableHeaderCell>
     </div>

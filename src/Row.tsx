@@ -2,24 +2,25 @@ import { memo, forwardRef } from 'react';
 import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import { groupRowSelectedClassname, rowClassname } from './style';
-import { getColSpan } from './utils';
 import Cell from './Cell';
-import EditCell from './EditCell';
-import type { RowRendererProps, SelectedCellProps } from './types';
-import { RowSelectionProvider } from './hooks';
+import { RowSelectionProvider, useLatestFunc, useCombinedRefs, useRovingRowRef } from './hooks';
+import { getColSpan } from './utils';
+import { rowClassname } from './style';
+import type { RowRendererProps } from './types';
 
 function Row<R, SR>(
   {
     className,
     rowIdx,
+    selectedCellIdx,
     isRowSelected,
     copiedCellIdx,
     draggedOverCellIdx,
     lastFrozenColumnIndex,
     row,
     viewportColumns,
-    selectedCellProps,
+    selectedCellEditor,
+    selectedCellDragHandle,
     onRowClick,
     onRowDoubleClick,
     rowClass,
@@ -33,6 +34,12 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
+  const { ref: rowRef, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
+
+  const handleRowChange = useLatestFunc((newRow: R) => {
+    onRowChange(rowIdx, newRow);
+  });
+
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
     onMouseEnter?.(event);
@@ -41,9 +48,7 @@ function Row<R, SR>(
   className = clsx(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-    {
-      [groupRowSelectedClassname]: selectedCellProps?.idx === -1
-    },
+    rovingClassName,
     rowClass?.(row),
     className
   );
@@ -52,54 +57,42 @@ function Row<R, SR>(
 
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
+    const { idx } = column;
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     if (colSpan !== undefined) {
       index += colSpan - 1;
     }
 
-    const isCellSelected = selectedCellProps?.idx === column.idx;
-    if (selectedCellProps?.mode === 'EDIT' && isCellSelected) {
+    const isCellSelected = selectedCellIdx === idx;
+
+    if (isCellSelected && selectedCellEditor) {
+      cells.push(selectedCellEditor);
+    } else {
       cells.push(
-        <EditCell
+        <Cell
           key={column.key}
-          rowIdx={rowIdx}
           column={column}
           colSpan={colSpan}
-          onKeyDown={selectedCellProps.onKeyDown}
-          {...selectedCellProps.editorProps}
+          row={row}
+          isCopied={copiedCellIdx === idx}
+          isDraggedOver={draggedOverCellIdx === idx}
+          isCellSelected={isCellSelected}
+          dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
+          onRowChange={handleRowChange}
+          selectCell={selectCell}
         />
       );
-      continue;
     }
-
-    cells.push(
-      <Cell
-        key={column.key}
-        rowIdx={rowIdx}
-        column={column}
-        colSpan={colSpan}
-        row={row}
-        isCopied={copiedCellIdx === column.idx}
-        isDraggedOver={draggedOverCellIdx === column.idx}
-        isCellSelected={isCellSelected}
-        dragHandleProps={
-          isCellSelected ? (selectedCellProps as SelectedCellProps).dragHandleProps : undefined
-        }
-        onFocus={isCellSelected ? (selectedCellProps as SelectedCellProps).onFocus : undefined}
-        onKeyDown={isCellSelected ? selectedCellProps!.onKeyDown : undefined}
-        onRowClick={onRowClick}
-        onRowDoubleClick={onRowDoubleClick}
-        onRowChange={onRowChange}
-        selectCell={selectCell}
-      />
-    );
   }
 
   return (
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
-        ref={ref}
+        ref={useCombinedRefs(ref, rowRef)}
+        tabIndex={tabIndex}
         className={className}
         onMouseEnter={handleDragEnter}
         style={

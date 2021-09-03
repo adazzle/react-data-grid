@@ -53,6 +53,7 @@ const root = css`
   background-color: var(--background-color);
   color: var(--color);
   font-size: var(--font-size);
+  direction: ltr;
 
   // set stacking context in safari
   @supports not (contain: strict) {
@@ -83,17 +84,6 @@ const root = css`
 `;
 
 export const rootClassname = `rdg ${root}`;
-
-const focusSink = css`
-  position: sticky;
-  top: 0;
-  left: 0;
-  height: 0;
-  width: 0;
-  outline: 0;
-`;
-
-export const focusSinkClassname = `rdg-focus-sink ${focusSink}`;
 
 const viewportDragging = css`
   &.${row} {

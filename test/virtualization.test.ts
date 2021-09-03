@@ -39,7 +39,9 @@ function setupGrid(
 
 function assertHeightFill(height: number) {
   // if there are not enough rows, we need to fill the rows viewport's height so summary rows stick to the bottom of the container
-  expect(document.querySelector('.rdg-focus-sink + div')).toHaveStyle({ height: `${height}px` });
+  expect(document.querySelector('div:not([class])[style^="height:"]')).toHaveStyle({
+    height: `${height}px`
+  });
 }
 
 function assertElements(

@@ -184,9 +184,8 @@ function createRows(numberOfRows: number): Row[] {
   return rows;
 }
 
-function isAtBottom(event: React.UIEvent<HTMLDivElement>): boolean {
-  const target = event.target as HTMLDivElement;
-  return target.clientHeight + target.scrollTop === target.scrollHeight;
+function isAtBottom({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean {
+  return currentTarget.clientHeight + currentTarget.scrollTop === currentTarget.scrollHeight;
 }
 
 function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
@@ -206,11 +205,8 @@ export function AllFeatures() {
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleFill({ columnKey, sourceRow, targetRows }: FillEvent<Row>): Row[] {
-    return targetRows.map((row) => ({
-      ...row,
-      [columnKey as keyof Row]: sourceRow[columnKey as keyof Row]
-    }));
+  function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
+    return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
   }
 
   function handlePaste({

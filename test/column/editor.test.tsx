@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { getCellsAtRowIndex } from '../utils';
+import { getCellsAtRowIndex, getGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -28,17 +28,37 @@ describe('Editor', () => {
     render(<EditorTest />);
     userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-    userEvent.type(document.activeElement!, '{enter}');
+    userEvent.keyboard('{enter}');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    userEvent.type(document.activeElement!, '3');
-    userEvent.tab();
+    userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+  });
+
+  it('should commit changes on enter if the editor is rendered in a portal', () => {
+    render(
+      <EditorTest
+        editorOptions={{
+          createPortal: true
+        }}
+      />
+    );
+    userEvent.click(getCellsAtRowIndex(0)[1]);
+    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
+    userEvent.keyboard('{enter}');
+    expect(screen.getByLabelText('col2-editor')).toHaveValue('a1');
+    userEvent.keyboard('23');
+    // The cell value should update as the editor value is changed
+    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
+    userEvent.keyboard('{enter}');
+    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
+    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
   });
 
   it('should open editor when user types', () => {
     render(<EditorTest />);
     userEvent.click(getCellsAtRowIndex(0)[0]);
-    userEvent.type(document.activeElement!, '123{enter}');
+    userEvent.keyboard('123{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1123$/);
   });
 
@@ -46,7 +66,7 @@ describe('Editor', () => {
     render(<EditorTest />);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    userEvent.type(document.activeElement!, '2222{escape}');
+    userEvent.keyboard('2222{escape}');
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1$/);
   });
@@ -55,7 +75,7 @@ describe('Editor', () => {
     render(<EditorTest />);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    userEvent.type(document.activeElement!, '2222');
+    userEvent.keyboard('2222');
     userEvent.click(screen.getByText('outside'));
     await waitForElementToBeRemoved(screen.queryByLabelText('col1-editor'));
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12222$/);
@@ -65,7 +85,7 @@ describe('Editor', () => {
     const onSave = jest.fn();
     render(<EditorTest onSave={onSave} />);
     userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    userEvent.type(document.activeElement!, '234');
+    userEvent.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = screen.getByRole('button', { name: 'save' });
     fireEvent.mouseDown(saveButton);
@@ -80,6 +100,26 @@ describe('Editor', () => {
       { col1: 1234, col2: 'a1' },
       { col1: 2, col2: 'a2' }
     ]);
+  });
+
+  it('should scroll to the editor if selected cell is not in the viewport', () => {
+    const rows: Row[] = [];
+    for (let i = 0; i < 99; i++) {
+      rows.push({ col1: i, col2: `${i}` });
+    }
+
+    render(<EditorTest gridRows={rows} />);
+    userEvent.click(getCellsAtRowIndex(0)[0]);
+    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+
+    const grid = getGrid();
+    grid.scrollTop = 2000;
+    expect(getCellsAtRowIndex(0)).toHaveLength(1);
+    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    userEvent.keyboard('123');
+    expect(screen.getByLabelText('col1-editor')).toHaveValue(123);
+    userEvent.keyboard('{enter}');
+    expect(getCellsAtRowIndex(0)).toHaveLength(2);
   });
 
   describe('editable', () => {
@@ -158,9 +198,9 @@ describe('Editor', () => {
         />
       );
       userEvent.click(getCellsAtRowIndex(0)[1]);
-      userEvent.type(document.activeElement!, 'yz{enter}');
+      userEvent.keyboard('yz{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
-      userEvent.type(document.activeElement!, 'x');
+      userEvent.keyboard('x');
       expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     });
 
@@ -175,29 +215,56 @@ describe('Editor', () => {
         />
       );
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      userEvent.type(document.activeElement!, 'a{arrowleft}b{arrowright}c{arrowdown}'); // should commit changes on arrowdown
+      userEvent.keyboard('a{arrowleft}b{arrowright}c{arrowdown}'); // should commit changes on arrowdown
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
     });
+  });
+
+  it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
+    const column: Column<unknown> = {
+      key: 'col',
+      name: 'Column',
+      editor() {
+        return <input value="123" readOnly autoFocus />;
+      }
+    };
+
+    render(
+      <>
+        <input value="abc" readOnly />
+        <DataGrid columns={[column]} rows={[{}]} />
+      </>
+    );
+
+    userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    const editorInput = screen.getByDisplayValue('123');
+    const outerInput = screen.getByDisplayValue('abc');
+    expect(editorInput).toHaveFocus();
+    userEvent.click(outerInput);
+    expect(outerInput).toHaveFocus();
+    await waitForElementToBeRemoved(editorInput);
+    expect(outerInput).toHaveFocus();
   });
 });
 
 interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
   onSave?: (rows: readonly Row[]) => void;
+  gridRows?: readonly Row[];
 }
 
-function EditorTest({ editable, editorOptions, onSave }: EditorTestProps) {
-  const [rows, setRows] = useState((): readonly Row[] => {
-    return [
-      {
-        col1: 1,
-        col2: 'a1'
-      },
-      {
-        col1: 2,
-        col2: 'a2'
-      }
-    ];
-  });
+const initialRows: readonly Row[] = [
+  {
+    col1: 1,
+    col2: 'a1'
+  },
+  {
+    col1: 2,
+    col2: 'a2'
+  }
+];
+
+function EditorTest({ editable, editorOptions, onSave, gridRows = initialRows }: EditorTestProps) {
+  const [rows, setRows] = useState(gridRows);
 
   const columns = useMemo((): readonly Column<Row>[] => {
     return [

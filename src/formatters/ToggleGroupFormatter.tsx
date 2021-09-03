@@ -28,7 +28,7 @@ export function ToggleGroupFormatter<R, SR>({
   isCellSelected,
   toggleGroup
 }: GroupFormatterProps<R, SR>) {
-  const cellRef = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
     if (key === 'Enter') {
@@ -40,9 +40,9 @@ export function ToggleGroupFormatter<R, SR>({
 
   return (
     <span
-      ref={cellRef}
+      ref={ref}
       className={groupCellContentClassname}
-      tabIndex={-1}
+      tabIndex={tabIndex}
       onKeyDown={handleKeyDown}
     >
       {groupKey}
