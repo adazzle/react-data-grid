@@ -1,4 +1,3 @@
-import 'core-js/stable';
 import { act } from 'react-dom/test-utils';
 
 window.ResizeObserver ??= class {
@@ -68,4 +67,3 @@ Object.defineProperties(Element.prototype, {
 });
 
 Element.prototype.setPointerCapture ??= () => {};
-Element.prototype.releasePointerCapture ??= () => {};

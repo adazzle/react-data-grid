@@ -1,8 +1,7 @@
-import 'core-js/stable';
 import { css } from '@linaria/core';
 
 css`
-  :global() {
+  @at-root {
     body,
     html {
       padding: 0 !important;

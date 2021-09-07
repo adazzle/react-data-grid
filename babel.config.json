@@ -5,9 +5,7 @@
       {
         "loose": true,
         "bugfixes": true,
-        "shippedProposals": true,
-        "corejs": 3,
-        "useBuiltIns": "entry"
+        "shippedProposals": true
       }
     ],
     ["@babel/react", { "runtime": "automatic" }],

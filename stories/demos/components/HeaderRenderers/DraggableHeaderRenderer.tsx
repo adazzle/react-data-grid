@@ -40,7 +40,7 @@ export function DraggableHeaderRenderer<R>({
       ref={useCombinedRefs(drag, drop)}
       style={{
         opacity: isDragging ? 0.5 : 1,
-        backgroundColor: isOver ? '#ececec' : 'inherit',
+        backgroundColor: isOver ? '#ececec' : undefined,
         cursor: 'move'
       }}
     >

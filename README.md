@@ -60,11 +60,6 @@ See [documentation](https://github.com/browserslist/browserslist/blob/main/READM
 See [documentation](https://babeljs.io/docs/en/)
 
 - It's important that the configuration filename be `babel.config.*` instead of `.babelrc.*`, otherwise Babel might not transpile modules under `node_modules`.
-- We recommend polyfilling modern JS features with [core-js](https://www.npmjs.com/package/core-js) by adding the following snippet at the top of your bundle's entry file:
-  ```js
-  import 'core-js/stable';
-  ```
-  - Babel's `env` preset, if configured correctly, will transform this import so only the necessary polyfills are included in your bundle.
 - Polyfilling the [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) API is required for older browsers.
 </details>
 

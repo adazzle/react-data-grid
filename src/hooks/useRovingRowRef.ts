@@ -16,7 +16,7 @@ const rowSelected = css`
   }
 
   > .${cell}:first-child {
-    // preserve left border on the first frozen cell after scrolling to the right
+    /* preserve left border on the first frozen cell after scrolling to the right */
     box-shadow: inset 2px 0 0 0 var(--selection-color);
   }
 `;

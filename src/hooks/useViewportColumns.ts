@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 
 import { getColSpan } from '../utils';
-import type { CalculatedColumn, GroupRow } from '../types';
+import type { CalculatedColumn, GroupRow, Maybe } from '../types';
 
 interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  summaryRows: readonly SR[] | undefined | null;
+  summaryRows: Maybe<readonly SR[]>;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   lastFrozenColumnIndex: number;

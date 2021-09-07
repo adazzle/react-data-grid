@@ -1,4 +1,4 @@
-import type { CalculatedColumn, Position, GroupRow, CellNavigationMode } from '../types';
+import type { CalculatedColumn, Position, GroupRow, CellNavigationMode, Maybe } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -32,7 +32,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  summaryRows: readonly SR[] | null | undefined;
+  summaryRows: Maybe<readonly SR[]>;
   minRowIdx: number;
   maxRowIdx: number;
   currentPosition: Position;
