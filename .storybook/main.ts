@@ -1,7 +1,4 @@
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import stylis from 'stylis';
-
-stylis.set({ prefix: false });
 
 // TODO: remove `target` https://github.com/storybookjs/storybook/issues/15882
 const target = 'browserslist:browserslist config, not maintained node versions';
@@ -35,14 +32,25 @@ export default {
             options: { cacheDirectory: !isProd }
           },
           {
-            loader: '@linaria/webpack-loader',
-            options: { sourceMap: !isProd }
+            loader: '@linaria/webpack5-loader',
+            options: { preprocessor: 'none', sourceMap: !isProd }
           }
         ]
       },
       {
         test: /\.css$/,
-        use: [isProd ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader']
+        use: [
+          isProd ? MiniCssExtractPlugin.loader : 'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: ['postcss-nested']
+              }
+            }
+          }
+        ]
       }
     ];
 
