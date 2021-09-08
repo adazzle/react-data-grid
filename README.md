@@ -128,3 +128,168 @@ function App() {
 - [Old website for react-data-grid v5](https://adazzle.github.io/react-data-grid/)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
+
+## API
+
+### Components
+
+#### `<DataGrid />`
+
+##### Props
+
+###### `columns: readonly Column<R, SR>[]`
+
+###### `rows: readonly R[]`
+
+###### `summaryRows?: Maybe<readonly SR[]>`
+
+###### `rowKeyGetter?: Maybe<(row: R) => K>`
+
+###### `onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>`
+
+###### `rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>`
+
+###### `headerRowHeight?: Maybe<number>`
+
+###### `summaryRowHeight?: Maybe<number>`
+
+###### `selectedRows?: Maybe<ReadonlySet<K>>`
+
+###### `onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>`
+
+###### `sortColumns?: Maybe<readonly SortColumn[]>`
+
+###### `onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>`
+
+###### `defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>`
+
+###### `groupBy?: Maybe<readonly string[]>`
+
+###### `rowGrouper?: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>`
+
+###### `expandedGroupIds?: Maybe<ReadonlySet<unknown>>`
+
+###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
+
+###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
+
+###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
+
+###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+
+###### `onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+
+###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
+
+###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
+
+###### `onSelectedCellChange?: Maybe<(position: Position) => void>`
+
+###### `cellNavigationMode?: Maybe<CellNavigationMode>`
+
+###### `enableVirtualization?: Maybe<boolean>`
+
+###### `rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>`
+
+###### `noRowsFallback?: React.ReactNode`
+
+###### `editorPortalTarget?: Maybe<Element>`
+
+###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
+
+###### `className?: string | undefined`
+
+###### `style?: CSSProperties | undefined`
+
+###### `'aria-label'?: string | undefined`
+
+###### `'aria-labelledby'?: string | undefined`
+
+###### `'aria-describedby'?: string | undefined`
+
+###### `'data-testid'?: Maybe<string>`
+
+#### `<TextEditor />`
+
+##### Props
+
+See [`EditorProps`](#editorprops)
+
+#### `<Row />`
+
+See [`RowRendererProps`](#rowrendererprops).
+The `ref` prop is supported.
+
+#### `<SortableHeaderCell />`
+
+##### Props
+
+###### `onSort: (ctrlClick: boolean) => void`
+
+###### `sortDirection: SortDirection | undefined`
+
+###### `priority: number | undefined`
+
+###### `isCellSelected: boolean`
+
+###### `children: React.ReactNode`
+
+#### `<ValueFormatter />`
+
+##### Props
+
+See [`FormatterProps`](#formatterprops)
+
+#### `<SelectCellFormatter />`
+
+##### Props
+
+###### `value: boolean`
+
+###### `isCellSelected: boolean`
+
+###### `disabled?: boolean | undefined`
+
+###### `onChange: (value: boolean, isShiftClick: boolean) => void`
+
+###### `onClick?: MouseEventHandler<T> | undefined`
+
+###### `'aria-label'?: string | undefined`
+
+###### `'aria-labelledby'?: string | undefined`
+
+#### `<ToggleGroupFormatter />`
+
+##### Props
+
+See [`GroupFormatterProps`](#groupformatterprops)
+
+### Hooks
+
+#### `useRowSelection<R>(): [boolean, (selectRowEvent: SelectRowEvent<R>) => void]`
+
+### Other
+
+#### `SelectColumn: Column<any, any>`
+
+#### `SELECT_COLUMN_KEY = 'select-row'`
+
+### Types
+
+#### `Column`
+
+#### `DataGridHandle`
+
+#### `EditorProps`
+
+#### `FormatterProps`
+
+#### `GroupFormatterProps`
+
+#### `RowRendererProps`
+
+### Generics
+
+- `R`, `TRow`: Row type
+- `SR`, `TSummaryRow`: Summary row type
+- `K`: Row key type

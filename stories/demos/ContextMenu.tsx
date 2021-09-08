@@ -9,7 +9,7 @@ import type { Column, RowRendererProps } from '../../src';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 css`
-  :global() {
+  @at-root {
     .react-contextmenu {
       background-color: #fff;
       background-clip: padding-box;

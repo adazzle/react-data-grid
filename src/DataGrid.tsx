@@ -125,7 +125,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   selectedRows?: Maybe<ReadonlySet<K>>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>;
-  /**Used for multi column sorting */
+  /** Used for multi column sorting */
   sortColumns?: Maybe<readonly SortColumn[]>;
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
   defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>;
