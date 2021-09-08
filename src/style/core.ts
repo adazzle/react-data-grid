@@ -77,8 +77,8 @@ const root = css`
     position: absolute;
     top: 0;
     left: 0;
-    height: var(--total-row-height);
-    width: var(--total-column-width);
+    height: var(--grid-height);
+    width: var(--row-width);
   }
 
   &.rdg-dark {

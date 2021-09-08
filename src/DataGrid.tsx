@@ -1104,14 +1104,14 @@ function DataGrid<R, SR, K extends Key>(
         {
           ...style,
           '--header-row-height': `${headerRowHeight}px`,
+          '--row-width': `${totalColumnWidth}px`,
           '--summary-row-height': `${summaryRowHeight}px`,
           '--template-rows': templateRows,
-          '--total-row-height': `${
+          '--grid-height': `${
             Math.max(totalRowHeight, clientHeight) +
             headerRowHeight +
             summaryRowsCount * summaryRowHeight
           }px`,
-          '--total-column-width': `${totalColumnWidth}px`,
           ...layoutCssVars
         } as unknown as React.CSSProperties
       }
