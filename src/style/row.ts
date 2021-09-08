@@ -2,6 +2,7 @@ import { css } from '@linaria/core';
 
 export const row = css`
   display: contents;
+  line-height: var(--row-height);
   background-color: var(--background-color);
 
   &:hover {

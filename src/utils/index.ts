@@ -19,7 +19,13 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
   }
 }
 
-export function getRowStyle(rowIdx: number): CSSProperties {
+export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
+  if (height !== undefined) {
+    return {
+      '--grid-row-start': rowIdx,
+      '--row-height': `${height}px`
+    } as unknown as CSSProperties;
+  }
   return { '--grid-row-start': rowIdx } as unknown as CSSProperties;
 }
 

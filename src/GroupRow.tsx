@@ -18,6 +18,7 @@ export interface GroupRowRendererProps<R, SR>
   rowIdx: number;
   row: GroupRow<R>;
   gridRowStart: number;
+  height: number;
   level: number;
   selectedCellIdx: number | undefined;
   isExpanded: boolean;
@@ -46,6 +47,7 @@ function GroupedRow<R, SR>({
   rowIdx,
   row,
   gridRowStart,
+  height,
   level,
   isExpanded,
   selectedCellIdx,
@@ -78,7 +80,7 @@ function GroupedRow<R, SR>({
           className
         )}
         onClick={handleSelectGroup}
-        style={getRowStyle(gridRowStart)}
+        style={getRowStyle(gridRowStart, height)}
         {...props}
       >
         {viewportColumns.map((column) => (

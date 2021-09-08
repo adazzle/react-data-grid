@@ -6,18 +6,16 @@ import { useFocusRef } from './useFocusRef';
 const rowSelected = css`
   outline: none;
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 0 2px var(--selection-color);
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  > .${cell}:first-child {
-    /* preserve left border on the first frozen cell after scrolling to the right */
-    box-shadow: inset 2px 0 0 0 var(--selection-color);
+  > .${cell} {
+    box-shadow: inset 0 2px 0 0 var(--selection-color), inset 0 -2px 0 0 var(--selection-color);
+    &:first-child {
+      box-shadow: inset 0 2px 0 0 var(--selection-color), inset 0 -2px 0 0 var(--selection-color),
+        inset 2px 0 0 0 var(--selection-color);
+    }
+    &:last-child {
+      box-shadow: inset 0 2px 0 0 var(--selection-color), inset 0 -2px 0 0 var(--selection-color),
+        inset -2px 0 0 0 var(--selection-color);
+    }
   }
 `;
 

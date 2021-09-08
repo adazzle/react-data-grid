@@ -12,7 +12,6 @@ export const cell = css`
   overflow: hidden;
   overflow: clip;
   text-overflow: ellipsis;
-  line-height: var(--row-height);
   outline: none;
 
   &[aria-selected='true'] {

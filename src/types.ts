@@ -137,6 +137,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   gridRowStart: number;
+  height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
