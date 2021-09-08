@@ -109,6 +109,8 @@ function Row<R, SR>(
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR>(
+export default memo(Row) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;
+
+export const RowWithRef = memo(forwardRef(Row)) as <R, SR>(
   props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
