@@ -34,7 +34,6 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   getColSpan,
-  max,
   sign,
   getSelectedCellColSpan
 } from './utils';
