@@ -91,7 +91,7 @@ export function InfiniteScrolling() {
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
-    if (!isAtBottom(event)) return;
+    if (isLoading || !isAtBottom(event)) return;
 
     setIsLoading(true);
 
