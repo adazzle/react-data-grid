@@ -14,5 +14,6 @@ export * from './demos/Grouping';
 export * from './demos/Resizable';
 export * from './demos/VariableRowHeight';
 export * from './demos/MasterDetail';
+export * from './demos/InfiniteScrolling';
 
 export default { title: 'Demos' };

@@ -17,17 +17,6 @@ const highlightClassname = css`
   }
 `;
 
-const loadMoreRowsClassname = css`
-  width: 180px;
-  padding: 8px 16px;
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  color: white;
-  line-height: 35px;
-  background: rgba(0, 0, 0, 0.6);
-`;
-
 export interface Row {
   id: string;
   avatar: string;
@@ -155,55 +144,34 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-function createFakeRowObjectData(index: number): Row {
-  return {
-    id: `id_${index}`,
-    avatar: faker.image.avatar(),
-    email: faker.internet.email(),
-    title: faker.name.prefix(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
-    street: faker.address.streetName(),
-    zipCode: faker.address.zipCode(),
-    date: faker.date.past().toLocaleDateString(),
-    bs: faker.company.bs(),
-    catchPhrase: faker.company.catchPhrase(),
-    companyName: faker.company.companyName(),
-    words: faker.lorem.words(),
-    sentence: faker.lorem.sentence()
-  };
-}
-
-function createRows(numberOfRows: number): Row[] {
+function createRows(): Row[] {
   const rows: Row[] = [];
 
-  for (let i = 0; i < numberOfRows; i++) {
-    rows[i] = createFakeRowObjectData(i);
+  for (let i = 0; i < 2000; i++) {
+    rows.push({
+      id: `id_${i}`,
+      avatar: faker.image.avatar(),
+      email: faker.internet.email(),
+      title: faker.name.prefix(),
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      street: faker.address.streetName(),
+      zipCode: faker.address.zipCode(),
+      date: faker.date.past().toLocaleDateString(),
+      bs: faker.company.bs(),
+      catchPhrase: faker.company.catchPhrase(),
+      companyName: faker.company.companyName(),
+      words: faker.lorem.words(),
+      sentence: faker.lorem.sentence()
+    });
   }
 
   return rows;
 }
 
-function isAtBottom({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean {
-  return currentTarget.clientHeight + currentTarget.scrollTop === currentTarget.scrollHeight;
-}
-
-function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
-  return new Promise((resolve) => {
-    const newRows: Row[] = [];
-
-    for (let i = 0; i < newRowsCount; i++) {
-      newRows[i] = createFakeRowObjectData(i + length);
-    }
-
-    setTimeout(() => resolve(newRows), 1000);
-  });
-}
-
 export function AllFeatures() {
-  const [rows, setRows] = useState(() => createRows(2000));
+  const [rows, setRows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
-  const [isLoading, setIsLoading] = useState(false);
 
   function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
@@ -229,17 +197,6 @@ export function AllFeatures() {
     return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
-  async function handleScroll(event: React.UIEvent<HTMLDivElement>) {
-    if (!isAtBottom(event)) return;
-
-    setIsLoading(true);
-
-    const newRows = await loadMoreRows(50, rows.length);
-
-    setRows([...rows, ...newRows]);
-    setIsLoading(false);
-  }
-
   return (
     <>
       <DataGrid
@@ -251,12 +208,10 @@ export function AllFeatures() {
         onPaste={handlePaste}
         rowHeight={30}
         selectedRows={selectedRows}
-        onScroll={handleScroll}
         onSelectedRowsChange={setSelectedRows}
         className="fill-grid"
         rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
       />
-      {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>}
     </>
   );
 }
