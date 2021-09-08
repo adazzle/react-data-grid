@@ -2,7 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, rowClassname } from './style';
+import { cell, row, rowClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
@@ -22,8 +22,13 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 const summaryRow = css`
   z-index: 3;
 
-  > .${cell} {
+  &.${row} > .${cell} {
     position: sticky;
+  }
+`;
+
+const summaryRowBorderClassname = css`
+  & > .${cell} {
     border-top: 2px solid var(--summary-border-color);
   }
 `;
@@ -74,6 +79,7 @@ function SummaryRow<R, SR>({
         rowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
+        { [summaryRowBorderClassname]: rowIdx === 0 },
         className
       )}
       style={getRowStyle(ariaRowIndex)}

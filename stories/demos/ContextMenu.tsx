@@ -9,8 +9,8 @@ import type { Column, RowRendererProps } from '../../src';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 css`
-  :global() {
-    react-contextmenu-wrapper {
+  @at-root {
+    .react-contextmenu-wrapper {
       display: contents;
     }
 

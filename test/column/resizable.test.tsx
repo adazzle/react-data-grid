@@ -7,19 +7,12 @@ const pointerId = 1;
 // TODO: https://github.com/jsdom/jsdom/issues/2527
 class PointerEvent extends Event {
   pointerId: number | undefined;
-  pointerType: string | undefined;
   clientX: number | undefined;
-  buttons: number | undefined;
 
-  constructor(
-    type: string,
-    { pointerId, pointerType, clientX, buttons, ...rest }: PointerEventInit
-  ) {
+  constructor(type: string, { pointerId, clientX, ...rest }: PointerEventInit) {
     super(type, rest);
     this.pointerId = pointerId;
-    this.pointerType = pointerType;
     this.clientX = clientX;
-    this.buttons = buttons;
   }
 }
 
@@ -51,25 +44,10 @@ function resize<K extends keyof DOMRect>({
   });
   fireEvent.pointerDown(
     column,
-    new PointerEvent('pointerdown', {
-      pointerId,
-      buttons: 1,
-      clientX: clientXStart
-    })
+    new PointerEvent('pointerdown', { pointerId, clientX: clientXStart })
   );
-  fireEvent.pointerMove(
-    column,
-    new PointerEvent('pointermove', {
-      pointerId,
-      clientX: clientXEnd
-    })
-  );
-  fireEvent.pointerUp(
-    column,
-    new PointerEvent('pointerup', {
-      pointerId
-    })
-  );
+  fireEvent.pointerMove(column, new PointerEvent('pointermove', { clientX: clientXEnd }));
+  fireEvent.lostPointerCapture(column, new PointerEvent('lostpointercapture', {}));
 }
 
 const columns: readonly Column<Row>[] = [

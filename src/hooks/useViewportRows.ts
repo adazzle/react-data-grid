@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { floor, max, min } from '../utils';
-import type { GroupRow, RowHeightArgs } from '../types';
+import type { GroupRow, Maybe, RowHeightArgs } from '../types';
 
 type GroupByDictionary<TRow> = Record<
   string,
@@ -17,11 +17,8 @@ interface ViewportRowsArgs<R> {
   clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
-  rowGrouper:
-    | ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>)
-    | undefined
-    | null;
-  expandedGroupIds: ReadonlySet<unknown> | undefined | null;
+  rowGrouper: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>;
+  expandedGroupIds: Maybe<ReadonlySet<unknown>>;
   enableVirtualization: boolean;
 }
 
