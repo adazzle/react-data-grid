@@ -12,7 +12,7 @@ const loadMoreRowsClassname = css`
   right: 8px;
   color: white;
   line-height: 35px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgb(0 0 0 / 0.6);
 `;
 
 interface Row {
