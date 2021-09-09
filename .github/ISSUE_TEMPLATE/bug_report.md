@@ -11,6 +11,8 @@ labels: bug
 1.
 2.
 
+Link to code example:
+
 **Expected behavior** <!-- A clear and concise description of what you expected to happen. -->
 
 **Environment**
