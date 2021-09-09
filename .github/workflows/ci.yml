@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - ign
     paths-ignore:
       - '**.md'
   pull_request:
