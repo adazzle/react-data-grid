@@ -1,13 +1,19 @@
 /** @jest-environment node */
 import { renderToString } from 'react-dom/server';
 import DataGrid from '../src';
+import type { Column } from '../src';
 
-const columns = [
+interface Row {
+  id: number;
+  title: string;
+}
+
+const columns: readonly Column<Row>[] = [
   { key: 'id', name: 'ID' },
   { key: 'title', name: 'Title' }
 ];
 
-const rows = [
+const rows: readonly Row[] = [
   { id: 0, title: 'Example' },
   { id: 1, title: 'Demo' }
 ];
