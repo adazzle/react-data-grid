@@ -22,7 +22,7 @@ function App() {
   return <DataGrid columns={columns} rows={rows} />;
 }
 
-test('basic SSR support', () => {
+test('basic server-side rendering (SSR) support', () => {
   // make sure we're not running in the JSDOM environment
   expect(globalThis.window).not.toBeDefined();
 
