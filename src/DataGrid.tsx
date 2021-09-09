@@ -1,17 +1,10 @@
-import {
-  forwardRef,
-  useState,
-  useRef,
-  useLayoutEffect,
-  useImperativeHandle,
-  useCallback,
-  useMemo
-} from 'react';
+import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname } from './style';
 import {
+  useLayoutEffect,
   useGridDimensions,
   useCalculatedColumns,
   useViewportColumns,
