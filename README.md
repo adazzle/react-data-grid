@@ -16,6 +16,39 @@
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions
 
+## Features
+
+- [React 16.14+ & 17.0+](package.json) support
+- [Evergreen browsers and server-side rendering](browserslist) support
+- Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
+- Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
+- Strictly typed with TypeScript
+- [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)>)
+- Light and dark mode support out of the box. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
+- [Frozen columns](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+- [Column resizing](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+- [Multi-column sorting](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+  - Click on a sortable column header to toggle between its ascending/descending sort order
+  - Ctrl+Click / Meta+Click to sort an additional column
+- [Column spanning](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--column-spanning)
+- [Row selection](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+- [Row grouping](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--grouping)
+- [Summary rows](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+- [Dynamic row heights](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--variable-row-height)
+- [No rows fallback](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--no-rows)
+- [Cell formatting](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+- [Cell editing](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+- [Cell copy / pasting](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--all-features)
+- [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--all-features)
+
+## Links
+
+- [Website](https://adazzle.github.io/react-data-grid/canary/)
+  - [Source code](stories)
+- [Old website for react-data-grid v5](https://adazzle.github.io/react-data-grid/)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+
 ## Install
 
 ```sh
@@ -120,14 +153,6 @@ function App() {
   return <DataGrid columns={columns} rows={rows} />;
 }
 ```
-
-## Documentation
-
-- [Website](https://adazzle.github.io/react-data-grid/canary/)
-  - [Source code](stories)
-- [Old website for react-data-grid v5](https://adazzle.github.io/react-data-grid/)
-- [Changelog](CHANGELOG.md)
-- [Contributing](CONTRIBUTING.md)
 
 ## API
 
