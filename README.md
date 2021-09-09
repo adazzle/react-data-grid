@@ -20,6 +20,7 @@
 
 - [React 16.14+ & 17.0+](package.json) support
 - [Evergreen browsers and server-side rendering](browserslist) support
+- Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
 - Strictly typed with TypeScript
 - [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)>)
