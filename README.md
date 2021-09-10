@@ -122,7 +122,7 @@ function MyGrid() {
 }
 ```
 
-:+1: While optional, setting this prop is recommended for optimal performance as the returned value is used to set the `key` prop on the row elements.
+:bulb: While optional, setting this prop is recommended for optimal performance as the returned value is used to set the `key` prop on the row elements.
 
 ###### `onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>`
 
