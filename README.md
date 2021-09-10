@@ -87,6 +87,8 @@ function App() {
 
 ###### `columns: readonly Column<R, SR>[]`
 
+See [`Column`](#column)
+
 ###### `rows: readonly R[]`
 
 ###### `summaryRows?: Maybe<readonly SR[]>`
@@ -137,7 +139,27 @@ function App() {
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
-###### `rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>`
+###### <span name="rowRenderer">`rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>`</span>
+
+The default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props for example.
+
+```tsx
+import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
+
+function MyRowRenderer(props: RowRendererProps<Row>) {
+  return (
+    <MyContext.Provider value={123}>
+      <Row {...props} />
+    </MyContext.Provider>
+  );
+}
+
+function MyGrid() {
+  return <DataGrid columns={columns} rows={rows} rowRenderer={MyRowRenderer} />;
+}
+```
+
+:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
 
 ###### `noRowsFallback?: React.ReactNode`
 
@@ -165,7 +187,12 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`RowRendererProps`](#rowrendererprops).
+See [`rowRenderer`](#rowRenderer)
+
+##### Props
+
+See [`RowRendererProps`](#rowrendererprops)
+
 The `ref` prop is supported.
 
 #### `<SortableHeaderCell />`
