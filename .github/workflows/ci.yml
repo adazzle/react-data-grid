@@ -72,5 +72,5 @@ jobs:
           git rm -r .
           mv ../storybook-static/* .
           git add .
-          git commit --allow-empty -m "gh-pages deployment"
+          git commit -m "gh-pages deployment" || echo "Nothing to commit"
           git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
