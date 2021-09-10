@@ -87,21 +87,77 @@ function App() {
 
 ###### `columns: readonly Column<R, SR>[]`
 
-See [`Column`](#column)
+See [`Column`](#column).
+
+An array describing the grid's columns.
+
+:warning: Passing a new `columns` array will trigger a re-render for the whole grid, avoid changing it as much as possible for optimal performance.
 
 ###### `rows: readonly R[]`
 
+An array of rows, the rows data can be of any type.
+
 ###### `summaryRows?: Maybe<readonly SR[]>`
+
+An optional array of summary rows, usually used to display total values for example.
 
 ###### `rowKeyGetter?: Maybe<(row: R) => K>`
 
+A function returning a unique key/identifier per row. `rowKeyGetter` is required for row selection to be work.
+
+```tsx
+import DataGrid from 'react-data-grid';
+
+interface Row {
+  id: number;
+  name: string;
+}
+
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
+function MyGrid() {
+  return <DataGrid columns={columns} rows={rows} rowKeyGetter={rowKeyGetter} />;
+}
+```
+
+:+1: While optional, setting this prop is recommended for optimal performance as the returned value is used to set the `key` prop on the row elements.
+
 ###### `onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>`
+
+A function receiving row updates.
+The first parameter is a new rows array with both the updated rows and the other untouched rows.
+The second parameter is an object with an `indexes` array highlighting which rows have changed by their index, and the `column` where the change happened.
+
+```tsx
+import { useState } from 'react';
+import DataGrid from 'react-data-grid';
+
+function MyGrid() {
+  const [rows, setRows] = useState(initialRows);
+
+  return <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />;
+}
+```
 
 ###### `rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>`
 
+**Default:** `35` pixels
+
+Either a number defining the height of row in pixels, or a function returning dynamic row heights.
+
 ###### `headerRowHeight?: Maybe<number>`
 
+**Default:** `35` pixels
+
+A number defining the height of the header row.
+
 ###### `summaryRowHeight?: Maybe<number>`
+
+**Default:** `35` pixels
+
+A number defining the height of summary rows.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
