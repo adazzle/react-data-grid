@@ -103,7 +103,7 @@ An optional array of summary rows, usually used to display total values for exam
 
 ###### `rowKeyGetter?: Maybe<(row: R) => K>`
 
-A function returning a unique key/identifier per row. `rowKeyGetter` is required for row selection to be work.
+A function returning a unique key/identifier per row. `rowKeyGetter` is required for row selection to work.
 
 ```tsx
 import DataGrid from 'react-data-grid';
