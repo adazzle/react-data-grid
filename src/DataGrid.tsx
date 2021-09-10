@@ -1141,11 +1141,6 @@ function DataGrid<R, SR, K extends Key>(
   );
 }
 
-/**
- * Check the README for API documentation:
- * https://github.com/adazzle/react-data-grid/blob/main/README.md#api
- * @see {@link DataGridProps}
- */
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
 ) => JSX.Element;
