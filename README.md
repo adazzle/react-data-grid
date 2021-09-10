@@ -43,7 +43,7 @@
 
 ## Links
 
-- [Website](https://adazzle.github.io/react-data-grid/)
+- [Examples website](https://adazzle.github.io/react-data-grid/)
   - [Source code](stories)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
