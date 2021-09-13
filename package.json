@@ -92,7 +92,7 @@
     "postcss": "^8.3.6",
     "postcss-loader": "^6.1.1",
     "postcss-nested": "^5.0.6",
-    "prettier": "2.3.2",
+    "prettier": "2.4.0",
     "react": "^17.0.2",
     "react-contextmenu": "^2.14.0",
     "react-dnd": "^14.0.2",
