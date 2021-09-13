@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
@@ -68,6 +69,14 @@ interface Row {
   account: string;
   version: string;
   available: boolean;
+}
+
+function ProgressFormatter({ value }: { value: number }) {
+  return (
+    <>
+      <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
+    </>
+  );
 }
 
 function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
@@ -142,35 +151,33 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       name: 'Completion',
       width: 110,
       formatter(props) {
-        const value = props.row.progress;
-        return (
-          <>
-            <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
-          </>
-        );
+        return <ProgressFormatter value={props.row.progress} />;
       },
       editor({ row, onRowChange, onClose }) {
         return (
-          <div className={dialogContainerClassname}>
-            <dialog open>
-              <input
-                autoFocus
-                type="range"
-                min="0"
-                max="100"
-                value={row.progress}
-                onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
-              />
-              <menu>
-                <button onClick={() => onClose()}>Cancel</button>
-                <button onClick={() => onClose(true)}>Save</button>
-              </menu>
-            </dialog>
-          </div>
+          <>
+            {createPortal(
+              <div className={dialogContainerClassname}>
+                <dialog open>
+                  <input
+                    autoFocus
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={row.progress}
+                    onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
+                  />
+                  <menu>
+                    <button onClick={() => onClose()}>Cancel</button>
+                    <button onClick={() => onClose(true)}>Save</button>
+                  </menu>
+                </dialog>
+              </div>,
+              document.body
+            )}
+            <ProgressFormatter value={row.progress} />
+          </>
         );
-      },
-      editorOptions: {
-        createPortal: true
       }
     },
     {

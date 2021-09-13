@@ -39,8 +39,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly editor?: Maybe<React.ComponentType<EditorProps<TRow, TSummaryRow>>>;
   readonly editorOptions?: Maybe<{
     /** @default false */
-    readonly createPortal?: Maybe<boolean>;
-    /** @default false */
     readonly editOnClick?: Maybe<boolean>;
     /** Prevent default to cancel editing */
     readonly onCellKeyDown?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => void>;
@@ -91,7 +89,6 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
 
 interface SharedEditorProps<TRow> {
   row: TRow;
-  editorPortalTarget: Element;
   onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }

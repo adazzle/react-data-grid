@@ -219,8 +219,6 @@ function MyGrid() {
 
 ###### `noRowsFallback?: React.ReactNode`
 
-###### `editorPortalTarget?: Maybe<Element>`
-
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
 
 ###### `className?: string | undefined`
