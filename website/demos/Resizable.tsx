@@ -23,10 +23,8 @@ for (let i = 0; i < 50; i++) {
   });
 }
 
-export function ResizableGrid() {
+export default function ResizableGrid() {
   return (
     <DataGrid columns={columns} rows={rows} className="fill-grid" style={{ resize: 'both' }} />
   );
 }
-
-ResizableGrid.storyName = 'Resizable Grid';
