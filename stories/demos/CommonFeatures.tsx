@@ -71,14 +71,6 @@ interface Row {
   available: boolean;
 }
 
-function ProgressFormatter({ value }: { value: number }) {
-  return (
-    <>
-      <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
-    </>
-  );
-}
-
 function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
@@ -151,9 +143,14 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       name: 'Completion',
       width: 110,
       formatter(props) {
-        return <ProgressFormatter value={props.row.progress} />;
+        const value = props.row.progress;
+        return (
+          <>
+            <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
+          </>
+        );
       },
-      editor({ row, onRowChange, onClose }) {
+      editor({ row, onRowChange, onClose, getFormattedValue }) {
         return (
           <>
             {createPortal(
@@ -175,7 +172,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
               </div>,
               document.body
             )}
-            <ProgressFormatter value={row.progress} />
+            {getFormattedValue()}
           </>
         );
       }

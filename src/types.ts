@@ -87,14 +87,12 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   toggleGroup: () => void;
 }
 
-interface SharedEditorProps<TRow> {
+export interface EditorProps<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
-}
-
-export interface EditorProps<TRow, TSummaryRow = unknown> extends SharedEditorProps<TRow> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
+  getFormattedValue: () => React.ReactElement;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {

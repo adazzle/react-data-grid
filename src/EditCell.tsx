@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
-import type { CellRendererProps, EditorProps } from './types';
+import type { CellRendererProps, EditorProps, Omit } from './types';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -29,7 +29,8 @@ const cellEditing = css`
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
-type EditCellProps<R, SR> = EditorProps<R, SR> & SharedCellRendererProps<R, SR>;
+type EditCellProps<R, SR> = Omit<EditorProps<R, SR>, 'getFormattedValue'> &
+  SharedCellRendererProps<R, SR>;
 
 export default function EditCell<R, SR>({
   column,
@@ -72,13 +73,6 @@ export default function EditCell<R, SR>({
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
-  let content;
-  if (column.editor != null) {
-    content = (
-      <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
-    );
-  }
-
   return (
     <div
       role="gridcell"
@@ -89,7 +83,24 @@ export default function EditCell<R, SR>({
       style={getCellStyle(column, colSpan)}
       onMouseDownCapture={cancelFrameRequest}
     >
-      {content}
+      {column.editor != null && (
+        <column.editor
+          column={column}
+          row={row}
+          onRowChange={onRowChange}
+          onClose={onClose}
+          getFormattedValue={() => {
+            return (
+              <column.formatter
+                column={column}
+                row={row}
+                isCellSelected
+                onRowChange={onRowChange}
+              />
+            );
+          }}
+        />
+      )}
     </div>
   );
 }
