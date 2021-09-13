@@ -4,8 +4,14 @@ import { css } from '@linaria/core';
 const navClassname = css`
   display: flex;
   flex-direction: column;
-  border-left: 4px solid hsl(210deg 50% 40%);
   white-space: nowrap;
+
+  @media (prefers-color-scheme: light) {
+    border-left: 4px solid hsl(210deg 50% 80%);
+  }
+  @media (prefers-color-scheme: dark) {
+    border-left: 4px solid hsl(210deg 50% 40%);
+  }
 
   h1,
   h2 {
@@ -13,24 +19,41 @@ const navClassname = css`
   }
 
   a {
-    color: #fff;
+    color: inherit;
     font-size: 14px;
     line-height: 22px;
     text-decoration: none;
     padding: 0 16px;
+    transition: 0.1s background-color;
 
     &:hover {
-      background-color: hsl(210deg 50% 30%);
+      @media (prefers-color-scheme: light) {
+        background-color: hsl(210deg 50% 90%);
+      }
+      @media (prefers-color-scheme: dark) {
+        background-color: hsl(210deg 50% 30%);
+      }
     }
   }
 `;
 
 const activeNavClassname = css`
   font-weight: 500;
-  background-color: hsl(210deg 50% 40%);
+
+  @media (prefers-color-scheme: light) {
+    background-color: hsl(210deg 50% 80%);
+  }
+  @media (prefers-color-scheme: dark) {
+    background-color: hsl(210deg 50% 40%);
+  }
 
   a&:hover {
-    background-color: hsl(210deg 50% 50%);
+    @media (prefers-color-scheme: light) {
+      background-color: hsl(210deg 50% 70%);
+    }
+    @media (prefers-color-scheme: dark) {
+      background-color: hsl(210deg 50% 50%);
+    }
   }
 `;
 
