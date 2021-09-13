@@ -652,7 +652,10 @@ const rules = {
   '@typescript-eslint/no-redeclare': 2,
   '@typescript-eslint/no-shadow': 0,
   '@typescript-eslint/no-throw-literal': 2,
-  '@typescript-eslint/no-unused-expressions': [2, { allowShortCircuit: true }],
+  '@typescript-eslint/no-unused-expressions': [
+    2,
+    { allowShortCircuit: true, allowTaggedTemplates: true }
+  ],
   '@typescript-eslint/no-unused-vars': [1, { ignoreRestSiblings: true }],
   '@typescript-eslint/no-use-before-define': 0,
   '@typescript-eslint/no-useless-constructor': 1,

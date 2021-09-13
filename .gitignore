@@ -1,8 +1,8 @@
 /.linaria-cache
 /coverage
+/dist
 /lib
 /node_modules
-/storybook-static
 /tmp
 /.eslintcache
 /package-lock.json

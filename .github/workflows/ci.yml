@@ -38,7 +38,7 @@ jobs:
         run: npm t -- --coverage --colors
       - uses: codecov/codecov-action@v2
 
-  storybook:
+  website:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -57,7 +57,7 @@ jobs:
       - name: Build
         run: |
           npm i
-          npm run build-storybook
+          npm run build:website
       - name: Set up git user
         if: github.event_name == 'push'
         run: |
@@ -71,7 +71,7 @@ jobs:
           cd gh-pages
           git rm -r .
           git checkout gh-pages -- old
-          mv ../storybook-static/* .
+          mv ../dist/* .
           git add .
           git commit -m "gh-pages deployment" || echo "Nothing to commit"
           git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git

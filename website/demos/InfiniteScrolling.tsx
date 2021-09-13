@@ -86,7 +86,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
   });
 }
 
-export function InfiniteScrolling() {
+export default function InfiniteScrolling() {
   const [rows, setRows] = useState(() => createRows(50));
   const [isLoading, setIsLoading] = useState(false);
 
@@ -116,5 +116,3 @@ export function InfiniteScrolling() {
     </>
   );
 }
-
-InfiniteScrolling.storyName = 'Infinite Scrolling';

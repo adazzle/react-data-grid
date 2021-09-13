@@ -319,7 +319,7 @@ function getComparator(sortColumn: string): Comparator {
   }
 }
 
-export function CommonFeatures() {
+export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -414,5 +414,3 @@ function ExportButton({
     </button>
   );
 }
-
-CommonFeatures.storyName = 'Common Features';
