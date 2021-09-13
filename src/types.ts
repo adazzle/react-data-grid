@@ -92,7 +92,6 @@ export interface EditorProps<TRow, TSummaryRow = unknown> {
   row: TRow;
   onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
-  getFormattedValue: () => React.ReactElement;
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {

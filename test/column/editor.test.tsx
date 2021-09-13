@@ -272,20 +272,25 @@ function EditorTest({
         key: 'col2',
         name: 'Col2',
         editable,
-        editor(p) {
+        editor({ row, column, onRowChange }) {
           const editor = (
             <input
               autoFocus
               aria-label="col2-editor"
-              value={p.row.col2}
-              onChange={(e) => p.onRowChange({ ...p.row, col2: e.target.value })}
+              value={row.col2}
+              onChange={(e) => onRowChange({ ...row, col2: e.target.value })}
             />
           );
 
           return createEditorPortal ? (
             <>
               {createPortal(editor, document.body)}
-              {p.getFormattedValue()}
+              <column.formatter
+                column={column}
+                row={row}
+                isCellSelected
+                onRowChange={onRowChange}
+              />
             </>
           ) : (
             editor

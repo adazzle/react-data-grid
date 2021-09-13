@@ -150,7 +150,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
           </>
         );
       },
-      editor({ row, onRowChange, onClose, getFormattedValue }) {
+      editor({ row, column, onRowChange, onClose }) {
         return (
           <>
             {createPortal(
@@ -172,7 +172,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
               </div>,
               document.body
             )}
-            {getFormattedValue()}
+            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
           </>
         );
       }
