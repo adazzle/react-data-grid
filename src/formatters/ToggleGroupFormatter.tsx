@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 import type { GroupFormatterProps } from '../types';
-import { useFocusRef } from '../hooks';
+import { useFocusRef } from '../hooks/useFocusRef';
 
 const groupCellContent = css`
   outline: none;

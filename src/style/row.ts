@@ -9,7 +9,7 @@ export const row = css`
   position: absolute;
   left: 0;
   width: var(--row-width);
-  height: var(--row-height); // needed on Firefox
+  height: var(--row-height); /* needed on Firefox */
   line-height: var(--row-height);
   background-color: var(--background-color);
 

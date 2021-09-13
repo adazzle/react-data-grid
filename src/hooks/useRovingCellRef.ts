@@ -1,4 +1,5 @@
-import { useRef, useLayoutEffect, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useLayoutEffect } from './useLayoutEffect';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
 export function useRovingCellRef(isSelected: boolean) {

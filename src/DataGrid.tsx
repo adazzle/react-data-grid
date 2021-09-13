@@ -1,17 +1,10 @@
-import {
-  forwardRef,
-  useState,
-  useRef,
-  useLayoutEffect,
-  useImperativeHandle,
-  useCallback,
-  useMemo
-} from 'react';
+import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import { rootClassname, viewportDraggingClassname } from './style';
 import {
+  useLayoutEffect,
   useGridDimensions,
   useCalculatedColumns,
   useViewportColumns,
@@ -50,7 +43,8 @@ import type {
   PasteEvent,
   CellNavigationMode,
   SortColumn,
-  RowHeightArgs
+  RowHeightArgs,
+  Maybe
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -82,7 +76,7 @@ export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
-  selectCell: (position: Position, enableEditor?: boolean | null) => void;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 type SharedDivProps = Pick<
@@ -102,68 +96,79 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: readonly SR[] | null;
+  summaryRows?: Maybe<readonly SR[]>;
   /** The getter should return a unique key for each row */
-  rowKeyGetter?: ((row: R) => K) | null;
-  onRowsChange?: ((rows: R[], data: RowsChangeData<R, SR>) => void) | null;
+  rowKeyGetter?: Maybe<(row: R) => K>;
+  onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>;
 
   /**
    * Dimensions props
    */
-  /** The height of each row in pixels */
-  rowHeight?: number | ((args: RowHeightArgs<R>) => number) | null;
-  /** The height of the header row in pixels */
-  headerRowHeight?: number | null;
-  /** The height of each summary row in pixels */
-  summaryRowHeight?: number | null;
+  /**
+   * The height of each row in pixels
+   * @default 35
+   */
+  rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
+  /**
+   * The height of the header row in pixels
+   * @default 35
+   */
+  headerRowHeight?: Maybe<number>;
+  /**
+   * The height of each summary row in pixels
+   * @default 35
+   */
+  summaryRowHeight?: Maybe<number>;
 
   /**
    * Feature props
    */
   /** Set of selected row keys */
-  selectedRows?: ReadonlySet<K> | null;
+  selectedRows?: Maybe<ReadonlySet<K>>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?: ((selectedRows: Set<K>) => void) | null;
-  /**Used for multi column sorting */
-  sortColumns?: readonly SortColumn[] | null;
-  onSortColumnsChange?: ((sortColumns: SortColumn[]) => void) | null;
-  defaultColumnOptions?: DefaultColumnOptions<R, SR> | null;
-  groupBy?: readonly string[] | null;
-  rowGrouper?: ((rows: readonly R[], columnKey: string) => Record<string, readonly R[]>) | null;
-  expandedGroupIds?: ReadonlySet<unknown> | null;
-  onExpandedGroupIdsChange?: ((expandedGroupIds: Set<unknown>) => void) | null;
-  onFill?: ((event: FillEvent<R>) => R) | null;
-  onPaste?: ((event: PasteEvent<R>) => R) | null;
+  onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>;
+  /** Used for multi column sorting */
+  sortColumns?: Maybe<readonly SortColumn[]>;
+  onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
+  defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>;
+  groupBy?: Maybe<readonly string[]>;
+  rowGrouper?: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>;
+  expandedGroupIds?: Maybe<ReadonlySet<unknown>>;
+  onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>;
+  onFill?: Maybe<(event: FillEvent<R>) => R>;
+  onPaste?: Maybe<(event: PasteEvent<R>) => R>;
 
   /**
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
-  onRowDoubleClick?: ((row: R, column: CalculatedColumn<R, SR>) => void) | null;
+  onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Called when the grid is scrolled */
-  onScroll?: ((event: React.UIEvent<HTMLDivElement>) => void) | null;
+  onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
-  onColumnResize?: ((idx: number, width: number) => void) | null;
+  onColumnResize?: Maybe<(idx: number, width: number) => void>;
   /** Function called whenever selected cell is changed */
-  onSelectedCellChange?: ((position: Position) => void) | null;
+  onSelectedCellChange?: Maybe<(position: Position) => void>;
 
   /**
    * Toggles and modes
    */
-  cellNavigationMode?: CellNavigationMode | null;
-  enableVirtualization?: boolean | null;
+  /** @default 'NONE' */
+  cellNavigationMode?: Maybe<CellNavigationMode>;
+  /** @default true */
+  enableVirtualization?: Maybe<boolean>;
 
   /**
    * Miscellaneous
    */
-  rowRenderer?: React.ComponentType<RowRendererProps<R, SR>> | null;
+  rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
   noRowsFallback?: React.ReactNode;
   /** The node where the editor portal should mount. */
-  editorPortalTarget?: Element | null;
-  rowClass?: ((row: R) => string | undefined | null) | null;
-  'data-testid'?: string;
+  editorPortalTarget?: Maybe<Element>;
+  rowClass?: Maybe<(row: R) => Maybe<string>>;
+  'data-testid'?: Maybe<string>;
 }
 
 /**
@@ -344,7 +349,7 @@ function DataGrid<R, SR, K extends Key>(
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectViewportCellLatest = useLatestFunc(
-    (row: R, column: CalculatedColumn<R, SR>, enableEditor: boolean | undefined | null) => {
+    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       const rowIdx = rows.indexOf(row);
       selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
@@ -352,8 +357,8 @@ function DataGrid<R, SR, K extends Key>(
   const selectGroupLatest = useLatestFunc((rowIdx: number) => {
     selectCell({ rowIdx, idx: -1 });
   });
-  const selectHeaderCellLatest = useLatestFunc((column: CalculatedColumn<R, SR>) => {
-    selectCell({ rowIdx: -1, idx: column.idx });
+  const selectHeaderCellLatest = useLatestFunc((idx: number) => {
+    selectCell({ rowIdx: -1, idx });
   });
   const selectSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
@@ -485,15 +490,6 @@ function DataGrid<R, SR, K extends Key>(
       newExpandedGroupIds.add(expandedGroupId);
     }
     onExpandedGroupIdsChange(newExpandedGroupIds);
-  }
-
-  function onGridFocus() {
-    // Tabbing into the grid should initiate keyboard navigation
-    const initialPosition: SelectCellState = { idx: 0, rowIdx: -1, mode: 'SELECT' };
-    if (isCellWithinSelectionBounds(initialPosition)) {
-      setSelectedPosition(initialPosition);
-    }
-    // otherwise browser automatically scrolls to the selected cell
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
@@ -642,7 +638,7 @@ function DataGrid<R, SR, K extends Key>(
     if (isSelectable && shiftKey && key === ' ') {
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
       const rowKey = rowKeyGetter(row);
-      selectRow({ row, checked: !selectedRows!.has(rowKey), isShiftClick: false });
+      selectRow({ row, checked: !selectedRows.has(rowKey), isShiftClick: false });
       // do not scroll
       event.preventDefault();
       return;
@@ -707,7 +703,7 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
-  function selectCell(position: Position, enableEditor?: boolean | null): void {
+  function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
@@ -1001,7 +997,7 @@ function DataGrid<R, SR, K extends Key>(
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected =
-          isSelectable && row.childRows.every((cr) => selectedRows?.has(rowKeyGetter!(cr)));
+          isSelectable && row.childRows.every((cr) => selectedRows.has(rowKeyGetter!(cr)));
         rowElements.push(
           <GroupRowRenderer
             aria-level={row.level + 1} // aria-level is 1-based
@@ -1121,18 +1117,12 @@ function DataGrid<R, SR, K extends Key>(
         lastFrozenColumnIndex={lastFrozenColumnIndex}
         selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         selectCell={selectHeaderCellLatest}
+        shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
       />
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
       ) : (
         <>
-          {/*
-            An extra div is needed initially to set the focus
-            on the grid when there is no selected cell.
-           */}
-          {!selectedCellIsWithinSelectionBounds && (
-            <div className={focusSinkClassname} tabIndex={0} onFocus={onGridFocus} />
-          )}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}

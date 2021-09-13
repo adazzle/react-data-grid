@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, Column } from '../types';
+import type { CalculatedColumn, Column, Maybe } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
@@ -17,7 +17,7 @@ interface ColumnMetric {
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
-  rawGroupBy: readonly string[] | undefined | null;
+  rawGroupBy: Maybe<readonly string[]>;
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;

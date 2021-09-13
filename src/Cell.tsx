@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import type { RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
@@ -98,6 +97,4 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(Cell) as <R, SR>(
-  props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
-) => JSX.Element;
+export default memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => JSX.Element;

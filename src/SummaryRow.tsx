@@ -2,7 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, rowClassname } from './style';
+import { cell, row, rowClassname } from './style';
 import { getColSpan } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
@@ -20,13 +20,17 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 }
 
 const summaryRow = css`
-  position: sticky;
-  z-index: 3;
-  grid-template-rows: var(--summary-row-height);
-  height: var(--summary-row-height); // needed on Firefox
-  line-height: var(--summary-row-height);
+  &.${row} {
+    position: sticky;
+    z-index: 3;
+    grid-template-rows: var(--summary-row-height);
+    height: var(--summary-row-height); /* needed on Firefox */
+    line-height: var(--summary-row-height);
+  }
+`;
 
-  > .${cell} {
+const summaryRowBorderClassname = css`
+  & > .${cell} {
     border-top: 2px solid var(--summary-border-color);
   }
 `;
@@ -76,6 +80,7 @@ function SummaryRow<R, SR>({
         rowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
+        { [summaryRowBorderClassname]: rowIdx === 0 },
         className
       )}
       style={{ bottom }}

@@ -1,4 +1,5 @@
-import { useRef, useState, useLayoutEffect } from 'react';
+import { useRef, useState } from 'react';
+import { useLayoutEffect } from './useLayoutEffect';
 
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
