@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { render } from 'react-dom';
 import { css } from '@linaria/core';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
 
 import Nav from './Nav';
 
@@ -87,7 +87,7 @@ function Root() {
       <main className={mainClassname}>
         <Suspense fallback="Loading...">
           <Switch>
-            <Route exact path="/" />
+            <Redirect exact from="/" to="/common-features" />
             <Route exact path="/common-features">
               <CommonFeatures />
             </Route>
