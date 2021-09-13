@@ -32,7 +32,7 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-export function NoRows() {
+export default function NoRows() {
   const [selectedRows, onSelectedRowsChange] = useState((): ReadonlySet<number> => new Set());
 
   return (

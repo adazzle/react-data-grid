@@ -31,6 +31,7 @@ export default (env, { mode }) => {
 
     stats: {
       assets: false,
+      entrypoints: false,
       modules: false
     },
 

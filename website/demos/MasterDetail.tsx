@@ -99,7 +99,7 @@ const departmentColumns: readonly Column<DepartmentRow>[] = [
   { key: 'department', name: 'Department' }
 ];
 
-export function MasterDetailStory() {
+export default function MasterDetail() {
   const [rows, setRows] = useState(createDepartments);
 
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {

@@ -13,7 +13,7 @@ function CellFormatter(props: FormatterProps<Row>) {
   );
 }
 
-export function MillionCells() {
+export default function MillionCells() {
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 

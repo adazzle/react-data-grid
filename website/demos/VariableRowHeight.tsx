@@ -14,7 +14,7 @@ function CellFormatter(props: FormatterProps<Row>) {
   );
 }
 
-export function VariableRowHeight() {
+export default function VariableRowHeight() {
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 

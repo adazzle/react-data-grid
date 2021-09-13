@@ -124,7 +124,7 @@ function RowRenderer(props: RowRendererProps<Row>) {
   );
 }
 
-export function ContextMenuStory() {
+export default function ContextMenuDemo() {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 

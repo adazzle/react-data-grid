@@ -54,7 +54,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export function RowsReordering() {
+export default function RowsReordering() {
   const [rows, setRows] = useState(createRows);
 
   const RowRenderer = useCallback((props: RowRendererProps<Row>) => {
