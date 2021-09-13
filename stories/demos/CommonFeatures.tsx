@@ -172,7 +172,18 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
               </div>,
               document.body
             )}
-            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
+            <div
+              className={css`
+                padding: 0 8px;
+              `}
+            >
+              <column.formatter
+                column={column}
+                row={row}
+                isCellSelected
+                onRowChange={onRowChange}
+              />
+            </div>
           </>
         );
       }
