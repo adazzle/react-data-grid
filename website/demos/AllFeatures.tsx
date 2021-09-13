@@ -169,7 +169,7 @@ function createRows(): Row[] {
   return rows;
 }
 
-export function AllFeatures() {
+export default function AllFeatures() {
   const [rows, setRows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -215,5 +215,3 @@ export function AllFeatures() {
     </>
   );
 }
-
-AllFeatures.storyName = 'All Features';

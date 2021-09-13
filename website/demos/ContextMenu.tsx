@@ -7,7 +7,6 @@ import { css } from '@linaria/core';
 import DataGrid, { Row as GridRow } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 css`
   @at-root {
     .react-contextmenu-wrapper {
@@ -129,7 +128,7 @@ function RowRenderer(props: RowRendererProps<Row>) {
   );
 }
 
-export function ContextMenuStory() {
+export default function ContextMenuDemo() {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 
@@ -178,5 +177,3 @@ export function ContextMenuStory() {
     </>
   );
 }
-
-ContextMenuStory.storyName = 'Context Menu';

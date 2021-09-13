@@ -23,29 +23,29 @@
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
 - Strictly typed with TypeScript
-- [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)>)
+- [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/#/common-features)>)
 - Light and dark mode support out of the box. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
-- [Frozen columns](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
-- [Column resizing](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
-- [Multi-column sorting](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
+- [Frozen columns](https://adazzle.github.io/react-data-grid/#/common-features)
+- [Column resizing](https://adazzle.github.io/react-data-grid/#/common-features)
+- [Multi-column sorting](https://adazzle.github.io/react-data-grid/#/common-features)
   - Click on a sortable column header to toggle between its ascending/descending sort order
   - Ctrl+Click / Meta+Click to sort an additional column
-- [Column spanning](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--column-spanning)
-- [Row selection](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
-- [Row grouping](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--grouping)
-- [Summary rows](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
-- [Dynamic row heights](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--variable-row-height)
-- [No rows fallback](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--no-rows)
-- [Cell formatting](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
-- [Cell editing](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--common-features)
-- [Cell copy / pasting](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--all-features)
-- [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--all-features)
+- [Column spanning](https://adazzle.github.io/react-data-grid/#/column-spanning)
+- [Row selection](https://adazzle.github.io/react-data-grid/#/common-features)
+- [Row grouping](https://adazzle.github.io/react-data-grid/#/grouping)
+- [Summary rows](https://adazzle.github.io/react-data-grid/#/common-features)
+- [Dynamic row heights](https://adazzle.github.io/react-data-grid/#/variable-row-height)
+- [No rows fallback](https://adazzle.github.io/react-data-grid/#/no-rows)
+- [Cell formatting](https://adazzle.github.io/react-data-grid/#/common-features)
+- [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
+- [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
+- [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
 
 ## Links
 
-- [Website](https://adazzle.github.io/react-data-grid/canary/)
-  - [Source code](stories)
-- [Old website for react-data-grid v5](https://adazzle.github.io/react-data-grid/)
+- [Examples website](https://adazzle.github.io/react-data-grid/)
+  - [Source code](website)
+- [Old website for react-data-grid v6](https://adazzle.github.io/react-data-grid/old/)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
@@ -87,19 +87,77 @@ function App() {
 
 ###### `columns: readonly Column<R, SR>[]`
 
+See [`Column`](#column).
+
+An array describing the grid's columns.
+
+:warning: Passing a new `columns` array will trigger a re-render for the whole grid, avoid changing it as much as possible for optimal performance.
+
 ###### `rows: readonly R[]`
+
+An array of rows, the rows data can be of any type.
 
 ###### `summaryRows?: Maybe<readonly SR[]>`
 
+An optional array of summary rows, usually used to display total values for example.
+
 ###### `rowKeyGetter?: Maybe<(row: R) => K>`
+
+A function returning a unique key/identifier per row. `rowKeyGetter` is required for row selection to work.
+
+```tsx
+import DataGrid from 'react-data-grid';
+
+interface Row {
+  id: number;
+  name: string;
+}
+
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
+function MyGrid() {
+  return <DataGrid columns={columns} rows={rows} rowKeyGetter={rowKeyGetter} />;
+}
+```
+
+:bulb: While optional, setting this prop is recommended for optimal performance as the returned value is used to set the `key` prop on the row elements.
 
 ###### `onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>`
 
+A function receiving row updates.
+The first parameter is a new rows array with both the updated rows and the other untouched rows.
+The second parameter is an object with an `indexes` array highlighting which rows have changed by their index, and the `column` where the change happened.
+
+```tsx
+import { useState } from 'react';
+import DataGrid from 'react-data-grid';
+
+function MyGrid() {
+  const [rows, setRows] = useState(initialRows);
+
+  return <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />;
+}
+```
+
 ###### `rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>`
+
+**Default:** `35` pixels
+
+Either a number defining the height of row in pixels, or a function returning dynamic row heights.
 
 ###### `headerRowHeight?: Maybe<number>`
 
+**Default:** `35` pixels
+
+A number defining the height of the header row.
+
 ###### `summaryRowHeight?: Maybe<number>`
+
+**Default:** `35` pixels
+
+A number defining the height of summary rows.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
@@ -137,7 +195,27 @@ function App() {
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
-###### `rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>`
+###### <span name="rowRenderer">`rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>`</span>
+
+The default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props for example.
+
+```tsx
+import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
+
+function MyRowRenderer(props: RowRendererProps<Row>) {
+  return (
+    <MyContext.Provider value={123}>
+      <Row {...props} />
+    </MyContext.Provider>
+  );
+}
+
+function MyGrid() {
+  return <DataGrid columns={columns} rows={rows} rowRenderer={MyRowRenderer} />;
+}
+```
+
+:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
 
 ###### `noRowsFallback?: React.ReactNode`
 
@@ -165,7 +243,12 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`RowRendererProps`](#rowrendererprops).
+See [`rowRenderer`](#rowRenderer)
+
+##### Props
+
+See [`RowRendererProps`](#rowrendererprops)
+
 The `ref` prop is supported.
 
 #### `<SortableHeaderCell />`

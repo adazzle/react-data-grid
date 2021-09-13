@@ -111,7 +111,7 @@ function reducer(rows: Row[], { type, id }: Action): Row[] {
 
 const defaultRows = createRows();
 
-export function TreeView() {
+export default function TreeView() {
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
   const columns: Column<Row>[] = useMemo(() => {
@@ -179,5 +179,3 @@ export function TreeView() {
     </>
   );
 }
-
-TreeView.storyName = 'Tree View';
