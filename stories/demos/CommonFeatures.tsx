@@ -154,7 +154,14 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         return (
           <>
             {createPortal(
-              <div className={dialogContainerClassname}>
+              <div
+                className={dialogContainerClassname}
+                onKeyDown={(event) => {
+                  if (event.key === 'Escape') {
+                    onClose();
+                  }
+                }}
+              >
                 <dialog open>
                   <input
                     autoFocus
