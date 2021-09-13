@@ -75,7 +75,7 @@ function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
   }
 }
 
-export function HeaderFilters() {
+export default function HeaderFilters() {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filter>({
     task: '',

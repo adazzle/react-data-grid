@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
+
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
 
 type Row = number;
-const rows: readonly Row[] = [...Array(1000).keys()];
+const rows: readonly Row[] = [...Array(500).keys()];
 
 function CellFormatter(props: FormatterProps<Row>) {
   return (
@@ -13,11 +14,11 @@ function CellFormatter(props: FormatterProps<Row>) {
   );
 }
 
-export function MillionCells() {
+export default function VariableRowHeight() {
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 30; i++) {
       const key = String(i);
       columns.push({
         key,
@@ -31,7 +32,10 @@ export function MillionCells() {
     return columns;
   }, []);
 
-  return <DataGrid columns={columns} rows={rows} rowHeight={22} className="fill-grid" />;
+  return <DataGrid columns={columns} rows={rows} rowHeight={rowHeight} className="fill-grid" />;
 }
 
-MillionCells.storyName = 'A Million Cells';
+function rowHeight() {
+  // should be based on the content of the row
+  return 25 + Math.round(Math.random() * 75);
+}

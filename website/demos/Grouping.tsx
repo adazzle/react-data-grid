@@ -140,7 +140,7 @@ function createRows(): readonly Row[] {
 
 const options = ['country', 'year', 'sport', 'athlete'] as const;
 
-export function Grouping() {
+export default function Grouping() {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([
@@ -198,5 +198,3 @@ export function Grouping() {
     </div>
   );
 }
-
-Grouping.storyName = 'Grouping';
