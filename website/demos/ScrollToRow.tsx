@@ -49,5 +49,3 @@ export function ScrollToRow() {
     </>
   );
 }
-
-ScrollToRow.storyName = 'Scroll To Row';

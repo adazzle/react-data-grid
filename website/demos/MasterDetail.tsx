@@ -178,5 +178,3 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
 function rowKeyGetter(row: DepartmentRow | ProductRow) {
   return row.id;
 }
-
-MasterDetailStory.storyName = 'Master Detail';

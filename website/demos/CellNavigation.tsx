@@ -109,5 +109,3 @@ export function CellNavigation() {
     </>
   );
 }
-
-CellNavigation.storyName = 'Cell Navigation';

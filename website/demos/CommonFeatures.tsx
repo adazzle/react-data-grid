@@ -392,5 +392,3 @@ function ExportButton({
     </button>
   );
 }
-
-CommonFeatures.storyName = 'Common Features';

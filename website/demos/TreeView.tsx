@@ -179,5 +179,3 @@ export function TreeView() {
     </>
   );
 }
-
-TreeView.storyName = 'Tree View';

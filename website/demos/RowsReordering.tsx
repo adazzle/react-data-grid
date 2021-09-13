@@ -75,5 +75,3 @@ export function RowsReordering() {
     </DndProvider>
   );
 }
-
-RowsReordering.storyName = 'Rows Reordering';

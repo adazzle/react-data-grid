@@ -47,5 +47,3 @@ export function NoRows() {
     />
   );
 }
-
-NoRows.storyName = 'No Rows';

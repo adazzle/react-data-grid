@@ -215,5 +215,3 @@ export function AllFeatures() {
     </>
   );
 }
-
-AllFeatures.storyName = 'All Features';

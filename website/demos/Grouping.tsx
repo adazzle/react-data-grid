@@ -198,5 +198,3 @@ export function Grouping() {
     </div>
   );
 }
-
-Grouping.storyName = 'Grouping';

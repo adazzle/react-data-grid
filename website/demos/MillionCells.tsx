@@ -33,5 +33,3 @@ export function MillionCells() {
 
   return <DataGrid columns={columns} rows={rows} rowHeight={22} className="fill-grid" />;
 }
-
-MillionCells.storyName = 'A Million Cells';

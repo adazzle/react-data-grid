@@ -174,5 +174,3 @@ export function ContextMenuStory() {
     </>
   );
 }
-
-ContextMenuStory.storyName = 'Context Menu';

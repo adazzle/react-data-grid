@@ -127,5 +127,3 @@ export function ColumnsReordering() {
     </DndProvider>
   );
 }
-
-ColumnsReordering.storyName = 'Columns Reordering';

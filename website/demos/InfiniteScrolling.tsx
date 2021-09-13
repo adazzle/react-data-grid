@@ -116,5 +116,3 @@ export function InfiniteScrolling() {
     </>
   );
 }
-
-InfiniteScrolling.storyName = 'Infinite Scrolling';

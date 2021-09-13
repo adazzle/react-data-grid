@@ -1,4 +1,6 @@
+import { render } from 'react-dom';
 import { css } from '@linaria/core';
+import { CommonFeatures } from './demos/CommonFeatures';
 
 css`
   @at-root {
@@ -50,3 +52,9 @@ css`
     }
   }
 `;
+
+function Root() {
+  return <CommonFeatures />;
+}
+
+render(<Root />, document.getElementById('root'));

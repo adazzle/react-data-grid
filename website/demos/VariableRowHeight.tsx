@@ -39,5 +39,3 @@ function rowHeight() {
   // should be based on the content of the row
   return 25 + Math.round(Math.random() * 75);
 }
-
-VariableRowHeight.storyName = 'Variable Row Height';
