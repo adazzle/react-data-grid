@@ -136,7 +136,7 @@
 
 ## v7.0.0-canary.22
 
-- Add Grouping ([PR](https://github.com/adazzle/react-data-grid/pull/2106)). Check the new [example](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--grouping).
+- Add Grouping ([PR](https://github.com/adazzle/react-data-grid/pull/2106)). Check the new [example](https://adazzle.github.io/react-data-grid/?path=/story/demos--grouping).
 - (Breaking) Removed `height` and `width` props and added new `className` and `style` props. We are now using `ResizeObserver` to calculate all the grid dimensions ([PR](https://github.com/adazzle/react-data-grid/pull/2130))
 - (Breaking) Removed formatterOptions. Grid now handles formatter focus internally so this prop is no longer required ([PR](https://github.com/adazzle/react-data-grid/pull/2138))
 - Added support for React 17
@@ -217,7 +217,7 @@
     - ⚠️ `height`
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
-      - Check the [Context Menu](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--context-menu) example
+      - Check the [Context Menu](https://adazzle.github.io/react-data-grid/?path=/story/demos--context-menu) example
     - ⚠️ `enableCellSelect`
     - ⚠️ `enableCellAutoFocus`
     - ⚠️ `getValidFilterValues`

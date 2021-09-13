@@ -63,25 +63,15 @@ jobs:
         run: |
           git config --global user.email 'action@github.com'
           git config --global user.name 'GitHub Action'
-      # - name: Deploy main
-      #   if: github.ref == 'refs/heads/main'
-      #   run: |
-      #     git fetch origin gh-pages
-      #     git worktree add gh-pages gh-pages
-      #     git rm -r .
-      #     git checkout gh-pages -- canary
-      #     mv ../storybook-static/* .
-      #     git add .
-      #     git commit --allow-empty -m "main storybook deployment"
-      #     git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
-      - name: Deploy main
+      - name: Deploy gh-pages
         if: github.ref == 'refs/heads/main'
         run: |
           git fetch origin gh-pages
           git worktree add gh-pages gh-pages
           cd gh-pages
-          git rm -r --ignore-unmatch canary
-          mv ../storybook-static canary
-          git add canary
-          git commit --allow-empty -m "beta storybook deployment"
+          git rm -r .
+          git checkout gh-pages -- old
+          mv ../storybook-static/* .
+          git add .
+          git commit -m "gh-pages deployment" || echo "Nothing to commit"
           git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
