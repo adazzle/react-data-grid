@@ -45,6 +45,7 @@
 
 - [Examples website](https://adazzle.github.io/react-data-grid/)
   - [Source code](stories)
+- [Old website for react-data-grid v6](https://adazzle.github.io/react-data-grid/old/)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
