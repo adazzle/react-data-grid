@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, StrictMode, Suspense } from 'react';
 import { render } from 'react-dom';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
@@ -149,4 +149,9 @@ function Root() {
   );
 }
 
-render(<Root />, document.getElementById('root'));
+render(
+  <StrictMode>
+    <Root />
+  </StrictMode>,
+  document.getElementById('root')
+);
