@@ -30,6 +30,7 @@ const headerRow = css`
   display: grid;
   grid-template-columns: var(--template-columns);
   grid-template-rows: var(--header-row-height);
+  gap: 1px;
   height: var(--header-row-height); /* needed on Firefox */
   line-height: var(--header-row-height);
   width: var(--row-width);

@@ -4,9 +4,8 @@ export const cell = css`
   contain: strict;
   contain: size layout style paint;
   padding: 0 8px;
-  border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
-  background-color: inherit;
+  background-color: var(--background-color);
 
   white-space: nowrap;
   overflow: hidden;
@@ -22,6 +21,7 @@ export const cell = css`
 export const cellClassname = `rdg-cell ${cell}`;
 
 const cellFrozen = css`
+  box-shadow: 1px 0 var(--border-color);
   position: sticky;
   /* Should have a higher value than 0 to show up above unfrozen cells */
   z-index: 1;
@@ -30,7 +30,7 @@ const cellFrozen = css`
 export const cellFrozenClassname = `rdg-cell-frozen ${cellFrozen}`;
 
 export const cellFrozenLast = css`
-  box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
+  box-shadow: 1px 0 var(--border-color), 2px 0 5px -2px rgba(136, 136, 136, 0.3);
 `;
 
 export const cellFrozenLastClassname = `rdg-cell-frozen-last ${cellFrozenLast}`;

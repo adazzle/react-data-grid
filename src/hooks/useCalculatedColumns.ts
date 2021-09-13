@@ -133,7 +133,7 @@ export function useCalculatedColumns<R, SR>({
   } => {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
-    let totalColumnWidth = 0;
+    let totalColumnWidth = columns.length - 1; // 1px per gap between columns
     let totalFrozenColumnWidth = 0;
     let templateColumns = '';
     let allocatedWidth = 0;
@@ -165,7 +165,7 @@ export function useCalculatedColumns<R, SR>({
         columnMetrics.set(column, { width, left });
       }
       totalColumnWidth += width;
-      left += width;
+      left += width + 1;
       templateColumns += `${width}px `;
     }
 

@@ -6,22 +6,23 @@ export const row = css`
   display: grid;
   grid-template-rows: var(--row-height);
   grid-template-columns: var(--template-columns);
+  gap: 1px;
   position: absolute;
   left: 0;
   width: var(--row-width);
   height: var(--row-height); /* needed on Firefox */
   line-height: var(--row-height);
-  background-color: var(--background-color);
+  background-color: var(--border-color);
 
   &:hover {
-    background-color: var(--row-hover-background-color);
+    --background-color: var(--row-hover-background-color);
   }
 
   &[aria-selected='true'] {
-    background-color: var(--row-selected-background-color);
+    --background-color: var(--row-selected-background-color);
 
     &:hover {
-      background-color: var(--row-selected-hover-background-color);
+      --background-color: var(--row-selected-hover-background-color);
     }
   }
 `;
