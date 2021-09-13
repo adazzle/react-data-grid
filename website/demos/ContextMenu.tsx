@@ -7,7 +7,6 @@ import { css } from '@linaria/core';
 import DataGrid, { Row as GridRow } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 css`
   @at-root {
     .react-contextmenu {
