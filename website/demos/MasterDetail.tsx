@@ -134,7 +134,6 @@ export default function MasterDetail() {
 
 function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSelected: boolean }) {
   const gridRef = useRef<DataGridHandle>(null);
-  const [selectedPosition, setSelectedPosition] = useState<Position>({ idx: -1, rowIdx: -2 });
   useEffect(() => {
     if (!isCellSelected) return;
     gridRef
@@ -144,21 +143,9 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
   const products = getProducts(parentId);
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const { idx, rowIdx } = selectedPosition;
-    if (
-      event.key === 'Tab' &&
-      !event.shiftKey &&
-      rowIdx === products.length - 1 &&
-      idx === productColumns.length - 1
-    ) {
-      return;
+    if (event.isDefaultPrevented()) {
+      event.stopPropagation();
     }
-
-    if (event.key === 'Tab' && event.shiftKey && rowIdx === -1 && idx === 0) {
-      return;
-    }
-
-    event.stopPropagation();
   }
 
   return (
@@ -168,7 +155,6 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
         rows={products}
         columns={productColumns}
         rowKeyGetter={rowKeyGetter}
-        onSelectedCellChange={setSelectedPosition}
         style={{ height: 250 }}
       />
     </div>
