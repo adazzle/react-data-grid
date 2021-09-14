@@ -854,11 +854,11 @@ function DataGrid<R, SR, K extends Key>(
         return;
       }
 
+      // Do not allow focus to leave
+      event.preventDefault();
+
       mode = cellNavigationMode === 'NONE' ? 'CHANGE_ROW' : cellNavigationMode;
     }
-
-    // Do not allow focus to leave
-    event.preventDefault();
 
     const ctrlKey = isCtrlKeyHeldDown(event);
     const nextPosition = getNextPosition(key, ctrlKey, shiftKey);
