@@ -55,7 +55,6 @@ interface EditCellState<R> extends Position {
   readonly mode: 'EDIT';
   readonly row: R;
   readonly originalRow: R;
-  readonly key: string | null;
 }
 
 type DefaultColumnOptions<R, SR> = Pick<
@@ -642,7 +641,6 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
-        key,
         mode: 'EDIT',
         row,
         originalRow: row
@@ -699,7 +697,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
-      setSelectedPosition({ ...position, mode: 'EDIT', key: null, row, originalRow: row });
+      setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (
       selectedPosition.mode !== 'SELECT' ||
       selectedPosition.idx !== position.idx ||
