@@ -5,7 +5,6 @@ import faker from 'faker';
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
 import { CellExpanderFormatter } from './components/Formatters';
-import type { Position } from '../../src/types';
 
 type DepartmentRow =
   | {
