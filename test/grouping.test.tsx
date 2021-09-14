@@ -17,7 +17,8 @@ import {
 } from './utils';
 import userEvent from '@testing-library/user-event';
 import type { FillEvent, PasteEvent } from '../src/types';
-import { rowSelected } from '../src/hooks';
+
+const rowSelectedClassname = 'rdg-row-selected';
 
 interface Row {
   id: number;
@@ -188,7 +189,7 @@ test('should toggle group using keyboard', () => {
   expect(getRows()).toHaveLength(5);
   // clicking on the group cell selects the row
   expect(getSelectedCell()).toBeNull();
-  expect(getRows()[1]).toHaveClass(rowSelected);
+  expect(getRows()[1]).toHaveClass(rowSelectedClassname);
   userEvent.keyboard('{arrowright}{arrowright}{enter}');
   expect(getRows()).toHaveLength(3);
   userEvent.keyboard('{enter}');
@@ -300,7 +301,7 @@ test('cell navigation in a treegrid', () => {
   // if the first cell is selected then arrowleft should select the row
   userEvent.keyboard('{arrowleft}');
   expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'false');
-  expect(getRows()[3]).toHaveClass(rowSelected);
+  expect(getRows()[3]).toHaveClass(rowSelectedClassname);
   expect(getRows()[3]).toHaveFocus();
 
   // if the row is selected then arrowright should select the first cell on the same row
@@ -320,15 +321,15 @@ test('cell navigation in a treegrid', () => {
   expect(getRows()).toHaveLength(5);
 
   // left arrow on a collapsed group should select the parent group
-  expect(getRows()[0]).not.toHaveClass(rowSelected);
+  expect(getRows()[0]).not.toHaveClass(rowSelectedClassname);
   userEvent.keyboard('{arrowleft}{arrowleft}');
-  expect(getRows()[0]).toHaveClass(rowSelected);
+  expect(getRows()[0]).toHaveClass(rowSelectedClassname);
 
   userEvent.keyboard('{end}');
-  expect(getRows()[3]).toHaveClass(rowSelected);
+  expect(getRows()[3]).toHaveClass(rowSelectedClassname);
 
   userEvent.keyboard('{home}');
-  expect(getRows()[0]).toHaveClass(rowSelected);
+  expect(getRows()[0]).toHaveClass(rowSelectedClassname);
 
   // collpase parent group
   userEvent.keyboard('{arrowleft}');
