@@ -27,8 +27,6 @@ const cellEditing = css`
   }
 `;
 
-const cellEditingClassname = `rdg-editor-container ${cellEditing}`;
-
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {}
@@ -69,7 +67,8 @@ export default function EditCell<R, SR>({
   const { cellClass } = column;
   const className = getCellClassname(
     column,
-    cellEditingClassname,
+    'rdg-editor-container',
+    !column.editorOptions?.renderFormatter && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
@@ -84,7 +83,12 @@ export default function EditCell<R, SR>({
       onMouseDownCapture={cancelFrameRequest}
     >
       {column.editor != null && (
-        <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
+        <>
+          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
+          {column.editorOptions?.renderFormatter && (
+            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
+          )}
+        </>
       )}
     </div>
   );

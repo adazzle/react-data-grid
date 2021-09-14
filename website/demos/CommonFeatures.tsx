@@ -150,49 +150,36 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
           </>
         );
       },
-      editor({ row, column, onRowChange, onClose }) {
-        return (
-          <>
-            {createPortal(
-              <div
-                className={dialogContainerClassname}
-                onKeyDown={(event) => {
-                  if (event.key === 'Escape') {
-                    onClose();
-                  }
-                }}
-              >
-                <dialog open>
-                  <input
-                    autoFocus
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={row.progress}
-                    onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
-                  />
-                  <menu>
-                    <button onClick={() => onClose()}>Cancel</button>
-                    <button onClick={() => onClose(true)}>Save</button>
-                  </menu>
-                </dialog>
-              </div>,
-              document.body
-            )}
-            <div
-              className={css`
-                padding: 0 8px;
-              `}
-            >
-              <column.formatter
-                column={column}
-                row={row}
-                isCellSelected
-                onRowChange={onRowChange}
+      editor({ row, onRowChange, onClose }) {
+        return createPortal(
+          <div
+            className={dialogContainerClassname}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                onClose();
+              }
+            }}
+          >
+            <dialog open>
+              <input
+                autoFocus
+                type="range"
+                min="0"
+                max="100"
+                value={row.progress}
+                onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
               />
-            </div>
-          </>
+              <menu>
+                <button onClick={() => onClose()}>Cancel</button>
+                <button onClick={() => onClose(true)}>Save</button>
+              </menu>
+            </dialog>
+          </div>,
+          document.body
         );
+      },
+      editorOptions: {
+        renderFormatter: true
       }
     },
     {

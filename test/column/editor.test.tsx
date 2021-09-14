@@ -148,7 +148,7 @@ describe('Editor', () => {
     });
 
     it('should detect outside click if editor is rendered in a portal', async () => {
-      render(<EditorTest createEditorPortal />);
+      render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const editor = screen.getByLabelText('col2-editor');
       expect(editor).toHaveValue('a1');
@@ -272,7 +272,7 @@ function EditorTest({
         key: 'col2',
         name: 'Col2',
         editable,
-        editor({ row, column, onRowChange }) {
+        editor({ row, onRowChange }) {
           const editor = (
             <input
               autoFocus
@@ -282,19 +282,7 @@ function EditorTest({
             />
           );
 
-          return createEditorPortal ? (
-            <>
-              {createPortal(editor, document.body)}
-              <column.formatter
-                column={column}
-                row={row}
-                isCellSelected
-                onRowChange={onRowChange}
-              />
-            </>
-          ) : (
-            editor
-          );
+          return createEditorPortal ? createPortal(editor, document.body) : editor;
         },
         editorOptions
       }
