@@ -63,7 +63,7 @@ function createColumns(): Column<Row>[] {
   ];
 }
 
-export function ColumnsReordering() {
+export default function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
@@ -127,5 +127,3 @@ export function ColumnsReordering() {
     </DndProvider>
   );
 }
-
-ColumnsReordering.storyName = 'Columns Reordering';

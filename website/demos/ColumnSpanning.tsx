@@ -21,7 +21,7 @@ function CellFormatter(props: FormatterProps<Row>) {
   );
 }
 
-export function ColumnSpanning() {
+export default function ColumnSpanning() {
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 
@@ -65,5 +65,3 @@ export function ColumnSpanning() {
 
   return <DataGrid columns={columns} rows={rows} rowHeight={22} className="fill-grid" />;
 }
-
-ColumnSpanning.storyName = 'Column Spanning';

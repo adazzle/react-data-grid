@@ -99,7 +99,7 @@ const departmentColumns: readonly Column<DepartmentRow>[] = [
   { key: 'department', name: 'Department' }
 ];
 
-export function MasterDetailStory() {
+export default function MasterDetail() {
   const [rows, setRows] = useState(createDepartments);
 
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {
@@ -178,5 +178,3 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
 function rowKeyGetter(row: DepartmentRow | ProductRow) {
   return row.id;
 }
-
-MasterDetailStory.storyName = 'Master Detail';

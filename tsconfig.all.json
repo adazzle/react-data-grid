@@ -4,5 +4,5 @@
     "emitDeclarationOnly": false,
     "noEmit": true
   },
-  "include": ["src/**/*", "stories/**/*", "test/**/*"]
+  "include": ["src/**/*", "test/**/*", "website/**/*"]
 }
