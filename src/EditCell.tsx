@@ -31,7 +31,7 @@ const cellEditingClassname = `rdg-editor-container ${cellEditing}`;
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
-type EditCellProps<R, SR> = EditorProps<R, SR> & SharedCellRendererProps<R, SR>;
+interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {}
 
 export default function EditCell<R, SR>({
   column,
