@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import DataGrid from '../../src';
 import type { Column } from '../../src';
 import { getCellsAtRowIndex, getGrid } from '../utils';
+import { createPortal } from 'react-dom';
 
 interface Row {
   col1: number;
@@ -33,26 +34,6 @@ describe('Editor', () => {
     userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-  });
-
-  it('should commit changes on enter if the editor is rendered in a portal', () => {
-    render(
-      <EditorTest
-        editorOptions={{
-          createPortal: true
-        }}
-      />
-    );
-    userEvent.click(getCellsAtRowIndex(0)[1]);
-    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
-    userEvent.keyboard('{enter}');
-    expect(screen.getByLabelText('col2-editor')).toHaveValue('a1');
-    userEvent.keyboard('23');
-    // The cell value should update as the editor value is changed
-    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
-    userEvent.keyboard('{enter}');
-    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
-    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
   });
 
   it('should open editor when user types', () => {
@@ -166,17 +147,14 @@ describe('Editor', () => {
       expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
     });
 
-    it('should render the editor in a portal if createPortal is true', async () => {
-      render(
-        <EditorTest
-          editorOptions={{
-            createPortal: true
-          }}
-        />
-      );
+    it('should detect outside click if editor is rendered in a portal', async () => {
+      render(<EditorTest createEditorPortal />);
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const editor = screen.getByLabelText('col2-editor');
-      expect(editor.parentElement).toBe(document.body);
+      expect(editor).toHaveValue('a1');
+      userEvent.keyboard('23');
+      // The cell value should update as the editor value is changed
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
       // clicking in a portal does not count as an outside click
       userEvent.click(editor);
       expect(editor).toBeInTheDocument();
@@ -250,6 +228,7 @@ describe('Editor', () => {
 interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
+  createEditorPortal?: boolean;
 }
 
 const initialRows: readonly Row[] = [
@@ -263,7 +242,13 @@ const initialRows: readonly Row[] = [
   }
 ];
 
-function EditorTest({ editable, editorOptions, onSave, gridRows = initialRows }: EditorTestProps) {
+function EditorTest({
+  editable,
+  editorOptions,
+  onSave,
+  gridRows = initialRows,
+  createEditorPortal
+}: EditorTestProps) {
   const [rows, setRows] = useState(gridRows);
 
   const columns = useMemo((): readonly Column<Row>[] => {
@@ -287,20 +272,34 @@ function EditorTest({ editable, editorOptions, onSave, gridRows = initialRows }:
         key: 'col2',
         name: 'Col2',
         editable,
-        editor(p) {
-          return (
+        editor({ row, column, onRowChange }) {
+          const editor = (
             <input
               autoFocus
               aria-label="col2-editor"
-              value={p.row.col2}
-              onChange={(e) => p.onRowChange({ ...p.row, col2: e.target.value })}
+              value={row.col2}
+              onChange={(e) => onRowChange({ ...row, col2: e.target.value })}
             />
+          );
+
+          return createEditorPortal ? (
+            <>
+              {createPortal(editor, document.body)}
+              <column.formatter
+                column={column}
+                row={row}
+                isCellSelected
+                onRowChange={onRowChange}
+              />
+            </>
+          ) : (
+            editor
           );
         },
         editorOptions
       }
     ];
-  }, [editable, editorOptions]);
+  }, [editable, editorOptions, createEditorPortal]);
 
   return (
     <StrictMode>

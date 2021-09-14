@@ -63,9 +63,6 @@ type DefaultColumnOptions<R, SR> = Pick<
   'formatter' | 'minWidth' | 'resizable' | 'sortable'
 >;
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const body = globalThis.document?.body;
-
 const initialPosition: SelectCellState = {
   idx: -1,
   rowIdx: -2,
@@ -165,8 +162,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
   noRowsFallback?: React.ReactNode;
-  /** The node where the editor portal should mount. */
-  editorPortalTarget?: Maybe<Element>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   'data-testid'?: Maybe<string>;
 }
@@ -214,7 +209,6 @@ function DataGrid<R, SR, K extends Key>(
     // Miscellaneous
     rowRenderer,
     noRowsFallback,
-    editorPortalTarget: rawEditorPortalTarget,
     className,
     style,
     rowClass,
@@ -235,7 +229,6 @@ function DataGrid<R, SR, K extends Key>(
   const RowRenderer = rowRenderer ?? Row;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
-  const editorPortalTarget = rawEditorPortalTarget ?? body;
 
   /**
    * states
@@ -492,11 +485,11 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
-    if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
+    if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
@@ -944,8 +937,6 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
-        editorPortalTarget={editorPortalTarget}
-        onKeyDown={handleKeyDown}
         onRowChange={handleEditorRowChange}
         onClose={handleOnClose}
       />
