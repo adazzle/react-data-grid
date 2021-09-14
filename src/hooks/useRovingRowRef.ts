@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 import { cell } from '../style';
 import { useFocusRef } from './useFocusRef';
 
-export const rowSelected = css`
+const rowSelected = css`
   outline: none;
 
   &::after {
