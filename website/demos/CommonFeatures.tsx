@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
@@ -149,28 +150,49 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
           </>
         );
       },
-      editor({ row, onRowChange, onClose }) {
+      editor({ row, column, onRowChange, onClose }) {
         return (
-          <div className={dialogContainerClassname}>
-            <dialog open>
-              <input
-                autoFocus
-                type="range"
-                min="0"
-                max="100"
-                value={row.progress}
-                onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
+          <>
+            {createPortal(
+              <div
+                className={dialogContainerClassname}
+                onKeyDown={(event) => {
+                  if (event.key === 'Escape') {
+                    onClose();
+                  }
+                }}
+              >
+                <dialog open>
+                  <input
+                    autoFocus
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={row.progress}
+                    onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
+                  />
+                  <menu>
+                    <button onClick={() => onClose()}>Cancel</button>
+                    <button onClick={() => onClose(true)}>Save</button>
+                  </menu>
+                </dialog>
+              </div>,
+              document.body
+            )}
+            <div
+              className={css`
+                padding: 0 8px;
+              `}
+            >
+              <column.formatter
+                column={column}
+                row={row}
+                isCellSelected
+                onRowChange={onRowChange}
               />
-              <menu>
-                <button onClick={() => onClose()}>Cancel</button>
-                <button onClick={() => onClose(true)}>Save</button>
-              </menu>
-            </dialog>
-          </div>
+            </div>
+          </>
         );
-      },
-      editorOptions: {
-        createPortal: true
       }
     },
     {
