@@ -146,8 +146,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
-  /** Function called whenever selected cell is changed */
-  onSelectedCellChange?: Maybe<(position: Position) => void>;
 
   /**
    * Toggles and modes
@@ -200,7 +198,6 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onScroll,
     onColumnResize,
-    onSelectedCellChange,
     onFill,
     onPaste,
     // Toggles and modes
@@ -703,7 +700,6 @@ function DataGrid<R, SR, K extends Key>(
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
       setSelectedPosition({ ...position, mode: 'EDIT', key: null, row, originalRow: row });
-      onSelectedCellChange?.(position);
     } else if (
       selectedPosition.mode !== 'SELECT' ||
       selectedPosition.idx !== position.idx ||
@@ -712,7 +708,6 @@ function DataGrid<R, SR, K extends Key>(
       // Avoid re-renders if the selected cell state is the same
       // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
       setSelectedPosition({ ...position, mode: 'SELECT' });
-      onSelectedCellChange?.(position);
     }
   }
 
