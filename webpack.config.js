@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -40,7 +41,10 @@ export default (env, { mode }) => {
     },
 
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx']
+      alias: {
+        lodash: resolve('./node_modules/lodash-es')
+      },
+      extensions: ['.js', '.ts', '.tsx']
     },
 
     optimization: {
