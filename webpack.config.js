@@ -44,6 +44,9 @@ export default (env, { mode }) => {
     },
 
     optimization: {
+      splitChunks: {
+        chunks: 'all'
+      },
       minimizer: ['...', new CssMinimizerPlugin()]
     },
 
