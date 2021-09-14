@@ -39,6 +39,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly editor?: Maybe<React.ComponentType<EditorProps<TRow, TSummaryRow>>>;
   readonly editorOptions?: Maybe<{
     /** @default false */
+    readonly renderFormatter?: Maybe<boolean>;
+    /** @default false */
     readonly editOnClick?: Maybe<boolean>;
     /** Prevent default to cancel editing */
     readonly onCellKeyDown?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => void>;
