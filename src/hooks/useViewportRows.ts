@@ -167,25 +167,16 @@ export function useViewportRows<R>({
     };
   }, [isGroupRow, rowHeight, rows]);
 
-  if (!enableVirtualization) {
-    return {
-      rowOverscanStartIdx: 0,
-      rowOverscanEndIdx: rows.length - 1,
-      rows,
-      rowsCount,
-      totalRowHeight,
-      isGroupRow,
-      getRowTop,
-      getRowHeight,
-      findRowIdx
-    };
-  }
+  let rowOverscanStartIdx = 0;
+  let rowOverscanEndIdx = rows.length - 1;
 
-  const overscanThreshold = 4;
-  const rowVisibleStartIdx = findRowIdx(scrollTop);
-  const rowVisibleEndIdx = findRowIdx(scrollTop + clientHeight);
-  const rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
-  const rowOverscanEndIdx = min(rows.length - 1, rowVisibleEndIdx + overscanThreshold);
+  if (enableVirtualization) {
+    const overscanThreshold = 4;
+    const rowVisibleStartIdx = findRowIdx(scrollTop);
+    const rowVisibleEndIdx = findRowIdx(scrollTop + clientHeight);
+    rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
+    rowOverscanEndIdx = min(rows.length - 1, rowVisibleEndIdx + overscanThreshold);
+  }
 
   return {
     rowOverscanStartIdx,

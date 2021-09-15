@@ -39,6 +39,7 @@ export default function EditCell<R, SR>({
   onClose
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
+  const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
 
   // We need to prevent the `useEffect` from cleaning up between re-renders,
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
@@ -52,6 +53,8 @@ export default function EditCell<R, SR>({
   }
 
   useEffect(() => {
+    if (!commitOnOutsideClick) return;
+
     function onWindowCaptureMouseDown() {
       frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
     }
@@ -62,7 +65,7 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [commitOnOutsideMouseDown]);
+  }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -80,7 +83,7 @@ export default function EditCell<R, SR>({
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}
-      onMouseDownCapture={cancelFrameRequest}
+      onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
     >
       {column.editor != null && (
         <>
