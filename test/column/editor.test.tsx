@@ -1,5 +1,12 @@
 import { StrictMode, useMemo, useState } from 'react';
-import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
@@ -167,17 +174,21 @@ describe('Editor', () => {
       render(
         <EditorTest
           editorOptions={{
-            commitOnOutsideClick: true
+            commitOnOutsideClick: false
           }}
         />
       );
-      userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-      const editor = screen.getByLabelText('col1-editor');
+      userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const editor = screen.getByLabelText('col2-editor');
       expect(editor).toBeInTheDocument();
       userEvent.click(screen.getByText('outside'));
+      await act(async () => {
+        await new Promise(requestAnimationFrame);
+      });
       expect(editor).toBeInTheDocument();
+      userEvent.click(editor);
       userEvent.keyboard('{enter}');
-      await waitForElementToBeRemoved(editor);
+      expect(editor).not.toBeInTheDocument();
     });
 
     it('should not open editor if onCellKeyDown prevents the default event', () => {
