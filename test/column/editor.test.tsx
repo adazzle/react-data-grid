@@ -163,6 +163,23 @@ describe('Editor', () => {
       await waitForElementToBeRemoved(editor);
     });
 
+    it('should not commit on outside click if commitOnOutsideClick is false', async () => {
+      render(
+        <EditorTest
+          editorOptions={{
+            commitOnOutsideClick: true
+          }}
+        />
+      );
+      userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+      const editor = screen.getByLabelText('col1-editor');
+      expect(editor).toBeInTheDocument();
+      userEvent.click(screen.getByText('outside'));
+      expect(editor).toBeInTheDocument();
+      userEvent.keyboard('{enter}');
+      await waitForElementToBeRemoved(editor);
+    });
+
     it('should not open editor if onCellKeyDown prevents the default event', () => {
       render(
         <EditorTest
