@@ -1,12 +1,5 @@
 import { StrictMode, useMemo, useState } from 'react';
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved
-} from '@testing-library/react';
+import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
