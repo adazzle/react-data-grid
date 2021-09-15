@@ -55,16 +55,12 @@ interface EditCellState<R> extends Position {
   readonly mode: 'EDIT';
   readonly row: R;
   readonly originalRow: R;
-  readonly key: string | null;
 }
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'formatter' | 'minWidth' | 'resizable' | 'sortable'
 >;
-
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const body = globalThis.document?.body;
 
 const initialPosition: SelectCellState = {
   idx: -1,
@@ -149,8 +145,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
-  /** Function called whenever selected cell is changed */
-  onSelectedCellChange?: Maybe<(position: Position) => void>;
 
   /**
    * Toggles and modes
@@ -165,8 +159,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
   noRowsFallback?: React.ReactNode;
-  /** The node where the editor portal should mount. */
-  editorPortalTarget?: Maybe<Element>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   'data-testid'?: Maybe<string>;
 }
@@ -205,7 +197,6 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onScroll,
     onColumnResize,
-    onSelectedCellChange,
     onFill,
     onPaste,
     // Toggles and modes
@@ -214,7 +205,6 @@ function DataGrid<R, SR, K extends Key>(
     // Miscellaneous
     rowRenderer,
     noRowsFallback,
-    editorPortalTarget: rawEditorPortalTarget,
     className,
     style,
     rowClass,
@@ -235,7 +225,6 @@ function DataGrid<R, SR, K extends Key>(
   const RowRenderer = rowRenderer ?? Row;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
-  const editorPortalTarget = rawEditorPortalTarget ?? body;
 
   /**
    * states
@@ -492,11 +481,11 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
-    if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
+    if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
@@ -652,7 +641,6 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
-        key,
         mode: 'EDIT',
         row,
         originalRow: row
@@ -709,8 +697,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
-      setSelectedPosition({ ...position, mode: 'EDIT', key: null, row, originalRow: row });
-      onSelectedCellChange?.(position);
+      setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (
       selectedPosition.mode !== 'SELECT' ||
       selectedPosition.idx !== position.idx ||
@@ -719,7 +706,6 @@ function DataGrid<R, SR, K extends Key>(
       // Avoid re-renders if the selected cell state is the same
       // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
       setSelectedPosition({ ...position, mode: 'SELECT' });
-      onSelectedCellChange?.(position);
     }
   }
 
@@ -944,8 +930,6 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
-        editorPortalTarget={editorPortalTarget}
-        onKeyDown={handleKeyDown}
         onRowChange={handleEditorRowChange}
         onClose={handleOnClose}
       />

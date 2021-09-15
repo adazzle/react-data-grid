@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
@@ -150,8 +151,15 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         );
       },
       editor({ row, onRowChange, onClose }) {
-        return (
-          <div className={dialogContainerClassname}>
+        return createPortal(
+          <div
+            className={dialogContainerClassname}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                onClose();
+              }
+            }}
+          >
             <dialog open>
               <input
                 autoFocus
@@ -166,11 +174,12 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
                 <button onClick={() => onClose(true)}>Save</button>
               </menu>
             </dialog>
-          </div>
+          </div>,
+          document.body
         );
       },
       editorOptions: {
-        createPortal: true
+        renderFormatter: true
       }
     },
     {
@@ -297,7 +306,7 @@ function getComparator(sortColumn: string): Comparator {
   }
 }
 
-export function CommonFeatures() {
+export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -392,5 +401,3 @@ function ExportButton({
     </button>
   );
 }
-
-CommonFeatures.storyName = 'Common Features';

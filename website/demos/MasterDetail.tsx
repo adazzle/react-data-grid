@@ -5,7 +5,6 @@ import faker from 'faker';
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
 import { CellExpanderFormatter } from './components/Formatters';
-import type { Position } from '../../src/types';
 
 type DepartmentRow =
   | {
@@ -99,7 +98,7 @@ const departmentColumns: readonly Column<DepartmentRow>[] = [
   { key: 'department', name: 'Department' }
 ];
 
-export function MasterDetailStory() {
+export default function MasterDetail() {
   const [rows, setRows] = useState(createDepartments);
 
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {
@@ -134,7 +133,6 @@ export function MasterDetailStory() {
 
 function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSelected: boolean }) {
   const gridRef = useRef<DataGridHandle>(null);
-  const [selectedPosition, setSelectedPosition] = useState<Position>({ idx: -1, rowIdx: -2 });
   useEffect(() => {
     if (!isCellSelected) return;
     gridRef
@@ -144,21 +142,9 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
   const products = getProducts(parentId);
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const { idx, rowIdx } = selectedPosition;
-    if (
-      event.key === 'Tab' &&
-      !event.shiftKey &&
-      rowIdx === products.length - 1 &&
-      idx === productColumns.length - 1
-    ) {
-      return;
+    if (event.isDefaultPrevented()) {
+      event.stopPropagation();
     }
-
-    if (event.key === 'Tab' && event.shiftKey && rowIdx === -1 && idx === 0) {
-      return;
-    }
-
-    event.stopPropagation();
   }
 
   return (
@@ -168,7 +154,6 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
         rows={products}
         columns={productColumns}
         rowKeyGetter={rowKeyGetter}
-        onSelectedCellChange={setSelectedPosition}
         style={{ height: 250 }}
       />
     </div>
@@ -178,5 +163,3 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
 function rowKeyGetter(row: DepartmentRow | ProductRow) {
   return row.id;
 }
-
-MasterDetailStory.storyName = 'Master Detail';

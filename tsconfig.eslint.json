@@ -1,4 +1,11 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["jest.config.js", "rollup.config.js", "src/**/*", "stories/**/*", "test/**/*"]
+  "include": [
+    "jest.config.js",
+    "rollup.config.js",
+    "webpack.config.js",
+    "src/**/*",
+    "test/**/*",
+    "website/**/*"
+  ]
 }

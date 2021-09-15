@@ -14,7 +14,7 @@ const columns: readonly Column<Row>[] = [
   { key: 'count', name: 'Count' }
 ];
 
-export function ScrollToRow() {
+export default function ScrollToRow() {
   const [rows] = useState(() => {
     const rows: Row[] = [];
 
@@ -49,5 +49,3 @@ export function ScrollToRow() {
     </>
   );
 }
-
-ScrollToRow.storyName = 'Scroll To Row';
