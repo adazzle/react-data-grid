@@ -2,7 +2,7 @@ import { StrictMode, useMemo, useState } from 'react';
 import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { TextEditor } from '../../src';
+import DataGrid from '../../src';
 import type { Column } from '../../src';
 import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 import { createPortal } from 'react-dom';
@@ -220,44 +220,25 @@ describe('Editor', () => {
   });
 
   describe('editor focus', () => {
-    const columns: readonly Column<Row>[] = [
-      {
-        key: 'col2',
-        name: 'Column',
-        editor: TextEditor
-      }
-    ];
-
-    function Grid() {
-      const [rows, setRows] = useState<readonly Row[]>(() => {
-        const rows: Row[] = [];
-        for (let i = 0; i < 60; i++) {
-          rows.push({
-            col1: 1,
-            col2: `value${i}`
-          });
-        }
-
-        return rows;
-      });
-
-      return <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />;
-    }
-
     it('should not steal focus back to the cell if the editor is not in the viewport and another cell is clicked', () => {
-      render(<Grid />);
+      const rows: Row[] = [];
+      for (let i = 0; i < 99; i++) {
+        rows.push({ col1: i, col2: `${i}` });
+      }
+
+      render(<EditorTest gridRows={rows} />);
       const grid = getGrid();
 
-      userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+      userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       userEvent.keyboard('abc');
 
       grid.scrollTop = 1500;
 
-      expect(getCellsAtRowIndex(40)[0]).toHaveTextContent('value40');
-      userEvent.click(getCellsAtRowIndex(40)[0]);
-      expect(getSelectedCell()).toHaveTextContent('value40');
+      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent('40');
+      userEvent.click(getCellsAtRowIndex(40)[1]);
+      expect(getSelectedCell()).toHaveTextContent('40');
       grid.scrollTop = 0;
-      expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('abc');
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('abc');
     });
 
     it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
