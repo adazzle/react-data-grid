@@ -14,7 +14,11 @@ export function useRovingCellRef(isSelected: boolean) {
       return;
     }
 
-    if (document.activeElement && !ref.current?.closest('.rdg')?.contains(document.activeElement)) {
+    if (
+      document.activeElement &&
+      document.activeElement !== document.body &&
+      !ref.current?.closest('.rdg')?.contains(document.activeElement)
+    ) {
       return;
     }
 
