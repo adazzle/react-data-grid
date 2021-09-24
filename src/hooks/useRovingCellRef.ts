@@ -14,6 +14,10 @@ export function useRovingCellRef(isSelected: boolean) {
       return;
     }
 
+    if (document.activeElement && !ref.current?.closest('.rdg')?.contains(document.activeElement)) {
+      return;
+    }
+
     if (isChildFocused.current) {
       // When the child is focused, we need to rerender
       // the cell again so tabIndex is updated to -1
@@ -29,11 +33,11 @@ export function useRovingCellRef(isSelected: boolean) {
     }
   }
 
-  const isFocused = isSelected && !isChildFocused.current;
+  const isFocusable = isSelected && !isChildFocused.current;
 
   return {
     ref,
-    tabIndex: isFocused ? 0 : -1,
+    tabIndex: isFocusable ? 0 : -1,
     onFocus
   };
 }
