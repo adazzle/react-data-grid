@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
-import { getCellStyle, getCellClassname } from './utils';
-import type { CellRendererProps, EditorProps } from './types';
+import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
+import type { CellRendererProps, EditorProps, Omit } from './types';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -29,14 +29,18 @@ const cellEditing = css`
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
-interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {}
+interface EditCellProps<R, SR>
+  extends Omit<EditorProps<R, SR>, 'onClose'>,
+    SharedCellRendererProps<R, SR> {
+  closeEditor: () => void;
+}
 
 export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
   onRowChange,
-  onClose
+  closeEditor
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
@@ -47,10 +51,6 @@ export default function EditCell<R, SR>({
   const commitOnOutsideMouseDown = useLatestFunc(() => {
     onRowChange(row, true);
   });
-
-  function cancelFrameRequest() {
-    cancelAnimationFrame(frameRequestRef.current!);
-  }
 
   useEffect(() => {
     if (!commitOnOutsideClick) return;
@@ -66,6 +66,24 @@ export default function EditCell<R, SR>({
       cancelFrameRequest();
     };
   }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
+
+  function cancelFrameRequest() {
+    cancelAnimationFrame(frameRequestRef.current!);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
+    if (!onNavigation(event)) {
+      event.stopPropagation();
+    }
+  }
+
+  function handleOnClose(commitChanges?: boolean) {
+    if (commitChanges) {
+      onRowChange(row, true);
+    }
+    closeEditor();
+  }
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -83,11 +101,17 @@ export default function EditCell<R, SR>({
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}
+      onKeyDown={handleKeyDown}
       onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
     >
       {column.editor != null && (
         <>
-          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
+          <column.editor
+            column={column}
+            row={row}
+            onRowChange={onRowChange}
+            onClose={handleOnClose}
+          />
           {column.editorOptions?.renderFormatter && (
             <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
           )}

@@ -20,7 +20,6 @@ import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import {
   assertIsValidKeyGetter,
-  onEditorNavigation,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
   canExitGrid,
@@ -575,14 +574,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function commitEditorChanges() {
-    if (
-      columns[selectedPosition.idx]?.editor == null ||
-      selectedPosition.mode === 'SELECT' ||
-      selectedPosition.row === selectedPosition.originalRow
-    ) {
-      return;
-    }
-
+    if (selectedPosition.mode !== 'EDIT') return;
     updateRow(selectedPosition.rowIdx, selectedPosition.row);
   }
 
@@ -658,13 +650,6 @@ function DataGrid<R, SR, K extends Key>(
     } else {
       setSelectedPosition((position) => ({ ...position, row }));
     }
-  }
-
-  function handleOnClose(commitChanges?: boolean) {
-    if (commitChanges) {
-      commitEditorChanges();
-    }
-    closeEditor();
   }
 
   /**
@@ -823,15 +808,9 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (selectedPosition.mode === 'EDIT') {
-      const onNavigation =
-        columns[selectedPosition.idx].editorOptions?.onNavigation ?? onEditorNavigation;
-      if (!onNavigation(event)) return;
-    }
     const { key, shiftKey } = event;
     let mode = cellNavigationMode;
     if (key === 'Tab') {
-      // If we are in a position to leave the grid, stop editing but stay in that cell
       if (
         canExitGrid({
           shiftKey,
@@ -926,7 +905,7 @@ function DataGrid<R, SR, K extends Key>(
         colSpan={colSpan}
         row={row}
         onRowChange={handleEditorRowChange}
-        onClose={handleOnClose}
+        closeEditor={closeEditor}
       />
     );
   }
