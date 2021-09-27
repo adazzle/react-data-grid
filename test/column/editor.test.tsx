@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { getCellsAtRowIndex, getGrid } from '../utils';
+import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 import { createPortal } from 'react-dom';
 
 interface Row {
@@ -219,30 +219,53 @@ describe('Editor', () => {
     });
   });
 
-  it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
-    const column: Column<unknown> = {
-      key: 'col',
-      name: 'Column',
-      editor() {
-        return <input value="123" readOnly autoFocus />;
+  describe('editor focus', () => {
+    it('should not steal focus back to the cell if the editor is not in the viewport and another cell is clicked', () => {
+      const rows: Row[] = [];
+      for (let i = 0; i < 99; i++) {
+        rows.push({ col1: i, col2: `${i}` });
       }
-    };
 
-    render(
-      <>
-        <input value="abc" readOnly />
-        <DataGrid columns={[column]} rows={[{}]} />
-      </>
-    );
+      render(<EditorTest gridRows={rows} />);
+      const grid = getGrid();
 
-    userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    const editorInput = screen.getByDisplayValue('123');
-    const outerInput = screen.getByDisplayValue('abc');
-    expect(editorInput).toHaveFocus();
-    userEvent.click(outerInput);
-    expect(outerInput).toHaveFocus();
-    await waitForElementToBeRemoved(editorInput);
-    expect(outerInput).toHaveFocus();
+      userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      userEvent.keyboard('abc');
+
+      grid.scrollTop = 1500;
+
+      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent('40');
+      userEvent.click(getCellsAtRowIndex(40)[1]);
+      expect(getSelectedCell()).toHaveTextContent('40');
+      grid.scrollTop = 0;
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('abc');
+    });
+
+    it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
+      const column: Column<unknown> = {
+        key: 'col',
+        name: 'Column',
+        editor() {
+          return <input value="123" readOnly autoFocus />;
+        }
+      };
+
+      render(
+        <>
+          <input value="abc" readOnly />
+          <DataGrid columns={[column]} rows={[{}]} />
+        </>
+      );
+
+      userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+      const editorInput = screen.getByDisplayValue('123');
+      const outerInput = screen.getByDisplayValue('abc');
+      expect(editorInput).toHaveFocus();
+      userEvent.click(outerInput);
+      expect(outerInput).toHaveFocus();
+      await waitForElementToBeRemoved(editorInput);
+      expect(outerInput).toHaveFocus();
+    });
   });
 });
 

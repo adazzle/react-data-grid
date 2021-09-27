@@ -20,7 +20,7 @@ export function useRovingCellRef(isSelected: boolean) {
       forceRender({});
       return;
     }
-    ref.current?.focus();
+    ref.current?.focus({ preventScroll: true });
   }, [isSelected]);
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {

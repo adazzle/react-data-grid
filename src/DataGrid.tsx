@@ -363,11 +363,12 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (
       !selectedCellIsWithinSelectionBounds ||
-      selectedPosition === prevSelectedPosition.current ||
-      selectedPosition.mode === 'EDIT'
+      isSamePosition(selectedPosition, prevSelectedPosition.current)
     ) {
+      prevSelectedPosition.current = selectedPosition;
       return;
     }
+
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
   });
@@ -619,6 +620,7 @@ function DataGrid<R, SR, K extends Key>(
         // Custom editors can listen for the event and stop propagation to prevent commit
         commitEditorChanges();
         closeEditor();
+        scrollToCell(selectedPosition);
       }
       return;
     }
@@ -698,13 +700,11 @@ function DataGrid<R, SR, K extends Key>(
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
-    } else if (
-      selectedPosition.mode !== 'SELECT' ||
-      selectedPosition.idx !== position.idx ||
-      selectedPosition.rowIdx !== position.rowIdx
-    ) {
+    } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
       // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
+      scrollToCell(position);
+    } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
   }
@@ -855,12 +855,7 @@ function DataGrid<R, SR, K extends Key>(
 
     const ctrlKey = isCtrlKeyHeldDown(event);
     const nextPosition = getNextPosition(key, ctrlKey, shiftKey);
-    if (
-      nextPosition.rowIdx === selectedPosition.rowIdx &&
-      nextPosition.idx === selectedPosition.idx
-    ) {
-      return;
-    }
+    if (isSamePosition(selectedPosition, nextPosition)) return;
 
     const nextSelectedCellPosition = getNextSelectedCellPosition({
       columns,
@@ -1132,6 +1127,10 @@ function DataGrid<R, SR, K extends Key>(
       )}
     </div>
   );
+}
+
+function isSamePosition(p1: Position, p2: Position) {
+  return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
 }
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
