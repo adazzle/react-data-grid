@@ -899,7 +899,7 @@ function DataGrid<R, SR, K extends Key>(
         onRowChange={onRowChange}
         closeEditor={closeEditor}
         scrollToCell={() => {
-          scrollToCell(selectedPosition)
+          scrollToCell(selectedPosition);
         }}
       />
     );
