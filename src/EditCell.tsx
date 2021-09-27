@@ -30,9 +30,10 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends Omit<EditorProps<R, SR>, 'onClose'>,
+  extends Omit<EditorProps<R, SR>,  'onClose'>,
     SharedCellRendererProps<R, SR> {
   closeEditor: () => void;
+  scrollToCell: () => void;
 }
 
 export default function EditCell<R, SR>({
@@ -40,7 +41,8 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   onRowChange,
-  closeEditor
+  closeEditor,
+  scrollToCell
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
@@ -49,7 +51,7 @@ export default function EditCell<R, SR>({
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
   // To that end we instead access the latest props via useLatestFunc.
   const commitOnOutsideMouseDown = useLatestFunc(() => {
-    onRowChange(row, true);
+    onClose(true);
   });
 
   useEffect(() => {
@@ -72,17 +74,28 @@ export default function EditCell<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
-    if (!onNavigation(event)) {
+    if (event.key === 'Escape') {
       event.stopPropagation();
+      // Discard changes
+      onClose();
+    } else if (event.key === 'Enter') {
+      event.stopPropagation();
+      onClose(true);
+      scrollToCell();
+    } else {
+      const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
+      if (!onNavigation(event)) {
+        event.stopPropagation();
+      }
     }
   }
 
   function onClose(commitChanges?: boolean) {
     if (commitChanges) {
       onRowChange(row, true);
+    } else {
+      closeEditor();
     }
-    closeEditor();
   }
 
   const { cellClass } = column;
