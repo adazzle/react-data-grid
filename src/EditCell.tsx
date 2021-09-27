@@ -71,14 +71,14 @@ export default function EditCell<R, SR>({
     cancelAnimationFrame(frameRequestRef.current!);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
     if (!onNavigation(event)) {
       event.stopPropagation();
     }
   }
 
-  function handleOnClose(commitChanges?: boolean) {
+  function onClose(commitChanges?: boolean) {
     if (commitChanges) {
       onRowChange(row, true);
     }
@@ -101,17 +101,12 @@ export default function EditCell<R, SR>({
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}
-      onKeyDown={handleKeyDown}
+      onKeyDown={onKeyDown}
       onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
     >
       {column.editor != null && (
         <>
-          <column.editor
-            column={column}
-            row={row}
-            onRowChange={onRowChange}
-            onClose={handleOnClose}
-          />
+          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
           {column.editorOptions?.renderFormatter && (
             <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
           )}
