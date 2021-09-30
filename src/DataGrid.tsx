@@ -144,6 +144,14 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
+  onKeyDown?: Maybe<
+    (
+      event: React.KeyboardEvent<HTMLDivElement>,
+      api: {
+        commitEditorChanges: () => void;
+      }
+    ) => boolean
+  >;
 
   /**
    * Toggles and modes
@@ -198,6 +206,7 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize,
     onFill,
     onPaste,
+    onKeyDown,
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
@@ -482,6 +491,8 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (onKeyDown?.(event, { commitEditorChanges }) === false) return;
+
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
@@ -615,11 +626,6 @@ function DataGrid<R, SR, K extends Key>(
       event.preventDefault();
       return;
     }
-
-    const column = columns[selectedPosition.idx];
-    column.editorOptions?.onCellKeyDown?.(event);
-    if (event.isDefaultPrevented()) return;
-
     if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
