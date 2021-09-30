@@ -74,6 +74,8 @@ export default function EditCell<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (column.editorOptions?.onKeyDown?.(event, row) === false) return;
+
     if (event.key === 'Escape') {
       event.stopPropagation();
       // Discard changes
@@ -82,11 +84,8 @@ export default function EditCell<R, SR>({
       event.stopPropagation();
       onClose(true);
       scrollToCell();
-    } else {
-      const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
-      if (!onNavigation(event)) {
-        event.stopPropagation();
-      }
+    } else if (!onEditorNavigation(event)) {
+      event.stopPropagation();
     }
   }
 

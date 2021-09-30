@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@test
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
-import type { Column } from '../../src';
+import type { Column, DataGridProps } from '../../src';
 import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 import { createPortal } from 'react-dom';
 
@@ -187,12 +187,8 @@ describe('Editor', () => {
     it('should not open editor if onCellKeyDown prevents the default event', () => {
       render(
         <EditorTest
-          editorOptions={{
-            onCellKeyDown(event) {
-              if (event.key === 'x') {
-                event.preventDefault();
-              }
-            }
+          onKeyDown={(event) => {
+            return event.key !== 'x';
           }}
         />
       );
@@ -207,8 +203,8 @@ describe('Editor', () => {
       render(
         <EditorTest
           editorOptions={{
-            onNavigation(event) {
-              return event.key === 'ArrowDown';
+            onKeyDown(event) {
+              return event.key !== 'ArrowDown';
             }
           }}
         />
@@ -273,6 +269,7 @@ interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
   createEditorPortal?: boolean;
+  onKeyDown?: DataGridProps<Row>['onKeyDown'];
 }
 
 const initialRows: readonly Row[] = [
@@ -291,7 +288,8 @@ function EditorTest({
   editorOptions,
   onSave,
   gridRows = initialRows,
-  createEditorPortal
+  createEditorPortal,
+  onKeyDown
 }: EditorTestProps) {
   const [rows, setRows] = useState(gridRows);
 
@@ -346,7 +344,7 @@ function EditorTest({
       <button type="button" onClick={() => onSave?.(rows)}>
         save
       </button>
-      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />
+      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} onKeyDown={onKeyDown} />
     </StrictMode>
   );
 }
