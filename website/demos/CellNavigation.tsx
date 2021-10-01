@@ -71,7 +71,7 @@ function createRows(): Row[] {
 
 export default function CellNavigation() {
   const [rows] = useState(createRows);
-  const [cellNavigatioMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
+  const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
   return (
     <>
@@ -81,7 +81,7 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === 'NONE'}
+            checked={cellNavigationMode === 'NONE'}
             onChange={() => setCellNavigationMode('NONE')}
           />
           None
@@ -90,7 +90,7 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === 'CHANGE_ROW'}
+            checked={cellNavigationMode === 'CHANGE_ROW'}
             onChange={() => setCellNavigationMode('CHANGE_ROW')}
           />
           Change Row
@@ -99,13 +99,13 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === 'LOOP_OVER_ROW'}
+            checked={cellNavigationMode === 'LOOP_OVER_ROW'}
             onChange={() => setCellNavigationMode('LOOP_OVER_ROW')}
           />
           Loop Over Row
         </label>
       </div>
-      <DataGrid columns={columns} rows={rows} cellNavigationMode={cellNavigatioMode} />
+      <DataGrid columns={columns} rows={rows} cellNavigationMode={cellNavigationMode} />
     </>
   );
 }
