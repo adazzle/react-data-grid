@@ -27,7 +27,7 @@ test('TextEditor', () => {
   );
 
   userEvent.dblClick(getCells()[0]);
-  let input: HTMLInputElement | null = screen.getByRole('textbox') as HTMLInputElement;
+  let input: HTMLInputElement | null = screen.getByRole<HTMLInputElement>('textbox');
   expect(input).toHaveClass('rdg-text-editor');
   // input value is row[column.key]
   expect(input).toHaveValue(initialRows[0].name);
@@ -45,7 +45,7 @@ test('TextEditor', () => {
 
   // blurring the input closes and commits the editor
   userEvent.dblClick(getCells()[0]);
-  input = screen.getByRole('textbox') as HTMLInputElement;
+  input = screen.getByRole<HTMLInputElement>('textbox');
   userEvent.keyboard('Jim Milton');
   fireEvent.blur(input);
   expect(input).not.toBeInTheDocument();
