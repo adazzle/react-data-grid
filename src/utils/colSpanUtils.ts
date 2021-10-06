@@ -6,6 +6,7 @@ export function getColSpan<R, SR>(
   args: ColSpanArgs<R, SR>
 ) {
   const colSpan = typeof column.colSpan === 'function' ? column.colSpan(args) : 1;
+
   if (
     Number.isInteger(colSpan) &&
     colSpan! > 1 &&

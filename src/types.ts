@@ -71,16 +71,19 @@ export interface ColumnMetric {
   left: number;
 }
 
-export interface ColumnGroup<R, SR> {
+export interface ColumnGroup<R, SR = unknown> {
+  /** A unique key to distinguish each column */
+  key: string;
   /** The name of the column group. By default it will be displayed in the header cell */
   name: string | ReactElement;
   children: readonly Column<R, SR>[]; // TODO: use ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>> to support multiple header rows
 }
 
-export interface CalculatedColumnGroup<R, SR> extends Pick<ColumnGroup<R, SR>, 'name'> {
+export interface CalculatedColumnGroup<R, SR> extends Pick<ColumnGroup<R, SR>, 'name' | 'key'> {
+  idx: number;
   frozen: boolean;
   rowGroup: boolean;
-  colSpan: number;
+  colSpan: () => number;
   children: readonly CalculatedColumn<R, SR>[];
 }
 

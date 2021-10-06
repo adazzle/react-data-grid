@@ -16,6 +16,9 @@ export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
   allRowsSelected: boolean;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
   lastFrozenColumnIndex: number;
+  ariaRowIndex: number;
+  top: number;
+  ignoreColSpanSkip?: boolean;
 }
 
 function HeaderRow<R, SR>({
@@ -28,7 +31,10 @@ function HeaderRow<R, SR>({
   sortColumn,
   sortDirection,
   onSort,
-  lastFrozenColumnIndex
+  lastFrozenColumnIndex,
+  ariaRowIndex,
+  top,
+  ignoreColSpanSkip = false
 }: HeaderRowProps<R, SR>) {
   const handleAllRowsSelectionChange = useCallback(
     (checked: boolean) => {
@@ -46,7 +52,7 @@ function HeaderRow<R, SR>({
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
-    if (colSpan !== undefined) {
+    if (!ignoreColSpanSkip && colSpan !== undefined) {
       index += colSpan - 1;
     }
 
@@ -68,8 +74,9 @@ function HeaderRow<R, SR>({
   return (
     <div
       role="row"
-      aria-rowindex={1} // aria-rowindex is 1 based
+      aria-rowindex={ariaRowIndex} // aria-rowindex is 1 based
       className={headerRowClassname}
+      style={{ top }}
     >
       {cells}
     </div>

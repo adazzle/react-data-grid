@@ -21,6 +21,23 @@ interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defau
   enableVirtualization: boolean;
 }
 
+const flattenColumnGroups = <R, SR>(
+  columns: readonly (CalculatedColumnGroup<R, SR> | CalculatedColumn<R, SR>)[],
+  depth = 0,
+  result: Record<string, CalculatedColumnGroup<R, SR>[]>
+) => {
+  if (columns[0] && 'children' in columns[0]) {
+    if (!result[depth]) {
+      result[depth] = [];
+    }
+    result[depth].push(...(columns as CalculatedColumnGroup<R, SR>[]));
+    (columns as CalculatedColumnGroup<R, SR>[]).forEach((col) => {
+      // TODO: check for that the column is a group
+      flattenColumnGroups(col.children, depth + 1, result);
+    });
+  }
+};
+
 export function useCalculatedColumns<R, SR>({
   rawColumns,
   columnWidths,
@@ -35,7 +52,14 @@ export function useCalculatedColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, columnGroups, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+  const {
+    columns,
+    columnGroups,
+    colSpanColumns,
+    lastFrozenColumnIndex,
+    groupBy,
+    parentColumnsToRender
+  } = useMemo(() => {
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
@@ -80,10 +104,12 @@ export function useCalculatedColumns<R, SR>({
         });
 
         columnGroups.push({
+          idx: 0,
+          key: rawColumn.key,
           name: rawColumn.name,
           frozen,
           rowGroup,
-          colSpan: rawColumn.children.length,
+          colSpan: () => rawColumn.children.length,
           children: childColumns
         });
       } else {
@@ -123,6 +149,15 @@ export function useCalculatedColumns<R, SR>({
       return 0;
     });
 
+    let previousIdx = 0;
+    const rootParentColumns: CalculatedColumnGroup<R, SR>[] = columnGroups.filter(
+      (r) => 'children' in r
+    ) as CalculatedColumnGroup<R, SR>[];
+    rootParentColumns.forEach((col) => {
+      col.idx = previousIdx;
+      previousIdx += col.colSpan();
+    });
+
     const columns = columnGroups.flatMap((column) =>
       isColumnGroup(column) ? column.children : column
     );
@@ -143,10 +178,15 @@ export function useCalculatedColumns<R, SR>({
       columns[lastFrozenColumnIndex].isLastFrozenColumn = true;
     }
 
+    const result = {};
+    flattenColumnGroups(rootParentColumns, 0, result);
+    const parentColumnsToRender: CalculatedColumnGroup<R, SR>[][] = Object.values(result);
+
     return {
       columns,
       columnGroups,
       colSpanColumns,
+      parentColumnsToRender,
       lastFrozenColumnIndex,
       groupBy
     };
@@ -205,8 +245,26 @@ export function useCalculatedColumns<R, SR>({
       layoutCssVars[`--frozen-left-${column.key}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
+    parentColumnsToRender.forEach((parentColumnGroup) => {
+      parentColumnGroup.forEach((parentColumn) => {
+        const firstChild = parentColumn.children[0];
+        if (parentColumn.frozen) {
+          layoutCssVars[`--frozen-left-${parentColumn.key}`] = `${
+            columnMetrics.get(firstChild)!.left
+          }px`;
+        }
+      });
+    });
+
     return { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics };
-  }, [columnWidths, columns, viewportWidth, minColumnWidth, lastFrozenColumnIndex]);
+  }, [
+    viewportWidth,
+    lastFrozenColumnIndex,
+    parentColumnsToRender,
+    columns,
+    columnWidths,
+    minColumnWidth
+  ]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
@@ -265,6 +323,7 @@ export function useCalculatedColumns<R, SR>({
   return {
     columns,
     columnGroups,
+    parentColumnsToRender,
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,

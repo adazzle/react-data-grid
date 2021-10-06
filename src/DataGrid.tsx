@@ -243,8 +243,9 @@ function DataGrid<R, SR>(
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
-  const [selectedPosition, setSelectedPosition] =
-    useState<SelectCellState | EditCellState<R>>(initialPosition);
+  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
+    initialPosition
+  );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
@@ -270,15 +271,11 @@ function DataGrid<R, SR>(
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const headerRowsCount = enableFilterRow ? 2 : 1;
-  const summaryRowsCount = summaryRows?.length ?? 0;
-  const totalHeaderHeight = headerRowHeight + (enableFilterRow ? headerFiltersHeight : 0);
-  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
-  const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
 
   const {
     columns,
     columnGroups,
+    parentColumnsToRender,
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
@@ -297,6 +294,17 @@ function DataGrid<R, SR>(
     rawGroupBy: rowGrouper ? rawGroupBy : undefined,
     enableVirtualization
   });
+
+  const summaryRowsCount = summaryRows?.length ?? 0;
+  const totalHeaderHeight =
+    headerRowHeight * (1 + parentColumnsToRender.length) +
+    (enableFilterRow ? headerFiltersHeight : 0);
+  const clientHeight = gridHeight - totalHeaderHeight - summaryRowsCount * summaryRowHeight;
+  const isSelectable = selectedRows !== undefined && onSelectedRowsChange !== undefined;
+
+  const headerRowsCount = enableFilterRow
+    ? 2 + parentColumnsToRender.length
+    : 1 + parentColumnsToRender.length;
 
   const {
     rowOverscanStartIdx,
@@ -942,6 +950,7 @@ function DataGrid<R, SR>(
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
       const row = rows[rowIdx];
       const top = getRowTop(rowIdx) + totalHeaderHeight;
+
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected =
@@ -1050,6 +1059,17 @@ function DataGrid<R, SR>(
       ref={gridRef}
       onScroll={handleScroll}
     >
+      {parentColumnsToRender.map((arrayOfColumns, idx) => (
+        <HeaderRow<R, SR>
+          rowKeyGetter={rowKeyGetter}
+          rows={rawRows}
+          columns={arrayOfColumns}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          ariaRowIndex={idx + 1}
+          top={idx * headerRowHeight}
+          ignoreColSpanSkip
+        />
+      ))}
       <HeaderRow<R, SR>
         rowKeyGetter={rowKeyGetter}
         rows={rawRows}
@@ -1061,6 +1081,8 @@ function DataGrid<R, SR>(
         sortDirection={sortDirection}
         onSort={onSort}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
+        ariaRowIndex={parentColumnsToRender.length + 1}
+        top={parentColumnsToRender.length * headerRowHeight}
       />
       {enableFilterRow && (
         <FilterRow<R, SR>
