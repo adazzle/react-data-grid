@@ -69,7 +69,7 @@
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.8",
     "@types/react-router-dom": "^5.1.8",
-    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-optimize-clsx": "^2.6.2",
