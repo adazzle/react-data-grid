@@ -30,6 +30,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onAllRowsSelectionChange'
   | 'selectCell'
   | 'onColumnResize'
+  | 'onColumnResizeEnd'
   | 'shouldFocusGrid'
 >;
 
@@ -44,6 +45,7 @@ export default function HeaderCell<R, SR>({
   colSpan,
   isCellSelected,
   onColumnResize,
+  onColumnResizeEnd,
   allRowsSelected,
   onAllRowsSelectionChange,
   sortColumns,
@@ -85,7 +87,12 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onLostPointerCapture() {
+    function onLostPointerCapture(event: PointerEvent) {
+      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      if (width > 0) {
+        onColumnResizeEnd(column, width);
+      }
+
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
