@@ -2,9 +2,9 @@ import { css } from '@linaria/core';
 
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import SortableHeaderCell from './headerCells/SortableHeaderCell';
 import { getCellStyle, getCellClassname } from './utils';
 import { useRovingCellRef } from './hooks';
+import { useComponents } from './DataGridComponentsProvider';
 
 const cellResizable = css`
   touch-action: none;
@@ -51,6 +51,7 @@ export default function HeaderCell<R, SR>({
   selectCell,
   shouldFocusGrid
 }: HeaderCellProps<R, SR>) {
+  const { HeaderRenderer: DefaultHeaderRenderer } = useComponents();
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
@@ -144,36 +145,7 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function getCell() {
-    if (column.headerRenderer) {
-      return (
-        <column.headerRenderer
-          column={column}
-          sortDirection={sortDirection}
-          priority={priority}
-          onSort={onSort}
-          allRowsSelected={allRowsSelected}
-          onAllRowsSelectionChange={onAllRowsSelectionChange}
-          isCellSelected={isCellSelected}
-        />
-      );
-    }
-
-    if (column.sortable) {
-      return (
-        <SortableHeaderCell
-          onSort={onSort}
-          sortDirection={sortDirection}
-          priority={priority}
-          isCellSelected={isCellSelected}
-        >
-          {column.name}
-        </SortableHeaderCell>
-      );
-    }
-
-    return column.name;
-  }
+  const HeaderRenderer = column.headerRenderer ?? DefaultHeaderRenderer;
 
   return (
     <div
@@ -191,7 +163,15 @@ export default function HeaderCell<R, SR>({
       onClick={onClick}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
-      {getCell()}
+      <HeaderRenderer
+        column={column}
+        sortDirection={sortDirection}
+        priority={priority}
+        onSort={onSort}
+        allRowsSelected={allRowsSelected}
+        onAllRowsSelectionChange={onAllRowsSelectionChange}
+        isCellSelected={isCellSelected}
+      />
     </div>
   );
 }

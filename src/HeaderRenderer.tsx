@@ -1,8 +1,7 @@
 import { css } from '@linaria/core';
-
-import { useFocusRef } from '../hooks';
-import type { HeaderRendererProps } from '../types';
-import { useComponents } from '../DataGridComponentsProvider';
+import { useFocusRef } from './hooks';
+import type { HeaderRendererProps } from './types';
+import { useComponents } from './DataGridComponentsProvider';
 
 const headerSortCell = css`
   cursor: pointer;
@@ -24,22 +23,43 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
+export default function HeaderRenderer<R, SR>({
+  column,
+  sortDirection,
+  priority,
+  onSort,
+  isCellSelected
+}: HeaderRendererProps<R, SR>) {
+  if (!column.sortable) return <>{column.name}</>;
+
+  return (
+    <SortableHeaderCell
+      onSort={onSort}
+      sortDirection={sortDirection}
+      priority={priority}
+      isCellSelected={isCellSelected}
+    >
+      {column.name}
+    </SortableHeaderCell>
+  );
+}
+
 type SharedHeaderCellProps<R, SR> = Pick<
   HeaderRendererProps<R, SR>,
   'sortDirection' | 'onSort' | 'priority' | 'isCellSelected'
 >;
 
-interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
+interface SortableHeaderCellProps<R, SR> extends SharedHeaderCellProps<R, SR> {
   children: React.ReactNode;
 }
 
-export default function SortableHeaderCell<R, SR>({
+function SortableHeaderCell<R, SR>({
   onSort,
   sortDirection,
   priority,
   children,
   isCellSelected
-}: Props<R, SR>) {
+}: SortableHeaderCellProps<R, SR>) {
   const { SortIcon } = useComponents();
   const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 

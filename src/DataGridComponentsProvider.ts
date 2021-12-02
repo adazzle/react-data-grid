@@ -1,20 +1,28 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import type { Maybe } from './types';
-import type { SortIconProps } from './components';
-import { SortIcon } from './components';
+import type { Maybe, HeaderRendererProps } from './types';
+import HeaderRenderer from './HeaderRenderer';
+import type { SortIconProps } from './SortIcon';
+import SortIcon from './SortIcon';
 
-interface Components {
+interface Components<R, SR> {
   SortIcon?: Maybe<React.ComponentType<SortIconProps>>;
+  HeaderRenderer?: Maybe<React.ComponentType<HeaderRendererProps<R, SR>>>;
 }
 
-const DataGridComponentsContext = createContext<Components | undefined>(undefined);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DataGridComponentsContext = createContext<Components<any, any> | undefined>(undefined);
 
 export const DataGridComponentsProvider = DataGridComponentsContext.Provider;
 
-export function useComponents(): {
-  SortIcon: React.ComponentType<SortIconProps>;
-} {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useComponents(): Required<NonNullable<Components<any, any>>> {
   const context = useContext(DataGridComponentsContext);
-  return useMemo(() => ({ SortIcon: context?.SortIcon ?? SortIcon }), [context?.SortIcon]);
+  return useMemo(
+    () => ({
+      SortIcon: context?.SortIcon ?? SortIcon,
+      HeaderRenderer: context?.HeaderRenderer ?? HeaderRenderer
+    }),
+    [context?.SortIcon, context?.HeaderRenderer]
+  );
 }

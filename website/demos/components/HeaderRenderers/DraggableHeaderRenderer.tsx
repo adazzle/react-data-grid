@@ -1,6 +1,6 @@
 import { useDrag, useDrop } from 'react-dnd';
 
-import { SortableHeaderCell } from '../../../../src';
+import { HeaderRenderer } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
 import { useCombinedRefs } from '../../../../src/hooks';
 
@@ -11,10 +11,7 @@ interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
 export function DraggableHeaderRenderer<R>({
   onColumnsReorder,
   column,
-  sortDirection,
-  onSort,
-  priority,
-  isCellSelected
+  ...props
 }: DraggableHeaderRendererProps<R>) {
   const [{ isDragging }, drag] = useDrag({
     type: 'COLUMN_DRAG',
@@ -44,14 +41,7 @@ export function DraggableHeaderRenderer<R>({
         cursor: 'move'
       }}
     >
-      <SortableHeaderCell
-        sortDirection={sortDirection}
-        onSort={onSort}
-        priority={priority}
-        isCellSelected={isCellSelected}
-      >
-        {column.name}
-      </SortableHeaderCell>
+      <HeaderRenderer column={column} {...props} />
     </div>
   );
 }
