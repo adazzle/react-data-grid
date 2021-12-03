@@ -62,7 +62,7 @@ function SortableHeaderCell<R, SR>({
   children,
   isCellSelected
 }: SortableHeaderCellProps<R, SR>) {
-  const SortIcon = useDefaultComponents()?.sortIcon ?? DefaultSortIcon;
+  const SortIcon = useDefaultComponents<R, SR>()?.sortIcon ?? DefaultSortIcon;
   const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {

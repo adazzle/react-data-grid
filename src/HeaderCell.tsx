@@ -65,7 +65,7 @@ export default function HeaderCell<R, SR>({
     [cellResizableClassname]: column.resizable
   });
 
-  const defaultComponents = useDefaultComponents();
+  const defaultComponents = useDefaultComponents<R, SR>();
   const HeaderRenderer =
     column.headerRenderer ?? defaultComponents?.headerRenderer ?? DefaultHeaderRenderer;
 
