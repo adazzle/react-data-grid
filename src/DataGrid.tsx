@@ -35,7 +35,6 @@ import type {
   CalculatedColumn,
   Column,
   Position,
-  RowRendererProps,
   RowsChangeData,
   SelectRowEvent,
   FillEvent,
@@ -43,8 +42,13 @@ import type {
   CellNavigationMode,
   SortColumn,
   RowHeightArgs,
-  Maybe
+  Maybe,
+  Components
 } from './types';
+import {
+  DataGridDefaultComponentsProvider,
+  useDefaultComponents
+} from './DataGridDefaultComponentsProvider';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -156,8 +160,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
-  rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
-  noRowsFallback?: React.ReactNode;
+  components?: Maybe<Components<R, SR>>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   'data-testid'?: Maybe<string>;
 }
@@ -202,8 +205,7 @@ function DataGrid<R, SR, K extends Key>(
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
     // Miscellaneous
-    rowRenderer,
-    noRowsFallback,
+    components,
     className,
     style,
     rowClass,
@@ -218,10 +220,14 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * defaults
    */
+  const defaultComponents = useDefaultComponents<R, SR>();
   rowHeight ??= 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
-  const RowRenderer = rowRenderer ?? Row;
+  const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
+  const headerRenderer = components?.headerRenderer ?? defaultComponents?.headerRenderer;
+  const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon;
+  const noRowsFallback = components?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
 
@@ -254,6 +260,14 @@ function DataGrid<R, SR, K extends Key>(
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isHeaderRowSelected = selectedPosition.rowIdx === -1;
+
+  const defaultHeaderComponents = useMemo(
+    () => ({
+      headerRenderer,
+      sortIcon
+    }),
+    [headerRenderer, sortIcon]
+  );
 
   const allRowsSelected = useMemo((): boolean => {
     // no rows to select = explicitely unchecked
@@ -1052,18 +1066,20 @@ function DataGrid<R, SR, K extends Key>(
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
-      <HeaderRow
-        columns={viewportColumns}
-        onColumnResize={handleColumnResize}
-        allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={selectAllRowsLatest}
-        sortColumns={sortColumns}
-        onSortColumnsChange={onSortColumnsChange}
-        lastFrozenColumnIndex={lastFrozenColumnIndex}
-        selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
-        selectCell={selectHeaderCellLatest}
-        shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-      />
+      <DataGridDefaultComponentsProvider value={defaultHeaderComponents}>
+        <HeaderRow
+          columns={viewportColumns}
+          onColumnResize={handleColumnResize}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={selectAllRowsLatest}
+          sortColumns={sortColumns}
+          onSortColumnsChange={onSortColumnsChange}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
+          selectCell={selectHeaderCellLatest}
+          shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+        />
+      </DataGridDefaultComponentsProvider>
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
       ) : (

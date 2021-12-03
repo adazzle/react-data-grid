@@ -1,5 +1,5 @@
 import { css } from '@linaria/core';
-import type { SortDirection } from './types';
+import type { SortIconProps } from './types';
 
 const arrow = css`
   fill: currentColor;
@@ -10,10 +10,6 @@ const arrow = css`
 `;
 
 const arrowClassname = `rdg-sort-arrow ${arrow}`;
-
-export interface SortIconProps {
-  sortDirection: SortDirection | undefined;
-}
 
 export default function SortIcon({ sortDirection }: SortIconProps) {
   return sortDirection !== undefined ? (

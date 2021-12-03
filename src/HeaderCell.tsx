@@ -4,7 +4,8 @@ import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import { getCellStyle, getCellClassname } from './utils';
 import { useRovingCellRef } from './hooks';
-import { useComponents } from './DataGridComponentsProvider';
+import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
+import DefaultHeaderRenderer from './HeaderRenderer';
 
 const cellResizable = css`
   touch-action: none;
@@ -51,7 +52,6 @@ export default function HeaderCell<R, SR>({
   selectCell,
   shouldFocusGrid
 }: HeaderCellProps<R, SR>) {
-  const { HeaderRenderer: DefaultHeaderRenderer } = useComponents();
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
@@ -64,6 +64,10 @@ export default function HeaderCell<R, SR>({
   const className = getCellClassname(column, column.headerCellClass, {
     [cellResizableClassname]: column.resizable
   });
+
+  const defaultComponents = useDefaultComponents();
+  const HeaderRenderer =
+    column.headerRenderer ?? defaultComponents?.headerRenderer ?? DefaultHeaderRenderer;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -144,8 +148,6 @@ export default function HeaderCell<R, SR>({
       selectCell(0);
     }
   }
-
-  const HeaderRenderer = column.headerRenderer ?? DefaultHeaderRenderer;
 
   return (
     <div
