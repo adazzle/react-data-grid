@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes } from 'react';
+import type { Key, RefAttributes, MouseEvent } from 'react';
 import clsx from 'clsx';
 
 import { rootClassname, viewportDraggingClassname } from './style';
@@ -137,12 +137,20 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
+  onRowClick?: Maybe<(params: { row: R }, event: MouseEvent<HTMLDivElement>) => void>;
   /** Function called whenever a row is double clicked */
-  onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
-  /** Called when the grid is scrolled */
+  onRowDoubleClick?: Maybe<(params: { row: R }, event: MouseEvent<HTMLDivElement>) => void>;
+  /** Function called whenever a cell is clicked */
+  onCellClick?: Maybe<
+    (params: { row: R; column: CalculatedColumn<R, SR> }, event: MouseEvent<HTMLDivElement>) => void
+  >;
+  /** Function called whenever a cell is double clicked */
+  onCellDoubleClick: Maybe<
+    (params: { row: R; column: CalculatedColumn<R, SR> }, event: MouseEvent<HTMLDivElement>) => void
+  >;
+  /** Function called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
-  /** Called when a column is resized */
+  /** Function called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
 
   /**
@@ -194,6 +202,8 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onRowClick,
     onRowDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
     onScroll,
     onColumnResize,
     onFill,
@@ -333,6 +343,10 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
+  const onCellClickLatest = useLatestFunc(onCellClick);
+  const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
+  const onRowClickLatest = useLatestFunc(onRowClick);
+  const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -997,8 +1011,10 @@ function DataGrid<R, SR, K extends Key>(
           row={row}
           viewportColumns={rowColumns}
           isRowSelected={isRowSelected}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
+          onClick={onRowClickLatest}
+          onDoubleClick={onRowDoubleClickLatest}
+          onCellClick={onCellClickLatest}
+          onCellDoubleClick={onCellDoubleClickLatest}
           rowClass={rowClass}
           top={top}
           height={getRowHeight(rowIdx)}

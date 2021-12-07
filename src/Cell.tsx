@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import type { MouseEvent } from 'react';
 import { css } from '@linaria/core';
 
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
@@ -29,8 +30,9 @@ function Cell<R, SR>({
   isDraggedOver,
   row,
   dragHandle,
-  onRowClick,
-  onRowDoubleClick,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
   onRowChange,
   selectCell,
   ...props
@@ -51,18 +53,22 @@ function Cell<R, SR>({
     selectCell(row, column, openEditor);
   }
 
-  function handleClick() {
+  function handleClick(event: MouseEvent<HTMLDivElement>) {
+    onClick?.({ row, column }, event);
+    if (event.isDefaultPrevented()) return;
     selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(row, column);
   }
 
-  function handleContextMenu() {
+  function handleContextMenu(event: MouseEvent<HTMLDivElement>) {
+    onContextMenu?.(event);
+    if (event.isDefaultPrevented()) return;
     selectCellWrapper();
   }
 
-  function handleDoubleClick() {
+  function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
+    onDoubleClick?.({ row, column }, event);
+    if (event.isDefaultPrevented()) return;
     selectCellWrapper(true);
-    onRowDoubleClick?.(row, column);
   }
 
   return (

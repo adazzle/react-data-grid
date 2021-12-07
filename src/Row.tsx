@@ -1,5 +1,5 @@
 import { memo, forwardRef } from 'react';
-import type { RefAttributes, CSSProperties } from 'react';
+import type { RefAttributes, CSSProperties, MouseEvent } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
@@ -21,8 +21,10 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
-    onRowClick,
-    onRowDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
+    onClick,
+    onDoubleClick,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -40,9 +42,17 @@ function Row<R, SR>(
     onRowChange(rowIdx, newRow);
   });
 
-  function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
+  function handleDragEnter(event: MouseEvent<HTMLDivElement>) {
     setDraggedOverRowIdx?.(rowIdx);
     onMouseEnter?.(event);
+  }
+
+  function handleClick(event: MouseEvent<HTMLDivElement>) {
+    onClick?.({ row }, event);
+  }
+
+  function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
+    onDoubleClick?.({ row }, event);
   }
 
   className = clsx(
@@ -78,8 +88,8 @@ function Row<R, SR>(
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
+          onClick={onCellClick}
+          onDoubleClick={onCellDoubleClick}
           onRowChange={handleRowChange}
           selectCell={selectCell}
         />
@@ -95,6 +105,8 @@ function Row<R, SR>(
         tabIndex={tabIndex}
         className={className}
         onMouseEnter={handleDragEnter}
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
         style={
           {
             top,
