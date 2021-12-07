@@ -145,7 +145,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
     (params: { row: R; column: CalculatedColumn<R, SR> }, event: MouseEvent<HTMLDivElement>) => void
   >;
   /** Function called whenever a cell is double clicked */
-  onCellDoubleClick: Maybe<
+  onCellDoubleClick?: Maybe<
     (params: { row: R; column: CalculatedColumn<R, SR> }, event: MouseEvent<HTMLDivElement>) => void
   >;
   /** Function called when the grid is scrolled */
