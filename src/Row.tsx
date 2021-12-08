@@ -28,6 +28,7 @@ function Row<R, SR>(
     onMouseEnter,
     top,
     height,
+    zIndex,
     onRowChange,
     selectCell,
     ...props
@@ -98,7 +99,8 @@ function Row<R, SR>(
         style={
           {
             top,
-            '--row-height': `${height}px`
+            '--row-height': `${height}px`,
+            zIndex
           } as unknown as CSSProperties
         }
         {...props}

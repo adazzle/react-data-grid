@@ -237,6 +237,7 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [stickyRowIndex, setStickyRowIndex] = useState<number | undefined>(undefined);
 
   /**
    * refs
@@ -293,6 +294,7 @@ function DataGrid<R, SR, K extends Key>(
     rowOverscanEndIdx,
     rows,
     rowsCount,
+    stickyRowIndexes,
     totalRowHeight,
     isGroupRow,
     getRowTop,
@@ -308,6 +310,23 @@ function DataGrid<R, SR, K extends Key>(
     expandedGroupIds,
     enableVirtualization
   });
+
+  if (stickyRowIndexes.length) {
+    const rowVisibleStartIdx = findRowIdx(scrollTop);
+    if (stickyRowIndex !== stickyRowIndexes.length - 1) {
+      const nextIndex = stickyRowIndex === undefined ? 0 : stickyRowIndex + 1;
+      if (rowVisibleStartIdx >= stickyRowIndexes[nextIndex]) {
+        setStickyRowIndex(nextIndex)
+      }
+    }
+
+    // eslint-disable-next-line sonarjs/no-collapsible-if
+    if (stickyRowIndex !== undefined && stickyRowIndex !== 0) {
+      if (rowVisibleStartIdx < stickyRowIndexes[stickyRowIndex]) {
+        setStickyRowIndex(stickyRowIndex - 1)
+      }
+    }
+  }
 
   const viewportColumns = useViewportColumns({
     columns,
@@ -919,6 +938,46 @@ function DataGrid<R, SR, K extends Key>(
         ? rowOverscanEndIdx + 1
         : rowOverscanEndIdx;
 
+        if (stickyRowIndex !== undefined) {
+          const stickyRow = rows[stickyRowIndexes[stickyRowIndex]] as R;
+  
+          let key;
+          if (typeof rowKeyGetter === 'function') {
+            key = rowKeyGetter(stickyRow);
+          } else {
+            key = hasGroups ? startRowIndex : stickyRowIndex;
+          }
+        
+          rowElements.push(<RowRenderer
+            aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : stickyRowIndexes[stickyRowIndex]) + 1} // aria-rowindex is 1 based
+            aria-selected={false}
+            key={key}
+            rowIdx={stickyRowIndexes[stickyRowIndex]}
+            row={stickyRow}
+            viewportColumns={viewportColumns}
+            isRowSelected={false}
+            onRowClick={onRowClick}
+            onRowDoubleClick={onRowDoubleClick}
+            rowClass={rowClass}
+            top={scrollTop + headerRowHeight}
+            zIndex={1}
+            height={getRowHeight(stickyRowIndexes[stickyRowIndex])}
+            copiedCellIdx={
+              copiedCell !== null && copiedCell.row === stickyRow
+                ? columns.findIndex((c) => c.key === copiedCell.columnKey)
+                : undefined
+            }
+            selectedCellIdx={selectedRowIdx === stickyRowIndexes[stickyRowIndex] ? selectedIdx : undefined}
+            draggedOverCellIdx={getDraggedOverCellIdx(stickyRowIndexes[stickyRowIndex])}
+            setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
+            onRowChange={handleFormatterRowChangeLatest}
+            selectCell={selectViewportCellLatest}
+            selectedCellDragHandle={getDragHandle(stickyRowIndexes[stickyRowIndex])}
+            selectedCellEditor={getCellEditor(stickyRowIndexes[stickyRowIndex])}
+          />)
+        }
+
     for (let viewportRowIdx = startRowIdx; viewportRowIdx <= endRowIdx; viewportRowIdx++) {
       const isRowOutsideViewport =
         viewportRowIdx === rowOverscanStartIdx - 1 || viewportRowIdx === rowOverscanEndIdx + 1;
@@ -943,6 +1002,10 @@ function DataGrid<R, SR, K extends Key>(
                   ...viewportColumns.slice(lastFrozenColumnIndex + 1)
                 ];
         }
+      }
+
+      if (stickyRowIndex !== undefined && stickyRowIndexes[stickyRowIndex] === rowIdx) {
+        continue
       }
 
       const row = rows[rowIdx];

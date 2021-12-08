@@ -114,6 +114,18 @@ export function useViewportRows<R>({
     }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
+  const stickyRowIndexes = useMemo(() => {
+    const stickyRowInfo: number[] = []
+    rows.forEach((r, i) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof r === 'object' && (r as any).isStickyRow) {
+        stickyRowInfo.push(i)
+      }
+    })
+
+    return stickyRowInfo
+  }, [rows])
+
   const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
       return {
@@ -187,6 +199,7 @@ export function useViewportRows<R>({
     isGroupRow,
     getRowTop,
     getRowHeight,
-    findRowIdx
+    findRowIdx,
+    stickyRowIndexes
   };
 }
