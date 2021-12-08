@@ -4,13 +4,13 @@ export const row = css`
   contain: strict;
   contain: size layout style paint;
   display: grid;
-  grid-template-rows: var(--row-height);
-  grid-template-columns: var(--template-columns);
+  grid-template-rows: var(--rdg-row-height);
+  grid-template-columns: var(--rdg-template-columns);
   position: absolute;
   left: 0;
-  width: var(--row-width);
-  height: var(--row-height); /* needed on Firefox */
-  line-height: var(--row-height);
+  width: var(--rdg-row-width);
+  height: var(--rdg-row-height); /* needed on Firefox */
+  line-height: var(--rdg-row-height);
   background-color: var(--rdg-background-color);
 
   &:hover {

@@ -14,10 +14,10 @@ const textEditor = css`
   background-color: var(--rdg-background-color);
 
   font-family: inherit;
-  font-size: var(--font-size);
+  font-size: var(--rdg-font-size);
 
   &:focus {
-    border-color: var(--selection-color);
+    border-color: var(--rdg-selection-color);
     outline: none;
   }
 

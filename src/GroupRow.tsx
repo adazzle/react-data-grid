@@ -83,7 +83,7 @@ function GroupedRow<R, SR>({
         style={
           {
             top,
-            '--row-height': `${height}px`
+            '--rdg-row-height': `${height}px`
           } as unknown as CSSProperties
         }
         {...props}

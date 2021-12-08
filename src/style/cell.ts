@@ -15,7 +15,7 @@ export const cell = css`
   outline: none;
 
   &[aria-selected='true'] {
-    box-shadow: inset 0 0 0 2px var(--selection-color);
+    box-shadow: inset 0 0 0 2px var(--rdg-selection-color);
   }
 `;
 

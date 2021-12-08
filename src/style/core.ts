@@ -35,8 +35,8 @@ const darkTheme = `
 
 const root = css`
   ${lightTheme}
-  --selection-color: #66afe9;
-  --font-size: 14px;
+  --rdg-selection-color: #66afe9;
+  --rdg-font-size: 14px;
 
   color-scheme: var(--rdg-color-scheme, light dark);
 
@@ -52,7 +52,7 @@ const root = css`
   user-select: none;
   background-color: var(--rdg-background-color);
   color: var(--rdg-color);
-  font-size: var(--font-size);
+  font-size: var(--rdg-font-size);
   direction: ltr;
 
   /* set stacking context in safari */
