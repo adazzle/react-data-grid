@@ -16,7 +16,7 @@ const cellDragHandle = css`
     width: 16px;
     height: 16px;
     border: 2px solid var(--selection-color);
-    background-color: var(--background-color);
+    background-color: var(--rdg-background-color);
   }
 `;
 

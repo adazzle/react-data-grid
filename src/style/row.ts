@@ -11,14 +11,14 @@ export const row = css`
   width: var(--row-width);
   height: var(--row-height); /* needed on Firefox */
   line-height: var(--row-height);
-  background-color: var(--background-color);
+  background-color: var(--rdg-background-color);
 
   &:hover {
-    background-color: var(--row-hover-background-color);
+    background-color: var(--rdg-row-hover-background-color);
   }
 
   &[aria-selected='true'] {
-    background-color: var(--row-selected-background-color);
+    background-color: var(--rdg-row-selected-background-color);
 
     &:hover {
       background-color: var(--row-selected-hover-background-color);

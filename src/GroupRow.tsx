@@ -29,7 +29,7 @@ export interface GroupRowRendererProps<R, SR>
 
 const groupRow = css`
   &:not([aria-selected='true']) {
-    background-color: var(--header-background-color);
+    background-color: var(--rdg-header-background-color);
   }
 
   > .${cell}:not(:last-child):not(.${cellFrozenLast}) {

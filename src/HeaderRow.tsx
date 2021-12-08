@@ -35,7 +35,7 @@ const headerRow = css`
   width: var(--row-width);
   position: sticky;
   top: 0;
-  background-color: var(--header-background-color);
+  background-color: var(--rdg-header-background-color);
   font-weight: bold;
   z-index: 3;
   outline: none;
