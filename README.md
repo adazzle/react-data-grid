@@ -181,9 +181,9 @@ A number defining the height of summary rows.
 
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
-###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onRowClick?: Maybe<(params: { row: R }, event: React.MouseEvent<HTMLDivElement>) => void>`
 
-###### `onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onRowDoubleClick?: Maybe<(params: { row: R }, event: React.MouseEvent<HTMLDivElement>) => void>`
 
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
