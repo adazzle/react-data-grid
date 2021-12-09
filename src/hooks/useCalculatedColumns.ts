@@ -175,12 +175,12 @@ export function useCalculatedColumns<R, SR>({
     }
 
     const layoutCssVars: Record<string, string> = {
-      '--template-columns': templateColumns
+      '--rdg-template-columns': templateColumns
     };
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
-      layoutCssVars[`--frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
+      layoutCssVars[`--rdg-frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
     return { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics };
