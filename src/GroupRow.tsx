@@ -29,7 +29,7 @@ export interface GroupRowRendererProps<R, SR>
 
 const groupRow = css`
   &:not([aria-selected='true']) {
-    background-color: var(--header-background-color);
+    background-color: var(--rdg-header-background-color);
   }
 
   > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
@@ -83,7 +83,7 @@ function GroupedRow<R, SR>({
         style={
           {
             top,
-            '--row-height': `${height}px`
+            '--rdg-row-height': `${height}px`
           } as unknown as CSSProperties
         }
         {...props}

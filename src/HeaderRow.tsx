@@ -28,20 +28,20 @@ const headerRow = css`
   contain: strict;
   contain: size layout style paint;
   display: grid;
-  grid-template-columns: var(--template-columns);
-  grid-template-rows: var(--header-row-height);
-  height: var(--header-row-height); /* needed on Firefox */
-  line-height: var(--header-row-height);
-  width: var(--row-width);
+  grid-template-columns: var(--rdg-template-columns);
+  grid-template-rows: var(--rdg-header-row-height);
+  height: var(--rdg-header-row-height); /* needed on Firefox */
+  line-height: var(--rdg-header-row-height);
+  width: var(--rdg-row-width);
   position: sticky;
   top: 0;
-  background-color: var(--header-background-color);
+  background-color: var(--rdg-header-background-color);
   font-weight: bold;
   z-index: 3;
   outline: none;
 
   &[aria-selected='true'] {
-    box-shadow: inset 0 0 0 2px var(--selection-color);
+    box-shadow: inset 0 0 0 2px var(--rdg-selection-color);
   }
 `;
 

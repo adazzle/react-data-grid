@@ -26,16 +26,16 @@ const checkbox = css`
   content: '';
   width: 20px;
   height: 20px;
-  border: 2px solid var(--border-color);
-  background-color: var(--background-color);
+  border: 2px solid var(--rdg-border-color);
+  background-color: var(--rdg-background-color);
 
   .${checkboxInput}:checked + & {
-    background-color: var(--checkbox-color);
-    box-shadow: inset 0px 0px 0px 4px var(--background-color);
+    background-color: var(--rdg-checkbox-color);
+    box-shadow: inset 0px 0px 0px 4px var(--rdg-background-color);
   }
 
   .${checkboxInput}:focus + & {
-    border-color: var(--checkbox-focus-color);
+    border-color: var(--rdg-checkbox-focus-color);
   }
 `;
 
@@ -45,8 +45,8 @@ const checkboxLabelDisabled = css`
   cursor: default;
 
   .${checkbox} {
-    border-color: var(--checkbox-disabled-border-color);
-    background-color: var(--checkbox-disabled-background-color);
+    border-color: var(--rdg-checkbox-disabled-border-color);
+    background-color: var(--rdg-checkbox-disabled-background-color);
   }
 `;
 
