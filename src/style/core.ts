@@ -2,43 +2,43 @@ import { css } from '@linaria/core';
 import { row } from './row';
 
 const lightTheme = `
-  --color: #000;
-  --border-color: #ddd;
-  --summary-border-color: #aaa;
-  --background-color: hsl(0deg 0% 100%);
-  --header-background-color: hsl(0deg 0% 97.5%);
-  --row-hover-background-color: hsl(0deg 0% 96%);
-  --row-selected-background-color: hsl(207deg 76% 92%);
+  --rdg-color: #000;
+  --rdg-border-color: #ddd;
+  --rdg-summary-border-color: #aaa;
+  --rdg-background-color: hsl(0deg 0% 100%);
+  --rdg-header-background-color: hsl(0deg 0% 97.5%);
+  --rdg-row-hover-background-color: hsl(0deg 0% 96%);
+  --rdg-row-selected-background-color: hsl(207deg 76% 92%);
   --row-selected-hover-background-color: hsl(207deg 76% 88%);
 
-  --checkbox-color: hsl(207deg 100% 29%);
-  --checkbox-focus-color: hsl(207deg 100% 69%);
-  --checkbox-disabled-border-color: #ccc;
-  --checkbox-disabled-background-color: #ddd;
+  --rdg-checkbox-color: hsl(207deg 100% 29%);
+  --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
+  --rdg-checkbox-disabled-border-color: #ccc;
+  --rdg-checkbox-disabled-background-color: #ddd;
 `;
 
 const darkTheme = `
-  --color: #ddd;
-  --border-color: #444;
-  --summary-border-color: #555;
-  --background-color: hsl(0deg 0% 13%);
-  --header-background-color: hsl(0deg 0% 10.5%);
-  --row-hover-background-color: hsl(0deg 0% 9%);
-  --row-selected-background-color: hsl(207deg 76% 42%);
+  --rdg-color: #ddd;
+  --rdg-border-color: #444;
+  --rdg-summary-border-color: #555;
+  --rdg-background-color: hsl(0deg 0% 13%);
+  --rdg-header-background-color: hsl(0deg 0% 10.5%);
+  --rdg-row-hover-background-color: hsl(0deg 0% 9%);
+  --rdg-row-selected-background-color: hsl(207deg 76% 42%);
   --row-selected-hover-background-color: hsl(207deg 76% 38%);
 
-  --checkbox-color: hsl(207deg 100% 79%);
-  --checkbox-focus-color: hsl(207deg 100% 89%);
-  --checkbox-disabled-border-color: #000;
-  --checkbox-disabled-background-color: #333;
+  --rdg-checkbox-color: hsl(207deg 100% 79%);
+  --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
+  --rdg-checkbox-disabled-border-color: #000;
+  --rdg-checkbox-disabled-background-color: #333;
 `;
 
 const root = css`
   ${lightTheme}
-  --selection-color: #66afe9;
-  --font-size: 14px;
+  --rdg-selection-color: #66afe9;
+  --rdg-font-size: 14px;
 
-  color-scheme: var(--color-scheme, light dark);
+  color-scheme: var(--rdg-color-scheme, light dark);
 
   /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
   /* We set a stacking context so internal elements don't render on top of external components. */
@@ -46,13 +46,13 @@ const root = css`
   contain: size layout style paint;
   content-visibility: auto;
   height: 350px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--rdg-border-color);
   box-sizing: border-box;
   overflow: auto;
   user-select: none;
-  background-color: var(--background-color);
-  color: var(--color);
-  font-size: var(--font-size);
+  background-color: var(--rdg-background-color);
+  color: var(--rdg-color);
+  font-size: var(--rdg-font-size);
   direction: ltr;
 
   /* set stacking context in safari */
@@ -68,12 +68,12 @@ const root = css`
   }
 
   &.rdg-dark {
-    --color-scheme: dark;
+    --rdg-color-scheme: dark;
     ${darkTheme}
   }
 
   &.rdg-light {
-    --color-scheme: light;
+    --rdg-color-scheme: light;
   }
 
   @media (prefers-color-scheme: dark) {

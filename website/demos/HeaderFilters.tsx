@@ -33,7 +33,7 @@ const filterContainerClassname = css`
       padding: 0 8px;
 
       &:first-child {
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--rdg-border-color);
       }
     }
   }
