@@ -1,3 +1,0 @@
-/*! cpexcel.js (C) 2013-present SheetJS -- http://sheetjs.com */
-
-/*! cputils.js (C) 2013-present SheetJS -- http://sheetjs.com */
