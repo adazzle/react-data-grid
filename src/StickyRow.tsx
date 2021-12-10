@@ -21,6 +21,8 @@ const headerRow = css`
   font-weight: bold;
   z-index: 3;
   outline: none;
+  border-bottom: 1px solid var(--border-color);
+  padding-left: 10px;
 
   &[aria-selected='true'] {
     box-shadow: inset 0 0 0 2px var(--selection-color);
