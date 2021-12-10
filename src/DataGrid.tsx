@@ -2,7 +2,7 @@ import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname } from './style';
+import { rootClassname, rowClassname, viewportDraggingClassname } from './style';
 import {
   useLayoutEffect,
   useGridDimensions,
@@ -16,6 +16,7 @@ import HeaderRow from './HeaderRow';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
+import StickyRow from './StickyRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import {
@@ -938,46 +939,6 @@ function DataGrid<R, SR, K extends Key>(
         ? rowOverscanEndIdx + 1
         : rowOverscanEndIdx;
 
-        if (stickyRowIndex !== undefined) {
-          const stickyRow = rows[stickyRowIndexes[stickyRowIndex]] as R;
-  
-          let key;
-          if (typeof rowKeyGetter === 'function') {
-            key = rowKeyGetter(stickyRow);
-          } else {
-            key = hasGroups ? startRowIndex : stickyRowIndex;
-          }
-        
-          rowElements.push(<RowRenderer
-            aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : stickyRowIndexes[stickyRowIndex]) + 1} // aria-rowindex is 1 based
-            aria-selected={false}
-            key={key}
-            rowIdx={stickyRowIndexes[stickyRowIndex]}
-            row={stickyRow}
-            viewportColumns={viewportColumns}
-            isRowSelected={false}
-            onRowClick={onRowClick}
-            onRowDoubleClick={onRowDoubleClick}
-            rowClass={rowClass}
-            top={scrollTop + headerRowHeight}
-            zIndex={1}
-            height={getRowHeight(stickyRowIndexes[stickyRowIndex])}
-            copiedCellIdx={
-              copiedCell !== null && copiedCell.row === stickyRow
-                ? columns.findIndex((c) => c.key === copiedCell.columnKey)
-                : undefined
-            }
-            selectedCellIdx={selectedRowIdx === stickyRowIndexes[stickyRowIndex] ? selectedIdx : undefined}
-            draggedOverCellIdx={getDraggedOverCellIdx(stickyRowIndexes[stickyRowIndex])}
-            setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
-            onRowChange={handleFormatterRowChangeLatest}
-            selectCell={selectViewportCellLatest}
-            selectedCellDragHandle={getDragHandle(stickyRowIndexes[stickyRowIndex])}
-            selectedCellEditor={getCellEditor(stickyRowIndexes[stickyRowIndex])}
-          />)
-        }
-
     for (let viewportRowIdx = startRowIdx; viewportRowIdx <= endRowIdx; viewportRowIdx++) {
       const isRowOutsideViewport =
         viewportRowIdx === rowOverscanStartIdx - 1 || viewportRowIdx === rowOverscanEndIdx + 1;
@@ -1039,6 +1000,17 @@ function DataGrid<R, SR, K extends Key>(
           />
         );
         continue;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof row === 'object' && (row as any).isStickyRow) {
+        rowElements.push(<StickyRow 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          content={(row as any).content}
+          isStuck
+          top={top}
+        />)
+        continue
       }
 
       startRowIndex++;
@@ -1127,6 +1099,13 @@ function DataGrid<R, SR, K extends Key>(
         selectCell={selectHeaderCellLatest}
         shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
       />
+      { stickyRowIndex !== undefined ?
+        <StickyRow
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          content={(rows[stickyRowIndexes[stickyRowIndex]] as any).content}
+          isStuck={false}
+          top={headerRowHeight}
+         /> : null}
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
       ) : (
