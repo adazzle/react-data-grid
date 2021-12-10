@@ -2,7 +2,7 @@ import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, rowClassname, viewportDraggingClassname } from './style';
+import { rootClassname, viewportDraggingClassname } from './style';
 import {
   useLayoutEffect,
   useGridDimensions,
@@ -1007,7 +1007,7 @@ function DataGrid<R, SR, K extends Key>(
         rowElements.push(<StickyRow 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           content={(row as any).content}
-          isStuck
+          isStuck={false}
           top={top}
         />)
         continue
@@ -1103,7 +1103,7 @@ function DataGrid<R, SR, K extends Key>(
         <StickyRow
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           content={(rows[stickyRowIndexes[stickyRowIndex]] as any).content}
-          isStuck={false}
+          isStuck
           top={headerRowHeight}
          /> : null}
       {rows.length === 0 && noRowsFallback ? (
