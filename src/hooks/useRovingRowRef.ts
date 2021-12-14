@@ -10,14 +10,14 @@ const rowSelected = css`
     content: '';
     position: absolute;
     inset: 0;
-    box-shadow: inset 0 0 0 2px var(--selection-color);
+    box-shadow: inset 0 0 0 2px var(--rdg-selection-color);
     pointer-events: none;
     z-index: 2;
   }
 
   > .${cell}:first-child {
     /* preserve left border on the first frozen cell after scrolling to the right */
-    box-shadow: inset 2px 0 0 0 var(--selection-color);
+    box-shadow: inset 2px 0 0 0 var(--rdg-selection-color);
   }
 `;
 

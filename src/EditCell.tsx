@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
-import { getCellStyle, getCellClassname } from './utils';
-import type { CellRendererProps, EditorProps } from './types';
+import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
+import type { CellRendererProps, EditorProps, Omit } from './types';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -30,8 +29,11 @@ const cellEditing = css`
 
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
-interface EditCellProps<R, SR> extends EditorProps<R, SR>, SharedCellRendererProps<R, SR> {
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent: boolean) => void;
+interface EditCellProps<R, SR>
+  extends Omit<EditorProps<R, SR>, 'onClose'>,
+    SharedCellRendererProps<R, SR> {
+  closeEditor: () => void;
+  scrollToCell: () => void;
 }
 
 export default function EditCell<R, SR>({
@@ -39,24 +41,22 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   onRowChange,
-  onClose,
-  onKeyDown,
-  editorPortalTarget
+  closeEditor,
+  scrollToCell
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
+  const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
 
   // We need to prevent the `useEffect` from cleaning up between re-renders,
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
   // To that end we instead access the latest props via useLatestFunc.
   const commitOnOutsideMouseDown = useLatestFunc(() => {
-    onRowChange(row, true);
+    onClose(true);
   });
 
-  function cancelFrameRequest() {
-    cancelAnimationFrame(frameRequestRef.current!);
-  }
-
   useEffect(() => {
+    if (!commitOnOutsideClick) return;
+
     function onWindowCaptureMouseDown() {
       frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
     }
@@ -67,41 +67,44 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [commitOnOutsideMouseDown]);
+  }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
+
+  function cancelFrameRequest() {
+    cancelAnimationFrame(frameRequestRef.current!);
+  }
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') {
+      event.stopPropagation();
+      // Discard changes
+      onClose();
+    } else if (event.key === 'Enter') {
+      event.stopPropagation();
+      onClose(true);
+      scrollToCell();
+    } else {
+      const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
+      if (!onNavigation(event)) {
+        event.stopPropagation();
+      }
+    }
+  }
+
+  function onClose(commitChanges?: boolean) {
+    if (commitChanges) {
+      onRowChange(row, true);
+    } else {
+      closeEditor();
+    }
+  }
 
   const { cellClass } = column;
   const className = getCellClassname(
     column,
     'rdg-editor-container',
-    !column.editorOptions?.createPortal && cellEditing,
+    !column.editorOptions?.renderFormatter && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
-
-  let content;
-  if (column.editor != null) {
-    content = (
-      <column.editor
-        column={column}
-        row={row}
-        onRowChange={onRowChange}
-        onClose={onClose}
-        editorPortalTarget={editorPortalTarget}
-      />
-    );
-
-    if (column.editorOptions?.createPortal) {
-      content = (
-        <>
-          {createPortal(content, editorPortalTarget)}
-          <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
-        </>
-      );
-    }
-  }
-
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    onKeyDown(event, true);
-  }
 
   return (
     <div
@@ -111,10 +114,17 @@ export default function EditCell<R, SR>({
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}
-      onKeyDown={column.editorOptions?.createPortal ? handleKeyDown : undefined}
-      onMouseDownCapture={cancelFrameRequest}
+      onKeyDown={onKeyDown}
+      onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
     >
-      {content}
+      {column.editor != null && (
+        <>
+          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
+          {column.editorOptions?.renderFormatter && (
+            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
+          )}
+        </>
+      )}
     </div>
   );
 }

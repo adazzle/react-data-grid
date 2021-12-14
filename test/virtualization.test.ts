@@ -146,7 +146,7 @@ test('virtualization is enabled', () => {
   assertCells(66, 18, 1, 18);
 
   // max left = row width - grid width
-  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--row-width'), 10) - 1920;
+  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--rdg-row-width'), 10) - 1920;
   assertHeaderCells(17, 13, 29);
   assertCells(66, 17, 13, 29);
 });
@@ -168,7 +168,7 @@ test('virtualization is enabled with 4 frozen columns', () => {
   assertCellIndexes(0, indexes);
 
   // max left = row width - grid width
-  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--row-width'), 10) - 1920;
+  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--rdg-row-width'), 10) - 1920;
   indexes = [0, 1, 2, 3, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
@@ -193,7 +193,7 @@ test('virtualization is enabled with all columns frozen', () => {
   assertCellIndexes(0, indexes);
 
   // max left = row width - grid width
-  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--row-width'), 10) - 1920;
+  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--rdg-row-width'), 10) - 1920;
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 });

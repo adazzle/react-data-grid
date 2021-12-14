@@ -20,7 +20,6 @@ import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import {
   assertIsValidKeyGetter,
-  onEditorNavigation,
   getNextSelectedCellPosition,
   isSelectedCellEditable,
   canExitGrid,
@@ -55,16 +54,12 @@ interface EditCellState<R> extends Position {
   readonly mode: 'EDIT';
   readonly row: R;
   readonly originalRow: R;
-  readonly key: string | null;
 }
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'formatter' | 'minWidth' | 'resizable' | 'sortable'
 >;
-
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const body = globalThis.document?.body;
 
 const initialPosition: SelectCellState = {
   idx: -1,
@@ -149,8 +144,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
-  /** Function called whenever selected cell is changed */
-  onSelectedCellChange?: Maybe<(position: Position) => void>;
 
   /**
    * Toggles and modes
@@ -165,8 +158,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
   noRowsFallback?: React.ReactNode;
-  /** The node where the editor portal should mount. */
-  editorPortalTarget?: Maybe<Element>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   'data-testid'?: Maybe<string>;
 }
@@ -205,7 +196,6 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onScroll,
     onColumnResize,
-    onSelectedCellChange,
     onFill,
     onPaste,
     // Toggles and modes
@@ -214,7 +204,6 @@ function DataGrid<R, SR, K extends Key>(
     // Miscellaneous
     rowRenderer,
     noRowsFallback,
-    editorPortalTarget: rawEditorPortalTarget,
     className,
     style,
     rowClass,
@@ -235,7 +224,6 @@ function DataGrid<R, SR, K extends Key>(
   const RowRenderer = rowRenderer ?? Row;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
-  const editorPortalTarget = rawEditorPortalTarget ?? body;
 
   /**
    * states
@@ -374,11 +362,12 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (
       !selectedCellIsWithinSelectionBounds ||
-      selectedPosition === prevSelectedPosition.current ||
-      selectedPosition.mode === 'EDIT'
+      isSamePosition(selectedPosition, prevSelectedPosition.current)
     ) {
+      prevSelectedPosition.current = selectedPosition;
       return;
     }
+
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
   });
@@ -492,11 +481,11 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, isEditorPortalEvent = false) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
-    if (!isCellEvent && !isRowEvent && !isEditorPortalEvent) return;
+    if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
@@ -542,7 +531,6 @@ function DataGrid<R, SR, K extends Key>(
     switch (event.key) {
       case 'Escape':
         setCopiedCell(null);
-        closeEditor();
         return;
       case 'ArrowUp':
       case 'ArrowDown':
@@ -585,14 +573,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function commitEditorChanges() {
-    if (
-      columns[selectedPosition.idx]?.editor == null ||
-      selectedPosition.mode === 'SELECT' ||
-      selectedPosition.row === selectedPosition.originalRow
-    ) {
-      return;
-    }
-
+    if (selectedPosition.mode !== 'EDIT') return;
     updateRow(selectedPosition.rowIdx, selectedPosition.row);
   }
 
@@ -625,15 +606,6 @@ function DataGrid<R, SR, K extends Key>(
     if (isGroupRow(row)) return;
     const { key, shiftKey } = event;
 
-    if (selectedPosition.mode === 'EDIT') {
-      if (key === 'Enter') {
-        // Custom editors can listen for the event and stop propagation to prevent commit
-        commitEditorChanges();
-        closeEditor();
-      }
-      return;
-    }
-
     // Select the row on Shift + Space
     if (isSelectable && shiftKey && key === ' ') {
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
@@ -652,29 +624,11 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
-        key,
         mode: 'EDIT',
         row,
         originalRow: row
       }));
     }
-  }
-
-  function handleEditorRowChange(row: R, commitChanges?: boolean) {
-    if (selectedPosition.mode === 'SELECT') return;
-    if (commitChanges) {
-      updateRow(selectedPosition.rowIdx, row);
-      closeEditor();
-    } else {
-      setSelectedPosition((position) => ({ ...position, row }));
-    }
-  }
-
-  function handleOnClose(commitChanges?: boolean) {
-    if (commitChanges) {
-      commitEditorChanges();
-    }
-    closeEditor();
   }
 
   /**
@@ -709,23 +663,14 @@ function DataGrid<R, SR, K extends Key>(
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
-      setSelectedPosition({ ...position, mode: 'EDIT', key: null, row, originalRow: row });
-      onSelectedCellChange?.(position);
-    } else if (
-      selectedPosition.mode !== 'SELECT' ||
-      selectedPosition.idx !== position.idx ||
-      selectedPosition.rowIdx !== position.rowIdx
-    ) {
+      setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
+    } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
       // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
+      scrollToCell(position);
+    } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
-      onSelectedCellChange?.(position);
     }
-  }
-
-  function closeEditor() {
-    if (selectedPosition.mode === 'SELECT') return;
-    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
   }
 
   function scrollToCell({ idx, rowIdx }: Partial<Position>): void {
@@ -837,15 +782,9 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (selectedPosition.mode === 'EDIT') {
-      const onNavigation =
-        columns[selectedPosition.idx].editorOptions?.onNavigation ?? onEditorNavigation;
-      if (!onNavigation(event)) return;
-    }
     const { key, shiftKey } = event;
     let mode = cellNavigationMode;
     if (key === 'Tab') {
-      // If we are in a position to leave the grid, stop editing but stay in that cell
       if (
         canExitGrid({
           shiftKey,
@@ -869,12 +808,7 @@ function DataGrid<R, SR, K extends Key>(
 
     const ctrlKey = isCtrlKeyHeldDown(event);
     const nextPosition = getNextPosition(key, ctrlKey, shiftKey);
-    if (
-      nextPosition.rowIdx === selectedPosition.rowIdx &&
-      nextPosition.idx === selectedPosition.idx
-    ) {
-      return;
-    }
+    if (isSamePosition(selectedPosition, nextPosition)) return;
 
     const nextSelectedCellPosition = getNextSelectedCellPosition({
       columns,
@@ -938,16 +872,35 @@ function DataGrid<R, SR, K extends Key>(
     const column = columns[idx];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
+    const closeEditor = () => {
+      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+    };
+
+    const onRowChange = (row: R, commitChanges?: boolean) => {
+      if (commitChanges) {
+        updateRow(selectedPosition.rowIdx, row);
+        closeEditor();
+      } else {
+        setSelectedPosition((position) => ({ ...position, row }));
+      }
+    };
+
+    if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
+      // Discard changes if rows are updated from outside
+      closeEditor();
+    }
+
     return (
       <EditCell
         key={column.key}
         column={column}
         colSpan={colSpan}
         row={row}
-        editorPortalTarget={editorPortalTarget}
-        onKeyDown={handleKeyDown}
-        onRowChange={handleEditorRowChange}
-        onClose={handleOnClose}
+        onRowChange={onRowChange}
+        closeEditor={closeEditor}
+        scrollToCell={() => {
+          scrollToCell(selectedPosition);
+        }}
       />
     );
   }
@@ -1075,14 +1028,6 @@ function DataGrid<R, SR, K extends Key>(
     setDraggedOverRowIdx(undefined);
   }
 
-  if (
-    selectedPosition.mode === 'EDIT' &&
-    rows[selectedPosition.rowIdx] !== selectedPosition.originalRow
-  ) {
-    // Discard changes if rows are updated from outside
-    closeEditor();
-  }
-
   return (
     <div
       role={hasGroups ? 'treegrid' : 'grid'}
@@ -1096,9 +1041,9 @@ function DataGrid<R, SR, K extends Key>(
       style={
         {
           ...style,
-          '--header-row-height': `${headerRowHeight}px`,
-          '--row-width': `${totalColumnWidth}px`,
-          '--summary-row-height': `${summaryRowHeight}px`,
+          '--rdg-header-row-height': `${headerRowHeight}px`,
+          '--rdg-row-width': `${totalColumnWidth}px`,
+          '--rdg-summary-row-height': `${summaryRowHeight}px`,
           ...layoutCssVars
         } as unknown as React.CSSProperties
       }
@@ -1148,6 +1093,10 @@ function DataGrid<R, SR, K extends Key>(
       )}
     </div>
   );
+}
+
+function isSamePosition(p1: Position, p2: Position) {
+  return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
 }
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(

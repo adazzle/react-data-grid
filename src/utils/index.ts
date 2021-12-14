@@ -25,7 +25,7 @@ export function getCellStyle<R, SR>(
   return {
     gridColumnStart: column.idx + 1,
     gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
-    left: column.frozen ? `var(--frozen-left-${column.idx})` : undefined
+    left: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
   };
 }
 

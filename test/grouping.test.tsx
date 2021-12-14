@@ -16,7 +16,9 @@ import {
   pasteSelectedCell
 } from './utils';
 import userEvent from '@testing-library/user-event';
-import type { FillEvent, PasteEvent, Position } from '../src/types';
+import type { FillEvent, PasteEvent } from '../src/types';
+
+const rowSelectedClassname = 'rdg-row-selected';
 
 interface Row {
   id: number;
@@ -85,7 +87,6 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
   const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
     () => new Set<unknown>([])
   );
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
 
   function onFill(event: FillEvent<Row>) {
     return event.targetRow;
@@ -99,24 +100,20 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
   }
 
   return (
-    <>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        rowKeyGetter={rowKeyGetter}
-        groupBy={groupBy}
-        rowGrouper={rowGrouper}
-        onSelectedCellChange={setSelectedPosition}
-        selectedRows={selectedRows}
-        onSelectedRowsChange={setSelectedRows}
-        expandedGroupIds={expandedGroupIds}
-        onExpandedGroupIdsChange={setExpandedGroupIds}
-        onRowsChange={setRows}
-        onFill={onFill}
-        onPaste={onPaste}
-      />
-      <div data-testid="selectedPosition">{JSON.stringify(selectedPosition)}</div>
-    </>
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      rowKeyGetter={rowKeyGetter}
+      groupBy={groupBy}
+      rowGrouper={rowGrouper}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      expandedGroupIds={expandedGroupIds}
+      onExpandedGroupIdsChange={setExpandedGroupIds}
+      onRowsChange={setRows}
+      onFill={onFill}
+      onPaste={onPaste}
+    />
   );
 }
 
@@ -191,10 +188,8 @@ test('should toggle group using keyboard', () => {
   userEvent.click(groupCell);
   expect(getRows()).toHaveLength(5);
   // clicking on the group cell selects the row
-  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
-    rowIdx: 1,
-    idx: -1
-  });
+  expect(getSelectedCell()).toBeNull();
+  expect(getRows()[1]).toHaveClass(rowSelectedClassname);
   userEvent.keyboard('{arrowright}{arrowright}{enter}');
   expect(getRows()).toHaveLength(3);
   userEvent.keyboard('{enter}');
@@ -306,10 +301,7 @@ test('cell navigation in a treegrid', () => {
   // if the first cell is selected then arrowleft should select the row
   userEvent.keyboard('{arrowleft}');
   expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'false');
-  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
-    rowIdx: 3,
-    idx: -1
-  });
+  expect(getRows()[3]).toHaveClass(rowSelectedClassname);
   expect(getRows()[3]).toHaveFocus();
 
   // if the row is selected then arrowright should select the first cell on the same row
@@ -329,23 +321,15 @@ test('cell navigation in a treegrid', () => {
   expect(getRows()).toHaveLength(5);
 
   // left arrow on a collapsed group should select the parent group
+  expect(getRows()[0]).not.toHaveClass(rowSelectedClassname);
   userEvent.keyboard('{arrowleft}{arrowleft}');
-  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
-    rowIdx: 0,
-    idx: -1
-  });
+  expect(getRows()[0]).toHaveClass(rowSelectedClassname);
 
   userEvent.keyboard('{end}');
-  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
-    rowIdx: 3,
-    idx: -1
-  });
+  expect(getRows()[3]).toHaveClass(rowSelectedClassname);
 
   userEvent.keyboard('{home}');
-  expect(JSON.parse(screen.getByTestId('selectedPosition').textContent!)).toStrictEqual({
-    rowIdx: 0,
-    idx: -1
-  });
+  expect(getRows()[0]).toHaveClass(rowSelectedClassname);
 
   // collpase parent group
   userEvent.keyboard('{arrowleft}');

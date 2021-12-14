@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { getCellsAtRowIndex, getGrid } from '../utils';
+import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
+import { createPortal } from 'react-dom';
 
 interface Row {
   col1: number;
@@ -33,26 +34,6 @@ describe('Editor', () => {
     userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-  });
-
-  it('should commit changes on enter if the editor is rendered in a portal', () => {
-    render(
-      <EditorTest
-        editorOptions={{
-          createPortal: true
-        }}
-      />
-    );
-    userEvent.click(getCellsAtRowIndex(0)[1]);
-    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
-    userEvent.keyboard('{enter}');
-    expect(screen.getByLabelText('col2-editor')).toHaveValue('a1');
-    userEvent.keyboard('23');
-    // The cell value should update as the editor value is changed
-    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
-    userEvent.keyboard('{enter}');
-    expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
-    expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
   });
 
   it('should open editor when user types', () => {
@@ -166,23 +147,41 @@ describe('Editor', () => {
       expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
     });
 
-    it('should render the editor in a portal if createPortal is true', async () => {
-      render(
-        <EditorTest
-          editorOptions={{
-            createPortal: true
-          }}
-        />
-      );
+    it('should detect outside click if editor is rendered in a portal', async () => {
+      render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
       userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const editor = screen.getByLabelText('col2-editor');
-      expect(editor.parentElement).toBe(document.body);
+      expect(editor).toHaveValue('a1');
+      userEvent.keyboard('23');
+      // The cell value should update as the editor value is changed
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
       // clicking in a portal does not count as an outside click
       userEvent.click(editor);
       expect(editor).toBeInTheDocument();
       // true outside clicks are still detected
       userEvent.click(screen.getByText('outside'));
       await waitForElementToBeRemoved(editor);
+    });
+
+    it('should not commit on outside click if commitOnOutsideClick is false', async () => {
+      render(
+        <EditorTest
+          editorOptions={{
+            commitOnOutsideClick: false
+          }}
+        />
+      );
+      userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const editor = screen.getByLabelText('col2-editor');
+      expect(editor).toBeInTheDocument();
+      userEvent.click(screen.getByText('outside'));
+      await act(async () => {
+        await new Promise(requestAnimationFrame);
+      });
+      expect(editor).toBeInTheDocument();
+      userEvent.click(editor);
+      userEvent.keyboard('{enter}');
+      expect(editor).not.toBeInTheDocument();
     });
 
     it('should not open editor if onCellKeyDown prevents the default event', () => {
@@ -220,36 +219,60 @@ describe('Editor', () => {
     });
   });
 
-  it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
-    const column: Column<unknown> = {
-      key: 'col',
-      name: 'Column',
-      editor() {
-        return <input value="123" readOnly autoFocus />;
+  describe('editor focus', () => {
+    it('should not steal focus back to the cell if the editor is not in the viewport and another cell is clicked', () => {
+      const rows: Row[] = [];
+      for (let i = 0; i < 99; i++) {
+        rows.push({ col1: i, col2: `${i}` });
       }
-    };
 
-    render(
-      <>
-        <input value="abc" readOnly />
-        <DataGrid columns={[column]} rows={[{}]} />
-      </>
-    );
+      render(<EditorTest gridRows={rows} />);
+      const grid = getGrid();
 
-    userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    const editorInput = screen.getByDisplayValue('123');
-    const outerInput = screen.getByDisplayValue('abc');
-    expect(editorInput).toHaveFocus();
-    userEvent.click(outerInput);
-    expect(outerInput).toHaveFocus();
-    await waitForElementToBeRemoved(editorInput);
-    expect(outerInput).toHaveFocus();
+      userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      userEvent.keyboard('abc');
+
+      grid.scrollTop = 1500;
+
+      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent('40');
+      userEvent.click(getCellsAtRowIndex(40)[1]);
+      expect(getSelectedCell()).toHaveTextContent('40');
+      grid.scrollTop = 0;
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('abc');
+    });
+
+    it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
+      const column: Column<unknown> = {
+        key: 'col',
+        name: 'Column',
+        editor() {
+          return <input value="123" readOnly autoFocus />;
+        }
+      };
+
+      render(
+        <>
+          <input value="abc" readOnly />
+          <DataGrid columns={[column]} rows={[{}]} />
+        </>
+      );
+
+      userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+      const editorInput = screen.getByDisplayValue('123');
+      const outerInput = screen.getByDisplayValue('abc');
+      expect(editorInput).toHaveFocus();
+      userEvent.click(outerInput);
+      expect(outerInput).toHaveFocus();
+      await waitForElementToBeRemoved(editorInput);
+      expect(outerInput).toHaveFocus();
+    });
   });
 });
 
 interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
+  createEditorPortal?: boolean;
 }
 
 const initialRows: readonly Row[] = [
@@ -263,7 +286,13 @@ const initialRows: readonly Row[] = [
   }
 ];
 
-function EditorTest({ editable, editorOptions, onSave, gridRows = initialRows }: EditorTestProps) {
+function EditorTest({
+  editable,
+  editorOptions,
+  onSave,
+  gridRows = initialRows,
+  createEditorPortal
+}: EditorTestProps) {
   const [rows, setRows] = useState(gridRows);
 
   const columns = useMemo((): readonly Column<Row>[] => {
@@ -287,20 +316,22 @@ function EditorTest({ editable, editorOptions, onSave, gridRows = initialRows }:
         key: 'col2',
         name: 'Col2',
         editable,
-        editor(p) {
-          return (
+        editor({ row, onRowChange }) {
+          const editor = (
             <input
               autoFocus
               aria-label="col2-editor"
-              value={p.row.col2}
-              onChange={(e) => p.onRowChange({ ...p.row, col2: e.target.value })}
+              value={row.col2}
+              onChange={(e) => onRowChange({ ...row, col2: e.target.value })}
             />
           );
+
+          return createEditorPortal ? createPortal(editor, document.body) : editor;
         },
         editorOptions
       }
     ];
-  }, [editable, editorOptions]);
+  }, [editable, editorOptions, createEditorPortal]);
 
   return (
     <StrictMode>
