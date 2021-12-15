@@ -1,19 +1,18 @@
 import { useMemo } from 'react';
 
 import { getColSpan } from '../utils';
-import type { CalculatedColumn, GroupRow, Maybe } from '../types';
+import type { CalculatedColumn, Maybe } from '../types';
 
 interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
-  rows: readonly (R | GroupRow<R>)[];
+  rows: readonly R[];
   summaryRows: Maybe<readonly SR[]>;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   lastFrozenColumnIndex: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
-  isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
 export function useViewportColumns<R, SR>({
@@ -25,8 +24,7 @@ export function useViewportColumns<R, SR>({
   colOverscanEndIdx,
   lastFrozenColumnIndex,
   rowOverscanStartIdx,
-  rowOverscanEndIdx,
-  isGroupRow
+  rowOverscanEndIdx
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
   const startIdx = useMemo(() => {
@@ -53,7 +51,6 @@ export function useViewportColumns<R, SR>({
       // check viewport rows
       for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
         const row = rows[rowIdx];
-        if (isGroupRow(row)) continue;
         if (
           updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row }))
         ) {
@@ -78,14 +75,13 @@ export function useViewportColumns<R, SR>({
 
     return startIdx;
   }, [
-    rowOverscanStartIdx,
-    rowOverscanEndIdx,
-    rows,
-    summaryRows,
     colOverscanStartIdx,
-    lastFrozenColumnIndex,
     colSpanColumns,
-    isGroupRow
+    lastFrozenColumnIndex,
+    rowOverscanEndIdx,
+    rowOverscanStartIdx,
+    rows,
+    summaryRows
   ]);
 
   return useMemo((): readonly CalculatedColumn<R, SR>[] => {

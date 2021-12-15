@@ -3,7 +3,8 @@ import { groupBy as rowGrouper } from 'lodash';
 import faker from 'faker';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn } from '../../src';
+import TreeDataGrid from '../../src/TreeDataGrid';
+import { SelectColumn } from '../../src';
 import type { Column } from '../../src';
 
 const groupingClassname = css`
@@ -183,7 +184,7 @@ export default function Grouping() {
         ))}
       </div>
 
-      <DataGrid
+      <TreeDataGrid
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}

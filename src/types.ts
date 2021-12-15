@@ -199,4 +199,9 @@ export type ColSpanArgs<R, SR> =
   | { type: 'ROW'; row: R }
   | { type: 'SUMMARY'; row: SR };
 
-export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
+export interface RowHeightArgs<R> {
+  type: 'ROW';
+  row: R;
+}
+
+export type GroupRowHeightArgs<R> = RowHeightArgs<R> | { type: 'GROUP'; row: GroupRow<R> };

@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, Column, Maybe } from '../types';
+import type { CalculatedColumn, Column } from '../types';
 import type { DataGridProps } from '../DataGrid';
-import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
-import { SELECT_COLUMN_KEY } from '../Columns';
+import { ValueFormatter } from '../formatters';
 import { floor, max, min } from '../utils';
 
 type Mutable<T> = {
@@ -17,7 +16,6 @@ interface ColumnMetric {
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
-  rawGroupBy: Maybe<readonly string[]>;
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
@@ -30,7 +28,6 @@ export function useCalculatedColumns<R, SR>({
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
-  rawGroupBy,
   enableVirtualization
 }: CalculatedColumnsArgs<R, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
@@ -38,35 +35,27 @@ export function useCalculatedColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo((): {
+  const { columns, colSpanColumns, lastFrozenColumnIndex } = useMemo((): {
     columns: readonly CalculatedColumn<R, SR>[];
     colSpanColumns: readonly CalculatedColumn<R, SR>[];
     lastFrozenColumnIndex: number;
-    groupBy: readonly string[];
   } => {
-    // Filter rawGroupBy and ignore keys that do not match the columns prop
-    const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
 
     const columns = rawColumns.map((rawColumn) => {
-      const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      const frozen = rowGroup || rawColumn.frozen || false;
+      const frozen = rawColumn.frozen || false;
 
       const column: Mutable<CalculatedColumn<R, SR>> = {
         ...rawColumn,
         idx: 0,
         frozen,
         isLastFrozenColumn: false,
-        rowGroup,
+        // rowGroup: false, // TODO
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
         formatter: rawColumn.formatter ?? defaultFormatter
       };
-
-      if (rowGroup) {
-        column.groupFormatter ??= ToggleGroupFormatter;
-      }
 
       if (frozen) {
         lastFrozenColumnIndex++;
@@ -75,21 +64,8 @@ export function useCalculatedColumns<R, SR>({
       return column;
     });
 
-    columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
-      // Sort select column first:
-      if (aKey === SELECT_COLUMN_KEY) return -1;
-      if (bKey === SELECT_COLUMN_KEY) return 1;
-
-      // Sort grouped columns second, following the groupBy order:
-      if (rawGroupBy?.includes(aKey)) {
-        if (rawGroupBy.includes(bKey)) {
-          return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
-        }
-        return -1;
-      }
-      if (rawGroupBy?.includes(bKey)) return 1;
-
-      // Sort frozen columns third:
+    columns.sort(({ frozen: frozenA }, { frozen: frozenB }) => {
+      // Sort frozen columns first:
       if (frozenA) {
         if (frozenB) return 0;
         return -1;
@@ -104,10 +80,6 @@ export function useCalculatedColumns<R, SR>({
     columns.forEach((column, idx) => {
       column.idx = idx;
 
-      if (column.rowGroup) {
-        groupBy.push(column.key);
-      }
-
       if (column.colSpan != null) {
         colSpanColumns.push(column);
       }
@@ -120,10 +92,9 @@ export function useCalculatedColumns<R, SR>({
     return {
       columns,
       colSpanColumns,
-      lastFrozenColumnIndex,
-      groupBy
+      lastFrozenColumnIndex
     };
-  }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
+  }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable]);
 
   const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
     layoutCssVars: Readonly<Record<string, string>>;
@@ -249,8 +220,7 @@ export function useCalculatedColumns<R, SR>({
     columnMetrics,
     totalColumnWidth,
     lastFrozenColumnIndex,
-    totalFrozenColumnWidth,
-    groupBy
+    totalFrozenColumnWidth
   };
 }
 
