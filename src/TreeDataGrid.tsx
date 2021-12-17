@@ -1,10 +1,10 @@
-import { forwardRef, useMemo, createContext, useContext } from 'react';
+import { forwardRef, useMemo, useRef } from 'react';
 import type { Key, RefAttributes } from 'react';
 
 import DataGrid from './DataGrid';
 import type { DataGridProps, DataGridHandle } from './DataGrid';
 import Row from './Row';
-import GroupRowA from './GroupRow';
+import GroupRowRenderer from './GroupRow';
 import type {
   CalculatedColumn,
   Column,
@@ -18,11 +18,10 @@ import type {
   GroupRowHeightArgs
 } from './types';
 import { ToggleGroupFormatter } from '.';
-import { useLatestFunc } from './hooks';
+import type { GroupApi } from './hooks';
+import { useCombinedRefs, useLatestFunc, useGroupApi, GroupApiProvider } from './hooks';
 
-const GroupContext = createContext<unknown | undefined>(undefined);
-
-interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
+export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Pick<DataGridProps<R | GroupRow<R>, SR, K>, 'defaultColumnOptions' | 'rowRenderer'>,
     Omit<DataGridProps<R, SR, K>, 'defaultColumnOptions' | 'rowRenderer' | 'onFill'> {
   rowHeight?: Maybe<number | ((args: GroupRowHeightArgs<R>) => number)>;
@@ -62,6 +61,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   ref: React.Ref<DataGridHandle>
 ) {
   // const startRowIndex = 0;
+  const gridRef = useRef<DataGridHandle>(null);
   const { columns, groupBy } = useMemo(() => {
     const groupBy: string[] = [];
     const columns: Column<R | GroupRow<R>, SR>[] = [];
@@ -193,7 +193,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     if (typeof rawRowClass === 'function') {
       return (row: R | GroupRow<R>) => {
         if (isGroupRow(row)) {
-          throw new Error('');
+          throw new Error('rowClass is not supported on a group row');
         }
         return rawRowClass(row);
       };
@@ -242,7 +242,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     if (typeof rawOnPaste === 'function') {
       return ({ sourceRow, targetRow, ...rest }: PasteEvent<R | GroupRow<R>>) => {
         if (isGroupRow(sourceRow) || isGroupRow(targetRow)) {
-          throw new Error('');
+          throw new Error('onPaste is not supported on a group row');
         }
         return rawOnPaste({ sourceRow, targetRow, ...rest });
       };
@@ -263,10 +263,14 @@ function TreeDataGrid<R, SR, K extends Key>(
       : rawOnRowsChange;
 
   const toggleGroupLatest = useLatestFunc(toggleGroup);
-  const v = useMemo(
-    () => ({
+
+  const value = useMemo(
+    (): GroupApi<R> => ({
       isGroupRow,
-      toggleGroup: toggleGroupLatest
+      toggleGroup: toggleGroupLatest,
+      selectGroup(rowIdx: number) {
+        gridRef.current!.selectCell({ rowIdx, idx: -1 });
+      }
     }),
     [isGroupRow, toggleGroupLatest]
   );
@@ -282,11 +286,11 @@ function TreeDataGrid<R, SR, K extends Key>(
   }
 
   return (
-    <GroupContext.Provider value={v}>
+    <GroupApiProvider value={value}>
       <DataGrid<R | GroupRow<R>, SR, K | string>
         role="treegrid"
         aria-rowcount={rowsCount}
-        ref={ref}
+        ref={useCombinedRefs(ref, gridRef)}
         columns={columns}
         rows={rows}
         rowHeight={rowHeight}
@@ -297,18 +301,33 @@ function TreeDataGrid<R, SR, K extends Key>(
         onRowDoubleClick={onRowDoubleClick}
         onSelectedRowsChange={onSelectedRowsChange}
         onPaste={onPaste}
-        rowRenderer={GroupRowRenderer}
+        rowRenderer={RowRenderer}
         {...props}
       />
-    </GroupContext.Provider>
+    </GroupApiProvider>
   );
 }
 
-function GroupRowRenderer<R, SR>({ row, ...props }: RowRendererProps<R | GroupRow<R>, SR>) {
-  const { isGroupRow, toggleGroup } = useContext(GroupContext);
+function RowRenderer<R, SR>({ row, ...props }: RowRendererProps<R | GroupRow<R>, SR>) {
+  const { isGroupRow, toggleGroup, selectGroup } = useGroupApi<R>()!;
+
   if (isGroupRow(row)) {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (
+        isGroupRow(row) &&
+        props.selectedCellIdx === -1 &&
+        // Collapse the current group row if it is focused and is in expanded state
+        ((event.key === 'ArrowLeft' && row.isExpanded) ||
+          // Expand the current group row if it is focused and is in collapsed state
+          (event.key === 'ArrowRight' && !row.isExpanded))
+      ) {
+        event.preventDefault(); // Prevents scrolling
+        toggleGroup(row.id);
+      }
+    };
+
     return (
-      <GroupRowA
+      <GroupRowRenderer
         aria-level={row.level + 1} // aria-level is 1-based
         aria-setsize={row.setSize}
         aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
@@ -327,8 +346,9 @@ function GroupRowRenderer<R, SR>({ row, ...props }: RowRendererProps<R | GroupRo
         isExpanded={row.isExpanded}
         selectedCellIdx={props.selectedCellIdx}
         isRowSelected={props.isRowSelected}
-        selectGroup={() => {}}
+        selectGroup={selectGroup}
         toggleGroup={toggleGroup}
+        onKeyDown={handleKeyDown}
       />
     );
   }

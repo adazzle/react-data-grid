@@ -10,7 +10,8 @@ import {
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
-  RowSelectionChangeProvider
+  RowSelectionChangeProvider,
+  useGroupApi
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import Row from './Row';
@@ -312,7 +313,8 @@ function DataGrid<R, SR, K extends Key>(
     summaryRows
   });
 
-  const minColIdx = 0;
+  const hasGroups = useGroupApi<R>() !== undefined;
+  const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
   const minRowIdx = -1; // change it to 0?
   const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
@@ -443,8 +445,9 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
-    if (event.isDefaultPrevented()) return;
-    if (event.target.closest('.rdg-cell') === null) return;
+    const isCellEvent = event.target.closest('.rdg-cell') !== null;
+    const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
+    if (!isCellEvent && !isRowEvent) return;
 
     const { keyCode } = event;
 
