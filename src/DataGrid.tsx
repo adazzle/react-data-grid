@@ -556,7 +556,6 @@ function DataGrid<R, SR, K extends Key>(
       case 'ArrowDown':
       case 'ArrowLeft':
       case 'ArrowRight':
-      case 'Tab':
       case 'Home':
       case 'End':
       case 'PageUp':
