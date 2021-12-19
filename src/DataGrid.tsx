@@ -710,11 +710,16 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function isCellHasEditor(position: Position) {
+    const column = columns[position.idx];
+    return !!column.editor;
+  }
+
   function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
-    if (enableEditor && isCellEditable(position)) {
+    if (enableEditor && isCellEditable(position) && isCellHasEditor(position)) {
       const row = rows[position.rowIdx] as R;
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (
