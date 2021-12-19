@@ -1,4 +1,12 @@
-import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
+import {
+  forwardRef,
+  useState,
+  useRef,
+  useImperativeHandle,
+  useCallback,
+  useMemo,
+  useEffect
+} from 'react';
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
@@ -50,11 +58,13 @@ export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
 }
 
-interface EditCellState<R> extends Position {
+export interface EditCellState<R> extends Position {
   readonly mode: 'EDIT';
   readonly row: R;
   readonly originalRow: R;
 }
+
+export type SelectedPosition<R> = SelectCellState | EditCellState<R>;
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
@@ -160,6 +170,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   noRowsFallback?: React.ReactNode;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   'data-testid'?: Maybe<string>;
+  onSelectedPositionChange?: Maybe<(position: SelectCellState | EditCellState<R>) => void>;
 }
 
 /**
@@ -211,7 +222,10 @@ function DataGrid<R, SR, K extends Key>(
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
-    'data-testid': testId
+    'data-testid': testId,
+
+    // added props
+    onSelectedPositionChange
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
@@ -266,6 +280,12 @@ function DataGrid<R, SR, K extends Key>(
       rawRows.every((row) => selectedRows.has(rowKeyGetter(row)))
     );
   }, [rawRows, selectedRows, rowKeyGetter]);
+
+  useEffect(() => {
+    if (onSelectedPositionChange) {
+      onSelectedPositionChange(selectedPosition);
+    }
+  }, [selectedPosition, onSelectedPositionChange]);
 
   const {
     columns,
