@@ -639,7 +639,7 @@ function DataGrid<R, SR, K extends Key>(
     column.editorOptions?.onCellKeyDown?.(event);
     if (event.isDefaultPrevented()) return;
 
-    if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
+    if (isCellHasEditor(selectedPosition) && isDefaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
