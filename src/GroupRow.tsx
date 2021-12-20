@@ -43,6 +43,7 @@ function GroupedRow<R, SR>({
   selectCell,
   top,
   height,
+  'aria-rowindex': ariaRowIndex, // ignore default value
   ...props
 }: RowRendererProps<R | GroupRow<R>, SR>) {
   const { isGroupRow, toggleGroup, getParentRow } = useGroupApi<R>()!;
@@ -112,6 +113,7 @@ function GroupedRow<R, SR>({
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
+        aria-rowindex={row.startRowIndex + 2}
         aria-level={row.level + 1} // aria-level is 1-based
         aria-setsize={row.setSize}
         aria-posinset={row.posInSet + 1} // aria-posinset is 1-based

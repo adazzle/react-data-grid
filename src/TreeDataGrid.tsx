@@ -59,37 +59,15 @@ function TreeDataGrid<R, SR, K extends Key>(
 ) {
   // const startRowIndex = 0;
   const { columns, groupBy } = useMemo(() => {
-    const groupBy: string[] = [];
-    const columns: Column<R, SR>[] = [];
-    for (const rawColumn of rawColumns) {
-      const rowGroup = rawGroupBy.includes(rawColumn.key);
-
-      if (rowGroup) {
-        groupBy.push(rawColumn.key);
-      }
-
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      const frozen = rowGroup || rawColumn.frozen || false;
-
-      columns.push({
-        ...rawColumn,
-        frozen,
-        formatter: rowGroup ? () => null : rawColumn.formatter,
-        groupFormatter: rowGroup
-          ? rawColumn.groupFormatter ?? ToggleGroupFormatter
-          : rawColumn.groupFormatter
-      });
-    }
-
-    columns.sort(({ key: aKey }, { key: bKey }) => {
+    const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
       // Sort select column first:
       if (aKey === SELECT_COLUMN_KEY) return -1;
       if (bKey === SELECT_COLUMN_KEY) return 1;
 
       // Sort grouped columns second, following the groupBy order:
-      if (groupBy.includes(aKey)) {
-        if (groupBy.includes(bKey)) {
-          return groupBy.indexOf(aKey) - groupBy.indexOf(bKey);
+      if (rawGroupBy.includes(aKey)) {
+        if (rawGroupBy.includes(bKey)) {
+          return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
         }
         return -1;
       }
@@ -98,6 +76,20 @@ function TreeDataGrid<R, SR, K extends Key>(
       // Sort other columns last:
       return 0;
     });
+
+    const groupBy: string[] = [];
+    for (const [index, column] of columns.entries()) {
+      if (rawGroupBy.includes(column.key)) {
+        groupBy.push(column.key);
+
+        columns[index] = {
+          ...column,
+          frozen: true,
+          formatter: () => null,
+          groupFormatter: column.groupFormatter ?? ToggleGroupFormatter
+        };
+      }
+    }
 
     return { columns, groupBy };
   }, [rawColumns, rawGroupBy]);
