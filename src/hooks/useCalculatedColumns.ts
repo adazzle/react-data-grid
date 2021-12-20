@@ -4,6 +4,7 @@ import type { CalculatedColumn, Column } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter } from '../formatters';
 import { floor, max, min } from '../utils';
+import { SELECT_COLUMN_KEY } from '../Columns';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -63,7 +64,11 @@ export function useCalculatedColumns<R, SR>({
       return column;
     });
 
-    columns.sort(({ frozen: frozenA }, { frozen: frozenB }) => {
+    columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
+      // Sort select column first:
+      if (aKey === SELECT_COLUMN_KEY) return -1;
+      if (bKey === SELECT_COLUMN_KEY) return 1;
+
       // Sort frozen columns first:
       if (frozenA) {
         if (frozenB) return 0;

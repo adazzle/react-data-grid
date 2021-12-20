@@ -1,6 +1,9 @@
-import { SelectColumn } from '../src';
+import { StrictMode } from 'react';
+import { render } from '@testing-library/react';
+
+import DataGrid, { TreeDataGrid, SelectColumn } from '../src';
 import type { Column } from '../src';
-import { getHeaderCells, setup } from './utils';
+import { getHeaderCells } from './utils';
 
 const frozen1: Column<unknown> = {
   key: 'f1',
@@ -26,12 +29,28 @@ const standard2: Column<unknown> = {
 
 test('column order', () => {
   function run(columns: readonly Column<unknown>[]) {
-    const { unmount } = setup({
-      columns,
-      rows: [],
-      groupBy,
-      rowGrouper: () => ({})
-    });
+    let unmount;
+    if (groupBy === undefined) {
+      ({ unmount } = render(
+        <StrictMode>
+          <DataGrid columns={columns} rows={[]} />
+        </StrictMode>
+      ));
+    } else {
+      ({ unmount } = render(
+        <StrictMode>
+          <TreeDataGrid
+            columns={columns}
+            rows={[]}
+            groupBy={groupBy}
+            rowGrouper={() => ({})}
+            expandedGroupIds={new Set()}
+            onExpandedGroupIdsChange={() => {}}
+          />
+        </StrictMode>
+      ));
+    }
+
     expect(getHeaderCells().map((c) => c.textContent)).toStrictEqual(expected);
     unmount();
   }
