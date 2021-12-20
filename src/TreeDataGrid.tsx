@@ -1,14 +1,12 @@
-import { forwardRef, useMemo, useRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
 import DataGrid from './DataGrid';
 import type { DataGridProps, DataGridHandle } from './DataGrid';
-import Row from './Row';
-import GroupRowRenderer from './GroupRow';
+import GroupedRowRenderer from './GroupRow';
 import type {
   CalculatedColumn,
   Column,
-  RowRendererProps,
   RowsChangeData,
   PasteEvent,
   RowHeightArgs,
@@ -19,11 +17,10 @@ import type {
 } from './types';
 import { ToggleGroupFormatter } from '.';
 import type { GroupApi } from './hooks';
-import { useCombinedRefs, useLatestFunc, useGroupApi, GroupApiProvider } from './hooks';
+import { useLatestFunc, GroupApiProvider } from './hooks';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
-  extends Pick<DataGridProps<R | GroupRow<R>, SR, K>, 'defaultColumnOptions' | 'rowRenderer'>,
-    Omit<DataGridProps<R, SR, K>, 'defaultColumnOptions' | 'rowRenderer' | 'onFill'> {
+  extends Omit<DataGridProps<R, SR, K>, 'onFill'> {
   rowHeight?: Maybe<number | ((args: GroupRowHeightArgs<R>) => number)>;
   groupBy: readonly string[];
   rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
@@ -61,10 +58,9 @@ function TreeDataGrid<R, SR, K extends Key>(
   ref: React.Ref<DataGridHandle>
 ) {
   // const startRowIndex = 0;
-  const gridRef = useRef<DataGridHandle>(null);
   const { columns, groupBy } = useMemo(() => {
     const groupBy: string[] = [];
-    const columns: Column<R | GroupRow<R>, SR>[] = [];
+    const columns: Column<R, SR>[] = [];
     for (const rawColumn of rawColumns) {
       const rowGroup = rawGroupBy.includes(rawColumn.key);
 
@@ -78,8 +74,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       columns.push({
         ...rawColumn,
         frozen,
-        rowGroup,
-        // cellClass() {},
+        formatter: rowGroup ? () => null : rawColumn.formatter,
         groupFormatter: rowGroup
           ? rawColumn.groupFormatter ?? ToggleGroupFormatter
           : rawColumn.groupFormatter
@@ -267,10 +262,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   const value = useMemo(
     (): GroupApi<R> => ({
       isGroupRow,
-      toggleGroup: toggleGroupLatest,
-      selectGroup(rowIdx: number) {
-        gridRef.current!.selectCell({ rowIdx, idx: -1 });
-      }
+      toggleGroup: toggleGroupLatest
     }),
     [isGroupRow, toggleGroupLatest]
   );
@@ -290,8 +282,8 @@ function TreeDataGrid<R, SR, K extends Key>(
       <DataGrid<R | GroupRow<R>, SR, K | string>
         role="treegrid"
         aria-rowcount={rowsCount}
-        ref={useCombinedRefs(ref, gridRef)}
-        columns={columns}
+        ref={ref}
+        columns={columns as Column<R | GroupRow<R>, SR>[]}
         rows={rows}
         rowHeight={rowHeight}
         rowKeyGetter={rowKeyGetter}
@@ -301,61 +293,13 @@ function TreeDataGrid<R, SR, K extends Key>(
         onRowDoubleClick={onRowDoubleClick}
         onSelectedRowsChange={onSelectedRowsChange}
         onPaste={onPaste}
-        rowRenderer={RowRenderer}
+        rowRenderer={GroupedRowRenderer}
         {...props}
       />
     </GroupApiProvider>
   );
 }
 
-function RowRenderer<R, SR>({ row, ...props }: RowRendererProps<R | GroupRow<R>, SR>) {
-  const { isGroupRow, toggleGroup, selectGroup } = useGroupApi<R>()!;
-
-  if (isGroupRow(row)) {
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (
-        isGroupRow(row) &&
-        props.selectedCellIdx === -1 &&
-        // Collapse the current group row if it is focused and is in expanded state
-        ((event.key === 'ArrowLeft' && row.isExpanded) ||
-          // Expand the current group row if it is focused and is in collapsed state
-          (event.key === 'ArrowRight' && !row.isExpanded))
-      ) {
-        event.preventDefault(); // Prevents scrolling
-        toggleGroup(row.id);
-      }
-    };
-
-    return (
-      <GroupRowRenderer
-        aria-level={row.level + 1} // aria-level is 1-based
-        aria-setsize={row.setSize}
-        aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
-        aria-rowindex={props['aria-rowindex']}
-        aria-selected={props['aria-selected']}
-        key={row.id}
-        id={row.id}
-        groupKey={row.groupKey}
-        viewportColumns={props.viewportColumns}
-        childRows={row.childRows}
-        rowIdx={props.rowIdx}
-        row={row}
-        top={props.top}
-        height={props.height}
-        level={row.level}
-        isExpanded={row.isExpanded}
-        selectedCellIdx={props.selectedCellIdx}
-        isRowSelected={props.isRowSelected}
-        selectGroup={selectGroup}
-        toggleGroup={toggleGroup}
-        onKeyDown={handleKeyDown}
-      />
-    );
-  }
-  return <Row row={row} {...props} />;
-}
-
-// TODO: https://github.com/microsoft/TypeScript/issues/41808
 function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
   return Array.isArray(arr);
 }

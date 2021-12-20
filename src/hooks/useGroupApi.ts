@@ -4,7 +4,6 @@ import type { GroupRow } from '../types';
 export interface GroupApi<R> {
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
   toggleGroup: (expandedGroupId: unknown) => void;
-  selectGroup: (rowIdx: number) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

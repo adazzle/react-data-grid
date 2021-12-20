@@ -5,27 +5,10 @@ import { css } from '@linaria/core';
 
 import { cell, cellFrozenLast, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
+import Row from './Row';
 import GroupCell from './GroupCell';
-import type { CalculatedColumn, GroupRow, Omit } from './types';
-import { RowSelectionProvider, useRovingRowRef } from './hooks';
-
-export interface GroupRowRendererProps<R, SR>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  id: string;
-  groupKey: unknown;
-  viewportColumns: readonly CalculatedColumn<R, SR>[];
-  childRows: readonly R[];
-  rowIdx: number;
-  row: GroupRow<R>;
-  top: number;
-  height: number;
-  level: number;
-  selectedCellIdx: number | undefined;
-  isExpanded: boolean;
-  isRowSelected: boolean;
-  selectGroup: (rowIdx: number) => void;
-  toggleGroup: (expandedGroupId: unknown) => void;
-}
+import type { GroupRow, RowRendererProps } from './types';
+import { RowSelectionProvider, useGroupApi, useRovingRowRef } from './hooks';
 
 const groupRow = css`
   &:not([aria-selected='true']) {
@@ -40,37 +23,92 @@ const groupRow = css`
 const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 function GroupedRow<R, SR>({
-  id,
-  groupKey,
-  viewportColumns,
-  childRows,
-  rowIdx,
+  className,
   row,
+  rowIdx,
+  viewportColumns,
+  selectedCellIdx,
+  copiedCellIdx,
+  draggedOverCellIdx,
+  lastFrozenColumnIndex,
+  isRowSelected,
+  selectedCellEditor,
+  selectedCellDragHandle,
+  rowClass,
+  onRowClick,
+  onRowDoubleClick,
+  onRowChange,
+  setDraggedOverRowIdx,
+  onMouseEnter,
+  selectCell,
   top,
   height,
-  level,
-  isExpanded,
-  selectedCellIdx,
-  isRowSelected,
-  selectGroup,
-  toggleGroup,
   ...props
-}: GroupRowRendererProps<R, SR>) {
-  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
+}: RowRendererProps<R | GroupRow<R>, SR>) {
+  const { isGroupRow, toggleGroup } = useGroupApi<R>()!;
+  const { ref, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
+
+  className = clsx(className, rovingClassName);
+  if (!isGroupRow(row)) {
+    return (
+      <Row
+        ref={ref}
+        tabIndex={tabIndex}
+        className={className}
+        row={row}
+        rowIdx={rowIdx}
+        isRowSelected={isRowSelected}
+        viewportColumns={viewportColumns}
+        selectedCellIdx={selectedCellIdx}
+        copiedCellIdx={copiedCellIdx}
+        draggedOverCellIdx={draggedOverCellIdx}
+        lastFrozenColumnIndex={lastFrozenColumnIndex}
+        top={top}
+        height={height}
+        selectedCellEditor={selectedCellEditor}
+        selectedCellDragHandle={selectedCellDragHandle}
+        rowClass={rowClass}
+        onRowClick={onRowClick}
+        onRowDoubleClick={onRowDoubleClick}
+        onRowChange={onRowChange}
+        setDraggedOverRowIdx={setDraggedOverRowIdx}
+        onMouseEnter={onMouseEnter}
+        selectCell={selectCell}
+        {...props}
+      />
+    );
+  }
 
   // Select is always the first column
-  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
+  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
 
-  function handleSelectGroup() {
-    selectGroup(rowIdx);
-  }
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (
+      isGroupRow(row) &&
+      selectedCellIdx === -1 &&
+      // Collapse the current group row if it is focused and is in expanded state
+      ((event.key === 'ArrowLeft' && row.isExpanded) ||
+        // Expand the current group row if it is focused and is in collapsed state
+        (event.key === 'ArrowRight' && !row.isExpanded))
+    ) {
+      event.preventDefault(); // Prevents scrolling
+      toggleGroup(row.id);
+    }
+  };
+
+  const handleSelectGroup = () => {
+    selectCell(row, -1);
+  };
 
   return (
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
-        aria-level={level}
-        aria-expanded={isExpanded}
+        aria-level={row.level + 1} // aria-level is 1-based
+        aria-setsize={row.setSize}
+        aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
+        aria-expanded={row.isExpanded}
+        key={row.id}
         ref={ref}
         tabIndex={tabIndex}
         className={clsx(
@@ -80,6 +118,7 @@ function GroupedRow<R, SR>({
           className
         )}
         onClick={handleSelectGroup}
+        onKeyDown={handleKeyDown}
         style={
           {
             top,
@@ -91,10 +130,10 @@ function GroupedRow<R, SR>({
         {viewportColumns.map((column) => (
           <GroupCell
             key={column.key}
-            id={id}
-            groupKey={groupKey}
-            childRows={childRows}
-            isExpanded={isExpanded}
+            id={row.id}
+            groupKey={row.groupKey}
+            childRows={row.childRows}
+            isExpanded={row.isExpanded}
             isCellSelected={selectedCellIdx === column.idx}
             column={column}
             row={row}
@@ -107,4 +146,4 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(props: GroupRowRendererProps<R, SR>) => JSX.Element;
+export default memo(GroupedRow) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;

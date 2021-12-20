@@ -48,7 +48,7 @@ function Cell<R, SR>({
   );
 
   function selectCellWrapper(openEditor?: boolean | null) {
-    selectCell(row, column, openEditor);
+    selectCell(row, column.idx, openEditor);
   }
 
   function handleClick() {
@@ -82,17 +82,13 @@ function Cell<R, SR>({
       onFocus={onFocus}
       {...props}
     >
-      {!column.rowGroup && (
-        <>
-          <column.formatter
-            column={column}
-            row={row}
-            isCellSelected={isCellSelected}
-            onRowChange={onRowChange}
-          />
-          {dragHandle}
-        </>
-      )}
+      <column.formatter
+        column={column}
+        row={row}
+        isCellSelected={isCellSelected}
+        onRowChange={onRowChange}
+      />
+      {dragHandle}
     </div>
   );
 }

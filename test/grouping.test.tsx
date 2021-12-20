@@ -1,13 +1,12 @@
 import { StrictMode, useState } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
 import type { Column } from '../src';
-import DataGrid, { SelectColumn, TextEditor } from '../src';
+import { TreeDataGrid, SelectColumn, TextEditor } from '../src';
 import { render, screen, within } from '@testing-library/react';
 import {
   getGrid,
   queryGrid,
   getRows,
-  queryTreeGrid,
   getTreeGrid,
   getHeaderCells,
   getCellsAtRowIndex,
@@ -16,7 +15,7 @@ import {
   pasteSelectedCell
 } from './utils';
 import userEvent from '@testing-library/user-event';
-import type { FillEvent, PasteEvent } from '../src/types';
+import type { PasteEvent } from '../src/types';
 
 const rowSelectedClassname = 'rdg-row-selected';
 
@@ -81,16 +80,12 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
+function TestGrid({ groupBy }: { groupBy: string[] }) {
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
     () => new Set<unknown>([])
   );
-
-  function onFill(event: FillEvent<Row>) {
-    return event.targetRow;
-  }
 
   function onPaste(event: PasteEvent<Row>) {
     return {
@@ -100,7 +95,7 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
   }
 
   return (
-    <DataGrid
+    <TreeDataGrid
       columns={columns}
       rows={rows}
       rowKeyGetter={rowKeyGetter}
@@ -111,13 +106,12 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
       expandedGroupIds={expandedGroupIds}
       onExpandedGroupIdsChange={setExpandedGroupIds}
       onRowsChange={setRows}
-      onFill={onFill}
       onPaste={onPaste}
     />
   );
 }
 
-function setup(groupBy?: string[]) {
+function setup(groupBy: string[]) {
   render(
     <StrictMode>
       <TestGrid groupBy={groupBy} />
@@ -128,14 +122,6 @@ function setup(groupBy?: string[]) {
 function getHeaderCellsContent() {
   return getHeaderCells().map((cell) => cell.textContent);
 }
-
-test('should not group if groupBy is not specified', () => {
-  setup();
-  expect(queryTreeGrid()).not.toBeInTheDocument();
-  expect(getGrid()).toHaveAttribute('aria-rowcount', '5');
-  expect(getHeaderCellsContent()).toStrictEqual(['', 'Sport', 'Country', 'Year', 'Id']);
-  expect(getRows()).toHaveLength(4);
-});
 
 test('should not group if column does not exist', () => {
   setup(['abc']);
@@ -335,13 +321,6 @@ test('cell navigation in a treegrid', () => {
   userEvent.keyboard('{arrowleft}');
   expect(screen.queryByRole('gridcell', { name: '2021' })).not.toBeInTheDocument();
   expect(getRows()).toHaveLength(2);
-});
-
-test('onFill is not supported when grouping is enabled', () => {
-  setup(['year']);
-  userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
-  userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
-  expect(document.querySelector('.rdg-cell-drag-handle')).not.toBeInTheDocument();
 });
 
 test('copy/paste when grouping is enabled', () => {

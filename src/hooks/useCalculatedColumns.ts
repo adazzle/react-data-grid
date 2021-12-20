@@ -51,7 +51,6 @@ export function useCalculatedColumns<R, SR>({
         idx: 0,
         frozen,
         isLastFrozenColumn: false,
-        // rowGroup: false, // TODO
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
         formatter: rawColumn.formatter ?? defaultFormatter

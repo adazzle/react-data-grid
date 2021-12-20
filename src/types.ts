@@ -59,7 +59,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly sortable: boolean;
   readonly frozen: boolean;
   readonly isLastFrozenColumn: boolean;
-  readonly rowGroup: boolean;
   readonly formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
@@ -143,11 +142,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
-  selectCell: (
-    row: TRow,
-    column: CalculatedColumn<TRow, TSummaryRow>,
-    enableEditor?: Maybe<boolean>
-  ) => void;
+  selectCell: (row: TRow, idx: number, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface RowsChangeData<R, SR = unknown> {

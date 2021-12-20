@@ -327,12 +327,10 @@ function DataGrid<R, SR, K extends Key>(
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectViewportCellLatest = useLatestFunc(
-    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
-      const rowIdx = rows.indexOf(row);
-      selectCell({ rowIdx, idx: column.idx }, enableEditor);
-    }
-  );
+  const selectViewportCellLatest = useLatestFunc((row: R, idx, enableEditor: Maybe<boolean>) => {
+    const rowIdx = rows.indexOf(row);
+    selectCell({ rowIdx, idx }, enableEditor);
+  });
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
     selectCell({ rowIdx: -1, idx });
   });
@@ -445,6 +443,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
+    if (event.isDefaultPrevented()) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
     if (!isCellEvent && !isRowEvent) return;
@@ -858,6 +857,8 @@ function DataGrid<R, SR, K extends Key>(
       if (typeof rowKeyGetter === 'function') {
         key = rowKeyGetter(row);
         isRowSelected = selectedRows?.has(key) ?? false;
+      } else {
+        key = rowIdx;
       }
 
       rowElements.push(
