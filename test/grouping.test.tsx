@@ -4,8 +4,6 @@ import type { Column } from '../src';
 import { TreeDataGrid, SelectColumn, TextEditor } from '../src';
 import { render, screen, within } from '@testing-library/react';
 import {
-  getGrid,
-  queryGrid,
   getRows,
   getTreeGrid,
   getHeaderCells,
@@ -125,13 +123,12 @@ function getHeaderCellsContent() {
 
 test('should not group if column does not exist', () => {
   setup(['abc']);
-  expect(getGrid()).toHaveAttribute('aria-rowcount', '5');
+  expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '5');
   expect(getRows()).toHaveLength(4);
 });
 
 test('should group by single column', () => {
   setup(['country']);
-  expect(queryGrid()).not.toBeInTheDocument();
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
   expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Sport', 'Year', 'Id']);
   expect(getRows()).toHaveLength(2);

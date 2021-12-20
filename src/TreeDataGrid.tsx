@@ -15,7 +15,7 @@ import type {
   Omit,
   GroupRowHeightArgs
 } from './types';
-import { ToggleGroupFormatter } from '.';
+import { SELECT_COLUMN_KEY, ToggleGroupFormatter } from '.';
 import type { GroupApi } from './hooks';
 import { useLatestFunc, GroupApiProvider } from './hooks';
 
@@ -81,10 +81,30 @@ function TreeDataGrid<R, SR, K extends Key>(
       });
     }
 
+    columns.sort(({ key: aKey }, { key: bKey }) => {
+      // Sort select column first:
+      if (aKey === SELECT_COLUMN_KEY) return -1;
+      if (bKey === SELECT_COLUMN_KEY) return 1;
+
+      // Sort grouped columns second, following the groupBy order:
+      if (groupBy.includes(aKey)) {
+        if (groupBy.includes(bKey)) {
+          return groupBy.indexOf(aKey) - groupBy.indexOf(bKey);
+        }
+        return -1;
+      }
+      if (rawGroupBy.includes(bKey)) return 1;
+
+      // Sort other columns last:
+      return 0;
+    });
+
     return { columns, groupBy };
   }, [rawColumns, rawGroupBy]);
 
   const [groupedRows, rowsCount] = useMemo(() => {
+    if (groupBy.length === 0) return [undefined, rawRows.length];
+
     const groupRows = (
       rows: readonly R[],
       [groupByKey, ...remainingGroupByKeys]: readonly string[],
@@ -113,6 +133,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     (row: R | GroupRow<R>) => row is GroupRow<R>
   ] => {
     const allGroupRows = new Set<unknown>();
+    if (!groupedRows) return [rawRows, isGroupRow];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
     const expandGroup = (
@@ -281,7 +302,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     <GroupApiProvider value={value}>
       <DataGrid<R | GroupRow<R>, SR, K | string>
         role="treegrid"
-        aria-rowcount={rowsCount}
+        aria-rowcount={rowsCount + 1 + (props.summaryRows?.length ?? 0)}
         ref={ref}
         columns={columns as Column<R | GroupRow<R>, SR>[]}
         rows={rows}
