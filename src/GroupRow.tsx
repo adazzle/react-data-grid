@@ -45,7 +45,7 @@ function GroupedRow<R, SR>({
   height,
   ...props
 }: RowRendererProps<R | GroupRow<R>, SR>) {
-  const { isGroupRow, toggleGroup } = useGroupApi<R>()!;
+  const { isGroupRow, toggleGroup, getParentRow } = useGroupApi<R>()!;
   const { ref, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
 
   className = clsx(className, rovingClassName);
@@ -84,7 +84,6 @@ function GroupedRow<R, SR>({
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (
-      isGroupRow(row) &&
       selectedCellIdx === -1 &&
       // Collapse the current group row if it is focused and is in expanded state
       ((event.key === 'ArrowLeft' && row.isExpanded) ||
@@ -93,6 +92,15 @@ function GroupedRow<R, SR>({
     ) {
       event.preventDefault(); // Prevents scrolling
       toggleGroup(row.id);
+    }
+
+    // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
+    if (selectedCellIdx === -1 && event.key === 'ArrowLeft' && !row.isExpanded && row.level !== 0) {
+      const parentRow = getParentRow(row);
+      if (parentRow !== undefined) {
+        event.preventDefault();
+        selectCell(parentRow, -1);
+      }
     }
   };
 

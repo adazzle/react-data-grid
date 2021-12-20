@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
 import DataGrid from './DataGrid';
@@ -177,7 +177,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
       return allGroupRows.has(row);
     }
-  }, [expandedGroupIds, groupedRows]);
+  }, [expandedGroupIds, groupedRows, rawRows]);
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
@@ -280,12 +280,28 @@ function TreeDataGrid<R, SR, K extends Key>(
 
   const toggleGroupLatest = useLatestFunc(toggleGroup);
 
+  const getParentRow = useCallback(
+    (row: GroupRow<R>) => {
+      const rowIdx = rows.indexOf(row);
+      for (let i = rowIdx - 1; i >= 0; i--) {
+        const parentRow = rows[i];
+        if (isGroupRow(parentRow) && parentRow.id === row.parentId) {
+          return parentRow;
+        }
+      }
+
+      return undefined;
+    },
+    [isGroupRow, rows]
+  );
+
   const value = useMemo(
     (): GroupApi<R> => ({
       isGroupRow,
-      toggleGroup: toggleGroupLatest
+      toggleGroup: toggleGroupLatest,
+      getParentRow
     }),
-    [isGroupRow, toggleGroupLatest]
+    [isGroupRow, toggleGroupLatest, getParentRow]
   );
 
   function toggleGroup(expandedGroupId: unknown) {
