@@ -43,7 +43,7 @@ function GroupedRow<R, SR>({
   selectCell,
   top,
   height,
-  'aria-rowindex': ariaRowIndex, // ignore default value
+  'aria-rowindex': ariaRowIndex, // ignore default value // TODO
   ...props
 }: RowRendererProps<R | GroupRow<R>, SR>) {
   const { isGroupRow, toggleGroup, getParentRow } = useGroupApi<R>()!;

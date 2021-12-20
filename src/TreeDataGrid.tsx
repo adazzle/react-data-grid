@@ -15,12 +15,12 @@ import type {
   Omit,
   GroupRowHeightArgs
 } from './types';
-import { SELECT_COLUMN_KEY, ToggleGroupFormatter } from '.';
+import { ToggleGroupFormatter } from '.';
 import type { GroupApi } from './hooks';
 import { useLatestFunc, GroupApiProvider } from './hooks';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
-  extends Omit<DataGridProps<R, SR, K>, 'onFill'> {
+  extends Omit<DataGridProps<R, SR, K>, 'rowHeight' | 'onFill'> {
   rowHeight?: Maybe<number | ((args: GroupRowHeightArgs<R>) => number)>;
   groupBy: readonly string[];
   rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
@@ -60,11 +60,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   // const startRowIndex = 0;
   const { columns, groupBy } = useMemo(() => {
     const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
-      // Sort select column first:
-      if (aKey === SELECT_COLUMN_KEY) return -1;
-      if (bKey === SELECT_COLUMN_KEY) return 1;
-
-      // Sort grouped columns second, following the groupBy order:
+      // Sort grouped columns, following the groupBy order:
       if (rawGroupBy.includes(aKey)) {
         if (rawGroupBy.includes(bKey)) {
           return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
@@ -185,6 +181,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   }, [isGroupRow, rawRowHeight]);
 
   const rowKeyGetter = useMemo(() => {
+    // TODO: fix row key on child rows
     if (typeof rawRowKeyGetter === 'function') {
       return (row: R | GroupRow<R>): K | string => {
         if (isGroupRow(row)) {
