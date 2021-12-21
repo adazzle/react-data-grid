@@ -77,12 +77,12 @@ function TreeDataGrid<R, SR, K extends Key>(
     for (const [index, column] of columns.entries()) {
       if (rawGroupBy.includes(column.key)) {
         groupBy.push(column.key);
-
         columns[index] = {
           ...column,
           frozen: true,
           formatter: () => null,
-          groupFormatter: column.groupFormatter ?? ToggleGroupFormatter
+          groupFormatter: column.groupFormatter ?? ToggleGroupFormatter,
+          editable: false
         };
       }
     }

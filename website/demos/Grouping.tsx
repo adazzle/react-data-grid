@@ -3,8 +3,7 @@ import { groupBy as rowGrouper } from 'lodash';
 import faker from 'faker';
 import { css } from '@linaria/core';
 
-import TreeDataGrid from '../../src/TreeDataGrid';
-import { SelectColumn, TextEditor } from '../../src';
+import { TreeDataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
 
 const groupingClassname = css`
@@ -69,27 +68,50 @@ const sports = [
 const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
-    key: 'sport',
-    name: 'Sport'
-  },
-  {
     key: 'country',
-    name: 'Country',
-    editor: TextEditor
+    name: 'Country'
   },
   {
     key: 'year',
     name: 'Year'
   },
   {
-    key: 'id',
-    name: 'Id',
-    formatter(props) {
-      function onClick() {
-        props.onRowChange({ ...props.row, id: props.row.id + 10 });
-      }
-
-      return <button onClick={onClick}>value: {props.row.id}</button>;
+    key: 'sport',
+    name: 'Sport'
+  },
+  {
+    key: 'athlete',
+    name: 'Athlete'
+  },
+  {
+    key: 'gold',
+    name: 'Gold',
+    groupFormatter({ childRows }) {
+      return <>{childRows.reduce((prev, { gold }) => prev + gold, 0)}</>;
+    }
+  },
+  {
+    key: 'silver',
+    name: 'Silver',
+    groupFormatter({ childRows }) {
+      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+    }
+  },
+  {
+    key: 'bronze',
+    name: 'Bronze',
+    groupFormatter({ childRows }) {
+      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+    }
+  },
+  {
+    key: 'total',
+    name: 'Total',
+    formatter({ row }) {
+      return <>{row.gold + row.silver + row.bronze}</>;
+    },
+    groupFormatter({ childRows }) {
+      return <>{childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0)}</>;
     }
   }
 ];
@@ -119,28 +141,7 @@ function createRows(): readonly Row[] {
 const options = ['country', 'year', 'sport', 'athlete'] as const;
 
 export default function Grouping() {
-  const [rows] = useState([
-    {
-      id: 1,
-      country: 'USA',
-      year: 2020
-    },
-    {
-      id: 2,
-      country: 'USA',
-      year: 2021
-    },
-    {
-      id: 3,
-      country: 'Canada',
-      year: 2021
-    },
-    {
-      id: 4,
-      country: 'Canada',
-      year: 2022
-    }
-  ]);
+  const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([
     options[0],
@@ -188,7 +189,7 @@ export default function Grouping() {
         rowKeyGetter={rowKeyGetter}
         selectedRows={selectedRows}
         onSelectedRowsChange={setSelectedRows}
-        groupBy={['year', 'country']}
+        groupBy={selectedOptions}
         rowGrouper={rowGrouper}
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
