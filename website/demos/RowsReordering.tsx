@@ -54,24 +54,19 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
+const hideRows = [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50];
+
 export default function RowsReordering() {
   const [rows, setRows] = useState(createRows);
 
-  const RowRenderer = useCallback((props: RowRendererProps<Row>) => {
-    function onRowReorder(fromIndex: number, toIndex: number) {
-      setRows((rows) => {
-        const newRows = [...rows];
-        newRows.splice(toIndex, 0, newRows.splice(fromIndex, 1)[0]);
-        return newRows;
-      });
-    }
-
-    return <DraggableRowRenderer {...props} onRowReorder={onRowReorder} />;
-  }, []);
-
   return (
-    <DndProvider backend={HTML5Backend}>
-      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} rowRenderer={RowRenderer} />
-    </DndProvider>
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      onRowsChange={setRows}
+      hideRows={hideRows}
+      enableVirtualization={false}
+      cellNavigationMode="CHANGE_ROW"
+    />
   );
 }

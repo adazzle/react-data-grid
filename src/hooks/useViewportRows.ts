@@ -20,6 +20,7 @@ interface ViewportRowsArgs<R> {
   rowGrouper: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>;
   expandedGroupIds: Maybe<ReadonlySet<unknown>>;
   enableVirtualization: boolean;
+  hideRows: number[];
 }
 
 // TODO: https://github.com/microsoft/TypeScript/issues/41808
@@ -35,7 +36,8 @@ export function useViewportRows<R>({
   groupBy,
   rowGrouper,
   expandedGroupIds,
-  enableVirtualization
+  enableVirtualization,
+  hideRows
 }: ViewportRowsArgs<R>) {
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || rowGrouper == null) return [undefined, rawRows.length];
@@ -117,8 +119,19 @@ export function useViewportRows<R>({
   const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
       return {
-        totalRowHeight: rowHeight * rows.length,
-        getRowTop: (rowIdx: number) => rowIdx * rowHeight,
+        totalRowHeight: rowHeight * (rows.length - hideRows.length),
+        getRowTop(rowIdx: number) {
+          let positionRowIdx = rowIdx;
+          hideRows.forEach((hideRowIndex) => {
+            if (rowIdx > hideRowIndex) {
+              positionRowIdx -= 1;
+            }
+          });
+
+          // return 0;
+          // const rawRowIdx
+          return positionRowIdx * rowHeight;
+        },
         getRowHeight: () => rowHeight,
         findRowIdx: (offset: number) => floor(offset / rowHeight)
       };
@@ -165,7 +178,7 @@ export function useViewportRows<R>({
         return 0;
       }
     };
-  }, [isGroupRow, rowHeight, rows]);
+  }, [isGroupRow, rowHeight, rows, hideRows]);
 
   let rowOverscanStartIdx = 0;
   let rowOverscanEndIdx = rows.length - 1;
