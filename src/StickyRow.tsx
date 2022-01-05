@@ -38,7 +38,6 @@ function StickyRow({
 }: StickyRowProps) {
   return (
     <div
-      key={top.toString()}
       role="row"
       aria-rowindex={2} // aria-rowindex is 1 based
       className={stickyRowClassname}

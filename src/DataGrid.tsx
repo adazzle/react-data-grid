@@ -1002,17 +1002,6 @@ function DataGrid<R, SR, K extends Key>(
         continue;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (typeof row === 'object' && (row as any).isStickyRow) {
-        rowElements.push(<StickyRow 
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          content={(row as any).content}
-          isStuck={false}
-          top={top}
-        />)
-        continue
-      }
-
       startRowIndex++;
       let key;
       let isRowSelected = false;
@@ -1021,6 +1010,18 @@ function DataGrid<R, SR, K extends Key>(
         isRowSelected = selectedRows?.has(key) ?? false;
       } else {
         key = hasGroups ? startRowIndex : rowIdx;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof row === 'object' && (row as any).isStickyRow) {
+        rowElements.push(<StickyRow 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          content={(row as any).content}
+          key={key}
+          isStuck={false}
+          top={top}
+        />)
+        continue
       }
 
       rowElements.push(
