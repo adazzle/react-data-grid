@@ -1,3 +1,7 @@
+import React from 'react';
+
+window.React = React;
+
 export { default } from './DataGrid';
 export type { DataGridProps, DataGridHandle, SelectedPosition } from './DataGrid';
 export { RowWithRef as Row } from './Row';

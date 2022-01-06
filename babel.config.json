@@ -8,7 +8,7 @@
         "shippedProposals": true
       }
     ],
-    ["@babel/react", { "runtime": "automatic" }],
+    ["@babel/react"],
     "@babel/typescript",
     "@linaria"
   ],
