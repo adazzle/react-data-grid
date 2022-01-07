@@ -21,7 +21,6 @@ export function isSelectedCellEditable<R, SR>({
 
 export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return (
-    column.editor != null &&
     !column.rowGroup &&
     (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false
   );
@@ -40,6 +39,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   lastFrozenColumnIndex: number;
   isCellWithinBounds: (position: Position) => boolean;
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
+  hideRows: number[];
 }
 
 export function getSelectedCellColSpan<R, SR>({
@@ -90,7 +90,8 @@ export function getNextSelectedCellPosition<R, SR>({
   nextPosition,
   lastFrozenColumnIndex,
   isCellWithinBounds,
-  isGroupRow
+  isGroupRow,
+  hideRows
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
@@ -134,7 +135,18 @@ export function getNextSelectedCellPosition<R, SR>({
         const isLastRow = nextRowIdx === maxRowIdx;
         if (!isLastRow) {
           nextIdx = 0;
-          nextRowIdx += 1;
+          nextRowIdx = (() => {
+            let nextRow = nextRowIdx + 1;
+            /* eslint-disable-next-line */
+            while (true) {
+              if (!hideRows.includes(nextRow)) {
+                break;
+              }
+              nextRow += 1;
+            }
+
+            return nextRow;
+          })();
         }
       } else {
         nextIdx = 0;
@@ -143,7 +155,18 @@ export function getNextSelectedCellPosition<R, SR>({
       if (cellNavigationMode === 'CHANGE_ROW') {
         const isFirstRow = nextRowIdx === minRowIdx;
         if (!isFirstRow) {
-          nextRowIdx -= 1;
+          nextRowIdx = (() => {
+            let nextRow = nextRowIdx - 1;
+            /* eslint-disable-next-line */
+            while (true) {
+              if (!hideRows.includes(nextRow)) {
+                break;
+              }
+              nextRow -= 1;
+            }
+
+            return nextRow;
+          })();
           nextIdx = columnsCount - 1;
         }
       } else {

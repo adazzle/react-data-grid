@@ -1,14 +1,14 @@
 {
-  "name": "react-data-grid",
-  "version": "7.0.0-beta.7",
+  "name": "@20scoops-cnx/react-data-grid-20",
+  "version": "7.0.0-beta.29",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
   "keywords": [
     "react",
     "data grid"
   ],
-  "repository": "github:adazzle/react-data-grid",
-  "bugs": "https://github.com/adazzle/react-data-grid/issues",
+  "repository": "github:20Scoops-CNX/react-data-grid",
+  "bugs": "https://github.com/20Scoops-CNX/react-data-grid/issues",
   "type": "module",
   "exports": {
     ".": {
@@ -37,8 +37,7 @@
     "prettier:check": "prettier --check .",
     "prettier:format": "prettier --write .",
     "typecheck": "tsc -p tsconfig.all.json",
-    "prepublishOnly": "npm install && npm run build && npm run build:types",
-    "postpublish": "git push --follow-tags origin HEAD"
+    "prepublishOnly": "npm install && npm run build && npm run build:types"
   },
   "dependencies": {
     "clsx": "^1.1.1"

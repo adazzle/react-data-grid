@@ -88,7 +88,12 @@ export default function DragHandle<R, SR>({
     const indexes: number[] = [];
     for (let i = startRowIdx; i < endRowIdx; i++) {
       if (isCellEditable({ rowIdx: i, idx })) {
-        const updatedRow = onFill({ columnKey: column.key, sourceRow, targetRow: rows[i] });
+        const updatedRow = onFill({
+          columnKey: column.key,
+          sourceRow,
+          targetRow: rows[i],
+          targetRowIndex: i
+        });
         if (updatedRow !== rows[i]) {
           updatedRows[i] = updatedRow;
           indexes.push(i);

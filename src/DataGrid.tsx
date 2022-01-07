@@ -1,4 +1,12 @@
-import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
+import {
+  forwardRef,
+  useState,
+  useRef,
+  useImperativeHandle,
+  useCallback,
+  useMemo,
+  useEffect
+} from 'react';
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
@@ -50,11 +58,13 @@ export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
 }
 
-interface EditCellState<R> extends Position {
+export interface EditCellState<R> extends Position {
   readonly mode: 'EDIT';
   readonly row: R;
   readonly originalRow: R;
 }
+
+export type SelectedPosition<R> = SelectCellState | EditCellState<R>;
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
@@ -160,6 +170,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   noRowsFallback?: React.ReactNode;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   'data-testid'?: Maybe<string>;
+  onSelectedPositionChange?: Maybe<(position: SelectCellState | EditCellState<R>) => void>;
+
+  hideRows?: number[];
 }
 
 /**
@@ -211,7 +224,12 @@ function DataGrid<R, SR, K extends Key>(
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
-    'data-testid': testId
+    'data-testid': testId,
+
+    // added props
+    onSelectedPositionChange,
+
+    hideRows = []
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
@@ -223,7 +241,7 @@ function DataGrid<R, SR, K extends Key>(
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const RowRenderer = rowRenderer ?? Row;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
-  enableVirtualization ??= true;
+  enableVirtualization = hideRows.length <= 0 ? false : enableVirtualization ?? true;
 
   /**
    * states
@@ -267,6 +285,12 @@ function DataGrid<R, SR, K extends Key>(
     );
   }, [rawRows, selectedRows, rowKeyGetter]);
 
+  useEffect(() => {
+    if (onSelectedPositionChange) {
+      onSelectedPositionChange(selectedPosition);
+    }
+  }, [selectedPosition, onSelectedPositionChange]);
+
   const {
     columns,
     colSpanColumns,
@@ -306,7 +330,8 @@ function DataGrid<R, SR, K extends Key>(
     clientHeight,
     scrollTop,
     expandedGroupIds,
-    enableVirtualization
+    enableVirtualization,
+    hideRows
   });
 
   const viewportColumns = useViewportColumns({
@@ -536,7 +561,6 @@ function DataGrid<R, SR, K extends Key>(
       case 'ArrowDown':
       case 'ArrowLeft':
       case 'ArrowRight':
-      case 'Tab':
       case 'Home':
       case 'End':
       case 'PageUp':
@@ -620,7 +644,7 @@ function DataGrid<R, SR, K extends Key>(
     column.editorOptions?.onCellKeyDown?.(event);
     if (event.isDefaultPrevented()) return;
 
-    if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
+    if (isCellHasEditor(selectedPosition) && isDefaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
@@ -657,11 +681,16 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function isCellHasEditor(position: Position) {
+    const column = columns[position.idx];
+    return !!column.editor;
+  }
+
   function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
-    if (enableEditor && isCellEditable(position)) {
+    if (enableEditor && isCellEditable(position) && isCellHasEditor(position)) {
       const row = rows[position.rowIdx] as R;
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (isSamePosition(selectedPosition, position)) {
@@ -748,10 +777,36 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     switch (key) {
-      case 'ArrowUp':
-        return { idx, rowIdx: rowIdx - 1 };
-      case 'ArrowDown':
-        return { idx, rowIdx: rowIdx + 1 };
+      case 'ArrowUp': {
+        const rawPrevRow = rowIdx - 1;
+
+        let prevRow = rawPrevRow;
+
+        /* eslint-disable-next-line */
+        while (true) {
+          if (!hideRows.includes(prevRow)) {
+            break;
+          }
+          prevRow -= 1;
+        }
+
+        return { idx, rowIdx: prevRow };
+      }
+      case 'ArrowDown': {
+        const rawNextRow = rowIdx + 1;
+
+        let nextRow = rawNextRow;
+
+        /* eslint-disable-next-line */
+        while (true) {
+          if (!hideRows.includes(nextRow)) {
+            break;
+          }
+          nextRow += 1;
+        }
+
+        return { idx, rowIdx: nextRow };
+      }
       case 'ArrowLeft':
         return { idx: idx - 1, rowIdx };
       case 'ArrowRight':
@@ -822,7 +877,8 @@ function DataGrid<R, SR, K extends Key>(
       currentPosition: selectedPosition,
       nextPosition,
       isCellWithinBounds: isCellWithinSelectionBounds,
-      isGroupRow
+      isGroupRow,
+      hideRows
     });
 
     selectCell(nextSelectedCellPosition);
@@ -943,6 +999,10 @@ function DataGrid<R, SR, K extends Key>(
                   ...viewportColumns.slice(lastFrozenColumnIndex + 1)
                 ];
         }
+      }
+
+      if (hideRows.includes(rowIdx)) {
+        continue;
       }
 
       const row = rows[rowIdx];

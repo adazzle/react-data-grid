@@ -165,6 +165,7 @@ export interface FillEvent<TRow> {
   columnKey: string;
   sourceRow: TRow;
   targetRow: TRow;
+  targetRowIndex: number;
 }
 
 export interface PasteEvent<TRow> {
