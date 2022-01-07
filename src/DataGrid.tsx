@@ -327,6 +327,8 @@ function DataGrid<R, SR, K extends Key>(
         setStickyRowIndex(stickyRowIndex - 1)
       }
     }
+  } else if (stickyRowIndex !== undefined) {
+      setStickyRowIndex(undefined)
   }
 
   const viewportColumns = useViewportColumns({
@@ -1100,7 +1102,7 @@ function DataGrid<R, SR, K extends Key>(
         selectCell={selectHeaderCellLatest}
         shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
       />
-      { stickyRowIndex !== undefined ?
+      { stickyRowIndex !== undefined && stickyRowIndexes.length ?
         <StickyRow
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           content={(rows[stickyRowIndexes[stickyRowIndex]] as any).content}
