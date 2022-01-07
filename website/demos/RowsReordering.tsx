@@ -1,10 +1,6 @@
-import { useCallback, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-
-import { DraggableRowRenderer } from './components/RowRenderers';
+import { useState } from 'react';
 import DataGrid, { TextEditor } from '../../src';
-import type { Column, RowRendererProps } from '../../src';
+import type { Column } from '../../src';
 
 interface Row {
   id: number;
