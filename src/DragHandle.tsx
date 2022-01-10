@@ -1,7 +1,8 @@
 import { css } from '@linaria/core';
 
 import type { CalculatedColumn, FillEvent, Position } from './types';
-import type { DataGridProps, SelectCellState } from './DataGrid';
+import type { SelectCellState } from './DataGrid';
+import {DataGridProps} from "./DataGridProps";
 
 const cellDragHandle = css`
   cursor: move;

@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
-import { css } from '@linaria/core';
+import {useEffect, useRef} from 'react';
+import {css} from '@linaria/core';
 
-import { useLatestFunc } from './hooks';
-import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
+import {useLatestFunc} from './hooks';
+import {getCellClassname, getCellStyle, onEditorNavigation} from './utils';
 import type { CellRendererProps, EditorProps, Omit } from './types';
+import {ICanCommit} from "./editors/ICanCommit";
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -30,11 +31,13 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends Omit<EditorProps<R, SR>, 'onClose'>,
-    SharedCellRendererProps<R, SR> {
-  closeEditor: () => void;
-  scrollToCell: () => void;
+    extends Omit<EditorProps<R, SR>, 'onClose'>,
+        SharedCellRendererProps<R, SR> {
+    closeEditor: () => void;
+    scrollToCell: () => void;
+    editorRef: React.RefObject<React.ComponentClass|ICanCommit>;
 }
+
 
 export default function EditCell<R, SR>({
   column,
@@ -42,7 +45,8 @@ export default function EditCell<R, SR>({
   row,
   onRowChange,
   closeEditor,
-  scrollToCell
+  scrollToCell,
+  editorRef
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
@@ -51,7 +55,7 @@ export default function EditCell<R, SR>({
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
   // To that end we instead access the latest props via useLatestFunc.
   const commitOnOutsideMouseDown = useLatestFunc(() => {
-    onClose(true);
+     commitAndClose();
   });
 
   useEffect(() => {
@@ -73,21 +77,40 @@ export default function EditCell<R, SR>({
     cancelAnimationFrame(frameRequestRef.current!);
   }
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key === 'Escape') {
-      event.stopPropagation();
-      // Discard changes
-      onClose();
-    } else if (event.key === 'Enter') {
-      event.stopPropagation();
-      onClose(true);
-      scrollToCell();
-    } else {
-      const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
-      if (!onNavigation(event)) {
-        event.stopPropagation();
+  function commitAndClose()
+  {
+      if (editorRef.current  && (editorRef.current as ICanCommit).commit !== undefined ) {
+          (editorRef.current as ICanCommit).commit();
+          onClose(false); //When commit supprted THEN not 'row' does not contain changed value.
       }
-    }
+      else {
+          onClose(true);
+      }
+  }
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+      if (event.key === 'Escape') {
+          event.stopPropagation();
+          // Discard changes
+          onClose();
+      } else if (event.key === 'Enter') {
+          event.stopPropagation();
+          commitAndClose();
+          scrollToCell();
+      } else {
+          if (column.editorOptions?.onCellKeyDown) {
+              column.editorOptions.onCellKeyDown(event);
+              if (event.isDefaultPrevented()) return;
+          }
+          if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "Tab") {
+              commitAndClose();
+              scrollToCell();
+          } else {
+              const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
+              if (!onNavigation(event)) {
+                  event.stopPropagation();
+              }
+          }
+      }
   }
 
   function onClose(commitChanges?: boolean) {
@@ -119,7 +142,7 @@ export default function EditCell<R, SR>({
     >
       {column.editor != null && (
         <>
-          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
+          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} ref={editorRef}/>
           {column.editorOptions?.renderFormatter && (
             <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
           )}

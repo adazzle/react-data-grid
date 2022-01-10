@@ -1,4 +1,4 @@
-import { memo, forwardRef } from 'react';
+import {memo, forwardRef, useState, useImperativeHandle} from 'react';
 import type { RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
@@ -7,6 +7,7 @@ import { RowSelectionProvider, useLatestFunc, useCombinedRefs, useRovingRowRef }
 import { getColSpan } from './utils';
 import { rowClassname } from './style';
 import type { RowRendererProps } from './types';
+import {RowHandle} from "./RowHandle";
 
 function Row<R, SR>(
   {
@@ -32,9 +33,15 @@ function Row<R, SR>(
     selectCell,
     ...props
   }: RowRendererProps<R, SR>,
-  ref: React.Ref<HTMLDivElement>
+  ref: React.Ref<RowHandle>
 ) {
   const { ref: rowRef, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
+
+  const [ rowVersion, forceUpdate] = useState<number>(1);
+  useImperativeHandle(ref, ()=> ({
+      element: rowRef.current,
+      updateRow: () => forceUpdate(rowVersion+1)
+  }));
 
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
@@ -70,6 +77,7 @@ function Row<R, SR>(
     } else {
       cells.push(
         <Cell
+          version={rowVersion} //required for direct update
           key={column.key}
           column={column}
           colSpan={colSpan}
@@ -91,9 +99,9 @@ function Row<R, SR>(
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
-        ref={useCombinedRefs(ref, rowRef)}
+        ref={useCombinedRefs(rowRef)}
         tabIndex={tabIndex}
-        className={className}
+        className={className + (selectedCellIdx !== undefined ? " rdg-row-active" : "")}
         onMouseEnter={handleDragEnter}
         style={
           {
@@ -109,7 +117,7 @@ function Row<R, SR>(
   );
 }
 
-export default memo(Row) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;
+//export default memo(Row) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;
 
 export const RowWithRef = memo(forwardRef(Row)) as <R, SR>(
   props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>

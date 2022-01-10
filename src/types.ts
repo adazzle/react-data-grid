@@ -44,6 +44,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly editOnClick?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
+    readonly commitOnNavigation?: Maybe<boolean>;
     /** Prevent default to cancel editing */
     readonly onCellKeyDown?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => void>;
     /** Control the default cell navigation behavior while the editor is open */
@@ -94,8 +95,9 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
 export interface EditorProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
-  onRowChange: (row: TRow, commitChanges?: boolean) => void;
+  onRowChange: (row: TRow, commitChanges?: boolean, previousRow?:TRow) => void;
   onClose: (commitChanges?: boolean) => void;
+  ref?:{current?:any}|((element:any)=>void);
 }
 
 export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
@@ -122,6 +124,7 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (newRow: TRow) => void;
+  version:number
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -153,6 +156,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
 export interface RowsChangeData<R, SR = unknown> {
   indexes: number[];
   column: CalculatedColumn<R, SR>;
+  previousRow?:R;
 }
 
 export interface SelectRowEvent<TRow> {

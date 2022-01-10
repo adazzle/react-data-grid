@@ -190,6 +190,7 @@ export default function HeaderCell<R, SR>({
       onFocus={handleFocus}
       onClick={onClick}
       onPointerDown={column.resizable ? onPointerDown : undefined}
+      title={  typeof column.name === "string" ? column.name : ""}
     >
       {getCell()}
     </div>

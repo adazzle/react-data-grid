@@ -61,7 +61,7 @@ export function useViewportRows<R>({
     };
 
     return groupRows(rawRows, groupBy, 0);
-  }, [groupBy, rowGrouper, rawRows]);
+  }, [groupBy, rowGrouper, rawRows, rawRows.length]);
 
   const [rows, isGroupRow] = useMemo((): [
     ReadonlyArray<R | GroupRow<R>>,
@@ -112,7 +112,7 @@ export function useViewportRows<R>({
     function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
       return allGroupRows.has(row);
     }
-  }, [expandedGroupIds, groupedRows, rawRows]);
+  }, [expandedGroupIds, groupedRows, rawRows, rawRows.length]);
 
   const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
@@ -165,7 +165,7 @@ export function useViewportRows<R>({
         return 0;
       }
     };
-  }, [isGroupRow, rowHeight, rows]);
+  }, [isGroupRow, rowHeight, rows, rows.length]);
 
   let rowOverscanStartIdx = 0;
   let rowOverscanEndIdx = rows.length - 1;

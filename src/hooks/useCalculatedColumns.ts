@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
 import type { CalculatedColumn, Column, Maybe } from '../types';
-import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import { floor, max, min } from '../utils';
+import {DataGridProps} from "../DataGridProps";
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];

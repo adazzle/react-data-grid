@@ -1,16 +1,16 @@
-import { memo } from 'react';
+import {memo, useMemo} from 'react';
 import clsx from 'clsx';
-import { css } from '@linaria/core';
+import {css} from '@linaria/core';
 
 import HeaderCell from './HeaderCell';
+import {getColSpan} from './utils';
+import {useRovingRowRef} from './hooks';
 import type { CalculatedColumn } from './types';
-import { getColSpan } from './utils';
-import type { DataGridProps } from './DataGrid';
-import { useRovingRowRef } from './hooks';
+import {DataGridProps} from "./DataGridProps";
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
-  'sortColumns' | 'onSortColumnsChange'
+  'sortColumns' | 'onSortColumnsChange' | 'onHeaderContextMenu'
 >;
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
@@ -22,6 +22,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
+  left:number;
 }
 
 const headerRow = css`
@@ -33,7 +34,7 @@ const headerRow = css`
   height: var(--rdg-header-row-height); /* needed on Firefox */
   line-height: var(--rdg-header-row-height);
   width: var(--rdg-row-width);
-  position: sticky;
+  position: absolute;
   top: 0;
   background-color: var(--rdg-header-background-color);
   font-weight: bold;
@@ -57,34 +58,39 @@ function HeaderRow<R, SR, K extends React.Key>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   selectCell,
-  shouldFocusGrid
+  shouldFocusGrid,
+    left,
+  onHeaderContextMenu
 }: HeaderRowProps<R, SR, K>) {
   const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
 
-  const cells = [];
-  for (let index = 0; index < columns.length; index++) {
-    const column = columns[index];
-    const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
-    if (colSpan !== undefined) {
-      index += colSpan - 1;
-    }
+    const cells = useMemo(() => {
+        const cells = [];
+        for (let index = 0; index < columns.length; index++) {
+            const column = columns[index];
+            const colSpan = getColSpan(column, lastFrozenColumnIndex, {type: 'HEADER'});
+            if (colSpan !== undefined) {
+                index += colSpan - 1;
+            }
 
-    cells.push(
-      <HeaderCell<R, SR>
-        key={column.key}
-        column={column}
-        colSpan={colSpan}
-        isCellSelected={selectedCellIdx === column.idx}
-        onColumnResize={onColumnResize}
-        allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={onAllRowsSelectionChange}
-        onSortColumnsChange={onSortColumnsChange}
-        sortColumns={sortColumns}
-        selectCell={selectCell}
-        shouldFocusGrid={shouldFocusGrid && index === 0}
-      />
-    );
-  }
+            cells.push(
+                <HeaderCell<R, SR>
+                    key={column.key}
+                    column={column}
+                    colSpan={colSpan}
+                    isCellSelected={false} //Header cell cannot be selected
+                    onColumnResize={onColumnResize}
+                    allRowsSelected={allRowsSelected}
+                    onAllRowsSelectionChange={onAllRowsSelectionChange}
+                    onSortColumnsChange={onSortColumnsChange}
+                    sortColumns={sortColumns}
+                    selectCell={selectCell}
+                    shouldFocusGrid={shouldFocusGrid && index === 0}
+                />
+            );
+        }
+        return cells;
+    }, [columns.length, columns]);
 
   return (
     <div
@@ -93,6 +99,8 @@ function HeaderRow<R, SR, K extends React.Key>({
       ref={ref}
       tabIndex={tabIndex}
       className={clsx(headerRowClassname, className)}
+      style={{left:left}}
+      onContextMenu={onHeaderContextMenu}
     >
       {cells}
     </div>
