@@ -238,7 +238,6 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-  const [stickyRowIndex, setStickyRowIndex] = useState<number | undefined>(undefined);
 
   /**
    * refs
@@ -296,6 +295,7 @@ function DataGrid<R, SR, K extends Key>(
     rows,
     rowsCount,
     stickyRowIndexes,
+    stickyRowIndex,
     totalRowHeight,
     isGroupRow,
     getRowTop,
@@ -311,25 +311,6 @@ function DataGrid<R, SR, K extends Key>(
     expandedGroupIds,
     enableVirtualization
   });
-
-  if (stickyRowIndexes.length) {
-    const rowVisibleStartIdx = findRowIdx(scrollTop);
-    if (stickyRowIndex !== stickyRowIndexes.length - 1) {
-      const nextIndex = stickyRowIndex === undefined ? 0 : stickyRowIndex + 1;
-      if (rowVisibleStartIdx >= stickyRowIndexes[nextIndex]) {
-        setStickyRowIndex(nextIndex)
-      }
-    }
-
-    // eslint-disable-next-line sonarjs/no-collapsible-if
-    if (stickyRowIndex !== undefined && stickyRowIndex !== 0) {
-      if (rowVisibleStartIdx < stickyRowIndexes[stickyRowIndex]) {
-        setStickyRowIndex(stickyRowIndex - 1)
-      }
-    }
-  } else if (stickyRowIndex !== undefined) {
-      setStickyRowIndex(undefined)
-  }
 
   const viewportColumns = useViewportColumns({
     columns,

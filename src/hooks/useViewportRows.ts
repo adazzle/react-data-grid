@@ -179,6 +179,25 @@ export function useViewportRows<R>({
     };
   }, [isGroupRow, rowHeight, rows]);
 
+  const stickyRowIndex = useMemo(() => {
+    if (!stickyRowIndexes.length) {
+      return undefined
+    }
+
+    const rowVisibleStartIdx = findRowIdx(scrollTop);
+    for (const [i, rowIndex] of stickyRowIndexes.entries()) {
+      if (rowIndex === rowVisibleStartIdx) {
+        return i
+      }
+
+      if (stickyRowIndexes[i] > rowVisibleStartIdx) {
+        return i === 0 ? i : i - 1
+      }
+    }
+
+    return stickyRowIndexes.length - 1
+  }, [stickyRowIndexes, findRowIdx, scrollTop])
+
   let rowOverscanStartIdx = 0;
   let rowOverscanEndIdx = rows.length - 1;
 
@@ -200,6 +219,7 @@ export function useViewportRows<R>({
     getRowTop,
     getRowHeight,
     findRowIdx,
-    stickyRowIndexes
+    stickyRowIndexes,
+    stickyRowIndex
   };
 }
