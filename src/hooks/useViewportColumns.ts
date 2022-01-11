@@ -75,13 +75,13 @@ export function useViewportColumns<R, SR>({
 
     return startIdx;
   }, [
-    colOverscanStartIdx,
-    colSpanColumns,
-    lastFrozenColumnIndex,
-    rowOverscanEndIdx,
     rowOverscanStartIdx,
+    rowOverscanEndIdx,
     rows,
-    summaryRows
+    summaryRows,
+    colOverscanStartIdx,
+    lastFrozenColumnIndex,
+    colSpanColumns
   ]);
 
   return useMemo((): readonly CalculatedColumn<R, SR>[] => {
