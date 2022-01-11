@@ -56,7 +56,7 @@ interface EditCellState<R> extends Position {
   readonly originalRow: R;
 }
 
-type DefaultColumnOptions<R, SR> = Pick<
+export type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'formatter' | 'minWidth' | 'resizable' | 'sortable'
 >;
@@ -76,13 +76,7 @@ export interface DataGridHandle {
 
 type SharedDivProps = Pick<
   React.HTMLAttributes<HTMLDivElement>,
-  | 'role'
-  | 'aria-label'
-  | 'aria-labelledby'
-  | 'aria-describedby'
-  | 'aria-rowcount'
-  | 'className'
-  | 'style'
+  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'aria-rowcount' | 'className' | 'style'
 >;
 
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
@@ -206,7 +200,6 @@ function DataGrid<R, SR, K extends Key>(
     style,
     rowClass,
     // ARIA
-    role = 'grid',
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
@@ -313,7 +306,7 @@ function DataGrid<R, SR, K extends Key>(
     summaryRows
   });
 
-  const hasGroups = useGroupApi<R>() !== undefined;
+  const hasGroups = useGroupApi<R, SR>() !== undefined;
   const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
   const minRowIdx = -1; // change it to 0?
@@ -443,7 +436,6 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
-    if (event.isDefaultPrevented()) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
     if (!isCellEvent && !isRowEvent) return;
@@ -905,7 +897,7 @@ function DataGrid<R, SR, K extends Key>(
 
   return (
     <div
-      role={role}
+      role={hasGroups ? 'treegrid' : 'grid'}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       aria-describedby={ariaDescribedBy}

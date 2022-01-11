@@ -69,7 +69,7 @@ export function useCalculatedColumns<R, SR>({
       if (aKey === SELECT_COLUMN_KEY) return -1;
       if (bKey === SELECT_COLUMN_KEY) return 1;
 
-      // Sort frozen columns first:
+      // Sort frozen columns second:
       if (frozenA) {
         if (frozenB) return 0;
         return -1;

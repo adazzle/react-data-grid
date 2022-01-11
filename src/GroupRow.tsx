@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 
 import { cell, cellFrozenLast, rowClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
-import Row from './Row';
+import { RowWithRef } from './Row';
 import GroupCell from './GroupCell';
 import type { GroupRow, RowRendererProps } from './types';
 import { RowSelectionProvider, useGroupApi, useRovingRowRef } from './hooks';
@@ -46,13 +46,14 @@ function GroupedRow<R, SR>({
   'aria-rowindex': ariaRowIndex, // ignore default value // TODO
   ...props
 }: RowRendererProps<R | GroupRow<R>, SR>) {
-  const { isGroupRow, toggleGroup, getParentRow } = useGroupApi<R>()!;
   const { ref, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
+  const { isGroupRow, toggleGroup, getParentRow, rowRenderer } = useGroupApi<R, SR>()!;
+  const RowRenderer = rowRenderer ?? RowWithRef;
 
   className = clsx(className, rovingClassName);
   if (!isGroupRow(row)) {
     return (
-      <Row
+      <RowRenderer
         ref={ref}
         tabIndex={tabIndex}
         className={className}
@@ -92,6 +93,7 @@ function GroupedRow<R, SR>({
         (event.key === 'ArrowRight' && !row.isExpanded))
     ) {
       event.preventDefault(); // Prevents scrolling
+      event.stopPropagation();
       toggleGroup(row.id);
     }
 
@@ -100,6 +102,7 @@ function GroupedRow<R, SR>({
       const parentRow = getParentRow(row);
       if (parentRow !== undefined) {
         event.preventDefault();
+        event.stopPropagation();
         selectCell(parentRow, -1);
       }
     }
@@ -110,7 +113,7 @@ function GroupedRow<R, SR>({
   };
 
   return (
-    <RowSelectionProvider value={isRowSelected}>
+    <RowSelectionProvider value={false}>
       <div
         role="row"
         aria-rowindex={row.startRowIndex + 2}

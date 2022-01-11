@@ -2,7 +2,7 @@ import { forwardRef, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
 import DataGrid from './DataGrid';
-import type { DataGridProps, DataGridHandle } from './DataGrid';
+import type { DataGridProps, DataGridHandle, DefaultColumnOptions } from './DataGrid';
 import GroupedRowRenderer from './GroupRow';
 import type {
   CalculatedColumn,
@@ -13,11 +13,41 @@ import type {
   Maybe,
   GroupRow,
   Omit,
-  GroupRowHeightArgs
+  GroupRowHeightArgs,
+  RowRendererProps
 } from './types';
-import { ToggleGroupFormatter } from '.';
+import { SELECT_COLUMN_KEY, ToggleGroupFormatter } from '.';
 import type { GroupApi } from './hooks';
 import { useLatestFunc, GroupApiProvider } from './hooks';
+import { assertIsValidKeyGetter } from './utils';
+
+// type SharedDataGridProps<R, SR, K extends Key = Key> = Omit<
+//   DataGridProps<R | GroupRow<R>, SR, K>,
+//   | 'aria-rowcount'
+//   | 'rows'
+//   | 'columns'
+//   | 'rowHeight'
+//   | 'rowRenderer'
+//   | 'rowClass'
+//   | 'rowKeyGetter'
+//   | 'onRowsChange'
+//   | 'onRowClick'
+//   | 'onRowDoubleClick'
+//   | 'onPaste'
+//   | 'onFill'
+// > &
+//   Pick<
+//     DataGridProps<R, SR, K>,
+//     | 'rows'
+//     | 'columns'
+//     | 'rowRenderer'
+//     | 'rowClass'
+//     | 'rowKeyGetter'
+//     | 'onRowsChange'
+//     | 'onRowClick'
+//     | 'onRowDoubleClick'
+//     | 'onPaste'
+//   >;
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<DataGridProps<R, SR, K>, 'rowHeight' | 'onFill'> {
@@ -41,14 +71,17 @@ function TreeDataGrid<R, SR, K extends Key>(
   {
     columns: rawColumns,
     rows: rawRows,
-    rowKeyGetter: rawRowKeyGetter,
     rowHeight: rawRowHeight,
+    rowRenderer,
     rowClass: rawRowClass,
+    rowKeyGetter: rawRowKeyGetter,
     onRowsChange: rawOnRowsChange,
     onRowClick: rawOnRowClick,
     onRowDoubleClick: rawOnRowDoubleClick,
     onPaste: rawOnPaste,
-    onSelectedRowsChange: rawOnSelectedRowsChange,
+    defaultColumnOptions,
+    selectedRows,
+    onSelectedRowsChange,
     groupBy: rawGroupBy,
     rowGrouper,
     expandedGroupIds,
@@ -57,10 +90,17 @@ function TreeDataGrid<R, SR, K extends Key>(
   }: TreeDataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
-  // const startRowIndex = 0;
+  // const isSelectable = selectedRows != null && onSelectedRowsChange != null;
+  const toggleGroupLatest = useLatestFunc(toggleGroup);
+  const toggleGroupSelectionLatest = useLatestFunc(toggleGroupSelection);
+
   const { columns, groupBy } = useMemo(() => {
     const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
-      // Sort grouped columns, following the groupBy order:
+      // Sort select column first:
+      if (aKey === SELECT_COLUMN_KEY) return -1;
+      if (bKey === SELECT_COLUMN_KEY) return 1;
+
+      // Sort grouped columns second, following the groupBy order:
       if (rawGroupBy.includes(aKey)) {
         if (rawGroupBy.includes(bKey)) {
           return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
@@ -180,20 +220,6 @@ function TreeDataGrid<R, SR, K extends Key>(
     return rawRowHeight;
   }, [isGroupRow, rawRowHeight]);
 
-  const rowKeyGetter = useMemo(() => {
-    // TODO: fix row key on child rows
-    if (typeof rawRowKeyGetter === 'function') {
-      return (row: R | GroupRow<R>): K | string => {
-        if (isGroupRow(row)) {
-          return row.id;
-        }
-        return rawRowKeyGetter(row);
-      };
-    }
-
-    return rawRowKeyGetter;
-  }, [isGroupRow, rawRowKeyGetter]);
-
   const rowClass = useMemo(() => {
     if (typeof rawRowClass === 'function') {
       return (row: R | GroupRow<R>) => {
@@ -206,6 +232,31 @@ function TreeDataGrid<R, SR, K extends Key>(
 
     return rawRowClass;
   }, [isGroupRow, rawRowClass]);
+
+  const rowKeyGetter = useMemo(() => {
+    // TODO: fix row key on child rows
+    if (typeof rawRowKeyGetter === 'function') {
+      return (row: R | GroupRow<R>): K => {
+        if (isGroupRow(row)) {
+          return row.id as K;
+        }
+        return rawRowKeyGetter(row);
+      };
+    }
+
+    return rawRowKeyGetter;
+  }, [isGroupRow, rawRowKeyGetter]);
+
+  const onRowsChange =
+    typeof rawOnRowsChange === 'function'
+      ? (rows: (R | GroupRow<R>)[], { indexes, column }: RowsChangeData<R | GroupRow<R>, SR>) => {
+          const rawIndexes = indexes.map((index) => rawRows.indexOf(rows[index] as R));
+          rawOnRowsChange(rows as R[], {
+            indexes: rawIndexes,
+            column: column as CalculatedColumn<R, SR>
+          });
+        }
+      : rawOnRowsChange;
 
   const onRowClick = useMemo(() => {
     if (typeof rawOnRowClick === 'function') {
@@ -233,16 +284,6 @@ function TreeDataGrid<R, SR, K extends Key>(
     return rawOnRowDoubleClick;
   }, [isGroupRow, rawOnRowDoubleClick]);
 
-  const onSelectedRowsChange = useMemo(() => {
-    if (typeof rawOnSelectedRowsChange === 'function') {
-      return (selectedRows: Set<K>) => {
-        rawOnSelectedRowsChange(selectedRows);
-      };
-    }
-
-    return rawOnSelectedRowsChange;
-  }, [rawOnSelectedRowsChange]);
-
   const onPaste = useMemo(() => {
     if (typeof rawOnPaste === 'function') {
       return ({ sourceRow, targetRow, ...rest }: PasteEvent<R | GroupRow<R>>) => {
@@ -255,19 +296,6 @@ function TreeDataGrid<R, SR, K extends Key>(
 
     return rawOnPaste;
   }, [isGroupRow, rawOnPaste]);
-
-  const onRowsChange =
-    typeof rawOnRowsChange === 'function'
-      ? (rows: (R | GroupRow<R>)[], { indexes, column }: RowsChangeData<R | GroupRow<R>, SR>) => {
-          const rawIndexes = indexes.map((index) => rawRows.indexOf(rows[index] as R));
-          rawOnRowsChange(rows as R[], {
-            indexes: rawIndexes,
-            column: column as CalculatedColumn<R, SR>
-          });
-        }
-      : rawOnRowsChange;
-
-  const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   const getParentRow = useCallback(
     (row: GroupRow<R>) => {
@@ -285,12 +313,14 @@ function TreeDataGrid<R, SR, K extends Key>(
   );
 
   const value = useMemo(
-    (): GroupApi<R> => ({
+    (): GroupApi<R, SR> => ({
       isGroupRow,
       toggleGroup: toggleGroupLatest,
-      getParentRow
+      toggleGroupSelection: toggleGroupSelectionLatest,
+      getParentRow,
+      rowRenderer: rowRenderer as Maybe<React.ComponentType<RowRendererProps<R | GroupRow<R>, SR>>>
     }),
-    [isGroupRow, toggleGroupLatest, getParentRow]
+    [isGroupRow, toggleGroupLatest, toggleGroupSelectionLatest, getParentRow, rowRenderer]
   );
 
   function toggleGroup(expandedGroupId: unknown) {
@@ -303,10 +333,28 @@ function TreeDataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
+  // function isGroupRowSelected(row: GroupRow<R>) {
+  //   return isSelectable && row.childRows.every((cr) => selectedRows.has(rowKeyGetter!(cr)));
+  // }
+
+  function toggleGroupSelection(row: GroupRow<R>, checked: boolean) {
+    if (!onSelectedRowsChange) return;
+    assertIsValidKeyGetter<R, K>(rawRowKeyGetter);
+    const newSelectedRows = new Set(selectedRows);
+    for (const childRow of row.childRows) {
+      const rowKey = rawRowKeyGetter(childRow);
+      if (checked) {
+        newSelectedRows.add(rowKey);
+      } else {
+        newSelectedRows.delete(rowKey);
+      }
+    }
+    onSelectedRowsChange(newSelectedRows);
+  }
+
   return (
     <GroupApiProvider value={value}>
-      <DataGrid<R | GroupRow<R>, SR, K | string>
-        role="treegrid"
+      <DataGrid<R | GroupRow<R>, SR, K>
         aria-rowcount={rowsCount + 1 + (props.summaryRows?.length ?? 0)}
         ref={ref}
         columns={columns as Column<R | GroupRow<R>, SR>[]}
@@ -317,6 +365,10 @@ function TreeDataGrid<R, SR, K extends Key>(
         onRowsChange={onRowsChange}
         onRowClick={onRowClick}
         onRowDoubleClick={onRowDoubleClick}
+        defaultColumnOptions={
+          defaultColumnOptions as Maybe<DefaultColumnOptions<R | GroupRow<R>, SR>>
+        }
+        selectedRows={selectedRows}
         onSelectedRowsChange={onSelectedRowsChange}
         onPaste={onPaste}
         rowRenderer={GroupedRowRenderer}

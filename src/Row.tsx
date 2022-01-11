@@ -105,6 +105,10 @@ function Row<R, SR>(
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR>(
+type RowType = <R, SR>(
   props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
+
+export const RowWithRef = forwardRef(Row) as RowType;
+
+export default memo(forwardRef(Row)) as RowType;
