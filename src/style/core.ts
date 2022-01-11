@@ -77,7 +77,7 @@ const root = css`
     position: absolute;
     top: 0;
     left: 0;
-    height: var(--grid-height);
+    height: var(--rdg-grid-height);
     width: var(--row-width);
   }
 
