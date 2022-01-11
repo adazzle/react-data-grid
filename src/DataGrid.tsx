@@ -1028,14 +1028,6 @@ function DataGrid<R, SR, K extends Key>(
     setDraggedOverRowIdx(undefined);
   }
 
-  if (
-    selectedPosition.mode === 'EDIT' &&
-    rows[selectedPosition.rowIdx] !== selectedPosition.originalRow
-  ) {
-    // Discard changes if rows are updated from outside
-    closeEditor();
-  }
-
   let templateRows = `${headerRowHeight}px`;
   if (rows.length > 0) {
     templateRows += gridTemplateRows;
