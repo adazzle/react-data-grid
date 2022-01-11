@@ -24,9 +24,9 @@ test('rowHeight is number', () => {
   setupGrid(40);
 
   const rows = getRows();
-  expect(rows[0]).toHaveStyle({ '--row-height': '40px' });
-  expect(rows[1]).toHaveStyle({ '--row-height': '40px' });
-  expect(rows[2]).toHaveStyle({ '--row-height': '40px' });
+  expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });
+  expect(rows[1]).toHaveStyle({ '--rdg-row-height': '40px' });
+  expect(rows[2]).toHaveStyle({ '--rdg-row-height': '40px' });
   expect(getRows()).toHaveLength(31);
 
   userEvent.tab();
@@ -43,10 +43,10 @@ test('rowHeight is function', () => {
   setupGrid((args) => (args.type === 'ROW' ? [40, 60, 80][args.row % 3] : 40));
 
   const rows = getRows();
-  expect(rows[0]).toHaveStyle({ '--row-height': '40px' });
-  expect(rows[1]).toHaveStyle({ '--row-height': '60px' });
-  expect(rows[2]).toHaveStyle({ '--row-height': '80px' });
-  expect(rows[3]).toHaveStyle({ '--row-height': '40px' });
+  expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });
+  expect(rows[1]).toHaveStyle({ '--rdg-row-height': '60px' });
+  expect(rows[2]).toHaveStyle({ '--rdg-row-height': '80px' });
+  expect(rows[3]).toHaveStyle({ '--rdg-row-height': '40px' });
   expect(rows).toHaveLength(22);
 
   userEvent.tab();

@@ -21,7 +21,7 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 
 const summaryRow = css`
   z-index: 3;
-  line-height: var(--summary-row-height);
+  line-height: var(--rdg-summary-row-height);
 
   &.${row} > .${cell} {
     position: sticky;
@@ -30,7 +30,7 @@ const summaryRow = css`
 
 const summaryRowBorderClassname = css`
   & > .${cell} {
-    border-top: 2px solid var(--summary-border-color);
+    border-top: 2px solid var(--rdg-summary-border-color);
   }
 `;
 

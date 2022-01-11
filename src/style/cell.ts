@@ -4,8 +4,8 @@ export const cell = css`
   contain: strict;
   contain: size layout style paint;
   padding: 0 8px;
-  border-right: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--rdg-border-color);
+  border-bottom: 1px solid var(--rdg-border-color);
   background-color: inherit;
 
   white-space: nowrap;
@@ -15,7 +15,7 @@ export const cell = css`
   outline: none;
 
   &[aria-selected='true'] {
-    box-shadow: inset 0 0 0 2px var(--selection-color);
+    box-shadow: inset 0 0 0 2px var(--rdg-selection-color);
   }
 `;
 

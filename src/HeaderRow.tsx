@@ -27,8 +27,8 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
 
 const headerRow = css`
   display: contents;
-  line-height: var(--header-row-height);
-  background-color: var(--header-background-color);
+  line-height: var(--rdg-header-row-height);
+  background-color: var(--rdg-header-background-color);
   font-weight: bold;
   outline: none;
 
@@ -43,7 +43,7 @@ const headerRow = css`
   }
 
   &[aria-selected='true'] {
-    box-shadow: inset 0 0 0 2px var(--selection-color);
+    box-shadow: inset 0 0 0 2px var(--rdg-selection-color);
   }
 `;
 

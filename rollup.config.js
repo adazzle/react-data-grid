@@ -14,13 +14,13 @@ export default {
     {
       file: './lib/bundle.js',
       format: 'es',
-      preferConst: true,
+      generatedCode: 'es2015',
       sourcemap: true
     },
     {
       file: './lib/bundle.cjs',
       format: 'cjs',
-      preferConst: true,
+      generatedCode: 'es2015',
       sourcemap: true,
       interop: false
     }

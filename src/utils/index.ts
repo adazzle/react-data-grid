@@ -22,11 +22,11 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
 export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
   if (height !== undefined) {
     return {
-      '--grid-row-start': rowIdx,
-      '--row-height': `${height}px`
+      '--rdg-grid-row-start': rowIdx,
+      '--rdg-row-height': `${height}px`
     } as unknown as CSSProperties;
   }
-  return { '--grid-row-start': rowIdx } as unknown as CSSProperties;
+  return { '--rdg-grid-row-start': rowIdx } as unknown as CSSProperties;
 }
 
 export function getCellStyle<R, SR>(
@@ -36,8 +36,8 @@ export function getCellStyle<R, SR>(
   return {
     gridColumnStart: column.idx + 1,
     gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
-    gridRowStart: 'var(--grid-row-start)',
-    left: column.frozen ? `var(--frozen-left-${column.idx})` : undefined
+    gridRowStart: 'var(--rdg-grid-row-start)',
+    left: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
   };
 }
 
