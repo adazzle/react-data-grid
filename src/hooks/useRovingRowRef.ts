@@ -7,14 +7,15 @@ const rowSelected = css`
   outline: none;
 
   > .${cell} {
-    box-shadow: inset 0 2px 0 0 var(--selection-color), inset 0 -2px 0 0 var(--rdg-selection-color);
+    box-shadow: inset 0 2px 0 0 var(--rdg-selection-color),
+      inset 0 -2px 0 0 var(--rdg-selection-color);
     &:first-child {
-      box-shadow: inset 0 2px 0 0 var(--selection-color),
-        inset 0 -2px 0 0 var(--rdg-selection-color), inset 2px 0 0 0 var(--selection-color);
+      box-shadow: inset 0 2px 0 0 var(--rdg-selection-color),
+        inset 0 -2px 0 0 var(--rdg-selection-color), inset 2px 0 0 0 var(--rdg-selection-color);
     }
     &:last-child {
-      box-shadow: inset 0 2px 0 0 var(--selection-color),
-        inset 0 -2px 0 0 var(--rdg-selection-color), inset -2px 0 0 0 var(--selection-color);
+      box-shadow: inset 0 2px 0 0 var(--rdg-selection-color),
+        inset 0 -2px 0 0 var(--rdg-selection-color), inset -2px 0 0 0 var(--rdg-selection-color);
     }
   }
 `;
