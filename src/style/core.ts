@@ -72,13 +72,14 @@ const root = css`
     box-sizing: inherit;
   }
 
+  /* needed on Firefox */
   &::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     height: var(--rdg-grid-height);
-    width: var(--row-width);
+    width: var(--rdg-row-width);
   }
 
   &.rdg-dark {

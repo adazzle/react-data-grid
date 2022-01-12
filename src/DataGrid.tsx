@@ -26,6 +26,7 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   getColSpan,
+  max,
   sign,
   getSelectedCellColSpan
 } from './utils';
@@ -1054,7 +1055,7 @@ function DataGrid<R, SR, K extends Key>(
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
           '--rdg-template-rows': templateRows,
           '--rdg-grid-height': `${
-            Math.max(totalRowHeight, clientHeight) +
+            max(totalRowHeight, clientHeight) +
             headerRowHeight +
             summaryRowsCount * summaryRowHeight
           }px`,
