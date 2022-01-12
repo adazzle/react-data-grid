@@ -454,17 +454,17 @@ function DataGrid<R, SR, K extends Key>(
 
   function selectAllRows(checked: boolean) {
     if (!onSelectedRowsChange) return;
+    if (!checked) {
+      onSelectedRowsChange(new Set());
+      return;
+    }
 
     assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
 
     for (const row of rawRows) {
       const rowKey = rowKeyGetter(row);
-      if (checked) {
-        newSelectedRows.add(rowKey);
-      } else {
-        newSelectedRows.delete(rowKey);
-      }
+      newSelectedRows.add(rowKey);
     }
 
     onSelectedRowsChange(newSelectedRows);
