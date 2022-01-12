@@ -21,34 +21,6 @@ import type { GroupApi } from './hooks';
 import { useLatestFunc, GroupApiProvider } from './hooks';
 import { assertIsValidKeyGetter } from './utils';
 
-// type SharedDataGridProps<R, SR, K extends Key = Key> = Omit<
-//   DataGridProps<R | GroupRow<R>, SR, K>,
-//   | 'aria-rowcount'
-//   | 'rows'
-//   | 'columns'
-//   | 'rowHeight'
-//   | 'rowRenderer'
-//   | 'rowClass'
-//   | 'rowKeyGetter'
-//   | 'onRowsChange'
-//   | 'onRowClick'
-//   | 'onRowDoubleClick'
-//   | 'onPaste'
-//   | 'onFill'
-// > &
-//   Pick<
-//     DataGridProps<R, SR, K>,
-//     | 'rows'
-//     | 'columns'
-//     | 'rowRenderer'
-//     | 'rowClass'
-//     | 'rowKeyGetter'
-//     | 'onRowsChange'
-//     | 'onRowClick'
-//     | 'onRowDoubleClick'
-//     | 'onPaste'
-//   >;
-
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<DataGridProps<R, SR, K>, 'rowHeight' | 'onFill'> {
   rowHeight?: Maybe<number | ((args: GroupRowHeightArgs<R>) => number)>;
@@ -332,10 +304,6 @@ function TreeDataGrid<R, SR, K extends Key>(
     }
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
-
-  // function isGroupRowSelected(row: GroupRow<R>) {
-  //   return isSelectable && row.childRows.every((cr) => selectedRows.has(rowKeyGetter!(cr)));
-  // }
 
   function toggleGroupSelection(row: GroupRow<R>, checked: boolean) {
     if (!onSelectedRowsChange) return;
