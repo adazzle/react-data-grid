@@ -51,7 +51,9 @@ export function DraggableRowRenderer<R, SR>({
   return (
     <Row
       ref={(ref) => {
-        drag(ref?.firstElementChild);
+        if (ref) {
+          drag(ref.firstElementChild);
+        }
         drop(ref);
       }}
       rowIdx={rowIdx}
