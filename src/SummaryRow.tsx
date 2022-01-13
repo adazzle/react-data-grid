@@ -67,8 +67,6 @@ function SummaryRow<R, SR>({
         row={row}
         isCellSelected={isCellSelected}
         selectCell={selectCell}
-        top={top}
-        bottom={bottom}
       />
     );
   }
@@ -86,7 +84,13 @@ function SummaryRow<R, SR>({
         { [summaryRowBorderClassname]: rowIdx === 0 },
         className
       )}
-      style={getRowStyle(ariaRowIndex)}
+      style={
+        {
+          ...getRowStyle(ariaRowIndex),
+          '--rdg-summary-row-top': `${top}px`,
+          '--rdg-summary-row-bottom': `${bottom}px`
+        } as unknown as React.CSSProperties
+      }
     >
       {cells}
     </div>
