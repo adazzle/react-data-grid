@@ -6,6 +6,7 @@ export const cell = css`
   padding: 0 8px;
   border-right: 1px solid var(--rdg-border-color);
   border-bottom: 1px solid var(--rdg-border-color);
+  grid-row-start: var(--rdg-grid-row-start);
   background-color: inherit;
 
   white-space: nowrap;

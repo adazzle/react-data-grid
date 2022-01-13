@@ -38,10 +38,7 @@ const root = css`
   --rdg-selection-color: #66afe9;
   --rdg-font-size: 14px;
 
-  position: relative;
   display: grid;
-  grid-template-columns: var(--rdg-template-columns);
-  grid-template-rows: var(--rdg-template-rows);
 
   color-scheme: var(--rdg-color-scheme, light dark);
 

@@ -1050,10 +1050,10 @@ function DataGrid<R, SR, K extends Key>(
       style={
         {
           ...style,
+          gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-row-width': `${totalColumnWidth}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
-          '--rdg-template-rows': templateRows,
           '--rdg-grid-height': `${
             max(totalRowHeight, clientHeight) +
             headerRowHeight +

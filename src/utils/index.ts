@@ -36,7 +36,6 @@ export function getCellStyle<R, SR>(
   return {
     gridColumnStart: column.idx + 1,
     gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
-    gridRowStart: 'var(--rdg-grid-row-start)',
     left: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
   };
 }

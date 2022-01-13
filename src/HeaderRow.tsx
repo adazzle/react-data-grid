@@ -30,7 +30,6 @@ const headerRow = css`
   line-height: var(--rdg-header-row-height);
   background-color: var(--rdg-header-background-color);
   font-weight: bold;
-  outline: none;
 
   > .${cell} {
     z-index: 3;
