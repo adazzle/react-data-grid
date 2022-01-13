@@ -11,13 +11,15 @@ interface SharedCellRendererProps<R, SR>
 
 interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
-  bottom: number;
+  top: number | undefined;
+  bottom: number | undefined;
 }
 
 function SummaryCell<R, SR>({
   column,
   colSpan,
   row,
+  top,
   bottom,
   isCellSelected,
   selectCell
@@ -42,7 +44,7 @@ function SummaryCell<R, SR>({
       ref={ref}
       tabIndex={tabIndex}
       className={className}
-      style={{ ...getCellStyle(column, colSpan), bottom }}
+      style={{ ...getCellStyle(column, colSpan), top, bottom }}
       onClick={onClick}
       onFocus={onFocus}
     >

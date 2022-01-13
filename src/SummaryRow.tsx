@@ -13,7 +13,8 @@ type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColu
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   'aria-rowindex': number;
   row: SR;
-  bottom: number;
+  top: number | undefined;
+  bottom: number | undefined;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
@@ -40,6 +41,7 @@ function SummaryRow<R, SR>({
   rowIdx,
   row,
   viewportColumns,
+  top,
   bottom,
   lastFrozenColumnIndex,
   selectedCellIdx,
@@ -65,6 +67,7 @@ function SummaryRow<R, SR>({
         row={row}
         isCellSelected={isCellSelected}
         selectCell={selectCell}
+        top={top}
         bottom={bottom}
       />
     );

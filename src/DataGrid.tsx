@@ -1089,13 +1089,21 @@ function DataGrid<R, SR, K extends Key>(
           {summaryRows?.map((row, rowIdx) => {
             const isSummaryRowSelected =
               selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
+            const top =
+              clientHeight > totalRowHeight
+                ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
+                : undefined;
+            const bottom =
+              top === undefined ? summaryRowHeight * (summaryRows.length - 1 - rowIdx) : undefined;
+
             return (
               <SummaryRow
                 aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
                 key={rowIdx}
                 rowIdx={rowIdx}
                 row={row}
-                bottom={summaryRowHeight * (summaryRows.length - 1 - rowIdx)}
+                top={top}
+                bottom={bottom}
                 viewportColumns={viewportColumns}
                 lastFrozenColumnIndex={lastFrozenColumnIndex}
                 selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
