@@ -320,10 +320,12 @@ function DataGrid<R, SR, K extends Key>(
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectViewportCellLatest = useLatestFunc((row: R, idx, enableEditor: Maybe<boolean>) => {
-    const rowIdx = rows.indexOf(row);
-    selectCell({ rowIdx, idx }, enableEditor);
-  });
+  const selectViewportCellLatest = useLatestFunc(
+    (row: R, idx: number, enableEditor: Maybe<boolean>) => {
+      const rowIdx = rows.indexOf(row);
+      selectCell({ rowIdx, idx }, enableEditor);
+    }
+  );
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
     selectCell({ rowIdx: -1, idx });
   });
