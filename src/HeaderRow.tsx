@@ -40,10 +40,6 @@ const headerRow = css`
   > .${cellFrozen} {
     z-index: 4;
   }
-
-  &[aria-selected='true'] {
-    box-shadow: inset 0 0 0 2px var(--rdg-selection-color);
-  }
 `;
 
 const headerRowClassname = `rdg-header-row ${headerRow}`;
