@@ -189,8 +189,6 @@ A number defining the height of summary rows.
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
 
-###### `onSelectedCellChange?: Maybe<(position: Position) => void>`
-
 ###### `cellNavigationMode?: Maybe<CellNavigationMode>`
 
 ###### `enableVirtualization?: Maybe<boolean>`
@@ -218,8 +216,6 @@ function MyGrid() {
 :warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
 
 ###### `noRowsFallback?: React.ReactNode`
-
-###### `editorPortalTarget?: Maybe<Element>`
 
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
 

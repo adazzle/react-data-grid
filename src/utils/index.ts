@@ -24,10 +24,8 @@ export function getCellStyle<R, SR>(
 ): React.CSSProperties {
   return {
     gridColumnStart: column.idx + 1,
-    // @ts-expect-error
     gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
-    // @ts-expect-error
-    left: column.frozen ? `var(--frozen-left-${column.idx})` : undefined
+    left: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
   };
 }
 

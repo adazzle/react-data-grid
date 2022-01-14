@@ -38,7 +38,6 @@ export function DraggableHeaderRenderer<R>({
   return (
     <div
       ref={useCombinedRefs(drag, drop)}
-      // @ts-expect-error
       style={{
         opacity: isDragging ? 0.5 : 1,
         backgroundColor: isOver ? '#ececec' : undefined,

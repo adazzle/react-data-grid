@@ -10,14 +10,14 @@ const textEditor = css`
   padding: 0px 6px 0 6px;
   border: 2px solid #ccc;
   vertical-align: top;
-  color: var(--color);
-  background-color: var(--background-color);
+  color: var(--rdg-color);
+  background-color: var(--rdg-background-color);
 
   font-family: inherit;
-  font-size: var(--font-size);
+  font-size: var(--rdg-font-size);
 
   &:focus {
-    border-color: var(--selection-color);
+    border-color: var(--rdg-selection-color);
     outline: none;
   }
 
