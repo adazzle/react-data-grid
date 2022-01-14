@@ -5,7 +5,7 @@ import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
 
-const summaryCellClassname = css`
+export const summaryCellClassname = css`
   top: var(--rdg-summary-row-top);
   bottom: var(--rdg-summary-row-bottom);
 `;
