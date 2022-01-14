@@ -83,7 +83,7 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-sonarjs": "^0.11.0",
-    "faker": "^5.5.3",
+    "faker": "^6.6.6",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.4.7",
     "jspdf": "^2.5.0",
