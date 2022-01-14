@@ -36,6 +36,7 @@ const darkTheme = `
 const root = css`
   ${lightTheme}
   --rdg-selection-color: #66afe9;
+  --rdg-frozen-cell-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
   --rdg-font-size: 14px;
 
   display: grid;
