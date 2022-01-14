@@ -9,7 +9,7 @@
       }
     ],
     ["@babel/react", { "runtime": "automatic" }],
-    "@babel/typescript",
+    ["@babel/typescript", { "optimizeConstEnums": true }],
     "@linaria"
   ],
   "plugins": [
