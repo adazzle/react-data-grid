@@ -124,7 +124,7 @@ export default function MasterDetail() {
       rows={rows}
       onRowsChange={onRowsChange}
       headerRowHeight={45}
-      rowHeight={(args) => (args.type === 'ROW' && args.row.type === 'DETAIL' ? 300 : 45)}
+      rowHeight={(args) => (args.row.type === 'DETAIL' ? 300 : 45)}
       className="fill-grid"
       enableVirtualization={false}
     />
