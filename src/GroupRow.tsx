@@ -14,6 +14,7 @@ import {
   useGroupApi,
   useRovingRowRef
 } from './hooks';
+import { isCtrlKeyHeldDown } from './utils';
 
 const groupRow = css`
   &:not([aria-selected='true']) {
@@ -113,6 +114,10 @@ function GroupedRow<R, SR>({
         event.stopPropagation();
         selectCell(parentRow, -1);
       }
+    }
+
+    if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
+      event.stopPropagation();
     }
   };
 

@@ -8,7 +8,6 @@ import type {
   CalculatedColumn,
   Column,
   RowsChangeData,
-  PasteEvent,
   RowHeightArgs,
   Maybe,
   GroupRow,
@@ -48,7 +47,6 @@ function TreeDataGrid<R, SR, K extends Key>(
     rowRenderer,
     rowKeyGetter: rawRowKeyGetter,
     onRowsChange: rawOnRowsChange,
-    onPaste: rawOnPaste,
     selectedRows,
     onSelectedRowsChange,
     groupBy: rawGroupBy,
@@ -204,27 +202,23 @@ function TreeDataGrid<R, SR, K extends Key>(
 
   const onRowsChange =
     typeof rawOnRowsChange === 'function'
-      ? (rows: (R | GroupRow<R>)[], { indexes, column }: RowsChangeData<R | GroupRow<R>, SR>) => {
-          const rawIndexes = indexes.map((index) => rawRows.indexOf(rows[index] as R));
-          rawOnRowsChange(rows as R[], {
+      ? (
+          updatedRows: (R | GroupRow<R>)[],
+          { indexes, column }: RowsChangeData<R | GroupRow<R>, SR>
+        ) => {
+          const updatedRawRows = [...rawRows];
+          const rawIndexes: number[] = [];
+          indexes.forEach((index) => {
+            const rawIndex = rawRows.indexOf(rows[index] as R);
+            updatedRawRows[rawIndex] = updatedRows[index] as R;
+            rawIndexes.push(rawIndex);
+          });
+          rawOnRowsChange(updatedRawRows, {
             indexes: rawIndexes,
             column: column as CalculatedColumn<R, SR>
           });
         }
       : rawOnRowsChange;
-
-  const onPaste = useMemo(() => {
-    if (typeof rawOnPaste === 'function') {
-      return ({ sourceRow, targetRow, ...rest }: PasteEvent<R | GroupRow<R>>) => {
-        if (isGroupRow(sourceRow) || isGroupRow(targetRow)) {
-          throw new Error('onPaste is not supported on a group row');
-        }
-        return rawOnPaste({ sourceRow, targetRow, ...rest });
-      };
-    }
-
-    return rawOnPaste;
-  }, [isGroupRow, rawOnPaste]);
 
   const getParentRow = useCallback(
     (row: GroupRow<R>) => {
@@ -299,7 +293,6 @@ function TreeDataGrid<R, SR, K extends Key>(
         onRowsChange={onRowsChange}
         selectedRows={selectedRows}
         onSelectedRowsChange={onSelectedRowsChange}
-        onPaste={onPaste}
         rowRenderer={GroupedRowRenderer}
       />
     </GroupApiProvider>
