@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "7.0.0-beta.7",
+  "version": "7.0.0-beta.7-av1",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
   "keywords": [
@@ -38,7 +38,8 @@
     "prettier:format": "prettier --write .",
     "typecheck": "tsc -p tsconfig.all.json",
     "prepublishOnly": "npm install && npm run build && npm run build:types",
-    "postpublish": "git push --follow-tags origin HEAD"
+    "postpublish": "git push --follow-tags origin HEAD",
+    "dist":"mkdir dist; cp -f package.json -r LICENSE README.md lib/ dist/"
   },
   "dependencies": {
     "clsx": "^1.1.1"

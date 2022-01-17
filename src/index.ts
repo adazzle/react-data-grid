@@ -1,5 +1,5 @@
 export { default } from './DataGrid';
-export type {  DataGridHandle } from './DataGrid';
+export type {  DataGridHandle } from './DataGridHandle';
 export type {  DataGridProps } from './DataGridProps';
 export { RowWithRef as Row } from './Row';
 export * from './Columns';

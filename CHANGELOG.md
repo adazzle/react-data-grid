@@ -1,5 +1,27 @@
 # Changelog
 
+## v7.0.0-av1
+AV:DataGrid, DataGridHandle: added method ::forceUpdate() to update visible rows when row content changed.
+AV:DataGrid: fixed viewport height and scroll.
+
+## v7.0.0-av
+
+
+- AV: refactored EditCell, props, layout to use instead of SlickGrid. New rule: only AppCode can change data rows.
+- AV: Header: Refactored  layout to Header/Viewport, added scroll synchronization viewport to Header. Because position:sticky work wrong. And scroll position does not correspond to outer components. (when required scroll sync)
+- AV: extracted Prop classes to single files. (It's good C++ way header+implementaton)
+- AV: added experiment with ClassComponent for Cell - CellClass. it more simplified code but same performance.
+- AV: added extra DataGridProps: onBeforeEditCell, onBeforeCellEditorDestroy, onContextMenu, onHeaderContextMenu, onKeyDown - required for us and implemented in Slick.Grid.
+- AV: added extra methods to DataGridHandle: updateRow(), inEditor(), forceUpdate()
+- AV: fixed keyboard behaviour:  ask client-code for processing keys, skip default behaviour on when modification keys is active
+- AV: Editor: changed editor behaviour, added interface ICanCommit to work with statefull editor. Editor can commit change or not. But Editor MUST NOT change row directly and 'by-design'. Editor can change row only after ::commit().
+- AV: Header: every header must have @title. because caption can be bigger than cel size.
+- AV: DataGrid: introduced 'props' variable because copy-paste (Props/local) is not good idea.
+- AV: DataGrid: Added caching check for rows.length - Every time copying rows array is not good idea to update components. Because User can loaded 2000-5000 items. But we have changed only 1-2 rows.
+- AV: DataGrid: changed onRowUpdated() behaviour: sent only updated rows , User have self own unchanged rows.  Added argument:'previousRow' - because we need make diff of changes. Original row we recive from Editor or location.
+- AV: added ContextMenu handlers.
+
+
 ## v7.0.0-canary.48
 
 - Fixed an edge case where clicking outside the grid wouldn't close and commit an open editor quickly enough, resulting in the previous rows state being used by parent components in `click` handlers. ([PR](https://github.com/adazzle/react-data-grid/pull/2415))

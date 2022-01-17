@@ -299,6 +299,13 @@ function DataGrid<R, SR, K extends Key>(gridProps: DataGridProps<R, SR, K>,
         },
         inEditor(){
             return editorRef.current !== null
+        },
+        forceUpdate(){
+            //discard memo for row.
+            rowRefs.current.forEach((rowRef)=>{
+                if  (!rowRef) return;
+                rowRef.current?.updateRow();
+            });
         }
     }));
 
@@ -859,6 +866,9 @@ function DataGrid<R, SR, K extends Key>(gridProps: DataGridProps<R, SR, K>,
                 ? rowOverscanEndIdx + 1
                 : rowOverscanEndIdx;
 
+        //row refs mst contain only rendered rows
+        rowRefs.current = [];
+
         for (let viewportRowIdx = startRowIdx; viewportRowIdx <= endRowIdx; viewportRowIdx++) {
             const isRowOutsideViewport =
                 viewportRowIdx === rowOverscanStartIdx - 1 || viewportRowIdx === rowOverscanEndIdx + 1;
@@ -972,7 +982,8 @@ function DataGrid<R, SR, K extends Key>(gridProps: DataGridProps<R, SR, K>,
         setDraggedOverRowIdx(undefined);
     }
 
-    const scrollerMaxHeight = max(totalRowHeight, clientHeight);
+    const scrollbarHeight = 15;
+    const scrollerMaxHeight = max(totalRowHeight, clientHeight-scrollbarHeight);
     return (
         <div
             role={hasGroups ? 'treegrid' : 'grid'}
@@ -1021,7 +1032,7 @@ function DataGrid<R, SR, K extends Key>(gridProps: DataGridProps<R, SR, K>,
                          ref={viewportRef}
                          onScroll={handleScroll}
                          style={{position:"relative",
-                             height:clientHeight- headerRowHeight, overflow:"scroll",
+                             height:clientHeight, overflow:"auto",
                              width: gridWidth,
                              top:headerRowHeight
                          }}>
