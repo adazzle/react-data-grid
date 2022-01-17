@@ -1,10 +1,10 @@
 import { createContext, useContext } from 'react';
-import type { GroupRow, Maybe, RowRendererProps } from '../types';
+import type { GroupRow, Maybe, RowRendererProps, SelectRowEvent } from '../types';
 
 export interface GroupApi<R, SR> {
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
   toggleGroup: (expandedGroupId: unknown) => void;
-  toggleGroupSelection: (row: GroupRow<R>, checked: boolean) => void;
+  toggleGroupSelection: (selectRowEvent: SelectRowEvent<GroupRow<R>>) => void;
   getParentRow: (row: GroupRow<R>) => GroupRow<R> | undefined;
   rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R | GroupRow<R>, SR>>>;
 }

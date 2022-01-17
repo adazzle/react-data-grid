@@ -8,7 +8,12 @@ import { SELECT_COLUMN_KEY } from './Columns';
 import { RowWithRef } from './Row';
 import GroupCell from './GroupCell';
 import type { GroupRow, RowRendererProps } from './types';
-import { RowSelectionProvider, useGroupApi, useRovingRowRef } from './hooks';
+import {
+  RowSelectionChangeProvider,
+  RowSelectionProvider,
+  useGroupApi,
+  useRovingRowRef
+} from './hooks';
 
 const groupRow = css`
   &:not([aria-selected='true']) {
@@ -47,7 +52,10 @@ function GroupedRow<R, SR>({
   ...props
 }: RowRendererProps<R | GroupRow<R>, SR>) {
   const { ref, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
-  const { isGroupRow, toggleGroup, getParentRow, rowRenderer } = useGroupApi<R, SR>()!;
+  const { isGroupRow, toggleGroup, getParentRow, toggleGroupSelection, rowRenderer } = useGroupApi<
+    R,
+    SR
+  >()!;
   const RowRenderer = rowRenderer ?? RowWithRef;
 
   className = clsx(className, rovingClassName);
@@ -113,49 +121,51 @@ function GroupedRow<R, SR>({
   };
 
   return (
-    <RowSelectionProvider value={false}>
-      <div
-        role="row"
-        aria-rowindex={row.startRowIndex + 2}
-        aria-level={row.level + 1} // aria-level is 1-based
-        aria-setsize={row.setSize}
-        aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
-        aria-expanded={row.isExpanded}
-        key={row.id}
-        ref={ref}
-        tabIndex={tabIndex}
-        className={clsx(
-          rowClassname,
-          groupRowClassname,
-          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-          className
-        )}
-        onClick={handleSelectGroup}
-        onKeyDown={handleKeyDown}
-        style={
-          {
-            top,
-            '--rdg-row-height': `${height}px`
-          } as unknown as CSSProperties
-        }
-        {...props}
-      >
-        {viewportColumns.map((column) => (
-          <GroupCell
-            key={column.key}
-            id={row.id}
-            groupKey={row.groupKey}
-            childRows={row.childRows}
-            isExpanded={row.isExpanded}
-            isCellSelected={selectedCellIdx === column.idx}
-            column={column}
-            row={row}
-            groupColumnIndex={idx}
-            toggleGroup={toggleGroup}
-          />
-        ))}
-      </div>
-    </RowSelectionProvider>
+    <RowSelectionChangeProvider value={toggleGroupSelection}>
+      <RowSelectionProvider value={false}>
+        <div
+          role="row"
+          aria-rowindex={row.startRowIndex + 2}
+          aria-level={row.level + 1} // aria-level is 1-based
+          aria-setsize={row.setSize}
+          aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
+          aria-expanded={row.isExpanded}
+          key={row.id}
+          ref={ref}
+          tabIndex={tabIndex}
+          className={clsx(
+            rowClassname,
+            groupRowClassname,
+            `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+            className
+          )}
+          onClick={handleSelectGroup}
+          onKeyDown={handleKeyDown}
+          style={
+            {
+              top,
+              '--rdg-row-height': `${height}px`
+            } as unknown as CSSProperties
+          }
+          {...props}
+        >
+          {viewportColumns.map((column) => (
+            <GroupCell
+              key={column.key}
+              id={row.id}
+              groupKey={row.groupKey}
+              childRows={row.childRows}
+              isExpanded={row.isExpanded}
+              isCellSelected={selectedCellIdx === column.idx}
+              column={column}
+              row={row}
+              groupColumnIndex={idx}
+              toggleGroup={toggleGroup}
+            />
+          ))}
+        </div>
+      </RowSelectionProvider>
+    </RowSelectionChangeProvider>
   );
 }
 
