@@ -2,11 +2,10 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, row, rowClassname } from './style';
+import { cell, row, rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
-import { useRovingRowRef } from './hooks';
 
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
@@ -48,7 +47,6 @@ function SummaryRow<R, SR>({
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
-  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
   const cells = [];
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
@@ -75,14 +73,14 @@ function SummaryRow<R, SR>({
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      ref={ref}
-      tabIndex={tabIndex}
       className={clsx(
         rowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
         { [summaryRowBorderClassname]: rowIdx === 0 },
-        className
+        {
+          [rowSelectedClassname]: selectedCellIdx === -1
+        }
       )}
       style={
         {
