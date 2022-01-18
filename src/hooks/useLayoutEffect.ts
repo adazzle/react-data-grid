@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-restricted-imports
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { useEffect, useLayoutEffect as useOriginalLayoutEffect } from 'react';
 
 // Silence silly warning

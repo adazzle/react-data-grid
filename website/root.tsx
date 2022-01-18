@@ -138,9 +138,7 @@ function Root() {
           <Route exact path="/variable-row-height">
             <VariableRowHeight />
           </Route>
-          <Route>
-            <>Nothing to see here</>
-          </Route>
+          <Route>Nothing to see here</Route>
         </Switch>
       </main>
     </Router>
