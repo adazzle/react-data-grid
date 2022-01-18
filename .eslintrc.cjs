@@ -110,7 +110,7 @@ const rules = {
   'no-script-url': 2,
   'no-self-assign': 2,
   'no-self-compare': 2,
-  'no-sequences': 2,
+  'no-sequences': [2, { allowInParentheses: false }],
   'no-throw-literal': 0, // replaced by @typescript-eslint/no-throw-literal
   'no-unmodified-loop-condition': 2,
   'no-unused-expressions': 0, // replaced by @typescript-eslint/no-unused-expressions
@@ -142,7 +142,13 @@ const rules = {
   'init-declarations': 0, // replaced by @typescript-eslint/init-declarations
   'no-delete-var': 2,
   'no-label-var': 2,
-  'no-restricted-globals': 0,
+  'no-restricted-globals': [
+    2,
+    {
+      name: 'Omit',
+      message: 'Use Omit from types instead.'
+    }
+  ],
   'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
   'no-shadow-restricted-names': 2,
   'no-undef': 0,
@@ -226,7 +232,7 @@ const rules = {
   'operator-assignment': 1,
   'operator-linebreak': [1, 'before', { overrides: { '=': 'after' } }],
   'padded-blocks': [1, 'never'],
-  'padding-line-between-statements': 0,
+  'padding-line-between-statements': 0, // replaced by @typescript-eslint/padding-line-between-statements
   'prefer-exponentiation-operator': 1,
   'prefer-object-spread': 1,
   'quote-props': [1, 'as-needed'],
@@ -258,31 +264,10 @@ const rules = {
   'no-confusing-arrow': 0,
   'no-const-assign': 0,
   'no-dupe-class-members': 0, // replaced by @typescript-eslint/no-dupe-class-members
-  'no-duplicate-imports': 0, // replace by @typescript-eslint/no-duplicate-imports
+  'no-duplicate-imports': 0, // replaced by @typescript-eslint/no-duplicate-imports
   'no-new-symbol': 0,
   'no-restricted-exports': 0,
-  'no-restricted-imports': [
-    1,
-    {
-      paths: [
-        {
-          name: 'react',
-          importNames: ['default'],
-          message: 'Use named imports instead.'
-        },
-        {
-          name: 'react',
-          importNames: ['useLayoutEffect'],
-          message: 'Use the override from src/hooks instead.'
-        },
-        {
-          name: 'react-dom',
-          importNames: ['default'],
-          message: 'Use named imports instead.'
-        }
-      ]
-    }
-  ],
+  'no-restricted-imports': 0, // replaced by @typescript-eslint/no-restricted-imports
   'no-this-before-super': 0,
   'no-useless-computed-key': [1, { enforceForClassMembers: true }],
   'no-useless-constructor': 0, // replaced by @typescript-eslint/no-useless-constructor
@@ -290,7 +275,7 @@ const rules = {
   'no-var': 2,
   'object-shorthand': [1, 'always', { avoidExplicitReturnArrows: true }],
   'prefer-arrow-callback': 0,
-  'prefer-const': 1,
+  'prefer-const': [1, { destructuring: 'all' }],
   'prefer-destructuring': [1, { array: false, object: true }],
   'prefer-numeric-literals': 1,
   'prefer-rest-params': 2,
@@ -329,6 +314,7 @@ const rules = {
   'react/no-find-dom-node': 0,
   'react/no-is-mounted': 2,
   'react/no-multi-comp': 0,
+  'react/no-namespace': 0,
   'react/no-redundant-should-component-update': 2,
   'react/no-render-return-value': 0,
   'react/no-set-state': 0,
@@ -338,10 +324,12 @@ const rules = {
   'react/no-unescaped-entities': 0,
   'react/no-unknown-property': 2,
   'react/no-unsafe': 2,
+  'react/no-unstable-nested-components': 0,
   'react/no-unused-prop-types': 0,
   'react/no-unused-state': 0,
   'react/no-will-update-set-state': 2,
   'react/prefer-es6-class': 2,
+  'react/prefer-exact-props': 0,
   'react/prefer-read-only-props': 0,
   'react/prefer-stateless-function': 0,
   'react/prop-types': 0,
@@ -385,7 +373,7 @@ const rules = {
   'react/jsx-no-script-url': 2,
   'react/jsx-no-target-blank': 0,
   'react/jsx-no-undef': 0,
-  'react/jsx-no-useless-fragment': 0, // TODO: https://github.com/microsoft/TypeScript/issues/21699
+  'react/jsx-no-useless-fragment': [1, { allowExpressions: true }], // TODO: https://github.com/microsoft/TypeScript/issues/21699
   'react/jsx-one-expression-per-line': 0,
   'react/jsx-pascal-case': 1,
   'react/jsx-props-no-multi-spaces': 1,
@@ -424,7 +412,7 @@ const rules = {
   // https://github.com/jest-community/eslint-plugin-jest#rules
   'jest/consistent-test-it': 1,
   'jest/expect-expect': 0,
-  'jest/lowercase-name': 0,
+  'jest/max-nested-describe': 0,
   'jest/no-alias-methods': 1,
   'jest/no-commented-out-tests': 1,
   'jest/no-conditional-expect': 1,
@@ -454,17 +442,19 @@ const rules = {
   'jest/no-test-return-statement': 0,
   'jest/prefer-called-with': 0,
   'jest/prefer-expect-assertions': 0,
+  'jest/prefer-expect-resolves': 0,
   'jest/prefer-hooks-on-top': 0,
+  'jest/prefer-lowercase-title': 0,
   'jest/prefer-spy-on': 2,
   'jest/prefer-strict-equal': 1,
-  'jest/prefer-to-be-null': 1,
-  'jest/prefer-to-be-undefined': 1,
+  'jest/prefer-to-be': 1,
   'jest/prefer-to-contain': 1,
   'jest/prefer-to-have-length': 1,
   'jest/prefer-todo': 1,
+  'jest/require-hook': 0,
   'jest/require-to-throw-message': 0,
   'jest/require-top-level-describe': 0,
-  'jest/valid-describe': 2,
+  'jest/valid-describe-callback': 1,
   'jest/valid-expect': [1, { alwaysAwait: true }],
   'jest/valid-expect-in-promise': 1,
   'jest/valid-title': 2,
@@ -486,19 +476,26 @@ const rules = {
   // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
   'sonarjs/no-all-duplicated-branches': 2,
   'sonarjs/no-element-overwrite': 2,
+  'sonarjs/no-empty-collection': 2,
   'sonarjs/no-extra-arguments': 0,
   'sonarjs/no-identical-conditions': 2,
   'sonarjs/no-identical-expressions': 2,
+  'sonarjs/no-ignored-return': 2,
   'sonarjs/no-one-iteration-loop': 2,
   'sonarjs/no-use-of-empty-return-value': 2,
+  'sonarjs/non-existent-operator': 1,
   'sonarjs/cognitive-complexity': 0,
+  'sonarjs/elseif-without-else': 0,
   'sonarjs/max-switch-cases': 0,
   'sonarjs/no-collapsible-if': 1,
   'sonarjs/no-collection-size-mischeck': 1,
   'sonarjs/no-duplicate-string': 0,
   'sonarjs/no-duplicated-branches': 1,
+  'sonarjs/no-gratuitous-expressions': 1,
   'sonarjs/no-identical-functions': 1,
   'sonarjs/no-inverted-boolean-check': 1,
+  'sonarjs/no-nested-switch': 1,
+  'sonarjs/no-nested-template-literals': 1,
   'sonarjs/no-redundant-boolean': 1,
   'sonarjs/no-redundant-jump': 1,
   'sonarjs/no-same-line-conditional': 1,
@@ -525,6 +522,7 @@ const rules = {
     { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }
   ],
   '@typescript-eslint/consistent-type-definitions': [1, 'interface'],
+  '@typescript-eslint/consistent-type-exports': 0,
   '@typescript-eslint/consistent-type-imports': 1,
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
@@ -557,12 +555,13 @@ const rules = {
   '@typescript-eslint/no-extraneous-class': 2,
   '@typescript-eslint/no-floating-promises': 0,
   '@typescript-eslint/no-for-in-array': 1,
-  '@typescript-eslint/no-implicit-any-catch': 1,
   '@typescript-eslint/no-inferrable-types': 1,
   '@typescript-eslint/no-invalid-void-type': 1,
+  '@typescript-eslint/no-meaningless-void-operator': 0,
   '@typescript-eslint/no-misused-new': 2,
   '@typescript-eslint/no-misused-promises': 0,
   '@typescript-eslint/no-namespace': 2,
+  '@typescript-eslint/no-non-null-asserted-nullish-coalescing': 1,
   '@typescript-eslint/no-non-null-asserted-optional-chain': 1,
   '@typescript-eslint/no-non-null-assertion': 0,
   '@typescript-eslint/no-parameter-properties': 0,
@@ -575,6 +574,7 @@ const rules = {
   '@typescript-eslint/no-unnecessary-type-arguments': 1,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
   '@typescript-eslint/no-unnecessary-type-constraint': 1,
+  '@typescript-eslint/no-unsafe-argument': 0,
   '@typescript-eslint/no-unsafe-assignment': 0,
   '@typescript-eslint/no-unsafe-call': 0,
   '@typescript-eslint/no-unsafe-member-access': 0,
@@ -600,6 +600,7 @@ const rules = {
   '@typescript-eslint/prefer-readonly-parameter-types': 0,
   '@typescript-eslint/prefer-reduce-type-parameter': 1,
   '@typescript-eslint/prefer-regexp-exec': 1,
+  '@typescript-eslint/prefer-return-this-type': 0,
   '@typescript-eslint/prefer-string-starts-ends-with': 1,
   '@typescript-eslint/prefer-ts-expect-error': 1,
   '@typescript-eslint/promise-function-async': 0,
@@ -650,6 +651,28 @@ const rules = {
   '@typescript-eslint/no-loss-of-precision': 2,
   '@typescript-eslint/no-magic-numbers': 0,
   '@typescript-eslint/no-redeclare': 2,
+  '@typescript-eslint/no-restricted-imports': [
+    1,
+    {
+      paths: [
+        {
+          name: 'react',
+          importNames: ['default'],
+          message: 'Use named imports instead.'
+        },
+        {
+          name: 'react',
+          importNames: ['useLayoutEffect'],
+          message: 'Use the override from src/hooks instead.'
+        },
+        {
+          name: 'react-dom',
+          importNames: ['default'],
+          message: 'Use named imports instead.'
+        }
+      ]
+    }
+  ],
   '@typescript-eslint/no-shadow': 0,
   '@typescript-eslint/no-throw-literal': 2,
   '@typescript-eslint/no-unused-expressions': [
@@ -660,9 +683,10 @@ const rules = {
   '@typescript-eslint/no-use-before-define': 0,
   '@typescript-eslint/no-useless-constructor': 1,
   '@typescript-eslint/object-curly-spacing': [1, 'always'],
+  '@typescript-eslint/padding-line-between-statements': 0,
   '@typescript-eslint/quotes': [1, 'single', { avoidEscape: true }],
-  '@typescript-eslint/require-await': 2,
-  '@typescript-eslint/return-await': 2,
+  '@typescript-eslint/require-await': 0,
+  '@typescript-eslint/return-await': 0,
   '@typescript-eslint/semi': 1,
   '@typescript-eslint/space-before-function-paren': [
     1,
