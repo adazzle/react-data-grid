@@ -244,6 +244,7 @@ function DataGrid<R, SR, K extends Key>(
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
+  const rowRef = useRef<HTMLDivElement>(null);
 
   /**
    * computed values
@@ -371,6 +372,10 @@ function DataGrid<R, SR, K extends Key>(
 
     prevSelectedPosition.current = selectedPosition;
     scrollToCell(selectedPosition);
+
+    if (selectedPosition.idx === -1) {
+      rowRef.current!.focus({ preventScroll: true });
+    }
   });
 
   useImperativeHandle(ref, () => ({
@@ -485,7 +490,7 @@ function DataGrid<R, SR, K extends Key>(
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
-    const isRowEvent = hasGroups && event.target.matches('.rdg-row, .rdg-header-row');
+    const isRowEvent = hasGroups && event.target === rowRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
@@ -1067,6 +1072,20 @@ function DataGrid<R, SR, K extends Key>(
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
+      {/* extra div is needed for row navigation in a treegrid */}
+      {hasGroups && (
+        <div
+          ref={rowRef}
+          tabIndex={selectedPosition.idx === -1 ? 0 : -1}
+          style={{
+            gridColumnStart: 1,
+            gridRowStart: selectedPosition.rowIdx + 2,
+            position: 'sticky',
+            left: 0
+          }}
+          onKeyDown={handleKeyDown}
+        />
+      )}
       <HeaderRow
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
