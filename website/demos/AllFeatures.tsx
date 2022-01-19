@@ -198,20 +198,18 @@ export default function AllFeatures() {
   }
 
   return (
-    <>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        rowKeyGetter={rowKeyGetter}
-        onRowsChange={setRows}
-        onFill={handleFill}
-        onPaste={handlePaste}
-        rowHeight={30}
-        selectedRows={selectedRows}
-        onSelectedRowsChange={setSelectedRows}
-        className="fill-grid"
-        rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
-      />
-    </>
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      rowKeyGetter={rowKeyGetter}
+      onRowsChange={setRows}
+      onFill={handleFill}
+      onPaste={handlePaste}
+      rowHeight={30}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      className="fill-grid"
+      rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+    />
   );
 }
