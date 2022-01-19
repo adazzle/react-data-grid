@@ -1076,7 +1076,11 @@ function DataGrid<R, SR, K extends Key>(
       {hasGroups && (
         <div
           ref={rowRef}
-          tabIndex={selectedPosition.idx === -1 ? 0 : -1}
+          tabIndex={
+            selectedPosition.idx === minColIdx && selectedPosition.rowIdx !== initialPosition.rowIdx
+              ? 0
+              : -1
+          }
           style={{
             gridColumnStart: 1,
             gridRowStart: selectedPosition.rowIdx + 2,
@@ -1084,6 +1088,7 @@ function DataGrid<R, SR, K extends Key>(
             left: 0
           }}
           onKeyDown={handleKeyDown}
+          data-testid="focus-sink"
         />
       )}
       <HeaderRow
