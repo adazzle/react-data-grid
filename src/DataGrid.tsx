@@ -1076,11 +1076,7 @@ function DataGrid<R, SR, K extends Key>(
       {hasGroups && (
         <div
           ref={rowRef}
-          tabIndex={
-            selectedPosition.idx === minColIdx && selectedPosition.rowIdx !== initialPosition.rowIdx
-              ? 0
-              : -1
-          }
+          tabIndex={selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2 ? 0 : -1}
           style={{
             gridColumnStart: 1,
             gridRowStart: selectedPosition.rowIdx + 2,
