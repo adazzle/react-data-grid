@@ -136,6 +136,18 @@ export default function HeaderCell<R, SR>({
     selectCell(column.idx);
   }
 
+  function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    const { right } = event.currentTarget.getBoundingClientRect();
+    const offset = right - event.clientX;
+
+    if (offset > 11) {
+      // +1px to account for the border size
+      return;
+    }
+
+    onColumnResize(column, 'auto');
+  }
+
   function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
     onFocus(event);
     if (shouldFocusGrid) {
@@ -189,6 +201,7 @@ export default function HeaderCell<R, SR>({
       style={getCellStyle(column, colSpan)}
       onFocus={handleFocus}
       onClick={onClick}
+      onDoubleClick={onDoubleClick}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}
