@@ -972,7 +972,6 @@ function DataGrid<R, SR, K extends Key>(
             rowIdx={rowIdx}
             row={row}
             gridRowStart={gridRowStart}
-            height={getRowHeight(rowIdx)}
             level={row.level}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
@@ -1007,7 +1006,6 @@ function DataGrid<R, SR, K extends Key>(
           onRowDoubleClick={onRowDoubleClick}
           rowClass={rowClass}
           gridRowStart={gridRowStart}
-          height={getRowHeight(rowIdx)}
           copiedCellIdx={
             copiedCell !== null && copiedCell.row === row
               ? columns.findIndex((c) => c.key === copiedCell.columnKey)
@@ -1056,9 +1054,7 @@ function DataGrid<R, SR, K extends Key>(
         {
           ...style,
           gridTemplateRows: templateRows,
-          '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-row-width': `${totalColumnWidth}px`,
-          '--rdg-summary-row-height': `${summaryRowHeight}px`,
           '--rdg-grid-height': `${
             max(totalRowHeight, clientHeight) +
             headerRowHeight +

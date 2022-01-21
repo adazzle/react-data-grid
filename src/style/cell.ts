@@ -7,6 +7,9 @@ export const cell = css`
   border-right: 1px solid var(--rdg-border-color);
   border-bottom: 1px solid var(--rdg-border-color);
   grid-row-start: var(--rdg-grid-row-start);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: inherit;
 
   white-space: nowrap;

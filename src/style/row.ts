@@ -4,7 +4,6 @@ import { cell, cellFrozenLast } from '../style';
 
 export const row = css`
   display: contents;
-  line-height: var(--rdg-row-height);
   background-color: var(--rdg-background-color);
 
   &:hover {

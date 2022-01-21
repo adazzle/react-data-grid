@@ -22,15 +22,11 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
 
 test('rowHeight is number', () => {
   setupGrid(40);
-
-  const rows = getRows();
-  expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });
-  expect(rows[1]).toHaveStyle({ '--rdg-row-height': '40px' });
-  expect(rows[2]).toHaveStyle({ '--rdg-row-height': '40px' });
+  const grid = screen.getByRole('grid');
+  expect(grid).toHaveStyle({ 'grid-template-rows': '40px repeat(50, 40px)' });
   expect(getRows()).toHaveLength(31);
 
   userEvent.tab();
-  const grid = screen.getByRole('grid');
   expect(grid.scrollTop).toBe(0);
 
   // Go to the last cell
@@ -42,15 +38,14 @@ test('rowHeight is number', () => {
 test('rowHeight is function', () => {
   setupGrid((args) => (args.type === 'ROW' ? [40, 60, 80][args.row % 3] : 40));
 
-  const rows = getRows();
-  expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });
-  expect(rows[1]).toHaveStyle({ '--rdg-row-height': '60px' });
-  expect(rows[2]).toHaveStyle({ '--rdg-row-height': '80px' });
-  expect(rows[3]).toHaveStyle({ '--rdg-row-height': '40px' });
-  expect(rows).toHaveLength(22);
+  const grid = screen.getByRole('grid');
+  expect(grid).toHaveStyle({
+    'grid-template-rows':
+      '35px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'
+  });
+  expect(getRows()).toHaveLength(22);
 
   userEvent.tab();
-  const grid = screen.getByRole('grid');
   expect(grid.scrollTop).toBe(0);
 
   // Go to the last cell
