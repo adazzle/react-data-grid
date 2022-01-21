@@ -9,8 +9,9 @@ import {
 } from 'react';
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
+import 'simplebar/dist/simplebar.min.css';
 
-import { rootClassname, viewportDraggingClassname } from './style';
+import { rootClassname, viewportDraggingClassname, wrapperClassname } from './style';
 import {
   useLayoutEffect,
   useGridDimensions,
@@ -53,6 +54,7 @@ import type {
   RowHeightArgs,
   Maybe
 } from './types';
+import SimpleBar from 'simplebar-react';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -1089,15 +1091,14 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   return (
-    <div
-      role={hasGroups ? 'treegrid' : 'grid'}
+    <SimpleBar
+      autoHide={false}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       aria-describedby={ariaDescribedBy}
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
       style={
         {
           ...style,
@@ -1107,9 +1108,14 @@ function DataGrid<R, SR, K extends Key>(
           ...layoutCssVars
         } as unknown as React.CSSProperties
       }
-      ref={gridRef}
-      onScroll={handleScroll}
-      onKeyDown={handleKeyDown}
+      className={wrapperClassname}
+      scrollableNodeProps={{
+        ref: gridRef,
+        onScroll: handleScroll,
+        onKeyDown: handleKeyDown,
+        role: hasGroups ? 'treegrid' : 'grid',
+        className: clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)
+      }}
       data-testid={testId}
     >
       <HeaderRow
@@ -1151,7 +1157,7 @@ function DataGrid<R, SR, K extends Key>(
           })}
         </>
       )}
-    </div>
+    </SimpleBar>
   );
 }
 

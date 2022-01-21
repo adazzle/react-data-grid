@@ -29,40 +29,46 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'id',
     name: 'ID',
-    width: 80
+    width: 56
   },
   {
     key: 'task',
     name: 'Title',
-    editor: TextEditor
+    editor: TextEditor,
+    width: 500
   },
   {
     key: 'priority',
-    name: 'Priority'
+    name: 'Priority',
+    width: 500
   },
   {
     key: 'issueType',
-    name: 'Issue Type'
+    name: 'Issue Type',
+    width: 500
   },
   {
     key: 'complete',
-    name: '% Complete'
+    name: '% Complete',
+    width: 500
   }
 ];
-
-const hideRows = [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50];
 
 export default function RowsReordering() {
   const [rows, setRows] = useState(createRows);
 
   return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      onRowsChange={setRows}
-      hideRows={hideRows}
-      enableVirtualization={false}
-      cellNavigationMode="CHANGE_ROW"
-    />
+    <div
+      style={{
+        padding: 32
+      }}
+    >
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        onRowsChange={setRows}
+        cellNavigationMode="CHANGE_ROW"
+      />
+    </div>
   );
 }
