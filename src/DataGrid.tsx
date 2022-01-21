@@ -144,6 +144,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
+  /** Called when a column resizing is ended */
+  onColumnResizeEnd?: Maybe<(idx: number, width: number) => void>;
 
   /**
    * Toggles and modes
@@ -196,6 +198,7 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onScroll,
     onColumnResize,
+    onColumnResizeEnd,
     onFill,
     onPaste,
     // Toggles and modes
@@ -388,20 +391,31 @@ function DataGrid<R, SR, K extends Key>(
     selectCell
   }));
 
+  const handleColumnWidh = useCallback((column: CalculatedColumn<R, SR>, width: number) => {
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(column.key, width);
+      return newColumnWidths;
+    });
+  }, []);
+
   /**
    * callbacks
    */
   const handleColumnResize = useCallback(
     (column: CalculatedColumn<R, SR>, width: number) => {
-      setColumnWidths((columnWidths) => {
-        const newColumnWidths = new Map(columnWidths);
-        newColumnWidths.set(column.key, width);
-        return newColumnWidths;
-      });
-
+      handleColumnWidh(column, width);
       onColumnResize?.(column.idx, width);
     },
-    [onColumnResize]
+    [onColumnResize, handleColumnWidh]
+  );
+
+  const handleColumnResizeEnd = useCallback(
+    (column: CalculatedColumn<R, SR>, width: number) => {
+      handleColumnWidh(column, width);
+      onColumnResizeEnd?.(column.idx, width);
+    },
+    [onColumnResizeEnd, handleColumnWidh]
   );
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
@@ -1055,6 +1069,7 @@ function DataGrid<R, SR, K extends Key>(
       <HeaderRow
         columns={viewportColumns}
         onColumnResize={handleColumnResize}
+        onColumnResizeEnd={handleColumnResizeEnd}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={selectAllRowsLatest}
         sortColumns={sortColumns}
