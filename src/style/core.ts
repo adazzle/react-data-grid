@@ -45,7 +45,6 @@ const root = css`
   contain: strict;
   contain: size layout style paint;
   content-visibility: auto;
-  height: 350px;
   border: 1px solid var(--rdg-border-color);
   box-sizing: border-box;
   overflow: auto;
@@ -84,6 +83,10 @@ const root = css`
 `;
 
 export const rootClassname = `rdg ${root}`;
+
+export const wrapperClassname = css`
+  height: 350px;
+`;
 
 const viewportDragging = css`
   &.${row} {

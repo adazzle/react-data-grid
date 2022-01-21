@@ -19,7 +19,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
-          registry-url: 'https://npm.pkg.github.com'
       - name: Install
         run: npm install
       - id: get_version
@@ -27,10 +26,10 @@ jobs:
       - name: Update package.json version
         run: |
           npm version ${{ steps.get_version.outputs.version }} --no-git-tag-version
-      - name: Deploy to Private Package
+      - name: Deploy to NPM Package
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: slack - GitHub Actions Slack integration
         uses: act10ns/slack@v1.0.9
         with:
