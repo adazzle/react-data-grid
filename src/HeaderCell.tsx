@@ -201,7 +201,7 @@ export default function HeaderCell<R, SR>({
       style={getCellStyle(column, colSpan)}
       onFocus={handleFocus}
       onClick={onClick}
-      onDoubleClick={onDoubleClick}
+      onDoubleClick={column.resizable ? onDoubleClick : undefined}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       {getCell()}
