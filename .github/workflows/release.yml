@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
+          registry-url: 'https://registry.npmjs.org'
       - name: Install
         run: npm install
       - id: get_version
