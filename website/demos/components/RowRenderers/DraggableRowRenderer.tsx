@@ -4,7 +4,6 @@ import { css } from '@linaria/core';
 
 import { Row } from '../../../../src';
 import type { RowRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../../src/hooks';
 
 const rowDraggingClassname = css`
   opacity: 0.5;
@@ -51,7 +50,12 @@ export function DraggableRowRenderer<R, SR>({
 
   return (
     <Row
-      ref={useCombinedRefs(drag, drop)}
+      ref={(ref) => {
+        if (ref) {
+          drag(ref.firstElementChild);
+        }
+        drop(ref);
+      }}
       rowIdx={rowIdx}
       isRowSelected={isRowSelected}
       className={className}

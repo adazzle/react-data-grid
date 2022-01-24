@@ -78,6 +78,7 @@ const mainClassname = css`
   box-sizing: border-box;
   height: 100vh;
   padding: 8px;
+  overflow: hidden;
 `;
 
 function Root() {
@@ -139,9 +140,7 @@ function Root() {
           <Route exact path="/variable-row-height">
             <VariableRowHeight />
           </Route>
-          <Route>
-            <>Nothing to see here</>
-          </Route>
+          <Route>Nothing to see here</Route>
         </Switch>
       </main>
     </Router>

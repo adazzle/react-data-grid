@@ -1,15 +1,9 @@
 import { css } from '@linaria/core';
 
+import { cell, cellFrozenLast } from '../style';
+
 export const row = css`
-  contain: strict;
-  contain: size layout style paint;
-  display: grid;
-  grid-template-rows: var(--rdg-row-height);
-  grid-template-columns: var(--rdg-template-columns);
-  position: absolute;
-  left: 0;
-  width: var(--rdg-row-width);
-  height: var(--rdg-row-height); /* needed on Firefox */
+  display: contents;
   line-height: var(--rdg-row-height);
   background-color: var(--rdg-background-color);
 
@@ -27,3 +21,28 @@ export const row = css`
 `;
 
 export const rowClassname = `rdg-row ${row}`;
+
+const topBoxShadow = 'inset 0 2px 0 0 var(--rdg-selection-color)';
+const rightBoxShadow = 'inset -2px 0 0 0 var(--rdg-selection-color)';
+const bottomBoxShadow = 'inset 0 -2px 0 0 var(--rdg-selection-color)';
+const leftBoxShadow = 'inset 2px 0 0 0 var(--rdg-selection-color)';
+
+const rowSelected = css`
+  outline: none;
+
+  > .${cell} {
+    box-shadow: ${topBoxShadow}, ${bottomBoxShadow};
+    &:first-child {
+      box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${leftBoxShadow};
+    }
+    &:last-child {
+      box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${rightBoxShadow};
+    }
+  }
+
+  > .${cellFrozenLast} {
+    box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, var(--rdg-frozen-cell-box-shadow);
+  }
+`;
+
+export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
