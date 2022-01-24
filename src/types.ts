@@ -136,7 +136,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends SharedDiv
   draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
-  top: number;
+  gridRowStart: number;
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;

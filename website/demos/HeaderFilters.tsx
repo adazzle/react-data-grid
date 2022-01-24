@@ -190,21 +190,19 @@ export default function HeaderFilters() {
         headerRenderer: (p) => (
           <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
             {({ filters, ...rest }) => (
-              <>
-                <input
-                  {...rest}
-                  className={filterClassname}
-                  value={filters.developer}
-                  onChange={(e) =>
-                    setFilters({
-                      ...filters,
-                      developer: e.target.value
-                    })
-                  }
-                  onKeyDown={inputStopPropagation}
-                  list="developers"
-                />
-              </>
+              <input
+                {...rest}
+                className={filterClassname}
+                value={filters.developer}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    developer: e.target.value
+                  })
+                }
+                onKeyDown={inputStopPropagation}
+                list="developers"
+              />
             )}
           </FilterRenderer>
         )

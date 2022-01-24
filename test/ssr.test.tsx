@@ -24,7 +24,7 @@ function App() {
 
 test('basic server-side rendering (SSR) support', () => {
   // make sure we're not running in the JSDOM environment
-  expect(globalThis.window).not.toBeDefined();
+  expect(globalThis.window).toBeUndefined();
 
   const html = renderToString(<App />);
   expect(html).not.toHaveLength(0);
