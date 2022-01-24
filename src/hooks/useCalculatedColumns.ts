@@ -175,7 +175,7 @@ export function useCalculatedColumns<R, SR>({
     }
 
     const layoutCssVars: Record<string, string> = {
-      '--rdg-template-columns': templateColumns
+      gridTemplateColumns: templateColumns
     };
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {

@@ -1,17 +1,19 @@
 import { memo, forwardRef } from 'react';
-import type { RefAttributes, CSSProperties } from 'react';
+import type { RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
-import { RowSelectionProvider, useLatestFunc, useCombinedRefs, useRovingRowRef } from './hooks';
-import { getColSpan } from './utils';
-import { rowClassname } from './style';
+import { RowSelectionProvider, useLatestFunc } from './hooks';
+import { getColSpan, getRowStyle } from './utils';
+import { rowClassname, rowSelectedClassname } from './style';
 import type { RowRendererProps } from './types';
 
 function Row<R, SR>(
   {
     className,
     rowIdx,
+    gridRowStart,
+    height,
     selectedCellIdx,
     isRowSelected,
     copiedCellIdx,
@@ -26,16 +28,12 @@ function Row<R, SR>(
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
-    top,
-    height,
     onRowChange,
     selectCell,
     ...props
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
-  const { ref: rowRef, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
-
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
   });
@@ -48,7 +46,9 @@ function Row<R, SR>(
   className = clsx(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-    rovingClassName,
+    {
+      [rowSelectedClassname]: selectedCellIdx === -1
+    },
     rowClass?.(row),
     className
   );
@@ -91,16 +91,10 @@ function Row<R, SR>(
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
-        ref={useCombinedRefs(ref, rowRef)}
-        tabIndex={tabIndex}
+        ref={ref}
         className={className}
         onMouseEnter={handleDragEnter}
-        style={
-          {
-            top,
-            '--rdg-row-height': `${height}px`
-          } as unknown as CSSProperties
-        }
+        style={getRowStyle(gridRowStart, height)}
         {...props}
       >
         {cells}
@@ -109,8 +103,6 @@ function Row<R, SR>(
   );
 }
 
-export default memo(Row) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;
-
-export const RowWithRef = memo(forwardRef(Row)) as <R, SR>(
+export default memo(forwardRef(Row)) as <R, SR>(
   props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;

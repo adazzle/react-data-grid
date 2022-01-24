@@ -1,11 +1,13 @@
 import type { Column } from '../../src';
 import { setup, getCells } from '../utils';
-import { cellClassname } from '../../src/style';
+import { cellClassname as cellClass } from '../../src/style';
+import { summaryCellClassname } from '../../src/SummaryCell';
 
 interface SummaryRow {
   id: number;
 }
 
+const cellClassname = `${cellClass} ${summaryCellClassname}`;
 const summaryRows: readonly SummaryRow[] = [{ id: 0 }, { id: 1 }];
 
 test('summaryCellClass is undefined', () => {

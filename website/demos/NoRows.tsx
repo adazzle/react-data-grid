@@ -4,7 +4,7 @@ import type { Column } from '../../src';
 
 function EmptyRowsRenderer() {
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ textAlign: 'center', gridColumn: '1/-1' }}>
       Nothing to show{' '}
       <span lang="ja" title="ショボーン">
         (´・ω・`)

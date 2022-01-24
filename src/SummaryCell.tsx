@@ -1,8 +1,14 @@
 import { memo } from 'react';
+import { css } from '@linaria/core';
 
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
+
+export const summaryCellClassname = css`
+  top: var(--rdg-summary-row-top);
+  bottom: var(--rdg-summary-row-bottom);
+`;
 
 interface SharedCellRendererProps<R, SR>
   extends Pick<CellRendererProps<R, SR>, 'column' | 'colSpan' | 'isCellSelected'> {
@@ -24,6 +30,7 @@ function SummaryCell<R, SR>({
   const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
   const className = getCellClassname(
     column,
+    summaryCellClassname,
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
 

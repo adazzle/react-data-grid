@@ -114,10 +114,11 @@ export function useViewportRows<R>({
     }
   }, [expandedGroupIds, groupedRows, rawRows]);
 
-  const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
+  const { totalRowHeight, gridTemplateRows, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
       return {
         totalRowHeight: rowHeight * rows.length,
+        gridTemplateRows: ` repeat(${rows.length}, ${rowHeight}px)`,
         getRowTop: (rowIdx: number) => rowIdx * rowHeight,
         getRowHeight: () => rowHeight,
         findRowIdx: (offset: number) => floor(offset / rowHeight)
@@ -125,6 +126,7 @@ export function useViewportRows<R>({
     }
 
     let totalRowHeight = 0;
+    let gridTemplateRows = ' ';
     // Calcule the height of all the rows upfront. This can cause performance issues
     // and we can consider using a similar approach as react-window
     // https://github.com/bvaughn/react-window/blob/b0a470cc264e9100afcaa1b78ed59d88f7914ad4/src/VariableSizeList.js#L68
@@ -133,6 +135,7 @@ export function useViewportRows<R>({
         ? rowHeight({ type: 'GROUP', row })
         : rowHeight({ type: 'ROW', row });
       const position = { top: totalRowHeight, height: currentRowHeight };
+      gridTemplateRows += `${currentRowHeight}px `;
       totalRowHeight += currentRowHeight;
       return position;
     });
@@ -143,6 +146,7 @@ export function useViewportRows<R>({
 
     return {
       totalRowHeight,
+      gridTemplateRows,
       getRowTop: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].top,
       getRowHeight: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].height,
       findRowIdx(offset: number) {
@@ -184,6 +188,7 @@ export function useViewportRows<R>({
     rows,
     rowsCount,
     totalRowHeight,
+    gridTemplateRows,
     isGroupRow,
     getRowTop,
     getRowHeight,

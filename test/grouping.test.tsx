@@ -17,6 +17,7 @@ import {
 } from './utils';
 import userEvent from '@testing-library/user-event';
 import type { FillEvent, PasteEvent } from '../src/types';
+import { focusSinkClassname } from '../src/style';
 
 const rowSelectedClassname = 'rdg-row-selected';
 
@@ -274,24 +275,24 @@ test('should select rows in a group', () => {
 test('cell navigation in a treegrid', () => {
   setup(['country', 'year']);
   expect(getRows()).toHaveLength(2);
+  const focusSink = document.querySelector(`.${focusSinkClassname}`);
 
   // expand group
   const groupCell1 = screen.getByRole('gridcell', { name: 'USA' });
   expect(document.body).toHaveFocus();
-  expect(getRows()[0]).toHaveAttribute('tabIndex', '-1');
+  expect(focusSink).toHaveAttribute('tabIndex', '-1');
   userEvent.click(groupCell1);
-  expect(getRows()[0]).toHaveFocus();
-  expect(getRows()[0]).toHaveAttribute('tabIndex', '0');
+  expect(focusSink).toHaveFocus();
+  expect(focusSink).toHaveAttribute('tabIndex', '0');
   const groupCell2 = screen.getByRole('gridcell', { name: '2021' });
   userEvent.click(groupCell2);
-  expect(getRows()[0]).toHaveAttribute('tabIndex', '-1');
-  expect(getRows()[2]).toHaveFocus();
-  expect(getRows()[2]).toHaveAttribute('tabIndex', '0');
+  expect(focusSink).toHaveFocus();
+  expect(focusSink).toHaveAttribute('tabIndex', '0');
 
   // select cell
   userEvent.click(getCellsAtRowIndex(4)[1]);
   expect(getCellsAtRowIndex(4)[1]).toHaveAttribute('aria-selected', 'true');
-  expect(getRows()[2]).toHaveAttribute('tabIndex', '-1');
+  expect(focusSink).toHaveAttribute('tabIndex', '-1');
 
   // select the previous cell
   userEvent.keyboard('{arrowleft}');
@@ -302,7 +303,7 @@ test('cell navigation in a treegrid', () => {
   userEvent.keyboard('{arrowleft}');
   expect(getCellsAtRowIndex(4)[0]).toHaveAttribute('aria-selected', 'false');
   expect(getRows()[3]).toHaveClass(rowSelectedClassname);
-  expect(getRows()[3]).toHaveFocus();
+  expect(focusSink).toHaveFocus();
 
   // if the row is selected then arrowright should select the first cell on the same row
   userEvent.keyboard('{arrowright}');
