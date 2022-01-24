@@ -62,7 +62,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
-    "@types/faker": "^5.5.9",
+    "@types/faker": "^6.6.9",
     "@types/hoist-non-react-statics": "^3.3.1",
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.178",
