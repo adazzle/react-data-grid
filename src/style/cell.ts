@@ -22,10 +22,10 @@ export const cell = css`
 
 export const cellClassname = `rdg-cell ${cell}`;
 
-// max-content does not calculate width when contain is set to strict
+// max-content does not calculate width when contain is set to style or size
 export const cellAutoResizeClassname = css`
   .${cell} {
-    contain: none;
+    contain: content;
   }
 `;
 
