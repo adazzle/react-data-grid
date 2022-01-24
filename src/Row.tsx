@@ -93,7 +93,7 @@ function Row<R, SR>(
         ref={ref}
         className={className}
         onMouseEnter={handleDragEnter}
-        style={getRowStyle(gridRowStart, height)}
+        style={getRowStyle(gridRowStart)}
         {...props}
       >
         {cells}
