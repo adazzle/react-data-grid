@@ -2,7 +2,12 @@ import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, cellAutoResizeClassname } from './style';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  focusSinkClassname,
+  cellAutoResizeClassname
+} from './style';
 import {
   useLayoutEffect,
   useGridDimensions,
@@ -1119,14 +1124,12 @@ function DataGrid<R, SR, K extends Key>(
         <div
           ref={rowRef}
           tabIndex={selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2 ? 0 : -1}
+          className={focusSinkClassname}
           style={{
             gridColumnStart: 1,
-            gridRowStart: selectedPosition.rowIdx + 2,
-            position: 'sticky',
-            left: 0
+            gridRowStart: selectedPosition.rowIdx + 2
           }}
           onKeyDown={handleKeyDown}
-          data-testid="focus-sink"
         />
       )}
       <HeaderRow

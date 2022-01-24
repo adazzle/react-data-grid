@@ -17,6 +17,7 @@ import {
 } from './utils';
 import userEvent from '@testing-library/user-event';
 import type { FillEvent, PasteEvent } from '../src/types';
+import { focusSinkClassname } from '../src/style';
 
 const rowSelectedClassname = 'rdg-row-selected';
 
@@ -274,7 +275,7 @@ test('should select rows in a group', () => {
 test('cell navigation in a treegrid', () => {
   setup(['country', 'year']);
   expect(getRows()).toHaveLength(2);
-  const focusSink = screen.getByTestId('focus-sink');
+  const focusSink = document.querySelector(`.${focusSinkClassname}`);
 
   // expand group
   const groupCell1 = screen.getByRole('gridcell', { name: 'USA' });

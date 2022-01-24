@@ -31,13 +31,14 @@ const headerRow = css`
   font-weight: bold;
 
   > .${cell} {
-    z-index: 3;
+    /* Should have a higher value than 1 to show up above frozen cells */
+    z-index: 2;
     position: sticky;
     top: 0;
   }
 
   > .${cellFrozen} {
-    z-index: 4;
+    z-index: 3;
   }
 `;
 
