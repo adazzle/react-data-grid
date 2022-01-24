@@ -2,7 +2,6 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import { HeaderRenderer } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
-import { useCombinedRefs } from '../../../../src/hooks';
 
 interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;
@@ -34,7 +33,10 @@ export function DraggableHeaderRenderer<R>({
 
   return (
     <div
-      ref={useCombinedRefs(drag, drop)}
+      ref={(ref) => {
+        drag(ref);
+        drop(ref);
+      }}
       style={{
         opacity: isDragging ? 0.5 : 1,
         backgroundColor: isOver ? '#ececec' : undefined,

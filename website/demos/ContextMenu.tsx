@@ -9,6 +9,10 @@ import type { Column, RowRendererProps } from '../../src';
 
 css`
   @at-root {
+    .react-contextmenu-wrapper {
+      display: contents;
+    }
+
     .react-contextmenu {
       background-color: #fff;
       background-clip: padding-box;
