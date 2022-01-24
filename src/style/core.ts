@@ -109,4 +109,5 @@ export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDraggi
 export const focusSinkClassname = css`
   position: sticky;
   left: 0;
+  grid-column-start: 1;
 `;

@@ -1079,7 +1079,6 @@ function DataGrid<R, SR, K extends Key>(
           tabIndex={selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2 ? 0 : -1}
           className={focusSinkClassname}
           style={{
-            gridColumnStart: 1,
             gridRowStart: selectedPosition.rowIdx + 2
           }}
           onKeyDown={handleKeyDown}
