@@ -84,8 +84,8 @@ function SummaryRow<R, SR>({
       style={
         {
           ...getRowStyle(ariaRowIndex),
-          '--rdg-summary-row-top': `${top}px`,
-          '--rdg-summary-row-bottom': `${bottom}px`
+          '--rdg-summary-row-top': top !== undefined ? `${top}px` : undefined,
+          '--rdg-summary-row-bottom': bottom !== undefined ? `${bottom}px` : undefined
         } as unknown as React.CSSProperties
       }
     >
