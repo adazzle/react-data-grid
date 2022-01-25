@@ -129,7 +129,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   rowIdx: number;
-  selectedCellIdx: number | undefined;
+  selectedCellIdx: number[] | undefined;
   copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
@@ -146,6 +146,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   selectCell: (
     row: TRow,
     column: CalculatedColumn<TRow, TSummaryRow>,
+    isShiftKey: boolean,
     enableEditor?: Maybe<boolean>
   ) => void;
 }

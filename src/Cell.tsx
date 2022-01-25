@@ -47,21 +47,30 @@ function Cell<R, SR>({
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
-  function selectCellWrapper(openEditor?: boolean | null) {
-    selectCell(row, column, openEditor);
+  function selectCellWrapper(config: { openEditor?: boolean | null; isShiftKey: boolean }) {
+    selectCell(row, column, config.isShiftKey, config.openEditor);
   }
 
-  function handleClick() {
-    selectCellWrapper(column.editorOptions?.editOnClick);
+  function handleClick(event: React.MouseEvent) {
+    selectCellWrapper({
+      openEditor: column.editorOptions?.editOnClick,
+      isShiftKey: event.shiftKey
+    });
     onRowClick?.(row, column);
   }
 
   function handleContextMenu() {
-    selectCellWrapper();
+    selectCellWrapper({
+      isShiftKey: false,
+      openEditor: false
+    });
   }
 
   function handleDoubleClick() {
-    selectCellWrapper(true);
+    selectCellWrapper({
+      isShiftKey: false,
+      openEditor: true
+    });
     onRowDoubleClick?.(row, column);
   }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import DataGrid, { TextEditor } from '../../src';
+import DataGrid, { PasteEvent, TextEditor } from '../../src';
 import type { Column } from '../../src';
 
 interface Row {
@@ -12,7 +12,7 @@ interface Row {
 
 function createRows(): readonly Row[] {
   const rows = [];
-  for (let i = 1; i < 500; i++) {
+  for (let i = 1; i < 10; i++) {
     rows.push({
       id: i,
       task: `Task ${i}`,
@@ -35,27 +35,38 @@ const columns: readonly Column<Row>[] = [
     key: 'task',
     name: 'Title',
     editor: TextEditor,
-    width: 500
+    width: 200
   },
   {
     key: 'priority',
     name: 'Priority',
-    width: 500
+    width: 200
   },
   {
     key: 'issueType',
     name: 'Issue Type',
-    width: 500
+    width: 200
   },
   {
     key: 'complete',
     name: '% Complete',
-    width: 500
+    width: 200
   }
 ];
 
+const handleFill = ({ columnKey, sourceRow, targetRow, targetRowIndex }) => {
+  return { ...targetRow, [columnKey]: sourceRow[columnKey] };
+};
+
 export default function RowsReordering() {
   const [rows, setRows] = useState(createRows);
+
+  const handlePaste = ({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }) => {
+    return {
+      ...targetRow,
+      [targetColumnKey]: sourceRow[sourceColumnKey]
+    };
+  };
 
   return (
     <div
@@ -68,6 +79,8 @@ export default function RowsReordering() {
         rows={rows}
         onRowsChange={setRows}
         cellNavigationMode="CHANGE_ROW"
+        onFill={handleFill}
+        onPaste={handlePaste}
       />
     </div>
   );

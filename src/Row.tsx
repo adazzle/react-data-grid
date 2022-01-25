@@ -34,7 +34,11 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
-  const { ref: rowRef, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
+  const {
+    ref: rowRef,
+    tabIndex,
+    className: rovingClassName
+  } = useRovingRowRef(selectedCellIdx?.[0]);
 
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
@@ -63,7 +67,7 @@ function Row<R, SR>(
       index += colSpan - 1;
     }
 
-    const isCellSelected = selectedCellIdx === idx;
+    const isCellSelected = selectedCellIdx?.includes(idx) ?? false;
 
     if (isCellSelected && selectedCellEditor) {
       cells.push(selectedCellEditor);
