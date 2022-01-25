@@ -201,7 +201,7 @@ export default function HeaderCell<R, SR>({
       style={{
         ...getCellStyle(column, colSpan),
         minWidth: column.minWidth ?? undefined,
-        maxWidth: column.minWidth ?? undefined
+        maxWidth: column.maxWidth ?? undefined
       }}
       onFocus={handleFocus}
       onClick={onClick}
