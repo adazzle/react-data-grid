@@ -198,7 +198,11 @@ export default function HeaderCell<R, SR>({
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={{
+        ...getCellStyle(column, colSpan),
+        minWidth: column.minWidth ?? undefined,
+        maxWidth: column.minWidth ?? undefined
+      }}
       onFocus={handleFocus}
       onClick={onClick}
       onDoubleClick={column.resizable ? onDoubleClick : undefined}

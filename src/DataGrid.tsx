@@ -31,7 +31,6 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   getColSpan,
-  min,
   max,
   sign,
   getSelectedCellColSpan
@@ -390,10 +389,7 @@ function DataGrid<R, SR, K extends Key>(
     const columnElement = gridRef.current!.querySelector(
       `[aria-colindex="${autoResizeColumn.idx + 1}"]`
     )!;
-    const { minWidth, maxWidth } = autoResizeColumn;
-    let width = columnElement.clientWidth + 2;
-    width = max(width, minWidth ?? width);
-    width = min(width, maxWidth ?? width);
+    const width = columnElement.clientWidth + 2;
     setColumnWidths((columnWidths) => {
       const newColumnWidths = new Map(columnWidths);
       newColumnWidths.set(autoResizeColumn.key, width);
