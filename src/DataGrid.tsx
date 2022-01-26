@@ -2,7 +2,12 @@ import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  focusSinkClassname,
+  cellAutoResizeClassname
+} from './style';
 import {
   useLayoutEffect,
   useGridDimensions,
@@ -243,6 +248,7 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
 
   /**
    * refs
@@ -392,6 +398,21 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
+  useLayoutEffect(() => {
+    if (autoResizeColumn === null) return;
+    const columnElement = gridRef.current!.querySelector(
+      `[aria-colindex="${autoResizeColumn.idx + 1}"]`
+    )!;
+    const width = columnElement.clientWidth + 2;
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(autoResizeColumn.key, width);
+      return newColumnWidths;
+    });
+    setAutoResizeColumn(null);
+    onColumnResize?.(autoResizeColumn.idx, width);
+  }, [autoResizeColumn, gridRef, onColumnResize]);
+
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn(idx: number) {
@@ -412,7 +433,11 @@ function DataGrid<R, SR, K extends Key>(
    * callbacks
    */
   const handleColumnResize = useCallback(
-    (column: CalculatedColumn<R, SR>, width: number) => {
+    (column: CalculatedColumn<R, SR>, width: number | 'auto') => {
+      if (width === 'auto') {
+        setAutoResizeColumn(column);
+        return;
+      }
       setColumnWidths((columnWidths) => {
         const newColumnWidths = new Map(columnWidths);
         newColumnWidths.set(column.key, width);
@@ -860,6 +885,17 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
+  function getLayoutCssVars() {
+    if (autoResizeColumn === null) return layoutCssVars;
+    const { gridTemplateColumns } = layoutCssVars;
+    const newSizes = gridTemplateColumns.split(' ');
+    newSizes[autoResizeColumn.idx] = 'max-content';
+    return {
+      ...layoutCssVars,
+      gridTemplateColumns: newSizes.join(' ')
+    };
+  }
+
   function getDragHandle(rowIdx: number) {
     if (
       selectedPosition.rowIdx !== rowIdx ||
@@ -1065,7 +1101,14 @@ function DataGrid<R, SR, K extends Key>(
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
+      className={clsx(
+        rootClassname,
+        {
+          [viewportDraggingClassname]: isDragging,
+          [cellAutoResizeClassname]: autoResizeColumn !== null
+        },
+        className
+      )}
       style={
         {
           ...style,
@@ -1078,7 +1121,7 @@ function DataGrid<R, SR, K extends Key>(
             headerRowHeight +
             summaryRowsCount * summaryRowHeight
           }px`,
-          ...layoutCssVars
+          ...getLayoutCssVars()
         } as unknown as React.CSSProperties
       }
       ref={gridRef}

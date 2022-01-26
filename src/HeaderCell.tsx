@@ -141,6 +141,18 @@ export default function HeaderCell<R, SR>({
     selectCell(column.idx);
   }
 
+  function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    const { right } = event.currentTarget.getBoundingClientRect();
+    const offset = right - event.clientX;
+
+    if (offset > 11) {
+      // +1px to account for the border size
+      return;
+    }
+
+    onColumnResize(column, 'auto');
+  }
+
   function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
     onFocus(event);
     if (shouldFocusGrid) {
@@ -160,9 +172,14 @@ export default function HeaderCell<R, SR>({
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={{
+        ...getCellStyle(column, colSpan),
+        minWidth: column.minWidth ?? undefined,
+        maxWidth: column.maxWidth ?? undefined
+      }}
       onFocus={handleFocus}
       onClick={onClick}
+      onDoubleClick={column.resizable ? onDoubleClick : undefined}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
       <HeaderRenderer

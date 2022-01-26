@@ -22,6 +22,13 @@ export const cell = css`
 
 export const cellClassname = `rdg-cell ${cell}`;
 
+// max-content does not calculate width when contain is set to style or size
+export const cellAutoResizeClassname = css`
+  .${cell} {
+    contain: content;
+  }
+`;
+
 export const cellFrozen = css`
   position: sticky;
   /* Should have a higher value than 0 to show up above unfrozen cells */
