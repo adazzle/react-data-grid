@@ -148,7 +148,7 @@ export default function TreeView() {
                     onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
                   />
                 )}
-                <div style={style}>{row.format}</div>
+                <div style={style}>&nbsp;{row.format}</div>
               </div>
             </>
           );

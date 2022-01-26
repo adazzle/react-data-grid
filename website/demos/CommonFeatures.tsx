@@ -146,7 +146,8 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         const value = props.row.progress;
         return (
           <>
-            <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
+            <progress max={100} value={value} style={{ width: 50 }} />
+            &nbsp;{Math.round(value)}%
           </>
         );
       },

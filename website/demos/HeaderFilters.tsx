@@ -26,13 +26,18 @@ const filterColumnClassName = 'filter-cell';
 
 const filterContainerClassname = css`
   .${filterColumnClassName} {
-    line-height: 35px;
     padding: 0;
+    display: grid;
+    grid-auto-rows: 1fr;
+    gap: 5px;
+    align-items: initial;
 
     > div {
       padding: 0 8px;
 
       &:first-child {
+        display: flex;
+        align-items: center;
         border-bottom: 1px solid var(--rdg-border-color);
       }
     }
