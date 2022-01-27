@@ -1,6 +1,4 @@
-export { default } from './DataGrid';
-export type { DataGridProps, DataGridHandle } from './DataGrid';
-export { default as Cell } from './Cell';
+export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { default as Row } from './Row';
 export * from './Columns';
 export * from './formatters';
@@ -18,14 +16,13 @@ export type {
   HeaderRendererProps,
   CellRendererProps,
   RowRendererProps,
-  FilterRendererProps,
-  Filters,
   RowsChangeData,
   SelectRowEvent,
   FillEvent,
   PasteEvent,
   CellNavigationMode,
   SortDirection,
+  SortColumn,
   ColSpanArgs,
   RowHeightArgs
 } from './types';

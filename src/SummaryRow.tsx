@@ -1,24 +1,49 @@
 import { memo } from 'react';
-import { rowClassname, summaryRowClassname } from './style';
-import { getColSpan } from './utils';
+import clsx from 'clsx';
+import { css } from '@linaria/core';
+
+import { cell, row, rowClassname, rowSelectedClassname } from './style';
+import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
-import type { RowRendererProps } from './types';
+import type { CalculatedColumn, RowRendererProps } from './types';
 
 type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   'aria-rowindex': number;
   row: SR;
-  bottom: number;
+  top: number | undefined;
+  bottom: number | undefined;
   lastFrozenColumnIndex: number;
+  selectedCellIdx: number | undefined;
+  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
+
+const summaryRow = css`
+  line-height: var(--rdg-summary-row-height);
+
+  &.${row} > .${cell} {
+    position: sticky;
+  }
+`;
+
+const summaryRowBorderClassname = css`
+  & > .${cell} {
+    border-top: 2px solid var(--rdg-summary-border-color);
+  }
+`;
+
+const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
   row,
   viewportColumns,
+  top,
   bottom,
   lastFrozenColumnIndex,
+  selectedCellIdx,
+  selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
   const cells = [];
@@ -29,17 +54,40 @@ function SummaryRow<R, SR>({
       index += colSpan - 1;
     }
 
-    cells.push(<SummaryCell<R, SR> key={column.key} column={column} colSpan={colSpan} row={row} />);
+    const isCellSelected = selectedCellIdx === column.idx;
+
+    cells.push(
+      <SummaryCell<R, SR>
+        key={column.key}
+        column={column}
+        colSpan={colSpan}
+        row={row}
+        isCellSelected={isCellSelected}
+        selectCell={selectCell}
+      />
+    );
   }
 
   return (
     <div
       role="row"
       aria-rowindex={ariaRowIndex}
-      className={`${rowClassname} rdg-row-${
-        rowIdx % 2 === 0 ? 'even' : 'odd'
-      } ${summaryRowClassname}`}
-      style={{ bottom }}
+      className={clsx(
+        rowClassname,
+        `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+        summaryRowClassname,
+        { [summaryRowBorderClassname]: rowIdx === 0 },
+        {
+          [rowSelectedClassname]: selectedCellIdx === -1
+        }
+      )}
+      style={
+        {
+          ...getRowStyle(ariaRowIndex),
+          '--rdg-summary-row-top': top !== undefined ? `${top}px` : undefined,
+          '--rdg-summary-row-bottom': bottom !== undefined ? `${bottom}px` : undefined
+        } as unknown as React.CSSProperties
+      }
     >
       {cells}
     </div>

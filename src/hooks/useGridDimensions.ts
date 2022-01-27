@@ -1,4 +1,5 @@
-import { useRef, useState, useLayoutEffect } from 'react';
+import { useRef, useState } from 'react';
+import { useLayoutEffect } from './useLayoutEffect';
 
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
@@ -12,7 +13,7 @@ export function useGridDimensions(): [
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
 
-    // don't break in jest/jsdom and browsers that don't support ResizeObserver
+    // don't break in Node.js (SSR), jest/jsdom, and browsers that don't support ResizeObserver
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
@@ -23,7 +24,7 @@ export function useGridDimensions(): [
       // TODO: remove once fixed upstream
       // we reduce width by 1px here to avoid layout issues in Chrome
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-      setGridWidth(clientWidth - (devicePixelRatio % 0.5 === 0 ? 0 : 1));
+      setGridWidth(clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1));
       setGridHeight(clientHeight);
     });
 

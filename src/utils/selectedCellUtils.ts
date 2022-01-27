@@ -1,4 +1,4 @@
-import type { CalculatedColumn, Position, GroupRow, CellNavigationMode } from '../types';
+import type { CalculatedColumn, Position, GroupRow, CellNavigationMode, Maybe } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -32,11 +32,50 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  currentPosition: Readonly<Position>;
+  summaryRows: Maybe<readonly SR[]>;
+  minRowIdx: number;
+  maxRowIdx: number;
+  currentPosition: Position;
   nextPosition: Position;
   lastFrozenColumnIndex: number;
   isCellWithinBounds: (position: Position) => boolean;
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
+}
+
+export function getSelectedCellColSpan<R, SR>({
+  rows,
+  summaryRows,
+  rowIdx,
+  lastFrozenColumnIndex,
+  column,
+  isGroupRow
+}: Pick<
+  GetNextSelectedCellPositionOpts<R, SR>,
+  'rows' | 'summaryRows' | 'isGroupRow' | 'lastFrozenColumnIndex'
+> & {
+  rowIdx: number;
+  column: CalculatedColumn<R, SR>;
+}) {
+  if (rowIdx === -1) {
+    return getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
+  }
+
+  if (rowIdx >= 0 && rowIdx < rows.length) {
+    const row = rows[rowIdx];
+    if (!isGroupRow(row)) {
+      return getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+    }
+    return undefined;
+  }
+
+  if (summaryRows) {
+    return getColSpan(column, lastFrozenColumnIndex, {
+      type: 'SUMMARY',
+      row: summaryRows[rowIdx - rows.length]
+    });
+  }
+
+  return undefined;
 }
 
 export function getNextSelectedCellPosition<R, SR>({
@@ -44,103 +83,103 @@ export function getNextSelectedCellPosition<R, SR>({
   columns,
   colSpanColumns,
   rows,
-  currentPosition,
+  summaryRows,
+  minRowIdx,
+  maxRowIdx,
+  currentPosition: { idx: currentIdx },
   nextPosition,
   lastFrozenColumnIndex,
   isCellWithinBounds,
   isGroupRow
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
-  const rowsCount = rows.length;
-  let position = nextPosition;
+  let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
   const setColSpan = (moveRight: boolean) => {
-    const row = rows[position.rowIdx];
-    if (!isGroupRow(row)) {
-      // If a cell within the colspan range is selected then move to the
-      // previous or the next cell depending on the navigation direction
-      const posIdx = position.idx;
-      for (const column of colSpanColumns) {
-        const colIdx = column.idx;
-        if (colIdx > posIdx) break;
-        const colSpan = getColSpan<R, SR>(column, lastFrozenColumnIndex, { type: 'ROW', row });
-        if (colSpan && posIdx > colIdx && posIdx < colSpan + colIdx) {
-          position.idx = colIdx + (moveRight ? colSpan : 0);
-          break;
-        }
+    if (nextRowIdx >= 0 && nextRowIdx < rows.length) {
+      const row = rows[nextRowIdx];
+      if (isGroupRow(row)) return;
+    }
+    // If a cell within the colspan range is selected then move to the
+    // previous or the next cell depending on the navigation direction
+    for (const column of colSpanColumns) {
+      const colIdx = column.idx;
+      if (colIdx > nextIdx) break;
+      const colSpan = getSelectedCellColSpan({
+        rows,
+        summaryRows,
+        rowIdx: nextRowIdx,
+        lastFrozenColumnIndex,
+        column,
+        isGroupRow
+      });
+
+      if (colSpan && nextIdx > colIdx && nextIdx < colSpan + colIdx) {
+        nextIdx = colIdx + (moveRight ? colSpan : 0);
+        break;
       }
     }
   };
 
-  if (isCellWithinBounds(position)) {
-    setColSpan(position.idx - currentPosition.idx > 0);
+  if (isCellWithinBounds(nextPosition)) {
+    setColSpan(nextIdx - currentIdx > 0);
   }
 
   if (cellNavigationMode !== 'NONE') {
-    const { idx, rowIdx } = nextPosition;
     const columnsCount = columns.length;
-    const isAfterLastColumn = idx === columnsCount;
-    const isBeforeFirstColumn = idx === -1;
+    const isAfterLastColumn = nextIdx === columnsCount;
+    const isBeforeFirstColumn = nextIdx === -1;
 
     if (isAfterLastColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isLastRow = rowIdx === rowsCount - 1;
+        const isLastRow = nextRowIdx === maxRowIdx;
         if (!isLastRow) {
-          position = {
-            idx: 0,
-            rowIdx: rowIdx + 1
-          };
+          nextIdx = 0;
+          nextRowIdx += 1;
         }
       } else {
-        position = {
-          rowIdx,
-          idx: 0
-        };
+        nextIdx = 0;
       }
-      setColSpan(true);
     } else if (isBeforeFirstColumn) {
       if (cellNavigationMode === 'CHANGE_ROW') {
-        const isFirstRow = rowIdx === 0;
+        const isFirstRow = nextRowIdx === minRowIdx;
         if (!isFirstRow) {
-          position = {
-            rowIdx: rowIdx - 1,
-            idx: columnsCount - 1
-          };
+          nextRowIdx -= 1;
+          nextIdx = columnsCount - 1;
         }
       } else {
-        position = {
-          rowIdx,
-          idx: columnsCount - 1
-        };
+        nextIdx = columnsCount - 1;
       }
+      setColSpan(false);
     }
-    setColSpan(false);
   }
 
-  return position;
+  return { idx: nextIdx, rowIdx: nextRowIdx };
 }
 
-interface CanExitGridOpts<R, SR> {
+interface CanExitGridOpts {
   cellNavigationMode: CellNavigationMode;
-  columns: readonly CalculatedColumn<R, SR>[];
-  rowsCount: number;
+  maxColIdx: number;
+  minRowIdx: number;
+  maxRowIdx: number;
   selectedPosition: Position;
   shiftKey: boolean;
 }
 
-export function canExitGrid<R, SR>({
+export function canExitGrid({
   cellNavigationMode,
-  columns,
-  rowsCount,
+  maxColIdx,
+  minRowIdx,
+  maxRowIdx,
   selectedPosition: { rowIdx, idx },
   shiftKey
-}: CanExitGridOpts<R, SR>): boolean {
+}: CanExitGridOpts): boolean {
   // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
   // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
   if (cellNavigationMode === 'NONE' || cellNavigationMode === 'CHANGE_ROW') {
-    const atLastCellInRow = idx === columns.length - 1;
+    const atLastCellInRow = idx === maxColIdx;
     const atFirstCellInRow = idx === 0;
-    const atLastRow = rowIdx === rowsCount - 1;
-    const atFirstRow = rowIdx === 0;
+    const atLastRow = rowIdx === maxRowIdx;
+    const atFirstRow = rowIdx === minRowIdx;
 
     return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
   }

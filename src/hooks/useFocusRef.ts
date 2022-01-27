@@ -1,11 +1,16 @@
-import { useRef, useLayoutEffect } from 'react';
+import { useRef } from 'react';
+import { useLayoutEffect } from './useLayoutEffect';
 
-export function useFocusRef<T extends HTMLOrSVGElement>(isCellSelected: boolean) {
+export function useFocusRef<T extends HTMLOrSVGElement>(isSelected: boolean) {
   const ref = useRef<T>(null);
-  useLayoutEffect(() => {
-    if (!isCellSelected) return;
-    ref.current?.focus({ preventScroll: true });
-  }, [isCellSelected]);
 
-  return ref;
+  useLayoutEffect(() => {
+    if (!isSelected) return;
+    ref.current?.focus({ preventScroll: true });
+  }, [isSelected]);
+
+  return {
+    ref,
+    tabIndex: isSelected ? 0 : -1
+  };
 }

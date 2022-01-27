@@ -1,83 +1,130 @@
-import { useState, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
-import EditorContainer from './editors/EditorContainer';
-import { getCellStyle, getCellClassname } from './utils';
-import type { CellRendererProps, SharedEditorProps, Omit } from './types';
+import { useLatestFunc } from './hooks';
+import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
+import type { CellRendererProps, EditorProps, Omit } from './types';
+
+/*
+ * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
+ * i.e. on the window during the capture phase, and at their death, i.e. on the window during the bubble phase.
+ *
+ * We schedule a check at the birth of the event, cancel the check when the event reaches the "inside" container,
+ * and trigger the "outside" callback when the event bubbles back up to the window.
+ *
+ * The event can be `stopPropagation()`ed halfway through, so they may not always bubble back up to the window,
+ * so an alternative check must be used. The check must happen after the event can reach the "inside" container,
+ * and not before it run to completion. `requestAnimationFrame` is the best way we know how to achieve this.
+ * Usually we want click event handlers from parent components to access the latest commited values,
+ * so `mousedown` is used instead of `click`.
+ *
+ * We must also rely on React's event capturing/bubbling to handle elements rendered in a portal.
+ */
 
 const cellEditing = css`
-  padding: 0;
+  &.rdg-cell {
+    padding: 0;
+  }
 `;
 
-const cellEditingClassname = `rdg-cell-editing ${cellEditing}`;
-
-type SharedCellRendererProps<R, SR> = Pick<
-  CellRendererProps<R, SR>,
-  'rowIdx' | 'row' | 'column' | 'colSpan'
->;
+type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends SharedCellRendererProps<R, SR>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
-  editorProps: SharedEditorProps<R>;
+  extends Omit<EditorProps<R, SR>, 'onClose'>,
+    SharedCellRendererProps<R, SR> {
+  closeEditor: () => void;
+  scrollToCell: () => void;
 }
 
 export default function EditCell<R, SR>({
-  className,
   column,
   colSpan,
   row,
-  rowIdx,
-  editorProps,
-  ...props
+  onRowChange,
+  closeEditor,
+  scrollToCell
 }: EditCellProps<R, SR>) {
-  const [dimensions, setDimensions] = useState<{ left: number; top: number } | null>(null);
+  const frameRequestRef = useRef<number | undefined>();
+  const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
 
-  const cellRef = useCallback((node) => {
-    if (node !== null) {
-      const { left, top } = node.getBoundingClientRect();
-      setDimensions({ left, top });
+  // We need to prevent the `useEffect` from cleaning up between re-renders,
+  // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
+  // To that end we instead access the latest props via useLatestFunc.
+  const commitOnOutsideMouseDown = useLatestFunc(() => {
+    onClose(true);
+  });
+
+  useEffect(() => {
+    if (!commitOnOutsideClick) return;
+
+    function onWindowCaptureMouseDown() {
+      frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
     }
-  }, []);
+
+    addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
+
+    return () => {
+      removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
+      cancelFrameRequest();
+    };
+  }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
+
+  function cancelFrameRequest() {
+    cancelAnimationFrame(frameRequestRef.current!);
+  }
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') {
+      event.stopPropagation();
+      // Discard changes
+      onClose();
+    } else if (event.key === 'Enter') {
+      event.stopPropagation();
+      onClose(true);
+      scrollToCell();
+    } else {
+      const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
+      if (!onNavigation(event)) {
+        event.stopPropagation();
+      }
+    }
+  }
+
+  function onClose(commitChanges?: boolean) {
+    if (commitChanges) {
+      onRowChange(row, true);
+    } else {
+      closeEditor();
+    }
+  }
 
   const { cellClass } = column;
-  className = getCellClassname(
+  const className = getCellClassname(
     column,
-    cellEditingClassname,
-    typeof cellClass === 'function' ? cellClass(row) : cellClass,
-    className
+    'rdg-editor-container',
+    !column.editorOptions?.renderFormatter && cellEditing,
+    typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
-
-  function getCellContent() {
-    if (dimensions === null) return;
-    const { scrollTop: docTop, scrollLeft: docLeft } =
-      document.scrollingElement ?? document.documentElement;
-    const { left, top } = dimensions;
-    const gridLeft = left + docLeft;
-    const gridTop = top + docTop;
-
-    return (
-      <EditorContainer
-        {...editorProps}
-        rowIdx={rowIdx}
-        column={column}
-        left={gridLeft}
-        top={gridTop}
-      />
-    );
-  }
 
   return (
     <div
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
+      aria-colspan={colSpan}
       aria-selected
-      ref={cellRef}
       className={className}
       style={getCellStyle(column, colSpan)}
-      {...props}
+      onKeyDown={onKeyDown}
+      onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
     >
-      {getCellContent()}
+      {column.editor != null && (
+        <>
+          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
+          {column.editorOptions?.renderFormatter && (
+            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
+          )}
+        </>
+      )}
     </div>
   );
 }

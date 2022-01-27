@@ -1,47 +1,61 @@
-import { useCallback, memo } from 'react';
+import { memo } from 'react';
+import clsx from 'clsx';
+import { css } from '@linaria/core';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn } from './types';
-import { assertIsValidKeyGetter, getColSpan } from './utils';
+import { getColSpan, getRowStyle } from './utils';
 import type { DataGridProps } from './DataGrid';
-import { headerRowClassname } from './style';
+import { cell, cellFrozen, rowSelectedClassname } from './style';
 
-type SharedDataGridProps<R, SR> = Pick<
-  DataGridProps<R, SR>,
-  'rows' | 'onSelectedRowsChange' | 'sortColumn' | 'sortDirection' | 'onSort' | 'rowKeyGetter'
+type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
+  DataGridProps<R, SR, K>,
+  'sortColumns' | 'onSortColumnsChange'
 >;
 
-export interface HeaderRowProps<R, SR> extends SharedDataGridProps<R, SR> {
+export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
-  onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onAllRowsSelectionChange: (checked: boolean) => void;
+  onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'auto') => void;
+  selectCell: (columnIdx: number) => void;
   lastFrozenColumnIndex: number;
+  selectedCellIdx: number | undefined;
+  shouldFocusGrid: boolean;
 }
 
-function HeaderRow<R, SR>({
+const headerRow = css`
+  display: contents;
+  line-height: var(--rdg-header-row-height);
+  background-color: var(--rdg-header-background-color);
+  font-weight: bold;
+
+  > .${cell} {
+    /* Should have a higher value than 1 to show up above frozen cells */
+    z-index: 2;
+    position: sticky;
+    top: 0;
+  }
+
+  > .${cellFrozen} {
+    z-index: 3;
+  }
+`;
+
+const headerRowClassname = `rdg-header-row ${headerRow}`;
+
+function HeaderRow<R, SR, K extends React.Key>({
   columns,
-  rows,
-  rowKeyGetter,
-  onSelectedRowsChange,
   allRowsSelected,
+  onAllRowsSelectionChange,
   onColumnResize,
-  sortColumn,
-  sortDirection,
-  onSort,
-  lastFrozenColumnIndex
-}: HeaderRowProps<R, SR>) {
-  const handleAllRowsSelectionChange = useCallback(
-    (checked: boolean) => {
-      if (!onSelectedRowsChange) return;
-
-      assertIsValidKeyGetter(rowKeyGetter);
-
-      const newSelectedRows = new Set<React.Key>(checked ? rows.map(rowKeyGetter) : undefined);
-      onSelectedRowsChange(newSelectedRows);
-    },
-    [onSelectedRowsChange, rows, rowKeyGetter]
-  );
-
+  sortColumns,
+  onSortColumnsChange,
+  lastFrozenColumnIndex,
+  selectedCellIdx,
+  selectCell,
+  shouldFocusGrid
+}: HeaderRowProps<R, SR, K>) {
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
@@ -55,12 +69,14 @@ function HeaderRow<R, SR>({
         key={column.key}
         column={column}
         colSpan={colSpan}
-        onResize={onColumnResize}
+        isCellSelected={selectedCellIdx === column.idx}
+        onColumnResize={onColumnResize}
         allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={handleAllRowsSelectionChange}
-        onSort={onSort}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
+        onAllRowsSelectionChange={onAllRowsSelectionChange}
+        onSortColumnsChange={onSortColumnsChange}
+        sortColumns={sortColumns}
+        selectCell={selectCell}
+        shouldFocusGrid={shouldFocusGrid && index === 0}
       />
     );
   }
@@ -69,11 +85,16 @@ function HeaderRow<R, SR>({
     <div
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
-      className={headerRowClassname}
+      className={clsx(headerRowClassname, {
+        [rowSelectedClassname]: selectedCellIdx === -1
+      })}
+      style={getRowStyle(1)}
     >
       {cells}
     </div>
   );
 }
 
-export default memo(HeaderRow) as <R, SR>(props: HeaderRowProps<R, SR>) => JSX.Element;
+export default memo(HeaderRow) as <R, SR, K extends React.Key>(
+  props: HeaderRowProps<R, SR, K>
+) => JSX.Element;

@@ -8,11 +8,8 @@ const checkboxLabel = css`
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin-right: 1px; // align checkbox in row group cell
+  inset: 0;
+  margin-right: 1px; /* align checkbox in row group cell */
 `;
 
 const checkboxLabelClassname = `rdg-checkbox-label ${checkboxLabel}`;
@@ -29,16 +26,16 @@ const checkbox = css`
   content: '';
   width: 20px;
   height: 20px;
-  border: 2px solid var(--border-color);
-  background-color: var(--background-color);
+  border: 2px solid var(--rdg-border-color);
+  background-color: var(--rdg-background-color);
 
   .${checkboxInput}:checked + & {
-    background-color: var(--checkbox-color);
-    box-shadow: inset 0px 0px 0px 4px var(--background-color);
+    background-color: var(--rdg-checkbox-color);
+    box-shadow: inset 0px 0px 0px 4px var(--rdg-background-color);
   }
 
   .${checkboxInput}:focus + & {
-    border-color: var(--checkbox-focus-color);
+    border-color: var(--rdg-checkbox-focus-color);
   }
 `;
 
@@ -48,8 +45,8 @@ const checkboxLabelDisabled = css`
   cursor: default;
 
   .${checkbox} {
-    border-color: var(--checkbox-disabled-border-color);
-    background-color: var(--checkbox-disabled-background-color);
+    border-color: var(--rdg-checkbox-disabled-border-color);
+    background-color: var(--rdg-checkbox-disabled-background-color);
   }
 `;
 
@@ -57,7 +54,7 @@ const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLa
 
 type SharedInputProps = Pick<
   React.InputHTMLAttributes<HTMLInputElement>,
-  'disabled' | 'tabIndex' | 'onClick' | 'aria-label' | 'aria-labelledby'
+  'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {
@@ -68,7 +65,6 @@ interface SelectCellFormatterProps extends SharedInputProps {
 
 export function SelectCellFormatter({
   value,
-  tabIndex,
   isCellSelected,
   disabled,
   onClick,
@@ -76,7 +72,7 @@ export function SelectCellFormatter({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
-  const inputRef = useFocusRef<HTMLInputElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
@@ -87,9 +83,9 @@ export function SelectCellFormatter({
       <input
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        tabIndex={tabIndex}
-        ref={inputRef}
+        ref={ref}
         type="checkbox"
+        tabIndex={tabIndex}
         className={checkboxInputClassname}
         disabled={disabled}
         checked={value}

@@ -1,5 +1,23 @@
 # Changelog
 
+## v7.0.0-canary.48
+
+- Fixed an edge case where clicking outside the grid wouldn't close and commit an open editor quickly enough, resulting in the previous rows state being used by parent components in `click` handlers. ([PR](https://github.com/adazzle/react-data-grid/pull/2415))
+- Support for filters has been removed, along with: ([PR](https://github.com/adazzle/react-data-grid/pull/2412))
+  - The `<DataGrid />` props: `headerFiltersHeight`, `filters`, `onFiltersChange`, `enableFilterRow`
+  - `Column.filterRenderer`
+  - The exports: `FilterRendererProps`, `Filters`
+- Optional `Column` props can now also be `null` in addition to `undefined`. ([PR](https://github.com/adazzle/react-data-grid/pull/2409))
+
+## v7.0.0-canary.47
+
+- Added a third, optional generic on `<DataGrid />` to specify the row key type. ([PR](https://github.com/adazzle/react-data-grid/pull/2311))
+- Added the `useRowSelection` hook for custom cell renderers to access `isRowSelected` and `onRowSelectionChange`. ([PR](https://github.com/adazzle/react-data-grid/pull/2338))
+- `HeaderRendererProps.allRowsSelected` tweaks, affecting the `SelectColumn`: ([PR](https://github.com/adazzle/react-data-grid/pull/2402))
+  - It will now be `false` when `rows.length === 0` instead of `true`.
+  - `selectedRows` must contain all the row keys for `allRowsSelected` to be `true`, instead of naively comparing the `size` and `length`.
+- Optional props on `<DataGrid />` can now also be `null` in addition to `undefined`. ([PR](https://github.com/adazzle/react-data-grid/pull/2406))
+
 ## v7.0.0-canary.46
 
 - Optimize onRowsChange: only update changed rows ([PR](https://github.com/adazzle/react-data-grid/pull/2390))
@@ -118,7 +136,7 @@
 
 ## v7.0.0-canary.22
 
-- Add Grouping ([PR](https://github.com/adazzle/react-data-grid/pull/2106)). Check the new [example](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--grouping).
+- Add Grouping ([PR](https://github.com/adazzle/react-data-grid/pull/2106)). Check the new [example](https://adazzle.github.io/react-data-grid/#/grouping).
 - (Breaking) Removed `height` and `width` props and added new `className` and `style` props. We are now using `ResizeObserver` to calculate all the grid dimensions ([PR](https://github.com/adazzle/react-data-grid/pull/2130))
 - (Breaking) Removed formatterOptions. Grid now handles formatter focus internally so this prop is no longer required ([PR](https://github.com/adazzle/react-data-grid/pull/2138))
 - Added support for React 17
@@ -199,7 +217,7 @@
     - ⚠️ `height`
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
-      - Check the [Context Menu](https://adazzle.github.io/react-data-grid/canary/?path=/story/demos--context-menu) example
+      - Check the [Context Menu](https://adazzle.github.io/react-data-grid/#/context-menu) example
     - ⚠️ `enableCellSelect`
     - ⚠️ `enableCellAutoFocus`
     - ⚠️ `getValidFilterValues`
@@ -267,7 +285,7 @@
   - ⚠️ `onScroll` will directly pass the UIEvent rather than the scrollLeft and scrollRight only.
   - ⚠️ The stylesheets are now automatically injected, there is no stylsheet to manually import anymore.
 
-## `master` to `alpha`
+## `main` to `alpha`
 
 - **Added:**
   - TypeScript declaration files

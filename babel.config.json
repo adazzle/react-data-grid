@@ -5,13 +5,11 @@
       {
         "loose": true,
         "bugfixes": true,
-        "shippedProposals": true,
-        "corejs": 3,
-        "useBuiltIns": "entry"
+        "shippedProposals": true
       }
     ],
     ["@babel/react", { "runtime": "automatic" }],
-    "@babel/typescript",
+    ["@babel/typescript", { "optimizeConstEnums": true }],
     "@linaria"
   ],
   "plugins": [

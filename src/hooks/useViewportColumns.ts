@@ -1,19 +1,18 @@
 import { useMemo } from 'react';
 
 import { getColSpan } from '../utils';
-import type { CalculatedColumn, GroupRow } from '../types';
+import type { CalculatedColumn, GroupRow, Maybe } from '../types';
 
 interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  summaryRows: readonly SR[] | undefined;
+  summaryRows: Maybe<readonly SR[]>;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   lastFrozenColumnIndex: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
-  enableFilterRow: boolean;
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
@@ -27,7 +26,6 @@ export function useViewportColumns<R, SR>({
   lastFrozenColumnIndex,
   rowOverscanStartIdx,
   rowOverscanEndIdx,
-  enableFilterRow,
   isGroupRow
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
@@ -52,14 +50,6 @@ export function useViewportColumns<R, SR>({
         break;
       }
 
-      // check filter row
-      if (
-        enableFilterRow &&
-        updateStartIdx(colIdx, getColSpan(column, lastFrozenColumnIndex, { type: 'FILTER' }))
-      ) {
-        break;
-      }
-
       // check viewport rows
       for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
         const row = rows[rowIdx];
@@ -72,7 +62,7 @@ export function useViewportColumns<R, SR>({
       }
 
       // check summary rows
-      if (summaryRows !== undefined) {
+      if (summaryRows != null) {
         for (const row of summaryRows) {
           if (
             updateStartIdx(
@@ -95,8 +85,7 @@ export function useViewportColumns<R, SR>({
     colOverscanStartIdx,
     lastFrozenColumnIndex,
     colSpanColumns,
-    isGroupRow,
-    enableFilterRow
+    isGroupRow
   ]);
 
   return useMemo((): readonly CalculatedColumn<R, SR>[] => {

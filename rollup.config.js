@@ -1,12 +1,11 @@
 import { isAbsolute } from 'path';
 import linaria from '@linaria/rollup';
 import postcss from 'rollup-plugin-postcss';
+import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import stylis from 'stylis';
 import pkg from './package.json';
 
-stylis.set({ prefix: false });
 const extensions = ['.ts', '.tsx'];
 
 export default {
@@ -15,27 +14,32 @@ export default {
     {
       file: './lib/bundle.js',
       format: 'es',
-      preferConst: true,
+      generatedCode: 'es2015',
       sourcemap: true
     },
     {
       file: './lib/bundle.cjs',
       format: 'cjs',
-      preferConst: true,
+      generatedCode: 'es2015',
       sourcemap: true,
       interop: false
     }
   ],
-  external: (id) => !id.startsWith('.') && !isAbsolute(id),
+  external: (id) => !id.startsWith('.') && !id.startsWith('@linaria:') && !isAbsolute(id),
   plugins: [
     linaria({
+      preprocessor: 'none',
       classNameSlug(hash) {
         // We add the package version as suffix to avoid style conflicts
         // between multiple versions of RDG on the same page.
         return `${hash}${pkg.version.replaceAll('.', '')}`;
       }
     }),
-    postcss({ minimize: true }),
+    postcss({
+      plugins: [postcssNested],
+      minimize: true,
+      inject: { insertAt: 'top' }
+    }),
     babel({
       babelHelpers: 'runtime',
       extensions,

@@ -1,20 +1,23 @@
 import { useMemo } from 'react';
 
-import type {
-  CalculatedColumn,
-  CalculatedColumnGroup,
-  Column,
-  ColumnGroup,
-  ColumnMetric
-} from '../types';
+import type { CalculatedColumn, Column, Maybe, CalculatedColumnGroup, ColumnGroup } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
-import { floor, max, min } from '../utils';
+import { floor, max, min, round } from '../utils';
+
+type Mutable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
+
+interface ColumnMetric {
+  width: number;
+  left: number;
+}
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>>;
-  rawGroupBy: readonly string[] | undefined;
+  rawGroupBy: Maybe<readonly string[]>;
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
@@ -35,7 +38,13 @@ export function useCalculatedColumns<R, SR>({
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  const { columns, columnGroups, colSpanColumns, lastFrozenColumnIndex, groupBy } = useMemo(() => {
+  const { columns, colSpanColumns, columnGroups, lastFrozenColumnIndex, groupBy } = useMemo((): {
+    columns: readonly CalculatedColumn<R, SR>[];
+    columnGroups: ReadonlyArray<CalculatedColumn<R, SR> | CalculatedColumnGroup<R, SR>>;
+    colSpanColumns: readonly CalculatedColumn<R, SR>[];
+    lastFrozenColumnIndex: number;
+    groupBy: readonly string[];
+  } => {
     // Filter rawGroupBy and ignore keys that do not match the columns prop
     const groupBy: string[] = [];
     let lastFrozenColumnIndex = -1;
@@ -44,7 +53,8 @@ export function useCalculatedColumns<R, SR>({
       const rowGroup = rawGroupBy?.includes(rawColumn.key) ?? false;
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const frozen = rowGroup || rawColumn.frozen || false;
-      const column: CalculatedColumn<R, SR> = {
+
+      const column: Mutable<CalculatedColumn<R, SR>> = {
         ...rawColumn,
         idx: 0,
         frozen,
@@ -54,9 +64,11 @@ export function useCalculatedColumns<R, SR>({
         resizable: rawColumn.resizable ?? defaultResizable,
         formatter: rawColumn.formatter ?? defaultFormatter
       };
+
       if (rowGroup) {
         column.groupFormatter ??= ToggleGroupFormatter;
       }
+
       if (frozen) {
         lastFrozenColumnIndex++;
       }
@@ -112,13 +124,13 @@ export function useCalculatedColumns<R, SR>({
 
       const { frozen: frozenA } = columnGroupA;
       const { frozen: frozenB } = columnGroupB;
-
       // Sort frozen columns third:
       if (frozenA) {
         if (frozenB) return 0;
         return -1;
       }
       if (frozenB) return 1;
+
       // Sort other columns last:
       return 0;
     });
@@ -134,7 +146,7 @@ export function useCalculatedColumns<R, SR>({
         groupBy.push(column.key);
       }
 
-      if (column.colSpan !== undefined) {
+      if (column.colSpan != null) {
         colSpanColumns.push(column);
       }
     });
@@ -152,7 +164,12 @@ export function useCalculatedColumns<R, SR>({
     };
   }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
 
-  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo(() => {
+  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+    layoutCssVars: Readonly<Record<string, string>>;
+    totalColumnWidth: number;
+    totalFrozenColumnWidth: number;
+    columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
+  } => {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalColumnWidth = 0;
@@ -173,9 +190,6 @@ export function useCalculatedColumns<R, SR>({
       }
     }
 
-    const unallocatedWidth = viewportWidth - allocatedWidth;
-    const unallocatedColumnWidth = unallocatedWidth / unassignedColumnsCount;
-
     for (const column of columns) {
       let width: number;
       if (columnMetrics.has(column)) {
@@ -183,7 +197,12 @@ export function useCalculatedColumns<R, SR>({
         columnMetric.left = left;
         ({ width } = columnMetric);
       } else {
+        // avoid decimals as subpixel positioning can lead to cell borders not being displayed
+        const unallocatedWidth = viewportWidth - allocatedWidth;
+        const unallocatedColumnWidth = round(unallocatedWidth / unassignedColumnsCount);
         width = clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
+        allocatedWidth += width;
+        unassignedColumnsCount--;
         columnMetrics.set(column, { width, left });
       }
       totalColumnWidth += width;
@@ -197,12 +216,12 @@ export function useCalculatedColumns<R, SR>({
     }
 
     const layoutCssVars: Record<string, string> = {
-      '--template-columns': templateColumns
+      gridTemplateColumns: templateColumns
     };
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
-      layoutCssVars[`--frozen-left-${column.key}`] = `${columnMetrics.get(column)!.left}px`;
+      layoutCssVars[`--rdg-frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
     return { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics };
