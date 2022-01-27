@@ -1,7 +1,6 @@
-export { default } from './DataGrid';
+export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { default as TreeDataGrid } from './TreeDataGrid';
 export type { TreeDataGridProps } from './TreeDataGrid';
-export type { DataGridProps, DataGridHandle } from './DataGrid';
 export { default as Row } from './Row';
 export * from './Columns';
 export * from './formatters';

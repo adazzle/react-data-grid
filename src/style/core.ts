@@ -36,7 +36,10 @@ const darkTheme = `
 const root = css`
   ${lightTheme}
   --rdg-selection-color: #66afe9;
+  --rdg-frozen-cell-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
   --rdg-font-size: 14px;
+
+  display: grid;
 
   color-scheme: var(--rdg-color-scheme, light dark);
 
@@ -67,6 +70,16 @@ const root = css`
     box-sizing: inherit;
   }
 
+  /* needed on Firefox */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--rdg-grid-height);
+    width: var(--rdg-row-width);
+  }
+
   &.rdg-dark {
     --rdg-color-scheme: dark;
     ${darkTheme}
@@ -92,3 +105,9 @@ const viewportDragging = css`
 `;
 
 export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDragging}`;
+
+export const focusSinkClassname = css`
+  position: sticky;
+  left: 0;
+  grid-column-start: 1;
+`;

@@ -1,20 +1,14 @@
-import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast, rowClassname } from './style';
+import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
-import { RowWithRef } from './Row';
+import RowWithRef from './Row';
 import GroupCell from './GroupCell';
 import type { GroupRow, RowRendererProps } from './types';
-import {
-  RowSelectionChangeProvider,
-  RowSelectionProvider,
-  useGroupApi,
-  useRovingRowRef
-} from './hooks';
-import { isCtrlKeyHeldDown } from './utils';
+import { RowSelectionChangeProvider, RowSelectionProvider, useGroupApi } from './hooks';
+import { getRowStyle, isCtrlKeyHeldDown } from './utils';
 
 const groupRow = css`
   &:not([aria-selected='true']) {
@@ -47,24 +41,23 @@ function GroupedRow<R, SR>({
   setDraggedOverRowIdx,
   onMouseEnter,
   selectCell,
-  top,
+  gridRowStart,
   height,
   'aria-rowindex': ariaRowIndex, // ignore default value // TODO
   ...props
 }: RowRendererProps<R | GroupRow<R>, SR>) {
-  const { ref, tabIndex, className: rovingClassName } = useRovingRowRef(selectedCellIdx);
   const { isGroupRow, toggleGroup, getParentRow, toggleGroupSelection, rowRenderer } = useGroupApi<
     R,
     SR
   >()!;
   const RowRenderer = rowRenderer ?? RowWithRef;
 
-  className = clsx(className, rovingClassName);
+  className = clsx(className, {
+    [rowSelectedClassname]: selectedCellIdx === -1
+  });
   if (!isGroupRow(row)) {
     return (
       <RowRenderer
-        ref={ref}
-        tabIndex={tabIndex}
         className={className}
         row={row}
         rowIdx={rowIdx}
@@ -74,7 +67,7 @@ function GroupedRow<R, SR>({
         copiedCellIdx={copiedCellIdx}
         draggedOverCellIdx={draggedOverCellIdx}
         lastFrozenColumnIndex={lastFrozenColumnIndex}
-        top={top}
+        gridRowStart={gridRowStart}
         height={height}
         selectedCellEditor={selectedCellEditor}
         selectedCellDragHandle={selectedCellDragHandle}
@@ -136,8 +129,6 @@ function GroupedRow<R, SR>({
           aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
           aria-expanded={row.isExpanded}
           key={row.id}
-          ref={ref}
-          tabIndex={tabIndex}
           className={clsx(
             rowClassname,
             groupRowClassname,
@@ -146,12 +137,7 @@ function GroupedRow<R, SR>({
           )}
           onClick={handleSelectGroup}
           onKeyDown={handleKeyDown}
-          style={
-            {
-              top,
-              '--rdg-row-height': `${height}px`
-            } as unknown as CSSProperties
-          }
+          style={getRowStyle(gridRowStart, height)}
           {...props}
         >
           {viewportColumns.map((column) => (

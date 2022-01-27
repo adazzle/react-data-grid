@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn } from '../types';
@@ -8,7 +9,7 @@ export * from './domUtils';
 export * from './keyboardUtils';
 export * from './selectedCellUtils';
 
-export const { min, max, floor, sign } = Math;
+export const { min, max, round, floor, sign } = Math;
 
 export function assertIsValidKeyGetter<R, K extends React.Key>(
   keyGetter: unknown
@@ -16,6 +17,16 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
   if (typeof keyGetter !== 'function') {
     throw new Error('Please specify the rowKeyGetter prop to use selection');
   }
+}
+
+export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
+  if (height !== undefined) {
+    return {
+      '--rdg-grid-row-start': rowIdx,
+      '--rdg-row-height': `${height}px`
+    } as unknown as CSSProperties;
+  }
+  return { '--rdg-grid-row-start': rowIdx } as unknown as CSSProperties;
 }
 
 export function getCellStyle<R, SR>(

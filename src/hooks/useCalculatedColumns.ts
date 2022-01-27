@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import type { CalculatedColumn, Column } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter } from '../formatters';
-import { floor, max, min } from '../utils';
+import { floor, max, min, round } from '../utils';
 import { SELECT_COLUMN_KEY } from '../Columns';
 
 type Mutable<T> = {
@@ -126,9 +126,6 @@ export function useCalculatedColumns<R, SR>({
       }
     }
 
-    const unallocatedWidth = viewportWidth - allocatedWidth;
-    const unallocatedColumnWidth = unallocatedWidth / unassignedColumnsCount;
-
     for (const column of columns) {
       let width: number;
       if (columnMetrics.has(column)) {
@@ -136,7 +133,12 @@ export function useCalculatedColumns<R, SR>({
         columnMetric.left = left;
         ({ width } = columnMetric);
       } else {
+        // avoid decimals as subpixel positioning can lead to cell borders not being displayed
+        const unallocatedWidth = viewportWidth - allocatedWidth;
+        const unallocatedColumnWidth = round(unallocatedWidth / unassignedColumnsCount);
         width = clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
+        allocatedWidth += width;
+        unassignedColumnsCount--;
         columnMetrics.set(column, { width, left });
       }
       totalColumnWidth += width;
@@ -150,7 +152,7 @@ export function useCalculatedColumns<R, SR>({
     }
 
     const layoutCssVars: Record<string, string> = {
-      '--rdg-template-columns': templateColumns
+      gridTemplateColumns: templateColumns
     };
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
