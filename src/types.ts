@@ -27,6 +27,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
   readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
+  readonly rowSpan?: Maybe<(params: RowSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
   /** Determines whether column is frozen or not */
   readonly frozen?: Maybe<boolean>;
   /** Enable resizing of a column */
@@ -198,5 +199,15 @@ export type ColSpanArgs<R, SR> =
   | { type: 'HEADER' }
   | { type: 'ROW'; row: R }
   | { type: 'SUMMARY'; row: SR };
+
+export type RowSpanArgs<R, SR> =
+  | {
+      type: 'ROW';
+      row: R;
+    }
+  | {
+      type: 'SUMMARY';
+      row: SR;
+    };
 
 export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
