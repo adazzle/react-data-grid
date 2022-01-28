@@ -640,7 +640,7 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     const observer = new MutationObserver(function (event) {
-      const latestClassname = (event[0].target as HTMLElement).className ?? '';
+      const latestClassname = (event[0].target as HTMLElement).className;
 
       if (latestClassname.includes('simplebar-dragging')) {
         document.body.style.cursor = 'grabbing';
@@ -1212,7 +1212,7 @@ function DataGrid<R, SR, K extends Key>(
       />
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
-      ) : rows.every((_, rowIndex) => hideRows.includes(rowIndex)) ? (
+      ) : rows.every((data, rowIndex) => hideRows.includes(rowIndex)) ? (
         noShowRowsFallback
       ) : (
         <>
