@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { css } from '@linaria/core';
 
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
@@ -28,24 +28,29 @@ function Cell<R, SR>({
   isCopied,
   isDraggedOver,
   row,
+  rowIndex,
   dragHandle,
   onRowClick,
   onRowDoubleClick,
   onRowChange,
   selectCell,
+  dragEndPosition,
   ...props
 }: CellRendererProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   const { cellClass } = column;
-  const className = getCellClassname(
-    column,
-    {
-      [cellCopiedClassname]: isCopied,
-      [cellDraggedOverClassname]: isDraggedOver
-    },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass
-  );
+  const className = useMemo(() => {
+    return getCellClassname(
+      column,
+      {
+        [cellCopiedClassname]: isCopied,
+        [cellDraggedOverClassname]: isDraggedOver,
+        'rdg-cell-dragged-over-end': isDraggedOver && dragEndPosition === rowIndex + 1
+      },
+      typeof cellClass === 'function' ? cellClass(row) : cellClass
+    );
+  }, [dragEndPosition, isDraggedOver, cellClass, isCopied, row, column, rowIndex]);
 
   function selectCellWrapper(openEditor?: boolean | null) {
     selectCell(row, column, openEditor);

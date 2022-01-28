@@ -30,6 +30,7 @@ function Row<R, SR>(
     height,
     onRowChange,
     selectCell,
+    dragEndPosition,
     ...props
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
@@ -71,6 +72,7 @@ function Row<R, SR>(
       cells.push(
         <Cell
           key={column.key}
+          rowIndex={rowIdx}
           column={column}
           colSpan={colSpan}
           row={row}
@@ -82,6 +84,7 @@ function Row<R, SR>(
           onRowDoubleClick={onRowDoubleClick}
           onRowChange={handleRowChange}
           selectCell={selectCell}
+          dragEndPosition={dragEndPosition}
         />
       );
     }

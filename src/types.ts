@@ -108,6 +108,11 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   isCellSelected: boolean;
 }
 
+export interface DragOverHook {
+  setLengthPosition: (startIndex: number, endIndex: number) => void;
+  endPosition: number;
+}
+
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
       RowRendererProps<TRow, TSummaryRow>,
@@ -117,11 +122,13 @@ export interface CellRendererProps<TRow, TSummaryRow>
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
+  rowIndex: number;
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (newRow: TRow) => void;
+  dragEndPosition: DragOverHook['endPosition'];
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -148,6 +155,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
     column: CalculatedColumn<TRow, TSummaryRow>,
     enableEditor?: Maybe<boolean>
   ) => void;
+  dragEndPosition: DragOverHook['endPosition'];
 }
 
 export interface RowsChangeData<R, SR = unknown> {
