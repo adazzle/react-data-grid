@@ -32,7 +32,7 @@ export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
 export function getCellStyle<R, SR>(
   column: CalculatedColumn<R, SR>,
   colSpan?: number,
-  rowSpan?: number | null
+  rowSpan?: number
 ): React.CSSProperties {
   return {
     gridColumnStart: column.idx + 1,
