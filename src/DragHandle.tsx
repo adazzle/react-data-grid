@@ -1,6 +1,13 @@
 import { css } from '@linaria/core';
 import { createPortal } from 'react-dom';
-import type { CalculatedColumn, DragOverflowHide, FillEvent, Position } from './types';
+import type {
+  CalculatedColumn,
+  DragOverflowHide,
+  DragOverHook,
+  FillEvent,
+  Position
+} from './types';
+
 import type { DataGridProps, SelectCellState } from './DataGrid';
 import { useDragHandlePopper } from './dragHandlePopper';
 
@@ -23,6 +30,7 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: (overRowIdx: number | undefined) => void;
   dragOverflowHide?: DragOverflowHide;
+  setLengthPosition: DragOverHook['setLengthPosition'];
 }
 
 export default function DragHandle<R, SR>({
@@ -35,7 +43,8 @@ export default function DragHandle<R, SR>({
   onFill,
   setDragging,
   setDraggedOverRowIdx,
-  dragOverflowHide
+  dragOverflowHide,
+  setLengthPosition
 }: Props<R, SR>) {
   const { popperRef, styles, attributes, isHide } = useDragHandlePopper({ dragOverflowHide });
 
@@ -46,9 +55,18 @@ export default function DragHandle<R, SR>({
     window.addEventListener('mouseup', onMouseUp);
 
     function onMouseOver(event: MouseEvent) {
+      const overRowIdx = latestDraggedOverRowIdx.current;
+      if (overRowIdx === undefined) return;
+
+      const { rowIdx } = selectedPosition;
+      const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx + 1;
+      const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
       // Trigger onMouseup in edge cases where we release the mouse button but `mouseup` isn't triggered,
       // for example when releasing the mouse button outside the iframe the grid is rendered in.
       // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+
+      setLengthPosition(startRowIndex, endRowIndex);
+
       if (event.buttons !== 1) onMouseUp();
     }
 

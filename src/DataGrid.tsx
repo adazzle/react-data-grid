@@ -57,6 +57,7 @@ import type {
   DragOverflowHide
 } from './types';
 import SimpleBar from 'simplebar-react';
+import useDragOver from './dragOver';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -389,6 +390,8 @@ function DataGrid<R, SR, K extends Key>(
     }
   );
   const toggleGroupLatest = useLatestFunc(toggleGroup);
+
+  const dragoverHook = useDragOver({ selectedPosition });
 
   /**
    * effects
@@ -1008,6 +1011,7 @@ function DataGrid<R, SR, K extends Key>(
         setDragging={setDragging}
         setDraggedOverRowIdx={setDraggedOverRowIdx}
         dragOverflowHide={dragOverflowHide}
+        setLengthPosition={dragoverHook.setLengthPosition}
       />
     );
   }
@@ -1164,6 +1168,7 @@ function DataGrid<R, SR, K extends Key>(
           selectCell={selectViewportCellLatest}
           selectedCellDragHandle={getDragHandle(rowIdx)}
           selectedCellEditor={getCellEditor(rowIdx)}
+          dragEndPosition={dragoverHook.endPosition}
         />
       );
     }

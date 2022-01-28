@@ -27,6 +27,10 @@ export const useDragHandlePopper = ({
     placement: 'right-end',
     modifiers: [
       {
+        name: 'flip',
+        enabled: false
+      },
+      {
         name: 'offset',
         options: {
           offset: [2, -6]
@@ -35,7 +39,7 @@ export const useDragHandlePopper = ({
     ]
   });
 
-  const isReferenceHidden = state?.modifiersData.hide?.isReferenceHidden ?? true;
+  const isReferenceHidden = state?.modifiersData.hide?.hasPopperEscaped ?? true;
   const referenceClippingOffsets = state?.modifiersData.hide?.referenceClippingOffsets ?? {
     top: 0,
     left: 0,
