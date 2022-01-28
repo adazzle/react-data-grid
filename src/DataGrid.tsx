@@ -7,8 +7,9 @@ import {
   useMemo,
   useEffect
 } from 'react';
-import type { Key, RefAttributes } from 'react';
+import type { Key, RefAttributes, ReactNode, RefObject } from 'react';
 import clsx from 'clsx';
+import { fromEvent } from 'rxjs';
 import 'simplebar/dist/simplebar.min.css';
 
 import { rootClassname, viewportDraggingClassname, wrapperClassname } from './style';
@@ -175,6 +176,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onSelectedPositionChange?: Maybe<(position: SelectCellState | EditCellState<R>) => void>;
 
   hideRows?: number[];
+  noShowRowsFallback?: ReactNode;
 }
 
 /**
@@ -230,7 +232,7 @@ function DataGrid<R, SR, K extends Key>(
 
     // added props
     onSelectedPositionChange,
-
+    noShowRowsFallback,
     hideRows = []
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
@@ -269,6 +271,8 @@ function DataGrid<R, SR, K extends Key>(
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const scrollRef = useRef<SimpleBar>(null);
+
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
@@ -581,6 +585,81 @@ function DataGrid<R, SR, K extends Key>(
     setScrollLeft(scrollLeft);
     onScroll?.(event);
   }
+
+  useEffect(() => {
+    const element = (gridRef as unknown as RefObject<HTMLDivElement>).current;
+
+    if (!element) {
+      return;
+    }
+
+    let scrollDirection: 'horizontal' | 'vertical' = 'horizontal';
+    const onMouseWheel = (event: WheelEvent) => {
+      const { scrollHeight } = element;
+      const elementHeight = element.clientHeight;
+      const { scrollTop } = element;
+      const { deltaY } = event;
+      const { deltaX } = event;
+
+      if (deltaX !== 0 && scrollDirection === 'horizontal') {
+        event.preventDefault();
+        return (element.scrollLeft += deltaX);
+      }
+      if (deltaY !== 0 && scrollDirection === 'vertical') {
+        if (scrollTop + deltaY <= -5 || scrollTop + elementHeight + deltaY > scrollHeight + 5) {
+          return;
+        }
+        event.preventDefault();
+        return (element.scrollTop += deltaY);
+      }
+      event.preventDefault();
+      return 0;
+    };
+
+    fromEvent(element, 'wheel').subscribe((e) => {
+      const wheelEvent = e as WheelEvent;
+      const stringDeltaY = wheelEvent.deltaY.toString();
+      const stringDeltaX = wheelEvent.deltaX.toString();
+      const deltaY = Number(stringDeltaY);
+      const deltaX = Number(stringDeltaX);
+      scrollDirection = Math.abs(deltaX) > Math.abs(deltaY) ? 'horizontal' : 'vertical';
+    });
+
+    element.addEventListener('wheel', onMouseWheel, { passive: false });
+
+    return () => {
+      element.removeEventListener('wheel', onMouseWheel);
+    };
+  }, [gridRef]);
+
+  useEffect(() => {
+    const element = (scrollRef as unknown as RefObject<HTMLDivElement>).current;
+
+    if (!element) {
+      return;
+    }
+
+    const observer = new MutationObserver(function (event) {
+      const latestClassname = (event[0].target as HTMLElement).className;
+
+      if (latestClassname.includes('simplebar-dragging')) {
+        document.body.style.cursor = 'grabbing';
+      } else {
+        document.body.style.cursor = 'auto';
+      }
+    });
+
+    observer.observe(scrollRef.current?.el as Node, {
+      attributes: true,
+      attributeFilter: ['class'],
+      childList: false,
+      characterData: false
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [scrollRef]);
 
   function getRawRowIdx(rowIdx: number) {
     return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
@@ -1092,6 +1171,7 @@ function DataGrid<R, SR, K extends Key>(
 
   return (
     <SimpleBar
+      ref={scrollRef}
       autoHide={false}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
@@ -1132,6 +1212,8 @@ function DataGrid<R, SR, K extends Key>(
       />
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
+      ) : rows.every((data, rowIndex) => hideRows.includes(rowIndex)) ? (
+        noShowRowsFallback
       ) : (
         <>
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
