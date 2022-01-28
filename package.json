@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "clsx": "^1.1.1",
+    "rxjs": "^7.5.2",
     "simplebar-react": "^2.3.6"
   },
   "devDependencies": {
