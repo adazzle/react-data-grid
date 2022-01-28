@@ -570,6 +570,8 @@ function DataGrid<R, SR, K extends Key>(
       case 'Home':
       case 'End':
       case 'PageUp':
+      case 'Enter':
+      case 'Tab':
       case 'PageDown':
         navigate(event);
         break;
@@ -857,6 +859,22 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
+    const goToDown = () => {
+      const rawNextRow = rowIdx + 1;
+
+      let nextRow = rawNextRow;
+
+      /* eslint-disable-next-line */
+      while (true) {
+        if (!hideRows.includes(nextRow)) {
+          break;
+        }
+        nextRow += 1;
+      }
+
+      return { idx, rowIdx: nextRow };
+    };
+
     switch (key) {
       case 'ArrowUp': {
         const rawPrevRow = rowIdx - 1;
@@ -873,21 +891,9 @@ function DataGrid<R, SR, K extends Key>(
 
         return { idx, rowIdx: prevRow };
       }
-      case 'ArrowDown': {
-        const rawNextRow = rowIdx + 1;
-
-        let nextRow = rawNextRow;
-
-        /* eslint-disable-next-line */
-        while (true) {
-          if (!hideRows.includes(nextRow)) {
-            break;
-          }
-          nextRow += 1;
-        }
-
-        return { idx, rowIdx: nextRow };
-      }
+      case 'ArrowDown':
+      case 'Enter':
+        return goToDown();
       case 'ArrowLeft':
         return { idx: idx - 1, rowIdx };
       case 'ArrowRight':
@@ -1035,9 +1041,7 @@ function DataGrid<R, SR, K extends Key>(
         row={row}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
-        scrollToCell={() => {
-          scrollToCell(selectedPosition);
-        }}
+        scrollToCell={() => scrollToCell(selectedPosition)}
       />
     );
   }
