@@ -53,7 +53,8 @@ import type {
   CellNavigationMode,
   SortColumn,
   RowHeightArgs,
-  Maybe
+  Maybe,
+  DragOverflowHide
 } from './types';
 import SimpleBar from 'simplebar-react';
 
@@ -177,6 +178,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
 
   hideRows?: number[];
   noShowRowsFallback?: ReactNode;
+  dragOverflowHide?: DragOverflowHide;
 }
 
 /**
@@ -233,7 +235,8 @@ function DataGrid<R, SR, K extends Key>(
     // added props
     onSelectedPositionChange,
     noShowRowsFallback,
-    hideRows = []
+    hideRows = [],
+    dragOverflowHide
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
@@ -1004,6 +1007,7 @@ function DataGrid<R, SR, K extends Key>(
         onFill={onFill}
         setDragging={setDragging}
         setDraggedOverRowIdx={setDraggedOverRowIdx}
+        dragOverflowHide={dragOverflowHide}
       />
     );
   }

@@ -57,6 +57,10 @@ const columns: readonly Column<Row>[] = [
 export default function RowsReordering() {
   const [rows, setRows] = useState(createRows);
 
+  const handleFill = ({ columnKey, sourceRow, targetRow, targetRowIndex }) => {
+    return { ...targetRow, [columnKey]: sourceRow[columnKey] };
+  };
+
   return (
     <div
       style={{
@@ -68,6 +72,7 @@ export default function RowsReordering() {
         rows={rows}
         onRowsChange={setRows}
         cellNavigationMode="CHANGE_ROW"
+        onFill={handleFill}
       />
     </div>
   );
