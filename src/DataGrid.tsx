@@ -424,15 +424,23 @@ function DataGrid<R, SR, K extends Key>(
         setAutoResizeColumn(column);
         return;
       }
+      const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
+      if (colSpan !== undefined) {
+        for (let index = 1; index < colSpan; index++) {
+          const nextColumn = columns[column.idx + index];
+          const nextColumnWidth: number = columnMetrics.get(nextColumn)!.width;
+          width -= nextColumnWidth;
+        }
+      }
       setColumnWidths((columnWidths) => {
         const newColumnWidths = new Map(columnWidths);
-        newColumnWidths.set(column.key, width);
+        newColumnWidths.set(column.key, width as number);
         return newColumnWidths;
       });
 
       onColumnResize?.(column.idx, width);
     },
-    [onColumnResize]
+    [columnMetrics, columns, lastFrozenColumnIndex, onColumnResize]
   );
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
