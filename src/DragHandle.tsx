@@ -1,23 +1,15 @@
 import { css } from '@linaria/core';
-
-import type { CalculatedColumn, FillEvent, Position } from './types';
+import { createPortal } from 'react-dom';
+import type { CalculatedColumn, DragOverflowHide, FillEvent, Position } from './types';
 import type { DataGridProps, SelectCellState } from './DataGrid';
+import { useDragHandlePopper } from './dragHandlePopper';
 
 const cellDragHandle = css`
   cursor: move;
   position: absolute;
-  right: 0;
-  bottom: 0;
   width: 8px;
   height: 8px;
-  background-color: var(--rdg-selection-color);
-
-  &:hover {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--rdg-selection-color);
-    background-color: var(--rdg-background-color);
-  }
+  background-color: #66afe9;
 `;
 
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
@@ -30,6 +22,7 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   onFill: (event: FillEvent<R>) => R;
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: (overRowIdx: number | undefined) => void;
+  dragOverflowHide?: DragOverflowHide;
 }
 
 export default function DragHandle<R, SR>({
@@ -41,8 +34,11 @@ export default function DragHandle<R, SR>({
   onRowsChange,
   onFill,
   setDragging,
-  setDraggedOverRowIdx
+  setDraggedOverRowIdx,
+  dragOverflowHide
 }: Props<R, SR>) {
+  const { popperRef, styles, attributes, isHide } = useDragHandlePopper({ dragOverflowHide });
+
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (event.buttons !== 1) return;
     setDragging(true);
@@ -106,11 +102,23 @@ export default function DragHandle<R, SR>({
     }
   }
 
-  return (
+  return createPortal(
     <div
+      ref={popperRef}
       className={cellDragHandleClassname}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
-    />
+      style={{
+        ...styles.popper,
+        ...(isHide
+          ? {
+              visibility: 'hidden',
+              pointerEvents: 'none'
+            }
+          : {})
+      }}
+      {...attributes.popper}
+    />,
+    document.body
   );
 }
