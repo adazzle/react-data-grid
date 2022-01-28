@@ -31,11 +31,13 @@ export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
 
 export function getCellStyle<R, SR>(
   column: CalculatedColumn<R, SR>,
-  colSpan?: number
+  colSpan?: number,
+  rowSpan?: number | null
 ): React.CSSProperties {
   return {
     gridColumnStart: column.idx + 1,
     gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
+    gridRowEnd: rowSpan !== undefined ? `span ${rowSpan}` : undefined,
     left: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
   };
 }

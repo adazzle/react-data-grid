@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
@@ -8,9 +9,20 @@ type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
 
 const colSpanClassname = css`
-  background-color: #ffb300;
-  color: black;
-  text-align: center;
+  .rdg-cell[aria-colspan] {
+    background-color: #ffb300;
+    color: black;
+    text-align: center;
+  }
+`;
+
+const rowSpanClassname = css`
+  .rdg-cell[aria-rowspan] {
+    background-color: #97ac8e;
+    color: black;
+    text-align: center;
+    z-index: 2;
+  }
 `;
 
 function CellFormatter(props: FormatterProps<Row>) {
@@ -46,14 +58,10 @@ export default function ColumnSpanning() {
           }
           return undefined;
         },
-        cellClass(row) {
-          if (
-            (key === '0' && row === 5) ||
-            (key === '2' && row === 2) ||
-            (key === '27' && row === 8) ||
-            (key === '6' && row < 8)
-          ) {
-            return colSpanClassname;
+        rowSpan(args) {
+          if (args.type === 'ROW') {
+            if (key === '0' && args.row === 2) return 5;
+            if (key === '11' && args.row === 4) return 6;
           }
           return undefined;
         }
@@ -63,5 +71,12 @@ export default function ColumnSpanning() {
     return columns;
   }, []);
 
-  return <DataGrid columns={columns} rows={rows} rowHeight={22} className="fill-grid" />;
+  return (
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      rowHeight={22}
+      className={clsx('fill-grid', colSpanClassname, rowSpanClassname)}
+    />
+  );
 }

@@ -65,17 +65,20 @@ function Cell<R, SR>({
     onRowDoubleClick?.(row, column);
   }
 
+  const rowSpan = column.rowSpan?.({ type: 'ROW', row });
+
   return (
     <div
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
+      aria-rowspan={rowSpan ?? undefined}
       aria-readonly={!isCellEditable(column, row) || undefined}
       ref={ref}
       tabIndex={tabIndex}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={getCellStyle(column, colSpan, rowSpan)}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
