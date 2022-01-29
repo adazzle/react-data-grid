@@ -784,7 +784,6 @@ function DataGrid<R, SR, K extends Key>(
 
   function selectCell(
     position: Position,
-    keyboard: { isShiftKey: boolean; isCommandKey: boolean },
     enableEditor?: Maybe<boolean>
   ): void {
     if (position.idx === 0) {
@@ -1157,10 +1156,10 @@ function DataGrid<R, SR, K extends Key>(
             selectedIdx > viewportColumns[viewportColumns.length - 1].idx
               ? [...viewportColumns, selectedColumn]
               : [
-                  ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
-                  selectedColumn,
-                  ...viewportColumns.slice(lastFrozenColumnIndex + 1)
-                ];
+                ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+                selectedColumn,
+                ...viewportColumns.slice(lastFrozenColumnIndex + 1)
+              ];
         }
       }
 
