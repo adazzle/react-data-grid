@@ -782,11 +782,8 @@ function DataGrid<R, SR, K extends Key>(
     return !!column.editor;
   }
 
-  function selectCell(
-    position: Position,
-    enableEditor?: Maybe<boolean>
-  ): void {
-    if (position.idx === 0) {
+  function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
+    if (position.idx === 0 || position.rowIdx === -1) {
       return;
     }
 
@@ -867,10 +864,16 @@ function DataGrid<R, SR, K extends Key>(
     const currentIdx = idx + (shiftKey ? -1 : direction);
 
     if (currentIdx === columns.length) {
-      return { idx: 1, rowIdx: rowIdx + direction };
+      return { idx: 1, rowIdx: shiftKey ? rowIdx + Direction.left : rowIdx + direction };
     }
     if (currentIdx === 0) {
-      return { idx: columns.length - 1, rowIdx: rowIdx + direction };
+      if (rowIdx === 0) {
+        return { idx: 0, rowIdx: 0 };
+      }
+      return {
+        idx: columns.length - 1,
+        rowIdx: shiftKey ? rowIdx + Direction.left : rowIdx + direction
+      };
     }
     return { idx: currentIdx, rowIdx };
   }
@@ -929,6 +932,10 @@ function DataGrid<R, SR, K extends Key>(
             break;
           }
           prevRow -= 1;
+        }
+
+        if (rowIdx === 0) {
+          return { idx, rowIdx };
         }
 
         return { idx, rowIdx: prevRow };
@@ -1156,10 +1163,10 @@ function DataGrid<R, SR, K extends Key>(
             selectedIdx > viewportColumns[viewportColumns.length - 1].idx
               ? [...viewportColumns, selectedColumn]
               : [
-                ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
-                selectedColumn,
-                ...viewportColumns.slice(lastFrozenColumnIndex + 1)
-              ];
+                  ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+                  selectedColumn,
+                  ...viewportColumns.slice(lastFrozenColumnIndex + 1)
+                ];
         }
       }
 
