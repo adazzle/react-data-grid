@@ -87,6 +87,7 @@ export interface DataGridHandle {
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+  manualNavigate: (control: { key: string; ctrlKey?: boolean; shiftKey?: boolean }) => void;
 }
 
 type SharedDivProps = Pick<
@@ -422,7 +423,8 @@ function DataGrid<R, SR, K extends Key>(
         behavior: 'smooth'
       });
     },
-    selectCell
+    selectCell,
+    manualNavigate
   }));
 
   /**
@@ -927,6 +929,39 @@ function DataGrid<R, SR, K extends Key>(
       default:
         return selectedPosition;
     }
+  }
+
+  function manualNavigate({
+    key,
+    ctrlKey = false,
+    shiftKey = false
+  }: {
+    key: string;
+    ctrlKey?: boolean;
+    shiftKey?: boolean;
+  }) {
+    const mode = cellNavigationMode;
+
+    const nextPosition = getNextPosition(key, ctrlKey, shiftKey);
+    if (isSamePosition(selectedPosition, nextPosition)) return;
+
+    const nextSelectedCellPosition = getNextSelectedCellPosition({
+      columns,
+      colSpanColumns,
+      rows,
+      summaryRows,
+      minRowIdx,
+      maxRowIdx,
+      lastFrozenColumnIndex,
+      cellNavigationMode: mode,
+      currentPosition: selectedPosition,
+      nextPosition,
+      isCellWithinBounds: isCellWithinSelectionBounds,
+      isGroupRow,
+      hideRows
+    });
+
+    selectCell(nextSelectedCellPosition);
   }
 
   function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
