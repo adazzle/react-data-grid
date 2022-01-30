@@ -52,15 +52,15 @@ css`
     }
 
     .rdg.fill-grid {
-      height: 100%;
+      block-size: 100%;
     }
 
     .rdg.small-grid {
-      height: 300px;
+      block-size: 300px;
     }
 
     .rdg.big-grid {
-      height: 600px;
+      block-size: 600px;
     }
 
     .rdg-cell .Select {
@@ -75,7 +75,7 @@ const mainClassname = css`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: 100vh;
+  block-size: 100vh;
   padding: 8px;
   overflow: hidden;
 `;

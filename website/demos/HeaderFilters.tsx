@@ -10,7 +10,7 @@ import { useFocusRef } from '../../src/hooks';
 const rootClassname = css`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  block-size: 100%;
   gap: 10px;
 
   > .rdg {
@@ -40,7 +40,7 @@ const filterContainerClassname = css`
 `;
 
 const filterClassname = css`
-  width: 100%;
+  inline-size: 100%;
   padding: 4px;
   font-size: 14px;
 `;

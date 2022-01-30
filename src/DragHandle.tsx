@@ -8,13 +8,13 @@ const cellDragHandle = css`
   position: absolute;
   inset-inline-end: 0;
   inset-block-end: 0;
-  width: 8px;
-  height: 8px;
+  inline-size: 8px;
+  block-size: 8px;
   background-color: var(--rdg-selection-color);
 
   &:hover {
-    width: 16px;
-    height: 16px;
+    inline-size: 16px;
+    block-size: 16px;
     border: 2px solid var(--rdg-selection-color);
     background-color: var(--rdg-background-color);
   }

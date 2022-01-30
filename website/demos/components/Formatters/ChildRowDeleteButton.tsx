@@ -11,15 +11,15 @@ const childRowActionCrossClassname = css`
 
   &::before {
     inset-inline-start: 21px;
-    width: 1px;
-    height: 100%;
+    inline-size: 1px;
+    block-size: 100%;
   }
 
   &::after {
     inset-block-start: 50%;
     inset-inline-start: 20px;
-    height: 1px;
-    width: 15px;
+    block-size: 1px;
+    inline-size: 15px;
   }
 
   &:hover {

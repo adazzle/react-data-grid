@@ -36,7 +36,7 @@ export default function ScrollToRow() {
       <div style={{ marginBlockEnd: 5 }}>
         <span style={{ marginInlineEnd: 5 }}>Row index: </span>
         <input
-          style={{ width: 50 }}
+          style={{ inlineSize: 50 }}
           type="number"
           value={value}
           onChange={(event) => setValue(event.target.value)}

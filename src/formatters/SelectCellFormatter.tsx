@@ -16,7 +16,7 @@ const checkboxLabelClassname = `rdg-checkbox-label ${checkboxLabel}`;
 
 const checkboxInput = css`
   all: unset;
-  width: 0;
+  inline-size: 0;
   margin: 0;
 `;
 
@@ -24,8 +24,8 @@ const checkboxInputClassname = `rdg-checkbox-input ${checkboxInput}`;
 
 const checkbox = css`
   content: '';
-  width: 20px;
-  height: 20px;
+  inline-size: 20px;
+  block-size: 20px;
   border: 2px solid var(--rdg-border-color);
   background-color: var(--rdg-background-color);
 

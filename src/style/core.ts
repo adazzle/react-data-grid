@@ -48,7 +48,7 @@ const root = css`
   contain: strict;
   contain: size layout style paint;
   content-visibility: auto;
-  height: 350px;
+  block-size: 350px;
   border: 1px solid var(--rdg-border-color);
   box-sizing: border-box;
   overflow: auto;
@@ -75,8 +75,8 @@ const root = css`
     position: absolute;
     inset-block-start: 0;
     inset-inline-start: 0;
-    height: var(--rdg-grid-height);
-    width: var(--rdg-row-width);
+    block-size: var(--rdg-grid-height);
+    inline-size: var(--rdg-row-width);
   }
 
   &.rdg-dark {

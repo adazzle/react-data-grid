@@ -4,7 +4,7 @@ import { useFocusRef } from '../../../../src/hooks';
 const cellExpandClassname = css`
   float: inline-end;
   display: table;
-  height: 100%;
+  block-size: 100%;
 
   > span {
     display: table-cell;

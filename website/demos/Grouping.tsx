@@ -9,7 +9,7 @@ import type { Column } from '../../src';
 const groupingClassname = css`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  block-size: 100%;
   gap: 8px;
 
   > .rdg {

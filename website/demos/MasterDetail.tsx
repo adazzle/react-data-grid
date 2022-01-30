@@ -154,7 +154,7 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
         rows={products}
         columns={productColumns}
         rowKeyGetter={rowKeyGetter}
-        style={{ height: 250 }}
+        style={{ blockSize: 250 }}
       />
     </div>
   );

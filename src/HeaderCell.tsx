@@ -16,7 +16,7 @@ const cellResizable = css`
     inset-block-start: 0;
     inset-inline-end: 0;
     inset-block-end: 0;
-    width: 10px;
+    inline-size: 10px;
   }
 `;
 

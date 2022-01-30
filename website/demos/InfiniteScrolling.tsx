@@ -5,7 +5,7 @@ import DataGrid from '../../src';
 import type { Column } from '../../src';
 
 const loadMoreRowsClassname = css`
-  width: 180px;
+  inline-size: 180px;
   padding: 8px 16px;
   position: absolute;
   inset-block-end: 8px;
