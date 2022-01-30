@@ -26,7 +26,7 @@ css`
       opacity: 0;
       padding: 5px 0;
       pointer-events: none;
-      text-align: left;
+      text-align: start;
       transition: opacity 250ms ease !important;
     }
 

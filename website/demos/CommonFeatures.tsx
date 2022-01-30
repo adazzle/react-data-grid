@@ -10,7 +10,7 @@ import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/TextEditor';
 
 const toolbarClassname = css`
-  text-align: right;
+  text-align: end;
   margin-block-end: 8px;
 `;
 
@@ -28,7 +28,7 @@ const dialogContainerClassname = css`
     }
 
     > menu {
-      text-align: right;
+      text-align: end;
     }
   }
 `;
