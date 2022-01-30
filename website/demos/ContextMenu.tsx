@@ -20,8 +20,10 @@ css`
       border-radius: 0.25rem;
       color: #373a3c;
       font-size: 16px;
-      margin: 2px 0 0;
-      min-width: 160px;
+      margin-block-start: 2px;
+      margin-inline-end: 0;
+      margin-block-end: 0;
+      min-inline-size: 160px;
       outline: none;
       opacity: 0;
       padding: 5px 0;
@@ -42,7 +44,8 @@ css`
       cursor: pointer;
       font-weight: 400;
       line-height: 1.5;
-      padding: 3px 20px;
+      padding-block: 3px;
+      padding-inline: 20px;
       text-align: inherit;
       white-space: nowrap;
     }
@@ -66,7 +69,8 @@ css`
       border-block-end: 1px solid rgba(0, 0, 0, 0.15);
       cursor: inherit;
       border-block-end: 3px;
-      padding: 2px 0;
+      padding-block: 2px;
+      padding-inline: 0;
     }
 
     .react-contextmenu-item--divider:hover {
@@ -82,7 +86,7 @@ css`
       content: '▶';
       display: inline-block;
       position: absolute;
-      right: 7px;
+      inset-inline-end: 7px;
     }
 
     .example-multiple-targets::after {
