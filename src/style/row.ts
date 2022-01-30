@@ -32,10 +32,12 @@ const rowSelected = css`
 
   > .${cell} {
     box-shadow: ${topBoxShadow}, ${bottomBoxShadow};
-    &:first-child {
+    &:first-child,
+    &:last-child:dir(rtl) {
       box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${leftBoxShadow};
     }
-    &:last-child {
+    &:last-child,
+    &:first-child:dir(rtl) {
       box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${rightBoxShadow};
     }
   }
