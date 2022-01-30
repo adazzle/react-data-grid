@@ -4,8 +4,8 @@ export const cell = css`
   contain: strict;
   contain: size layout style paint;
   padding: 0 8px;
-  border-right: 1px solid var(--rdg-border-color);
-  border-bottom: 1px solid var(--rdg-border-color);
+  border-inline-end: 1px solid var(--rdg-border-color);
+  border-block-end: 1px solid var(--rdg-border-color);
   grid-row-start: var(--rdg-grid-row-start);
   background-color: inherit;
 

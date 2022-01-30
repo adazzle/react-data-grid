@@ -6,8 +6,8 @@ import type { DataGridProps, SelectCellState } from './DataGrid';
 const cellDragHandle = css`
   cursor: move;
   position: absolute;
-  right: 0;
-  bottom: 0;
+  inset-inline-end: 0;
+  inset-block-end: 0;
   width: 8px;
   height: 8px;
   background-color: var(--rdg-selection-color);

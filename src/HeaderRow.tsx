@@ -34,7 +34,7 @@ const headerRow = css`
     /* Should have a higher value than 1 to show up above frozen cells */
     z-index: 2;
     position: sticky;
-    top: 0;
+    inset-block-start: 0;
   }
 
   > .${cellFrozen} {

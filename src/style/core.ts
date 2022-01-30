@@ -56,7 +56,6 @@ const root = css`
   background-color: var(--rdg-background-color);
   color: var(--rdg-color);
   font-size: var(--rdg-font-size);
-  direction: ltr;
 
   /* set stacking context in safari */
   @supports not (contain: strict) {
@@ -74,8 +73,8 @@ const root = css`
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
+    inset-block-start: 0;
+    inset-inline-start: 0;
     height: var(--rdg-grid-height);
     width: var(--rdg-row-width);
   }
@@ -108,6 +107,6 @@ export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDraggi
 
 export const focusSinkClassname = css`
   position: sticky;
-  left: 0;
+  inset-inline-start: 0;
   grid-column-start: 1;
 `;

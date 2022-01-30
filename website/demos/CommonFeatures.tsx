@@ -11,7 +11,7 @@ import { textEditorClassname } from '../../src/editors/TextEditor';
 
 const toolbarClassname = css`
   text-align: right;
-  margin-bottom: 8px;
+  margin-block-end: 8px;
 `;
 
 const dialogContainerClassname = css`

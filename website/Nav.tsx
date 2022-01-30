@@ -7,10 +7,10 @@ const navClassname = css`
   white-space: nowrap;
 
   @media (prefers-color-scheme: light) {
-    border-left: 4px solid hsl(210deg 50% 80%);
+    border-inline-start: 4px solid hsl(210deg 50% 80%);
   }
   @media (prefers-color-scheme: dark) {
-    border-left: 4px solid hsl(210deg 50% 40%);
+    border-inline-start: 4px solid hsl(210deg 50% 40%);
   }
 
   h1,

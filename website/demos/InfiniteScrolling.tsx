@@ -8,8 +8,8 @@ const loadMoreRowsClassname = css`
   width: 180px;
   padding: 8px 16px;
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  inset-block-end: 8px;
+  inset-inline-end: 8px;
   color: white;
   line-height: 35px;
   background: rgb(0 0 0 / 0.6);

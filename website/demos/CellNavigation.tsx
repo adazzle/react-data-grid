@@ -75,7 +75,7 @@ export default function CellNavigation() {
 
   return (
     <>
-      <div style={{ marginBottom: 5 }}>
+      <div style={{ marginBlockEnd: 5 }}>
         Cell Navigation Modes:
         <label>
           <input
