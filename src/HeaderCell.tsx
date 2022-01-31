@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
-import { getCellStyle, getCellClassname } from './utils';
+import { getCellStyle, getCellClassname, isRtlDirection } from './utils';
 import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
@@ -70,8 +70,9 @@ export default function HeaderCell<R, SR>({
     }
 
     const { currentTarget, pointerId } = event;
-    const { right } = currentTarget.getBoundingClientRect();
-    const offset = right - event.clientX;
+    const { right, left } = currentTarget.getBoundingClientRect();
+    const isRtl = isRtlDirection(currentTarget);
+    const offset = isRtl ? event.clientX - left : right - event.clientX;
 
     if (offset > 11) {
       // +1px to account for the border size
@@ -79,7 +80,8 @@ export default function HeaderCell<R, SR>({
     }
 
     function onPointerMove(event: PointerEvent) {
-      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      const { right, left } = currentTarget.getBoundingClientRect();
+      const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
         onColumnResize(column, width);
       }
@@ -137,8 +139,10 @@ export default function HeaderCell<R, SR>({
   }
 
   function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    const { right } = event.currentTarget.getBoundingClientRect();
-    const offset = right - event.clientX;
+    const { right, left } = event.currentTarget.getBoundingClientRect();
+    const offset = isRtlDirection(event.currentTarget)
+      ? event.clientX - left
+      : right - event.clientX;
 
     if (offset > 11) {
       // +1px to account for the border size

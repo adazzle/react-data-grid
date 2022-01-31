@@ -34,7 +34,8 @@ import {
   max,
   sign,
   abs,
-  getSelectedCellColSpan
+  getSelectedCellColSpan,
+  isRtlDirection
 } from './utils';
 
 import type {
@@ -252,6 +253,7 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
+  const isRtlRef = useRef<boolean | undefined>(undefined);
 
   /**
    * computed values
@@ -369,6 +371,10 @@ function DataGrid<R, SR, K extends Key>(
    * effects
    */
   useLayoutEffect(() => {
+    if (isRtlRef.current === undefined) {
+      isRtlRef.current = isRtlDirection(gridRef.current!);
+    }
+
     if (
       !selectedCellIsWithinSelectionBounds ||
       isSamePosition(selectedPosition, prevSelectedPosition.current)
@@ -733,10 +739,13 @@ function DataGrid<R, SR, K extends Key>(
 
       const isCellAtLeftBoundary = left < scrollInline + totalFrozenColumnWidth;
       const isCellAtRightBoundary = right > clientWidth + scrollInline;
+      const isRtl = isRtlRef.current === true;
       if (isCellAtLeftBoundary) {
-        current.scrollLeft = left - totalFrozenColumnWidth;
+        const newScrollLeft = left - totalFrozenColumnWidth;
+        current.scrollLeft = isRtl ? -newScrollLeft : newScrollLeft;
       } else if (isCellAtRightBoundary) {
-        current.scrollLeft = right - clientWidth;
+        const newScrollLeft = right - clientWidth;
+        current.scrollLeft = isRtl ? -newScrollLeft : newScrollLeft;
       }
     }
 

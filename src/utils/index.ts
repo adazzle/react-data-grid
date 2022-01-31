@@ -53,3 +53,7 @@ export function getCellClassname<R, SR>(
     ...extraClasses
   );
 }
+
+export function isRtlDirection(element: Element) {
+  return getComputedStyle(element).direction === 'rtl';
+}
