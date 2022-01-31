@@ -105,7 +105,15 @@ export default function CellNavigation() {
           Loop Over Row
         </label>
       </div>
-      <DataGrid columns={columns} rows={rows} cellNavigationMode={cellNavigationMode} />
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        cellNavigationMode={cellNavigationMode}
+        onFill={({ columnKey, sourceRow, targetRow, targetRowIndex }) => ({
+          ...targetRow,
+          [columnKey]: sourceRow[columnKey]
+        })}
+      />
     </>
   );
 }

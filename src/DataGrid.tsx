@@ -186,6 +186,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   hideRows?: number[];
   noShowRowsFallback?: ReactNode;
   dragOverflowHide?: DragOverflowHide;
+  onDragging?: (idDragging: boolean) => void;
 }
 
 /**
@@ -243,7 +244,8 @@ function DataGrid<R, SR, K extends Key>(
     onSelectedPositionChange,
     noShowRowsFallback,
     hideRows = [],
-    dragOverflowHide
+    dragOverflowHide,
+    onDragging
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
@@ -269,6 +271,10 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    onDragging?.(isDragging);
+  }, [isDragging, onDragging]);
 
   /**
    * refs
