@@ -19,6 +19,7 @@ import MillionCells from './demos/MillionCells';
 import NoRows from './demos/NoRows';
 import ResizableGrid from './demos/Resizable';
 import RowsReordering from './demos/RowsReordering';
+import Rtl from './demos/Rtl';
 import ScrollToRow from './demos/ScrollToRow';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
@@ -129,6 +130,9 @@ function Root() {
           </Route>
           <Route exact path="/rows-reordering">
             <RowsReordering />
+          </Route>
+          <Route exact path="/rtl">
+            <Rtl />
           </Route>
           <Route exact path="/scroll-to-row">
             <ScrollToRow />
