@@ -69,7 +69,7 @@ css`
     .react-contextmenu-item--divider {
       border-block-end: 1px solid rgba(0, 0, 0, 0.15);
       cursor: inherit;
-      border-block-end: 3px;
+      margin-block-end: 3px;
       padding-block: 2px;
       padding-inline: 0;
     }
