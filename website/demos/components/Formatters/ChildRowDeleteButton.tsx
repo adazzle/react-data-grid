@@ -33,6 +33,9 @@ const childRowButtonClassname = css`
   inset-inline-start: 21px;
   transform: translateX(-50%);
   filter: grayscale(1);
+  &:dir(rtl) {
+    transform: translateX(50%);
+  }
 `;
 
 interface ChildRowDeleteButtonProps {
