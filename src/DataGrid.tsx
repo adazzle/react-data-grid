@@ -589,7 +589,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, scrollLeft } = event.currentTarget;
-    setScrollTop(abs(scrollTop));
+    setScrollTop(scrollTop);
     setScrollLeft(abs(scrollLeft));
     onScroll?.(event);
   }
