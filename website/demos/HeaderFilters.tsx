@@ -30,7 +30,8 @@ const filterContainerClassname = css`
     padding: 0;
 
     > div {
-      padding: 0 8px;
+      padding-block: 0;
+      padding-inline: 8px;
 
       &:first-child {
         border-block-end: 1px solid var(--rdg-border-color);

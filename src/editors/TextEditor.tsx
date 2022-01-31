@@ -7,7 +7,8 @@ const textEditor = css`
   box-sizing: border-box;
   inline-size: 100%;
   block-size: 100%;
-  padding: 0px 6px 0 6px;
+  padding-block: 0;
+  padding-inline: 6px;
   border: 2px solid #ccc;
   vertical-align: top;
   color: var(--rdg-color);

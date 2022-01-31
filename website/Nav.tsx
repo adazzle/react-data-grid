@@ -23,7 +23,8 @@ const navClassname = css`
     font-size: 14px;
     line-height: 22px;
     text-decoration: none;
-    padding: 0 16px;
+    padding-block: 0;
+    padding-inline: 16px;
     transition: 0.1s background-color;
 
     &:hover {

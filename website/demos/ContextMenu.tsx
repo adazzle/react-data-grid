@@ -26,7 +26,8 @@ css`
       min-inline-size: 160px;
       outline: none;
       opacity: 0;
-      padding: 5px 0;
+      padding-block: 5px;
+      padding-inline: 0;
       pointer-events: none;
       text-align: start;
       transition: opacity 250ms ease !important;

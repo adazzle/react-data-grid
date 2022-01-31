@@ -6,7 +6,8 @@ import type { Column } from '../../src';
 
 const loadMoreRowsClassname = css`
   inline-size: 180px;
-  padding: 8px 16px;
+  padding-block: 8px;
+  padding-inline: 16px;
   position: absolute;
   inset-block-end: 8px;
   inset-inline-end: 8px;
