@@ -75,8 +75,8 @@ const root = css`
     position: absolute;
     inset-block-start: 0;
     inset-inline-start: 0;
-    block-size: var(--rdg-grid-height);
-    inline-size: var(--rdg-row-width);
+    block-size: var(--rdg-grid-block-size);
+    inline-size: var(--rdg-grid-inline-size);
   }
 
   &.rdg-dark {
