@@ -235,8 +235,8 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * states
    */
-  const [scrollBlock, setScrollBlock] = useState(0);
-  const [scrollInline, setScrollInline] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
     initialPosition
@@ -291,7 +291,7 @@ function DataGrid<R, SR, K extends Key>(
   } = useCalculatedColumns({
     rawColumns,
     columnWidths,
-    scrollLeft: scrollInline,
+    scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
     rawGroupBy: rowGrouper ? rawGroupBy : undefined,
@@ -315,7 +315,7 @@ function DataGrid<R, SR, K extends Key>(
     rowGrouper,
     rowHeight,
     clientHeight,
-    scrollTop: scrollBlock,
+    scrollTop,
     expandedGroupIds,
     enableVirtualization
   });
@@ -589,8 +589,8 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, scrollLeft } = event.currentTarget;
-    setScrollBlock(abs(scrollTop));
-    setScrollInline(abs(scrollLeft));
+    setScrollTop(abs(scrollTop));
+    setScrollLeft(abs(scrollLeft));
     onScroll?.(event);
   }
 
@@ -737,8 +737,8 @@ function DataGrid<R, SR, K extends Key>(
         right = left + width;
       }
 
-      const isCellAtLeftBoundary = left < scrollInline + totalFrozenColumnWidth;
-      const isCellAtRightBoundary = right > clientWidth + scrollInline;
+      const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
+      const isCellAtRightBoundary = right > clientWidth + scrollLeft;
       const isRtl = isRtlRef.current === true;
       if (isCellAtLeftBoundary) {
         const newScrollLeft = left - totalFrozenColumnWidth;
@@ -752,10 +752,10 @@ function DataGrid<R, SR, K extends Key>(
     if (typeof rowIdx === 'number' && isRowIdxWithinViewportBounds(rowIdx)) {
       const rowTop = getRowTop(rowIdx);
       const rowHeight = getRowHeight(rowIdx);
-      if (rowTop < scrollBlock) {
+      if (rowTop < scrollTop) {
         // at top boundary, scroll to the row's top
         current.scrollTop = rowTop;
-      } else if (rowTop + rowHeight > scrollBlock + clientHeight) {
+      } else if (rowTop + rowHeight > scrollTop + clientHeight) {
         // at bottom boundary, scroll the next row's top to the bottom of the viewport
         current.scrollTop = rowTop + rowHeight - clientHeight;
       }
