@@ -34,8 +34,7 @@ import {
   max,
   sign,
   abs,
-  getSelectedCellColSpan,
-  isRtlDirection
+  getSelectedCellColSpan
 } from './utils';
 
 import type {
@@ -83,7 +82,7 @@ export interface DataGridHandle {
 
 type SharedDivProps = Pick<
   React.HTMLAttributes<HTMLDivElement>,
-  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'className' | 'style' | 'dir'
+  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'className' | 'style'
 >;
 
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
@@ -166,6 +165,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
   noRowsFallback?: React.ReactNode;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
+  direction?: Maybe<'ltr' | 'rtl'>;
   'data-testid'?: Maybe<string>;
 }
 
@@ -214,7 +214,7 @@ function DataGrid<R, SR, K extends Key>(
     className,
     style,
     rowClass,
-    dir,
+    direction,
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
@@ -232,6 +232,7 @@ function DataGrid<R, SR, K extends Key>(
   const RowRenderer = rowRenderer ?? Row;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
+  direction ??= 'ltr';
 
   /**
    * states
@@ -254,7 +255,6 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
-  const isRtlRef = useRef<boolean | undefined>(undefined);
 
   /**
    * computed values
@@ -372,10 +372,6 @@ function DataGrid<R, SR, K extends Key>(
    * effects
    */
   useLayoutEffect(() => {
-    if (isRtlRef.current === undefined) {
-      isRtlRef.current = isRtlDirection(gridRef.current!);
-    }
-
     if (
       !selectedCellIsWithinSelectionBounds ||
       isSamePosition(selectedPosition, prevSelectedPosition.current)
@@ -740,7 +736,7 @@ function DataGrid<R, SR, K extends Key>(
 
       const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
       const isCellAtRightBoundary = right > clientWidth + scrollLeft;
-      const sign = isRtlRef.current === true ? -1 : 1;
+      const sign = direction === 'rtl' ? -1 : 1;
       if (isCellAtLeftBoundary) {
         current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
       } else if (isCellAtRightBoundary) {
@@ -1119,8 +1115,8 @@ function DataGrid<R, SR, K extends Key>(
           ...getLayoutCssVars()
         } as unknown as React.CSSProperties
       }
-      dir={dir}
-      key={dir} // recreate grid as scroll position is not compatible b/w ltr and rtl
+      dir={direction}
+      key={direction} // recreate grid as scroll position is not compatible b/w ltr and rtl
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}

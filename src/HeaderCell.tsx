@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import SortableHeaderCell from './headerCells/SortableHeaderCell';
-import { getCellStyle, getCellClassname, isRtlDirection } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
@@ -31,6 +31,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'selectCell'
   | 'onColumnResize'
   | 'shouldFocusGrid'
+  | 'direction'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -49,8 +50,10 @@ export default function HeaderCell<R, SR>({
   sortColumns,
   onSortColumnsChange,
   selectCell,
-  shouldFocusGrid
+  shouldFocusGrid,
+  direction
 }: HeaderCellProps<R, SR>) {
+  const isRtl = direction === 'rtl';
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
@@ -71,7 +74,6 @@ export default function HeaderCell<R, SR>({
 
     const { currentTarget, pointerId } = event;
     const { right, left } = currentTarget.getBoundingClientRect();
-    const isRtl = isRtlDirection(currentTarget);
     const offset = isRtl ? event.clientX - left : right - event.clientX;
 
     if (offset > 11) {
@@ -140,9 +142,7 @@ export default function HeaderCell<R, SR>({
 
   function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     const { right, left } = event.currentTarget.getBoundingClientRect();
-    const offset = isRtlDirection(event.currentTarget)
-      ? event.clientX - left
-      : right - event.clientX;
+    const offset = isRtl ? event.clientX - left : right - event.clientX;
 
     if (offset > 11) {
       // +1px to account for the border size
