@@ -790,9 +790,9 @@ function DataGrid<R, SR, K extends Key>(
       case 'ArrowDown':
         return { idx, rowIdx: rowIdx + 1 };
       case 'ArrowLeft':
-        return { idx: idx - 1, rowIdx };
+        return direction === 'rtl' ? { idx: idx + 1, rowIdx } : { idx: idx - 1, rowIdx };
       case 'ArrowRight':
-        return { idx: idx + 1, rowIdx };
+        return direction === 'rtl' ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
