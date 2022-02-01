@@ -200,3 +200,5 @@ export type ColSpanArgs<R, SR> =
   | { type: 'SUMMARY'; row: SR };
 
 export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
+
+export type Direction = 'ltr' | 'rtl';

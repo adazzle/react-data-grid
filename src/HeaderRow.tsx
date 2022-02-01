@@ -3,14 +3,14 @@ import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import HeaderCell from './HeaderCell';
-import type { CalculatedColumn } from './types';
+import type { CalculatedColumn, Direction } from './types';
 import { getColSpan, getRowStyle } from './utils';
 import type { DataGridProps } from './DataGrid';
 import { cell, cellFrozen, rowSelectedClassname } from './style';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
-  'sortColumns' | 'onSortColumnsChange' | 'direction'
+  'sortColumns' | 'onSortColumnsChange'
 >;
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
@@ -22,6 +22,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
+  direction: Direction;
 }
 
 const headerRow = css`
@@ -54,7 +55,8 @@ function HeaderRow<R, SR, K extends React.Key>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   selectCell,
-  shouldFocusGrid
+  shouldFocusGrid,
+  direction
 }: HeaderRowProps<R, SR, K>) {
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
@@ -77,6 +79,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         sortColumns={sortColumns}
         selectCell={selectCell}
         shouldFocusGrid={shouldFocusGrid && index === 0}
+        direction={direction}
       />
     );
   }

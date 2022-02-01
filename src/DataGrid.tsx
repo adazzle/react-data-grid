@@ -49,7 +49,8 @@ import type {
   CellNavigationMode,
   SortColumn,
   RowHeightArgs,
-  Maybe
+  Maybe,
+  Direction
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -165,7 +166,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
   noRowsFallback?: React.ReactNode;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
-  direction?: Maybe<'ltr' | 'rtl'>;
+  direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
 }
 
@@ -1144,6 +1145,7 @@ function DataGrid<R, SR, K extends Key>(
         selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
         selectCell={selectHeaderCellLatest}
         shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+        direction={direction}
       />
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
