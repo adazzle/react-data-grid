@@ -174,13 +174,15 @@ export default function ContextMenuDemo({ direction }: Props) {
         direction={direction}
       />
       {createPortal(
-        <ContextMenu id="grid-context-menu">
-          <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
-          <SubMenu title="Insert Row">
-            <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
-            <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
-          </SubMenu>
-        </ContextMenu>,
+        <div dir={direction}>
+          <ContextMenu id="grid-context-menu" rtl={direction === 'rtl'}>
+            <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
+            <SubMenu title="Insert Row">
+              <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
+              <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
+            </SubMenu>
+          </ContextMenu>
+        </div>,
         document.body
       )}
     </>

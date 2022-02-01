@@ -9,6 +9,7 @@ import { stopPropagation } from '../../src/utils';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/TextEditor';
 import type { Props } from './types';
+import type { Direction } from '../../src/types';
 
 const toolbarClassname = css`
   text-align: end;
@@ -72,7 +73,7 @@ interface Row {
   available: boolean;
 }
 
-function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
+function getColumns(countries: string[], direction: Direction): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
     {
@@ -154,6 +155,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       editor({ row, onRowChange, onClose }) {
         return createPortal(
           <div
+            dir={direction}
             className={dialogContainerClassname}
             onKeyDown={(event) => {
               if (event.key === 'Escape') {
@@ -316,7 +318,7 @@ export default function CommonFeatures({ direction }: Props) {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const columns = useMemo(() => getColumns(countries), [countries]);
+  const columns = useMemo(() => getColumns(countries, direction), [countries, direction]);
 
   const summaryRows = useMemo(() => {
     const summaryRow: SummaryRow = {
