@@ -741,11 +741,9 @@ function DataGrid<R, SR, K extends Key>(
       const isCellAtRightBoundary = right > clientWidth + scrollLeft;
       const sign = isRtlRef.current === true ? -1 : 1;
       if (isCellAtLeftBoundary) {
-        const newScrollLeft = left - totalFrozenColumnWidth;
-        current.scrollLeft = newScrollLeft * sign;
+        current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
       } else if (isCellAtRightBoundary) {
-        const newScrollLeft = right - clientWidth;
-        current.scrollLeft = newScrollLeft * sign;
+        current.scrollLeft = (right - clientWidth) * sign;
       }
     }
 

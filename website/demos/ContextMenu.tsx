@@ -21,8 +21,9 @@ css`
       color: #373a3c;
       font-size: 16px;
       margin-block-start: 2px;
-      margin-inline-end: 0;
       margin-block-end: 0;
+      margin-inline-start: 0;
+      margin-inline-end: 0;
       min-inline-size: 160px;
       outline: none;
       opacity: 0;
