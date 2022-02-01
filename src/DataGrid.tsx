@@ -83,7 +83,7 @@ export interface DataGridHandle {
 
 type SharedDivProps = Pick<
   React.HTMLAttributes<HTMLDivElement>,
-  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'className' | 'style'
+  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'className' | 'style' | 'dir'
 >;
 
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
@@ -214,6 +214,7 @@ function DataGrid<R, SR, K extends Key>(
     className,
     style,
     rowClass,
+    dir,
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
@@ -1118,6 +1119,8 @@ function DataGrid<R, SR, K extends Key>(
           ...getLayoutCssVars()
         } as unknown as React.CSSProperties
       }
+      dir={dir}
+      key={dir} // recreate grid as scroll position is not compatible b/w ltr and rtl
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
