@@ -1,8 +1,9 @@
-import { StrictMode } from 'react';
+import React, { StrictMode, useState } from 'react';
 import { render } from 'react-dom';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
 
+import type { Direction } from './Nav';
 import Nav from './Nav';
 
 import CommonFeatures from './demos/CommonFeatures';
@@ -19,7 +20,6 @@ import MillionCells from './demos/MillionCells';
 import NoRows from './demos/NoRows';
 import ResizableGrid from './demos/Resizable';
 import RowsReordering from './demos/RowsReordering';
-import Rtl from './demos/Rtl';
 import ScrollToRow from './demos/ScrollToRow';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
@@ -82,11 +82,11 @@ const mainClassname = css`
 `;
 
 function Root() {
+  const [direction, setDirection] = useState<Direction>('ltr');
   return (
     <Router>
-      <Nav />
-
-      <main className={mainClassname}>
+      <Nav direction={direction} onDirectionChange={setDirection} />
+      <main className={mainClassname} style={{ direction }}>
         <Switch>
           <Redirect exact from="/" to="/common-features" />
           <Route exact path="/common-features">
@@ -130,9 +130,6 @@ function Root() {
           </Route>
           <Route exact path="/rows-reordering">
             <RowsReordering />
-          </Route>
-          <Route exact path="/rtl">
-            <Rtl />
           </Route>
           <Route exact path="/scroll-to-row">
             <ScrollToRow />
