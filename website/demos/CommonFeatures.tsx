@@ -8,6 +8,7 @@ import type { Column, SortColumn } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/TextEditor';
+import type { Props } from './types';
 
 const toolbarClassname = css`
   text-align: end;
@@ -306,7 +307,7 @@ function getComparator(sortColumn: string): Comparator {
   }
 }
 
-export default function CommonFeatures() {
+export default function CommonFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -359,6 +360,7 @@ export default function CommonFeatures() {
       onSortColumnsChange={setSortColumns}
       summaryRows={summaryRows}
       className="fill-grid"
+      direction={direction}
     />
   );
 

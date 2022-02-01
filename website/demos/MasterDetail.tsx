@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
 import { CellExpanderFormatter } from './components/Formatters';
+import type { Direction, Props } from './types';
 
 type DepartmentRow =
   | {
@@ -62,43 +63,50 @@ const productColumns: readonly Column<ProductRow>[] = [
   { key: 'price', name: 'Price' }
 ];
 
-const departmentColumns: readonly Column<DepartmentRow>[] = [
-  {
-    key: 'expanded',
-    name: '',
-    minWidth: 30,
-    width: 30,
-    colSpan(args) {
-      return args.type === 'ROW' && args.row.type === 'DETAIL' ? 3 : undefined;
-    },
-    cellClass(row) {
-      return row.type === 'DETAIL'
-        ? css`
-            padding: 24px;
-          `
-        : undefined;
-    },
-    formatter({ row, isCellSelected, onRowChange }) {
-      if (row.type === 'DETAIL') {
-        return <ProductGrid isCellSelected={isCellSelected} parentId={row.parentId} />;
-      }
+export default function MasterDetail({ direction }: Props) {
+  const columns = useMemo((): readonly Column<DepartmentRow>[] => {
+    return [
+      {
+        key: 'expanded',
+        name: '',
+        minWidth: 30,
+        width: 30,
+        colSpan(args) {
+          return args.type === 'ROW' && args.row.type === 'DETAIL' ? 3 : undefined;
+        },
+        cellClass(row) {
+          return row.type === 'DETAIL'
+            ? css`
+                padding: 24px;
+              `
+            : undefined;
+        },
+        formatter({ row, isCellSelected, onRowChange }) {
+          if (row.type === 'DETAIL') {
+            return (
+              <ProductGrid
+                isCellSelected={isCellSelected}
+                parentId={row.parentId}
+                direction={direction}
+              />
+            );
+          }
 
-      return (
-        <CellExpanderFormatter
-          expanded={row.expanded}
-          isCellSelected={isCellSelected}
-          onCellExpand={() => {
-            onRowChange({ ...row, expanded: !row.expanded });
-          }}
-        />
-      );
-    }
-  },
-  { key: 'id', name: 'ID', width: 35 },
-  { key: 'department', name: 'Department' }
-];
-
-export default function MasterDetail() {
+          return (
+            <CellExpanderFormatter
+              expanded={row.expanded}
+              isCellSelected={isCellSelected}
+              onCellExpand={() => {
+                onRowChange({ ...row, expanded: !row.expanded });
+              }}
+            />
+          );
+        }
+      },
+      { key: 'id', name: 'ID', width: 35 },
+      { key: 'department', name: 'Department' }
+    ];
+  }, [direction]);
   const [rows, setRows] = useState(createDepartments);
 
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {
@@ -120,18 +128,27 @@ export default function MasterDetail() {
   return (
     <DataGrid
       rowKeyGetter={rowKeyGetter}
-      columns={departmentColumns}
+      columns={columns}
       rows={rows}
       onRowsChange={onRowsChange}
       headerRowHeight={45}
       rowHeight={(args) => (args.type === 'ROW' && args.row.type === 'DETAIL' ? 300 : 45)}
       className="fill-grid"
       enableVirtualization={false}
+      direction={direction}
     />
   );
 }
 
-function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSelected: boolean }) {
+function ProductGrid({
+  parentId,
+  isCellSelected,
+  direction
+}: {
+  parentId: number;
+  isCellSelected: boolean;
+  direction: Direction;
+}) {
   const gridRef = useRef<DataGridHandle>(null);
   useEffect(() => {
     if (!isCellSelected) return;
@@ -155,6 +172,7 @@ function ProductGrid({ parentId, isCellSelected }: { parentId: number; isCellSel
         columns={productColumns}
         rowKeyGetter={rowKeyGetter}
         style={{ blockSize: 250 }}
+        direction={direction}
       />
     </div>
   );

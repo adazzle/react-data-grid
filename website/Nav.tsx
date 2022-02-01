@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { css } from '@linaria/core';
 
+import type { Direction } from './demos/types';
+
 const navClassname = css`
   display: flex;
   flex-direction: column;
@@ -61,8 +63,6 @@ const activeNavClassname = css`
 const rtlCheckboxClassname = css`
   padding-inline-start: 8px;
 `;
-
-export type Direction = 'ltr' | 'rtl';
 
 interface Props {
   direction: Direction;

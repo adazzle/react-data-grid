@@ -6,6 +6,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { Row as GridRow } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
+import type { Props } from './types';
 
 css`
   @at-root {
@@ -134,7 +135,7 @@ function RowRenderer(props: RowRendererProps<Row>) {
   );
 }
 
-export default function ContextMenuDemo() {
+export default function ContextMenuDemo({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 
@@ -169,6 +170,7 @@ export default function ContextMenuDemo() {
         rows={rows}
         rowRenderer={RowRenderer}
         className="fill-grid"
+        direction={direction}
       />
       {createPortal(
         <ContextMenu id="grid-context-menu">

@@ -5,6 +5,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
+import type { Props } from './types';
 
 const groupingClassname = css`
   display: flex;
@@ -140,7 +141,7 @@ function createRows(): readonly Row[] {
 
 const options = ['country', 'year', 'sport', 'athlete'] as const;
 
-export default function Grouping() {
+export default function Grouping({ direction }: Props) {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([
@@ -194,6 +195,7 @@ export default function Grouping() {
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
         defaultColumnOptions={{ resizable: true }}
+        direction={direction}
       />
     </div>
   );

@@ -6,6 +6,7 @@ import DataGrid from '../../src';
 import type { Column } from '../../src';
 import type { HeaderRendererProps, Omit } from '../../src/types';
 import { useFocusRef } from '../../src/hooks';
+import type { Props } from './types';
 
 const rootClassname = css`
   display: flex;
@@ -76,7 +77,7 @@ function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
   }
 }
 
-export default function HeaderFilters() {
+export default function HeaderFilters({ direction }: Props) {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filter>({
     task: '',
@@ -285,6 +286,7 @@ export default function HeaderFilters() {
           columns={columns}
           rows={filteredRows}
           headerRowHeight={filters.enabled ? 70 : undefined}
+          direction={direction}
         />
       </FilterContext.Provider>
       <datalist id="developers">

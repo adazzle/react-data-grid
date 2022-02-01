@@ -1,8 +1,10 @@
 import faker from 'faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
+
 import DataGrid from '../../src';
 import type { Column } from '../../src';
+import type { Props } from './types';
 
 const loadMoreRowsClassname = css`
   inline-size: 180px;
@@ -87,7 +89,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
   });
 }
 
-export default function InfiniteScrolling() {
+export default function InfiniteScrolling({ direction }: Props) {
   const [rows, setRows] = useState(() => createRows(50));
   const [isLoading, setIsLoading] = useState(false);
 
@@ -112,6 +114,7 @@ export default function InfiniteScrolling() {
         rowHeight={30}
         onScroll={handleScroll}
         className="fill-grid"
+        direction={direction}
       />
       {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>}
     </>
