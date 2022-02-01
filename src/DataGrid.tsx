@@ -266,6 +266,9 @@ function DataGrid<R, SR, K extends Key>(
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isHeaderRowSelected = selectedPosition.rowIdx === -1;
+  const isRtl = direction === 'rtl';
+  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
 
   const allRowsSelected = useMemo((): boolean => {
     // no rows to select = explicitely unchecked
@@ -554,9 +557,9 @@ function DataGrid<R, SR, K extends Key>(
         isGroupRow(row) &&
         selectedPosition.idx === -1 &&
         // Collapse the current group row if it is focused and is in expanded state
-        ((key === 'ArrowLeft' && row.isExpanded) ||
+        ((key === leftKey && row.isExpanded) ||
           // Expand the current group row if it is focused and is in collapsed state
-          (key === 'ArrowRight' && !row.isExpanded))
+          (key === rightKey && !row.isExpanded))
       ) {
         event.preventDefault(); // Prevents scrolling
         toggleGroup(row.id);
@@ -737,7 +740,7 @@ function DataGrid<R, SR, K extends Key>(
 
       const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
       const isCellAtRightBoundary = right > clientWidth + scrollLeft;
-      const sign = direction === 'rtl' ? -1 : 1;
+      const sign = isRtl ? -1 : 1;
       if (isCellAtLeftBoundary) {
         current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
       } else if (isCellAtRightBoundary) {
@@ -764,13 +767,7 @@ function DataGrid<R, SR, K extends Key>(
     const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
 
     // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
-    if (
-      key === 'ArrowLeft' &&
-      isRowSelected &&
-      isGroupRow(row) &&
-      !row.isExpanded &&
-      row.level !== 0
-    ) {
+    if (key === leftKey && isRowSelected && isGroupRow(row) && !row.isExpanded && row.level !== 0) {
       let parentRowIdx = -1;
       for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
         const parentRow = rows[i];
@@ -790,9 +787,9 @@ function DataGrid<R, SR, K extends Key>(
       case 'ArrowDown':
         return { idx, rowIdx: rowIdx + 1 };
       case 'ArrowLeft':
-        return direction === 'rtl' ? { idx: idx + 1, rowIdx } : { idx: idx - 1, rowIdx };
+        return isRtl ? { idx: idx + 1, rowIdx } : { idx: idx - 1, rowIdx };
       case 'ArrowRight':
-        return direction === 'rtl' ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
+        return isRtl ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
