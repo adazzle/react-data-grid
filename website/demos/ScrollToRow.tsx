@@ -46,7 +46,7 @@ export default function ScrollToRow({ direction }: Props) {
           Scroll to row
         </button>
       </div>
-      <DataGrid ref={gridRef} columns={columns} rows={rows} direction={direction} />
+      <DataGrid key={direction} ref={gridRef} columns={columns} rows={rows} direction={direction} />
     </>
   );
 }

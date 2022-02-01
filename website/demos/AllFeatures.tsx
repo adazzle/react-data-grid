@@ -200,6 +200,7 @@ export default function AllFeatures({ direction }: Props) {
 
   return (
     <DataGrid
+      key={direction}
       columns={columns}
       rows={rows}
       rowKeyGetter={rowKeyGetter}

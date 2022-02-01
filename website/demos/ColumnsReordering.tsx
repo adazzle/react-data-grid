@@ -120,6 +120,7 @@ export default function ColumnsReordering({ direction }: Props) {
   return (
     <DndProvider backend={HTML5Backend}>
       <DataGrid
+        key={direction}
         columns={draggableColumns}
         rows={sortedRows}
         sortColumns={sortColumns}

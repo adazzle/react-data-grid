@@ -346,6 +346,7 @@ export default function CommonFeatures({ direction }: Props) {
 
   const gridElement = (
     <DataGrid
+      key={direction}
       rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={sortedRows}

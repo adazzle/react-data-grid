@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { css } from '@linaria/core';
 
-import type { Direction } from './demos/types';
+import type { Direction } from '../src/types';
 
 const navClassname = css`
   display: flex;

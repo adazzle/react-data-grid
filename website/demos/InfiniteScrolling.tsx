@@ -107,6 +107,7 @@ export default function InfiniteScrolling({ direction }: Props) {
   return (
     <>
       <DataGrid
+        key={direction}
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}

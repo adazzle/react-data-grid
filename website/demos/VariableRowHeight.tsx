@@ -35,6 +35,7 @@ export default function VariableRowHeight({ direction }: Props) {
 
   return (
     <DataGrid
+      key={direction}
       columns={columns}
       rows={rows}
       rowHeight={rowHeight}

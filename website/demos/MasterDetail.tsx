@@ -5,7 +5,8 @@ import faker from 'faker';
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
 import { CellExpanderFormatter } from './components/Formatters';
-import type { Direction, Props } from './types';
+import type { Props } from './types';
+import type { Direction } from '../../src/types';
 
 type DepartmentRow =
   | {
@@ -127,6 +128,7 @@ export default function MasterDetail({ direction }: Props) {
 
   return (
     <DataGrid
+      key={direction}
       rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={rows}

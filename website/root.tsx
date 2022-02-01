@@ -3,9 +3,9 @@ import { render } from 'react-dom';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
 
+import type { Direction } from '../src/types';
 import Nav from './Nav';
 
-import type { Direction } from './demos/types';
 import CommonFeatures from './demos/CommonFeatures';
 import AllFeatures from './demos/AllFeatures';
 import CellNavigation from './demos/CellNavigation';

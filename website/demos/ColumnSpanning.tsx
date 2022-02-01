@@ -66,6 +66,7 @@ export default function ColumnSpanning({ direction }: Props) {
 
   return (
     <DataGrid
+      key={direction}
       columns={columns}
       rows={rows}
       rowHeight={22}

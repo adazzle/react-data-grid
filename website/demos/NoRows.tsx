@@ -38,6 +38,7 @@ export default function NoRows({ direction }: Props) {
 
   return (
     <DataGrid
+      key={direction}
       columns={columns}
       rows={rows}
       noRowsFallback={<EmptyRowsRenderer />}
