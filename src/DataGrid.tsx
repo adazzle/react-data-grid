@@ -745,7 +745,7 @@ function DataGrid<R, SR, K extends Key>(
         current.scrollLeft = newScrollLeft * sign;
       } else if (isCellAtRightBoundary) {
         const newScrollLeft = right - clientWidth;
-        current.scrollLeft = isRtl ? -newScrollLeft : newScrollLeft;
+        current.scrollLeft = newScrollLeft * sign;
       }
     }
 
