@@ -14,9 +14,10 @@ import { useDragHandlePopper } from './dragHandlePopper';
 const cellDragHandle = css`
   cursor: move;
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background-color: #66afe9;
+  box-sizing: border-box;
 `;
 
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
