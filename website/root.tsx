@@ -86,7 +86,7 @@ function Root() {
   return (
     <Router>
       <Nav direction={direction} onDirectionChange={setDirection} />
-      <main className={mainClassname} style={{ direction }}>
+      <main className={mainClassname} style={{ direction }} key={direction}>
         <Switch>
           <Redirect exact from="/" to="/common-features" />
           <Route exact path="/common-features">
