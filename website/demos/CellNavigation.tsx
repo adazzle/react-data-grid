@@ -109,7 +109,7 @@ export default function CellNavigation() {
         columns={columns}
         rows={rows}
         cellNavigationMode={cellNavigationMode}
-        onFill={({ columnKey, sourceRow, targetRow, targetRowIndex }) => ({
+        onFill={({ columnKey, sourceRow, targetRow }) => ({
           ...targetRow,
           [columnKey]: sourceRow[columnKey]
         })}
