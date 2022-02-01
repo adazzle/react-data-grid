@@ -107,7 +107,7 @@ export default function Nav() {
         Rows Reordering
       </NavLink>
       <NavLink to="/rtl" exact activeClassName={activeNavClassname}>
-        RTL
+        Right-to-left (RTL)
       </NavLink>
       <NavLink to="/scroll-to-row" exact activeClassName={activeNavClassname}>
         Scroll To Row
