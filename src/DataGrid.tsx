@@ -1116,7 +1116,6 @@ function DataGrid<R, SR, K extends Key>(
         } as unknown as React.CSSProperties
       }
       dir={direction}
-      key={direction} // recreate grid as scroll position is not compatible b/w ltr and rtl
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
