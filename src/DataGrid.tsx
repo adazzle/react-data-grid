@@ -18,7 +18,6 @@ import {
   RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
-import HeaderRenderer from './HeaderRenderer';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
@@ -233,8 +232,6 @@ function DataGrid<R, SR, K extends Key>(
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
-  const headerRenderer =
-    components?.headerRenderer ?? defaultComponents?.headerRenderer ?? HeaderRenderer;
   const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon ?? SortIcon;
   const checkboxFormatter =
     components?.checkboxFormatter ?? defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
@@ -1159,7 +1156,6 @@ function DataGrid<R, SR, K extends Key>(
           selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
           selectCell={selectHeaderCellLatest}
           shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-          headerRenderer={headerRenderer}
         />
         {rows.length === 0 && noRowsFallback ? (
           noRowsFallback

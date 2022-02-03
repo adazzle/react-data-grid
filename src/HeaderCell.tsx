@@ -2,6 +2,7 @@ import { css } from '@linaria/core';
 
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
+import DefaultHeaderRenderer from './HeaderRenderer';
 import { getCellStyle, getCellClassname } from './utils';
 import { useRovingCellRef } from './hooks';
 
@@ -30,7 +31,6 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'selectCell'
   | 'onColumnResize'
   | 'shouldFocusGrid'
-  | 'headerRenderer'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -49,8 +49,7 @@ export default function HeaderCell<R, SR>({
   sortColumns,
   onSortColumnsChange,
   selectCell,
-  shouldFocusGrid,
-  headerRenderer
+  shouldFocusGrid
 }: HeaderCellProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
@@ -65,7 +64,7 @@ export default function HeaderCell<R, SR>({
     [cellResizableClassname]: column.resizable
   });
 
-  const HeaderRenderer = column.headerRenderer ?? headerRenderer;
+  const HeaderRenderer = column.headerRenderer ?? DefaultHeaderRenderer;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {

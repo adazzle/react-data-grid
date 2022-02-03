@@ -221,7 +221,6 @@ export interface CheckboxFormatterProps extends SharedInputProps {
 export interface Components<TRow, TSummaryRow> {
   sortIcon?: Maybe<ComponentType<SortIconProps>>;
   checkboxFormatter?: Maybe<ComponentType<CheckboxFormatterProps>>;
-  headerRenderer?: Maybe<ComponentType<HeaderRendererProps<TRow, TSummaryRow>>>;
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;
 }
