@@ -97,7 +97,7 @@ export default function Components() {
 
 const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
   function CheckboxFormatter({ disabled, ...props }, ref) {
-    return <input ref={ref} {...props} />;
+    return <input type="checkbox" ref={ref} {...props} />;
   }
 );
 

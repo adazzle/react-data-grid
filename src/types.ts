@@ -207,9 +207,10 @@ export interface SortIconProps {
   sortDirection: SortDirection | undefined;
 }
 
-export type CheckboxFormatterProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & {
-  type: 'checkbox';
-};
+export type CheckboxFormatterProps = Pick<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled' | 'onClick' | 'onChange'
+>;
 
 export interface Components<TRow, TSummaryRow> {
   sortIcon?: Maybe<ComponentType<SortIconProps>>;

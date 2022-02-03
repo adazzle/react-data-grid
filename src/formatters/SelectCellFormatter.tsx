@@ -54,7 +54,7 @@ const checkboxLabelDisabled = css`
 const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
 
 type SharedInputProps = Pick<
-  React.InputHTMLAttributes<HTMLInputElement>,
+  CheckboxFormatterProps,
   'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
 >;
 
@@ -82,7 +82,6 @@ export function SelectCellFormatter({
 
   return (
     <Formatter
-      type="checkbox"
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       ref={ref}
@@ -101,7 +100,13 @@ export const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterP
       <label
         className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: disabled })}
       >
-        <input ref={ref} {...props} disabled={disabled} className={checkboxInputClassname} />
+        <input
+          type="checkbox"
+          ref={ref}
+          {...props}
+          disabled={disabled}
+          className={checkboxInputClassname}
+        />
         <div className={checkboxClassname} />
       </label>
     );
