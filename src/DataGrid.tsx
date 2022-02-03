@@ -18,6 +18,7 @@ import {
   RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
+import HeaderRenderer from './HeaderRenderer';
 import Row from './Row';
 import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
@@ -230,7 +231,8 @@ function DataGrid<R, SR, K extends Key>(
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
-  const headerRenderer = components?.headerRenderer ?? defaultComponents?.headerRenderer;
+  const headerRenderer =
+    components?.headerRenderer ?? defaultComponents?.headerRenderer ?? HeaderRenderer;
   const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon;
   const noRowsFallback = (components ?? defaultComponents)?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
@@ -270,10 +272,9 @@ function DataGrid<R, SR, K extends Key>(
 
   const defaultHeaderComponents = useMemo(
     () => ({
-      headerRenderer,
       sortIcon
     }),
-    [headerRenderer, sortIcon]
+    [sortIcon]
   );
 
   const allRowsSelected = useMemo((): boolean => {
@@ -1153,6 +1154,7 @@ function DataGrid<R, SR, K extends Key>(
           selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
           selectCell={selectHeaderCellLatest}
           shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+          headerRenderer={headerRenderer}
         />
       </DataGridDefaultComponentsProvider>
       {rows.length === 0 && noRowsFallback ? (
