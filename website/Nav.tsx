@@ -78,6 +78,9 @@ export default function Nav() {
       <NavLink to="/columns-reordering" exact activeClassName={activeNavClassname}>
         Columns Reordering
       </NavLink>
+      <NavLink to="/components" exact activeClassName={activeNavClassname}>
+        Components
+      </NavLink>
       <NavLink to="/context-menu" exact activeClassName={activeNavClassname}>
         Context Menu
       </NavLink>
