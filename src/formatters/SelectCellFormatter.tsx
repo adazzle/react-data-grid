@@ -1,7 +1,10 @@
+import { forwardRef } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
+
 import { useFocusRef } from '../hooks/useFocusRef';
-import type { CheckboxFormatterProps } from '../types';
+import { useDefaultComponents } from '../DataGridDefaultComponentsProvider';
+import type { CheckboxFormatterProps } from '..';
 
 const checkboxLabel = css`
   cursor: pointer;
@@ -29,12 +32,10 @@ const checkbox = css`
   height: 20px;
   border: 2px solid var(--rdg-border-color);
   background-color: var(--rdg-background-color);
-
   .${checkboxInput}:checked + & {
     background-color: var(--rdg-checkbox-color);
     box-shadow: inset 0px 0px 0px 4px var(--rdg-background-color);
   }
-
   .${checkboxInput}:focus + & {
     border-color: var(--rdg-checkbox-focus-color);
   }
@@ -44,7 +45,6 @@ const checkboxClassname = `rdg-checkbox ${checkbox}`;
 
 const checkboxLabelDisabled = css`
   cursor: default;
-
   .${checkbox} {
     border-color: var(--rdg-checkbox-disabled-border-color);
     background-color: var(--rdg-checkbox-disabled-background-color);
@@ -53,7 +53,18 @@ const checkboxLabelDisabled = css`
 
 const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
 
-export function CheckboxFormatter({
+type SharedInputProps = Pick<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
+>;
+
+interface SelectCellFormatterProps extends SharedInputProps {
+  isCellSelected: boolean;
+  value: boolean;
+  onChange: (value: boolean, isShiftClick: boolean) => void;
+}
+
+export function SelectCellFormatter({
   value,
   isCellSelected,
   disabled,
@@ -61,28 +72,38 @@ export function CheckboxFormatter({
   onChange,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
-}: CheckboxFormatterProps) {
+}: SelectCellFormatterProps) {
   const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
+  const Formatter = useDefaultComponents()?.checkboxFormatter ?? CheckboxFormatter;
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
   return (
-    <label className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: disabled })}>
-      <input
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        ref={ref}
-        type="checkbox"
-        tabIndex={tabIndex}
-        className={checkboxInputClassname}
-        disabled={disabled}
-        checked={value}
-        onChange={handleChange}
-        onClick={onClick}
-      />
-      <div className={checkboxClassname} />
-    </label>
+    <Formatter
+      type="checkbox"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      ref={ref}
+      tabIndex={tabIndex}
+      disabled={disabled}
+      checked={value}
+      onChange={handleChange}
+      onClick={onClick}
+    />
   );
 }
+
+export const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
+  function CheckboxFormatter({ disabled, ...props }: CheckboxFormatterProps, ref) {
+    return (
+      <label
+        className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: disabled })}
+      >
+        <input ref={ref} {...props} disabled={disabled} className={checkboxInputClassname} />
+        <div className={checkboxClassname} />
+      </label>
+    );
+  }
+);

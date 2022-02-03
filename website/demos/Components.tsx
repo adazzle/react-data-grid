@@ -1,10 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, forwardRef } from 'react';
 
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
 import type { Column } from '../../src';
 import type { CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src/types';
-import { useFocusRef } from '../../src/hooks';
-import { stopPropagation } from '../../src/utils';
 
 interface Row {
   id: number;
@@ -97,25 +95,11 @@ export default function Components() {
   );
 }
 
-export function CheckboxFormatter({ value, isCellSelected, onChange }: CheckboxFormatterProps) {
-  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
+const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
+  function CheckboxFormatter({ disabled, ...props }, ref) {
+    return <input ref={ref} {...props} />;
   }
-
-  return (
-    <input
-      aria-label="Select All"
-      ref={ref}
-      type="checkbox"
-      tabIndex={tabIndex}
-      checked={value}
-      onChange={handleChange}
-      onClick={stopPropagation}
-    />
-  );
-}
+);
 
 function SortIcon({ sortDirection }: SortIconProps) {
   return sortDirection !== undefined ? <>{sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F'} </> : null;

@@ -200,7 +200,7 @@ This prop can be used to override the internal components. The prop accepts an o
 ```tsx
 interface Components<TRow, TSummaryRow> {
   sortIcon?: Maybe<ComponentType<SortIconProps>>;
-  headerRenderer?: Maybe<ComponentType<HeaderRendererProps<TRow, TSummaryRow>>>;
+  checkboxFormatter?: Maybe<ComponentType<CheckboxFormatterProps>>;
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;
 }
