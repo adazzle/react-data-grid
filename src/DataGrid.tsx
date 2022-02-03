@@ -232,7 +232,7 @@ function DataGrid<R, SR, K extends Key>(
   const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
   const headerRenderer = components?.headerRenderer ?? defaultComponents?.headerRenderer;
   const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon;
-  const noRowsFallback = components?.noRowsFallback ?? defaultComponents?.noRowsFallback;
+  const noRowsFallback = (components ?? defaultComponents)?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
 
