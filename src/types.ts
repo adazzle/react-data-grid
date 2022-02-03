@@ -207,8 +207,20 @@ export interface SortIconProps {
   sortDirection: SortDirection | undefined;
 }
 
+type SharedInputProps = Pick<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
+>;
+
+export interface CheckboxFormatterProps extends SharedInputProps {
+  isCellSelected: boolean;
+  value: boolean;
+  onChange: (value: boolean, isShiftClick: boolean) => void;
+}
+
 export interface Components<TRow, TSummaryRow> {
   sortIcon?: Maybe<ComponentType<SortIconProps>>;
+  checkboxFormatter?: Maybe<ComponentType<CheckboxFormatterProps>>;
   headerRenderer?: Maybe<ComponentType<HeaderRendererProps<TRow, TSummaryRow>>>;
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;

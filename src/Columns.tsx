@@ -1,4 +1,5 @@
-import { SelectCellFormatter } from './formatters';
+import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
+import { CheckboxFormatter } from './formatters';
 import { useRowSelection } from './hooks/useRowSelection';
 import type { Column, FormatterProps, GroupFormatterProps } from './types';
 import { stopPropagation } from './utils';
@@ -6,10 +7,12 @@ import { stopPropagation } from './utils';
 export const SELECT_COLUMN_KEY = 'select-row';
 
 function SelectFormatter(props: FormatterProps<unknown>) {
+  const defaultComponents = useDefaultComponents();
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
+  const Formatter = defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
 
   return (
-    <SelectCellFormatter
+    <Formatter
       aria-label="Select"
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
@@ -22,10 +25,12 @@ function SelectFormatter(props: FormatterProps<unknown>) {
 }
 
 function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
+  const defaultComponents = useDefaultComponents();
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
+  const Formatter = defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
 
   return (
-    <SelectCellFormatter
+    <Formatter
       aria-label="Select Group"
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
@@ -47,9 +52,12 @@ export const SelectColumn: Column<any, any> = {
   resizable: false,
   sortable: false,
   frozen: true,
-  headerRenderer(props) {
+  headerRenderer: function Formatter(props) {
+    const defaultComponents = useDefaultComponents();
+    const Formatter = defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
+
     return (
-      <SelectCellFormatter
+      <Formatter
         aria-label="Select All"
         isCellSelected={props.isCellSelected}
         value={props.allRowsSelected}

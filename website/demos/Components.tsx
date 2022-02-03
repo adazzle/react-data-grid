@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
 
-import DataGrid, { TextEditor } from '../../src';
+import DataGrid, { SelectColumn, TextEditor } from '../../src';
 import type { Column } from '../../src';
-import type { SortColumn, SortIconProps } from '../../src/types';
+import type { CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src/types';
+import { useFocusRef } from '../../src/hooks';
+import { stopPropagation } from '../../src/utils';
 
 interface Row {
   id: number;
@@ -28,6 +30,7 @@ function createRows(): readonly Row[] {
 }
 
 const columns: readonly Column<Row>[] = [
+  SelectColumn,
   {
     key: 'id',
     name: 'ID',
@@ -59,6 +62,7 @@ const columns: readonly Column<Row>[] = [
 export default function Components() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
 
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
@@ -82,16 +86,43 @@ export default function Components() {
       className="fill-grid"
       columns={columns}
       rows={sortedRows}
+      rowKeyGetter={rowKeyGetter}
       onRowsChange={setRows}
       sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
-      components={{ sortIcon: SortIcon }}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      components={{ sortIcon: SortIcon, checkboxFormatter: CheckboxFormatter }}
+    />
+  );
+}
+
+export function CheckboxFormatter({ value, isCellSelected, onChange }: CheckboxFormatterProps) {
+  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
+  }
+
+  return (
+    <input
+      aria-label="Select All"
+      ref={ref}
+      type="checkbox"
+      tabIndex={tabIndex}
+      checked={value}
+      onChange={handleChange}
+      onClick={stopPropagation}
     />
   );
 }
 
 function SortIcon({ sortDirection }: SortIconProps) {
   return sortDirection !== undefined ? <>{sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F'} </> : null;
+}
+
+function rowKeyGetter(row: Row) {
+  return row.id;
 }
 
 type Comparator = (a: Row, b: Row) => number;

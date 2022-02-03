@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 import faker from 'faker';
 
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, TextEditor, CheckboxFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
 import { stopPropagation } from '../../src/utils';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
@@ -226,7 +226,7 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
       width: 80,
       formatter({ row, onRowChange, isCellSelected }) {
         return (
-          <SelectCellFormatter
+          <CheckboxFormatter
             value={row.available}
             onChange={() => {
               onRowChange({ ...row, available: !row.available });

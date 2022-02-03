@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 import { useFocusRef } from '../hooks/useFocusRef';
+import type { CheckboxFormatterProps } from '../types';
 
 const checkboxLabel = css`
   cursor: pointer;
@@ -52,18 +53,7 @@ const checkboxLabelDisabled = css`
 
 const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
 
-type SharedInputProps = Pick<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
->;
-
-interface SelectCellFormatterProps extends SharedInputProps {
-  isCellSelected: boolean;
-  value: boolean;
-  onChange: (value: boolean, isShiftClick: boolean) => void;
-}
-
-export function SelectCellFormatter({
+export function CheckboxFormatter({
   value,
   isCellSelected,
   disabled,
@@ -71,7 +61,7 @@ export function SelectCellFormatter({
   onChange,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
-}: SelectCellFormatterProps) {
+}: CheckboxFormatterProps) {
   const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

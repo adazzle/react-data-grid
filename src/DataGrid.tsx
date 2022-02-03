@@ -24,6 +24,12 @@ import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
+import SortIcon from './SortIcon';
+import { CheckboxFormatter } from './formatters';
+import {
+  DataGridDefaultComponentsProvider,
+  useDefaultComponents
+} from './DataGridDefaultComponentsProvider';
 import {
   assertIsValidKeyGetter,
   getNextSelectedCellPosition,
@@ -51,10 +57,6 @@ import type {
   Maybe,
   Components
 } from './types';
-import {
-  DataGridDefaultComponentsProvider,
-  useDefaultComponents
-} from './DataGridDefaultComponentsProvider';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -233,7 +235,9 @@ function DataGrid<R, SR, K extends Key>(
   const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
   const headerRenderer =
     components?.headerRenderer ?? defaultComponents?.headerRenderer ?? HeaderRenderer;
-  const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon;
+  const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon ?? SortIcon;
+  const checkboxFormatter =
+    components?.checkboxFormatter ?? defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
   const noRowsFallback = (components ?? defaultComponents)?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
@@ -270,11 +274,12 @@ function DataGrid<R, SR, K extends Key>(
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isHeaderRowSelected = selectedPosition.rowIdx === -1;
 
-  const defaultHeaderComponents = useMemo(
+  const defaultGridComponents = useMemo(
     () => ({
-      sortIcon
+      sortIcon,
+      checkboxFormatter
     }),
-    [sortIcon]
+    [sortIcon, checkboxFormatter]
   );
 
   const allRowsSelected = useMemo((): boolean => {
@@ -1142,7 +1147,7 @@ function DataGrid<R, SR, K extends Key>(
           onKeyDown={handleKeyDown}
         />
       )}
-      <DataGridDefaultComponentsProvider value={defaultHeaderComponents}>
+      <DataGridDefaultComponentsProvider value={defaultGridComponents}>
         <HeaderRow
           columns={viewportColumns}
           onColumnResize={handleColumnResize}
@@ -1156,41 +1161,43 @@ function DataGrid<R, SR, K extends Key>(
           shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
           headerRenderer={headerRenderer}
         />
-      </DataGridDefaultComponentsProvider>
-      {rows.length === 0 && noRowsFallback ? (
-        noRowsFallback
-      ) : (
-        <>
-          <RowSelectionChangeProvider value={selectRowLatest}>
-            {getViewportRows()}
-          </RowSelectionChangeProvider>
-          {summaryRows?.map((row, rowIdx) => {
-            const isSummaryRowSelected =
-              selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
-            const top =
-              clientHeight > totalRowHeight
-                ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
-                : undefined;
-            const bottom =
-              top === undefined ? summaryRowHeight * (summaryRows.length - 1 - rowIdx) : undefined;
+        {rows.length === 0 && noRowsFallback ? (
+          noRowsFallback
+        ) : (
+          <>
+            <RowSelectionChangeProvider value={selectRowLatest}>
+              {getViewportRows()}
+            </RowSelectionChangeProvider>
+            {summaryRows?.map((row, rowIdx) => {
+              const isSummaryRowSelected =
+                selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
+              const top =
+                clientHeight > totalRowHeight
+                  ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
+                  : undefined;
+              const bottom =
+                top === undefined
+                  ? summaryRowHeight * (summaryRows.length - 1 - rowIdx)
+                  : undefined;
 
-            return (
-              <SummaryRow
-                aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
-                key={rowIdx}
-                rowIdx={rowIdx}
-                row={row}
-                top={top}
-                bottom={bottom}
-                viewportColumns={viewportColumns}
-                lastFrozenColumnIndex={lastFrozenColumnIndex}
-                selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                selectCell={selectSummaryCellLatest}
-              />
-            );
-          })}
-        </>
-      )}
+              return (
+                <SummaryRow
+                  aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
+                  key={rowIdx}
+                  rowIdx={rowIdx}
+                  row={row}
+                  top={top}
+                  bottom={bottom}
+                  viewportColumns={viewportColumns}
+                  lastFrozenColumnIndex={lastFrozenColumnIndex}
+                  selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                  selectCell={selectSummaryCellLatest}
+                />
+              );
+            })}
+          </>
+        )}
+      </DataGridDefaultComponentsProvider>
     </div>
   );
 }
