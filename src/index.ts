@@ -4,7 +4,6 @@ export * from './Columns';
 export * from './formatters';
 export { default as TextEditor } from './editors/TextEditor';
 export { default as HeaderRenderer } from './HeaderRenderer';
-export { default as SortIcon } from './SortIcon';
 export { useRowSelection } from './hooks';
 export type {
   Column,
