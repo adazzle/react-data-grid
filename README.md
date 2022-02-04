@@ -40,6 +40,7 @@
 - [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
+- [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
 
 ## Links
 
