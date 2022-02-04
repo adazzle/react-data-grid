@@ -223,7 +223,7 @@ function MyRowRenderer(props: RowRendererProps<Row>) {
 }
 
 function MyGrid() {
-  return <DataGrid columns={columns} rows={rows} components={{ rowRenderer={MyRowRenderer}} />;
+  return <DataGrid columns={columns} rows={rows} components={{ rowRenderer: MyRowRenderer }} />;
 }
 ```
 
