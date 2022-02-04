@@ -52,7 +52,7 @@ const checkboxLabelDisabled = css`
 const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
 
 export const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
-  function CheckboxFormatter({ disabled, ...props }: CheckboxFormatterProps, ref) {
+  function CheckboxFormatter(props: CheckboxFormatterProps, ref) {
     return (
       <label
         className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: disabled })}
