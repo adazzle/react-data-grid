@@ -14,7 +14,6 @@ export function SelectCellFormatter({
   value,
   isCellSelected,
   disabled,
-  onClick,
   onChange,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
@@ -35,7 +34,6 @@ export function SelectCellFormatter({
       disabled={disabled}
       checked={value}
       onChange={handleChange}
-      onClick={onClick}
     />
   );
 }

@@ -231,7 +231,6 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
             onChange={() => {
               onRowChange({ ...row, available: !row.available });
             }}
-            onClick={stopPropagation}
             isCellSelected={isCellSelected}
           />
         );
