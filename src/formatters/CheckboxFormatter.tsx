@@ -61,7 +61,6 @@ export const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterP
           type="checkbox"
           ref={ref}
           {...props}
-          disabled={disabled}
           className={checkboxInputClassname}
         />
         <div className={checkboxClassname} />
