@@ -79,7 +79,7 @@ export default function Nav() {
         Columns Reordering
       </NavLink>
       <NavLink to="/components" exact activeClassName={activeNavClassname}>
-        Components
+        Customizable Components
       </NavLink>
       <NavLink to="/context-menu" exact activeClassName={activeNavClassname}>
         Context Menu
