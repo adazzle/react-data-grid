@@ -235,7 +235,7 @@ function DataGrid<R, SR, K extends Key>(
   const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon ?? SortIcon;
   const checkboxFormatter =
     components?.checkboxFormatter ?? defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
-  const noRowsFallback = (components ?? defaultComponents)?.noRowsFallback;
+  const noRowsFallback = components?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
 
