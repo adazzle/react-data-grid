@@ -5,7 +5,6 @@ import faker from 'faker';
 
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
-import { stopPropagation } from '../../src/utils';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/TextEditor';
 
