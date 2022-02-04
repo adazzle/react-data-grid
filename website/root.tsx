@@ -10,7 +10,7 @@ import AllFeatures from './demos/AllFeatures';
 import CellNavigation from './demos/CellNavigation';
 import ColumnSpanning from './demos/ColumnSpanning';
 import ColumnsReordering from './demos/ColumnsReordering';
-import Components from './demos/Components';
+import CustomizableComponents from './demos/CustomizableComponents';
 import ContextMenuDemo from './demos/ContextMenu';
 import Grouping from './demos/Grouping';
 import HeaderFilters from './demos/HeaderFilters';
@@ -104,11 +104,11 @@ function Root() {
           <Route exact path="/columns-reordering">
             <ColumnsReordering />
           </Route>
-          <Route exact path="/components">
-            <Components />
-          </Route>
           <Route exact path="/context-menu">
             <ContextMenuDemo />
+          </Route>
+          <Route exact path="/customizable-components">
+            <CustomizableComponents />
           </Route>
           <Route exact path="/grouping">
             <Grouping />

@@ -78,11 +78,11 @@ export default function Nav() {
       <NavLink to="/columns-reordering" exact activeClassName={activeNavClassname}>
         Columns Reordering
       </NavLink>
-      <NavLink to="/components" exact activeClassName={activeNavClassname}>
-        Customizable Components
-      </NavLink>
       <NavLink to="/context-menu" exact activeClassName={activeNavClassname}>
         Context Menu
+      </NavLink>
+      <NavLink to="/customizable-components" exact activeClassName={activeNavClassname}>
+        Customizable Components
       </NavLink>
       <NavLink to="/grouping" exact activeClassName={activeNavClassname}>
         Grouping
