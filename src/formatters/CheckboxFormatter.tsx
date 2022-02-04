@@ -55,7 +55,7 @@ export const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterP
   function CheckboxFormatter(props: CheckboxFormatterProps, ref) {
     return (
       <label
-        className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: disabled })}
+        className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: props.disabled })}
       >
         <input
           type="checkbox"
