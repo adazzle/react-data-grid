@@ -201,7 +201,9 @@ This prop can be used to override the internal components. The prop accepts an o
 ```tsx
 interface Components<TRow, TSummaryRow> {
   sortIcon?: Maybe<ComponentType<SortIconProps>>;
-  checkboxFormatter?: Maybe<ComponentType<CheckboxFormatterProps>>;
+  checkboxFormatter?: Maybe<
+    ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLInputElement>>
+  >;
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;
 }
@@ -322,6 +324,8 @@ See [`GroupFormatterProps`](#groupformatterprops)
 #### `FormatterProps`
 
 #### `GroupFormatterProps`
+
+#### `rowRenderer`
 
 #### `RowRendererProps`
 
