@@ -18,8 +18,6 @@ const checkboxLabelClassname = `rdg-checkbox-label ${checkboxLabel}`;
 
 const checkboxInput = css`
   all: unset;
-  width: 0;
-  margin: 0;
 `;
 
 const checkboxInputClassname = `rdg-checkbox-input ${checkboxInput}`;
@@ -55,14 +53,11 @@ export const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterP
   function CheckboxFormatter(props: CheckboxFormatterProps, ref) {
     return (
       <label
-        className={clsx(checkboxLabelClassname, { [checkboxLabelDisabledClassname]: props.disabled })}
+        className={clsx(checkboxLabelClassname, {
+          [checkboxLabelDisabledClassname]: props.disabled
+        })}
       >
-        <input
-          type="checkbox"
-          ref={ref}
-          {...props}
-          className={checkboxInputClassname}
-        />
+        <input type="checkbox" ref={ref} {...props} className={checkboxInputClassname} />
         <div className={checkboxClassname} />
       </label>
     );
