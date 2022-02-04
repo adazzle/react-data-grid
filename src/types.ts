@@ -209,7 +209,7 @@ export interface SortIconProps {
 
 export type CheckboxFormatterProps = Pick<
   React.InputHTMLAttributes<HTMLInputElement>,
-  'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled' | 'onClick' | 'onChange'
+  'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled' | 'onChange'
 >;
 
 export interface Components<TRow, TSummaryRow> {

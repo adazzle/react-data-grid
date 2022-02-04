@@ -2,10 +2,7 @@ import { useFocusRef } from '../hooks/useFocusRef';
 import { useDefaultComponents } from '../DataGridDefaultComponentsProvider';
 import type { CheckboxFormatterProps } from '../types';
 
-type SharedInputProps = Pick<
-  CheckboxFormatterProps,
-  'disabled' | 'onClick' | 'aria-label' | 'aria-labelledby'
->;
+type SharedInputProps = Pick<CheckboxFormatterProps, 'disabled' | 'aria-label' | 'aria-labelledby'>;
 
 interface SelectCellFormatterProps extends SharedInputProps {
   isCellSelected: boolean;

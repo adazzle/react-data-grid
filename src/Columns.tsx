@@ -1,7 +1,6 @@
 import { SelectCellFormatter } from './formatters';
 import { useRowSelection } from './hooks/useRowSelection';
 import type { Column, FormatterProps, GroupFormatterProps } from './types';
-import { stopPropagation } from './utils';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
@@ -13,7 +12,6 @@ function SelectFormatter(props: FormatterProps<unknown>) {
       aria-label="Select"
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
-      onClick={stopPropagation}
       onChange={(checked, isShiftClick) => {
         onRowSelectionChange({ row: props.row, checked, isShiftClick });
       }}
@@ -32,8 +30,6 @@ function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
       onChange={(checked) => {
         onRowSelectionChange({ row: props.row, checked, isShiftClick: false });
       }}
-      // Stop propagation to prevent row selection
-      onClick={stopPropagation}
     />
   );
 }
@@ -54,8 +50,6 @@ export const SelectColumn: Column<any, any> = {
         isCellSelected={props.isCellSelected}
         value={props.allRowsSelected}
         onChange={props.onAllRowsSelectionChange}
-        // Stop propagation to prevent row selection
-        onClick={stopPropagation}
       />
     );
   },
