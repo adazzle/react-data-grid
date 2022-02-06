@@ -327,8 +327,7 @@ export default function CommonFeatures() {
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
 
-    const sortedRows = [...rows];
-    sortedRows.sort((a, b) => {
+    return [...rows].sort((a, b) => {
       for (const sort of sortColumns) {
         const comparator = getComparator(sort.columnKey);
         const compResult = comparator(a, b);
@@ -338,7 +337,6 @@ export default function CommonFeatures() {
       }
       return 0;
     });
-    return sortedRows;
   }, [rows, sortColumns]);
 
   const gridElement = (
