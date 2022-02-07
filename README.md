@@ -194,7 +194,7 @@ A number defining the height of summary rows.
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
-###### `components?: Maybe<Components<R, SR>>`
+###### <span name="customizatble-components">`components?: Maybe<Components<R, SR>>`</span>
 
 This prop can be used to override the internal components. The prop accepts an object of type
 
@@ -251,7 +251,7 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`components`](#components)
+See [`components`](#customizatble-components)
 
 ##### Props
 
