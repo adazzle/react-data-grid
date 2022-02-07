@@ -23,10 +23,11 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 }
 
 const summaryRow = css`
-  line-height: var(--rdg-summary-row-height);
-
-  &.${row} > .${cell} {
-    position: sticky;
+  &.${row} {
+    line-height: var(--rdg-summary-row-height);
+    > .${cell} {
+      position: sticky;
+    }
   }
 `;
 
