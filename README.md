@@ -202,7 +202,8 @@ This prop can be used to override the internal components. The prop accepts an o
 interface Components<TRow, TSummaryRow> {
   sortIcon?: Maybe<ComponentType<SortIconProps>>;
   checkboxFormatter?: Maybe<
-    ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLInputElement>>
+    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
+    | ComponentType<CheckboxFormatterProps>
   >;
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;
