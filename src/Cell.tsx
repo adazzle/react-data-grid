@@ -4,6 +4,7 @@ import { css } from '@linaria/core';
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
+import { Direction } from './dragOver';
 
 const cellCopied = css`
   background-color: #ccccff;
@@ -35,22 +36,27 @@ function Cell<R, SR>({
   onRowChange,
   selectCell,
   dragEndPosition,
+  dragDirection,
+  handleCopy,
+  handlePaste,
   ...props
 }: CellRendererProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   const { cellClass } = column;
   const className = useMemo(() => {
+    const isDragOverEnd = isDraggedOver && dragEndPosition === rowIndex + 1;
     return getCellClassname(
       column,
       {
         [cellCopiedClassname]: isCopied,
         [cellDraggedOverClassname]: isDraggedOver,
-        'rdg-cell-dragged-over-end': isDraggedOver && dragEndPosition === rowIndex + 1
+        'rdg-cell-dragged-over-end-top': isDragOverEnd && dragDirection === Direction.up,
+        'rdg-cell-dragged-over-end-bottom': isDragOverEnd && dragDirection === Direction.down
       },
       typeof cellClass === 'function' ? cellClass(row) : cellClass
     );
-  }, [dragEndPosition, isDraggedOver, cellClass, isCopied, row, column, rowIndex]);
+  }, [dragEndPosition, isDraggedOver, cellClass, isCopied, row, column, rowIndex, dragDirection]);
 
   function selectCellWrapper(openEditor?: boolean | null) {
     selectCell(row, column, openEditor);
@@ -94,6 +100,8 @@ function Cell<R, SR>({
             row={row}
             isCellSelected={isCellSelected}
             onRowChange={onRowChange}
+            handleCopy={handleCopy}
+            handlePaste={handlePaste}
           />
           {dragHandle}
         </>

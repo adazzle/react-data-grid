@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import DataGrid from '../../src';
+import DataGrid, { TextEditor } from '../../src';
 import type { Column, CellNavigationMode } from '../../src';
 
 interface Row {
@@ -21,15 +21,18 @@ const columns: Column<Row>[] = [
   },
   {
     key: 'task',
-    name: 'Title'
+    name: 'Title',
+    editor: TextEditor
   },
   {
     key: 'priority',
-    name: 'Priority'
+    name: 'Priority',
+    editor: TextEditor
   },
   {
     key: 'issueType',
-    name: 'Issue Type'
+    name: 'Issue Type',
+    editor: TextEditor
   },
   {
     key: 'complete',

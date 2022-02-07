@@ -594,6 +594,13 @@ function DataGrid<R, SR, K extends Key>(
       case 'PageDown':
         navigate(event);
         break;
+      case 'z': {
+        if (event.ctrlKey || event.metaKey) {
+          break;
+        }
+        handleCellInput(event);
+        break;
+      }
       default:
         handleCellInput(event);
         break;
@@ -950,9 +957,9 @@ function DataGrid<R, SR, K extends Key>(
       case 'Enter':
         return goToDown();
       case 'ArrowLeft':
-        return getNextIdxAndRow({ idx, rowIdx, shiftKey, direction: Direction.left });
+        return getNextIdxAndRow({ idx, rowIdx, shiftKey: false, direction: Direction.left });
       case 'ArrowRight':
-        return getNextIdxAndRow({ idx, rowIdx, shiftKey, direction: Direction.right });
+        return getNextIdxAndRow({ idx, rowIdx, shiftKey: false, direction: Direction.right });
       case 'Tab':
         return getNextIdxAndRow({ idx, rowIdx, shiftKey, direction: Direction.right });
       case 'Home':
@@ -1251,6 +1258,9 @@ function DataGrid<R, SR, K extends Key>(
           selectedCellDragHandle={getDragHandle(rowIdx)}
           selectedCellEditor={getCellEditor(rowIdx)}
           dragEndPosition={dragoverHook.endPosition}
+          dragDirection={dragoverHook.direction}
+          handleCopy={handleCopy}
+          handlePaste={handlePaste}
         />
       );
     }
