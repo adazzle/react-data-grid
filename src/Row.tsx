@@ -31,6 +31,9 @@ function Row<R, SR>(
     onRowChange,
     selectCell,
     dragEndPosition,
+    dragDirection,
+    handleCopy,
+    handlePaste,
     ...props
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
@@ -85,6 +88,9 @@ function Row<R, SR>(
           onRowChange={handleRowChange}
           selectCell={selectCell}
           dragEndPosition={dragEndPosition}
+          dragDirection={dragDirection}
+          handleCopy={handleCopy}
+          handlePaste={handlePaste}
         />
       );
     }

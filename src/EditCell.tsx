@@ -121,7 +121,14 @@ export default function EditCell<R, SR>({
         <>
           <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
           {column.editorOptions?.renderFormatter && (
-            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
+            <column.formatter
+              column={column}
+              row={row}
+              isCellSelected
+              onRowChange={onRowChange}
+              handleCopy={() => {}}
+              handlePaste={() => {}}
+            />
           )}
         </>
       )}

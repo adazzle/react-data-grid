@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import type { Direction } from './dragOver';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -73,6 +74,8 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
   row: TRow;
   isCellSelected: boolean;
   onRowChange: (row: TRow) => void;
+  handleCopy: () => void;
+  handlePaste: () => void;
 }
 
 export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
@@ -111,6 +114,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 export interface DragOverHook {
   setLengthPosition: (startIndex: number, endIndex: number) => void;
   endPosition: number;
+  direction: Direction;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
@@ -129,6 +133,9 @@ export interface CellRendererProps<TRow, TSummaryRow>
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (newRow: TRow) => void;
   dragEndPosition: DragOverHook['endPosition'];
+  dragDirection: DragOverHook['direction'];
+  handleCopy: () => void;
+  handlePaste: () => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -156,6 +163,9 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
     enableEditor?: Maybe<boolean>
   ) => void;
   dragEndPosition: DragOverHook['endPosition'];
+  dragDirection: DragOverHook['direction'];
+  handleCopy: () => void;
+  handlePaste: () => void;
 }
 
 export interface RowsChangeData<R, SR = unknown> {

@@ -1,5 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { EditCellState, SelectCellState } from './DataGrid';
+
+export enum Direction {
+  up,
+  down
+}
 
 const useDragOver = <R>({
   selectedPosition
@@ -16,7 +21,11 @@ const useDragOver = <R>({
 
   const endPosition = startIndex < selectedPosition.rowIdx ? startIndex : endIndex;
 
-  return { setLengthPosition, endPosition };
+  const direction = useMemo(() => {
+    return startIndex <= selectedPosition.rowIdx ? Direction.up : Direction.down;
+  }, [startIndex, selectedPosition.rowIdx]);
+
+  return { setLengthPosition, endPosition, direction };
 };
 
 export default useDragOver;
