@@ -71,7 +71,12 @@ export default function RowsReordering() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} rowRenderer={RowRenderer} />
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        onRowsChange={setRows}
+        components={{ rowRenderer: RowRenderer }}
+      />
     </DndProvider>
   );
 }
