@@ -11,6 +11,7 @@ import AllFeatures from './demos/AllFeatures';
 import CellNavigation from './demos/CellNavigation';
 import ColumnSpanning from './demos/ColumnSpanning';
 import ColumnsReordering from './demos/ColumnsReordering';
+import CustomizableComponents from './demos/CustomizableComponents';
 import ContextMenuDemo from './demos/ContextMenu';
 import Grouping from './demos/Grouping';
 import HeaderFilters from './demos/HeaderFilters';
@@ -106,6 +107,9 @@ function Root() {
           </Route>
           <Route exact path="/context-menu">
             <ContextMenuDemo direction={direction} />
+          </Route>
+          <Route exact path="/customizable-components">
+            <CustomizableComponents />
           </Route>
           <Route exact path="/grouping">
             <Grouping direction={direction} />

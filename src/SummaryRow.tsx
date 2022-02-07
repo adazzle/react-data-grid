@@ -7,7 +7,10 @@ import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
 
-type SharedRowRendererProps<R, SR> = Pick<RowRendererProps<R, SR>, 'viewportColumns' | 'rowIdx'>;
+type SharedRowRendererProps<R, SR> = Pick<
+  RowRendererProps<R, SR>,
+  'viewportColumns' | 'rowIdx' | 'gridRowStart'
+>;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   'aria-rowindex': number;
@@ -20,10 +23,11 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 }
 
 const summaryRow = css`
-  line-height: var(--rdg-summary-row-height);
-
-  &.${row} > .${cell} {
-    position: sticky;
+  &.${row} {
+    line-height: var(--rdg-summary-row-height);
+    > .${cell} {
+      position: sticky;
+    }
   }
 `;
 
@@ -37,6 +41,7 @@ const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
+  gridRowStart,
   row,
   viewportColumns,
   top,
@@ -83,7 +88,7 @@ function SummaryRow<R, SR>({
       )}
       style={
         {
-          ...getRowStyle(ariaRowIndex),
+          ...getRowStyle(gridRowStart),
           '--rdg-summary-row-top': top !== undefined ? `${top}px` : undefined,
           '--rdg-summary-row-bottom': bottom !== undefined ? `${bottom}px` : undefined
         } as unknown as React.CSSProperties

@@ -2,7 +2,7 @@ import { css } from '@linaria/core';
 
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import SortableHeaderCell from './headerCells/SortableHeaderCell';
+import DefaultHeaderRenderer from './HeaderRenderer';
 import { getCellStyle, getCellClassname } from './utils';
 import { useRovingCellRef } from './hooks';
 
@@ -66,6 +66,8 @@ export default function HeaderCell<R, SR>({
   const className = getCellClassname(column, column.headerCellClass, {
     [cellResizableClassname]: column.resizable
   });
+
+  const HeaderRenderer = column.headerRenderer ?? DefaultHeaderRenderer;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -160,37 +162,6 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function getCell() {
-    if (column.headerRenderer) {
-      return (
-        <column.headerRenderer
-          column={column}
-          sortDirection={sortDirection}
-          priority={priority}
-          onSort={onSort}
-          allRowsSelected={allRowsSelected}
-          onAllRowsSelectionChange={onAllRowsSelectionChange}
-          isCellSelected={isCellSelected}
-        />
-      );
-    }
-
-    if (column.sortable) {
-      return (
-        <SortableHeaderCell
-          onSort={onSort}
-          sortDirection={sortDirection}
-          priority={priority}
-          isCellSelected={isCellSelected}
-        >
-          {column.name}
-        </SortableHeaderCell>
-      );
-    }
-
-    return column.name;
-  }
-
   return (
     <div
       role="columnheader"
@@ -212,7 +183,15 @@ export default function HeaderCell<R, SR>({
       onDoubleClick={column.resizable ? onDoubleClick : undefined}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
-      {getCell()}
+      <HeaderRenderer
+        column={column}
+        sortDirection={sortDirection}
+        priority={priority}
+        onSort={onSort}
+        allRowsSelected={allRowsSelected}
+        onAllRowsSelectionChange={onAllRowsSelectionChange}
+        isCellSelected={isCellSelected}
+      />
     </div>
   );
 }

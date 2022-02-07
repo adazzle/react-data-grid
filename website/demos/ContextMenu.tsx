@@ -169,7 +169,7 @@ export default function ContextMenuDemo({ direction }: Props) {
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
-        rowRenderer={RowRenderer}
+        components={{ rowRenderer: RowRenderer }}
         className="fill-grid"
         direction={direction}
       />

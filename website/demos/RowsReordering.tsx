@@ -77,7 +77,7 @@ export default function RowsReordering({ direction }: Props) {
         columns={columns}
         rows={rows}
         onRowsChange={setRows}
-        rowRenderer={RowRenderer}
+        components={{ rowRenderer: RowRenderer }}
         direction={direction}
       />
     </DndProvider>

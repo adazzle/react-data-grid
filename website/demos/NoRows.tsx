@@ -41,7 +41,7 @@ export default function NoRows({ direction }: Props) {
       key={direction}
       columns={columns}
       rows={rows}
-      noRowsFallback={<EmptyRowsRenderer />}
+      components={{ noRowsFallback: <EmptyRowsRenderer /> }}
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       rowKeyGetter={rowKeyGetter}
