@@ -1,9 +1,8 @@
 import { StrictMode } from 'react';
 import { render, screen } from '@testing-library/react';
 
-import type { DataGridProps } from '../src/';
-import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn } from '../src/';
-import type { Column } from '../src';
+import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn } from '../src';
+import type { Column, DataGridProps } from '../src';
 import { getRows, setup } from './utils';
 
 interface Row {
