@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ComponentType, ForwardRefExoticComponent, RefAttributes } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -19,11 +19,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly headerCellClass?: Maybe<string>;
   readonly summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>;
   /** Formatter to be used to render the cell content */
-  readonly formatter?: Maybe<React.ComponentType<FormatterProps<TRow, TSummaryRow>>>;
+  readonly formatter?: Maybe<ComponentType<FormatterProps<TRow, TSummaryRow>>>;
   /** Formatter to be used to render the summary cell content */
-  readonly summaryFormatter?: Maybe<React.ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>>;
+  readonly summaryFormatter?: Maybe<ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>>;
   /** Formatter to be used to render the group cell content */
-  readonly groupFormatter?: Maybe<React.ComponentType<GroupFormatterProps<TRow, TSummaryRow>>>;
+  readonly groupFormatter?: Maybe<ComponentType<GroupFormatterProps<TRow, TSummaryRow>>>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
   readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
@@ -36,7 +36,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   readonly sortDescendingFirst?: Maybe<boolean>;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  readonly editor?: Maybe<React.ComponentType<EditorProps<TRow, TSummaryRow>>>;
+  readonly editor?: Maybe<ComponentType<EditorProps<TRow, TSummaryRow>>>;
   readonly editorOptions?: Maybe<{
     /** @default false */
     readonly renderFormatter?: Maybe<boolean>;
@@ -50,7 +50,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly onNavigation?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => boolean>;
   }>;
   /** Header renderer for each header cell */
-  readonly headerRenderer?: Maybe<React.ComponentType<HeaderRendererProps<TRow, TSummaryRow>>>;
+  readonly headerRenderer?: Maybe<ComponentType<HeaderRendererProps<TRow, TSummaryRow>>>;
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
@@ -60,7 +60,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly frozen: boolean;
   readonly isLastFrozenColumn: boolean;
   readonly rowGroup: boolean;
-  readonly formatter: React.ComponentType<FormatterProps<TRow, TSummaryRow>>;
+  readonly formatter: ComponentType<FormatterProps<TRow, TSummaryRow>>;
 }
 
 export interface Position {
@@ -194,9 +194,33 @@ export interface SortColumn {
 export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
 export type SortDirection = 'ASC' | 'DESC';
 
-export type ColSpanArgs<R, SR> =
+export type ColSpanArgs<TRow, TSummaryRow> =
   | { type: 'HEADER' }
-  | { type: 'ROW'; row: R }
-  | { type: 'SUMMARY'; row: SR };
+  | { type: 'ROW'; row: TRow }
+  | { type: 'SUMMARY'; row: TSummaryRow };
 
-export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
+export type RowHeightArgs<TRow> =
+  | { type: 'ROW'; row: TRow }
+  | { type: 'GROUP'; row: GroupRow<TRow> };
+
+export interface SortIconProps {
+  sortDirection: SortDirection | undefined;
+}
+
+export interface CheckboxFormatterProps
+  extends Pick<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
+  > {
+  onChange: (checked: boolean, shift: boolean) => void;
+}
+
+export interface Components<TRow, TSummaryRow> {
+  sortIcon?: Maybe<ComponentType<SortIconProps>>;
+  checkboxFormatter?: Maybe<
+    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
+    | ComponentType<CheckboxFormatterProps>
+  >;
+  rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
+  noRowsFallback?: Maybe<React.ReactNode>;
+}

@@ -81,6 +81,9 @@ export default function Nav() {
       <NavLink to="/context-menu" exact activeClassName={activeNavClassname}>
         Context Menu
       </NavLink>
+      <NavLink to="/customizable-components" exact activeClassName={activeNavClassname}>
+        Customizable Components
+      </NavLink>
       <NavLink to="/grouping" exact activeClassName={activeNavClassname}>
         Grouping
       </NavLink>

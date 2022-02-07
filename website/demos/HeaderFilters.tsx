@@ -3,8 +3,8 @@ import faker from 'faker';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column } from '../../src';
-import type { HeaderRendererProps, Omit } from '../../src/types';
+import type { Column, HeaderRendererProps } from '../../src';
+import type { Omit } from '../../src/types';
 import { useFocusRef } from '../../src/hooks';
 
 const rootClassname = css`
