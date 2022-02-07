@@ -218,7 +218,7 @@ export interface CheckboxFormatterProps
 export interface Components<TRow, TSummaryRow> {
   sortIcon?: Maybe<ComponentType<SortIconProps>>;
   checkboxFormatter?: Maybe<
-    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLInputElement>>
+    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
     | ComponentType<CheckboxFormatterProps>
   >;
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
