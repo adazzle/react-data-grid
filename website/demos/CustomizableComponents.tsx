@@ -93,8 +93,12 @@ export default function CustomizableComponents() {
 }
 
 const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
-  function CheckboxFormatter({ disabled, ...props }, ref) {
-    return <input type="checkbox" ref={ref} {...props} />;
+  function CheckboxFormatter({ disabled, onChange, ...props }, ref) {
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+      onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
+    }
+
+    return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
   }
 );
 

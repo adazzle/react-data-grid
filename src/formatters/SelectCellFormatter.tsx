@@ -21,10 +21,6 @@ export function SelectCellFormatter({
   const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
   const Formatter = useDefaultComponents()!.checkboxFormatter!;
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
-  }
-
   return (
     <Formatter
       aria-label={ariaLabel}
@@ -33,7 +29,7 @@ export function SelectCellFormatter({
       tabIndex={tabIndex}
       disabled={disabled}
       checked={value}
-      onChange={handleChange}
+      onChange={onChange}
     />
   );
 }
