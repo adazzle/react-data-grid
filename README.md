@@ -251,7 +251,7 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`rowRenderer`](#rowRenderer)
+See [`components`](#components)
 
 ##### Props
 
@@ -324,8 +324,6 @@ See [`GroupFormatterProps`](#groupformatterprops)
 #### `FormatterProps`
 
 #### `GroupFormatterProps`
-
-#### `rowRenderer`
 
 #### `RowRendererProps`
 
