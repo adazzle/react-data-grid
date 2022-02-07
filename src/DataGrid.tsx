@@ -1173,6 +1173,7 @@ function DataGrid<R, SR, K extends Key>(
               {getViewportRows()}
             </RowSelectionChangeProvider>
             {summaryRows?.map((row, rowIdx) => {
+              const gridRowStart = headerRowsCount + rows.length + rowIdx + 1;
               const isSummaryRowSelected =
                 selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
               const top =
@@ -1189,6 +1190,7 @@ function DataGrid<R, SR, K extends Key>(
                   aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
                   key={rowIdx}
                   rowIdx={rowIdx}
+                  gridRowStart={gridRowStart}
                   row={row}
                   top={top}
                   bottom={bottom}
