@@ -161,7 +161,7 @@ export default function ContextMenuDemo() {
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
-        rowRenderer={RowRenderer}
+        components={{ rowRenderer: RowRenderer }}
         className="fill-grid"
       />
       {createPortal(

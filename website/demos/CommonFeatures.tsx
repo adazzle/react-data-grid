@@ -5,7 +5,6 @@ import faker from 'faker';
 
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
-import { stopPropagation } from '../../src/utils';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/TextEditor';
 
@@ -231,7 +230,6 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
             onChange={() => {
               onRowChange({ ...row, available: !row.available });
             }}
-            onClick={stopPropagation}
             isCellSelected={isCellSelected}
           />
         );
@@ -329,8 +327,7 @@ export default function CommonFeatures() {
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
 
-    const sortedRows = [...rows];
-    sortedRows.sort((a, b) => {
+    return [...rows].sort((a, b) => {
       for (const sort of sortColumns) {
         const comparator = getComparator(sort.columnKey);
         const compResult = comparator(a, b);
@@ -340,7 +337,6 @@ export default function CommonFeatures() {
       }
       return 0;
     });
-    return sortedRows;
   }, [rows, sortColumns]);
 
   const gridElement = (
