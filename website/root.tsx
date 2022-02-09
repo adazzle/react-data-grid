@@ -109,7 +109,7 @@ function Root() {
             <ContextMenuDemo direction={direction} />
           </Route>
           <Route exact path="/customizable-components">
-            <CustomizableComponents />
+            <CustomizableComponents direction={direction} />
           </Route>
           <Route exact path="/grouping">
             <Grouping direction={direction} />
