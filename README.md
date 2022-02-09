@@ -233,6 +233,10 @@ function MyGrid() {
 
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
 
+##### `direction`
+
+This propertly sets the text direction of the grid. Supported values are `ltr` and `rtl`.
+
 ###### `className?: string | undefined`
 
 ###### `style?: CSSProperties | undefined`
