@@ -235,7 +235,12 @@ function MyGrid() {
 
 ##### `direction`
 
-This propertly sets the text direction of the grid. Supported values are `ltr` and `rtl`.
+This propertly sets the text direction of the grid. Supported values are `ltr` and `rtl`. Setting `direction` to `rtl` has the following affects
+
+- Columns flow from right to left
+- Frozen columns are pinned on the right
+- Column resize handle is shown on the left edge of the column
+- Scrollbar is moved to the left
 
 ###### `className?: string | undefined`
 
