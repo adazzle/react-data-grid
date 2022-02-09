@@ -41,7 +41,7 @@
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
-- Right-to-left (RTL) text support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
+- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
 
