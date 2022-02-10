@@ -229,3 +229,5 @@ export interface Components<TRow, TSummaryRow> {
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;
 }
+
+export type Direction = 'ltr' | 'rtl';
