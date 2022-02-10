@@ -23,21 +23,19 @@ export const row = css`
 export const rowClassname = `rdg-row ${row}`;
 
 const topBoxShadow = 'inset 0 2px 0 0 var(--rdg-selection-color)';
-const rightBoxShadow = 'inset -2px 0 0 0 var(--rdg-selection-color)';
+const rightBoxShadow = 'inset calc(-2px * var(--rdg-sign)) 0 0 0 var(--rdg-selection-color)';
 const bottomBoxShadow = 'inset 0 -2px 0 0 var(--rdg-selection-color)';
-const leftBoxShadow = 'inset 2px 0 0 0 var(--rdg-selection-color)';
+const leftBoxShadow = 'inset calc(2px * var(--rdg-sign)) 0 0 0 var(--rdg-selection-color)';
 
 const rowSelected = css`
   outline: none;
 
   > .${cell} {
     box-shadow: ${topBoxShadow}, ${bottomBoxShadow};
-    &:first-child,
-    &:last-child:dir(rtl) {
+    &:first-child {
       box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${leftBoxShadow};
     }
-    &:last-child,
-    &:first-child:dir(rtl) {
+    &:last-child {
       box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${rightBoxShadow};
     }
   }

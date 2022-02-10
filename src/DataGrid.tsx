@@ -1127,6 +1127,7 @@ function DataGrid<R, SR, K extends Key>(
             headerRowHeight +
             summaryRowsCount * summaryRowHeight
           }px`,
+          '--rdg-sign': isRtl ? -1 : 1,
           ...getLayoutCssVars()
         } as unknown as React.CSSProperties
       }
