@@ -377,3 +377,19 @@ test('reset selected cell when row is removed', () => {
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
+
+test('should not change the left and right arrow behavior for right to left languages', () => {
+  setup({ rows, columns, direction: 'rtl' });
+  userEvent.tab();
+  validateCellPosition(0, 0);
+  userEvent.tab();
+  validateCellPosition(1, 0);
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(0, 0);
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(0, 0);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(1, 0);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(2, 0);
+});

@@ -6,6 +6,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { Row as GridRow } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
+import type { Props } from './types';
 
 css`
   @at-root {
@@ -20,13 +21,17 @@ css`
       border-radius: 0.25rem;
       color: #373a3c;
       font-size: 16px;
-      margin: 2px 0 0;
-      min-width: 160px;
+      margin-block-start: 2px;
+      margin-block-end: 0;
+      margin-inline-start: 0;
+      margin-inline-end: 0;
+      min-inline-size: 160px;
       outline: none;
       opacity: 0;
-      padding: 5px 0;
+      padding-block: 5px;
+      padding-inline: 0;
       pointer-events: none;
-      text-align: left;
+      text-align: start;
       transition: opacity 250ms ease !important;
     }
 
@@ -42,7 +47,8 @@ css`
       cursor: pointer;
       font-weight: 400;
       line-height: 1.5;
-      padding: 3px 20px;
+      padding-block: 3px;
+      padding-inline: 20px;
       text-align: inherit;
       white-space: nowrap;
     }
@@ -63,10 +69,11 @@ css`
     }
 
     .react-contextmenu-item--divider {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+      border-block-end: 1px solid rgba(0, 0, 0, 0.15);
       cursor: inherit;
-      margin-bottom: 3px;
-      padding: 2px 0;
+      margin-block-end: 3px;
+      padding-block: 2px;
+      padding-inline: 0;
     }
 
     .react-contextmenu-item--divider:hover {
@@ -82,7 +89,7 @@ css`
       content: '▶';
       display: inline-block;
       position: absolute;
-      right: 7px;
+      inset-inline-end: 7px;
     }
 
     .example-multiple-targets::after {
@@ -128,7 +135,7 @@ function RowRenderer(props: RowRendererProps<Row>) {
   );
 }
 
-export default function ContextMenuDemo() {
+export default function ContextMenuDemo({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
 
@@ -163,15 +170,18 @@ export default function ContextMenuDemo() {
         rows={rows}
         components={{ rowRenderer: RowRenderer }}
         className="fill-grid"
+        direction={direction}
       />
       {createPortal(
-        <ContextMenu id="grid-context-menu">
-          <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
-          <SubMenu title="Insert Row">
-            <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
-            <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
-          </SubMenu>
-        </ContextMenu>,
+        <div dir={direction}>
+          <ContextMenu id="grid-context-menu" rtl={direction === 'rtl'}>
+            <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
+            <SubMenu title="Insert Row">
+              <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
+              <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
+            </SubMenu>
+          </ContextMenu>
+        </div>,
         document.body
       )}
     </>

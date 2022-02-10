@@ -1,5 +1,6 @@
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
+import type { Props } from './types';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
@@ -23,8 +24,14 @@ for (let i = 0; i < 50; i++) {
   });
 }
 
-export default function ResizableGrid() {
+export default function ResizableGrid({ direction }: Props) {
   return (
-    <DataGrid columns={columns} rows={rows} className="fill-grid" style={{ resize: 'both' }} />
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      className="fill-grid"
+      style={{ resize: 'both' }}
+      direction={direction}
+    />
   );
 }

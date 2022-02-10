@@ -10,16 +10,16 @@ const childRowActionCrossClassname = css`
   }
 
   &::before {
-    left: 21px;
-    width: 1px;
-    height: 100%;
+    inset-inline-start: 21px;
+    inline-size: 1px;
+    block-size: 100%;
   }
 
   &::after {
-    top: 50%;
-    left: 20px;
-    height: 1px;
-    width: 15px;
+    inset-block-start: 50%;
+    inset-inline-start: 20px;
+    block-size: 1px;
+    inline-size: 15px;
   }
 
   &:hover {
@@ -30,9 +30,12 @@ const childRowActionCrossClassname = css`
 const childRowButtonClassname = css`
   cursor: pointer;
   position: absolute;
-  left: 21px;
+  inset-inline-start: 21px;
   transform: translateX(-50%);
   filter: grayscale(1);
+  &:dir(rtl) {
+    transform: translateX(50%);
+  }
 `;
 
 interface ChildRowDeleteButtonProps {

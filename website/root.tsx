@@ -1,8 +1,9 @@
-import { StrictMode } from 'react';
+import React, { StrictMode, useState } from 'react';
 import { render } from 'react-dom';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
 
+import type { Direction } from '../src/types';
 import Nav from './Nav';
 
 import CommonFeatures from './demos/CommonFeatures';
@@ -53,15 +54,15 @@ css`
     }
 
     .rdg.fill-grid {
-      height: 100%;
+      block-size: 100%;
     }
 
     .rdg.small-grid {
-      height: 300px;
+      block-size: 300px;
     }
 
     .rdg.big-grid {
-      height: 600px;
+      block-size: 600px;
     }
 
     .rdg-cell .Select {
@@ -76,72 +77,72 @@ const mainClassname = css`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: 100vh;
+  block-size: 100vh;
   padding: 8px;
   overflow: hidden;
 `;
 
 function Root() {
+  const [direction, setDirection] = useState<Direction>('ltr');
   return (
     <Router>
-      <Nav />
-
-      <main className={mainClassname}>
+      <Nav direction={direction} onDirectionChange={setDirection} />
+      <main className={mainClassname} dir={direction}>
         <Switch>
           <Redirect exact from="/" to="/common-features" />
           <Route exact path="/common-features">
-            <CommonFeatures />
+            <CommonFeatures direction={direction} />
           </Route>
           <Route exact path="/all-features">
-            <AllFeatures />
+            <AllFeatures direction={direction} />
           </Route>
           <Route exact path="/cell-navigation">
-            <CellNavigation />
+            <CellNavigation direction={direction} />
           </Route>
           <Route exact path="/column-spanning">
-            <ColumnSpanning />
+            <ColumnSpanning direction={direction} />
           </Route>
           <Route exact path="/columns-reordering">
-            <ColumnsReordering />
+            <ColumnsReordering direction={direction} />
           </Route>
           <Route exact path="/context-menu">
-            <ContextMenuDemo />
+            <ContextMenuDemo direction={direction} />
           </Route>
           <Route exact path="/customizable-components">
-            <CustomizableComponents />
+            <CustomizableComponents direction={direction} />
           </Route>
           <Route exact path="/grouping">
-            <Grouping />
+            <Grouping direction={direction} />
           </Route>
           <Route exact path="/header-filters">
-            <HeaderFilters />
+            <HeaderFilters direction={direction} />
           </Route>
           <Route exact path="/infinite-scrolling">
-            <InfiniteScrolling />
+            <InfiniteScrolling direction={direction} />
           </Route>
           <Route exact path="/master-detail">
-            <MasterDetail />
+            <MasterDetail direction={direction} />
           </Route>
           <Route exact path="/million-cells">
-            <MillionCells />
+            <MillionCells direction={direction} />
           </Route>
           <Route exact path="/no-rows">
-            <NoRows />
+            <NoRows direction={direction} />
           </Route>
           <Route exact path="/resizable-grid">
-            <ResizableGrid />
+            <ResizableGrid direction={direction} />
           </Route>
           <Route exact path="/rows-reordering">
-            <RowsReordering />
+            <RowsReordering direction={direction} />
           </Route>
           <Route exact path="/scroll-to-row">
-            <ScrollToRow />
+            <ScrollToRow direction={direction} />
           </Route>
           <Route exact path="/tree-view">
-            <TreeView />
+            <TreeView direction={direction} />
           </Route>
           <Route exact path="/variable-row-height">
-            <VariableRowHeight />
+            <VariableRowHeight direction={direction} />
           </Route>
           <Route>Nothing to see here</Route>
         </Switch>

@@ -33,7 +33,7 @@ const summaryRow = css`
 
 const summaryRowBorderClassname = css`
   & > .${cell} {
-    border-top: 2px solid var(--rdg-summary-border-color);
+    border-block-start: 2px solid var(--rdg-summary-border-color);
   }
 `;
 
