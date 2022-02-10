@@ -2,9 +2,10 @@ import faker from 'faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
-import type { Column, FillEvent, PasteEvent } from '../../src';
+import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
+import type { Props } from './types';
 
 const highlightClassname = css`
   .rdg-cell {
@@ -169,7 +170,7 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function AllFeatures() {
+export default function AllFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -197,6 +198,12 @@ export default function AllFeatures() {
     return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
+  function handleCopy({ sourceRow, sourceColumnKey }: CopyEvent<Row>): void {
+    if (window.isSecureContext) {
+      navigator.clipboard.writeText(sourceRow[sourceColumnKey as keyof Row]);
+    }
+  }
+
   return (
     <DataGrid
       columns={columns}
@@ -204,12 +211,14 @@ export default function AllFeatures() {
       rowKeyGetter={rowKeyGetter}
       onRowsChange={setRows}
       onFill={handleFill}
+      onCopy={handleCopy}
       onPaste={handlePaste}
       rowHeight={30}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
       rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+      direction={direction}
     />
   );
 }

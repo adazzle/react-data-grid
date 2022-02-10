@@ -187,6 +187,11 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
+export interface CopyEvent<TRow> {
+  sourceColumnKey: string;
+  sourceRow: TRow;
+}
+
 export interface PasteEvent<TRow> {
   sourceColumnKey: string;
   sourceRow: TRow;
@@ -244,3 +249,5 @@ export interface Components<TRow, TSummaryRow> {
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;
 }
+
+export type Direction = 'ltr' | 'rtl';

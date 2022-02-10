@@ -2,6 +2,7 @@ import { useMemo, useState, forwardRef } from 'react';
 
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
 import type { Column, CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src';
+import type { Props } from './types';
 
 interface Row {
   id: number;
@@ -56,7 +57,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function CustomizableComponents() {
+export default function CustomizableComponents({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -88,6 +89,7 @@ export default function CustomizableComponents() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       components={{ sortIcon: SortIcon, checkboxFormatter: CheckboxFormatter }}
+      direction={direction}
     />
   );
 }

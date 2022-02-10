@@ -9,7 +9,7 @@ const groupCellContent = css`
 const groupCellContentClassname = `rdg-group-cell-content ${groupCellContent}`;
 
 const caret = css`
-  margin-left: 4px;
+  margin-inline-start: 4px;
   stroke: currentColor;
   stroke-width: 1.5px;
   fill: transparent;
