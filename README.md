@@ -235,7 +235,7 @@ function MyGrid() {
 
 ##### `direction?: Maybe<'ltr' | 'rtl'>`
 
-This propertly sets the text direction of the grid. Setting `direction` to `rtl` has the following affects
+This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
 
 - Columns flow from right to left
 - Frozen columns are pinned on the right
