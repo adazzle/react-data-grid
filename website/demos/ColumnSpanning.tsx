@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
+import type { Props } from './types';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
@@ -33,7 +34,7 @@ function CellFormatter(props: FormatterProps<Row>) {
   );
 }
 
-export default function ColumnSpanning() {
+export default function ColumnSpanning({ direction }: Props) {
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 
@@ -77,6 +78,7 @@ export default function ColumnSpanning() {
       rows={rows}
       rowHeight={22}
       className={clsx('fill-grid', colSpanClassname, rowSpanClassname)}
+      direction={direction}
     />
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
+import type { Props } from './types';
 
 function EmptyRowsRenderer() {
   return (
@@ -32,18 +33,19 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-export default function NoRows() {
+export default function NoRows({ direction }: Props) {
   const [selectedRows, onSelectedRowsChange] = useState((): ReadonlySet<number> => new Set());
 
   return (
     <DataGrid
       columns={columns}
       rows={rows}
-      noRowsFallback={<EmptyRowsRenderer />}
+      components={{ noRowsFallback: <EmptyRowsRenderer /> }}
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       rowKeyGetter={rowKeyGetter}
       className="small-grid"
+      direction={direction}
     />
   );
 }
