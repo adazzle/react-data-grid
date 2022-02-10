@@ -4,7 +4,7 @@ import type { CalculatedColumn, Column, Maybe } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
-import { floor, max, min } from '../utils';
+import { floor, max, min, round } from '../utils';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -151,9 +151,6 @@ export function useCalculatedColumns<R, SR>({
       }
     }
 
-    const unallocatedWidth = viewportWidth - allocatedWidth;
-    const unallocatedColumnWidth = unallocatedWidth / unassignedColumnsCount;
-
     for (const column of columns) {
       let width: number;
       if (columnMetrics.has(column)) {
@@ -161,7 +158,12 @@ export function useCalculatedColumns<R, SR>({
         columnMetric.left = left;
         ({ width } = columnMetric);
       } else {
+        // avoid decimals as subpixel positioning can lead to cell borders not being displayed
+        const unallocatedWidth = viewportWidth - allocatedWidth;
+        const unallocatedColumnWidth = round(unallocatedWidth / unassignedColumnsCount);
         width = clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
+        allocatedWidth += width;
+        unassignedColumnsCount--;
         columnMetrics.set(column, { width, left });
       }
       totalColumnWidth += width;
