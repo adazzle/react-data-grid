@@ -377,3 +377,36 @@ test('reset selected cell when row is removed', () => {
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
+
+test('should use left to right direction by default', () => {
+  setup({ rows, columns });
+  expect(getGrid()).toHaveAttribute('dir', 'ltr');
+});
+
+test('should use left to right direction if direction prop is set to ltr', () => {
+  setup({ rows, columns, direction: 'ltr' });
+  expect(getGrid()).toHaveAttribute('dir', 'ltr');
+});
+
+test('should use right to left direction if direction prop is set to rtl', () => {
+  setup({ rows, columns, direction: 'rtl' });
+  expect(getGrid()).toHaveAttribute('dir', 'rtl');
+});
+
+test('should not change the left and right arrow behavior for right to left languages', () => {
+  setup({ rows, columns, direction: 'rtl' });
+  userEvent.tab();
+  validateCellPosition(0, 0);
+  userEvent.tab();
+  validateCellPosition(1, 0);
+  // we reverse the arrow direction for rtl, but in JSDOM arrowright moves to the left
+  // it seems like the dir attribute is not supported
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(0, 0);
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(0, 0);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(1, 0);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(2, 0);
+});
