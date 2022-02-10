@@ -79,7 +79,6 @@ export default function CustomizableComponents({ direction }: Props) {
 
   return (
     <DataGrid
-      key={direction}
       className="fill-grid"
       columns={columns}
       rows={sortedRows}

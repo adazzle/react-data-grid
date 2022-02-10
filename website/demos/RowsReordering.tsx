@@ -73,7 +73,6 @@ export default function RowsReordering({ direction }: Props) {
   return (
     <DndProvider backend={HTML5Backend}>
       <DataGrid
-        key={direction}
         columns={columns}
         rows={rows}
         onRowsChange={setRows}

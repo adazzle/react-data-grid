@@ -185,7 +185,6 @@ export default function Grouping({ direction }: Props) {
       </div>
 
       <DataGrid
-        key={direction}
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}

@@ -176,13 +176,7 @@ export default function TreeView({ direction }: Props) {
           onChange={() => setAllowDelete(!allowDelete)}
         />
       </label>
-      <DataGrid
-        key={direction}
-        columns={columns}
-        rows={rows}
-        className="big-grid"
-        direction={direction}
-      />
+      <DataGrid columns={columns} rows={rows} className="big-grid" direction={direction} />
     </>
   );
 }

@@ -282,7 +282,6 @@ export default function HeaderFilters({ direction }: Props) {
       </div>
       <FilterContext.Provider value={filters}>
         <DataGrid
-          key={direction}
           className={filters.enabled ? filterContainerClassname : undefined}
           columns={columns}
           rows={filteredRows}

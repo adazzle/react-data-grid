@@ -128,7 +128,6 @@ export default function MasterDetail({ direction }: Props) {
 
   return (
     <DataGrid
-      key={direction}
       rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={rows}

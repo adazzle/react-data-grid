@@ -27,7 +27,6 @@ for (let i = 0; i < 50; i++) {
 export default function ResizableGrid({ direction }: Props) {
   return (
     <DataGrid
-      key={direction}
       columns={columns}
       rows={rows}
       className="fill-grid"

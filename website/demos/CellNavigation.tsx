@@ -107,7 +107,6 @@ export default function CellNavigation({ direction }: Props) {
         </label>
       </div>
       <DataGrid
-        key={direction}
         columns={columns}
         rows={rows}
         cellNavigationMode={cellNavigationMode}

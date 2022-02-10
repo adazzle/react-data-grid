@@ -165,7 +165,6 @@ export default function ContextMenuDemo({ direction }: Props) {
   return (
     <>
       <DataGrid
-        key={direction}
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
