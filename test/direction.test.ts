@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 
-import type { Column } from '../../src';
-import { getGrid, setup, validateCellPosition } from '../utils';
+import type { Column } from '../src';
+import { getGrid, setup, validateCellPosition } from './utils';
 
 interface Row {
   id: number;
