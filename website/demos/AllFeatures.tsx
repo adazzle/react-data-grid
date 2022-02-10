@@ -2,7 +2,7 @@ import faker from 'faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
-import type { Column, FillEvent, PasteEvent } from '../../src';
+import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import type { Props } from './types';
@@ -198,6 +198,12 @@ export default function AllFeatures({ direction }: Props) {
     return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
+  function handleCopy({ sourceRow, sourceColumnKey }: CopyEvent<Row>): void {
+    if (window.isSecureContext) {
+      navigator.clipboard.writeText(sourceRow[sourceColumnKey as keyof Row]);
+    }
+  }
+
   return (
     <DataGrid
       columns={columns}
@@ -205,6 +211,7 @@ export default function AllFeatures({ direction }: Props) {
       rowKeyGetter={rowKeyGetter}
       onRowsChange={setRows}
       onFill={handleFill}
+      onCopy={handleCopy}
       onPaste={handlePaste}
       rowHeight={30}
       selectedRows={selectedRows}

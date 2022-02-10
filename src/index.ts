@@ -19,6 +19,7 @@ export type {
   RowsChangeData,
   SelectRowEvent,
   FillEvent,
+  CopyEvent,
   PasteEvent,
   CellNavigationMode,
   SortDirection,
