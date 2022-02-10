@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
-import { getGrid, getSelectedCell, setup } from '../utils';
+import { getGrid, setup, validateCellPosition } from '../utils';
 
 interface Row {
   id: number;
@@ -39,16 +39,15 @@ test('should use right to left direction if direction prop is set to rtl', () =>
 test('should not change the left and right arrow behavior for right to left languages', () => {
   setup({ rows, columns, direction: 'rtl' });
   userEvent.tab();
-  // it seems like the dir prop is not supported in jsdom.
-  // in a real browser, name will be selected
-  expect(getSelectedCell()).toHaveTextContent('ID');
+  validateCellPosition(0, 0);
   userEvent.tab();
-  expect(getSelectedCell()).toHaveTextContent('Name');
-  // as we reverse the arrow direction for rtl, so in jsdom arrowright moves to the left
-  userEvent.type(getSelectedCell(), '{arrowright}');
-  expect(getSelectedCell()).toHaveTextContent('ID');
-  userEvent.type(getSelectedCell(), '{arrowleft}');
-  expect(getSelectedCell()).toHaveTextContent('Name');
-  userEvent.type(getSelectedCell(), '{arrowleft}');
-  expect(getSelectedCell()).toHaveTextContent('Name');
+  validateCellPosition(1, 0);
+  // we reverse the arrow direction for rtl, but in JSDOM arrowright moves to the left
+  // it seems like the dir attribute is not supported
+  userEvent.keyboard('{arrowright}');
+  validateCellPosition(0, 0);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(1, 0);
+  userEvent.keyboard('{arrowleft}');
+  validateCellPosition(1, 0);
 });
