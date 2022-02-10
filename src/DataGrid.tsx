@@ -2,7 +2,12 @@ import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo
 import type { Key, RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  focusSinkClassname,
+  cellAutoResizeClassname
+} from './style';
 import {
   useLayoutEffect,
   useGridDimensions,
@@ -18,6 +23,12 @@ import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
+import SortIcon from './SortIcon';
+import { CheckboxFormatter } from './formatters';
+import {
+  DataGridDefaultComponentsProvider,
+  useDefaultComponents
+} from './DataGridDefaultComponentsProvider';
 import {
   assertIsValidKeyGetter,
   getNextSelectedCellPosition,
@@ -28,6 +39,7 @@ import {
   getColSpan,
   max,
   sign,
+  abs,
   getSelectedCellColSpan
 } from './utils';
 
@@ -35,15 +47,17 @@ import type {
   CalculatedColumn,
   Column,
   Position,
-  RowRendererProps,
   RowsChangeData,
   SelectRowEvent,
   FillEvent,
+  CopyEvent,
   PasteEvent,
   CellNavigationMode,
   SortColumn,
   RowHeightArgs,
-  Maybe
+  Maybe,
+  Components,
+  Direction
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -131,6 +145,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   expandedGroupIds?: Maybe<ReadonlySet<unknown>>;
   onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>;
   onFill?: Maybe<(event: FillEvent<R>) => R>;
+  onCopy?: Maybe<(event: CopyEvent<R>) => void>;
   onPaste?: Maybe<(event: PasteEvent<R>) => R>;
 
   /**
@@ -164,9 +179,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
-  rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
-  noRowsFallback?: React.ReactNode;
+  components?: Maybe<Components<R, SR>>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
+  direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
 }
 
@@ -205,17 +220,18 @@ function DataGrid<R, SR, K extends Key>(
     onScroll,
     onColumnResize,
     onFill,
+    onCopy,
     onPaste,
     onKeyDown,
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
     // Miscellaneous
-    rowRenderer,
-    noRowsFallback,
+    components,
     className,
     style,
     rowClass,
+    direction,
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
@@ -227,12 +243,18 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * defaults
    */
+  const defaultComponents = useDefaultComponents<R, SR>();
   rowHeight ??= 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
-  const RowRenderer = rowRenderer ?? Row;
+  const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
+  const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon ?? SortIcon;
+  const checkboxFormatter =
+    components?.checkboxFormatter ?? defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
+  const noRowsFallback = components?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
+  direction ??= 'ltr';
 
   /**
    * states
@@ -246,6 +268,7 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
 
   /**
    * refs
@@ -264,6 +287,17 @@ function DataGrid<R, SR, K extends Key>(
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isHeaderRowSelected = selectedPosition.rowIdx === -1;
+  const isRtl = direction === 'rtl';
+  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+
+  const defaultGridComponents = useMemo(
+    () => ({
+      sortIcon,
+      checkboxFormatter
+    }),
+    [sortIcon, checkboxFormatter]
+  );
 
   const allRowsSelected = useMemo((): boolean => {
     // no rows to select = explicitely unchecked
@@ -387,6 +421,21 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
+  useLayoutEffect(() => {
+    if (autoResizeColumn === null) return;
+    const columnElement = gridRef.current!.querySelector(
+      `[aria-colindex="${autoResizeColumn.idx + 1}"]`
+    )!;
+    const width = columnElement.clientWidth + 2;
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(autoResizeColumn.key, width);
+      return newColumnWidths;
+    });
+    setAutoResizeColumn(null);
+    onColumnResize?.(autoResizeColumn.idx, width);
+  }, [autoResizeColumn, gridRef, onColumnResize]);
+
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn(idx: number) {
@@ -407,7 +456,11 @@ function DataGrid<R, SR, K extends Key>(
    * callbacks
    */
   const handleColumnResize = useCallback(
-    (column: CalculatedColumn<R, SR>, width: number) => {
+    (column: CalculatedColumn<R, SR>, width: number | 'auto') => {
+      if (width === 'auto') {
+        setAutoResizeColumn(column);
+        return;
+      }
       setColumnWidths((columnWidths) => {
         const newColumnWidths = new Map(columnWidths);
         newColumnWidths.set(column.key, width);
@@ -509,7 +562,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (
       selectedCellIsWithinViewportBounds &&
-      onPaste != null &&
+      (onPaste != null || onCopy != null) &&
       isCtrlKeyHeldDown(event) &&
       !isGroupRow(rows[rowIdx]) &&
       selectedPosition.mode === 'SELECT'
@@ -535,9 +588,9 @@ function DataGrid<R, SR, K extends Key>(
         isGroupRow(row) &&
         selectedPosition.idx === -1 &&
         // Collapse the current group row if it is focused and is in expanded state
-        ((key === 'ArrowLeft' && row.isExpanded) ||
+        ((key === leftKey && row.isExpanded) ||
           // Expand the current group row if it is focused and is in collapsed state
-          (key === 'ArrowRight' && !row.isExpanded))
+          (key === rightKey && !row.isExpanded))
       ) {
         event.preventDefault(); // Prevents scrolling
         toggleGroup(row.id);
@@ -569,7 +622,8 @@ function DataGrid<R, SR, K extends Key>(
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, scrollLeft } = event.currentTarget;
     setScrollTop(scrollTop);
-    setScrollLeft(scrollLeft);
+    // scrollLeft is nagative when direction is rtl
+    setScrollLeft(abs(scrollLeft));
     onScroll?.(event);
   }
 
@@ -596,7 +650,10 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    setCopiedCell({ row: rawRows[getRawRowIdx(rowIdx)], columnKey: columns[idx].key });
+    const sourceRow = rawRows[getRawRowIdx(rowIdx)];
+    const sourceColumnKey = columns[idx].key;
+    setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
+    onCopy?.({ sourceRow, sourceColumnKey });
   }
 
   function handlePaste() {
@@ -713,10 +770,11 @@ function DataGrid<R, SR, K extends Key>(
 
       const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
       const isCellAtRightBoundary = right > clientWidth + scrollLeft;
+      const sign = isRtl ? -1 : 1;
       if (isCellAtLeftBoundary) {
-        current.scrollLeft = left - totalFrozenColumnWidth;
+        current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
       } else if (isCellAtRightBoundary) {
-        current.scrollLeft = right - clientWidth;
+        current.scrollLeft = (right - clientWidth) * sign;
       }
     }
 
@@ -739,13 +797,7 @@ function DataGrid<R, SR, K extends Key>(
     const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
 
     // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
-    if (
-      key === 'ArrowLeft' &&
-      isRowSelected &&
-      isGroupRow(row) &&
-      !row.isExpanded &&
-      row.level !== 0
-    ) {
+    if (key === leftKey && isRowSelected && isGroupRow(row) && !row.isExpanded && row.level !== 0) {
       let parentRowIdx = -1;
       for (let i = selectedPosition.rowIdx - 1; i >= 0; i--) {
         const parentRow = rows[i];
@@ -765,9 +817,9 @@ function DataGrid<R, SR, K extends Key>(
       case 'ArrowDown':
         return { idx, rowIdx: rowIdx + 1 };
       case 'ArrowLeft':
-        return { idx: idx - 1, rowIdx };
+        return isRtl ? { idx: idx + 1, rowIdx } : { idx: idx - 1, rowIdx };
       case 'ArrowRight':
-        return { idx: idx + 1, rowIdx };
+        return isRtl ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
@@ -850,6 +902,17 @@ function DataGrid<R, SR, K extends Key>(
         : rowIdx > currentRowIdx && currentRowIdx >= draggedOverRowIdx;
 
     return isDraggedOver ? selectedPosition.idx : undefined;
+  }
+
+  function getLayoutCssVars() {
+    if (autoResizeColumn === null) return layoutCssVars;
+    const { gridTemplateColumns } = layoutCssVars;
+    const newSizes = gridTemplateColumns.split(' ');
+    newSizes[autoResizeColumn.idx] = 'max-content';
+    return {
+      ...layoutCssVars,
+      gridTemplateColumns: newSizes.join(' ')
+    };
   }
 
   function getDragHandle(rowIdx: number) {
@@ -1057,22 +1120,31 @@ function DataGrid<R, SR, K extends Key>(
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={headerRowsCount + rowsCount + summaryRowsCount}
-      className={clsx(rootClassname, { [viewportDraggingClassname]: isDragging }, className)}
+      className={clsx(
+        rootClassname,
+        {
+          [viewportDraggingClassname]: isDragging,
+          [cellAutoResizeClassname]: autoResizeColumn !== null
+        },
+        className
+      )}
       style={
         {
           ...style,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
-          '--rdg-row-width': `${totalColumnWidth}px`,
+          '--rdg-grid-inline-size': `${totalColumnWidth}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
-          '--rdg-grid-height': `${
+          '--rdg-grid-block-size': `${
             max(totalRowHeight, clientHeight) +
             headerRowHeight +
             summaryRowsCount * summaryRowHeight
           }px`,
-          ...layoutCssVars
+          '--rdg-sign': isRtl ? -1 : 1,
+          ...getLayoutCssVars()
         } as unknown as React.CSSProperties
       }
+      dir={direction}
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
@@ -1090,52 +1162,59 @@ function DataGrid<R, SR, K extends Key>(
           onKeyDown={handleKeyDown}
         />
       )}
-      <HeaderRow
-        columns={viewportColumns}
-        onColumnResize={handleColumnResize}
-        allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={selectAllRowsLatest}
-        sortColumns={sortColumns}
-        onSortColumnsChange={onSortColumnsChange}
-        lastFrozenColumnIndex={lastFrozenColumnIndex}
-        selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
-        selectCell={selectHeaderCellLatest}
-        shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-      />
-      {rows.length === 0 && noRowsFallback ? (
-        noRowsFallback
-      ) : (
-        <>
-          <RowSelectionChangeProvider value={selectRowLatest}>
-            {getViewportRows()}
-          </RowSelectionChangeProvider>
-          {summaryRows?.map((row, rowIdx) => {
-            const isSummaryRowSelected =
-              selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
-            const top =
-              clientHeight > totalRowHeight
-                ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
-                : undefined;
-            const bottom =
-              top === undefined ? summaryRowHeight * (summaryRows.length - 1 - rowIdx) : undefined;
+      <DataGridDefaultComponentsProvider value={defaultGridComponents}>
+        <HeaderRow
+          columns={viewportColumns}
+          onColumnResize={handleColumnResize}
+          allRowsSelected={allRowsSelected}
+          onAllRowsSelectionChange={selectAllRowsLatest}
+          sortColumns={sortColumns}
+          onSortColumnsChange={onSortColumnsChange}
+          lastFrozenColumnIndex={lastFrozenColumnIndex}
+          selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
+          selectCell={selectHeaderCellLatest}
+          shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+          direction={direction}
+        />
+        {rows.length === 0 && noRowsFallback ? (
+          noRowsFallback
+        ) : (
+          <>
+            <RowSelectionChangeProvider value={selectRowLatest}>
+              {getViewportRows()}
+            </RowSelectionChangeProvider>
+            {summaryRows?.map((row, rowIdx) => {
+              const gridRowStart = headerRowsCount + rows.length + rowIdx + 1;
+              const isSummaryRowSelected =
+                selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
+              const top =
+                clientHeight > totalRowHeight
+                  ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
+                  : undefined;
+              const bottom =
+                top === undefined
+                  ? summaryRowHeight * (summaryRows.length - 1 - rowIdx)
+                  : undefined;
 
-            return (
-              <SummaryRow
-                aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
-                key={rowIdx}
-                rowIdx={rowIdx}
-                row={row}
-                top={top}
-                bottom={bottom}
-                viewportColumns={viewportColumns}
-                lastFrozenColumnIndex={lastFrozenColumnIndex}
-                selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                selectCell={selectSummaryCellLatest}
-              />
-            );
-          })}
-        </>
-      )}
+              return (
+                <SummaryRow
+                  aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
+                  key={rowIdx}
+                  rowIdx={rowIdx}
+                  gridRowStart={gridRowStart}
+                  row={row}
+                  top={top}
+                  bottom={bottom}
+                  viewportColumns={viewportColumns}
+                  lastFrozenColumnIndex={lastFrozenColumnIndex}
+                  selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                  selectCell={selectSummaryCellLatest}
+                />
+              );
+            })}
+          </>
+        )}
+      </DataGridDefaultComponentsProvider>
     </div>
   );
 }

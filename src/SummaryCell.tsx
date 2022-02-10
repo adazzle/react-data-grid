@@ -6,8 +6,8 @@ import type { CalculatedColumn, CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
 
 export const summaryCellClassname = css`
-  top: var(--rdg-summary-row-top);
-  bottom: var(--rdg-summary-row-bottom);
+  inset-block-start: var(--rdg-summary-row-top);
+  inset-block-end: var(--rdg-summary-row-bottom);
 `;
 
 interface SharedCellRendererProps<R, SR>
