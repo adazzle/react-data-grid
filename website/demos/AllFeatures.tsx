@@ -5,6 +5,7 @@ import DataGrid, { SelectColumn, TextEditor } from '../../src';
 import type { Column, FillEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
 import { ImageFormatter } from './components/Formatters';
+import type { Props } from './types';
 
 const highlightClassname = css`
   .rdg-cell {
@@ -169,7 +170,7 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function AllFeatures() {
+export default function AllFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -210,6 +211,7 @@ export default function AllFeatures() {
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
       rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+      direction={direction}
     />
   );
 }

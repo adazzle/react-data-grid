@@ -13,10 +13,10 @@ const cellResizable = css`
     content: '';
     cursor: col-resize;
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 10px;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inline-size: 10px;
   }
 `;
 
@@ -31,6 +31,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'selectCell'
   | 'onColumnResize'
   | 'shouldFocusGrid'
+  | 'direction'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -49,8 +50,10 @@ export default function HeaderCell<R, SR>({
   sortColumns,
   onSortColumnsChange,
   selectCell,
-  shouldFocusGrid
+  shouldFocusGrid,
+  direction
 }: HeaderCellProps<R, SR>) {
+  const isRtl = direction === 'rtl';
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
@@ -72,8 +75,8 @@ export default function HeaderCell<R, SR>({
     }
 
     const { currentTarget, pointerId } = event;
-    const { right } = currentTarget.getBoundingClientRect();
-    const offset = right - event.clientX;
+    const { right, left } = currentTarget.getBoundingClientRect();
+    const offset = isRtl ? event.clientX - left : right - event.clientX;
 
     if (offset > 11) {
       // +1px to account for the border size
@@ -81,7 +84,8 @@ export default function HeaderCell<R, SR>({
     }
 
     function onPointerMove(event: PointerEvent) {
-      const width = event.clientX + offset - currentTarget.getBoundingClientRect().left;
+      const { right, left } = currentTarget.getBoundingClientRect();
+      const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
         onColumnResize(column, width);
       }
@@ -139,8 +143,8 @@ export default function HeaderCell<R, SR>({
   }
 
   function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    const { right } = event.currentTarget.getBoundingClientRect();
-    const offset = right - event.clientX;
+    const { right, left } = event.currentTarget.getBoundingClientRect();
+    const offset = isRtl ? event.clientX - left : right - event.clientX;
 
     if (offset > 11) {
       // +1px to account for the border size

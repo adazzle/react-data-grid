@@ -1,16 +1,18 @@
 import { NavLink } from 'react-router-dom';
 import { css } from '@linaria/core';
 
+import type { Direction } from '../src/types';
+
 const navClassname = css`
   display: flex;
   flex-direction: column;
   white-space: nowrap;
 
   @media (prefers-color-scheme: light) {
-    border-left: 4px solid hsl(210deg 50% 80%);
+    border-inline-start: 4px solid hsl(210deg 50% 80%);
   }
   @media (prefers-color-scheme: dark) {
-    border-left: 4px solid hsl(210deg 50% 40%);
+    border-inline-start: 4px solid hsl(210deg 50% 40%);
   }
 
   h1,
@@ -23,7 +25,8 @@ const navClassname = css`
     font-size: 14px;
     line-height: 22px;
     text-decoration: none;
-    padding: 0 16px;
+    padding-block: 0;
+    padding-inline: 16px;
     transition: 0.1s background-color;
 
     &:hover {
@@ -57,7 +60,16 @@ const activeNavClassname = css`
   }
 `;
 
-export default function Nav() {
+const rtlCheckboxClassname = css`
+  padding-inline-start: 8px;
+`;
+
+interface Props {
+  direction: Direction;
+  onDirectionChange: (direction: Direction) => void;
+}
+
+export default function Nav({ direction, onDirectionChange }: Props) {
   return (
     <nav className={navClassname}>
       <h1>react-data-grid</h1>
@@ -143,6 +155,16 @@ export default function Nav() {
       <a href="https://github.com/adazzle/react-data-grid/issues" target="_blank" rel="noreferrer">
         Issues
       </a>
+
+      <h2>Direction</h2>
+      <label className={rtlCheckboxClassname}>
+        <input
+          type="checkbox"
+          checked={direction === 'rtl'}
+          onChange={() => onDirectionChange(direction === 'rtl' ? 'ltr' : 'rtl')}
+        />
+        Right to left
+      </label>
     </nav>
   );
 }

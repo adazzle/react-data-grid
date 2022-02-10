@@ -11,7 +11,7 @@ const checkboxLabel = css`
   justify-content: center;
   position: absolute;
   inset: 0;
-  margin-right: 1px; /* align checkbox in row group cell */
+  margin-inline-end: 1px; /* align checkbox in row group cell */
 `;
 
 const checkboxLabelClassname = `rdg-checkbox-label ${checkboxLabel}`;
@@ -24,8 +24,8 @@ const checkboxInputClassname = `rdg-checkbox-input ${checkboxInput}`;
 
 const checkbox = css`
   content: '';
-  width: 20px;
-  height: 20px;
+  inline-size: 20px;
+  block-size: 20px;
   border: 2px solid var(--rdg-border-color);
   background-color: var(--rdg-background-color);
   .${checkboxInput}:checked + & {

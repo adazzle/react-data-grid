@@ -41,6 +41,7 @@
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
+- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
 
@@ -231,6 +232,15 @@ function MyGrid() {
 :warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
 
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
+
+##### `direction?: Maybe<'ltr' | 'rtl'>`
+
+This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
+
+- Columns flow from right to left
+- Frozen columns are pinned on the right
+- Column resize handle is shown on the left edge of the column
+- Scrollbar is moved to the left
 
 ###### `className?: string | undefined`
 
