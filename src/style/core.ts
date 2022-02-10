@@ -36,7 +36,7 @@ const darkTheme = `
 const root = css`
   ${lightTheme}
   --rdg-selection-color: #66afe9;
-  --rdg-frozen-cell-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
+  --rdg-frozen-cell-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
   --rdg-font-size: 14px;
 
   display: grid;
@@ -48,7 +48,7 @@ const root = css`
   contain: strict;
   contain: size layout style paint;
   content-visibility: auto;
-  height: 350px;
+  block-size: 350px;
   border: 1px solid var(--rdg-border-color);
   box-sizing: border-box;
   overflow: auto;
@@ -56,7 +56,6 @@ const root = css`
   background-color: var(--rdg-background-color);
   color: var(--rdg-color);
   font-size: var(--rdg-font-size);
-  direction: ltr;
 
   /* set stacking context in safari */
   @supports not (contain: strict) {
@@ -74,10 +73,10 @@ const root = css`
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    height: var(--rdg-grid-height);
-    width: var(--rdg-row-width);
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    block-size: var(--rdg-grid-block-size);
+    inline-size: var(--rdg-grid-inline-size);
   }
 
   &.rdg-dark {
@@ -108,6 +107,6 @@ export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDraggi
 
 export const focusSinkClassname = css`
   position: sticky;
-  left: 0;
+  inset-inline-start: 0;
   grid-column-start: 1;
 `;

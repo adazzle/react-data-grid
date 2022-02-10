@@ -9,8 +9,8 @@ const imageCellClassname = css`
   background: #efefef;
   background-size: 100%;
   display: inline-block;
-  height: 28px;
-  width: 28px;
+  block-size: 28px;
+  inline-size: 28px;
   vertical-align: middle;
   background-position: center;
 `;

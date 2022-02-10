@@ -1,11 +1,13 @@
 export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { default as TreeDataGrid } from './TreeDataGrid';
 export type { TreeDataGridProps } from './TreeDataGrid';
+export { DataGridDefaultComponentsProvider } from './DataGridDefaultComponentsProvider';
+
 export { default as Row } from './Row';
 export * from './Columns';
 export * from './formatters';
 export { default as TextEditor } from './editors/TextEditor';
-export { default as SortableHeaderCell } from './headerCells/SortableHeaderCell';
+export { default as HeaderRenderer } from './HeaderRenderer';
 export { useRowSelection } from './hooks';
 export type {
   Column,
@@ -20,10 +22,13 @@ export type {
   RowsChangeData,
   SelectRowEvent,
   FillEvent,
+  CopyEvent,
   PasteEvent,
   CellNavigationMode,
   SortDirection,
   SortColumn,
   ColSpanArgs,
-  RowHeightArgs
+  RowHeightArgs,
+  CheckboxFormatterProps,
+  SortIconProps
 } from './types';

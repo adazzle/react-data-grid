@@ -5,13 +5,14 @@ import faker from 'faker';
 
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
-import { stopPropagation } from '../../src/utils';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/TextEditor';
+import type { Props } from './types';
+import type { Direction } from '../../src/types';
 
 const toolbarClassname = css`
-  text-align: right;
-  margin-bottom: 8px;
+  text-align: end;
+  margin-block-end: 8px;
 `;
 
 const dialogContainerClassname = css`
@@ -28,7 +29,7 @@ const dialogContainerClassname = css`
     }
 
     > menu {
-      text-align: right;
+      text-align: end;
     }
   }
 `;
@@ -71,7 +72,7 @@ interface Row {
   available: boolean;
 }
 
-function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
+function getColumns(countries: string[], direction: Direction): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
     {
@@ -146,13 +147,14 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
         const value = props.row.progress;
         return (
           <>
-            <progress max={100} value={value} style={{ width: 50 }} /> {Math.round(value)}%
+            <progress max={100} value={value} style={{ inlineSize: 50 }} /> {Math.round(value)}%
           </>
         );
       },
       editor({ row, onRowChange, onClose }) {
         return createPortal(
           <div
+            dir={direction}
             className={dialogContainerClassname}
             onKeyDown={(event) => {
               if (event.key === 'Escape') {
@@ -231,7 +233,6 @@ function getColumns(countries: string[]): readonly Column<Row, SummaryRow>[] {
             onChange={() => {
               onRowChange({ ...row, available: !row.available });
             }}
-            onClick={stopPropagation}
             isCellSelected={isCellSelected}
           />
         );
@@ -306,7 +307,7 @@ function getComparator(sortColumn: string): Comparator {
   }
 }
 
-export default function CommonFeatures() {
+export default function CommonFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -315,7 +316,7 @@ export default function CommonFeatures() {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const columns = useMemo(() => getColumns(countries), [countries]);
+  const columns = useMemo(() => getColumns(countries, direction), [countries, direction]);
 
   const summaryRows = useMemo(() => {
     const summaryRow: SummaryRow = {
@@ -329,8 +330,7 @@ export default function CommonFeatures() {
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
 
-    const sortedRows = [...rows];
-    sortedRows.sort((a, b) => {
+    return [...rows].sort((a, b) => {
       for (const sort of sortColumns) {
         const comparator = getComparator(sort.columnKey);
         const compResult = comparator(a, b);
@@ -340,7 +340,6 @@ export default function CommonFeatures() {
       }
       return 0;
     });
-    return sortedRows;
   }, [rows, sortColumns]);
 
   const gridElement = (
@@ -359,6 +358,7 @@ export default function CommonFeatures() {
       onSortColumnsChange={setSortColumns}
       summaryRows={summaryRows}
       className="fill-grid"
+      direction={direction}
     />
   );
 

@@ -1,6 +1,8 @@
 import { css } from '@linaria/core';
-import { useFocusRef } from '../hooks';
-import type { HeaderRendererProps } from '../types';
+
+import { useFocusRef } from './hooks';
+import type { HeaderRendererProps } from './types';
+import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
 
 const headerSortCell = css`
   cursor: pointer;
@@ -22,32 +24,44 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-const arrow = css`
-  fill: currentColor;
+export default function HeaderRenderer<R, SR>({
+  column,
+  sortDirection,
+  priority,
+  onSort,
+  isCellSelected
+}: HeaderRendererProps<R, SR>) {
+  if (!column.sortable) return <>{column.name}</>;
 
-  > path {
-    transition: d 0.1s;
-  }
-`;
-
-const arrowClassname = `rdg-sort-arrow ${arrow}`;
+  return (
+    <SortableHeaderCell
+      onSort={onSort}
+      sortDirection={sortDirection}
+      priority={priority}
+      isCellSelected={isCellSelected}
+    >
+      {column.name}
+    </SortableHeaderCell>
+  );
+}
 
 type SharedHeaderCellProps<R, SR> = Pick<
   HeaderRendererProps<R, SR>,
   'sortDirection' | 'onSort' | 'priority' | 'isCellSelected'
 >;
 
-interface Props<R, SR> extends SharedHeaderCellProps<R, SR> {
+interface SortableHeaderCellProps<R, SR> extends SharedHeaderCellProps<R, SR> {
   children: React.ReactNode;
 }
 
-export default function SortableHeaderCell<R, SR>({
+function SortableHeaderCell<R, SR>({
   onSort,
   sortDirection,
   priority,
   children,
   isCellSelected
-}: Props<R, SR>) {
+}: SortableHeaderCellProps<R, SR>) {
+  const SortIcon = useDefaultComponents<R, SR>()!.sortIcon!;
   const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
@@ -72,11 +86,7 @@ export default function SortableHeaderCell<R, SR>({
     >
       <span className={headerSortNameClassname}>{children}</span>
       <span>
-        {sortDirection !== undefined && (
-          <svg viewBox="0 0 12 8" width="12" height="8" className={arrowClassname} aria-hidden>
-            <path d={sortDirection === 'ASC' ? 'M0 8 6 0 12 8' : 'M0 0 6 8 12 0'} />
-          </svg>
-        )}
+        <SortIcon sortDirection={sortDirection} />
         {priority}
       </span>
     </span>

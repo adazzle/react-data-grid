@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import DataGrid from '../../src';
 import type { Column, DataGridHandle } from '../../src';
+import type { Props } from './types';
 
 interface Row {
   id: number;
@@ -14,7 +15,7 @@ const columns: readonly Column<Row>[] = [
   { key: 'count', name: 'Count' }
 ];
 
-export default function ScrollToRow() {
+export default function ScrollToRow({ direction }: Props) {
   const [rows] = useState(() => {
     const rows: Row[] = [];
 
@@ -33,10 +34,10 @@ export default function ScrollToRow() {
 
   return (
     <>
-      <div style={{ marginBottom: 5 }}>
-        <span style={{ marginRight: 5 }}>Row index: </span>
+      <div style={{ marginBlockEnd: 5 }}>
+        <span style={{ marginInlineEnd: 5 }}>Row index: </span>
         <input
-          style={{ width: 50 }}
+          style={{ inlineSize: 50 }}
           type="number"
           value={value}
           onChange={(event) => setValue(event.target.value)}
@@ -45,7 +46,7 @@ export default function ScrollToRow() {
           Scroll to row
         </button>
       </div>
-      <DataGrid ref={gridRef} columns={columns} rows={rows} />
+      <DataGrid ref={gridRef} columns={columns} rows={rows} direction={direction} />
     </>
   );
 }

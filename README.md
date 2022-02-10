@@ -40,6 +40,8 @@
 - [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
+- [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
+- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
 
@@ -179,6 +181,8 @@ A number defining the height of summary rows.
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
+###### `onCopy?: Maybe<(event: CopyEvent<R>) => void>`
+
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
 ###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
@@ -193,9 +197,23 @@ A number defining the height of summary rows.
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
-###### <span name="rowRenderer">`rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>`</span>
+###### `components?: Maybe<Components<R, SR>>`
 
-The default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props for example.
+This prop can be used to override the internal components. The prop accepts an object of type
+
+```tsx
+interface Components<TRow, TSummaryRow> {
+  sortIcon?: Maybe<ComponentType<SortIconProps>>;
+  checkboxFormatter?: Maybe<
+    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
+    | ComponentType<CheckboxFormatterProps>
+  >;
+  rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
+  noRowsFallback?: Maybe<React.ReactNode>;
+}
+```
+
+For example, the default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props
 
 ```tsx
 import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
@@ -209,15 +227,22 @@ function MyRowRenderer(props: RowRendererProps<Row>) {
 }
 
 function MyGrid() {
-  return <DataGrid columns={columns} rows={rows} rowRenderer={MyRowRenderer} />;
+  return <DataGrid columns={columns} rows={rows} components={{ rowRenderer: MyRowRenderer }} />;
 }
 ```
 
 :warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
 
-###### `noRowsFallback?: React.ReactNode`
-
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
+
+##### `direction?: Maybe<'ltr' | 'rtl'>`
+
+This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
+
+- Columns flow from right to left
+- Frozen columns are pinned on the right
+- Column resize handle is shown on the left edge of the column
+- Scrollbar is moved to the left
 
 ###### `className?: string | undefined`
 
@@ -239,7 +264,7 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`rowRenderer`](#rowRenderer)
+See [`components`](#components-maybecomponentsr-sr)
 
 ##### Props
 

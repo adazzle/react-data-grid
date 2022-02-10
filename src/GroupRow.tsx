@@ -16,7 +16,7 @@ const groupRow = css`
   }
 
   > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
-    border-right: none;
+    border-inline-end: none;
   }
 `;
 
