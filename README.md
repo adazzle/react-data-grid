@@ -181,6 +181,8 @@ A number defining the height of summary rows.
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
+###### `onCopy?: Maybe<(event: CopyEvent<R>) => void>`
+
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
 ###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`

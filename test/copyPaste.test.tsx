@@ -44,8 +44,15 @@ const summaryRows: readonly Row[] = [
 
 const copyCellClassName = 'rdg-cell-copied';
 const onPasteSpy = jest.fn();
+const onCopySpy = jest.fn();
 
-function CopyPasteTest({ allowCopyPaste = true }: { allowCopyPaste?: boolean }) {
+function CopyPasteTest({
+  onPasteCallback = true,
+  onCopyCallback = false
+}: {
+  onPasteCallback?: boolean;
+  onCopyCallback?: boolean;
+}) {
   const [rows, setRows] = useState(initialRows);
 
   function onPaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>) {
@@ -59,35 +66,70 @@ function CopyPasteTest({ allowCopyPaste = true }: { allowCopyPaste?: boolean }) 
       rows={rows}
       summaryRows={summaryRows}
       onRowsChange={setRows}
-      onPaste={allowCopyPaste ? onPaste : undefined}
+      onPaste={onPasteCallback ? onPaste : undefined}
+      onCopy={onCopyCallback ? onCopySpy : undefined}
     />
   );
 }
 
-function setup(allowCopyPaste = true) {
+function setup(onPasteCallback = true, onCopyCallback = false) {
   onPasteSpy.mockReset();
+  onCopySpy.mockReset();
   render(
     <StrictMode>
-      <CopyPasteTest allowCopyPaste={allowCopyPaste} />
+      <CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} />
     </StrictMode>
   );
 }
 
-test('should not allow copy/paste if onPaste is undefined', () => {
-  setup(false);
+test('should not allow copy/paste if onPaste & onCopy is undefined', () => {
+  setup(false, false);
   userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
   expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
+  expect(onCopySpy).not.toHaveBeenCalled();
   userEvent.keyboard('{arrowdown}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
+  expect(onPasteSpy).not.toHaveBeenCalled();
 });
 
-test('should allow copy/paste if onPaste is specified', () => {
-  setup();
+test('should allow copy if only onCopy is specified', () => {
+  setup(false, true);
   userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
   expect(getSelectedCell()).toHaveClass(copyCellClassName);
+  expect(onCopySpy).toHaveBeenCalledWith({
+    sourceRow: initialRows[0],
+    sourceColumnKey: 'col'
+  });
+  userEvent.keyboard('{arrowdown}');
+  pasteSelectedCell();
+  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
+  expect(onPasteSpy).not.toHaveBeenCalled();
+});
+
+test('should allow copy/paste if only onPaste is specified', () => {
+  setup(true, false);
+  userEvent.click(getCellsAtRowIndex(0)[0]);
+  copySelectedCell();
+  expect(getSelectedCell()).toHaveClass(copyCellClassName);
+  expect(onCopySpy).not.toHaveBeenCalled();
+  userEvent.keyboard('{arrowdown}');
+  pasteSelectedCell();
+  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
+  expect(onPasteSpy).toHaveBeenCalledTimes(1);
+});
+
+test('should allow copy/paste if both onPaste & onCopy is specified', () => {
+  setup(true, true);
+  userEvent.click(getCellsAtRowIndex(0)[0]);
+  copySelectedCell();
+  expect(getSelectedCell()).toHaveClass(copyCellClassName);
+  expect(onCopySpy).toHaveBeenCalledWith({
+    sourceRow: initialRows[0],
+    sourceColumnKey: 'col'
+  });
   userEvent.keyboard('{arrowdown}');
   pasteSelectedCell();
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');

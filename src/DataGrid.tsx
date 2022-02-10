@@ -50,6 +50,7 @@ import type {
   RowsChangeData,
   SelectRowEvent,
   FillEvent,
+  CopyEvent,
   PasteEvent,
   CellNavigationMode,
   SortColumn,
@@ -144,6 +145,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   expandedGroupIds?: Maybe<ReadonlySet<unknown>>;
   onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>;
   onFill?: Maybe<(event: FillEvent<R>) => R>;
+  onCopy?: Maybe<(event: CopyEvent<R>) => void>;
   onPaste?: Maybe<(event: PasteEvent<R>) => R>;
 
   /**
@@ -210,6 +212,7 @@ function DataGrid<R, SR, K extends Key>(
     onScroll,
     onColumnResize,
     onFill,
+    onCopy,
     onPaste,
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
@@ -548,7 +551,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (
       selectedCellIsWithinViewportBounds &&
-      onPaste != null &&
+      (onPaste != null || onCopy != null) &&
       isCtrlKeyHeldDown(event) &&
       !isGroupRow(rows[rowIdx]) &&
       selectedPosition.mode === 'SELECT'
@@ -636,7 +639,10 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleCopy() {
     const { idx, rowIdx } = selectedPosition;
-    setCopiedCell({ row: rawRows[getRawRowIdx(rowIdx)], columnKey: columns[idx].key });
+    const sourceRow = rawRows[getRawRowIdx(rowIdx)];
+    const sourceColumnKey = columns[idx].key;
+    setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
+    onCopy?.({ sourceRow, sourceColumnKey });
   }
 
   function handlePaste() {
