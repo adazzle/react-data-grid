@@ -608,6 +608,7 @@ function DataGrid<R, SR, K extends Key>(
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, scrollLeft } = event.currentTarget;
     setScrollTop(scrollTop);
+    // scrollLeft is nagative when direction is rtl
     setScrollLeft(abs(scrollLeft));
     onScroll?.(event);
   }
