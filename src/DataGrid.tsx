@@ -1033,6 +1033,7 @@ function DataGrid<R, SR, K extends Key>(
             viewportColumns={rowColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
+            lastFrozenColumnIndex={lastFrozenColumnIndex}
             row={row}
             gridRowStart={gridRowStart}
             height={getRowHeight(rowIdx)}

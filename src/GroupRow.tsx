@@ -2,7 +2,13 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
+import {
+  cell,
+  cellFrozenLast,
+  rowClassname,
+  rowSelectedClassname,
+  rowSelectedWithFrozenCell
+} from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
@@ -16,6 +22,7 @@ export interface GroupRowRendererProps<R, SR>
   viewportColumns: readonly CalculatedColumn<R, SR>[];
   childRows: readonly R[];
   rowIdx: number;
+  lastFrozenColumnIndex: number;
   row: GroupRow<R>;
   gridRowStart: number;
   height: number;
@@ -45,6 +52,7 @@ function GroupedRow<R, SR>({
   viewportColumns,
   childRows,
   rowIdx,
+  lastFrozenColumnIndex,
   row,
   gridRowStart,
   height,
@@ -56,6 +64,7 @@ function GroupedRow<R, SR>({
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
+  const isRowFocused = selectedCellIdx === -1;
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
@@ -74,7 +83,8 @@ function GroupedRow<R, SR>({
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
           {
-            [rowSelectedClassname]: selectedCellIdx === -1
+            [rowSelectedClassname]: isRowFocused,
+            [rowSelectedWithFrozenCell]: isRowFocused && lastFrozenColumnIndex !== -1
           }
         )}
         onClick={handleSelectGroup}
