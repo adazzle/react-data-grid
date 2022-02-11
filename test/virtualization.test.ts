@@ -180,7 +180,7 @@ test('virtualization is enabled with all columns frozen', () => {
   assertCellIndexes(0, indexes);
 
   // max left = row width - grid width
-  // grid.scrollLeft = parseInt(grid.style.getPropertyValue('--rdg-grid-inline-size'), 10) - 1920;
+  grid.scrollLeft = 3600 - 1920;
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 });
