@@ -39,7 +39,6 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   getColSpan,
-  max,
   sign,
   abs,
   getSelectedCellColSpan
