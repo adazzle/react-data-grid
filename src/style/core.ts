@@ -71,11 +71,8 @@ const root = css`
   /* needed on Firefox */
   &::before {
     content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    block-size: var(--rdg-grid-block-size);
-    inline-size: var(--rdg-grid-inline-size);
+    grid-column: 1/-1;
+    grid-row: 1/-1;
   }
 
   &.rdg-dark {

@@ -39,7 +39,6 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   getColSpan,
-  max,
   sign,
   abs,
   getSelectedCellColSpan
@@ -311,7 +310,6 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanEndIdx,
     layoutCssVars,
     columnMetrics,
-    totalColumnWidth,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -1131,13 +1129,7 @@ function DataGrid<R, SR, K extends Key>(
           ...style,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
-          '--rdg-grid-inline-size': `${totalColumnWidth}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
-          '--rdg-grid-block-size': `${
-            max(totalRowHeight, clientHeight) +
-            headerRowHeight +
-            summaryRowsCount * summaryRowHeight
-          }px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...getLayoutCssVars()
         } as unknown as React.CSSProperties
