@@ -1158,8 +1158,7 @@ function DataGrid<R, SR, K extends Key>(
             [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
           })}
           style={{
-            gridRowStart: selectedPosition.rowIdx + 2,
-            gridColumn: '1/-1'
+            gridRowStart: selectedPosition.rowIdx + 2
           }}
           onKeyDown={handleKeyDown}
         />
