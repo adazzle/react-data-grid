@@ -43,7 +43,12 @@ function Row<R, SR>(
     onMouseEnter?.(event);
   }
 
-  className = clsx(rowClassname, rowClass?.(row), className);
+  className = clsx(
+    rowClassname,
+    `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+    rowClass?.(row),
+    className
+  );
 
   const cells = [];
 
