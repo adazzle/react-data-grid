@@ -105,8 +105,6 @@ const viewportDragging = css`
 export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDragging}`;
 
 export const focusSinkClassname = css`
-  position: sticky;
-  inset-inline-start: 0;
   grid-column: 1/-1;
   pointer-events: none;
   /* Should have a higher value than 3 to show up above header row */
