@@ -125,15 +125,13 @@ export function useCalculatedColumns<R, SR>({
     };
   }, [rawColumns, defaultFormatter, defaultResizable, defaultSortable, rawGroupBy]);
 
-  const { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+  const { layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
     layoutCssVars: Readonly<Record<string, string>>;
-    totalColumnWidth: number;
     totalFrozenColumnWidth: number;
     columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
   } => {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
-    let totalColumnWidth = 0;
     let totalFrozenColumnWidth = 0;
     let templateColumns = '';
     let allocatedWidth = 0;
@@ -166,7 +164,6 @@ export function useCalculatedColumns<R, SR>({
         unassignedColumnsCount--;
         columnMetrics.set(column, { width, left });
       }
-      totalColumnWidth += width;
       left += width;
       templateColumns += `${width}px `;
     }
@@ -185,7 +182,7 @@ export function useCalculatedColumns<R, SR>({
       layoutCssVars[`--rdg-frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
-    return { layoutCssVars, totalColumnWidth, totalFrozenColumnWidth, columnMetrics };
+    return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
   }, [columnWidths, columns, viewportWidth, minColumnWidth, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
@@ -249,7 +246,6 @@ export function useCalculatedColumns<R, SR>({
     colOverscanEndIdx,
     layoutCssVars,
     columnMetrics,
-    totalColumnWidth,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
