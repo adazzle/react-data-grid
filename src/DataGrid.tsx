@@ -7,7 +7,7 @@ import {
   viewportDraggingClassname,
   focusSinkClassname,
   cellAutoResizeClassname,
-  rowSelectedClassname,
+  rowSelected,
   rowSelectedWithFrozenCell
 } from './style';
 import {
@@ -1154,7 +1154,7 @@ function DataGrid<R, SR, K extends Key>(
           ref={rowRef}
           tabIndex={isGroupRowFocused ? 0 : -1}
           className={clsx(focusSinkClassname, {
-            [rowSelectedClassname]: isGroupRowFocused,
+            [rowSelected]: isGroupRowFocused,
             [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
           })}
           style={{

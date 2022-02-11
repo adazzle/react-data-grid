@@ -2,7 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast, rowClassname } from './style';
+import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
@@ -72,7 +72,10 @@ function GroupedRow<R, SR>({
         className={clsx(
           rowClassname,
           groupRowClassname,
-          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`
+          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+          {
+            [rowSelectedClassname]: selectedCellIdx === -1
+          }
         )}
         onClick={handleSelectGroup}
         style={getRowStyle(gridRowStart, height)}

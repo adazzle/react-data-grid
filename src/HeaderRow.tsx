@@ -1,11 +1,12 @@
 import { memo } from 'react';
+import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import HeaderCell from './HeaderCell';
 import type { CalculatedColumn, Direction } from './types';
 import { getColSpan, getRowStyle } from './utils';
 import type { DataGridProps } from './DataGrid';
-import { cell, cellFrozen } from './style';
+import { cell, cellFrozen, rowSelectedClassname } from './style';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
@@ -87,7 +88,9 @@ function HeaderRow<R, SR, K extends React.Key>({
     <div
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
-      className={headerRowClassname}
+      className={clsx(headerRowClassname, {
+        [rowSelectedClassname]: selectedCellIdx === -1
+      })}
       style={getRowStyle(1)}
     >
       {cells}

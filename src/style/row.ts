@@ -20,20 +20,20 @@ export const row = css`
 
 export const rowClassname = `rdg-row ${row}`;
 
-const rowSelected = css`
+export const rowSelected = css`
   outline: 2px solid var(--rdg-selection-color);
   outline-offset: -2px;
 `;
 
-export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
+export const rowSelectedClassname = `rdg-row-selected`;
 
 export const rowSelectedWithFrozenCell = css`
   &::before {
     content: '';
+    display: inline-block;
+    height: 100%;
     position: sticky;
     inset-inline-start: 0;
     border-inline-start: 2px solid var(--rdg-selection-color);
-    display: inline-block;
-    height: 100%;
   }
 `;
