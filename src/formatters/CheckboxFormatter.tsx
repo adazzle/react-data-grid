@@ -30,7 +30,8 @@ const checkbox = css`
   background-color: var(--rdg-background-color);
   .${checkboxInput}:checked + & {
     background-color: var(--rdg-checkbox-color);
-    box-shadow: inset 0px 0px 0px 4px var(--rdg-background-color);
+    outline: 4px solid var(--rdg-background-color);
+    outline-offset: -6px;
   }
   .${checkboxInput}:focus + & {
     border-color: var(--rdg-checkbox-focus-color);

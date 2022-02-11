@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Cell from './Cell';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
-import { rowClassname, rowSelectedClassname } from './style';
+import { rowClassname, rowSelectedClassname, rowSelectedWithFrozenCell } from './style';
 import type { RowRendererProps } from './types';
 
 function Row<R, SR>(
@@ -43,11 +43,14 @@ function Row<R, SR>(
     onMouseEnter?.(event);
   }
 
+  const isRowFocused = selectedCellIdx === -1;
+
   className = clsx(
     rowClassname,
     `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
     {
-      [rowSelectedClassname]: selectedCellIdx === -1
+      [rowSelectedClassname]: isRowFocused,
+      [rowSelectedWithFrozenCell]: isRowFocused && lastFrozenColumnIndex !== -1
     },
     rowClass?.(row),
     className

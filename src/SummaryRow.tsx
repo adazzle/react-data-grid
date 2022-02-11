@@ -2,7 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, row, rowClassname, rowSelectedClassname } from './style';
+import { cell, row, rowClassname, rowSelectedClassname, rowSelectedWithFrozenCell } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
@@ -51,6 +51,7 @@ function SummaryRow<R, SR>({
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
+  const isRowFocused = selectedCellIdx === -1;
   const cells = [];
   for (let index = 0; index < viewportColumns.length; index++) {
     const column = viewportColumns[index];
@@ -81,9 +82,10 @@ function SummaryRow<R, SR>({
         rowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
-        { [summaryRowBorderClassname]: rowIdx === 0 },
         {
-          [rowSelectedClassname]: selectedCellIdx === -1
+          [summaryRowBorderClassname]: rowIdx === 0,
+          [rowSelectedClassname]: isRowFocused,
+          [rowSelectedWithFrozenCell]: isRowFocused && lastFrozenColumnIndex !== -1
         }
       )}
       style={
