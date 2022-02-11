@@ -33,5 +33,7 @@ export const rowSelectedWithFrozenCell = css`
     position: sticky;
     inset-inline-start: 0;
     border-inline-start: 2px solid var(--rdg-selection-color);
+    display: inline-block;
+    height: 100%;
   }
 `;
