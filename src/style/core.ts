@@ -109,5 +109,5 @@ export const focusSinkClassname = css`
   inset-inline-start: 0;
   grid-column: 1/-1;
   pointer-events: none;
-  z-index: 2;
+  z-index: 4;
 `;
