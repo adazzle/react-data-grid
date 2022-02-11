@@ -21,14 +21,8 @@ export const row = css`
 export const rowClassname = `rdg-row ${row}`;
 
 const rowSelected = css`
-  &::after {
-    content: '';
-    grid-column: 1 / -1;
-    grid-row-start: var(--rdg-grid-row-start);
-    border: 2px solid var(--rdg-selection-color);
-    pointer-events: none;
-    z-index: 2;
-  }
+  outline: 2px solid var(--rdg-selection-color);
+  outline-offset: -2px;
 `;
 
 export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
@@ -36,12 +30,8 @@ export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
 export const rowSelectedWithFrozenCell = css`
   &::before {
     content: '';
-    grid-column-start: 1;
-    grid-row-start: var(--rdg-grid-row-start);
     position: sticky;
     inset-inline-start: 0;
     border-inline-start: 2px solid var(--rdg-selection-color);
-    pointer-events: none;
-    z-index: 2;
   }
 `;

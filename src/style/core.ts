@@ -108,4 +108,6 @@ export const focusSinkClassname = css`
   position: sticky;
   inset-inline-start: 0;
   grid-column-start: 1;
+  pointer-events: none;
+  z-index: 2;
 `;
