@@ -6,7 +6,9 @@ import {
   rootClassname,
   viewportDraggingClassname,
   focusSinkClassname,
-  cellAutoResizeClassname
+  cellAutoResizeClassname,
+  rowSelected,
+  rowSelectedWithFrozenCell
 } from './style';
 import {
   useLayoutEffect,
@@ -1033,7 +1035,6 @@ function DataGrid<R, SR, K extends Key>(
             viewportColumns={rowColumns}
             childRows={row.childRows}
             rowIdx={rowIdx}
-            lastFrozenColumnIndex={lastFrozenColumnIndex}
             row={row}
             gridRowStart={gridRowStart}
             height={getRowHeight(rowIdx)}
@@ -1106,6 +1107,8 @@ function DataGrid<R, SR, K extends Key>(
     templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
   }
 
+  const isGroupRowFocused = selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2;
+
   return (
     <div
       role={hasGroups ? 'treegrid' : 'grid'}
@@ -1149,8 +1152,11 @@ function DataGrid<R, SR, K extends Key>(
       {hasGroups && (
         <div
           ref={rowRef}
-          tabIndex={selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2 ? 0 : -1}
-          className={focusSinkClassname}
+          tabIndex={isGroupRowFocused ? 0 : -1}
+          className={clsx(focusSinkClassname, {
+            [rowSelected]: isGroupRowFocused,
+            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
+          })}
           style={{
             gridRowStart: selectedPosition.rowIdx + 2
           }}

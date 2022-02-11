@@ -6,7 +6,7 @@ import HeaderCell from './HeaderCell';
 import type { CalculatedColumn, Direction } from './types';
 import { getColSpan, getRowStyle } from './utils';
 import type { DataGridProps } from './DataGrid';
-import { cell, cellFrozen, rowSelectedClassname, rowSelectedWithFrozenCell } from './style';
+import { cell, cellFrozen, rowSelectedClassname } from './style';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
@@ -58,7 +58,6 @@ function HeaderRow<R, SR, K extends React.Key>({
   shouldFocusGrid,
   direction
 }: HeaderRowProps<R, SR, K>) {
-  const isRowFocused = selectedCellIdx === -1;
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
@@ -90,8 +89,7 @@ function HeaderRow<R, SR, K extends React.Key>({
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
       className={clsx(headerRowClassname, {
-        [rowSelectedClassname]: isRowFocused,
-        [rowSelectedWithFrozenCell]: isRowFocused && lastFrozenColumnIndex !== -1
+        [rowSelectedClassname]: selectedCellIdx === -1
       })}
       style={getRowStyle(1)}
     >
