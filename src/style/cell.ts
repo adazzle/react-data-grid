@@ -17,7 +17,8 @@ export const cell = css`
   outline: none;
 
   &[aria-selected='true'] {
-    box-shadow: inset 0 0 0 2px var(--rdg-selection-color);
+    outline: 2px solid var(--rdg-selection-color);
+    outline-offset: -2px;
   }
 `;
 
@@ -39,7 +40,7 @@ export const cellFrozen = css`
 export const cellFrozenClassname = `rdg-cell-frozen ${cellFrozen}`;
 
 export const cellFrozenLast = css`
-  box-shadow: var(--rdg-frozen-cell-box-shadow);
+  box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
 `;
 
 export const cellFrozenLastClassname = `rdg-cell-frozen-last ${cellFrozenLast}`;
