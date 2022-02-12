@@ -1,7 +1,5 @@
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast } from '../style';
-
 export const row = css`
   display: contents;
   line-height: var(--rdg-row-height);
@@ -22,27 +20,20 @@ export const row = css`
 
 export const rowClassname = `rdg-row ${row}`;
 
-const topBoxShadow = 'inset 0 2px 0 0 var(--rdg-selection-color)';
-const rightBoxShadow = 'inset calc(-2px * var(--rdg-sign)) 0 0 0 var(--rdg-selection-color)';
-const bottomBoxShadow = 'inset 0 -2px 0 0 var(--rdg-selection-color)';
-const leftBoxShadow = 'inset calc(2px * var(--rdg-sign)) 0 0 0 var(--rdg-selection-color)';
-
-const rowSelected = css`
-  outline: none;
-
-  > .${cell} {
-    box-shadow: ${topBoxShadow}, ${bottomBoxShadow};
-    &:first-child {
-      box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${leftBoxShadow};
-    }
-    &:last-child {
-      box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, ${rightBoxShadow};
-    }
-  }
-
-  > .${cellFrozenLast} {
-    box-shadow: ${topBoxShadow}, ${bottomBoxShadow}, var(--rdg-frozen-cell-box-shadow);
-  }
+export const rowSelected = css`
+  outline: 2px solid var(--rdg-selection-color);
+  outline-offset: -2px;
 `;
 
-export const rowSelectedClassname = `rdg-row-selected ${rowSelected}`;
+export const rowSelectedClassname = `rdg-row-selected`;
+
+export const rowSelectedWithFrozenCell = css`
+  &::before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    position: sticky;
+    inset-inline-start: 0;
+    border-inline-start: 2px solid var(--rdg-selection-color);
+  }
+`;

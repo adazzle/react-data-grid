@@ -1,8 +1,19 @@
 import { useMemo, useState, forwardRef } from 'react';
+import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
 import type { Column, CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src';
 import type { Props } from './types';
+
+const selectCellClassname = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > input {
+    margin: 0;
+  }
+`;
 
 interface Row {
   id: number;
@@ -28,7 +39,11 @@ function createRows(): readonly Row[] {
 }
 
 const columns: readonly Column<Row>[] = [
-  SelectColumn,
+  {
+    ...SelectColumn,
+    headerCellClass: selectCellClassname,
+    cellClass: selectCellClassname
+  },
   {
     key: 'id',
     name: 'ID',
