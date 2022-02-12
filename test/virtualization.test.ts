@@ -37,11 +37,6 @@ function setupGrid(
   return setup({ columns, rows, summaryRows, rowHeight, enableVirtualization });
 }
 
-function assertHeightFill(height: number) {
-  // if there are not enough rows, we need to fill the rows viewport's height so summary rows stick to the bottom of the container
-  expect(getGrid()).toHaveStyle({ '--rdg-grid-block-size': `${height}px` });
-}
-
 function assertElements(
   elements: HTMLElement[],
   attribute: string,
@@ -95,8 +90,6 @@ test('virtualization is enabled', () => {
 
   const grid = getGrid();
 
-  assertHeightFill(100 * rowHeight + 35);
-
   assertHeaderCells(18, 0, 17);
   assertRows(34, 0, 33);
   assertCells(0, 18, 0, 17);
@@ -144,7 +137,7 @@ test('virtualization is enabled', () => {
   assertCells(66, 18, 1, 18);
 
   // max left = row width - grid width
-  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--rdg-grid-inline-size'), 10) - 1920;
+  grid.scrollLeft = 3600 - 1920;
   assertHeaderCells(17, 13, 29);
   assertCells(66, 17, 13, 29);
 });
@@ -153,8 +146,6 @@ test('virtualization is enabled with 4 frozen columns', () => {
   setupGrid(true, 30, 30, 4);
 
   const grid = getGrid();
-
-  assertHeightFill(30 * rowHeight + 35);
 
   let indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
   assertHeaderCellIndexes(indexes);
@@ -166,7 +157,7 @@ test('virtualization is enabled with 4 frozen columns', () => {
   assertCellIndexes(0, indexes);
 
   // max left = row width - grid width
-  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--rdg-grid-inline-size'), 10) - 1920;
+  grid.scrollLeft = 3600 - 1920;
   indexes = [0, 1, 2, 3, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
@@ -176,8 +167,6 @@ test('virtualization is enabled with all columns frozen', () => {
   setupGrid(true, 30, 30, 30);
 
   const grid = getGrid();
-
-  assertHeightFill(30 * rowHeight + 35);
 
   const indexes = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
@@ -191,7 +180,7 @@ test('virtualization is enabled with all columns frozen', () => {
   assertCellIndexes(0, indexes);
 
   // max left = row width - grid width
-  grid.scrollLeft = parseInt(grid.style.getPropertyValue('--rdg-grid-inline-size'), 10) - 1920;
+  grid.scrollLeft = 3600 - 1920;
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 });
@@ -200,8 +189,6 @@ test('virtualization is enabled with 2 summary rows', () => {
   setupGrid(true, 1, 100, 0, 2);
 
   const grid = getGrid();
-
-  assertHeightFill(100 * rowHeight + 35 + 70);
 
   assertRowIndexes([
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
@@ -218,7 +205,6 @@ test('virtualization is enabled with 2 summary rows', () => {
 test('zero columns', () => {
   setupGrid(true, 0, 100);
 
-  assertHeightFill(100 * rowHeight + 35);
   expect(queryHeaderCells()).toHaveLength(0);
   expect(queryCells()).toHaveLength(0);
   expect(getRows()).toHaveLength(34);
@@ -227,22 +213,13 @@ test('zero columns', () => {
 test('zero rows', () => {
   setupGrid(true, 20, 0);
 
-  assertHeightFill(1080 - rowHeight + 35);
   expect(getHeaderCells()).toHaveLength(18);
   expect(queryCells()).toHaveLength(0);
   expect(queryRows()).toHaveLength(0);
 });
 
-test('zero rows + 2 summary rows', () => {
-  setupGrid(true, 20, 0, 0, 2);
-
-  assertHeightFill(1080 - rowHeight * 3 + 35 + 70);
-});
-
 test('virtualization is enable with not enough columns or rows to virtualize', () => {
   setupGrid(true, 5, 5);
-
-  assertHeightFill(1080 - rowHeight + 35);
 
   assertHeaderCells(5, 0, 4);
   assertRows(5, 0, 4);
@@ -253,8 +230,6 @@ test('virtualization is enable with not enough columns or rows to virtualize', (
 
 test('enableVirtualization is disabled', () => {
   setupGrid(false, 40, 100);
-
-  assertHeightFill(100 * rowHeight + 35);
 
   assertHeaderCells(40, 0, 39);
   assertRows(100, 0, 99);
