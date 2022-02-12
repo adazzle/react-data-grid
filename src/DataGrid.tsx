@@ -6,7 +6,9 @@ import {
   rootClassname,
   viewportDraggingClassname,
   focusSinkClassname,
-  cellAutoResizeClassname
+  cellAutoResizeClassname,
+  rowSelected,
+  rowSelectedWithFrozenCell
 } from './style';
 import {
   useLayoutEffect,
@@ -37,7 +39,6 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   getColSpan,
-  max,
   sign,
   abs,
   getSelectedCellColSpan
@@ -302,7 +303,6 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanEndIdx,
     layoutCssVars,
     columnMetrics,
-    totalColumnWidth,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth
   } = useCalculatedColumns({
@@ -979,6 +979,8 @@ function DataGrid<R, SR, K extends Key>(
     templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
   }
 
+  const isGroupRowFocused = selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2;
+
   return (
     <div
       role={hasGroups ? 'treegrid' : 'grid'}
@@ -1001,13 +1003,7 @@ function DataGrid<R, SR, K extends Key>(
           ...style,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
-          '--rdg-grid-inline-size': `${totalColumnWidth}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
-          '--rdg-grid-block-size': `${
-            max(totalRowHeight, clientHeight) +
-            headerRowHeight +
-            summaryRowsCount * summaryRowHeight
-          }px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...getLayoutCssVars()
         } as unknown as React.CSSProperties
@@ -1022,8 +1018,11 @@ function DataGrid<R, SR, K extends Key>(
       {hasGroups && (
         <div
           ref={rowRef}
-          tabIndex={selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2 ? 0 : -1}
-          className={focusSinkClassname}
+          tabIndex={isGroupRowFocused ? 0 : -1}
+          className={clsx(focusSinkClassname, {
+            [rowSelected]: isGroupRowFocused,
+            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
+          })}
           style={{
             gridRowStart: selectedPosition.rowIdx + 2
           }}

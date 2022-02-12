@@ -81,8 +81,8 @@ function SummaryRow<R, SR>({
         rowClassname,
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
-        { [summaryRowBorderClassname]: rowIdx === 0 },
         {
+          [summaryRowBorderClassname]: rowIdx === 0,
           [rowSelectedClassname]: selectedCellIdx === -1
         }
       )}
