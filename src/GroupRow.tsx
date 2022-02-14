@@ -46,14 +46,12 @@ function GroupedRow<R, SR>({
   'aria-rowindex': ariaRowIndex, // ignore default value // TODO
   ...props
 }: RowRendererProps<R | GroupRow<R>, SR>) {
-  const { isGroupRow, toggleGroup, getParentRow, toggleGroupSelection, rowRenderer } = useGroupApi<
-    R,
-    SR
-  >()!;
+  const { isRtl, isGroupRow, toggleGroup, getParentRow, toggleGroupSelection, rowRenderer } =
+    useGroupApi<R, SR>()!;
   const RowRenderer = rowRenderer ?? Row;
 
-  // const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  // const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
 
   className = clsx(className, {
     [rowSelectedClassname]: selectedCellIdx === -1
@@ -93,9 +91,9 @@ function GroupedRow<R, SR>({
     if (
       selectedCellIdx === -1 &&
       // Collapse the current group row if it is focused and is in expanded state
-      ((event.key === 'ArrowLeft' && row.isExpanded) ||
+      ((event.key === leftKey && row.isExpanded) ||
         // Expand the current group row if it is focused and is in collapsed state
-        (event.key === 'ArrowRight' && !row.isExpanded))
+        (event.key === rightKey && !row.isExpanded))
     ) {
       event.preventDefault(); // Prevents scrolling
       event.stopPropagation();
@@ -103,7 +101,7 @@ function GroupedRow<R, SR>({
     }
 
     // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
-    if (selectedCellIdx === -1 && event.key === 'ArrowLeft' && !row.isExpanded && row.level !== 0) {
+    if (selectedCellIdx === -1 && event.key === leftKey && !row.isExpanded && row.level !== 0) {
       const parentRow = getParentRow(row);
       if (parentRow !== undefined) {
         event.preventDefault();

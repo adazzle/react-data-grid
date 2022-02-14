@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 import type { GroupRow, Maybe, RowRendererProps, SelectRowEvent } from '../types';
 
 export interface GroupApi<R, SR> {
+  isRtl: boolean;
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
   toggleGroup: (expandedGroupId: unknown) => void;
   toggleGroupSelection: (selectRowEvent: SelectRowEvent<GroupRow<R>>) => void;

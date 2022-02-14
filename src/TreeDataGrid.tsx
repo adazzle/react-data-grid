@@ -58,6 +58,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   }: TreeDataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
+  const isRtl = props.direction === 'rtl';
   const toggleGroupLatest = useLatestFunc(toggleGroup);
   const toggleGroupSelectionLatest = useLatestFunc(toggleGroupSelection);
 
@@ -247,6 +248,7 @@ function TreeDataGrid<R, SR, K extends Key>(
 
   const value = useMemo((): GroupApi<R, SR> => {
     return {
+      isRtl,
       isGroupRow,
       toggleGroup: toggleGroupLatest,
       toggleGroupSelection: toggleGroupSelectionLatest,
@@ -256,6 +258,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       >
     };
   }, [
+    isRtl,
     isGroupRow,
     toggleGroupLatest,
     toggleGroupSelectionLatest,
