@@ -702,8 +702,6 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
-    const column = columns[selectedPosition.idx];
-
     if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
