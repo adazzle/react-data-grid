@@ -644,7 +644,7 @@ function DataGrid<R, SR, K extends Key>(
       return 0;
     };
 
-    fromEvent(element, 'wheel').subscribe((e) => {
+    const subscription = fromEvent(element, 'wheel', { passive: true }).subscribe((e) => {
       const wheelEvent = e as WheelEvent;
       const stringDeltaY = wheelEvent.deltaY.toString();
       const stringDeltaX = wheelEvent.deltaX.toString();
@@ -657,6 +657,7 @@ function DataGrid<R, SR, K extends Key>(
 
     return () => {
       element.removeEventListener('wheel', onMouseWheel);
+      subscription.unsubscribe();
     };
   }, [gridRef]);
 
