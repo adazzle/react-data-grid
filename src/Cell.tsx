@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import type { MouseEvent } from 'react';
+import type { MouseEvent, KeyboardEvent } from 'react';
 import { css } from '@linaria/core';
 
 import { getCellStyle, getCellClassname, isCellEditable } from './utils';
@@ -33,6 +33,7 @@ function Cell<R, SR>({
   onClick,
   onDoubleClick,
   onContextMenu,
+  onKeyDown,
   onRowChange,
   selectCell,
   ...props
@@ -71,6 +72,10 @@ function Cell<R, SR>({
     selectCellWrapper(true);
   }
 
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    onKeyDown?.({ row, column }, event);
+  }
+
   return (
     <div
       role="gridcell"
@@ -85,6 +90,7 @@ function Cell<R, SR>({
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
+      onKeyDown={handleKeyDown}
       onFocus={onFocus}
       {...props}
     >

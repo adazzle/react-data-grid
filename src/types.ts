@@ -3,7 +3,8 @@ import type {
   ComponentType,
   ForwardRefExoticComponent,
   RefAttributes,
-  MouseEvent
+  MouseEvent,
+  KeyboardEvent
 } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -50,8 +51,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly editOnClick?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
-    /** Prevent default to cancel editing */
-    readonly onCellKeyDown?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => void>;
     /** Control the default cell navigation behavior while the editor is open */
     readonly onNavigation?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => boolean>;
   }>;
@@ -116,9 +115,8 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 
 type SharedDivProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  'style' | 'children' | 'onClick' | 'onDoubleClick'
+  'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onKeyDown'
 >;
-
 export interface CellRendererProps<TRow, TSummaryRow> extends SharedDivProps {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
@@ -131,6 +129,7 @@ export interface CellRendererProps<TRow, TSummaryRow> extends SharedDivProps {
   selectCell: RowRendererProps<TRow, TSummaryRow>['selectCell'];
   onClick: RowRendererProps<TRow, TSummaryRow>['onCellClick'];
   onDoubleClick: RowRendererProps<TRow, TSummaryRow>['onCellDoubleClick'];
+  onKeyDown: RowRendererProps<TRow, TSummaryRow>['onCellKeyDown'];
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown> extends SharedDivProps {
@@ -159,6 +158,12 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends SharedDiv
     (
       params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
       event: MouseEvent<HTMLDivElement>
+    ) => void
+  >;
+  onCellKeyDown: Maybe<
+    (
+      params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
+      event: KeyboardEvent<HTMLDivElement>
     ) => void
   >;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;

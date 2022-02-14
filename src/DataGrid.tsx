@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes, MouseEvent } from 'react';
+import type { Key, RefAttributes, MouseEvent, KeyboardEvent } from 'react';
 import clsx from 'clsx';
 
 import {
@@ -164,6 +164,12 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onCellDoubleClick?: Maybe<
     (params: { row: R; column: CalculatedColumn<R, SR> }, event: MouseEvent<HTMLDivElement>) => void
   >;
+  onCellKeydown?: Maybe<
+    (
+      params: { row: R; column: CalculatedColumn<R, SR> },
+      event: KeyboardEvent<HTMLDivElement>
+    ) => void
+  >;
   /** Function called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Function called when a column is resized */
@@ -220,6 +226,7 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onCellClick,
     onCellDoubleClick,
+    onCellKeydown,
     onScroll,
     onColumnResize,
     onFill,
@@ -379,10 +386,11 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
-  const onCellClickLatest = useLatestFunc(onCellClick);
-  const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
+  const onCellClickLatest = useLatestFunc(onCellClick);
+  const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
+  const onCellKeyDownLatest = useLatestFunc(onCellKeydown);
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -554,7 +562,8 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.isDefaultPrevented()) return;
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
@@ -677,7 +686,7 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(rowIdx, updatedTargetRow);
   }
 
-  function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleCellInput(event: KeyboardEvent<HTMLDivElement>) {
     if (!selectedCellIsWithinViewportBounds) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
@@ -694,8 +703,6 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     const column = columns[selectedPosition.idx];
-    column.editorOptions?.onCellKeyDown?.(event);
-    if (event.isDefaultPrevented()) return;
 
     if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
@@ -853,7 +860,7 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
+  function navigate(event: KeyboardEvent<HTMLDivElement>) {
     const { key, shiftKey } = event;
     let mode = cellNavigationMode;
     if (key === 'Tab') {
@@ -1084,6 +1091,7 @@ function DataGrid<R, SR, K extends Key>(
           onDoubleClick={onRowDoubleClickLatest}
           onCellClick={onCellClickLatest}
           onCellDoubleClick={onCellDoubleClickLatest}
+          onCellKeyDown={onCellKeyDownLatest}
           rowClass={rowClass}
           gridRowStart={gridRowStart}
           height={getRowHeight(rowIdx)}

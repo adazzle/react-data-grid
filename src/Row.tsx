@@ -23,10 +23,11 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
-    onCellClick,
-    onCellDoubleClick,
     onClick,
     onDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
+    onCellKeyDown,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -90,6 +91,7 @@ function Row<R, SR>(
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
           onClick={onCellClick}
           onDoubleClick={onCellDoubleClick}
+          onKeyDown={onCellKeyDown}
           onRowChange={handleRowChange}
           selectCell={selectCell}
         />
