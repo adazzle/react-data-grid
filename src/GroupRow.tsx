@@ -4,7 +4,7 @@ import { css } from '@linaria/core';
 
 import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
-import RowWithRef from './Row';
+import Row from './Row';
 import GroupCell from './GroupCell';
 import type { GroupRow, RowRendererProps } from './types';
 import { RowSelectionChangeProvider, RowSelectionProvider, useGroupApi } from './hooks';
@@ -50,7 +50,10 @@ function GroupedRow<R, SR>({
     R,
     SR
   >()!;
-  const RowRenderer = rowRenderer ?? RowWithRef;
+  const RowRenderer = rowRenderer ?? Row;
+
+  // const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+  // const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
 
   className = clsx(className, {
     [rowSelectedClassname]: selectedCellIdx === -1

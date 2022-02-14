@@ -14,7 +14,8 @@ import type {
   Omit,
   GroupRowHeightArgs,
   RowRendererProps,
-  SelectRowEvent
+  SelectRowEvent,
+  Components
 } from './types';
 import { SELECT_COLUMN_KEY, ToggleGroupFormatter } from '.';
 import type { GroupApi } from './hooks';
@@ -44,7 +45,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     columns: rawColumns,
     rows: rawRows,
     rowHeight: rawRowHeight,
-    rowRenderer,
+    components: rawComponents,
     rowKeyGetter: rawRowKeyGetter,
     onRowsChange: rawOnRowsChange,
     selectedRows,
@@ -250,9 +251,24 @@ function TreeDataGrid<R, SR, K extends Key>(
       toggleGroup: toggleGroupLatest,
       toggleGroupSelection: toggleGroupSelectionLatest,
       getParentRow,
-      rowRenderer: rowRenderer as Maybe<React.ComponentType<RowRendererProps<R | GroupRow<R>, SR>>>
+      rowRenderer: rawComponents?.rowRenderer as Maybe<
+        React.ComponentType<RowRendererProps<R | GroupRow<R>, SR>>
+      >
     };
-  }, [isGroupRow, toggleGroupLatest, toggleGroupSelectionLatest, getParentRow, rowRenderer]);
+  }, [
+    isGroupRow,
+    toggleGroupLatest,
+    toggleGroupSelectionLatest,
+    getParentRow,
+    rawComponents?.rowRenderer
+  ]);
+
+  const components = useMemo((): Components<GroupRow<R>, SR> => {
+    return {
+      ...rawComponents,
+      rowRenderer: GroupedRowRenderer
+    };
+  }, [rawComponents]);
 
   function toggleGroup(expandedGroupId: unknown) {
     const newExpandedGroupIds = new Set(expandedGroupIds);
@@ -293,7 +309,7 @@ function TreeDataGrid<R, SR, K extends Key>(
         onRowsChange={onRowsChange}
         selectedRows={selectedRows}
         onSelectedRowsChange={onSelectedRowsChange}
-        rowRenderer={GroupedRowRenderer}
+        components={components}
       />
     </GroupApiProvider>
   );

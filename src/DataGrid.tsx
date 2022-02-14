@@ -273,8 +273,6 @@ function DataGrid<R, SR, K extends Key>(
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isHeaderRowSelected = selectedPosition.rowIdx === -1;
   const isRtl = direction === 'rtl';
-  // const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  // const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
 
   const defaultGridComponents = useMemo(
     () => ({
