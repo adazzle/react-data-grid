@@ -51,8 +51,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly editOnClick?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
-    /** Control the default cell navigation behavior while the editor is open */
-    readonly onNavigation?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => boolean>;
   }>;
   /** Header renderer for each header cell */
   readonly headerRenderer?: Maybe<ComponentType<HeaderRendererProps<TRow, TSummaryRow>>>;
@@ -146,9 +144,9 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends SharedDiv
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onClick?: Maybe<(params: { row: TRow }, event: MouseEvent<HTMLDivElement>) => void>;
-  onDoubleClick?: Maybe<(params: { row: TRow }, event: MouseEvent<HTMLDivElement>) => void>;
-  onCellClick?: Maybe<
+  onClick: Maybe<(params: { row: TRow }, event: MouseEvent<HTMLDivElement>) => void>;
+  onDoubleClick: Maybe<(params: { row: TRow }, event: MouseEvent<HTMLDivElement>) => void>;
+  onCellClick: Maybe<
     (
       params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
       event: MouseEvent<HTMLDivElement>
@@ -163,7 +161,10 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends SharedDiv
   onCellKeyDown: Maybe<
     (
       params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
-      event: KeyboardEvent<HTMLDivElement>
+      event: KeyboardEvent<HTMLDivElement>,
+      api?: {
+        closeEditor: (commitChanges?: boolean) => void;
+      }
     ) => void
   >;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;

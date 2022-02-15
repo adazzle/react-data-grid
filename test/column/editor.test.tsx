@@ -184,10 +184,10 @@ describe('Editor', () => {
       expect(editor).not.toBeInTheDocument();
     });
 
-    it('should not open editor if onCellKeydown prevents the default event', () => {
+    it('should not open editor if onCellKeyDown prevents the default event', () => {
       render(
         <EditorTest
-          onCellKeydown={(params, event) => {
+          onCellKeyDown={(params, event) => {
             if (event.key === 'x') {
               event.preventDefault();
             }
@@ -204,9 +204,10 @@ describe('Editor', () => {
     it('should prevent navigation if onNavigation returns false', () => {
       render(
         <EditorTest
-          editorOptions={{
-            onNavigation(event) {
-              return event.key === 'ArrowDown';
+          onCellKeyDown={(params, event, api) => {
+            if (api?.closeEditor && event.key === 'ArrowDown') {
+              event.preventDefault();
+              api.closeEditor(true);
             }
           }}
         />
@@ -269,7 +270,7 @@ describe('Editor', () => {
 
 interface EditorTestProps
   extends Pick<Column<Row>, 'editorOptions' | 'editable'>,
-    Pick<DataGridProps<Row>, 'onCellKeydown'> {
+    Pick<DataGridProps<Row>, 'onCellKeyDown'> {
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
   createEditorPortal?: boolean;
@@ -289,7 +290,7 @@ const initialRows: readonly Row[] = [
 function EditorTest({
   editable,
   editorOptions,
-  onCellKeydown,
+  onCellKeyDown,
   onSave,
   gridRows = initialRows,
   createEditorPortal
@@ -351,7 +352,7 @@ function EditorTest({
         columns={columns}
         rows={rows}
         onRowsChange={setRows}
-        onCellKeydown={onCellKeydown}
+        onCellKeyDown={onCellKeyDown}
       />
     </StrictMode>
   );

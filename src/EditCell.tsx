@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
-import type { CellRendererProps, EditorProps, Omit } from './types';
+import type { CellRendererProps, EditorProps, RowRendererProps, Omit } from './types';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -34,12 +34,14 @@ interface EditCellProps<R, SR>
     SharedCellRendererProps<R, SR> {
   closeEditor: () => void;
   scrollToCell: () => void;
+  onKeyDown: RowRendererProps<R, SR>['onCellKeyDown'];
 }
 
 export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
+  onKeyDown,
   onRowChange,
   closeEditor,
   scrollToCell
@@ -73,7 +75,9 @@ export default function EditCell<R, SR>({
     cancelAnimationFrame(frameRequestRef.current!);
   }
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    onKeyDown?.({ row, column }, event, { closeEditor: onClose });
+    if (event.isDefaultPrevented()) return;
     if (event.key === 'Escape') {
       event.stopPropagation();
       // Discard changes
@@ -82,11 +86,8 @@ export default function EditCell<R, SR>({
       event.stopPropagation();
       onClose(true);
       scrollToCell();
-    } else {
-      const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
-      if (!onNavigation(event)) {
-        event.stopPropagation();
-      }
+    } else if (!onEditorNavigation(event)) {
+      event.stopPropagation();
     }
   }
 
@@ -114,7 +115,7 @@ export default function EditCell<R, SR>({
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}
-      onKeyDown={onKeyDown}
+      onKeyDown={handleKeyDown}
       onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
     >
       {column.editor != null && (

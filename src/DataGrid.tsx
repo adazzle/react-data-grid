@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes, MouseEvent, KeyboardEvent } from 'react';
+import type { Key, RefAttributes, KeyboardEvent } from 'react';
 import clsx from 'clsx';
 
 import {
@@ -58,7 +58,8 @@ import type {
   RowHeightArgs,
   Maybe,
   Components,
-  Direction
+  Direction,
+  RowRendererProps
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -153,23 +154,14 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: Maybe<(params: { row: R }, event: MouseEvent<HTMLDivElement>) => void>;
+  onRowClick?: RowRendererProps<R, SR>['onClick'];
   /** Function called whenever a row is double clicked */
-  onRowDoubleClick?: Maybe<(params: { row: R }, event: MouseEvent<HTMLDivElement>) => void>;
+  onRowDoubleClick?: RowRendererProps<R, SR>['onDoubleClick'];
   /** Function called whenever a cell is clicked */
-  onCellClick?: Maybe<
-    (params: { row: R; column: CalculatedColumn<R, SR> }, event: MouseEvent<HTMLDivElement>) => void
-  >;
+  onCellClick?: RowRendererProps<R, SR>['onCellClick'];
   /** Function called whenever a cell is double clicked */
-  onCellDoubleClick?: Maybe<
-    (params: { row: R; column: CalculatedColumn<R, SR> }, event: MouseEvent<HTMLDivElement>) => void
-  >;
-  onCellKeydown?: Maybe<
-    (
-      params: { row: R; column: CalculatedColumn<R, SR> },
-      event: KeyboardEvent<HTMLDivElement>
-    ) => void
-  >;
+  onCellDoubleClick?: RowRendererProps<R, SR>['onCellDoubleClick'];
+  onCellKeyDown?: RowRendererProps<R, SR>['onCellKeyDown'];
   /** Function called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Function called when a column is resized */
@@ -226,7 +218,7 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onCellClick,
     onCellDoubleClick,
-    onCellKeydown,
+    onCellKeyDown,
     onScroll,
     onColumnResize,
     onFill,
@@ -390,7 +382,7 @@ function DataGrid<R, SR, K extends Key>(
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
   const onCellClickLatest = useLatestFunc(onCellClick);
   const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
-  const onCellKeyDownLatest = useLatestFunc(onCellKeydown);
+  const onCellKeyDownLatest = useLatestFunc(onCellKeyDown);
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -984,6 +976,7 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
+        onKeyDown={onCellKeyDownLatest}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
         scrollToCell={() => {
