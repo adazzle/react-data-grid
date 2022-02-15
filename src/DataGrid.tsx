@@ -558,8 +558,9 @@ function DataGrid<R, SR, K extends Key>(
     if (event.isDefaultPrevented()) return;
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
+    const isEditCellEvent = event.target.closest('.rdg-editor-container') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
-    if (!isCellEvent && !isRowEvent) return;
+    if ((!isCellEvent && !isRowEvent) || isEditCellEvent) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
@@ -976,12 +977,13 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
-        onKeyDown={onCellKeyDownLatest}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
         scrollToCell={() => {
           scrollToCell(selectedPosition);
         }}
+        onKeyDown={onCellKeyDownLatest}
+        navigate={navigate}
       />
     );
   }

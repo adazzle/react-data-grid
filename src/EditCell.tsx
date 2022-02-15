@@ -34,6 +34,7 @@ interface EditCellProps<R, SR>
     SharedCellRendererProps<R, SR> {
   closeEditor: () => void;
   scrollToCell: () => void;
+  navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   onKeyDown: RowRendererProps<R, SR>['onCellKeyDown'];
 }
 
@@ -41,10 +42,11 @@ export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
-  onKeyDown,
   onRowChange,
   closeEditor,
-  scrollToCell
+  scrollToCell,
+  onKeyDown,
+  navigate
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
@@ -79,15 +81,13 @@ export default function EditCell<R, SR>({
     onKeyDown?.({ row, column }, event, { closeEditor: onClose });
     if (event.isDefaultPrevented()) return;
     if (event.key === 'Escape') {
-      event.stopPropagation();
       // Discard changes
       onClose();
     } else if (event.key === 'Enter') {
-      event.stopPropagation();
       onClose(true);
       scrollToCell();
-    } else if (!onEditorNavigation(event)) {
-      event.stopPropagation();
+    } else if (onEditorNavigation(event)) {
+      navigate(event);
     }
   }
 
