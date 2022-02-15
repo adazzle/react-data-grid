@@ -159,23 +159,15 @@ function ProductGrid({
   }, [isCellSelected]);
   const products = getProducts(parentId);
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.isDefaultPrevented()) {
-      event.stopPropagation();
-    }
-  }
-
   return (
-    <div onKeyDown={onKeyDown}>
-      <DataGrid
-        ref={gridRef}
-        rows={products}
-        columns={productColumns}
-        rowKeyGetter={rowKeyGetter}
-        style={{ blockSize: 250 }}
-        direction={direction}
-      />
-    </div>
+    <DataGrid
+      ref={gridRef}
+      rows={products}
+      columns={productColumns}
+      rowKeyGetter={rowKeyGetter}
+      style={{ blockSize: 250 }}
+      direction={direction}
+    />
   );
 }
 
