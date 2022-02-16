@@ -36,7 +36,6 @@ const darkTheme = `
 const root = css`
   ${lightTheme}
   --rdg-selection-color: #66afe9;
-  --rdg-frozen-cell-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
   --rdg-font-size: 14px;
 
   display: grid;
@@ -72,11 +71,8 @@ const root = css`
   /* needed on Firefox */
   &::before {
     content: '';
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    block-size: var(--rdg-grid-block-size);
-    inline-size: var(--rdg-grid-inline-size);
+    grid-column: 1/-1;
+    grid-row: 1/-1;
   }
 
   &.rdg-dark {
@@ -106,7 +102,8 @@ const viewportDragging = css`
 export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDragging}`;
 
 export const focusSinkClassname = css`
-  position: sticky;
-  inset-inline-start: 0;
-  grid-column-start: 1;
+  grid-column: 1/-1;
+  pointer-events: none;
+  /* Should have a higher value than 3 to show up above header row */
+  z-index: 4;
 `;
