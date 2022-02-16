@@ -193,8 +193,6 @@ A number defining the height of summary rows.
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
 
-###### `cellNavigationMode?: Maybe<CellNavigationMode>`
-
 ###### `enableVirtualization?: Maybe<boolean>`
 
 ###### `components?: Maybe<Components<R, SR>>`

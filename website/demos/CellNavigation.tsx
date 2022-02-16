@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import DataGrid from '../../src';
-import type { Column, CellNavigationMode } from '../../src';
+import type { Column } from '../../src';
 import type { Props } from './types';
 
 interface Row {
@@ -13,6 +13,8 @@ interface Row {
   startDate: string;
   completeDate: string;
 }
+
+type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW' | 'LOOP_OVER_COLUMN';
 
 const columns: Column<Row>[] = [
   {
@@ -105,12 +107,54 @@ export default function CellNavigation({ direction }: Props) {
           />
           Loop Over Row
         </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            checked={cellNavigationMode === 'LOOP_OVER_COLUMN'}
+            onChange={() => setCellNavigationMode('LOOP_OVER_COLUMN')}
+          />
+          Loop Over Column
+        </label>
       </div>
       <DataGrid
         columns={columns}
         rows={rows}
-        cellNavigationMode={cellNavigationMode}
         direction={direction}
+        onCellKeyDown={({ column, row }, event, api) => {
+          const { key, shiftKey } = event;
+          if (cellNavigationMode === 'LOOP_OVER_ROW') {
+            if (
+              (key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) &&
+              column.idx === columns.length - 1
+            ) {
+              api.selectCell({ rowIdx: rows.indexOf(row), idx: 0 });
+              event.preventDefault();
+            } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && column.idx === 0) {
+              api.selectCell({ rowIdx: rows.indexOf(row), idx: columns.length - 1 });
+              event.preventDefault();
+            }
+          } else if (cellNavigationMode === 'CHANGE_ROW') {
+            if (key === 'ArrowRight' && column.idx === columns.length - 1) {
+              if (row === rows[rows.length - 1]) return;
+              api.selectCell({ rowIdx: rows.indexOf(row) + 1, idx: 0 });
+              event.preventDefault();
+            } else if (key === 'ArrowLeft' && column.idx === 0) {
+              api.selectCell({ rowIdx: rows.indexOf(row) - 1, idx: columns.length - 1 });
+              event.preventDefault();
+            }
+          } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
+            const rowIdx = shiftKey
+              ? row === rows[0]
+                ? rows.length - 1
+                : rows.indexOf(row) - 1
+              : row === rows[rows.length - 1]
+              ? 0
+              : rows.indexOf(row) + 1;
+            api.selectCell({ rowIdx, idx: column.idx });
+            event.preventDefault();
+          }
+        }}
       />
     </>
   );

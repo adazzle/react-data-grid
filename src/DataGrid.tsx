@@ -161,7 +161,15 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onCellClick?: RowRendererProps<R, SR>['onCellClick'];
   /** Function called whenever a cell is double clicked */
   onCellDoubleClick?: RowRendererProps<R, SR>['onCellDoubleClick'];
-  onCellKeyDown?: RowRendererProps<R, SR>['onCellKeyDown'];
+  onCellKeyDown?: Maybe<
+    (
+      params: { row: R; column: CalculatedColumn<R, SR> },
+      event: KeyboardEvent<HTMLDivElement>,
+      api: DataGridHandle & {
+        closeEditor?: (commitChanges?: boolean) => void;
+      }
+    ) => void
+  >;
   /** Function called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Function called when a column is resized */
@@ -170,8 +178,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Toggles and modes
    */
-  /** @default 'NONE' */
-  cellNavigationMode?: Maybe<CellNavigationMode>;
   /** @default true */
   enableVirtualization?: Maybe<boolean>;
 
@@ -218,14 +224,13 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onCellClick,
     onCellDoubleClick,
-    onCellKeyDown,
+    onCellKeyDown: rawOnCellKeyDown,
     onScroll,
     onColumnResize,
     onFill,
     onCopy,
     onPaste,
     // Toggles and modes
-    cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
     // Miscellaneous
     components,
@@ -253,7 +258,6 @@ function DataGrid<R, SR, K extends Key>(
   const checkboxFormatter =
     components?.checkboxFormatter ?? defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
   const noRowsFallback = components?.noRowsFallback ?? defaultComponents?.noRowsFallback;
-  const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
   direction ??= 'ltr';
 
@@ -291,6 +295,21 @@ function DataGrid<R, SR, K extends Key>(
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const api: DataGridHandle = {
+    element: gridRef.current,
+    scrollToColumn(idx: number) {
+      scrollToCell({ idx });
+    },
+    scrollToRow(rowIdx: number) {
+      const { current } = gridRef;
+      if (!current) return;
+      current.scrollTo({
+        top: getRowTop(rowIdx),
+        behavior: 'smooth'
+      });
+    },
+    selectCell
+  };
 
   const defaultGridComponents = useMemo(
     () => ({
@@ -378,6 +397,10 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
+  const onCellKeyDown: RowRendererProps<R, SR>['onCellKeyDown'] = (params, event, aapi) => {
+    rawOnCellKeyDown?.(params, event, { ...aapi, ...api });
+  };
+
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
   const onCellClickLatest = useLatestFunc(onCellClick);
@@ -441,21 +464,7 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize?.(autoResizeColumn.idx, width);
   }, [autoResizeColumn, gridRef, onColumnResize]);
 
-  useImperativeHandle(ref, () => ({
-    element: gridRef.current,
-    scrollToColumn(idx: number) {
-      scrollToCell({ idx });
-    },
-    scrollToRow(rowIdx: number) {
-      const { current } = gridRef;
-      if (!current) return;
-      current.scrollTo({
-        top: getRowTop(rowIdx),
-        behavior: 'smooth'
-      });
-    },
-    selectCell
-  }));
+  useImperativeHandle(ref, () => api);
 
   /**
    * callbacks
@@ -853,12 +862,11 @@ function DataGrid<R, SR, K extends Key>(
 
   function navigate(event: KeyboardEvent<HTMLDivElement>) {
     const { key, shiftKey } = event;
-    let mode = cellNavigationMode;
+    let cellNavigationMode: CellNavigationMode = 'NONE';
     if (key === 'Tab') {
       if (
         canExitGrid({
           shiftKey,
-          cellNavigationMode,
           maxColIdx,
           minRowIdx,
           maxRowIdx,
@@ -870,7 +878,7 @@ function DataGrid<R, SR, K extends Key>(
         return;
       }
 
-      mode = cellNavigationMode === 'NONE' ? 'CHANGE_ROW' : cellNavigationMode;
+      cellNavigationMode = 'CHANGE_ROW';
     }
 
     // Do not allow focus to leave and prevent scrolling
@@ -888,7 +896,7 @@ function DataGrid<R, SR, K extends Key>(
       minRowIdx,
       maxRowIdx,
       lastFrozenColumnIndex,
-      cellNavigationMode: mode,
+      cellNavigationMode,
       currentPosition: selectedPosition,
       nextPosition,
       isCellWithinBounds: isCellWithinSelectionBounds,

@@ -130,23 +130,15 @@ export function getNextSelectedCellPosition<R, SR>({
     const isBeforeFirstColumn = nextIdx === -1;
 
     if (isAfterLastColumn) {
-      if (cellNavigationMode === 'CHANGE_ROW') {
-        const isLastRow = nextRowIdx === maxRowIdx;
-        if (!isLastRow) {
-          nextIdx = 0;
-          nextRowIdx += 1;
-        }
-      } else {
+      const isLastRow = nextRowIdx === maxRowIdx;
+      if (!isLastRow) {
         nextIdx = 0;
+        nextRowIdx += 1;
       }
     } else if (isBeforeFirstColumn) {
-      if (cellNavigationMode === 'CHANGE_ROW') {
-        const isFirstRow = nextRowIdx === minRowIdx;
-        if (!isFirstRow) {
-          nextRowIdx -= 1;
-          nextIdx = columnsCount - 1;
-        }
-      } else {
+      const isFirstRow = nextRowIdx === minRowIdx;
+      if (!isFirstRow) {
+        nextRowIdx -= 1;
         nextIdx = columnsCount - 1;
       }
       setColSpan(false);
@@ -157,7 +149,6 @@ export function getNextSelectedCellPosition<R, SR>({
 }
 
 interface CanExitGridOpts {
-  cellNavigationMode: CellNavigationMode;
   maxColIdx: number;
   minRowIdx: number;
   maxRowIdx: number;
@@ -166,23 +157,16 @@ interface CanExitGridOpts {
 }
 
 export function canExitGrid({
-  cellNavigationMode,
   maxColIdx,
   minRowIdx,
   maxRowIdx,
   selectedPosition: { rowIdx, idx },
   shiftKey
 }: CanExitGridOpts): boolean {
-  // When the cellNavigationMode is 'none' or 'changeRow', you can exit the grid if you're at the first or last cell of the grid
-  // When the cellNavigationMode is 'loopOverRow', there is no logical exit point so you can't exit the grid
-  if (cellNavigationMode === 'NONE' || cellNavigationMode === 'CHANGE_ROW') {
-    const atLastCellInRow = idx === maxColIdx;
-    const atFirstCellInRow = idx === 0;
-    const atLastRow = rowIdx === maxRowIdx;
-    const atFirstRow = rowIdx === minRowIdx;
+  const atLastCellInRow = idx === maxColIdx;
+  const atFirstCellInRow = idx === 0;
+  const atLastRow = rowIdx === maxRowIdx;
+  const atFirstRow = rowIdx === minRowIdx;
 
-    return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
-  }
-
-  return false;
+  return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
 }

@@ -21,7 +21,6 @@ export type {
   FillEvent,
   CopyEvent,
   PasteEvent,
-  CellNavigationMode,
   SortDirection,
   SortColumn,
   ColSpanArgs,
