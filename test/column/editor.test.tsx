@@ -205,7 +205,7 @@ describe('Editor', () => {
       render(
         <EditorTest
           onCellKeyDown={(params, event, api) => {
-            if (api?.closeEditor && event.key === 'ArrowDown') {
+            if (api.closeEditor && event.key === 'ArrowDown') {
               event.preventDefault();
               api.closeEditor(true);
             }
