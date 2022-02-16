@@ -1,7 +1,7 @@
 import React, { StrictMode, useState } from 'react';
 import { render } from 'react-dom';
 import { css } from '@linaria/core';
-import { HashRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import type { Direction } from '../src/types';
 import Nav from './Nav';
@@ -88,64 +88,31 @@ function Root() {
     <Router>
       <Nav direction={direction} onDirectionChange={setDirection} />
       <main className={mainClassname} dir={direction}>
-        <Switch>
-          <Redirect exact from="/" to="/common-features" />
-          <Route exact path="/common-features">
-            <CommonFeatures direction={direction} />
-          </Route>
-          <Route exact path="/all-features">
-            <AllFeatures direction={direction} />
-          </Route>
-          <Route exact path="/cell-navigation">
-            <CellNavigation direction={direction} />
-          </Route>
-          <Route exact path="/column-spanning">
-            <ColumnSpanning direction={direction} />
-          </Route>
-          <Route exact path="/columns-reordering">
-            <ColumnsReordering direction={direction} />
-          </Route>
-          <Route exact path="/context-menu">
-            <ContextMenuDemo direction={direction} />
-          </Route>
-          <Route exact path="/customizable-components">
-            <CustomizableComponents direction={direction} />
-          </Route>
-          <Route exact path="/grouping">
-            <Grouping direction={direction} />
-          </Route>
-          <Route exact path="/header-filters">
-            <HeaderFilters direction={direction} />
-          </Route>
-          <Route exact path="/infinite-scrolling">
-            <InfiniteScrolling direction={direction} />
-          </Route>
-          <Route exact path="/master-detail">
-            <MasterDetail direction={direction} />
-          </Route>
-          <Route exact path="/million-cells">
-            <MillionCells direction={direction} />
-          </Route>
-          <Route exact path="/no-rows">
-            <NoRows direction={direction} />
-          </Route>
-          <Route exact path="/resizable-grid">
-            <ResizableGrid direction={direction} />
-          </Route>
-          <Route exact path="/rows-reordering">
-            <RowsReordering direction={direction} />
-          </Route>
-          <Route exact path="/scroll-to-row">
-            <ScrollToRow direction={direction} />
-          </Route>
-          <Route exact path="/tree-view">
-            <TreeView direction={direction} />
-          </Route>
-          <Route exact path="/variable-row-height">
-            <VariableRowHeight direction={direction} />
-          </Route>
-          <Route>Nothing to see here</Route>
-        </Switch>
+        <Routes>
+          <Route index element={<Navigate to="common-features" replace />} />
+          <Route path="common-features" element={<CommonFeatures direction={direction} />} />
+          <Route path="all-features" element={<AllFeatures direction={direction} />} />
+          <Route path="cell-navigation" element={<CellNavigation direction={direction} />} />
+          <Route path="column-spanning" element={<ColumnSpanning direction={direction} />} />
+          <Route path="columns-reordering" element={<ColumnsReordering direction={direction} />} />
+          <Route path="context-menu" element={<ContextMenuDemo direction={direction} />} />
+          <Route
+            path="customizable-components"
+            element={<CustomizableComponents direction={direction} />}
+          />
+          <Route path="grouping" element={<Grouping direction={direction} />} />
+          <Route path="header-filters" element={<HeaderFilters direction={direction} />} />
+          <Route path="infinite-scrolling" element={<InfiniteScrolling direction={direction} />} />
+          <Route path="master-detail" element={<MasterDetail direction={direction} />} />
+          <Route path="million-cells" element={<MillionCells direction={direction} />} />
+          <Route path="no-rows" element={<NoRows direction={direction} />} />
+          <Route path="resizable-grid" element={<ResizableGrid direction={direction} />} />
+          <Route path="rows-reordering" element={<RowsReordering direction={direction} />} />
+          <Route path="scroll-to-row" element={<ScrollToRow direction={direction} />} />
+          <Route path="tree-view" element={<TreeView direction={direction} />} />
+          <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
+          <Route path="*" element="Nothing to see here" />
+        </Routes>
       </main>
     </Router>
   );
