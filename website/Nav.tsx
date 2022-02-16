@@ -170,5 +170,5 @@ export default function Nav({ direction, onDirectionChange }: Props) {
 }
 
 function getActiveClassname({ isActive }: { isActive: boolean }) {
-  return isActive ? activeNavClassname : undefined;
+  return isActive ? activeNavClassname : '';
 }
