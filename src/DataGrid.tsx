@@ -397,8 +397,8 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
-  const onCellKeyDown: RowRendererProps<R, SR>['onCellKeyDown'] = (params, event, aapi) => {
-    rawOnCellKeyDown?.(params, event, { ...aapi, ...api });
+  const onCellKeyDown: RowRendererProps<R, SR>['onCellKeyDown'] = (params, event, editApi) => {
+    rawOnCellKeyDown?.(params, event, { ...editApi, ...api });
   };
 
   const onRowClickLatest = useLatestFunc(onRowClick);
