@@ -140,11 +140,12 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   onCellKeyDown: Maybe<
     (
-      params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
-      event: React.KeyboardEvent<HTMLDivElement>,
-      api?: {
-        closeEditor: (commitChanges?: boolean) => void;
-      }
+      params: {
+        mode: 'SELECT';
+        row: TRow;
+        column: CalculatedColumn<TRow, TSummaryRow>;
+      },
+      event: React.KeyboardEvent<HTMLDivElement>
     ) => void
   >;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;

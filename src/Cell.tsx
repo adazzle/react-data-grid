@@ -67,7 +67,7 @@ function Cell<R, SR>({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    onKeyDown?.({ row, column }, event);
+    onKeyDown?.({ mode: 'SELECT', row, column }, event);
   }
 
   return (

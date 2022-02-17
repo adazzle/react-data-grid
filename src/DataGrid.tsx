@@ -58,8 +58,7 @@ import type {
   RowHeightArgs,
   Maybe,
   Components,
-  Direction,
-  RowRendererProps
+  Direction
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -159,11 +158,20 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   onCellKeyDown?: Maybe<
     (
-      params: { row: R; column: CalculatedColumn<R, SR> },
-      event: KeyboardEvent<HTMLDivElement>,
-      api: DataGridHandle & {
-        closeEditor?: (commitChanges?: boolean) => void;
-      }
+      args:
+        | {
+            mode: 'SELECT';
+            row: R;
+            column: CalculatedColumn<R, SR>;
+            selectCell: DataGridHandle['selectCell'];
+          }
+        | {
+            mode: 'EDIT';
+            row: R;
+            column: CalculatedColumn<R, SR>;
+            closeEditor: (commitChanges?: boolean) => void;
+          },
+      event: KeyboardEvent<HTMLDivElement>
     ) => void
   >;
   /** Function called when the grid is scrolled */
@@ -218,7 +226,7 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onRowClick,
     onRowDoubleClick,
-    onCellKeyDown: rawOnCellKeyDown,
+    onCellKeyDown,
     onScroll,
     onColumnResize,
     onFill,
@@ -289,21 +297,6 @@ function DataGrid<R, SR, K extends Key>(
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
-  const api: DataGridHandle = {
-    element: gridRef.current,
-    scrollToColumn(idx: number) {
-      scrollToCell({ idx });
-    },
-    scrollToRow(rowIdx: number) {
-      const { current } = gridRef;
-      if (!current) return;
-      current.scrollTo({
-        top: getRowTop(rowIdx),
-        behavior: 'smooth'
-      });
-    },
-    selectCell
-  };
 
   const defaultGridComponents = useMemo(
     () => ({
@@ -391,10 +384,14 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
-  const onCellKeyDown: RowRendererProps<R, SR>['onCellKeyDown'] = (params, event, editApi) => {
-    rawOnCellKeyDown?.(params, event, { ...editApi, ...api });
-  };
-  const onCellKeyDownLatest = useLatestFunc(onCellKeyDown);
+  const onCellKeyDownLatest = useLatestFunc(
+    (
+      args: { mode: 'SELECT'; row: R; column: CalculatedColumn<R, SR> },
+      event: KeyboardEvent<HTMLDivElement>
+    ) => {
+      onCellKeyDown?.({ ...args, selectCell }, event);
+    }
+  );
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -453,7 +450,21 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize?.(autoResizeColumn.idx, width);
   }, [autoResizeColumn, gridRef, onColumnResize]);
 
-  useImperativeHandle(ref, () => api);
+  useImperativeHandle(ref, () => ({
+    element: gridRef.current,
+    scrollToColumn(idx: number) {
+      scrollToCell({ idx });
+    },
+    scrollToRow(rowIdx: number) {
+      const { current } = gridRef;
+      if (!current) return;
+      current.scrollTo({
+        top: getRowTop(rowIdx),
+        behavior: 'smooth'
+      });
+    },
+    selectCell
+  }));
 
   /**
    * callbacks
@@ -979,7 +990,7 @@ function DataGrid<R, SR, K extends Key>(
         scrollToCell={() => {
           scrollToCell(selectedPosition);
         }}
-        onKeyDown={onCellKeyDownLatest}
+        onKeyDown={onCellKeyDown}
         navigate={navigate}
       />
     );

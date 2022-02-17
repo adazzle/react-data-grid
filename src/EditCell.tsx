@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
-import type { CellRendererProps, EditorProps, RowRendererProps, Omit } from './types';
+import type { CalculatedColumn, CellRendererProps, EditorProps, Maybe, Omit } from './types';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -35,7 +35,17 @@ interface EditCellProps<R, SR>
   closeEditor: () => void;
   scrollToCell: () => void;
   navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  onKeyDown: RowRendererProps<R, SR>['onCellKeyDown'];
+  onKeyDown: Maybe<
+    (
+      args: {
+        mode: 'EDIT';
+        row: R;
+        column: CalculatedColumn<R, SR>;
+        closeEditor: (commitChanges?: boolean) => void;
+      },
+      event: React.KeyboardEvent<HTMLDivElement>
+    ) => void
+  >;
 }
 
 export default function EditCell<R, SR>({
@@ -78,7 +88,7 @@ export default function EditCell<R, SR>({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    onKeyDown?.({ row, column }, event, { closeEditor: onClose });
+    onKeyDown?.({ mode: 'EDIT', row, column, closeEditor: onClose }, event);
     if (event.isDefaultPrevented()) return;
     if (event.key === 'Escape') {
       // Discard changes

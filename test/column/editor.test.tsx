@@ -188,7 +188,7 @@ describe('Editor', () => {
       render(
         <EditorTest
           onCellKeyDown={(params, event) => {
-            if (event.key === 'x') {
+            if (params.mode === 'SELECT' && event.key === 'x') {
               event.preventDefault();
             }
           }}
@@ -204,10 +204,10 @@ describe('Editor', () => {
     it('should prevent navigation if onNavigation returns false', () => {
       render(
         <EditorTest
-          onCellKeyDown={(params, event, api) => {
-            if (api.closeEditor && event.key === 'ArrowDown') {
+          onCellKeyDown={(params, event) => {
+            if (params.mode === 'EDIT' && event.key === 'ArrowDown') {
               event.preventDefault();
-              api.closeEditor(true);
+              params.closeEditor(true);
             }
           }}
         />
