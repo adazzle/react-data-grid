@@ -109,7 +109,7 @@ export interface CellRendererProps<TRow, TSummaryRow>
       RowRendererProps<TRow, TSummaryRow>,
       'onRowClick' | 'onRowDoubleClick' | 'selectCell'
     >,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children' | 'onKeyDown'> {
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -118,7 +118,6 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (newRow: TRow) => void;
-  onKeyDown: RowRendererProps<TRow, TSummaryRow>['onCellKeyDown'];
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -138,16 +137,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   onRowChange: (rowIdx: number, newRow: TRow) => void;
   onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
-  onCellKeyDown: Maybe<
-    (
-      params: {
-        mode: 'SELECT';
-        row: TRow;
-        column: CalculatedColumn<TRow, TSummaryRow>;
-      },
-      event: React.KeyboardEvent<HTMLDivElement>
-    ) => void
-  >;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (

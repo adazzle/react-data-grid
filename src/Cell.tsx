@@ -31,7 +31,6 @@ function Cell<R, SR>({
   dragHandle,
   onRowClick,
   onRowDoubleClick,
-  onKeyDown,
   onRowChange,
   selectCell,
   ...props
@@ -66,10 +65,6 @@ function Cell<R, SR>({
     onRowDoubleClick?.(row, column);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    onKeyDown?.({ mode: 'SELECT', row, column }, event);
-  }
-
   return (
     <div
       role="gridcell"
@@ -84,7 +79,6 @@ function Cell<R, SR>({
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
-      onKeyDown={handleKeyDown}
       onFocus={onFocus}
       {...props}
     >

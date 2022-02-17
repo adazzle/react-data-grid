@@ -121,7 +121,9 @@ export default function CellNavigation({ direction }: Props) {
         columns={columns}
         rows={rows}
         direction={direction}
-        onCellKeyDown={({ column, row, ...api }, event) => {
+        onKeyDown={(args, event) => {
+          if (args.type === 'HEADER' || args.type === 'SUMMARY') return;
+          const { row, column, ...api } = args;
           if (api.mode === 'EDIT') return;
           const { key, shiftKey } = event;
           if (cellNavigationMode === 'LOOP_OVER_ROW') {

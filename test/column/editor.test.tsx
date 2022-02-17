@@ -184,11 +184,11 @@ describe('Editor', () => {
       expect(editor).not.toBeInTheDocument();
     });
 
-    it('should not open editor if onCellKeyDown prevents the default event', () => {
+    it('should not open editor if onKeyDown prevents the default event', () => {
       render(
         <EditorTest
-          onCellKeyDown={(params, event) => {
-            if (params.mode === 'SELECT' && event.key === 'x') {
+          onKeyDown={(params, event) => {
+            if (params.type === 'ROW' && params.mode === 'SELECT' && event.key === 'x') {
               event.preventDefault();
             }
           }}
@@ -204,8 +204,8 @@ describe('Editor', () => {
     it('should prevent navigation if onNavigation returns false', () => {
       render(
         <EditorTest
-          onCellKeyDown={(params, event) => {
-            if (params.mode === 'EDIT' && event.key === 'ArrowDown') {
+          onKeyDown={(params, event) => {
+            if (params.type === 'ROW' && params.mode === 'EDIT' && event.key === 'ArrowDown') {
               event.preventDefault();
               params.closeEditor(true);
             }
@@ -270,7 +270,7 @@ describe('Editor', () => {
 
 interface EditorTestProps
   extends Pick<Column<Row>, 'editorOptions' | 'editable'>,
-    Pick<DataGridProps<Row>, 'onCellKeyDown'> {
+    Pick<DataGridProps<Row>, 'onKeyDown'> {
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
   createEditorPortal?: boolean;
@@ -290,7 +290,7 @@ const initialRows: readonly Row[] = [
 function EditorTest({
   editable,
   editorOptions,
-  onCellKeyDown,
+  onKeyDown,
   onSave,
   gridRows = initialRows,
   createEditorPortal
@@ -348,12 +348,7 @@ function EditorTest({
       <button type="button" onClick={() => onSave?.(rows)}>
         save
       </button>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        onRowsChange={setRows}
-        onCellKeyDown={onCellKeyDown}
-      />
+      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} onKeyDown={onKeyDown} />
     </StrictMode>
   );
 }

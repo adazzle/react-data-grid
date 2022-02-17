@@ -156,20 +156,33 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
   onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
-  onCellKeyDown?: Maybe<
+  onKeyDown?: Maybe<
     (
       args:
         | {
+            type: 'HEADER';
+            column: CalculatedColumn<R, SR>;
+            selectCell: DataGridHandle['selectCell'];
+          }
+        | {
+            type: 'ROW';
             mode: 'SELECT';
             row: R;
             column: CalculatedColumn<R, SR>;
             selectCell: DataGridHandle['selectCell'];
           }
         | {
+            type: 'ROW';
             mode: 'EDIT';
             row: R;
             column: CalculatedColumn<R, SR>;
             closeEditor: (commitChanges?: boolean) => void;
+          }
+        | {
+            type: 'SUMMARY';
+            column: CalculatedColumn<R, SR>;
+            row: SR;
+            selectCell: DataGridHandle['selectCell'];
           },
       event: KeyboardEvent<HTMLDivElement>
     ) => void
@@ -226,7 +239,7 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onRowClick,
     onRowDoubleClick,
-    onCellKeyDown,
+    onKeyDown,
     onScroll,
     onColumnResize,
     onFill,
@@ -384,14 +397,6 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
-  const onCellKeyDownLatest = useLatestFunc(
-    (
-      args: { mode: 'SELECT'; row: R; column: CalculatedColumn<R, SR> },
-      event: KeyboardEvent<HTMLDivElement>
-    ) => {
-      onCellKeyDown?.({ ...args, selectCell }, event);
-    }
-  );
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -563,13 +568,55 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
+  function handleCustomKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (!onKeyDown) return;
+    const { rowIdx, idx } = selectedPosition;
+    const column = columns[idx];
+    if (rowIdx === -1) {
+      onKeyDown(
+        {
+          type: 'HEADER',
+          column,
+          selectCell
+        },
+        event
+      );
+    } else if (rowIdx >= 0 && rowIdx < rows.length) {
+      const row = rows[rowIdx];
+      if (!isGroupRow(row)) {
+        onKeyDown(
+          {
+            type: 'ROW',
+            mode: 'SELECT',
+            column,
+            row,
+            selectCell
+          },
+          event
+        );
+      }
+    } else if (summaryRows) {
+      onKeyDown(
+        {
+          type: 'SUMMARY',
+          column,
+          row: summaryRows[rowIdx - rows.length - 1],
+          selectCell
+        },
+        event
+      );
+    }
+  }
+
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.isDefaultPrevented()) return;
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isEditCellEvent = event.target.closest('.rdg-editor-container') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
     if ((!isCellEvent && !isRowEvent) || isEditCellEvent) return;
+
+    handleCustomKeyDown(event);
+    if (event.isDefaultPrevented()) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
@@ -990,7 +1037,7 @@ function DataGrid<R, SR, K extends Key>(
         scrollToCell={() => {
           scrollToCell(selectedPosition);
         }}
-        onKeyDown={onCellKeyDown}
+        onKeyDown={onKeyDown}
         navigate={navigate}
       />
     );
@@ -1090,7 +1137,6 @@ function DataGrid<R, SR, K extends Key>(
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
-          onCellKeyDown={onCellKeyDownLatest}
           rowClass={rowClass}
           gridRowStart={gridRowStart}
           height={getRowHeight(rowIdx)}

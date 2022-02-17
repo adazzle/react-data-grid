@@ -38,6 +38,7 @@ interface EditCellProps<R, SR>
   onKeyDown: Maybe<
     (
       args: {
+        type: 'ROW';
         mode: 'EDIT';
         row: R;
         column: CalculatedColumn<R, SR>;
@@ -88,7 +89,7 @@ export default function EditCell<R, SR>({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    onKeyDown?.({ mode: 'EDIT', row, column, closeEditor: onClose }, event);
+    onKeyDown?.({ type: 'ROW', mode: 'EDIT', row, column, closeEditor: onClose }, event);
     if (event.isDefaultPrevented()) return;
     if (event.key === 'Escape') {
       // Discard changes

@@ -25,7 +25,6 @@ function Row<R, SR>(
     selectedCellDragHandle,
     onRowClick,
     onRowDoubleClick,
-    onCellKeyDown,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -81,7 +80,6 @@ function Row<R, SR>(
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
-          onKeyDown={onCellKeyDown}
           onRowChange={handleRowChange}
           selectCell={selectCell}
         />
