@@ -122,40 +122,67 @@ export default function CellNavigation({ direction }: Props) {
         rows={rows}
         direction={direction}
         onKeyDown={(args, event) => {
-          if (args.type === 'HEADER' || args.type === 'SUMMARY') return;
-          const { row, column, ...api } = args;
-          if (api.mode === 'EDIT') return;
+          if (args.type === 'SUMMARY' || (args.type === 'ROW' && args.mode === 'EDIT')) return;
+          const { column, ...props } = args;
           const { key, shiftKey } = event;
-          if (cellNavigationMode === 'LOOP_OVER_ROW') {
+          const loopOverNavigation = () => {
             if (
               (key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) &&
               column.idx === columns.length - 1
             ) {
-              api.selectCell({ rowIdx: rows.indexOf(row), idx: 0 });
+              const rowIdx = props.type === 'HEADER' ? -1 : rows.indexOf(props.row);
+              props.selectCell({ rowIdx, idx: 0 });
               event.preventDefault();
             } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && column.idx === 0) {
-              api.selectCell({ rowIdx: rows.indexOf(row), idx: columns.length - 1 });
+              const rowIdx = props.type === 'HEADER' ? -1 : rows.indexOf(props.row);
+              props.selectCell({ rowIdx, idx: columns.length - 1 });
               event.preventDefault();
             }
-          } else if (cellNavigationMode === 'CHANGE_ROW') {
+          };
+
+          const changeRowNavigation = () => {
             if (key === 'ArrowRight' && column.idx === columns.length - 1) {
-              if (row === rows[rows.length - 1]) return;
-              api.selectCell({ rowIdx: rows.indexOf(row) + 1, idx: 0 });
+              if (rows.length === 0) return;
+              let rowIdx: number;
+              if (props.type === 'HEADER') {
+                rowIdx = 0;
+              } else {
+                if (props.row === rows[rows.length - 1]) return;
+                rowIdx = rows.indexOf(props.row) + 1;
+              }
+              props.selectCell({ rowIdx, idx: 0 });
               event.preventDefault();
             } else if (key === 'ArrowLeft' && column.idx === 0) {
-              api.selectCell({ rowIdx: rows.indexOf(row) - 1, idx: columns.length - 1 });
+              if (props.type === 'HEADER') return;
+              props.selectCell({ rowIdx: rows.indexOf(props.row) - 1, idx: columns.length - 1 });
               event.preventDefault();
             }
-          } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
-            const rowIdx = shiftKey
-              ? row === rows[0]
-                ? rows.length - 1
-                : rows.indexOf(row) - 1
-              : row === rows[rows.length - 1]
-              ? 0
-              : rows.indexOf(row) + 1;
-            api.selectCell({ rowIdx, idx: column.idx });
+          };
+
+          const loopOverColumnNavigation = () => {
+            let rowIdx: number;
+            if (props.type === 'HEADER') {
+              rowIdx = shiftKey ? rows.length - 1 : 0;
+            } else {
+              const { row } = props;
+              rowIdx = shiftKey
+                ? row === rows[0]
+                  ? -1
+                  : rows.indexOf(row) - 1
+                : row === rows[rows.length - 1]
+                ? -1
+                : rows.indexOf(row) + 1;
+            }
+            props.selectCell({ rowIdx, idx: column.idx });
             event.preventDefault();
+          };
+
+          if (cellNavigationMode === 'LOOP_OVER_ROW') {
+            loopOverNavigation();
+          } else if (cellNavigationMode === 'CHANGE_ROW') {
+            changeRowNavigation();
+          } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
+            loopOverColumnNavigation();
           }
         }}
       />
