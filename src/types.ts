@@ -1,11 +1,4 @@
-import type {
-  ReactElement,
-  ComponentType,
-  ForwardRefExoticComponent,
-  RefAttributes,
-  MouseEvent,
-  KeyboardEvent
-} from 'react';
+import type { ReactElement, ComponentType, ForwardRefExoticComponent, RefAttributes } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -111,11 +104,12 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   isCellSelected: boolean;
 }
 
-type SharedDivProps = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onKeyDown'
->;
-export interface CellRendererProps<TRow, TSummaryRow> extends SharedDivProps {
+export interface CellRendererProps<TRow, TSummaryRow>
+  extends Pick<
+      RowRendererProps<TRow, TSummaryRow>,
+      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
+    >,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children' | 'onKeyDown'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -124,13 +118,11 @@ export interface CellRendererProps<TRow, TSummaryRow> extends SharedDivProps {
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (newRow: TRow) => void;
-  selectCell: RowRendererProps<TRow, TSummaryRow>['selectCell'];
-  onClick: RowRendererProps<TRow, TSummaryRow>['onCellClick'];
-  onDoubleClick: RowRendererProps<TRow, TSummaryRow>['onCellDoubleClick'];
   onKeyDown: RowRendererProps<TRow, TSummaryRow>['onCellKeyDown'];
 }
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown> extends SharedDivProps {
+export interface RowRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   rowIdx: number;
@@ -144,24 +136,12 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown> extends SharedDiv
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onClick: Maybe<(params: { row: TRow }, event: MouseEvent<HTMLDivElement>) => void>;
-  onDoubleClick: Maybe<(params: { row: TRow }, event: MouseEvent<HTMLDivElement>) => void>;
-  onCellClick: Maybe<
-    (
-      params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
-      event: MouseEvent<HTMLDivElement>
-    ) => void
-  >;
-  onCellDoubleClick: Maybe<
-    (
-      params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
-      event: MouseEvent<HTMLDivElement>
-    ) => void
-  >;
+  onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
+  onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   onCellKeyDown: Maybe<
     (
       params: { row: TRow; column: CalculatedColumn<TRow, TSummaryRow> },
-      event: KeyboardEvent<HTMLDivElement>,
+      event: React.KeyboardEvent<HTMLDivElement>,
       api?: {
         closeEditor: (commitChanges?: boolean) => void;
       }

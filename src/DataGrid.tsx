@@ -154,13 +154,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a row is clicked */
-  onRowClick?: RowRendererProps<R, SR>['onClick'];
+  onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
-  onRowDoubleClick?: RowRendererProps<R, SR>['onDoubleClick'];
-  /** Function called whenever a cell is clicked */
-  onCellClick?: RowRendererProps<R, SR>['onCellClick'];
-  /** Function called whenever a cell is double clicked */
-  onCellDoubleClick?: RowRendererProps<R, SR>['onCellDoubleClick'];
+  onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   onCellKeyDown?: Maybe<
     (
       params: { row: R; column: CalculatedColumn<R, SR> },
@@ -222,8 +218,6 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onRowClick,
     onRowDoubleClick,
-    onCellClick,
-    onCellDoubleClick,
     onCellKeyDown: rawOnCellKeyDown,
     onScroll,
     onColumnResize,
@@ -400,11 +394,6 @@ function DataGrid<R, SR, K extends Key>(
   const onCellKeyDown: RowRendererProps<R, SR>['onCellKeyDown'] = (params, event, editApi) => {
     rawOnCellKeyDown?.(params, event, { ...editApi, ...api });
   };
-
-  const onRowClickLatest = useLatestFunc(onRowClick);
-  const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
-  const onCellClickLatest = useLatestFunc(onCellClick);
-  const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const onCellKeyDownLatest = useLatestFunc(onCellKeyDown);
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
@@ -1088,10 +1077,8 @@ function DataGrid<R, SR, K extends Key>(
           row={row}
           viewportColumns={rowColumns}
           isRowSelected={isRowSelected}
-          onClick={onRowClickLatest}
-          onDoubleClick={onRowDoubleClickLatest}
-          onCellClick={onCellClickLatest}
-          onCellDoubleClick={onCellDoubleClickLatest}
+          onRowClick={onRowClick}
+          onRowDoubleClick={onRowDoubleClick}
           onCellKeyDown={onCellKeyDownLatest}
           rowClass={rowClass}
           gridRowStart={gridRowStart}
