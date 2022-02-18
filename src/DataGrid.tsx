@@ -610,10 +610,9 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
-    const isCellEvent = event.target.closest('.rdg-cell') !== null;
-    const isEditCellEvent = event.target.closest('.rdg-editor-container') !== null;
+    const isCellEvent = event.target.closest('.rdg-cell:not(.rdg-editor-container)') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
-    if ((!isCellEvent && !isRowEvent) || isEditCellEvent) return;
+    if (!isCellEvent && !isRowEvent) return;
 
     handleCustomKeyDown(event);
     if (event.isDefaultPrevented()) return;
