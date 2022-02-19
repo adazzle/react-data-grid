@@ -156,7 +156,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
   onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
-  onKeyDown?: Maybe<
+  onCellKeyDown?: Maybe<
     (
       args:
         | {
@@ -239,7 +239,7 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onRowClick,
     onRowDoubleClick,
-    onKeyDown,
+    onCellKeyDown,
     onScroll,
     onColumnResize,
     onFill,
@@ -569,11 +569,11 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleCustomKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (!onKeyDown) return;
+    if (!onCellKeyDown) return;
     const { rowIdx, idx } = selectedPosition;
     const column = columns[idx];
     if (rowIdx === -1) {
-      onKeyDown(
+      onCellKeyDown(
         {
           type: 'HEADER',
           column,
@@ -584,7 +584,7 @@ function DataGrid<R, SR, K extends Key>(
     } else if (rowIdx >= 0 && rowIdx < rows.length) {
       const row = rows[rowIdx];
       if (!isGroupRow(row)) {
-        onKeyDown(
+        onCellKeyDown(
           {
             type: 'ROW',
             mode: 'SELECT',
@@ -596,7 +596,7 @@ function DataGrid<R, SR, K extends Key>(
         );
       }
     } else if (summaryRows) {
-      onKeyDown(
+      onCellKeyDown(
         {
           type: 'SUMMARY',
           column,
@@ -609,13 +609,13 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    handleCustomKeyDown(event);
+    if (event.isDefaultPrevented() || event.isPropagationStopped()) return;
+
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell:not(.rdg-editor-container)') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
     if (!isCellEvent && !isRowEvent) return;
-
-    handleCustomKeyDown(event);
-    if (event.isDefaultPrevented()) return;
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
@@ -1036,7 +1036,7 @@ function DataGrid<R, SR, K extends Key>(
         scrollToCell={() => {
           scrollToCell(selectedPosition);
         }}
-        onKeyDown={onKeyDown}
+        onKeyDown={onCellKeyDown}
         navigate={navigate}
       />
     );

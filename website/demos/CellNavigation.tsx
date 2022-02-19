@@ -14,7 +14,7 @@ interface Row {
   completeDate: string;
 }
 
-type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW' | 'LOOP_OVER_COLUMN';
+type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW' | 'LOOP_OVER_COLUMN' | 'NO_TAB';
 
 const columns: Column<Row>[] = [
   {
@@ -116,12 +116,21 @@ export default function CellNavigation({ direction }: Props) {
           />
           Loop Over Column
         </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            checked={cellNavigationMode === 'NO_TAB'}
+            onChange={() => setCellNavigationMode('NO_TAB')}
+          />
+          No Tab
+        </label>
       </div>
       <DataGrid
         columns={columns}
         rows={rows}
         direction={direction}
-        onKeyDown={(args, event) => {
+        onCellKeyDown={(args, event) => {
           if (args.type === 'SUMMARY' || (args.type === 'ROW' && args.mode === 'EDIT')) return;
           const { column, ...props } = args;
           const { key, shiftKey } = event;
@@ -183,6 +192,8 @@ export default function CellNavigation({ direction }: Props) {
             changeRowNavigation();
           } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
             loopOverColumnNavigation();
+          } else if (cellNavigationMode === 'NO_TAB' && key === 'Tab') {
+            event.stopPropagation();
           }
         }}
       />

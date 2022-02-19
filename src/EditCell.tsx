@@ -90,7 +90,7 @@ export default function EditCell<R, SR>({
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     onKeyDown?.({ type: 'ROW', mode: 'EDIT', row, column, closeEditor: onClose }, event);
-    if (event.isDefaultPrevented()) return;
+    if (event.isDefaultPrevented() || event.isPropagationStopped()) return;
     if (event.key === 'Escape') {
       // Discard changes
       onClose();
