@@ -88,15 +88,26 @@ export function useViewportColumns<R, SR>({
     isGroupRow
   ]);
 
-  return useMemo((): readonly CalculatedColumn<R, SR>[] => {
+  return useMemo((): {
+    viewportColumns: readonly CalculatedColumn<R, SR>[];
+    initialAutoResizeColumns: readonly CalculatedColumn<R, SR>[] | null;
+  } => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];
+    let initialAutoResizeColumns: CalculatedColumn<R, SR>[] | null = null;
     for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
       const column = columns[colIdx];
 
       if (colIdx < startIdx && !column.frozen) continue;
       viewportColumns.push(column);
+
+      if (column.width === 'auto') {
+        if (initialAutoResizeColumns === null) {
+          initialAutoResizeColumns = [];
+        }
+        initialAutoResizeColumns.push(column);
+      }
     }
 
-    return viewportColumns;
+    return { viewportColumns, initialAutoResizeColumns };
   }, [startIdx, colOverscanEndIdx, columns]);
 }

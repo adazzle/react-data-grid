@@ -260,7 +260,6 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-  const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
 
   /**
    * refs
@@ -345,7 +344,7 @@ function DataGrid<R, SR, K extends Key>(
     enableVirtualization
   });
 
-  const viewportColumns = useViewportColumns({
+  const { viewportColumns, initialAutoResizeColumns } = useViewportColumns({
     columns,
     colSpanColumns,
     colOverscanStartIdx,
@@ -357,6 +356,10 @@ function DataGrid<R, SR, K extends Key>(
     summaryRows,
     isGroupRow
   });
+
+  const [autoResizeColumns, setAutoResizeColumns] = useState<
+    readonly CalculatedColumn<R, SR>[] | null
+  >(initialAutoResizeColumns);
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
@@ -413,19 +416,19 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   useLayoutEffect(() => {
-    if (autoResizeColumn === null) return;
-    const columnElement = gridRef.current!.querySelector(
-      `[aria-colindex="${autoResizeColumn.idx + 1}"]`
-    )!;
-    const width = columnElement.clientWidth + 2;
-    setColumnWidths((columnWidths) => {
-      const newColumnWidths = new Map(columnWidths);
-      newColumnWidths.set(autoResizeColumn.key, width);
-      return newColumnWidths;
-    });
-    setAutoResizeColumn(null);
-    onColumnResize?.(autoResizeColumn.idx, width);
-  }, [autoResizeColumn, gridRef, onColumnResize]);
+    if (autoResizeColumns === null) return;
+    const newColumnWidths = new Map(columnWidths);
+    for (const column of autoResizeColumns) {
+      const columnElement = gridRef.current!.querySelector(`[aria-colindex="${column.idx + 1}"]`);
+      const width = columnElement!.clientWidth + 2;
+      newColumnWidths.set(column.key, width);
+    }
+    setColumnWidths(newColumnWidths);
+    if (columns.length === 1) {
+      onColumnResize?.(columns[0].idx, newColumnWidths.get(columns[0].key)!);
+    }
+    setAutoResizeColumns(null);
+  }, [autoResizeColumns, columnWidths, columns, gridRef, onColumnResize]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -449,7 +452,7 @@ function DataGrid<R, SR, K extends Key>(
   const handleColumnResize = useCallback(
     (column: CalculatedColumn<R, SR>, width: number | 'auto') => {
       if (width === 'auto') {
-        setAutoResizeColumn(column);
+        setAutoResizeColumns([column]);
         return;
       }
       setColumnWidths((columnWidths) => {
@@ -899,10 +902,12 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getLayoutCssVars() {
-    if (autoResizeColumn === null) return layoutCssVars;
+    if (autoResizeColumns === null) return layoutCssVars;
     const { gridTemplateColumns } = layoutCssVars;
     const newSizes = gridTemplateColumns.split(' ');
-    newSizes[autoResizeColumn.idx] = 'max-content';
+    for (const column of autoResizeColumns) {
+      newSizes[column.idx] = 'max-content';
+    }
     return {
       ...layoutCssVars,
       gridTemplateColumns: newSizes.join(' ')
@@ -1120,7 +1125,7 @@ function DataGrid<R, SR, K extends Key>(
         rootClassname,
         {
           [viewportDraggingClassname]: isDragging,
-          [cellAutoResizeClassname]: autoResizeColumn !== null
+          [cellAutoResizeClassname]: autoResizeColumns !== null
         },
         className
       )}

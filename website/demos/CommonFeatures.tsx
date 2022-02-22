@@ -98,19 +98,19 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'client',
       name: 'Client',
-      width: 220,
+      width: 'auto',
       editor: TextEditor
     },
     {
       key: 'area',
       name: 'Area',
-      width: 120,
+      width: 'auto',
       editor: TextEditor
     },
     {
       key: 'country',
       name: 'Country',
-      width: 180,
+      width: 'auto',
       editor: (p) => (
         <select
           autoFocus
@@ -130,7 +130,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'contact',
       name: 'Contact',
-      width: 160,
+      width: 'auto',
       editor: TextEditor
     },
     {
@@ -252,7 +252,7 @@ function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 30; i++) {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
@@ -359,6 +359,7 @@ export default function CommonFeatures({ direction }: Props) {
       summaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
+      enableVirtualization={false}
     />
   );
 
