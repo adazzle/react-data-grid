@@ -574,7 +574,7 @@ const rules = {
   '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
   '@typescript-eslint/no-unnecessary-condition': 1,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
-  '@typescript-eslint/no-unnecessary-type-arguments': 1,
+  '@typescript-eslint/no-unnecessary-type-arguments': 0,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
   '@typescript-eslint/no-unnecessary-type-constraint': 1,
   '@typescript-eslint/no-unsafe-argument': 0,
