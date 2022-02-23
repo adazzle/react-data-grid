@@ -18,7 +18,6 @@ export function useGridDimensions(): [
     if (ResizeObserver == null) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
-      // The dimensions given by the callback entries in Firefox do not substract the scrollbar sizes.
       const size = entries[0].contentBoxSize[0];
       // TODO: remove once fixed upstream
       // we reduce width by 1px here to avoid layout issues in Chrome
