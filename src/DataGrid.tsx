@@ -73,7 +73,7 @@ interface EditCellState<R> extends Position {
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
-  'formatter' | 'minWidth' | 'width' | 'resizable' | 'sortable'
+  'formatter' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
 >;
 
 const initialPosition: SelectCellState = {
