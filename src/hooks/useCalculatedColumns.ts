@@ -33,8 +33,9 @@ export function useCalculatedColumns<R, SR>({
   rawGroupBy,
   enableVirtualization
 }: CalculatedColumnsArgs<R, SR>) {
-  const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
   const defaultWidth = defaultColumnOptions?.width;
+  const defaultMinWidth = defaultColumnOptions?.minWidth ?? 80;
+  const defaultMaxWidth = defaultColumnOptions?.maxWidth;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
@@ -144,7 +145,7 @@ export function useCalculatedColumns<R, SR>({
       if (width === undefined) {
         unassignedColumnsCount++;
       } else {
-        width = clampColumnWidth(width, column, minColumnWidth);
+        width = clampColumnWidth(width, column, defaultMinWidth, defaultMaxWidth);
         allocatedWidth += width;
         columnMetrics.set(column, { width, left: 0 });
       }
@@ -160,7 +161,7 @@ export function useCalculatedColumns<R, SR>({
         // avoid decimals as subpixel positioning can lead to cell borders not being displayed
         const unallocatedWidth = viewportWidth - allocatedWidth;
         const unallocatedColumnWidth = round(unallocatedWidth / unassignedColumnsCount);
-        width = clampColumnWidth(unallocatedColumnWidth, column, minColumnWidth);
+        width = clampColumnWidth(unallocatedColumnWidth, column, defaultMinWidth, defaultMaxWidth);
         allocatedWidth += width;
         unassignedColumnsCount--;
         columnMetrics.set(column, { width, left });
@@ -184,7 +185,15 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [columnWidths, columns, viewportWidth, defaultWidth, minColumnWidth, lastFrozenColumnIndex]);
+  }, [
+    columnWidths,
+    columns,
+    viewportWidth,
+    defaultWidth,
+    defaultMinWidth,
+    defaultMaxWidth,
+    lastFrozenColumnIndex
+  ]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
@@ -264,16 +273,14 @@ function getSpecifiedWidth<R, SR>(
     return columnWidths.get(key);
   }
 
-  /**
-   * The best defined width. If the column's width is not defined, fallback to the default width.
-   */
-  const definedWidth = width ?? defaultWidth;
+  // If the column's width is not defined, fallback to the default width
+  width = width ?? defaultWidth;
 
-  if (typeof definedWidth === 'number') {
-    return definedWidth;
+  if (typeof width === 'number') {
+    return width;
   }
-  if (typeof definedWidth === 'string' && /^\d+%$/.test(definedWidth)) {
-    return floor((viewportWidth * parseInt(definedWidth, 10)) / 100);
+  if (typeof width === 'string' && /^\d+%$/.test(width)) {
+    return floor((viewportWidth * parseInt(width, 10)) / 100);
   }
   return undefined;
 }
@@ -281,9 +288,11 @@ function getSpecifiedWidth<R, SR>(
 function clampColumnWidth<R, SR>(
   width: number,
   { minWidth, maxWidth }: Column<R, SR>,
-  minColumnWidth: number
+  defaultMinWidth: number,
+  defaultMaxWidth: Maybe<number>
 ): number {
-  width = max(width, minWidth ?? minColumnWidth);
+  width = max(width, minWidth ?? defaultMinWidth);
+  maxWidth = maxWidth ?? defaultMaxWidth;
 
   if (typeof maxWidth === 'number') {
     return min(width, maxWidth);
