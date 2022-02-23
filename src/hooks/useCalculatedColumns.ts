@@ -34,6 +34,7 @@ export function useCalculatedColumns<R, SR>({
   enableVirtualization
 }: CalculatedColumnsArgs<R, SR>) {
   const minColumnWidth = defaultColumnOptions?.minWidth ?? 80;
+  const defaultWidth = defaultColumnOptions?.width;
   const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
@@ -138,7 +139,7 @@ export function useCalculatedColumns<R, SR>({
     let unassignedColumnsCount = 0;
 
     for (const column of columns) {
-      let width = getSpecifiedWidth(column, columnWidths, viewportWidth);
+      let width = getSpecifiedWidth(column, columnWidths, viewportWidth, defaultWidth);
 
       if (width === undefined) {
         unassignedColumnsCount++;
@@ -183,7 +184,7 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [columnWidths, columns, viewportWidth, minColumnWidth, lastFrozenColumnIndex]);
+  }, [columnWidths, columns, viewportWidth, defaultWidth, minColumnWidth, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
@@ -255,17 +256,24 @@ export function useCalculatedColumns<R, SR>({
 function getSpecifiedWidth<R, SR>(
   { key, width }: Column<R, SR>,
   columnWidths: ReadonlyMap<string, number>,
-  viewportWidth: number
+  viewportWidth: number,
+  defaultWidth: Maybe<string | number>
 ): number | undefined {
   if (columnWidths.has(key)) {
     // Use the resized width if available
     return columnWidths.get(key);
   }
-  if (typeof width === 'number') {
-    return width;
+
+  /**
+   * The best defined width. If the column's width is not defined, fallback to the default width.
+   */
+  const definedWidth = width ?? defaultWidth;
+
+  if (typeof definedWidth === 'number') {
+    return definedWidth;
   }
-  if (typeof width === 'string' && /^\d+%$/.test(width)) {
-    return floor((viewportWidth * parseInt(width, 10)) / 100);
+  if (typeof definedWidth === 'string' && /^\d+%$/.test(definedWidth)) {
+    return floor((viewportWidth * parseInt(definedWidth, 10)) / 100);
   }
   return undefined;
 }
