@@ -4,11 +4,13 @@ import { useLayoutEffect } from './useLayoutEffect';
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
-  height: number
+  height: number,
+  areDimensionsInitialized: boolean
 ] {
   const gridRef = useRef<HTMLDivElement>(null);
   const [gridWidth, setGridWidth] = useState(1);
   const [gridHeight, setGridHeight] = useState(1);
+  const [isInitialized, setInitialized] = useState(false);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -26,6 +28,7 @@ export function useGridDimensions(): [
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
       setGridWidth(clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1));
       setGridHeight(clientHeight);
+      setInitialized(true);
     });
 
     resizeObserver.observe(gridRef.current!);
@@ -35,5 +38,5 @@ export function useGridDimensions(): [
     };
   }, []);
 
-  return [gridRef, gridWidth, gridHeight];
+  return [gridRef, gridWidth, gridHeight, isInitialized];
 }

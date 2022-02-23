@@ -260,6 +260,9 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [autoResizeColumns, setAutoResizeColumns] = useState<
+    readonly CalculatedColumn<R, SR>[] | null
+  >(null);
 
   /**
    * refs
@@ -268,11 +271,12 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
+  const areAutoResizeColumnsSet = useRef(false);
 
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, areDimensionsInitialized] = useGridDimensions();
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
@@ -344,7 +348,7 @@ function DataGrid<R, SR, K extends Key>(
     enableVirtualization
   });
 
-  const { viewportColumns, initialAutoResizeColumns } = useViewportColumns({
+  const viewportColumns = useViewportColumns({
     columns,
     colSpanColumns,
     colOverscanStartIdx,
@@ -356,10 +360,6 @@ function DataGrid<R, SR, K extends Key>(
     summaryRows,
     isGroupRow
   });
-
-  const [autoResizeColumns, setAutoResizeColumns] = useState<
-    readonly CalculatedColumn<R, SR>[] | null
-  >(initialAutoResizeColumns);
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
@@ -414,6 +414,15 @@ function DataGrid<R, SR, K extends Key>(
       rowRef.current!.focus({ preventScroll: true });
     }
   });
+
+  useLayoutEffect(() => {
+    if (areAutoResizeColumnsSet.current || !areDimensionsInitialized) return;
+    areAutoResizeColumnsSet.current = true;
+    const initialAutoResizeColumns = viewportColumns.filter((column) => column.width === 'auto');
+    if (initialAutoResizeColumns.length > 0) {
+      setAutoResizeColumns(initialAutoResizeColumns);
+    }
+  }, [areDimensionsInitialized, viewportColumns]);
 
   useLayoutEffect(() => {
     if (autoResizeColumns === null) return;

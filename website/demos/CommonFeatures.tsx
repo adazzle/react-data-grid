@@ -252,7 +252,7 @@ function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 1000; i++) {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
@@ -359,7 +359,6 @@ export default function CommonFeatures({ direction }: Props) {
       summaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
-      enableVirtualization={false}
     />
   );
 
