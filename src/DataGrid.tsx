@@ -415,6 +415,7 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
+  // useEffect is fired too late and causes width to jump from initial value to max value
   useLayoutEffect(() => {
     if (areAutoResizeColumnsSet.current || !areDimensionsInitialized) return;
     areAutoResizeColumnsSet.current = true;

@@ -264,11 +264,8 @@ function getSpecifiedWidth<R, SR>(
   if (typeof width === 'number') {
     return width;
   }
-  if (typeof width === 'string') {
-    if (width === 'auto') return undefined;
-    if (/^\d+%$/.test(width)) {
-      return floor((viewportWidth * parseInt(width, 10)) / 100);
-    }
+  if (typeof width === 'string' && /^\d+%$/.test(width)) {
+    return floor((viewportWidth * parseInt(width, 10)) / 100);
   }
   return undefined;
 }
