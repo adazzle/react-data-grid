@@ -98,19 +98,19 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'client',
       name: 'Client',
-      width: 'auto',
+      width: 'max-content',
       editor: TextEditor
     },
     {
       key: 'area',
       name: 'Area',
-      width: 'auto',
+      width: 'max-content',
       editor: TextEditor
     },
     {
       key: 'country',
       name: 'Country',
-      width: 'auto',
+      width: 'max-content',
       editor: (p) => (
         <select
           autoFocus
@@ -130,7 +130,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'contact',
       name: 'Contact',
-      width: 'auto',
+      width: 300,
       editor: TextEditor
     },
     {

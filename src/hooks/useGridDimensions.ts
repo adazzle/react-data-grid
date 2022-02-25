@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
-export function useGridDimensions(): [
+export function useGridDimensions(
+  setFlexColumnWidths: (value: Map<string, number>) => void
+): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
   height: number,
@@ -11,6 +13,7 @@ export function useGridDimensions(): [
   const [gridWidth, setGridWidth] = useState(1);
   const [gridHeight, setGridHeight] = useState(1);
   const [isInitialized, setInitialized] = useState(false);
+  const prevGridWidth = useRef(gridWidth);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -26,8 +29,13 @@ export function useGridDimensions(): [
       // TODO: remove once fixed upstream
       // we reduce width by 1px here to avoid layout issues in Chrome
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-      setGridWidth(clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1));
+      const newWidth = clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1);
+      setGridWidth(newWidth);
       setGridHeight(clientHeight);
+      if (prevGridWidth.current !== newWidth) {
+        prevGridWidth.current = newWidth;
+        setFlexColumnWidths(new Map());
+      }
       setInitialized(true);
     });
 
@@ -36,7 +44,7 @@ export function useGridDimensions(): [
     return () => {
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [setFlexColumnWidths]);
 
   return [gridRef, gridWidth, gridHeight, isInitialized];
 }

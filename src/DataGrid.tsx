@@ -254,15 +254,16 @@ function DataGrid<R, SR, K extends Key>(
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
+  const [flexColumnWidths, setFlexColumnWidths] = useState<ReadonlyMap<string, number>>(
+    () => new Map()
+  );
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
     initialPosition
   );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-  const [autoResizeColumns, setAutoResizeColumns] = useState<
-    readonly CalculatedColumn<R, SR>[] | null
-  >(null);
+  const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
 
   /**
    * refs
@@ -271,12 +272,12 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
-  const areAutoResizeColumnsSet = useRef(false);
 
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight, areDimensionsInitialized] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, areDimensionsInitialized] =
+    useGridDimensions(setFlexColumnWidths);
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
@@ -313,6 +314,7 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanEndIdx,
     layoutCssVars,
     columnMetrics,
+    flexWidthColumns,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -323,7 +325,8 @@ function DataGrid<R, SR, K extends Key>(
     viewportWidth: gridWidth,
     defaultColumnOptions,
     rawGroupBy: rowGrouper ? rawGroupBy : undefined,
-    enableVirtualization
+    enableVirtualization,
+    flexColumnWidths
   });
 
   const {
@@ -415,30 +418,31 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
-  // useEffect is fired too late and causes width to jump from initial value to max value
   useLayoutEffect(() => {
-    if (areAutoResizeColumnsSet.current || !areDimensionsInitialized) return;
-    areAutoResizeColumnsSet.current = true;
-    const initialAutoResizeColumns = viewportColumns.filter((column) => column.width === 'auto');
-    if (initialAutoResizeColumns.length > 0) {
-      setAutoResizeColumns(initialAutoResizeColumns);
+    if (flexWidthColumns.length === 0 || !areDimensionsInitialized) return;
+    const newFlexColumnWidths = new Map(flexColumnWidths);
+    for (const column of flexWidthColumns) {
+      const columnElement = gridRef.current!.querySelector(`[aria-colindex="${column.idx + 1}"]`);
+      const width = columnElement!.clientWidth;
+      newFlexColumnWidths.set(column.key, width);
     }
-  }, [areDimensionsInitialized, viewportColumns]);
+    setFlexColumnWidths(newFlexColumnWidths);
+  }, [areDimensionsInitialized, flexColumnWidths, flexWidthColumns, gridRef]);
 
   useLayoutEffect(() => {
-    if (autoResizeColumns === null) return;
-    const newColumnWidths = new Map(columnWidths);
-    for (const column of autoResizeColumns) {
-      const columnElement = gridRef.current!.querySelector(`[aria-colindex="${column.idx + 1}"]`);
-      const width = columnElement!.clientWidth + 2;
-      newColumnWidths.set(column.key, width);
-    }
-    setColumnWidths(newColumnWidths);
-    if (columns.length === 1) {
-      onColumnResize?.(columns[0].idx, newColumnWidths.get(columns[0].key)!);
-    }
-    setAutoResizeColumns(null);
-  }, [autoResizeColumns, columnWidths, columns, gridRef, onColumnResize]);
+    if (autoResizeColumn === null) return;
+    const columnElement = gridRef.current!.querySelector(
+      `[aria-colindex="${autoResizeColumn.idx + 1}"]`
+    )!;
+    const width = columnElement.clientWidth + 2;
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(autoResizeColumn.key, width);
+      return newColumnWidths;
+    });
+    setAutoResizeColumn(null);
+    onColumnResize?.(autoResizeColumn.idx, width);
+  }, [autoResizeColumn, gridRef, onColumnResize]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -460,9 +464,9 @@ function DataGrid<R, SR, K extends Key>(
    * callbacks
    */
   const handleColumnResize = useCallback(
-    (column: CalculatedColumn<R, SR>, width: number | 'auto') => {
-      if (width === 'auto') {
-        setAutoResizeColumns([column]);
+    (column: CalculatedColumn<R, SR>, width: number | 'max-content') => {
+      if (width === 'max-content') {
+        setAutoResizeColumn(column);
         return;
       }
       setColumnWidths((columnWidths) => {
@@ -470,6 +474,7 @@ function DataGrid<R, SR, K extends Key>(
         newColumnWidths.set(column.key, width);
         return newColumnWidths;
       });
+      setFlexColumnWidths(new Map())
 
       onColumnResize?.(column.idx, width);
     },
@@ -912,12 +917,10 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getLayoutCssVars() {
-    if (autoResizeColumns === null) return layoutCssVars;
+    if (autoResizeColumn === null) return layoutCssVars;
     const { gridTemplateColumns } = layoutCssVars;
     const newSizes = gridTemplateColumns.split(' ');
-    for (const column of autoResizeColumns) {
-      newSizes[column.idx] = 'max-content';
-    }
+    newSizes[autoResizeColumn.idx] = 'max-content';
     return {
       ...layoutCssVars,
       gridTemplateColumns: newSizes.join(' ')
@@ -1135,7 +1138,7 @@ function DataGrid<R, SR, K extends Key>(
         rootClassname,
         {
           [viewportDraggingClassname]: isDragging,
-          [cellAutoResizeClassname]: autoResizeColumns !== null
+          [cellAutoResizeClassname]: autoResizeColumn !== null || flexWidthColumns.length > 0
         },
         className
       )}
