@@ -125,7 +125,6 @@ export default function ColumnsReordering({ direction }: Props) {
         sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
         direction={direction}
-        defaultColumnOptions={{ width: '1fr' }}
       />
     </DndProvider>
   );

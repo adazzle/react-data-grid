@@ -23,7 +23,6 @@ export default function MillionCells({ direction }: Props) {
       columns.push({
         key,
         name: key,
-        width: 80,
         frozen: i < 5,
         resizable: true,
         formatter: CellFormatter

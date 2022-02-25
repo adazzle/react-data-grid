@@ -104,13 +104,13 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'area',
       name: 'Area',
-      width: 'max-content',
+      width: '120',
       editor: TextEditor
     },
     {
       key: 'country',
       name: 'Country',
-      width: 'max-content',
+      width: '180',
       editor: (p) => (
         <select
           autoFocus
@@ -130,7 +130,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'contact',
       name: 'Contact',
-      width: 300,
+      width: 160,
       editor: TextEditor
     },
     {

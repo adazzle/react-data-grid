@@ -17,7 +17,8 @@ import {
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
-  RowSelectionChangeProvider
+  RowSelectionChangeProvider,
+  DEFAULT_FLEX_COLUMN_WIDTH
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import Row from './Row';
@@ -421,13 +422,24 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (flexWidthColumns.length === 0 || !areDimensionsInitialized) return;
     const newFlexColumnWidths = new Map(flexColumnWidths);
+    const newColumnWidths = new Map(columnWidths);
     for (const column of flexWidthColumns) {
       const columnElement = gridRef.current!.querySelector(`[aria-colindex="${column.idx + 1}"]`);
-      const width = columnElement!.clientWidth;
-      newFlexColumnWidths.set(column.key, width);
+      if (columnElement) {
+        const width = columnElement.clientWidth;
+        if (column.width === 'max-content') {
+          newColumnWidths.set(column.key, width + 2);
+        } else {
+          newFlexColumnWidths.set(column.key, columnElement.clientWidth);
+        }
+      } else {
+        // flex column was not rendered so we cannot find the calculated width
+        newColumnWidths.set(column.key, DEFAULT_FLEX_COLUMN_WIDTH);
+      }
     }
     setFlexColumnWidths(newFlexColumnWidths);
-  }, [areDimensionsInitialized, flexColumnWidths, flexWidthColumns, gridRef]);
+    setColumnWidths(newColumnWidths);
+  }, [areDimensionsInitialized, columnWidths, flexColumnWidths, flexWidthColumns, gridRef]);
 
   useLayoutEffect(() => {
     if (autoResizeColumn === null) return;
@@ -441,6 +453,7 @@ function DataGrid<R, SR, K extends Key>(
       return newColumnWidths;
     });
     setAutoResizeColumn(null);
+    setFlexColumnWidths(new Map());
     onColumnResize?.(autoResizeColumn.idx, width);
   }, [autoResizeColumn, gridRef, onColumnResize]);
 
@@ -474,7 +487,7 @@ function DataGrid<R, SR, K extends Key>(
         newColumnWidths.set(column.key, width);
         return newColumnWidths;
       });
-      setFlexColumnWidths(new Map())
+      setFlexColumnWidths(new Map());
 
       onColumnResize?.(column.idx, width);
     },
@@ -1124,6 +1137,8 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   const isGroupRowFocused = selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2;
+
+  console.log(getLayoutCssVars());
 
   return (
     <div
