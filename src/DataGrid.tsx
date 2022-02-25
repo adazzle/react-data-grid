@@ -1138,8 +1138,6 @@ function DataGrid<R, SR, K extends Key>(
 
   const isGroupRowFocused = selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2;
 
-  console.log(getLayoutCssVars());
-
   return (
     <div
       role={hasGroups ? 'treegrid' : 'grid'}
