@@ -74,6 +74,7 @@ function Row<R, SR>(
           column={column}
           colSpan={colSpan}
           row={row}
+          rowIdx={rowIdx}
           isCopied={copiedCellIdx === idx}
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}

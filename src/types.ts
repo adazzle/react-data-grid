@@ -71,6 +71,7 @@ export interface Position {
 export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  rowIdx: number;
   isCellSelected: boolean;
   onRowChange: (row: TRow) => void;
 }
@@ -111,7 +112,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
       RowRendererProps<TRow, TSummaryRow>,
-      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
+      'rowIdx' | 'onRowClick' | 'onRowDoubleClick' | 'selectCell'
     >,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   column: CalculatedColumn<TRow, TSummaryRow>;

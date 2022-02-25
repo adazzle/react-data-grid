@@ -28,6 +28,7 @@ function Cell<R, SR>({
   isCopied,
   isDraggedOver,
   row,
+  rowIdx,
   dragHandle,
   onRowClick,
   onRowDoubleClick,
@@ -87,6 +88,7 @@ function Cell<R, SR>({
           <column.formatter
             column={column}
             row={row}
+            rowIdx={rowIdx}
             isCellSelected={isCellSelected}
             onRowChange={onRowChange}
           />

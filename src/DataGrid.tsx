@@ -965,6 +965,7 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
+        rowIdx={rowIdx}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
         scrollToCell={() => {
