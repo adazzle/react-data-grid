@@ -18,7 +18,7 @@ import {
   useViewportRows,
   useLatestFunc,
   RowSelectionChangeProvider,
-  DEFAULT_FLEX_COLUMN_WIDTH
+  DEFAULT_COLUMN_MIN_WIDTH
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import Row from './Row';
@@ -311,11 +311,11 @@ function DataGrid<R, SR, K extends Key>(
   const {
     columns,
     colSpanColumns,
+    flexWidthColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
     columnMetrics,
-    flexWidthColumns,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -426,15 +426,12 @@ function DataGrid<R, SR, K extends Key>(
     for (const column of flexWidthColumns) {
       const columnElement = gridRef.current!.querySelector(`[aria-colindex="${column.idx + 1}"]`);
       if (columnElement) {
-        const width = columnElement.clientWidth;
-        if (column.width === 'max-content') {
-          newColumnWidths.set(column.key, width + 2);
-        } else {
-          newFlexColumnWidths.set(column.key, columnElement.clientWidth);
-        }
+        // Set the actual width of the column after it is rendered
+        newFlexColumnWidths.set(column.key, columnElement.clientWidth);
       } else {
-        // flex column was not rendered so we cannot find the calculated width
-        newColumnWidths.set(column.key, DEFAULT_FLEX_COLUMN_WIDTH);
+        // Due to virtualization, we can only calculate the width of the visible flex columns and rest of the columns are assigned a fixed value.
+        // Set `enableVirtualization: false` if all the columns need flex width
+        newColumnWidths.set(column.key, DEFAULT_COLUMN_MIN_WIDTH);
       }
     }
     setFlexColumnWidths(newFlexColumnWidths);

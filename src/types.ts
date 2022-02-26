@@ -58,6 +58,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly resizable: boolean;
   readonly sortable: boolean;
   readonly frozen: boolean;
+  readonly width: number | string;
   readonly isLastFrozenColumn: boolean;
   readonly rowGroup: boolean;
   readonly formatter: ComponentType<FormatterProps<TRow, TSummaryRow>>;

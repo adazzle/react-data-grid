@@ -41,7 +41,8 @@ function createColumns(): Column<Row>[] {
       key: 'task',
       name: 'Title',
       resizable: true,
-      sortable: true
+      sortable: true,
+      width: 'max-content'
     },
     {
       key: 'priority',
@@ -125,6 +126,7 @@ export default function ColumnsReordering({ direction }: Props) {
         sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
         direction={direction}
+        defaultColumnOptions={{ width: '1fr' }}
       />
     </DndProvider>
   );

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
 export function useGridDimensions(
-  setFlexColumnWidths: (value: Map<string, number>) => void
+  setFlexColumnWidths: React.Dispatch<React.SetStateAction<ReadonlyMap<string, number>>>
 ): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
@@ -34,7 +34,8 @@ export function useGridDimensions(
       setGridHeight(clientHeight);
       if (prevGridWidth.current !== newWidth) {
         prevGridWidth.current = newWidth;
-        setFlexColumnWidths(new Map());
+        // Clear existing widths. This will trigger recalculation of visible flex columns again
+        setFlexColumnWidths((widths) => (widths.size > 0 ? new Map() : widths));
       }
       setInitialized(true);
     });
