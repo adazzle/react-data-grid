@@ -33,7 +33,6 @@ interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose'>,
     SharedCellRendererProps<R, SR> {
   closeEditor: () => void;
-  scrollToCell: () => void;
 }
 
 export default function EditCell<R, SR>({
@@ -41,8 +40,7 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   onRowChange,
-  closeEditor,
-  scrollToCell
+  closeEditor
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
@@ -81,7 +79,6 @@ export default function EditCell<R, SR>({
     } else if (event.key === 'Enter') {
       event.stopPropagation();
       onClose(true);
-      scrollToCell();
     } else {
       const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
       if (!onNavigation(event)) {

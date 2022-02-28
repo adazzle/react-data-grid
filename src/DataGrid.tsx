@@ -41,7 +41,7 @@ import {
   getColSpan,
   sign,
   abs,
-  getSelectedCellColSpan
+  scrollIntoView
 } from './utils';
 
 import type {
@@ -309,7 +309,6 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
-    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -405,10 +404,10 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     prevSelectedPosition.current = selectedPosition;
-    scrollToCell(selectedPosition);
 
     if (selectedPosition.idx === -1) {
       rowRef.current!.focus({ preventScroll: true });
+      scrollIntoView(rowRef.current);
     }
   });
 
@@ -430,7 +429,7 @@ function DataGrid<R, SR, K extends Key>(
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn(idx: number) {
-      scrollToCell({ idx });
+      // scrollToCell({ idx });
     },
     scrollToRow(rowIdx: number) {
       const { current } = gridRef;
@@ -730,60 +729,60 @@ function DataGrid<R, SR, K extends Key>(
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
       // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
-      scrollToCell(position);
+      scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
   }
 
-  function scrollToCell({ idx, rowIdx }: Partial<Position>): void {
-    const { current } = gridRef;
-    if (!current) return;
+  // function scrollToCell({ idx, rowIdx }: Partial<Position>): void {
+  //   const { current } = gridRef;
+  //   if (!current) return;
 
-    if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
-      rowIdx ??= selectedPosition.rowIdx;
-      if (!isCellWithinSelectionBounds({ rowIdx, idx })) return;
-      const { clientWidth } = current;
-      const column = columns[idx];
-      const { left, width } = columnMetrics.get(column)!;
-      let right = left + width;
+  //   if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
+  //     rowIdx ??= selectedPosition.rowIdx;
+  //     if (!isCellWithinSelectionBounds({ rowIdx, idx })) return;
+  //     const { clientWidth } = current;
+  //     const column = columns[idx];
+  //     const { left, width } = columnMetrics.get(column)!;
+  //     let right = left + width;
 
-      const colSpan = getSelectedCellColSpan({
-        rows,
-        summaryRows,
-        rowIdx,
-        lastFrozenColumnIndex,
-        column,
-        isGroupRow
-      });
+  //     const colSpan = getSelectedCellColSpan({
+  //       rows,
+  //       summaryRows,
+  //       rowIdx,
+  //       lastFrozenColumnIndex,
+  //       column,
+  //       isGroupRow
+  //     });
 
-      if (colSpan !== undefined) {
-        const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
-        right = left + width;
-      }
+  //     if (colSpan !== undefined) {
+  //       const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
+  //       right = left + width;
+  //     }
 
-      const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
-      const isCellAtRightBoundary = right > clientWidth + scrollLeft;
-      const sign = isRtl ? -1 : 1;
-      if (isCellAtLeftBoundary) {
-        current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
-      } else if (isCellAtRightBoundary) {
-        current.scrollLeft = (right - clientWidth) * sign;
-      }
-    }
+  //     const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
+  //     const isCellAtRightBoundary = right > clientWidth + scrollLeft;
+  //     const sign = isRtl ? -1 : 1;
+  //     if (isCellAtLeftBoundary) {
+  //       current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
+  //     } else if (isCellAtRightBoundary) {
+  //       current.scrollLeft = (right - clientWidth) * sign;
+  //     }
+  //   }
 
-    if (typeof rowIdx === 'number' && isRowIdxWithinViewportBounds(rowIdx)) {
-      const rowTop = getRowTop(rowIdx);
-      const rowHeight = getRowHeight(rowIdx);
-      if (rowTop < scrollTop) {
-        // at top boundary, scroll to the row's top
-        current.scrollTop = rowTop;
-      } else if (rowTop + rowHeight > scrollTop + clientHeight) {
-        // at bottom boundary, scroll the next row's top to the bottom of the viewport
-        current.scrollTop = rowTop + rowHeight - clientHeight;
-      }
-    }
-  }
+  //   if (typeof rowIdx === 'number' && isRowIdxWithinViewportBounds(rowIdx)) {
+  //     const rowTop = getRowTop(rowIdx);
+  //     const rowHeight = getRowHeight(rowIdx);
+  //     if (rowTop < scrollTop) {
+  //       // at top boundary, scroll to the row's top
+  //       current.scrollTop = rowTop;
+  //     } else if (rowTop + rowHeight > scrollTop + clientHeight) {
+  //       // at bottom boundary, scroll the next row's top to the bottom of the viewport
+  //       current.scrollTop = rowTop + rowHeight - clientHeight;
+  //     }
+  //   }
+  // }
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
@@ -967,9 +966,6 @@ function DataGrid<R, SR, K extends Key>(
         row={row}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
-        scrollToCell={() => {
-          scrollToCell(selectedPosition);
-        }}
       />
     );
   }
@@ -1127,6 +1123,15 @@ function DataGrid<R, SR, K extends Key>(
       style={
         {
           ...style,
+          // handle sticky row/columns
+          scrollPaddingInlineStart:
+            selectedPosition.idx > lastFrozenColumnIndex
+              ? `${totalFrozenColumnWidth}px`
+              : undefined,
+          scrollPaddingBlock:
+            selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
+              ? `${headerRowHeight}px ${summaryRowsCount * summaryRowHeight}px`
+              : undefined,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,

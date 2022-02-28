@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { scrollIntoView } from '../utils';
 import { useLayoutEffect } from './useLayoutEffect';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
@@ -17,10 +18,12 @@ export function useRovingCellRef(isSelected: boolean) {
     if (isChildFocused.current) {
       // When the child is focused, we need to rerender
       // the cell again so tabIndex is updated to -1
+      scrollIntoView(ref.current);
       forceRender({});
       return;
     }
     ref.current?.focus({ preventScroll: true });
+    scrollIntoView(ref.current);
   }, [isSelected]);
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
