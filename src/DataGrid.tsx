@@ -984,7 +984,7 @@ function DataGrid<R, SR, K extends Key>(
       !viewportColumns.includes(selectedColumn)
     ) {
       // Add the selected column to viewport columns if the cell is not within the viewport
-      return selectedPosition.idx > viewportColumns[viewportColumns.length - 1].idx
+      return selectedPosition.idx > colOverscanEndIdx
         ? [...viewportColumns, selectedColumn]
         : [
             ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
