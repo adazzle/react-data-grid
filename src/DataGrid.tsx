@@ -41,6 +41,7 @@ import {
   getColSpan,
   sign,
   abs,
+  getSelectedCellColSpan,
   scrollIntoView
 } from './utils';
 
@@ -309,6 +310,7 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
+    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -428,9 +430,7 @@ function DataGrid<R, SR, K extends Key>(
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
-    scrollToColumn(idx: number) {
-      // scrollToCell({ idx });
-    },
+    scrollToColumn,
     scrollToRow(rowIdx: number) {
       const { current } = gridRef;
       if (!current) return;
@@ -735,54 +735,42 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  // function scrollToCell({ idx, rowIdx }: Partial<Position>): void {
-  //   const { current } = gridRef;
-  //   if (!current) return;
+  function scrollToColumn(idx: number): void {
+    const { current } = gridRef;
+    if (!current) return;
 
-  //   if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
-  //     rowIdx ??= selectedPosition.rowIdx;
-  //     if (!isCellWithinSelectionBounds({ rowIdx, idx })) return;
-  //     const { clientWidth } = current;
-  //     const column = columns[idx];
-  //     const { left, width } = columnMetrics.get(column)!;
-  //     let right = left + width;
+    if (idx > lastFrozenColumnIndex) {
+      const { rowIdx } = selectedPosition;
+      if (!isCellWithinSelectionBounds({ rowIdx, idx })) return;
+      const { clientWidth } = current;
+      const column = columns[idx];
+      const { left, width } = columnMetrics.get(column)!;
+      let right = left + width;
 
-  //     const colSpan = getSelectedCellColSpan({
-  //       rows,
-  //       summaryRows,
-  //       rowIdx,
-  //       lastFrozenColumnIndex,
-  //       column,
-  //       isGroupRow
-  //     });
+      const colSpan = getSelectedCellColSpan({
+        rows,
+        summaryRows,
+        rowIdx,
+        lastFrozenColumnIndex,
+        column,
+        isGroupRow
+      });
 
-  //     if (colSpan !== undefined) {
-  //       const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
-  //       right = left + width;
-  //     }
+      if (colSpan !== undefined) {
+        const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
+        right = left + width;
+      }
 
-  //     const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
-  //     const isCellAtRightBoundary = right > clientWidth + scrollLeft;
-  //     const sign = isRtl ? -1 : 1;
-  //     if (isCellAtLeftBoundary) {
-  //       current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
-  //     } else if (isCellAtRightBoundary) {
-  //       current.scrollLeft = (right - clientWidth) * sign;
-  //     }
-  //   }
-
-  //   if (typeof rowIdx === 'number' && isRowIdxWithinViewportBounds(rowIdx)) {
-  //     const rowTop = getRowTop(rowIdx);
-  //     const rowHeight = getRowHeight(rowIdx);
-  //     if (rowTop < scrollTop) {
-  //       // at top boundary, scroll to the row's top
-  //       current.scrollTop = rowTop;
-  //     } else if (rowTop + rowHeight > scrollTop + clientHeight) {
-  //       // at bottom boundary, scroll the next row's top to the bottom of the viewport
-  //       current.scrollTop = rowTop + rowHeight - clientHeight;
-  //     }
-  //   }
-  // }
+      const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
+      const isCellAtRightBoundary = right > clientWidth + scrollLeft;
+      const sign = isRtl ? -1 : 1;
+      if (isCellAtLeftBoundary) {
+        current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
+      } else if (isCellAtRightBoundary) {
+        current.scrollLeft = (right - clientWidth) * sign;
+      }
+    }
+  }
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
