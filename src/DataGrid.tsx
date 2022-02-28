@@ -977,6 +977,7 @@ function DataGrid<R, SR, K extends Key>(
   function getRowViewportColumns(rowIdx: number) {
     const selectedColumn = columns[selectedPosition.idx];
     if (
+      // idx can be -1 if grouping is enabled
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       selectedColumn !== undefined &&
       selectedPosition.rowIdx === rowIdx &&
