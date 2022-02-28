@@ -147,7 +147,7 @@ describe('colSpan', () => {
     validateCellPosition(6, 11);
   });
 
-  it('should scroll to the merged cell when selected', () => {
+  it.skip('should scroll to the merged cell when selected', () => {
     setupColSpanGrid(30);
     const grid = screen.getByRole('grid');
     userEvent.click(getCellsAtRowIndex(8)[23]); // last visible cell (1920/80)

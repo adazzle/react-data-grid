@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
     disconnect() {}
   };
 
-  window.HTMLElement.prototype.scrollIntoView = () => {};
+  window.HTMLElement.prototype.scrollIntoView ??= () => {};
 
   // patch clientWidth/clientHeight to pretend we're rendering DataGrid at 1080p
   Object.defineProperties(HTMLDivElement.prototype, {
