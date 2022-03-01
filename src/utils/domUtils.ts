@@ -4,6 +4,6 @@ export function stopPropagation(event: React.SyntheticEvent) {
   event.stopPropagation();
 }
 
-export function scrollIntoView(element: Maybe<HTMLDivElement>, behavior: ScrollBehavior = 'auto') {
+export function scrollIntoView(element: Maybe<Element>, behavior: ScrollBehavior = 'auto') {
   element?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior });
 }
