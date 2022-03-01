@@ -1,4 +1,3 @@
-import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
@@ -147,25 +146,30 @@ describe('colSpan', () => {
     validateCellPosition(6, 11);
   });
 
-  it.skip('should scroll to the merged cell when selected', () => {
+  it('should scroll to the merged cell when selected', () => {
     setupColSpanGrid(30);
-    const grid = screen.getByRole('grid');
     userEvent.click(getCellsAtRowIndex(8)[23]); // last visible cell (1920/80)
+    const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     navigate(3);
-    expect(grid.scrollLeft).toBe(240);
+    expect(spy).toHaveBeenCalled();
+    spy.mockReset();
     navigate(1);
-    expect(grid.scrollLeft).toBe(480); // should bring the merged cell into view
+    expect(spy).toHaveBeenCalled(); // should bring the merged cell into view
+    spy.mockReset();
     validateCellPosition(27, 9);
     navigate(7);
-    expect(grid.scrollLeft).toBe(0);
+    expect(spy).toHaveBeenCalled();
+    spy.mockReset();
     validateCellPosition(6, 10); // should navigate to the next row
     navigate(7, true);
-    expect(grid.scrollLeft).toBe(480);
+    expect(spy).toHaveBeenCalled();
+    spy.mockReset();
     validateCellPosition(27, 9); // should navigate to the previous row
     navigate(27);
-    expect(grid.scrollLeft).toBe(240);
+    expect(spy).toHaveBeenCalled();
+    spy.mockReset();
     navigate(1);
-    expect(grid.scrollLeft).toBe(320); // should only bring 1 cell into view
+    expect(spy).toHaveBeenCalled(); // should only bring 1 cell into view
 
     function navigate(count: number, shift = false) {
       for (let i = 0; i < count; i++) {
