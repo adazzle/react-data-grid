@@ -26,6 +26,7 @@ import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import SortIcon from './SortIcon';
+import ScrollToCell from './ScrollToCell';
 import { CheckboxFormatter } from './formatters';
 import {
   DataGridDefaultComponentsProvider,
@@ -41,7 +42,6 @@ import {
   getColSpan,
   sign,
   abs,
-  getSelectedCellColSpan,
   scrollIntoView
 } from './utils';
 
@@ -262,6 +262,7 @@ function DataGrid<R, SR, K extends Key>(
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
+  const [scrollToCell, setScrollToCell] = useState<Partial<Position> | null>(null);
 
   /**
    * refs
@@ -310,7 +311,6 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
-    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -431,14 +431,7 @@ function DataGrid<R, SR, K extends Key>(
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn,
-    scrollToRow(rowIdx: number) {
-      const { current } = gridRef;
-      if (!current) return;
-      current.scrollTo({
-        top: getRowTop(rowIdx),
-        behavior: 'smooth'
-      });
-    },
+    scrollToRow,
     selectCell
   }));
 
@@ -736,39 +729,20 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function scrollToColumn(idx: number): void {
-    const { current } = gridRef;
-    if (!current) return;
+    const { rowIdx } = selectedPosition;
+    if (isCellWithinSelectionBounds({ rowIdx, idx })) {
+      setScrollToCell({ rowIdx, idx });
+    } else {
+      setScrollToCell({ idx });
+    }
+  }
 
-    if (idx > lastFrozenColumnIndex) {
-      const { rowIdx } = selectedPosition;
-      if (!isCellWithinSelectionBounds({ rowIdx, idx })) return;
-      const { clientWidth } = current;
-      const column = columns[idx];
-      const { left, width } = columnMetrics.get(column)!;
-      let right = left + width;
-
-      const colSpan = getSelectedCellColSpan({
-        rows,
-        summaryRows,
-        rowIdx,
-        lastFrozenColumnIndex,
-        column,
-        isGroupRow
-      });
-
-      if (colSpan !== undefined) {
-        const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
-        right = left + width;
-      }
-
-      const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
-      const isCellAtRightBoundary = right > clientWidth + scrollLeft;
-      const sign = isRtl ? -1 : 1;
-      if (isCellAtLeftBoundary) {
-        current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
-      } else if (isCellAtRightBoundary) {
-        current.scrollLeft = (right - clientWidth) * sign;
-      }
+  function scrollToRow(rowIdx: number) {
+    const { idx } = selectedPosition;
+    if (isCellWithinSelectionBounds({ rowIdx, idx })) {
+      setScrollToCell({ rowIdx, idx });
+    } else {
+      setScrollToCell({ rowIdx });
     }
   }
 
@@ -1127,11 +1101,15 @@ function DataGrid<R, SR, K extends Key>(
           ...style,
           // handle sticky row/columns
           scrollPaddingInlineStart:
-            selectedPosition.idx > lastFrozenColumnIndex
+            selectedPosition.idx > lastFrozenColumnIndex ||
+            (scrollToCell?.idx !== undefined && scrollToCell.idx > lastFrozenColumnIndex)
               ? `${totalFrozenColumnWidth}px`
               : undefined,
           scrollPaddingBlock:
-            selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
+            (selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length) ||
+            (scrollToCell?.rowIdx !== undefined &&
+              scrollToCell.rowIdx >= 0 &&
+              scrollToCell.rowIdx < rows.length)
               ? `${headerRowHeight}px ${summaryRowsCount * summaryRowHeight}px`
               : undefined,
           gridTemplateRows: templateRows,
@@ -1161,6 +1139,9 @@ function DataGrid<R, SR, K extends Key>(
           }}
           onKeyDown={handleKeyDown}
         />
+      )}
+      {scrollToCell !== null && (
+        <ScrollToCell scrollToCell={scrollToCell} setScrollToCell={setScrollToCell} />
       )}
       <DataGridDefaultComponentsProvider value={defaultGridComponents}>
         <HeaderRow
