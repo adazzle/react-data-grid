@@ -1125,7 +1125,7 @@ function DataGrid<R, SR, K extends Key>(
       style={
         {
           ...style,
-          // set scrollPadding to correctly position non sticky cells
+          // set scrollPadding to correctly position non-sticky cells after scrolling
           scrollPaddingInlineStart:
             selectedPosition.idx > lastFrozenColumnIndex
               ? `${totalFrozenColumnWidth}px`
