@@ -150,26 +150,25 @@ describe('colSpan', () => {
     setupColSpanGrid(30);
     userEvent.click(getCellsAtRowIndex(8)[23]); // last visible cell (1920/80)
     const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const testScrollIntoView = () => {
+      expect(spy).toHaveBeenCalled();
+      spy.mockReset();
+    };
     navigate(3);
-    expect(spy).toHaveBeenCalled();
-    spy.mockReset();
+    testScrollIntoView();
     navigate(1);
-    expect(spy).toHaveBeenCalled(); // should bring the merged cell into view
-    spy.mockReset();
+    testScrollIntoView(); // should bring the merged cell into view
     validateCellPosition(27, 9);
     navigate(7);
-    expect(spy).toHaveBeenCalled();
-    spy.mockReset();
+    testScrollIntoView();
     validateCellPosition(6, 10); // should navigate to the next row
     navigate(7, true);
-    expect(spy).toHaveBeenCalled();
-    spy.mockReset();
+    testScrollIntoView();
     validateCellPosition(27, 9); // should navigate to the previous row
     navigate(27);
-    expect(spy).toHaveBeenCalled();
-    spy.mockReset();
+    testScrollIntoView();
     navigate(1);
-    expect(spy).toHaveBeenCalled(); // should only bring 1 cell into view
+    testScrollIntoView(); // should only bring 1 cell into view
 
     function navigate(count: number, shift = false) {
       for (let i = 0; i < count; i++) {
