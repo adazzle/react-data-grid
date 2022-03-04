@@ -810,10 +810,10 @@ function DataGrid<R, SR, K extends Key>(
         return { idx, rowIdx: rowIdx - 1 };
       case 'ArrowDown':
         return { idx, rowIdx: rowIdx + 1 };
-      case 'ArrowLeft':
-        return isRtl ? { idx: idx + 1, rowIdx } : { idx: idx - 1, rowIdx };
-      case 'ArrowRight':
-        return isRtl ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
+      case leftKey:
+        return { idx: idx - 1, rowIdx };
+      case rightKey:
+        return { idx: idx + 1, rowIdx };
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
