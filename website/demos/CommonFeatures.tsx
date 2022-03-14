@@ -104,13 +104,13 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'area',
       name: 'Area',
-      width: '120',
+      width: 120,
       editor: TextEditor
     },
     {
       key: 'country',
       name: 'Country',
-      width: '180',
+      width: 180,
       editor: (p) => (
         <select
           autoFocus

@@ -67,7 +67,7 @@ export function useCalculatedColumns<R, SR>({
         isLastFrozenColumn: false,
         rowGroup,
         width: rawColumn.width ?? defaultWidth ?? DEFAULT_COLUMN_WIDTH,
-        minWidth: rawColumn.minWidth ?? defaultMinWidth,
+        minWidth: rawColumn.minWidth ?? defaultMinWidth ?? DEFAULT_COLUMN_MIN_WIDTH,
         maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
