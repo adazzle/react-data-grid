@@ -429,7 +429,7 @@ function DataGrid<R, SR, K extends Key>(
         // Set the actual width of the column after it is rendered
         newFlexColumnWidths.set(column.key, columnElement.clientWidth);
       } else {
-        // Due to virtualization, we can only calculate the width of the visible flex columns and rest of the columns are assigned a fixed value.
+        // We can only calculate the width of the visible flex columns and rest of the columns are assigned a fixed value.
         // Set `enableVirtualization: false` if all the columns need flex width
         newColumnWidths.set(column.key, DEFAULT_COLUMN_MIN_WIDTH);
       }

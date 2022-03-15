@@ -35,7 +35,7 @@ export function useGridDimensions(
       setGridHeight(clientHeight);
       if (prevGridWidth.current !== newWidth) {
         prevGridWidth.current = newWidth;
-        // Clear existing widths. This will trigger recalculation of visible flex columns again
+        // Clear existing flex widths. This will trigger recalculation of visible flex columns again
         setFlexColumnWidths((widths) => (widths.size > 0 ? new Map() : widths));
       }
       setInitialized(true);
