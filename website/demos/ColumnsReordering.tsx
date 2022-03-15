@@ -41,8 +41,7 @@ function createColumns(): Column<Row>[] {
       key: 'task',
       name: 'Title',
       resizable: true,
-      sortable: true,
-      width: 'max-content'
+      sortable: true
     },
     {
       key: 'priority',
