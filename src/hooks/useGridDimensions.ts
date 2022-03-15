@@ -7,12 +7,12 @@ export function useGridDimensions(
   ref: React.RefObject<HTMLDivElement>,
   width: number,
   height: number,
-  areDimensionsInitialized: boolean
+  isWidthInitialized: boolean
 ] {
   const gridRef = useRef<HTMLDivElement>(null);
   const [gridWidth, setGridWidth] = useState(1);
   const [gridHeight, setGridHeight] = useState(1);
-  const [isInitialized, setInitialized] = useState(false);
+  const [isWidthInitialized, setWidthInitialized] = useState(false);
   const prevGridWidth = useRef(gridWidth);
 
   useLayoutEffect(() => {
@@ -38,7 +38,7 @@ export function useGridDimensions(
         // Clear existing flex widths. This will trigger recalculation of visible flex columns again
         setFlexColumnWidths((widths) => (widths.size > 0 ? new Map() : widths));
       }
-      setInitialized(true);
+      setWidthInitialized(true);
     });
 
     resizeObserver.observe(gridRef.current!);
@@ -48,5 +48,5 @@ export function useGridDimensions(
     };
   }, [setFlexColumnWidths]);
 
-  return [gridRef, gridWidth, gridHeight, isInitialized];
+  return [gridRef, gridWidth, gridHeight, isWidthInitialized];
 }

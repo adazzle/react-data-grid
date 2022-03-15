@@ -277,7 +277,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight, areDimensionsInitialized] =
+  const [gridRef, gridWidth, gridHeight, isWidthInitialized] =
     useGridDimensions(setFlexColumnWidths);
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
@@ -420,7 +420,7 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   useLayoutEffect(() => {
-    if (flexWidthColumns.length === 0 || !areDimensionsInitialized) return;
+    if (flexWidthColumns.length === 0 || !isWidthInitialized) return;
     const newFlexColumnWidths = new Map(flexColumnWidths);
     const newColumnWidths = new Map(columnWidths);
     for (const column of flexWidthColumns) {
@@ -438,7 +438,7 @@ function DataGrid<R, SR, K extends Key>(
     }
     setFlexColumnWidths(newFlexColumnWidths);
     setColumnWidths(newColumnWidths);
-  }, [areDimensionsInitialized, columnWidths, flexColumnWidths, flexWidthColumns, gridRef]);
+  }, [isWidthInitialized, columnWidths, flexColumnWidths, flexWidthColumns, gridRef]);
 
   useLayoutEffect(() => {
     if (autoResizeColumn === null) return;
