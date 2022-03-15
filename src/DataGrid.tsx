@@ -424,10 +424,12 @@ function DataGrid<R, SR, K extends Key>(
     const newFlexColumnWidths = new Map(flexColumnWidths);
     const newColumnWidths = new Map(columnWidths);
     for (const column of flexWidthColumns) {
-      const columnElement = gridRef.current!.querySelector(`[aria-colindex="${column.idx + 1}"]`);
+      const columnElement = gridRef.current!.querySelector<HTMLDivElement>(
+        `[aria-colindex="${column.idx + 1}"]`
+      );
       if (columnElement) {
         // Set the actual width of the column after it is rendered
-        newFlexColumnWidths.set(column.key, columnElement.clientWidth);
+        newFlexColumnWidths.set(column.key, columnElement.getBoundingClientRect().width);
       } else {
         // We can only calculate the width of the visible flex columns and rest of the columns are assigned a fixed value.
         // Set `enableVirtualization: false` if all the columns need flex width
@@ -443,7 +445,7 @@ function DataGrid<R, SR, K extends Key>(
     const columnElement = gridRef.current!.querySelector(
       `[aria-colindex="${autoResizeColumn.idx + 1}"]`
     )!;
-    const width = columnElement.clientWidth + 2;
+    const { width } = columnElement.getBoundingClientRect();
     setColumnWidths((columnWidths) => {
       const newColumnWidths = new Map(columnWidths);
       newColumnWidths.set(autoResizeColumn.key, width);
