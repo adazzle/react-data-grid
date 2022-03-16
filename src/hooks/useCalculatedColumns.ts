@@ -4,7 +4,7 @@ import type { CalculatedColumn, Column, Maybe } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
-import { floor, max, min, round } from '../utils';
+import { clampColumnWidth, floor, max, min, round } from '../utils';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -283,17 +283,4 @@ function getSpecifiedWidth<R, SR>(
     return floor((viewportWidth * parseInt(width, 10)) / 100);
   }
   return undefined;
-}
-
-function clampColumnWidth<R, SR>(
-  width: number,
-  { minWidth, maxWidth }: CalculatedColumn<R, SR>
-): number {
-  width = max(width, minWidth);
-
-  if (typeof maxWidth === 'number' && maxWidth > minWidth) {
-    return min(width, maxWidth);
-  }
-
-  return width;
 }
