@@ -541,10 +541,10 @@ const rules = {
       modifiers: ['const'],
       format: ['camelCase', 'PascalCase', 'UPPER_CASE']
     },
-    {
-      selector: ['function', 'parameter', 'property'],
-      format: ['camelCase', 'PascalCase']
-    },
+    // {
+    //   selector: ['function', 'parameter', 'property'],
+    //   format: ['camelCase', 'PascalCase']
+    // },
     { selector: 'memberLike', format: ['camelCase'] },
     { selector: 'typeLike', format: ['PascalCase'] }
   ],
