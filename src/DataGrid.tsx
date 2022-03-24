@@ -721,10 +721,10 @@ function DataGrid<R, SR, K extends Key>(
         return { idx, rowIdx: rowIdx - 1 };
       case 'ArrowDown':
         return { idx, rowIdx: rowIdx + 1 };
-      case 'ArrowLeft':
-        return isRtl ? { idx: idx + 1, rowIdx } : { idx: idx - 1, rowIdx };
-      case 'ArrowRight':
-        return isRtl ? { idx: idx - 1, rowIdx } : { idx: idx + 1, rowIdx };
+      case leftKey:
+        return { idx: idx - 1, rowIdx };
+      case rightKey:
+        return { idx: idx + 1, rowIdx };
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
@@ -879,6 +879,27 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function getRowViewportColumns(rowIdx: number) {
+    const selectedColumn = columns[selectedPosition.idx];
+    if (
+      // idx can be -1 if grouping is enabled
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      selectedColumn !== undefined &&
+      selectedPosition.rowIdx === rowIdx &&
+      !viewportColumns.includes(selectedColumn)
+    ) {
+      // Add the selected column to viewport columns if the cell is not within the viewport
+      return selectedPosition.idx > colOverscanEndIdx
+        ? [...viewportColumns, selectedColumn]
+        : [
+            ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+            selectedColumn,
+            ...viewportColumns.slice(lastFrozenColumnIndex + 1)
+          ];
+    }
+    return viewportColumns;
+  }
+
   function getViewportRows() {
     const rowElements = [];
 
@@ -904,16 +925,9 @@ function DataGrid<R, SR, K extends Key>(
         if (isRowOutsideViewport) {
           // if the row is outside the viewport then only render the selected cell
           rowColumns = [selectedColumn];
-        } else if (selectedRowIdx === rowIdx && !viewportColumns.includes(selectedColumn)) {
+        } else {
           // if the row is within the viewport and cell is not, add the selected column to viewport columns
-          rowColumns =
-            selectedIdx > viewportColumns[viewportColumns.length - 1].idx
-              ? [...viewportColumns, selectedColumn]
-              : [
-                  ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
-                  selectedColumn,
-                  ...viewportColumns.slice(lastFrozenColumnIndex + 1)
-                ];
+          rowColumns = getRowViewportColumns(rowIdx);
         }
       }
 
@@ -1029,7 +1043,7 @@ function DataGrid<R, SR, K extends Key>(
       )}
       <DataGridDefaultComponentsProvider value={defaultGridComponents}>
         <HeaderRow
-          columns={viewportColumns}
+          columns={getRowViewportColumns(-1)}
           onColumnResize={handleColumnResize}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={selectAllRowsLatest}
@@ -1050,8 +1064,8 @@ function DataGrid<R, SR, K extends Key>(
             </RowSelectionChangeProvider>
             {summaryRows?.map((row, rowIdx) => {
               const gridRowStart = headerRowsCount + rows.length + rowIdx + 1;
-              const isSummaryRowSelected =
-                selectedPosition.rowIdx === headerRowsCount + rows.length + rowIdx - 1;
+              const summaryRowIdx = headerRowsCount + rows.length + rowIdx - 1;
+              const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
               const top =
                 clientHeight > totalRowHeight
                   ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
@@ -1070,7 +1084,7 @@ function DataGrid<R, SR, K extends Key>(
                   row={row}
                   top={top}
                   bottom={bottom}
-                  viewportColumns={viewportColumns}
+                  viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                   selectCell={selectSummaryCellLatest}
