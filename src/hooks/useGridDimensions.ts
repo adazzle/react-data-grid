@@ -19,7 +19,8 @@ export function useGridDimensions(): [
 
     function saveDimensions() {
       // Get dimensions without scrollbars.
-      // The dimensions given by the ResizeObserver callback entries in Firefox do not substract the scrollbar sizes.
+      // The dimensions given by the callback entries in Firefox do not substract the scrollbar sizes.
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1733042
       const { clientWidth, clientHeight } = gridRef.current!;
       // TODO: remove once fixed upstream
       // we reduce width by 1px here to avoid layout issues in Chrome
