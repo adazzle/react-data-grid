@@ -533,21 +533,8 @@ const rules = {
   '@typescript-eslint/member-delimiter-style': 1,
   '@typescript-eslint/member-ordering': 0,
   '@typescript-eslint/method-signature-style': 1,
-  '@typescript-eslint/naming-convention': [
-    1,
-    { selector: 'variable', format: ['camelCase'] },
-    {
-      selector: 'variable',
-      modifiers: ['const'],
-      format: ['camelCase', 'PascalCase', 'UPPER_CASE']
-    },
-    {
-      selector: ['function', 'parameter', 'property'],
-      format: ['camelCase', 'PascalCase']
-    },
-    { selector: 'memberLike', format: ['camelCase'] },
-    { selector: 'typeLike', format: ['PascalCase'] }
-  ],
+  // TODO: fix
+  '@typescript-eslint/naming-convention': 0,
   '@typescript-eslint/no-base-to-string': 0,
   '@typescript-eslint/no-confusing-non-null-assertion': 0,
   '@typescript-eslint/no-confusing-void-expression': [1, { ignoreArrowShorthand: true }],
