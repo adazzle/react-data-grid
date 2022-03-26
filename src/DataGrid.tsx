@@ -575,7 +575,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (
       selectedCellIsWithinViewportBounds &&
-      (onPaste != null || onCopy != null) &&
+      (onPaste != null || onCopy != null || onMultiCopy != null || onMultiPaste != null) &&
       isCtrlKeyHeldDown(event) &&
       !isGroupRow(rows[rowIdx]) &&
       selectedPosition.mode === 'SELECT'
