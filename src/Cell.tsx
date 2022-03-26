@@ -67,8 +67,10 @@ function Cell<R, SR>({
   }
 
   function onMouseDown(){
-    selectCellWrapper(false);
-    onRowClick?.(row, column);
+    if(rangeSelectionMode){
+      selectCellWrapper(false);
+      onRowClick?.(row, column);
+    }
   }
 
   return (
