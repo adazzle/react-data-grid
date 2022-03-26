@@ -24,6 +24,7 @@ import RowsReordering from './demos/RowsReordering';
 import ScrollToRow from './demos/ScrollToRow';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
+import RangeSelection from "./demos/RangeSelection";
 
 css`
   @at-root {
@@ -112,6 +113,7 @@ function Root() {
           <Route path="tree-view" element={<TreeView direction={direction} />} />
           <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
           <Route path="*" element="Nothing to see here" />
+          <Route path="range-selection" element={<RangeSelection direction={direction} />} />
         </Routes>
       </main>
     </Router>

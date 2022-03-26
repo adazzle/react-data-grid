@@ -58,8 +58,10 @@ import type {
   RowHeightArgs,
   Maybe,
   Components,
-  Direction
+  Direction,
+  MultiPasteEvent, CellsRange, MultiCopyEvent
 } from './types';
+import {isValueInBetween} from "./utils/Helpers";
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -80,6 +82,13 @@ const initialPosition: SelectCellState = {
   idx: -1,
   rowIdx: -2,
   mode: 'SELECT'
+};
+
+const initialSelectedRange: CellsRange = {
+  startRowIdx: -1,
+  startColumnIdx: -1,
+  endRowIdx: -1,
+  endColumnIdx: -1,
 };
 
 export interface DataGridHandle {
@@ -148,6 +157,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onFill?: Maybe<(event: FillEvent<R>) => R>;
   onCopy?: Maybe<(event: CopyEvent<R>) => void>;
   onPaste?: Maybe<(event: PasteEvent<R>) => R>;
+  onMultiPaste?: Maybe<(event: MultiPasteEvent) => void>;
+  onMultiCopy?: Maybe<(event: MultiCopyEvent) => void>;
+  onMultiCopySuccess?: Maybe<(copiedText: string) => void>;
+  onMultiCopyFail?: Maybe<(copiedText: string) => void>;
 
   /**
    * Event props
@@ -168,6 +181,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   cellNavigationMode?: Maybe<CellNavigationMode>;
   /** @default true */
   enableVirtualization?: Maybe<boolean>;
+  /** @default false, set true to enable range selection with copy and paste through clipboard */
+  enableRangeSelection?: Maybe<boolean>
 
   /**
    * Miscellaneous
@@ -215,9 +230,13 @@ function DataGrid<R, SR, K extends Key>(
     onFill,
     onCopy,
     onPaste,
+    onMultiPaste,
+    onMultiCopy,
+
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
+    enableRangeSelection,
     // Miscellaneous
     components,
     className,
@@ -246,6 +265,7 @@ function DataGrid<R, SR, K extends Key>(
   const noRowsFallback = components?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
+  enableRangeSelection ??= false;
   direction ??= 'ltr';
 
   /**
@@ -261,6 +281,10 @@ function DataGrid<R, SR, K extends Key>(
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
+
+  const [selectedRange, setSelectedRange] = useState<CellsRange>(initialSelectedRange);
+  const [copiedRange, setCopiedRange] = useState<CellsRange | null>(null);
+  const [isMouseRangeSelectionMode, setIsMouseRangeSelectionMode] = useState<boolean>(false);
 
   /**
    * refs
@@ -587,24 +611,51 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    switch (event.key) {
-      case 'Escape':
-        setCopiedCell(null);
-        return;
-      case 'ArrowUp':
-      case 'ArrowDown':
-      case 'ArrowLeft':
-      case 'ArrowRight':
-      case 'Tab':
-      case 'Home':
-      case 'End':
-      case 'PageUp':
-      case 'PageDown':
-        navigate(event);
-        break;
-      default:
-        handleCellInput(event);
-        break;
+    if(event.shiftKey){
+      switch (event.key) {
+        case 'ArrowUp':
+          if (selectedRange.endRowIdx > 0) {
+            setSelectedRange({...selectedRange, endRowIdx: selectedRange.endRowIdx - 1})
+          }
+          break;
+        case 'ArrowDown':
+          if (selectedRange.endRowIdx < rows.length - 1) {
+            setSelectedRange({...selectedRange, endRowIdx: selectedRange.endRowIdx + 1})
+          }
+          break;
+        case 'ArrowRight':
+          if (selectedRange.endColumnIdx < columns.length - 1) {
+            setSelectedRange({...selectedRange, endColumnIdx: selectedRange.endColumnIdx + 1})
+          }
+          break;
+        case 'ArrowLeft':
+          if (selectedRange.endColumnIdx > 0) {
+            setSelectedRange({...selectedRange, endColumnIdx: selectedRange.endColumnIdx - 1})
+          }
+          break;
+        default:
+          break;
+      }
+    }else{
+      switch ( event.key ) {
+        case 'Escape':
+          setCopiedCell ( null );
+          return;
+        case 'ArrowUp':
+        case 'ArrowDown':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+        case 'Tab':
+        case 'Home':
+        case 'End':
+        case 'PageUp':
+        case 'PageDown':
+          navigate ( event );
+          break;
+        default:
+          handleCellInput ( event );
+          break;
+      }
     }
   }
 
@@ -638,32 +689,49 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleCopy() {
-    const { idx, rowIdx } = selectedPosition;
-    const sourceRow = rawRows[getRawRowIdx(rowIdx)];
-    const sourceColumnKey = columns[idx].key;
-    setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
-    onCopy?.({ sourceRow, sourceColumnKey });
+    if(enableRangeSelection){
+      setCopiedRange(selectedRange)
+      onMultiCopy?.({cellsRange: selectedRange})
+    }else{
+      const { idx, rowIdx } = selectedPosition;
+      const sourceRow = rawRows[getRawRowIdx(rowIdx)];
+      const sourceColumnKey = columns[idx].key;
+      setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
+      onCopy?.({ sourceRow, sourceColumnKey });
+    }
   }
 
   function handlePaste() {
-    if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
-      return;
+    if (enableRangeSelection) {
+      if (!onMultiPaste || !onRowsChange || copiedRange === null) {
+        return;
+      }
+
+      onMultiPaste({
+        copiedRange,
+        targetRange: selectedRange
+      })
+    } else {
+
+      if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
+        return;
+      }
+
+      const {idx, rowIdx} = selectedPosition;
+      const targetRow = rawRows[getRawRowIdx(rowIdx)];
+
+      const updatedTargetRow = onPaste({
+        sourceRow: copiedCell.row,
+        sourceColumnKey: copiedCell.columnKey,
+        targetRow,
+        targetColumnKey: columns[idx].key
+      });
+
+      updateRow(rowIdx, updatedTargetRow);
     }
-
-    const { idx, rowIdx } = selectedPosition;
-    const targetRow = rawRows[getRawRowIdx(rowIdx)];
-
-    const updatedTargetRow = onPaste({
-      sourceRow: copiedCell.row,
-      sourceColumnKey: copiedCell.columnKey,
-      targetRow,
-      targetColumnKey: columns[idx].key
-    });
-
-    updateRow(rowIdx, updatedTargetRow);
   }
 
-  function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
+    function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
     if (!selectedCellIsWithinViewportBounds) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
@@ -733,6 +801,12 @@ function DataGrid<R, SR, K extends Key>(
       scrollToCell(position);
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
+      setSelectedRange({
+        startColumnIdx: position.idx,
+        startRowIdx: position.rowIdx,
+        endColumnIdx: position.idx,
+        endRowIdx: position.rowIdx
+      })
     }
   }
 
@@ -1091,13 +1165,25 @@ function DataGrid<R, SR, K extends Key>(
               : undefined
           }
           selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
+          selectedCellsRange={ enableRangeSelection && isValueInBetween(rowIdx, selectedRange?.startRowIdx, selectedRange?.endRowIdx) ? {
+            startIdx: selectedRange.startColumnIdx,
+            endIdx: selectedRange.endColumnIdx
+          } : {startIdx: -1, endIdx: -1}}
           draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
           setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           onRowChange={handleFormatterRowChangeLatest}
           selectCell={selectViewportCellLatest}
+          rangeSelectionMode={enableRangeSelection ?? false}
           selectedCellDragHandle={getDragHandle(rowIdx)}
           selectedCellEditor={getCellEditor(rowIdx)}
+          onCellMouseDown={() => setIsMouseRangeSelectionMode(true)}
+          onCellMouseUp={() => setIsMouseRangeSelectionMode(false)}
+          onCellMouseEnter={(columnIdx: number) => {
+            if (isMouseRangeSelectionMode && enableRangeSelection) {
+              setSelectedRange({...selectedRange, endRowIdx: rowIdx, endColumnIdx: columnIdx})
+            }
+          }}
         />
       );
     }
@@ -1109,6 +1195,7 @@ function DataGrid<R, SR, K extends Key>(
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition(initialPosition);
     setDraggedOverRowIdx(undefined);
+    setSelectedRange(initialSelectedRange)
   }
 
   let templateRows = `${headerRowHeight}px`;
