@@ -11,7 +11,7 @@ import CommonFeatures from './demos/CommonFeatures';
 import AllFeatures from './demos/AllFeatures';
 import CellNavigation from './demos/CellNavigation';
 import ColumnSpanning from './demos/ColumnSpanning';
-import ColumnsReordering from './demos/ColumnsReordering';
+// import ColumnsReordering from './demos/ColumnsReordering';
 import CustomizableComponents from './demos/CustomizableComponents';
 import ContextMenuDemo from './demos/ContextMenu';
 import Grouping from './demos/Grouping';
@@ -21,7 +21,7 @@ import MasterDetail from './demos/MasterDetail';
 import MillionCells from './demos/MillionCells';
 import NoRows from './demos/NoRows';
 import ResizableGrid from './demos/Resizable';
-import RowsReordering from './demos/RowsReordering';
+// import RowsReordering from './demos/RowsReordering';
 import ScrollToRow from './demos/ScrollToRow';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
@@ -95,7 +95,7 @@ function Root() {
           <Route path="all-features" element={<AllFeatures direction={direction} />} />
           <Route path="cell-navigation" element={<CellNavigation direction={direction} />} />
           <Route path="column-spanning" element={<ColumnSpanning direction={direction} />} />
-          <Route path="columns-reordering" element={<ColumnsReordering direction={direction} />} />
+          {/* <Route path="columns-reordering" element={<ColumnsReordering direction={direction} />} /> */}
           <Route path="context-menu" element={<ContextMenuDemo direction={direction} />} />
           <Route
             path="customizable-components"
@@ -108,7 +108,7 @@ function Root() {
           <Route path="million-cells" element={<MillionCells direction={direction} />} />
           <Route path="no-rows" element={<NoRows direction={direction} />} />
           <Route path="resizable-grid" element={<ResizableGrid direction={direction} />} />
-          <Route path="rows-reordering" element={<RowsReordering direction={direction} />} />
+          {/* <Route path="rows-reordering" element={<RowsReordering direction={direction} />} /> */}
           <Route path="scroll-to-row" element={<ScrollToRow direction={direction} />} />
           <Route path="tree-view" element={<TreeView direction={direction} />} />
           <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
