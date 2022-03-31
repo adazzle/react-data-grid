@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
 
