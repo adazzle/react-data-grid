@@ -4,7 +4,7 @@ import type { CalculatedColumn, Column, Maybe } from '../types';
 import type { DataGridProps } from '../DataGrid';
 import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
-import { max, min } from '../utils';
+import { clampColumnWidth, max, min } from '../utils';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -255,20 +255,4 @@ export function useCalculatedColumns<R, SR>({
     totalFrozenColumnWidth,
     groupBy
   };
-}
-
-function clampColumnWidth<R, SR>(
-  width: number,
-  { minWidth, maxWidth }: CalculatedColumn<R, SR>
-): number {
-  if (typeof minWidth === 'number') {
-    width = max(width, minWidth);
-  }
-
-  // Ignore maxWidth if it is less than minWidth
-  if (typeof maxWidth === 'number' && (typeof minWidth !== 'number' || maxWidth > minWidth)) {
-    return min(width, maxWidth);
-  }
-
-  return width;
 }

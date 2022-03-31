@@ -22,7 +22,7 @@ export function useGridDimensions(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
-    const resizeObserver = new ResizeObserver(() => {
+    function saveDimensions() {
       // Get dimensions without scrollbars.
       // The dimensions given by the callback entries in Firefox do not substract the scrollbar sizes.
       // https://bugzilla.mozilla.org/show_bug.cgi?id=1733042
@@ -39,8 +39,10 @@ export function useGridDimensions(
         setFlexColumnWidths((widths) => (widths.size > 0 ? new Map() : widths));
       }
       setWidthInitialized(true);
-    });
+    }
 
+    saveDimensions();
+    const resizeObserver = new ResizeObserver(saveDimensions);
     resizeObserver.observe(gridRef.current!);
 
     return () => {
