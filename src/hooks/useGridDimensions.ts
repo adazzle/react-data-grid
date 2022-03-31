@@ -7,7 +7,8 @@ export function useGridDimensions(): [
   height: number
 ] {
   const gridRef = useRef<HTMLDivElement>(null);
-  const [gridWidth, setGridWidth] = useState(1);
+  // keep track of the old width and the new width to avoid twitching
+  const [gridWidth, setGridWidth] = useState([0, 1]);
   const [gridHeight, setGridHeight] = useState(1);
 
   useLayoutEffect(() => {
@@ -25,7 +26,18 @@ export function useGridDimensions(): [
       // TODO: remove once fixed upstream
       // we reduce width by 1px here to avoid layout issues in Chrome
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-      setGridWidth(clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1));
+      setGridWidth((prev: number[]) => {
+        const newValue = clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1);
+
+        // If the new value is the same as the previous value, just ignore it.
+        // If we change back the value to the old one, we will end up with
+        // and infinite loop of twitching.
+        if (prev[0] === newValue) {
+          return prev;
+        }
+
+        return [prev[1], newValue];
+      });
       setGridHeight(clientHeight);
     }
 
@@ -38,5 +50,5 @@ export function useGridDimensions(): [
     };
   }, []);
 
-  return [gridRef, gridWidth, gridHeight];
+  return [gridRef, gridWidth[1], gridHeight];
 }
