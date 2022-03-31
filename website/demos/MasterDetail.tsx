@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { css } from '@linaria/core';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
