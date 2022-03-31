@@ -55,6 +55,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
   readonly idx: number;
+  readonly minWidth: number;
   readonly resizable: boolean;
   readonly sortable: boolean;
   readonly frozen: boolean;

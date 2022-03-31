@@ -417,7 +417,7 @@ function DataGrid<R, SR, K extends Key>(
     const columnElement = gridRef.current!.querySelector(
       `[aria-colindex="${autoResizeColumn.idx + 1}"]`
     )!;
-    const width = columnElement.clientWidth + 2;
+    const { width } = columnElement.getBoundingClientRect();
     setColumnWidths((columnWidths) => {
       const newColumnWidths = new Map(columnWidths);
       newColumnWidths.set(autoResizeColumn.key, width);
