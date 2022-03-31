@@ -71,8 +71,12 @@ test('multi column sort', async () => {
   setup();
   const [headerCell1, headerCell2, headerCell3] = getHeaderCells();
   await userEvent.click(headerCell1.firstElementChild!);
-  await userEvent.click(headerCell2.firstElementChild!, { ctrlKey: true });
-  await userEvent.click(headerCell3.firstElementChild!, { ctrlKey: true });
+  await userEvent.click(headerCell2.firstElementChild!, {
+    keyboardState: { modifiers: { Control: true } }
+  });
+  await userEvent.click(headerCell3.firstElementChild!, {
+    keyboardState: { modifiers: { Control: true } }
+  });
 
   // aria-sort is only added for single sort
   expect(headerCell1).not.toHaveAttribute('aria-sort');
@@ -87,13 +91,17 @@ test('multi column sort', async () => {
     { columnKey: 'colC', direction: 'ASC' }
   ]);
 
-  await userEvent.click(headerCell2.firstElementChild!, { ctrlKey: true });
+  await userEvent.click(headerCell2.firstElementChild!, {
+    keyboardState: { modifiers: { Control: true } }
+  });
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colB', direction: 'ASC' },
     { columnKey: 'colC', direction: 'ASC' }
   ]);
-  await userEvent.click(headerCell2.firstElementChild!, { ctrlKey: true });
+  await userEvent.click(headerCell2.firstElementChild!, {
+    keyboardState: { modifiers: { Control: true } }
+  });
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colC', direction: 'ASC' }
@@ -111,7 +119,9 @@ test('multi column sort with metakey', async () => {
   setup();
   const [headerCell1, headerCell2] = getHeaderCells();
   await userEvent.click(headerCell1.firstElementChild!);
-  await userEvent.click(headerCell2.firstElementChild!, { metaKey: true });
+  await userEvent.click(headerCell2.firstElementChild!, {
+    keyboardState: { modifiers: { Meta: true } }
+  });
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colB', direction: 'DESC' }
@@ -122,7 +132,7 @@ test('multi column sort with keyboard', async () => {
   setup();
   const [headerCell1] = getHeaderCells();
   await userEvent.click(headerCell1.firstElementChild!);
-  await userEvent.keyboard('{space}{arrowright}{ctrl}{enter}');
+  await userEvent.keyboard(' {arrowright}{Control>}{enter}');
   testSortColumns([
     { columnKey: 'colA', direction: 'DESC' },
     { columnKey: 'colB', direction: 'DESC' }

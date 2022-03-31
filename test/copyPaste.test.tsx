@@ -177,7 +177,7 @@ test('should not allow copy on header or summary cells', async () => {
   pasteSelectedCell();
   expect(getSelectedCell()).toHaveTextContent('a1');
   expect(onPasteSpy).not.toHaveBeenCalled();
-  await userEvent.keyboard('{ctrl}{end}');
+  await userEvent.keyboard('{Control>}{end}');
   copySelectedCell();
   expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
   await userEvent.keyboard('{arrowup}');
@@ -194,7 +194,7 @@ test('should not allow paste on header or summary cells', async () => {
   pasteSelectedCell();
   expect(getSelectedCell()).toHaveTextContent('Col');
   expect(onPasteSpy).not.toHaveBeenCalled();
-  await userEvent.keyboard('{ctrl}{end}');
+  await userEvent.keyboard('{Control>}{end}');
   pasteSelectedCell();
   expect(getSelectedCell()).toHaveTextContent('s1');
   expect(onPasteSpy).not.toHaveBeenCalled();

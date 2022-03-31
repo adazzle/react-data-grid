@@ -50,10 +50,9 @@ function testSelection(rowIdx: number, isSelected: boolean) {
   expect(getRows()[rowIdx]).toHaveAttribute('aria-selected', isSelected ? 'true' : 'false');
 }
 
-async function toggleSelection(rowIdx: number, shiftKey = false) {
-  await userEvent.click(within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select'), {
-    shiftKey
-  });
+async function toggleSelection(rowIdx: number, Shift = false) {
+  const element = within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select');
+  await userEvent.click(element, { keyboardState: { modifiers: { Shift } } });
 }
 
 test('toggle selection when checkbox is clicked', async () => {
@@ -73,13 +72,11 @@ test('toggle selection using keyboard', async () => {
   setup();
   testSelection(0, false);
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await userEvent.keyboard('{space}');
+  await userEvent.keyboard(' ');
   testSelection(0, true);
-  await userEvent.keyboard('{arrowdown}');
-  await userEvent.keyboard('{space}');
+  await userEvent.keyboard('{arrowdown} ');
   testSelection(1, true);
-  await userEvent.keyboard('{arrowup}');
-  await userEvent.keyboard('{space}');
+  await userEvent.keyboard('{arrowup} ');
   testSelection(0, false);
 });
 
@@ -198,10 +195,10 @@ test('select rows using shift click', async () => {
 test('select rows using shift space', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(0)[1]);
-  await userEvent.keyboard('{shift}{space}');
+  await userEvent.keyboard('{Shift>} ');
   testSelection(0, true);
-  await userEvent.keyboard('{space}');
+  await userEvent.keyboard(' ');
   testSelection(0, true);
-  await userEvent.keyboard('{shift}{space}');
+  await userEvent.keyboard('{Shift>} ');
   testSelection(0, false);
 });
