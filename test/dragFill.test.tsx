@@ -65,24 +65,24 @@ function getDragHandle() {
   return document.querySelector('.rdg-cell-drag-handle');
 }
 
-test('should not allow dragFill if onFill is undefined', () => {
+test('should not allow dragFill if onFill is undefined', async () => {
   setup(false);
-  userEvent.click(getCellsAtRowIndex(0)[0]);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
   expect(getDragHandle()).not.toBeInTheDocument();
 });
 
-test('should allow dragFill if onFill is specified', () => {
+test('should allow dragFill if onFill is specified', async () => {
   setup();
-  userEvent.click(getCellsAtRowIndex(0)[0]);
-  userEvent.dblClick(getDragHandle()!);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  await userEvent.dblClick(getDragHandle()!);
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
 });
 
-test('should update single row using mouse', () => {
+test('should update single row using mouse', async () => {
   setup();
-  userEvent.click(getCellsAtRowIndex(0)[0]);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
   fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
   fireEvent.mouseEnter(getRows()[1]);
   fireEvent.mouseUp(window);
@@ -90,9 +90,9 @@ test('should update single row using mouse', () => {
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
 });
 
-test('should update multiple rows using mouse', () => {
+test('should update multiple rows using mouse', async () => {
   setup();
-  userEvent.click(getCellsAtRowIndex(0)[0]);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
   fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
   fireEvent.mouseEnter(getRows()[3]);
   fireEvent.mouseUp(window);
@@ -101,9 +101,9 @@ test('should update multiple rows using mouse', () => {
   expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
 });
 
-test('should allow drag up using mouse', () => {
+test('should allow drag up using mouse', async () => {
   setup();
-  userEvent.click(getCellsAtRowIndex(3)[0]);
+  await userEvent.click(getCellsAtRowIndex(3)[0]);
   fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
   fireEvent.mouseEnter(getRows()[0]);
   fireEvent.mouseUp(window);
