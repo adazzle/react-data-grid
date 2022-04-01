@@ -1,4 +1,4 @@
-import React, { StrictMode, useState } from 'react';
+import { StrictMode, useState } from 'react';
 // @ts-expect-error
 import { createRoot } from 'react-dom';
 import { css } from '@linaria/core';
