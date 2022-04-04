@@ -1,4 +1,4 @@
-import React, { StrictMode, useState } from 'react';
+import { StrictMode, useState } from 'react';
 import { render } from 'react-dom';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
