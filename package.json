@@ -80,7 +80,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "eslint-plugin-sonarjs": "^0.12.0",
+    "eslint-plugin-sonarjs": "^0.13.0",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.4.7",
     "jspdf": "^2.5.0",
