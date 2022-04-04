@@ -29,7 +29,7 @@ export default function ScrollToRow({ direction }: Props) {
 
     return rows;
   });
-  const [value, setValue] = useState('10');
+  const [value, setValue] = useState(10);
   const gridRef = useRef<DataGridHandle>(null);
 
   return (
@@ -40,9 +40,9 @@ export default function ScrollToRow({ direction }: Props) {
           style={{ inlineSize: 50 }}
           type="number"
           value={value}
-          onChange={(event) => setValue(event.target.value)}
+          onChange={(event) => setValue(event.target.valueAsNumber)}
         />
-        <button type="button" onClick={() => gridRef.current!.scrollToRow(Number(value))}>
+        <button type="button" onClick={() => gridRef.current!.scrollToRow(value)}>
           Scroll to row
         </button>
       </div>
