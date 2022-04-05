@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
@@ -38,8 +38,6 @@ export interface Row {
 function rowKeyGetter(row: Row) {
   return row.id;
 }
-
-faker.locale = 'en_GB';
 
 const columns: readonly Column<Row>[] = [
   SelectColumn,
