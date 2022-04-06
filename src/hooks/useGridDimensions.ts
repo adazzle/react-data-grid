@@ -17,12 +17,16 @@ export function useGridDimensions(): [
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
+    const { clientWidth, clientHeight } = gridRef.current!;
+    setInlineSize(handleDevicePixelRatio(clientWidth));
+    setBlockSize(clientHeight);
+
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
       // TODO: remove once fixed upstream
       // we reduce width by 1px here to avoid layout issues in Chrome
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-      setInlineSize(size.inlineSize - (devicePixelRatio % 1 === 0 ? 0 : 1));
+      setInlineSize(handleDevicePixelRatio(size.inlineSize));
       setBlockSize(size.blockSize);
     });
     resizeObserver.observe(gridRef.current!);
@@ -33,4 +37,11 @@ export function useGridDimensions(): [
   }, []);
 
   return [gridRef, inlineSize, blockSize];
+}
+
+// TODO: remove once fixed upstream
+// we reduce width by 1px here to avoid layout issues in Chrome
+// https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
+function handleDevicePixelRatio(size: number) {
+  return size - (devicePixelRatio % 1 === 0 ? 0 : 1);
 }
