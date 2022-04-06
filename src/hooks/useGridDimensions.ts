@@ -17,9 +17,13 @@ export function useGridDimensions(): [
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
-    const { clientWidth, clientHeight } = gridRef.current!;
-    setInlineSize(handleDevicePixelRatio(clientWidth));
-    setBlockSize(clientHeight);
+    const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
+    const { width, height } = gridRef.current!.getBoundingClientRect();
+    const initialWidth = width - offsetWidth + clientWidth;
+    const initialHeight = height - offsetHeight + clientHeight;
+
+    setInlineSize(handleDevicePixelRatio(initialWidth));
+    setBlockSize(initialHeight);
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
