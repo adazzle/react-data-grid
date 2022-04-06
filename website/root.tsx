@@ -118,7 +118,7 @@ function Root() {
   );
 }
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Root />
   </StrictMode>
