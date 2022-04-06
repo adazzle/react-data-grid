@@ -69,14 +69,12 @@ test('single column sort', async () => {
 
 test('multi column sort', async () => {
   setup();
+  const user = userEvent.setup();
   const [headerCell1, headerCell2, headerCell3] = getHeaderCells();
-  await userEvent.click(headerCell1.firstElementChild!);
-  await userEvent.click(headerCell2.firstElementChild!, {
-    keyboardState: { modifiers: { Control: true } }
-  });
-  await userEvent.click(headerCell3.firstElementChild!, {
-    keyboardState: { modifiers: { Control: true } }
-  });
+  await user.click(headerCell1.firstElementChild!);
+  await user.keyboard('{Control>}');
+  await user.click(headerCell2.firstElementChild!);
+  await user.click(headerCell3.firstElementChild!);
 
   // aria-sort is only added for single sort
   expect(headerCell1).not.toHaveAttribute('aria-sort');
@@ -91,17 +89,13 @@ test('multi column sort', async () => {
     { columnKey: 'colC', direction: 'ASC' }
   ]);
 
-  await userEvent.click(headerCell2.firstElementChild!, {
-    keyboardState: { modifiers: { Control: true } }
-  });
+  await user.click(headerCell2.firstElementChild!);
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colB', direction: 'ASC' },
     { columnKey: 'colC', direction: 'ASC' }
   ]);
-  await userEvent.click(headerCell2.firstElementChild!, {
-    keyboardState: { modifiers: { Control: true } }
-  });
+  await user.click(headerCell2.firstElementChild!);
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colC', direction: 'ASC' }
@@ -109,7 +103,8 @@ test('multi column sort', async () => {
   expect(headerCell3).toHaveTextContent('2');
 
   // clicking on a column without ctrlKey should remove multisort
-  await userEvent.click(headerCell2.firstElementChild!);
+  await user.keyboard('{/Control}');
+  await user.click(headerCell2.firstElementChild!);
   testSortColumns([{ columnKey: 'colB', direction: 'DESC' }]);
   expect(headerCell2).toHaveAttribute('aria-sort');
   expect(headerCell2).not.toHaveTextContent('2');
@@ -118,10 +113,10 @@ test('multi column sort', async () => {
 test('multi column sort with metakey', async () => {
   setup();
   const [headerCell1, headerCell2] = getHeaderCells();
-  await userEvent.click(headerCell1.firstElementChild!);
-  await userEvent.click(headerCell2.firstElementChild!, {
-    keyboardState: { modifiers: { Meta: true } }
-  });
+  const user = userEvent.setup();
+  await user.click(headerCell1.firstElementChild!);
+  await user.keyboard('{Meta>}');
+  await user.click(headerCell2.firstElementChild!);
   testSortColumns([
     { columnKey: 'colA', direction: 'ASC' },
     { columnKey: 'colB', direction: 'DESC' }

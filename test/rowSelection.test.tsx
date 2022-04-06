@@ -50,9 +50,12 @@ function testSelection(rowIdx: number, isSelected: boolean) {
   expect(getRows()[rowIdx]).toHaveAttribute('aria-selected', isSelected ? 'true' : 'false');
 }
 
-async function toggleSelection(rowIdx: number, Shift = false) {
+async function toggleSelection(rowIdx: number, shift = false) {
   const element = within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select');
-  await userEvent.click(element, { keyboardState: { modifiers: { Shift } } });
+  const user = userEvent.setup();
+  if (shift) await user.keyboard('{Shift>}');
+  await user.click(element);
+  if (shift) await user.keyboard('{/Shift}');
 }
 
 test('toggle selection when checkbox is clicked', async () => {
