@@ -44,5 +44,5 @@ export function useGridDimensions(): [
 // we reduce width by 1px here to avoid layout issues in Chrome
 // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
 function handleDevicePixelRatio(size: number) {
-  return size - (devicePixelRatio % 1 === 0 ? 0 : 1);
+  return size - (devicePixelRatio === 1 ? 0 : ceil(devicePixelRatio));
 }
