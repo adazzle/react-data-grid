@@ -1,6 +1,5 @@
 import { StrictMode, useState } from 'react';
-// @ts-expect-error
-import { createRoot } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
