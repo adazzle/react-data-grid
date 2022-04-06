@@ -27,9 +27,6 @@ export function useGridDimensions(): [
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      // TODO: remove once fixed upstream
-      // we reduce width by 1px here to avoid layout issues in Chrome
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
       setInlineSize(handleDevicePixelRatio(size.inlineSize));
       setBlockSize(size.blockSize);
     });
