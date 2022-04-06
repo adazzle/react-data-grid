@@ -9,7 +9,7 @@ export function useRovingCellRef(isSelected: boolean) {
     setIsChildFocused(false);
   }
 
-  const refCallback = useCallback(
+  const ref = useCallback(
     (cell: HTMLDivElement | null) => {
       if (cell === null || !isSelected || cell.contains(document.activeElement)) return;
 
@@ -27,7 +27,7 @@ export function useRovingCellRef(isSelected: boolean) {
   const isFocused = isSelected && !isChildFocused;
 
   return {
-    ref: refCallback,
+    ref,
     tabIndex: isFocused ? 0 : -1,
     onFocus
   };
