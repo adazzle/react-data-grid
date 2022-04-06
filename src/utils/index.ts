@@ -6,7 +6,7 @@ export * from './keyboardUtils';
 export * from './selectedCellUtils';
 export * from './styleUtils';
 
-export const { min, max, round, floor, sign, abs } = Math;
+export const { min, max, round, floor, sign, abs, ceil } = Math;
 
 export function assertIsValidKeyGetter<R, K extends React.Key>(
   keyGetter: unknown

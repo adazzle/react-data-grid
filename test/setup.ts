@@ -9,7 +9,9 @@ if (typeof window !== 'undefined') {
     }
 
     observe() {
-      this.callback([], this);
+      // patch inlineSize/blockSize to pretend we're rendering DataGrid at 1920p/1080p
+      // @ts-expect-error
+      this.callback([{ contentBoxSize: [{ inlineSize: 1920, blockSize: 1080 }] }], this);
     }
 
     unobserve() {}
