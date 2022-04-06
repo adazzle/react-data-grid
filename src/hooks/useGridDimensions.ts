@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
+import { ceil } from '../utils';
+
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
