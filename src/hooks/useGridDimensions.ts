@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
+import { ceil } from '../utils';
+
 export function useGridDimensions(
   setFlexColumnWidths: React.Dispatch<React.SetStateAction<ReadonlyMap<string, number>>>
 ): [
@@ -10,10 +12,10 @@ export function useGridDimensions(
   isWidthInitialized: boolean
 ] {
   const gridRef = useRef<HTMLDivElement>(null);
-  const [gridWidth, setGridWidth] = useState(1);
-  const [gridHeight, setGridHeight] = useState(1);
+  const [inlineSize, setInlineSize] = useState(1);
+  const [blockSize, setBlockSize] = useState(1);
   const [isWidthInitialized, setWidthInitialized] = useState(false);
-  const prevGridWidth = useRef(gridWidth);
+  const prevInlineSize = useRef(inlineSize);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -22,27 +24,26 @@ export function useGridDimensions(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
-    function saveDimensions() {
-      // Get dimensions without scrollbars.
-      // The dimensions given by the callback entries in Firefox do not substract the scrollbar sizes.
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1733042
-      const { clientWidth, clientHeight } = gridRef.current!;
-      // TODO: remove once fixed upstream
-      // we reduce width by 1px here to avoid layout issues in Chrome
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-      const newWidth = clientWidth - (devicePixelRatio % 1 === 0 ? 0 : 1);
-      setGridWidth(newWidth);
-      setGridHeight(clientHeight);
-      if (prevGridWidth.current !== newWidth) {
-        prevGridWidth.current = newWidth;
-        // Clear existing flex widths. This will trigger recalculation of visible flex columns again
+    const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
+    const { width, height } = gridRef.current!.getBoundingClientRect();
+    const initialWidth = width - offsetWidth + clientWidth;
+    const initialHeight = height - offsetHeight + clientHeight;
+
+    setInlineSize(handleDevicePixelRatio(initialWidth));
+    setBlockSize(initialHeight);
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const size = entries[0].contentBoxSize[0];
+      const newInlineSize = handleDevicePixelRatio(size.inlineSize);
+      setInlineSize(newInlineSize);
+      setBlockSize(size.blockSize);
+      if (prevInlineSize.current !== newInlineSize) {
+        prevInlineSize.current = newInlineSize;
+        // clear existing flex widths, this will trigger recalculation of visible flex columns again
         setFlexColumnWidths((widths) => (widths.size > 0 ? new Map() : widths));
       }
       setWidthInitialized(true);
-    }
-
-    saveDimensions();
-    const resizeObserver = new ResizeObserver(saveDimensions);
+    });
     resizeObserver.observe(gridRef.current!);
 
     return () => {
@@ -50,5 +51,12 @@ export function useGridDimensions(
     };
   }, [setFlexColumnWidths]);
 
-  return [gridRef, gridWidth, gridHeight, isWidthInitialized];
+  return [gridRef, inlineSize, blockSize, isWidthInitialized];
+}
+
+// TODO: remove once fixed upstream
+// we reduce width by 1px here to avoid layout issues in Chrome
+// https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
+function handleDevicePixelRatio(size: number) {
+  return size - (devicePixelRatio === 1 ? 0 : ceil(devicePixelRatio));
 }
