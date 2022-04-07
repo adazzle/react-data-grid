@@ -9,14 +9,11 @@ export function useRovingCellRef(isSelected: boolean) {
     setIsChildFocused(false);
   }
 
-  const ref = useCallback(
-    (cell: HTMLDivElement | null) => {
-      if (cell === null || !isSelected || cell.contains(document.activeElement)) return;
+  const ref = useCallback((cell: HTMLDivElement | null) => {
+    if (cell === null || cell.contains(document.activeElement)) return;
 
-      cell.focus({ preventScroll: true });
-    },
-    [isSelected]
-  );
+    cell.focus({ preventScroll: true });
+  }, []);
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
     if (event.target !== event.currentTarget) {
@@ -27,8 +24,8 @@ export function useRovingCellRef(isSelected: boolean) {
   const isFocused = isSelected && !isChildFocused;
 
   return {
-    ref,
+    ref: isSelected ? ref : undefined,
     tabIndex: isFocused ? 0 : -1,
-    onFocus
+    onFocus: isSelected ? onFocus : undefined
   };
 }
