@@ -39,6 +39,7 @@ export function ToggleGroupFormatter<R, SR>({
   const d = isExpanded ? 'M1 1 L 7 7 L 13 1' : 'M1 7 L 7 1 L 13 7';
 
   return (
+    // @ts-expect-error
     <span
       ref={ref}
       className={groupCellContentClassname}
