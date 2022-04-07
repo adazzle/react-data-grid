@@ -39,14 +39,13 @@ export function ToggleGroupFormatter<R, SR>({
   const d = isExpanded ? 'M1 1 L 7 7 L 13 1' : 'M1 7 L 7 1 L 13 7';
 
   return (
-    // @ts-expect-error
     <span
       ref={ref}
       className={groupCellContentClassname}
       tabIndex={tabIndex}
       onKeyDown={handleKeyDown}
     >
-      {groupKey}
+      {groupKey as string}
       <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname} aria-hidden>
         <path d={d} />
       </svg>
