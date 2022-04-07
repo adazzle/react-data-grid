@@ -26,6 +26,6 @@ export function useRovingCellRef(isSelected: boolean) {
   return {
     ref: isSelected ? ref : undefined,
     tabIndex: isFocused ? 0 : -1,
-    onFocus
+    onFocus: isSelected ? onFocus : undefined
   };
 }
