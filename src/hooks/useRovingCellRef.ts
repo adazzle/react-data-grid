@@ -1,39 +1,31 @@
-import { useRef, useState } from 'react';
-import { useLayoutEffect } from './useLayoutEffect';
+import { useCallback, useState } from 'react';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
 export function useRovingCellRef(isSelected: boolean) {
-  const ref = useRef<HTMLDivElement>(null);
   // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
-  const isChildFocused = useRef(false);
-  const [, forceRender] = useState<unknown>({});
+  const [isChildFocused, setIsChildFocused] = useState(false);
 
-  useLayoutEffect(() => {
-    if (!isSelected) {
-      isChildFocused.current = false;
-      return;
-    }
+  if (isChildFocused && !isSelected) {
+    setIsChildFocused(false);
+  }
 
-    if (isChildFocused.current) {
-      // When the child is focused, we need to rerender
-      // the cell again so tabIndex is updated to -1
-      forceRender({});
-      return;
-    }
-    ref.current?.focus({ preventScroll: true });
-  }, [isSelected]);
+  const ref = useCallback((cell: HTMLDivElement | null) => {
+    if (cell === null || cell.contains(document.activeElement)) return;
+
+    cell.focus({ preventScroll: true });
+  }, []);
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
-    if (event.target !== ref.current) {
-      isChildFocused.current = true;
+    if (event.target !== event.currentTarget) {
+      setIsChildFocused(true);
     }
   }
 
-  const isFocused = isSelected && !isChildFocused.current;
+  const isFocused = isSelected && !isChildFocused;
 
   return {
-    ref,
+    ref: isSelected ? ref : undefined,
     tabIndex: isFocused ? 0 : -1,
-    onFocus
+    onFocus: isSelected ? onFocus : undefined
   };
 }
