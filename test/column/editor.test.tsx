@@ -242,7 +242,33 @@ describe('Editor', () => {
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('abc');
     });
 
-    it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
+    it('should steal focus back to the cell after being closed by clicking an empty area outside the grid', async () => {
+      const column: Column<unknown> = {
+        key: 'col',
+        name: 'Column',
+        editor() {
+          return <input value="123" readOnly autoFocus />;
+        }
+      };
+
+      render(
+        <>
+          <div>abc</div>
+          <DataGrid columns={[column]} rows={[{}]} />
+        </>
+      );
+
+      userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+      const editorInput = screen.getByDisplayValue('123');
+      const outerElement = screen.getByText('abc');
+      expect(editorInput).toHaveFocus();
+      userEvent.click(outerElement);
+      expect(document.body).toHaveFocus();
+      await waitForElementToBeRemoved(editorInput);
+      expect(getSelectedCell()).toHaveFocus();
+    });
+
+    it('should not steal focus back to the cell after being closed by clicking a focusable element outside the grid', async () => {
       const column: Column<unknown> = {
         key: 'col',
         name: 'Column',

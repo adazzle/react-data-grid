@@ -12,8 +12,20 @@ export function useRovingCellRef(isSelected: boolean) {
 
   const ref = useCallback((cell: HTMLDivElement | null) => {
     if (cell === null) return;
+
     scrollIntoView(cell);
-    if (cell.contains(document.activeElement)) return;
+    const { activeElement, body } = document;
+
+    // Don't focus if the cell or a descendant is focused.
+    if (cell.contains(activeElement)) return;
+
+    // Don't focus if we've focused on a specific element outside the grid,
+    // for example focusing an external input outside the grid will close the open editor,
+    // and the cell should not steal back focus.
+    // If the body is the active element then it's fair to assume that "nothing" is focused,
+    // i.e. after clicking in an empty area to close an editor, the grid can steal back the focus.
+    if (activeElement !== body && !cell.closest('.rdg')!.contains(activeElement)) return;
+
     cell.focus({ preventScroll: true });
   }, []);
 
