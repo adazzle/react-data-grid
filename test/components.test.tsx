@@ -1,8 +1,8 @@
-import { StrictMode } from 'react';
+import { forwardRef, StrictMode } from 'react';
 import { render, screen } from '@testing-library/react';
 
 import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn } from '../src';
-import type { Column, DataGridProps } from '../src';
+import type { Column, DataGridProps, CheckboxFormatterProps } from '../src';
 import { getRows, setup } from './utils';
 
 interface Row {
@@ -25,13 +25,16 @@ function GlobalNoRowsFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function Checkbox() {
-  return <div>Local checkbox</div>;
-}
+const Checkbox = forwardRef<HTMLDivElement, CheckboxFormatterProps>(function Checkbox(props, ref) {
+  return <div ref={ref}>Local checkbox</div>;
+});
 
-function GlobalCheckbox() {
-  return <div>Global checkbox</div>;
-}
+const GlobalCheckbox = forwardRef<HTMLDivElement, CheckboxFormatterProps>(function GlobalCheckbox(
+  props,
+  ref
+) {
+  return <div ref={ref}>Global checkbox</div>;
+});
 
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
