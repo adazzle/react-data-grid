@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { scrollIntoView } from '../utils';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
 export function useRovingCellRef(isSelected: boolean) {
@@ -10,8 +11,9 @@ export function useRovingCellRef(isSelected: boolean) {
   }
 
   const ref = useCallback((cell: HTMLDivElement | null) => {
-    if (cell === null || cell.contains(document.activeElement)) return;
-
+    if (cell === null) return;
+    scrollIntoView(cell);
+    if (cell.contains(document.activeElement)) return;
     cell.focus({ preventScroll: true });
   }, []);
 

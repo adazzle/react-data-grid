@@ -99,8 +99,9 @@ describe('Editor', () => {
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     userEvent.keyboard('123');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(123);
+    const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     userEvent.keyboard('{enter}');
-    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+    expect(spy).toHaveBeenCalled();
   });
 
   describe('editable', () => {
