@@ -1,5 +1,5 @@
 import { StrictMode, useState } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -118,9 +118,8 @@ function Root() {
   );
 }
 
-render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Root />
-  </StrictMode>,
-  document.getElementById('root')
+  </StrictMode>
 );
