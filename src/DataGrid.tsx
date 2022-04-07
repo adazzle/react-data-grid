@@ -41,7 +41,8 @@ import {
   getColSpan,
   sign,
   abs,
-  getSelectedCellColSpan
+  getSelectedCellColSpan,
+  scrollIntoView
 } from './utils';
 
 import type {
@@ -405,10 +406,10 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     prevSelectedPosition.current = selectedPosition;
-    scrollToCell(selectedPosition);
 
     if (selectedPosition.idx === -1) {
       rowRef.current!.focus({ preventScroll: true });
+      scrollIntoView(rowRef.current);
     }
   });
 
@@ -429,9 +430,7 @@ function DataGrid<R, SR, K extends Key>(
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
-    scrollToColumn(idx: number) {
-      scrollToCell({ idx });
-    },
+    scrollToColumn,
     scrollToRow(rowIdx: number) {
       const { current } = gridRef;
       if (!current) return;
@@ -729,19 +728,18 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
-      // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
-      scrollToCell(position);
+      scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
   }
 
-  function scrollToCell({ idx, rowIdx }: Partial<Position>): void {
+  function scrollToColumn(idx: number): void {
     const { current } = gridRef;
     if (!current) return;
 
-    if (typeof idx === 'number' && idx > lastFrozenColumnIndex) {
-      rowIdx ??= selectedPosition.rowIdx;
+    if (idx > lastFrozenColumnIndex) {
+      const { rowIdx } = selectedPosition;
       if (!isCellWithinSelectionBounds({ rowIdx, idx })) return;
       const { clientWidth } = current;
       const column = columns[idx];
@@ -769,18 +767,6 @@ function DataGrid<R, SR, K extends Key>(
         current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
       } else if (isCellAtRightBoundary) {
         current.scrollLeft = (right - clientWidth) * sign;
-      }
-    }
-
-    if (typeof rowIdx === 'number' && isRowIdxWithinViewportBounds(rowIdx)) {
-      const rowTop = getRowTop(rowIdx);
-      const rowHeight = getRowHeight(rowIdx);
-      if (rowTop < scrollTop) {
-        // at top boundary, scroll to the row's top
-        current.scrollTop = rowTop;
-      } else if (rowTop + rowHeight > scrollTop + clientHeight) {
-        // at bottom boundary, scroll the next row's top to the bottom of the viewport
-        current.scrollTop = rowTop + rowHeight - clientHeight;
       }
     }
   }
@@ -967,9 +953,6 @@ function DataGrid<R, SR, K extends Key>(
         row={row}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
-        scrollToCell={() => {
-          scrollToCell(selectedPosition);
-        }}
       />
     );
   }
@@ -1141,6 +1124,15 @@ function DataGrid<R, SR, K extends Key>(
       style={
         {
           ...style,
+          // set scrollPadding to correctly position non-sticky cells after scrolling
+          scrollPaddingInlineStart:
+            selectedPosition.idx > lastFrozenColumnIndex
+              ? `${totalFrozenColumnWidth}px`
+              : undefined,
+          scrollPaddingBlock:
+            selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
+              ? `${headerRowHeight}px ${summaryRowsCount * summaryRowHeight}px`
+              : undefined,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
