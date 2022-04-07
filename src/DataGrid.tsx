@@ -728,7 +728,6 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
-      // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
       scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
