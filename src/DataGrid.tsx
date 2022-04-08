@@ -41,7 +41,6 @@ import {
   getColSpan,
   sign,
   abs,
-  getSelectedCellColSpan,
   scrollIntoView
 } from './utils';
 
@@ -311,7 +310,6 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
-    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
