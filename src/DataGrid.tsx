@@ -41,6 +41,7 @@ import {
   getColSpan,
   sign,
   abs,
+  getSelectedCellColSpan,
   scrollIntoView
 } from './utils';
 
@@ -310,6 +311,7 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
+    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -439,9 +441,8 @@ function DataGrid<R, SR, K extends Key>(
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn(idx: number) {
-      if (isColIdxWithinSelectionBounds(idx)) {
-        setScrollToColumnIdx(idx);
-      }
+      if (!isColIdxWithinSelectionBounds(idx)) return;
+      setScrollToColumnIdx(idx);
     },
     scrollToRow(rowIdx: number) {
       const { current } = gridRef;
@@ -740,12 +741,12 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
-      // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
       scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
   }
+
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
     const row = rows[rowIdx];
