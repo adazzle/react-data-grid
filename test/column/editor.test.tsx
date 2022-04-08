@@ -19,10 +19,10 @@ describe('Editor', () => {
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    await userEvent.type(document.activeElement!, '2');
+    await userEvent.keyboard('2');
     await userEvent.tab();
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12$/);
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^21$/);
   });
 
   it('should open and commit changes on enter', async () => {
