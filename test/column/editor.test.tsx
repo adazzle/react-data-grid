@@ -31,7 +31,7 @@ describe('Editor', () => {
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.keyboard('{enter}');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    await userEvent.keyboard('3{enter}');
+    await userEvent.keyboard('{ArrowRight}3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
   });
@@ -40,7 +40,7 @@ describe('Editor', () => {
     render(<EditorTest />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('123{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1123$/);
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1231$/);
   });
 
   it('should close editor and discard changes on escape', async () => {
@@ -59,14 +59,14 @@ describe('Editor', () => {
     await userEvent.keyboard('2222');
     await userEvent.click(screen.getByText('outside'));
     await waitForElementToBeRemoved(screen.queryByLabelText('col1-editor'));
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12222$/);
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^22221$/);
   });
 
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
     const onSave = jest.fn();
     render(<EditorTest onSave={onSave} />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    await userEvent.keyboard('234');
+    await userEvent.keyboard('{ArrowRight}234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = screen.getByRole('button', { name: 'save' });
     fireEvent.mouseDown(saveButton);
@@ -98,7 +98,7 @@ describe('Editor', () => {
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.keyboard('123');
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(123);
+    expect(screen.getByLabelText('col1-editor')).toHaveValue(1230);
     const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     await userEvent.keyboard('{enter}');
     expect(spy).toHaveBeenCalled();
@@ -155,7 +155,7 @@ describe('Editor', () => {
       expect(editor).toHaveValue('a1');
       await userEvent.keyboard('23');
       // The cell value should update as the editor value is changed
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a123');
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a123$/);
       // clicking in a portal does not count as an outside click
       await userEvent.click(editor);
       expect(editor).toBeInTheDocument();
@@ -235,11 +235,11 @@ describe('Editor', () => {
 
       grid.scrollTop = 1500;
 
-      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent('40');
+      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
       await userEvent.click(getCellsAtRowIndex(40)[1]);
-      expect(getSelectedCell()).toHaveTextContent('40');
+      expect(getSelectedCell()).toHaveTextContent(/^40$/);
       grid.scrollTop = 0;
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('abc');
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
     });
 
     it.skip('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
