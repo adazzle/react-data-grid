@@ -31,8 +31,8 @@ describe('Editor', () => {
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.keyboard('{enter}');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
-    await userEvent.keyboard('{ArrowRight}3{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
+    await userEvent.keyboard('3{enter}');
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^31$/);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
   });
 
@@ -66,7 +66,7 @@ describe('Editor', () => {
     const onSave = jest.fn();
     render(<EditorTest onSave={onSave} />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    await userEvent.keyboard('{ArrowRight}234');
+    await userEvent.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = screen.getByRole('button', { name: 'save' });
     fireEvent.mouseDown(saveButton);
@@ -78,7 +78,7 @@ describe('Editor', () => {
     fireEvent.click(saveButton);
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith([
-      { col1: 1234, col2: 'a1' },
+      { col1: 2341, col2: 'a1' },
       { col1: 2, col2: 'a2' }
     ]);
   });
