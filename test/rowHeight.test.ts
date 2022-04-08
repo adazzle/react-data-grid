@@ -34,9 +34,9 @@ test('rowHeight is number', async () => {
   expect(grid.scrollTop).toBe(0);
 
   // Go to the last cell
+  const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   await userEvent.keyboard('{Control>}{end}');
-  // scrollTop = 2000 (totalRowHeight) + 40(headerRowHeight)- 1080(clientHeight)
-  expect(grid.scrollTop).toBe(960);
+  expect(spy).toHaveBeenCalled();
 });
 
 test('rowHeight is function', async () => {
@@ -53,8 +53,8 @@ test('rowHeight is function', async () => {
   const grid = screen.getByRole('grid');
   expect(grid.scrollTop).toBe(0);
 
+  const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   // Go to the last cell
   await userEvent.keyboard('{Control>}{end}');
-  // scrollTop = 2980 (totalRowHeight) + 35(headerRowHeight)- 1080(clientHeight)
-  expect(grid.scrollTop).toBe(1935);
+  expect(spy).toHaveBeenCalled();
 });
