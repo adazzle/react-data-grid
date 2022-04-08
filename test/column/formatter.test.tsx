@@ -56,7 +56,7 @@ describe('Custom formatter component', () => {
     expect(cell2).toHaveTextContent('No name');
   });
 
-  it('can update rows', () => {
+  it('can update rows', async () => {
     const column: Column<Row> = {
       key: 'test',
       name: 'test',
@@ -83,7 +83,7 @@ describe('Custom formatter component', () => {
 
     const [cell] = getCells();
     expect(cell).toHaveTextContent('value: 1');
-    userEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button'));
     expect(cell).toHaveTextContent('value: 2');
   });
 });
