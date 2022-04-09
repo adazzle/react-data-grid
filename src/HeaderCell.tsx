@@ -172,7 +172,7 @@ export default function HeaderCell<R, SR>({
       ref={ref}
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
-      className={className}
+      className={`${className} ${column.key === 'FROZEN_RIGHT_COLUMN' && 'RIGHT_COLUMN_FROZEN_CLASS'}`}
       style={{
         ...getCellStyle(column, colSpan),
         minWidth: column.minWidth,

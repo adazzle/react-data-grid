@@ -240,7 +240,12 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       summaryFormatter({ row: { yesCount, totalCount } }) {
         return <>{`${Math.floor((100 * yesCount) / totalCount)}% ✔️`}</>;
       }
-    }
+    },
+    {
+      key: 'FROZEN_RIGHT_COLUMN',
+      name: 'frozen right columns',
+      editor: TextEditor
+    },
   ];
 }
 
