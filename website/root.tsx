@@ -34,6 +34,11 @@ css`
       font-family: sans-serif;
     }
 
+    .RIGHT_COLUMN_FROZEN_CLASS {
+      position: sticky !important;
+      right: 0 !important;
+    }
+
     :root {
       color-scheme: light dark;
 
