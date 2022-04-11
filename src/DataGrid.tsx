@@ -26,6 +26,7 @@ import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import SortIcon from './SortIcon';
+import ScrollToCell from './ScrollToCell';
 import { CheckboxFormatter } from './formatters';
 import {
   DataGridDefaultComponentsProvider,
@@ -84,8 +85,7 @@ const initialPosition: SelectCellState = {
 
 export interface DataGridHandle {
   element: HTMLDivElement | null;
-  scrollToColumn: (colIdx: number) => void;
-  scrollToRow: (rowIdx: number) => void;
+  scrollToCell: (position: Partial<Position>) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
@@ -261,7 +261,7 @@ function DataGrid<R, SR, K extends Key>(
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
-  const [scrollToColumnIdx, setScrollToColumnIdx] = useState<number | undefined>(undefined);
+  const [scrollToPosition, setScrollToPosition] = useState<Partial<Position> | null>(null);
 
   /**
    * refs
@@ -427,28 +427,17 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize?.(autoResizeColumn.idx, width);
   }, [autoResizeColumn, gridRef, onColumnResize]);
 
-  useLayoutEffect(() => {
-    if (scrollToColumnIdx === undefined) return;
-    const scrollToCellEl = gridRef.current?.querySelector(
-      `[aria-rowindex="1"] > [aria-colindex="${scrollToColumnIdx + 1}"]`
-    );
-    scrollIntoView(scrollToCellEl);
-    setScrollToColumnIdx(undefined);
-  }, [gridRef, scrollToColumnIdx]);
-
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
-    scrollToColumn(idx: number) {
-      if (!isColIdxWithinSelectionBounds(idx)) return;
-      setScrollToColumnIdx(idx);
-    },
-    scrollToRow(rowIdx: number) {
-      const { current } = gridRef;
-      if (!current) return;
-      current.scrollTo({
-        top: getRowTop(rowIdx),
-        behavior: 'smooth'
-      });
+    scrollToCell({ idx, rowIdx }) {
+      const scrollToIdx =
+        idx !== undefined && idx > lastFrozenColumnIndex && idx < columns.length ? idx : undefined;
+      const scrollToRowIdx =
+        rowIdx !== undefined && rowIdx >= 0 && rowIdx < rows.length ? rowIdx : undefined;
+
+      if (scrollToIdx !== undefined || scrollToRowIdx !== undefined) {
+        setScrollToPosition({ idx: scrollToIdx, rowIdx: scrollToRowIdx });
+      }
     },
     selectCell
   }));
@@ -931,44 +920,25 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
-  function addOutOfBoundColumnToRowViewportColumns(
-    columnToAddIdx: number,
-    rowViewportColumns: readonly CalculatedColumn<R, SR>[]
-  ) {
-    const column = columns[columnToAddIdx];
+  function getRowViewportColumns(rowIdx: number) {
+    const selectedColumn = columns[selectedPosition.idx];
     if (
       // idx can be -1 if grouping is enabled
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      column !== undefined &&
-      !rowViewportColumns.includes(column)
+      selectedColumn !== undefined &&
+      selectedPosition.rowIdx === rowIdx &&
+      !viewportColumns.includes(selectedColumn)
     ) {
       // Add the selected column to viewport columns if the cell is not within the viewport
-      return columnToAddIdx > colOverscanEndIdx
-        ? [...rowViewportColumns, column]
+      return selectedPosition.idx > colOverscanEndIdx
+        ? [...viewportColumns, selectedColumn]
         : [
-            ...rowViewportColumns.slice(0, lastFrozenColumnIndex + 1),
-            column,
-            ...rowViewportColumns.slice(lastFrozenColumnIndex + 1)
+            ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+            selectedColumn,
+            ...viewportColumns.slice(lastFrozenColumnIndex + 1)
           ];
     }
-    return rowViewportColumns;
-  }
-
-  function getRowViewportColumns(rowIdx: number) {
-    let rowViewportColumns = viewportColumns;
-    if (rowIdx === selectedPosition.rowIdx) {
-      rowViewportColumns = addOutOfBoundColumnToRowViewportColumns(
-        selectedPosition.idx,
-        viewportColumns
-      );
-    }
-    if (rowIdx === -1 && scrollToColumnIdx !== undefined) {
-      rowViewportColumns = addOutOfBoundColumnToRowViewportColumns(
-        scrollToColumnIdx,
-        rowViewportColumns
-      );
-    }
-    return rowViewportColumns;
+    return viewportColumns;
   }
 
   function getViewportRows() {
@@ -1120,11 +1090,14 @@ function DataGrid<R, SR, K extends Key>(
           // set scrollPadding to correctly position non-sticky cells after scrolling
           scrollPaddingInlineStart:
             selectedPosition.idx > lastFrozenColumnIndex ||
-            (scrollToColumnIdx !== undefined && scrollToColumnIdx > lastFrozenColumnIndex)
+            (scrollToPosition?.idx !== undefined && scrollToPosition.idx > lastFrozenColumnIndex)
               ? `${totalFrozenColumnWidth}px`
               : undefined,
           scrollPaddingBlock:
-            selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
+            (selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length) ||
+            (scrollToPosition?.rowIdx !== undefined &&
+              scrollToPosition.rowIdx >= 0 &&
+              scrollToPosition.rowIdx < rows.length)
               ? `${headerRowHeight}px ${summaryRowsCount * summaryRowHeight}px`
               : undefined,
           gridTemplateRows: templateRows,
@@ -1153,6 +1126,12 @@ function DataGrid<R, SR, K extends Key>(
             gridRowStart: selectedPosition.rowIdx + 2
           }}
           onKeyDown={handleKeyDown}
+        />
+      )}
+      {scrollToPosition !== null && (
+        <ScrollToCell
+          scrollToPosition={scrollToPosition}
+          setScrollToCellPosition={setScrollToPosition}
         />
       )}
       <DataGridDefaultComponentsProvider value={defaultGridComponents}>
