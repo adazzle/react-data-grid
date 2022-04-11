@@ -26,6 +26,7 @@ import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import SortIcon from './SortIcon';
+import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import { CheckboxFormatter } from './formatters';
 import {
@@ -85,7 +86,7 @@ const initialPosition: SelectCellState = {
 
 export interface DataGridHandle {
   element: HTMLDivElement | null;
-  scrollToCell: (position: Partial<Position>) => void;
+  scrollToCell: (position: PartialPosition) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
@@ -261,7 +262,7 @@ function DataGrid<R, SR, K extends Key>(
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
-  const [scrollToPosition, setScrollToPosition] = useState<Partial<Position> | null>(null);
+  const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
 
   /**
    * refs
