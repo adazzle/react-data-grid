@@ -21,7 +21,7 @@ export default function ScrollToCell({ direction }: Props) {
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 200; i++) {
       const key = String(i);
       columns.push({
         key,
