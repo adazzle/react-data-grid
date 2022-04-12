@@ -434,7 +434,7 @@ function DataGrid<R, SR, K extends Key>(
       const scrollToIdx =
         idx !== undefined && idx > lastFrozenColumnIndex && idx < columns.length ? idx : undefined;
       const scrollToRowIdx =
-        rowIdx !== undefined && rowIdx >= 0 && rowIdx < rows.length ? rowIdx : undefined;
+        rowIdx !== undefined && isRowIdxWithinViewportBounds(rowIdx) ? rowIdx : undefined;
 
       if (scrollToIdx !== undefined || scrollToRowIdx !== undefined) {
         setScrollToPosition({ idx: scrollToIdx, rowIdx: scrollToRowIdx });
@@ -1090,14 +1090,12 @@ function DataGrid<R, SR, K extends Key>(
           ...style,
           // set scrollPadding to correctly position non-sticky cells after scrolling
           scrollPaddingInlineStart:
-            selectedPosition.idx > lastFrozenColumnIndex ||
-            (scrollToPosition?.idx !== undefined && scrollToPosition.idx > lastFrozenColumnIndex)
+            selectedPosition.idx > lastFrozenColumnIndex || scrollToPosition?.idx !== undefined
               ? `${totalFrozenColumnWidth}px`
               : undefined,
           scrollPaddingBlock:
             isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
-            (scrollToPosition?.rowIdx !== undefined &&
-              isRowIdxWithinViewportBounds(scrollToPosition.rowIdx))
+            scrollToPosition?.rowIdx !== undefined
               ? `${headerRowHeight}px ${summaryRowsCount * summaryRowHeight}px`
               : undefined,
           gridTemplateRows: templateRows,
