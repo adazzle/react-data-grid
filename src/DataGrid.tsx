@@ -1095,10 +1095,9 @@ function DataGrid<R, SR, K extends Key>(
               ? `${totalFrozenColumnWidth}px`
               : undefined,
           scrollPaddingBlock:
-            (selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length) ||
+            isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
             (scrollToPosition?.rowIdx !== undefined &&
-              scrollToPosition.rowIdx >= 0 &&
-              scrollToPosition.rowIdx < rows.length)
+              isRowIdxWithinViewportBounds(scrollToPosition.rowIdx))
               ? `${headerRowHeight}px ${summaryRowsCount * summaryRowHeight}px`
               : undefined,
           gridTemplateRows: templateRows,
