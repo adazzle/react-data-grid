@@ -120,8 +120,8 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/rows-reordering" end className={getActiveClassname}>
         Rows Reordering
       </NavLink>
-      <NavLink to="/scroll-to-row" end className={getActiveClassname}>
-        Scroll To Row
+      <NavLink to="/scroll-to-cell" end className={getActiveClassname}>
+        Scroll To Cell
       </NavLink>
       <NavLink to="/tree-view" end className={getActiveClassname}>
         Tree View

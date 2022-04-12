@@ -108,7 +108,7 @@ function Root() {
           <Route path="no-rows" element={<NoRows direction={direction} />} />
           <Route path="resizable-grid" element={<ResizableGrid direction={direction} />} />
           <Route path="rows-reordering" element={<RowsReordering direction={direction} />} />
-          <Route path="scroll-to-row" element={<ScrollToCell direction={direction} />} />
+          <Route path="scroll-to-cell" element={<ScrollToCell direction={direction} />} />
           <Route path="tree-view" element={<TreeView direction={direction} />} />
           <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
           <Route path="*" element="Nothing to see here" />
