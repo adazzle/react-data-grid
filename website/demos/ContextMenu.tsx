@@ -129,6 +129,7 @@ function rowKeyGetter(row: Row) {
 
 function RowRenderer(props: RowRendererProps<Row>) {
   return (
+    // @ts-expect-error
     <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
       <GridRow {...props} />
     </ContextMenuTrigger>
@@ -174,10 +175,15 @@ export default function ContextMenuDemo({ direction }: Props) {
       />
       {createPortal(
         <div dir={direction}>
+          {/* @ts-expect-error */}
           <ContextMenu id="grid-context-menu" rtl={direction === 'rtl'}>
+            {/* @ts-expect-error */}
             <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
+            {/* @ts-expect-error */}
             <SubMenu title="Insert Row">
+              {/* @ts-expect-error */}
               <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
+              {/* @ts-expect-error */}
               <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
             </SubMenu>
           </ContextMenu>

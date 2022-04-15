@@ -21,191 +21,191 @@ const columns: readonly Column<Row>[] = [
   { key: 'col7', name: 'col7' }
 ];
 
-test('keyboard navigation', () => {
+test('keyboard navigation', async () => {
   setup({ columns, rows, summaryRows });
 
   // no initial selection
   expect(getSelectedCell()).not.toBeInTheDocument();
 
   // tab into the grid
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 
   // tab to the next cell
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(1, 0);
 
   // tab back to the previous cell
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   validateCellPosition(0, 0);
 
   // arrow navigation
-  userEvent.keyboard('{arrowdown}');
+  await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
-  userEvent.keyboard('{arrowright}');
+  await userEvent.keyboard('{arrowright}');
   validateCellPosition(1, 1);
-  userEvent.keyboard('{arrowup}');
+  await userEvent.keyboard('{arrowup}');
   validateCellPosition(1, 0);
-  userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowleft}');
   validateCellPosition(0, 0);
 
   // page {up,down}
-  userEvent.keyboard('{PageDown}');
+  await userEvent.keyboard('{PageDown}');
   validateCellPosition(0, 27);
-  userEvent.keyboard('{PageDown}');
+  await userEvent.keyboard('{PageDown}');
   validateCellPosition(0, 54);
-  userEvent.keyboard('{PageUp}');
+  await userEvent.keyboard('{PageUp}');
   validateCellPosition(0, 27);
 
   // home/end navigation
-  userEvent.keyboard('{end}');
+  await userEvent.keyboard('{end}');
   validateCellPosition(6, 27);
-  userEvent.keyboard('{home}');
+  await userEvent.keyboard('{home}');
   validateCellPosition(0, 27);
-  userEvent.keyboard('{ctrl}{end}');
+  await userEvent.keyboard('{Control>}{end}');
   validateCellPosition(6, 102);
-  userEvent.keyboard('{arrowdown}');
+  await userEvent.keyboard('{arrowdown}');
   validateCellPosition(6, 102);
-  userEvent.keyboard('{arrowright}');
+  await userEvent.keyboard('{arrowright}');
   validateCellPosition(6, 102);
-  userEvent.keyboard('{end}');
+  await userEvent.keyboard('{end}');
   validateCellPosition(6, 102);
-  userEvent.keyboard('{ctrl}{end}');
+  await userEvent.keyboard('{Control>}{end}');
   validateCellPosition(6, 102);
-  userEvent.keyboard('{PageDown}');
+  await userEvent.keyboard('{PageDown}');
   validateCellPosition(6, 102);
-  userEvent.keyboard('{ctrl}{home}');
+  await userEvent.keyboard('{Control>}{home}');
   validateCellPosition(0, 0);
-  userEvent.keyboard('{home}');
+  await userEvent.keyboard('{home}');
   validateCellPosition(0, 0);
-  userEvent.keyboard('{ctrl}{home}');
+  await userEvent.keyboard('{Control>}{home}');
   validateCellPosition(0, 0);
-  userEvent.keyboard('{PageUp}');
+  await userEvent.keyboard('{PageUp}');
   validateCellPosition(0, 0);
 
   // tab at the end of a row selects the first cell on the next row
-  userEvent.keyboard('{end}');
-  userEvent.tab();
+  await userEvent.keyboard('{end}');
+  await userEvent.tab();
   validateCellPosition(0, 1);
 
   // shift tab should select the last cell of the previous row
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   validateCellPosition(6, 0);
 });
 
-test('cellNavigationMode="NONE"', () => {
+test('cellNavigationMode="NONE"', async () => {
   setup({ columns, rows, summaryRows, cellNavigationMode: 'NONE' });
 
   // pressing arrowleft on the leftmost cell does nothing
-  userEvent.tab();
-  userEvent.keyboard('{arrowdown}');
+  await userEvent.tab();
+  await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
-  userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowleft}');
   validateCellPosition(0, 1);
 
   // pressing arrowright on the rightmost cell does nothing
-  userEvent.keyboard('{end}');
+  await userEvent.keyboard('{end}');
   validateCellPosition(6, 1);
-  userEvent.keyboard('{arrowright}');
+  await userEvent.keyboard('{arrowright}');
   validateCellPosition(6, 1);
 
   // pressing tab on the rightmost cell navigates to the leftmost cell on the next row
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 2);
 
   // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the previous row
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   validateCellPosition(6, 1);
 });
 
-test('cellNavigationMode="CHANGE_ROW"', () => {
+test('cellNavigationMode="CHANGE_ROW"', async () => {
   setup({ columns, rows, summaryRows, cellNavigationMode: 'CHANGE_ROW' });
 
   // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the previous row
-  userEvent.tab();
-  userEvent.keyboard('{arrowdown}');
+  await userEvent.tab();
+  await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
-  userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowleft}');
   validateCellPosition(6, 0);
 
   // pressing arrowright on the rightmost cell navigates to the leftmost cell on the next row
-  userEvent.keyboard('{arrowright}');
+  await userEvent.keyboard('{arrowright}');
   validateCellPosition(0, 1);
 
   // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the previous row
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   validateCellPosition(6, 0);
 
   // pressing tab on the rightmost cell navigates to the leftmost cell on the next row
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 1);
 });
 
-test('cellNavigationMode="LOOP_OVER_ROW"', () => {
+test('cellNavigationMode="LOOP_OVER_ROW"', async () => {
   setup({ columns, rows, summaryRows, cellNavigationMode: 'LOOP_OVER_ROW' });
 
   // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the same row
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 0);
-  userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowleft}');
   validateCellPosition(6, 0);
 
   // pressing arrowright on the rightmost cell navigates to the leftmost cell on the same row
-  userEvent.keyboard('{arrowright}');
+  await userEvent.keyboard('{arrowright}');
   validateCellPosition(0, 0);
 
   // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the same row
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   validateCellPosition(6, 0);
 
   // pressing tab on the rightmost cell navigates to the leftmost cell on the same row
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 });
 
-test('grid enter/exit', () => {
+test('grid enter/exit', async () => {
   setup({ columns, rows: Array(5), summaryRows });
 
   // no initial selection
   expect(getSelectedCell()).not.toBeInTheDocument();
 
   // tab into the grid
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 
   // shift+tab tabs out of the grid if we are at the first cell
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   expect(document.body).toHaveFocus();
 
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 
-  userEvent.keyboard('{arrowdown}{arrowdown}');
+  await userEvent.keyboard('{arrowdown}{arrowdown}');
   validateCellPosition(0, 2);
 
   // tab should select the last selected cell
   // click outside the grid
-  userEvent.click(document.body);
-  userEvent.tab();
-  userEvent.keyboard('{arrowdown}');
+  await userEvent.click(document.body);
+  await userEvent.tab();
+  await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 3);
 
   // shift+tab should select the last selected cell
-  userEvent.click(document.body);
-  userEvent.tab({ shift: true });
-  userEvent.keyboard('{arrowup}');
+  await userEvent.click(document.body);
+  await userEvent.tab({ shift: true });
+  await userEvent.keyboard('{arrowup}');
   validateCellPosition(0, 2);
 
   // tab tabs out of the grid if we are at the last cell
-  userEvent.keyboard('{ctrl}{end}');
-  userEvent.tab();
+  await userEvent.keyboard('{Control>}{end}');
+  await userEvent.tab();
   expect(document.body).toHaveFocus();
 });
 
-test('navigation with focusable formatter', () => {
+test('navigation with focusable formatter', async () => {
   setup({ columns, rows: Array(1), summaryRows });
-  userEvent.tab();
-  userEvent.keyboard('{arrowdown}');
+  await userEvent.tab();
+  await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
 
   // cell should not set tabIndex to 0 if it contains a focusable formatter
@@ -214,13 +214,13 @@ test('navigation with focusable formatter', () => {
   expect(checkbox).toHaveFocus();
   expect(checkbox).toHaveAttribute('tabIndex', '0');
 
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(1, 1);
   // cell should set tabIndex to 0 if it does not have focusable formatter
   expect(getSelectedCell()).toHaveAttribute('tabIndex', '0');
 });
 
-test('navigation when header and summary rows have focusable elements', () => {
+test('navigation when header and summary rows have focusable elements', async () => {
   function Test({ id, isCellSelected }: { id: string; isCellSelected: boolean }) {
     const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
 
@@ -251,74 +251,74 @@ test('navigation when header and summary rows have focusable elements', () => {
   ];
 
   setup({ columns, rows: Array(2), summaryRows });
-  userEvent.tab();
+  await userEvent.tab();
 
   // should set focus on the header filter
   expect(document.getElementById('header-filter1')).toHaveFocus();
 
-  userEvent.tab();
+  await userEvent.tab();
   expect(document.getElementById('header-filter2')).toHaveFocus();
 
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 1);
 
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   expect(document.getElementById('header-filter2')).toHaveFocus();
 
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   expect(document.getElementById('header-filter1')).toHaveFocus();
 
-  userEvent.tab();
-  userEvent.tab();
-  userEvent.keyboard('{ctrl}{end}{arrowup}{arrowup}');
+  await userEvent.tab();
+  await userEvent.tab();
+  await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
   validateCellPosition(1, 2);
 
-  userEvent.tab();
+  await userEvent.tab();
   expect(document.getElementById('summary-formatter1')).toHaveFocus();
 
-  userEvent.tab();
+  await userEvent.tab();
   expect(document.getElementById('summary-formatter2')).toHaveFocus();
 
-  userEvent.tab({ shift: true });
-  userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
   validateCellPosition(1, 2);
   expect(getSelectedCell()).toHaveFocus();
 });
 
-test('navigation when selected cell not in the viewport', () => {
+test('navigation when selected cell not in the viewport', async () => {
   const columns: Column<Row>[] = [SelectColumn];
   for (let i = 0; i < 99; i++) {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
   setup({ columns, rows, summaryRows });
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 
   const grid = getGrid();
-  userEvent.keyboard('{ctrl}{end}{arrowup}{arrowup}');
+  await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
   validateCellPosition(99, 100);
   expect(getCellsAtRowIndex(100)).not.toHaveLength(1);
 
   grid.scrollTop = 0;
   expect(getCellsAtRowIndex(99)).toHaveLength(1);
-  userEvent.keyboard('{arrowup}');
+  await userEvent.keyboard('{arrowup}');
   validateCellPosition(99, 99);
   expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
 
   grid.scrollLeft = 0;
-  userEvent.keyboard('{arrowdown}');
+  await userEvent.keyboard('{arrowdown}');
   validateCellPosition(99, 100);
 
-  userEvent.keyboard(
+  await userEvent.keyboard(
     '{home}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
   );
   validateCellPosition(7, 100);
   grid.scrollLeft = 2000;
-  userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowleft}');
   validateCellPosition(6, 100);
 });
 
-test('reset selected cell when column is removed', () => {
+test('reset selected cell when column is removed', async () => {
   const columns: readonly Column<Row>[] = [
     { key: '1', name: '1' },
     { key: '2', name: '2' }
@@ -335,8 +335,8 @@ test('reset selected cell when column is removed', () => {
     </StrictMode>
   );
 
-  userEvent.tab();
-  userEvent.keyboard('{arrowdown}{arrowright}');
+  await userEvent.tab();
+  await userEvent.keyboard('{arrowdown}{arrowright}');
   validateCellPosition(1, 1);
 
   rerender(
@@ -348,7 +348,7 @@ test('reset selected cell when column is removed', () => {
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
 
-test('reset selected cell when row is removed', () => {
+test('reset selected cell when row is removed', async () => {
   const columns: readonly Column<Row>[] = [
     { key: '1', name: '1' },
     { key: '2', name: '2' }
@@ -365,8 +365,8 @@ test('reset selected cell when row is removed', () => {
     </StrictMode>
   );
 
-  userEvent.tab();
-  userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
+  await userEvent.tab();
+  await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
   validateCellPosition(1, 2);
 
   rerender(
@@ -378,18 +378,18 @@ test('reset selected cell when row is removed', () => {
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
 
-test('should not change the left and right arrow behavior for right to left languages', () => {
+test('should not change the left and right arrow behavior for right to left languages', async () => {
   setup({ rows, columns, direction: 'rtl' });
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(0, 0);
-  userEvent.tab();
+  await userEvent.tab();
   validateCellPosition(1, 0);
-  userEvent.keyboard('{arrowright}');
+  await userEvent.keyboard('{arrowright}');
   validateCellPosition(0, 0);
-  userEvent.keyboard('{arrowright}');
+  await userEvent.keyboard('{arrowright}');
   validateCellPosition(0, 0);
-  userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowleft}');
   validateCellPosition(1, 0);
-  userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowleft}');
   validateCellPosition(2, 0);
 });
