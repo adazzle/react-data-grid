@@ -17,8 +17,7 @@ import {
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
-  RowSelectionChangeProvider,
-  DEFAULT_COLUMN_MIN_WIDTH
+  RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import Row from './Row';
@@ -312,7 +311,6 @@ function DataGrid<R, SR, K extends Key>(
   const {
     columns,
     colSpanColumns,
-    flexWidthColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
@@ -353,7 +351,7 @@ function DataGrid<R, SR, K extends Key>(
     enableVirtualization
   });
 
-  const viewportColumns = useViewportColumns({
+  const { viewportColumns, flexWidthViewportColumns } = useViewportColumns({
     columns,
     colSpanColumns,
     colOverscanStartIdx,
@@ -363,6 +361,8 @@ function DataGrid<R, SR, K extends Key>(
     rowOverscanEndIdx,
     rows,
     summaryRows,
+    columnWidths,
+    flexColumnWidths,
     isGroupRow
   });
 
@@ -421,25 +421,22 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   useLayoutEffect(() => {
-    if (flexWidthColumns.length === 0 || !isWidthInitialized) return;
-    const newFlexColumnWidths = new Map(flexColumnWidths);
-    const newColumnWidths = new Map(columnWidths);
-    for (const column of flexWidthColumns) {
+    if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
+    const newFlexColumnWidths = new Map<string, number>();
+    for (const column of flexWidthViewportColumns) {
       const columnElement = gridRef.current!.querySelector<HTMLDivElement>(
         `[aria-colindex="${column.idx + 1}"]`
       );
       if (columnElement) {
         // Set the actual width of the column after it is rendered
         newFlexColumnWidths.set(column.key, columnElement.getBoundingClientRect().width);
-      } else {
-        // We can only calculate the width of the visible flex columns and rest of the columns are assigned a fixed value.
-        // Set `enableVirtualization: false` if all the columns need flex width
-        newColumnWidths.set(column.key, DEFAULT_COLUMN_MIN_WIDTH);
       }
     }
-    setFlexColumnWidths(newFlexColumnWidths);
-    setColumnWidths(newColumnWidths);
-  }, [isWidthInitialized, columnWidths, flexColumnWidths, flexWidthColumns, gridRef]);
+    if (newFlexColumnWidths.size === 0) return;
+    setFlexColumnWidths((flexColumnWidths) => {
+      return new Map([...flexColumnWidths, ...newFlexColumnWidths]);
+    });
+  }, [isWidthInitialized, flexWidthViewportColumns, gridRef]);
 
   useLayoutEffect(() => {
     if (autoResizeColumn === null) return;
@@ -915,10 +912,18 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getLayoutCssVars() {
-    if (autoResizeColumn === null) return layoutCssVars;
+    if (autoResizeColumn === null && flexWidthViewportColumns.length === 0) return layoutCssVars;
     const { gridTemplateColumns } = layoutCssVars;
     const newSizes = gridTemplateColumns.split(' ');
-    newSizes[autoResizeColumn.idx] = 'max-content';
+    if (autoResizeColumn !== null) {
+      newSizes[autoResizeColumn.idx] = 'max-content';
+    }
+    if (flexWidthViewportColumns.length > 0) {
+      for (const column of flexWidthViewportColumns) {
+        newSizes[column.idx] = column.width.toString();
+      }
+    }
+
     return {
       ...layoutCssVars,
       gridTemplateColumns: newSizes.join(' ')
@@ -1147,7 +1152,8 @@ function DataGrid<R, SR, K extends Key>(
         rootClassname,
         {
           [viewportDraggingClassname]: isDragging,
-          [cellAutoResizeClassname]: autoResizeColumn !== null || flexWidthColumns.length > 0
+          [cellAutoResizeClassname]:
+            autoResizeColumn !== null || flexWidthViewportColumns.length > 0
         },
         className
       )}

@@ -13,6 +13,8 @@ interface ViewportColumnsArgs<R, SR> {
   lastFrozenColumnIndex: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
+  columnWidths: ReadonlyMap<string, number>;
+  flexColumnWidths: ReadonlyMap<string, number>;
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
@@ -26,6 +28,8 @@ export function useViewportColumns<R, SR>({
   lastFrozenColumnIndex,
   rowOverscanStartIdx,
   rowOverscanEndIdx,
+  columnWidths,
+  flexColumnWidths,
   isGroupRow
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
@@ -88,15 +92,31 @@ export function useViewportColumns<R, SR>({
     isGroupRow
   ]);
 
-  return useMemo((): readonly CalculatedColumn<R, SR>[] => {
+  const { viewportColumns, flexWidthViewportColumns } = useMemo((): {
+    viewportColumns: readonly CalculatedColumn<R, SR>[];
+    flexWidthViewportColumns: readonly CalculatedColumn<R, SR>[];
+  } => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];
+    const flexWidthViewportColumns: CalculatedColumn<R, SR>[] = [];
     for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
       const column = columns[colIdx];
 
       if (colIdx < startIdx && !column.frozen) continue;
       viewportColumns.push(column);
+      if (typeof column.width === 'string') {
+        flexWidthViewportColumns.push(column);
+      }
     }
 
-    return viewportColumns;
+    return { viewportColumns, flexWidthViewportColumns };
   }, [startIdx, colOverscanEndIdx, columns]);
+
+  return {
+    viewportColumns,
+    flexWidthViewportColumns: useMemo(() => {
+      return flexWidthViewportColumns.filter(
+        (column) => !columnWidths.has(column.key) && !flexColumnWidths.has(column.key)
+      );
+    }, [flexWidthViewportColumns, columnWidths, flexColumnWidths])
+  };
 }

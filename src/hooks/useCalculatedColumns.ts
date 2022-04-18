@@ -16,7 +16,7 @@ interface ColumnMetric {
 }
 
 const DEFAULT_COLUMN_WIDTH = 'auto';
-export const DEFAULT_COLUMN_MIN_WIDTH = 80;
+const DEFAULT_COLUMN_MIN_WIDTH = 80;
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
@@ -144,30 +144,26 @@ export function useCalculatedColumns<R, SR>({
     rawGroupBy
   ]);
 
-  const { layoutCssVars, totalFrozenColumnWidth, columnMetrics, flexWidthColumns } = useMemo((): {
+  const { layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
     layoutCssVars: Readonly<Record<string, string>>;
     totalFrozenColumnWidth: number;
     columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
-    flexWidthColumns: readonly CalculatedColumn<R, SR>[];
   } => {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalFrozenColumnWidth = 0;
     let templateColumns = '';
-    const flexWidthColumns: CalculatedColumn<R, SR>[] = [];
 
     for (const column of columns) {
       let width = columnWidths.get(column.key) ?? flexColumnWidths.get(column.key) ?? column.width;
       if (typeof width === 'number') {
         width = clampColumnWidth(width, column);
-        templateColumns += `${width}px `;
       } else {
-        templateColumns += `${width} `;
         // This is a placeholder width so we can continue to use virtualization.
         // The actual value is set after the column is rendered
         width = DEFAULT_COLUMN_MIN_WIDTH;
-        flexWidthColumns.push(column);
       }
+      templateColumns += `${width}px `;
       columnMetrics.set(column, { width, left });
       left += width;
     }
@@ -186,7 +182,7 @@ export function useCalculatedColumns<R, SR>({
       layoutCssVars[`--rdg-frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
-    return { layoutCssVars, totalFrozenColumnWidth, columnMetrics, flexWidthColumns };
+    return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
   }, [columnWidths, flexColumnWidths, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
@@ -246,7 +242,6 @@ export function useCalculatedColumns<R, SR>({
   return {
     columns,
     colSpanColumns,
-    flexWidthColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
     layoutCssVars,
