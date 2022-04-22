@@ -14,12 +14,15 @@ type GroupByDictionary<TRow> = Record<
 interface ViewportRowsArgs<R> {
   rawRows: readonly R[];
   rowHeight: number | ((args: RowHeightArgs<R>) => number);
-  clientHeight: number;
   scrollTop: number;
   groupBy: readonly string[];
   rowGrouper: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>;
   expandedGroupIds: Maybe<ReadonlySet<unknown>>;
   enableVirtualization: boolean;
+  headerRowHeight: number;
+  gridHeight: number;
+  summaryRowsCount: number;
+  summaryRowHeight: number;
 }
 
 // TODO: https://github.com/microsoft/TypeScript/issues/41808
@@ -30,12 +33,15 @@ function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
 export function useViewportRows<R>({
   rawRows,
   rowHeight,
-  clientHeight,
   scrollTop,
   groupBy,
   rowGrouper,
   expandedGroupIds,
-  enableVirtualization
+  enableVirtualization,
+  headerRowHeight,
+  gridHeight,
+  summaryRowsCount,
+  summaryRowHeight
 }: ViewportRowsArgs<R>) {
   const [groupedRows, rowsCount] = useMemo(() => {
     if (groupBy.length === 0 || rowGrouper == null) return [undefined, rawRows.length];
@@ -115,16 +121,16 @@ export function useViewportRows<R>({
   }, [expandedGroupIds, groupedRows, rawRows]);
 
   const stickyRowIndexes = useMemo(() => {
-    const stickyRowInfo: number[] = []
+    const stickyRowInfo: number[] = [];
     rows.forEach((r, i) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof r === 'object' && (r as any).isStickyRow) {
-        stickyRowInfo.push(i)
+        stickyRowInfo.push(i);
       }
-    })
+    });
 
-    return stickyRowInfo
-  }, [rows])
+    return stickyRowInfo;
+  }, [rows]);
 
   const { totalRowHeight, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
@@ -181,25 +187,33 @@ export function useViewportRows<R>({
 
   const stickyRowIndex = useMemo(() => {
     if (!stickyRowIndexes.length) {
-      return undefined
+      return undefined;
     }
 
     const rowVisibleStartIdx = findRowIdx(scrollTop);
     for (const [i, rowIndex] of stickyRowIndexes.entries()) {
       if (rowIndex === rowVisibleStartIdx) {
-        return i
+        return i;
       }
 
       if (stickyRowIndexes[i] > rowVisibleStartIdx) {
-        return i === 0 ? i : i - 1
+        return i === 0 ? i : i - 1;
       }
     }
 
-    return stickyRowIndexes.length - 1
-  }, [stickyRowIndexes, findRowIdx, scrollTop])
+    return stickyRowIndexes.length - 1;
+  }, [stickyRowIndexes, findRowIdx, scrollTop]);
 
   let rowOverscanStartIdx = 0;
   let rowOverscanEndIdx = rows.length - 1;
+
+  // const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
+  let stickyRowHeight = 0;
+  if (stickyRowIndex !== undefined) {
+    stickyRowHeight = headerRowHeight;
+  }
+  const clientHeight =
+    gridHeight - headerRowHeight - stickyRowHeight - summaryRowsCount * summaryRowHeight;
 
   if (enableVirtualization) {
     const overscanThreshold = 4;
@@ -220,6 +234,7 @@ export function useViewportRows<R>({
     getRowHeight,
     findRowIdx,
     stickyRowIndexes,
-    stickyRowIndex
+    stickyRowIndex,
+    clientHeight
   };
 }

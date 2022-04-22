@@ -1,7 +1,6 @@
 /.linaria-cache
 /coverage
 /dist
-/lib
 /node_modules
 /tmp
 /.eslintcache

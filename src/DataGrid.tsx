@@ -252,7 +252,14 @@ function DataGrid<R, SR, K extends Key>(
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
-  const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
+  // const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
+  // let stickyRowHeight = 0;
+  // if (stickyRowIndex !== undefined) {
+  //   stickyRowHeight = headerRowHeight;
+  // }
+  // const clientHeight =
+  //   gridHeight - headerRowHeight - stickyRowHeight - summaryRowsCount * summaryRowHeight;
+  // console.log('clientHeight', clientHeight);
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isHeaderRowSelected = selectedPosition.rowIdx === -1;
 
@@ -300,16 +307,20 @@ function DataGrid<R, SR, K extends Key>(
     isGroupRow,
     getRowTop,
     getRowHeight,
-    findRowIdx
+    findRowIdx,
+    clientHeight
   } = useViewportRows({
     rawRows,
     groupBy,
     rowGrouper,
     rowHeight,
-    clientHeight,
     scrollTop,
     expandedGroupIds,
-    enableVirtualization
+    enableVirtualization,
+    headerRowHeight,
+    gridHeight,
+    summaryRowsCount,
+    summaryRowHeight
   });
 
   const viewportColumns = useViewportColumns({
@@ -949,7 +960,7 @@ function DataGrid<R, SR, K extends Key>(
       }
 
       if (stickyRowIndex !== undefined && stickyRowIndexes[stickyRowIndex] === rowIdx) {
-        continue
+        continue;
       }
 
       const row = rows[rowIdx];
@@ -997,14 +1008,16 @@ function DataGrid<R, SR, K extends Key>(
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof row === 'object' && (row as any).isStickyRow) {
-        rowElements.push(<StickyRow 
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          content={(row as any).content}
-          key={key}
-          isStuck={false}
-          top={top}
-        />)
-        continue
+        rowElements.push(
+          <StickyRow
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            content={(row as any).content}
+            key={key}
+            isStuck={false}
+            top={top}
+          />
+        );
+        continue;
       }
 
       rowElements.push(
@@ -1083,17 +1096,19 @@ function DataGrid<R, SR, K extends Key>(
         selectCell={selectHeaderCellLatest}
         shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
       />
-      { stickyRowIndex !== undefined && stickyRowIndexes.length ?
+      {stickyRowIndex !== undefined && stickyRowIndexes.length ? (
         <StickyRow
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           content={(rows[stickyRowIndexes[stickyRowIndex]] as any).content}
           isStuck
           top={headerRowHeight}
-         /> : null}
+        />
+      ) : null}
       {rows.length === 0 && noRowsFallback ? (
         noRowsFallback
       ) : (
         <>
+          {/* this is the height we need to fix */}
           <div style={{ height: max(totalRowHeight, clientHeight) }} />
           <RowSelectionChangeProvider value={selectRowLatest}>
             {getViewportRows()}
