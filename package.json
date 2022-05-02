@@ -82,7 +82,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-sonarjs": "^0.13.0",
     "html-webpack-plugin": "^5.5.0",
-    "jest": "^27.4.7",
+    "jest": "^28.0.3",
     "jspdf": "^2.5.0",
     "jspdf-autotable": "^3.5.23",
     "lodash-es": "^4.17.21",
