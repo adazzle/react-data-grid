@@ -1,8 +1,15 @@
 import { css } from '@linaria/core';
 
 export const cell = css`
+  /*
+  Cannot use these because of a Chromium bug:
+  https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
+  once this is fixed we can also remove "position: relative:"
   contain: strict;
   contain: size layout style paint;
+  */
+  position: relative; /* needed for absolute positioning to work */
+  contain: size style;
   padding-block: 0;
   padding-inline: 8px;
   border-inline-end: 1px solid var(--rdg-border-color);
