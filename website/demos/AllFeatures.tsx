@@ -1,6 +1,7 @@
-import faker from '@faker-js/faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
+
 import DataGrid, { SelectColumn, TextEditor } from '../../src';
 import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
 import DropDownEditor from './components/Editors/DropDownEditor';
