@@ -50,7 +50,7 @@
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/runtime": "^7.17.9",
-    "@faker-js/faker": "^6.3.1",
+    "@faker-js/faker": "^7.1.0",
     "@linaria/babel-preset": "^3.0.0-beta.18",
     "@linaria/core": "^3.0.0-beta.18",
     "@linaria/rollup": "^3.0.0-beta.18",

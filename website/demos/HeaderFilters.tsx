@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import faker from '@faker-js/faker';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
 import DataGrid from '../../src';
 import type { Column, HeaderRendererProps } from '../../src';

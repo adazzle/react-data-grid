@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';

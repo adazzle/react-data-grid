@@ -1,8 +1,8 @@
 import { useState, useReducer } from 'react';
 import { createPortal } from 'react-dom';
-import faker from '@faker-js/faker';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
 import DataGrid, { Row as GridRow } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
