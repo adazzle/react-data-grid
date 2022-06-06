@@ -1,0 +1,9 @@
+/*!
+ * 
+ *               jsPDF AutoTable plugin v3.5.25
+ *
+ *               Copyright (c) 2022 Simon Bengtsson, https://github.com/simonbengtsson/jsPDF-AutoTable
+ *               Licensed under the MIT License.
+ *               http://opensource.org/licenses/mit-license
+ *
+ */
