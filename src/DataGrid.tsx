@@ -136,6 +136,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   /** Set of selected row keys */
   selectedRows?: Maybe<ReadonlySet<K>>;
+  /** Function called whenever cell selection is changed */
+  onSelectedCellChange?: Maybe<(selectedCell: Position) => void>
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>;
   /** Used for multi column sorting */
@@ -200,6 +202,7 @@ function DataGrid<R, SR, K extends Key>(
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
     selectedRows,
+    onSelectedCellChange,
     onSelectedRowsChange,
     sortColumns,
     onSortColumnsChange,
@@ -732,6 +735,8 @@ function DataGrid<R, SR, K extends Key>(
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
+
+    onSelectedCellChange?.(position);
   }
 
   function scrollToColumn(idx: number): void {
