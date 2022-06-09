@@ -61,6 +61,7 @@ import type {
   Components,
   Direction
 } from './types';
+import Cell from './Cell';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -243,6 +244,7 @@ function DataGrid<R, SR, K extends Key>(
   rowHeight ??= 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
+  const CellRenderer = components?.cellRenderer ?? defaultComponents?.cellRenderer ?? Cell;
   const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
   const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon ?? SortIcon;
   const checkboxFormatter =
@@ -287,12 +289,13 @@ function DataGrid<R, SR, K extends Key>(
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
 
-  const defaultGridComponents = useMemo(
+  const defaultGridComponents = useMemo<Maybe<Components<R, SR>>>(
     () => ({
       sortIcon,
-      checkboxFormatter
+      checkboxFormatter,
+      cellRenderer: CellRenderer
     }),
-    [sortIcon, checkboxFormatter]
+    [sortIcon, checkboxFormatter, CellRenderer]
   );
 
   const allRowsSelected = useMemo((): boolean => {

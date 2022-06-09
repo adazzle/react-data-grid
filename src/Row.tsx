@@ -7,6 +7,7 @@ import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import { rowClassname, rowSelectedClassname } from './style';
 import type { RowRendererProps } from './types';
+import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
 
 function Row<R, SR>(
   {
@@ -34,6 +35,9 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
+  const defaultComponents = useDefaultComponents<R, SR>();
+  const CellRenderer = defaultComponents?.cellRenderer ?? Cell;
+
   const handleRowChange = useLatestFunc((newRow: R) => {
     onRowChange(rowIdx, newRow);
   });
@@ -69,7 +73,7 @@ function Row<R, SR>(
       cells.push(selectedCellEditor);
     } else {
       cells.push(
-        <Cell
+        <CellRenderer
           key={column.key}
           column={column}
           colSpan={colSpan}

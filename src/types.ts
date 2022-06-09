@@ -227,6 +227,7 @@ export interface Components<TRow, TSummaryRow> {
     | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
     | ComponentType<CheckboxFormatterProps>
   >;
+  cellRenderer?: Maybe<ComponentType<CellRendererProps<TRow, TSummaryRow>>>;
   rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
   noRowsFallback?: Maybe<React.ReactNode>;
 }
