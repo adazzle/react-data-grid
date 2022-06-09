@@ -49,11 +49,11 @@ function Cell<R, SR>(
   function setRef(element: HTMLDivElement | null) {
     ref?.(element);
 
-    if(typeof refComponent === 'function') { 
+    if (typeof refComponent === 'function') {
       refComponent(element);
-    } else if(typeof refComponent === 'object' && refComponent !== null) {
+    } else if (typeof refComponent === 'object' && refComponent !== null) {
       //@ts-expect-error ref mutation
-      refComponent.current = element
+      refComponent.current = element;
     }
   }
 
@@ -75,11 +75,11 @@ function Cell<R, SR>(
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     selectCellWrapper(column.editorOptions?.editOnClick);
     onRowClick?.(row, column);
-    onMouseDown?.(event)
+    onMouseDown?.(event);
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
-    onClick?.(event)
+    onClick?.(event);
   }
 
   function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
@@ -90,7 +90,7 @@ function Cell<R, SR>(
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     selectCellWrapper(true);
     onRowDoubleClick?.(row, column);
-    onDoubleClick?.(event)
+    onDoubleClick?.(event);
   }
 
   function handleFocus(event: React.FocusEvent<HTMLDivElement, Element>) {
