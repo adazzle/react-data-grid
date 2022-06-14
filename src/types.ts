@@ -74,6 +74,7 @@ export interface Position {
 export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  isScrolling: boolean;
   isCellSelected: boolean;
   onRowChange: (row: TRow) => void;
 }
@@ -89,6 +90,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: GroupRow<TRow>;
   childRows: readonly TRow[];
+  isScrolling: boolean;
   isExpanded: boolean;
   isCellSelected: boolean;
   toggleGroup: () => void;
@@ -120,6 +122,7 @@ export interface CellRendererProps<TRow, TSummaryRow>
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
+  isScrolling: boolean;
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
@@ -137,6 +140,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
+  isScrolling: boolean;
   gridRowStart: number;
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;

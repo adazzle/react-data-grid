@@ -26,6 +26,7 @@ function Cell<R, SR>(
     column,
     colSpan,
     className,
+    isScrolling,
     isCellSelected,
     isCopied,
     isDraggedOver,
@@ -121,6 +122,7 @@ function Cell<R, SR>(
           <column.formatter
             column={column}
             row={row}
+            isScrolling={isScrolling}
             isCellSelected={isCellSelected}
             onRowChange={onRowChange}
           />

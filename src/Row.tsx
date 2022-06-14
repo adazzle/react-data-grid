@@ -16,6 +16,7 @@ function Row<R, SR>(
     gridRowStart,
     height,
     selectedCellIdx,
+    isScrolling,
     isRowSelected,
     copiedCellIdx,
     draggedOverCellIdx,
@@ -75,6 +76,7 @@ function Row<R, SR>(
       cells.push(
         <CellRenderer
           key={column.key}
+          isScrolling={isScrolling}
           column={column}
           colSpan={colSpan}
           row={row}

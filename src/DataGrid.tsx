@@ -259,6 +259,8 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * states
    */
+  const scrollingResetRef = useRef(-1)
+  const [isScrolling, setScrolling] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
@@ -621,7 +623,11 @@ function DataGrid<R, SR, K extends Key>(
     setScrollTop(scrollTop);
     // scrollLeft is nagative when direction is rtl
     setScrollLeft(abs(scrollLeft));
+    setScrolling(true);
     onScroll?.(event);
+
+    clearTimeout(scrollingResetRef.current);
+    scrollingResetRef.current = setTimeout(()=>setScrolling(false), 16)
   }
 
   function getRawRowIdx(rowIdx: number) {
@@ -749,7 +755,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if(isCellSelectable(position)) {
       setSelectedPosition({ ...position, mode: 'SELECT' });
-    onSelectedCellChange?.(position);
+      onSelectedCellChange?.(position);
     }
   }
 
@@ -970,6 +976,7 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
+        isScrolling={isScrolling}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
       />
@@ -1053,6 +1060,7 @@ function DataGrid<R, SR, K extends Key>(
             gridRowStart={gridRowStart}
             height={getRowHeight(rowIdx)}
             level={row.level}
+            isScrolling={isScrolling}
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
             isRowSelected={isGroupRowSelected}
@@ -1080,6 +1088,7 @@ function DataGrid<R, SR, K extends Key>(
           key={key}
           rowIdx={rowIdx}
           row={row}
+          isScrolling={isScrolling}
           viewportColumns={rowColumns}
           isRowSelected={isRowSelected}
           onRowClick={onRowClick}

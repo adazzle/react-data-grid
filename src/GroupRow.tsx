@@ -21,6 +21,7 @@ export interface GroupRowRendererProps<R, SR>
   height: number;
   level: number;
   selectedCellIdx: number | undefined;
+  isScrolling: boolean;
   isExpanded: boolean;
   isRowSelected: boolean;
   selectGroup: (rowIdx: number) => void;
@@ -49,6 +50,7 @@ function GroupedRow<R, SR>({
   gridRowStart,
   height,
   level,
+  isScrolling,
   isExpanded,
   selectedCellIdx,
   isRowSelected,
@@ -87,6 +89,7 @@ function GroupedRow<R, SR>({
             id={id}
             groupKey={groupKey}
             childRows={childRows}
+            isScrolling={isScrolling}
             isExpanded={isExpanded}
             isCellSelected={selectedCellIdx === column.idx}
             column={column}

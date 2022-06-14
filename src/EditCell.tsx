@@ -27,7 +27,7 @@ const cellEditing = css`
   }
 `;
 
-type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
+type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan' | 'isScrolling'>;
 
 interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose'>,
@@ -39,6 +39,7 @@ export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
+  isScrolling,
   onRowChange,
   closeEditor
 }: EditCellProps<R, SR>) {
@@ -118,7 +119,7 @@ export default function EditCell<R, SR>({
         <>
           <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
           {column.editorOptions?.renderFormatter && (
-            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
+            <column.formatter column={column} row={row} isScrolling={isScrolling} isCellSelected onRowChange={onRowChange} />
           )}
         </>
       )}

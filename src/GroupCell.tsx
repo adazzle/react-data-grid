@@ -7,7 +7,7 @@ import { useRovingCellRef } from './hooks';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<
   GroupRowRendererProps<R, SR>,
-  'id' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup'
+  'id' | 'groupKey' | 'isScrolling' | 'childRows' | 'isExpanded' | 'toggleGroup'
 >;
 
 interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
@@ -21,6 +21,7 @@ function GroupCell<R, SR>({
   id,
   groupKey,
   childRows,
+  isScrolling,
   isExpanded,
   isCellSelected,
   column,
@@ -59,6 +60,7 @@ function GroupCell<R, SR>({
           childRows={childRows}
           column={column}
           row={row}
+          isScrolling={isScrolling}
           isExpanded={isExpanded}
           isCellSelected={isCellSelected}
           toggleGroup={toggleGroup}
