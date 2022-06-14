@@ -47,7 +47,7 @@ function Cell<R, SR>(
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   function setRef(element: HTMLDivElement | null) {
-    ref?.(element);
+    ref(element);
 
     if (typeof refComponent === 'function') {
       refComponent(element);
