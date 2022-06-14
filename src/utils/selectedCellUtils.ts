@@ -1,6 +1,14 @@
 import type { CalculatedColumn, Position, GroupRow, CellNavigationMode, Maybe } from '../types';
 import { getColSpan } from './colSpanUtils';
 
+export function isSelectedCellSelectable<R, SR>(
+  columns: readonly CalculatedColumn<R, SR>[],
+  selectedPosition: Position
+): boolean {
+  const column = columns[selectedPosition.idx];
+  return column.selectable !== false;
+}
+
 interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R, SR>[];

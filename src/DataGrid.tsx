@@ -42,7 +42,8 @@ import {
   sign,
   abs,
   getSelectedCellColSpan,
-  scrollIntoView
+  scrollIntoView,
+  isSelectedCellSelectable
 } from './utils';
 
 import type {
@@ -727,6 +728,13 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function isCellSelectable(position: Position): boolean {
+    return (
+      isCellWithinViewportBounds(position) &&
+      isSelectedCellSelectable(columns, position)
+    );
+  }
+
   function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
@@ -737,11 +745,12 @@ function DataGrid<R, SR, K extends Key>(
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
-    } else {
-      setSelectedPosition({ ...position, mode: 'SELECT' });
     }
 
+    if(isCellSelectable(position)) {
+      setSelectedPosition({ ...position, mode: 'SELECT' });
     onSelectedCellChange?.(position);
+    }
   }
 
   function scrollToColumn(idx: number): void {
