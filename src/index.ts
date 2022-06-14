@@ -9,6 +9,7 @@ export { default as HeaderRenderer } from './HeaderRenderer';
 export { useRowSelection } from './hooks';
 export type {
   Column,
+  Position,
   CalculatedColumn,
   FormatterProps,
   SummaryFormatterProps,
