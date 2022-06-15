@@ -259,7 +259,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * states
    */
-  const scrollingResetRef = useRef(-1)
+  const scrollingResetRef = useRef(-1);
   const [isScrolling, setScrolling] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -627,7 +627,7 @@ function DataGrid<R, SR, K extends Key>(
     onScroll?.(event);
 
     clearTimeout(scrollingResetRef.current);
-    scrollingResetRef.current = setTimeout(()=>setScrolling(false), 16)
+    scrollingResetRef.current = setTimeout(() => setScrolling(false), 16);
   }
 
   function getRawRowIdx(rowIdx: number) {
@@ -735,10 +735,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function isCellSelectable(position: Position): boolean {
-    return (
-      isCellWithinViewportBounds(position) &&
-      isSelectedCellSelectable(columns, position)
-    );
+    return isCellWithinViewportBounds(position) && isSelectedCellSelectable(columns, position);
   }
 
   function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
@@ -753,7 +750,7 @@ function DataGrid<R, SR, K extends Key>(
       scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
     }
 
-    if(isCellSelectable(position)) {
+    if (isCellSelectable(position)) {
       setSelectedPosition({ ...position, mode: 'SELECT' });
       onSelectedCellChange?.(position);
     }

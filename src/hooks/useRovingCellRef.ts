@@ -6,7 +6,7 @@ import { useLayoutEffect } from './useLayoutEffect';
 export function useRovingCellRef(isSelected: boolean) {
   // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
   const [isChildFocused, setIsChildFocused] = useState(false);
-  const [cell, setRef] = useState<HTMLDivElement | null>(null)
+  const [cell, setRef] = useState<HTMLDivElement | null>(null);
 
   if (isChildFocused && !isSelected) {
     setIsChildFocused(false);
@@ -19,12 +19,12 @@ export function useRovingCellRef(isSelected: boolean) {
   }
 
   useLayoutEffect(() => {
-    if(isSelected && cell) {
+    if (isSelected && cell) {
       scrollIntoView(cell);
       if (cell.contains(document.activeElement)) return;
       cell.focus({ preventScroll: true });
     }
-  }, [isSelected, cell])
+  }, [isSelected, cell]);
 
   const isFocused = isSelected && !isChildFocused;
 
