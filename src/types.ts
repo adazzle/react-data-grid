@@ -94,6 +94,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
 export interface EditorProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  isMouseClick: boolean;
   onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean) => void;
 }
@@ -110,10 +111,10 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
-      RowRendererProps<TRow, TSummaryRow>,
-      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
-    >,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  RowRendererProps<TRow, TSummaryRow>,
+  'onRowClick' | 'onRowDoubleClick' | 'selectCell'
+  >,
+  Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -214,8 +215,8 @@ export interface SortIconProps {
 
 export interface CheckboxFormatterProps
   extends Pick<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
   > {
   onChange: (checked: boolean, shift: boolean) => void;
 }
