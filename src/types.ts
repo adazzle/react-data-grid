@@ -1,6 +1,7 @@
 import type {
   ComponentType,
   ForwardRefExoticComponent,
+  Key,
   ReactElement,
   ReactNode,
   RefAttributes
@@ -227,13 +228,13 @@ export interface CheckboxFormatterProps
   onChange: (checked: boolean, shift: boolean) => void;
 }
 
-export interface Components<TRow, TSummaryRow> {
-  sortIcon?: Maybe<ComponentType<SortIconProps>>;
+export interface Renderers<TRow, TSummaryRow> {
+  sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
   checkboxFormatter?: Maybe<
     | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
     | ComponentType<CheckboxFormatterProps>
   >;
-  rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
+  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 

@@ -103,6 +103,12 @@ function Row<R, SR>(
   );
 }
 
-export default memo(forwardRef(Row)) as <R, SR>(
+const RowComponent = memo(forwardRef(Row)) as <R, SR>(
   props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
+
+export default RowComponent;
+
+export function defaultRowRenderer<R, SR>(key: React.Key, props: RowRendererProps<R, SR>) {
+  return <RowComponent key={key} {...props} />;
+}

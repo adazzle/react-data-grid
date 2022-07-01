@@ -48,8 +48,8 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
   );
 }
 
-test('fallback defined using components prop with no rows', () => {
-  setup({ columns, rows: [], components: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using renderers prop with no rows', () => {
+  setup({ columns, rows: [], renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
@@ -62,15 +62,15 @@ test('fallback defined using provider with no rows', () => {
   expect(screen.getByText('Global no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using both provider and components with no rows', () => {
-  setupProvider({ columns, rows: [], components: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using both provider and renderers with no rows', () => {
+  setupProvider({ columns, rows: [], renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using components prop with a row', () => {
-  setup({ columns, rows: [{ id: 1 }], components: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using renderers prop with a row', () => {
+  setup({ columns, rows: [{ id: 1 }], renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRows()).toHaveLength(1);
   expect(screen.queryByText('Local no rows fallback')).not.toBeInTheDocument();
@@ -83,16 +83,16 @@ test('fallback defined using provider with a row', () => {
   expect(screen.queryByText('Global no rows fallback')).not.toBeInTheDocument();
 });
 
-test('fallback defined using both provider and components with a row', () => {
-  setupProvider({ columns, rows: [{ id: 1 }], components: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using both provider and renderers with a row', () => {
+  setupProvider({ columns, rows: [{ id: 1 }], renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRows()).toHaveLength(1);
   expect(screen.queryByText('Global no rows fallback')).not.toBeInTheDocument();
   expect(screen.queryByText('Local no rows fallback')).not.toBeInTheDocument();
 });
 
-test('checkbox defined using components prop', () => {
-  setup({ columns, rows: [], components: { checkboxFormatter: Checkbox } });
+test('checkbox defined using renderers prop', () => {
+  setup({ columns, rows: [], renderers: { checkboxFormatter: Checkbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -105,8 +105,8 @@ test('checkbox defined using provider', () => {
   expect(screen.getByText('Global checkbox')).toBeInTheDocument();
 });
 
-test('checkbox defined using both provider and components', () => {
-  setupProvider({ columns, rows: [], components: { checkboxFormatter: Checkbox } });
+test('checkbox defined using both provider and renderers', () => {
+  setupProvider({ columns, rows: [], renderers: { checkboxFormatter: Checkbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();

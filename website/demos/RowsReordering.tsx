@@ -59,7 +59,7 @@ const columns: readonly Column<Row>[] = [
 export default function RowsReordering({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
 
-  const RowRenderer = useCallback((props: RowRendererProps<Row>) => {
+  const rowRenderer = useCallback((key: React.Key, props: RowRendererProps<Row>) => {
     function onRowReorder(fromIndex: number, toIndex: number) {
       setRows((rows) => {
         const newRows = [...rows];
@@ -68,7 +68,7 @@ export default function RowsReordering({ direction }: Props) {
       });
     }
 
-    return <DraggableRowRenderer {...props} onRowReorder={onRowReorder} />;
+    return <DraggableRowRenderer key={key} {...props} onRowReorder={onRowReorder} />;
   }, []);
 
   return (
@@ -77,7 +77,7 @@ export default function RowsReordering({ direction }: Props) {
         columns={columns}
         rows={rows}
         onRowsChange={setRows}
-        components={{ rowRenderer: RowRenderer }}
+        renderers={{ rowRenderer }}
         direction={direction}
       />
     </DndProvider>

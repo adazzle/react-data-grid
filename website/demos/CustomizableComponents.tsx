@@ -104,7 +104,7 @@ export default function CustomizableComponents({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      components={{ sortIcon: SortIcon, checkboxFormatter: CheckboxFormatter }}
+      renderers={{ sortIcon, checkboxFormatter: CheckboxFormatter }}
       direction={direction}
     />
   );
@@ -120,7 +120,7 @@ const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
   }
 );
 
-function SortIcon({ sortDirection }: SortIconProps) {
+function sortIcon({ sortDirection }: SortIconProps) {
   return sortDirection !== undefined ? <>{sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F'} </> : null;
 }
 
