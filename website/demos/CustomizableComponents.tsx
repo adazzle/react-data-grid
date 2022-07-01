@@ -1,7 +1,7 @@
 import { useMemo, useState, forwardRef } from 'react';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn, TextEditor } from '../../src';
+import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src';
 import type { Props } from './types';
 
@@ -24,7 +24,8 @@ interface Row {
 }
 
 function createRows(): readonly Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 500; i++) {
     rows.push({
       id: i,
@@ -52,7 +53,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: TextEditor,
+    editor: textEditor,
     sortable: true
   },
   {

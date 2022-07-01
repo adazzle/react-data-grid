@@ -84,12 +84,12 @@ function Cell<R, SR>({
     >
       {!column.rowGroup && (
         <>
-          <column.formatter
-            column={column}
-            row={row}
-            isCellSelected={isCellSelected}
-            onRowChange={onRowChange}
-          />
+          {column.formatter({
+            column,
+            row,
+            isCellSelected,
+            onRowChange
+          })}
           {dragHandle}
         </>
       )}

@@ -24,7 +24,7 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-export default function HeaderRenderer<R, SR>({
+export default function headerRenderer<R, SR>({
   column,
   sortDirection,
   priority,

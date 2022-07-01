@@ -1,7 +1,7 @@
 import { css } from '@linaria/core';
 import type { EditorProps } from '../types';
 
-const textEditor = css`
+const textEditorInternalClassname = css`
   appearance: none;
 
   box-sizing: border-box;
@@ -28,14 +28,14 @@ const textEditor = css`
   }
 `;
 
-export const textEditorClassname = `rdg-text-editor ${textEditor}`;
+export const textEditorClassname = `rdg-text-editor ${textEditorInternalClassname}`;
 
 function autoFocusAndSelect(input: HTMLInputElement | null) {
   input?.focus();
   input?.select();
 }
 
-export default function TextEditor<TRow, TSummaryRow>({
+export default function textEditor<TRow, TSummaryRow>({
   row,
   column,
   onRowChange,

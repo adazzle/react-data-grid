@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableRowRenderer } from './components/RowRenderers';
-import DataGrid, { TextEditor } from '../../src';
+import DataGrid, { textEditor } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
 import type { Props } from './types';
 
@@ -16,7 +16,8 @@ interface Row {
 }
 
 function createRows(): readonly Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 500; i++) {
     rows.push({
       id: i,
@@ -39,7 +40,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'priority',
