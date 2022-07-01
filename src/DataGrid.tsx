@@ -69,6 +69,7 @@ interface EditCellState<R> extends Position {
   readonly mode: 'EDIT';
   readonly row: R;
   readonly originalRow: R;
+  readonly isMouseClick: boolean;
 }
 
 type DefaultColumnOptions<R, SR> = Pick<
@@ -689,7 +690,8 @@ function DataGrid<R, SR, K extends Key>(
         rowIdx,
         mode: 'EDIT',
         row,
-        originalRow: row
+        originalRow: row,
+        isMouseClick: false
       }));
     }
   }
@@ -726,7 +728,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
-      setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
+      setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row, isMouseClick: true });
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
       // TODO: replace with a #record? https://github.com/microsoft/TypeScript/issues/39831
@@ -970,6 +972,7 @@ function DataGrid<R, SR, K extends Key>(
         scrollToCell={() => {
           scrollToCell(selectedPosition);
         }}
+        isMouseClick={'isMouseClick' in selectedPosition && selectedPosition.isMouseClick}
       />
     );
   }

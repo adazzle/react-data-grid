@@ -40,6 +40,7 @@ export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
+  isMouseClick,
   onRowChange,
   closeEditor,
   scrollToCell
@@ -119,7 +120,13 @@ export default function EditCell<R, SR>({
     >
       {column.editor != null && (
         <>
-          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
+          <column.editor
+            column={column}
+            row={row}
+            onRowChange={onRowChange}
+            onClose={onClose}
+            isMouseClick={isMouseClick}
+          />
           {column.editorOptions?.renderFormatter && (
             <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
           )}
