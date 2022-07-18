@@ -55,7 +55,7 @@
     "@linaria/core": "^3.0.0-beta.18",
     "@linaria/rollup": "^3.0.0-beta.18",
     "@linaria/shaker": "^3.0.0-beta.18",
-    "@linaria/webpack5-loader": "^3.0.0-beta.18",
+    "@linaria/webpack5-loader": "^4.0.0-beta.0",
     "@microsoft/api-extractor": "^7.23.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
     "@rollup/plugin-babel": "^5.3.1",
