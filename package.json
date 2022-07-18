@@ -52,7 +52,7 @@
     "@babel/runtime": "^7.17.9",
     "@faker-js/faker": "^7.1.0",
     "@linaria/babel-preset": "^3.0.0-beta.18",
-    "@linaria/core": "^3.0.0-beta.18",
+    "@linaria/core": "^4.0.0-beta.0",
     "@linaria/rollup": "^3.0.0-beta.18",
     "@linaria/shaker": "^3.0.0-beta.18",
     "@linaria/webpack5-loader": "^3.0.0-beta.18",
