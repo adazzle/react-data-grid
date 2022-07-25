@@ -5,7 +5,6 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": ["esnext", "dom", "dom.iterable"],
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitReturns": true,
