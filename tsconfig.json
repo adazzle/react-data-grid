@@ -1,23 +1,14 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "exactOptionalPropertyTypes": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "lib": ["esnext", "dom", "dom.iterable"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "outDir": "tmp",
-    "pretty": true,
-    "strict": true,
-    "target": "esnext",
-    "types": ["jest", "@testing-library/jest-dom"]
+    "noEmit": true
   },
-  "files": ["src/index.ts"]
+  "include": [
+    "jest.config.js",
+    "rollup.config.js",
+    "webpack.config.js",
+    "src/**/*",
+    "test/**/*",
+    "website/**/*"
+  ]
 }

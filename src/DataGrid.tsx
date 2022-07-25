@@ -619,7 +619,7 @@ function DataGrid<R, SR, K extends Key>(
     return hasGroups ? rawRows.indexOf(rows[rowIdx] as R) : rowIdx;
   }
 
-  function updateRow(rowIdx: number, row: R) {
+  function updateRow(column: CalculatedColumn<R, SR>, rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
     const rawRowIdx = getRawRowIdx(rowIdx);
     if (row === rawRows[rawRowIdx]) return;
@@ -627,13 +627,13 @@ function DataGrid<R, SR, K extends Key>(
     updatedRows[rawRowIdx] = row;
     onRowsChange(updatedRows, {
       indexes: [rawRowIdx],
-      column: columns[selectedPosition.idx]
+      column
     });
   }
 
   function commitEditorChanges() {
     if (selectedPosition.mode !== 'EDIT') return;
-    updateRow(selectedPosition.rowIdx, selectedPosition.row);
+    updateRow(columns[selectedPosition.idx], selectedPosition.rowIdx, selectedPosition.row);
   }
 
   function handleCopy() {
@@ -650,16 +650,17 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     const { idx, rowIdx } = selectedPosition;
+    const targetColumn = columns[idx];
     const targetRow = rawRows[getRawRowIdx(rowIdx)];
 
     const updatedTargetRow = onPaste({
       sourceRow: copiedCell.row,
       sourceColumnKey: copiedCell.columnKey,
       targetRow,
-      targetColumnKey: columns[idx].key
+      targetColumnKey: targetColumn.key
     });
 
-    updateRow(rowIdx, updatedTargetRow);
+    updateRow(targetColumn, rowIdx, updatedTargetRow);
   }
 
   function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -933,7 +934,7 @@ function DataGrid<R, SR, K extends Key>(
 
     const onRowChange = (row: R, commitChanges?: boolean) => {
       if (commitChanges) {
-        updateRow(selectedPosition.rowIdx, row);
+        updateRow(column, selectedPosition.rowIdx, row);
         closeEditor();
       } else {
         setSelectedPosition((position) => ({ ...position, row }));
