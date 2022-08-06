@@ -45,13 +45,19 @@ const summaryRows: readonly Row[] = [
 const copyCellClassName = 'rdg-cell-copied';
 const onPasteSpy = jest.fn();
 const onCopySpy = jest.fn();
+const externalPasteSpy = jest.fn();
+const externalCopySpy = jest.fn();
 
 function CopyPasteTest({
   onPasteCallback = true,
-  onCopyCallback = false
+  onCopyCallback = false,
+  externalCopy = false,
+  externalPaste = false,
 }: {
   onPasteCallback?: boolean;
   onCopyCallback?: boolean;
+  externalCopy?: boolean;
+  externalPaste?: boolean;
 }) {
   const [rows, setRows] = useState(initialRows);
 
@@ -68,16 +74,21 @@ function CopyPasteTest({
       onRowsChange={setRows}
       onPaste={onPasteCallback ? onPaste : undefined}
       onCopy={onCopyCallback ? onCopySpy : undefined}
+      handlePasteExternally={externalPaste ? externalPasteSpy : undefined}
+      handleCopyExternally={externalCopy ? externalCopySpy : undefined}
     />
   );
 }
 
-function setup(onPasteCallback = true, onCopyCallback = false) {
+function setup(onPasteCallback = true, onCopyCallback = false, externalCopy = false, externalPaste = false) {
   onPasteSpy.mockReset();
   onCopySpy.mockReset();
+  externalPasteSpy.mockReset();
+  externalCopySpy.mockReset();
+
   render(
     <StrictMode>
-      <CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} />
+      <CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} externalCopy={externalCopy} externalPaste={externalPaste}/>
     </StrictMode>
   );
 }
@@ -199,3 +210,19 @@ test('should not allow paste on header or summary cells', async () => {
   expect(getSelectedCell()).toHaveTextContent('s1');
   expect(onPasteSpy).not.toHaveBeenCalled();
 });
+
+test('when provided external copy, it is used over the internal copy method', async () => {
+  setup(true, true, true);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  copySelectedCell();
+  expect(externalCopySpy).toHaveBeenCalled();
+  expect(onCopySpy).not.toHaveBeenCalled();
+})
+
+test('when provided external paste, it is used over the internal paste method', async () => {
+  setup(true, true, true, true);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  pasteSelectedCell();
+  expect(externalPasteSpy).toHaveBeenCalled();
+  expect(onPasteSpy).not.toHaveBeenCalled();
+})
