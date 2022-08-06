@@ -95,13 +95,14 @@ export default function EditCell<R, SR>({
     }
   }
 
-  const { cellClass } = column;
+  const { cellClass, cellStyle } = column;
   const className = getCellClassname(
     column,
     'rdg-editor-container',
     !column.editorOptions?.renderFormatter && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
+  const style = typeof cellStyle === 'function' ? cellStyle(row) : cellStyle;
 
   return (
     <div
@@ -110,7 +111,7 @@ export default function EditCell<R, SR>({
       aria-colspan={colSpan}
       aria-selected
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={getCellStyle(column, colSpan, style)}
       onKeyDown={onKeyDown}
       onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
     >

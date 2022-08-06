@@ -234,6 +234,10 @@ function MyGrid() {
 
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
 
+###### `rowStyle?: Maybe<(row: R) => Maybe<CSSProperties>>`
+
+This property sets the passed JSX style to the row.
+
 ##### `direction?: Maybe<'ltr' | 'rtl'>`
 
 This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:

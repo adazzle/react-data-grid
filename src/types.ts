@@ -1,4 +1,4 @@
-import type { Key, ReactElement, ReactNode, RefObject } from 'react';
+import type { Key, ReactElement, ReactNode, RefObject, CSSProperties } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -15,9 +15,14 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly minWidth?: Maybe<number>;
   /** Maximum column width in px. */
   readonly maxWidth?: Maybe<number>;
+  /** Standard, header and summary cell style */
   readonly cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>;
   readonly headerCellClass?: Maybe<string>;
   readonly summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>;
+  /** Standard, header and summary cell style */
+  readonly cellStyle?: Maybe<CSSProperties | ((row: TRow) => Maybe<CSSProperties>)>;
+  readonly headerCellStyle?: Maybe<CSSProperties>;
+  readonly summaryCellStyle?: Maybe<CSSProperties | ((row: TSummaryRow) => Maybe<CSSProperties>)>;
   /** Formatter to be used to render the cell content */
   readonly formatter?: Maybe<(props: FormatterProps<TRow, TSummaryRow>) => ReactNode>;
   /** Formatter to be used to render the summary cell content */
@@ -143,6 +148,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
+  rowStyle: Maybe<CSSProperties | ((row: TRow) => Maybe<CSSProperties>)>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (
     row: TRow,

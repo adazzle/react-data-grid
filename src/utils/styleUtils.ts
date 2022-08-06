@@ -1,14 +1,19 @@
 import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import type { CalculatedColumn } from '../types';
+import type { Maybe, CalculatedColumn } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
 
-export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
+export function getRowStyle(
+  rowIdx: number,
+  height?: number,
+  extraStyles?: Maybe<CSSProperties>
+): CSSProperties {
   if (height !== undefined) {
     return {
       '--rdg-grid-row-start': rowIdx,
-      '--rdg-row-height': `${height}px`
+      '--rdg-row-height': `${height}px`,
+      ...extraStyles
     } as unknown as CSSProperties;
   }
   return { '--rdg-grid-row-start': rowIdx } as unknown as CSSProperties;
@@ -16,12 +21,14 @@ export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
 
 export function getCellStyle<R, SR>(
   column: CalculatedColumn<R, SR>,
-  colSpan?: number
+  colSpan?: number,
+  extraStyles?: Maybe<CSSProperties>
 ): React.CSSProperties {
   return {
     gridColumnStart: column.idx + 1,
     gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
-    insetInlineStart: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
+    insetInlineStart: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined,
+    ...extraStyles
   };
 }
 
