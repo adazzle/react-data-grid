@@ -185,6 +185,14 @@ A number defining the height of summary rows.
 
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
+###### `handleCopyExternally?: Maybe<() => void>`
+
+Handle the copy event outside of react data grid
+
+###### `handlePasteExternally?: Maybe<() => void>`
+
+Handle the paste event outside of react data grid
+
 ###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
 
 ###### `onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
