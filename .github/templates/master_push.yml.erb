@@ -1,0 +1,18 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: [self-hosted, large]
+    if: "!contains(github.event.head_commit.author.name, 'Github Action')"
+    needs: ["test", "lint"]
+    outputs:
+      result: ${{ steps.notify_status.outputs.status }}
+    concurrency: publish-${{ github.ref }}
+    steps:
+      @import smartlyio/steps/js/publish (remote_update: true)
+
+  @import smartlyio/jobs/publish/notify (publish_notify_needs: ["publish"])

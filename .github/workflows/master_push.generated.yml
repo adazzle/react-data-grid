@@ -1,0 +1,164 @@
+# IMPORTANT NOTE/WARNING!
+# Do not make changes to this file, your changes will be overwritten.
+#
+# This file is automagically generated from:
+# - .github/templates/master_push.yml.erb
+# - Templates contained in the smartlyio/github-actions-templates repository
+#
+# This file can be updated by editing the template file, and running `devbox render workflows`
+
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: [self-hosted, large]
+    if: "!contains(github.event.head_commit.author.name, 'Github Action')"
+    needs: ['test', 'lint']
+    outputs:
+      result: ${{ steps.notify_status.outputs.status }}
+    concurrency: publish-${{ github.ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get git base branch
+        id: get_base_branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BASE_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY" | jq -r .default_branch)"
+          echo ::set-output name=git_base_branch::"$BASE_BRANCH"
+          echo GIT_BASE_BRANCH="$BASE_BRANCH" >> "$GITHUB_ENV"
+      - name: Calculate PR filters
+        id: filters
+        run: |
+          last_tag_date=$(git log -1 --tags --no-walk --pretty="format:%cI")
+          start_date=$(date -Is -d "$last_tag_date")
+          echo ::set-output name=start_date::"$start_date"
+      - name: Get PR labels
+        uses: octokit/graphql-action@v2.x
+        id: get_latest_prs
+        with:
+          query: |
+            query($filter:String!) {
+              search(query:$filter, type: ISSUE, last: 100) {
+                edges {
+                  node {
+                    ... on PullRequest {
+                      number
+                      mergedAt
+                      labels (first: 100) {
+                        nodes {
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          filter: repo:${{ github.repository }} is:pr base:${{ steps.get_base_branch.outputs.git_base_branch }} merged:>${{ steps.filters.outputs.start_date }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get version being bumped
+        id: version_check
+        env:
+          PR_DATA: '${{ steps.get_latest_prs.outputs.data }}'
+        run: |
+          echo "$PR_DATA"
+          version=$(echo "$PR_DATA" | grep -m1 -oi major || echo "$PR_DATA" | grep -m1 -oi minor || echo "$PR_DATA" | grep -m1 -oi patch || echo "")
+          version_lower=${version,,}
+          echo ::set-output name=version::"$version_lower"
+          if [ -z "$version" ]; then
+            echo ::set-output name=continue_release::false
+          else
+            echo ::set-output name=continue_release::true
+          fi
+      - name: Show version being bumped
+        if: steps.version_check.outputs.continue_release == 'true'
+        run: echo "Based on tags, we're updating ${{ steps.version_check.outputs.VERSION }} version!"
+      - name: Setup node version
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+      - name: Node modules cache
+        uses: actions/cache@v3
+        if: steps.version_check.outputs.continue_release == 'true'
+        id: cache-node-modules
+        with:
+          path: |
+            .yarn-meta
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-node-${{ steps.node-version.outputs.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
+      - name: yarn install
+        if: steps.version_check.outputs.continue_release == 'true'
+        run: yarn run ci:install
+      - name: yarn ci:build
+        if: steps.version_check.outputs.continue_release == 'true'
+        run: yarn run ci:build
+      - name: Setup publish environment
+        if: steps.version_check.outputs.continue_release == 'true'
+        uses: smartlyio/setup-npm-publish-action@v1
+        env:
+          AUTH_TOKEN_STRING: |
+            registry = https://smartly.af/artifactory/api/npm/npm/
+            //smartly.af/artifactory/api/npm/npm/:_authToken=${{ secrets.ARTIFACTORY_NPM_PUSH_TOKEN }}
+            always-auth = true
+            email = devops+npm@smartly.io
+            engine-strict=true
+          GIT_DEPLOY_KEY: ${{ secrets.GIT_DEPLOY_KEY }}
+      - name: Check if at head of branch
+        id: check_branch_behind
+        run: |
+          git remote update
+          local=${{ github.sha }}
+          remote=$(git rev-parse origin/main)
+          echo "$remote"
+          if [ "$local" == "$remote" ]; then
+            echo "Looks like we're at the head of the branch."
+            echo ::set-output name=BRANCH_UP_TO_DATE::true
+          else
+            echo "Local branch is not up to date with remote. Exiting."
+            echo ::set-output name=BRANCH_UP_TO_DATE::false
+          fi
+      - name: Publish package
+        if: steps.version_check.outputs.continue_release == 'true' && steps.check_branch_behind.outputs.BRANCH_UP_TO_DATE == 'true'
+        env:
+          VERSION: ${{ steps.version_check.outputs.VERSION }}
+        run: |
+          yarn run ci:publish
+      - name: Set job result
+        id: notify_status
+        if: steps.version_check.outputs.continue_release == 'false' || steps.check_branch_behind.outputs.BRANCH_UP_TO_DATE == 'false'
+        run: |
+          if [[ "${{steps.version_check.outputs.continue_release}}" == "false" ]]; then
+            echo ::set-output name=status::"cancelled"
+          elif [[ "${{steps.check_branch_behind.outputs.BRANCH_UP_TO_DATE}}" == "false" ]]; then
+            echo ::set-output name=status::"skipped"
+          fi
+
+  notify:
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    needs: ['publish']
+    steps:
+      - name: Notify Slack Channels
+        if: "!contains(github.event.head_commit.author.name, 'Github Action') && needs.publish.outputs.result != 'cancelled'"
+        uses: smartlyio/workflow-webhook@v1
+        with:
+          webhook_url: 'https://slack-notify.smartly.io/api/webhook'
+          webhook_auth: '${{ secrets.SLACK_NOTIFY_TOKEN }}'
+          webhook_secret: '${{ secrets.SLACK_NOTIFY_HMAC_SECRET }}'
+          data: |
+            {
+              "channels": ["dev-chatops"],
+              "jobs": ${{ toJson(needs) }},
+              "user": "${{ github.actor }}",
+              "run_id": ${{ github.run_id }}
+            }
