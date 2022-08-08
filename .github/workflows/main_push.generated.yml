@@ -2,7 +2,7 @@
 # Do not make changes to this file, your changes will be overwritten.
 #
 # This file is automagically generated from:
-# - .github/templates/master_push.yml.erb
+# - .github/templates/main_push.yml.erb
 # - Templates contained in the smartlyio/github-actions-templates repository
 #
 # This file can be updated by editing the template file, and running `devbox render workflows`
@@ -11,13 +11,13 @@ name: Release
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   publish:
     runs-on: [self-hosted, large]
     if: "!contains(github.event.head_commit.author.name, 'Github Action')"
-    needs: ['test', 'lint']
+    needs: ["test", "lint"]
     outputs:
       result: ${{ steps.notify_status.outputs.status }}
     concurrency: publish-${{ github.ref }}
@@ -68,7 +68,7 @@ jobs:
       - name: Get version being bumped
         id: version_check
         env:
-          PR_DATA: '${{ steps.get_latest_prs.outputs.data }}'
+          PR_DATA: "${{ steps.get_latest_prs.outputs.data }}"
         run: |
           echo "$PR_DATA"
           version=$(echo "$PR_DATA" | grep -m1 -oi major || echo "$PR_DATA" | grep -m1 -oi minor || echo "$PR_DATA" | grep -m1 -oi patch || echo "")
@@ -146,15 +146,15 @@ jobs:
   notify:
     if: ${{ always() }}
     runs-on: ubuntu-20.04
-    needs: ['publish']
+    needs: ["publish"]
     steps:
       - name: Notify Slack Channels
         if: "!contains(github.event.head_commit.author.name, 'Github Action') && needs.publish.outputs.result != 'cancelled'"
         uses: smartlyio/workflow-webhook@v1
         with:
-          webhook_url: 'https://slack-notify.smartly.io/api/webhook'
-          webhook_auth: '${{ secrets.SLACK_NOTIFY_TOKEN }}'
-          webhook_secret: '${{ secrets.SLACK_NOTIFY_HMAC_SECRET }}'
+          webhook_url: "https://slack-notify.smartly.io/api/webhook"
+          webhook_auth: "${{ secrets.SLACK_NOTIFY_TOKEN }}"
+          webhook_secret: "${{ secrets.SLACK_NOTIFY_HMAC_SECRET }}"
           data: |
             {
               "channels": ["dev-chatops"],
