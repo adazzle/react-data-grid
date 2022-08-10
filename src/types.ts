@@ -8,7 +8,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
   readonly name: string | ReactElement;
   /** A unique key to distinguish each column */
-  readonly key: string;
+  readonly key: keyof TRow;
   /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
   readonly width?: Maybe<number | string>;
   /** Minimum column width in px. */
@@ -111,10 +111,10 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
-      RowRendererProps<TRow, TSummaryRow>,
-      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
-    >,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  RowRendererProps<TRow, TSummaryRow>,
+  'onRowClick' | 'onRowDoubleClick' | 'selectCell'
+  >,
+  Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -215,8 +215,8 @@ export interface SortIconProps {
 
 export interface CheckboxFormatterProps
   extends Pick<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
   > {
   onChange: (checked: boolean, shift: boolean) => void;
 }
