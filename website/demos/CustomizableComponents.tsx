@@ -112,20 +112,13 @@ export default function CustomizableComponents({ direction }: Props) {
 
 function checkboxFormatter(
   { disabled, onChange, ...props }: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLOrSVGElement>
+  ref: React.RefObject<HTMLInputElement>
 ) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
-  return (
-    <input
-      type="checkbox"
-      ref={ref as React.RefObject<HTMLInputElement>}
-      {...props}
-      onChange={handleChange}
-    />
-  );
+  return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
 }
 
 function sortIcon({ sortDirection }: SortIconProps) {

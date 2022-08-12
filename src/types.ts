@@ -224,7 +224,7 @@ export interface CheckboxFormatterProps
 export interface Renderers<TRow, TSummaryRow> {
   sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
   checkboxFormatter?: Maybe<
-    (props: CheckboxFormatterProps, ref: RefObject<HTMLOrSVGElement>) => ReactNode
+    (props: CheckboxFormatterProps, ref: RefObject<HTMLInputElement>) => ReactNode
   >;
   rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;

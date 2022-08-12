@@ -27,16 +27,16 @@ function GlobalNoRowsFallback() {
 
 function localCheckboxFormatter(
   props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLOrSVGElement>
+  ref: React.RefObject<HTMLInputElement>
 ) {
-  return <div ref={ref as React.RefObject<HTMLDivElement>}>Local checkbox</div>;
+  return <div ref={ref}>Local checkbox</div>;
 }
 
 function globalCheckboxFormatter(
   props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLOrSVGElement>
+  ref: React.RefObject<HTMLInputElement>
 ) {
-  return <div ref={ref as React.RefObject<HTMLDivElement>}>Global checkbox</div>;
+  return <div ref={ref}>Global checkbox</div>;
 }
 
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {

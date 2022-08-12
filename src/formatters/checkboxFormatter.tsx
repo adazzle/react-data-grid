@@ -51,7 +51,7 @@ const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLa
 
 export function checkboxFormatter(
   { onChange, ...props }: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLOrSVGElement>
+  ref: React.RefObject<HTMLInputElement>
 ) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
@@ -65,7 +65,7 @@ export function checkboxFormatter(
     >
       <input
         type="checkbox"
-        ref={ref as React.RefObject<HTMLInputElement>}
+        ref={ref}
         {...props}
         className={checkboxInputClassname}
         onChange={handleChange}

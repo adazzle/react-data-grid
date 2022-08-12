@@ -18,7 +18,7 @@ export function SelectCellFormatter({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
-  const { ref, tabIndex } = useFocusRef(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
   const checkboxFormatter = useDefaultComponents()!.checkboxFormatter!;
 
   return (
