@@ -20,13 +20,13 @@ import {
   RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
-import Row from './Row';
+import { defaultRowRenderer } from './Row';
 import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
-import SortIcon from './SortIcon';
-import { CheckboxFormatter } from './formatters';
+import { default as defaultSortIcon } from './sortIcon';
+import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import {
   DataGridDefaultComponentsProvider,
   useDefaultComponents
@@ -58,7 +58,7 @@ import type {
   SortColumn,
   RowHeightArgs,
   Maybe,
-  Components,
+  Renderers,
   Direction
 } from './types';
 
@@ -173,7 +173,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
-  components?: Maybe<Components<R, SR>>;
+  renderers?: Maybe<Renderers<R, SR>>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
@@ -220,7 +220,7 @@ function DataGrid<R, SR, K extends Key>(
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
     // Miscellaneous
-    components,
+    renderers,
     className,
     style,
     rowClass,
@@ -240,11 +240,14 @@ function DataGrid<R, SR, K extends Key>(
   rowHeight ??= 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
-  const RowRenderer = components?.rowRenderer ?? defaultComponents?.rowRenderer ?? Row;
-  const sortIcon = components?.sortIcon ?? defaultComponents?.sortIcon ?? SortIcon;
+  const rowRenderer =
+    renderers?.rowRenderer ?? defaultComponents?.rowRenderer ?? defaultRowRenderer;
+  const sortIcon = renderers?.sortIcon ?? defaultComponents?.sortIcon ?? defaultSortIcon;
   const checkboxFormatter =
-    components?.checkboxFormatter ?? defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
-  const noRowsFallback = components?.noRowsFallback ?? defaultComponents?.noRowsFallback;
+    renderers?.checkboxFormatter ??
+    defaultComponents?.checkboxFormatter ??
+    defaultCheckboxFormatter;
+  const noRowsFallback = renderers?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
   direction ??= 'ltr';
@@ -980,7 +983,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getViewportRows() {
-    const rowElements = [];
+    const rowElements: React.ReactNode[] = [];
     let startRowIndex = 0;
 
     const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
@@ -1056,33 +1059,33 @@ function DataGrid<R, SR, K extends Key>(
       }
 
       rowElements.push(
-        <RowRenderer
-          aria-rowindex={headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1} // aria-rowindex is 1 based
-          aria-selected={isSelectable ? isRowSelected : undefined}
-          key={key}
-          rowIdx={rowIdx}
-          row={row}
-          viewportColumns={rowColumns}
-          isRowSelected={isRowSelected}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
-          rowClass={rowClass}
-          gridRowStart={gridRowStart}
-          height={getRowHeight(rowIdx)}
-          copiedCellIdx={
+        rowRenderer(key, {
+          // aria-rowindex is 1 based
+          'aria-rowindex': headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1,
+          'aria-selected': isSelectable ? isRowSelected : undefined,
+          rowIdx,
+          row,
+          viewportColumns: rowColumns,
+          isRowSelected,
+          onRowClick,
+          onRowDoubleClick,
+          rowClass,
+          gridRowStart,
+          height: getRowHeight(rowIdx),
+          copiedCellIdx:
             copiedCell !== null && copiedCell.row === row
               ? columns.findIndex((c) => c.key === copiedCell.columnKey)
-              : undefined
-          }
-          selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
-          draggedOverCellIdx={getDraggedOverCellIdx(rowIdx)}
-          setDraggedOverRowIdx={isDragging ? setDraggedOverRowIdx : undefined}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          onRowChange={handleFormatterRowChangeLatest}
-          selectCell={selectViewportCellLatest}
-          selectedCellDragHandle={getDragHandle(rowIdx)}
-          selectedCellEditor={getCellEditor(rowIdx)}
-        />
+              : undefined,
+
+          selectedCellIdx: selectedRowIdx === rowIdx ? selectedIdx : undefined,
+          draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
+          setDraggedOverRowIdx: isDragging ? setDraggedOverRowIdx : undefined,
+          lastFrozenColumnIndex,
+          onRowChange: handleFormatterRowChangeLatest,
+          selectCell: selectViewportCellLatest,
+          selectedCellDragHandle: getDragHandle(rowIdx),
+          selectedCellEditor: getCellEditor(rowIdx)
+        })
       );
     }
 

@@ -197,19 +197,18 @@ A number defining the height of summary rows.
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
-###### `components?: Maybe<Components<R, SR>>`
+###### `renderers?: Maybe<Renderers<R, SR>>`
 
-This prop can be used to override the internal components. The prop accepts an object of type
+This prop can be used to override the internal renderers. The prop accepts an object of type
 
 ```tsx
-interface Components<TRow, TSummaryRow> {
-  sortIcon?: Maybe<ComponentType<SortIconProps>>;
+interface Renderers<TRow, TSummaryRow> {
+  sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
   checkboxFormatter?: Maybe<
-    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
-    | ComponentType<CheckboxFormatterProps>
+    (props: CheckboxFormatterProps, ref: Ref<HTMLInputElement>) => ReactNode
   >;
-  rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
-  noRowsFallback?: Maybe<React.ReactNode>;
+  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  noRowsFallback?: Maybe<ReactNode>;
 }
 ```
 
@@ -218,16 +217,16 @@ For example, the default `<Row />` component can be wrapped via the `rowRenderer
 ```tsx
 import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
 
-function MyRowRenderer(props: RowRendererProps<Row>) {
+function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
   return (
-    <MyContext.Provider value={123}>
+    <MyContext.Provider key={key} value={123}>
       <Row {...props} />
     </MyContext.Provider>
   );
 }
 
 function MyGrid() {
-  return <DataGrid columns={columns} rows={rows} components={{ rowRenderer: MyRowRenderer }} />;
+  return <DataGrid columns={columns} rows={rows} renderers={{ rowRenderer: myRowRenderer }} />;
 }
 ```
 
@@ -264,7 +263,7 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`components`](#components-maybecomponentsr-sr)
+See [`renderers`](#renderers-mayberenderersr-sr)
 
 ##### Props
 

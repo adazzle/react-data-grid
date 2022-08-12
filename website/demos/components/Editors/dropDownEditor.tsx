@@ -1,10 +1,10 @@
-import { textEditorClassname } from '../../../../src/editors/TextEditor';
+import { textEditorClassname } from '../../../../src/editors/textEditor';
 import type { EditorProps } from '../../../../src';
 import type { Row } from '../../AllFeatures';
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'] as const;
 
-export default function DropDownEditor({ row, onRowChange }: EditorProps<Row>) {
+export default function dropDownEditor({ row, onRowChange }: EditorProps<Row>) {
   return (
     <select
       className={textEditorClassname}

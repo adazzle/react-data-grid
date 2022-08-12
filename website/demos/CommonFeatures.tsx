@@ -3,10 +3,10 @@ import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
 
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
-import { textEditorClassname } from '../../src/editors/TextEditor';
+import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Props } from './types';
 import type { Direction } from '../../src/types';
 
@@ -90,7 +90,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       name: 'Task',
       width: 120,
       frozen: true,
-      editor: TextEditor,
+      editor: textEditor,
       summaryFormatter({ row }) {
         return <>{row.totalCount} records</>;
       }
@@ -99,13 +99,13 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       key: 'client',
       name: 'Client',
       width: 220,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'area',
       name: 'Area',
       width: 120,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'country',
@@ -131,13 +131,13 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       key: 'contact',
       name: 'Contact',
       width: 160,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'assignee',
       name: 'Assignee',
       width: 150,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'progress',
@@ -220,7 +220,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'version',
       name: 'Version',
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'available',

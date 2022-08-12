@@ -1,7 +1,7 @@
 import { StrictMode, useState } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
 import type { Column } from '../src';
-import DataGrid, { SelectColumn, TextEditor } from '../src';
+import DataGrid, { SelectColumn, textEditor } from '../src';
 import { render, screen, within } from '@testing-library/react';
 import {
   getGrid,
@@ -36,7 +36,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'country',
     name: 'Country',
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'year',

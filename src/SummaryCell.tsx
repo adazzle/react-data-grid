@@ -27,7 +27,7 @@ function SummaryCell<R, SR>({
   selectCell
 }: SummaryCellProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
-  const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
+  const { summaryCellClass } = column;
   const className = getCellClassname(
     column,
     summaryCellClassname,
@@ -51,9 +51,7 @@ function SummaryCell<R, SR>({
       onClick={onClick}
       onFocus={onFocus}
     >
-      {SummaryFormatter && (
-        <SummaryFormatter column={column} row={row} isCellSelected={isCellSelected} />
-      )}
+      {column.summaryFormatter?.({ column, row, isCellSelected })}
     </div>
   );
 }
