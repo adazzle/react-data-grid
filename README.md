@@ -217,7 +217,7 @@ For example, the default `<Row />` component can be wrapped via the `rowRenderer
 ```tsx
 import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
 
-function myRowRenderer(Key: React.Key, props: RowRendererProps<Row>) {
+function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
   return (
     <MyContext.Provider key={key} value={123}>
       <Row {...props} />
