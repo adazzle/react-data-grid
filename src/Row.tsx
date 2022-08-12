@@ -6,7 +6,7 @@ import Cell from './Cell';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import { rowClassname, rowSelectedClassname } from './style';
-import type { RowRendererProps } from './types';
+import type { CalculatedColumn, RowRendererProps } from './types';
 
 function Row<R, SR>(
   {
@@ -34,8 +34,8 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
-  const handleRowChange = useLatestFunc((newRow: R) => {
-    onRowChange(rowIdx, newRow);
+  const handleRowChange = useLatestFunc((column: CalculatedColumn<R, SR>, newRow: R) => {
+    onRowChange(column, rowIdx, newRow);
   });
 
   function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {

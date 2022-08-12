@@ -65,6 +65,10 @@ function Cell<R, SR>({
     onRowDoubleClick?.(row, column);
   }
 
+  function handleRowChange(newRow: R) {
+    onRowChange(column, newRow);
+  }
+
   return (
     <div
       role="gridcell"
@@ -88,7 +92,7 @@ function Cell<R, SR>({
             column,
             row,
             isCellSelected,
-            onRowChange
+            onRowChange: handleRowChange
           })}
           {dragHandle}
         </>
