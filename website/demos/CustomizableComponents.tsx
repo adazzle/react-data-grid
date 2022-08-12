@@ -1,4 +1,4 @@
-import { useMemo, useState, forwardRef } from 'react';
+import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
@@ -104,21 +104,29 @@ export default function CustomizableComponents({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      renderers={{ sortIcon, checkboxFormatter: CheckboxFormatter }}
+      renderers={{ sortIcon, checkboxFormatter }}
       direction={direction}
     />
   );
 }
 
-const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
-  function CheckboxFormatter({ disabled, onChange, ...props }, ref) {
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
-    }
-
-    return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
+function checkboxFormatter(
+  { disabled, onChange, ...props }: CheckboxFormatterProps,
+  ref: React.RefObject<HTMLOrSVGElement>
+) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
-);
+
+  return (
+    <input
+      type="checkbox"
+      ref={ref as React.RefObject<HTMLInputElement>}
+      {...props}
+      onChange={handleChange}
+    />
+  );
+}
 
 function sortIcon({ sortDirection }: SortIconProps) {
   return sortDirection !== undefined ? <>{sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F'} </> : null;

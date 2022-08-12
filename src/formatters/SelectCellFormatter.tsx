@@ -18,18 +18,22 @@ export function SelectCellFormatter({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
-  const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
-  const Formatter = useDefaultComponents()!.checkboxFormatter!;
+  const { ref, tabIndex } = useFocusRef(isCellSelected);
+  const checkboxFormatter = useDefaultComponents()!.checkboxFormatter!;
 
   return (
-    <Formatter
-      aria-label={ariaLabel}
-      aria-labelledby={ariaLabelledBy}
-      ref={ref}
-      tabIndex={tabIndex}
-      disabled={disabled}
-      checked={value}
-      onChange={onChange}
-    />
+    <>
+      {checkboxFormatter(
+        {
+          'aria-label': ariaLabel,
+          'aria-labelledby': ariaLabelledBy,
+          tabIndex,
+          disabled,
+          checked: value,
+          onChange
+        },
+        ref
+      )}
+    </>
   );
 }

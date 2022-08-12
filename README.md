@@ -205,11 +205,10 @@ This prop can be used to override the internal renderers. The prop accepts an ob
 interface Renderers<TRow, TSummaryRow> {
   sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
   checkboxFormatter?: Maybe<
-    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
-    | ComponentType<CheckboxFormatterProps>
+    (props: CheckboxFormatterProps, ref: Ref<HTMLOrSVGElement>) => ReactNode
   >;
   rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
-  noRowsFallback?: Maybe<React.ReactNode>;
+  noRowsFallback?: Maybe<ReactNode>;
 }
 ```
 

@@ -1,4 +1,4 @@
-import { forwardRef, StrictMode } from 'react';
+import { StrictMode } from 'react';
 import { render, screen } from '@testing-library/react';
 
 import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn } from '../src';
@@ -25,22 +25,28 @@ function GlobalNoRowsFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-const Checkbox = forwardRef<HTMLDivElement, CheckboxFormatterProps>(function Checkbox(props, ref) {
-  return <div ref={ref}>Local checkbox</div>;
-});
-
-const GlobalCheckbox = forwardRef<HTMLDivElement, CheckboxFormatterProps>(function GlobalCheckbox(
-  props,
-  ref
+function localCheckboxFormatter(
+  props: CheckboxFormatterProps,
+  ref: React.RefObject<HTMLOrSVGElement>
 ) {
-  return <div ref={ref}>Global checkbox</div>;
-});
+  return <div ref={ref as React.RefObject<HTMLDivElement>}>Local checkbox</div>;
+}
+
+function globalCheckboxFormatter(
+  props: CheckboxFormatterProps,
+  ref: React.RefObject<HTMLOrSVGElement>
+) {
+  return <div ref={ref as React.RefObject<HTMLDivElement>}>Global checkbox</div>;
+}
 
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
     <StrictMode>
       <DataGridDefaultComponentsProvider
-        value={{ noRowsFallback: <GlobalNoRowsFallback />, checkboxFormatter: GlobalCheckbox }}
+        value={{
+          noRowsFallback: <GlobalNoRowsFallback />,
+          checkboxFormatter: globalCheckboxFormatter
+        }}
       >
         <DataGrid {...props} />
       </DataGridDefaultComponentsProvider>
@@ -92,7 +98,7 @@ test('fallback defined using both provider and renderers with a row', () => {
 });
 
 test('checkbox defined using renderers prop', () => {
-  setup({ columns, rows: [], renderers: { checkboxFormatter: Checkbox } });
+  setup({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -106,7 +112,7 @@ test('checkbox defined using provider', () => {
 });
 
 test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: [], renderers: { checkboxFormatter: Checkbox } });
+  setupProvider({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();

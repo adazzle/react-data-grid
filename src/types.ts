@@ -1,11 +1,4 @@
-import type {
-  ComponentType,
-  ForwardRefExoticComponent,
-  Key,
-  ReactElement,
-  ReactNode,
-  RefAttributes
-} from 'react';
+import type { Key, ReactElement, ReactNode, RefObject } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -231,8 +224,7 @@ export interface CheckboxFormatterProps
 export interface Renderers<TRow, TSummaryRow> {
   sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
   checkboxFormatter?: Maybe<
-    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
-    | ComponentType<CheckboxFormatterProps>
+    (props: CheckboxFormatterProps, ref: RefObject<HTMLOrSVGElement>) => ReactNode
   >;
   rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;

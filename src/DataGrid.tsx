@@ -26,7 +26,7 @@ import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import { default as defaultSortIcon } from './sortIcon';
-import { CheckboxFormatter } from './formatters';
+import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import {
   DataGridDefaultComponentsProvider,
   useDefaultComponents
@@ -244,7 +244,9 @@ function DataGrid<R, SR, K extends Key>(
     renderers?.rowRenderer ?? defaultComponents?.rowRenderer ?? defaultRowRenderer;
   const sortIcon = renderers?.sortIcon ?? defaultComponents?.sortIcon ?? defaultSortIcon;
   const checkboxFormatter =
-    renderers?.checkboxFormatter ?? defaultComponents?.checkboxFormatter ?? CheckboxFormatter;
+    renderers?.checkboxFormatter ??
+    defaultComponents?.checkboxFormatter ??
+    defaultCheckboxFormatter;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   enableVirtualization ??= true;
