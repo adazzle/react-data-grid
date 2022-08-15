@@ -16,7 +16,8 @@ interface Row {
 }
 
 function createRows(): Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 500; i++) {
     rows.push({
       id: i,
@@ -73,7 +74,7 @@ export default function ColumnsReordering({ direction }: Props) {
   }, []);
 
   const draggableColumns = useMemo(() => {
-    function HeaderRenderer(props: HeaderRendererProps<Row>) {
+    function headerRenderer(props: HeaderRendererProps<Row>) {
       return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
     }
 
@@ -93,7 +94,7 @@ export default function ColumnsReordering({ direction }: Props) {
 
     return columns.map((c) => {
       if (c.key === 'id') return c;
-      return { ...c, headerRenderer: HeaderRenderer };
+      return { ...c, headerRenderer };
     });
   }, [columns]);
 

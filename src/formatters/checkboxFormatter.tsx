@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
@@ -50,27 +49,28 @@ const checkboxLabelDisabled = css`
 
 const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
 
-export const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
-  function CheckboxFormatter({ onChange, ...props }: CheckboxFormatterProps, ref) {
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
-    }
-
-    return (
-      <label
-        className={clsx(checkboxLabelClassname, {
-          [checkboxLabelDisabledClassname]: props.disabled
-        })}
-      >
-        <input
-          type="checkbox"
-          ref={ref}
-          {...props}
-          className={checkboxInputClassname}
-          onChange={handleChange}
-        />
-        <div className={checkboxClassname} />
-      </label>
-    );
+export function checkboxFormatter(
+  { onChange, ...props }: CheckboxFormatterProps,
+  ref: React.RefObject<HTMLInputElement>
+) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
-);
+
+  return (
+    <label
+      className={clsx(checkboxLabelClassname, {
+        [checkboxLabelDisabledClassname]: props.disabled
+      })}
+    >
+      <input
+        type="checkbox"
+        ref={ref}
+        {...props}
+        className={checkboxInputClassname}
+        onChange={handleChange}
+      />
+      <div className={checkboxClassname} />
+    </label>
+  );
+}

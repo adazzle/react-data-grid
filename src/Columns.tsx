@@ -54,6 +54,10 @@ export const SelectColumn: Column<any, any> = {
       />
     );
   },
-  formatter: SelectFormatter,
-  groupFormatter: SelectGroupFormatter
+  formatter(props) {
+    return <SelectFormatter {...props} />;
+  },
+  groupFormatter(props) {
+    return <SelectGroupFormatter {...props} />;
+  }
 };

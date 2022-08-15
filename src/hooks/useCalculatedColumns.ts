@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import type { CalculatedColumn, Column, Maybe } from '../types';
 import type { DataGridProps } from '../DataGrid';
-import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
+import { valueFormatter, toggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import { clampColumnWidth, max, min } from '../utils';
 
@@ -41,7 +41,7 @@ export function useCalculatedColumns<R, SR>({
   const defaultWidth = defaultColumnOptions?.width;
   const defaultMinWidth = defaultColumnOptions?.minWidth;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth;
-  const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
+  const defaultFormatter = defaultColumnOptions?.formatter ?? valueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
@@ -75,7 +75,7 @@ export function useCalculatedColumns<R, SR>({
       };
 
       if (rowGroup) {
-        column.groupFormatter ??= ToggleGroupFormatter;
+        column.groupFormatter ??= toggleGroupFormatter;
       }
 
       if (frozen) {

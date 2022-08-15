@@ -57,6 +57,8 @@ describe('Custom formatter component', () => {
   });
 
   it('can update rows', async () => {
+    const onChange = jest.fn();
+
     const column: Column<Row> = {
       key: 'test',
       name: 'test',
@@ -72,7 +74,16 @@ describe('Custom formatter component', () => {
     function Test() {
       const [rows, setRows] = useState<readonly Row[]>([{ id: 1 }]);
 
-      return <DataGrid columns={[column]} rows={rows} onRowsChange={setRows} />;
+      return (
+        <DataGrid
+          columns={[column]}
+          rows={rows}
+          onRowsChange={(rows, data) => {
+            setRows(rows);
+            onChange(rows, data);
+          }}
+        />
+      );
     }
 
     render(
@@ -85,5 +96,21 @@ describe('Custom formatter component', () => {
     expect(cell).toHaveTextContent('value: 1');
     await userEvent.click(screen.getByRole('button'));
     expect(cell).toHaveTextContent('value: 2');
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith([{ id: 2 }], {
+      column: {
+        ...column,
+        frozen: false,
+        idx: 0,
+        isLastFrozenColumn: false,
+        maxWidth: undefined,
+        minWidth: 80,
+        resizable: false,
+        rowGroup: false,
+        sortable: false,
+        width: undefined
+      },
+      indexes: [0]
+    });
   });
 });

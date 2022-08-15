@@ -1,11 +1,10 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import faker from '@faker-js/faker';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
-import DataGrid from '../../src';
+import DataGrid, { useFocusRef } from '../../src';
 import type { Column, HeaderRendererProps } from '../../src';
 import type { Omit } from '../../src/types';
-import { useFocusRef } from '../../src/hooks';
 import type { Props } from './types';
 
 const rootClassname = css`
