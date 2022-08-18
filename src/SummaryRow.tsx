@@ -2,7 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, row, rowClassname, rowSelectedClassname } from './style';
+import { cell, cellFrozen, row, rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
@@ -19,6 +19,7 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   bottom: number | undefined;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
+  isTop: boolean;
   selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
 
@@ -37,7 +38,21 @@ const summaryRowBorderClassname = css`
   }
 `;
 
+const topSummaryRow = css`
+  &.${row} {
+    > .${cell} {
+      z-index: 1;
+    }
+
+    > .${cellFrozen} {
+      z-index: 2;
+    }
+  }
+`;
+
 const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
+
+const topSummaryRowClassname = `rdg-top-summary-row ${topSummaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
@@ -48,6 +63,7 @@ function SummaryRow<R, SR>({
   bottom,
   lastFrozenColumnIndex,
   selectedCellIdx,
+  isTop,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -83,7 +99,9 @@ function SummaryRow<R, SR>({
         summaryRowClassname,
         {
           [summaryRowBorderClassname]: rowIdx === 0,
-          [rowSelectedClassname]: selectedCellIdx === -1
+          [rowSelectedClassname]: selectedCellIdx === -1,
+          [topSummaryRowClassname]: isTop,
+          'rdg-bottom-summary-row': !isTop
         }
       )}
       style={

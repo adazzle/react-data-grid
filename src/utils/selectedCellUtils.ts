@@ -32,6 +32,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
+  topSummaryRows: Maybe<readonly SR[]>;
   bottomSummaryRows: Maybe<readonly SR[]>;
   minRowIdx: number;
   maxRowIdx: number;
@@ -44,6 +45,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
 
 export function getSelectedCellColSpan<R, SR>({
   rows,
+  topSummaryRows,
   bottomSummaryRows,
   rowIdx,
   lastFrozenColumnIndex,
@@ -51,7 +53,7 @@ export function getSelectedCellColSpan<R, SR>({
   isGroupRow
 }: Pick<
   GetNextSelectedCellPositionOpts<R, SR>,
-  'rows' | 'bottomSummaryRows' | 'isGroupRow' | 'lastFrozenColumnIndex'
+  'rows' | 'topSummaryRows' | 'bottomSummaryRows' | 'isGroupRow' | 'lastFrozenColumnIndex'
 > & {
   rowIdx: number;
   column: CalculatedColumn<R, SR>;
@@ -60,8 +62,18 @@ export function getSelectedCellColSpan<R, SR>({
     return getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
   }
 
-  if (rowIdx >= 0 && rowIdx < rows.length) {
-    const row = rows[rowIdx];
+  if (topSummaryRows) {
+    return getColSpan(column, lastFrozenColumnIndex, {
+      type: 'SUMMARY',
+      row: topSummaryRows[rowIdx - 1]
+    });
+  }
+
+  const startRowIdx = rowIdx - (topSummaryRows?.length ?? 0);
+
+  // TODO: handle start/end index
+  if (startRowIdx >= 0 && startRowIdx < rows.length) {
+    const row = rows[startRowIdx];
     if (!isGroupRow(row)) {
       return getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     }
@@ -83,6 +95,7 @@ export function getNextSelectedCellPosition<R, SR>({
   columns,
   colSpanColumns,
   rows,
+  topSummaryRows,
   bottomSummaryRows,
   minRowIdx,
   maxRowIdx,

@@ -33,13 +33,13 @@ const headerRow = css`
 
   > .${cell} {
     /* Should have a higher value than 1 to show up above frozen cells */
-    z-index: 2;
+    z-index: 1;
     position: sticky;
     inset-block-start: 0;
   }
 
   > .${cellFrozen} {
-    z-index: 3;
+    z-index: 2;
   }
 `;
 

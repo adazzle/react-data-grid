@@ -356,6 +356,7 @@ export default function CommonFeatures({ direction }: Props) {
       onRowsChange={setRows}
       sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
+      topSummaryRows={bottomSummaryRows}
       bottomSummaryRows={bottomSummaryRows}
       className="fill-grid"
       direction={direction}
