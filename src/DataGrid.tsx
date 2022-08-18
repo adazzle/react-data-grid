@@ -393,7 +393,13 @@ function DataGrid<R, SR, K extends Key>(
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
     selectCell({ rowIdx: -1, idx });
   });
-  const selectSummaryCellLatest = useLatestFunc(
+  const selectTopSummaryCellLatest = useLatestFunc(
+    (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
+      const rowIdx = topSummaryRows!.indexOf(summaryRow);
+      selectCell({ rowIdx, idx: column.idx });
+    }
+  );
+  const selectBottomSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
       const rowIdx = bottomSummaryRows!.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
       selectCell({ rowIdx, idx: column.idx });
@@ -710,7 +716,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function isRowIdxWithinViewportBounds(rowIdx: number) {
-    return rowIdx >= 0 && rowIdx < rows.length;
+    return rowIdx >= topSummaryRowsCount && rowIdx < topSummaryRowsCount + rows.length;
   }
 
   function isCellWithinSelectionBounds({ idx, rowIdx }: Position): boolean {
@@ -1214,7 +1220,7 @@ function DataGrid<R, SR, K extends Key>(
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                  selectCell={selectSummaryCellLatest}
+                  selectCell={selectTopSummaryCellLatest}
                 />
               );
             })}
@@ -1247,7 +1253,7 @@ function DataGrid<R, SR, K extends Key>(
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                  selectCell={selectSummaryCellLatest}
+                  selectCell={selectBottomSummaryCellLatest}
                 />
               );
             })}
