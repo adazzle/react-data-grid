@@ -25,7 +25,7 @@ test('summaryFormatter', () => {
   setup({
     columns,
     rows: [],
-    summaryRows: [
+    bottomSummaryRows: [
       { id: 12, col1: 'ab', col2: 'cd' },
       { id: 34, col1: 'ef', col2: 'gh' }
     ]

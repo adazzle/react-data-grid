@@ -8,7 +8,7 @@ interface SummaryRow {
 }
 
 const cellClassname = `${cellClass} ${summaryCellClassname}`;
-const summaryRows: readonly SummaryRow[] = [{ id: 0 }, { id: 1 }];
+const bottomSummaryRows: readonly SummaryRow[] = [{ id: 0 }, { id: 1 }];
 
 test('summaryCellClass is undefined', () => {
   const columns: readonly Column<unknown, SummaryRow>[] = [
@@ -17,7 +17,7 @@ test('summaryCellClass is undefined', () => {
       name: 'ID'
     }
   ];
-  setup({ columns, summaryRows, rows: [] });
+  setup({ columns, bottomSummaryRows, rows: [] });
   const [cell1, cell2] = getCells();
   expect(cell1).toHaveClass(cellClassname, { exact: true });
   expect(cell2).toHaveClass(cellClassname, { exact: true });
@@ -31,7 +31,7 @@ test('summaryCellClass is a string', () => {
       summaryCellClass: 'my-cell'
     }
   ];
-  setup({ columns, summaryRows, rows: [] });
+  setup({ columns, bottomSummaryRows, rows: [] });
   const [cell1, cell2] = getCells();
   expect(cell1).toHaveClass(`${cellClassname} my-cell`, { exact: true });
   expect(cell2).toHaveClass(`${cellClassname} my-cell`, { exact: true });
@@ -45,7 +45,7 @@ test('summaryCellClass returns a string', () => {
       summaryCellClass: (row) => `my-cell-${row.id}`
     }
   ];
-  setup({ columns, summaryRows, rows: [] });
+  setup({ columns, bottomSummaryRows, rows: [] });
   const [cell1, cell2] = getCells();
   expect(cell1).toHaveClass(`${cellClassname} my-cell-0`, { exact: true });
   expect(cell2).toHaveClass(`${cellClassname} my-cell-1`, { exact: true });
@@ -59,7 +59,7 @@ test('summaryCellClass returns undefined', () => {
       summaryCellClass: () => undefined
     }
   ];
-  setup({ columns, summaryRows, rows: [] });
+  setup({ columns, bottomSummaryRows, rows: [] });
   const [cell1, cell2] = getCells();
   expect(cell1).toHaveClass(cellClassname, { exact: true });
   expect(cell2).toHaveClass(cellClassname, { exact: true });

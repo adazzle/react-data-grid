@@ -32,7 +32,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  summaryRows: Maybe<readonly SR[]>;
+  bottomSummaryRows: Maybe<readonly SR[]>;
   minRowIdx: number;
   maxRowIdx: number;
   currentPosition: Position;
@@ -44,14 +44,14 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
 
 export function getSelectedCellColSpan<R, SR>({
   rows,
-  summaryRows,
+  bottomSummaryRows,
   rowIdx,
   lastFrozenColumnIndex,
   column,
   isGroupRow
 }: Pick<
   GetNextSelectedCellPositionOpts<R, SR>,
-  'rows' | 'summaryRows' | 'isGroupRow' | 'lastFrozenColumnIndex'
+  'rows' | 'bottomSummaryRows' | 'isGroupRow' | 'lastFrozenColumnIndex'
 > & {
   rowIdx: number;
   column: CalculatedColumn<R, SR>;
@@ -68,10 +68,10 @@ export function getSelectedCellColSpan<R, SR>({
     return undefined;
   }
 
-  if (summaryRows) {
+  if (bottomSummaryRows) {
     return getColSpan(column, lastFrozenColumnIndex, {
       type: 'SUMMARY',
-      row: summaryRows[rowIdx - rows.length]
+      row: bottomSummaryRows[rowIdx - rows.length]
     });
   }
 
@@ -83,7 +83,7 @@ export function getNextSelectedCellPosition<R, SR>({
   columns,
   colSpanColumns,
   rows,
-  summaryRows,
+  bottomSummaryRows,
   minRowIdx,
   maxRowIdx,
   currentPosition: { idx: currentIdx },
@@ -106,7 +106,7 @@ export function getNextSelectedCellPosition<R, SR>({
       if (colIdx > nextIdx) break;
       const colSpan = getSelectedCellColSpan({
         rows,
-        summaryRows,
+        bottomSummaryRows,
         rowIdx: nextRowIdx,
         lastFrozenColumnIndex,
         column,

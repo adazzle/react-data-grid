@@ -9,7 +9,7 @@ import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex, getGr
 type Row = undefined;
 
 const rows: readonly Row[] = Array(100);
-const summaryRows: readonly Row[] = [undefined, undefined];
+const bottomSummaryRows: readonly Row[] = [undefined, undefined];
 
 const columns: readonly Column<Row>[] = [
   SelectColumn,
@@ -22,7 +22,7 @@ const columns: readonly Column<Row>[] = [
 ];
 
 test('keyboard navigation', async () => {
-  setup({ columns, rows, summaryRows });
+  setup({ columns, rows, bottomSummaryRows });
 
   // no initial selection
   expect(getSelectedCell()).not.toBeInTheDocument();
@@ -94,7 +94,7 @@ test('keyboard navigation', async () => {
 });
 
 test('cellNavigationMode="NONE"', async () => {
-  setup({ columns, rows, summaryRows, cellNavigationMode: 'NONE' });
+  setup({ columns, rows, bottomSummaryRows, cellNavigationMode: 'NONE' });
 
   // pressing arrowleft on the leftmost cell does nothing
   await userEvent.tab();
@@ -119,7 +119,7 @@ test('cellNavigationMode="NONE"', async () => {
 });
 
 test('cellNavigationMode="CHANGE_ROW"', async () => {
-  setup({ columns, rows, summaryRows, cellNavigationMode: 'CHANGE_ROW' });
+  setup({ columns, rows, bottomSummaryRows, cellNavigationMode: 'CHANGE_ROW' });
 
   // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the previous row
   await userEvent.tab();
@@ -142,7 +142,7 @@ test('cellNavigationMode="CHANGE_ROW"', async () => {
 });
 
 test('cellNavigationMode="LOOP_OVER_ROW"', async () => {
-  setup({ columns, rows, summaryRows, cellNavigationMode: 'LOOP_OVER_ROW' });
+  setup({ columns, rows, bottomSummaryRows, cellNavigationMode: 'LOOP_OVER_ROW' });
 
   // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the same row
   await userEvent.tab();
@@ -164,7 +164,7 @@ test('cellNavigationMode="LOOP_OVER_ROW"', async () => {
 });
 
 test('grid enter/exit', async () => {
-  setup({ columns, rows: Array(5), summaryRows });
+  setup({ columns, rows: Array(5), bottomSummaryRows });
 
   // no initial selection
   expect(getSelectedCell()).not.toBeInTheDocument();
@@ -203,7 +203,7 @@ test('grid enter/exit', async () => {
 });
 
 test('navigation with focusable formatter', async () => {
-  setup({ columns, rows: Array(1), summaryRows });
+  setup({ columns, rows: Array(1), bottomSummaryRows });
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
@@ -250,7 +250,7 @@ test('navigation when header and summary rows have focusable elements', async ()
     }
   ];
 
-  setup({ columns, rows: Array(2), summaryRows });
+  setup({ columns, rows: Array(2), bottomSummaryRows });
   await userEvent.tab();
 
   // should set focus on the header filter
@@ -290,7 +290,7 @@ test('navigation when selected cell not in the viewport', async () => {
   for (let i = 0; i < 99; i++) {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
-  setup({ columns, rows, summaryRows });
+  setup({ columns, rows, bottomSummaryRows });
   await userEvent.tab();
   validateCellPosition(0, 0);
 

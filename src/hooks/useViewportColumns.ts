@@ -7,7 +7,7 @@ interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly (R | GroupRow<R>)[];
-  summaryRows: Maybe<readonly SR[]>;
+  bottomSummaryRows: Maybe<readonly SR[]>;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   lastFrozenColumnIndex: number;
@@ -20,7 +20,7 @@ export function useViewportColumns<R, SR>({
   columns,
   colSpanColumns,
   rows,
-  summaryRows,
+  bottomSummaryRows,
   colOverscanStartIdx,
   colOverscanEndIdx,
   lastFrozenColumnIndex,
@@ -62,8 +62,8 @@ export function useViewportColumns<R, SR>({
       }
 
       // check summary rows
-      if (summaryRows != null) {
-        for (const row of summaryRows) {
+      if (bottomSummaryRows != null) {
+        for (const row of bottomSummaryRows) {
           if (
             updateStartIdx(
               colIdx,
@@ -81,7 +81,7 @@ export function useViewportColumns<R, SR>({
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
-    summaryRows,
+    bottomSummaryRows,
     colOverscanStartIdx,
     lastFrozenColumnIndex,
     colSpanColumns,

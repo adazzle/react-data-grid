@@ -22,7 +22,7 @@ function setupGrid(
 ) {
   const columns: Column<unknown>[] = [];
   const rows = Array(rowCount);
-  const summaryRows = Array(summaryRowCount).fill(null);
+  const bottomSummaryRows = Array(summaryRowCount).fill(null);
 
   for (let i = 0; i < columnCount; i++) {
     const key = String(i);
@@ -34,7 +34,7 @@ function setupGrid(
     });
   }
 
-  return setup({ columns, rows, summaryRows, rowHeight, enableVirtualization });
+  return setup({ columns, rows, bottomSummaryRows, rowHeight, enableVirtualization });
 }
 
 function assertElements(

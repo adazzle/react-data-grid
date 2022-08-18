@@ -107,7 +107,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
    * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
-  summaryRows?: Maybe<readonly SR[]>;
+  bottomSummaryRows?: Maybe<readonly SR[]>;
   /** The getter should return a unique key for each row */
   rowKeyGetter?: Maybe<(row: R) => K>;
   onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>;
@@ -191,7 +191,7 @@ function DataGrid<R, SR, K extends Key>(
     // Grid and data Props
     columns: rawColumns,
     rows: rawRows,
-    summaryRows,
+    bottomSummaryRows,
     rowKeyGetter,
     onRowsChange,
     // Dimensions props
@@ -279,7 +279,7 @@ function DataGrid<R, SR, K extends Key>(
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const headerRowsCount = 1;
-  const summaryRowsCount = summaryRows?.length ?? 0;
+  const summaryRowsCount = bottomSummaryRows?.length ?? 0;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isHeaderRowSelected = selectedPosition.rowIdx === -1;
@@ -358,7 +358,7 @@ function DataGrid<R, SR, K extends Key>(
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
-    summaryRows,
+    bottomSummaryRows,
     isGroupRow
   });
 
@@ -390,7 +390,7 @@ function DataGrid<R, SR, K extends Key>(
   });
   const selectSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx = summaryRows!.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
+      const rowIdx = bottomSummaryRows!.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
       selectCell({ rowIdx, idx: column.idx });
     }
   );
@@ -752,7 +752,7 @@ function DataGrid<R, SR, K extends Key>(
 
       const colSpan = getSelectedCellColSpan({
         rows,
-        summaryRows,
+        bottomSummaryRows,
         rowIdx,
         lastFrozenColumnIndex,
         column,
@@ -862,7 +862,7 @@ function DataGrid<R, SR, K extends Key>(
       columns,
       colSpanColumns,
       rows,
-      summaryRows,
+      bottomSummaryRows,
       minRowIdx,
       maxRowIdx,
       lastFrozenColumnIndex,
@@ -1186,17 +1186,17 @@ function DataGrid<R, SR, K extends Key>(
             <RowSelectionChangeProvider value={selectRowLatest}>
               {getViewportRows()}
             </RowSelectionChangeProvider>
-            {summaryRows?.map((row, rowIdx) => {
+            {bottomSummaryRows?.map((row, rowIdx) => {
               const gridRowStart = headerRowsCount + rows.length + rowIdx + 1;
               const summaryRowIdx = headerRowsCount + rows.length + rowIdx - 1;
               const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
               const top =
                 clientHeight > totalRowHeight
-                  ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
+                  ? gridHeight - summaryRowHeight * (bottomSummaryRows.length - rowIdx)
                   : undefined;
               const bottom =
                 top === undefined
-                  ? summaryRowHeight * (summaryRows.length - 1 - rowIdx)
+                  ? summaryRowHeight * (bottomSummaryRows.length - 1 - rowIdx)
                   : undefined;
 
               return (

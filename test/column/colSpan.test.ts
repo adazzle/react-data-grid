@@ -34,7 +34,7 @@ describe('colSpan', () => {
         }
       });
     }
-    setup({ columns, rows, summaryRows: [1, 2] });
+    setup({ columns, rows, bottomSummaryRows: [1, 2] });
   }
 
   it('should merges cells', () => {
