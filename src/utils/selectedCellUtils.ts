@@ -65,15 +65,12 @@ export function getSelectedCellColSpan<R, SR>({
   if (topSummaryRows) {
     return getColSpan(column, lastFrozenColumnIndex, {
       type: 'SUMMARY',
-      row: topSummaryRows[rowIdx - 1]
+      row: topSummaryRows[rowIdx]
     });
   }
 
-  const startRowIdx = rowIdx - (topSummaryRows?.length ?? 0);
-
-  // TODO: handle start/end index
-  if (startRowIdx >= 0 && startRowIdx < rows.length) {
-    const row = rows[startRowIdx];
+  if (rowIdx >= 0 && rowIdx < rows.length) {
+    const row = rows[rowIdx];
     if (!isGroupRow(row)) {
       return getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     }
@@ -119,6 +116,7 @@ export function getNextSelectedCellPosition<R, SR>({
       if (colIdx > nextIdx) break;
       const colSpan = getSelectedCellColSpan({
         rows,
+        topSummaryRows,
         bottomSummaryRows,
         rowIdx: nextRowIdx,
         lastFrozenColumnIndex,
