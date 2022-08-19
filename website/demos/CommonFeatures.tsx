@@ -256,11 +256,11 @@ function createRows(): readonly Row[] {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
-      client: faker.company.companyName(),
+      client: faker.company.name(),
       area: faker.name.jobArea(),
       country: faker.address.country(),
       contact: faker.internet.exampleEmail(),
-      assignee: faker.name.findName(),
+      assignee: faker.name.fullName(),
       progress: Math.random() * 100,
       startTimestamp: now - Math.round(Math.random() * 1e10),
       endTimestamp: now + Math.round(Math.random() * 1e10),
