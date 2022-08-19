@@ -318,7 +318,7 @@ export default function CommonFeatures({ direction }: Props) {
   }, []);
   const columns = useMemo(() => getColumns(countries, direction), [countries, direction]);
 
-  const bottomSummaryRows = useMemo(() => {
+  const summaryRows = useMemo(() => {
     const summaryRow: SummaryRow = {
       id: 'total_0',
       totalCount: rows.length,
@@ -356,8 +356,8 @@ export default function CommonFeatures({ direction }: Props) {
       onRowsChange={setRows}
       sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
-      topSummaryRows={bottomSummaryRows}
-      bottomSummaryRows={bottomSummaryRows}
+      topSummaryRows={summaryRows}
+      bottomSummaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
     />
