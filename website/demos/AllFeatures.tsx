@@ -155,12 +155,12 @@ function createRows(): Row[] {
       title: faker.name.prefix(),
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
-      street: faker.address.streetName(),
+      street: faker.address.street(),
       zipCode: faker.address.zipCode(),
       date: faker.date.past().toLocaleDateString(),
       bs: faker.company.bs(),
       catchPhrase: faker.company.catchPhrase(),
-      companyName: faker.company.companyName(),
+      companyName: faker.company.name(),
       words: faker.lorem.words(),
       sentence: faker.lorem.sentence()
     });
