@@ -1216,6 +1216,7 @@ function DataGrid<R, SR, K extends Key>(
               const gridRowStart = headerRowsCount + rowIdx + 1;
               const summaryRowIdx = headerRowsCount + rowIdx - 1;
               const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
+              const top = headerRowHeight + summaryRowHeight * rowIdx;
 
               return (
                 <SummaryRow
@@ -1224,7 +1225,7 @@ function DataGrid<R, SR, K extends Key>(
                   rowIdx={rowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
-                  top={headerRowHeight}
+                  top={top}
                   bottom={undefined}
                   isTop
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
