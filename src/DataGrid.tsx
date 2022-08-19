@@ -286,7 +286,6 @@ function DataGrid<R, SR, K extends Key>(
   const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
-  const isHeaderRowSelected = selectedPosition.rowIdx === -1;
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
@@ -370,10 +369,8 @@ function DataGrid<R, SR, K extends Key>(
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
-  const minRowIdx = -1;
-  const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
-  const minViewportRowIdx = topSummaryRowsCount;
-  const maxViewportRowIdx = rows.length + topSummaryRowsCount - 1;
+  const minRowIdx = -1 - topSummaryRowsCount;
+  const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
 
@@ -386,29 +383,24 @@ function DataGrid<R, SR, K extends Key>(
   const selectViewportCellLatest = useLatestFunc(
     (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       const rowIdx = rows.indexOf(row);
-      selectCell({ rowIdx: rowIdx + topSummaryRowsCount, idx: column.idx }, enableEditor);
+      selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
   );
   const selectGroupLatest = useLatestFunc((rowIdx: number) => {
     selectCell({ rowIdx, idx: -1 });
   });
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
-    selectCell({ rowIdx: -1, idx });
+    selectCell({ rowIdx: minRowIdx, idx });
   });
   const selectTopSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
       const rowIdx = topSummaryRows!.indexOf(summaryRow);
-      selectCell({ rowIdx, idx: column.idx });
+      selectCell({ rowIdx: rowIdx + minRowIdx + 1, idx: column.idx });
     }
   );
   const selectBottomSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx =
-        bottomSummaryRows!.indexOf(summaryRow) +
-        headerRowsCount +
-        topSummaryRowsCount +
-        rows.length -
-        1;
+      const rowIdx = bottomSummaryRows!.indexOf(summaryRow) + rows.length;
       selectCell({ rowIdx, idx: column.idx });
     }
   );
@@ -642,7 +634,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function updateRow(column: CalculatedColumn<R, SR>, rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
-    const rawRowIdx = getRawRowIdx(rowIdx - topSummaryRowsCount);
+    const rawRowIdx = getRawRowIdx(rowIdx);
     if (row === rawRows[rawRowIdx]) return;
     const updatedRows = [...rawRows];
     updatedRows[rawRowIdx] = row;
@@ -723,7 +715,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function isRowIdxWithinViewportBounds(rowIdx: number) {
-    return rowIdx >= minViewportRowIdx && rowIdx <= maxViewportRowIdx;
+    return rowIdx >= 0 && rowIdx < rows.length;
   }
 
   function isCellWithinSelectionBounds({ idx, rowIdx }: Position): boolean {
@@ -1006,8 +998,7 @@ function DataGrid<R, SR, K extends Key>(
     const rowElements: React.ReactNode[] = [];
     let startRowIndex = 0;
 
-    const selectedIdx = selectedPosition.idx;
-    const selectedRowIdx = selectedPosition.rowIdx - topSummaryRowsCount;
+    const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
 
     const startRowIdx =
       selectedCellIsWithinViewportBounds && selectedRowIdx < rowOverscanStartIdx
@@ -1160,8 +1151,7 @@ function DataGrid<R, SR, K extends Key>(
               ? `${totalFrozenColumnWidth}px`
               : undefined,
           scrollPaddingBlock:
-            selectedPosition.rowIdx >= minViewportRowIdx &&
-            selectedPosition.rowIdx <= maxViewportRowIdx
+            selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
               ? `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
@@ -1203,7 +1193,7 @@ function DataGrid<R, SR, K extends Key>(
           sortColumns={sortColumns}
           onSortColumnsChange={onSortColumnsChange}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
-          selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
+          selectedCellIdx={selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined}
           selectCell={selectHeaderCellLatest}
           shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
           direction={direction}
@@ -1214,7 +1204,7 @@ function DataGrid<R, SR, K extends Key>(
           <>
             {topSummaryRows?.map((row, rowIdx) => {
               const gridRowStart = headerRowsCount + rowIdx + 1;
-              const summaryRowIdx = headerRowsCount + rowIdx - 1;
+              const summaryRowIdx = rowIdx + minRowIdx + 1;
               const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
               const top = headerRowHeight + summaryRowHeight * rowIdx;
 
@@ -1240,8 +1230,7 @@ function DataGrid<R, SR, K extends Key>(
             </RowSelectionChangeProvider>
             {bottomSummaryRows?.map((row, rowIdx) => {
               const gridRowStart = headerRowsCount + topSummaryRowsCount + rows.length + rowIdx + 1;
-              const summaryRowIdx =
-                headerRowsCount + topSummaryRowsCount + rows.length + rowIdx - 1;
+              const summaryRowIdx = rows.length + rowIdx;
               const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
               const top =
                 clientHeight > totalRowHeight
