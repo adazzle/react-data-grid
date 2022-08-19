@@ -1217,7 +1217,7 @@ function DataGrid<R, SR, K extends Key>(
                   row={row}
                   top={top}
                   bottom={undefined}
-                  isTop
+                  lastTopRowIdx={topSummaryRowsCount + -1}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
@@ -1250,7 +1250,7 @@ function DataGrid<R, SR, K extends Key>(
                   row={row}
                   top={top}
                   bottom={bottom}
-                  isTop={false}
+                  lastTopRowIdx={undefined}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}

@@ -19,7 +19,7 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   bottom: number | undefined;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
-  isTop: boolean;
+  lastTopRowIdx: number | undefined;
   selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
 
@@ -32,12 +32,6 @@ const summaryRow = css`
   }
 `;
 
-const summaryRowBorderClassname = css`
-  & > .${cell} {
-    border-block-start: 2px solid var(--rdg-summary-border-color);
-  }
-`;
-
 const topSummaryRow = css`
   &.${row} {
     > .${cell} {
@@ -47,6 +41,18 @@ const topSummaryRow = css`
     > .${cellFrozen} {
       z-index: 2;
     }
+  }
+`;
+
+const topSummaryRowBorderClassname = css`
+  & > .${cell} {
+    border-block-end: 2px solid var(--rdg-summary-border-color);
+  }
+`;
+
+const bottomSummaryRowBorderClassname = css`
+  & > .${cell} {
+    border-block-start: 2px solid var(--rdg-summary-border-color);
   }
 `;
 
@@ -63,7 +69,7 @@ function SummaryRow<R, SR>({
   bottom,
   lastFrozenColumnIndex,
   selectedCellIdx,
-  isTop,
+  lastTopRowIdx,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -89,6 +95,8 @@ function SummaryRow<R, SR>({
     );
   }
 
+  const isTop = lastTopRowIdx !== undefined;
+
   return (
     <div
       role="row"
@@ -98,9 +106,10 @@ function SummaryRow<R, SR>({
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
         {
-          [summaryRowBorderClassname]: rowIdx === 0,
           [rowSelectedClassname]: selectedCellIdx === -1,
           [topSummaryRowClassname]: isTop,
+          [topSummaryRowBorderClassname]: isTop && lastTopRowIdx === rowIdx,
+          [bottomSummaryRowBorderClassname]: !isTop && rowIdx === 0,
           'rdg-bottom-summary-row': !isTop
         }
       )}
