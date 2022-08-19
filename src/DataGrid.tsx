@@ -370,8 +370,10 @@ function DataGrid<R, SR, K extends Key>(
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
-  const minRowIdx = -1; // change it to 0?
+  const minRowIdx = -1;
   const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
+  const minViewportRowIdx = topSummaryRowsCount;
+  const maxViewportRowIdx = rows.length + topSummaryRowsCount - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
 
@@ -384,7 +386,7 @@ function DataGrid<R, SR, K extends Key>(
   const selectViewportCellLatest = useLatestFunc(
     (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       const rowIdx = rows.indexOf(row);
-      selectCell({ rowIdx, idx: column.idx }, enableEditor);
+      selectCell({ rowIdx: rowIdx + topSummaryRowsCount, idx: column.idx }, enableEditor);
     }
   );
   const selectGroupLatest = useLatestFunc((rowIdx: number) => {
@@ -401,7 +403,12 @@ function DataGrid<R, SR, K extends Key>(
   );
   const selectBottomSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx = bottomSummaryRows!.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
+      const rowIdx =
+        bottomSummaryRows!.indexOf(summaryRow) +
+        headerRowsCount +
+        topSummaryRowsCount +
+        rows.length -
+        1;
       selectCell({ rowIdx, idx: column.idx });
     }
   );
@@ -635,7 +642,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function updateRow(column: CalculatedColumn<R, SR>, rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
-    const rawRowIdx = getRawRowIdx(rowIdx);
+    const rawRowIdx = getRawRowIdx(rowIdx - topSummaryRowsCount);
     if (row === rawRows[rawRowIdx]) return;
     const updatedRows = [...rawRows];
     updatedRows[rawRowIdx] = row;
@@ -716,7 +723,7 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function isRowIdxWithinViewportBounds(rowIdx: number) {
-    return rowIdx >= topSummaryRowsCount && rowIdx < topSummaryRowsCount + rows.length;
+    return rowIdx >= minViewportRowIdx && rowIdx <= maxViewportRowIdx;
   }
 
   function isCellWithinSelectionBounds({ idx, rowIdx }: Position): boolean {
@@ -999,7 +1006,9 @@ function DataGrid<R, SR, K extends Key>(
     const rowElements: React.ReactNode[] = [];
     let startRowIndex = 0;
 
-    const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
+    const selectedIdx = selectedPosition.idx;
+    const selectedRowIdx = selectedPosition.rowIdx - topSummaryRowsCount;
+
     const startRowIdx =
       selectedCellIsWithinViewportBounds && selectedRowIdx < rowOverscanStartIdx
         ? rowOverscanStartIdx - 1
@@ -1151,8 +1160,9 @@ function DataGrid<R, SR, K extends Key>(
               ? `${totalFrozenColumnWidth}px`
               : undefined,
           scrollPaddingBlock:
-            selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
-              ? `${headerRowHeight + bottomSummaryRowsCount * summaryRowHeight}px ${
+            selectedPosition.rowIdx >= minViewportRowIdx &&
+            selectedPosition.rowIdx <= maxViewportRowIdx
+              ? `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
               : undefined,
@@ -1228,8 +1238,9 @@ function DataGrid<R, SR, K extends Key>(
               {getViewportRows()}
             </RowSelectionChangeProvider>
             {bottomSummaryRows?.map((row, rowIdx) => {
-              const gridRowStart = headerRowsCount + rows.length + rowIdx + 1;
-              const summaryRowIdx = headerRowsCount + rows.length + rowIdx - 1;
+              const gridRowStart = headerRowsCount + topSummaryRowsCount + rows.length + rowIdx + 1;
+              const summaryRowIdx =
+                headerRowsCount + topSummaryRowsCount + rows.length + rowIdx - 1;
               const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
               const top =
                 clientHeight > totalRowHeight
@@ -1242,7 +1253,7 @@ function DataGrid<R, SR, K extends Key>(
 
               return (
                 <SummaryRow
-                  aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
+                  aria-rowindex={headerRowsCount + topSummaryRowsCount + rowsCount + rowIdx + 1}
                   key={rowIdx}
                   rowIdx={rowIdx}
                   gridRowStart={gridRowStart}
