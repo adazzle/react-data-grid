@@ -32,7 +32,7 @@ const headerRow = css`
   font-weight: bold;
 
   > .${cell} {
-    /* Should have a higher value than 1 to show up above frozen cells */
+    /* Should have a higher value than 0 to show up above regular cells */
     z-index: 1;
     position: sticky;
     inset-block-start: 0;
