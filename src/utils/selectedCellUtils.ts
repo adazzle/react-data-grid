@@ -58,14 +58,16 @@ export function getSelectedCellColSpan<R, SR>({
   rowIdx: number;
   column: CalculatedColumn<R, SR>;
 }) {
-  if (rowIdx === -1) {
+  const topSummaryRowsCount = topSummaryRows?.length ?? 0;
+  const minRowIdx = -1 - topSummaryRowsCount;
+  if (rowIdx === minRowIdx) {
     return getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
   }
 
-  if (topSummaryRows) {
+  if (topSummaryRows && rowIdx > minRowIdx && rowIdx <= topSummaryRowsCount + minRowIdx) {
     return getColSpan(column, lastFrozenColumnIndex, {
       type: 'SUMMARY',
-      row: topSummaryRows[rowIdx]
+      row: topSummaryRows[rowIdx + topSummaryRowsCount]
     });
   }
 
