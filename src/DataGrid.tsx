@@ -1220,7 +1220,7 @@ function DataGrid<R, SR, K extends Key>(
                   row={row}
                   top={top}
                   bottom={undefined}
-                  lastTopRowIdx={topSummaryRowsCount + -1}
+                  lastTopRowIdx={topSummaryRowsCount - 1}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
