@@ -105,7 +105,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rows: readonly R[];
   /**
    * Rows to be pinned at the top of the rows view for summary, the vertical scroll bar will not scroll these rows.
-   * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
    */
   topSummaryRows?: Maybe<readonly SR[]>;
   /**
