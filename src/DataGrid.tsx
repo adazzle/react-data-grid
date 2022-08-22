@@ -1213,7 +1213,7 @@ function DataGrid<R, SR, K extends Key>(
 
               return (
                 <SummaryRow
-                  aria-rowindex={headerRowsCount + rowIdx + 1}
+                  aria-rowindex={gridRowStart}
                   key={rowIdx}
                   rowIdx={rowIdx}
                   gridRowStart={gridRowStart}
