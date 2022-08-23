@@ -28,9 +28,13 @@ export function useGridDimensions(): [
     setBlockSize(initialHeight);
 
     const resizeObserver = new ResizeObserver((entries) => {
-      const size = entries[0].contentBoxSize[0];
-      setInlineSize(handleDevicePixelRatio(size.inlineSize));
-      setBlockSize(size.blockSize);
+      // contentBoxSize is not available in Chrome <84
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (entries[0].contentBoxSize?.length > 0) {
+        const size = entries[0].contentBoxSize[0];
+        setInlineSize(handleDevicePixelRatio(size.inlineSize));
+        setBlockSize(size.blockSize);
+      }
     });
     resizeObserver.observe(gridRef.current!);
 
