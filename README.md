@@ -99,7 +99,9 @@ An array describing the grid's columns.
 
 An array of rows, the rows data can be of any type.
 
-###### `summaryRows?: Maybe<readonly SR[]>`
+###### `topSummaryRows?: Maybe<readonly SR[]>`
+
+###### `bottomSummaryRows?: Maybe<readonly SR[]>`
 
 An optional array of summary rows, usually used to display total values for example.
 

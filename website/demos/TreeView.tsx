@@ -83,7 +83,7 @@ function toggleSubRow(rows: Row[], id: string): Row[] {
 
 function deleteSubRow(rows: Row[], id: string): Row[] {
   const row = rows.find((r) => r.id === id);
-  if (!row || !row.parentId) return rows;
+  if (row?.parentId === undefined) return rows;
 
   // Remove sub row from flattened rows.
   const newRows = rows.filter((r) => r.id !== id);
