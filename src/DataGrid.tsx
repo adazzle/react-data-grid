@@ -104,10 +104,13 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
-   * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
-   * Bottom horizontal scroll bar can move the row left / right. Or a customized row renderer can be used to disabled the scrolling support.
+   * Rows to be pinned at the top of the rows view for summary, the vertical scroll bar will not scroll these rows.
    */
-  summaryRows?: Maybe<readonly SR[]>;
+  topSummaryRows?: Maybe<readonly SR[]>;
+  /**
+   * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
+   */
+  bottomSummaryRows?: Maybe<readonly SR[]>;
   /** The getter should return a unique key for each row */
   rowKeyGetter?: Maybe<(row: R) => K>;
   onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>;
@@ -191,7 +194,8 @@ function DataGrid<R, SR, K extends Key>(
     // Grid and data Props
     columns: rawColumns,
     rows: rawRows,
-    summaryRows,
+    topSummaryRows,
+    bottomSummaryRows,
     rowKeyGetter,
     onRowsChange,
     // Dimensions props
@@ -279,10 +283,11 @@ function DataGrid<R, SR, K extends Key>(
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const headerRowsCount = 1;
-  const summaryRowsCount = summaryRows?.length ?? 0;
+  const topSummaryRowsCount = topSummaryRows?.length ?? 0;
+  const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
+  const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
-  const isHeaderRowSelected = selectedPosition.rowIdx === -1;
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
@@ -358,15 +363,16 @@ function DataGrid<R, SR, K extends Key>(
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
-    summaryRows,
+    topSummaryRows,
+    bottomSummaryRows,
     isGroupRow
   });
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
-  const minRowIdx = -1; // change it to 0?
-  const maxRowIdx = headerRowsCount + rows.length + summaryRowsCount - 2;
+  const minRowIdx = -1 - topSummaryRowsCount;
+  const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
 
@@ -386,11 +392,17 @@ function DataGrid<R, SR, K extends Key>(
     selectCell({ rowIdx, idx: -1 });
   });
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
-    selectCell({ rowIdx: -1, idx });
+    selectCell({ rowIdx: minRowIdx, idx });
   });
-  const selectSummaryCellLatest = useLatestFunc(
+  const selectTopSummaryCellLatest = useLatestFunc(
     (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx = summaryRows!.indexOf(summaryRow) + headerRowsCount + rows.length - 1;
+      const rowIdx = topSummaryRows!.indexOf(summaryRow);
+      selectCell({ rowIdx: rowIdx + minRowIdx + 1, idx: column.idx });
+    }
+  );
+  const selectBottomSummaryCellLatest = useLatestFunc(
+    (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
+      const rowIdx = bottomSummaryRows!.indexOf(summaryRow) + rows.length;
       selectCell({ rowIdx, idx: column.idx });
     }
   );
@@ -752,7 +764,8 @@ function DataGrid<R, SR, K extends Key>(
 
       const colSpan = getSelectedCellColSpan({
         rows,
-        summaryRows,
+        topSummaryRows,
+        bottomSummaryRows,
         rowIdx,
         lastFrozenColumnIndex,
         column,
@@ -862,7 +875,8 @@ function DataGrid<R, SR, K extends Key>(
       columns,
       colSpanColumns,
       rows,
-      summaryRows,
+      topSummaryRows,
+      bottomSummaryRows,
       minRowIdx,
       maxRowIdx,
       lastFrozenColumnIndex,
@@ -987,6 +1001,7 @@ function DataGrid<R, SR, K extends Key>(
     let startRowIndex = 0;
 
     const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
+
     const startRowIdx =
       selectedCellIsWithinViewportBounds && selectedRowIdx < rowOverscanStartIdx
         ? rowOverscanStartIdx - 1
@@ -1016,7 +1031,7 @@ function DataGrid<R, SR, K extends Key>(
       }
 
       const row = rows[rowIdx];
-      const gridRowStart = headerRowsCount + rowIdx + 1;
+      const gridRowStart = headerRowsCount + topSummaryRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected =
@@ -1026,7 +1041,7 @@ function DataGrid<R, SR, K extends Key>(
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
-            aria-rowindex={headerRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
+            aria-rowindex={headerRowsCount + topSummaryRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
             aria-selected={isSelectable ? isGroupRowSelected : undefined}
             key={row.id}
             id={row.id}
@@ -1061,7 +1076,8 @@ function DataGrid<R, SR, K extends Key>(
       rowElements.push(
         rowRenderer(key, {
           // aria-rowindex is 1 based
-          'aria-rowindex': headerRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1,
+          'aria-rowindex':
+            headerRowsCount + topSummaryRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1,
           'aria-selected': isSelectable ? isRowSelected : undefined,
           rowIdx,
           row,
@@ -1099,11 +1115,14 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   let templateRows = `${headerRowHeight}px`;
+  if (topSummaryRowsCount > 0) {
+    templateRows += ` repeat(${topSummaryRowsCount}, ${summaryRowHeight}px)`;
+  }
   if (rows.length > 0) {
     templateRows += gridTemplateRows;
   }
-  if (summaryRowsCount > 0) {
-    templateRows += ` repeat(${summaryRowsCount}, ${summaryRowHeight}px)`;
+  if (bottomSummaryRowsCount > 0) {
+    templateRows += ` repeat(${bottomSummaryRowsCount}, ${summaryRowHeight}px)`;
   }
 
   const isGroupRowFocused = selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2;
@@ -1135,7 +1154,9 @@ function DataGrid<R, SR, K extends Key>(
               : undefined,
           scrollPaddingBlock:
             selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
-              ? `${headerRowHeight}px ${summaryRowsCount * summaryRowHeight}px`
+              ? `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
+                  bottomSummaryRowsCount * summaryRowHeight
+                }px`
               : undefined,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
@@ -1174,7 +1195,7 @@ function DataGrid<R, SR, K extends Key>(
           sortColumns={sortColumns}
           onSortColumnsChange={onSortColumnsChange}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
-          selectedCellIdx={isHeaderRowSelected ? selectedPosition.idx : undefined}
+          selectedCellIdx={selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined}
           selectCell={selectHeaderCellLatest}
           shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
           direction={direction}
@@ -1183,35 +1204,59 @@ function DataGrid<R, SR, K extends Key>(
           noRowsFallback
         ) : (
           <>
+            {topSummaryRows?.map((row, rowIdx) => {
+              const gridRowStart = headerRowsCount + rowIdx + 1;
+              const summaryRowIdx = rowIdx + minRowIdx + 1;
+              const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
+              const top = headerRowHeight + summaryRowHeight * rowIdx;
+
+              return (
+                <SummaryRow
+                  aria-rowindex={gridRowStart}
+                  key={rowIdx}
+                  rowIdx={rowIdx}
+                  gridRowStart={gridRowStart}
+                  row={row}
+                  top={top}
+                  bottom={undefined}
+                  lastTopRowIdx={topSummaryRowsCount - 1}
+                  viewportColumns={getRowViewportColumns(summaryRowIdx)}
+                  lastFrozenColumnIndex={lastFrozenColumnIndex}
+                  selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                  selectCell={selectTopSummaryCellLatest}
+                />
+              );
+            })}
             <RowSelectionChangeProvider value={selectRowLatest}>
               {getViewportRows()}
             </RowSelectionChangeProvider>
-            {summaryRows?.map((row, rowIdx) => {
-              const gridRowStart = headerRowsCount + rows.length + rowIdx + 1;
-              const summaryRowIdx = headerRowsCount + rows.length + rowIdx - 1;
+            {bottomSummaryRows?.map((row, rowIdx) => {
+              const gridRowStart = headerRowsCount + topSummaryRowsCount + rows.length + rowIdx + 1;
+              const summaryRowIdx = rows.length + rowIdx;
               const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
               const top =
                 clientHeight > totalRowHeight
-                  ? gridHeight - summaryRowHeight * (summaryRows.length - rowIdx)
+                  ? gridHeight - summaryRowHeight * (bottomSummaryRows.length - rowIdx)
                   : undefined;
               const bottom =
                 top === undefined
-                  ? summaryRowHeight * (summaryRows.length - 1 - rowIdx)
+                  ? summaryRowHeight * (bottomSummaryRows.length - 1 - rowIdx)
                   : undefined;
 
               return (
                 <SummaryRow
-                  aria-rowindex={headerRowsCount + rowsCount + rowIdx + 1}
+                  aria-rowindex={headerRowsCount + topSummaryRowsCount + rowsCount + rowIdx + 1}
                   key={rowIdx}
                   rowIdx={rowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
                   top={top}
                   bottom={bottom}
+                  lastTopRowIdx={undefined}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                  selectCell={selectSummaryCellLatest}
+                  selectCell={selectBottomSummaryCellLatest}
                 />
               );
             })}
