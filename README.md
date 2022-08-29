@@ -206,6 +206,7 @@ This prop can be used to override the internal renderers. The prop accepts an ob
 ```tsx
 interface Renderers<TRow, TSummaryRow> {
   sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
+  sortPriority?: Maybe<(props: SortPriorityProps) => ReactNode>;
   checkboxFormatter?: Maybe<
     (props: CheckboxFormatterProps, ref: Ref<HTMLInputElement>) => ReactNode
   >;
