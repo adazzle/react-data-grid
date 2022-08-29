@@ -26,6 +26,7 @@ import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
 import { default as defaultSortIcon } from './sortIcon';
+import { default as defaultSortPriority } from './sortPriority';
 import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import {
   DataGridDefaultComponentsProvider,
@@ -247,6 +248,7 @@ function DataGrid<R, SR, K extends Key>(
   const rowRenderer =
     renderers?.rowRenderer ?? defaultComponents?.rowRenderer ?? defaultRowRenderer;
   const sortIcon = renderers?.sortIcon ?? defaultComponents?.sortIcon ?? defaultSortIcon;
+  const sortPriority = renderers?.sortPriority ?? defaultComponents?.sortPriority ?? defaultSortPriority;
   const checkboxFormatter =
     renderers?.checkboxFormatter ??
     defaultComponents?.checkboxFormatter ??
@@ -295,9 +297,10 @@ function DataGrid<R, SR, K extends Key>(
   const defaultGridComponents = useMemo(
     () => ({
       sortIcon,
+      sortPriority,
       checkboxFormatter
     }),
-    [sortIcon, checkboxFormatter]
+    [sortIcon, sortPriority, checkboxFormatter]
   );
 
   const allRowsSelected = useMemo((): boolean => {
@@ -1274,3 +1277,4 @@ function isSamePosition(p1: Position, p2: Position) {
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
 ) => JSX.Element;
+

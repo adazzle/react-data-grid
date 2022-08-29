@@ -27,5 +27,6 @@ export type {
   ColSpanArgs,
   RowHeightArgs,
   CheckboxFormatterProps,
-  SortIconProps
+  SortIconProps,
+  SortPriorityProps
 } from './types';
