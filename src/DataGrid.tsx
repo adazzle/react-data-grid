@@ -248,7 +248,8 @@ function DataGrid<R, SR, K extends Key>(
   const rowRenderer =
     renderers?.rowRenderer ?? defaultComponents?.rowRenderer ?? defaultRowRenderer;
   const sortIcon = renderers?.sortIcon ?? defaultComponents?.sortIcon ?? defaultSortIcon;
-  const sortPriority = renderers?.sortPriority ?? defaultComponents?.sortPriority ?? defaultSortPriority;
+  const sortPriority =
+    renderers?.sortPriority ?? defaultComponents?.sortPriority ?? defaultSortPriority;
   const checkboxFormatter =
     renderers?.checkboxFormatter ??
     defaultComponents?.checkboxFormatter ??
@@ -1277,4 +1278,3 @@ function isSamePosition(p1: Position, p2: Position) {
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
 ) => JSX.Element;
-
