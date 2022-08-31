@@ -14,7 +14,7 @@ const colSpanClassname = css`
   text-align: center;
 `;
 
-function CellFormatter(props: FormatterProps<Row>) {
+function cellFormatter(props: FormatterProps<Row>) {
   return (
     <>
       {props.column.key}&times;{props.row}
@@ -33,7 +33,7 @@ export default function ColumnSpanning({ direction }: Props) {
         name: key,
         frozen: i < 5,
         resizable: true,
-        formatter: CellFormatter,
+        formatter: cellFormatter,
         colSpan(args) {
           if (args.type === 'ROW') {
             if (key === '2' && args.row === 2) return 3;

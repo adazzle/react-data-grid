@@ -22,7 +22,11 @@ const caret = css`
 
 const caretClassname = `rdg-caret ${caret}`;
 
-export function ToggleGroupFormatter<R, SR>({
+export function toggleGroupFormatter<R, SR>(props: GroupFormatterProps<R, SR>) {
+  return <ToggleGroup {...props} />;
+}
+
+export function ToggleGroup<R, SR>({
   groupKey,
   isExpanded,
   isCellSelected,

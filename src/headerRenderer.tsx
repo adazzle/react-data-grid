@@ -24,7 +24,7 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-export default function HeaderRenderer<R, SR>({
+export default function headerRenderer<R, SR>({
   column,
   sortDirection,
   priority,
@@ -61,7 +61,7 @@ function SortableHeaderCell<R, SR>({
   children,
   isCellSelected
 }: SortableHeaderCellProps<R, SR>) {
-  const SortIcon = useDefaultComponents<R, SR>()!.sortIcon!;
+  const sortIcon = useDefaultComponents<R, SR>()!.sortIcon!;
   const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
@@ -86,7 +86,7 @@ function SortableHeaderCell<R, SR>({
     >
       <span className={headerSortNameClassname}>{children}</span>
       <span>
-        <SortIcon sortDirection={sortDirection} />
+        {sortIcon({ sortDirection })}
         {priority}
       </span>
     </span>

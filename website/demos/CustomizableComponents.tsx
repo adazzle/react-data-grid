@@ -1,7 +1,7 @@
-import { useMemo, useState, forwardRef } from 'react';
+import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn, TextEditor } from '../../src';
+import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src';
 import type { Props } from './types';
 
@@ -24,7 +24,8 @@ interface Row {
 }
 
 function createRows(): readonly Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 500; i++) {
     rows.push({
       id: i,
@@ -52,7 +53,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: TextEditor,
+    editor: textEditor,
     sortable: true
   },
   {
@@ -103,23 +104,24 @@ export default function CustomizableComponents({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      components={{ sortIcon: SortIcon, checkboxFormatter: CheckboxFormatter }}
+      renderers={{ sortIcon, checkboxFormatter }}
       direction={direction}
     />
   );
 }
 
-const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
-  function CheckboxFormatter({ disabled, onChange, ...props }, ref) {
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
-    }
-
-    return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
+function checkboxFormatter(
+  { disabled, onChange, ...props }: CheckboxFormatterProps,
+  ref: React.RefObject<HTMLInputElement>
+) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
-);
 
-function SortIcon({ sortDirection }: SortIconProps) {
+  return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
+}
+
+function sortIcon({ sortDirection }: SortIconProps) {
   return sortDirection !== undefined ? <>{sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F'} </> : null;
 }
 

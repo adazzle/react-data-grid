@@ -31,15 +31,15 @@ const headerRow = css`
   background-color: var(--rdg-header-background-color);
   font-weight: bold;
 
-  > .${cell} {
-    /* Should have a higher value than 1 to show up above frozen cells */
-    z-index: 2;
+  & > .${cell} {
+    /* Should have a higher value than 0 to show up above regular cells */
+    z-index: 1;
     position: sticky;
     inset-block-start: 0;
   }
 
-  > .${cellFrozen} {
-    z-index: 3;
+  & > .${cellFrozen} {
+    z-index: 2;
   }
 `;
 

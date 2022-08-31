@@ -427,14 +427,15 @@ const rules = {
   'jest/no-if': 1,
   'jest/no-interpolation-in-snapshots': 0,
   'jest/no-jasmine-globals': 1,
-  'jest/no-jest-import': 1,
   'jest/no-large-snapshots': 0,
   'jest/no-mocks-import': 1,
   'jest/no-restricted-matchers': [
     1,
     {
       toBeTruthy: 'Use toBe(true) instead.',
-      toBeFalsy: 'Use toBe(false) instead.'
+      'not.toBeTruthy': null,
+      toBeFalsy: 'Use toBe(false) instead.',
+      'not.toBeFalsy': null
     }
   ],
   'jest/no-standalone-expect': 2,
