@@ -32,8 +32,12 @@ const groupRow = css`
     background-color: var(--rdg-header-background-color);
   }
 
-  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+  > .${cell}:not(:last-child) {
     border-inline-end: none;
+  }
+
+  > &:has(+ .${cell}:not(&)) {
+    border-inline-end: 1px solid var(--rdg-border-color);
   }
 `;
 

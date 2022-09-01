@@ -42,12 +42,10 @@ export const cellFrozen = css`
   position: sticky;
   /* Should have a higher value than 0 to show up above unfrozen cells */
   z-index: 1;
+
+  &:has(+ .${cell}:not(&)) {
+    box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
+  }
 `;
 
 export const cellFrozenClassname = `rdg-cell-frozen ${cellFrozen}`;
-
-export const cellFrozenLast = css`
-  box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
-`;
-
-export const cellFrozenLastClassname = `rdg-cell-frozen-last ${cellFrozenLast}`;

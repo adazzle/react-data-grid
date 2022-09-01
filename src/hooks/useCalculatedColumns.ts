@@ -59,7 +59,6 @@ export function useCalculatedColumns<R, SR>({
         ...rawColumn,
         idx: 0,
         frozen,
-        isLastFrozenColumn: false,
         rowGroup,
         width: rawColumn.width ?? defaultWidth,
         minWidth: rawColumn.minWidth ?? defaultMinWidth,
@@ -117,10 +116,6 @@ export function useCalculatedColumns<R, SR>({
         colSpanColumns.push(column);
       }
     });
-
-    if (lastFrozenColumnIndex !== -1) {
-      columns[lastFrozenColumnIndex].isLastFrozenColumn = true;
-    }
 
     return {
       columns,

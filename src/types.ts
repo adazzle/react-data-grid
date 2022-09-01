@@ -59,7 +59,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly resizable: boolean;
   readonly sortable: boolean;
   readonly frozen: boolean;
-  readonly isLastFrozenColumn: boolean;
   readonly rowGroup: boolean;
   readonly formatter: (props: FormatterProps<TRow, TSummaryRow>) => ReactNode;
 }
