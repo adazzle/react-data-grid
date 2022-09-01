@@ -94,7 +94,7 @@ const root = css`
 export const rootClassname = `rdg ${root}`;
 
 const viewportDragging = css`
-  &.${row} {
+  & .${row} {
     cursor: move;
   }
 `;
@@ -104,6 +104,6 @@ export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDraggi
 export const focusSinkClassname = css`
   grid-column: 1/-1;
   pointer-events: none;
-  /* Should have a higher value than 3 to show up above header row */
-  z-index: 4;
+  /* Should have a higher value than 2 to show up above header row */
+  z-index: 3;
 `;
