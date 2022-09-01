@@ -2,7 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
+import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
@@ -32,12 +32,8 @@ const groupRow = css`
     background-color: var(--rdg-header-background-color);
   }
 
-  > .${cell}:not(:last-child) {
+  > .${cell}:not(:last-child):not(.${cellFrozen}:has(+ .${cell}:not(.${cellFrozen}))) {
     border-inline-end: none;
-  }
-
-  > &:has(+ .${cell}:not(&)) {
-    border-inline-end: 1px solid var(--rdg-border-color);
   }
 `;
 
