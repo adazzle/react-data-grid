@@ -13,7 +13,7 @@ export const row = css`
     background-color: var(--rdg-row-selected-background-color);
 
     &:hover {
-      background-color: var(--row-selected-hover-background-color);
+      background-color: var(--rdg-row-selected-hover-background-color);
     }
   }
 `;
