@@ -174,7 +174,7 @@ export default function HeaderCell<R, SR>({
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
       style={{
-        ...getCellStyle(column, colSpan),
+        ...getCellStyle(column, colSpan, column.headerCellStyle),
         minWidth: column.minWidth,
         maxWidth: column.maxWidth ?? undefined
       }}

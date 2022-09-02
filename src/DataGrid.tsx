@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes } from 'react';
+import type { Key, RefAttributes, CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import {
@@ -178,6 +178,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   renderers?: Maybe<Renderers<R, SR>>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
+  rowStyle?: Maybe<CSSProperties | ((row: R) => Maybe<CSSProperties>)>;
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
 }
@@ -228,6 +229,7 @@ function DataGrid<R, SR, K extends Key>(
     className,
     style,
     rowClass,
+    rowStyle,
     direction,
     // ARIA
     'aria-label': ariaLabel,
@@ -1086,6 +1088,7 @@ function DataGrid<R, SR, K extends Key>(
           onRowClick,
           onRowDoubleClick,
           rowClass,
+          rowStyle,
           gridRowStart,
           height: getRowHeight(rowIdx),
           copiedCellIdx:

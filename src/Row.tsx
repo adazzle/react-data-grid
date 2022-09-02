@@ -26,6 +26,7 @@ function Row<R, SR>(
     onRowClick,
     onRowDoubleClick,
     rowClass,
+    rowStyle,
     setDraggedOverRowIdx,
     onMouseEnter,
     onRowChange,
@@ -52,6 +53,8 @@ function Row<R, SR>(
     rowClass?.(row),
     className
   );
+
+  rowStyle = typeof rowStyle === 'function' ? rowStyle(row) : rowStyle;
 
   const cells = [];
 
@@ -94,7 +97,7 @@ function Row<R, SR>(
         ref={ref}
         className={className}
         onMouseEnter={handleDragEnter}
-        style={getRowStyle(gridRowStart, height)}
+        style={getRowStyle(gridRowStart, height, rowStyle)}
         {...props}
       >
         {cells}
