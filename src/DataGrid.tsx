@@ -1,5 +1,6 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
+import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
@@ -624,9 +625,11 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, scrollLeft } = event.currentTarget;
-    setScrollTop(scrollTop);
-    // scrollLeft is nagative when direction is rtl
-    setScrollLeft(abs(scrollLeft));
+    flushSync(() => {
+      setScrollTop(scrollTop);
+      // scrollLeft is nagative when direction is rtl
+      setScrollLeft(abs(scrollLeft));
+    });
     onScroll?.(event);
   }
 
