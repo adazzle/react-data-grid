@@ -9,7 +9,7 @@ const lightTheme = `
   --rdg-header-background-color: hsl(0deg 0% 97.5%);
   --rdg-row-hover-background-color: hsl(0deg 0% 96%);
   --rdg-row-selected-background-color: hsl(207deg 76% 92%);
-  --row-selected-hover-background-color: hsl(207deg 76% 88%);
+  --rdg-row-selected-hover-background-color: hsl(207deg 76% 88%);
 
   --rdg-checkbox-color: hsl(207deg 100% 29%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
@@ -25,7 +25,7 @@ const darkTheme = `
   --rdg-header-background-color: hsl(0deg 0% 10.5%);
   --rdg-row-hover-background-color: hsl(0deg 0% 9%);
   --rdg-row-selected-background-color: hsl(207deg 76% 42%);
-  --row-selected-hover-background-color: hsl(207deg 76% 38%);
+  --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);
 
   --rdg-checkbox-color: hsl(207deg 100% 79%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
@@ -94,7 +94,7 @@ const root = css`
 export const rootClassname = `rdg ${root}`;
 
 const viewportDragging = css`
-  &.${row} {
+  & .${row} {
     cursor: move;
   }
 `;
@@ -104,6 +104,6 @@ export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDraggi
 export const focusSinkClassname = css`
   grid-column: 1/-1;
   pointer-events: none;
-  /* Should have a higher value than 3 to show up above header row */
-  z-index: 4;
+  /* Should have a higher value than 2 to show up above header row */
+  z-index: 3;
 `;
