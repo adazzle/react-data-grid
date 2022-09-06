@@ -5,6 +5,7 @@ export * from './Columns';
 export * from './formatters';
 export { default as textEditor } from './editors/textEditor';
 export { default as headerRenderer } from './headerRenderer';
+export { sortIcon, sortPriority } from './sortStatus';
 export { useFocusRef, useRowSelection } from './hooks';
 export type {
   Column,
@@ -28,5 +29,6 @@ export type {
   RowHeightArgs,
   CheckboxFormatterProps,
   SortIconProps,
-  SortPriorityProps
+  SortPriorityProps,
+  SortStatusProps
 } from './types';

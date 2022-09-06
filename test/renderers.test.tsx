@@ -2,13 +2,13 @@ import { StrictMode, useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn } from '../src';
+import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn, sortIcon } from '../src';
 import type {
   Column,
   DataGridProps,
   CheckboxFormatterProps,
   SortColumn,
-  SortPriorityProps
+  SortStatusProps
 } from '../src';
 import { getHeaderCells, getRows, setup } from './utils';
 
@@ -52,12 +52,22 @@ function globalCheckboxFormatter(
   return <div ref={ref}>Global checkbox</div>;
 }
 
-function globalSortPriority({ priority }: SortPriorityProps) {
-  return <span data-testid="global-sort-priority">{priority}</span>;
+function globalSortStatus({ sortDirection, priority }: SortStatusProps) {
+  return (
+    <>
+      {sortIcon({ sortDirection })}
+      <span data-testid="global-sort-priority">{priority}</span>
+    </>
+  );
 }
 
-function sortPriority({ priority }: SortPriorityProps) {
-  return <span data-testid="local-sort-priority">{priority}</span>;
+function sortStatus({ sortDirection, priority }: SortStatusProps) {
+  return (
+    <>
+      {sortIcon({ sortDirection })}
+      <span data-testid="local-sort-priority">{priority}</span>;
+    </>
+  );
 }
 
 function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
@@ -73,7 +83,7 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
         value={{
           noRowsFallback: <GlobalNoRowsFallback />,
           checkboxFormatter: globalCheckboxFormatter,
-          sortPriority: globalSortPriority
+          sortStatus: globalSortStatus
         }}
       >
         <TestGrid {...props} />
@@ -164,7 +174,7 @@ test('sortPriority defined using both providers', async () => {
 });
 
 test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: [], renderers: { sortPriority } });
+  setupProvider({ columns, rows: [], renderers: { sortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
