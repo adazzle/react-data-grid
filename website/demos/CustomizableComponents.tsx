@@ -130,7 +130,7 @@ function sortStatus({ sortDirection, priority }: SortStatusProps) {
   return (
     <>
       {sortDirection !== undefined ? (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F') : null}
-      <span className={sortPriorityClassname}>{priority}</span>;
+      <span className={sortPriorityClassname}>{priority}</span>
     </>
   );
 }

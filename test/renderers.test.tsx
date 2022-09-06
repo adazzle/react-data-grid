@@ -65,7 +65,7 @@ function sortStatus({ sortDirection, priority }: SortStatusProps) {
   return (
     <>
       {sortIcon({ sortDirection })}
-      <span data-testid="local-sort-priority">{priority}</span>;
+      <span data-testid="local-sort-priority">{priority}</span>
     </>
   );
 }
