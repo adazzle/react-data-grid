@@ -26,7 +26,7 @@ import GroupRowRenderer from './GroupRow';
 import SummaryRow from './SummaryRow';
 import EditCell from './EditCell';
 import DragHandle from './DragHandle';
-import { default as defaultSortIcon } from './sortIcon';
+import { default as defaultSortStatus } from './sortStatus';
 import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import {
   DataGridDefaultComponentsProvider,
@@ -247,7 +247,7 @@ function DataGrid<R, SR, K extends Key>(
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const rowRenderer =
     renderers?.rowRenderer ?? defaultComponents?.rowRenderer ?? defaultRowRenderer;
-  const sortIcon = renderers?.sortIcon ?? defaultComponents?.sortIcon ?? defaultSortIcon;
+  const sortStatus = renderers?.sortStatus ?? defaultComponents?.sortStatus ?? defaultSortStatus;
   const checkboxFormatter =
     renderers?.checkboxFormatter ??
     defaultComponents?.checkboxFormatter ??
@@ -295,10 +295,10 @@ function DataGrid<R, SR, K extends Key>(
 
   const defaultGridComponents = useMemo(
     () => ({
-      sortIcon,
+      sortStatus,
       checkboxFormatter
     }),
-    [sortIcon, checkboxFormatter]
+    [sortStatus, checkboxFormatter]
   );
 
   const allRowsSelected = useMemo((): boolean => {

@@ -1,9 +1,16 @@
-import { StrictMode } from 'react';
+import { StrictMode, useState } from 'react';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn } from '../src';
-import type { Column, DataGridProps, CheckboxFormatterProps } from '../src';
-import { getRows, setup } from './utils';
+import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn, sortIcon } from '../src';
+import type {
+  Column,
+  DataGridProps,
+  CheckboxFormatterProps,
+  SortColumn,
+  SortStatusProps
+} from '../src';
+import { getHeaderCells, getRows, setup } from './utils';
 
 interface Row {
   id: number;
@@ -12,8 +19,14 @@ interface Row {
 const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
-    key: 'col',
-    name: 'Column'
+    key: 'col1',
+    name: 'Column1',
+    sortable: true
+  },
+  {
+    key: 'col2',
+    name: 'Column2',
+    sortable: true
   }
 ];
 
@@ -39,16 +52,41 @@ function globalCheckboxFormatter(
   return <div ref={ref}>Global checkbox</div>;
 }
 
+function globalSortStatus({ sortDirection, priority }: SortStatusProps) {
+  return (
+    <>
+      {sortIcon({ sortDirection })}
+      <span data-testid="global-sort-priority">{priority}</span>
+    </>
+  );
+}
+
+function sortStatus({ sortDirection, priority }: SortStatusProps) {
+  return (
+    <>
+      {sortIcon({ sortDirection })}
+      <span data-testid="local-sort-priority">{priority}</span>
+    </>
+  );
+}
+
+function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+
+  return <DataGrid {...props} sortColumns={sortColumns} onSortColumnsChange={setSortColumns} />;
+}
+
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
     <StrictMode>
       <DataGridDefaultComponentsProvider
         value={{
           noRowsFallback: <GlobalNoRowsFallback />,
-          checkboxFormatter: globalCheckboxFormatter
+          checkboxFormatter: globalCheckboxFormatter,
+          sortStatus: globalSortStatus
         }}
       >
-        <DataGrid {...props} />
+        <TestGrid {...props} />
       </DataGridDefaultComponentsProvider>
     </StrictMode>
   );
@@ -117,4 +155,36 @@ test('checkbox defined using both provider and renderers', () => {
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
   expect(screen.queryByText('Global checkbox')).not.toBeInTheDocument();
+});
+
+test('sortPriority defined using both providers', async () => {
+  setupProvider({ columns, rows: [] });
+
+  const [, headerCell2, headerCell3] = getHeaderCells();
+  const user = userEvent.setup();
+  await user.click(headerCell2.firstElementChild!);
+  await user.keyboard('{Control>}');
+  await user.click(headerCell3.firstElementChild!);
+
+  const p = screen.getAllByTestId('global-sort-priority');
+  expect(p[0]).toHaveTextContent('1');
+  expect(p[1]).toHaveTextContent('2');
+
+  expect(screen.queryByTestId('local-sort-priority')).not.toBeInTheDocument();
+});
+
+test('sortPriority defined using both providers and renderers', async () => {
+  setupProvider({ columns, rows: [], renderers: { sortStatus } });
+
+  const [, headerCell2, headerCell3] = getHeaderCells();
+  const user = userEvent.setup();
+  await user.click(headerCell3.firstElementChild!);
+  await user.keyboard('{Control>}');
+  await user.click(headerCell2.firstElementChild!);
+
+  const p = screen.getAllByTestId('local-sort-priority');
+  expect(p[0]).toHaveTextContent('2');
+  expect(p[1]).toHaveTextContent('1');
+
+  expect(screen.queryByTestId('global-sort-priority')).not.toBeInTheDocument();
 });

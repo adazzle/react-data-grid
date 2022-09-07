@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { Column, CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src';
+import type { Column, CheckboxFormatterProps, SortColumn, SortStatusProps } from '../../src';
 import type { Props } from './types';
 
 const selectCellClassname = css`
@@ -13,6 +13,11 @@ const selectCellClassname = css`
   > input {
     margin: 0;
   }
+`;
+
+const sortPriorityClassname = css`
+  color: grey;
+  margin-left: 2px;
 `;
 
 interface Row {
@@ -104,7 +109,7 @@ export default function CustomizableComponents({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      renderers={{ sortIcon, checkboxFormatter }}
+      renderers={{ sortStatus, checkboxFormatter }}
       direction={direction}
     />
   );
@@ -121,10 +126,14 @@ function checkboxFormatter(
   return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
 }
 
-function sortIcon({ sortDirection }: SortIconProps) {
-  return sortDirection !== undefined ? <>{sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F'} </> : null;
+function sortStatus({ sortDirection, priority }: SortStatusProps) {
+  return (
+    <>
+      {sortDirection !== undefined ? (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F') : null}
+      <span className={sortPriorityClassname}>{priority}</span>
+    </>
+  );
 }
-
 function rowKeyGetter(row: Row) {
   return row.id;
 }
