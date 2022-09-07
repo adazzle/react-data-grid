@@ -63,7 +63,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^14.1.1",
-    "@types/jest": "^28.1.8",
+    "@types/jest": "^29.0.0",
     "@types/lodash": "^4.14.184",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
@@ -109,7 +109,7 @@
     "xlsx": "^0.18.5"
   },
   "peerDependencies": {
-    "react": "^16.14 || ^17.0 || ^18.0",
-    "react-dom": "^16.14 || ^17.0 || ^18.0"
+    "react": "^18.0",
+    "react-dom": "^18.0"
   }
 }

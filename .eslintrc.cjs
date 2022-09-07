@@ -322,7 +322,7 @@ const rules = {
   'react/no-this-in-sfc': 0,
   'react/no-typos': 2,
   'react/no-unescaped-entities': 0,
-  'react/no-unknown-property': 2,
+  'react/no-unknown-property': 0,
   'react/no-unsafe': 2,
   'react/no-unstable-nested-components': 0,
   'react/no-unused-prop-types': 0,
