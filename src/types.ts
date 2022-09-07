@@ -217,7 +217,7 @@ export interface SortPriorityProps {
   priority: number | undefined;
 }
 
-export interface SortStatusProps extends SortIconProps, SortPriorityProps {};
+export interface SortStatusProps extends SortIconProps, SortPriorityProps {}
 
 export interface CheckboxFormatterProps
   extends Pick<
