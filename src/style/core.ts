@@ -93,6 +93,8 @@ const root = css`
 export const rootClassname = `rdg ${root}`;
 
 const viewportDragging = css`
+  user-select: none;
+
   & .${row} {
     cursor: move;
   }
