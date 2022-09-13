@@ -380,6 +380,8 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
+  const onRowClickLatest = useLatestFunc(onRowClick);
+  const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -1086,8 +1088,8 @@ function DataGrid<R, SR, K extends Key>(
           row,
           viewportColumns: rowColumns,
           isRowSelected,
-          onRowClick,
-          onRowDoubleClick,
+          onRowClick: onRowClickLatest,
+          onRowDoubleClick: onRowDoubleClickLatest,
           rowClass,
           gridRowStart,
           height: getRowHeight(rowIdx),
