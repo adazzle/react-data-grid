@@ -1,5 +1,5 @@
 import { css } from '@linaria/core';
-import type { SortIconProps } from './types';
+import type { SortStatusProps, SortIconProps, SortPriorityProps } from './types';
 
 const arrow = css`
   fill: currentColor;
@@ -11,7 +11,16 @@ const arrow = css`
 
 const arrowClassname = `rdg-sort-arrow ${arrow}`;
 
-export default function sortIcon({ sortDirection }: SortIconProps) {
+export default function sortStatus({ sortDirection, priority }: SortStatusProps) {
+  return (
+    <>
+      {sortIcon({ sortDirection })}
+      {sortPriority({ priority })}
+    </>
+  );
+}
+
+export function sortIcon({ sortDirection }: SortIconProps) {
   if (sortDirection === undefined) return null;
 
   return (
@@ -19,4 +28,8 @@ export default function sortIcon({ sortDirection }: SortIconProps) {
       <path d={sortDirection === 'ASC' ? 'M0 8 6 0 12 8' : 'M0 0 6 8 12 0'} />
     </svg>
   );
+}
+
+export function sortPriority({ priority }: SortPriorityProps) {
+  return priority;
 }

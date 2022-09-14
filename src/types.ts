@@ -214,6 +214,12 @@ export interface SortIconProps {
   sortDirection: SortDirection | undefined;
 }
 
+export interface SortPriorityProps {
+  priority: number | undefined;
+}
+
+export interface SortStatusProps extends SortIconProps, SortPriorityProps {}
+
 export interface CheckboxFormatterProps
   extends Pick<
     React.InputHTMLAttributes<HTMLInputElement>,
@@ -223,7 +229,7 @@ export interface CheckboxFormatterProps
 }
 
 export interface Renderers<TRow, TSummaryRow> {
-  sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
+  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
   checkboxFormatter?: Maybe<
     (props: CheckboxFormatterProps, ref: RefObject<HTMLInputElement>) => ReactNode
   >;

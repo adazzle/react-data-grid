@@ -18,7 +18,7 @@
 
 ## Features
 
-- [React 16.14+, 17.0+, and 18.0+](package.json) support
+- [React 18.0+](package.json) support
 - [Evergreen browsers and server-side rendering](browserslist) support
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
@@ -99,7 +99,9 @@ An array describing the grid's columns.
 
 An array of rows, the rows data can be of any type.
 
-###### `summaryRows?: Maybe<readonly SR[]>`
+###### `topSummaryRows?: Maybe<readonly SR[]>`
+
+###### `bottomSummaryRows?: Maybe<readonly SR[]>`
 
 An optional array of summary rows, usually used to display total values for example.
 
@@ -203,7 +205,7 @@ This prop can be used to override the internal renderers. The prop accepts an ob
 
 ```tsx
 interface Renderers<TRow, TSummaryRow> {
-  sortIcon?: Maybe<(props: SortIconProps) => ReactNode>;
+  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
   checkboxFormatter?: Maybe<
     (props: CheckboxFormatterProps, ref: Ref<HTMLInputElement>) => ReactNode
   >;
