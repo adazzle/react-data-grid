@@ -84,6 +84,8 @@ export default function HeaderCell<R, SR>({
     }
 
     function onPointerMove(event: PointerEvent) {
+      // prevents chrome from scrolling the grid and fixes re-size on an autosized column
+      event.preventDefault();
       const { right, left } = currentTarget.getBoundingClientRect();
       const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
