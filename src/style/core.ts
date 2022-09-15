@@ -1,5 +1,4 @@
 import { css } from '@linaria/core';
-import { cellResizingClassname } from './cell';
 import { row } from './row';
 
 const lightTheme = `
@@ -82,10 +81,6 @@ const root = css`
 
   &.rdg-light {
     --rdg-color-scheme: light;
-  }
-
-  &:has(.${cellResizingClassname}) {
-    user-select: none;
   }
 
   @media (prefers-color-scheme: dark) {
