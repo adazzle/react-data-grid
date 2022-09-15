@@ -55,11 +55,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
   readonly idx: number;
+  readonly width: number | string;
   readonly minWidth: number;
   readonly resizable: boolean;
   readonly sortable: boolean;
   readonly frozen: boolean;
-  readonly width: number | string;
   readonly isLastFrozenColumn: boolean;
   readonly rowGroup: boolean;
   readonly formatter: (props: FormatterProps<TRow, TSummaryRow>) => ReactNode;
