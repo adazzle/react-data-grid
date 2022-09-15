@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { flushSync } from 'react-dom';
 import { css } from '@linaria/core';
 
 import type { CalculatedColumn, SortColumn } from './types';
@@ -7,7 +5,6 @@ import type { HeaderRowProps } from './HeaderRow';
 import defaultHeaderRenderer from './headerRenderer';
 import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import { useRovingCellRef } from './hooks';
-import { cellResizingClassname } from './style';
 
 const cellResizable = css`
   touch-action: none;
@@ -57,7 +54,6 @@ export default function HeaderCell<R, SR>({
   direction
 }: HeaderCellProps<R, SR>) {
   const isRtl = direction === 'rtl';
-  const [isResizing, setResizing] = useState(false);
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
@@ -68,8 +64,7 @@ export default function HeaderCell<R, SR>({
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
 
   const className = getCellClassname(column, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable,
-    [cellResizingClassname]: isResizing
+    [cellResizableClassname]: column.resizable
   });
 
   const headerRenderer = column.headerRenderer ?? defaultHeaderRenderer;
@@ -94,17 +89,12 @@ export default function HeaderCell<R, SR>({
       if (width > 0) {
         onColumnResize(column, clampColumnWidth(width, column));
       }
-      if (!isResizing) {
-        flushSync(() => {
-          setResizing(true);
-        });
-      }
     }
 
     function onLostPointerCapture() {
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
-      setResizing(false);
+      onColumnResize(column, undefined);
     }
 
     currentTarget.setPointerCapture(pointerId);
