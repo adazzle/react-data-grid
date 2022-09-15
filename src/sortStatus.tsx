@@ -2,10 +2,12 @@ import { css } from '@linaria/core';
 import type { SortStatusProps, SortIconProps, SortPriorityProps } from './types';
 
 const arrow = css`
-  fill: currentColor;
+  @layer rdg.SortIcon {
+    fill: currentColor;
 
-  > path {
-    transition: d 0.1s;
+    > path {
+      transition: d 0.1s;
+    }
   }
 `;
 

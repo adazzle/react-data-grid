@@ -4,19 +4,21 @@ import type { CalculatedColumn, FillEvent, Position } from './types';
 import type { DataGridProps, SelectCellState } from './DataGrid';
 
 const cellDragHandle = css`
-  cursor: move;
-  position: absolute;
-  inset-inline-end: 0;
-  inset-block-end: 0;
-  inline-size: 8px;
-  block-size: 8px;
-  background-color: var(--rdg-selection-color);
+  @layer rdg.DragHandle {
+    cursor: move;
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inline-size: 8px;
+    block-size: 8px;
+    background-color: var(--rdg-selection-color);
 
-  &:hover {
-    inline-size: 16px;
-    block-size: 16px;
-    border: 2px solid var(--rdg-selection-color);
-    background-color: var(--rdg-background-color);
+    &:hover {
+      inline-size: 16px;
+      block-size: 16px;
+      border: 2px solid var(--rdg-selection-color);
+      background-color: var(--rdg-background-color);
+    }
   }
 `;
 

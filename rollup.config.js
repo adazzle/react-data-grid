@@ -36,9 +36,8 @@ export default {
       }
     }),
     postcss({
-      plugins: [postcssNested],
-      minimize: true,
-      inject: { insertAt: 'top' }
+      plugins: [postcssNested({ bubble: ['layer'] })],
+      minimize: true
     }),
     babel({
       babelHelpers: 'runtime',

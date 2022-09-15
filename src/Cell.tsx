@@ -6,16 +6,20 @@ import type { CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
 
 const cellCopied = css`
-  background-color: #ccccff;
+  @layer rdg.Cell {
+    background-color: #ccccff;
+  }
 `;
 
 const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
 
 const cellDraggedOver = css`
-  background-color: #ccccff;
+  @layer rdg.Cell {
+    background-color: #ccccff;
 
-  &.${cellCopied} {
-    background-color: #9999ff;
+    &.${cellCopied} {
+      background-color: #9999ff;
+    }
   }
 `;
 

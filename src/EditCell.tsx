@@ -22,7 +22,7 @@ import type { CellRendererProps, EditorProps, Omit } from './types';
  */
 
 const cellEditing = css`
-  &.rdg-cell {
+  @layer rdg.EditCell {
     padding: 0;
   }
 `;
