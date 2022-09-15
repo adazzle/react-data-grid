@@ -51,7 +51,6 @@ const root = css`
   border: 1px solid var(--rdg-border-color);
   box-sizing: border-box;
   overflow: auto;
-  user-select: none;
   background-color: var(--rdg-background-color);
   color: var(--rdg-color);
   font-size: var(--rdg-font-size);
@@ -94,6 +93,8 @@ const root = css`
 export const rootClassname = `rdg ${root}`;
 
 const viewportDragging = css`
+  user-select: none;
+
   & .${row} {
     cursor: move;
   }
