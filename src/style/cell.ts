@@ -51,3 +51,5 @@ export const cellFrozenLast = css`
 `;
 
 export const cellFrozenLastClassname = `rdg-cell-frozen-last ${cellFrozenLast}`;
+
+export const cellResizingClassname = `rdg-cell-resizing`;
