@@ -441,19 +441,32 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
     const newFlexColumnWidths = new Map<string, number>();
+    const newColumnWidths = new Map<string, number>();
     for (const column of flexWidthViewportColumns) {
       const columnElement = gridRef.current!.querySelector<HTMLDivElement>(
         `[aria-colindex="${column.idx + 1}"]`
       );
       if (columnElement) {
         // Set the actual width of the column after it is rendered
-        newFlexColumnWidths.set(column.key, columnElement.getBoundingClientRect().width);
+        const { width } = columnElement.getBoundingClientRect();
+        if (column.width === 'max-content') {
+          newColumnWidths.set(column.key, width);
+        } else {
+          newFlexColumnWidths.set(column.key, width);
+        }
       }
     }
-    if (newFlexColumnWidths.size === 0) return;
-    setFlexColumnWidths((flexColumnWidths) => {
-      return new Map([...flexColumnWidths, ...newFlexColumnWidths]);
-    });
+    if (newFlexColumnWidths.size !== 0) {
+      setFlexColumnWidths((flexColumnWidths) => {
+        return new Map([...flexColumnWidths, ...newFlexColumnWidths]);
+      });
+    }
+
+    if (newColumnWidths.size !== 0) {
+      setColumnWidths((columnWidths) => {
+        return new Map([...columnWidths, ...newColumnWidths]);
+      });
+    }
   }, [isWidthInitialized, flexWidthViewportColumns, gridRef]);
 
   useLayoutEffect(() => {
