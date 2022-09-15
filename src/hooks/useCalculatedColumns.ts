@@ -38,8 +38,8 @@ export function useCalculatedColumns<R, SR>({
   rawGroupBy,
   enableVirtualization
 }: CalculatedColumnsArgs<R, SR>) {
-  const defaultWidth = defaultColumnOptions?.width;
-  const defaultMinWidth = defaultColumnOptions?.minWidth;
+  const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
+  const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth;
   const defaultFormatter = defaultColumnOptions?.formatter ?? valueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
@@ -66,8 +66,8 @@ export function useCalculatedColumns<R, SR>({
         frozen,
         isLastFrozenColumn: false,
         rowGroup,
-        width: rawColumn.width ?? defaultWidth ?? DEFAULT_COLUMN_WIDTH,
-        minWidth: rawColumn.minWidth ?? defaultMinWidth ?? DEFAULT_COLUMN_MIN_WIDTH,
+        width: rawColumn.width ?? defaultWidth,
+        minWidth: rawColumn.minWidth ?? defaultMinWidth,
         maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
@@ -161,7 +161,7 @@ export function useCalculatedColumns<R, SR>({
       } else {
         // This is a placeholder width so we can continue to use virtualization.
         // The actual value is set after the column is rendered
-        width = DEFAULT_COLUMN_MIN_WIDTH;
+        width = column.minWidth;
       }
       templateColumns += `${width}px `;
       columnMetrics.set(column, { width, left });

@@ -942,7 +942,7 @@ function DataGrid<R, SR, K extends Key>(
       newSizes[autoResizeColumn.idx] = 'max-content';
     }
     for (const column of flexWidthViewportColumns) {
-      newSizes[column.idx] = column.width.toString();
+      newSizes[column.idx] = column.width as string;
     }
 
     return {
