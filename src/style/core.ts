@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+import { cellResizingClassname } from './cell';
 import { row } from './row';
 
 const lightTheme = `
@@ -83,6 +84,10 @@ const root = css`
     --rdg-color-scheme: light;
   }
 
+  &:has(.${cellResizingClassname}) {
+    user-select: none;
+  }
+
   @media (prefers-color-scheme: dark) {
     &:not(.rdg-light) {
       ${darkTheme}
@@ -101,10 +106,6 @@ const viewportDragging = css`
 `;
 
 export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDragging}`;
-
-export const columnResizingClassname = css`
-  user-select: none;
-`;
 
 export const focusSinkClassname = css`
   grid-column: 1/-1;

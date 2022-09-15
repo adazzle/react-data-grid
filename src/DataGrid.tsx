@@ -9,8 +9,7 @@ import {
   focusSinkClassname,
   cellAutoResizeClassname,
   rowSelected,
-  rowSelectedWithFrozenCell,
-  columnResizingClassname
+  rowSelectedWithFrozenCell
 } from './style';
 import {
   useLayoutEffect,
@@ -269,7 +268,6 @@ function DataGrid<R, SR, K extends Key>(
   );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
-  const [isColumnResizing, setColumnResizing] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
 
@@ -466,12 +464,7 @@ function DataGrid<R, SR, K extends Key>(
    * callbacks
    */
   const handleColumnResize = useCallback(
-    (column: CalculatedColumn<R, SR>, width: number | 'auto' | undefined) => {
-      if (width === undefined) {
-        setColumnResizing(false);
-        return;
-      }
-
+    (column: CalculatedColumn<R, SR>, width: number | 'auto') => {
       if (width === 'auto') {
         setAutoResizeColumn(column);
         return;
@@ -480,9 +473,6 @@ function DataGrid<R, SR, K extends Key>(
         const newColumnWidths = new Map(columnWidths);
         newColumnWidths.set(column.key, width);
         return newColumnWidths;
-      });
-      flushSync(() => {
-        setColumnResizing(true);
       });
 
       onColumnResize?.(column.idx, width);
@@ -1155,7 +1145,6 @@ function DataGrid<R, SR, K extends Key>(
         rootClassname,
         {
           [viewportDraggingClassname]: isDragging,
-          [columnResizingClassname]: isColumnResizing,
           [cellAutoResizeClassname]: autoResizeColumn !== null
         },
         className
