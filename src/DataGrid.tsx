@@ -7,7 +7,7 @@ import {
   rootClassname,
   viewportDraggingClassname,
   focusSinkClassname,
-  cellAutoResizeClassname,
+  autosizeColumnsClassname,
   rowSelected,
   rowSelectedWithFrozenCell
 } from './style';
@@ -282,7 +282,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, isWidthInitialized] = useGridDimensions();
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
@@ -355,7 +355,7 @@ function DataGrid<R, SR, K extends Key>(
     enableVirtualization
   });
 
-  const viewportColumns = useViewportColumns({
+  const { viewportColumns, flexWidthViewportColumns } = useViewportColumns({
     columns,
     colSpanColumns,
     colOverscanStartIdx,
@@ -366,6 +366,7 @@ function DataGrid<R, SR, K extends Key>(
     rows,
     topSummaryRows,
     bottomSummaryRows,
+    columnWidths,
     isGroupRow
   });
 
@@ -433,6 +434,25 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   useLayoutEffect(() => {
+    if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
+    const newColumnWidths = new Map<string, number>();
+    for (const column of flexWidthViewportColumns) {
+      const columnElement = gridRef.current!.querySelector<HTMLDivElement>(
+        `[aria-colindex="${column.idx + 1}"]`
+      );
+      if (columnElement) {
+        // Set the actual width of the column after it is rendered
+        const { width } = columnElement.getBoundingClientRect();
+        newColumnWidths.set(column.key, width);
+      }
+    }
+    if (newColumnWidths.size === 0) return;
+    setColumnWidths((columnWidths) => {
+      return new Map([...columnWidths, ...newColumnWidths]);
+    });
+  }, [isWidthInitialized, flexWidthViewportColumns, gridRef]);
+
+  useLayoutEffect(() => {
     if (autoResizeColumn === null) return;
     const columnElement = gridRef.current!.querySelector(
       `[aria-colindex="${autoResizeColumn.idx + 1}"]`
@@ -465,8 +485,8 @@ function DataGrid<R, SR, K extends Key>(
    * callbacks
    */
   const handleColumnResize = useCallback(
-    (column: CalculatedColumn<R, SR>, width: number | 'auto') => {
-      if (width === 'auto') {
+    (column: CalculatedColumn<R, SR>, width: number | 'max-content') => {
+      if (width === 'max-content') {
         setAutoResizeColumn(column);
         return;
       }
@@ -909,10 +929,16 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getLayoutCssVars() {
-    if (autoResizeColumn === null) return layoutCssVars;
+    if (autoResizeColumn === null && flexWidthViewportColumns.length === 0) return layoutCssVars;
     const { gridTemplateColumns } = layoutCssVars;
     const newSizes = gridTemplateColumns.split(' ');
-    newSizes[autoResizeColumn.idx] = 'max-content';
+    if (autoResizeColumn !== null) {
+      newSizes[autoResizeColumn.idx] = 'max-content';
+    }
+    for (const column of flexWidthViewportColumns) {
+      newSizes[column.idx] = column.width as string;
+    }
+
     return {
       ...layoutCssVars,
       gridTemplateColumns: newSizes.join(' ')
@@ -1146,7 +1172,8 @@ function DataGrid<R, SR, K extends Key>(
         rootClassname,
         {
           [viewportDraggingClassname]: isDragging,
-          [cellAutoResizeClassname]: autoResizeColumn !== null
+          [autosizeColumnsClassname]:
+            autoResizeColumn !== null || flexWidthViewportColumns.length > 0
         },
         className
       )}

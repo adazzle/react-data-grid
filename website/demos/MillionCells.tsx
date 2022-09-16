@@ -24,6 +24,7 @@ export default function MillionCells({ direction }: Props) {
         key,
         name: key,
         frozen: i < 5,
+        width: 80,
         resizable: true,
         formatter: cellFormatter
       });

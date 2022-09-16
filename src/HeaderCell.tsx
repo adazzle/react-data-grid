@@ -155,7 +155,7 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
-    onColumnResize(column, 'auto');
+    onColumnResize(column, 'max-content');
   }
 
   function handleFocus(event: React.FocusEvent<HTMLDivElement>) {

@@ -33,7 +33,7 @@ export const cell = css`
 export const cellClassname = `rdg-cell ${cell}`;
 
 // max-content does not calculate width when contain is set to style or size
-export const cellAutoResizeClassname = css`
+export const autosizeColumnsClassname = css`
   @layer rdg.Root {
     .${cell} {
       contain: content;

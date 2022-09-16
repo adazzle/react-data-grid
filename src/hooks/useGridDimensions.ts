@@ -6,11 +6,13 @@ import { ceil } from '../utils';
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
-  height: number
+  height: number,
+  isWidthInitialized: boolean
 ] {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
+  const [isWidthInitialized, setWidthInitialized] = useState(false);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -31,6 +33,7 @@ export function useGridDimensions(): [
       const size = entries[0].contentBoxSize[0];
       setInlineSize(handleDevicePixelRatio(size.inlineSize));
       setBlockSize(size.blockSize);
+      setWidthInitialized(true);
     });
     resizeObserver.observe(gridRef.current!);
 
@@ -39,7 +42,7 @@ export function useGridDimensions(): [
     };
   }, []);
 
-  return [gridRef, inlineSize, blockSize];
+  return [gridRef, inlineSize, blockSize, isWidthInitialized];
 }
 
 // TODO: remove once fixed upstream
