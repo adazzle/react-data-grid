@@ -1296,7 +1296,7 @@ function DataGrid<R, SR, K extends Key>(
           </>
         )}
 
-        {/* render empty cells that span only 1 column so we can safely measure column widths */}
+        {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
         {renderMeasuringCells({ viewportColumns })}
       </DataGridDefaultComponentsProvider>
     </div>
