@@ -32,13 +32,11 @@ export const cell = css`
 
 export const cellClassname = `rdg-cell ${cell}`;
 
+// max-content does not calculate width when contain is set to style or size
 export const autosizeColumnsClassname = css`
   @layer rdg.Root {
     .${cell} {
-      /* max-content does not calculate width when contain is set to style or size */
       contain: content;
-      /* reset column span while measuring flex/autosized columns */
-      grid-column-end: span 1 !important;
     }
   }
 `;
