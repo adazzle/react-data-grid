@@ -127,8 +127,8 @@ export function useViewportColumns<R, SR>({
 
   return {
     viewportColumns,
-    flexWidthViewportColumns: useMemo(() => {
-      return flexWidthViewportColumns.filter((column) => !columnWidths.has(column.key));
-    }, [flexWidthViewportColumns, columnWidths])
+    flexWidthViewportColumns: flexWidthViewportColumns.filter(
+      (column) => !columnWidths.has(column.key)
+    )
   };
 }
