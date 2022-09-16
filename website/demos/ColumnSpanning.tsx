@@ -32,7 +32,6 @@ export default function ColumnSpanning({ direction }: Props) {
         key,
         name: key,
         frozen: i < 5,
-        width: 80,
         resizable: true,
         formatter: cellFormatter,
         colSpan(args) {
