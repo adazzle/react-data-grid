@@ -57,6 +57,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly idx: number;
   readonly width: number | string;
   readonly minWidth: number;
+  readonly maxWidth: number | undefined;
   readonly resizable: boolean;
   readonly sortable: boolean;
   readonly frozen: boolean;

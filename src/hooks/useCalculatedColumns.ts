@@ -38,7 +38,7 @@ export function useCalculatedColumns<R, SR>({
 }: CalculatedColumnsArgs<R, SR>) {
   const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
-  const defaultMaxWidth = defaultColumnOptions?.maxWidth;
+  const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
   const defaultFormatter = defaultColumnOptions?.formatter ?? valueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;

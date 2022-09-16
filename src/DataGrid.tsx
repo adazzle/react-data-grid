@@ -43,6 +43,7 @@ import {
   sign,
   abs,
   getSelectedCellColSpan,
+  renderMeasuringCells,
   scrollIntoView
 } from './utils';
 
@@ -435,29 +436,28 @@ function DataGrid<R, SR, K extends Key>(
 
   useLayoutEffect(() => {
     if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
-    const newColumnWidths = new Map<string, number>();
-    for (const column of flexWidthViewportColumns) {
-      const columnElement = gridRef.current!.querySelector<HTMLDivElement>(
-        `[aria-colindex="${column.idx + 1}"]`
-      );
-      if (columnElement) {
+
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
+      const grid = gridRef.current!;
+
+      for (const column of flexWidthViewportColumns) {
+        const measuringCell = grid.querySelector(`[data-measuring-cell-key="${column.key}"]`)!;
         // Set the actual width of the column after it is rendered
-        const { width } = columnElement.getBoundingClientRect();
+        const { width } = measuringCell.getBoundingClientRect();
         newColumnWidths.set(column.key, width);
       }
-    }
-    if (newColumnWidths.size === 0) return;
-    setColumnWidths((columnWidths) => {
-      return new Map([...columnWidths, ...newColumnWidths]);
+
+      return newColumnWidths;
     });
   }, [isWidthInitialized, flexWidthViewportColumns, gridRef]);
 
   useLayoutEffect(() => {
     if (autoResizeColumn === null) return;
-    const columnElement = gridRef.current!.querySelector(
-      `[aria-colindex="${autoResizeColumn.idx + 1}"]`
+    const measuringCell = gridRef.current!.querySelector(
+      `[data-measuring-cell-key="${autoResizeColumn.key}"]`
     )!;
-    const { width } = columnElement.getBoundingClientRect();
+    const { width } = measuringCell.getBoundingClientRect();
     setColumnWidths((columnWidths) => {
       const newColumnWidths = new Map(columnWidths);
       newColumnWidths.set(autoResizeColumn.key, width);
@@ -1295,6 +1295,9 @@ function DataGrid<R, SR, K extends Key>(
             })}
           </>
         )}
+
+        {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
+        {renderMeasuringCells({ viewportColumns })}
       </DataGridDefaultComponentsProvider>
     </div>
   );
