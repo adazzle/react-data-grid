@@ -380,6 +380,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
+  const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
   const selectRowLatest = useLatestFunc(selectRow);
@@ -1198,7 +1199,7 @@ function DataGrid<R, SR, K extends Key>(
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={selectAllRowsLatest}
           sortColumns={sortColumns}
-          onSortColumnsChange={onSortColumnsChange}
+          onSortColumnsChange={onSortColumnsChangeLatest}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
           selectedCellIdx={selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined}
           selectCell={selectHeaderCellLatest}
