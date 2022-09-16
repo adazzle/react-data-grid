@@ -458,7 +458,6 @@ function DataGrid<R, SR, K extends Key>(
       `[data-measuring-cell-key="${autoResizeColumn.key}"]`
     )!;
     const { width } = measuringCell.getBoundingClientRect();
-    console.log(autoResizeColumn, width);
     setColumnWidths((columnWidths) => {
       const newColumnWidths = new Map(columnWidths);
       newColumnWidths.set(autoResizeColumn.key, width);
