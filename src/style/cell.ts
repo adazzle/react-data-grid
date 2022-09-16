@@ -32,7 +32,7 @@ export const cell = css`
 
 export const cellClassname = `rdg-cell ${cell}`;
 
-// max-content does not calculate width when size containment is enabled
+// max-content does not work when size containment is enabled
 // `contain: content` leasd to odd subpixel mismatches when combined with colSpan
 export const autosizeColumnsClassname = css`
   @layer rdg.Root {
