@@ -31,8 +31,7 @@ export function useGridDimensions(): [
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      const newInlineSize = handleDevicePixelRatio(size.inlineSize);
-      setInlineSize(newInlineSize);
+      setInlineSize(handleDevicePixelRatio(size.inlineSize));
       setBlockSize(size.blockSize);
       setWidthInitialized(true);
     });
