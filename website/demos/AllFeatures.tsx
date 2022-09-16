@@ -89,7 +89,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'email',
     name: 'Email',
-    width: 200,
+    width: 'max-content',
     resizable: true,
     editor: textEditor
   },
@@ -124,7 +124,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'catchPhrase',
     name: 'Catch Phrase',
-    width: 200,
+    width: 'max-content',
     resizable: true,
     editor: textEditor
   },
@@ -138,7 +138,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'sentence',
     name: 'Sentence',
-    width: 200,
+    width: 'max-content',
     resizable: true,
     editor: textEditor
   }

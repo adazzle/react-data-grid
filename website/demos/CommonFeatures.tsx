@@ -100,7 +100,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'client',
       name: 'Client',
-      width: 220,
+      width: 'max-content',
       editor: textEditor
     },
     {
