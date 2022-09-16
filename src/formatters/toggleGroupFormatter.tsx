@@ -3,20 +3,24 @@ import type { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks/useFocusRef';
 
 const groupCellContent = css`
-  outline: none;
+  @layer rdg.GroupCellContent {
+    outline: none;
+  }
 `;
 
 const groupCellContentClassname = `rdg-group-cell-content ${groupCellContent}`;
 
 const caret = css`
-  margin-inline-start: 4px;
-  stroke: currentColor;
-  stroke-width: 1.5px;
-  fill: transparent;
-  vertical-align: middle;
+  @layer rdg.GroupCellCaret {
+    margin-inline-start: 4px;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    fill: transparent;
+    vertical-align: middle;
 
-  > path {
-    transition: d 0.1s;
+    > path {
+      transition: d 0.1s;
+    }
   }
 `;
 

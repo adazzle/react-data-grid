@@ -3,6 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import postcssNested from 'postcss-nested';
 
 // TODO: remove `target` https://github.com/storybookjs/storybook/issues/15882
 const target = 'browserslist:browserslist config, not maintained node versions';
@@ -80,7 +81,7 @@ export default (env, { mode }) => {
               loader: 'postcss-loader',
               options: {
                 postcssOptions: {
-                  plugins: ['postcss-nested']
+                  plugins: [postcssNested({ bubble: ['layer'] })]
                 }
               }
             }
