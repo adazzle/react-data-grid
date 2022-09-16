@@ -438,7 +438,7 @@ function DataGrid<R, SR, K extends Key>(
     if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
 
     setColumnWidths((columnWidths) => {
-      const newColumnWidths = new Map<string, number>(columnWidths);
+      const newColumnWidths = new Map(columnWidths);
       const grid = gridRef.current!;
 
       for (const column of flexWidthViewportColumns) {

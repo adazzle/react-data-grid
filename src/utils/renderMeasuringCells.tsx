@@ -2,9 +2,11 @@ import { css } from '@linaria/core';
 import type { CalculatedColumn } from '../types';
 
 const measuringCellClassname = css`
-  contain: strict;
-  grid-row: 1;
-  visibility: hidden;
+  @layer rdg.MeasuringCell {
+    contain: strict;
+    grid-row: 1;
+    visibility: hidden;
+  }
 `;
 
 export function renderMeasuringCells<R, SR>({
