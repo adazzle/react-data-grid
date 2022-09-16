@@ -24,14 +24,12 @@ interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defau
   viewportWidth: number;
   scrollLeft: number;
   columnWidths: ReadonlyMap<string, number>;
-  flexColumnWidths: ReadonlyMap<string, number>;
   enableVirtualization: boolean;
 }
 
 export function useCalculatedColumns<R, SR>({
   rawColumns,
   columnWidths,
-  flexColumnWidths,
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
@@ -155,7 +153,7 @@ export function useCalculatedColumns<R, SR>({
     let templateColumns = '';
 
     for (const column of columns) {
-      let width = columnWidths.get(column.key) ?? flexColumnWidths.get(column.key) ?? column.width;
+      let width = columnWidths.get(column.key) ?? column.width;
       if (typeof width === 'number') {
         width = clampColumnWidth(width, column);
       } else {
@@ -183,7 +181,7 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [columnWidths, flexColumnWidths, columns, lastFrozenColumnIndex]);
+  }, [columnWidths, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {

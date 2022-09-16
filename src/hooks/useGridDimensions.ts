@@ -3,9 +3,7 @@ import { useLayoutEffect } from './useLayoutEffect';
 
 import { ceil } from '../utils';
 
-export function useGridDimensions(
-  setFlexColumnWidths: React.Dispatch<React.SetStateAction<ReadonlyMap<string, number>>>
-): [
+export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
   height: number,
@@ -15,7 +13,6 @@ export function useGridDimensions(
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
   const [isWidthInitialized, setWidthInitialized] = useState(false);
-  const prevInlineSize = useRef(inlineSize);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -37,11 +34,6 @@ export function useGridDimensions(
       const newInlineSize = handleDevicePixelRatio(size.inlineSize);
       setInlineSize(newInlineSize);
       setBlockSize(size.blockSize);
-      if (prevInlineSize.current !== newInlineSize) {
-        prevInlineSize.current = newInlineSize;
-        // clear existing flex widths, this will trigger recalculation of visible flex columns again
-        setFlexColumnWidths((widths) => (widths.size > 0 ? new Map() : widths));
-      }
       setWidthInitialized(true);
     });
     resizeObserver.observe(gridRef.current!);
@@ -49,7 +41,7 @@ export function useGridDimensions(
     return () => {
       resizeObserver.disconnect();
     };
-  }, [setFlexColumnWidths]);
+  }, []);
 
   return [gridRef, inlineSize, blockSize, isWidthInitialized];
 }

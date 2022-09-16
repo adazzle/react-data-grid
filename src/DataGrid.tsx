@@ -263,9 +263,6 @@ function DataGrid<R, SR, K extends Key>(
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
-  const [flexColumnWidths, setFlexColumnWidths] = useState<ReadonlyMap<string, number>>(
-    () => new Map()
-  );
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
     initialPosition
   );
@@ -285,8 +282,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight, isWidthInitialized] =
-    useGridDimensions(setFlexColumnWidths);
+  const [gridRef, gridWidth, gridHeight, isWidthInitialized] = useGridDimensions();
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
@@ -334,8 +330,7 @@ function DataGrid<R, SR, K extends Key>(
     viewportWidth: gridWidth,
     defaultColumnOptions,
     rawGroupBy: rowGrouper ? rawGroupBy : undefined,
-    enableVirtualization,
-    flexColumnWidths
+    enableVirtualization
   });
 
   const {
@@ -372,7 +367,6 @@ function DataGrid<R, SR, K extends Key>(
     topSummaryRows,
     bottomSummaryRows,
     columnWidths,
-    flexColumnWidths,
     isGroupRow
   });
 
@@ -440,7 +434,6 @@ function DataGrid<R, SR, K extends Key>(
 
   useLayoutEffect(() => {
     if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
-    const newFlexColumnWidths = new Map<string, number>();
     const newColumnWidths = new Map<string, number>();
     for (const column of flexWidthViewportColumns) {
       const columnElement = gridRef.current!.querySelector<HTMLDivElement>(
@@ -449,24 +442,13 @@ function DataGrid<R, SR, K extends Key>(
       if (columnElement) {
         // Set the actual width of the column after it is rendered
         const { width } = columnElement.getBoundingClientRect();
-        if (column.width === 'max-content') {
-          newColumnWidths.set(column.key, width);
-        } else {
-          newFlexColumnWidths.set(column.key, width);
-        }
+        newColumnWidths.set(column.key, width);
       }
     }
-    if (newFlexColumnWidths.size !== 0) {
-      setFlexColumnWidths((flexColumnWidths) => {
-        return new Map([...flexColumnWidths, ...newFlexColumnWidths]);
-      });
-    }
-
-    if (newColumnWidths.size !== 0) {
-      setColumnWidths((columnWidths) => {
-        return new Map([...columnWidths, ...newColumnWidths]);
-      });
-    }
+    if (newColumnWidths.size === 0) return;
+    setColumnWidths((columnWidths) => {
+      return new Map([...columnWidths, ...newColumnWidths]);
+    });
   }, [isWidthInitialized, flexWidthViewportColumns, gridRef]);
 
   useLayoutEffect(() => {
@@ -481,7 +463,6 @@ function DataGrid<R, SR, K extends Key>(
       return newColumnWidths;
     });
     setAutoResizeColumn(null);
-    setFlexColumnWidths(new Map());
     onColumnResize?.(autoResizeColumn.idx, width);
   }, [autoResizeColumn, gridRef, onColumnResize]);
 
@@ -513,7 +494,6 @@ function DataGrid<R, SR, K extends Key>(
         newColumnWidths.set(column.key, width);
         return newColumnWidths;
       });
-      setFlexColumnWidths(new Map());
 
       onColumnResize?.(column.idx, width);
     },
