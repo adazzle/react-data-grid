@@ -9,7 +9,10 @@ export const cell = css`
     contain: strict;
     */
     position: relative; /* needed for absolute positioning to work */
-    contain: size style;
+
+    /* max-content does not work when size containment is enabled *
+    /* "contain: content" leads to odd subpixel mismatches when combined with colSpan */
+    contain: style;
     padding-block: 0;
     padding-inline: 8px;
     border-inline-end: 1px solid var(--rdg-border-color);
@@ -31,16 +34,6 @@ export const cell = css`
 `;
 
 export const cellClassname = `rdg-cell ${cell}`;
-
-// max-content does not work when size containment is enabled
-// `contain: content` leads to odd subpixel mismatches when combined with colSpan
-export const autosizeColumnsClassname = css`
-  @layer rdg.Root {
-    .${cell} {
-      contain: style;
-    }
-  }
-`;
 
 export const cellFrozen = css`
   @layer rdg.Cell {
