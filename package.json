@@ -25,7 +25,9 @@
   "files": [
     "lib"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "start": "webpack serve --mode=development",
     "build:website": "webpack --mode=production",
