@@ -6,7 +6,7 @@ import type { Props } from './types';
 type Row = number;
 const rows: readonly Row[] = [...Array(1000).keys()];
 
-function CellFormatter(props: FormatterProps<Row>) {
+function cellFormatter(props: FormatterProps<Row>) {
   return (
     <>
       {props.column.key}&times;{props.row}
@@ -25,7 +25,7 @@ export default function MillionCells({ direction }: Props) {
         name: key,
         frozen: i < 5,
         resizable: true,
-        formatter: CellFormatter
+        formatter: cellFormatter
       });
     }
 

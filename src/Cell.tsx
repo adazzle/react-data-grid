@@ -6,16 +6,20 @@ import type { CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
 
 const cellCopied = css`
-  background-color: #ccccff;
+  @layer rdg.Cell {
+    background-color: #ccccff;
+  }
 `;
 
 const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
 
 const cellDraggedOver = css`
-  background-color: #ccccff;
+  @layer rdg.Cell {
+    background-color: #ccccff;
 
-  &.${cellCopied} {
-    background-color: #9999ff;
+    &.${cellCopied} {
+      background-color: #9999ff;
+    }
   }
 `;
 
@@ -65,6 +69,10 @@ function Cell<R, SR>({
     onRowDoubleClick?.(row, column);
   }
 
+  function handleRowChange(newRow: R) {
+    onRowChange(column, newRow);
+  }
+
   return (
     <div
       role="gridcell"
@@ -84,12 +92,12 @@ function Cell<R, SR>({
     >
       {!column.rowGroup && (
         <>
-          <column.formatter
-            column={column}
-            row={row}
-            isCellSelected={isCellSelected}
-            onRowChange={onRowChange}
-          />
+          {column.formatter({
+            column,
+            row,
+            isCellSelected,
+            onRowChange: handleRowChange
+          })}
           {dragHandle}
         </>
       )}

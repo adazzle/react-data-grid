@@ -2,21 +2,23 @@ import { css } from '@linaria/core';
 
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import DefaultHeaderRenderer from './HeaderRenderer';
+import defaultHeaderRenderer from './headerRenderer';
 import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
-  touch-action: none;
+  @layer rdg.HeaderCell {
+    touch-action: none;
 
-  &::after {
-    content: '';
-    cursor: col-resize;
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    inset-block-end: 0;
-    inline-size: 10px;
+    &::after {
+      content: '';
+      cursor: col-resize;
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-end: 0;
+      inset-block-end: 0;
+      inline-size: 10px;
+    }
   }
 `;
 
@@ -67,7 +69,7 @@ export default function HeaderCell<R, SR>({
     [cellResizableClassname]: column.resizable
   });
 
-  const HeaderRenderer = column.headerRenderer ?? DefaultHeaderRenderer;
+  const headerRenderer = column.headerRenderer ?? defaultHeaderRenderer;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -84,6 +86,8 @@ export default function HeaderCell<R, SR>({
     }
 
     function onPointerMove(event: PointerEvent) {
+      // prevents text selection in Chrome, which fixes scrolling the grid while dragging, and fixes re-size on an autosized column
+      event.preventDefault();
       const { right, left } = currentTarget.getBoundingClientRect();
       const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
@@ -183,15 +187,15 @@ export default function HeaderCell<R, SR>({
       onDoubleClick={column.resizable ? onDoubleClick : undefined}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
-      <HeaderRenderer
-        column={column}
-        sortDirection={sortDirection}
-        priority={priority}
-        onSort={onSort}
-        allRowsSelected={allRowsSelected}
-        onAllRowsSelectionChange={onAllRowsSelectionChange}
-        isCellSelected={isCellSelected}
-      />
+      {headerRenderer({
+        column,
+        sortDirection,
+        priority,
+        onSort,
+        allRowsSelected,
+        onAllRowsSelectionChange,
+        isCellSelected
+      })}
     </div>
   );
 }

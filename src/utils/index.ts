@@ -23,7 +23,7 @@ export function clampColumnWidth<R, SR>(
   width = max(width, minWidth);
 
   // ignore maxWidth if it less than minWidth
-  if (typeof maxWidth === 'number' && maxWidth > minWidth) {
+  if (typeof maxWidth === 'number' && maxWidth >= minWidth) {
     return min(width, maxWidth);
   }
 
