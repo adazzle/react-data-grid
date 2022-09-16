@@ -1172,7 +1172,7 @@ function DataGrid<R, SR, K extends Key>(
         rootClassname,
         {
           [viewportDraggingClassname]: isDragging,
-          [cellAutoResizeClassname]:
+          [autosizeColumnsClassname]:
             autoResizeColumn !== null || flexWidthViewportColumns.length > 0
         },
         className
