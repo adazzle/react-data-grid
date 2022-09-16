@@ -65,9 +65,8 @@ const root = css`
       color-scheme: var(--rdg-color-scheme, light dark);
 
       /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
-      /* We set a stacking context so internal elements don't render on top of external components. */
+      /* We set a stacking context so internal elements don't render on top of external elements. */
       contain: strict;
-      contain: size layout style paint;
       content-visibility: auto;
       block-size: 350px;
       border: 1px solid var(--rdg-border-color);
@@ -76,12 +75,6 @@ const root = css`
       background-color: var(--rdg-background-color);
       color: var(--rdg-color);
       font-size: var(--rdg-font-size);
-
-      /* set stacking context in safari */
-      @supports not (contain: strict) {
-        position: relative;
-        z-index: 0;
-      }
 
       /* needed on Firefox */
       &::before {

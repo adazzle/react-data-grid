@@ -7,7 +7,6 @@ export const cell = css`
     https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
     once this is fixed we can also remove "position: relative:"
     contain: strict;
-    contain: size layout style paint;
     */
     position: relative; /* needed for absolute positioning to work */
     contain: size style;
