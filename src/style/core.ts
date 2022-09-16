@@ -34,58 +34,69 @@ const darkTheme = `
 `;
 
 const root = css`
-  ${lightTheme}
-  --rdg-selection-color: #66afe9;
-  --rdg-font-size: 14px;
+  @layer rdg {
+    @layer Defaults,
+      FocusSink,
+      Cell,
+      HeaderCell,
+      SummaryCell,
+      EditCell,
+      Row,
+      HeaderRow,
+      SummaryRow,
+      GroupedRow,
+      Root;
 
-  display: grid;
+    @layer Defaults {
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+    }
 
-  color-scheme: var(--rdg-color-scheme, light dark);
+    @layer Root {
+      ${lightTheme}
+      --rdg-selection-color: #66afe9;
+      --rdg-font-size: 14px;
 
-  /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
-  /* We set a stacking context so internal elements don't render on top of external components. */
-  contain: strict;
-  contain: size layout style paint;
-  content-visibility: auto;
-  block-size: 350px;
-  border: 1px solid var(--rdg-border-color);
-  box-sizing: border-box;
-  overflow: auto;
-  background-color: var(--rdg-background-color);
-  color: var(--rdg-color);
-  font-size: var(--rdg-font-size);
+      display: grid;
 
-  /* set stacking context in safari */
-  @supports not (contain: strict) {
-    position: relative;
-    z-index: 0;
-  }
+      color-scheme: var(--rdg-color-scheme, light dark);
 
-  *,
-  *::before,
-  *::after {
-    box-sizing: inherit;
-  }
+      /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
+      /* We set a stacking context so internal elements don't render on top of external elements. */
+      contain: strict;
+      content-visibility: auto;
+      block-size: 350px;
+      border: 1px solid var(--rdg-border-color);
+      box-sizing: border-box;
+      overflow: auto;
+      background-color: var(--rdg-background-color);
+      color: var(--rdg-color);
+      font-size: var(--rdg-font-size);
 
-  /* needed on Firefox */
-  &::before {
-    content: '';
-    grid-column: 1/-1;
-    grid-row: 1/-1;
-  }
+      /* needed on Firefox */
+      &::before {
+        content: '';
+        grid-column: 1/-1;
+        grid-row: 1/-1;
+      }
 
-  &.rdg-dark {
-    --rdg-color-scheme: dark;
-    ${darkTheme}
-  }
+      &.rdg-dark {
+        --rdg-color-scheme: dark;
+        ${darkTheme}
+      }
 
-  &.rdg-light {
-    --rdg-color-scheme: light;
-  }
+      &.rdg-light {
+        --rdg-color-scheme: light;
+      }
 
-  @media (prefers-color-scheme: dark) {
-    &:not(.rdg-light) {
-      ${darkTheme}
+      @media (prefers-color-scheme: dark) {
+        &:not(.rdg-light) {
+          ${darkTheme}
+        }
+      }
     }
   }
 `;
@@ -93,18 +104,22 @@ const root = css`
 export const rootClassname = `rdg ${root}`;
 
 const viewportDragging = css`
-  user-select: none;
+  @layer rdg.Root {
+    user-select: none;
 
-  & .${row} {
-    cursor: move;
+    & .${row} {
+      cursor: move;
+    }
   }
 `;
 
 export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDragging}`;
 
 export const focusSinkClassname = css`
-  grid-column: 1/-1;
-  pointer-events: none;
-  /* Should have a higher value than 2 to show up above header row */
-  z-index: 3;
+  @layer rdg.FocusSink {
+    grid-column: 1/-1;
+    pointer-events: none;
+    /* Should have a higher value than 2 to show up above header row */
+    z-index: 3;
+  }
 `;

@@ -11,7 +11,9 @@ import type { Props } from './types';
 import type { Direction } from '../../src/types';
 
 const toolbarClassname = css`
-  text-align: end;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
   margin-block-end: 8px;
 `;
 

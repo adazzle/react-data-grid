@@ -2,7 +2,8 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozen, row, rowClassname, rowSelectedClassname } from './style';
+import { cell, cellFrozen } from './style/cell';
+import { rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
@@ -24,8 +25,9 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
 }
 
 const summaryRow = css`
-  &.${row} {
+  @layer rdg.SummaryRow {
     line-height: var(--rdg-summary-row-height);
+
     > .${cell} {
       position: sticky;
     }
@@ -33,7 +35,7 @@ const summaryRow = css`
 `;
 
 const topSummaryRow = css`
-  &.${row} {
+  @layer rdg.SummaryRow {
     > .${cell} {
       z-index: 1;
     }
@@ -45,14 +47,18 @@ const topSummaryRow = css`
 `;
 
 const topSummaryRowBorderClassname = css`
-  & > .${cell} {
-    border-block-end: 2px solid var(--rdg-summary-border-color);
+  @layer rdg.SummaryRow {
+    > .${cell} {
+      border-block-end: 2px solid var(--rdg-summary-border-color);
+    }
   }
 `;
 
 const bottomSummaryRowBorderClassname = css`
-  & > .${cell} {
-    border-block-start: 2px solid var(--rdg-summary-border-color);
+  @layer rdg.SummaryRow {
+    > .${cell} {
+      border-block-start: 2px solid var(--rdg-summary-border-color);
+    }
   }
 `;
 

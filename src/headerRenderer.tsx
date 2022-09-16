@@ -5,21 +5,25 @@ import type { HeaderRendererProps } from './types';
 import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
 
 const headerSortCell = css`
-  cursor: pointer;
-  display: flex;
+  @layer rdg.SortableHeaderCell {
+    cursor: pointer;
+    display: flex;
 
-  &:focus {
-    outline: none;
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
 const headerSortCellClassname = `rdg-header-sort-cell ${headerSortCell}`;
 
 const headerSortName = css`
-  flex-grow: 1;
-  overflow: hidden;
-  overflow: clip;
-  text-overflow: ellipsis;
+  @layer rdg.SortableHeaderCellName {
+    flex-grow: 1;
+    overflow: hidden;
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
 `;
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;

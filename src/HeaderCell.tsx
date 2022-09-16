@@ -7,16 +7,18 @@ import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
-  touch-action: none;
+  @layer rdg.HeaderCell {
+    touch-action: none;
 
-  &::after {
-    content: '';
-    cursor: col-resize;
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    inset-block-end: 0;
-    inline-size: 10px;
+    &::after {
+      content: '';
+      cursor: col-resize;
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-end: 0;
+      inset-block-end: 0;
+      inline-size: 10px;
+    }
   }
 `;
 

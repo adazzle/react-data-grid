@@ -26,20 +26,22 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
 }
 
 const headerRow = css`
-  display: contents;
-  line-height: var(--rdg-header-row-height);
-  background-color: var(--rdg-header-background-color);
-  font-weight: bold;
+  @layer rdg.HeaderRow {
+    display: contents;
+    line-height: var(--rdg-header-row-height);
+    background-color: var(--rdg-header-background-color);
+    font-weight: bold;
 
-  & > .${cell} {
-    /* Should have a higher value than 0 to show up above regular cells */
-    z-index: 1;
-    position: sticky;
-    inset-block-start: 0;
-  }
+    & > .${cell} {
+      /* Should have a higher value than 0 to show up above regular cells */
+      z-index: 1;
+      position: sticky;
+      inset-block-start: 0;
+    }
 
-  & > .${cellFrozen} {
-    z-index: 2;
+    & > .${cellFrozen} {
+      z-index: 2;
+    }
   }
 `;
 
