@@ -125,10 +125,12 @@ export function useViewportColumns<R, SR>({
     return { viewportColumns, flexWidthViewportColumns };
   }, [startIdx, colOverscanEndIdx, columns]);
 
+  const unsizedFlexWidthViewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
+    return flexWidthViewportColumns.filter((column) => !columnWidths.has(column.key));
+  }, [flexWidthViewportColumns, columnWidths]);
+
   return {
     viewportColumns,
-    flexWidthViewportColumns: flexWidthViewportColumns.filter(
-      (column) => !columnWidths.has(column.key)
-    )
+    flexWidthViewportColumns: unsizedFlexWidthViewportColumns
   };
 }
