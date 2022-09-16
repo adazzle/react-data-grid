@@ -62,6 +62,7 @@ npm install react-data-grid
 ## Quick start
 
 ```jsx
+import 'react-data-grid/lib/styles.css';
 import DataGrid from 'react-data-grid';
 
 const columns = [

@@ -11,6 +11,7 @@
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
   "exports": {
+    "./lib/styles.css": "./lib/styles.css",
     ".": {
       "module": "./lib/bundle.js",
       "require": "./lib/bundle.cjs",

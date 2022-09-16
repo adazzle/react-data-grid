@@ -32,12 +32,12 @@ export default {
       classNameSlug(hash) {
         // We add the package version as suffix to avoid style conflicts
         // between multiple versions of RDG on the same page.
-        return `${hash}${pkg.version.replaceAll('.', '')}`;
+        return `${hash}${pkg.version.replaceAll('.', '-')}`;
       }
     }),
     postcss({
       plugins: [postcssNested({ bubble: ['layer'] })],
-      minimize: true
+      extract: 'styles.css'
     }),
     babel({
       babelHelpers: 'runtime',
