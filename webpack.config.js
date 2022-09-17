@@ -3,6 +3,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import { browserslistToTargets } from 'lightningcss';
+import browserslist from 'browserslist';
 import postcssNested from 'postcss-nested';
 
 // TODO: remove `target` https://github.com/storybookjs/storybook/issues/15882
@@ -52,7 +54,17 @@ export default (env, { mode }) => {
       splitChunks: {
         chunks: 'all'
       },
-      minimizer: ['...', new CssMinimizerPlugin()]
+      minimizer: [
+        '...',
+        new CssMinimizerPlugin({
+          minify: CssMinimizerPlugin.lightningCssMinify,
+          minimizerOptions: {
+            targets: browserslistToTargets(
+              browserslist('browserslist config, not maintained node versions')
+            )
+          }
+        })
+      ]
     },
 
     module: {
