@@ -14,7 +14,8 @@ interface ViewportColumnsArgs<R, SR> {
   lastFrozenColumnIndex: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
-  columnWidths: ReadonlyMap<string, number>;
+  measuredColumnWidths: ReadonlyMap<string, number>;
+  resizedColumnWidths: ReadonlyMap<string, number>;
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
@@ -29,7 +30,8 @@ export function useViewportColumns<R, SR>({
   lastFrozenColumnIndex,
   rowOverscanStartIdx,
   rowOverscanEndIdx,
-  columnWidths,
+  measuredColumnWidths,
+  resizedColumnWidths,
   isGroupRow
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
@@ -126,8 +128,10 @@ export function useViewportColumns<R, SR>({
   }, [startIdx, colOverscanEndIdx, columns]);
 
   const unsizedFlexWidthViewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
-    return flexWidthViewportColumns.filter((column) => !columnWidths.has(column.key));
-  }, [flexWidthViewportColumns, columnWidths]);
+    return flexWidthViewportColumns.filter(
+      (column) => !resizedColumnWidths.has(column.key) && !measuredColumnWidths.has(column.key)
+    );
+  }, [flexWidthViewportColumns, measuredColumnWidths, resizedColumnWidths]);
 
   return {
     viewportColumns,

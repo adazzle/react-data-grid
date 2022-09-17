@@ -1,16 +1,13 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
-export function useGridDimensions(): [
-  ref: React.RefObject<HTMLDivElement>,
-  width: number,
-  height: number,
-  isWidthInitialized: boolean
-] {
+export function useGridDimensions() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
-  const [isWidthInitialized, setWidthInitialized] = useState(false);
+  const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
+    (): ReadonlyMap<string, number> => new Map()
+  );
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -31,7 +28,8 @@ export function useGridDimensions(): [
       const size = entries[0].contentBoxSize[0];
       setInlineSize(size.inlineSize);
       setBlockSize(size.blockSize);
-      setWidthInitialized(true);
+      // TODO: only clear flex columns, if any?
+      setMeasuredColumnWidths(new Map());
     });
     resizeObserver.observe(gridRef.current!);
 
@@ -40,5 +38,36 @@ export function useGridDimensions(): [
     };
   }, []);
 
-  return [gridRef, inlineSize, blockSize, isWidthInitialized];
+  const observeMeasuringCell = useMemo(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      setMeasuredColumnWidths((measuredColumnWidths) => {
+        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+        let hasChanges = false;
+
+        for (const entry of entries) {
+          const { inlineSize } = entry.contentBoxSize[0];
+          const key = (entry.target as HTMLDivElement).dataset.measuringCellKey!;
+          newMeasuredColumnWidths.set(key, inlineSize);
+          hasChanges ||= measuredColumnWidths.get(key) !== inlineSize;
+        }
+
+        return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
+      });
+    });
+
+    return (measuringCell: HTMLDivElement | null) => {
+      if (measuringCell !== null) {
+        resizeObserver.observe(measuringCell);
+      }
+    };
+  }, []);
+
+  return [
+    gridRef,
+    inlineSize,
+    blockSize,
+    measuredColumnWidths,
+    setMeasuredColumnWidths,
+    observeMeasuringCell
+  ] as const;
 }
