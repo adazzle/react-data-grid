@@ -1,8 +1,6 @@
 import { useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
-import { ceil } from '../utils';
-
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
@@ -26,12 +24,12 @@ export function useGridDimensions(): [
     const initialWidth = width - offsetWidth + clientWidth;
     const initialHeight = height - offsetHeight + clientHeight;
 
-    setInlineSize(handleDevicePixelRatio(initialWidth));
+    setInlineSize(initialWidth);
     setBlockSize(initialHeight);
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      setInlineSize(handleDevicePixelRatio(size.inlineSize));
+      setInlineSize(size.inlineSize);
       setBlockSize(size.blockSize);
       setWidthInitialized(true);
     });
@@ -43,11 +41,4 @@ export function useGridDimensions(): [
   }, []);
 
   return [gridRef, inlineSize, blockSize, isWidthInitialized];
-}
-
-// TODO: remove once fixed upstream
-// we reduce width by 1px here to avoid layout issues in Chrome
-// https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-function handleDevicePixelRatio(size: number) {
-  return size - (devicePixelRatio === 1 ? 0 : ceil(devicePixelRatio));
 }
