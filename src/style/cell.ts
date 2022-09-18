@@ -4,7 +4,7 @@ export const cell = css`
   @layer rdg.Cell {
     /* max-content does not work with size containment
      * dynamically switching between different containment styles incurs a heavy relayout penalty
-     * Chromium bug: at odd zoom levels, layout or paint containment can make cell borders disappear
+     * Chromium bug: at odd zoom levels or subpixel positioning, layout/paint containment can make cell borders disappear
      *   https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
      */
     contain: style;
@@ -26,10 +26,6 @@ export const cell = css`
     &[aria-selected='true'] {
       outline: 2px solid var(--rdg-selection-color);
       outline-offset: -2px;
-    }
-
-    @media (resolution: 1dppx) or (resolution: 2dppx) {
-      contain: layout paint style;
     }
   }
 `;
