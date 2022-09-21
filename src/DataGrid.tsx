@@ -7,7 +7,6 @@ import {
   rootClassname,
   viewportDraggingClassname,
   focusSinkClassname,
-  autosizeColumnsClassname,
   rowSelected,
   rowSelectedWithFrozenCell
 } from './style';
@@ -266,7 +265,9 @@ function DataGrid<R, SR, K extends Key>(
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [columnWidths, setColumnWidths] = useState<ReadonlyMap<string, number>>(() => new Map());
+  const [resizedColumnWidths, setResizedColumnWidths] = useState<ReadonlyMap<string, number>>(
+    () => new Map()
+  );
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
     initialPosition
   );
@@ -329,7 +330,7 @@ function DataGrid<R, SR, K extends Key>(
     groupBy
   } = useCalculatedColumns({
     rawColumns,
-    columnWidths,
+    resizedColumnWidths,
     scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
@@ -370,7 +371,7 @@ function DataGrid<R, SR, K extends Key>(
     rows,
     topSummaryRows,
     bottomSummaryRows,
-    columnWidths,
+    resizedColumnWidths,
     isGroupRow
   });
 
@@ -440,18 +441,18 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
 
-    setColumnWidths((columnWidths) => {
-      const newColumnWidths = new Map(columnWidths);
+    setResizedColumnWidths((resizedColumnWidths) => {
+      const newResizedColumnWidths = new Map(resizedColumnWidths);
       const grid = gridRef.current!;
 
       for (const column of flexWidthViewportColumns) {
         const measuringCell = grid.querySelector(`[data-measuring-cell-key="${column.key}"]`)!;
         // Set the actual width of the column after it is rendered
         const { width } = measuringCell.getBoundingClientRect();
-        newColumnWidths.set(column.key, width);
+        newResizedColumnWidths.set(column.key, width);
       }
 
-      return newColumnWidths;
+      return newResizedColumnWidths;
     });
   }, [isWidthInitialized, flexWidthViewportColumns, gridRef]);
 
@@ -461,10 +462,10 @@ function DataGrid<R, SR, K extends Key>(
       `[data-measuring-cell-key="${autoResizeColumn.key}"]`
     )!;
     const { width } = measuringCell.getBoundingClientRect();
-    setColumnWidths((columnWidths) => {
-      const newColumnWidths = new Map(columnWidths);
-      newColumnWidths.set(autoResizeColumn.key, width);
-      return newColumnWidths;
+    setResizedColumnWidths((resizedColumnWidths) => {
+      const newResizedColumnWidths = new Map(resizedColumnWidths);
+      newResizedColumnWidths.set(autoResizeColumn.key, width);
+      return newResizedColumnWidths;
     });
     setAutoResizeColumn(null);
     onColumnResize?.(autoResizeColumn.idx, width);
@@ -493,10 +494,10 @@ function DataGrid<R, SR, K extends Key>(
         setAutoResizeColumn(column);
         return;
       }
-      setColumnWidths((columnWidths) => {
-        const newColumnWidths = new Map(columnWidths);
-        newColumnWidths.set(column.key, width);
-        return newColumnWidths;
+      setResizedColumnWidths((resizedColumnWidths) => {
+        const newResizedColumnWidths = new Map(resizedColumnWidths);
+        newResizedColumnWidths.set(column.key, width);
+        return newResizedColumnWidths;
       });
 
       onColumnResize?.(column.idx, width);
@@ -1174,9 +1175,7 @@ function DataGrid<R, SR, K extends Key>(
       className={clsx(
         rootClassname,
         {
-          [viewportDraggingClassname]: isDragging,
-          [autosizeColumnsClassname]:
-            autoResizeColumn !== null || flexWidthViewportColumns.length > 0
+          [viewportDraggingClassname]: isDragging
         },
         className
       )}
@@ -1300,7 +1299,7 @@ function DataGrid<R, SR, K extends Key>(
         )}
 
         {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
-        {renderMeasuringCells({ viewportColumns })}
+        {renderMeasuringCells(viewportColumns)}
       </DataGridDefaultComponentsProvider>
     </div>
   );
