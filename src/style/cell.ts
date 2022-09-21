@@ -2,17 +2,13 @@ import { css } from '@linaria/core';
 
 export const cell = css`
   @layer rdg.Cell {
-    /*
-    Cannot use these because of a Chromium bug:
-    https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
-    once this is fixed we can also remove "position: relative:"
-    contain: strict;
-    */
-    position: relative; /* needed for absolute positioning to work */
-
-    /* max-content does not work when size containment is enabled *
-    /* "contain: content" leads to odd subpixel mismatches when combined with colSpan */
+    /* max-content does not work with size containment
+     * dynamically switching between different containment styles incurs a heavy relayout penalty
+     * Chromium bug: at odd zoom levels or subpixel positioning, layout/paint containment can make cell borders disappear
+     *   https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
+     */
     contain: style;
+    position: relative; /* needed for absolute positioning to work */
     padding-block: 0;
     padding-inline: 8px;
     border-inline-end: 1px solid var(--rdg-border-color);

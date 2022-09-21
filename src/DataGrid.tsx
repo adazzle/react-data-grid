@@ -179,6 +179,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   renderers?: Maybe<Renderers<R, SR>>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
+  /** @default 'ltr' */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
 }
@@ -191,7 +192,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
  * <DataGrid columns={columns} rows={rows} />
  */
 function DataGrid<R, SR, K extends Key>(
-  {
+  props: DataGridProps<R, SR, K>,
+  ref: React.Ref<DataGridHandle>
+) {
+  const {
     // Grid and data Props
     columns: rawColumns,
     rows: rawRows,
@@ -200,7 +204,7 @@ function DataGrid<R, SR, K extends Key>(
     rowKeyGetter,
     onRowsChange,
     // Dimensions props
-    rowHeight,
+    rowHeight: rawRowHeight,
     headerRowHeight: rawHeaderRowHeight,
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
@@ -223,26 +227,25 @@ function DataGrid<R, SR, K extends Key>(
     onPaste,
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
-    enableVirtualization,
+    enableVirtualization: rawEnableVirtualization,
     // Miscellaneous
     renderers,
     className,
     style,
     rowClass,
-    direction,
+    direction: rawDirection,
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
     'data-testid': testId
-  }: DataGridProps<R, SR, K>,
-  ref: React.Ref<DataGridHandle>
-) {
+  } = props;
+
   /**
    * defaults
    */
   const defaultComponents = useDefaultComponents<R, SR>();
-  rowHeight ??= 35;
+  const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const rowRenderer =
@@ -254,8 +257,8 @@ function DataGrid<R, SR, K extends Key>(
     defaultCheckboxFormatter;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
-  enableVirtualization ??= true;
-  direction ??= 'ltr';
+  const enableVirtualization = rawEnableVirtualization ?? true;
+  const direction = rawDirection ?? 'ltr';
 
   /**
    * states
@@ -380,6 +383,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * The identity of the wrapper function is stable so it won't break memoization
    */
+  const handleColumnResizeLatest = useLatestFunc(handleColumnResize);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
@@ -467,33 +471,6 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * callbacks
    */
-  const handleColumnResize = useLatestFunc(
-    (column: CalculatedColumn<R, SR>, width: number | 'max-content') => {
-      const { style } = gridRef.current!;
-      const newSizes = style.gridTemplateColumns.split(' ');
-      newSizes[column.idx] = width === 'max-content' ? width : `${width}px`;
-      style.gridTemplateColumns = newSizes.join(' ');
-
-      const measuringCell = gridRef.current!.querySelector(
-        `[data-measuring-cell-key="${column.key}"]`
-      )!;
-      const measuredWidth = measuringCell.getBoundingClientRect().width;
-
-      if (columnWidths.get(column.key) === measuredWidth) {
-        // when the width hasn't changed, we have to reset `max-content` manually so it doesn't remain stuck on max-content
-        newSizes[column.idx] = `${measuredWidth}px`;
-        style.gridTemplateColumns = newSizes.join(' ');
-        return;
-      }
-
-      const newColumnWidths = new Map(columnWidths);
-      newColumnWidths.set(column.key, measuredWidth);
-      setColumnWidths(newColumnWidths);
-
-      onColumnResize?.(column.idx, measuredWidth);
-    }
-  );
-
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
     latestDraggedOverRowIdx.current = rowIdx;
@@ -502,6 +479,31 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * event handlers
    */
+  function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
+    const { style } = gridRef.current!;
+    const newSizes = style.gridTemplateColumns.split(' ');
+    newSizes[column.idx] = width === 'max-content' ? width : `${width}px`;
+    style.gridTemplateColumns = newSizes.join(' ');
+
+    const measuringCell = gridRef.current!.querySelector(
+      `[data-measuring-cell-key="${column.key}"]`
+    )!;
+    const measuredWidth = measuringCell.getBoundingClientRect().width;
+
+    if (columnWidths.get(column.key) === measuredWidth) {
+      // when the width hasn't changed, we have to reset `max-content` manually so it doesn't remain stuck on max-content
+      newSizes[column.idx] = `${measuredWidth}px`;
+      style.gridTemplateColumns = newSizes.join(' ');
+      return;
+    }
+
+    const newColumnWidths = new Map(columnWidths);
+    newColumnWidths.set(column.key, measuredWidth);
+    setColumnWidths(newColumnWidths);
+
+    onColumnResize?.(column.idx, measuredWidth);
+  }
+
   function selectRow({ row, checked, isShiftClick }: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
 
@@ -1210,7 +1212,7 @@ function DataGrid<R, SR, K extends Key>(
       <DataGridDefaultComponentsProvider value={defaultGridComponents}>
         <HeaderRow
           columns={getRowViewportColumns(-1)}
-          onColumnResize={handleColumnResize}
+          onColumnResize={handleColumnResizeLatest}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={selectAllRowsLatest}
           sortColumns={sortColumns}
