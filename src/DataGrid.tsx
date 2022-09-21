@@ -482,11 +482,9 @@ function DataGrid<R, SR, K extends Key>(
   const handleColumnResize = useLatestFunc(
     (column: CalculatedColumn<R, SR>, width: number | 'max-content') => {
       if (width === 'max-content') {
-        flushSync(() => {
-          // TODO: only clear flex columns, if any?
-          setMeasuredColumnWidths(new Map());
-          setAutoResizeColumn(column);
-        });
+        // TODO: only clear flex columns, if any?
+        setMeasuredColumnWidths(new Map());
+        setAutoResizeColumn(column);
         return;
       }
 
