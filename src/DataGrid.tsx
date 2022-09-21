@@ -180,6 +180,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   renderers?: Maybe<Renderers<R, SR>>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
+  /** @default 'ltr' */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
 }
@@ -192,7 +193,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
  * <DataGrid columns={columns} rows={rows} />
  */
 function DataGrid<R, SR, K extends Key>(
-  {
+  props: DataGridProps<R, SR, K>,
+  ref: React.Ref<DataGridHandle>
+) {
+  const {
     // Grid and data Props
     columns: rawColumns,
     rows: rawRows,
@@ -201,7 +205,7 @@ function DataGrid<R, SR, K extends Key>(
     rowKeyGetter,
     onRowsChange,
     // Dimensions props
-    rowHeight,
+    rowHeight: rawRowHeight,
     headerRowHeight: rawHeaderRowHeight,
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
@@ -224,26 +228,25 @@ function DataGrid<R, SR, K extends Key>(
     onPaste,
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
-    enableVirtualization,
+    enableVirtualization: rawEnableVirtualization,
     // Miscellaneous
     renderers,
     className,
     style,
     rowClass,
-    direction,
+    direction: rawDirection,
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
     'data-testid': testId
-  }: DataGridProps<R, SR, K>,
-  ref: React.Ref<DataGridHandle>
-) {
+  } = props;
+
   /**
    * defaults
    */
   const defaultComponents = useDefaultComponents<R, SR>();
-  rowHeight ??= 35;
+  const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const rowRenderer =
@@ -255,8 +258,8 @@ function DataGrid<R, SR, K extends Key>(
     defaultCheckboxFormatter;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultComponents?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
-  enableVirtualization ??= true;
-  direction ??= 'ltr';
+  const enableVirtualization = rawEnableVirtualization ?? true;
+  const direction = rawDirection ?? 'ltr';
 
   /**
    * states
