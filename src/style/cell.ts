@@ -9,7 +9,6 @@ export const cell = css`
      */
     contain: style;
     position: relative; /* needed for absolute positioning to work */
-    z-index: 0;
     padding-block: 0;
     padding-inline: 8px;
     border-inline-end: 1px solid var(--rdg-border-color);
