@@ -265,9 +265,7 @@ function DataGrid<R, SR, K extends Key>(
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [resizedColumnWidths, setResizedColumnWidths] = useState(
-    (): ReadonlyMap<string, number> => new Map()
-  );
+  const [columnWidths, setColumnWidths] = useState((): ReadonlyMap<string, number> => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
     initialPosition
   );
@@ -330,7 +328,7 @@ function DataGrid<R, SR, K extends Key>(
     groupBy
   } = useCalculatedColumns({
     rawColumns,
-    resizedColumnWidths,
+    columnWidths,
     scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
@@ -371,7 +369,7 @@ function DataGrid<R, SR, K extends Key>(
     rows,
     topSummaryRows,
     bottomSummaryRows,
-    resizedColumnWidths,
+    columnWidths,
     isGroupRow
   });
 
@@ -442,8 +440,8 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
 
-    setResizedColumnWidths((resizedColumnWidths) => {
-      const newColumnWidths = new Map(resizedColumnWidths);
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
       const grid = gridRef.current!;
 
       for (const column of flexWidthViewportColumns) {
@@ -463,10 +461,10 @@ function DataGrid<R, SR, K extends Key>(
       `[data-measuring-cell-key="${autoResizeColumn.key}"]`
     )!;
     const { width } = measuringCell.getBoundingClientRect();
-    setResizedColumnWidths((resizedColumnWidths) => {
-      const newResizedColumnWidths = new Map(resizedColumnWidths);
-      newResizedColumnWidths.set(autoResizeColumn.key, width);
-      return newResizedColumnWidths;
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(autoResizeColumn.key, width);
+      return newColumnWidths;
     });
     setAutoResizeColumn(null);
     onColumnResize?.(autoResizeColumn.idx, width);
@@ -502,10 +500,10 @@ function DataGrid<R, SR, K extends Key>(
       setAutoResizeColumn(column);
       return;
     }
-    setResizedColumnWidths((resizedColumnWidths) => {
-      const newResizedColumnWidths = new Map(resizedColumnWidths);
-      newResizedColumnWidths.set(column.key, width);
-      return newResizedColumnWidths;
+    setColumnWidths((columnWidths) => {
+      const newColumnWidths = new Map(columnWidths);
+      newColumnWidths.set(column.key, width);
+      return newColumnWidths;
     });
 
     onColumnResize?.(column.idx, width);
