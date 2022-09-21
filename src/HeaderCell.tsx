@@ -85,11 +85,25 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
+    const colSpan = currentTarget.ariaColSpan;
+
+    function getColSpanColumnsWidth() {
+      let colSpanColumnsWidth = 0;
+      if (colSpan === null) return colSpanColumnsWidth;
+      for (let index = 1; index < Number(colSpan); index++) {
+        // nextElementSibling won't be null as all the colSpan columns are rendered
+        colSpanColumnsWidth += currentTarget.nextElementSibling!.getBoundingClientRect().width;
+      }
+      return colSpanColumnsWidth;
+    }
+
     function onPointerMove(event: PointerEvent) {
       // prevents text selection in Chrome, which fixes scrolling the grid while dragging, and fixes re-size on an autosized column
       event.preventDefault();
       const { right, left } = currentTarget.getBoundingClientRect();
-      const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
+      const width =
+        (isRtl ? right + offset - event.clientX : event.clientX + offset - left) -
+        getColSpanColumnsWidth();
       if (width > 0) {
         onColumnResize(column, clampColumnWidth(width, column));
       }
