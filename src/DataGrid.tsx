@@ -265,8 +265,8 @@ function DataGrid<R, SR, K extends Key>(
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [resizedColumnWidths, setResizedColumnWidths] = useState<ReadonlyMap<string, number>>(
-    () => new Map()
+  const [resizedColumnWidths, setResizedColumnWidths] = useState(
+    (): ReadonlyMap<string, number> => new Map()
   );
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
     initialPosition
