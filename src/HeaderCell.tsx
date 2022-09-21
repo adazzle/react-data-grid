@@ -85,7 +85,7 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
-    const colSpan = currentTarget.ariaColSpan;
+    const colSpan = Number(currentTarget.ariaColSpan);
 
     function getColSpanColumnsWidth() {
       let colSpanColumnsWidth = 0;
