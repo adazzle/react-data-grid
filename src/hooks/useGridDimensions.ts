@@ -45,8 +45,14 @@ export function useGridDimensions() {
         let hasChanges = false;
 
         for (const entry of entries) {
+          const measuringCell = entry.target as HTMLDivElement;
+          if (measuringCell.parentNode === null) {
+            resizeObserver.unobserve(measuringCell);
+            continue;
+          }
+
           const { inlineSize } = entry.contentBoxSize[0];
-          const key = (entry.target as HTMLDivElement).dataset.measuringCellKey!;
+          const key = measuringCell.dataset.measuringCellKey!;
           newMeasuredColumnWidths.set(key, inlineSize);
           hasChanges ||= measuredColumnWidths.get(key) !== inlineSize;
         }
