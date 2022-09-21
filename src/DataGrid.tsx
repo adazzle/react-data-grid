@@ -396,6 +396,7 @@ function DataGrid<R, SR, K extends Key>(
    * The identity of the wrapper function is stable so it won't break memoization
    */
   const handleColumnResizeLatest = useLatestFunc(handleColumnResize);
+  const handleColumnResizeEndLatest = useLatestFunc(handleColumnResizeEnd);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
@@ -636,24 +637,67 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
+    const { key, idx } = column;
+
     if (width === 'max-content') {
-      // TODO: only clear flex columns, if any?
-      setMeasuredColumnWidths(new Map());
+      unsetMeasuredAutoColumnWidths(key);
       setAutoResizeColumn(column);
       return;
     }
 
     flushSync(() => {
-      // TODO: only clear flex columns, if any? set resized width in measured width immediately?
-      setMeasuredColumnWidths(new Map());
+      unsetMeasuredAutoColumnWidths(key, width);
       setResizedColumnWidths((resizedColumnWidths) => {
         const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.set(column.key, width);
+        newResizedColumnWidths.set(key, width);
         return newResizedColumnWidths;
       });
     });
 
-    onColumnResize?.(column.idx, width);
+    onColumnResize?.(idx, width);
+  }
+
+  function unsetMeasuredAutoColumnWidths(key: string, width?: number) {
+    setMeasuredColumnWidths((measuredColumnWidths) => {
+      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+      // immediately update resized column
+      let hasChanges = false;
+
+      if (width !== undefined && measuredColumnWidths.get(key) !== width) {
+        newMeasuredColumnWidths.set(key, width);
+        hasChanges = true;
+      }
+
+      for (const column of columns) {
+        // reset flex columns that are not resized
+        if (
+          column.width === 'auto' &&
+          measuredColumnWidths.has(column.key) &&
+          !resizedColumnWidths.has(column.key) &&
+          column.key !== key
+        ) {
+          newMeasuredColumnWidths.delete(column.key);
+          hasChanges = true;
+        }
+      }
+
+      return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
+    });
+  }
+
+  function handleColumnResizeEnd() {
+    setMeasuredColumnWidths((measuredColumnWidths) => {
+      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+      const measuringCells = gridRef.current!.querySelectorAll('[data-measuring-cell-key]');
+
+      for (const measuringCell of measuringCells) {
+        const key = (measuringCell as HTMLDivElement).dataset.measuringCellKey!;
+        const { width } = measuringCell.getBoundingClientRect();
+        newMeasuredColumnWidths.set(key, width);
+      }
+
+      return newMeasuredColumnWidths;
+    });
   }
 
   function getRawRowIdx(rowIdx: number) {
@@ -1221,6 +1265,7 @@ function DataGrid<R, SR, K extends Key>(
         <HeaderRow
           columns={getRowViewportColumns(-1)}
           onColumnResize={handleColumnResizeLatest}
+          onColumnResizeEnd={handleColumnResizeEndLatest}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={selectAllRowsLatest}
           sortColumns={sortColumns}

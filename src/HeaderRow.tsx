@@ -18,6 +18,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
+  onColumnResizeEnd: () => void;
   selectCell: (columnIdx: number) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
@@ -52,6 +53,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   allRowsSelected,
   onAllRowsSelectionChange,
   onColumnResize,
+  onColumnResizeEnd,
   sortColumns,
   onSortColumnsChange,
   lastFrozenColumnIndex,
@@ -75,6 +77,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         colSpan={colSpan}
         isCellSelected={selectedCellIdx === column.idx}
         onColumnResize={onColumnResize}
+        onColumnResizeEnd={onColumnResizeEnd}
         allRowsSelected={allRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
