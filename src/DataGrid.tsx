@@ -928,15 +928,17 @@ function DataGrid<R, SR, K extends Key>(
     const newSizes = gridTemplateColumns.split(' ');
 
     for (const column of viewportColumns) {
-      if (
-        typeof column.width === 'number' ||
-        (resizedColumnWidths.has(column.key) && autoResizeColumn === null) ||
-        (!isColumnResizing && autoResizeColumn === null && measuredColumnWidths.has(column.key))
-      ) {
-        continue;
+      if (column.key === autoResizeColumn?.key) {
+        newSizes[column.idx] = 'max-content';
       }
 
-      newSizes[column.idx] = autoResizeColumn?.key === column.key ? 'max-content' : column.width;
+      if (
+        column.width === 'auto' &&
+        !resizedColumnWidths.has(column.key) &&
+        (isColumnResizing || !measuredColumnWidths.has(column.key))
+      ) {
+        newSizes[column.idx] = column.width;
+      }
     }
 
     return {
