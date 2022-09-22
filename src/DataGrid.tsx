@@ -489,13 +489,19 @@ function DataGrid<R, SR, K extends Key>(
       `[data-measuring-cell-key="${column.key}"]`
     )!;
     const measuredWidth = measuringCell.getBoundingClientRect().width;
+    const measuredWidthPx = `${measuredWidth}px`;
 
-    if (columnWidths.get(column.key) === measuredWidth) {
-      // when the width hasn't changed, we have to reset `max-content` manually so it doesn't remain stuck on max-content
-      newSizes[column.idx] = `${measuredWidth}px`;
+    // Immediately update `grid-template-columns` to prevent the column from jumping to its min/max allowed width.
+    // Only measuring cells have the min/max width set for proper colSpan support,
+    // which is why other cells may render at the previously set width, beyond the min/max.
+    // An alternative for the above would be to use flushSync.
+    // We also have to reset `max-content` so it doesn't remain stuck on `max-content`.
+    if (newSizes[column.idx] !== measuredWidthPx) {
+      newSizes[column.idx] = measuredWidthPx;
       style.gridTemplateColumns = newSizes.join(' ');
-      return;
     }
+
+    if (columnWidths.get(column.key) === measuredWidth) return;
 
     const newColumnWidths = new Map(columnWidths);
     newColumnWidths.set(column.key, measuredWidth);

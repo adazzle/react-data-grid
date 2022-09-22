@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import defaultHeaderRenderer from './headerRenderer';
-import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
@@ -91,7 +91,7 @@ export default function HeaderCell<R, SR>({
       const { right, left } = currentTarget.getBoundingClientRect();
       const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
-        onColumnResize(column, clampColumnWidth(width, column));
+        onColumnResize(column, width);
       }
     }
 
