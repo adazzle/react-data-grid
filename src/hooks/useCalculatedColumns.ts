@@ -26,6 +26,8 @@ interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defau
   measuredColumnWidths: ReadonlyMap<string, number>;
   resizedColumnWidths: ReadonlyMap<string, number>;
   enableVirtualization: boolean;
+  isColumnResizing: boolean;
+  autoResizeColumn: CalculatedColumn<R, SR> | null;
 }
 
 export function useCalculatedColumns<R, SR>({
@@ -36,7 +38,9 @@ export function useCalculatedColumns<R, SR>({
   scrollLeft,
   defaultColumnOptions,
   rawGroupBy,
-  enableVirtualization
+  enableVirtualization,
+  isColumnResizing,
+  autoResizeColumn
 }: CalculatedColumnsArgs<R, SR>) {
   const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
@@ -155,16 +159,27 @@ export function useCalculatedColumns<R, SR>({
     let templateColumns = '';
 
     for (const column of columns) {
-      let width =
-        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width;
-      if (typeof width === 'number') {
-        width = clampColumnWidth(width, column);
+      let width: string | number | undefined;
+      if (autoResizeColumn !== null && column.key === autoResizeColumn.key) {
+        width = 'max-content';
+      } else if (isColumnResizing) {
+        width = resizedColumnWidths.get(column.key) ?? column.width;
       } else {
+        width =
+          resizedColumnWidths.get(column.key) ??
+          measuredColumnWidths.get(column.key) ??
+          column.width;
+      }
+
+      if (typeof width === 'string') {
+        templateColumns += `${width} `;
         // This is a placeholder width so we can continue to use virtualization.
         // The actual value is set after the column is rendered
         width = column.minWidth;
+      } else {
+        width = clampColumnWidth(width, column);
+        templateColumns += `${width}px `;
       }
-      templateColumns += `${width}px `;
       columnMetrics.set(column, { width, left });
       left += width;
     }
@@ -184,7 +199,14 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [measuredColumnWidths, resizedColumnWidths, columns, lastFrozenColumnIndex]);
+  }, [
+    measuredColumnWidths,
+    resizedColumnWidths,
+    columns,
+    lastFrozenColumnIndex,
+    isColumnResizing,
+    autoResizeColumn
+  ]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {

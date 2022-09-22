@@ -29,7 +29,8 @@ export function useGridDimensions() {
       setInlineSize(size.inlineSize);
       setBlockSize(size.blockSize);
       // TODO: only clear flex columns, if any?
-      setMeasuredColumnWidths(new Map());
+      // TODO: compare widths and reset?
+      // setMeasuredColumnWidths(new Map());
     });
     resizeObserver.observe(gridRef.current!);
 
@@ -68,12 +69,5 @@ export function useGridDimensions() {
     };
   }, []);
 
-  return [
-    gridRef,
-    inlineSize,
-    blockSize,
-    measuredColumnWidths,
-    setMeasuredColumnWidths,
-    observeMeasuringCell
-  ] as const;
+  return [gridRef, inlineSize, blockSize, measuredColumnWidths, observeMeasuringCell] as const;
 }

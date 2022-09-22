@@ -272,6 +272,7 @@ function DataGrid<R, SR, K extends Key>(
     initialPosition
   );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
+  const [isColumnResizing, setColumnResizing] = useState(false);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
@@ -287,14 +288,8 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [
-    gridRef,
-    gridWidth,
-    gridHeight,
-    measuredColumnWidths,
-    setMeasuredColumnWidths,
-    observeMeasuringCell
-  ] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, measuredColumnWidths, observeMeasuringCell] =
+    useGridDimensions();
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
@@ -343,7 +338,9 @@ function DataGrid<R, SR, K extends Key>(
     viewportWidth: gridWidth,
     defaultColumnOptions,
     rawGroupBy: rowGrouper ? rawGroupBy : undefined,
-    enableVirtualization
+    enableVirtualization,
+    isColumnResizing,
+    autoResizeColumn
   });
 
   const {
@@ -368,7 +365,7 @@ function DataGrid<R, SR, K extends Key>(
     enableVirtualization
   });
 
-  const { viewportColumns, flexWidthViewportColumns } = useViewportColumns({
+  const viewportColumns = useViewportColumns({
     columns,
     colSpanColumns,
     colOverscanStartIdx,
@@ -379,8 +376,6 @@ function DataGrid<R, SR, K extends Key>(
     rows,
     topSummaryRows,
     bottomSummaryRows,
-    measuredColumnWidths,
-    resizedColumnWidths,
     isGroupRow
   });
 
@@ -640,13 +635,12 @@ function DataGrid<R, SR, K extends Key>(
     const { key, idx } = column;
 
     if (width === 'max-content') {
-      unsetMeasuredAutoColumnWidths(key);
       setAutoResizeColumn(column);
       return;
     }
 
     flushSync(() => {
-      unsetMeasuredAutoColumnWidths(key, width);
+      setColumnResizing(true);
       setResizedColumnWidths((resizedColumnWidths) => {
         const newResizedColumnWidths = new Map(resizedColumnWidths);
         newResizedColumnWidths.set(key, width);
@@ -657,47 +651,8 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize?.(idx, width);
   }
 
-  function unsetMeasuredAutoColumnWidths(key: string, width?: number) {
-    setMeasuredColumnWidths((measuredColumnWidths) => {
-      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-      // immediately update resized column
-      let hasChanges = false;
-
-      if (width !== undefined && measuredColumnWidths.get(key) !== width) {
-        newMeasuredColumnWidths.set(key, width);
-        hasChanges = true;
-      }
-
-      for (const column of columns) {
-        // reset flex columns that are not resized
-        if (
-          column.width === 'auto' &&
-          measuredColumnWidths.has(column.key) &&
-          !resizedColumnWidths.has(column.key) &&
-          column.key !== key
-        ) {
-          newMeasuredColumnWidths.delete(column.key);
-          hasChanges = true;
-        }
-      }
-
-      return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
-    });
-  }
-
   function handleColumnResizeEnd() {
-    setMeasuredColumnWidths((measuredColumnWidths) => {
-      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-      const measuringCells = gridRef.current!.querySelectorAll('[data-measuring-cell-key]');
-
-      for (const measuringCell of measuringCells) {
-        const key = (measuringCell as HTMLDivElement).dataset.measuringCellKey!;
-        const { width } = measuringCell.getBoundingClientRect();
-        newMeasuredColumnWidths.set(key, width);
-      }
-
-      return newMeasuredColumnWidths;
-    });
+    setColumnResizing(false);
   }
 
   function getRawRowIdx(rowIdx: number) {
@@ -972,23 +927,6 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getLayoutCssVars() {
-    if (autoResizeColumn === null && flexWidthViewportColumns.length === 0) return layoutCssVars;
-    const { gridTemplateColumns } = layoutCssVars;
-    const newSizes = gridTemplateColumns.split(' ');
-    if (autoResizeColumn !== null) {
-      newSizes[autoResizeColumn.idx] = 'max-content';
-    }
-    for (const column of flexWidthViewportColumns) {
-      newSizes[column.idx] = column.width as string;
-    }
-
-    return {
-      ...layoutCssVars,
-      gridTemplateColumns: newSizes.join(' ')
-    };
-  }
-
   function getDragHandle(rowIdx: number) {
     if (
       selectedPosition.rowIdx !== rowIdx ||
@@ -1237,7 +1175,7 @@ function DataGrid<R, SR, K extends Key>(
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
-          ...getLayoutCssVars()
+          ...layoutCssVars
         } as unknown as React.CSSProperties
       }
       dir={direction}
