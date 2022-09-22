@@ -444,21 +444,6 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
-  useLayoutEffect(() => {
-    if (autoResizeColumn === null) return;
-    const measuringCell = gridRef.current!.querySelector(
-      `[data-measuring-cell-key="${autoResizeColumn.key}"]`
-    )!;
-    const { width } = measuringCell.getBoundingClientRect();
-    setResizedColumnWidths((resizedColumnWidths) => {
-      const newResizedColumnWidths = new Map(resizedColumnWidths);
-      newResizedColumnWidths.set(autoResizeColumn.key, width);
-      return newResizedColumnWidths;
-    });
-    setAutoResizeColumn(null);
-    onColumnResize?.(autoResizeColumn.idx, width);
-  }, [autoResizeColumn, gridRef, onColumnResize]);
-
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn,
@@ -635,7 +620,20 @@ function DataGrid<R, SR, K extends Key>(
     const { key, idx } = column;
 
     if (width === 'max-content') {
-      setAutoResizeColumn(column);
+      flushSync(() => {
+        setAutoResizeColumn(column);
+      });
+      const measuringCell = gridRef.current!.querySelector(
+        `[data-measuring-cell-key="${column.key}"]`
+      )!;
+      const { width } = measuringCell.getBoundingClientRect();
+      setResizedColumnWidths((resizedColumnWidths) => {
+        const newResizedColumnWidths = new Map(resizedColumnWidths);
+        newResizedColumnWidths.set(column.key, width);
+        return newResizedColumnWidths;
+      });
+      setAutoResizeColumn(null);
+
       return;
     }
 
