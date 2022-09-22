@@ -338,9 +338,7 @@ function DataGrid<R, SR, K extends Key>(
     viewportWidth: gridWidth,
     defaultColumnOptions,
     rawGroupBy: rowGrouper ? rawGroupBy : undefined,
-    enableVirtualization,
-    isColumnResizing,
-    autoResizeColumn
+    enableVirtualization
   });
 
   const {
@@ -925,6 +923,28 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
+  function getLayoutCssVars() {
+    const { gridTemplateColumns } = layoutCssVars;
+    const newSizes = gridTemplateColumns.split(' ');
+
+    for (const column of viewportColumns) {
+      if (
+        typeof column.width === 'number' ||
+        (resizedColumnWidths.has(column.key) && autoResizeColumn === null) ||
+        (!isColumnResizing && autoResizeColumn === null && measuredColumnWidths.has(column.key))
+      ) {
+        continue;
+      }
+
+      newSizes[column.idx] = autoResizeColumn?.key === column.key ? 'max-content' : column.width;
+    }
+
+    return {
+      ...layoutCssVars,
+      gridTemplateColumns: newSizes.join(' ')
+    };
+  }
+
   function getDragHandle(rowIdx: number) {
     if (
       selectedPosition.rowIdx !== rowIdx ||
@@ -1173,7 +1193,7 @@ function DataGrid<R, SR, K extends Key>(
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
-          ...layoutCssVars
+          ...getLayoutCssVars()
         } as unknown as React.CSSProperties
       }
       dir={direction}
