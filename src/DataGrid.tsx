@@ -288,8 +288,14 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight, measuredColumnWidths, observeMeasuringCell] =
-    useGridDimensions();
+  const [
+    gridRef,
+    gridWidth,
+    gridHeight,
+    measuredColumnWidths,
+    setMeasuredColumnWidths,
+    observeMeasuringCell
+  ] = useGridDimensions();
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
@@ -619,6 +625,13 @@ function DataGrid<R, SR, K extends Key>(
 
     if (width === 'max-content') {
       flushSync(() => {
+        setMeasuredColumnWidths((measuredColumnWidths) => {
+          const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+          for (const column of viewportColumns) {
+            newMeasuredColumnWidths.delete(column.key);
+          }
+          return newMeasuredColumnWidths;
+        });
         setAutoResizeColumn(column);
       });
       const measuringCell = gridRef.current!.querySelector(

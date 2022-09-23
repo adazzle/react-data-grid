@@ -69,5 +69,12 @@ export function useGridDimensions() {
     };
   }, []);
 
-  return [gridRef, inlineSize, blockSize, measuredColumnWidths, observeMeasuringCell] as const;
+  return [
+    gridRef,
+    inlineSize,
+    blockSize,
+    measuredColumnWidths,
+    setMeasuredColumnWidths,
+    observeMeasuringCell
+  ] as const;
 }
