@@ -331,6 +331,7 @@ function DataGrid<R, SR, K extends Key>(
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
+    templateColumns,
     layoutCssVars,
     columnMetrics,
     lastFrozenColumnIndex,
@@ -395,7 +396,6 @@ function DataGrid<R, SR, K extends Key>(
    * The identity of the wrapper function is stable so it won't break memoization
    */
   const handleColumnResizeLatest = useLatestFunc(handleColumnResize);
-  const handleColumnResizeEndLatest = useLatestFunc(handleColumnResizeEnd);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
@@ -468,6 +468,10 @@ function DataGrid<R, SR, K extends Key>(
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
     latestDraggedOverRowIdx.current = rowIdx;
+  }, []);
+
+  const handleColumnResizeEnd = useCallback(() => {
+    setColumnResizing(false);
   }, []);
 
   /**
@@ -634,13 +638,11 @@ function DataGrid<R, SR, K extends Key>(
         });
         setAutoResizeColumn(column);
       });
-      const measuringCell = gridRef.current!.querySelector(
-        `[data-measuring-cell-key="${column.key}"]`
-      )!;
+      const measuringCell = gridRef.current!.querySelector(`[data-measuring-cell-key="${key}"]`)!;
       const { width } = measuringCell.getBoundingClientRect();
       setResizedColumnWidths((resizedColumnWidths) => {
         const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.set(column.key, width);
+        newResizedColumnWidths.set(key, width);
         return newResizedColumnWidths;
       });
       setAutoResizeColumn(null);
@@ -658,10 +660,6 @@ function DataGrid<R, SR, K extends Key>(
     });
 
     onColumnResize?.(idx, width);
-  }
-
-  function handleColumnResizeEnd() {
-    setColumnResizing(false);
   }
 
   function getRawRowIdx(rowIdx: number) {
@@ -937,24 +935,22 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getLayoutCssVars() {
-    const { gridTemplateColumns } = layoutCssVars;
-    const newSizes = gridTemplateColumns.split(' ');
-
+    const newTemplateColumns = [...templateColumns];
     for (const column of viewportColumns) {
       if (column.key === autoResizeColumn?.key) {
-        newSizes[column.idx] = 'max-content';
+        newTemplateColumns[column.idx] = 'max-content';
       } else if (
         column.width === 'auto' &&
         !resizedColumnWidths.has(column.key) &&
         (isColumnResizing || autoResizeColumn !== null || !measuredColumnWidths.has(column.key))
       ) {
-        newSizes[column.idx] = column.width;
+        newTemplateColumns[column.idx] = column.width;
       }
     }
 
     return {
       ...layoutCssVars,
-      gridTemplateColumns: newSizes.join(' ')
+      gridTemplateColumns: newTemplateColumns.join(' ')
     };
   }
 
@@ -1234,7 +1230,7 @@ function DataGrid<R, SR, K extends Key>(
         <HeaderRow
           columns={getRowViewportColumns(-1)}
           onColumnResize={handleColumnResizeLatest}
-          onColumnResizeEnd={handleColumnResizeEndLatest}
+          onColumnResizeEnd={handleColumnResizeEnd}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={selectAllRowsLatest}
           sortColumns={sortColumns}

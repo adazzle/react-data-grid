@@ -144,7 +144,8 @@ export function useCalculatedColumns<R, SR>({
     rawGroupBy
   ]);
 
-  const { layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+  const { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+    templateColumns: readonly string[];
     layoutCssVars: Readonly<Record<string, string>>;
     totalFrozenColumnWidth: number;
     columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
@@ -152,21 +153,21 @@ export function useCalculatedColumns<R, SR>({
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalFrozenColumnWidth = 0;
-    let templateColumns = '';
+    const templateColumns: string[] = [];
 
     for (const column of columns) {
       let width =
         resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width;
 
-      if (typeof width === 'string') {
+      if (typeof width === 'number') {
+        width = clampColumnWidth(width, column);
+      } else {
         // This is a placeholder width so we can continue to use virtualization.
         // The actual value is set after the column is rendered
         width = column.minWidth;
-      } else {
-        width = clampColumnWidth(width, column);
       }
 
-      templateColumns += `${width}px `;
+      templateColumns.push(`${width}px`);
       columnMetrics.set(column, { width, left });
       left += width;
     }
@@ -176,16 +177,14 @@ export function useCalculatedColumns<R, SR>({
       totalFrozenColumnWidth = columnMetric.left + columnMetric.width;
     }
 
-    const layoutCssVars: Record<string, string> = {
-      gridTemplateColumns: templateColumns
-    };
+    const layoutCssVars: Record<string, string> = {};
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
       layoutCssVars[`--rdg-frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
-    return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
+    return { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics };
   }, [measuredColumnWidths, resizedColumnWidths, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
@@ -247,6 +246,7 @@ export function useCalculatedColumns<R, SR>({
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
+    templateColumns,
     layoutCssVars,
     columnMetrics,
     lastFrozenColumnIndex,
