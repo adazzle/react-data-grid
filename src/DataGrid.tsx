@@ -321,6 +321,7 @@ function DataGrid<R, SR, K extends Key>(
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
+    templateColumns,
     layoutCssVars,
     columnMetrics,
     lastFrozenColumnIndex,
@@ -930,18 +931,17 @@ function DataGrid<R, SR, K extends Key>(
 
   function getLayoutCssVars() {
     if (autoResizeColumn === null && flexWidthViewportColumns.length === 0) return layoutCssVars;
-    const { gridTemplateColumns } = layoutCssVars;
-    const newSizes = gridTemplateColumns.split(' ');
+    const newTemplateColumns = [...templateColumns];
     if (autoResizeColumn !== null) {
-      newSizes[autoResizeColumn.idx] = 'max-content';
+      newTemplateColumns[autoResizeColumn.idx] = 'max-content';
     }
     for (const column of flexWidthViewportColumns) {
-      newSizes[column.idx] = column.width as string;
+      newTemplateColumns[column.idx] = column.width as string;
     }
 
     return {
       ...layoutCssVars,
-      gridTemplateColumns: newSizes.join(' ')
+      gridTemplateColumns: newTemplateColumns.join(' ')
     };
   }
 
