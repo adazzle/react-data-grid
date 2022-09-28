@@ -320,6 +320,7 @@ function DataGrid<R, SR, K extends Key>(
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
+    templateColumns,
     layoutCssVars,
     columnMetrics,
     lastFrozenColumnIndex,
@@ -481,9 +482,9 @@ function DataGrid<R, SR, K extends Key>(
    */
   function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
     const { style } = gridRef.current!;
-    const newSizes = style.gridTemplateColumns.split(' ');
-    newSizes[column.idx] = width === 'max-content' ? width : `${width}px`;
-    style.gridTemplateColumns = newSizes.join(' ');
+    const newTemplateColumns = [...templateColumns];
+    newTemplateColumns[column.idx] = width === 'max-content' ? width : `${width}px`;
+    style.gridTemplateColumns = newTemplateColumns.join(' ');
 
     const measuringCell = gridRef.current!.querySelector(
       `[data-measuring-cell-key="${column.key}"]`
@@ -496,9 +497,9 @@ function DataGrid<R, SR, K extends Key>(
     // which is why other cells may render at the previously set width, beyond the min/max.
     // An alternative for the above would be to use flushSync.
     // We also have to reset `max-content` so it doesn't remain stuck on `max-content`.
-    if (newSizes[column.idx] !== measuredWidthPx) {
-      newSizes[column.idx] = measuredWidthPx;
-      style.gridTemplateColumns = newSizes.join(' ');
+    if (newTemplateColumns[column.idx] !== measuredWidthPx) {
+      newTemplateColumns[column.idx] = measuredWidthPx;
+      style.gridTemplateColumns = newTemplateColumns.join(' ');
     }
 
     if (columnWidths.get(column.key) === measuredWidth) return;
@@ -931,15 +932,14 @@ function DataGrid<R, SR, K extends Key>(
 
   function getLayoutCssVars() {
     if (flexWidthViewportColumns.length === 0) return layoutCssVars;
-    const { gridTemplateColumns } = layoutCssVars;
-    const newSizes = gridTemplateColumns.split(' ');
+    const newTemplateColumns = [...templateColumns];
     for (const column of flexWidthViewportColumns) {
-      newSizes[column.idx] = column.width as string;
+      newTemplateColumns[column.idx] = column.width as string;
     }
 
     return {
       ...layoutCssVars,
-      gridTemplateColumns: newSizes.join(' ')
+      gridTemplateColumns: newTemplateColumns.join(' ')
     };
   }
 
