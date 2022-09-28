@@ -30,5 +30,6 @@ export type {
   CheckboxFormatterProps,
   SortIconProps,
   SortPriorityProps,
-  SortStatusProps
+  SortStatusProps,
+  Renderers
 } from './types';
