@@ -1,13 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
 export function useGridDimensions() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
-  const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
-    (): ReadonlyMap<string, number> => new Map()
-  );
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -28,9 +25,6 @@ export function useGridDimensions() {
       const size = entries[0].contentBoxSize[0];
       setInlineSize(size.inlineSize);
       setBlockSize(size.blockSize);
-      // TODO: only clear flex columns, if any?
-      // TODO: compare widths and reset?
-      // setMeasuredColumnWidths(new Map());
     });
     resizeObserver.observe(gridRef.current!);
 
@@ -39,35 +33,5 @@ export function useGridDimensions() {
     };
   }, []);
 
-  const observeMeasuringCell = useMemo(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      setMeasuredColumnWidths((measuredColumnWidths) => {
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-        let hasChanges = false;
-
-        for (const entry of entries) {
-          const measuringCell = entry.target as HTMLDivElement;
-          if (measuringCell.parentNode === null) {
-            resizeObserver.unobserve(measuringCell);
-            continue;
-          }
-
-          const { inlineSize } = entry.contentBoxSize[0];
-          const key = measuringCell.dataset.measuringCellKey!;
-          newMeasuredColumnWidths.set(key, inlineSize);
-          hasChanges ||= measuredColumnWidths.get(key) !== inlineSize;
-        }
-
-        return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
-      });
-    });
-
-    return (measuringCell: HTMLDivElement | null) => {
-      if (measuringCell !== null) {
-        resizeObserver.observe(measuringCell);
-      }
-    };
-  }, []);
-
-  return [gridRef, inlineSize, blockSize, measuredColumnWidths, observeMeasuringCell] as const;
+  return [gridRef, inlineSize, blockSize] as const;
 }

@@ -177,9 +177,7 @@ export function useCalculatedColumns<R, SR>({
       totalFrozenColumnWidth = columnMetric.left + columnMetric.width;
     }
 
-    const layoutCssVars: Record<string, string> = {
-      gridTemplateColumns: templateColumns.join(' ')
-    };
+    const layoutCssVars: Record<string, string> = {};
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
