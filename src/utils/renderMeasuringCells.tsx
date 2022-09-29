@@ -15,10 +15,10 @@ export function renderMeasuringCells<R, SR>(
 ) {
   return (
     <>
-      {viewportColumns.map(({ key, idx, minWidth, maxWidth }) => (
+      {viewportColumns.map(({ key, idx, width, minWidth, maxWidth }) => (
         <div
           key={key}
-          ref={observeMeasuringCell}
+          ref={typeof width === 'number' ? undefined : observeMeasuringCell}
           className={measuringCellClassname}
           style={{ gridColumnStart: idx + 1, minWidth, maxWidth }}
           data-measuring-cell-key={key}
