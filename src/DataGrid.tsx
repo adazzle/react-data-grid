@@ -290,7 +290,7 @@ function DataGrid<R, SR, K extends Key>(
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const [measuredColumnWidths, setMeasuredColumnWidths, observeMeasuringCell] =
     useMeasuringCellDimensions();
-  const prevGridWidth = useRef(gridWidth);
+  const [prevGridWidth, setPrevGridWidth] = useState(gridWidth);
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
@@ -1153,8 +1153,8 @@ function DataGrid<R, SR, K extends Key>(
     return rowElements;
   }
 
-  if (gridWidth !== prevGridWidth.current) {
-    prevGridWidth.current = gridWidth;
+  if (gridWidth !== prevGridWidth) {
+    setPrevGridWidth(gridWidth);
     const newMeasuredColumnWidths = new Map(measuredColumnWidths);
     for (const viewportColumn of viewportColumns) {
       if (
