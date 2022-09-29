@@ -28,12 +28,14 @@ export interface GroupRowRendererProps<R, SR>
 }
 
 const groupRow = css`
-  &:not([aria-selected='true']) {
-    background-color: var(--rdg-header-background-color);
-  }
+  @layer rdg.GroupedRow {
+    &:not([aria-selected='true']) {
+      background-color: var(--rdg-header-background-color);
+    }
 
-  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
-    border-inline-end: none;
+    > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+      border-inline-end: none;
+    }
   }
 `;
 

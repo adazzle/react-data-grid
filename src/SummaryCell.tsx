@@ -6,8 +6,10 @@ import type { CalculatedColumn, CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
 
 export const summaryCellClassname = css`
-  inset-block-start: var(--rdg-summary-row-top);
-  inset-block-end: var(--rdg-summary-row-bottom);
+  @layer rdg.SummaryCell {
+    inset-block-start: var(--rdg-summary-row-top);
+    inset-block-end: var(--rdg-summary-row-bottom);
+  }
 `;
 
 interface SharedCellRendererProps<R, SR>
@@ -27,7 +29,7 @@ function SummaryCell<R, SR>({
   selectCell
 }: SummaryCellProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
-  const { summaryFormatter: SummaryFormatter, summaryCellClass } = column;
+  const { summaryCellClass } = column;
   const className = getCellClassname(
     column,
     summaryCellClassname,
@@ -51,9 +53,7 @@ function SummaryCell<R, SR>({
       onClick={onClick}
       onFocus={onFocus}
     >
-      {SummaryFormatter && (
-        <SummaryFormatter column={column} row={row} isCellSelected={isCellSelected} />
-      )}
+      {column.summaryFormatter?.({ column, row, isCellSelected })}
     </div>
   );
 }
