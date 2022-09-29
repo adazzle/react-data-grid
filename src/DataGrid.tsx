@@ -290,6 +290,7 @@ function DataGrid<R, SR, K extends Key>(
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const [measuredColumnWidths, setMeasuredColumnWidths, observeMeasuringCell] =
     useMeasuringCellDimensions();
+  const prevGridWidth = useRef(gridWidth);
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
@@ -505,13 +506,11 @@ function DataGrid<R, SR, K extends Key>(
     // We need to reset measured width otherwise grid used the already measured
     // with in the next render and the new measured width is never set
     if (viewportColumnsToReset.length > 0) {
-      setMeasuredColumnWidths((measuredColumnWidths) => {
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-        for (const viewportColumn of viewportColumnsToReset) {
-          newMeasuredColumnWidths.delete(viewportColumn.key);
-        }
-        return newMeasuredColumnWidths;
-      });
+      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+      for (const viewportColumn of viewportColumnsToReset) {
+        newMeasuredColumnWidths.delete(viewportColumn.key);
+      }
+      setMeasuredColumnWidths(newMeasuredColumnWidths);
     }
 
     onColumnResize?.(column.idx, measuredWidth);
@@ -1152,6 +1151,23 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     return rowElements;
+  }
+
+  if (gridWidth !== prevGridWidth.current) {
+    prevGridWidth.current = gridWidth;
+    const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+    for (const viewportColumn of viewportColumns) {
+      if (
+        !resizedColumnWidths.has(viewportColumn.key) &&
+        typeof viewportColumn.width === 'string'
+      ) {
+        newMeasuredColumnWidths.delete(viewportColumn.key);
+      }
+    }
+
+    if (newMeasuredColumnWidths.size !== measuredColumnWidths.size) {
+      setMeasuredColumnWidths(newMeasuredColumnWidths);
+    }
   }
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
