@@ -472,12 +472,10 @@ function DataGrid<R, SR, K extends Key>(
     const { style } = gridRef.current!;
     const newTemplateColumns = [...templateColumns];
     const viewportColumnsToReset: CalculatedColumn<R, SR>[] = [];
+    // Clear measured width of flex columns
     for (const viewportColumn of viewportColumns) {
-      if (
-        !resizedColumnWidths.has(viewportColumn.key) &&
-        typeof viewportColumn.width === 'string'
-      ) {
-        newTemplateColumns[viewportColumn.idx] = viewportColumn.width;
+      if (shouldCalculateMeasuredColumnWidth(viewportColumn)) {
+        newTemplateColumns[viewportColumn.idx] = viewportColumn.width as string;
         viewportColumnsToReset.push(viewportColumn);
       }
     }
@@ -504,7 +502,7 @@ function DataGrid<R, SR, K extends Key>(
     setResizedColumnWidths(newResizedColumnWidths);
 
     // We need to reset measured width otherwise grid used the already measured
-    // with in the next render and the new measured width is never set
+    // width in the next render and the new measured width is never set
     if (viewportColumnsToReset.length > 0) {
       const newMeasuredColumnWidths = new Map(measuredColumnWidths);
       for (const viewportColumn of viewportColumnsToReset) {
@@ -750,6 +748,10 @@ function DataGrid<R, SR, K extends Key>(
     return measuringCell.getBoundingClientRect().width;
   }
 
+  function shouldCalculateMeasuredColumnWidth(column: CalculatedColumn<R, SR>) {
+    return !resizedColumnWidths.has(column.key) && typeof column.width === 'string';
+  }
+
   function isColIdxWithinSelectionBounds(idx: number) {
     return idx >= minColIdx && idx <= maxColIdx;
   }
@@ -943,12 +945,8 @@ function DataGrid<R, SR, K extends Key>(
   function getLayoutCssVars() {
     const newTemplateColumns = [...templateColumns];
     for (const column of viewportColumns) {
-      if (
-        !resizedColumnWidths.has(column.key) &&
-        !measuredColumnWidths.has(column.key) &&
-        typeof column.width === 'string'
-      ) {
-        newTemplateColumns[column.idx] = column.width;
+      if (shouldCalculateMeasuredColumnWidth(column) && !measuredColumnWidths.has(column.key)) {
+        newTemplateColumns[column.idx] = column.width as string;
       }
     }
 
@@ -1157,10 +1155,7 @@ function DataGrid<R, SR, K extends Key>(
     setPrevGridWidth(gridWidth);
     const newMeasuredColumnWidths = new Map(measuredColumnWidths);
     for (const viewportColumn of viewportColumns) {
-      if (
-        !resizedColumnWidths.has(viewportColumn.key) &&
-        typeof viewportColumn.width === 'string'
-      ) {
+      if (shouldCalculateMeasuredColumnWidth(viewportColumn)) {
         newMeasuredColumnWidths.delete(viewportColumn.key);
       }
     }
