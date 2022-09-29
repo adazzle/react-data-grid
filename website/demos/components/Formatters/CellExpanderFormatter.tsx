@@ -1,5 +1,5 @@
 import { css } from '@linaria/core';
-import { useFocusRef } from '../../../../src/hooks';
+import { useFocusRef } from '../../../../src';
 
 const cellExpandClassname = css`
   /* needed on chrome */

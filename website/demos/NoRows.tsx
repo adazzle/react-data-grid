@@ -40,7 +40,7 @@ export default function NoRows({ direction }: Props) {
     <DataGrid
       columns={columns}
       rows={rows}
-      components={{ noRowsFallback: <EmptyRowsRenderer /> }}
+      renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       rowKeyGetter={rowKeyGetter}

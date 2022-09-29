@@ -106,7 +106,8 @@ interface Row {
 }
 
 function createRows(): Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 1000; i++) {
     rows.push({
       id: i,
@@ -114,6 +115,7 @@ function createRows(): Row[] {
       price: faker.commerce.price()
     });
   }
+
   return rows;
 }
 
@@ -127,10 +129,10 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function RowRenderer(props: RowRendererProps<Row>) {
+function rowRenderer(key: React.Key, props: RowRendererProps<Row>) {
   return (
     // @ts-expect-error
-    <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
+    <ContextMenuTrigger key={key} id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
       <GridRow {...props} />
     </ContextMenuTrigger>
   );
@@ -169,7 +171,7 @@ export default function ContextMenuDemo({ direction }: Props) {
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
-        components={{ rowRenderer: RowRenderer }}
+        renderers={{ rowRenderer }}
         className="fill-grid"
         direction={direction}
       />

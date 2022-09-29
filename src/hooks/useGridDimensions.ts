@@ -1,16 +1,16 @@
 import { useRef, useState } from 'react';
 import { useLayoutEffect } from './useLayoutEffect';
 
-import { ceil } from '../utils';
-
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
-  height: number
+  height: number,
+  isWidthInitialized: boolean
 ] {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
+  const [isWidthInitialized, setWidthInitialized] = useState(false);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -24,12 +24,13 @@ export function useGridDimensions(): [
     const initialWidth = width - offsetWidth + clientWidth;
     const initialHeight = height - offsetHeight + clientHeight;
 
-    setInlineSize(handleDevicePixelRatio(initialWidth));
+    setInlineSize(initialWidth);
     setBlockSize(initialHeight);
+    setWidthInitialized(true);
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      setInlineSize(handleDevicePixelRatio(size.inlineSize));
+      setInlineSize(size.inlineSize);
       setBlockSize(size.blockSize);
     });
     resizeObserver.observe(gridRef.current!);
@@ -39,12 +40,5 @@ export function useGridDimensions(): [
     };
   }, []);
 
-  return [gridRef, inlineSize, blockSize];
-}
-
-// TODO: remove once fixed upstream
-// we reduce width by 1px here to avoid layout issues in Chrome
-// https://bugs.chromium.org/p/chromium/issues/detail?id=1206298
-function handleDevicePixelRatio(size: number) {
-  return size - (devicePixelRatio === 1 ? 0 : ceil(devicePixelRatio));
+  return [gridRef, inlineSize, blockSize, isWidthInitialized];
 }

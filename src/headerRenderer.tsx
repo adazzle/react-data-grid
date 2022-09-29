@@ -5,26 +5,30 @@ import type { HeaderRendererProps } from './types';
 import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
 
 const headerSortCell = css`
-  cursor: pointer;
-  display: flex;
+  @layer rdg.SortableHeaderCell {
+    cursor: pointer;
+    display: flex;
 
-  &:focus {
-    outline: none;
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
 const headerSortCellClassname = `rdg-header-sort-cell ${headerSortCell}`;
 
 const headerSortName = css`
-  flex-grow: 1;
-  overflow: hidden;
-  overflow: clip;
-  text-overflow: ellipsis;
+  @layer rdg.SortableHeaderCellName {
+    flex-grow: 1;
+    overflow: hidden;
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
 `;
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-export default function HeaderRenderer<R, SR>({
+export default function headerRenderer<R, SR>({
   column,
   sortDirection,
   priority,
@@ -61,7 +65,7 @@ function SortableHeaderCell<R, SR>({
   children,
   isCellSelected
 }: SortableHeaderCellProps<R, SR>) {
-  const SortIcon = useDefaultComponents<R, SR>()!.sortIcon!;
+  const sortStatus = useDefaultComponents<R, SR>()!.sortStatus!;
   const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
@@ -85,10 +89,7 @@ function SortableHeaderCell<R, SR>({
       onKeyDown={handleKeyDown}
     >
       <span className={headerSortNameClassname}>{children}</span>
-      <span>
-        <SortIcon sortDirection={sortDirection} />
-        {priority}
-      </span>
+      <span>{sortStatus({ sortDirection, priority })}</span>
     </span>
   );
 }
