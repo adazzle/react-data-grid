@@ -3,9 +3,10 @@ export { DataGridDefaultComponentsProvider } from './DataGridDefaultComponentsPr
 export { default as Row } from './Row';
 export * from './Columns';
 export * from './formatters';
-export { default as TextEditor } from './editors/TextEditor';
-export { default as HeaderRenderer } from './HeaderRenderer';
-export { useRowSelection } from './hooks';
+export { default as textEditor } from './editors/textEditor';
+export { default as headerRenderer } from './headerRenderer';
+export { sortIcon, sortPriority } from './sortStatus';
+export { useFocusRef, useRowSelection } from './hooks';
 export type {
   Column,
   CalculatedColumn,
@@ -27,5 +28,8 @@ export type {
   ColSpanArgs,
   RowHeightArgs,
   CheckboxFormatterProps,
-  SortIconProps
+  SortIconProps,
+  SortPriorityProps,
+  SortStatusProps,
+  Renderers
 } from './types';

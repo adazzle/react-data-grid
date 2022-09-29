@@ -22,7 +22,7 @@ import type { CellRendererProps, EditorProps, Omit } from './types';
  */
 
 const cellEditing = css`
-  &.rdg-cell {
+  @layer rdg.EditCell {
     padding: 0;
   }
 `;
@@ -116,10 +116,14 @@ export default function EditCell<R, SR>({
     >
       {column.editor != null && (
         <>
-          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
-          {column.editorOptions?.renderFormatter && (
-            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
-          )}
+          {column.editor({
+            column,
+            row,
+            onRowChange,
+            onClose
+          })}
+          {column.editorOptions?.renderFormatter &&
+            column.formatter({ column, row, isCellSelected: true, onRowChange })}
         </>
       )}
     </div>
