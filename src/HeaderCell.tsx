@@ -118,8 +118,8 @@ export default function HeaderCell<R, SR>({
     } else {
       let nextSortColumn: SortColumn | undefined;
       if (
-        (sortDescendingFirst && sortDirection === 'DESC') ||
-        (!sortDescendingFirst && sortDirection === 'ASC')
+        (sortDescendingFirst === true && sortDirection === 'DESC') ||
+        (sortDescendingFirst !== true && sortDirection === 'ASC')
       ) {
         nextSortColumn = {
           columnKey: column.key,

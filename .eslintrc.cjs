@@ -562,7 +562,7 @@ const rules = {
   '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
   '@typescript-eslint/no-unnecessary-condition': 1,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
-  '@typescript-eslint/no-unnecessary-type-arguments': 0,
+  '@typescript-eslint/no-unnecessary-type-arguments': 1,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
   '@typescript-eslint/no-unnecessary-type-constraint': 1,
   '@typescript-eslint/no-unsafe-argument': 0,
@@ -583,7 +583,8 @@ const rules = {
     1,
     {
       ignoreConditionalTests: false,
-      ignoreMixedLogicalExpressions: true
+      ignoreTernaryTests: false,
+      ignoreMixedLogicalExpressions: false
     }
   ],
   '@typescript-eslint/prefer-optional-chain': 1,
@@ -702,7 +703,13 @@ module.exports = {
   plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
   overrides: [
     {
-      files: ['*.js', '*.jsx', '*.cjs', '*.mjs'],
+      files: ['test/**/*'],
+      rules: {
+        '@typescript-eslint/no-floating-promises': 1
+      }
+    },
+    {
+      files: ['*.js', '*.cjs'],
       rules: {
         'no-undef': 2,
         'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
