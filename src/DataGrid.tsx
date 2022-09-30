@@ -288,7 +288,7 @@ function DataGrid<R, SR, K extends Key>(
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const [measuredColumnWidths, setMeasuredColumnWidths, observeMeasuringCell] =
+  const [measuredColumnWidths, setMeasuredColumnWidths, measuringCellResizeObserver] =
     useMeasuringCellDimensions();
   const [prevGridWidth, setPrevGridWidth] = useState(gridWidth);
   const headerRowsCount = 1;
@@ -1311,7 +1311,7 @@ function DataGrid<R, SR, K extends Key>(
         )}
 
         {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
-        {renderMeasuringCells(viewportColumns, observeMeasuringCell)}
+        {renderMeasuringCells(viewportColumns, measuringCellResizeObserver)}
       </DataGridDefaultComponentsProvider>
     </div>
   );

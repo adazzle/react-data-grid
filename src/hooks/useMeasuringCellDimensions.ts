@@ -5,8 +5,8 @@ export function useMeasuringCellDimensions() {
     (): ReadonlyMap<string, number> => new Map()
   );
 
-  const observeMeasuringCell = useMemo(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
+  const measuringCellResizeObserver = useMemo(() => {
+    return new ResizeObserver((entries, resizeObserver) => {
       setMeasuredColumnWidths((measuredColumnWidths) => {
         const newMeasuredColumnWidths = new Map(measuredColumnWidths);
         let hasChanges = false;
@@ -27,13 +27,7 @@ export function useMeasuringCellDimensions() {
         return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
       });
     });
-
-    return (measuringCell: HTMLDivElement | null) => {
-      if (measuringCell !== null) {
-        resizeObserver.observe(measuringCell);
-      }
-    };
   }, []);
 
-  return [measuredColumnWidths, setMeasuredColumnWidths, observeMeasuringCell] as const;
+  return [measuredColumnWidths, setMeasuredColumnWidths, measuringCellResizeObserver] as const;
 }
