@@ -458,6 +458,7 @@ function DataGrid<R, SR, K extends Key>(
         const measuredWidth = measuringCell.getBoundingClientRect().width;
         if (autoResizeColumn?.key === key) {
           newResizedColumnWidths.set(key, measuredWidth);
+          onColumnResize?.(autoResizeColumn.idx, measuredWidth);
         } else {
           newMeasuredColumnWidths.set(key, measuredWidth);
         }
@@ -470,7 +471,14 @@ function DataGrid<R, SR, K extends Key>(
       setResizedColumnWidths(newResizedColumnWidths);
       setAutoResizeColumn(null);
     }
-  }, [autoResizeColumn, gridRef, measuredColumnWidths, resizedColumnWidths, viewportColumns]);
+  }, [
+    autoResizeColumn,
+    gridRef,
+    measuredColumnWidths,
+    onColumnResize,
+    resizedColumnWidths,
+    viewportColumns
+  ]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -517,6 +525,7 @@ function DataGrid<R, SR, K extends Key>(
       });
 
       resetMeasuredColumnWidths();
+      onColumnResize?.(column.idx, width);
     });
   }
 
