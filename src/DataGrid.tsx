@@ -277,6 +277,7 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
 
   /**
    * refs
@@ -446,6 +447,7 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     let hasChanges = false;
     const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+    const newResizedColumnWidths = new Map(resizedColumnWidths);
     for (const { key, width } of viewportColumns) {
       if (
         !resizedColumnWidths.has(key) &&
@@ -454,15 +456,21 @@ function DataGrid<R, SR, K extends Key>(
       ) {
         const measuringCell = gridRef.current!.querySelector(`[data-measuring-cell-key="${key}"]`)!;
         const measuredWidth = measuringCell.getBoundingClientRect().width;
-        newMeasuredColumnWidths.set(key, measuredWidth);
+        if (autoResizeColumn?.key === key) {
+          newResizedColumnWidths.set(key, measuredWidth);
+        } else {
+          newMeasuredColumnWidths.set(key, measuredWidth);
+        }
         hasChanges = true;
       }
     }
 
     if (hasChanges) {
       setMeasuredColumnWidths(newMeasuredColumnWidths);
+      setResizedColumnWidths(newResizedColumnWidths);
+      setAutoResizeColumn(null);
     }
-  }, [gridRef, measuredColumnWidths, resizedColumnWidths, viewportColumns]);
+  }, [autoResizeColumn, gridRef, measuredColumnWidths, resizedColumnWidths, viewportColumns]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -490,50 +498,26 @@ function DataGrid<R, SR, K extends Key>(
    * event handlers
    */
   function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
-    const { style } = gridRef.current!;
-    const newTemplateColumns = [...templateColumns];
-    let resetMeasuredColumnWidths = false;
-    // Clear measured width of flex columns
-    if (columns.length === viewportColumns.length) {
-      for (const column of columns) {
-        if (!resizedColumnWidths.has(column.key) && typeof column.width === 'string') {
-          newTemplateColumns[column.idx] = column.width;
-          resetMeasuredColumnWidths = true;
-        }
-      }
-    }
-    newTemplateColumns[column.idx] = width === 'max-content' ? width : `${width}px`;
-    style.gridTemplateColumns = newTemplateColumns.join(' ');
-
-    const measuringCell = gridRef.current!.querySelector(
-      `[data-measuring-cell-key="${column.key}"]`
-    )!;
-    const measuredWidth = measuringCell.getBoundingClientRect().width;
-    const measuredWidthPx = `${measuredWidth}px`;
-
-    // Immediately update `grid-template-columns` to prevent the column from jumping to its min/max allowed width.
-    // Only measuring cells have the min/max width set for proper colSpan support,
-    // which is why other cells may render at the previously set width, beyond the min/max.
-    // An alternative for the above would be to use flushSync.
-    // We also have to reset `max-content` so it doesn't remain stuck on `max-content`.
-    if (newTemplateColumns[column.idx] !== measuredWidthPx) {
-      newTemplateColumns[column.idx] = measuredWidthPx;
-      style.gridTemplateColumns = newTemplateColumns.join(' ');
+    if (width === 'max-content') {
+      setAutoResizeColumn(column);
+      setResizedColumnWidths((resizedColumnWidths) => {
+        const newResizedColumnWidths = new Map(resizedColumnWidths);
+        newResizedColumnWidths.delete(column.key);
+        return newResizedColumnWidths;
+      });
+      resetMeasuredColumnWidths();
+      return;
     }
 
-    if (resizedColumnWidths.get(column.key) === measuredWidth) return;
+    flushSync(() => {
+      setResizedColumnWidths((resizedColumnWidths) => {
+        const newResizedColumnWidths = new Map(resizedColumnWidths);
+        newResizedColumnWidths.set(column.key, width);
+        return newResizedColumnWidths;
+      });
 
-    const newResizedColumnWidths = new Map(resizedColumnWidths);
-    newResizedColumnWidths.set(column.key, measuredWidth);
-    setResizedColumnWidths(newResizedColumnWidths);
-
-    // We need to reset measured width otherwise grid used the already measured
-    // width in the next render and the new measured width is never set
-    if (resetMeasuredColumnWidths) {
-      setMeasuredColumnWidths(new Map());
-    }
-
-    onColumnResize?.(column.idx, measuredWidth);
+      resetMeasuredColumnWidths();
+    });
   }
 
   function selectRow({ row, checked, isShiftClick }: SelectRowEvent<R>) {
@@ -765,6 +749,20 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * utils
    */
+  function resetMeasuredColumnWidths() {
+    if (columns.length === viewportColumns.length) {
+      setMeasuredColumnWidths((measuredColumnWidths) => {
+        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+        for (const column of columns) {
+          if (!resizedColumnWidths.has(column.key) && typeof column.width === 'string') {
+            newMeasuredColumnWidths.delete(column.key);
+          }
+        }
+        return newMeasuredColumnWidths;
+      });
+    }
+  }
+
   function isColIdxWithinSelectionBounds(idx: number) {
     return idx >= minColIdx && idx <= maxColIdx;
   }
@@ -967,6 +965,10 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
+    if (autoResizeColumn !== null) {
+      newTemplateColumns[autoResizeColumn.idx] = 'max-content';
+    }
+
     return newTemplateColumns.join(' ');
   }
 
@@ -1167,9 +1169,7 @@ function DataGrid<R, SR, K extends Key>(
 
   if (gridWidth !== prevGridWidth) {
     setPrevGridWidth(gridWidth);
-    if (columns.length === viewportColumns.length) {
-      setMeasuredColumnWidths(new Map());
-    }
+    resetMeasuredColumnWidths();
   }
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
