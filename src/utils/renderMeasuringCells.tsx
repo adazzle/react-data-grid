@@ -9,16 +9,12 @@ const measuringCellClassname = css`
   }
 `;
 
-export function renderMeasuringCells<R, SR>(
-  viewportColumns: readonly CalculatedColumn<R, SR>[],
-  observeMeasuringCell: (measuringCell: HTMLDivElement | null) => void
-) {
+export function renderMeasuringCells<R, SR>(viewportColumns: readonly CalculatedColumn<R, SR>[]) {
   return (
     <>
-      {viewportColumns.map(({ key, idx, width, minWidth, maxWidth }) => (
+      {viewportColumns.map(({ key, idx, minWidth, maxWidth }) => (
         <div
           key={key}
-          ref={typeof width === 'number' ? undefined : observeMeasuringCell}
           className={measuringCellClassname}
           style={{ gridColumnStart: idx + 1, minWidth, maxWidth }}
           data-measuring-cell-key={key}
