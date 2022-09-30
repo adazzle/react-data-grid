@@ -444,6 +444,7 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   useLayoutEffect(() => {
+    let hasChanges = false;
     const newMeasuredColumnWidths = new Map(measuredColumnWidths);
     for (const { key, width } of viewportColumns) {
       if (
@@ -454,10 +455,11 @@ function DataGrid<R, SR, K extends Key>(
         const measuringCell = gridRef.current!.querySelector(`[data-measuring-cell-key="${key}"]`)!;
         const measuredWidth = measuringCell.getBoundingClientRect().width;
         newMeasuredColumnWidths.set(key, measuredWidth);
+        hasChanges = true;
       }
     }
 
-    if (newMeasuredColumnWidths.size !== measuredColumnWidths.size) {
+    if (hasChanges) {
       setMeasuredColumnWidths(newMeasuredColumnWidths);
     }
   }, [gridRef, measuredColumnWidths, resizedColumnWidths, viewportColumns]);
@@ -953,7 +955,7 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getLayoutCssVars() {
+  function getGridTemplateColumns() {
     const newTemplateColumns = [...templateColumns];
     for (const column of viewportColumns) {
       if (
@@ -965,10 +967,7 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    return {
-      ...layoutCssVars,
-      gridTemplateColumns: newTemplateColumns.join(' ')
-    };
+    return newTemplateColumns.join(' ');
   }
 
   function getDragHandle(rowIdx: number) {
@@ -1222,11 +1221,12 @@ function DataGrid<R, SR, K extends Key>(
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
               : undefined,
+          gridTemplateColumns: getGridTemplateColumns(),
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
-          ...getLayoutCssVars()
+          ...layoutCssVars
         } as unknown as React.CSSProperties
       }
       dir={direction}
