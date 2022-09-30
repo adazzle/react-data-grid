@@ -944,7 +944,7 @@ function DataGrid<R, SR, K extends Key>(
         !measuredColumnWidths.has(column.key) &&
         typeof column.width === 'string'
       ) {
-        newTemplateColumns[column.idx] = column.width as string;
+        newTemplateColumns[column.idx] = column.width;
       }
     }
 

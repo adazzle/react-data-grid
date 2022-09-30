@@ -166,7 +166,6 @@ export function useCalculatedColumns<R, SR>({
         // The actual value is set after the column is rendered
         width = column.minWidth;
       }
-
       templateColumns.push(`${width}px`);
       columnMetrics.set(column, { width, left });
       left += width;
