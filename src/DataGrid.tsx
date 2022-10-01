@@ -387,6 +387,13 @@ function DataGrid<R, SR, K extends Key>(
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
+  const columnsToMeasure = viewportColumns.filter((column) => {
+    return (
+      !resizedColumnWidths.has(column.key) &&
+      !measuredColumnWidths.has(column.key) &&
+      typeof column.width === 'string'
+    );
+  });
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -445,40 +452,27 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   useLayoutEffect(() => {
-    let hasChanges = false;
-    const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-    const newResizedColumnWidths = new Map(resizedColumnWidths);
-    for (const { key, width } of viewportColumns) {
-      if (
-        !resizedColumnWidths.has(key) &&
-        !newMeasuredColumnWidths.has(key) &&
-        typeof width === 'string'
-      ) {
-        const measuringCell = gridRef.current!.querySelector(`[data-measuring-cell-key="${key}"]`)!;
-        const measuredWidth = measuringCell.getBoundingClientRect().width;
-        if (autoResizeColumn?.key === key) {
-          newResizedColumnWidths.set(key, measuredWidth);
-          onColumnResize?.(autoResizeColumn.idx, measuredWidth);
-        } else {
-          newMeasuredColumnWidths.set(key, measuredWidth);
-        }
-        hasChanges = true;
+    if (columnsToMeasure.length === 0) return;
+    const newMeasuredColumnWidths = new Map<string, number>();
+    const newResizedColumnWidths = new Map<string, number>();
+    for (const { key } of columnsToMeasure) {
+      const measuringCell = gridRef.current!.querySelector(`[data-measuring-cell-key="${key}"]`)!;
+      const measuredWidth = measuringCell.getBoundingClientRect().width;
+      if (autoResizeColumn?.key === key) {
+        newResizedColumnWidths.set(key, measuredWidth);
+        onColumnResize?.(autoResizeColumn.idx, measuredWidth);
+      } else {
+        newMeasuredColumnWidths.set(key, measuredWidth);
       }
     }
-
-    if (hasChanges) {
-      setMeasuredColumnWidths(newMeasuredColumnWidths);
-      setResizedColumnWidths(newResizedColumnWidths);
-      setAutoResizeColumn(null);
-    }
-  }, [
-    autoResizeColumn,
-    gridRef,
-    measuredColumnWidths,
-    onColumnResize,
-    resizedColumnWidths,
-    viewportColumns
-  ]);
+    setMeasuredColumnWidths(
+      (measuredColumnWidths) => new Map([...measuredColumnWidths, ...newMeasuredColumnWidths])
+    );
+    setResizedColumnWidths(
+      (resizedColumnWidths) => new Map([...resizedColumnWidths, ...newResizedColumnWidths])
+    );
+    setAutoResizeColumn(null);
+  }, [autoResizeColumn, columnsToMeasure, gridRef, onColumnResize]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -964,14 +958,8 @@ function DataGrid<R, SR, K extends Key>(
 
   function getGridTemplateColumns() {
     const newTemplateColumns = [...templateColumns];
-    for (const column of viewportColumns) {
-      if (
-        !resizedColumnWidths.has(column.key) &&
-        !measuredColumnWidths.has(column.key) &&
-        typeof column.width === 'string'
-      ) {
-        newTemplateColumns[column.idx] = column.width;
-      }
+    for (const column of columnsToMeasure) {
+      newTemplateColumns[column.idx] = column.width as string;
     }
 
     if (autoResizeColumn !== null) {
