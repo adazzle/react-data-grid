@@ -456,11 +456,10 @@ function DataGrid<R, SR, K extends Key>(
     const newMeasuredColumnWidths = new Map<string, number>();
     const newResizedColumnWidths = new Map<string, number>();
     for (const { key } of columnsToMeasure) {
-      const measuringCell = gridRef.current!.querySelector(`[data-measuring-cell-key="${key}"]`)!;
+      const measuringCell = gridRef.current!.querySelector(getMeasuringCellKey(key))!;
       const measuredWidth = measuringCell.getBoundingClientRect().width;
       if (autoResizeColumn?.key === key) {
         newResizedColumnWidths.set(key, measuredWidth);
-        onColumnResize?.(autoResizeColumn.idx, measuredWidth);
       } else {
         newMeasuredColumnWidths.set(key, measuredWidth);
       }
@@ -472,7 +471,7 @@ function DataGrid<R, SR, K extends Key>(
       (resizedColumnWidths) => new Map([...resizedColumnWidths, ...newResizedColumnWidths])
     );
     setAutoResizeColumn(null);
-  }, [autoResizeColumn, columnsToMeasure, gridRef, onColumnResize]);
+  }, [autoResizeColumn, columnsToMeasure, gridRef]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -501,26 +500,36 @@ function DataGrid<R, SR, K extends Key>(
    */
   function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
     if (width === 'max-content') {
-      setAutoResizeColumn(column);
-      setResizedColumnWidths((resizedColumnWidths) => {
-        const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.delete(column.key);
-        return newResizedColumnWidths;
+      flushSync(() => {
+        resetMeasuredColumnWidths();
+        // Clear resized and measured width of the auto resized column
+        setResizedColumnWidths((resizedColumnWidths) => {
+          const newResizedColumnWidths = new Map(resizedColumnWidths);
+          newResizedColumnWidths.delete(column.key);
+          return newResizedColumnWidths;
+        });
+        setMeasuredColumnWidths((measuredColumnWidths) => {
+          const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+          newMeasuredColumnWidths.delete(column.key);
+          return newMeasuredColumnWidths;
+        });
+        setAutoResizeColumn(column);
       });
-      resetMeasuredColumnWidths();
+      const measuringCell = gridRef.current!.querySelector(getMeasuringCellKey(column.key))!;
+      const measuredWidth = measuringCell.getBoundingClientRect().width;
+      onColumnResize?.(column.idx, measuredWidth);
       return;
     }
 
     flushSync(() => {
+      resetMeasuredColumnWidths();
       setResizedColumnWidths((resizedColumnWidths) => {
         const newResizedColumnWidths = new Map(resizedColumnWidths);
         newResizedColumnWidths.set(column.key, width);
         return newResizedColumnWidths;
       });
-
-      resetMeasuredColumnWidths();
-      onColumnResize?.(column.idx, width);
     });
+    onColumnResize?.(column.idx, width);
   }
 
   function selectRow({ row, checked, isShiftClick }: SelectRowEvent<R>) {
@@ -1333,6 +1342,10 @@ function DataGrid<R, SR, K extends Key>(
 
 function isSamePosition(p1: Position, p2: Position) {
   return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
+}
+
+function getMeasuringCellKey(key: string) {
+  return `[data-measuring-cell-key="${key}"]`;
 }
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
