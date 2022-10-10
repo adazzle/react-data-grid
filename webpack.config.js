@@ -81,7 +81,7 @@ export default (env, { mode }) => {
               loader: 'postcss-loader',
               options: {
                 postcssOptions: {
-                  plugins: [postcssNested({ bubble: ['layer'] })]
+                  plugins: [postcssNested]
                 }
               }
             }
