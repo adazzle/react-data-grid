@@ -93,7 +93,7 @@
     "mini-css-extract-plugin": "^2.6.0",
     "postcss": "^8.4.13",
     "postcss-loader": "^7.0.0",
-    "postcss-nested": "^5.0.6",
+    "postcss-nested": "^6.0.0",
     "prettier": "2.7.1",
     "react": "^18.1.0",
     "react-contextmenu": "^2.14.0",
