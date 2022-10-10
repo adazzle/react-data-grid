@@ -36,7 +36,7 @@ export default {
       }
     }),
     postcss({
-      plugins: [postcssNested({ bubble: ['layer'] })],
+      plugins: [postcssNested],
       extract: 'styles.css'
     }),
     babel({
