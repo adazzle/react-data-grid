@@ -1,11 +1,12 @@
-import { isAbsolute } from 'path';
-import linaria from '@linaria/rollup';
+import { isAbsolute } from 'node:path';
+import linariaModule from '@linaria/rollup';
 import postcss from 'rollup-plugin-postcss';
 import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import pkg from './package.json';
+import pkg from './package.json' assert { type: 'json' };
 
+const linaria = linariaModule.default;
 const extensions = ['.ts', '.tsx'];
 
 export default {
@@ -21,8 +22,7 @@ export default {
       file: './lib/bundle.cjs',
       format: 'cjs',
       generatedCode: 'es2015',
-      sourcemap: true,
-      interop: false
+      sourcemap: true
     }
   ],
   external: (id) => !id.startsWith('.') && !id.startsWith('@linaria:') && !isAbsolute(id),
