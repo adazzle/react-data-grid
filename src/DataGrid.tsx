@@ -398,6 +398,7 @@ function DataGrid<R, SR, K extends Key>(
    * effects
    */
   useLayoutEffect(() => {
+    const gridCurrent = gridRef.current;
     if (
       !selectedCellIsWithinSelectionBounds ||
       isSamePosition(selectedPosition, prevSelectedPosition.current)
@@ -412,6 +413,11 @@ function DataGrid<R, SR, K extends Key>(
     if (selectedPosition.idx === -1) {
       rowRef.current!.focus({ preventScroll: true });
     }
+
+    gridCurrent?.addEventListener('scroll', handleScroll);
+    return () => {
+      gridCurrent?.removeEventListener('scroll', handleScroll);
+    };
   });
 
   useLayoutEffect(() => {
@@ -610,7 +616,8 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function handleScroll(event: React.UIEvent<HTMLDivElement>) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleScroll(event: any) {
     const { scrollTop, scrollLeft } = event.currentTarget;
     setScrollTop(scrollTop);
     // scrollLeft is nagative when direction is rtl
@@ -1152,7 +1159,6 @@ function DataGrid<R, SR, K extends Key>(
       }
       dir={direction}
       ref={parentEl ? undefined : gridRef}
-      onScroll={handleScroll}
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
