@@ -398,7 +398,6 @@ function DataGrid<R, SR, K extends Key>(
    * effects
    */
   useLayoutEffect(() => {
-    const gridCurrent = gridRef.current;
     if (
       !selectedCellIsWithinSelectionBounds ||
       isSamePosition(selectedPosition, prevSelectedPosition.current)
@@ -413,7 +412,10 @@ function DataGrid<R, SR, K extends Key>(
     if (selectedPosition.idx === -1) {
       rowRef.current!.focus({ preventScroll: true });
     }
+  });
 
+  useLayoutEffect(() => {
+    const gridCurrent = gridRef.current;
     gridCurrent?.addEventListener('scroll', handleScroll);
     return () => {
       gridCurrent?.removeEventListener('scroll', handleScroll);
