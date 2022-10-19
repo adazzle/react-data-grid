@@ -5,7 +5,12 @@ import { ceil } from '../utils';
 
 export function useGridDimensions(
   parentEl?: HTMLDivElement
-): [ref: React.RefObject<HTMLDivElement>, width: number, height: number] {
+): [
+  ref: React.RefObject<HTMLDivElement>,
+  gridRef: React.RefObject<HTMLDivElement>,
+  width: number,
+  height: number
+] {
   const parentRef = useRef<HTMLDivElement>(parentEl ?? null);
   const gridRef = useRef<HTMLDivElement>(null);
   const refForHeight = parentEl ? parentRef : gridRef;
@@ -49,7 +54,7 @@ export function useGridDimensions(
     };
   }, [refForHeight]);
 
-  return [refForHeight, inlineSize, blockSize];
+  return [refForHeight, gridRef, inlineSize, blockSize];
 }
 
 // TODO: remove once fixed upstream

@@ -275,7 +275,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions(parentEl);
+  const [gridRef, originalRef, gridWidth, gridHeight] = useGridDimensions(parentEl);
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
@@ -1160,7 +1160,7 @@ function DataGrid<R, SR, K extends Key>(
         } as unknown as React.CSSProperties
       }
       dir={direction}
-      ref={parentEl ? undefined : gridRef}
+      ref={originalRef}
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
