@@ -618,7 +618,7 @@ function DataGrid<R, SR, K extends Key>(
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleScroll(event: any) {
-    const { scrollTop, scrollLeft } = event.currentTarget;
+    const { scrollTop, scrollLeft } = event.target;
     setScrollTop(scrollTop);
     // scrollLeft is nagative when direction is rtl
     setScrollLeft(abs(scrollLeft));
