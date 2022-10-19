@@ -39,7 +39,7 @@
     "typecheck": "tsc -p tsconfig.all.json",
     "prepublishOnly": "npm install && npm run build && npm run build:types",
     "postpublish": "git push --follow-tags origin HEAD",
-    "prepare": "npm install && npm run build && npm run build:types"
+    "prepare": "npm run build && npm run build:types"
   },
   "dependencies": {
     "clsx": "^1.1.1"
