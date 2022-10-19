@@ -6,7 +6,9 @@ import { ceil } from '../utils';
 export function useGridDimensions(
   parentEl?: HTMLDivElement
 ): [ref: React.RefObject<HTMLDivElement>, width: number, height: number] {
-  const gridRef = useRef<HTMLDivElement>(parentEl ?? null);
+  const parentRef = useRef<HTMLDivElement>(parentEl ?? null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const refForHeight = parentEl ? parentRef : gridRef;
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
 
@@ -17,27 +19,37 @@ export function useGridDimensions(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
-    const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
-    const { width, height } = gridRef.current!.getBoundingClientRect();
+    const { clientWidth, offsetWidth } = gridRef.current!;
+    const { clientHeight, offsetHeight } = refForHeight.current!;
+    const { width } = gridRef.current!.getBoundingClientRect();
+    const { height } = refForHeight.current!.getBoundingClientRect();
     const initialWidth = width - offsetWidth + clientWidth;
     const initialHeight = height - offsetHeight + clientHeight;
 
     setInlineSize(handleDevicePixelRatio(initialWidth));
     setBlockSize(initialHeight);
 
-    const resizeObserver = new ResizeObserver((entries) => {
+    // for width
+    const resizeObserverWidth = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
       setInlineSize(handleDevicePixelRatio(size.inlineSize));
+    });
+    resizeObserverWidth.observe(gridRef.current!);
+
+    // for height
+    const resizeObserverHeight = new ResizeObserver((entries) => {
+      const size = entries[0].contentBoxSize[0];
       setBlockSize(size.blockSize);
     });
-    resizeObserver.observe(gridRef.current!);
+    resizeObserverHeight.observe(refForHeight.current!);
 
     return () => {
-      resizeObserver.disconnect();
+      resizeObserverWidth.disconnect();
+      resizeObserverHeight.disconnect();
     };
-  }, []);
+  }, [refForHeight]);
 
-  return [gridRef, inlineSize, blockSize];
+  return [refForHeight, inlineSize, blockSize];
 }
 
 // TODO: remove once fixed upstream
