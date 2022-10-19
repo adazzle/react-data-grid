@@ -176,6 +176,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
+  parentEl?: HTMLDivElement;
 }
 
 /**
@@ -228,7 +229,8 @@ function DataGrid<R, SR, K extends Key>(
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
-    'data-testid': testId
+    'data-testid': testId,
+    parentEl
   }: DataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
@@ -273,7 +275,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight] = useGridDimensions(parentEl);
   const headerRowsCount = 1;
   const summaryRowsCount = summaryRows?.length ?? 0;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
@@ -1149,7 +1151,7 @@ function DataGrid<R, SR, K extends Key>(
         } as unknown as React.CSSProperties
       }
       dir={direction}
-      ref={gridRef}
+      ref={parentEl ? undefined : gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
       data-testid={testId}

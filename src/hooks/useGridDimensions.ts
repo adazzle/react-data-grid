@@ -3,12 +3,10 @@ import { useLayoutEffect } from './useLayoutEffect';
 
 import { ceil } from '../utils';
 
-export function useGridDimensions(): [
-  ref: React.RefObject<HTMLDivElement>,
-  width: number,
-  height: number
-] {
-  const gridRef = useRef<HTMLDivElement>(null);
+export function useGridDimensions(
+  parentEl?: HTMLDivElement
+): [ref: React.RefObject<HTMLDivElement>, width: number, height: number] {
+  const gridRef = useRef<HTMLDivElement>(parentEl ?? null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
 
