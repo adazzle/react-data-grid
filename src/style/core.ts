@@ -37,6 +37,9 @@ const root = css`
   @layer rdg {
     @layer Defaults,
       FocusSink,
+      CheckboxInput,
+      CheckboxIcon,
+      CheckboxLabel,
       Cell,
       HeaderCell,
       SummaryCell,
