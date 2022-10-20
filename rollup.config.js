@@ -1,12 +1,11 @@
 import { isAbsolute } from 'node:path';
-import linariaModule from '@linaria/rollup';
+import linaria from '@linaria/rollup';
 import postcss from 'rollup-plugin-postcss';
 import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import pkg from './package.json' assert { type: 'json' };
 
-const linaria = linariaModule.default;
 const extensions = ['.ts', '.tsx'];
 
 export default {

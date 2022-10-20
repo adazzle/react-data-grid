@@ -2,8 +2,7 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozen } from './style/cell';
-import { rowClassname, rowSelectedClassname } from './style';
+import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
 import type { CalculatedColumn, RowRendererProps } from './types';
