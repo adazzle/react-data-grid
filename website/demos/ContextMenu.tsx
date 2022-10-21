@@ -132,7 +132,12 @@ function rowKeyGetter(row: Row) {
 function rowRenderer(key: React.Key, props: RowRendererProps<Row>) {
   return (
     // @ts-expect-error
-    <ContextMenuTrigger key={key} id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
+    <ContextMenuTrigger
+      key={key}
+      holdToDisplay={-1}
+      id="grid-context-menu"
+      collect={() => ({ rowIdx: props.rowIdx })}
+    >
       <GridRow {...props} />
     </ContextMenuTrigger>
   );
