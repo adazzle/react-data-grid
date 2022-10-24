@@ -81,7 +81,7 @@ export function useCalculatedColumns<R, SR>({
       }
 
       return column;
-    });
+    }).filter(Boolean);
 
     columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
       // Sort select column first:
