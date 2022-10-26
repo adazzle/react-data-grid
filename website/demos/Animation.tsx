@@ -18,7 +18,7 @@ const rangeClassname = css`
 `;
 
 const transitionClassname = css`
-  transition: grid-template-rows line-height 0.5s;
+  transition: grid-template-rows 0.5s ease;
 `;
 
 interface Row {
