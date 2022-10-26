@@ -15,8 +15,7 @@ const rangeClassname = css`
 const transitionClassname = css`
   transition: grid-template-rows 0.5s ease;
 
-  > .rdg-row,
-  .rdg-header-row {
+  > :is(.rdg-header-row, .rdg-row) {
     transition: line-height 0.5s ease;
   }
 `;
