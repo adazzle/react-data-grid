@@ -8,11 +8,11 @@ import type { Column, HeaderRendererProps, SortColumn } from '../../src';
 import type { Props } from './types';
 
 interface Row {
-  id: number;
-  task: string;
-  complete: number;
-  priority: string;
-  issueType: string;
+  readonly id: number;
+  readonly task: string;
+  readonly complete: number;
+  readonly priority: string;
+  readonly issueType: string;
 }
 
 function createRows(): Row[] {

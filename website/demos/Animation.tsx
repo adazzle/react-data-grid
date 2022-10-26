@@ -22,11 +22,11 @@ const transitionClassname = css`
 `;
 
 interface Row {
-  id: number;
-  task: string;
-  complete: number;
-  priority: string;
-  issueType: string;
+  readonly id: number;
+  readonly task: string;
+  readonly complete: number;
+  readonly priority: string;
+  readonly issueType: string;
 }
 
 function createRows(): Row[] {
@@ -54,26 +54,22 @@ const columns: Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    resizable: true,
-    sortable: true
+    resizable: true
   },
   {
     key: 'priority',
     name: 'Priority',
-    resizable: true,
-    sortable: true
+    resizable: true
   },
   {
     key: 'issueType',
     name: 'Issue Type',
-    resizable: true,
-    sortable: true
+    resizable: true
   },
   {
     key: 'complete',
     name: '% Complete',
-    resizable: true,
-    sortable: true
+    resizable: true
   }
 ];
 
