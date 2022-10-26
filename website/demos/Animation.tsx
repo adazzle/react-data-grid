@@ -6,15 +6,10 @@ import type { Column } from '../../src';
 import type { Props } from './types';
 
 const rangeClassname = css`
-  width: 500px;
-  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
-
-  > input {
-    flex-grow: 1;
-  }
+  margin-bottom: 8px;
 `;
 
 const transitionClassname = css`
@@ -84,18 +79,12 @@ export default function ColumnsReordering({ direction }: Props) {
 
   return (
     <>
-      <label className={rangeClassname}>
+      <div className={rangeClassname}>
         Row Height
-        <input
-          type="range"
-          min="30"
-          max="90"
-          value={rowHeight}
-          onChange={(event) => {
-            setRowHeight(event.target.valueAsNumber);
-          }}
-        />
-      </label>
+        <button onClick={() => setRowHeight(30)}>Small</button>
+        <button onClick={() => setRowHeight(60)}>Medium</button>
+        <button onClick={() => setRowHeight(90)}>Large</button>
+      </div>
       <DataGrid
         className={`${transitionClassname} fill-grid`}
         columns={columns}
