@@ -164,7 +164,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
-  shouldCloseEdior?: Maybe<
+  shouldCloseEditor?: Maybe<
     (column: CalculatedColumn<R, SR>, currentlyEditedRow: R, incomingRow: R) => boolean
   >;
   rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>;
@@ -213,7 +213,7 @@ function DataGrid<R, SR, K extends Key>(
     // cellNavigationMode: rawCellNavigationMode,
     enableVirtualization,
     // Miscellaneous
-    // shouldCloseEdior,
+    // shouldCloseEditor,
     // rowRenderer,
     // noRowsFallback,
     className,
@@ -912,7 +912,7 @@ function DataGrid<R, SR, K extends Key>(
 
   //   if (
   //     !isGroupRow(rows[selectedPosition.rowIdx]) &&
-  //     shouldCloseEdior?.(column, selectedPosition.originalRow, rows[selectedPosition.rowIdx] as R)
+  //     shouldCloseEditor?.(column, selectedPosition.originalRow, rows[selectedPosition.rowIdx] as R)
   //   ) {
   //     // Discard changes if rows are updated from outside
   //     closeEditor();
