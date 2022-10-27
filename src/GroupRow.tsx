@@ -1,13 +1,13 @@
-import type { CSSProperties } from 'react';
 import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozenLast, rowClassname } from './style';
+import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
-import { RowSelectionProvider, useRovingRowRef } from './hooks';
+import { RowSelectionProvider } from './hooks';
+import { getRowStyle } from './utils';
 
 export interface GroupRowRendererProps<R, SR>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
@@ -17,7 +17,7 @@ export interface GroupRowRendererProps<R, SR>
   childRows: readonly R[];
   rowIdx: number;
   row: GroupRow<R>;
-  top: number;
+  gridRowStart: number;
   height: number;
   level: number;
   selectedCellIdx: number | undefined;
@@ -28,12 +28,14 @@ export interface GroupRowRendererProps<R, SR>
 }
 
 const groupRow = css`
-  &:not([aria-selected='true']) {
-    background-color: var(--header-background-color);
-  }
+  @layer rdg.GroupedRow {
+    &:not([aria-selected='true']) {
+      background-color: var(--rdg-header-background-color);
+    }
 
-  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
-    border-right: none;
+    > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+      border-inline-end: none;
+    }
   }
 `;
 
@@ -46,7 +48,7 @@ function GroupedRow<R, SR>({
   childRows,
   rowIdx,
   row,
-  top,
+  gridRowStart,
   height,
   level,
   isExpanded,
@@ -56,8 +58,6 @@ function GroupedRow<R, SR>({
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
-  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
-
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? level + 1 : level;
 
@@ -71,21 +71,16 @@ function GroupedRow<R, SR>({
         role="row"
         aria-level={level}
         aria-expanded={isExpanded}
-        ref={ref}
-        tabIndex={tabIndex}
         className={clsx(
           rowClassname,
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-          className
+          {
+            [rowSelectedClassname]: selectedCellIdx === -1
+          }
         )}
         onClick={handleSelectGroup}
-        style={
-          {
-            top,
-            '--row-height': `${height}px`
-          } as unknown as CSSProperties
-        }
+        style={getRowStyle(gridRowStart, height)}
         {...props}
       >
         {viewportColumns.map((column) => (

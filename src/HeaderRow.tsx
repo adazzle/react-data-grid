@@ -3,10 +3,10 @@ import clsx from 'clsx';
 import { css } from '@linaria/core';
 
 import HeaderCell from './HeaderCell';
-import type { CalculatedColumn } from './types';
-import { getColSpan } from './utils';
+import type { CalculatedColumn, Direction } from './types';
+import { getColSpan, getRowStyle } from './utils';
 import type { DataGridProps } from './DataGrid';
-import { useRovingRowRef } from './hooks';
+import { cell, cellFrozen, rowSelectedClassname } from './style';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
@@ -17,31 +17,31 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
-  onColumnResize: (column: CalculatedColumn<R, SR>, width: number) => void;
+  onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
   selectCell: (columnIdx: number) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
+  direction: Direction;
 }
 
 const headerRow = css`
-  contain: strict;
-  contain: size layout style paint;
-  display: grid;
-  grid-template-columns: var(--template-columns);
-  grid-template-rows: var(--header-row-height);
-  height: var(--header-row-height); /* needed on Firefox */
-  line-height: var(--header-row-height);
-  width: var(--row-width);
-  position: sticky;
-  top: 0;
-  background-color: var(--header-background-color);
-  font-weight: bold;
-  z-index: 3;
-  outline: none;
+  @layer rdg.HeaderRow {
+    display: contents;
+    line-height: var(--rdg-header-row-height);
+    background-color: var(--rdg-header-background-color);
+    font-weight: bold;
 
-  &[aria-selected='true'] {
-    box-shadow: inset 0 0 0 2px var(--selection-color);
+    & > .${cell} {
+      /* Should have a higher value than 0 to show up above regular cells */
+      z-index: 1;
+      position: sticky;
+      inset-block-start: 0;
+    }
+
+    & > .${cellFrozen} {
+      z-index: 2;
+    }
   }
 `;
 
@@ -57,10 +57,9 @@ function HeaderRow<R, SR, K extends React.Key>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   selectCell,
-  shouldFocusGrid
+  shouldFocusGrid,
+  direction
 }: HeaderRowProps<R, SR, K>) {
-  const { ref, tabIndex, className } = useRovingRowRef(selectedCellIdx);
-
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
@@ -82,6 +81,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         sortColumns={sortColumns}
         selectCell={selectCell}
         shouldFocusGrid={shouldFocusGrid && index === 0}
+        direction={direction}
       />
     );
   }
@@ -90,9 +90,10 @@ function HeaderRow<R, SR, K extends React.Key>({
     <div
       role="row"
       aria-rowindex={1} // aria-rowindex is 1 based
-      ref={ref}
-      tabIndex={tabIndex}
-      className={clsx(headerRowClassname, className)}
+      className={clsx(headerRowClassname, {
+        [rowSelectedClassname]: selectedCellIdx === -1
+      })}
+      style={getRowStyle(1)}
     >
       {cells}
     </div>

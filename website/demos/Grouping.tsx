@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
-import faker from 'faker';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
+import type { Props } from './types';
 
 const groupingClassname = css`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  block-size: 100%;
   gap: 8px;
 
   > .rdg {
@@ -128,7 +129,7 @@ function createRows(): readonly Row[] {
       year: 2015 + faker.datatype.number(3),
       country: faker.address.country(),
       sport: sports[faker.datatype.number(sports.length - 1)],
-      athlete: faker.name.findName(),
+      athlete: faker.name.fullName(),
       gold: faker.datatype.number(5),
       silver: faker.datatype.number(5),
       bronze: faker.datatype.number(5)
@@ -140,7 +141,7 @@ function createRows(): readonly Row[] {
 
 const options = ['country', 'year', 'sport', 'athlete'] as const;
 
-export default function Grouping() {
+export default function Grouping({ direction }: Props) {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
   const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([
@@ -194,6 +195,7 @@ export default function Grouping() {
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
         defaultColumnOptions={{ resizable: true }}
+        direction={direction}
       />
     </div>
   );

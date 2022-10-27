@@ -1,16 +1,16 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import faker from 'faker';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
-import DataGrid from '../../src';
-import type { Column } from '../../src';
-import type { HeaderRendererProps, Omit } from '../../src/types';
-import { useFocusRef } from '../../src/hooks';
+import DataGrid, { useFocusRef } from '../../src';
+import type { Column, HeaderRendererProps } from '../../src';
+import type { Omit } from '../../src/types';
+import type { Props } from './types';
 
 const rootClassname = css`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  block-size: 100%;
   gap: 10px;
 
   > .rdg {
@@ -30,17 +30,18 @@ const filterContainerClassname = css`
     padding: 0;
 
     > div {
-      padding: 0 8px;
+      padding-block: 0;
+      padding-inline: 8px;
 
       &:first-child {
-        border-bottom: 1px solid var(--border-color);
+        border-block-end: 1px solid var(--rdg-border-color);
       }
     }
   }
 `;
 
 const filterClassname = css`
-  width: 100%;
+  inline-size: 100%;
   padding: 4px;
   font-size: 14px;
 `;
@@ -75,7 +76,7 @@ function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
   }
 }
 
-export default function HeaderFilters() {
+export default function HeaderFilters({ direction }: Props) {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filter>({
     task: '',
@@ -190,21 +191,19 @@ export default function HeaderFilters() {
         headerRenderer: (p) => (
           <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
             {({ filters, ...rest }) => (
-              <>
-                <input
-                  {...rest}
-                  className={filterClassname}
-                  value={filters.developer}
-                  onChange={(e) =>
-                    setFilters({
-                      ...filters,
-                      developer: e.target.value
-                    })
-                  }
-                  onKeyDown={inputStopPropagation}
-                  list="developers"
-                />
-              </>
+              <input
+                {...rest}
+                className={filterClassname}
+                value={filters.developer}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    developer: e.target.value
+                  })
+                }
+                onKeyDown={inputStopPropagation}
+                list="developers"
+              />
             )}
           </FilterRenderer>
         )
@@ -286,6 +285,7 @@ export default function HeaderFilters() {
           columns={columns}
           rows={filteredRows}
           headerRowHeight={filters.enabled ? 70 : undefined}
+          direction={direction}
         />
       </FilterContext.Provider>
       <datalist id="developers">
@@ -330,7 +330,7 @@ function createRows() {
       complete: Math.min(100, Math.round(Math.random() * 110)),
       priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
       issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
-      developer: faker.name.findName()
+      developer: faker.name.fullName()
     });
   }
   return rows;

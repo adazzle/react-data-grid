@@ -18,7 +18,7 @@
 
 ## Features
 
-- [React 16.14+ & 17.0+](package.json) support
+- [React 18.0+](package.json) support
 - [Evergreen browsers and server-side rendering](browserslist) support
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
@@ -40,6 +40,8 @@
 - [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
+- [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
+- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
 
@@ -60,6 +62,7 @@ npm install react-data-grid
 ## Quick start
 
 ```jsx
+import 'react-data-grid/lib/styles.css';
 import DataGrid from 'react-data-grid';
 
 const columns = [
@@ -97,7 +100,9 @@ An array describing the grid's columns.
 
 An array of rows, the rows data can be of any type.
 
-###### `summaryRows?: Maybe<readonly SR[]>`
+###### `topSummaryRows?: Maybe<readonly SR[]>`
+
+###### `bottomSummaryRows?: Maybe<readonly SR[]>`
 
 An optional array of summary rows, usually used to display total values for example.
 
@@ -179,6 +184,8 @@ A number defining the height of summary rows.
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
+###### `onCopy?: Maybe<(event: CopyEvent<R>) => void>`
+
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
 ###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
@@ -195,31 +202,51 @@ A number defining the height of summary rows.
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
-###### <span name="rowRenderer">`rowRenderer?: Maybe<React.ComponentType<RowRendererProps<R, SR>>>`</span>
+###### `renderers?: Maybe<Renderers<R, SR>>`
 
-The default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props for example.
+This prop can be used to override the internal renderers. The prop accepts an object of type
+
+```tsx
+interface Renderers<TRow, TSummaryRow> {
+  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
+  checkboxFormatter?: Maybe<
+    (props: CheckboxFormatterProps, ref: Ref<HTMLInputElement>) => ReactNode
+  >;
+  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  noRowsFallback?: Maybe<ReactNode>;
+}
+```
+
+For example, the default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props
 
 ```tsx
 import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
 
-function MyRowRenderer(props: RowRendererProps<Row>) {
+function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
   return (
-    <MyContext.Provider value={123}>
+    <MyContext.Provider key={key} value={123}>
       <Row {...props} />
     </MyContext.Provider>
   );
 }
 
 function MyGrid() {
-  return <DataGrid columns={columns} rows={rows} rowRenderer={MyRowRenderer} />;
+  return <DataGrid columns={columns} rows={rows} renderers={{ rowRenderer: myRowRenderer }} />;
 }
 ```
 
 :warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
 
-###### `noRowsFallback?: React.ReactNode`
-
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
+
+##### `direction?: Maybe<'ltr' | 'rtl'>`
+
+This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
+
+- Columns flow from right to left
+- Frozen columns are pinned on the right
+- Column resize handle is shown on the left edge of the column
+- Scrollbar is moved to the left
 
 ###### `className?: string | undefined`
 
@@ -241,7 +268,7 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`rowRenderer`](#rowRenderer)
+See [`renderers`](#renderers-mayberenderersr-sr)
 
 ##### Props
 
