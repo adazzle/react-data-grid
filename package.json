@@ -70,7 +70,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
-    "babel-loader": "^8.2.5",
+    "babel-loader": "^9.0.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^4.0.0",
