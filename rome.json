@@ -1,0 +1,85 @@
+{
+  "formatter": {
+    "enabled": false,
+    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"],
+    "indentStyle": "space",
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingComma": "none"
+    }
+  },
+  "linter": {
+    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"],
+    "rules": {
+      "recommended": false,
+      "a11y": {
+        "noAutofocus": "off",
+        "noPositiveTabindex": "warn",
+        "useAltText": "warn",
+        "useAnchorContent": "warn",
+        "useBlankTarget": "warn",
+        "useButtonType": "warn",
+        "useKeyWithClickEvents": "off",
+        "useKeyWithMouseEvents": "off",
+        "useValidAnchor": "off"
+      },
+      "complexity": {
+        "noExtraBooleanCast": "warn",
+        "useSimplifiedLogicExpression": "off"
+      },
+      "correctness": {
+        "noArguments": "warn",
+        "noArrayIndexKey": "off",
+        "noAsyncPromiseExecutor": "warn",
+        "noCatchAssign": "warn",
+        "noChildrenProp": "off",
+        "noCommentText": "warn",
+        "noCompareNegZero": "warn",
+        "noDebugger": "warn",
+        "noDelete": "warn",
+        "noDoubleEquals": "warn",
+        "noDupeArgs": "warn",
+        "noEmptyPattern": "warn",
+        "noFunctionAssign": "warn",
+        "noImportAssign": "warn",
+        "noLabelVar": "warn",
+        "noMultipleSpacesInRegularExpressionLiterals": "warn",
+        "noNewSymbol": "off",
+        "noRenderReturnValue": "warn",
+        "noRestrictedGlobals": "off",
+        "noShadowRestrictedNames": "warn",
+        "noSparseArray": "warn",
+        "noUndeclaredVariables": "off",
+        "noUnnecessaryContinue": "warn",
+        "noUnreachable": "warn",
+        "noUnsafeNegation": "warn",
+        "noUnusedVariables": "off",
+        "noUselessFragments": "off",
+        "noVoidElementsWithChildren": "warn",
+        "useSingleCaseStatement": "off",
+        "useValidTypeof": "warn",
+        "useWhile": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn",
+        "noDangerouslySetInnerHtmlWithChildren": "warn"
+      },
+      "style": {
+        "noImplicitBoolean": "off",
+        "noNegationElse": "off",
+        "noShoutyConstants": "warn",
+        "noUnusedTemplateLiteral": "warn",
+        "useBlockStatements": "off",
+        "useFragmentSyntax": "warn",
+        "useOptionalChain": "warn",
+        "useSelfClosingElements": "warn",
+        "useShorthandArrayType": "warn",
+        "useSingleVarDeclarator": "warn",
+        "useTemplate": "warn"
+      }
+    }
+  }
+}
