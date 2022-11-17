@@ -116,7 +116,7 @@ export default function CustomizableComponents({ direction }: Props) {
 }
 
 function checkboxFormatter(
-  { disabled, onChange, ...props }: CheckboxFormatterProps,
+  { onChange, ...props }: CheckboxFormatterProps,
   ref: React.RefObject<HTMLInputElement>
 ) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

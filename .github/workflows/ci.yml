@@ -24,6 +24,8 @@ jobs:
           key: npm-${{ hashFiles('package.json') }}
       - name: npm install
         run: npm i
+      - name: Rome
+        run: npm run rome:ci
       - name: ESLint
         run: npm run eslint
       - name: Prettier
