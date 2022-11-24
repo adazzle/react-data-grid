@@ -157,12 +157,14 @@ export function useCalculatedColumns<R, SR>({
       let width = columnWidths.get(column.key) ?? column.width;
       if (typeof width === 'number') {
         width = clampColumnWidth(width, column);
+        templateColumns.push(`${width}px`);
       } else {
+        // Allow custom values
+        templateColumns.push(width);
         // This is a placeholder width so we can continue to use virtualization.
         // The actual value is set after the column is rendered
         width = column.minWidth;
       }
-      templateColumns.push(`${width}px`);
       columnMetrics.set(column, { width, left });
       left += width;
     }

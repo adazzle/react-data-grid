@@ -3,6 +3,7 @@ import clsx from 'clsx';
 
 import type { CalculatedColumn } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
+import React from 'react';
 
 export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
   if (height !== undefined) {
@@ -18,11 +19,18 @@ export function getCellStyle<R, SR>(
   column: CalculatedColumn<R, SR>,
   colSpan?: number
 ): React.CSSProperties {
-  return {
-    gridColumnStart: column.idx + 1,
-    gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
-    insetInlineStart: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
+  const style: React.CSSProperties = {
+    gridColumnStart: column.idx + 1
   };
+
+  if (colSpan !== undefined) {
+    style.gridColumnEnd = `span ${colSpan}`;
+  }
+  if (column.frozen) {
+    style.insetInlineStart = `var(--rdg-frozen-left-${column.idx})`;
+  }
+
+  return style;
 }
 
 export function getCellClassname<R, SR>(
