@@ -165,6 +165,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
+  /** Function called whenever selected cell is changed */
+  onSelectedCellChange?: Maybe<(position: Position) => void>;
 
   /**
    * Toggles and modes
@@ -177,6 +179,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
+  shouldCloseEditor?: Maybe<
+    (column: CalculatedColumn<R, SR>, currentlyEditedRow: R, incomingRow: R) => boolean
+  >;
   renderers?: Maybe<Renderers<R, SR>>;
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   /** @default 'ltr' */
@@ -222,6 +227,7 @@ function DataGrid<R, SR, K extends Key>(
     onRowDoubleClick,
     onScroll,
     onColumnResize,
+    onSelectedCellChange,
     onFill,
     onCopy,
     onPaste,
@@ -229,6 +235,7 @@ function DataGrid<R, SR, K extends Key>(
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization: rawEnableVirtualization,
     // Miscellaneous
+    shouldCloseEditor,
     renderers,
     className,
     style,
@@ -770,11 +777,13 @@ function DataGrid<R, SR, K extends Key>(
     if (enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx] as R;
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
+      onSelectedCellChange?.(position);
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
     } else {
       setSelectedPosition({ ...position, mode: 'SELECT' });
+      onSelectedCellChange?.(position);
     }
   }
 
@@ -988,7 +997,10 @@ function DataGrid<R, SR, K extends Key>(
       }
     };
 
-    if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
+    if (
+      !isGroupRow(rows[selectedPosition.rowIdx]) &&
+      shouldCloseEditor?.(column, selectedPosition.originalRow, rows[selectedPosition.rowIdx] as R)
+    ) {
       // Discard changes if rows are updated from outside
       closeEditor();
     }
