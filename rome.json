@@ -1,7 +1,10 @@
 {
+  "$schema": "./node_modules/rome/configuration_schema.json",
+  "files": {
+    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"]
+  },
   "formatter": {
     "enabled": false,
-    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"],
     "indentStyle": "space",
     "lineWidth": 100
   },
@@ -12,15 +15,14 @@
     }
   },
   "linter": {
-    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"],
     "rules": {
       "recommended": false,
       "a11y": {
         "noAutofocus": "off",
+        "noBlankTarget": "warn",
         "noPositiveTabindex": "warn",
         "useAltText": "warn",
         "useAnchorContent": "warn",
-        "useBlankTarget": "warn",
         "useButtonType": "warn",
         "useKeyWithClickEvents": "off",
         "useKeyWithMouseEvents": "off",
@@ -28,57 +30,64 @@
       },
       "complexity": {
         "noExtraBooleanCast": "warn",
+        "noMultipleSpacesInRegularExpressionLiterals": "warn",
+        "noUselessFragments": "warn",
+        "useFlatMap": "warn",
+        "useOptionalChain": "warn",
         "useSimplifiedLogicExpression": "off"
       },
       "correctness": {
-        "noArguments": "warn",
-        "noArrayIndexKey": "off",
-        "noAsyncPromiseExecutor": "warn",
-        "noCatchAssign": "warn",
         "noChildrenProp": "off",
-        "noCommentText": "warn",
-        "noCompareNegZero": "warn",
-        "noDebugger": "warn",
-        "noDelete": "warn",
-        "noDoubleEquals": "warn",
-        "noDupeArgs": "warn",
+        "noConstAssign": "warn",
         "noEmptyPattern": "warn",
-        "noFunctionAssign": "warn",
-        "noImportAssign": "warn",
-        "noLabelVar": "warn",
-        "noMultipleSpacesInRegularExpressionLiterals": "warn",
         "noNewSymbol": "off",
         "noRenderReturnValue": "warn",
-        "noRestrictedGlobals": "off",
-        "noShadowRestrictedNames": "warn",
-        "noSparseArray": "warn",
         "noUndeclaredVariables": "off",
         "noUnnecessaryContinue": "warn",
         "noUnreachable": "warn",
-        "noUnsafeNegation": "warn",
         "noUnusedVariables": "off",
-        "noUselessFragments": "off",
         "noVoidElementsWithChildren": "warn",
-        "useSingleCaseStatement": "off",
-        "useValidTypeof": "warn",
-        "useWhile": "warn"
+        "useValidForDirection": "warn"
+      },
+      "performance": {
+        "noDelete": "warn"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn",
         "noDangerouslySetInnerHtmlWithChildren": "warn"
       },
       "style": {
+        "noArguments": "warn",
         "noImplicitBoolean": "off",
         "noNegationElse": "off",
         "noShoutyConstants": "warn",
         "noUnusedTemplateLiteral": "warn",
         "useBlockStatements": "off",
         "useFragmentSyntax": "warn",
-        "useOptionalChain": "warn",
         "useSelfClosingElements": "warn",
         "useShorthandArrayType": "warn",
+        "useSingleCaseStatement": "off",
         "useSingleVarDeclarator": "warn",
-        "useTemplate": "warn"
+        "useTemplate": "warn",
+        "useWhile": "warn"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noAsyncPromiseExecutor": "warn",
+        "noCatchAssign": "warn",
+        "noCommentText": "warn",
+        "noCompareNegZero": "warn",
+        "noDebugger": "warn",
+        "noDoubleEquals": "warn",
+        "noDuplicateParameters": "warn",
+        "noExplicitAny": "off",
+        "noFunctionAssign": "warn",
+        "noImportAssign": "warn",
+        "noLabelVar": "warn",
+        "noShadowRestrictedNames": "warn",
+        "noSparseArray": "warn",
+        "noUnsafeNegation": "warn",
+        "useValidTypeof": "warn"
       }
     }
   }
