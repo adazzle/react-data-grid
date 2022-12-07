@@ -4,5 +4,8 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
   "typescript.tsdk": "node_modules/typescript/lib"
 }

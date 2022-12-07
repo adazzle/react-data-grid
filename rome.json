@@ -4,7 +4,7 @@
     "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"]
   },
   "formatter": {
-    "enabled": false,
+    "ignore": ["*.ts", "*.tsx"],
     "indentStyle": "space",
     "lineWidth": 100
   },
