@@ -243,28 +243,58 @@ describe('Editor', () => {
     });
 
     it('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
-      const column: Column<unknown> = {
-        key: 'col',
-        name: 'Column',
-        editor() {
-          return <input value="123" readOnly autoFocus />;
+      const columns: readonly Column<unknown>[] = [
+        {
+          key: 'col1',
+          name: 'Column1',
+          editor() {
+            return <input aria-label="col1-input" value="123" readOnly autoFocus />;
+          }
+        },
+        {
+          key: 'col2',
+          name: 'Column2',
+          editor({ onClose }) {
+            return (
+              <input
+                aria-label="col2-input"
+                value="123"
+                readOnly
+                autoFocus
+                onBlur={() => {
+                  onClose(true);
+                }}
+              />
+            );
+          },
+          editorOptions: {
+            commitOnOutsideClick: false
+          }
         }
-      };
+      ];
 
       render(
         <>
-          <input value="abc" readOnly />
-          <DataGrid columns={[column]} rows={[{}]} />
+          <input aria-label="outer-input" value="abc" readOnly />
+          <DataGrid columns={columns} rows={[{}]} />
         </>
       );
 
+      const outerInput = screen.getByLabelText('outer-input');
       await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-      const editorInput = screen.getByDisplayValue('123');
-      const outerInput = screen.getByDisplayValue('abc');
-      expect(editorInput).toHaveFocus();
+      const col1Input = screen.getByLabelText('col1-input');
+      expect(col1Input).toHaveFocus();
       await userEvent.click(outerInput);
       expect(outerInput).toHaveFocus();
-      await waitForElementToBeRemoved(editorInput);
+      await waitForElementToBeRemoved(col1Input);
+      expect(outerInput).toHaveFocus();
+
+      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const col2Input = screen.getByLabelText('col2-input');
+      expect(col2Input).toHaveFocus();
+      await userEvent.click(outerInput);
+      expect(outerInput).toHaveFocus();
+      expect(col2Input).not.toBeInTheDocument();
       expect(outerInput).toHaveFocus();
     });
   });
