@@ -13,10 +13,13 @@ export function useRovingCellRef(isSelected: boolean) {
   const ref = useCallback((cell: HTMLDivElement | null) => {
     if (cell === null) return;
     scrollIntoView(cell);
-    if (cell.contains(document.activeElement)) return;
-    if (!cell.closest('.rdg')!.contains(document.activeElement)) {
+    if (
+      cell.contains(document.activeElement) ||
+      !cell.closest('.rdg')!.contains(document.activeElement)
+    ) {
       return;
     }
+
     cell.focus({ preventScroll: true });
   }, []);
 
