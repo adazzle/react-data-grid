@@ -1,47 +1,36 @@
-import { useRef, useState } from 'react';
-import { useLayoutEffect } from './useLayoutEffect';
+import { useCallback, useState } from 'react';
+import { scrollIntoView } from '../utils';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
 export function useRovingCellRef(isSelected: boolean) {
-  const ref = useRef<HTMLDivElement>(null);
   // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
-  const isChildFocused = useRef(false);
-  const [, forceRender] = useState<unknown>({});
+  const [isChildFocused, setIsChildFocused] = useState(false);
 
-  useLayoutEffect(() => {
-    if (!isSelected) {
-      isChildFocused.current = false;
+  if (isChildFocused && !isSelected) {
+    setIsChildFocused(false);
+  }
+
+  const ref = useCallback((cell: HTMLDivElement | null) => {
+    if (cell === null) return;
+    scrollIntoView(cell);
+    if (cell.contains(document.activeElement)) return;
+    if (!cell.closest('.rdg')!.contains(document.activeElement)) {
       return;
     }
-
-    if (
-      document.activeElement &&
-      document.activeElement !== document.body &&
-      !ref.current?.closest('.rdg')?.contains(document.activeElement)
-    ) {
-      return;
-    }
-
-    if (isChildFocused.current) {
-      // When the child is focused, we need to rerender
-      // the cell again so tabIndex is updated to -1
-      forceRender({});
-      return;
-    }
-    ref.current?.focus({ preventScroll: true });
-  }, [isSelected]);
+    cell.focus({ preventScroll: true });
+  }, []);
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
-    if (event.target !== ref.current) {
-      isChildFocused.current = true;
+    if (event.target !== event.currentTarget) {
+      setIsChildFocused(true);
     }
   }
 
-  const isFocusable = isSelected && !isChildFocused.current;
+  const isFocusable = isSelected && !isChildFocused;
 
   return {
-    ref,
+    ref: isSelected ? ref : undefined,
     tabIndex: isFocusable ? 0 : -1,
-    onFocus
+    onFocus: isSelected ? onFocus : undefined
   };
 }

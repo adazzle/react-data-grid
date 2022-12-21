@@ -50,53 +50,55 @@ function testSelection(rowIdx: number, isSelected: boolean) {
   expect(getRows()[rowIdx]).toHaveAttribute('aria-selected', isSelected ? 'true' : 'false');
 }
 
-function toggleSelection(rowIdx: number, shiftKey = false) {
-  userEvent.click(within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select'), { shiftKey });
+async function toggleSelection(rowIdx: number, shift = false) {
+  const element = within(getCellsAtRowIndex(rowIdx)[0]).getByLabelText('Select');
+  const user = userEvent.setup();
+  if (shift) await user.keyboard('{Shift>}');
+  await user.click(element);
+  if (shift) await user.keyboard('{/Shift}');
 }
 
-test('toggle selection when checkbox is clicked', () => {
+test('toggle selection when checkbox is clicked', async () => {
   setup();
-  toggleSelection(0);
+  await toggleSelection(0);
   testSelection(0, true);
-  toggleSelection(1);
+  await toggleSelection(1);
   testSelection(0, true);
 
-  toggleSelection(0);
+  await toggleSelection(0);
   testSelection(0, false);
-  toggleSelection(1);
+  await toggleSelection(1);
   testSelection(1, false);
 });
 
-test('toggle selection using keyboard', () => {
+test('toggle selection using keyboard', async () => {
   setup();
   testSelection(0, false);
-  userEvent.click(getCellsAtRowIndex(0)[0]);
-  userEvent.keyboard('{space}');
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  await userEvent.keyboard(' ');
   testSelection(0, true);
-  userEvent.keyboard('{arrowdown}');
-  userEvent.keyboard('{space}');
+  await userEvent.keyboard('{arrowdown} ');
   testSelection(1, true);
-  userEvent.keyboard('{arrowup}');
-  userEvent.keyboard('{space}');
+  await userEvent.keyboard('{arrowup} ');
   testSelection(0, false);
 });
 
-test('select/deselect all rows when header checkbox is clicked', () => {
+test('select/deselect all rows when header checkbox is clicked', async () => {
   setup();
   const headerCheckbox = screen.getByLabelText('Select All');
   expect(headerCheckbox).not.toBeChecked();
-  userEvent.click(headerCheckbox);
+  await userEvent.click(headerCheckbox);
   testSelection(0, true);
   testSelection(1, true);
   testSelection(2, true);
 
   // deselecting a row should toggle header
-  toggleSelection(0);
+  await toggleSelection(0);
   expect(headerCheckbox).not.toBeChecked();
-  toggleSelection(0);
+  await toggleSelection(0);
   expect(headerCheckbox).toBeChecked();
 
-  userEvent.click(headerCheckbox);
+  await userEvent.click(headerCheckbox);
   testSelection(0, false);
   testSelection(1, false);
   testSelection(2, false);
@@ -137,7 +139,7 @@ test('header checkbox is not necessarily checked when selectedRows.size > rows.l
   expect(screen.getByLabelText('Select All')).not.toBeChecked();
 });
 
-test('extra keys are preserved when updating the selectedRows Set', () => {
+test('extra keys are preserved when updating the selectedRows Set', async () => {
   const initialSet = new Set([-1, 0, 99]);
   let set = initialSet;
 
@@ -168,38 +170,38 @@ test('extra keys are preserved when updating the selectedRows Set', () => {
 
   const headerCheckbox = screen.getByLabelText('Select All');
 
-  toggleSelection(1);
+  await toggleSelection(1);
   expect(set).toStrictEqual(new Set([...initialSet, 2]));
 
-  userEvent.click(headerCheckbox);
+  await userEvent.click(headerCheckbox);
   expect(set).toStrictEqual(new Set([...initialSet, 1, 2, 3]));
 
-  userEvent.click(headerCheckbox);
+  await userEvent.click(headerCheckbox);
   expect(set).toStrictEqual(initialSet);
 
-  toggleSelection(1);
+  await toggleSelection(1);
   expect(set).toStrictEqual(new Set([...initialSet, 2]));
 
-  toggleSelection(1);
+  await toggleSelection(1);
   expect(set).toStrictEqual(initialSet);
 });
 
-test('select rows using shift click', () => {
+test('select rows using shift click', async () => {
   setup();
-  toggleSelection(0);
-  toggleSelection(2, true);
+  await toggleSelection(0);
+  await toggleSelection(2, true);
   testSelection(0, true);
   testSelection(1, true);
   testSelection(2, true);
 });
 
-test('select rows using shift space', () => {
+test('select rows using shift space', async () => {
   setup();
-  userEvent.click(getCellsAtRowIndex(0)[1]);
-  userEvent.keyboard('{shift}{space}');
+  await userEvent.click(getCellsAtRowIndex(0)[1]);
+  await userEvent.keyboard('{Shift>} ');
   testSelection(0, true);
-  userEvent.keyboard('{space}');
+  await userEvent.keyboard(' ');
   testSelection(0, true);
-  userEvent.keyboard('{shift}{space}');
+  await userEvent.keyboard('{Shift>} ');
   testSelection(0, false);
 });

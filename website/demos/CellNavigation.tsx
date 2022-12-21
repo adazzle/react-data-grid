@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import DataGrid from '../../src';
 import type { Column, CellNavigationMode } from '../../src';
+import type { Props } from './types';
 
 interface Row {
   id: number;
@@ -69,19 +70,19 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function CellNavigation() {
+export default function CellNavigation({ direction }: Props) {
   const [rows] = useState(createRows);
-  const [cellNavigatioMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
+  const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
   return (
     <>
-      <div style={{ marginBottom: 5 }}>
+      <div style={{ marginBlockEnd: 5 }}>
         Cell Navigation Modes:
         <label>
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === 'NONE'}
+            checked={cellNavigationMode === 'NONE'}
             onChange={() => setCellNavigationMode('NONE')}
           />
           None
@@ -90,7 +91,7 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === 'CHANGE_ROW'}
+            checked={cellNavigationMode === 'CHANGE_ROW'}
             onChange={() => setCellNavigationMode('CHANGE_ROW')}
           />
           Change Row
@@ -99,13 +100,18 @@ export default function CellNavigation() {
           <input
             type="radio"
             name="mode"
-            checked={cellNavigatioMode === 'LOOP_OVER_ROW'}
+            checked={cellNavigationMode === 'LOOP_OVER_ROW'}
             onChange={() => setCellNavigationMode('LOOP_OVER_ROW')}
           />
           Loop Over Row
         </label>
       </div>
-      <DataGrid columns={columns} rows={rows} cellNavigationMode={cellNavigatioMode} />
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        cellNavigationMode={cellNavigationMode}
+        direction={direction}
+      />
     </>
   );
 }

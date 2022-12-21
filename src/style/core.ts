@@ -2,83 +2,104 @@ import { css } from '@linaria/core';
 import { row } from './row';
 
 const lightTheme = `
-  --color: #000;
-  --border-color: #ddd;
-  --summary-border-color: #aaa;
-  --background-color: hsl(0deg 0% 100%);
-  --header-background-color: hsl(0deg 0% 97.5%);
-  --row-hover-background-color: hsl(0deg 0% 96%);
-  --row-selected-background-color: hsl(207deg 76% 92%);
-  --row-selected-hover-background-color: hsl(207deg 76% 88%);
+  --rdg-color: #000;
+  --rdg-border-color: #ddd;
+  --rdg-summary-border-color: #aaa;
+  --rdg-background-color: hsl(0deg 0% 100%);
+  --rdg-header-background-color: hsl(0deg 0% 97.5%);
+  --rdg-row-hover-background-color: hsl(0deg 0% 96%);
+  --rdg-row-selected-background-color: hsl(207deg 76% 92%);
+  --rdg-row-selected-hover-background-color: hsl(207deg 76% 88%);
 
-  --checkbox-color: hsl(207deg 100% 29%);
-  --checkbox-focus-color: hsl(207deg 100% 69%);
-  --checkbox-disabled-border-color: #ccc;
-  --checkbox-disabled-background-color: #ddd;
+  --rdg-checkbox-color: hsl(207deg 100% 29%);
+  --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
+  --rdg-checkbox-disabled-border-color: #ccc;
+  --rdg-checkbox-disabled-background-color: #ddd;
 `;
 
 const darkTheme = `
-  --color: #ddd;
-  --border-color: #444;
-  --summary-border-color: #555;
-  --background-color: hsl(0deg 0% 13%);
-  --header-background-color: hsl(0deg 0% 10.5%);
-  --row-hover-background-color: hsl(0deg 0% 9%);
-  --row-selected-background-color: hsl(207deg 76% 42%);
-  --row-selected-hover-background-color: hsl(207deg 76% 38%);
+  --rdg-color: #ddd;
+  --rdg-border-color: #444;
+  --rdg-summary-border-color: #555;
+  --rdg-background-color: hsl(0deg 0% 13%);
+  --rdg-header-background-color: hsl(0deg 0% 10.5%);
+  --rdg-row-hover-background-color: hsl(0deg 0% 9%);
+  --rdg-row-selected-background-color: hsl(207deg 76% 42%);
+  --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);
 
-  --checkbox-color: hsl(207deg 100% 79%);
-  --checkbox-focus-color: hsl(207deg 100% 89%);
-  --checkbox-disabled-border-color: #000;
-  --checkbox-disabled-background-color: #333;
+  --rdg-checkbox-color: hsl(207deg 100% 79%);
+  --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
+  --rdg-checkbox-disabled-border-color: #000;
+  --rdg-checkbox-disabled-background-color: #333;
 `;
 
 const root = css`
-  ${lightTheme}
-  --selection-color: #66afe9;
-  --font-size: 14px;
+  @layer rdg {
+    @layer Defaults,
+      FocusSink,
+      CheckboxInput,
+      CheckboxIcon,
+      CheckboxLabel,
+      Cell,
+      HeaderCell,
+      SummaryCell,
+      EditCell,
+      Row,
+      HeaderRow,
+      SummaryRow,
+      GroupedRow,
+      Root;
 
-  color-scheme: var(--color-scheme, light dark);
+    @layer Defaults {
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+    }
 
-  /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
-  /* We set a stacking context so internal elements don't render on top of external components. */
-  contain: strict;
-  contain: size layout style paint;
-  content-visibility: auto;
-  height: 350px;
-  border: 1px solid var(--border-color);
-  box-sizing: border-box;
-  overflow: auto;
-  user-select: none;
-  background-color: var(--background-color);
-  color: var(--color);
-  font-size: var(--font-size);
-  direction: ltr;
+    @layer Root {
+      ${lightTheme}
+      --rdg-selection-color: #66afe9;
+      --rdg-font-size: 14px;
 
-  /* set stacking context in safari */
-  @supports not (contain: strict) {
-    position: relative;
-    z-index: 0;
-  }
+      display: grid;
 
-  *,
-  *::before,
-  *::after {
-    box-sizing: inherit;
-  }
+      color-scheme: var(--rdg-color-scheme, light dark);
 
-  &.rdg-dark {
-    --color-scheme: dark;
-    ${darkTheme}
-  }
+      /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
+      /* We set a stacking context so internal elements don't render on top of external elements. */
+      contain: strict;
+      content-visibility: auto;
+      block-size: 350px;
+      border: 1px solid var(--rdg-border-color);
+      box-sizing: border-box;
+      overflow: auto;
+      background-color: var(--rdg-background-color);
+      color: var(--rdg-color);
+      font-size: var(--rdg-font-size);
 
-  &.rdg-light {
-    --color-scheme: light;
-  }
+      /* needed on Firefox */
+      &::before {
+        content: '';
+        grid-column: 1/-1;
+        grid-row: 1/-1;
+      }
 
-  @media (prefers-color-scheme: dark) {
-    &:not(.rdg-light) {
-      ${darkTheme}
+      &.rdg-dark {
+        --rdg-color-scheme: dark;
+        ${darkTheme}
+      }
+
+      &.rdg-light {
+        --rdg-color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        &:not(.rdg-light) {
+          ${darkTheme}
+        }
+      }
     }
   }
 `;
@@ -86,9 +107,22 @@ const root = css`
 export const rootClassname = `rdg ${root}`;
 
 const viewportDragging = css`
-  &.${row} {
-    cursor: move;
+  @layer rdg.Root {
+    user-select: none;
+
+    & .${row} {
+      cursor: move;
+    }
   }
 `;
 
 export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDragging}`;
+
+export const focusSinkClassname = css`
+  @layer rdg.FocusSink {
+    grid-column: 1/-1;
+    pointer-events: none;
+    /* Should have a higher value than 2 to show up above header row */
+    z-index: 3;
+  }
+`;
