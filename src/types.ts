@@ -1,4 +1,4 @@
-import type { Key, ReactElement, ReactNode, RefObject } from 'react';
+import type { Key, MutableRefObject, ReactElement, ReactNode, RefObject } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -114,7 +114,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
       RowRendererProps<TRow, TSummaryRow>,
-      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
+      'onRowClick' | 'onRowDoubleClick' | 'selectCell' | 'skipCellFocus'
     >,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -124,7 +124,6 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isDraggedOver: boolean;
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  isModeChangedFromEditToSelect: boolean | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
@@ -142,7 +141,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  isModeChangedFromEditToSelect: boolean;
+  skipCellFocus: MutableRefObject<boolean>;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;

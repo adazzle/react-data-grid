@@ -280,6 +280,7 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
+  const skipCellFocus = useRef(false);
 
   /**
    * computed values
@@ -979,8 +980,14 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
-    const onRowChange = (row: R, commitChanges?: boolean) => {
+    const onRowChange = (
+      row: R,
+      commitChanges?: boolean,
+      outsideClickedElement?: Element | null
+    ) => {
       if (commitChanges) {
+        skipCellFocus.current =
+          outsideClickedElement != null && !gridRef.current!.contains(outsideClickedElement);
         updateRow(column, selectedPosition.rowIdx, row);
         closeEditor();
       } else {
@@ -1002,16 +1009,6 @@ function DataGrid<R, SR, K extends Key>(
         onRowChange={onRowChange}
         closeEditor={closeEditor}
       />
-    );
-  }
-
-  function isCellModeChangedFromEditToSelect(rowIdx: number) {
-    return (
-      selectedPosition.rowIdx === rowIdx &&
-      selectedPosition.rowIdx === prevSelectedPosition.current.rowIdx &&
-      selectedPosition.idx === prevSelectedPosition.current.idx &&
-      selectedPosition.mode === 'SELECT' &&
-      prevSelectedPosition.current.mode === 'EDIT'
     );
   }
 
@@ -1141,7 +1138,7 @@ function DataGrid<R, SR, K extends Key>(
           selectCell: selectViewportCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
           selectedCellEditor: getCellEditor(rowIdx),
-          isModeChangedFromEditToSelect: isCellModeChangedFromEditToSelect(rowIdx)
+          skipCellFocus
         })
       );
     }
