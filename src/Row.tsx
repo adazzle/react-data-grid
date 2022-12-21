@@ -23,6 +23,7 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
+    isModeChangedFromEditToSelect,
     onRowClick,
     onRowDoubleClick,
     rowClass,
@@ -78,6 +79,7 @@ function Row<R, SR>(
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
+          isModeChangedFromEditToSelect={isCellSelected ? isModeChangedFromEditToSelect : undefined}
           onRowClick={onRowClick}
           onRowDoubleClick={onRowDoubleClick}
           onRowChange={handleRowChange}

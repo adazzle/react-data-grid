@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { scrollIntoView } from '../utils';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
-export function useRovingCellRef(isSelected: boolean) {
+export function useRovingCellRef(isSelected: boolean, isModeChangedFromEditToSelect?: boolean) {
   // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
   const [isChildFocused, setIsChildFocused] = useState(false);
 
@@ -10,18 +10,21 @@ export function useRovingCellRef(isSelected: boolean) {
     setIsChildFocused(false);
   }
 
-  const ref = useCallback((cell: HTMLDivElement | null) => {
-    if (cell === null) return;
-    scrollIntoView(cell);
-    if (
-      cell.contains(document.activeElement) ||
-      !cell.closest('.rdg')!.contains(document.activeElement)
-    ) {
-      return;
-    }
+  const ref = useCallback(
+    (cell: HTMLDivElement | null) => {
+      if (cell === null) return;
+      scrollIntoView(cell);
+      if (
+        cell.contains(document.activeElement) ||
+        (isModeChangedFromEditToSelect && !cell.closest('.rdg')!.contains(document.activeElement))
+      ) {
+        return;
+      }
 
-    cell.focus({ preventScroll: true });
-  }, []);
+      cell.focus({ preventScroll: true });
+    },
+    [isModeChangedFromEditToSelect]
+  );
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
     if (event.target !== event.currentTarget) {

@@ -1005,6 +1005,16 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function isCellModeChangedFromEditToSelect(rowIdx: number) {
+    return (
+      selectedPosition.rowIdx === rowIdx &&
+      selectedPosition.rowIdx === prevSelectedPosition.current.rowIdx &&
+      selectedPosition.idx === prevSelectedPosition.current.idx &&
+      selectedPosition.mode === 'SELECT' &&
+      prevSelectedPosition.current.mode === 'EDIT'
+    );
+  }
+
   function getRowViewportColumns(rowIdx: number) {
     const selectedColumn = columns[selectedPosition.idx];
     if (
@@ -1130,7 +1140,8 @@ function DataGrid<R, SR, K extends Key>(
           onRowChange: handleFormatterRowChangeLatest,
           selectCell: selectViewportCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
-          selectedCellEditor: getCellEditor(rowIdx)
+          selectedCellEditor: getCellEditor(rowIdx),
+          isModeChangedFromEditToSelect: isCellModeChangedFromEditToSelect(rowIdx)
         })
       );
     }
