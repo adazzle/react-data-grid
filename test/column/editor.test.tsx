@@ -33,6 +33,7 @@ describe('Editor', () => {
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
     await userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^31$/);
+    expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
   });
 
@@ -50,6 +51,7 @@ describe('Editor', () => {
     await userEvent.keyboard('2222{escape}');
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1$/);
+    expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
   });
 
   it('should commit changes and close editor when clicked outside', async () => {
