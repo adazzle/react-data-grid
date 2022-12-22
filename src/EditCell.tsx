@@ -32,7 +32,7 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose' | 'onRowChange'>,
     SharedCellRendererProps<R, SR> {
-  onRowChange: (row: R, commitChanges?: boolean, clickedElement?: Element | null) => void;
+  onRowChange: (row: R, commitChanges?: boolean, clickedNode?: Node | null) => void;
   closeEditor: () => void;
 }
 
@@ -44,7 +44,7 @@ export default function EditCell<R, SR>({
   closeEditor
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
-  const clickedElementRef = useRef<Element | null>(null);
+  const clickedNodeRef = useRef<Node | null>(null);
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
 
   // We need to prevent the `useEffect` from cleaning up between re-renders,
@@ -56,8 +56,8 @@ export default function EditCell<R, SR>({
 
   useEffect(() => {
     function onWindowCaptureMouseDown(event: MouseEvent) {
-      if (event.target instanceof Element) {
-        clickedElementRef.current = event.target;
+      if (event.target instanceof Node) {
+        clickedNodeRef.current = event.target;
       }
       if (commitOnOutsideClick) {
         frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
@@ -94,7 +94,7 @@ export default function EditCell<R, SR>({
 
   function onClose(commitChanges?: boolean) {
     if (commitChanges) {
-      onRowChange(row, true, clickedElementRef.current);
+      onRowChange(row, true, clickedNodeRef.current);
     } else {
       closeEditor();
     }

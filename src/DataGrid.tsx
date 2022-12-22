@@ -980,10 +980,9 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
-    const onRowChange = (row: R, commitChanges?: boolean, clickedElement?: Element | null) => {
+    const onRowChange = (row: R, commitChanges?: boolean, clickedNode?: Node | null) => {
       if (commitChanges) {
-        skipCellFocus.current =
-          clickedElement != null && !gridRef.current!.contains(clickedElement);
+        skipCellFocus.current = clickedNode != null && !gridRef.current!.contains(clickedNode);
         updateRow(column, selectedPosition.rowIdx, row);
         closeEditor();
       } else {
