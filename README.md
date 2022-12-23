@@ -256,7 +256,9 @@ This property sets the text direction of the grid, it defaults to `'ltr'` (left-
 
 ###### `'aria-describedby'?: string | undefined`
 
-###### `'data-testid'?: Maybe<string>`
+###### `'data-*'?: Maybe<string>`
+
+Any arbitrary data-\* attribute can be passed to the outer table wrapper element.
 
 #### `<TextEditor />`
 
