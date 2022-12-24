@@ -1,5 +1,5 @@
 import { StrictMode, useState } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -24,6 +24,7 @@ import RowsReordering from './demos/RowsReordering';
 import ScrollToRow from './demos/ScrollToRow';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
+import Animation from './demos/Animation';
 
 css`
   @at-root {
@@ -111,6 +112,7 @@ function Root() {
           <Route path="scroll-to-row" element={<ScrollToRow direction={direction} />} />
           <Route path="tree-view" element={<TreeView direction={direction} />} />
           <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
+          <Route path="animation" element={<Animation direction={direction} />} />
           <Route path="*" element="Nothing to see here" />
         </Routes>
       </main>
@@ -118,9 +120,8 @@ function Root() {
   );
 }
 
-render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Root />
-  </StrictMode>,
-  document.getElementById('root')
+  </StrictMode>
 );

@@ -3,6 +3,7 @@ import type { CalculatedColumn } from '../types';
 export * from './colSpanUtils';
 export * from './domUtils';
 export * from './keyboardUtils';
+export * from './renderMeasuringCells';
 export * from './selectedCellUtils';
 export * from './styleUtils';
 
@@ -23,7 +24,7 @@ export function clampColumnWidth<R, SR>(
   width = max(width, minWidth);
 
   // ignore maxWidth if it less than minWidth
-  if (typeof maxWidth === 'number' && maxWidth > minWidth) {
+  if (typeof maxWidth === 'number' && maxWidth >= minWidth) {
     return min(width, maxWidth);
   }
 

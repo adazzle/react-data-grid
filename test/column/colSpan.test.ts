@@ -1,4 +1,3 @@
-import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
@@ -35,7 +34,7 @@ describe('colSpan', () => {
         }
       });
     }
-    setup({ columns, rows, summaryRows: [1, 2] });
+    setup({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
   }
 
   it('should merges cells', () => {
@@ -43,8 +42,20 @@ describe('colSpan', () => {
     // header
     expect(getHeaderCells()).toHaveLength(13);
 
+    // top summary rows
+    const topSummarryRow1 = getCellsAtRowIndex(0);
+    expect(topSummarryRow1).toHaveLength(14);
+    // 7th-8th cells are merged
+    expect(topSummarryRow1[7]).toHaveAttribute('aria-colindex', '8');
+    expect(topSummarryRow1[7]).toHaveAttribute('aria-colspan', '2');
+    expect(topSummarryRow1[7]).toHaveStyle({
+      'grid-column-start': '8',
+      'grid-column-end': 'span 2'
+    });
+    expect(getCellsAtRowIndex(1)).toHaveLength(15);
+
     // rows
-    const row1 = getCellsAtRowIndex(1);
+    const row1 = getCellsAtRowIndex(3);
     expect(row1).toHaveLength(14);
     // 7th-8th cells are merged
     expect(row1[6]).toHaveAttribute('aria-colindex', '7');
@@ -57,7 +68,7 @@ describe('colSpan', () => {
     expect(row1[7]).not.toHaveAttribute('aria-colspan');
 
     // 3rd-5th, 7th-8th cells are merged
-    const row2 = getCellsAtRowIndex(2);
+    const row2 = getCellsAtRowIndex(4);
     expect(row2).toHaveLength(12);
     expect(row2[2]).toHaveAttribute('aria-colindex', '3');
     expect(row2[2]).toHaveStyle({
@@ -73,103 +84,119 @@ describe('colSpan', () => {
     });
     expect(row2[5]).toHaveAttribute('aria-colindex', '9');
 
-    expect(getCellsAtRowIndex(4)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
-    expect(getCellsAtRowIndex(5)).toHaveLength(10);
+    expect(getCellsAtRowIndex(6)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
+    expect(getCellsAtRowIndex(7)).toHaveLength(10);
 
-    // summary row
-    expect(getCellsAtRowIndex(10)).toHaveLength(14);
-    expect(getCellsAtRowIndex(11)).toHaveLength(15);
+    // bottom summary row
+    expect(getCellsAtRowIndex(12)).toHaveLength(14);
+    expect(getCellsAtRowIndex(13)).toHaveLength(15);
   });
 
-  it('should navigate between merged cells', () => {
+  it('should navigate between merged cells', async () => {
     setupColSpanGrid();
     // header row
-    userEvent.click(getHeaderCells()[7]);
+    await userEvent.click(getHeaderCells()[7]);
     validateCellPosition(7, 0);
-    userEvent.keyboard('{arrowright}');
+    await userEvent.keyboard('{arrowright}');
     validateCellPosition(8, 0);
-    userEvent.keyboard('{arrowright}');
+    await userEvent.keyboard('{arrowright}');
     validateCellPosition(11, 0);
-    userEvent.keyboard('{arrowright}');
+    await userEvent.keyboard('{arrowright}');
     validateCellPosition(12, 0);
-    userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
     validateCellPosition(7, 0);
+
+    // top summary rows
+    await userEvent.click(getCellsAtRowIndex(0)[6]);
+    validateCellPosition(6, 1);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(7, 1);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(9, 1);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(10, 1);
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
+    validateCellPosition(6, 1);
 
     // viewport rows
-    userEvent.click(getCellsAtRowIndex(1)[1]);
-    validateCellPosition(1, 2);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(2, 2);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(3, 2);
-    userEvent.keyboard('{arrowdown}');
-    validateCellPosition(2, 3);
-    userEvent.keyboard('{arrowleft}');
-    validateCellPosition(1, 3);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(2, 3);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(5, 3);
-    userEvent.keyboard('{arrowleft}');
-    validateCellPosition(2, 3);
-    userEvent.keyboard('{arrowdown}');
+    await userEvent.click(getCellsAtRowIndex(3)[1]);
+    validateCellPosition(1, 4);
+    await userEvent.keyboard('{arrowright}');
     validateCellPosition(2, 4);
-    userEvent.keyboard('{arrowdown}{arrowdown}');
-    validateCellPosition(0, 6);
-    userEvent.keyboard('{arrowLeft}');
-    validateCellPosition(0, 6);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(5, 6);
-    userEvent.tab({ shift: true });
-    userEvent.tab({ shift: true });
-    validateCellPosition(14, 5);
-    userEvent.tab();
-    validateCellPosition(0, 6);
-    userEvent.click(getCellsAtRowIndex(8)[11]);
-    validateCellPosition(11, 9);
-    userEvent.tab();
-    validateCellPosition(12, 9);
-    userEvent.tab();
-    validateCellPosition(0, 10);
-    userEvent.tab({ shift: true });
-    validateCellPosition(12, 9);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(3, 4);
+    await userEvent.keyboard('{arrowdown}');
+    validateCellPosition(2, 5);
+    await userEvent.keyboard('{arrowleft}');
+    validateCellPosition(1, 5);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(2, 5);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(5, 5);
+    await userEvent.keyboard('{arrowleft}');
+    validateCellPosition(2, 5);
+    await userEvent.keyboard('{arrowdown}');
+    validateCellPosition(2, 6);
+    await userEvent.keyboard('{arrowdown}{arrowdown}');
+    validateCellPosition(0, 8);
+    await userEvent.keyboard('{arrowLeft}');
+    validateCellPosition(0, 8);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(5, 8);
+    await userEvent.tab({ shift: true });
+    await userEvent.tab({ shift: true });
+    validateCellPosition(14, 7);
+    await userEvent.tab();
+    validateCellPosition(0, 8);
+    await userEvent.click(getCellsAtRowIndex(10)[11]);
+    validateCellPosition(11, 11);
+    await userEvent.tab();
+    validateCellPosition(12, 11);
+    await userEvent.tab();
+    validateCellPosition(0, 12);
+    await userEvent.tab({ shift: true });
+    validateCellPosition(12, 11);
 
-    // summary rows
-    userEvent.click(getCellsAtRowIndex(10)[6]);
-    validateCellPosition(6, 11);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(7, 11);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(9, 11);
-    userEvent.keyboard('{arrowright}');
-    validateCellPosition(10, 11);
-    userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
-    validateCellPosition(6, 11);
+    // bottom summary rows
+    await userEvent.click(getCellsAtRowIndex(12)[6]);
+    validateCellPosition(6, 13);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(7, 13);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(9, 13);
+    await userEvent.keyboard('{arrowright}');
+    validateCellPosition(10, 13);
+    await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
+    validateCellPosition(6, 13);
   });
 
-  it('should scroll to the merged cell when selected', () => {
+  it('should scroll to the merged cell when selected', async () => {
     setupColSpanGrid(30);
-    const grid = screen.getByRole('grid');
-    userEvent.click(getCellsAtRowIndex(8)[23]); // last visible cell (1920/80)
-    navigate(3);
-    expect(grid.scrollLeft).toBe(240);
-    navigate(1);
-    expect(grid.scrollLeft).toBe(480); // should bring the merged cell into view
-    validateCellPosition(27, 9);
-    navigate(7);
-    expect(grid.scrollLeft).toBe(0);
-    validateCellPosition(6, 10); // should navigate to the next row
-    navigate(7, true);
-    expect(grid.scrollLeft).toBe(480);
-    validateCellPosition(27, 9); // should navigate to the previous row
-    navigate(27);
-    expect(grid.scrollLeft).toBe(240);
-    navigate(1);
-    expect(grid.scrollLeft).toBe(320); // should only bring 1 cell into view
+    await userEvent.click(getCellsAtRowIndex(10)[23]); // last visible cell (1920/80)
+    const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const testScrollIntoView = () => {
+      expect(spy).toHaveBeenCalled();
+      spy.mockReset();
+    };
+    await navigate(3);
+    testScrollIntoView();
+    await navigate(1);
+    testScrollIntoView(); // should bring the merged cell into view
+    validateCellPosition(27, 11);
+    await navigate(7);
+    testScrollIntoView();
+    validateCellPosition(6, 12); // should navigate to the next row
+    await navigate(7, true);
+    testScrollIntoView();
+    validateCellPosition(27, 11); // should navigate to the previous row
+    await navigate(27);
+    testScrollIntoView();
+    await navigate(1);
+    testScrollIntoView(); // should only bring 1 cell into view
 
-    function navigate(count: number, shift = false) {
+    async function navigate(count: number, shift = false) {
       for (let i = 0; i < count; i++) {
-        userEvent.tab({ shift });
+        await userEvent.tab({ shift });
       }
     }
   });

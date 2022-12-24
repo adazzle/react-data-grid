@@ -22,7 +22,7 @@ import type { CalculatedColumn, CellRendererProps, EditorProps, Maybe, Omit } fr
  */
 
 const cellEditing = css`
-  &.rdg-cell {
+  @layer rdg.EditCell {
     padding: 0;
   }
 `;
@@ -33,7 +33,6 @@ interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose'>,
     SharedCellRendererProps<R, SR> {
   closeEditor: () => void;
-  scrollToCell: () => void;
   navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   onKeyDown: Maybe<
     (
@@ -55,7 +54,6 @@ export default function EditCell<R, SR>({
   row,
   onRowChange,
   closeEditor,
-  scrollToCell,
   onKeyDown,
   navigate
 }: EditCellProps<R, SR>) {
@@ -96,7 +94,6 @@ export default function EditCell<R, SR>({
       onClose();
     } else if (event.key === 'Enter') {
       onClose(true);
-      scrollToCell();
     } else if (onEditorNavigation(event)) {
       navigate(event);
     }
@@ -131,10 +128,14 @@ export default function EditCell<R, SR>({
     >
       {column.editor != null && (
         <>
-          <column.editor column={column} row={row} onRowChange={onRowChange} onClose={onClose} />
-          {column.editorOptions?.renderFormatter && (
-            <column.formatter column={column} row={row} isCellSelected onRowChange={onRowChange} />
-          )}
+          {column.editor({
+            column,
+            row,
+            onRowChange,
+            onClose
+          })}
+          {column.editorOptions?.renderFormatter &&
+            column.formatter({ column, row, isCellSelected: true, onRowChange })}
         </>
       )}
     </div>
