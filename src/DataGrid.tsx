@@ -60,7 +60,8 @@ import type {
   RowHeightArgs,
   Maybe,
   Renderers,
-  Direction
+  Direction,
+  CellKeyDownArgs
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -161,24 +162,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
   onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
-  onCellKeyDown?: Maybe<
-    (
-      args:
-        | {
-            mode: 'SELECT';
-            idx: number;
-            rowIdx: number;
-            selectCell: DataGridHandle['selectCell'];
-          }
-        | {
-            mode: 'EDIT';
-            idx: number;
-            rowIdx: number;
-            onClose: (commitChanges?: boolean) => void;
-          },
-      event: KeyboardEvent<HTMLDivElement>
-    ) => void
-  >;
+  onCellKeyDown?: Maybe<(args: CellKeyDownArgs, event: KeyboardEvent<HTMLDivElement>) => void>;
   /** Function called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */

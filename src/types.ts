@@ -235,3 +235,19 @@ export interface Renderers<TRow, TSummaryRow> {
 }
 
 export type Direction = 'ltr' | 'rtl';
+
+interface SelectCellKeyDownArgs {
+  mode: 'SELECT';
+  idx: number;
+  rowIdx: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface EditCellKeyDownArgs {
+  mode: 'EDIT';
+  idx: number;
+  rowIdx: number;
+  onClose: (commitChanges?: boolean) => void;
+}
+
+export type CellKeyDownArgs = SelectCellKeyDownArgs | EditCellKeyDownArgs;

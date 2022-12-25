@@ -30,5 +30,6 @@ export type {
   SortIconProps,
   SortPriorityProps,
   SortStatusProps,
-  Renderers
+  Renderers,
+  CellKeyDownArgs
 } from './types';

@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
 import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
-import type { CellRendererProps, EditorProps, Maybe, Omit } from './types';
+import type { CellRendererProps, EditCellKeyDownArgs, EditorProps, Maybe, Omit } from './types';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -35,17 +35,7 @@ interface EditCellProps<R, SR>
   rowIdx: number;
   closeEditor: () => void;
   navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  onKeyDown: Maybe<
-    (
-      args: {
-        mode: 'EDIT';
-        idx: number;
-        rowIdx: number;
-        onClose: (commitChanges?: boolean) => void;
-      },
-      event: React.KeyboardEvent<HTMLDivElement>
-    ) => void
-  >;
+  onKeyDown: Maybe<(args: EditCellKeyDownArgs, event: React.KeyboardEvent<HTMLDivElement>) => void>;
 }
 
 export default function EditCell<R, SR>({
