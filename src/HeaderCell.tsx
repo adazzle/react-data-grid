@@ -29,6 +29,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'sortColumns'
   | 'onSortColumnsChange'
   | 'allRowsSelected'
+  | 'someRowsSelected'
   | 'onAllRowsSelectionChange'
   | 'selectCell'
   | 'onColumnResize'
@@ -48,6 +49,7 @@ export default function HeaderCell<R, SR>({
   isCellSelected,
   onColumnResize,
   allRowsSelected,
+  someRowsSelected,
   onAllRowsSelectionChange,
   sortColumns,
   onSortColumnsChange,
@@ -189,6 +191,7 @@ export default function HeaderCell<R, SR>({
         priority,
         onSort,
         allRowsSelected,
+        someRowsSelected,
         onAllRowsSelectionChange,
         isCellSelected
       })}

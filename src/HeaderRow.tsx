@@ -16,6 +16,7 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   columns: readonly CalculatedColumn<R, SR>[];
   allRowsSelected: boolean;
+  someRowsSelected: boolean;
   onAllRowsSelectionChange: (checked: boolean) => void;
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
   selectCell: (columnIdx: number) => void;
@@ -50,6 +51,7 @@ const headerRowClassname = `rdg-header-row ${headerRow}`;
 function HeaderRow<R, SR, K extends React.Key>({
   columns,
   allRowsSelected,
+  someRowsSelected,
   onAllRowsSelectionChange,
   onColumnResize,
   sortColumns,
@@ -76,6 +78,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         isCellSelected={selectedCellIdx === column.idx}
         onColumnResize={onColumnResize}
         allRowsSelected={allRowsSelected}
+        someRowsSelected={someRowsSelected}
         onAllRowsSelectionChange={onAllRowsSelectionChange}
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}

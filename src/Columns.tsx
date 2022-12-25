@@ -50,6 +50,7 @@ export const SelectColumn: Column<any, any> = {
         aria-label="Select All"
         isCellSelected={props.isCellSelected}
         value={props.allRowsSelected}
+        isIndeterminate={props.someRowsSelected}
         onChange={props.onAllRowsSelectionChange}
       />
     );
