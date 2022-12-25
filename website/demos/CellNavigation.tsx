@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import DataGrid from '../../src';
-import type { Column } from '../../src';
+import type { Column, CellKeyDownArgs } from '../../src';
 import type { Props } from './types';
 
 interface Row {
@@ -76,6 +76,59 @@ export default function CellNavigation({ direction }: Props) {
   const [rows] = useState(createRows);
   const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
+  function handleCellKeyDown(args: CellKeyDownArgs, event: React.KeyboardEvent<HTMLDivElement>) {
+    if (args.mode === 'EDIT') return;
+    const { idx, rowIdx, selectCell } = args;
+    const { key, shiftKey } = event;
+    const loopOverNavigation = () => {
+      if ((key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) && idx === columns.length - 1) {
+        selectCell({ rowIdx, idx: 0 });
+        event.preventDefault();
+      } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && idx === 0) {
+        selectCell({ rowIdx, idx: columns.length - 1 });
+        event.preventDefault();
+      }
+    };
+
+    const changeRowNavigation = () => {
+      if (key === 'ArrowRight' && idx === columns.length - 1) {
+        if (rows.length === 0) return;
+        if (rowIdx === -1) {
+          selectCell({ rowIdx: 0, idx: 0 });
+        } else {
+          if (rowIdx === rows.length - 1) return;
+          selectCell({ rowIdx: rowIdx + 1, idx: 0 });
+        }
+        event.preventDefault();
+      } else if (key === 'ArrowLeft' && idx === 0) {
+        if (rowIdx === -1) return;
+        selectCell({ rowIdx: rowIdx - 1, idx: columns.length - 1 });
+        event.preventDefault();
+      }
+    };
+
+    const loopOverColumnNavigation = () => {
+      let newRowIdx: number;
+      if (rowIdx === -1) {
+        newRowIdx = shiftKey ? rows.length - 1 : 0;
+      } else {
+        newRowIdx = shiftKey ? rowIdx - 1 : rowIdx === rows.length - 1 ? -1 : rowIdx + 1;
+      }
+      selectCell({ rowIdx: newRowIdx, idx });
+      event.preventDefault();
+    };
+
+    if (cellNavigationMode === 'LOOP_OVER_ROW') {
+      loopOverNavigation();
+    } else if (cellNavigationMode === 'CHANGE_ROW') {
+      changeRowNavigation();
+    } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
+      loopOverColumnNavigation();
+    } else if (cellNavigationMode === 'NO_TAB' && key === 'Tab') {
+      event.stopPropagation();
+    }
+  }
+
   return (
     <>
       <div style={{ marginBlockEnd: 5 }}>
@@ -130,61 +183,7 @@ export default function CellNavigation({ direction }: Props) {
         columns={columns}
         rows={rows}
         direction={direction}
-        onCellKeyDown={(args, event) => {
-          if (args.mode === 'EDIT') return;
-          const { idx, rowIdx, selectCell } = args;
-          const { key, shiftKey } = event;
-          const loopOverNavigation = () => {
-            if (
-              (key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) &&
-              idx === columns.length - 1
-            ) {
-              selectCell({ rowIdx, idx: 0 });
-              event.preventDefault();
-            } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && idx === 0) {
-              selectCell({ rowIdx, idx: columns.length - 1 });
-              event.preventDefault();
-            }
-          };
-
-          const changeRowNavigation = () => {
-            if (key === 'ArrowRight' && idx === columns.length - 1) {
-              if (rows.length === 0) return;
-              if (rowIdx === -1) {
-                selectCell({ rowIdx: 0, idx: 0 });
-              } else {
-                if (rowIdx === rows.length - 1) return;
-                selectCell({ rowIdx: rowIdx + 1, idx: 0 });
-              }
-              event.preventDefault();
-            } else if (key === 'ArrowLeft' && idx === 0) {
-              if (rowIdx === -1) return;
-              selectCell({ rowIdx: rowIdx - 1, idx: columns.length - 1 });
-              event.preventDefault();
-            }
-          };
-
-          const loopOverColumnNavigation = () => {
-            let newRowIdx: number;
-            if (rowIdx === -1) {
-              newRowIdx = shiftKey ? rows.length - 1 : 0;
-            } else {
-              newRowIdx = shiftKey ? rowIdx - 1 : rowIdx === rows.length - 1 ? -1 : rowIdx + 1;
-            }
-            selectCell({ rowIdx: newRowIdx, idx });
-            event.preventDefault();
-          };
-
-          if (cellNavigationMode === 'LOOP_OVER_ROW') {
-            loopOverNavigation();
-          } else if (cellNavigationMode === 'CHANGE_ROW') {
-            changeRowNavigation();
-          } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
-            loopOverColumnNavigation();
-          } else if (cellNavigationMode === 'NO_TAB' && key === 'Tab') {
-            event.stopPropagation();
-          }
-        }}
+        onCellKeyDown={handleCellKeyDown}
       />
     </>
   );
