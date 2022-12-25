@@ -165,29 +165,16 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
     (
       args:
         | {
-            type: 'HEADER';
-            column: CalculatedColumn<R, SR>;
-            selectCell: DataGridHandle['selectCell'];
-          }
-        | {
-            type: 'ROW';
             mode: 'SELECT';
-            row: R;
-            column: CalculatedColumn<R, SR>;
+            idx: number;
+            rowIdx: number;
             selectCell: DataGridHandle['selectCell'];
           }
         | {
-            type: 'ROW';
             mode: 'EDIT';
-            row: R;
-            column: CalculatedColumn<R, SR>;
-            closeEditor: (commitChanges?: boolean) => void;
-          }
-        | {
-            type: 'SUMMARY';
-            column: CalculatedColumn<R, SR>;
-            row: SR;
-            selectCell: DataGridHandle['selectCell'];
+            idx: number;
+            rowIdx: number;
+            onClose: (commitChanges?: boolean) => void;
           },
       event: KeyboardEvent<HTMLDivElement>
     ) => void
@@ -608,63 +595,31 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function handleCustomKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (!onCellKeyDown) return;
-    const { rowIdx, idx } = selectedPosition;
-    const column = columns[idx];
-    if (rowIdx === -1) {
-      onCellKeyDown(
-        {
-          type: 'HEADER',
-          column,
-          selectCell
-        },
-        event
-      );
-    } else if (rowIdx >= 0 && rowIdx < rows.length) {
-      const row = rows[rowIdx];
-      if (!isGroupRow(row)) {
-        onCellKeyDown(
-          {
-            type: 'ROW',
-            mode: 'SELECT',
-            column,
-            row,
-            selectCell
-          },
-          event
-        );
-      }
-    } else if (summaryRows) {
-      onCellKeyDown(
-        {
-          type: 'SUMMARY',
-          column,
-          row: summaryRows[rowIdx - rows.length - 1],
-          selectCell
-        },
-        event
-      );
-    }
-  }
-
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    handleCustomKeyDown(event);
-    if (event.isDefaultPrevented() || event.isPropagationStopped()) return;
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const { idx, rowIdx, mode } = selectedPosition;
+    if (mode === 'EDIT') return;
+    onCellKeyDown?.(
+      {
+        mode: 'SELECT',
+        idx,
+        rowIdx,
+        selectCell
+      },
+      event
+    );
+    if (event.isDefaultPrevented()) return;
     if (!(event.target instanceof Element)) return;
-    const isCellEvent = event.target.closest('.rdg-cell:not(.rdg-editor-container)') !== null;
+    const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
-    const { rowIdx } = selectedPosition;
 
     if (
       selectedCellIsWithinViewportBounds &&
       (onPaste != null || onCopy != null) &&
       isCtrlKeyHeldDown(event) &&
-      !isGroupRow(rows[rowIdx]) &&
-      selectedPosition.mode === 'SELECT'
+      !isGroupRow(rows[rowIdx])
     ) {
       // event.key may differ by keyboard input language, so we use event.keyCode instead
       // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
@@ -776,7 +731,7 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(targetColumn, rowIdx, updatedTargetRow);
   }
 
-  function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleCellInput(event: KeyboardEvent<HTMLDivElement>) {
     if (!selectedCellIsWithinViewportBounds) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
@@ -936,7 +891,7 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
+  function navigate(event: KeyboardEvent<HTMLDivElement>) {
     const { key, shiftKey } = event;
     let cellNavigationMode: CellNavigationMode = 'NONE';
     if (key === 'Tab') {
@@ -1064,6 +1019,7 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
+        rowIdx={rowIdx}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
         onKeyDown={onCellKeyDown}

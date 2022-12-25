@@ -188,8 +188,8 @@ describe('Editor', () => {
     it('should not open editor if onCellKeyDown prevents the default event', async () => {
       render(
         <EditorTest
-          onCellKeyDown={(params, event) => {
-            if (params.type === 'ROW' && params.mode === 'SELECT' && event.key === 'x') {
+          onCellKeyDown={(args, event) => {
+            if (args.mode === 'SELECT' && event.key === 'x') {
               event.preventDefault();
             }
           }}
@@ -202,13 +202,13 @@ describe('Editor', () => {
       expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     });
 
-    it('should prevent navigation if onNavigation returns false', async () => {
+    it('should prevent navigation if onCellKeyDown prevents the default event', async () => {
       render(
         <EditorTest
-          onCellKeyDown={(params, event) => {
-            if (params.type === 'ROW' && params.mode === 'EDIT' && event.key === 'ArrowDown') {
+          onCellKeyDown={(args, event) => {
+            if (args.mode === 'EDIT' && event.key === 'ArrowDown') {
               event.preventDefault();
-              params.closeEditor(true);
+              args.onClose(true);
             }
           }}
         />

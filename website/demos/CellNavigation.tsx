@@ -131,58 +131,47 @@ export default function CellNavigation({ direction }: Props) {
         rows={rows}
         direction={direction}
         onCellKeyDown={(args, event) => {
-          if (args.type === 'SUMMARY' || (args.type === 'ROW' && args.mode === 'EDIT')) return;
-          const { column, ...props } = args;
+          if (args.mode === 'EDIT') return;
+          const { idx, rowIdx, selectCell } = args;
           const { key, shiftKey } = event;
           const loopOverNavigation = () => {
             if (
               (key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) &&
-              column.idx === columns.length - 1
+              idx === columns.length - 1
             ) {
-              const rowIdx = props.type === 'HEADER' ? -1 : rows.indexOf(props.row);
-              props.selectCell({ rowIdx, idx: 0 });
+              selectCell({ rowIdx, idx: 0 });
               event.preventDefault();
-            } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && column.idx === 0) {
-              const rowIdx = props.type === 'HEADER' ? -1 : rows.indexOf(props.row);
-              props.selectCell({ rowIdx, idx: columns.length - 1 });
+            } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && idx === 0) {
+              selectCell({ rowIdx, idx: columns.length - 1 });
               event.preventDefault();
             }
           };
 
           const changeRowNavigation = () => {
-            if (key === 'ArrowRight' && column.idx === columns.length - 1) {
+            if (key === 'ArrowRight' && idx === columns.length - 1) {
               if (rows.length === 0) return;
-              let rowIdx: number;
-              if (props.type === 'HEADER') {
-                rowIdx = 0;
+              if (rowIdx === -1) {
+                selectCell({ rowIdx: 0, idx: 0 });
               } else {
-                if (props.row === rows[rows.length - 1]) return;
-                rowIdx = rows.indexOf(props.row) + 1;
+                if (rowIdx === rows.length - 1) return;
+                selectCell({ rowIdx: rowIdx + 1, idx: 0 });
               }
-              props.selectCell({ rowIdx, idx: 0 });
               event.preventDefault();
-            } else if (key === 'ArrowLeft' && column.idx === 0) {
-              if (props.type === 'HEADER') return;
-              props.selectCell({ rowIdx: rows.indexOf(props.row) - 1, idx: columns.length - 1 });
+            } else if (key === 'ArrowLeft' && idx === 0) {
+              if (rowIdx === -1) return;
+              selectCell({ rowIdx: rowIdx - 1, idx: columns.length - 1 });
               event.preventDefault();
             }
           };
 
           const loopOverColumnNavigation = () => {
-            let rowIdx: number;
-            if (props.type === 'HEADER') {
-              rowIdx = shiftKey ? rows.length - 1 : 0;
+            let newRowIdx: number;
+            if (rowIdx === -1) {
+              newRowIdx = shiftKey ? rows.length - 1 : 0;
             } else {
-              const { row } = props;
-              rowIdx = shiftKey
-                ? row === rows[0]
-                  ? -1
-                  : rows.indexOf(row) - 1
-                : row === rows[rows.length - 1]
-                ? -1
-                : rows.indexOf(row) + 1;
+              newRowIdx = shiftKey ? rowIdx - 1 : rowIdx === rows.length - 1 ? -1 : rowIdx + 1;
             }
-            props.selectCell({ rowIdx, idx: column.idx });
+            selectCell({ rowIdx: newRowIdx, idx });
             event.preventDefault();
           };
 

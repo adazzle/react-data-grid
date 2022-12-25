@@ -137,7 +137,7 @@ export function getNextSelectedCellPosition<R, SR>({
     setColSpan(nextIdx - currentIdx > 0);
   }
 
-  if (cellNavigationMode !== 'NONE') {
+  if (cellNavigationMode === 'CHANGE_ROW') {
     const columnsCount = columns.length;
     const isAfterLastColumn = nextIdx === columnsCount;
     const isBeforeFirstColumn = nextIdx === -1;
@@ -176,6 +176,7 @@ export function canExitGrid({
   selectedPosition: { rowIdx, idx },
   shiftKey
 }: CanExitGridOpts): boolean {
+  // Exit the grid if we're at the first or last cell of the grid
   const atLastCellInRow = idx === maxColIdx;
   const atFirstCellInRow = idx === 0;
   const atLastRow = rowIdx === maxRowIdx;
