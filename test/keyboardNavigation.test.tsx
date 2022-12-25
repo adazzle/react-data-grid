@@ -98,7 +98,7 @@ test('keyboard navigation', async () => {
   validateCellPosition(6, 0);
 });
 
-test('cellNavigationMode="NONE"', async () => {
+test('arrow and tab navigation', async () => {
   setup({ columns, rows, bottomSummaryRows });
 
   // pressing arrowleft on the leftmost cell does nothing
