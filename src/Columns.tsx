@@ -39,6 +39,7 @@ export const SelectColumn: Column<any, any> = {
   key: SELECT_COLUMN_KEY,
   name: '',
   width: 35,
+  minWidth: 35,
   maxWidth: 35,
   resizable: false,
   sortable: false,
@@ -53,6 +54,10 @@ export const SelectColumn: Column<any, any> = {
       />
     );
   },
-  formatter: SelectFormatter,
-  groupFormatter: SelectGroupFormatter
+  formatter(props) {
+    return <SelectFormatter {...props} />;
+  },
+  groupFormatter(props) {
+    return <SelectGroupFormatter {...props} />;
+  }
 };

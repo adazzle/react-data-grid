@@ -3,26 +3,34 @@ import type { GroupFormatterProps } from '../types';
 import { useFocusRef } from '../hooks/useFocusRef';
 
 const groupCellContent = css`
-  outline: none;
+  @layer rdg.GroupCellContent {
+    outline: none;
+  }
 `;
 
 const groupCellContentClassname = `rdg-group-cell-content ${groupCellContent}`;
 
 const caret = css`
-  margin-inline-start: 4px;
-  stroke: currentColor;
-  stroke-width: 1.5px;
-  fill: transparent;
-  vertical-align: middle;
+  @layer rdg.GroupCellCaret {
+    margin-inline-start: 4px;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    fill: transparent;
+    vertical-align: middle;
 
-  > path {
-    transition: d 0.1s;
+    > path {
+      transition: d 0.1s;
+    }
   }
 `;
 
 const caretClassname = `rdg-caret ${caret}`;
 
-export function ToggleGroupFormatter<R, SR>({
+export function toggleGroupFormatter<R, SR>(props: GroupFormatterProps<R, SR>) {
+  return <ToggleGroup {...props} />;
+}
+
+export function ToggleGroup<R, SR>({
   groupKey,
   isExpanded,
   isCellSelected,
@@ -45,7 +53,7 @@ export function ToggleGroupFormatter<R, SR>({
       tabIndex={tabIndex}
       onKeyDown={handleKeyDown}
     >
-      {groupKey}
+      {groupKey as string}
       <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname} aria-hidden>
         <path d={d} />
       </svg>

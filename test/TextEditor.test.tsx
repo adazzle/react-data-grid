@@ -2,7 +2,7 @@ import { StrictMode, useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { TextEditor } from '../src';
+import DataGrid, { textEditor } from '../src';
 import type { Column } from '../src';
 import { getCells } from './utils';
 
@@ -10,7 +10,7 @@ interface Row {
   readonly name: string;
 }
 
-const columns: readonly Column<Row>[] = [{ key: 'name', name: 'Name', editor: TextEditor }];
+const columns: readonly Column<Row>[] = [{ key: 'name', name: 'Name', editor: textEditor }];
 const initialRows: readonly Row[] = [{ name: 'Tacitus Kilgore' }];
 
 function Test() {
@@ -19,14 +19,14 @@ function Test() {
   return <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />;
 }
 
-test('TextEditor', () => {
+test('TextEditor', async () => {
   render(
     <StrictMode>
       <Test />
     </StrictMode>
   );
 
-  userEvent.dblClick(getCells()[0]);
+  await userEvent.dblClick(getCells()[0]);
   let input: HTMLInputElement | null = screen.getByRole<HTMLInputElement>('textbox');
   expect(input).toHaveClass('rdg-text-editor');
   // input value is row[column.key]
@@ -38,15 +38,15 @@ test('TextEditor', () => {
   expect(input.selectionEnd).toBe(initialRows[0].name.length);
 
   // pressing escape closes the editor without committing
-  userEvent.keyboard('Test{escape}');
+  await userEvent.keyboard('Test{escape}');
   expect(input).not.toBeInTheDocument();
   input = null;
   expect(getCells()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
 
   // blurring the input closes and commits the editor
-  userEvent.dblClick(getCells()[0]);
+  await userEvent.dblClick(getCells()[0]);
   input = screen.getByRole<HTMLInputElement>('textbox');
-  userEvent.keyboard('Jim Milton');
+  await userEvent.keyboard('Jim Milton');
   fireEvent.blur(input);
   expect(input).not.toBeInTheDocument();
   expect(getCells()[0]).toHaveTextContent(/^Jim Milton$/);

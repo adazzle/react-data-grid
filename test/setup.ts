@@ -9,12 +9,16 @@ if (typeof window !== 'undefined') {
     }
 
     observe() {
-      this.callback([], this);
+      // patch inlineSize/blockSize to pretend we're rendering DataGrid at 1920p/1080p
+      // @ts-expect-error
+      this.callback([{ contentBoxSize: [{ inlineSize: 1920, blockSize: 1080 }] }], this);
     }
 
     unobserve() {}
     disconnect() {}
   };
+
+  window.HTMLElement.prototype.scrollIntoView ??= () => {};
 
   // patch clientWidth/clientHeight to pretend we're rendering DataGrid at 1080p
   Object.defineProperties(HTMLDivElement.prototype, {
@@ -47,9 +51,9 @@ if (typeof window !== 'undefined') {
       get(this: Element) {
         return getScrollState(this).scrollTop;
       },
-      set(this: Element, value: number) {
+      async set(this: Element, value: number) {
         getScrollState(this).scrollTop = value;
-        act(() => {
+        await act(() => {
           this.dispatchEvent(new Event('scroll'));
         });
       }
@@ -58,9 +62,9 @@ if (typeof window !== 'undefined') {
       get(this: Element) {
         return getScrollState(this).scrollLeft;
       },
-      set(this: Element, value: number) {
+      async set(this: Element, value: number) {
         getScrollState(this).scrollLeft = value;
-        act(() => {
+        await act(() => {
           this.dispatchEvent(new Event('scroll'));
         });
       }

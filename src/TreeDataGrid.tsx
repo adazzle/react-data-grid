@@ -3,7 +3,7 @@ import type { Key, RefAttributes } from 'react';
 
 import DataGrid from './DataGrid';
 import type { DataGridProps, DataGridHandle } from './DataGrid';
-import GroupedRowRenderer from './GroupRow';
+import { defaultGroupRowRenderer } from './GroupRow';
 import type {
   CalculatedColumn,
   Column,
@@ -15,9 +15,9 @@ import type {
   GroupRowHeightArgs,
   RowRendererProps,
   SelectRowEvent,
-  Components
+  Renderers
 } from './types';
-import { SELECT_COLUMN_KEY, ToggleGroupFormatter } from '.';
+import { SELECT_COLUMN_KEY, toggleGroupFormatter } from '.';
 import type { GroupApi } from './hooks';
 import { useLatestFunc, GroupApiProvider } from './hooks';
 import { assertIsValidKeyGetter } from './utils';
@@ -45,7 +45,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     columns: rawColumns,
     rows: rawRows,
     rowHeight: rawRowHeight,
-    components: rawComponents,
+    renderers: rawRenderers,
     rowKeyGetter: rawRowKeyGetter,
     onRowsChange: rawOnRowsChange,
     selectedRows,
@@ -89,7 +89,7 @@ function TreeDataGrid<R, SR, K extends Key>(
           ...column,
           frozen: true,
           formatter: () => null,
-          groupFormatter: column.groupFormatter ?? ToggleGroupFormatter,
+          groupFormatter: column.groupFormatter ?? toggleGroupFormatter,
           editable: false
         };
       }
@@ -253,7 +253,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       toggleGroup: toggleGroupLatest,
       toggleGroupSelection: toggleGroupSelectionLatest,
       getParentRow,
-      rowRenderer: rawComponents?.rowRenderer as Maybe<
+      rowRenderer: rawRenderers?.rowRenderer as Maybe<
         React.ComponentType<RowRendererProps<R | GroupRow<R>, SR>>
       >
     };
@@ -263,15 +263,15 @@ function TreeDataGrid<R, SR, K extends Key>(
     toggleGroupLatest,
     toggleGroupSelectionLatest,
     getParentRow,
-    rawComponents?.rowRenderer
+    rawRenderers?.rowRenderer
   ]);
 
-  const components = useMemo((): Components<GroupRow<R>, SR> => {
+  const renderers = useMemo((): Renderers<GroupRow<R>, SR> => {
     return {
-      ...rawComponents,
-      rowRenderer: GroupedRowRenderer
+      ...rawRenderers,
+      rowRenderer: defaultGroupRowRenderer
     };
-  }, [rawComponents]);
+  }, [rawRenderers]);
 
   function toggleGroup(expandedGroupId: unknown) {
     const newExpandedGroupIds = new Set(expandedGroupIds);
@@ -303,7 +303,12 @@ function TreeDataGrid<R, SR, K extends Key>(
       <DataGrid<R | GroupRow<R>, SR, K>
         // TODO: support onRowClick, rowClass etc on group rows
         {...(props as DataGridProps<R | GroupRow<R>, SR, K>)}
-        aria-rowcount={rowsCount + 1 + (props.summaryRows?.length ?? 0)}
+        aria-rowcount={
+          rowsCount +
+          1 +
+          (props.topSummaryRows?.length ?? 0) +
+          (props.bottomSummaryRows?.length ?? 0)
+        }
         ref={ref}
         columns={columns as Column<R | GroupRow<R>, SR>[]}
         rows={rows}
@@ -312,7 +317,7 @@ function TreeDataGrid<R, SR, K extends Key>(
         onRowsChange={onRowsChange}
         selectedRows={selectedRows}
         onSelectedRowsChange={onSelectedRowsChange}
-        components={components}
+        renderers={renderers}
       />
     </GroupApiProvider>
   );

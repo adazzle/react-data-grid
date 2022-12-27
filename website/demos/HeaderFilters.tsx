@@ -1,11 +1,10 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import faker from 'faker';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
-import DataGrid from '../../src';
+import DataGrid, { useFocusRef } from '../../src';
 import type { Column, HeaderRendererProps } from '../../src';
 import type { Omit } from '../../src/types';
-import { useFocusRef } from '../../src/hooks';
 import type { Props } from './types';
 
 const rootClassname = css`
@@ -331,7 +330,7 @@ function createRows() {
       complete: Math.min(100, Math.round(Math.random() * 110)),
       priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
       issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
-      developer: faker.name.findName()
+      developer: faker.name.fullName()
     });
   }
   return rows;

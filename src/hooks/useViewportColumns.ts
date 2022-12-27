@@ -7,24 +7,28 @@ interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
   rows: readonly R[];
-  summaryRows: Maybe<readonly SR[]>;
+  topSummaryRows: Maybe<readonly SR[]>;
+  bottomSummaryRows: Maybe<readonly SR[]>;
   colOverscanStartIdx: number;
   colOverscanEndIdx: number;
   lastFrozenColumnIndex: number;
   rowOverscanStartIdx: number;
   rowOverscanEndIdx: number;
+  columnWidths: ReadonlyMap<string, number>;
 }
 
 export function useViewportColumns<R, SR>({
   columns,
   colSpanColumns,
   rows,
-  summaryRows,
+  topSummaryRows,
+  bottomSummaryRows,
   colOverscanStartIdx,
   colOverscanEndIdx,
   lastFrozenColumnIndex,
   rowOverscanStartIdx,
-  rowOverscanEndIdx
+  rowOverscanEndIdx,
+  columnWidths
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
   const startIdx = useMemo(() => {
@@ -59,8 +63,21 @@ export function useViewportColumns<R, SR>({
       }
 
       // check summary rows
-      if (summaryRows != null) {
-        for (const row of summaryRows) {
+      if (topSummaryRows != null) {
+        for (const row of topSummaryRows) {
+          if (
+            updateStartIdx(
+              colIdx,
+              getColSpan(column, lastFrozenColumnIndex, { type: 'SUMMARY', row })
+            )
+          ) {
+            break;
+          }
+        }
+      }
+
+      if (bottomSummaryRows != null) {
+        for (const row of bottomSummaryRows) {
           if (
             updateStartIdx(
               colIdx,
@@ -78,21 +95,38 @@ export function useViewportColumns<R, SR>({
     rowOverscanStartIdx,
     rowOverscanEndIdx,
     rows,
-    summaryRows,
+    topSummaryRows,
+    bottomSummaryRows,
     colOverscanStartIdx,
     lastFrozenColumnIndex,
     colSpanColumns
   ]);
 
-  return useMemo((): readonly CalculatedColumn<R, SR>[] => {
+  const { viewportColumns, flexWidthViewportColumns } = useMemo((): {
+    viewportColumns: readonly CalculatedColumn<R, SR>[];
+    flexWidthViewportColumns: readonly CalculatedColumn<R, SR>[];
+  } => {
     const viewportColumns: CalculatedColumn<R, SR>[] = [];
+    const flexWidthViewportColumns: CalculatedColumn<R, SR>[] = [];
     for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
       const column = columns[colIdx];
 
       if (colIdx < startIdx && !column.frozen) continue;
       viewportColumns.push(column);
+      if (typeof column.width === 'string') {
+        flexWidthViewportColumns.push(column);
+      }
     }
 
-    return viewportColumns;
+    return { viewportColumns, flexWidthViewportColumns };
   }, [startIdx, colOverscanEndIdx, columns]);
+
+  const unsizedFlexWidthViewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
+    return flexWidthViewportColumns.filter((column) => !columnWidths.has(column.key));
+  }, [flexWidthViewportColumns, columnWidths]);
+
+  return {
+    viewportColumns,
+    flexWidthViewportColumns: unsizedFlexWidthViewportColumns
+  };
 }

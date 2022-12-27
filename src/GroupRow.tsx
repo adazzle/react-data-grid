@@ -1,4 +1,5 @@
-import { memo } from 'react';
+import type { RefAttributes } from 'react';
+import { forwardRef, memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
@@ -11,41 +12,46 @@ import { RowSelectionChangeProvider, RowSelectionProvider, useGroupApi } from '.
 import { getRowStyle, isCtrlKeyHeldDown } from './utils';
 
 const groupRow = css`
-  &:not([aria-selected='true']) {
-    background-color: var(--rdg-header-background-color);
-  }
+  @layer rdg.GroupedRow {
+    &:not([aria-selected='true']) {
+      background-color: var(--rdg-header-background-color);
+    }
 
-  > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
-    border-inline-end: none;
+    > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+      border-inline-end: none;
+    }
   }
 `;
 
 const groupRowClassname = `rdg-group-row ${groupRow}`;
 
-function GroupedRow<R, SR>({
-  className,
-  row,
-  rowIdx,
-  viewportColumns,
-  selectedCellIdx,
-  copiedCellIdx,
-  draggedOverCellIdx,
-  lastFrozenColumnIndex,
-  isRowSelected,
-  selectedCellEditor,
-  selectedCellDragHandle,
-  rowClass,
-  onRowClick,
-  onRowDoubleClick,
-  onRowChange,
-  setDraggedOverRowIdx,
-  onMouseEnter,
-  selectCell,
-  gridRowStart,
-  height,
-  'aria-rowindex': ariaRowIndex, // ignore default value // TODO
-  ...props
-}: RowRendererProps<R | GroupRow<R>, SR>) {
+function GroupedRow<R, SR>(
+  {
+    className,
+    row,
+    rowIdx,
+    viewportColumns,
+    selectedCellIdx,
+    copiedCellIdx,
+    draggedOverCellIdx,
+    lastFrozenColumnIndex,
+    isRowSelected,
+    selectedCellEditor,
+    selectedCellDragHandle,
+    rowClass,
+    onRowClick,
+    onRowDoubleClick,
+    onRowChange,
+    setDraggedOverRowIdx,
+    onMouseEnter,
+    selectCell,
+    gridRowStart,
+    height,
+    'aria-rowindex': ariaRowIndex, // ignore default value // TODO
+    ...props
+  }: RowRendererProps<R | GroupRow<R>, SR>,
+  ref: React.Ref<HTMLDivElement>
+) {
   const { isRtl, isGroupRow, toggleGroup, getParentRow, toggleGroupSelection, rowRenderer } =
     useGroupApi<R, SR>()!;
   const RowRenderer = rowRenderer ?? Row;
@@ -59,6 +65,7 @@ function GroupedRow<R, SR>({
   if (!isGroupRow(row)) {
     return (
       <RowRenderer
+        ref={ref}
         className={className}
         row={row}
         rowIdx={rowIdx}
@@ -161,4 +168,12 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(props: RowRendererProps<R, SR>) => JSX.Element;
+const GroupRowComponent = memo(forwardRef(GroupedRow)) as <R, SR>(
+  props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+) => JSX.Element;
+
+export default GroupRowComponent;
+
+export function defaultGroupRowRenderer<R, SR>(key: React.Key, props: RowRendererProps<R, SR>) {
+  return <GroupRowComponent key={key} {...props} />;
+}

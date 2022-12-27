@@ -129,6 +129,9 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/variable-row-height" end className={getActiveClassname}>
         Variable Row Height
       </NavLink>
+      <NavLink to="/animation" end className={getActiveClassname}>
+        Animation
+      </NavLink>
 
       <h2>Links</h2>
       <a

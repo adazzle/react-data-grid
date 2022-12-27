@@ -53,17 +53,16 @@ function GroupCell<R, SR>({
       onClick={isLevelMatching ? toggleGroup : undefined}
       onFocus={onFocus}
     >
-      {(isLevelMatching || column.key === SELECT_COLUMN_KEY) && column.groupFormatter && (
-        <column.groupFormatter
-          groupKey={groupKey}
-          childRows={childRows}
-          column={column}
-          row={row}
-          isExpanded={isExpanded}
-          isCellSelected={isCellSelected}
-          toggleGroup={toggleGroup}
-        />
-      )}
+      {(isLevelMatching || column.key === SELECT_COLUMN_KEY) &&
+        column.groupFormatter?.({
+          groupKey,
+          childRows,
+          column,
+          row,
+          isExpanded,
+          isCellSelected,
+          toggleGroup
+        })}
     </div>
   );
 }

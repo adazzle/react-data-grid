@@ -1,8 +1,8 @@
 import { useState, useReducer } from 'react';
 import { createPortal } from 'react-dom';
-import faker from 'faker';
 import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
 import DataGrid, { Row as GridRow } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
@@ -106,7 +106,8 @@ interface Row {
 }
 
 function createRows(): Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 1000; i++) {
     rows.push({
       id: i,
@@ -114,6 +115,7 @@ function createRows(): Row[] {
       price: faker.commerce.price()
     });
   }
+
   return rows;
 }
 
@@ -127,9 +129,10 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function RowRenderer(props: RowRendererProps<Row>) {
+function rowRenderer(key: React.Key, props: RowRendererProps<Row>) {
   return (
-    <ContextMenuTrigger id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
+    // @ts-expect-error
+    <ContextMenuTrigger key={key} id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
       <GridRow {...props} />
     </ContextMenuTrigger>
   );
@@ -168,16 +171,21 @@ export default function ContextMenuDemo({ direction }: Props) {
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
-        components={{ rowRenderer: RowRenderer }}
+        renderers={{ rowRenderer }}
         className="fill-grid"
         direction={direction}
       />
       {createPortal(
         <div dir={direction}>
+          {/* @ts-expect-error */}
           <ContextMenu id="grid-context-menu" rtl={direction === 'rtl'}>
+            {/* @ts-expect-error */}
             <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
+            {/* @ts-expect-error */}
             <SubMenu title="Insert Row">
+              {/* @ts-expect-error */}
               <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
+              {/* @ts-expect-error */}
               <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
             </SubMenu>
           </ContextMenu>

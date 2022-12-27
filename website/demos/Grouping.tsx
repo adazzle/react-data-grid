@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { groupBy as rowGrouper } from 'lodash';
-import faker from 'faker';
 import { css } from '@linaria/core';
+import { faker } from '@faker-js/faker';
 
 import { TreeDataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
@@ -129,7 +129,7 @@ function createRows(): readonly Row[] {
       year: 2015 + faker.datatype.number(3),
       country: faker.address.country(),
       sport: sports[faker.datatype.number(sports.length - 1)],
-      athlete: faker.name.findName(),
+      athlete: faker.name.fullName(),
       gold: faker.datatype.number(5),
       silver: faker.datatype.number(5),
       bronze: faker.datatype.number(5)

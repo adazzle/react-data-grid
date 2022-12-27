@@ -1,17 +1,19 @@
 import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { css } from '@linaria/core';
-import faker from 'faker';
+import { faker } from '@faker-js/faker';
 
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
 import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
-import { textEditorClassname } from '../../src/editors/TextEditor';
+import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Props } from './types';
 import type { Direction } from '../../src/types';
 
 const toolbarClassname = css`
-  text-align: end;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
   margin-block-end: 8px;
 `;
 
@@ -90,7 +92,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       name: 'Task',
       width: 120,
       frozen: true,
-      editor: TextEditor,
+      editor: textEditor,
       summaryFormatter({ row }) {
         return <>{row.totalCount} records</>;
       }
@@ -98,14 +100,14 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'client',
       name: 'Client',
-      width: 220,
-      editor: TextEditor
+      width: 'max-content',
+      editor: textEditor
     },
     {
       key: 'area',
       name: 'Area',
       width: 120,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'country',
@@ -131,13 +133,13 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       key: 'contact',
       name: 'Contact',
       width: 160,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'assignee',
       name: 'Assignee',
       width: 150,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'progress',
@@ -220,7 +222,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'version',
       name: 'Version',
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'available',
@@ -256,11 +258,11 @@ function createRows(): readonly Row[] {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
-      client: faker.company.companyName(),
+      client: faker.company.name(),
       area: faker.name.jobArea(),
       country: faker.address.country(),
       contact: faker.internet.exampleEmail(),
-      assignee: faker.name.findName(),
+      assignee: faker.name.fullName(),
       progress: Math.random() * 100,
       startTimestamp: now - Math.round(Math.random() * 1e10),
       endTimestamp: now + Math.round(Math.random() * 1e10),
@@ -356,7 +358,8 @@ export default function CommonFeatures({ direction }: Props) {
       onRowsChange={setRows}
       sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
-      summaryRows={summaryRows}
+      topSummaryRows={summaryRows}
+      bottomSummaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
     />

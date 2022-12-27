@@ -1,9 +1,10 @@
-import faker from 'faker';
 import { useState } from 'react';
 import { css } from '@linaria/core';
-import DataGrid, { SelectColumn, TextEditor } from '../../src';
+import { faker } from '@faker-js/faker';
+
+import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
-import DropDownEditor from './components/Editors/DropDownEditor';
+import dropDownEditor from './components/Editors/dropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import type { Props } from './types';
 
@@ -39,8 +40,6 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-faker.locale = 'en_GB';
-
 const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
@@ -66,7 +65,7 @@ const columns: readonly Column<Row>[] = [
     formatter(props) {
       return <>{props.row.title}</>;
     },
-    editor: DropDownEditor,
+    editor: dropDownEditor,
     editorOptions: {
       editOnClick: true
     }
@@ -77,7 +76,7 @@ const columns: readonly Column<Row>[] = [
     width: 200,
     resizable: true,
     frozen: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'lastName',
@@ -85,63 +84,63 @@ const columns: readonly Column<Row>[] = [
     width: 200,
     resizable: true,
     frozen: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'email',
     name: 'Email',
-    width: 200,
+    width: 'max-content',
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'street',
     name: 'Street',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'zipCode',
     name: 'ZipCode',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'date',
     name: 'Date',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'bs',
     name: 'bs',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'catchPhrase',
     name: 'Catch Phrase',
-    width: 200,
+    width: 'max-content',
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'companyName',
     name: 'Company Name',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   },
   {
     key: 'sentence',
     name: 'Sentence',
-    width: 200,
+    width: 'max-content',
     resizable: true,
-    editor: TextEditor
+    editor: textEditor
   }
 ];
 
@@ -156,12 +155,12 @@ function createRows(): Row[] {
       title: faker.name.prefix(),
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
-      street: faker.address.streetName(),
+      street: faker.address.street(),
       zipCode: faker.address.zipCode(),
       date: faker.date.past().toLocaleDateString(),
       bs: faker.company.bs(),
       catchPhrase: faker.company.catchPhrase(),
-      companyName: faker.company.companyName(),
+      companyName: faker.company.name(),
       words: faker.lorem.words(),
       sentence: faker.lorem.sentence()
     });
