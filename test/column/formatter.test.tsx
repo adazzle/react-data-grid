@@ -106,7 +106,6 @@ describe('Custom formatter component', () => {
         maxWidth: undefined,
         minWidth: 80,
         resizable: false,
-        rowGroup: false,
         sortable: false,
         width: 'auto'
       },

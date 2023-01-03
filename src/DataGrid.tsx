@@ -17,8 +17,7 @@ import {
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
-  RowSelectionChangeProvider,
-  useGroupApi
+  RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import { defaultRowRenderer } from './Row';
@@ -60,7 +59,8 @@ import type {
   RowHeightArgs,
   Maybe,
   Renderers,
-  Direction
+  Direction,
+  CellKeyDownArgs
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -157,6 +157,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
   onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
+  onCellKeyDown?: Maybe<
+    (args: CellKeyDownArgs, event: React.KeyboardEvent<HTMLDivElement>) => void
+  >;
+  /** Function called when the grid is scrolled */
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -212,6 +216,7 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onRowClick,
     onRowDoubleClick,
+    onCellKeyDown,
     onScroll,
     onColumnResize,
     onFill,
@@ -226,6 +231,7 @@ function DataGrid<R, SR, K extends Key>(
     style,
     rowClass,
     direction: rawDirection,
+    hasGroups,
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
@@ -358,7 +364,6 @@ function DataGrid<R, SR, K extends Key>(
     columnWidths
   });
 
-  const hasGroups = useGroupApi<R, SR>() !== undefined;
   const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
   const minRowIdx = -1 - topSummaryRowsCount;
@@ -537,6 +542,18 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const { idx, rowIdx } = selectedPosition;
+    onCellKeyDown?.(
+      {
+        mode: 'SELECT',
+        idx,
+        rowIdx,
+        selectCell
+      },
+      event
+    );
+    if (event.isDefaultPrevented()) return;
+
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
@@ -1148,7 +1165,7 @@ function DataGrid<R, SR, K extends Key>(
 
               return (
                 <SummaryRow
-                  aria-rowindex={ariaRowCount - summaryRowsCount + rowIdx + 1}
+                  aria-rowindex={ariaRowCount - bottomSummaryRowsCount + rowIdx + 1}
                   key={rowIdx}
                   rowIdx={rowIdx}
                   gridRowStart={gridRowStart}

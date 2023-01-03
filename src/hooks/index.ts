@@ -1,7 +1,6 @@
 export * from './useCalculatedColumns';
 export * from './useFocusRef';
 export * from './useGridDimensions';
-export * from './useGroupApi';
 export * from './useLatestFunc';
 export * from './useLayoutEffect';
 export * from './useRovingCellRef';

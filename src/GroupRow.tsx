@@ -5,11 +5,10 @@ import { css } from '@linaria/core';
 
 import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
 import { SELECT_COLUMN_KEY } from './Columns';
-import Row from './Row';
 import GroupCell from './GroupCell';
-import type { GroupRow, RowRendererProps } from './types';
-import { RowSelectionChangeProvider, RowSelectionProvider, useGroupApi } from './hooks';
-import { getRowStyle, isCtrlKeyHeldDown } from './utils';
+import type { GroupRow, BaseRowRendererProps, SelectRowEvent } from './types';
+import { RowSelectionChangeProvider, RowSelectionProvider } from './hooks';
+import { getRowStyle } from './utils';
 
 const groupRow = css`
   @layer rdg.GroupedRow {
@@ -25,6 +24,12 @@ const groupRow = css`
 
 const groupRowClassname = `rdg-group-row ${groupRow}`;
 
+interface GroupRowRendererProps<R, SR> extends BaseRowRendererProps<R, SR> {
+  row: GroupRow<R>;
+  toggleGroup: (expandedGroupId: unknown) => void;
+  toggleGroupSelection: (selectRowEvent: SelectRowEvent<GroupRow<R>>) => void;
+}
+
 function GroupedRow<R, SR>(
   {
     className,
@@ -32,110 +37,37 @@ function GroupedRow<R, SR>(
     rowIdx,
     viewportColumns,
     selectedCellIdx,
-    copiedCellIdx,
-    draggedOverCellIdx,
     lastFrozenColumnIndex,
     isRowSelected,
-    selectedCellEditor,
-    selectedCellDragHandle,
-    rowClass,
-    onRowClick,
-    onRowDoubleClick,
-    onRowChange,
-    setDraggedOverRowIdx,
-    onMouseEnter,
     selectCell,
     gridRowStart,
     height,
-    'aria-rowindex': ariaRowIndex, // ignore default value // TODO
+    toggleGroup,
+    toggleGroupSelection,
     ...props
-  }: RowRendererProps<R | GroupRow<R>, SR>,
+  }: GroupRowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
-  const { isRtl, isGroupRow, toggleGroup, getParentRow, toggleGroupSelection, rowRenderer } =
-    useGroupApi<R, SR>()!;
-  const RowRenderer = rowRenderer ?? Row;
-
-  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
-
+  // Select is always the first column
+  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
   className = clsx(className, {
     [rowSelectedClassname]: selectedCellIdx === -1
   });
-  if (!isGroupRow(row)) {
-    return (
-      <RowRenderer
-        ref={ref}
-        className={className}
-        row={row}
-        rowIdx={rowIdx}
-        isRowSelected={isRowSelected}
-        viewportColumns={viewportColumns}
-        selectedCellIdx={selectedCellIdx}
-        copiedCellIdx={copiedCellIdx}
-        draggedOverCellIdx={draggedOverCellIdx}
-        lastFrozenColumnIndex={lastFrozenColumnIndex}
-        gridRowStart={gridRowStart}
-        height={height}
-        selectedCellEditor={selectedCellEditor}
-        selectedCellDragHandle={selectedCellDragHandle}
-        rowClass={rowClass}
-        onRowClick={onRowClick}
-        onRowDoubleClick={onRowDoubleClick}
-        onRowChange={onRowChange}
-        setDraggedOverRowIdx={setDraggedOverRowIdx}
-        onMouseEnter={onMouseEnter}
-        selectCell={selectCell}
-        {...props}
-      />
-    );
-  }
 
-  // Select is always the first column
-  const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (
-      selectedCellIdx === -1 &&
-      // Collapse the current group row if it is focused and is in expanded state
-      ((event.key === leftKey && row.isExpanded) ||
-        // Expand the current group row if it is focused and is in collapsed state
-        (event.key === rightKey && !row.isExpanded))
-    ) {
-      event.preventDefault(); // Prevents scrolling
-      event.stopPropagation();
-      toggleGroup(row.id);
-    }
-
-    // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
-    if (selectedCellIdx === -1 && event.key === leftKey && !row.isExpanded && row.level !== 0) {
-      const parentRow = getParentRow(row);
-      if (parentRow !== undefined) {
-        event.preventDefault();
-        event.stopPropagation();
-        selectCell(parentRow, -1);
-      }
-    }
-
-    if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
-      event.stopPropagation();
-    }
-  };
-
-  const handleSelectGroup = () => {
+  function handleSelectGroup() {
     selectCell(row, -1);
-  };
+  }
 
   return (
     <RowSelectionChangeProvider value={toggleGroupSelection}>
-      <RowSelectionProvider value={false}>
+      <RowSelectionProvider value={isRowSelected}>
         <div
           role="row"
-          aria-rowindex={row.startRowIndex + 2}
           aria-level={row.level + 1} // aria-level is 1-based
           aria-setsize={row.setSize}
           aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
           aria-expanded={row.isExpanded}
+          ref={ref}
           key={row.id}
           className={clsx(
             rowClassname,
@@ -144,7 +76,6 @@ function GroupedRow<R, SR>(
             className
           )}
           onClick={handleSelectGroup}
-          onKeyDown={handleKeyDown}
           style={getRowStyle(gridRowStart, height)}
           {...props}
         >
@@ -169,11 +100,11 @@ function GroupedRow<R, SR>(
 }
 
 const GroupRowComponent = memo(forwardRef(GroupedRow)) as <R, SR>(
-  props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+  props: GroupRowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
 
 export default GroupRowComponent;
 
-export function defaultGroupRowRenderer<R, SR>(key: React.Key, props: RowRendererProps<R, SR>) {
+export function groupRowRenderer<R, SR>(key: React.Key, props: GroupRowRendererProps<R, SR>) {
   return <GroupRowComponent key={key} {...props} />;
 }

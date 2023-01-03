@@ -126,18 +126,24 @@ export interface CellRendererProps<TRow, TSummaryRow>
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown>
+export interface BaseRowRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  row: TRow;
   rowIdx: number;
   selectedCellIdx: number | undefined;
-  copiedCellIdx: number | undefined;
-  draggedOverCellIdx: number | undefined;
   lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   gridRowStart: number;
   height: number;
+  selectCell: (row: TRow, idx: number, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface RowRendererProps<TRow, TSummaryRow = unknown>
+  extends BaseRowRendererProps<TRow, TSummaryRow>,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  row: TRow;
+  copiedCellIdx: number | undefined;
+  draggedOverCellIdx: number | undefined;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
@@ -145,7 +151,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
-  selectCell: (row: TRow, idx: number, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface RowsChangeData<R, SR = unknown> {
@@ -237,3 +242,18 @@ export interface Renderers<TRow, TSummaryRow> {
 export type Direction = 'ltr' | 'rtl';
 
 export type GroupRowHeightArgs<TRow> = RowHeightArgs<TRow> | { type: 'GROUP'; row: GroupRow<TRow> };
+interface SelectCellKeyDownArgs {
+  mode: 'SELECT';
+  idx: number;
+  rowIdx: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface EditCellKeyDownArgs {
+  mode: 'EDIT';
+  idx: number;
+  rowIdx: number;
+  onClose: (commitChanges?: boolean) => void;
+}
+
+export type CellKeyDownArgs = SelectCellKeyDownArgs | EditCellKeyDownArgs;
