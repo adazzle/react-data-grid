@@ -192,6 +192,8 @@ A number defining the height of summary rows.
 
 ###### `onCellDoubleClick?: Maybe<(args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void>`
 
+###### `onCellContextMenu?: Maybe<(args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void>`
+
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`

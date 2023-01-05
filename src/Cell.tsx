@@ -35,6 +35,7 @@ function Cell<R, SR>({
   dragHandle,
   onClick,
   onDoubleClick,
+  onContextMenu,
   onRowChange,
   selectCell,
   ...props
@@ -61,7 +62,9 @@ function Cell<R, SR>({
     selectCellWrapper();
   }
 
-  function handleContextMenu() {
+  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+    onContextMenu?.({ row, column, selectCell: selectCellWrapper }, event);
+    if (event.isDefaultPrevented()) return;
     selectCellWrapper();
   }
 

@@ -111,7 +111,10 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RowRendererProps<TRow, TSummaryRow>, 'selectCell'>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children' | 'onClick' | 'onDoubleClick'> {
+    Omit<
+      React.HTMLAttributes<HTMLDivElement>,
+      'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+    > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -121,10 +124,11 @@ export interface CellRendererProps<TRow, TSummaryRow>
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onClick: RowRendererProps<TRow, TSummaryRow>['onCellClick'];
   onDoubleClick: RowRendererProps<TRow, TSummaryRow>['onCellDoubleClick'];
+  onContextMenu: RowRendererProps<TRow, TSummaryRow>['onCellContextMenu'];
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
-interface CellEventArgs<TRow, TSummaryRow> {
+export interface CellEventArgs<TRow, TSummaryRow> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   selectCell: (enableEditor?: boolean) => void;
@@ -149,6 +153,9 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
     (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
   >;
   onCellDoubleClick: Maybe<
+    (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
+  >;
+  onCellContextMenu: Maybe<
     (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
   >;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
