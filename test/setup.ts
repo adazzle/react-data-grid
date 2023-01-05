@@ -51,9 +51,9 @@ if (typeof window !== 'undefined') {
       get(this: Element) {
         return getScrollState(this).scrollTop;
       },
-      async set(this: Element, value: number) {
+      set(this: Element, value: number) {
         getScrollState(this).scrollTop = value;
-        await act(() => {
+        act(() => {
           this.dispatchEvent(new Event('scroll'));
         });
       }
@@ -62,9 +62,9 @@ if (typeof window !== 'undefined') {
       get(this: Element) {
         return getScrollState(this).scrollLeft;
       },
-      async set(this: Element, value: number) {
+      set(this: Element, value: number) {
         getScrollState(this).scrollLeft = value;
-        await act(() => {
+        act(() => {
           this.dispatchEvent(new Event('scroll'));
         });
       }
