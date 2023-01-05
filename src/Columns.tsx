@@ -6,6 +6,7 @@ export const SELECT_COLUMN_KEY = 'select-row';
 
 function HeaderRenderer(props: HeaderRendererProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
+
   return (
     <SelectCellFormatter
       aria-label="Select All"
