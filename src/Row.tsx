@@ -25,6 +25,8 @@ function Row<R, SR>(
     selectedCellDragHandle,
     onRowClick,
     onRowDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -78,8 +80,8 @@ function Row<R, SR>(
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
+          onClick={onCellClick}
+          onDoubleClick={onCellDoubleClick}
           onRowChange={handleRowChange}
           selectCell={selectCell}
         />

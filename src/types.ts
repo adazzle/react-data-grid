@@ -1,4 +1,4 @@
-import type { Key, ReactElement, ReactNode, RefObject } from 'react';
+import type { Key, ReactElement, ReactNode, RefObject, MouseEvent } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -40,8 +40,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly editorOptions?: Maybe<{
     /** @default false */
     readonly renderFormatter?: Maybe<boolean>;
-    /** @default false */
-    readonly editOnClick?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
     /** Prevent default to cancel editing */
@@ -112,11 +110,8 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<
-      RowRendererProps<TRow, TSummaryRow>,
-      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
-    >,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'selectCell'>,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children' | 'onClick' | 'onDoubleClick'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -124,7 +119,15 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isDraggedOver: boolean;
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
+  onClick: RowRendererProps<TRow, TSummaryRow>['onCellClick'];
+  onDoubleClick: RowRendererProps<TRow, TSummaryRow>['onCellDoubleClick'];
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
+}
+
+interface CellEventArgs<TRow, TSummaryRow> {
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  selectCell: (enableEditor?: boolean) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
@@ -144,6 +147,12 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
+  onCellClick: Maybe<
+    (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
+  >;
+  onCellDoubleClick: Maybe<
+    (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
+  >;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (

@@ -60,7 +60,8 @@ import type {
   RowHeightArgs,
   Maybe,
   Renderers,
-  Direction
+  Direction,
+  RowRendererProps
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -161,6 +162,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a row is double clicked */
   onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
+  /** Function called whenever a cell is clicked */
+  onCellClick?: RowRendererProps<R, SR>['onCellClick'];
+  /** Function called whenever a cell is double clicked */
+  onCellDoubleClick?: RowRendererProps<R, SR>['onCellDoubleClick'];
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -220,6 +225,8 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onRowClick,
     onRowDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
     onScroll,
     onColumnResize,
     onFill,
@@ -388,6 +395,8 @@ function DataGrid<R, SR, K extends Key>(
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
+  const onCellClickLatest = useLatestFunc(onCellClick);
+  const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const selectRowLatest = useLatestFunc(selectRow);
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -1115,6 +1124,8 @@ function DataGrid<R, SR, K extends Key>(
           isRowSelected,
           onRowClick: onRowClickLatest,
           onRowDoubleClick: onRowDoubleClickLatest,
+          onCellClick: onCellClickLatest,
+          onCellDoubleClick: onCellDoubleClickLatest,
           rowClass,
           gridRowStart,
           height: getRowHeight(rowIdx),
