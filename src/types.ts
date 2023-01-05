@@ -145,8 +145,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
-  onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
-  onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   onCellClick: Maybe<
     (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
   >;

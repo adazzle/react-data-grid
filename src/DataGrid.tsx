@@ -158,10 +158,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Event props
    */
-  /** Function called whenever a row is clicked */
-  onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
-  /** Function called whenever a row is double clicked */
-  onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
   /** Function called whenever a cell is clicked */
   onCellClick?: RowRendererProps<R, SR>['onCellClick'];
   /** Function called whenever a cell is double clicked */
@@ -223,8 +219,6 @@ function DataGrid<R, SR, K extends Key>(
     expandedGroupIds,
     onExpandedGroupIdsChange,
     // Event props
-    onRowClick,
-    onRowDoubleClick,
     onCellClick,
     onCellDoubleClick,
     onScroll,
@@ -393,8 +387,6 @@ function DataGrid<R, SR, K extends Key>(
    */
   const handleColumnResizeLatest = useLatestFunc(handleColumnResize);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
-  const onRowClickLatest = useLatestFunc(onRowClick);
-  const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
   const onCellClickLatest = useLatestFunc(onCellClick);
   const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const selectRowLatest = useLatestFunc(selectRow);
@@ -1122,8 +1114,6 @@ function DataGrid<R, SR, K extends Key>(
           row,
           viewportColumns: rowColumns,
           isRowSelected,
-          onRowClick: onRowClickLatest,
-          onRowDoubleClick: onRowDoubleClickLatest,
           onCellClick: onCellClickLatest,
           onCellDoubleClick: onCellDoubleClickLatest,
           rowClass,

@@ -23,8 +23,6 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
-    onRowClick,
-    onRowDoubleClick,
     onCellClick,
     onCellDoubleClick,
     rowClass,
