@@ -157,16 +157,8 @@ export interface RowsChangeData<R, SR = unknown> {
 }
 
 export type SelectRowEvent<TRow> =
-  | {
-      type: 'HEADER';
-      checked: boolean;
-    }
-  | {
-      type: 'ROW';
-      row: TRow;
-      checked: boolean;
-      isShiftClick: boolean;
-    };
+  | { type: 'HEADER'; checked: boolean }
+  | { type: 'ROW'; row: TRow; checked: boolean; isShiftClick: boolean };
 
 export interface FillEvent<TRow> {
   columnKey: string;
