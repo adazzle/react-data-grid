@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@test
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
-import type { Column, DataGridProps } from '../../src';
+import type { Column } from '../../src';
 import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 import { createPortal } from 'react-dom';
 
@@ -134,23 +134,6 @@ describe('Editor', () => {
   });
 
   describe('editorOptions', () => {
-    it('should open editor on single click if editOnClick is true', async () => {
-      render(
-        <EditorTest
-          onCellClick={(args, event) => {
-            if (args.column.key === 'col2') {
-              event.preventDefault();
-              args.selectCell(true);
-            }
-          }}
-        />
-      );
-      await userEvent.click(getCellsAtRowIndex(0)[0]);
-      expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-      await userEvent.click(getCellsAtRowIndex(0)[1]);
-      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
-    });
-
     it('should detect outside click if editor is rendered in a portal', async () => {
       render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
@@ -273,9 +256,7 @@ describe('Editor', () => {
   });
 });
 
-interface EditorTestProps
-  extends Pick<Column<Row>, 'editorOptions' | 'editable'>,
-    Pick<DataGridProps<Row>, 'onCellClick'> {
+interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
   createEditorPortal?: boolean;
@@ -295,7 +276,6 @@ const initialRows: readonly Row[] = [
 function EditorTest({
   editable,
   editorOptions,
-  onCellClick,
   onSave,
   gridRows = initialRows,
   createEditorPortal
@@ -353,7 +333,7 @@ function EditorTest({
       <button type="button" onClick={() => onSave?.(rows)}>
         save
       </button>
-      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} onCellClick={onCellClick} />
+      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />
     </StrictMode>
   );
 }
