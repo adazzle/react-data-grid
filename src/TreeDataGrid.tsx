@@ -19,6 +19,7 @@ import { SELECT_COLUMN_KEY, toggleGroupFormatter } from '.';
 import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
 import { defaultRowRenderer } from './Row';
 import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
+import { TreeDataGridProvider } from './hooks';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<DataGridProps<R, SR, K>, 'rowHeight' | 'onFill'> {
@@ -350,30 +351,30 @@ function TreeDataGrid<R, SR, K extends Key>(
   }
 
   return (
-    <DataGrid
-      {...props}
-      hasGroups
-      aria-rowcount={
-        rowsCount + 1 + (props.topSummaryRows?.length ?? 0) + (props.bottomSummaryRows?.length ?? 0)
-      }
-      ref={ref}
-      columns={columns}
-      rows={rows as R[]}
-      rowHeight={rowHeight}
-      rowKeyGetter={rowKeyGetter}
-      onRowsChange={handleRowsChange}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={onSelectedRowsChange}
-      onCellKeyDown={handleKeyDown}
-      renderers={
-        groupBy.length === 0
-          ? renderers
-          : {
-              ...renderers,
-              rowRenderer
-            }
-      }
-    />
+    <TreeDataGridProvider value>
+      <DataGrid
+        {...props}
+        aria-rowcount={
+          rowsCount +
+          1 +
+          (props.topSummaryRows?.length ?? 0) +
+          (props.bottomSummaryRows?.length ?? 0)
+        }
+        ref={ref}
+        columns={columns}
+        rows={rows as R[]}
+        rowHeight={rowHeight}
+        rowKeyGetter={rowKeyGetter}
+        onRowsChange={handleRowsChange}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={onSelectedRowsChange}
+        onCellKeyDown={handleKeyDown}
+        renderers={{
+          ...renderers,
+          rowRenderer
+        }}
+      />
+    </TreeDataGridProvider>
   );
 }
 

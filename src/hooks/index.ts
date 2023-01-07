@@ -5,5 +5,6 @@ export * from './useLatestFunc';
 export * from './useLayoutEffect';
 export * from './useRovingCellRef';
 export * from './useRowSelection';
+export * from './useTreeDataGrid';
 export * from './useViewportColumns';
 export * from './useViewportRows';

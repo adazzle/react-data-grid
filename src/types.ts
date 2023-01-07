@@ -135,11 +135,7 @@ export interface BaseRowRendererProps<TRow, TSummaryRow = unknown>
   isRowSelected: boolean;
   gridRowStart: number;
   height: number;
-  selectCell: (
-    row: TRow,
-    column: CalculatedColumn<TRow, TSummaryRow>,
-    enableEditor?: Maybe<boolean>
-  ) => void;
+  selectCell: (row: TRow, idx: number, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
