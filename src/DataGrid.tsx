@@ -382,9 +382,9 @@ function DataGrid<R, SR, K extends Key>(
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectViewportCellLatest = useLatestFunc(
-    (row: R, idx: number, enableEditor: Maybe<boolean>) => {
+    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       const rowIdx = rows.indexOf(row);
-      selectCell({ rowIdx, idx }, enableEditor);
+      selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
   );
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {

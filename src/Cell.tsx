@@ -52,7 +52,7 @@ function Cell<R, SR>({
   );
 
   function selectCellWrapper(openEditor?: boolean | null) {
-    selectCell(row, column.idx, openEditor);
+    selectCell(row, column, openEditor);
   }
 
   function handleClick() {
