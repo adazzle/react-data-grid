@@ -17,8 +17,7 @@ import {
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
-  RowSelectionChangeProvider,
-  useTreeDataGrid
+  RowSelectionChangeProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import { defaultRowRenderer } from './Row';
@@ -232,6 +231,7 @@ function DataGrid<R, SR, K extends Key>(
     style,
     rowClass,
     direction: rawDirection,
+    hasGroups,
     // ARIA
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
@@ -243,7 +243,6 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * defaults
    */
-  const isTreeDataGrid = useTreeDataGrid();
   const defaultComponents = useDefaultComponents<R, SR>();
   const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
@@ -365,7 +364,7 @@ function DataGrid<R, SR, K extends Key>(
     columnWidths
   });
 
-  const minColIdx = isTreeDataGrid ? -1 : 0;
+  const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
   const minRowIdx = -1 - topSummaryRowsCount;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
@@ -383,9 +382,9 @@ function DataGrid<R, SR, K extends Key>(
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectViewportCellLatest = useLatestFunc(
-    (row: R, idx: number, enableEditor: Maybe<boolean>) => {
+    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       const rowIdx = rows.indexOf(row);
-      selectCell({ rowIdx, idx }, enableEditor);
+      selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
   );
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
@@ -557,7 +556,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
-    const isRowEvent = isTreeDataGrid && event.target === rowRef.current;
+    const isRowEvent = hasGroups && event.target === rowRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { keyCode } = event;
@@ -1051,7 +1050,7 @@ function DataGrid<R, SR, K extends Key>(
 
   return (
     <div
-      role={isTreeDataGrid ? 'treegrid' : 'grid'}
+      role={hasGroups ? 'treegrid' : 'grid'}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       aria-describedby={ariaDescribedBy}
@@ -1093,7 +1092,7 @@ function DataGrid<R, SR, K extends Key>(
       data-testid={testId}
     >
       {/* extra div is needed for row navigation in a treegrid */}
-      {isTreeDataGrid && (
+      {hasGroups && (
         <div
           ref={rowRef}
           tabIndex={isGroupRowFocused ? 0 : -1}
