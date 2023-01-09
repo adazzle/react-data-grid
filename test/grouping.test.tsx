@@ -241,6 +241,9 @@ test('should set aria-attributes', async () => {
 test('should select rows in a group', async () => {
   setup(['year', 'country']);
 
+  const headerCheckbox = screen.getByLabelText('Select All');
+  expect(headerCheckbox).not.toBeChecked();
+
   // expand group
   const groupCell1 = screen.getByRole('gridcell', { name: '2021' });
   await userEvent.click(groupCell1);
@@ -277,6 +280,15 @@ test('should select rows in a group', async () => {
   selectedRows = screen.getAllByRole('row', { selected: true });
   // eslint-disable-next-line jest-dom/prefer-in-document
   expect(selectedRows).toHaveLength(1);
+
+  await userEvent.click(screen.getByRole('gridcell', { name: '2020' }));
+  await userEvent.click(screen.getByRole('gridcell', { name: '2022' }));
+
+  await userEvent.click(headerCheckbox);
+  expect(screen.getAllByRole('row', { selected: true })).toHaveLength(8);
+
+  await userEvent.click(headerCheckbox);
+  expect(screen.queryByRole('row', { selected: true })).not.toBeInTheDocument();
 });
 
 test('cell navigation in a treegrid', async () => {
