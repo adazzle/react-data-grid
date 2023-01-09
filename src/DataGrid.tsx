@@ -93,7 +93,13 @@ export interface DataGridHandle {
 
 type SharedDivProps = Pick<
   React.HTMLAttributes<HTMLDivElement>,
-  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'aria-rowcount' | 'className' | 'style'
+  | 'role'
+  | 'aria-label'
+  | 'aria-labelledby'
+  | 'aria-describedby'
+  | 'aria-rowcount'
+  | 'className'
+  | 'style'
 >;
 
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
@@ -231,8 +237,8 @@ function DataGrid<R, SR, K extends Key>(
     style,
     rowClass,
     direction: rawDirection,
-    hasGroups,
     // ARIA
+    role = 'grid',
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
@@ -283,6 +289,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
+  const hasGroups = role === 'treegrid';
   const [gridRef, gridWidth, gridHeight, isWidthInitialized] = useGridDimensions();
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
@@ -382,9 +389,9 @@ function DataGrid<R, SR, K extends Key>(
   const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectViewportCellLatest = useLatestFunc(
-    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
+    (row: R, idx: number, enableEditor: Maybe<boolean>) => {
       const rowIdx = rows.indexOf(row);
-      selectCell({ rowIdx, idx: column.idx }, enableEditor);
+      selectCell({ rowIdx, idx }, enableEditor);
     }
   );
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
@@ -1050,7 +1057,7 @@ function DataGrid<R, SR, K extends Key>(
 
   return (
     <div
-      role={hasGroups ? 'treegrid' : 'grid'}
+      role={role}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       aria-describedby={ariaDescribedBy}

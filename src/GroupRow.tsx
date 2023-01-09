@@ -55,6 +55,7 @@ function GroupedRow<R, SR>(
   });
 
   function handleSelectGroup() {
+    // @ts-expect-error
     selectCell(row, -1);
   }
 

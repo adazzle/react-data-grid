@@ -352,7 +352,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   return (
     <DataGrid
       {...props}
-      hasGroups
+      role="treegrid"
       aria-rowcount={
         rowsCount + 1 + (props.topSummaryRows?.length ?? 0) + (props.bottomSummaryRows?.length ?? 0)
       }
@@ -365,14 +365,10 @@ function TreeDataGrid<R, SR, K extends Key>(
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       onCellKeyDown={handleKeyDown}
-      renderers={
-        groupBy.length === 0
-          ? renderers
-          : {
-              ...renderers,
-              rowRenderer
-            }
-      }
+      renderers={{
+        ...renderers,
+        rowRenderer
+      }}
     />
   );
 }
