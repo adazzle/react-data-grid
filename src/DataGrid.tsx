@@ -73,7 +73,7 @@ interface EditCellState<R> extends Position {
   readonly originalRow: R;
 }
 
-export type DefaultColumnOptions<R, SR> = Pick<
+type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'formatter' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
 >;
@@ -289,7 +289,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const hasGroups = role === 'treegrid';
+  const isTreeDataGrid = role === 'treegrid';
   const [gridRef, gridWidth, gridHeight, isWidthInitialized] = useGridDimensions();
   const headerRowsCount = 1;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
@@ -371,7 +371,7 @@ function DataGrid<R, SR, K extends Key>(
     columnWidths
   });
 
-  const minColIdx = hasGroups ? -1 : 0;
+  const minColIdx = isTreeDataGrid ? -1 : 0;
   const maxColIdx = columns.length - 1;
   const minRowIdx = -1 - topSummaryRowsCount;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
@@ -563,7 +563,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
-    const isRowEvent = hasGroups && event.target === rowRef.current;
+    const isRowEvent = isTreeDataGrid && event.target === rowRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { keyCode } = event;
@@ -1099,7 +1099,7 @@ function DataGrid<R, SR, K extends Key>(
       data-testid={testId}
     >
       {/* extra div is needed for row navigation in a treegrid */}
-      {hasGroups && (
+      {isTreeDataGrid && (
         <div
           ref={rowRef}
           tabIndex={isGroupRowFocused ? 0 : -1}
