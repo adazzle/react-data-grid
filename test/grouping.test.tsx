@@ -17,7 +17,7 @@ import {
 } from './utils';
 import userEvent from '@testing-library/user-event';
 import type { FillEvent, PasteEvent } from '../src/types';
-import { focusSinkClassname } from '../src/style';
+import { focusSinkClassname, rowSelected } from '../src/style';
 
 const rowSelectedClassname = 'rdg-row-selected';
 
@@ -292,6 +292,22 @@ test('cell navigation in a treegrid', async () => {
   expect(focusSink).toHaveFocus();
   expect(focusSink).toHaveAttribute('tabIndex', '0');
   expect(focusSink).toHaveStyle('grid-row-start:3');
+  expect(focusSink).toHaveClass(rowSelected);
+  await userEvent.keyboard('{arrowup}');
+  expect(focusSink).toHaveFocus();
+  expect(focusSink).toHaveStyle('grid-row-start:2');
+  expect(focusSink).toHaveClass(rowSelected);
+  await userEvent.keyboard('{arrowup}');
+  expect(focusSink).toHaveFocus();
+  expect(focusSink).toHaveStyle('grid-row-start:1');
+  expect(focusSink).toHaveClass(rowSelected);
+  expect(focusSink).toHaveFocus();
+  expect(focusSink).toHaveStyle('grid-row-start:1');
+  expect(focusSink).toHaveClass(rowSelected);
+  await userEvent.keyboard('{arrowdown}');
+  expect(focusSink).toHaveFocus();
+  expect(focusSink).toHaveStyle('grid-row-start:2');
+  expect(focusSink).toHaveClass(rowSelected);
   const groupCell2 = screen.getByRole('gridcell', { name: '2021' });
   await userEvent.click(groupCell2);
   expect(focusSink).toHaveFocus();
