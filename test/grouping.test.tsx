@@ -291,6 +291,7 @@ test('cell navigation in a treegrid', async () => {
   await userEvent.click(groupCell1);
   expect(focusSink).toHaveFocus();
   expect(focusSink).toHaveAttribute('tabIndex', '0');
+  expect(focusSink).toHaveStyle('grid-row-start:3');
   const groupCell2 = screen.getByRole('gridcell', { name: '2021' });
   await userEvent.click(groupCell2);
   expect(focusSink).toHaveFocus();
