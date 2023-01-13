@@ -700,12 +700,21 @@ module.exports = {
   env: {
     es6: true
   },
-  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
+  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint', 'testing-library'],
   overrides: [
     {
       files: ['test/**/*'],
       rules: {
-        '@typescript-eslint/no-floating-promises': 1
+        '@typescript-eslint/no-floating-promises': 1,
+        'testing-library/no-wait-for-multiple-assertions': 1,
+        'testing-library/no-unnecessary-act': 1,
+        'testing-library/no-wait-for-empty-callback': 1,
+        'testing-library/no-wait-for-side-effects': 1,
+        'testing-library/prefer-explicit-assert': 1,
+        'testing-library/prefer-find-by': 1,
+        'testing-library/prefer-presence-queries': 1,
+        'testing-library/prefer-query-by-disappearance': 1,
+        'testing-library/prefer-screen-queries': 1
       }
     },
     {
