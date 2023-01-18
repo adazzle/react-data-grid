@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject, type MutableRefObject } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
@@ -32,6 +32,8 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose'>,
     SharedCellRendererProps<R, SR> {
+  gridRef: RefObject<HTMLDivElement>;
+  skipCellFocusRef: MutableRefObject<boolean>;
   closeEditor: () => void;
 }
 
@@ -39,6 +41,8 @@ export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
+  gridRef,
+  skipCellFocusRef,
   onRowChange,
   closeEditor
 }: EditCellProps<R, SR>) {
@@ -53,10 +57,11 @@ export default function EditCell<R, SR>({
   });
 
   useEffect(() => {
-    if (!commitOnOutsideClick) return;
-
-    function onWindowCaptureMouseDown() {
-      frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
+    function onWindowCaptureMouseDown({ target }: MouseEvent) {
+      skipCellFocusRef.current = target instanceof Node && !gridRef.current!.contains(target);
+      if (commitOnOutsideClick) {
+        frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
+      }
     }
 
     addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
@@ -65,7 +70,7 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
+  }, [commitOnOutsideClick, commitOnOutsideMouseDown, gridRef, skipCellFocusRef]);
 
   function cancelFrameRequest() {
     cancelAnimationFrame(frameRequestRef.current!);
