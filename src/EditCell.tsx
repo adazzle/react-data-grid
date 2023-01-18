@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, type RefObject, type MutableRefObject } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
@@ -33,6 +33,7 @@ interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose' | 'onRowChange'>,
     SharedCellRendererProps<R, SR> {
   gridRef: RefObject<HTMLDivElement>;
+  skipCellFocusRef: MutableRefObject<boolean>;
   onRowChange: (row: R, commitChanges?: boolean, clickedNode?: Node | null) => void;
   closeEditor: () => void;
 }
@@ -42,11 +43,11 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   gridRef,
+  skipCellFocusRef,
   onRowChange,
   closeEditor
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
-  const clickedNodeRef = useRef<Node | null>(null);
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
 
   // We need to prevent the `useEffect` from cleaning up between re-renders,
@@ -58,9 +59,7 @@ export default function EditCell<R, SR>({
 
   useEffect(() => {
     function onWindowCaptureMouseDown({ target }: MouseEvent) {
-      if (target instanceof Node && !gridRef.current!.contains(target)) {
-        clickedNodeRef.current = target;
-      }
+      skipCellFocusRef.current = target instanceof Node && !gridRef.current!.contains(target);
       if (commitOnOutsideClick) {
         frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
       }
@@ -96,7 +95,7 @@ export default function EditCell<R, SR>({
 
   function onClose(commitChanges?: boolean) {
     if (commitChanges) {
-      onRowChange(row, true, clickedNodeRef.current);
+      onRowChange(row, true);
     } else {
       closeEditor();
     }

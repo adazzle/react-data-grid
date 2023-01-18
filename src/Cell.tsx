@@ -33,14 +33,14 @@ function Cell<R, SR>({
   isDraggedOver,
   row,
   dragHandle,
-  skipCellFocus,
+  skipCellFocusRef,
   onRowClick,
   onRowDoubleClick,
   onRowChange,
   selectCell,
   ...props
 }: CellRendererProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocus);
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocusRef);
 
   const { cellClass } = column;
   const className = getCellClassname(

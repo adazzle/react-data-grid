@@ -1,9 +1,11 @@
-import type { MutableRefObject } from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type MutableRefObject } from 'react';
 import { scrollIntoView } from '../utils';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
-export function useRovingCellRef(isSelected: boolean, skipCellFocus?: MutableRefObject<boolean>) {
+export function useRovingCellRef(
+  isSelected: boolean,
+  skipCellFocusRef?: MutableRefObject<boolean>
+) {
   // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
   const [isChildFocused, setIsChildFocused] = useState(false);
 
@@ -16,13 +18,13 @@ export function useRovingCellRef(isSelected: boolean, skipCellFocus?: MutableRef
       if (cell === null) return;
       scrollIntoView(cell);
       if (cell.contains(document.activeElement)) return;
-      if (skipCellFocus?.current) {
-        skipCellFocus.current = false;
+      if (skipCellFocusRef?.current) {
+        skipCellFocusRef.current = false;
         return;
       }
       cell.focus({ preventScroll: true });
     },
-    [skipCellFocus]
+    [skipCellFocusRef]
   );
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {

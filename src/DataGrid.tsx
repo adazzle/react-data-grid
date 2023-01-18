@@ -280,7 +280,7 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
-  const skipCellFocus = useRef(false);
+  const skipCellFocusRef = useRef(false);
 
   /**
    * computed values
@@ -980,9 +980,8 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
-    const onRowChange = (row: R, commitChanges?: boolean, clickedNode?: Node | null) => {
+    const onRowChange = (row: R, commitChanges?: boolean) => {
       if (commitChanges) {
-        skipCellFocus.current = clickedNode != null;
         updateRow(column, selectedPosition.rowIdx, row);
         closeEditor();
       } else {
@@ -1002,6 +1001,7 @@ function DataGrid<R, SR, K extends Key>(
         colSpan={colSpan}
         row={row}
         gridRef={gridRef}
+        skipCellFocusRef={skipCellFocusRef}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
       />
@@ -1134,7 +1134,7 @@ function DataGrid<R, SR, K extends Key>(
           selectCell: selectViewportCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
           selectedCellEditor: getCellEditor(rowIdx),
-          skipCellFocus
+          skipCellFocusRef
         })
       );
     }
