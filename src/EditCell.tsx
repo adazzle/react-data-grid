@@ -34,7 +34,7 @@ interface EditCellProps<R, SR>
     SharedCellRendererProps<R, SR> {
   gridRef: RefObject<HTMLDivElement>;
   skipCellFocusRef: MutableRefObject<boolean>;
-  onRowChange: (row: R, commitChanges?: boolean, clickedNode?: Node | null) => void;
+  onRowChange: (row: R, commitChanges?: boolean) => void;
   closeEditor: () => void;
 }
 
