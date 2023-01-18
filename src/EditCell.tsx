@@ -71,7 +71,7 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [commitOnOutsideClick, commitOnOutsideMouseDown, gridRef]);
+  }, [commitOnOutsideClick, commitOnOutsideMouseDown, gridRef, skipCellFocusRef]);
 
   function cancelFrameRequest() {
     cancelAnimationFrame(frameRequestRef.current!);
