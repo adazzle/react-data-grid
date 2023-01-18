@@ -982,7 +982,7 @@ function DataGrid<R, SR, K extends Key>(
 
     const onRowChange = (row: R, commitChanges?: boolean, clickedNode?: Node | null) => {
       if (commitChanges) {
-        skipCellFocus.current = clickedNode != null && !gridRef.current!.contains(clickedNode);
+        skipCellFocus.current = clickedNode != null;
         updateRow(column, selectedPosition.rowIdx, row);
         closeEditor();
       } else {
@@ -1001,6 +1001,7 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
+        gridRef={gridRef}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
       />
