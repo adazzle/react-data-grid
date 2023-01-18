@@ -377,7 +377,6 @@ export default function CommonFeatures({ direction }: Props) {
         <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
           Export to PDF
         </ExportButton>
-        <input type="text" />
       </div>
       {gridElement}
     </>
