@@ -30,7 +30,7 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends Omit<EditorProps<R, SR>, 'onClose' | 'onRowChange'>,
+  extends Omit<EditorProps<R, SR>, 'onClose'>,
     SharedCellRendererProps<R, SR> {
   gridRef: RefObject<HTMLDivElement>;
   skipCellFocusRef: MutableRefObject<boolean>;
