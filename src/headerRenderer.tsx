@@ -2,7 +2,7 @@ import { css } from '@linaria/core';
 
 import { useFocusRef } from './hooks';
 import type { HeaderRendererProps } from './types';
-import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
+import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 
 const headerSortCell = css`
   @layer rdg.SortableHeaderCell {
@@ -65,7 +65,7 @@ function SortableHeaderCell<R, SR>({
   children,
   isCellSelected
 }: SortableHeaderCellProps<R, SR>) {
-  const sortStatus = useDefaultComponents<R, SR>()!.sortStatus!;
+  const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
   const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {

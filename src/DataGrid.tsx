@@ -28,9 +28,9 @@ import DragHandle from './DragHandle';
 import { default as defaultSortStatus } from './sortStatus';
 import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import {
-  DataGridDefaultComponentsProvider,
-  useDefaultComponents
-} from './DataGridDefaultComponentsProvider';
+  DataGridDefaultRenderersProvider,
+  useDefaultRenderers
+} from './DataGridDefaultRenderersProvider';
 import {
   assertIsValidKeyGetter,
   getNextSelectedCellPosition,
@@ -244,18 +244,15 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * defaults
    */
-  const defaultComponents = useDefaultComponents<R, SR>();
+  const defaultRenderers = useDefaultRenderers<R, SR>();
   const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
-  const rowRenderer =
-    renderers?.rowRenderer ?? defaultComponents?.rowRenderer ?? defaultRowRenderer;
-  const sortStatus = renderers?.sortStatus ?? defaultComponents?.sortStatus ?? defaultSortStatus;
+  const rowRenderer = renderers?.rowRenderer ?? defaultRenderers?.rowRenderer ?? defaultRowRenderer;
+  const sortStatus = renderers?.sortStatus ?? defaultRenderers?.sortStatus ?? defaultSortStatus;
   const checkboxFormatter =
-    renderers?.checkboxFormatter ??
-    defaultComponents?.checkboxFormatter ??
-    defaultCheckboxFormatter;
-  const noRowsFallback = renderers?.noRowsFallback ?? defaultComponents?.noRowsFallback;
+    renderers?.checkboxFormatter ?? defaultRenderers?.checkboxFormatter ?? defaultCheckboxFormatter;
+  const noRowsFallback = renderers?.noRowsFallback ?? defaultRenderers?.noRowsFallback;
   const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   const enableVirtualization = rawEnableVirtualization ?? true;
   const direction = rawDirection ?? 'ltr';
@@ -1219,7 +1216,7 @@ function DataGrid<R, SR, K extends Key>(
           onKeyDown={handleKeyDown}
         />
       )}
-      <DataGridDefaultComponentsProvider value={defaultGridComponents}>
+      <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <HeaderRow
           columns={getRowViewportColumns(-1)}
           onColumnResize={handleColumnResizeLatest}
@@ -1298,7 +1295,7 @@ function DataGrid<R, SR, K extends Key>(
 
         {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
         {renderMeasuringCells(viewportColumns)}
-      </DataGridDefaultComponentsProvider>
+      </DataGridDefaultRenderersProvider>
     </div>
   );
 }
