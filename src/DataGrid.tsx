@@ -78,12 +78,6 @@ type DefaultColumnOptions<R, SR> = Pick<
   'formatter' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
 >;
 
-const initialPosition: SelectCellState = {
-  idx: -1,
-  rowIdx: -2,
-  mode: 'SELECT'
-};
-
 export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToColumn: (colIdx: number) => void;
@@ -257,6 +251,13 @@ function DataGrid<R, SR, K extends Key>(
   const enableVirtualization = rawEnableVirtualization ?? true;
   const direction = rawDirection ?? 'ltr';
 
+  const headerRowsCount = 1;
+  const topSummaryRowsCount = topSummaryRows?.length ?? 0;
+  const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
+  const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
+  const headerAndTopSummaryRowsCount = headerRowsCount + topSummaryRowsCount;
+  const minRowIdx = -headerAndTopSummaryRowsCount;
+
   /**
    * states
    */
@@ -264,7 +265,7 @@ function DataGrid<R, SR, K extends Key>(
   const [scrollLeft, setScrollLeft] = useState(0);
   const [columnWidths, setColumnWidths] = useState((): ReadonlyMap<string, number> => new Map());
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
-    initialPosition
+    () => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
@@ -283,10 +284,6 @@ function DataGrid<R, SR, K extends Key>(
    * computed values
    */
   const [gridRef, gridWidth, gridHeight, isWidthInitialized] = useGridDimensions();
-  const headerRowsCount = 1;
-  const topSummaryRowsCount = topSummaryRows?.length ?? 0;
-  const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
-  const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = direction === 'rtl';
@@ -374,7 +371,6 @@ function DataGrid<R, SR, K extends Key>(
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
-  const minRowIdx = -1 - topSummaryRowsCount;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
@@ -1061,7 +1057,7 @@ function DataGrid<R, SR, K extends Key>(
       }
 
       const row = rows[rowIdx];
-      const gridRowStart = headerRowsCount + topSummaryRowsCount + rowIdx + 1;
+      const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
         const isGroupRowSelected =
@@ -1071,7 +1067,7 @@ function DataGrid<R, SR, K extends Key>(
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
-            aria-rowindex={headerRowsCount + topSummaryRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
+            aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
             aria-selected={isSelectable ? isGroupRowSelected : undefined}
             key={row.id}
             id={row.id}
@@ -1106,8 +1102,7 @@ function DataGrid<R, SR, K extends Key>(
       rowElements.push(
         rowRenderer(key, {
           // aria-rowindex is 1 based
-          'aria-rowindex':
-            headerRowsCount + topSummaryRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1,
+          'aria-rowindex': headerAndTopSummaryRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1,
           'aria-selected': isSelectable ? isRowSelected : undefined,
           rowIdx,
           row,
@@ -1141,7 +1136,7 @@ function DataGrid<R, SR, K extends Key>(
 
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
-    setSelectedPosition(initialPosition);
+    setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
     setDraggedOverRowIdx(undefined);
   }
 
@@ -1156,7 +1151,8 @@ function DataGrid<R, SR, K extends Key>(
     templateRows += ` repeat(${bottomSummaryRowsCount}, ${summaryRowHeight}px)`;
   }
 
-  const isGroupRowFocused = selectedPosition.idx === -1 && selectedPosition.rowIdx !== -2;
+  const isGroupRowFocused =
+    selectedPosition.idx === -1 && selectedPosition.rowIdx !== minRowIdx - 1;
 
   return (
     <div
@@ -1211,7 +1207,7 @@ function DataGrid<R, SR, K extends Key>(
             [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
           })}
           style={{
-            gridRowStart: selectedPosition.rowIdx + 2
+            gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
           }}
           onKeyDown={handleKeyDown}
         />
@@ -1261,7 +1257,7 @@ function DataGrid<R, SR, K extends Key>(
               {getViewportRows()}
             </RowSelectionChangeProvider>
             {bottomSummaryRows?.map((row, rowIdx) => {
-              const gridRowStart = headerRowsCount + topSummaryRowsCount + rows.length + rowIdx + 1;
+              const gridRowStart = headerAndTopSummaryRowsCount + rows.length + rowIdx + 1;
               const summaryRowIdx = rows.length + rowIdx;
               const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
               const top =
@@ -1275,7 +1271,7 @@ function DataGrid<R, SR, K extends Key>(
 
               return (
                 <SummaryRow
-                  aria-rowindex={headerRowsCount + topSummaryRowsCount + rowsCount + rowIdx + 1}
+                  aria-rowindex={headerAndTopSummaryRowsCount + rowsCount + rowIdx + 1}
                   key={rowIdx}
                   rowIdx={rowIdx}
                   gridRowStart={gridRowStart}
