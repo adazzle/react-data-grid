@@ -153,7 +153,7 @@ describe('Editor', () => {
     it('should detect outside click if editor is rendered in a portal', async () => {
       render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      const editor = screen.getByLabelText('col2-editor');
+      let editor = screen.getByLabelText('col2-editor');
       expect(editor).toHaveValue('a1');
       await userEvent.keyboard('23');
       // The cell value should update as the editor value is changed
@@ -164,6 +164,13 @@ describe('Editor', () => {
       // true outside clicks are still detected
       await userEvent.click(screen.getByText('outside'));
       await waitForElementToBeRemoved(editor);
+      expect(getCellsAtRowIndex(0)[1]).not.toHaveFocus();
+
+      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      editor = screen.getByLabelText('col2-editor');
+      await userEvent.click(editor);
+      await userEvent.keyboard('{enter}');
+      expect(getCellsAtRowIndex(0)[1]).toHaveFocus();
     });
 
     it('should not commit on outside click if commitOnOutsideClick is false', async () => {
