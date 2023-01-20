@@ -2,7 +2,7 @@ import { StrictMode, useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn, sortIcon } from '../src';
+import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, sortIcon } from '../src';
 import type {
   Column,
   DataGridProps,
@@ -79,7 +79,7 @@ function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
     <StrictMode>
-      <DataGridDefaultComponentsProvider
+      <DataGridDefaultRenderersProvider
         value={{
           noRowsFallback: <GlobalNoRowsFallback />,
           checkboxFormatter: globalCheckboxFormatter,
@@ -87,7 +87,7 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
         }}
       >
         <TestGrid {...props} />
-      </DataGridDefaultComponentsProvider>
+      </DataGridDefaultRenderersProvider>
     </StrictMode>
   );
 }

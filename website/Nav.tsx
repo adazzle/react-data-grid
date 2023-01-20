@@ -93,8 +93,8 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/context-menu" end className={getActiveClassname}>
         Context Menu
       </NavLink>
-      <NavLink to="/customizable-components" end className={getActiveClassname}>
-        Customizable Components
+      <NavLink to="/customizable-renderers" end className={getActiveClassname}>
+        Customizable Renderers
       </NavLink>
       <NavLink to="/grouping" end className={getActiveClassname}>
         Grouping
