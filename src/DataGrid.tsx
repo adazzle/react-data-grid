@@ -299,7 +299,7 @@ function DataGrid<R, SR, K extends Key>(
   );
 
   const allRowsSelected = useMemo((): boolean => {
-    // no rows to select = explicitely unchecked
+    // no rows to select = explicitly unchecked
     const { length } = rawRows;
     return (
       length !== 0 &&
@@ -307,6 +307,17 @@ function DataGrid<R, SR, K extends Key>(
       rowKeyGetter != null &&
       selectedRows.size >= length &&
       rawRows.every((row) => selectedRows.has(rowKeyGetter(row)))
+    );
+  }, [rawRows, selectedRows, rowKeyGetter]);
+
+  const someRowsSelected = useMemo((): boolean => {
+    const { length } = rawRows;
+    return (
+      length !== 0 &&
+      selectedRows != null &&
+      rowKeyGetter != null &&
+      selectedRows.size > 0 &&
+      selectedRows.size < length
     );
   }, [rawRows, selectedRows, rowKeyGetter]);
 
@@ -1217,6 +1228,7 @@ function DataGrid<R, SR, K extends Key>(
           onColumnResize={handleColumnResizeLatest}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={selectAllRowsLatest}
+          someRowsSelected={someRowsSelected}
           sortColumns={sortColumns}
           onSortColumnsChange={onSortColumnsChangeLatest}
           lastFrozenColumnIndex={lastFrozenColumnIndex}
