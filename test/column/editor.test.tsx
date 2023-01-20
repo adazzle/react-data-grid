@@ -169,8 +169,8 @@ describe('Editor', () => {
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       editor = screen.getByLabelText('col2-editor');
       await userEvent.click(editor);
-      await userEvent.keyboard('{Tab}');
-      expect(getCellsAtRowIndex(1)[0]).toHaveFocus();
+      await userEvent.keyboard('{enter}');
+      expect(getCellsAtRowIndex(0)[1]).toHaveFocus();
     });
 
     it('should not commit on outside click if commitOnOutsideClick is false', async () => {
