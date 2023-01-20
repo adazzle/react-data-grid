@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject, type MutableRefObject } from 'react';
+import { useEffect, useRef, type MutableRefObject, useCallback } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
@@ -32,7 +32,6 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose'>,
     SharedCellRendererProps<R, SR> {
-  gridRef: RefObject<HTMLDivElement>;
   skipCellFocusRef: MutableRefObject<boolean>;
   closeEditor: () => void;
 }
@@ -41,7 +40,6 @@ export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
-  gridRef,
   skipCellFocusRef,
   onRowChange,
   closeEditor
@@ -56,9 +54,16 @@ export default function EditCell<R, SR>({
     onClose(true);
   });
 
+  const cancelFrameRequest = useCallback(() => {
+    skipCellFocusRef.current = false;
+    if (commitOnOutsideClick) {
+      cancelAnimationFrame(frameRequestRef.current!);
+    }
+  }, [commitOnOutsideClick, skipCellFocusRef]);
+
   useEffect(() => {
-    function onWindowCaptureMouseDown({ target }: MouseEvent) {
-      skipCellFocusRef.current = target instanceof Node && !gridRef.current!.contains(target);
+    function onWindowCaptureMouseDown() {
+      skipCellFocusRef.current = true;
       if (commitOnOutsideClick) {
         frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
       }
@@ -70,11 +75,7 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [commitOnOutsideClick, commitOnOutsideMouseDown, gridRef, skipCellFocusRef]);
-
-  function cancelFrameRequest() {
-    cancelAnimationFrame(frameRequestRef.current!);
-  }
+  }, [cancelFrameRequest, commitOnOutsideClick, commitOnOutsideMouseDown, skipCellFocusRef]);
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Escape') {
@@ -117,7 +118,7 @@ export default function EditCell<R, SR>({
       className={className}
       style={getCellStyle(column, colSpan)}
       onKeyDown={onKeyDown}
-      onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
+      onMouseDownCapture={cancelFrameRequest}
     >
       {column.editor != null && (
         <>
