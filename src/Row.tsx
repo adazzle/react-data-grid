@@ -1,5 +1,4 @@
-import { memo, forwardRef } from 'react';
-import type { RefAttributes } from 'react';
+import { memo, forwardRef, type RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
@@ -23,6 +22,7 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
+    skipCellFocusRef,
     onCellClick,
     onCellDoubleClick,
     onCellContextMenu,
@@ -84,6 +84,7 @@ function Row<R, SR>(
           onContextMenu={onCellContextMenu}
           onRowChange={handleRowChange}
           selectCell={selectCell}
+          skipCellFocusRef={skipCellFocusRef}
         />
       );
     }

@@ -78,7 +78,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function CustomizableComponents({ direction }: Props) {
+export default function CustomizableRenderers({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());

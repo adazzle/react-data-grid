@@ -1,4 +1,4 @@
-import type { Key, ReactElement, ReactNode, RefObject, MouseEvent } from 'react';
+import type { Key, MutableRefObject, ReactElement, ReactNode, RefObject, MouseEvent } from 'react';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -110,7 +110,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'selectCell'>,
+  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'selectCell' | 'skipCellFocusRef'>,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
       'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
@@ -148,6 +148,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
+  skipCellFocusRef: MutableRefObject<boolean>;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   onCellClick: Maybe<
     (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
