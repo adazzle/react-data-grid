@@ -147,6 +147,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onFill?: Maybe<(event: FillEvent<R>) => R>;
   onCopy?: Maybe<(event: CopyEvent<R>) => void>;
   onPaste?: Maybe<(event: PasteEvent<R>) => R>;
+  handleCopyExternally?: Maybe<() => void>;
+  handlePasteExternally?: Maybe<() => void>;
 
   /**
    * Event props
@@ -219,6 +221,8 @@ function DataGrid<R, SR, K extends Key>(
     onFill,
     onCopy,
     onPaste,
+    handleCopyExternally,
+    handlePasteExternally,
     // Toggles and modes
     cellNavigationMode: rawCellNavigationMode,
     enableVirtualization: rawEnableVirtualization,
@@ -582,10 +586,12 @@ function DataGrid<R, SR, K extends Key>(
 
     const { key, keyCode } = event;
     const { rowIdx } = selectedPosition;
+    const hasCopyHandler = handleCopyExternally ?? onCopy;
+    const hasPasteHandler = handlePasteExternally ?? onPaste;
 
     if (
       selectedCellIsWithinViewportBounds &&
-      (onPaste != null || onCopy != null) &&
+      (hasPasteHandler != null || hasCopyHandler != null) &&
       isCtrlKeyHeldDown(event) &&
       !isGroupRow(rows[rowIdx]) &&
       selectedPosition.mode === 'SELECT'
@@ -595,11 +601,13 @@ function DataGrid<R, SR, K extends Key>(
       const cKey = 67;
       const vKey = 86;
       if (keyCode === cKey) {
-        handleCopy();
+        const copyHandler = handleCopyExternally ?? handleCopy
+        copyHandler();
         return;
       }
       if (keyCode === vKey) {
-        handlePaste();
+        const pastehandler = handlePasteExternally ?? handlePaste
+        pastehandler();
         return;
       }
     }
