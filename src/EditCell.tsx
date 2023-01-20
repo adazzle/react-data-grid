@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type MutableRefObject, useCallback } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
@@ -33,6 +33,7 @@ interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose'>,
     SharedCellRendererProps<R, SR> {
   rowIdx: number;
+  skipCellFocusRef: MutableRefObject<boolean>;
   closeEditor: () => void;
   navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   onKeyDown: Maybe<(args: EditCellKeyDownArgs, event: React.KeyboardEvent<HTMLDivElement>) => void>;
@@ -43,6 +44,7 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   rowIdx,
+  skipCellFocusRef,
   onRowChange,
   closeEditor,
   onKeyDown,
@@ -58,11 +60,19 @@ export default function EditCell<R, SR>({
     onClose(true);
   });
 
-  useEffect(() => {
-    if (!commitOnOutsideClick) return;
+  const cancelFrameRequest = useCallback(() => {
+    skipCellFocusRef.current = false;
+    if (commitOnOutsideClick) {
+      cancelAnimationFrame(frameRequestRef.current!);
+    }
+  }, [commitOnOutsideClick, skipCellFocusRef]);
 
+  useEffect(() => {
     function onWindowCaptureMouseDown() {
-      frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
+      skipCellFocusRef.current = true;
+      if (commitOnOutsideClick) {
+        frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
+      }
     }
 
     addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
@@ -71,11 +81,7 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
-
-  function cancelFrameRequest() {
-    cancelAnimationFrame(frameRequestRef.current!);
-  }
+  }, [cancelFrameRequest, commitOnOutsideClick, commitOnOutsideMouseDown, skipCellFocusRef]);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     onKeyDown?.({ mode: 'EDIT', idx: column.idx, rowIdx, onClose }, event);
@@ -115,7 +121,7 @@ export default function EditCell<R, SR>({
       className={className}
       style={getCellStyle(column, colSpan)}
       onKeyDown={handleKeyDown}
-      onMouseDownCapture={commitOnOutsideClick ? cancelFrameRequest : undefined}
+      onMouseDownCapture={cancelFrameRequest}
     >
       {column.editor != null && (
         <>
