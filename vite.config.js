@@ -17,6 +17,10 @@ export default defineConfig({
   test: {
     root: '.',
     globals: true,
+    coverage: {
+      reporter: ['json']
+    },
+    restoreMocks: true,
     setupFiles: ['./test/setup.ts'],
     setupFilesAfterEnv: ['@testing-library/jest-dom'],
     environment: 'jsdom'

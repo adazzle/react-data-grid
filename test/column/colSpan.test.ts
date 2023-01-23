@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import type { Column } from '../../src';
 import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
@@ -173,7 +174,7 @@ describe('colSpan', () => {
   it('should scroll to the merged cell when selected', async () => {
     setupColSpanGrid(30);
     await userEvent.click(getCellsAtRowIndex(10)[23]); // last visible cell (1920/80)
-    const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     const testScrollIntoView = () => {
       expect(spy).toHaveBeenCalled();
       spy.mockReset();

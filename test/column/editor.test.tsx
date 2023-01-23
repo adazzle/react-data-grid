@@ -1,4 +1,5 @@
 import { StrictMode, useMemo, useState } from 'react';
+import { vi } from 'vitest';
 import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -65,7 +66,7 @@ describe('Editor', () => {
   });
 
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
-    const onSave = jest.fn();
+    const onSave = vi.fn();
     render(<EditorTest onSave={onSave} />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('234');
@@ -101,7 +102,7 @@ describe('Editor', () => {
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.keyboard('123');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1230);
-    const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     await userEvent.keyboard('{enter}');
     expect(spy).toHaveBeenCalled();
   });

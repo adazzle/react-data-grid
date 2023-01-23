@@ -1,4 +1,5 @@
 import { StrictMode, useState } from 'react';
+import { vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -57,7 +58,7 @@ describe('Custom formatter component', () => {
   });
 
   it('can update rows', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     const column: Column<Row> = {
       key: 'test',

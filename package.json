@@ -27,6 +27,7 @@
     "build": "rollup --config --no-stdin",
     "build:types": "tsc -p tsconfig.lib.json && api-extractor run --local --verbose",
     "test": "vitest",
+    "coverage": "vitest run --coverage",
     "test:watch": "jest --watch",
     "format": "rome format . --write",
     "check": "rome check .",

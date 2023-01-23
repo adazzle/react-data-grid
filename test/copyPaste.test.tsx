@@ -1,4 +1,5 @@
 import { StrictMode, useState } from 'react';
+import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
@@ -43,8 +44,8 @@ const bottomSummaryRows: readonly Row[] = [
 ];
 
 const copyCellClassName = 'rdg-cell-copied';
-const onPasteSpy = jest.fn();
-const onCopySpy = jest.fn();
+const onPasteSpy = vi.fn();
+const onCopySpy = vi.fn();
 
 function CopyPasteTest({
   onPasteCallback = true,
