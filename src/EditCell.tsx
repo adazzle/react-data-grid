@@ -36,7 +36,9 @@ interface EditCellProps<R, SR>
   skipCellFocusRef: MutableRefObject<boolean>;
   closeEditor: () => void;
   navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  onKeyDown: Maybe<(args: EditCellKeyDownArgs, event: React.KeyboardEvent<HTMLDivElement>) => void>;
+  onKeyDown: Maybe<
+    (args: EditCellKeyDownArgs<R, SR>, event: React.KeyboardEvent<HTMLDivElement>) => void
+  >;
 }
 
 export default function EditCell<R, SR>({
@@ -84,7 +86,7 @@ export default function EditCell<R, SR>({
   }, [cancelFrameRequest, commitOnOutsideClick, commitOnOutsideMouseDown, skipCellFocusRef]);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    onKeyDown?.({ mode: 'EDIT', idx: column.idx, rowIdx, onClose }, event);
+    onKeyDown?.({ mode: 'EDIT', row, column, rowIdx, onClose }, event);
     if (event.isDefaultPrevented()) return;
     if (event.key === 'Escape') {
       // Discard changes

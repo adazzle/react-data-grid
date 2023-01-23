@@ -124,11 +124,31 @@ export interface CellRendererProps<TRow, TSummaryRow>
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
-export interface CellEventArgs<TRow, TSummaryRow> {
+export interface CellClickArgs<TRow, TSummaryRow> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   selectCell: (enableEditor?: boolean) => void;
 }
+
+interface SelectCellKeyDownArgs<TRow, TSummaryRow> {
+  mode: 'SELECT';
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  rowIdx: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface EditCellKeyDownArgs<TRow, TSummaryRow> {
+  mode: 'EDIT';
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  rowIdx: number;
+  onClose: (commitChanges?: boolean) => void;
+}
+
+export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
+  | SelectCellKeyDownArgs<TRow, TSummaryRow>
+  | EditCellKeyDownArgs<TRow, TSummaryRow>;
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
@@ -243,19 +263,3 @@ export interface Renderers<TRow, TSummaryRow> {
 }
 
 export type Direction = 'ltr' | 'rtl';
-
-interface SelectCellKeyDownArgs {
-  mode: 'SELECT';
-  idx: number;
-  rowIdx: number;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
-}
-
-export interface EditCellKeyDownArgs {
-  mode: 'EDIT';
-  idx: number;
-  rowIdx: number;
-  onClose: (commitChanges?: boolean) => void;
-}
-
-export type CellKeyDownArgs = SelectCellKeyDownArgs | EditCellKeyDownArgs;

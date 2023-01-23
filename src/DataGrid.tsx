@@ -62,7 +62,7 @@ import type {
   Maybe,
   Renderers,
   Direction,
-  CellEventArgs,
+  CellClickArgs,
   CellKeyDownArgs
 } from './types';
 
@@ -155,16 +155,18 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a cell is clicked */
-  onCellClick?: Maybe<(args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void>;
+  onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void>;
   /** Function called whenever a cell is double clicked */
   onCellDoubleClick?: Maybe<
-    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
+    (args: CellClickArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
   >;
   /** Function called whenever a cell is right clicked */
   onCellContextMenu?: Maybe<
-    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
+    (args: CellClickArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
   >;
-  onCellKeyDown?: Maybe<(args: CellKeyDownArgs, event: KeyboardEvent<HTMLDivElement>) => void>;
+  onCellKeyDown?: Maybe<
+    (args: CellKeyDownArgs<R, SR>, event: KeyboardEvent<HTMLDivElement>) => void
+  >;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -591,15 +593,20 @@ function DataGrid<R, SR, K extends Key>(
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const { idx, rowIdx, mode } = selectedPosition;
     if (mode === 'EDIT') return;
-    onCellKeyDown?.(
-      {
-        mode: 'SELECT',
-        idx,
-        rowIdx,
-        selectCell
-      },
-      event
-    );
+
+    const row = rows[rowIdx];
+    if (!isGroupRow(row)) {
+      onCellKeyDown?.(
+        {
+          mode: 'SELECT',
+          row,
+          column: columns[idx],
+          rowIdx,
+          selectCell
+        },
+        event
+      );
+    }
     if (event.isDefaultPrevented()) return;
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
@@ -629,8 +636,6 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     if (isRowIdxWithinViewportBounds(rowIdx)) {
-      const row = rows[rowIdx];
-
       if (
         isGroupRow(row) &&
         selectedPosition.idx === -1 &&

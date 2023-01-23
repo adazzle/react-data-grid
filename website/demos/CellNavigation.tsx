@@ -76,9 +76,13 @@ export default function CellNavigation({ direction }: Props) {
   const [rows] = useState(createRows);
   const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
-  function handleCellKeyDown(args: CellKeyDownArgs, event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleCellKeyDown(
+    args: CellKeyDownArgs<Row>,
+    event: React.KeyboardEvent<HTMLDivElement>
+  ) {
     if (args.mode === 'EDIT') return;
-    const { idx, rowIdx, selectCell } = args;
+    const { column, rowIdx, selectCell } = args;
+    const { idx } = column;
     const { key, shiftKey } = event;
     const loopOverNavigation = () => {
       if ((key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) && idx === columns.length - 1) {

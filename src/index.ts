@@ -31,6 +31,6 @@ export type {
   SortPriorityProps,
   SortStatusProps,
   Renderers,
-  CellEventArgs,
+  CellClickArgs,
   CellKeyDownArgs
 } from './types';
