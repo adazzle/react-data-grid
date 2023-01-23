@@ -28,8 +28,6 @@ type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
   | 'sortColumns'
   | 'onSortColumnsChange'
-  | 'allRowsSelected'
-  | 'onAllRowsSelectionChange'
   | 'selectCell'
   | 'onColumnResize'
   | 'shouldFocusGrid'
@@ -47,8 +45,6 @@ export default function HeaderCell<R, SR>({
   colSpan,
   isCellSelected,
   onColumnResize,
-  allRowsSelected,
-  onAllRowsSelectionChange,
   sortColumns,
   onSortColumnsChange,
   selectCell,
@@ -188,8 +184,6 @@ export default function HeaderCell<R, SR>({
         sortDirection,
         priority,
         onSort,
-        allRowsSelected,
-        onAllRowsSelectionChange,
         isCellSelected
       })}
     </div>
