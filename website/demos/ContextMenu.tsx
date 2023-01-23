@@ -113,8 +113,8 @@ export default function ContextMenuDemo({ direction }: Props) {
             className={contextMenuClassname}
             style={
               {
-                top: `${contextMenuProps.top}px`,
-                left: `${contextMenuProps.left}px`
+                top: contextMenuProps.top,
+                left: contextMenuProps.left
               } as unknown as React.CSSProperties
             }
           >
