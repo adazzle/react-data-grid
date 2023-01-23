@@ -106,7 +106,7 @@ export default function ContextMenuDemo({ direction }: Props) {
           });
         }}
       />
-      {contextMenuProps !== null &&
+      {isContextMenuOpen &&
         createPortal(
           <menu
             ref={menuRef}
