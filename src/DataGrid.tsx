@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes } from 'react';
+import type { Key, RefAttributes, MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
@@ -17,7 +17,8 @@ import {
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
-  RowSelectionChangeProvider
+  RowSelectionChangeProvider,
+  RowSelectionProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import { defaultRowRenderer } from './Row';
@@ -60,7 +61,8 @@ import type {
   RowHeightArgs,
   Maybe,
   Renderers,
-  Direction
+  Direction,
+  CellEventArgs
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -151,10 +153,16 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Event props
    */
-  /** Function called whenever a row is clicked */
-  onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
-  /** Function called whenever a row is double clicked */
-  onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>;
+  /** Function called whenever a cell is clicked */
+  onCellClick?: Maybe<(args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void>;
+  /** Function called whenever a cell is double clicked */
+  onCellDoubleClick?: Maybe<
+    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
+  >;
+  /** Function called whenever a cell is right clicked */
+  onCellContextMenu?: Maybe<
+    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
+  >;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -212,8 +220,9 @@ function DataGrid<R, SR, K extends Key>(
     expandedGroupIds,
     onExpandedGroupIdsChange,
     // Event props
-    onRowClick,
-    onRowDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
+    onCellContextMenu,
     onScroll,
     onColumnResize,
     onFill,
@@ -380,10 +389,10 @@ function DataGrid<R, SR, K extends Key>(
    */
   const handleColumnResizeLatest = useLatestFunc(handleColumnResize);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
-  const onRowClickLatest = useLatestFunc(onRowClick);
-  const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
+  const onCellClickLatest = useLatestFunc(onCellClick);
+  const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
+  const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
   const selectRowLatest = useLatestFunc(selectRow);
-  const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectViewportCellLatest = useLatestFunc(
     (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
@@ -505,8 +514,14 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize?.(column.idx, measuredWidth);
   }
 
-  function selectRow({ row, checked, isShiftClick }: SelectRowEvent<R>) {
+  function selectRow(args: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
+    if (args.type === 'HEADER') {
+      selectAllRows(args.checked);
+      return;
+    }
+
+    const { row, checked, isShiftClick } = args;
 
     assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
@@ -710,7 +725,7 @@ function DataGrid<R, SR, K extends Key>(
     if (isSelectable && shiftKey && key === ' ') {
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
       const rowKey = rowKeyGetter(row);
-      selectRow({ row, checked: !selectedRows.has(rowKey), isShiftClick: false });
+      selectRow({ type: 'ROW', row, checked: !selectedRows.has(rowKey), isShiftClick: false });
       // do not scroll
       event.preventDefault();
       return;
@@ -1107,8 +1122,9 @@ function DataGrid<R, SR, K extends Key>(
           row,
           viewportColumns: rowColumns,
           isRowSelected,
-          onRowClick: onRowClickLatest,
-          onRowDoubleClick: onRowDoubleClickLatest,
+          onCellClick: onCellClickLatest,
+          onCellDoubleClick: onCellDoubleClickLatest,
+          onCellContextMenu: onCellContextMenuLatest,
           rowClass,
           gridRowStart,
           height: getRowHeight(rowIdx),
@@ -1212,19 +1228,23 @@ function DataGrid<R, SR, K extends Key>(
         />
       )}
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
-        <HeaderRow
-          columns={getRowViewportColumns(-1)}
-          onColumnResize={handleColumnResizeLatest}
-          allRowsSelected={allRowsSelected}
-          onAllRowsSelectionChange={selectAllRowsLatest}
-          sortColumns={sortColumns}
-          onSortColumnsChange={onSortColumnsChangeLatest}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          selectedCellIdx={selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined}
-          selectCell={selectHeaderCellLatest}
-          shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-          direction={direction}
-        />
+        <RowSelectionChangeProvider value={selectRowLatest}>
+          <RowSelectionProvider value={allRowsSelected}>
+            <HeaderRow
+              columns={getRowViewportColumns(-1)}
+              onColumnResize={handleColumnResizeLatest}
+              sortColumns={sortColumns}
+              onSortColumnsChange={onSortColumnsChangeLatest}
+              lastFrozenColumnIndex={lastFrozenColumnIndex}
+              selectedCellIdx={
+                selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined
+              }
+              selectCell={selectHeaderCellLatest}
+              shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+              direction={direction}
+            />
+          </RowSelectionProvider>
+        </RowSelectionChangeProvider>
         {rows.length === 0 && noRowsFallback ? (
           noRowsFallback
         ) : (
