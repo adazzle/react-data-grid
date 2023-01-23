@@ -31,5 +31,6 @@ export type {
   SortIconProps,
   SortPriorityProps,
   SortStatusProps,
-  Renderers
+  Renderers,
+  CellEventArgs
 } from './types';
