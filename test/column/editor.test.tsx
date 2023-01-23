@@ -136,20 +136,6 @@ describe('Editor', () => {
   });
 
   describe('editorOptions', () => {
-    it('should open editor on single click if editOnClick is true', async () => {
-      render(
-        <EditorTest
-          editorOptions={{
-            editOnClick: true
-          }}
-        />
-      );
-      await userEvent.click(getCellsAtRowIndex(0)[0]);
-      expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-      await userEvent.click(getCellsAtRowIndex(0)[1]);
-      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
-    });
-
     it('should detect outside click if editor is rendered in a portal', async () => {
       render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);

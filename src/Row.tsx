@@ -23,8 +23,9 @@ function Row<R, SR>(
     selectedCellEditor,
     selectedCellDragHandle,
     skipCellFocusRef,
-    onRowClick,
-    onRowDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
+    onCellContextMenu,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -78,8 +79,9 @@ function Row<R, SR>(
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
+          onClick={onCellClick}
+          onDoubleClick={onCellDoubleClick}
+          onContextMenu={onCellContextMenu}
           onRowChange={handleRowChange}
           selectCell={selectCell}
           skipCellFocusRef={skipCellFocusRef}
