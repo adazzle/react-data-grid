@@ -13,5 +13,12 @@ export default defineConfig({
   },
   server: {
     open: true
+  },
+  test: {
+    root: '.',
+    globals: true,
+    setupFiles: ['./test/setup.ts'],
+    setupFilesAfterEnv: ['@testing-library/jest-dom'],
+    environment: 'jsdom'
   }
 });
