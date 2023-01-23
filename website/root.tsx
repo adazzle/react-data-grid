@@ -1,4 +1,4 @@
-import { StrictMode, useState } from 'react';
+import { StrictMode, useState, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { css } from '@linaria/core';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -6,25 +6,25 @@ import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import type { Direction } from '../src/types';
 import Nav from './Nav';
 
-import CommonFeatures from './demos/CommonFeatures';
-import AllFeatures from './demos/AllFeatures';
-import CellNavigation from './demos/CellNavigation';
-import ColumnSpanning from './demos/ColumnSpanning';
-import ColumnsReordering from './demos/ColumnsReordering';
-import CustomizableRenderers from './demos/CustomizableRenderers';
-import ContextMenuDemo from './demos/ContextMenu';
-import Grouping from './demos/Grouping';
-import HeaderFilters from './demos/HeaderFilters';
-import InfiniteScrolling from './demos/InfiniteScrolling';
-import MasterDetail from './demos/MasterDetail';
-import MillionCells from './demos/MillionCells';
-import NoRows from './demos/NoRows';
-import ResizableGrid from './demos/Resizable';
-import RowsReordering from './demos/RowsReordering';
-import ScrollToRow from './demos/ScrollToRow';
-import TreeView from './demos/TreeView';
-import VariableRowHeight from './demos/VariableRowHeight';
-import Animation from './demos/Animation';
+const CommonFeatures = lazy(() => import('./demos/CommonFeatures'));
+const AllFeatures = lazy(() => import('./demos/AllFeatures'));
+const CellNavigation = lazy(() => import('./demos/CellNavigation'));
+const ColumnSpanning = lazy(() => import('./demos/ColumnSpanning'));
+const ColumnsReordering = lazy(() => import('./demos/ColumnsReordering'));
+const CustomizableRenderers = lazy(() => import('./demos/CustomizableRenderers'));
+const ContextMenuDemo = lazy(() => import('./demos/ContextMenu'));
+const Grouping = lazy(() => import('./demos/Grouping'));
+const HeaderFilters = lazy(() => import('./demos/HeaderFilters'));
+const InfiniteScrolling = lazy(() => import('./demos/InfiniteScrolling'));
+const MasterDetail = lazy(() => import('./demos/MasterDetail'));
+const MillionCells = lazy(() => import('./demos/MillionCells'));
+const NoRows = lazy(() => import('./demos/NoRows'));
+const ResizableGrid = lazy(() => import('./demos/Resizable'));
+const RowsReordering = lazy(() => import('./demos/RowsReordering'));
+const ScrollToRow = lazy(() => import('./demos/ScrollToRow'));
+const TreeView = lazy(() => import('./demos/TreeView'));
+const VariableRowHeight = lazy(() => import('./demos/VariableRowHeight'));
+const Animation = lazy(() => import('./demos/Animation'));
 
 css`
   @at-root {
@@ -89,32 +89,43 @@ function Root() {
     <Router>
       <Nav direction={direction} onDirectionChange={setDirection} />
       <main className={mainClassname} dir={direction}>
-        <Routes>
-          <Route index element={<Navigate to="common-features" replace />} />
-          <Route path="common-features" element={<CommonFeatures direction={direction} />} />
-          <Route path="all-features" element={<AllFeatures direction={direction} />} />
-          <Route path="cell-navigation" element={<CellNavigation direction={direction} />} />
-          <Route path="column-spanning" element={<ColumnSpanning direction={direction} />} />
-          <Route path="columns-reordering" element={<ColumnsReordering direction={direction} />} />
-          <Route path="context-menu" element={<ContextMenuDemo direction={direction} />} />
-          <Route
-            path="customizable-renderers"
-            element={<CustomizableRenderers direction={direction} />}
-          />
-          <Route path="grouping" element={<Grouping direction={direction} />} />
-          <Route path="header-filters" element={<HeaderFilters direction={direction} />} />
-          <Route path="infinite-scrolling" element={<InfiniteScrolling direction={direction} />} />
-          <Route path="master-detail" element={<MasterDetail direction={direction} />} />
-          <Route path="million-cells" element={<MillionCells direction={direction} />} />
-          <Route path="no-rows" element={<NoRows direction={direction} />} />
-          <Route path="resizable-grid" element={<ResizableGrid direction={direction} />} />
-          <Route path="rows-reordering" element={<RowsReordering direction={direction} />} />
-          <Route path="scroll-to-row" element={<ScrollToRow direction={direction} />} />
-          <Route path="tree-view" element={<TreeView direction={direction} />} />
-          <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
-          <Route path="animation" element={<Animation direction={direction} />} />
-          <Route path="*" element="Nothing to see here" />
-        </Routes>
+        <Suspense fallback="Loading...">
+          <Routes>
+            <Route index element={<Navigate to="common-features" replace />} />
+            <Route path="common-features" element={<CommonFeatures direction={direction} />} />
+            <Route path="all-features" element={<AllFeatures direction={direction} />} />
+            <Route path="cell-navigation" element={<CellNavigation direction={direction} />} />
+            <Route path="column-spanning" element={<ColumnSpanning direction={direction} />} />
+            <Route
+              path="columns-reordering"
+              element={<ColumnsReordering direction={direction} />}
+            />
+            <Route path="context-menu" element={<ContextMenuDemo direction={direction} />} />
+            <Route
+              path="customizable-renderers"
+              element={<CustomizableRenderers direction={direction} />}
+            />
+            <Route path="grouping" element={<Grouping direction={direction} />} />
+            <Route path="header-filters" element={<HeaderFilters direction={direction} />} />
+            <Route
+              path="infinite-scrolling"
+              element={<InfiniteScrolling direction={direction} />}
+            />
+            <Route path="master-detail" element={<MasterDetail direction={direction} />} />
+            <Route path="million-cells" element={<MillionCells direction={direction} />} />
+            <Route path="no-rows" element={<NoRows direction={direction} />} />
+            <Route path="resizable-grid" element={<ResizableGrid direction={direction} />} />
+            <Route path="rows-reordering" element={<RowsReordering direction={direction} />} />
+            <Route path="scroll-to-row" element={<ScrollToRow direction={direction} />} />
+            <Route path="tree-view" element={<TreeView direction={direction} />} />
+            <Route
+              path="variable-row-height"
+              element={<VariableRowHeight direction={direction} />}
+            />
+            <Route path="animation" element={<Animation direction={direction} />} />
+            <Route path="*" element="Nothing to see here" />
+          </Routes>
+        </Suspense>
       </main>
     </Router>
   );

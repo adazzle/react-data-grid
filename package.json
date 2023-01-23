@@ -10,14 +10,6 @@
   "repository": "github:adazzle/react-data-grid",
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
-  "exports": {
-    "./lib/styles.css": "./lib/styles.css",
-    ".": {
-      "module": "./lib/bundle.js",
-      "require": "./lib/bundle.cjs",
-      "default": "./lib/bundle.js"
-    }
-  },
   "browser": "./lib/bundle.js",
   "main": "./lib/bundle.cjs",
   "module": "./lib/bundle.js",
@@ -29,7 +21,7 @@
     "**/*.css"
   ],
   "scripts": {
-    "start": "webpack serve --mode=development",
+    "start": "vite serve",
     "build:website": "webpack --mode=production",
     "build": "rollup --config --no-stdin",
     "build:types": "tsc -p tsconfig.lib.json && api-extractor run --local --verbose",
@@ -59,6 +51,7 @@
     "@faker-js/faker": "^7.1.0",
     "@linaria/babel-preset": "^4.2.3",
     "@linaria/rollup": "^4.2.0",
+    "@linaria/vite": "^4.2.5",
     "@linaria/webpack5-loader": "^4.1.6",
     "@microsoft/api-extractor": "^7.23.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
@@ -73,6 +66,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
+    "@vitejs/plugin-react": "^3.0.1",
     "babel-loader": "^9.0.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "css-loader": "^6.7.1",
@@ -108,6 +102,8 @@
     "rome": "^11.0.0",
     "style-loader": "^3.3.1",
     "typescript": "~4.9.3",
+    "vite": "^4.0.4",
+    "vite-plugin-html": "^3.2.0",
     "webpack": "^5.72.0",
     "webpack-cli": "^5.0.0",
     "webpack-dev-server": "^4.8.1",
