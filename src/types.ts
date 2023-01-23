@@ -1,4 +1,6 @@
-import type { Key, MutableRefObject, ReactElement, ReactNode, RefObject, MouseEvent } from 'react';
+import type { Key, MutableRefObject, ReactElement, ReactNode, RefObject } from 'react';
+
+import type { DataGridProps } from './DataGrid';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -133,7 +135,11 @@ export interface CellEventArgs<TRow, TSummaryRow> {
 }
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
+    Pick<
+      DataGridProps<TRow, TSummaryRow>,
+      'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+    > {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   rowIdx: number;
@@ -148,15 +154,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   skipCellFocusRef: MutableRefObject<boolean>;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
-  onCellClick: Maybe<
-    (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
-  >;
-  onCellDoubleClick: Maybe<
-    (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
-  >;
-  onCellContextMenu: Maybe<
-    (args: CellEventArgs<TRow, TSummaryRow>, event: MouseEvent<HTMLDivElement>) => void
-  >;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (

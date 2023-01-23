@@ -10,8 +10,6 @@ import type { Props } from './types';
 
 const contextMenuClassname = css`
   position: absolute;
-  top: var(--top);
-  left: var(--left);
   background-color: #ffffff;
   border: 1px solid black;
   padding: 16px;
@@ -61,9 +59,10 @@ export default function ContextMenuDemo({ direction }: Props) {
     left: number;
   } | null>(null);
   const menuRef = useRef<HTMLMenuElement | null>(null);
+  const isContextMenuOpen = contextMenuProps !== null;
 
   useLayoutEffect(() => {
-    if (contextMenuProps === null) return;
+    if (!isContextMenuOpen) return;
 
     function onClick(event: MouseEvent) {
       if (event.target instanceof Node && menuRef.current?.contains(event.target)) {
@@ -77,7 +76,7 @@ export default function ContextMenuDemo({ direction }: Props) {
     return () => {
       removeEventListener('click', onClick);
     };
-  }, [contextMenuProps]);
+  }, [isContextMenuOpen]);
 
   function insertRow(insertRowIdx: number) {
     const newRow: Row = {
@@ -114,8 +113,8 @@ export default function ContextMenuDemo({ direction }: Props) {
             className={contextMenuClassname}
             style={
               {
-                '--top': `${contextMenuProps.top}px`,
-                '--left': `${contextMenuProps.left}px`
+                top: `${contextMenuProps.top}px`,
+                left: `${contextMenuProps.left}px`
               } as unknown as React.CSSProperties
             }
           >

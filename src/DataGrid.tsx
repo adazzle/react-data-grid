@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes } from 'react';
+import type { Key, RefAttributes, MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
@@ -62,7 +62,7 @@ import type {
   Maybe,
   Renderers,
   Direction,
-  RowRendererProps
+  CellEventArgs
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -154,11 +154,15 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a cell is clicked */
-  onCellClick?: RowRendererProps<R, SR>['onCellClick'];
+  onCellClick?: Maybe<(args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void>;
   /** Function called whenever a cell is double clicked */
-  onCellDoubleClick?: RowRendererProps<R, SR>['onCellDoubleClick'];
+  onCellDoubleClick?: Maybe<
+    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
+  >;
   /** Function called whenever a cell is right clicked */
-  onCellContextMenu?: RowRendererProps<R, SR>['onCellContextMenu'];
+  onCellContextMenu?: Maybe<
+    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
+  >;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
