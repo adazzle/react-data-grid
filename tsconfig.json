@@ -4,7 +4,7 @@
     "noEmit": true
   },
   "include": [
-    "jest.config.js",
+    "vite.config.js",
     "rollup.config.js",
     "webpack.config.js",
     "src/**/*",
