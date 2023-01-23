@@ -17,7 +17,8 @@ import {
   useViewportColumns,
   useViewportRows,
   useLatestFunc,
-  RowSelectionChangeProvider
+  RowSelectionChangeProvider,
+  RowSelectionProvider
 } from './hooks';
 import HeaderRow from './HeaderRow';
 import { defaultRowRenderer } from './Row';
@@ -383,7 +384,6 @@ function DataGrid<R, SR, K extends Key>(
   const onRowClickLatest = useLatestFunc(onRowClick);
   const onRowDoubleClickLatest = useLatestFunc(onRowDoubleClick);
   const selectRowLatest = useLatestFunc(selectRow);
-  const selectAllRowsLatest = useLatestFunc(selectAllRows);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectViewportCellLatest = useLatestFunc(
     (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
@@ -505,8 +505,14 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize?.(column.idx, measuredWidth);
   }
 
-  function selectRow({ row, checked, isShiftClick }: SelectRowEvent<R>) {
+  function selectRow(args: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
+    if (args.type === 'HEADER') {
+      selectAllRows(args.checked);
+      return;
+    }
+
+    const { row, checked, isShiftClick } = args;
 
     assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
@@ -710,7 +716,7 @@ function DataGrid<R, SR, K extends Key>(
     if (isSelectable && shiftKey && key === ' ') {
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
       const rowKey = rowKeyGetter(row);
-      selectRow({ row, checked: !selectedRows.has(rowKey), isShiftClick: false });
+      selectRow({ type: 'ROW', row, checked: !selectedRows.has(rowKey), isShiftClick: false });
       // do not scroll
       event.preventDefault();
       return;
@@ -1212,19 +1218,23 @@ function DataGrid<R, SR, K extends Key>(
         />
       )}
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
-        <HeaderRow
-          columns={getRowViewportColumns(-1)}
-          onColumnResize={handleColumnResizeLatest}
-          allRowsSelected={allRowsSelected}
-          onAllRowsSelectionChange={selectAllRowsLatest}
-          sortColumns={sortColumns}
-          onSortColumnsChange={onSortColumnsChangeLatest}
-          lastFrozenColumnIndex={lastFrozenColumnIndex}
-          selectedCellIdx={selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined}
-          selectCell={selectHeaderCellLatest}
-          shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-          direction={direction}
-        />
+        <RowSelectionChangeProvider value={selectRowLatest}>
+          <RowSelectionProvider value={allRowsSelected}>
+            <HeaderRow
+              columns={getRowViewportColumns(-1)}
+              onColumnResize={handleColumnResizeLatest}
+              sortColumns={sortColumns}
+              onSortColumnsChange={onSortColumnsChangeLatest}
+              lastFrozenColumnIndex={lastFrozenColumnIndex}
+              selectedCellIdx={
+                selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined
+              }
+              selectCell={selectHeaderCellLatest}
+              shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+              direction={direction}
+            />
+          </RowSelectionProvider>
+        </RowSelectionChangeProvider>
         {rows.length === 0 && noRowsFallback ? (
           noRowsFallback
         ) : (

@@ -106,8 +106,6 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
   onSort: (ctrlClick: boolean) => void;
-  allRowsSelected: boolean;
-  onAllRowsSelectionChange: (checked: boolean) => void;
   isCellSelected: boolean;
 }
 
@@ -159,11 +157,9 @@ export interface RowsChangeData<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
 }
 
-export interface SelectRowEvent<TRow> {
-  row: TRow;
-  checked: boolean;
-  isShiftClick: boolean;
-}
+export type SelectRowEvent<TRow> =
+  | { type: 'HEADER'; checked: boolean }
+  | { type: 'ROW'; row: TRow; checked: boolean; isShiftClick: boolean };
 
 export interface FillEvent<TRow> {
   columnKey: string;

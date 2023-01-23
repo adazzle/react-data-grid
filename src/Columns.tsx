@@ -1,8 +1,23 @@
 import { SelectCellFormatter } from './formatters';
 import { useRowSelection } from './hooks/useRowSelection';
-import type { Column, FormatterProps, GroupFormatterProps } from './types';
+import type { Column, FormatterProps, GroupFormatterProps, HeaderRendererProps } from './types';
 
 export const SELECT_COLUMN_KEY = 'select-row';
+
+function HeaderRenderer(props: HeaderRendererProps<unknown>) {
+  const [isRowSelected, onRowSelectionChange] = useRowSelection();
+
+  return (
+    <SelectCellFormatter
+      aria-label="Select All"
+      isCellSelected={props.isCellSelected}
+      value={isRowSelected}
+      onChange={(checked) => {
+        onRowSelectionChange({ type: 'HEADER', checked });
+      }}
+    />
+  );
+}
 
 function SelectFormatter(props: FormatterProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
@@ -13,7 +28,7 @@ function SelectFormatter(props: FormatterProps<unknown>) {
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
       onChange={(checked, isShiftClick) => {
-        onRowSelectionChange({ row: props.row, checked, isShiftClick });
+        onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick });
       }}
     />
   );
@@ -28,7 +43,7 @@ function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
       isCellSelected={props.isCellSelected}
       value={isRowSelected}
       onChange={(checked) => {
-        onRowSelectionChange({ row: props.row, checked, isShiftClick: false });
+        onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick: false });
       }}
     />
   );
@@ -45,14 +60,7 @@ export const SelectColumn: Column<any, any> = {
   sortable: false,
   frozen: true,
   headerRenderer(props) {
-    return (
-      <SelectCellFormatter
-        aria-label="Select All"
-        isCellSelected={props.isCellSelected}
-        value={props.allRowsSelected}
-        onChange={props.onAllRowsSelectionChange}
-      />
-    );
+    return <HeaderRenderer {...props} />;
   },
   formatter(props) {
     return <SelectFormatter {...props} />;
