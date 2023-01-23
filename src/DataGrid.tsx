@@ -635,19 +635,18 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    if (isRowIdxWithinViewportBounds(rowIdx)) {
-      if (
-        isGroupRow(row) &&
-        selectedPosition.idx === -1 &&
-        // Collapse the current group row if it is focused and is in expanded state
-        ((key === leftKey && row.isExpanded) ||
-          // Expand the current group row if it is focused and is in collapsed state
-          (key === rightKey && !row.isExpanded))
-      ) {
-        event.preventDefault(); // Prevents scrolling
-        toggleGroup(row.id);
-        return;
-      }
+    if (
+      isRowIdxWithinViewportBounds(rowIdx) &&
+      isGroupRow(row) &&
+      selectedPosition.idx === -1 &&
+      // Collapse the current group row if it is focused and is in expanded state
+      ((key === leftKey && row.isExpanded) ||
+        // Expand the current group row if it is focused and is in collapsed state
+        (key === rightKey && !row.isExpanded))
+    ) {
+      event.preventDefault(); // Prevents scrolling
+      toggleGroup(row.id);
+      return;
     }
 
     switch (event.key) {
