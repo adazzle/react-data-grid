@@ -124,10 +124,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
             <option key={country}>{country}</option>
           ))}
         </select>
-      ),
-      editorOptions: {
-        editOnClick: true
-      }
+      )
     },
     {
       key: 'contact',

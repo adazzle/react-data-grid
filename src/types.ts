@@ -1,5 +1,7 @@
 import type { Key, MutableRefObject, ReactElement, ReactNode, RefObject } from 'react';
 
+import type { DataGridProps } from './DataGrid';
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export type Maybe<T> = T | undefined | null;
@@ -40,8 +42,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly editorOptions?: Maybe<{
     /** @default false */
     readonly renderFormatter?: Maybe<boolean>;
-    /** @default false */
-    readonly editOnClick?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
     /** Prevent default to cancel editing */
@@ -110,11 +110,11 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<
-      RowRendererProps<TRow, TSummaryRow>,
-      'onRowClick' | 'onRowDoubleClick' | 'selectCell' | 'skipCellFocusRef'
-    >,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'selectCell' | 'skipCellFocusRef'>,
+    Omit<
+      React.HTMLAttributes<HTMLDivElement>,
+      'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+    > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   row: TRow;
@@ -122,11 +122,24 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isDraggedOver: boolean;
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
+  onClick: RowRendererProps<TRow, TSummaryRow>['onCellClick'];
+  onDoubleClick: RowRendererProps<TRow, TSummaryRow>['onCellDoubleClick'];
+  onContextMenu: RowRendererProps<TRow, TSummaryRow>['onCellContextMenu'];
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
+export interface CellEventArgs<TRow, TSummaryRow> {
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  selectCell: (enableEditor?: boolean) => void;
+}
+
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
+    Pick<
+      DataGridProps<TRow, TSummaryRow>,
+      'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+    > {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   rowIdx: number;
@@ -141,8 +154,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   skipCellFocusRef: MutableRefObject<boolean>;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
-  onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
-  onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (

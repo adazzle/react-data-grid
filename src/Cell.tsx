@@ -34,8 +34,9 @@ function Cell<R, SR>({
   row,
   dragHandle,
   skipCellFocusRef,
-  onRowClick,
-  onRowDoubleClick,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
   onRowChange,
   selectCell,
   ...props
@@ -52,22 +53,26 @@ function Cell<R, SR>({
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
-  function selectCellWrapper(openEditor?: boolean | null) {
+  function selectCellWrapper(openEditor?: boolean) {
     selectCell(row, column, openEditor);
   }
 
-  function handleClick() {
-    selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(row, column);
-  }
-
-  function handleContextMenu() {
+  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+    onClick?.({ row, column, selectCell: selectCellWrapper }, event);
+    if (event.isDefaultPrevented()) return;
     selectCellWrapper();
   }
 
-  function handleDoubleClick() {
+  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+    onContextMenu?.({ row, column, selectCell: selectCellWrapper }, event);
+    if (event.isDefaultPrevented()) return;
+    selectCellWrapper();
+  }
+
+  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    onDoubleClick?.({ row, column, selectCell: selectCellWrapper }, event);
+    if (event.isDefaultPrevented()) return;
     selectCellWrapper(true);
-    onRowDoubleClick?.(row, column);
   }
 
   function handleRowChange(newRow: R) {
