@@ -23,7 +23,6 @@ export default defineConfig({
     restoreMocks: true,
     setupFiles: ['./test/setup.ts'],
     setupFilesAfterEnv: ['@testing-library/jest-dom'],
-    environment: 'jsdom',
-    threads: false
+    environment: 'jsdom'
   }
 });
