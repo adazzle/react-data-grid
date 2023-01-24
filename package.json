@@ -23,7 +23,8 @@
   "scripts": {
     "start": "webpack serve --mode=development",
     "dev": "vite serve",
-    "build:website": "webpack --mode=production",
+    "preview": "vite preview",
+    "build:website": "vite build",
     "build": "rollup --config --no-stdin",
     "build:types": "tsc -p tsconfig.lib.json && api-extractor run --local --verbose",
     "test": "jest",

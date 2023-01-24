@@ -14,15 +14,12 @@ export default defineConfig({
   server: {
     open: true
   },
-  test: {
-    root: '.',
-    globals: true,
-    coverage: {
-      reporter: ['json']
+  build: {
+    outDir: '../dist',
+    postcss: {
+      plugins: [postcssNested],
+      extract: 'styles.css'
     },
-    restoreMocks: true,
-    setupFiles: ['./test/setup.ts'],
-    setupFilesAfterEnv: ['@testing-library/jest-dom'],
-    environment: 'jsdom'
+    rollupOptions: {}
   }
 });
