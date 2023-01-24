@@ -16,6 +16,7 @@ export default defineConfig({
   },
   build: {
     outDir: '../dist',
+    sourcemap: 'true',
     postcss: {
       plugins: [postcssNested],
       extract: 'styles.css'
