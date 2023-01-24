@@ -60,7 +60,7 @@ describe('Events', () => {
       <EventTest
         onCellClick={(args, event) => {
           if (args.column.key === 'col1') {
-            event.preventDefault();
+            event.preventGridDefault();
           }
         }}
       />
@@ -76,7 +76,7 @@ describe('Events', () => {
       <EventTest
         onCellClick={(args, event) => {
           if (args.column.key === 'col2') {
-            event.preventDefault();
+            event.preventGridDefault();
             args.selectCell(true);
           }
         }}
@@ -93,7 +93,7 @@ describe('Events', () => {
       <EventTest
         onCellDoubleClick={(args, event) => {
           if (args.column.key === 'col1') {
-            event.preventDefault();
+            event.preventGridDefault();
           }
         }}
       />
@@ -109,7 +109,7 @@ describe('Events', () => {
       <EventTest
         onCellContextMenu={(args, event) => {
           if (args.column.key === 'col1') {
-            event.preventDefault();
+            event.preventGridDefault();
           }
         }}
       />

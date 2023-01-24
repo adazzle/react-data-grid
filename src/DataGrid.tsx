@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes, MouseEvent, KeyboardEvent } from 'react';
+import type { Key, RefAttributes, KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
@@ -44,7 +44,8 @@ import {
   abs,
   getSelectedCellColSpan,
   renderMeasuringCells,
-  scrollIntoView
+  scrollIntoView,
+  createCellEvent
 } from './utils';
 
 import type {
@@ -62,8 +63,10 @@ import type {
   Maybe,
   Renderers,
   Direction,
+  CellMouseEvent,
   CellClickArgs,
-  CellKeyDownArgs
+  CellKeyDownArgs,
+  CellKeyboardEvent
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -155,18 +158,12 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a cell is clicked */
-  onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void>;
+  onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   /** Function called whenever a cell is double clicked */
-  onCellDoubleClick?: Maybe<
-    (args: CellClickArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
-  >;
+  onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   /** Function called whenever a cell is right clicked */
-  onCellContextMenu?: Maybe<
-    (args: CellClickArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
-  >;
-  onCellKeyDown?: Maybe<
-    (args: CellKeyDownArgs<R, SR>, event: KeyboardEvent<HTMLDivElement>) => void
-  >;
+  onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
+  onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -595,8 +592,9 @@ function DataGrid<R, SR, K extends Key>(
     if (mode === 'EDIT') return;
 
     const row = rows[rowIdx];
-    if (!isGroupRow(row)) {
-      onCellKeyDown?.(
+    if (!isGroupRow(row) && onCellKeyDown) {
+      const cellEvent = createCellEvent(event);
+      onCellKeyDown(
         {
           mode: 'SELECT',
           row,
@@ -604,10 +602,10 @@ function DataGrid<R, SR, K extends Key>(
           rowIdx,
           selectCell
         },
-        event
+        cellEvent
       );
+      if (cellEvent.isGridDefaultPrevented()) return;
     }
-    if (event.isDefaultPrevented()) return;
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;

@@ -124,6 +124,15 @@ export interface CellRendererProps<TRow, TSummaryRow>
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
+export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
+  preventGridDefault: () => void;
+  isGridDefaultPrevented: () => boolean;
+};
+
+export interface CellMouseEvent extends CellEvent<React.MouseEvent<HTMLDivElement>> {}
+
+export interface CellKeyboardEvent extends CellEvent<React.KeyboardEvent<HTMLDivElement>> {}
+
 export interface CellClickArgs<TRow, TSummaryRow> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;

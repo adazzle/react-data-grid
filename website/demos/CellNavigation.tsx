@@ -87,10 +87,10 @@ export default function CellNavigation({ direction }: Props) {
     const loopOverNavigation = () => {
       if ((key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) && idx === columns.length - 1) {
         selectCell({ rowIdx, idx: 0 });
-        event.preventDefault();
+        event.preventGridDefault();
       } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && idx === 0) {
         selectCell({ rowIdx, idx: columns.length - 1 });
-        event.preventDefault();
+        event.preventGridDefault();
       }
     };
 
@@ -103,11 +103,11 @@ export default function CellNavigation({ direction }: Props) {
           if (rowIdx === rows.length - 1) return;
           selectCell({ rowIdx: rowIdx + 1, idx: 0 });
         }
-        event.preventDefault();
+        event.preventGridDefault();
       } else if (key === 'ArrowLeft' && idx === 0) {
         if (rowIdx === -1) return;
         selectCell({ rowIdx: rowIdx - 1, idx: columns.length - 1 });
-        event.preventDefault();
+        event.preventGridDefault();
       }
     };
 
@@ -119,7 +119,7 @@ export default function CellNavigation({ direction }: Props) {
         newRowIdx = shiftKey ? rowIdx - 1 : rowIdx === rows.length - 1 ? -1 : rowIdx + 1;
       }
       selectCell({ rowIdx: newRowIdx, idx });
-      event.preventDefault();
+      event.preventGridDefault();
     };
 
     if (cellNavigationMode === 'LOOP_OVER_ROW') {
@@ -129,7 +129,7 @@ export default function CellNavigation({ direction }: Props) {
     } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
       loopOverColumnNavigation();
     } else if (cellNavigationMode === 'NO_TAB' && key === 'Tab') {
-      event.stopPropagation();
+      event.preventGridDefault();
     }
   }
 

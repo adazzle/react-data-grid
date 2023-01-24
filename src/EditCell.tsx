@@ -2,7 +2,7 @@ import { useEffect, useRef, type MutableRefObject, useCallback } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
-import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
+import { getCellStyle, getCellClassname, onEditorNavigation, createCellEvent } from './utils';
 import type { CellRendererProps, EditCellKeyDownArgs, EditorProps, Maybe, Omit } from './types';
 
 /*
@@ -86,8 +86,11 @@ export default function EditCell<R, SR>({
   }, [cancelFrameRequest, commitOnOutsideClick, commitOnOutsideMouseDown, skipCellFocusRef]);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    onKeyDown?.({ mode: 'EDIT', row, column, rowIdx, onClose }, event);
-    if (event.isDefaultPrevented()) return;
+    if (onKeyDown) {
+      const cellEvent = createCellEvent(event);
+      onKeyDown({ mode: 'EDIT', row, column, rowIdx, onClose }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     if (event.key === 'Escape') {
       // Discard changes
       onClose();
