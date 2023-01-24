@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-import { vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
 import type { Column, DataGridProps } from '../src';
@@ -35,7 +34,7 @@ test('rowHeight is number', async () => {
   expect(grid.scrollTop).toBe(0);
 
   // Go to the last cell
-  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+  const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   await userEvent.keyboard('{Control>}{end}');
   expect(spy).toHaveBeenCalled();
 });
@@ -54,7 +53,7 @@ test('rowHeight is function', async () => {
   const grid = screen.getByRole('grid');
   expect(grid.scrollTop).toBe(0);
 
-  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+  const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   // Go to the last cell
   await userEvent.keyboard('{Control>}{end}');
   expect(spy).toHaveBeenCalled();

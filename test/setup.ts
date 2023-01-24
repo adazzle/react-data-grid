@@ -1,8 +1,4 @@
 import { act } from 'react-dom/test-utils';
-import matchers from '@testing-library/jest-dom/matchers';
-
-// extends Vitest's expect method with methods from react-testing-library
-expect.extend(matchers);
 
 if (typeof window !== 'undefined') {
   window.ResizeObserver ??= class {

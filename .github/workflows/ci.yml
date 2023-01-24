@@ -30,14 +30,14 @@ jobs:
         run: npm run eslint
       - name: Prettier
         run: npm run prettier:check
-      - name: Test
-        run: npm run coverage
       - name: Typecheck
         run: npm run typecheck
       - name: Bundle
         run: |
           npm run build
           npm run build:types
+      - name: Test
+        run: npm t -- --coverage --colors
       - uses: codecov/codecov-action@v3
 
   website:
