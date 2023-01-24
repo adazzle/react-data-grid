@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import DataGrid from '../../src';
-import type { Column, CellKeyDownArgs , CellKeyboardEvent } from '../../src';
+import type { Column, CellKeyDownArgs, CellKeyboardEvent } from '../../src';
 import type { Props } from './types';
 
 interface Row {
@@ -76,10 +76,7 @@ export default function CellNavigation({ direction }: Props) {
   const [rows] = useState(createRows);
   const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
-  function handleCellKeyDown(
-    args: CellKeyDownArgs<Row>,
-    event: CellKeyboardEvent
-  ) {
+  function handleCellKeyDown(args: CellKeyDownArgs<Row>, event: CellKeyboardEvent) {
     if (args.mode === 'EDIT') return;
     const { column, rowIdx, selectCell } = args;
     const { idx } = column;
