@@ -137,6 +137,12 @@ export default function MasterDetail({ direction }: Props) {
       className="fill-grid"
       enableVirtualization={false}
       direction={direction}
+      onCellKeyDown={(_, event) => {
+        if (event.isDefaultPrevented()) {
+          // skip parent grid keyboard navigation if nested grid handled it
+          event.preventGridDefault();
+        }
+      }}
     />
   );
 }
