@@ -129,9 +129,9 @@ export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
   isGridDefaultPrevented: () => boolean;
 };
 
-export interface CellMouseEvent extends CellEvent<React.MouseEvent<HTMLDivElement>> {}
+export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
-export interface CellKeyboardEvent extends CellEvent<React.KeyboardEvent<HTMLDivElement>> {}
+export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
 export interface CellClickArgs<TRow, TSummaryRow> {
   row: TRow;
