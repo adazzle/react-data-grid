@@ -37,9 +37,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: (id) => !id.startsWith('.') && !id.startsWith('@linaria:') && !isAbsolute(id),
-      plugins: [
-        nodeResolve({ extensions })
-      ]
+      plugins: [nodeResolve({ extensions })]
     }
   }
 });
