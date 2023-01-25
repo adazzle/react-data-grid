@@ -700,7 +700,16 @@ module.exports = {
   env: {
     es6: true
   },
-  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint', 'testing-library'],
+  plugins: [
+    'node',
+    'react',
+    'react-hooks',
+    'jest',
+    'jest-dom',
+    'sonarjs',
+    '@typescript-eslint',
+    'testing-library'
+  ],
   overrides: [
     {
       files: ['test/**/*'],
