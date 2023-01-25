@@ -71,6 +71,22 @@ describe('Events', () => {
     expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
+  it('should not select cell if onCellClick prevents browser default', async () => {
+    render(
+      <EventTest
+        onCellClick={(args, event) => {
+          if (args.column.key === 'col1') {
+            event.preventDefault();
+          }
+        }}
+      />
+    );
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
+    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
+  });
+
   it('should be able to open editor editor on single click using onCellClick', async () => {
     render(
       <EventTest
