@@ -76,7 +76,7 @@ describe('Events', () => {
       <EventTest
         onCellClick={(args, event) => {
           if (args.column.key === 'col1') {
-            event.preventDefault();
+            event.preventGridDefault();
           }
         }}
       />
