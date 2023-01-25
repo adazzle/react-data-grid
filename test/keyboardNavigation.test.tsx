@@ -98,8 +98,8 @@ test('keyboard navigation', async () => {
   validateCellPosition(6, 0);
 });
 
-test('cellNavigationMode="NONE"', async () => {
-  setup({ columns, rows, bottomSummaryRows, cellNavigationMode: 'NONE' });
+test('arrow and tab navigation', async () => {
+  setup({ columns, rows, bottomSummaryRows });
 
   // pressing arrowleft on the leftmost cell does nothing
   await userEvent.tab();
@@ -121,51 +121,6 @@ test('cellNavigationMode="NONE"', async () => {
   // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the previous row
   await userEvent.tab({ shift: true });
   validateCellPosition(6, 1);
-});
-
-test('cellNavigationMode="CHANGE_ROW"', async () => {
-  setup({ columns, rows, bottomSummaryRows, cellNavigationMode: 'CHANGE_ROW' });
-
-  // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the previous row
-  await userEvent.tab();
-  await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(0, 1);
-  await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(6, 0);
-
-  // pressing arrowright on the rightmost cell navigates to the leftmost cell on the next row
-  await userEvent.keyboard('{arrowright}');
-  validateCellPosition(0, 1);
-
-  // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the previous row
-  await userEvent.tab({ shift: true });
-  validateCellPosition(6, 0);
-
-  // pressing tab on the rightmost cell navigates to the leftmost cell on the next row
-  await userEvent.tab();
-  validateCellPosition(0, 1);
-});
-
-test('cellNavigationMode="LOOP_OVER_ROW"', async () => {
-  setup({ columns, rows, bottomSummaryRows, cellNavigationMode: 'LOOP_OVER_ROW' });
-
-  // pressing arrowleft on the leftmost cell navigates to the rightmost cell on the same row
-  await userEvent.tab();
-  validateCellPosition(0, 0);
-  await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(6, 0);
-
-  // pressing arrowright on the rightmost cell navigates to the leftmost cell on the same row
-  await userEvent.keyboard('{arrowright}');
-  validateCellPosition(0, 0);
-
-  // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the same row
-  await userEvent.tab({ shift: true });
-  validateCellPosition(6, 0);
-
-  // pressing tab on the rightmost cell navigates to the leftmost cell on the same row
-  await userEvent.tab();
-  validateCellPosition(0, 0);
 });
 
 test('grid enter/exit', async () => {

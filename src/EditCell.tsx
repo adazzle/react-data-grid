@@ -2,8 +2,15 @@ import { useEffect, useRef, type MutableRefObject, useCallback } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
-import { getCellStyle, getCellClassname, onEditorNavigation } from './utils';
-import type { CellRendererProps, EditorProps, Omit } from './types';
+import { getCellStyle, getCellClassname, onEditorNavigation, createCellEvent } from './utils';
+import type {
+  CellKeyboardEvent,
+  CellRendererProps,
+  EditCellKeyDownArgs,
+  EditorProps,
+  Maybe,
+  Omit
+} from './types';
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
@@ -32,17 +39,23 @@ type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 interface EditCellProps<R, SR>
   extends Omit<EditorProps<R, SR>, 'onClose'>,
     SharedCellRendererProps<R, SR> {
+  rowIdx: number;
   skipCellFocusRef: MutableRefObject<boolean>;
   closeEditor: () => void;
+  navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  onKeyDown: Maybe<(args: EditCellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
 }
 
 export default function EditCell<R, SR>({
   column,
   colSpan,
   row,
+  rowIdx,
   skipCellFocusRef,
   onRowChange,
-  closeEditor
+  closeEditor,
+  onKeyDown,
+  navigate
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number | undefined>();
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
@@ -77,19 +90,19 @@ export default function EditCell<R, SR>({
     };
   }, [cancelFrameRequest, commitOnOutsideClick, commitOnOutsideMouseDown, skipCellFocusRef]);
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (onKeyDown) {
+      const cellEvent = createCellEvent(event);
+      onKeyDown({ mode: 'EDIT', row, column, rowIdx, onClose }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     if (event.key === 'Escape') {
-      event.stopPropagation();
       // Discard changes
       onClose();
     } else if (event.key === 'Enter') {
-      event.stopPropagation();
       onClose(true);
-    } else {
-      const onNavigation = column.editorOptions?.onNavigation ?? onEditorNavigation;
-      if (!onNavigation(event)) {
-        event.stopPropagation();
-      }
+    } else if (onEditorNavigation(event)) {
+      navigate(event);
     }
   }
 
@@ -117,7 +130,7 @@ export default function EditCell<R, SR>({
       aria-selected
       className={className}
       style={getCellStyle(column, colSpan)}
-      onKeyDown={onKeyDown}
+      onKeyDown={handleKeyDown}
       onMouseDownCapture={cancelFrameRequest}
     >
       {column.editor != null && (
