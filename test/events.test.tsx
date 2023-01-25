@@ -60,7 +60,7 @@ describe('Events', () => {
       <EventTest
         onCellClick={(args, event) => {
           if (args.column.key === 'col1') {
-            event.preventGridDefault();
+            event.preventDefault();
           }
         }}
       />
@@ -71,7 +71,7 @@ describe('Events', () => {
     expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should not select cell if onCellClick prevents browser default', async () => {
+  it('should not select cell if onCellClick prevents grid default', async () => {
     render(
       <EventTest
         onCellClick={(args, event) => {
@@ -92,7 +92,7 @@ describe('Events', () => {
       <EventTest
         onCellClick={(args, event) => {
           if (args.column.key === 'col2') {
-            event.preventGridDefault();
+            event.preventDefault();
             args.selectCell(true);
           }
         }}
@@ -109,7 +109,7 @@ describe('Events', () => {
       <EventTest
         onCellDoubleClick={(args, event) => {
           if (args.column.key === 'col1') {
-            event.preventGridDefault();
+            event.preventDefault();
           }
         }}
       />
@@ -125,7 +125,7 @@ describe('Events', () => {
       <EventTest
         onCellContextMenu={(args, event) => {
           if (args.column.key === 'col1') {
-            event.preventGridDefault();
+            event.preventDefault();
           }
         }}
       />

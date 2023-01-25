@@ -185,7 +185,7 @@ describe('Editor', () => {
         <EditorTest
           onCellKeyDown={(args, event) => {
             if (args.mode === 'SELECT' && event.key === 'x') {
-              event.preventGridDefault();
+              event.preventDefault();
             }
           }}
         />
@@ -202,7 +202,7 @@ describe('Editor', () => {
         <EditorTest
           onCellKeyDown={(args, event) => {
             if (args.mode === 'EDIT' && event.key === 'ArrowDown') {
-              event.preventGridDefault();
+              event.preventDefault();
               args.onClose(true);
             }
           }}
