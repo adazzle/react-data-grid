@@ -5,7 +5,14 @@ import postcssNested from 'postcss-nested';
 
 export default defineConfig({
   root: 'website',
-  plugins: [react(), linaria({ preprocessor: 'none' })],
+  plugins: [
+    react({
+      babel: {
+        plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
+      }
+    }),
+    linaria({ preprocessor: 'none' })
+  ],
   css: {
     postcss: {
       plugins: [postcssNested]

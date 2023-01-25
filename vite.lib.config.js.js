@@ -10,7 +10,11 @@ const extensions = ['.ts', '.tsx'];
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
+      }
+    }),
     linaria({
       preprocessor: 'none',
       classNameSlug(hash) {
