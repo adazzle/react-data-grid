@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes, MouseEvent } from 'react';
+import type { Key, RefAttributes, KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
@@ -44,7 +44,8 @@ import {
   abs,
   getSelectedCellColSpan,
   renderMeasuringCells,
-  scrollIntoView
+  scrollIntoView,
+  createCellEvent
 } from './utils';
 
 import type {
@@ -62,7 +63,10 @@ import type {
   Maybe,
   Renderers,
   Direction,
-  CellEventArgs
+  CellMouseEvent,
+  CellClickArgs,
+  CellKeyDownArgs,
+  CellKeyboardEvent
 } from './types';
 
 export interface SelectCellState extends Position {
@@ -154,15 +158,12 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Function called whenever a cell is clicked */
-  onCellClick?: Maybe<(args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void>;
+  onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   /** Function called whenever a cell is double clicked */
-  onCellDoubleClick?: Maybe<
-    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
-  >;
+  onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   /** Function called whenever a cell is right clicked */
-  onCellContextMenu?: Maybe<
-    (args: CellEventArgs<R, SR>, event: MouseEvent<HTMLDivElement>) => void
-  >;
+  onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
+  onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -171,8 +172,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Toggles and modes
    */
-  /** @default 'NONE' */
-  cellNavigationMode?: Maybe<CellNavigationMode>;
   /** @default true */
   enableVirtualization?: Maybe<boolean>;
 
@@ -223,13 +222,13 @@ function DataGrid<R, SR, K extends Key>(
     onCellClick,
     onCellDoubleClick,
     onCellContextMenu,
+    onCellKeyDown,
     onScroll,
     onColumnResize,
     onFill,
     onCopy,
     onPaste,
     // Toggles and modes
-    cellNavigationMode: rawCellNavigationMode,
     enableVirtualization: rawEnableVirtualization,
     // Miscellaneous
     renderers,
@@ -256,7 +255,6 @@ function DataGrid<R, SR, K extends Key>(
   const checkboxFormatter =
     renderers?.checkboxFormatter ?? defaultRenderers?.checkboxFormatter ?? defaultCheckboxFormatter;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultRenderers?.noRowsFallback;
-  const cellNavigationMode = rawCellNavigationMode ?? 'NONE';
   const enableVirtualization = rawEnableVirtualization ?? true;
   const direction = rawDirection ?? 'ltr';
 
@@ -589,21 +587,37 @@ function DataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const { idx, rowIdx, mode } = selectedPosition;
+    if (mode === 'EDIT') return;
+
+    const row = rows[rowIdx];
+    if (!isGroupRow(row) && onCellKeyDown) {
+      const cellEvent = createCellEvent(event);
+      onCellKeyDown(
+        {
+          mode: 'SELECT',
+          row,
+          column: columns[idx],
+          rowIdx,
+          selectCell
+        },
+        cellEvent
+      );
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = hasGroups && event.target === rowRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
-    const { rowIdx } = selectedPosition;
 
     if (
       selectedCellIsWithinViewportBounds &&
       (onPaste != null || onCopy != null) &&
       isCtrlKeyHeldDown(event) &&
-      !isGroupRow(rows[rowIdx]) &&
-      selectedPosition.mode === 'SELECT'
+      !isGroupRow(rows[rowIdx])
     ) {
       // event.key may differ by keyboard input language, so we use event.keyCode instead
       // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
@@ -619,21 +633,18 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    if (isRowIdxWithinViewportBounds(rowIdx)) {
-      const row = rows[rowIdx];
-
-      if (
-        isGroupRow(row) &&
-        selectedPosition.idx === -1 &&
-        // Collapse the current group row if it is focused and is in expanded state
-        ((key === leftKey && row.isExpanded) ||
-          // Expand the current group row if it is focused and is in collapsed state
-          (key === rightKey && !row.isExpanded))
-      ) {
-        event.preventDefault(); // Prevents scrolling
-        toggleGroup(row.id);
-        return;
-      }
+    if (
+      isRowIdxWithinViewportBounds(rowIdx) &&
+      isGroupRow(row) &&
+      selectedPosition.idx === -1 &&
+      // Collapse the current group row if it is focused and is in expanded state
+      ((key === leftKey && row.isExpanded) ||
+        // Expand the current group row if it is focused and is in collapsed state
+        (key === rightKey && !row.isExpanded))
+    ) {
+      event.preventDefault(); // Prevents scrolling
+      toggleGroup(row.id);
+      return;
     }
 
     switch (event.key) {
@@ -715,7 +726,7 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(targetColumn, rowIdx, updatedTargetRow);
   }
 
-  function handleCellInput(event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleCellInput(event: KeyboardEvent<HTMLDivElement>) {
     if (!selectedCellIsWithinViewportBounds) return;
     const row = rows[selectedPosition.rowIdx];
     if (isGroupRow(row)) return;
@@ -730,10 +741,6 @@ function DataGrid<R, SR, K extends Key>(
       event.preventDefault();
       return;
     }
-
-    const column = columns[selectedPosition.idx];
-    column.editorOptions?.onCellKeyDown?.(event);
-    if (event.isDefaultPrevented()) return;
 
     if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
@@ -879,14 +886,13 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function navigate(event: React.KeyboardEvent<HTMLDivElement>) {
+  function navigate(event: KeyboardEvent<HTMLDivElement>) {
     const { key, shiftKey } = event;
-    let mode = cellNavigationMode;
+    let cellNavigationMode: CellNavigationMode = 'NONE';
     if (key === 'Tab') {
       if (
         canExitGrid({
           shiftKey,
-          cellNavigationMode,
           maxColIdx,
           minRowIdx,
           maxRowIdx,
@@ -898,10 +904,10 @@ function DataGrid<R, SR, K extends Key>(
         return;
       }
 
-      mode = cellNavigationMode === 'NONE' ? 'CHANGE_ROW' : cellNavigationMode;
+      cellNavigationMode = 'CHANGE_ROW';
     }
 
-    // Do not allow focus to leave
+    // Do not allow focus to leave and prevent scrolling
     event.preventDefault();
 
     const ctrlKey = isCtrlKeyHeldDown(event);
@@ -917,7 +923,7 @@ function DataGrid<R, SR, K extends Key>(
       minRowIdx,
       maxRowIdx,
       lastFrozenColumnIndex,
-      cellNavigationMode: mode,
+      cellNavigationMode,
       currentPosition: selectedPosition,
       nextPosition,
       isCellWithinBounds: isCellWithinSelectionBounds,
@@ -1008,9 +1014,12 @@ function DataGrid<R, SR, K extends Key>(
         column={column}
         colSpan={colSpan}
         row={row}
+        rowIdx={rowIdx}
         skipCellFocusRef={skipCellFocusRef}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
+        onKeyDown={onCellKeyDown}
+        navigate={navigate}
       />
     );
   }

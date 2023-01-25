@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import DataGrid from '../../src';
-import type { Column, CellNavigationMode } from '../../src';
+import type { Column, CellKeyDownArgs, CellKeyboardEvent } from '../../src';
 import type { Props } from './types';
 
 interface Row {
@@ -13,6 +13,8 @@ interface Row {
   startDate: string;
   completeDate: string;
 }
+
+type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW' | 'LOOP_OVER_COLUMN' | 'NO_TAB';
 
 const columns: Column<Row>[] = [
   {
@@ -74,6 +76,61 @@ export default function CellNavigation({ direction }: Props) {
   const [rows] = useState(createRows);
   const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
+  function handleCellKeyDown(args: CellKeyDownArgs<Row>, event: CellKeyboardEvent) {
+    if (args.mode === 'EDIT') return;
+    const { column, rowIdx, selectCell } = args;
+    const { idx } = column;
+    const { key, shiftKey } = event;
+    const loopOverNavigation = () => {
+      if ((key === 'ArrowRight' || (key === 'Tab' && !shiftKey)) && idx === columns.length - 1) {
+        selectCell({ rowIdx, idx: 0 });
+        event.preventDefault();
+      } else if ((key === 'ArrowLeft' || (key === 'Tab' && shiftKey)) && idx === 0) {
+        selectCell({ rowIdx, idx: columns.length - 1 });
+        event.preventDefault();
+      }
+    };
+
+    const changeRowNavigation = () => {
+      if (key === 'ArrowRight' && idx === columns.length - 1) {
+        if (rows.length === 0) return;
+        if (rowIdx === -1) {
+          selectCell({ rowIdx: 0, idx: 0 });
+        } else {
+          if (rowIdx === rows.length - 1) return;
+          selectCell({ rowIdx: rowIdx + 1, idx: 0 });
+        }
+        event.preventDefault();
+      } else if (key === 'ArrowLeft' && idx === 0) {
+        if (rowIdx === -1) return;
+        selectCell({ rowIdx: rowIdx - 1, idx: columns.length - 1 });
+        event.preventDefault();
+      }
+    };
+
+    const loopOverColumnNavigation = () => {
+      let newRowIdx: number;
+      if (rowIdx === -1) {
+        newRowIdx = shiftKey ? rows.length - 1 : 0;
+      } else {
+        newRowIdx = shiftKey ? rowIdx - 1 : rowIdx === rows.length - 1 ? -1 : rowIdx + 1;
+      }
+      selectCell({ rowIdx: newRowIdx, idx });
+      event.preventDefault();
+    };
+
+    if (cellNavigationMode === 'LOOP_OVER_ROW') {
+      loopOverNavigation();
+    } else if (cellNavigationMode === 'CHANGE_ROW') {
+      changeRowNavigation();
+    } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
+      loopOverColumnNavigation();
+    } else if (cellNavigationMode === 'NO_TAB' && key === 'Tab') {
+      // Need to allow default event to focus the next element
+      event.preventGridDefault();
+    }
+  }
+
   return (
     <>
       <div style={{ marginBlockEnd: 5 }}>
@@ -105,12 +162,30 @@ export default function CellNavigation({ direction }: Props) {
           />
           Loop Over Row
         </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            checked={cellNavigationMode === 'LOOP_OVER_COLUMN'}
+            onChange={() => setCellNavigationMode('LOOP_OVER_COLUMN')}
+          />
+          Loop Over Column
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            checked={cellNavigationMode === 'NO_TAB'}
+            onChange={() => setCellNavigationMode('NO_TAB')}
+          />
+          No Tab
+        </label>
       </div>
       <DataGrid
         columns={columns}
         rows={rows}
-        cellNavigationMode={cellNavigationMode}
         direction={direction}
+        onCellKeyDown={handleCellKeyDown}
       />
     </>
   );

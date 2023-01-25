@@ -217,7 +217,7 @@ export default function AllFeatures({ direction }: Props) {
       direction={direction}
       onCellClick={(args, event) => {
         if (args.column.key === 'title') {
-          event.preventDefault();
+          event.preventGridDefault();
           args.selectCell(true);
         }
       }}

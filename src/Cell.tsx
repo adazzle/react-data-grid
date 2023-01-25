@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
-import { getCellStyle, getCellClassname, isCellEditable } from './utils';
+import { getCellStyle, getCellClassname, isCellEditable, createCellEvent } from './utils';
 import type { CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
 
@@ -58,20 +58,29 @@ function Cell<R, SR>({
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
-    onClick?.({ row, column, selectCell: selectCellWrapper }, event);
-    if (event.isDefaultPrevented()) return;
+    if (onClick) {
+      const cellEvent = createCellEvent(event);
+      onClick({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     selectCellWrapper();
   }
 
   function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
-    onContextMenu?.({ row, column, selectCell: selectCellWrapper }, event);
-    if (event.isDefaultPrevented()) return;
+    if (onContextMenu) {
+      const cellEvent = createCellEvent(event);
+      onContextMenu({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     selectCellWrapper();
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    onDoubleClick?.({ row, column, selectCell: selectCellWrapper }, event);
-    if (event.isDefaultPrevented()) return;
+    if (onDoubleClick) {
+      const cellEvent = createCellEvent(event);
+      onDoubleClick({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     selectCellWrapper(true);
   }
 
