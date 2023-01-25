@@ -10,7 +10,7 @@ export function createCellEvent<E extends React.SyntheticEvent<HTMLDivElement>>(
       defaultPrevented = true;
     },
     isGridDefaultPrevented() {
-      return this.isDefaultPrevented() || defaultPrevented;
+      return defaultPrevented || this.isDefaultPrevented();
     }
   };
 
