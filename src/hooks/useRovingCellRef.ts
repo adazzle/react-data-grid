@@ -16,12 +16,12 @@ export function useRovingCellRef(
   const ref = useCallback(
     (cell: HTMLDivElement | null) => {
       if (cell === null) return;
-      scrollIntoView(cell);
-      if (cell.contains(document.activeElement)) return;
       if (skipCellFocusRef?.current) {
         skipCellFocusRef.current = false;
         return;
       }
+      scrollIntoView(cell);
+      if (cell.contains(document.activeElement)) return;
       cell.focus({ preventScroll: true });
     },
     [skipCellFocusRef]
