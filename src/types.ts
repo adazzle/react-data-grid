@@ -44,10 +44,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly renderFormatter?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
-    /** Prevent default to cancel editing */
-    readonly onCellKeyDown?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => void>;
-    /** Control the default cell navigation behavior while the editor is open */
-    readonly onNavigation?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => boolean>;
   }>;
   /** Header renderer for each header cell */
   readonly headerRenderer?: Maybe<(props: HeaderRendererProps<TRow, TSummaryRow>) => ReactNode>;
@@ -128,11 +124,40 @@ export interface CellRendererProps<TRow, TSummaryRow>
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
-export interface CellEventArgs<TRow, TSummaryRow> {
+export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
+  preventGridDefault: () => void;
+  isGridDefaultPrevented: () => boolean;
+};
+
+export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
+
+export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
+
+export interface CellClickArgs<TRow, TSummaryRow> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   selectCell: (enableEditor?: boolean) => void;
 }
+
+interface SelectCellKeyDownArgs<TRow, TSummaryRow> {
+  mode: 'SELECT';
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  rowIdx: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface EditCellKeyDownArgs<TRow, TSummaryRow> {
+  mode: 'EDIT';
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  rowIdx: number;
+  onClose: (commitChanges?: boolean) => void;
+}
+
+export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
+  | SelectCellKeyDownArgs<TRow, TSummaryRow>
+  | EditCellKeyDownArgs<TRow, TSummaryRow>;
 
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
@@ -207,7 +232,7 @@ export interface SortColumn {
   readonly direction: SortDirection;
 }
 
-export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
+export type CellNavigationMode = 'NONE' | 'CHANGE_ROW';
 export type SortDirection = 'ASC' | 'DESC';
 
 export type ColSpanArgs<TRow, TSummaryRow> =
