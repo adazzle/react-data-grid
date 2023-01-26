@@ -65,10 +65,7 @@ const columns: readonly Column<Row>[] = [
     formatter(props) {
       return <>{props.row.title}</>;
     },
-    editor: dropDownEditor,
-    editorOptions: {
-      editOnClick: true
-    }
+    editor: dropDownEditor
   },
   {
     key: 'firstName',
@@ -218,6 +215,12 @@ export default function AllFeatures({ direction }: Props) {
       className="fill-grid"
       rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
       direction={direction}
+      onCellClick={(args, event) => {
+        if (args.column.key === 'title') {
+          event.preventGridDefault();
+          args.selectCell(true);
+        }
+      }}
     />
   );
 }

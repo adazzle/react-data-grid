@@ -700,7 +700,16 @@ module.exports = {
   env: {
     es6: true
   },
-  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
+  plugins: [
+    'node',
+    'react',
+    'react-hooks',
+    'jest',
+    'jest-dom',
+    'sonarjs',
+    '@typescript-eslint',
+    'testing-library'
+  ],
   overrides: [
     {
       files: ['test/**/*'],
@@ -774,7 +783,19 @@ module.exports = {
         'node/prefer-global/url-search-params': 1,
         'node/prefer-global/url': 1,
         'node/prefer-promises/dns': 1,
-        'node/prefer-promises/fs': 1
+        'node/prefer-promises/fs': 1,
+
+        // eslint-plugin-testing-library Rules
+        // https://github.com/testing-library/eslint-plugin-testing-library#supported-rules
+        'testing-library/no-wait-for-multiple-assertions': 1,
+        'testing-library/no-unnecessary-act': 1,
+        'testing-library/no-wait-for-empty-callback': 1,
+        'testing-library/no-wait-for-side-effects': 1,
+        'testing-library/prefer-explicit-assert': 1,
+        'testing-library/prefer-find-by': 1,
+        'testing-library/prefer-presence-queries': 1,
+        'testing-library/prefer-query-by-disappearance': 1,
+        'testing-library/prefer-screen-queries': 1
       }
     }
   ],

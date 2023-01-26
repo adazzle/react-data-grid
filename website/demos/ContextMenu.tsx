@@ -1,101 +1,22 @@
-import { useState, useReducer } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { useState, useReducer, useRef, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ContextMenu, MenuItem, SubMenu, ContextMenuTrigger } from 'react-contextmenu';
 import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
 
-import DataGrid, { Row as GridRow } from '../../src';
-import type { Column, RowRendererProps } from '../../src';
+import DataGrid from '../../src';
+import type { Column } from '../../src';
 import type { Props } from './types';
 
-css`
-  @at-root {
-    .react-contextmenu-wrapper {
-      display: contents;
-    }
+const contextMenuClassname = css`
+  position: absolute;
+  background-color: #ffffff;
+  border: 1px solid black;
+  padding: 16px;
+  list-style: none;
 
-    .react-contextmenu {
-      background-color: #fff;
-      background-clip: padding-box;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      border-radius: 0.25rem;
-      color: #373a3c;
-      font-size: 16px;
-      margin-block-start: 2px;
-      margin-block-end: 0;
-      margin-inline-start: 0;
-      margin-inline-end: 0;
-      min-inline-size: 160px;
-      outline: none;
-      opacity: 0;
-      padding-block: 5px;
-      padding-inline: 0;
-      pointer-events: none;
-      text-align: start;
-      transition: opacity 250ms ease !important;
-    }
-
-    .react-contextmenu.react-contextmenu--visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .react-contextmenu-item {
-      background: 0 0;
-      border: 0;
-      color: #373a3c;
-      cursor: pointer;
-      font-weight: 400;
-      line-height: 1.5;
-      padding-block: 3px;
-      padding-inline: 20px;
-      text-align: inherit;
-      white-space: nowrap;
-    }
-
-    .react-contextmenu-item.react-contextmenu-item--active,
-    .react-contextmenu-item.react-contextmenu-item--selected {
-      color: #fff;
-      background-color: #20a0ff;
-      border-color: #20a0ff;
-      text-decoration: none;
-    }
-
-    .react-contextmenu-item.react-contextmenu-item--disabled,
-    .react-contextmenu-item.react-contextmenu-item--disabled:hover {
-      background-color: transparent;
-      border-color: rgba(0, 0, 0, 0.15);
-      color: #878a8c;
-    }
-
-    .react-contextmenu-item--divider {
-      border-block-end: 1px solid rgba(0, 0, 0, 0.15);
-      cursor: inherit;
-      margin-block-end: 3px;
-      padding-block: 2px;
-      padding-inline: 0;
-    }
-
-    .react-contextmenu-item--divider:hover {
-      background-color: transparent;
-      border-color: rgba(0, 0, 0, 0.15);
-    }
-
-    .react-contextmenu-item.react-contextmenu-submenu {
-      padding: 0;
-    }
-
-    .react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item::after {
-      content: '▶';
-      display: inline-block;
-      position: absolute;
-      inset-inline-end: 7px;
-    }
-
-    .example-multiple-targets::after {
-      content: attr(data-count);
-      display: block;
-    }
+  > li {
+    padding: 8px;
   }
 `;
 
@@ -129,30 +50,33 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function rowRenderer(key: React.Key, props: RowRendererProps<Row>) {
-  return (
-    // @ts-expect-error
-    <ContextMenuTrigger key={key} id="grid-context-menu" collect={() => ({ rowIdx: props.rowIdx })}>
-      <GridRow {...props} />
-    </ContextMenuTrigger>
-  );
-}
-
 export default function ContextMenuDemo({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
+  const [contextMenuProps, setContextMenuProps] = useState<{
+    rowIdx: number;
+    top: number;
+    left: number;
+  } | null>(null);
+  const menuRef = useRef<HTMLMenuElement | null>(null);
+  const isContextMenuOpen = contextMenuProps !== null;
 
-  function onRowDelete(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
-    setRows([...rows.slice(0, rowIdx), ...rows.slice(rowIdx + 1)]);
-  }
+  useLayoutEffect(() => {
+    if (!isContextMenuOpen) return;
 
-  function onRowInsertAbove(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
-    insertRow(rowIdx);
-  }
+    function onClick(event: MouseEvent) {
+      if (event.target instanceof Node && menuRef.current?.contains(event.target)) {
+        return;
+      }
+      setContextMenuProps(null);
+    }
 
-  function onRowInsertBelow(e: React.MouseEvent<HTMLDivElement>, { rowIdx }: { rowIdx: number }) {
-    insertRow(rowIdx + 1);
-  }
+    addEventListener('click', onClick);
+
+    return () => {
+      removeEventListener('click', onClick);
+    };
+  }, [isContextMenuOpen]);
 
   function insertRow(insertRowIdx: number) {
     const newRow: Row = {
@@ -171,27 +95,65 @@ export default function ContextMenuDemo({ direction }: Props) {
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}
-        renderers={{ rowRenderer }}
         className="fill-grid"
         direction={direction}
+        onCellContextMenu={({ row }, event) => {
+          event.preventDefault();
+          setContextMenuProps({
+            rowIdx: rows.indexOf(row),
+            top: event.clientY,
+            left: event.clientX
+          });
+        }}
       />
-      {createPortal(
-        <div dir={direction}>
-          {/* @ts-expect-error */}
-          <ContextMenu id="grid-context-menu" rtl={direction === 'rtl'}>
-            {/* @ts-expect-error */}
-            <MenuItem onClick={onRowDelete}>Delete Row</MenuItem>
-            {/* @ts-expect-error */}
-            <SubMenu title="Insert Row">
-              {/* @ts-expect-error */}
-              <MenuItem onClick={onRowInsertAbove}>Above</MenuItem>
-              {/* @ts-expect-error */}
-              <MenuItem onClick={onRowInsertBelow}>Below</MenuItem>
-            </SubMenu>
-          </ContextMenu>
-        </div>,
-        document.body
-      )}
+      {isContextMenuOpen &&
+        createPortal(
+          <menu
+            ref={menuRef}
+            className={contextMenuClassname}
+            style={
+              {
+                top: contextMenuProps.top,
+                left: contextMenuProps.left
+              } as unknown as React.CSSProperties
+            }
+          >
+            <li>
+              <button
+                onClick={() => {
+                  const { rowIdx } = contextMenuProps;
+                  setRows([...rows.slice(0, rowIdx), ...rows.slice(rowIdx + 1)]);
+                  setContextMenuProps(null);
+                }}
+              >
+                Delete Row
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  const { rowIdx } = contextMenuProps;
+                  insertRow(rowIdx);
+                  setContextMenuProps(null);
+                }}
+              >
+                Insert Row Above
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  const { rowIdx } = contextMenuProps;
+                  insertRow(rowIdx + 1);
+                  setContextMenuProps(null);
+                }}
+              >
+                Insert Row Below
+              </button>
+            </li>
+          </menu>,
+          document.body
+        )}
     </>
   );
 }

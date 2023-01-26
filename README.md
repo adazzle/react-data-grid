@@ -40,7 +40,7 @@
 - [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
-- [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
+- [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/customizable-renderers)
 - Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
@@ -188,15 +188,17 @@ A number defining the height of summary rows.
 
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
-###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-###### `onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+
+###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+
+###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
 
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
-
-###### `cellNavigationMode?: Maybe<CellNavigationMode>`
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
