@@ -22,7 +22,6 @@ export type {
   FillEvent,
   CopyEvent,
   PasteEvent,
-  CellNavigationMode,
   SortDirection,
   SortColumn,
   ColSpanArgs,
@@ -31,5 +30,9 @@ export type {
   SortIconProps,
   SortPriorityProps,
   SortStatusProps,
-  Renderers
+  Renderers,
+  CellMouseEvent,
+  CellClickArgs,
+  CellKeyDownArgs,
+  CellKeyboardEvent
 } from './types';

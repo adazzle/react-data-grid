@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@test
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
-import type { Column } from '../../src';
+import type { Column, DataGridProps } from '../../src';
 import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 import { createPortal } from 'react-dom';
 
@@ -136,20 +136,6 @@ describe('Editor', () => {
   });
 
   describe('editorOptions', () => {
-    it('should open editor on single click if editOnClick is true', async () => {
-      render(
-        <EditorTest
-          editorOptions={{
-            editOnClick: true
-          }}
-        />
-      );
-      await userEvent.click(getCellsAtRowIndex(0)[0]);
-      expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-      await userEvent.click(getCellsAtRowIndex(0)[1]);
-      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
-    });
-
     it('should detect outside click if editor is rendered in a portal', async () => {
       render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
@@ -197,11 +183,9 @@ describe('Editor', () => {
     it('should not open editor if onCellKeyDown prevents the default event', async () => {
       render(
         <EditorTest
-          editorOptions={{
-            onCellKeyDown(event) {
-              if (event.key === 'x') {
-                event.preventDefault();
-              }
+          onCellKeyDown={(args, event) => {
+            if (args.mode === 'SELECT' && event.key === 'x') {
+              event.preventDefault();
             }
           }}
         />
@@ -213,12 +197,13 @@ describe('Editor', () => {
       expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     });
 
-    it('should prevent navigation if onNavigation returns false', async () => {
+    it('should prevent navigation if onCellKeyDown prevents the default event', async () => {
       render(
         <EditorTest
-          editorOptions={{
-            onNavigation(event) {
-              return event.key === 'ArrowDown';
+          onCellKeyDown={(args, event) => {
+            if (args.mode === 'EDIT' && event.key === 'ArrowDown') {
+              event.preventDefault();
+              args.onClose(true);
             }
           }}
         />
@@ -309,7 +294,9 @@ describe('Editor', () => {
   });
 });
 
-interface EditorTestProps extends Pick<Column<Row>, 'editorOptions' | 'editable'> {
+interface EditorTestProps
+  extends Pick<Column<Row>, 'editorOptions' | 'editable'>,
+    Pick<DataGridProps<Row>, 'onCellKeyDown'> {
   onSave?: (rows: readonly Row[]) => void;
   gridRows?: readonly Row[];
   createEditorPortal?: boolean;
@@ -329,6 +316,7 @@ const initialRows: readonly Row[] = [
 function EditorTest({
   editable,
   editorOptions,
+  onCellKeyDown,
   onSave,
   gridRows = initialRows,
   createEditorPortal
@@ -386,7 +374,12 @@ function EditorTest({
       <button type="button" onClick={() => onSave?.(rows)}>
         save
       </button>
-      <DataGrid columns={columns} rows={rows} onRowsChange={setRows} />
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        onRowsChange={setRows}
+        onCellKeyDown={onCellKeyDown}
+      />
     </StrictMode>
   );
 }
