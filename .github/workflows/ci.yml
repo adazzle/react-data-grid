@@ -37,7 +37,8 @@ jobs:
           npm run build
           npm run build:types
       - name: Test
-        run: npm run test
+        run: npm run coverage
+      - uses: codecov/codecov-action@v3
 
   website:
     runs-on: ubuntu-latest
