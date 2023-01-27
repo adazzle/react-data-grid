@@ -11,6 +11,7 @@
     "noUnusedLocals": true,
     "pretty": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "skipLibCheck": true
   }
 }
