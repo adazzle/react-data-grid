@@ -3,12 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": [
-    "jest.config.js",
-    "vite.config.js",
-    "vite.lib.config.js",
-    "src/**/*",
-    "test/**/*",
-    "website/**/*"
-  ]
+  "include": ["vite.config.js", "vite.lib.config.js", "src/**/*", "test/**/*", "website/**/*"]
 }

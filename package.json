@@ -10,14 +10,6 @@
   "repository": "github:adazzle/react-data-grid",
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
-  "exports": {
-    "./lib/styles.css": "./lib/styles.css",
-    ".": {
-      "module": "./lib/bundle.js",
-      "require": "./lib/bundle.cjs",
-      "default": "./lib/bundle.js"
-    }
-  },
   "browser": "./lib/bundle.js",
   "main": "./lib/bundle.cjs",
   "module": "./lib/bundle.js",
@@ -34,8 +26,9 @@
     "build:website": "vite build",
     "build": "vite build --config vite.lib.config.js",
     "build:types": "tsc -p tsconfig.lib.json && api-extractor run --local --verbose",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "test:watch": "vitest watch",
     "format": "rome format . --write",
     "check": "rome check .",
     "rome:ci": "rome ci .",
@@ -65,11 +58,14 @@
     "@testing-library/user-event": "^14.1.1",
     "@types/jest": "^29.2.6",
     "@types/lodash": "^4.14.184",
+    "@types/node": "^18.11.18",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "@vitejs/plugin-react": "^3.0.1",
+    "@vitejs/plugin-react-swc": "^3.0.1",
+    "@vitest/coverage-c8": "^0.28.2",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
@@ -96,6 +92,7 @@
     "rome": "^11.0.0",
     "typescript": "~4.9.3",
     "vite": "^4.1.0-beta.1",
+    "vitest": "^0.28.2",
     "xlsx": "^0.18.5"
   },
   "peerDependencies": {

@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-swc';
 import linaria from '@linaria/vite';
 import postcssNested from 'postcss-nested';
 
@@ -24,5 +24,16 @@ export default defineConfig({
   build: {
     outDir: '../dist',
     sourcemap: 'true'
+  },
+  test: {
+    root: '.',
+    globals: true,
+    coverage: {
+      reporter: ['json']
+    },
+    restoreMocks: true,
+    setupFiles: ['./test/setup.ts'],
+    setupFilesAfterEnv: ['@testing-library/jest-dom'],
+    environment: 'jsdom'
   }
 });
