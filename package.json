@@ -10,6 +10,14 @@
   "repository": "github:adazzle/react-data-grid",
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
+  "exports": {
+    "./lib/styles.css": "./lib/styles.css",
+    ".": {
+      "module": "./lib/bundle.js",
+      "require": "./lib/bundle.cjs",
+      "default": "./lib/bundle.js"
+    }
+  },
   "browser": "./lib/bundle.js",
   "main": "./lib/bundle.cjs",
   "module": "./lib/bundle.js",
@@ -87,7 +95,7 @@
     "react-router-dom": "^6.3.0",
     "rome": "^11.0.0",
     "typescript": "~4.9.3",
-    "vite": "^4.0.4",
+    "vite": "^4.1.0-beta.1",
     "xlsx": "^0.18.5"
   },
   "peerDependencies": {
