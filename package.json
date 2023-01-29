@@ -89,7 +89,7 @@
     "rome": "^11.0.0",
     "typescript": "~4.9.3",
     "vite": "^4.1.0-beta.1",
-    "vitest": "^0.28.2",
+    "vitest": "^0.28.3",
     "xlsx": "^0.18.5"
   },
   "peerDependencies": {
