@@ -160,9 +160,9 @@ export function useCalculatedColumns<R, SR>({
         width = clampColumnWidth(width, column);
         templateColumns.push(`${width}px`);
       } else {
-        templateColumns.push(width);
         // This is a placeholder width so we can continue to use virtualization.
         // The actual value is set after the column is rendered
+        templateColumns.push(width);
         width = column.minWidth;
       }
       columnMetrics.set(column, { width, left });
