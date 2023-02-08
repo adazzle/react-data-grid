@@ -152,7 +152,7 @@ export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   rowIdx: number;
-  navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  navigate: () => void;
   onClose: (commitChanges?: boolean) => void;
 }
 
