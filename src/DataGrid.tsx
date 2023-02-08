@@ -998,7 +998,7 @@ function DataGrid<R, SR, K extends Key>(
       if (commitChanges) {
         // Prevents two issues when editor is closed by clicking on a different cell
         //
-        // Sometimes commitEditorChanges is called before the cell state is changed to
+        // Otherwise commitEditorChanges may be called before the cell state is changed to
         // SELECT and this results in onRowChange getting called twice.
         //
         // Sometimes rows prop is changed before selectCell is called and this results in
