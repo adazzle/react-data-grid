@@ -133,13 +133,13 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
-export interface CellClickArgs<TRow, TSummaryRow> {
+export interface CellClickArgs<TRow, TSummaryRow = unknown> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   selectCell: (enableEditor?: boolean) => void;
 }
 
-interface SelectCellKeyDownArgs<TRow, TSummaryRow> {
+interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'SELECT';
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -147,11 +147,12 @@ interface SelectCellKeyDownArgs<TRow, TSummaryRow> {
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
-export interface EditCellKeyDownArgs<TRow, TSummaryRow> {
+export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'EDIT';
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   rowIdx: number;
+  navigate: () => void;
   onClose: (commitChanges?: boolean) => void;
 }
 
