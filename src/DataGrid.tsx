@@ -996,7 +996,7 @@ function DataGrid<R, SR, K extends Key>(
 
     const onRowChange = (row: R, commitChanges?: boolean) => {
       if (commitChanges) {
-        // Fixes two issues when editor is closed by clicking on a different cell
+        // Prevents two issues when editor is closed by clicking on a different cell
         //
         // Sometimes commitEditorChanges is called before the cell state is changed to
         // SELECT and this results in onRowChange getting called twice.
