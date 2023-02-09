@@ -132,6 +132,7 @@ export default function CellNavigation({ direction }: Props) {
     } else if (cellNavigationMode === 'LOOP_OVER_COLUMN' && key === 'Tab') {
       loopOverColumnNavigation();
     } else if (cellNavigationMode === 'NO_TAB' && key === 'Tab') {
+      // Need to allow default event to focus the next element
       event.preventGridDefault();
     }
   }
