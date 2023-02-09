@@ -99,6 +99,8 @@ export default function ContextMenuDemo({ direction }: Props) {
         direction={direction}
         onCellContextMenu={({ row }, event) => {
           event.preventGridDefault();
+          // Do not show the default context menu
+          event.preventDefault();
           setContextMenuProps({
             rowIdx: rows.indexOf(row),
             top: event.clientY,
