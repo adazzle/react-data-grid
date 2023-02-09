@@ -393,8 +393,7 @@ function DataGrid<R, SR, K extends Key>(
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectViewportCellLatest = useLatestFunc(
-    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
-      const rowIdx = rows.indexOf(row);
+    (rowIdx, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
   );

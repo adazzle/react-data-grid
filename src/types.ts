@@ -106,14 +106,16 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'selectCell' | 'skipCellFocusRef'>,
+  extends Pick<
+      RowRendererProps<TRow, TSummaryRow>,
+      'row' | 'rowIdx' | 'selectCell' | 'skipCellFocusRef'
+    >,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
       'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
-  row: TRow;
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
@@ -183,7 +185,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
   selectCell: (
-    row: TRow,
+    rowIdx: number,
     column: CalculatedColumn<TRow, TSummaryRow>,
     enableEditor?: Maybe<boolean>
   ) => void;
