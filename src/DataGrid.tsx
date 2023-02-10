@@ -392,30 +392,13 @@ function DataGrid<R, SR, K extends Key>(
   const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectViewportCellLatest = useLatestFunc(
-    (row: R, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
-      const rowIdx = rows.indexOf(row);
-      selectCell({ rowIdx, idx: column.idx }, enableEditor);
-    }
-  );
+  const selectCellLatest = useLatestFunc(selectCell);
   const selectGroupLatest = useLatestFunc((rowIdx: number) => {
     selectCell({ rowIdx, idx: -1 });
   });
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
     selectCell({ rowIdx: minRowIdx, idx });
   });
-  const selectTopSummaryCellLatest = useLatestFunc(
-    (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx = topSummaryRows!.indexOf(summaryRow);
-      selectCell({ rowIdx: rowIdx + minRowIdx + 1, idx: column.idx });
-    }
-  );
-  const selectBottomSummaryCellLatest = useLatestFunc(
-    (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx = bottomSummaryRows!.indexOf(summaryRow) + rows.length;
-      selectCell({ rowIdx, idx: column.idx });
-    }
-  );
   const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   /**
@@ -1000,9 +983,6 @@ function DataGrid<R, SR, K extends Key>(
         //
         // Otherwise commitEditorChanges may be called before the cell state is changed to
         // SELECT and this results in onRowChange getting called twice.
-        //
-        // Sometimes rows prop is changed before selectCell is called and this results in
-        // rows.indexOf(row) returning -1 so incorrect cell gets selected
         flushSync(() => {
           updateRow(column, selectedPosition.rowIdx, row);
           closeEditor();
@@ -1156,7 +1136,7 @@ function DataGrid<R, SR, K extends Key>(
           setDraggedOverRowIdx: isDragging ? setDraggedOverRowIdx : undefined,
           lastFrozenColumnIndex,
           onRowChange: handleFormatterRowChangeLatest,
-          selectCell: selectViewportCellLatest,
+          selectCell: selectCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
           selectedCellEditor: getCellEditor(rowIdx),
           skipCellFocusRef
@@ -1277,16 +1257,17 @@ function DataGrid<R, SR, K extends Key>(
                 <SummaryRow
                   aria-rowindex={gridRowStart}
                   key={rowIdx}
-                  rowIdx={rowIdx}
+                  rowIdx={summaryRowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
                   top={top}
                   bottom={undefined}
-                  lastTopRowIdx={topSummaryRowsCount - 1}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                  selectCell={selectTopSummaryCellLatest}
+                  isTop
+                  showBorder={rowIdx === topSummaryRowsCount - 1}
+                  selectCell={selectCellLatest}
                 />
               );
             })}
@@ -1310,16 +1291,17 @@ function DataGrid<R, SR, K extends Key>(
                 <SummaryRow
                   aria-rowindex={headerAndTopSummaryRowsCount + rowsCount + rowIdx + 1}
                   key={rowIdx}
-                  rowIdx={rowIdx}
+                  rowIdx={summaryRowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
                   top={top}
                   bottom={bottom}
-                  lastTopRowIdx={undefined}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                  selectCell={selectBottomSummaryCellLatest}
+                  isTop={false}
+                  showBorder={rowIdx === 0}
+                  selectCell={selectCellLatest}
                 />
               );
             })}
