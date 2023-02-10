@@ -38,7 +38,7 @@ function SummaryCell<R, SR>({
   );
 
   function onClick() {
-    selectCell(rowIdx, column);
+    selectCell({ rowIdx, idx: column.idx });
   }
 
   return (

@@ -55,7 +55,7 @@ function Cell<R, SR>({
   );
 
   function selectCellWrapper(openEditor?: boolean) {
-    selectCell(rowIdx, column, openEditor);
+    selectCell({ rowIdx, idx: column.idx }, openEditor);
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
