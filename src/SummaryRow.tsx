@@ -44,7 +44,7 @@ const topSummaryRow = css`
   }
 `;
 
-const topSummaryRowBorderClassname = css`
+export const topSummaryRowBorderClassname = css`
   @layer rdg.SummaryRow {
     > .${cell} {
       border-block-end: 2px solid var(--rdg-summary-border-color);
@@ -52,7 +52,7 @@ const topSummaryRowBorderClassname = css`
   }
 `;
 
-const bottomSummaryRowBorderClassname = css`
+export const bottomSummaryRowBorderClassname = css`
   @layer rdg.SummaryRow {
     > .${cell} {
       border-block-start: 2px solid var(--rdg-summary-border-color);
