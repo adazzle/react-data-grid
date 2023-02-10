@@ -392,11 +392,7 @@ function DataGrid<R, SR, K extends Key>(
   const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectCellLatest = useLatestFunc(
-    (rowIdx, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
-      selectCell({ rowIdx, idx: column.idx }, enableEditor);
-    }
-  );
+  const selectCellLatest = useLatestFunc(selectCell);
   const selectGroupLatest = useLatestFunc((rowIdx: number) => {
     selectCell({ rowIdx, idx: -1 });
   });
