@@ -1,5 +1,9 @@
 import type { Column } from '../../src';
-import { setup, getCells } from '../utils';
+import {
+  bottomSummaryRowBorderClassname,
+  topSummaryRowBorderClassname
+} from '../../src/SummaryRow';
+import { setup, getCells, getRows } from '../utils';
 
 interface SummaryRow {
   id: number;
@@ -46,4 +50,14 @@ test('summaryFormatter', () => {
   expect(cells[3]).toBeEmptyDOMElement();
   expect(cells[5]).toBeEmptyDOMElement();
   expect(cells[7]).toBeEmptyDOMElement();
+
+  const rows = getRows();
+  expect(rows[0]).not.toHaveClass(topSummaryRowBorderClassname);
+  expect(rows[0]).not.toHaveClass(bottomSummaryRowBorderClassname);
+  expect(rows[1]).toHaveClass(topSummaryRowBorderClassname);
+  expect(rows[1]).not.toHaveClass(bottomSummaryRowBorderClassname);
+  expect(rows[2]).toHaveClass(bottomSummaryRowBorderClassname);
+  expect(rows[2]).not.toHaveClass(topSummaryRowBorderClassname);
+  expect(rows[3]).not.toHaveClass(bottomSummaryRowBorderClassname);
+  expect(rows[3]).not.toHaveClass(topSummaryRowBorderClassname);
 });
