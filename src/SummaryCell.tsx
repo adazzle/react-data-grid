@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { css } from '@linaria/core';
 
 import { getCellStyle, getCellClassname } from './utils';
-import type { CalculatedColumn, CellRendererProps } from './types';
+import type { CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
 
 export const summaryCellClassname = css`
