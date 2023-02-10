@@ -78,7 +78,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function CustomizableComponents({ direction }: Props) {
+export default function CustomizableRenderers({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -116,7 +116,7 @@ export default function CustomizableComponents({ direction }: Props) {
 }
 
 function checkboxFormatter(
-  { disabled, onChange, ...props }: CheckboxFormatterProps,
+  { onChange, ...props }: CheckboxFormatterProps,
   ref: React.RefObject<HTMLInputElement>
 ) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

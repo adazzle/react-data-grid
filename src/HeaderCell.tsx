@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import defaultHeaderRenderer from './headerRenderer';
-import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
+import { getCellStyle, getCellClassname } from './utils';
 import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
@@ -28,8 +28,6 @@ type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
   | 'sortColumns'
   | 'onSortColumnsChange'
-  | 'allRowsSelected'
-  | 'onAllRowsSelectionChange'
   | 'selectCell'
   | 'onColumnResize'
   | 'shouldFocusGrid'
@@ -47,8 +45,6 @@ export default function HeaderCell<R, SR>({
   colSpan,
   isCellSelected,
   onColumnResize,
-  allRowsSelected,
-  onAllRowsSelectionChange,
   sortColumns,
   onSortColumnsChange,
   selectCell,
@@ -105,7 +101,7 @@ export default function HeaderCell<R, SR>({
         (isRtl ? right + offset - event.clientX : event.clientX + offset - left) -
         getColSpanColumnsWidth();
       if (width > 0) {
-        onColumnResize(column, clampColumnWidth(width, column));
+        onColumnResize(column, width);
       }
     }
 
@@ -132,8 +128,8 @@ export default function HeaderCell<R, SR>({
     } else {
       let nextSortColumn: SortColumn | undefined;
       if (
-        (sortDescendingFirst && sortDirection === 'DESC') ||
-        (!sortDescendingFirst && sortDirection === 'ASC')
+        (sortDescendingFirst === true && sortDirection === 'DESC') ||
+        (sortDescendingFirst !== true && sortDirection === 'ASC')
       ) {
         nextSortColumn = {
           columnKey: column.key,
@@ -202,8 +198,6 @@ export default function HeaderCell<R, SR>({
         sortDirection,
         priority,
         onSort,
-        allRowsSelected,
-        onAllRowsSelectionChange,
         isCellSelected
       })}
     </div>

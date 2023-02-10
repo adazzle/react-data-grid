@@ -11,7 +11,7 @@ import AllFeatures from './demos/AllFeatures';
 import CellNavigation from './demos/CellNavigation';
 import ColumnSpanning from './demos/ColumnSpanning';
 import ColumnsReordering from './demos/ColumnsReordering';
-import CustomizableComponents from './demos/CustomizableComponents';
+import CustomizableRenderers from './demos/CustomizableRenderers';
 import ContextMenuDemo from './demos/ContextMenu';
 import Grouping from './demos/Grouping';
 import HeaderFilters from './demos/HeaderFilters';
@@ -24,6 +24,7 @@ import RowsReordering from './demos/RowsReordering';
 import ScrollToRow from './demos/ScrollToRow';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
+import Animation from './demos/Animation';
 
 css`
   @at-root {
@@ -97,8 +98,8 @@ function Root() {
           <Route path="columns-reordering" element={<ColumnsReordering direction={direction} />} />
           <Route path="context-menu" element={<ContextMenuDemo direction={direction} />} />
           <Route
-            path="customizable-components"
-            element={<CustomizableComponents direction={direction} />}
+            path="customizable-renderers"
+            element={<CustomizableRenderers direction={direction} />}
           />
           <Route path="grouping" element={<Grouping direction={direction} />} />
           <Route path="header-filters" element={<HeaderFilters direction={direction} />} />
@@ -111,6 +112,7 @@ function Root() {
           <Route path="scroll-to-row" element={<ScrollToRow direction={direction} />} />
           <Route path="tree-view" element={<TreeView direction={direction} />} />
           <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
+          <Route path="animation" element={<Animation direction={direction} />} />
           <Route path="*" element="Nothing to see here" />
         </Routes>
       </main>

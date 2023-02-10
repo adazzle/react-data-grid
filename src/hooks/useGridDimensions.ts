@@ -26,12 +26,12 @@ export function useGridDimensions(): [
 
     setInlineSize(initialWidth);
     setBlockSize(initialHeight);
+    setWidthInitialized(true);
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
       setInlineSize(size.inlineSize);
       setBlockSize(size.blockSize);
-      setWidthInitialized(true);
     });
     resizeObserver.observe(gridRef.current!);
 

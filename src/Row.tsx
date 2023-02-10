@@ -1,5 +1,4 @@
-import { memo, forwardRef } from 'react';
-import type { RefAttributes } from 'react';
+import { memo, forwardRef, type RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import Cell from './Cell';
@@ -23,8 +22,10 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
-    onRowClick,
-    onRowDoubleClick,
+    skipCellFocusRef,
+    onCellClick,
+    onCellDoubleClick,
+    onCellContextMenu,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -74,14 +75,17 @@ function Row<R, SR>(
           column={column}
           colSpan={colSpan}
           row={row}
+          rowIdx={rowIdx}
           isCopied={copiedCellIdx === idx}
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
+          onClick={onCellClick}
+          onDoubleClick={onCellDoubleClick}
+          onContextMenu={onCellContextMenu}
           onRowChange={handleRowChange}
           selectCell={selectCell}
+          skipCellFocusRef={skipCellFocusRef}
         />
       );
     }

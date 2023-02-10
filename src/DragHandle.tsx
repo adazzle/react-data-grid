@@ -45,7 +45,7 @@ export default function DragHandle<R, SR>({
   setDragging,
   setDraggedOverRowIdx
 }: Props<R, SR>) {
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     if (event.buttons !== 1) return;
     setDragging(true);
     window.addEventListener('mouseover', onMouseOver);

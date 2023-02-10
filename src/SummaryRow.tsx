@@ -2,15 +2,14 @@ import { memo } from 'react';
 import clsx from 'clsx';
 import { css } from '@linaria/core';
 
-import { cell, cellFrozen } from './style/cell';
-import { rowClassname, rowSelectedClassname } from './style';
+import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
-import type { CalculatedColumn, RowRendererProps } from './types';
+import type { RowRendererProps } from './types';
 
 type SharedRowRendererProps<R, SR> = Pick<
   RowRendererProps<R, SR>,
-  'viewportColumns' | 'rowIdx' | 'gridRowStart'
+  'viewportColumns' | 'rowIdx' | 'gridRowStart' | 'selectCell'
 >;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
@@ -20,8 +19,8 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   bottom: number | undefined;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
-  lastTopRowIdx: number | undefined;
-  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
+  isTop: boolean;
+  showBorder: boolean;
 }
 
 const summaryRow = css`
@@ -46,7 +45,7 @@ const topSummaryRow = css`
   }
 `;
 
-const topSummaryRowBorderClassname = css`
+export const topSummaryRowBorderClassname = css`
   @layer rdg.SummaryRow {
     > .${cell} {
       border-block-end: 2px solid var(--rdg-summary-border-color);
@@ -54,7 +53,7 @@ const topSummaryRowBorderClassname = css`
   }
 `;
 
-const bottomSummaryRowBorderClassname = css`
+export const bottomSummaryRowBorderClassname = css`
   @layer rdg.SummaryRow {
     > .${cell} {
       border-block-start: 2px solid var(--rdg-summary-border-color);
@@ -75,7 +74,8 @@ function SummaryRow<R, SR>({
   bottom,
   lastFrozenColumnIndex,
   selectedCellIdx,
-  lastTopRowIdx,
+  isTop,
+  showBorder,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -95,13 +95,12 @@ function SummaryRow<R, SR>({
         column={column}
         colSpan={colSpan}
         row={row}
+        rowIdx={rowIdx}
         isCellSelected={isCellSelected}
         selectCell={selectCell}
       />
     );
   }
-
-  const isTop = lastTopRowIdx !== undefined;
 
   return (
     <div
@@ -114,8 +113,8 @@ function SummaryRow<R, SR>({
         {
           [rowSelectedClassname]: selectedCellIdx === -1,
           [topSummaryRowClassname]: isTop,
-          [topSummaryRowBorderClassname]: isTop && lastTopRowIdx === rowIdx,
-          [bottomSummaryRowBorderClassname]: !isTop && rowIdx === 0,
+          [topSummaryRowBorderClassname]: isTop && showBorder,
+          [bottomSummaryRowBorderClassname]: !isTop && showBorder,
           'rdg-bottom-summary-row': !isTop
         }
       )}

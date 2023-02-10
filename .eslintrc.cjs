@@ -562,7 +562,7 @@ const rules = {
   '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
   '@typescript-eslint/no-unnecessary-condition': 1,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
-  '@typescript-eslint/no-unnecessary-type-arguments': 0,
+  '@typescript-eslint/no-unnecessary-type-arguments': 1,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
   '@typescript-eslint/no-unnecessary-type-constraint': 1,
   '@typescript-eslint/no-unsafe-argument': 0,
@@ -583,7 +583,8 @@ const rules = {
     1,
     {
       ignoreConditionalTests: false,
-      ignoreMixedLogicalExpressions: true
+      ignoreTernaryTests: false,
+      ignoreMixedLogicalExpressions: false
     }
   ],
   '@typescript-eslint/prefer-optional-chain': 1,
@@ -699,10 +700,25 @@ module.exports = {
   env: {
     es6: true
   },
-  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
+  plugins: [
+    'node',
+    'react',
+    'react-hooks',
+    'jest',
+    'jest-dom',
+    'sonarjs',
+    '@typescript-eslint',
+    'testing-library'
+  ],
   overrides: [
     {
-      files: ['*.js', '*.jsx', '*.cjs', '*.mjs'],
+      files: ['test/**/*'],
+      rules: {
+        '@typescript-eslint/no-floating-promises': 1
+      }
+    },
+    {
+      files: ['*.js', '*.cjs'],
       rules: {
         'no-undef': 2,
         'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
@@ -767,7 +783,19 @@ module.exports = {
         'node/prefer-global/url-search-params': 1,
         'node/prefer-global/url': 1,
         'node/prefer-promises/dns': 1,
-        'node/prefer-promises/fs': 1
+        'node/prefer-promises/fs': 1,
+
+        // eslint-plugin-testing-library Rules
+        // https://github.com/testing-library/eslint-plugin-testing-library#supported-rules
+        'testing-library/no-wait-for-multiple-assertions': 1,
+        'testing-library/no-unnecessary-act': 1,
+        'testing-library/no-wait-for-empty-callback': 1,
+        'testing-library/no-wait-for-side-effects': 1,
+        'testing-library/prefer-explicit-assert': 1,
+        'testing-library/prefer-find-by': 1,
+        'testing-library/prefer-presence-queries': 1,
+        'testing-library/prefer-query-by-disappearance': 1,
+        'testing-library/prefer-screen-queries': 1
       }
     }
   ],

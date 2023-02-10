@@ -137,6 +137,12 @@ export default function MasterDetail({ direction }: Props) {
       className="fill-grid"
       enableVirtualization={false}
       direction={direction}
+      onCellKeyDown={(_, event) => {
+        if (event.isDefaultPrevented()) {
+          // skip parent grid keyboard navigation if nested grid handled it
+          event.preventGridDefault();
+        }
+      }}
     />
   );
 }
@@ -159,23 +165,15 @@ function ProductGrid({
   }, [isCellSelected]);
   const products = getProducts(parentId);
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.isDefaultPrevented()) {
-      event.stopPropagation();
-    }
-  }
-
   return (
-    <div onKeyDown={onKeyDown}>
-      <DataGrid
-        ref={gridRef}
-        rows={products}
-        columns={productColumns}
-        rowKeyGetter={rowKeyGetter}
-        style={{ blockSize: 250 }}
-        direction={direction}
-      />
-    </div>
+    <DataGrid
+      ref={gridRef}
+      rows={products}
+      columns={productColumns}
+      rowKeyGetter={rowKeyGetter}
+      style={{ blockSize: 250 }}
+      direction={direction}
+    />
   );
 }
 
