@@ -1261,7 +1261,7 @@ function DataGrid<R, SR, K extends Key>(
                 <SummaryRow
                   aria-rowindex={gridRowStart}
                   key={rowIdx}
-                  rowIdx={rowIdx}
+                  rowIdx={summaryRowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
                   top={top}
@@ -1294,7 +1294,7 @@ function DataGrid<R, SR, K extends Key>(
                 <SummaryRow
                   aria-rowindex={headerAndTopSummaryRowsCount + rowsCount + rowIdx + 1}
                   key={rowIdx}
-                  rowIdx={rowIdx}
+                  rowIdx={summaryRowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
                   top={top}
