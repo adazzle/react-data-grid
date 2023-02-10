@@ -987,9 +987,6 @@ function DataGrid<R, SR, K extends Key>(
         //
         // Otherwise commitEditorChanges may be called before the cell state is changed to
         // SELECT and this results in onRowChange getting called twice.
-        //
-        // Sometimes rows prop is changed before selectCell is called and this results in
-        // rows.indexOf(row) returning -1 so incorrect cell gets selected
         flushSync(() => {
           updateRow(column, selectedPosition.rowIdx, row);
           closeEditor();
