@@ -155,7 +155,7 @@ export default function EditCell<R, SR>({
             onClose
           })}
           {column.editorOptions?.renderFormatter &&
-            column.formatter({ column, row, rowIdx, isCellSelected: true, onRowChange })}
+            column.formatter({ column, row, isCellSelected: true, onRowChange })}
         </>
       )}
     </div>

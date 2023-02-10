@@ -111,7 +111,6 @@ function Cell<R, SR>({
           {column.formatter({
             column,
             row,
-            rowIdx,
             isCellSelected,
             onRowChange: handleRowChange
           })}

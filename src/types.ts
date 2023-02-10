@@ -70,7 +70,6 @@ export interface Position {
 export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
-  rowIdx: number;
   isCellSelected: boolean;
   onRowChange: (row: TRow) => void;
 }
@@ -78,7 +77,6 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
 export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
-  rowIdx: number;
   isCellSelected: boolean;
 }
 
