@@ -5,11 +5,11 @@ import { css } from '@linaria/core';
 import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
 import SummaryCell from './SummaryCell';
-import type { CalculatedColumn, RowRendererProps } from './types';
+import type { RowRendererProps } from './types';
 
 type SharedRowRendererProps<R, SR> = Pick<
   RowRendererProps<R, SR>,
-  'viewportColumns' | 'rowIdx' | 'gridRowStart'
+  'viewportColumns' | 'rowIdx' | 'gridRowStart' | 'selectCell'
 >;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
@@ -20,7 +20,6 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   lastTopRowIdx: number | undefined;
-  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
 }
 
 const summaryRow = css`
@@ -94,6 +93,7 @@ function SummaryRow<R, SR>({
         column={column}
         colSpan={colSpan}
         row={row}
+        rowIdx={rowIdx}
         isCellSelected={isCellSelected}
         selectCell={selectCell}
       />

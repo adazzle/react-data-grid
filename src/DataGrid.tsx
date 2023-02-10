@@ -392,7 +392,7 @@ function DataGrid<R, SR, K extends Key>(
   const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectViewportCellLatest = useLatestFunc(
+  const selectCellLatest = useLatestFunc(
     (rowIdx, column: CalculatedColumn<R, SR>, enableEditor: Maybe<boolean>) => {
       selectCell({ rowIdx, idx: column.idx }, enableEditor);
     }
@@ -403,18 +403,6 @@ function DataGrid<R, SR, K extends Key>(
   const selectHeaderCellLatest = useLatestFunc((idx: number) => {
     selectCell({ rowIdx: minRowIdx, idx });
   });
-  const selectTopSummaryCellLatest = useLatestFunc(
-    (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx = topSummaryRows!.indexOf(summaryRow);
-      selectCell({ rowIdx: rowIdx + minRowIdx + 1, idx: column.idx });
-    }
-  );
-  const selectBottomSummaryCellLatest = useLatestFunc(
-    (summaryRow: SR, column: CalculatedColumn<R, SR>) => {
-      const rowIdx = bottomSummaryRows!.indexOf(summaryRow) + rows.length;
-      selectCell({ rowIdx, idx: column.idx });
-    }
-  );
   const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   /**
@@ -1155,7 +1143,7 @@ function DataGrid<R, SR, K extends Key>(
           setDraggedOverRowIdx: isDragging ? setDraggedOverRowIdx : undefined,
           lastFrozenColumnIndex,
           onRowChange: handleFormatterRowChangeLatest,
-          selectCell: selectViewportCellLatest,
+          selectCell: selectCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
           selectedCellEditor: getCellEditor(rowIdx),
           skipCellFocusRef
@@ -1285,7 +1273,7 @@ function DataGrid<R, SR, K extends Key>(
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                  selectCell={selectTopSummaryCellLatest}
+                  selectCell={selectCellLatest}
                 />
               );
             })}
@@ -1318,7 +1306,7 @@ function DataGrid<R, SR, K extends Key>(
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                  selectCell={selectBottomSummaryCellLatest}
+                  selectCell={selectCellLatest}
                 />
               );
             })}
