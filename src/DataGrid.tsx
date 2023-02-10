@@ -1261,15 +1261,16 @@ function DataGrid<R, SR, K extends Key>(
                 <SummaryRow
                   aria-rowindex={gridRowStart}
                   key={rowIdx}
-                  rowIdx={summaryRowIdx}
+                  rowIdx={rowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
                   top={top}
                   bottom={undefined}
-                  lastTopRowIdx={topSummaryRowsCount - 1}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                  isTop
+                  showBorder={rowIdx === topSummaryRowsCount - 1}
                   selectCell={selectCellLatest}
                 />
               );
@@ -1294,15 +1295,16 @@ function DataGrid<R, SR, K extends Key>(
                 <SummaryRow
                   aria-rowindex={headerAndTopSummaryRowsCount + rowsCount + rowIdx + 1}
                   key={rowIdx}
-                  rowIdx={summaryRowIdx}
+                  rowIdx={rowIdx}
                   gridRowStart={gridRowStart}
                   row={row}
                   top={top}
                   bottom={bottom}
-                  lastTopRowIdx={undefined}
                   viewportColumns={getRowViewportColumns(summaryRowIdx)}
                   lastFrozenColumnIndex={lastFrozenColumnIndex}
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                  isTop={false}
+                  showBorder={rowIdx === 0}
                   selectCell={selectCellLatest}
                 />
               );

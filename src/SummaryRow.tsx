@@ -19,7 +19,8 @@ interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
   bottom: number | undefined;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
-  lastTopRowIdx: number | undefined;
+  isTop: boolean;
+  showBorder: boolean;
 }
 
 const summaryRow = css`
@@ -73,7 +74,8 @@ function SummaryRow<R, SR>({
   bottom,
   lastFrozenColumnIndex,
   selectedCellIdx,
-  lastTopRowIdx,
+  isTop,
+  showBorder,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -100,8 +102,6 @@ function SummaryRow<R, SR>({
     );
   }
 
-  const isTop = lastTopRowIdx !== undefined;
-
   return (
     <div
       role="row"
@@ -113,8 +113,8 @@ function SummaryRow<R, SR>({
         {
           [rowSelectedClassname]: selectedCellIdx === -1,
           [topSummaryRowClassname]: isTop,
-          [topSummaryRowBorderClassname]: isTop && lastTopRowIdx === rowIdx,
-          [bottomSummaryRowBorderClassname]: !isTop && rowIdx === 0,
+          [topSummaryRowBorderClassname]: isTop && showBorder,
+          [bottomSummaryRowBorderClassname]: !isTop && showBorder,
           'rdg-bottom-summary-row': !isTop
         }
       )}
