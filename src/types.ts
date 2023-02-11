@@ -44,6 +44,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly renderFormatter?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
+    /** @default false */
+    readonly editOnFocus?: Maybe<boolean>;
   }>;
   /** Header renderer for each header cell */
   readonly headerRenderer?: Maybe<(props: HeaderRendererProps<TRow, TSummaryRow>) => ReactNode>;

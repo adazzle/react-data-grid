@@ -44,7 +44,7 @@ function Cell<R, SR>({
 }: CellRendererProps<R, SR>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocusRef);
 
-  const { cellClass } = column;
+  const { cellClass, editorOptions } = column;
   const className = getCellClassname(
     column,
     {
@@ -85,6 +85,16 @@ function Cell<R, SR>({
     selectCellWrapper(true);
   }
 
+  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
+    if (onFocus) {
+      onFocus(event);
+    }
+    if(editorOptions?.editOnFocus) {
+      selectCellWrapper(true);
+    }
+  }
+
+
   function handleRowChange(newRow: R) {
     onRowChange(column, newRow);
   }
@@ -103,7 +113,7 @@ function Cell<R, SR>({
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
-      onFocus={onFocus}
+      onFocus={handleFocus}
       {...props}
     >
       {!column.rowGroup && (
