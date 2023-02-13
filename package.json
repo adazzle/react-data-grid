@@ -60,7 +60,7 @@
     "@linaria/babel-preset": "4.3.3",
     "@linaria/core": "4.2.5",
     "@linaria/logger": "4.0.0",
-    "@linaria/rollup": "4.3.2",
+    "@linaria/rollup": "4.3.4",
     "@linaria/shaker": "4.2.7",
     "@linaria/tags": "4.3.0",
     "@linaria/utils": "4.3.0",
