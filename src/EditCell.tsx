@@ -93,9 +93,22 @@ export default function EditCell<R, SR>({
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (onKeyDown) {
       const cellEvent = createCellEvent(event);
-      onKeyDown({ mode: 'EDIT', row, column, rowIdx, onClose }, cellEvent);
+      onKeyDown(
+        {
+          mode: 'EDIT',
+          row,
+          column,
+          rowIdx,
+          navigate() {
+            navigate(event);
+          },
+          onClose
+        },
+        cellEvent
+      );
       if (cellEvent.isGridDefaultPrevented()) return;
     }
+
     if (event.key === 'Escape') {
       // Discard changes
       onClose();
