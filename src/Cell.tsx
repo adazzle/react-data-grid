@@ -32,6 +32,7 @@ function Cell<R, SR>({
   isCopied,
   isDraggedOver,
   row,
+  rowIdx,
   dragHandle,
   skipCellFocusRef,
   onClick,
@@ -54,7 +55,7 @@ function Cell<R, SR>({
   );
 
   function selectCellWrapper(openEditor?: boolean) {
-    selectCell(row, column, openEditor);
+    selectCell({ rowIdx, idx: column.idx }, openEditor);
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {

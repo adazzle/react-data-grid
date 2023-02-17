@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "7.0.0-beta.22",
+  "version": "7.0.0-beta.26",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
   "keywords": [
@@ -49,8 +49,8 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@faker-js/faker": "^7.1.0",
-    "@linaria/babel-preset": "^4.2.3",
-    "@linaria/vite": "^4.2.5",
+    "@linaria/babel-preset": "^4.4.1",
+    "@linaria/vite": "^4.2.7",
     "@microsoft/api-extractor": "^7.23.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@testing-library/jest-dom": "^5.16.4",
@@ -80,7 +80,7 @@
     "lodash-es": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.0",
     "postcss-nested": "^6.0.0",
-    "prettier": "2.8.3",
+    "prettier": "2.8.4",
     "react": "^18.1.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
