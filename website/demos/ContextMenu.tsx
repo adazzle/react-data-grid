@@ -98,6 +98,8 @@ export default function ContextMenuDemo({ direction }: Props) {
         className="fill-grid"
         direction={direction}
         onCellContextMenu={({ row }, event) => {
+          event.preventGridDefault();
+          // Do not show the default context menu
           event.preventDefault();
           setContextMenuProps({
             rowIdx: rows.indexOf(row),
