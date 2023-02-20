@@ -61,7 +61,7 @@
     "@linaria/core": "4.2.5",
     "@linaria/logger": "4.0.0",
     "@linaria/rollup": "4.3.2",
-    "@linaria/shaker": "4.2.7",
+    "@linaria/shaker": "4.2.8",
     "@linaria/tags": "4.3.0",
     "@linaria/utils": "4.3.0",
     "@linaria/vite": "4.2.5",
