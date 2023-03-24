@@ -21,7 +21,7 @@ export function useRovingCellRef(
         return;
       }
       scrollIntoView(cell);
-      if (cell.contains(document.activeElement)) return;
+      if (cell.contains((cell.getRootNode() as ShadowRoot | Document).activeElement)) return;
       cell.focus({ preventScroll: true });
     },
     [skipCellFocusRef]
