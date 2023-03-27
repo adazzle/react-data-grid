@@ -109,7 +109,9 @@ describe('Editor', () => {
   describe('editable', () => {
     it('should be editable if an editor is specified and editable is undefined/null', async () => {
       render(<EditorTest />);
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const cell = getCellsAtRowIndex(0)[1];
+      expect(cell).not.toHaveAttribute('aria-readonly');
+      await userEvent.dblClick(cell);
       expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
     });
 
@@ -121,7 +123,9 @@ describe('Editor', () => {
 
     it('should not be editable if editable is false', async () => {
       render(<EditorTest editable={false} />);
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const cell = getCellsAtRowIndex(0)[1];
+      expect(cell).toHaveAttribute('aria-readonly', 'true');
+      await userEvent.dblClick(cell);
       expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
     });
 
