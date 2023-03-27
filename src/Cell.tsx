@@ -53,6 +53,7 @@ function Cell<R, SR>({
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
+  const isEditable = isCellEditable(column, row);
 
   function selectCellWrapper(openEditor?: boolean) {
     selectCell({ rowIdx, idx: column.idx }, openEditor);
@@ -95,7 +96,7 @@ function Cell<R, SR>({
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
-      aria-readonly={!isCellEditable(column, row) || undefined}
+      aria-readonly={!isEditable || undefined}
       ref={ref}
       tabIndex={tabIndex}
       className={className}
@@ -112,6 +113,7 @@ function Cell<R, SR>({
             column,
             row,
             isCellSelected,
+            isCellEditable: isEditable,
             onRowChange: handleRowChange
           })}
           {dragHandle}
