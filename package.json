@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "7.0.0-beta.26",
+  "version": "7.0.0-beta.27",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
   "keywords": [
@@ -10,6 +10,15 @@
   "repository": "github:adazzle/react-data-grid",
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
+  "exports": {
+    "./lib/styles.css": "./lib/styles.css",
+    ".": {
+      "types": "./lib/index.d.ts",
+      "module": "./lib/bundle.js",
+      "require": "./lib/bundle.cjs",
+      "default": "./lib/bundle.js"
+    }
+  },
   "browser": "./lib/bundle.js",
   "main": "./lib/bundle.cjs",
   "module": "./lib/bundle.js",
@@ -72,7 +81,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.5.0",
-    "eslint-plugin-sonarjs": "^0.18.0",
+    "eslint-plugin-sonarjs": "^0.19.0",
     "eslint-plugin-testing-library": "^5.9.1",
     "jsdom": "^21.1.0",
     "jspdf": "^2.5.1",
@@ -80,15 +89,15 @@
     "lodash-es": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.0",
     "postcss-nested": "^6.0.0",
-    "prettier": "2.8.4",
+    "prettier": "2.8.7",
     "react": "^18.1.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.1.0",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "~6.3.0",
     "rome": "^11.0.0",
-    "typescript": "~4.9.3",
-    "vite": "^4.1.1",
+    "typescript": "~5.0.2",
+    "vite": "^4.2.1",
     "vitest": "^0.28.3",
     "xlsx": "^0.18.5"
   },

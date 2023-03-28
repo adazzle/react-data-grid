@@ -71,6 +71,7 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
+  isCellEditable: boolean;
   onRowChange: (row: TRow) => void;
 }
 
