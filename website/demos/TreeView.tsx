@@ -1,9 +1,14 @@
 import { useState, useReducer, useMemo } from 'react';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
 import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
 import type { Props } from './types';
+
+const gridClassname = css`
+  block-size: 600px;
+`;
 
 interface Row {
   id: string;
@@ -73,10 +78,10 @@ function toggleSubRow(rows: Row[], id: string): Row[] {
 
   const newRows = [...rows];
   newRows[rowIndex] = { ...row, isExpanded: !row.isExpanded };
-  if (!row.isExpanded) {
-    newRows.splice(rowIndex + 1, 0, ...children);
-  } else {
+  if (row.isExpanded) {
     newRows.splice(rowIndex + 1, children.length);
+  } else {
+    newRows.splice(rowIndex + 1, 0, ...children);
   }
   return newRows;
 }
@@ -131,7 +136,7 @@ export default function TreeView({ direction }: Props) {
         name: 'format',
         formatter({ row, isCellSelected }) {
           const hasChildren = row.children !== undefined;
-          const style = !hasChildren ? { marginInlineStart: 30 } : undefined;
+          const style = hasChildren ? undefined : { marginInlineStart: 30 };
           return (
             <>
               {hasChildren && (
@@ -176,7 +181,7 @@ export default function TreeView({ direction }: Props) {
           onChange={() => setAllowDelete(!allowDelete)}
         />
       </label>
-      <DataGrid columns={columns} rows={rows} className="big-grid" direction={direction} />
+      <DataGrid columns={columns} rows={rows} className={gridClassname} direction={direction} />
     </>
   );
 }
