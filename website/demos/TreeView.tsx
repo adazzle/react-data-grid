@@ -73,10 +73,10 @@ function toggleSubRow(rows: Row[], id: string): Row[] {
 
   const newRows = [...rows];
   newRows[rowIndex] = { ...row, isExpanded: !row.isExpanded };
-  if (!row.isExpanded) {
-    newRows.splice(rowIndex + 1, 0, ...children);
-  } else {
+  if (row.isExpanded) {
     newRows.splice(rowIndex + 1, children.length);
+  } else {
+    newRows.splice(rowIndex + 1, 0, ...children);
   }
   return newRows;
 }
@@ -131,7 +131,7 @@ export default function TreeView({ direction }: Props) {
         name: 'format',
         formatter({ row, isCellSelected }) {
           const hasChildren = row.children !== undefined;
-          const style = !hasChildren ? { marginInlineStart: 30 } : undefined;
+          const style = hasChildren ? undefined : { marginInlineStart: 30 };
           return (
             <>
               {hasChildren && (
