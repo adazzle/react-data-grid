@@ -1,9 +1,14 @@
 import { useState, useReducer, useMemo } from 'react';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
 import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
 import type { Props } from './types';
+
+const gridClassname = css`
+  block-size: 600px;
+`;
 
 interface Row {
   id: string;
@@ -176,7 +181,7 @@ export default function TreeView({ direction }: Props) {
           onChange={() => setAllowDelete(!allowDelete)}
         />
       </label>
-      <DataGrid columns={columns} rows={rows} className="big-grid" direction={direction} />
+      <DataGrid columns={columns} rows={rows} className={gridClassname} direction={direction} />
     </>
   );
 }

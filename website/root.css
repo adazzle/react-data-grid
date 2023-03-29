@@ -24,20 +24,6 @@ body {
   grid-template-columns: auto 1fr;
 }
 
-.rdg.fill-grid {
+.fill-grid {
   block-size: 100%;
-}
-
-.rdg.small-grid {
-  block-size: 300px;
-}
-
-.rdg.big-grid {
-  block-size: 600px;
-}
-
-.rdg-cell .Select {
-  max-height: 30px;
-  font-size: 12px;
-  font-weight: normal;
 }
