@@ -70,7 +70,7 @@
         "noArguments": "error",
         "noImplicitBoolean": "off",
         "noNegationElse": "error",
-        "noNonNullAssertion": "error",
+        "noNonNullAssertion": "off",
         "noShoutyConstants": "error",
         "noUnusedTemplateLiteral": "error",
         "noVar": "error",
