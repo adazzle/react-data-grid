@@ -27,13 +27,22 @@ export default defineConfig({
   },
   test: {
     root: '.',
-    globals: true,
+    browser: {
+      enabled: false,
+      name: 'chromium',
+      provider: 'playwright'
+    },
     coverage: {
       reporter: ['json']
     },
+    environment: 'jsdom',
+    globals: true,
     restoreMocks: true,
-    setupFiles: ['./test/setup.ts'],
-    setupFilesAfterEnv: ['@testing-library/jest-dom'],
-    environment: 'jsdom'
+    setupFiles: ['./test/setup.ts', '@testing-library/jest-dom'],
+    sequence: {
+      shuffle: true
+    },
+    testTimeout: 2500,
+    useAtomics: true
   }
 });
