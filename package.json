@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "7.0.0-beta.27",
+  "version": "7.0.0-beta.28",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
   "keywords": [
@@ -95,7 +95,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.1.0",
     "react-router-dom": "~6.3.0",
-    "rome": "^11.0.0",
+    "rome": "^12.0.0",
     "typescript": "~5.0.2",
     "vite": "^4.2.1",
     "vitest": "^0.28.3",
