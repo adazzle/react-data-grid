@@ -113,14 +113,14 @@ export default function MasterDetail({ direction }: Props) {
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {
     const row = rows[indexes[0]];
     if (row.type === 'MASTER') {
-      if (!row.expanded) {
-        rows.splice(indexes[0] + 1, 1);
-      } else {
+      if (row.expanded) {
         rows.splice(indexes[0] + 1, 0, {
           type: 'DETAIL',
           id: row.id + 100,
           parentId: row.id
         });
+      } else {
+        rows.splice(indexes[0] + 1, 1);
       }
       setRows(rows);
     }
