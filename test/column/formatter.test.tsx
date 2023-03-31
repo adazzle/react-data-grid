@@ -1,4 +1,4 @@
-import React, { StrictMode, useState } from 'react';
+import { StrictMode, useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -139,7 +139,7 @@ describe('editor focus', () => {
     );
   }
 
-  it('should not steal focus back to the cell if the focus is outside the grid and formatter value is changed', async () => {
+  it('should not steal focus back to the cell if the focus is outside the grid and formatter is recreated', async () => {
     render(<FormatterTest />);
 
     await userEvent.click(getCellsAtRowIndex(0)[0]);
