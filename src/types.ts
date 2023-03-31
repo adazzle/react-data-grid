@@ -109,7 +109,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<
       RowRendererProps<TRow, TSummaryRow>,
-      'row' | 'rowIdx' | 'selectCell' | 'skipCellFocusRef'
+      'row' | 'rowIdx' | 'selectCell' | 'shouldFocusCellRef'
     >,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
@@ -181,7 +181,7 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  skipCellFocusRef: MutableRefObject<boolean>;
+  shouldFocusCellRef: MutableRefObject<boolean>;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   rowClass: Maybe<(row: TRow) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;

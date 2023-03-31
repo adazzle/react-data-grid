@@ -4,7 +4,7 @@ import { scrollIntoView } from '../utils';
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
 export function useRovingCellRef(
   isSelected: boolean,
-  skipCellFocusRef?: MutableRefObject<boolean>
+  shouldFocusCellRef?: MutableRefObject<boolean>
 ) {
   // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
   const [isChildFocused, setIsChildFocused] = useState(false);
@@ -16,15 +16,15 @@ export function useRovingCellRef(
   const ref = useCallback(
     (cell: HTMLDivElement | null) => {
       if (cell === null) return;
-      if (skipCellFocusRef?.current) {
-        skipCellFocusRef.current = false;
+      if (!shouldFocusCellRef?.current) {
         return;
       }
       scrollIntoView(cell);
       if (cell.contains(document.activeElement)) return;
+      shouldFocusCellRef.current = false;
       cell.focus({ preventScroll: true });
     },
-    [skipCellFocusRef]
+    [shouldFocusCellRef]
   );
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {

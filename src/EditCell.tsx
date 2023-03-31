@@ -37,11 +37,11 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends Omit<EditorProps<R, SR>, 'onClose'>,
+  extends Omit<EditorProps<R, SR>, 'onRowChange' | 'onClose'>,
     SharedCellRendererProps<R, SR> {
   rowIdx: number;
-  skipCellFocusRef: MutableRefObject<boolean>;
-  closeEditor: () => void;
+  onRowChange: (row: R, commitChanges: boolean, shouldFocusCell: boolean) => void;
+  closeEditor: (shouldFocusCell: boolean) => void;
   navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   onKeyDown: Maybe<(args: EditCellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
 }
@@ -51,7 +51,6 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   rowIdx,
-  skipCellFocusRef,
   onRowChange,
   closeEditor,
   onKeyDown,
@@ -64,22 +63,14 @@ export default function EditCell<R, SR>({
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
   // To that end we instead access the latest props via useLatestFunc.
   const commitOnOutsideMouseDown = useLatestFunc(() => {
-    onClose(true);
+    onClose(true, false);
   });
 
-  const cancelFrameRequest = useCallback(() => {
-    skipCellFocusRef.current = false;
-    if (commitOnOutsideClick) {
-      cancelAnimationFrame(frameRequestRef.current!);
-    }
-  }, [commitOnOutsideClick, skipCellFocusRef]);
-
   useEffect(() => {
+    if (!commitOnOutsideClick) return;
+
     function onWindowCaptureMouseDown() {
-      skipCellFocusRef.current = true;
-      if (commitOnOutsideClick) {
-        frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
-      }
+      frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
     }
 
     addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
@@ -88,7 +79,11 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [cancelFrameRequest, commitOnOutsideClick, commitOnOutsideMouseDown, skipCellFocusRef]);
+  }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
+
+  function cancelFrameRequest() {
+    cancelAnimationFrame(frameRequestRef.current!);
+  }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (onKeyDown) {
@@ -111,19 +106,23 @@ export default function EditCell<R, SR>({
 
     if (event.key === 'Escape') {
       // Discard changes
-      onClose();
+      onClose(false, true);
     } else if (event.key === 'Enter') {
-      onClose(true);
+      onClose(true, true);
     } else if (onEditorNavigation(event)) {
       navigate(event);
     }
   }
 
-  function onClose(commitChanges?: boolean) {
+  function onEditorRowChange(row: R, commitChanges = false) {
+    onRowChange(row, commitChanges, commitChanges);
+  }
+
+  function onClose(commitChanges: boolean, shouldFocusCell: boolean) {
     if (commitChanges) {
-      onRowChange(row, true);
+      onRowChange(row, true, shouldFocusCell);
     } else {
-      closeEditor();
+      closeEditor(shouldFocusCell);
     }
   }
 
@@ -151,7 +150,7 @@ export default function EditCell<R, SR>({
           {column.editor({
             column,
             row,
-            onRowChange,
+            onRowChange: onEditorRowChange,
             onClose
           })}
           {column.editorOptions?.renderFormatter &&
@@ -160,7 +159,7 @@ export default function EditCell<R, SR>({
               row,
               isCellSelected: true,
               isCellEditable: true,
-              onRowChange
+              onRowChange: onEditorRowChange
             })}
         </>
       )}

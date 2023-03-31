@@ -285,7 +285,7 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
-  const skipCellFocusRef = useRef(false);
+  const shouldFocusCellRef = useRef(false);
 
   /**
    * computed values
@@ -913,6 +913,7 @@ function DataGrid<R, SR, K extends Key>(
       isGroupRow
     });
 
+    shouldFocusCellRef.current = true;
     selectCell(nextSelectedCellPosition);
   }
 
@@ -973,11 +974,14 @@ function DataGrid<R, SR, K extends Key>(
     const column = columns[idx];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
-    const closeEditor = () => {
+    const closeEditor = (shouldFocusCell: boolean) => {
+      if (shouldFocusCell) {
+        shouldFocusCellRef.current = true;
+      }
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
-    const onRowChange = (row: R, commitChanges?: boolean) => {
+    const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
       if (commitChanges) {
         // Prevents two issues when editor is closed by clicking on a different cell
         //
@@ -985,7 +989,7 @@ function DataGrid<R, SR, K extends Key>(
         // SELECT and this results in onRowChange getting called twice.
         flushSync(() => {
           updateRow(column, selectedPosition.rowIdx, row);
-          closeEditor();
+          closeEditor(shouldFocusCell);
         });
       } else {
         setSelectedPosition((position) => ({ ...position, row }));
@@ -994,7 +998,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      closeEditor();
+      closeEditor(true); // ??
     }
 
     return (
@@ -1004,7 +1008,6 @@ function DataGrid<R, SR, K extends Key>(
         colSpan={colSpan}
         row={row}
         rowIdx={rowIdx}
-        skipCellFocusRef={skipCellFocusRef}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
         onKeyDown={onCellKeyDown}
@@ -1139,7 +1142,7 @@ function DataGrid<R, SR, K extends Key>(
           selectCell: selectCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
           selectedCellEditor: getCellEditor(rowIdx),
-          skipCellFocusRef
+          shouldFocusCellRef
         })
       );
     }
