@@ -115,7 +115,7 @@ describe('Custom formatter component', () => {
   });
 });
 
-describe('editor focus', () => {
+describe('formatter focus', () => {
   const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
   function FormatterTest() {
     const [inputValue, setInputValue] = useState('');
