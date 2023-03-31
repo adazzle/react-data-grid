@@ -97,7 +97,7 @@ export default function EditCell<R, SR>({
           navigate() {
             navigate(event);
           },
-          onClose
+          onClose: onEditorClose
         },
         cellEvent
       );
@@ -114,16 +114,20 @@ export default function EditCell<R, SR>({
     }
   }
 
-  function onEditorRowChange(row: R, commitChanges = false) {
-    onRowChange(row, commitChanges, commitChanges);
-  }
-
   function onClose(commitChanges: boolean, shouldFocusCell: boolean) {
     if (commitChanges) {
       onRowChange(row, true, shouldFocusCell);
     } else {
       closeEditor(shouldFocusCell);
     }
+  }
+
+  function onEditorRowChange(row: R, commitChanges = false) {
+    onRowChange(row, commitChanges, commitChanges);
+  }
+
+  function onEditorClose(commitChanges = false) {
+    onClose(commitChanges, true);
   }
 
   const { cellClass } = column;
@@ -151,8 +155,7 @@ export default function EditCell<R, SR>({
             column,
             row,
             onRowChange: onEditorRowChange,
-            // @ts-expect-errorts-ignore fix it
-            onClose
+            onClose: onEditorClose
           })}
           {column.editorOptions?.renderFormatter &&
             column.formatter({
