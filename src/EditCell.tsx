@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MutableRefObject, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
@@ -151,6 +151,7 @@ export default function EditCell<R, SR>({
             column,
             row,
             onRowChange: onEditorRowChange,
+            // @ts-expect-errorts-ignore fix it
             onClose
           })}
           {column.editorOptions?.renderFormatter &&
