@@ -1,68 +1,72 @@
-import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes, KeyboardEvent } from 'react';
-import { flushSync } from 'react-dom';
 import clsx from 'clsx';
+import type { Key, RefAttributes, KeyboardEvent } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 import {
-  rootClassname,
-  viewportDraggingClassname,
-  focusSinkClassname,
-  rowSelected,
-  rowSelectedWithFrozenCell
-} from './style';
+  DataGridDefaultComponentsProvider,
+  useDefaultComponents
+} from './DataGridDefaultComponentsProvider';
+import DragHandle from './DragHandle';
+import EditCell from './EditCell';
+import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
+import GroupRowRenderer from './GroupRow';
+import HeaderRow from './HeaderRow';
 import {
-  useLayoutEffect,
-  useGridDimensions,
+  RowSelectionChangeProvider,
+  RowSelectionProvider,
   useCalculatedColumns,
+  useGridDimensions,
+  useLatestFunc,
+  useLayoutEffect,
   useViewportColumns,
   useViewportRows,
-  useLatestFunc,
-  RowSelectionChangeProvider,
-  RowSelectionProvider
 } from './hooks';
-import HeaderRow from './HeaderRow';
 import { defaultRowRenderer } from './Row';
-import GroupRowRenderer from './GroupRow';
-import SummaryRow from './SummaryRow';
-import EditCell from './EditCell';
-import DragHandle from './DragHandle';
 import { default as defaultSortStatus } from './sortStatus';
-import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
+import {
+  focusSinkClassname,
+  rootClassname,
+  rowSelected,
+  rowSelectedWithFrozenCell,
+  viewportDraggingClassname,
+} from './style';
+import SummaryRow from './SummaryRow';
 import {
   DataGridDefaultRenderersProvider,
   useDefaultRenderers
 } from './DataGridDefaultRenderersProvider';
 import {
+  abs,
   assertIsValidKeyGetter,
-  getNextSelectedCellPosition,
-  isSelectedCellEditable,
   canExitGrid,
+  getColSpan,
+  getNextSelectedCellPosition,
+  getSelectedCellColSpan,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
-  getColSpan,
-  sign,
-  abs,
-  getSelectedCellColSpan,
+  isSelectedCellEditable,
   renderMeasuringCells,
   scrollIntoView,
-  createCellEvent
+  sign,
+  createCellEvent,
 } from './utils';
 
 import type {
   CalculatedColumn,
+  CellNavigationMode,
   Column,
+  CopyEvent,
+  Direction,
+  FillEvent,
+  Maybe,
+  PasteEvent,
   Position,
+  Renderers,
+  RowHeightArgs,
   RowsChangeData,
   SelectRowEvent,
-  FillEvent,
-  CopyEvent,
-  PasteEvent,
-  CellNavigationMode,
   SortColumn,
-  RowHeightArgs,
-  Maybe,
-  Renderers,
-  Direction,
   CellMouseEvent,
   CellClickArgs,
   CellKeyDownArgs,
@@ -182,7 +186,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rowClass?: Maybe<(row: R) => Maybe<string>>;
   /** @default 'ltr' */
   direction?: Maybe<Direction>;
-  'data-testid'?: Maybe<string>;
 }
 
 /**
@@ -240,7 +243,8 @@ function DataGrid<R, SR, K extends Key>(
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
-    'data-testid': testId
+    // Arbitrary data attributes, etc.
+    ...rest
   } = props;
 
   /**
@@ -1169,6 +1173,9 @@ function DataGrid<R, SR, K extends Key>(
 
   return (
     <div
+      // Spread arbitrary data attributes onto upper element.
+      // Do this first to avoid overwritting attributes.
+      {...rest}
       role={hasGroups ? 'treegrid' : 'grid'}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
@@ -1208,7 +1215,6 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
-      data-testid={testId}
     >
       {/* extra div is needed for row navigation in a treegrid */}
       {hasGroups && (
