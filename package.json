@@ -83,7 +83,7 @@
     "babel-loader": "^9.0.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "css-loader": "^6.7.1",
-    "css-minimizer-webpack-plugin": "^4.0.0",
+    "css-minimizer-webpack-plugin": "^5.0.0",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^27.0.1",
