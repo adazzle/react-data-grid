@@ -3,12 +3,12 @@ import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
-import type { Direction } from '../../src/types';
-import type { Props } from './types';
-import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
+import type { Direction } from '../../src/types';
+import type { Props } from './types';
+import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 
 const toolbarClassname = css`
   display: flex;

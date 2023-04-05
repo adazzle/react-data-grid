@@ -2,9 +2,9 @@ import { StrictMode, useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { getCells } from './utils';
 import DataGrid, { textEditor } from '../src';
 import type { Column } from '../src';
+import { getCells } from './utils';
 
 interface Row {
   readonly name: string;

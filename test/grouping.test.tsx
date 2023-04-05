@@ -3,6 +3,10 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { groupBy as rowGrouper } from 'lodash';
 
+import type { Column } from '../src';
+import DataGrid, { SelectColumn, textEditor } from '../src';
+import { focusSinkClassname, rowSelected } from '../src/style';
+import type { FillEvent, PasteEvent } from '../src/types';
 import {
   getGrid,
   queryGrid,
@@ -15,10 +19,6 @@ import {
   copySelectedCell,
   pasteSelectedCell
 } from './utils';
-import type { FillEvent, PasteEvent } from '../src/types';
-import type { Column } from '../src';
-import DataGrid, { SelectColumn, textEditor } from '../src';
-import { focusSinkClassname, rowSelected } from '../src/style';
 
 const rowSelectedClassname = 'rdg-row-selected';
 

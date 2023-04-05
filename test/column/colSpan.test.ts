@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 
-import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
 import type { Column } from '../../src';
+import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {

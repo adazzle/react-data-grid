@@ -2,9 +2,9 @@ import { StrictMode, useState } from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { getCellsAtRowIndex, getSelectedCell, copySelectedCell, pasteSelectedCell } from './utils';
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
+import { getCellsAtRowIndex, getSelectedCell, copySelectedCell, pasteSelectedCell } from './utils';
 
 interface Row {
   col: string;

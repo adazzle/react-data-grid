@@ -13,6 +13,7 @@
     "^@linaria",
     "^clsx$",
     "",
+    "./src",
     "./components",
     "./hooks",
     "./utils",

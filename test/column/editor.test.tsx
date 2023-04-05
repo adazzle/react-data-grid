@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom';
 import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
+import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 
 interface Row {
   col1: number;

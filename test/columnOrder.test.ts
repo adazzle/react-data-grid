@@ -1,6 +1,6 @@
-import { getHeaderCells, setup } from './utils';
 import { SelectColumn } from '../src';
 import type { Column } from '../src';
+import { getHeaderCells, setup } from './utils';
 
 const frozen1: Column<unknown> = {
   key: 'f1',

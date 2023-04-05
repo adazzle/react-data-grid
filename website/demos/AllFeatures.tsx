@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
+import DataGrid, { SelectColumn, textEditor } from '../../src';
+import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
 import dropDownEditor from './components/Editors/dropDownEditor';
 import { ImageFormatter } from './components/Formatters';
 import type { Props } from './types';
-import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
 
 const highlightClassname = css`
   .rdg-cell {

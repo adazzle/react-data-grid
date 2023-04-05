@@ -1,7 +1,7 @@
-import { setup, getCells } from '../utils';
 import type { Column } from '../../src';
 import { summaryCellClassname } from '../../src/SummaryCell';
 import { cellClassname as cellClass } from '../../src/style';
+import { setup, getCells } from '../utils';
 
 interface SummaryRow {
   id: number;

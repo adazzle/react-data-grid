@@ -4,9 +4,9 @@ import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
-import type { Props } from './types';
 import DataGrid from '../../src';
 import type { Column } from '../../src';
+import type { Props } from './types';
 
 const contextMenuClassname = css`
   position: absolute;

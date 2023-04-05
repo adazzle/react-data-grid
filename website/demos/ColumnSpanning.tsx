@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { css } from '@linaria/core';
 
-import type { Props } from './types';
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
+import type { Props } from './types';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];

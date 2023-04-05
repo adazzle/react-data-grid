@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { css } from '@linaria/core';
 
-import type { Props } from './types';
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
+import type { Props } from './types';
 
 const gridClassname = css`
   block-size: 300px;

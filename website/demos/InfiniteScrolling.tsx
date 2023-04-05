@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
-import type { Props } from './types';
 import DataGrid from '../../src';
 import type { Column } from '../../src';
+import type { Props } from './types';
 
 const loadMoreRowsClassname = css`
   inline-size: 180px;
