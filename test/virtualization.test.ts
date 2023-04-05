@@ -1,4 +1,3 @@
-import type { Column } from '../src';
 import {
   getCells,
   getCellsAtRowIndex,
@@ -10,6 +9,7 @@ import {
   queryRows,
   setup
 } from './utils';
+import type { Column } from '../src';
 
 const rowHeight = 35;
 

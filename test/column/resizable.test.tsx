@@ -1,6 +1,7 @@
 import { fireEvent } from '@testing-library/react';
-import type { Column } from '../../src';
+
 import { setup, getHeaderCells, getGrid } from '../utils';
+import type { Column } from '../../src';
 
 const pointerId = 1;
 

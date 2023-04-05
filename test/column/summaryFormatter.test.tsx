@@ -1,9 +1,9 @@
+import { setup, getCells, getRows } from '../utils';
 import type { Column } from '../../src';
 import {
   bottomSummaryRowBorderClassname,
   topSummaryRowBorderClassname
 } from '../../src/SummaryRow';
-import { setup, getCells, getRows } from '../utils';
 
 interface SummaryRow {
   id: number;

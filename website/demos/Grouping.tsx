@@ -1,11 +1,11 @@
 import { useState } from 'react';
+import { faker } from '@faker-js/faker';
 import { groupBy as rowGrouper } from 'lodash';
 import { css } from '@linaria/core';
-import { faker } from '@faker-js/faker';
 
+import type { Props } from './types';
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import type { Props } from './types';
 
 const groupingClassname = css`
   display: flex;

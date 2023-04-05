@@ -3,9 +3,9 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
+import type { Props } from './types';
 import DataGrid from '../../src';
 import type { Column, HeaderRendererProps, SortColumn } from '../../src';
-import type { Props } from './types';
 
 interface Row {
   readonly id: number;

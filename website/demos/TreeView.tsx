@@ -1,10 +1,10 @@
 import { useState, useReducer, useMemo } from 'react';
 import { css } from '@linaria/core';
 
-import DataGrid from '../../src';
-import type { Column } from '../../src';
 import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
 import type { Props } from './types';
+import DataGrid from '../../src';
+import type { Column } from '../../src';
 
 const gridClassname = css`
   block-size: 600px;

@@ -1,5 +1,5 @@
-import type { Column, HeaderRendererProps } from '../../src';
 import { setup, getHeaderCells } from '../utils';
+import type { Column, HeaderRendererProps } from '../../src';
 
 interface Row {
   id: number;

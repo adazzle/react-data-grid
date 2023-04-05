@@ -2,9 +2,9 @@ import { StrictMode, useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { setup, getCells } from '../utils';
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { setup, getCells } from '../utils';
 
 interface Row {
   id: number;

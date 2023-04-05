@@ -1,5 +1,5 @@
-import type { Column } from '../../src';
 import { setup, getCells } from '../utils';
+import type { Column } from '../../src';
 import { cellClassname } from '../../src/style';
 
 interface Row {

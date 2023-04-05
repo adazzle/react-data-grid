@@ -2,9 +2,9 @@ import { StrictMode } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { getCellsAtRowIndex } from './utils';
 import DataGrid from '../src';
 import type { Column, DataGridProps } from '../src';
-import { getCellsAtRowIndex } from './utils';
 
 interface Row {
   col1: number;

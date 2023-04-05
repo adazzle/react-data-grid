@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { useState, useReducer, useRef, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
+import type { Props } from './types';
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import type { Props } from './types';
 
 const contextMenuClassname = css`
   position: absolute;

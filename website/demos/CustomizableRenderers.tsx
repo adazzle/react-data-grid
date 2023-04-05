@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
+import type { Props } from './types';
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CheckboxFormatterProps, SortColumn, SortStatusProps } from '../../src';
-import type { Props } from './types';
 
 const selectCellClassname = css`
   display: flex;

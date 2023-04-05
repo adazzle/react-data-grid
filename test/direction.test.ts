@@ -1,5 +1,5 @@
-import type { Column } from '../src';
 import { getGrid, setup } from './utils';
+import type { Column } from '../src';
 
 interface Row {
   id: number;

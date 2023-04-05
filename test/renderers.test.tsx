@@ -2,6 +2,7 @@ import { StrictMode, useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { getHeaderCells, getRows, setup } from './utils';
 import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, sortIcon } from '../src';
 import type {
   Column,
@@ -10,7 +11,6 @@ import type {
   SortColumn,
   SortStatusProps
 } from '../src';
-import { getHeaderCells, getRows, setup } from './utils';
 
 interface Row {
   id: number;
