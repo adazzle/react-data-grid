@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
+import type { Direction } from '../../src/types';
 import { CellExpanderFormatter } from './components/Formatters';
 import type { Props } from './types';
-import type { Direction } from '../../src/types';
 
 type DepartmentRow =
   | {
