@@ -3,18 +3,11 @@ import type { ReactElement } from 'react';
 
 import type { DataGridProps } from '../../src';
 
-// import { renderToStaticMarkup } from 'react-dom/server';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function renderToStaticMarkup(element: ReactElement) {
-  return '';
-}
-
-export function exportToCsv<R, SR>(
+export async function exportToCsv<R, SR>(
   gridElement: ReactElement<DataGridProps<R, SR>>,
   fileName: string
 ) {
-  const { head, body, foot } = getGridContent(gridElement);
+  const { head, body, foot } = await getGridContent(gridElement);
   const content = [...head, ...body, ...foot]
     .map((cells) => cells.map(serialiseCellValue).join(','))
     .join('\n');
@@ -40,11 +33,11 @@ export async function exportToPdf<R, SR>(
   gridElement: ReactElement<DataGridProps<R, SR>>,
   fileName: string
 ) {
-  const [{ jsPDF }, autoTable] = await Promise.all([
+  const [{ jsPDF }, autoTable, { head, body, foot }] = await Promise.all([
     import('jspdf'),
-    (await import('jspdf-autotable')).default
+    (await import('jspdf-autotable')).default,
+    await getGridContent(gridElement)
   ]);
-  const { head, body, foot } = getGridContent(gridElement);
   const doc = new jsPDF({
     orientation: 'l',
     unit: 'px'
@@ -61,7 +54,8 @@ export async function exportToPdf<R, SR>(
   doc.save(fileName);
 }
 
-function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) {
+async function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) {
+  const { renderToStaticMarkup } = await import('react-dom/server');
   const grid = document.createElement('div');
   grid.innerHTML = renderToStaticMarkup(
     cloneElement(gridElement, {

@@ -9,7 +9,7 @@ import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../s
 import type { Column, SortColumn } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
-import { exportToXlsx, exportToPdf } from './exportUtils';
+import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { useDirection } from '../DirectionContext';
 
 const toolbarClassname = css`
@@ -368,9 +368,9 @@ export default function CommonFeatures() {
   return (
     <>
       <div className={toolbarClassname}>
-        {/* <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
+        <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
           Export to CSV
-        </ExportButton> */}
+        </ExportButton>
         <ExportButton onExport={() => exportToXlsx(gridElement, 'CommonFeatures.xlsx')}>
           Export to XSLX
         </ExportButton>
