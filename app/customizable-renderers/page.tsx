@@ -6,7 +6,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CheckboxFormatterProps, SortColumn, SortStatusProps } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 const selectCellClassname = css`
   display: flex;
@@ -81,7 +81,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function CustomizableRenderers({ direction }: Props) {
+export default function CustomizableRenderers() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -113,7 +113,7 @@ export default function CustomizableRenderers({ direction }: Props) {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       renderers={{ sortStatus, checkboxFormatter }}
-      direction={direction}
+      direction={useDirection()}
     />
   );
 }

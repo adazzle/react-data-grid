@@ -5,9 +5,9 @@ import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import type { Props } from './types';
+import ChildRowDeleteButton from './ChildRowDeleteButton';
 import CellExpanderFormatter from '../CellExpanderFormatter';
-import ChildRowDeleteButton from '../ChildRowDeleteButton';
+import { useDirection } from '../DirectionContext';
 
 const gridClassname = css`
   block-size: 600px;
@@ -120,7 +120,7 @@ function reducer(rows: Row[], { type, id }: Action): Row[] {
 
 const defaultRows = createRows();
 
-export default function TreeView({ direction }: Props) {
+export default function TreeView() {
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
   const columns: Column<Row>[] = useMemo(() => {
@@ -184,7 +184,12 @@ export default function TreeView({ direction }: Props) {
           onChange={() => setAllowDelete(!allowDelete)}
         />
       </label>
-      <DataGrid columns={columns} rows={rows} className={gridClassname} direction={direction} />
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        className={gridClassname}
+        direction={useDirection()}
+      />
     </>
   );
 }

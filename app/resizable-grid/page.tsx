@@ -2,7 +2,7 @@
 
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
@@ -26,14 +26,14 @@ for (let i = 0; i < 50; i++) {
   });
 }
 
-export default function ResizableGrid({ direction }: Props) {
+export default function ResizableGrid() {
   return (
     <DataGrid
       columns={columns}
       rows={rows}
       className="fill-grid"
       style={{ resize: 'both' }}
-      direction={direction}
+      direction={useDirection()}
     />
   );
 }

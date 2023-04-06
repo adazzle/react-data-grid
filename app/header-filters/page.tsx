@@ -7,7 +7,7 @@ import { css } from '@linaria/core';
 import DataGrid, { useFocusRef } from '../../src';
 import type { Column, HeaderRendererProps } from '../../src';
 import type { Omit } from '../../src/types';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 const rootClassname = css`
   display: flex;
@@ -78,7 +78,7 @@ function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
   }
 }
 
-export default function HeaderFilters({ direction }: Props) {
+export default function HeaderFilters() {
   const [rows] = useState(createRows);
   const [filters, setFilters] = useState<Filter>({
     task: '',
@@ -287,7 +287,7 @@ export default function HeaderFilters({ direction }: Props) {
           columns={columns}
           rows={filteredRows}
           headerRowHeight={filters.enabled ? 70 : undefined}
-          direction={direction}
+          direction={useDirection()}
         />
       </FilterContext.Provider>
       <datalist id="developers">

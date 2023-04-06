@@ -7,8 +7,8 @@ import { css } from '@linaria/core';
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, FillEvent, CopyEvent, PasteEvent, EditorProps } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
-import type { Props } from '../types';
 import ImageFormatter from './ImageFormatter';
+import { useDirection } from '../DirectionContext';
 
 const highlightClassname = css`
   .rdg-cell {
@@ -168,7 +168,7 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function AllFeatures({ direction }: Props) {
+export default function AllFeatures() {
   const [rows, setRows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -216,7 +216,7 @@ export default function AllFeatures({ direction }: Props) {
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
       rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
-      direction={direction}
+      direction={useDirection()}
       onCellClick={(args, event) => {
         if (args.column.key === 'title') {
           event.preventGridDefault();

@@ -6,7 +6,7 @@ import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 const loadMoreRowsClassname = css`
   inline-size: 180px;
@@ -91,7 +91,7 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
   });
 }
 
-export default function InfiniteScrolling({ direction }: Props) {
+export default function InfiniteScrolling() {
   const [rows, setRows] = useState(() => createRows(50));
   const [isLoading, setIsLoading] = useState(false);
 
@@ -116,7 +116,7 @@ export default function InfiniteScrolling({ direction }: Props) {
         rowHeight={30}
         onScroll={handleScroll}
         className="fill-grid"
-        direction={direction}
+        direction={useDirection()}
       />
       {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>}
     </>

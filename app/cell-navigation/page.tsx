@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import DataGrid from '../../src';
 import type { Column, CellKeyDownArgs, CellKeyboardEvent } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 interface Row {
   id: number;
@@ -74,7 +74,7 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function CellNavigation({ direction }: Props) {
+export default function CellNavigation() {
   const [rows] = useState(createRows);
   const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
@@ -192,7 +192,7 @@ export default function CellNavigation({ direction }: Props) {
       <DataGrid
         columns={columns}
         rows={rows}
-        direction={direction}
+        direction={useDirection()}
         onCellKeyDown={handleCellKeyDown}
       />
     </>

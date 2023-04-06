@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(500).keys()];
@@ -17,7 +17,7 @@ function cellFormatter(props: FormatterProps<Row>) {
   );
 }
 
-export default function VariableRowHeight({ direction }: Props) {
+export default function VariableRowHeight() {
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 
@@ -41,7 +41,7 @@ export default function VariableRowHeight({ direction }: Props) {
       rows={rows}
       rowHeight={rowHeight}
       className="fill-grid"
-      direction={direction}
+      direction={useDirection()}
     />
   );
 }

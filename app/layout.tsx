@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
+import { DirectionContextProvider } from './DirectionContext';
 import Nav from './nav';
 
 const mainClassname = css`
@@ -24,7 +25,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <div id="root">
           <Nav direction={direction} onDirectionChange={setDirection} />
-          <main className={mainClassname}>{children}</main>
+          <main className={mainClassname}>
+            <DirectionContextProvider value={direction}>{children}</DirectionContextProvider>
+          </main>
         </div>
       </body>
     </html>

@@ -4,7 +4,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 const gridClassname = css`
   block-size: 300px;
@@ -40,7 +40,7 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-export default function NoRows({ direction }: Props) {
+export default function NoRows() {
   return (
     <DataGrid
       columns={columns}
@@ -48,7 +48,7 @@ export default function NoRows({ direction }: Props) {
       renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
       rowKeyGetter={rowKeyGetter}
       className={gridClassname}
-      direction={direction}
+      direction={useDirection()}
     />
   );
 }

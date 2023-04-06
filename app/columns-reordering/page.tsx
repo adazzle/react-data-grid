@@ -6,8 +6,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import DataGrid from '../../src';
 import type { Column, HeaderRendererProps, SortColumn } from '../../src';
-import type { Props } from '../types';
 import DraggableHeaderRenderer from './DraggableHeaderRenderer';
+import { useDirection } from '../DirectionContext';
 
 interface Row {
   readonly id: number;
@@ -67,7 +67,7 @@ function createColumns(): Column<Row>[] {
   ];
 }
 
-export default function ColumnsReordering({ direction }: Props) {
+export default function ColumnsReordering() {
   const [rows] = useState(createRows);
   const [columns, setColumns] = useState(createColumns);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
@@ -127,7 +127,7 @@ export default function ColumnsReordering({ direction }: Props) {
         rows={sortedRows}
         sortColumns={sortColumns}
         onSortColumnsChange={onSortColumnsChange}
-        direction={direction}
+        direction={useDirection()}
         defaultColumnOptions={{ width: '1fr' }}
       />
     </DndProvider>

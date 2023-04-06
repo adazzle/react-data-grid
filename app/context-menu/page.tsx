@@ -8,7 +8,7 @@ import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 const contextMenuClassname = css`
   position: absolute;
@@ -52,7 +52,7 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-export default function ContextMenuDemo({ direction }: Props) {
+export default function ContextMenuDemo() {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
   const [contextMenuProps, setContextMenuProps] = useState<{
@@ -98,7 +98,7 @@ export default function ContextMenuDemo({ direction }: Props) {
         columns={columns}
         rows={rows}
         className="fill-grid"
-        direction={direction}
+        direction={useDirection()}
         onCellContextMenu={({ row }, event) => {
           event.preventGridDefault();
           // Do not show the default context menu

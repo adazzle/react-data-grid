@@ -7,8 +7,8 @@ import { css } from '@linaria/core';
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
 import type { Direction } from '../../src/types';
-import type { Props } from '../types';
 import CellExpanderFormatter from '../CellExpanderFormatter';
+import { useDirection } from '../DirectionContext';
 
 type DepartmentRow =
   | {
@@ -66,7 +66,8 @@ const productColumns: readonly Column<ProductRow>[] = [
   { key: 'price', name: 'Price' }
 ];
 
-export default function MasterDetail({ direction }: Props) {
+export default function MasterDetail() {
+  const direction = useDirection();
   const columns = useMemo((): readonly Column<DepartmentRow>[] => {
     return [
       {

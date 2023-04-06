@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import type { Props } from '../types';
+import { useDirection } from '../DirectionContext';
 
 const rangeClassname = css`
   display: flex;
@@ -76,7 +76,7 @@ const columns: Column<Row>[] = [
 
 const rows = createRows();
 
-export default function ColumnsReordering({ direction }: Props) {
+export default function ColumnsReordering() {
   const [rowHeight, setRowHeight] = useState(30);
 
   return (
@@ -91,7 +91,7 @@ export default function ColumnsReordering({ direction }: Props) {
         className={`${transitionClassname} fill-grid`}
         columns={columns}
         rows={rows}
-        direction={direction}
+        direction={useDirection()}
         rowHeight={rowHeight}
       />
     </>

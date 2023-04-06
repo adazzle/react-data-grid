@@ -9,8 +9,8 @@ import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../s
 import type { Column, SortColumn } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
-import type { Props } from '../types';
-import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
+import { exportToXlsx, exportToPdf } from './exportUtils';
+import { useDirection } from '../DirectionContext';
 
 const toolbarClassname = css`
   display: flex;
@@ -308,10 +308,11 @@ function getComparator(sortColumn: string): Comparator {
   }
 }
 
-export default function CommonFeatures({ direction }: Props) {
+export default function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
+  const direction = useDirection();
 
   const countries = useMemo(() => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
@@ -367,9 +368,9 @@ export default function CommonFeatures({ direction }: Props) {
   return (
     <>
       <div className={toolbarClassname}>
-        <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
+        {/* <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
           Export to CSV
-        </ExportButton>
+        </ExportButton> */}
         <ExportButton onExport={() => exportToXlsx(gridElement, 'CommonFeatures.xlsx')}>
           Export to XSLX
         </ExportButton>
