@@ -1,14 +1,25 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "include": [
     "jest.config.js",
     "rollup.config.js",
     "webpack.config.js",
+    "next.config.js",
+    "app/**/*",
     "src/**/*",
     "test/**/*",
-    "website/**/*"
-  ]
+    "website/**/*",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
 }
