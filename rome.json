@@ -105,7 +105,7 @@
         "noFunctionAssign": "error",
         "noImportAssign": "error",
         "noLabelVar": "error",
-        "noRedundantUseStrict": "error",
+        "noRedundantUseStrict": "off",
         "noShadowRestrictedNames": "error",
         "noSparseArray": "error",
         "noUnsafeNegation": "error",
