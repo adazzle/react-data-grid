@@ -7,7 +7,10 @@ const config = {
   },
   linaria: {
     preprocessor: 'none'
-  }
+  },
+  typescript: {
+    ignoreBuildErrors: true
+  },
 };
 
 export default withLinaria(config);

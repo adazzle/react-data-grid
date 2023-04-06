@@ -1,7 +1,14 @@
 'use client';
 
+import { css } from '@linaria/core';
+
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
+import type { Props } from '../types';
+
+const gridClassname = css`
+  block-size: 300px;
+`;
 
 function EmptyRowsRenderer() {
   return (
@@ -33,13 +40,15 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-export default function NoRows() {
+export default function NoRows({ direction }: Props) {
   return (
     <DataGrid
       columns={columns}
       rows={rows}
       renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
       rowKeyGetter={rowKeyGetter}
+      className={gridClassname}
+      direction={direction}
     />
   );
 }

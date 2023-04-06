@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
 export default function Profile() {
-  redirect('/animation');
+  // TODO: is this the best way to set default page?
+  redirect('/common-features');
 }
