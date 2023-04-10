@@ -1,0 +1,19 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "loose": true,
+        "bugfixes": true,
+        "shippedProposals": true
+      }
+    ],
+    ["@babel/react", { "runtime": "automatic" }],
+    ["@babel/typescript", { "optimizeConstEnums": true }],
+    "@linaria"
+  ],
+  "plugins": [
+    "@babel/transform-runtime",
+    ["optimize-clsx", { "functionNames": ["getCellClassname"] }]
+  ]
+}

@@ -2,7 +2,8 @@ import withLinaria from 'next-with-linaria';
 
 const config = {
   experimental: {
-    appDir: true
+    appDir: true,
+    forceSwcTransforms: true
   },
   linaria: {
     preprocessor: 'none'
