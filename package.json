@@ -87,6 +87,7 @@
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^5.0.0",
     "eslint": "^8.14.0",
+    "eslint-config-next": "^13.3.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^27.0.1",
     "eslint-plugin-jest-dom": "^4.0.1",
