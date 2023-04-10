@@ -697,9 +697,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
-  extends: [
-    'next/core-web-vitals'
-  ],
+  extends: ['next/core-web-vitals'],
   env: {
     es6: true
   },
