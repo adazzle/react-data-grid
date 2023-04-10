@@ -18,7 +18,6 @@
     "app/**/*",
     "src/**/*",
     "test/**/*",
-    "website/**/*",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

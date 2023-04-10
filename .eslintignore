@@ -1,4 +1,5 @@
 /.eslintrc.js
+/.next
 /coverage
-/dist
 /lib
+/out

@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/rome/configuration_schema.json",
   "files": {
-    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*", "./.next/**/*", "*.json"]
+    "ignore": ["./coverage/**/*", "./lib/**/*", "./out/**/*", "./.next/**/*", "*.json"]
   },
   "formatter": {
     "ignore": ["*.ts", "*.tsx"],

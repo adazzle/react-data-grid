@@ -73,7 +73,7 @@ jobs:
           cd gh-pages
           git rm -r .
           git checkout gh-pages -- old
-          mv ../dist/* .
+          mv ../out/* .
           git add .
           git commit -m "gh-pages deployment" || echo "Nothing to commit"
           git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git

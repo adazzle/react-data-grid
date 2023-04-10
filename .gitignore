@@ -1,13 +1,12 @@
 /.linaria-cache
 /coverage
-/dist
 /lib
+/out
 /node_modules
 /tmp
 /.eslintcache
 /package-lock.json
 /.next
-/out
 
 npm-debug.log
 tsconfig.tsbuildinfo
