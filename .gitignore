@@ -7,6 +7,7 @@
 /.eslintcache
 /package-lock.json
 /.next
+/out
 
 npm-debug.log
 **.orig

@@ -7,7 +7,8 @@ const config = {
   },
   linaria: {
     preprocessor: 'none'
-  }
+  },
+  output: 'export'
 };
 
 export default withLinaria(config);
