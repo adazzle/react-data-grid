@@ -22,6 +22,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <html lang="en">
+      <head>
+        <title>React Data Grid</title>
+        <meta
+          name="description"
+          content="Feature-rich and customizable data grid React component."
+        />
+      </head>
       <body>
         <div id="root">
           <Nav direction={direction} onDirectionChange={setDirection} />
@@ -33,8 +40,3 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
-
-export const metadata = {
-  title: 'React Data Grid',
-  description: 'Feature-rich and customizable data grid React component.'
-};
