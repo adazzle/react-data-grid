@@ -416,7 +416,7 @@ const rules = {
   'jest/no-alias-methods': 1,
   'jest/no-commented-out-tests': 1,
   'jest/no-conditional-expect': 1,
-  'jest/no-deprecated-functions': 1,
+  'jest/no-deprecated-functions': 0,
   'jest/no-disabled-tests': 0,
   'jest/no-done-callback': 0,
   'jest/no-duplicate-hooks': 2,

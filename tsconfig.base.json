@@ -11,6 +11,6 @@
     "pretty": true,
     "strict": true,
     "target": "esnext",
-    "skipLibCheck": true
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   }
 }
