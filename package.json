@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "start": "next start",
+    "start": "npx serve@latest out",
     "build:website": "next build",
     "build": "rollup --config --no-stdin",
     "build:types": "tsc -p tsconfig.lib.json && api-extractor run --local --verbose",
