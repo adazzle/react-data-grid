@@ -4,13 +4,6 @@ import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
-  rootClassname,
-  viewportDraggingClassname,
-  focusSinkClassname,
-  rowSelected,
-  rowSelectedWithFrozenCell
-} from './style';
-import {
   useLayoutEffect,
   useGridDimensions,
   useCalculatedColumns,
@@ -20,18 +13,6 @@ import {
   RowSelectionChangeProvider,
   RowSelectionProvider
 } from './hooks';
-import HeaderRow from './HeaderRow';
-import { defaultRowRenderer } from './Row';
-import GroupRowRenderer from './GroupRow';
-import SummaryRow from './SummaryRow';
-import EditCell from './EditCell';
-import DragHandle from './DragHandle';
-import { default as defaultSortStatus } from './sortStatus';
-import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
-import {
-  DataGridDefaultRenderersProvider,
-  useDefaultRenderers
-} from './DataGridDefaultRenderersProvider';
 import {
   assertIsValidKeyGetter,
   getNextSelectedCellPosition,
@@ -47,7 +28,6 @@ import {
   scrollIntoView,
   createCellEvent
 } from './utils';
-
 import type {
   CalculatedColumn,
   Column,
@@ -68,6 +48,25 @@ import type {
   CellKeyDownArgs,
   CellKeyboardEvent
 } from './types';
+import {
+  DataGridDefaultRenderersProvider,
+  useDefaultRenderers
+} from './DataGridDefaultRenderersProvider';
+import DragHandle from './DragHandle';
+import EditCell from './EditCell';
+import GroupRowRenderer from './GroupRow';
+import HeaderRow from './HeaderRow';
+import { defaultRowRenderer } from './Row';
+import SummaryRow from './SummaryRow';
+import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
+import { default as defaultSortStatus } from './sortStatus';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  focusSinkClassname,
+  rowSelected,
+  rowSelectedWithFrozenCell
+} from './style';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';

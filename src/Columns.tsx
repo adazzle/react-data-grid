@@ -1,6 +1,6 @@
-import { SelectCellFormatter } from './formatters';
 import { useRowSelection } from './hooks/useRowSelection';
 import type { Column, FormatterProps, GroupFormatterProps, HeaderRendererProps } from './types';
+import { SelectCellFormatter } from './formatters';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 

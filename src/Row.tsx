@@ -1,11 +1,11 @@
 import { memo, forwardRef, type RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import Cell from './Cell';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
-import { rowClassname, rowSelectedClassname } from './style';
 import type { CalculatedColumn, RowRendererProps } from './types';
+import Cell from './Cell';
+import { rowClassname, rowSelectedClassname } from './style';
 
 function Row<R, SR>(
   {

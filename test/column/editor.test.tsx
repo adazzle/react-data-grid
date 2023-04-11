@@ -1,12 +1,12 @@
 import { StrictMode, useMemo, useState } from 'react';
-import { vi } from 'vitest';
+import { createPortal } from 'react-dom';
 import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
 import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
-import { createPortal } from 'react-dom';
 
 interface Row {
   col1: number;

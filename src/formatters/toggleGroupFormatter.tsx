@@ -1,6 +1,7 @@
 import { css } from '@linaria/core';
-import type { GroupFormatterProps } from '../types';
+
 import { useFocusRef } from '../hooks/useFocusRef';
+import type { GroupFormatterProps } from '../types';
 
 const groupCellContent = css`
   @layer rdg.GroupCellContent {
