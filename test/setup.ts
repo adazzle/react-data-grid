@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 vi.mock('@linaria/core', () => {
   return {
     css() {
-      return 'abc';
+      return crypto.randomUUID();
     }
   };
 });
