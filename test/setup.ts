@@ -1,11 +1,11 @@
 import { act } from 'react-dom/test-utils';
 import { vi } from 'vitest';
 
-let index = 0;
+let idx = 0;
 vi.mock('@linaria/core', () => {
   return {
     css() {
-      return `mock-css-${index++}`;
+      return `mocked-css-${idx++}`;
     }
   };
 });
