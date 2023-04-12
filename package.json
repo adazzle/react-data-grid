@@ -36,7 +36,7 @@
     "build:types": "tsc -p tsconfig.lib.json && api-extractor run --local --verbose",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "coverage": "vitest run --coverage",
+    "coverage": "vitest run",
     "format": "rome format . --write",
     "check": "rome check .",
     "rome:ci": "rome ci .",
