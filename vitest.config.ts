@@ -16,7 +16,7 @@ export default defineConfig({
     testTimeout: 2500,
     setupFiles: ['./test/setup.ts', '@testing-library/jest-dom'],
     browser: {
-      enabled: false,
+      enabled: true,
       name: 'chromium',
       provider: 'playwright'
     },
