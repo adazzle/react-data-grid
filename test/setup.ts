@@ -1,8 +1,13 @@
 import { act } from 'react-dom/test-utils';
-import matchers from '@testing-library/jest-dom/matchers';
+import { vi } from 'vitest';
 
-// extends Vitest's expect method with methods from react-testing-library
-expect.extend(matchers);
+vi.mock('@linaria/core', () => {
+  return {
+    css() {
+      return 'abc';
+    }
+  };
+});
 
 if (typeof window !== 'undefined') {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
