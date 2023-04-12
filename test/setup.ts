@@ -5,7 +5,7 @@ let idx = 0;
 vi.mock('@linaria/core', () => {
   return {
     css() {
-      return `mocked-css-${idx++}`;
+      return `mocked-atomic-css-${idx++}`;
     }
   };
 });
