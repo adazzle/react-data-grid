@@ -1,6 +1,6 @@
 import { useFocusRef } from '../hooks/useFocusRef';
-import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
 import type { CheckboxFormatterProps } from '../types';
+import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
 
 type SharedInputProps = Pick<CheckboxFormatterProps, 'disabled' | 'aria-label' | 'aria-labelledby'>;
 
