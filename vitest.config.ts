@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
+import linaria from '@linaria/vite';
 
 // https://vitest.dev/config/
 export default defineConfig({
@@ -7,7 +8,7 @@ export default defineConfig({
     exclude: ['vitest/utils'],
     include: ['@vitest/utils']
   },
-  plugins: [react({ fastRefresh: false })],
+  plugins: [react({ fastRefresh: false }), linaria({ preprocessor: 'none' })],
   worker: {
     plugins: [react()]
   },
