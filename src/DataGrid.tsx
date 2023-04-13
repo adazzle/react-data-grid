@@ -33,19 +33,20 @@ import {
   useDefaultRenderers
 } from './DataGridDefaultRenderersProvider';
 import {
+  abs,
   assertIsValidKeyGetter,
-  getNextSelectedCellPosition,
-  isSelectedCellEditable,
   canExitGrid,
+  createCellEvent,
+  cssEscape,
+  getColSpan,
+  getNextSelectedCellPosition,
+  getSelectedCellColSpan,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
-  getColSpan,
-  sign,
-  abs,
-  getSelectedCellColSpan,
+  isSelectedCellEditable,
   renderMeasuringCells,
   scrollIntoView,
-  createCellEvent
+  sign
 } from './utils';
 
 import type {
@@ -429,7 +430,9 @@ function DataGrid<R, SR, K extends Key>(
       const grid = gridRef.current!;
 
       for (const column of flexWidthViewportColumns) {
-        const measuringCell = grid.querySelector(`[data-measuring-cell-key="${column.key}"]`)!;
+        const measuringCell = grid.querySelector(
+          `[data-measuring-cell-key="${cssEscape(column.key)}"]`
+        )!;
         // Set the actual width of the column after it is rendered
         const { width } = measuringCell.getBoundingClientRect();
         newColumnWidths.set(column.key, width);
@@ -471,7 +474,7 @@ function DataGrid<R, SR, K extends Key>(
     style.gridTemplateColumns = newTemplateColumns.join(' ');
 
     const measuringCell = gridRef.current!.querySelector(
-      `[data-measuring-cell-key="${column.key}"]`
+      `[data-measuring-cell-key="${cssEscape(column.key)}"]`
     )!;
     const measuredWidth = measuringCell.getBoundingClientRect().width;
     const measuredWidthPx = `${measuredWidth}px`;
