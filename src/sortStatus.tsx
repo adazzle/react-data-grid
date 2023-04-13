@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+
 import type { SortStatusProps, SortIconProps, SortPriorityProps } from './types';
 
 const arrow = css`

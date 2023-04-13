@@ -1,19 +1,19 @@
 import './root.css';
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { css } from '@linaria/core';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
 import Nav from './Nav';
-
-import CommonFeatures from './demos/CommonFeatures';
 import AllFeatures from './demos/AllFeatures';
+import Animation from './demos/Animation';
 import CellNavigation from './demos/CellNavigation';
 import ColumnSpanning from './demos/ColumnSpanning';
 import ColumnsReordering from './demos/ColumnsReordering';
-import CustomizableRenderers from './demos/CustomizableRenderers';
+import CommonFeatures from './demos/CommonFeatures';
 import ContextMenuDemo from './demos/ContextMenu';
+import CustomizableRenderers from './demos/CustomizableRenderers';
 import Grouping from './demos/Grouping';
 import HeaderFilters from './demos/HeaderFilters';
 import InfiniteScrolling from './demos/InfiniteScrolling';
@@ -25,7 +25,6 @@ import RowsReordering from './demos/RowsReordering';
 import ScrollToRow from './demos/ScrollToRow';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
-import Animation from './demos/Animation';
 
 const mainClassname = css`
   display: flex;
