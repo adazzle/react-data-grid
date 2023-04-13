@@ -3,18 +3,25 @@ import { defineConfig } from 'vitest/config';
 
 // https://vitest.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  optimizeDeps: {
+    exclude: ['vitest/utils'],
+    include: ['@vitest/utils']
+  },
+  plugins: [react({ fastRefresh: false })],
+  worker: {
+    plugins: [react()]
+  },
   test: {
     globals: true,
     environment: 'jsdom',
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
       all: true,
-      reporter: ['json']
+      reporter: ['text', 'html', 'cobertura']
     },
     useAtomics: true,
     testTimeout: 2500,
-    setupFiles: ['./test/setup.ts', '@testing-library/jest-dom'],
+    setupFiles: ['test/setup.ts'],
     browser: {
       enabled: true,
       name: 'chromium',
