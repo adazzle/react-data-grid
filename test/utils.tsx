@@ -7,7 +7,13 @@ import type { DataGridProps } from '../src/';
 export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
     <StrictMode>
-      <DataGrid {...props} />
+      <DataGrid
+        {...props}
+        style={{
+          width: 1920,
+          height: 1080
+        }}
+      />
     </StrictMode>
   );
 }
