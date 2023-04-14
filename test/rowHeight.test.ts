@@ -1,6 +1,3 @@
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
 import type { Column, DataGridProps } from '../src';
 import { setup, getRows } from './utils';
 
@@ -20,7 +17,7 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
   setup({ columns, rows, rowHeight });
 }
 
-test('rowHeight is number', async () => {
+test('rowHeight is number', () => {
   setupGrid(40);
 
   const rows = getRows();
@@ -30,7 +27,7 @@ test('rowHeight is number', async () => {
   expect(getRows()).toHaveLength(31);
 });
 
-test('rowHeight is function', async () => {
+test('rowHeight is function', () => {
   setupGrid((args) => (args.type === 'ROW' ? [40, 60, 80][args.row % 3] : 40));
 
   const rows = getRows();
