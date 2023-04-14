@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vitest/config';
 import linaria from '@linaria/vite';
 
@@ -11,6 +12,11 @@ export default defineConfig({
   plugins: [react({ fastRefresh: false }), linaria({ preprocessor: 'none' })],
   worker: {
     plugins: [react()]
+  },
+  css: {
+    postcss: {
+      plugins: [postcssNested]
+    }
   },
   test: {
     globals: true,
