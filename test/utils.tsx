@@ -10,8 +10,8 @@ export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>
       <DataGrid
         {...props}
         style={{
-          width: 1939,
-          height: 1099
+          width: 1920,
+          height: 1080
         }}
       />
     </StrictMode>
