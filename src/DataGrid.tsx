@@ -179,7 +179,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Miscellaneous
    */
   renderers?: Maybe<Renderers<R, SR>>;
-  rowClass?: Maybe<(row: R) => Maybe<string>>;
+  rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
   /** @default 'ltr' */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
