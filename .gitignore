@@ -2,10 +2,11 @@
 /coverage
 /dist
 /lib
-node_modules
+/node_modules
 /tmp
 /.eslintcache
 /package-lock.json
 
+junit.xml
 npm-debug.log
 **.orig
