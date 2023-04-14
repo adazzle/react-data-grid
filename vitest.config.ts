@@ -10,9 +10,6 @@ export default defineConfig({
     include: ['@vitest/utils']
   },
   plugins: [react({ fastRefresh: false }), linaria({ preprocessor: 'none' })],
-  worker: {
-    plugins: [react()]
-  },
   css: {
     postcss: {
       plugins: [postcssNested]
@@ -22,10 +19,13 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     coverage: {
+      provider: 'istanbul',
       include: ['src/**/*.{ts,tsx}'],
       all: true,
       reporter: ['text', 'html', 'cobertura']
     },
+    reporters: ['basic', 'junit'],
+    outputFile: 'junit.xml',
     useAtomics: true,
     testTimeout: 5000,
     setupFiles: ['test/setup.ts'],
