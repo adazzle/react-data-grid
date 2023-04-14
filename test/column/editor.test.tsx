@@ -13,7 +13,7 @@ interface Row {
   col2: string;
 }
 
-describe.only('Editor', () => {
+describe('Editor', () => {
   it('should open editor on double click', async () => {
     render(<EditorTest />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
