@@ -147,35 +147,35 @@ test('virtualization is enabled', async () => {
   });
 
   grid.scrollLeft = 90;
-  // await waitFor(() => {
-  //   assertHeaderCells(18, 0, 17);
-  // });
-  // assertCells(66, 18, 0, 17);
+  await waitFor(() => {
+    assertHeaderCells(18, 0, 17);
+  });
+  assertCells(66, 18, 0, 17);
 
-  // grid.scrollLeft = 91;
-  // await waitFor(() => {
-  //   assertHeaderCells(17, 0, 17);
-  // });
-  // assertCells(66, 17, 0, 17);
+  grid.scrollLeft = 91;
+  await waitFor(() => {
+    assertHeaderCells(18, 0, 17);
+  });
+  assertCells(66, 18, 0, 17);
 
-  // grid.scrollLeft = 209;
-  // await waitFor(() => {
-  //   assertHeaderCells(19, 0, 18);
-  // });
-  // assertCells(66, 19, 0, 18);
+  grid.scrollLeft = 209;
+  await waitFor(() => {
+    assertHeaderCells(19, 0, 18);
+  });
+  assertCells(66, 19, 0, 18);
 
-  // grid.scrollLeft = 210;
-  // await waitFor(() => {
-  //   assertHeaderCells(18, 1, 18);
-  // });
-  // assertCells(66, 18, 1, 18);
+  grid.scrollLeft = 210;
+  await waitFor(() => {
+    assertHeaderCells(18, 1, 18);
+  });
+  assertCells(66, 18, 1, 18);
 
-  // // max left = row width - grid width
-  // grid.scrollLeft = 3600 - 1920;
-  // await waitFor(() => {
-  //   assertHeaderCells(17, 13, 29);
-  // });
-  // assertCells(66, 17, 13, 29);
+  // max left = row width - grid width
+  grid.scrollLeft = 3600 - 1920;
+  await waitFor(() => {
+    assertHeaderCells(17, 13, 29);
+  });
+  assertCells(66, 17, 13, 29);
 });
 
 test('virtualization is enabled with 4 frozen columns', async () => {
