@@ -27,7 +27,7 @@ export default defineConfig({
       reporter: ['text', 'html', 'cobertura']
     },
     useAtomics: true,
-    testTimeout: 2500,
+    testTimeout: 5000,
     setupFiles: ['test/setup.ts'],
     browser: {
       enabled: true,

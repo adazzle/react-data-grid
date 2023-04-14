@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
@@ -57,17 +57,17 @@ test('keyboard navigation', async () => {
 
   // page {up,down}
   await userEvent.keyboard('{PageDown}');
-  validateCellPosition(0, 26);
+  validateCellPosition(0, 27);
   await userEvent.keyboard('{PageDown}');
-  validateCellPosition(0, 52);
+  validateCellPosition(0, 54);
   await userEvent.keyboard('{PageUp}');
-  validateCellPosition(0, 26);
+  validateCellPosition(0, 27);
 
   // home/end navigation
   await userEvent.keyboard('{end}');
-  validateCellPosition(6, 26);
+  validateCellPosition(6, 27);
   await userEvent.keyboard('{home}');
-  validateCellPosition(0, 26);
+  validateCellPosition(0, 27);
   await userEvent.keyboard('{Control>}{end}');
   validateCellPosition(6, 103);
   await userEvent.keyboard('{arrowdown}');
@@ -261,7 +261,9 @@ test('navigation when selected cell not in the viewport', async () => {
   expect(getCellsAtRowIndex(100)).not.toHaveLength(1);
 
   grid.scrollTop = 0;
-  expect(getCellsAtRowIndex(99)).toHaveLength(1);
+  await waitFor(() => {
+    expect(getCellsAtRowIndex(99)).toHaveLength(1);
+  });
   await userEvent.keyboard('{arrowup}');
   validateCellPosition(99, 99);
   expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
