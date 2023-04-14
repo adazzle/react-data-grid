@@ -20,12 +20,10 @@ export default defineConfig({
     environment: 'jsdom',
     coverage: {
       provider: 'istanbul',
-      include: ['src/**/*.{ts,tsx}'],
+      include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       all: true,
       reporter: ['text', 'html', 'cobertura']
     },
-    reporters: ['basic', 'junit'],
-    outputFile: 'junit.xml',
     useAtomics: true,
     testTimeout: 5000,
     setupFiles: ['test/setup.ts'],
