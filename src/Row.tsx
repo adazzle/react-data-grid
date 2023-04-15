@@ -5,7 +5,7 @@ import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RowRendererProps } from './types';
 import Cell from './Cell';
-import { rowClassname, rowSelectedClassname } from './style';
+import { rowClassname, rowSelectedClassname } from './style/row';
 
 function Row<R, SR>(
   {

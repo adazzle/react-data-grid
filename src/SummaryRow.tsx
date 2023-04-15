@@ -5,7 +5,8 @@ import clsx from 'clsx';
 import { getColSpan, getRowStyle } from './utils';
 import type { RowRendererProps } from './types';
 import SummaryCell from './SummaryCell';
-import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
+import { cell, cellFrozen } from './style/cell';
+import { rowClassname, rowSelectedClassname } from './style/row';
 
 type SharedRowRendererProps<R, SR> = Pick<
   RowRendererProps<R, SR>,

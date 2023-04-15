@@ -7,7 +7,8 @@ import { getRowStyle } from './utils';
 import type { CalculatedColumn, GroupRow, Omit } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
+import { cell, cellFrozenLast } from './style/cell';
+import { rowClassname, rowSelectedClassname } from './style/row';
 
 export interface GroupRowRendererProps<R, SR>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {

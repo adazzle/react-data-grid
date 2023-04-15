@@ -6,7 +6,8 @@ import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, Direction } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
-import { cell, cellFrozen, rowSelectedClassname } from './style';
+import { cell, cellFrozen } from './style/cell';
+import { rowSelectedClassname } from './style/row';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,

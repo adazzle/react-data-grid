@@ -1,6 +1,6 @@
 import type { Column } from '../../src';
 import { summaryCellClassname } from '../../src/SummaryCell';
-import { cellClassname as cellClass } from '../../src/style';
+import { cellClassname as cellClass } from '../../src/style/cell';
 import { setup, getCells } from '../utils';
 
 interface SummaryRow {

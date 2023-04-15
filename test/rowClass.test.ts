@@ -1,5 +1,5 @@
 import type { Column } from '../src';
-import { rowClassname } from '../src/style';
+import { rowClassname } from '../src/style/row';
 import { setup, getRows } from './utils';
 
 interface Row {

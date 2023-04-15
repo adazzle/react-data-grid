@@ -1,5 +1,5 @@
 import type { Column } from '../../src';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../../src/style';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../../src/style/cell';
 import { setup, getHeaderCells } from '../utils';
 
 interface Row {
