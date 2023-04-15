@@ -50,7 +50,7 @@ function Row<R, SR>(
     {
       [rowSelectedClassname]: selectedCellIdx === -1
     },
-    rowClass?.(row),
+    rowClass?.(row, rowIdx),
     className
   );
 
