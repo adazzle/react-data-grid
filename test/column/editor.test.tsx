@@ -1,6 +1,6 @@
 import { StrictMode, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
@@ -57,10 +57,13 @@ describe('Editor', () => {
   it('should commit changes and close editor when clicked outside', async () => {
     render(<EditorTest />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
+    const editor = screen.getByLabelText('col1-editor');
+    expect(editor).toHaveValue(1);
     await userEvent.keyboard('2222');
     await userEvent.click(screen.getByText('outside'));
-    await waitForElementToBeRemoved(screen.queryByLabelText('col1-editor'));
+    await waitFor(() => {
+      expect(editor).not.toBeInTheDocument();
+    });
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^22221$/);
   });
 
@@ -143,22 +146,24 @@ describe('Editor', () => {
     it('should detect outside click if editor is rendered in a portal', async () => {
       render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      let editor = screen.getByLabelText('col2-editor');
-      expect(editor).toHaveValue('a1');
+      const editor1 = screen.getByLabelText('col2-editor');
+      expect(editor1).toHaveValue('a1');
       await userEvent.keyboard('23');
       // The cell value should update as the editor value is changed
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a123$/);
       // clicking in a portal does not count as an outside click
-      await userEvent.click(editor);
-      expect(editor).toBeInTheDocument();
+      await userEvent.click(editor1);
+      expect(editor1).toBeInTheDocument();
       // true outside clicks are still detected
       await userEvent.click(screen.getByText('outside'));
-      await waitForElementToBeRemoved(editor);
+      await waitFor(() => {
+        expect(editor1).not.toBeInTheDocument();
+      });
       expect(getCellsAtRowIndex(0)[1]).not.toHaveFocus();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      editor = screen.getByLabelText('col2-editor');
-      await userEvent.click(editor);
+      const editor2 = screen.getByLabelText('col2-editor');
+      await userEvent.click(editor2);
       await userEvent.keyboard('{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveFocus();
     });
@@ -284,7 +289,9 @@ describe('Editor', () => {
       expect(col1Input).toHaveFocus();
       await userEvent.click(outerInput);
       expect(outerInput).toHaveFocus();
-      await waitForElementToBeRemoved(col1Input);
+      await waitFor(() => {
+        expect(col1Input).not.toBeInTheDocument();
+      });
       expect(outerInput).toHaveFocus();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
