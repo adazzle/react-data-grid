@@ -1,21 +1,25 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
-import { getCellStyle, getCellClassname, isCellEditable } from './utils';
-import type { CellRendererProps } from './types';
 import { useRovingCellRef } from './hooks';
+import { getCellStyle, getCellClassname, isCellEditable, createCellEvent } from './utils';
+import type { CellRendererProps } from './types';
 
 const cellCopied = css`
-  background-color: #ccccff;
+  @layer rdg.Cell {
+    background-color: #ccccff;
+  }
 `;
 
 const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
 
 const cellDraggedOver = css`
-  background-color: #ccccff;
+  @layer rdg.Cell {
+    background-color: #ccccff;
 
-  &.${cellCopied} {
-    background-color: #9999ff;
+    &.${cellCopied} {
+      background-color: #9999ff;
+    }
   }
 `;
 
@@ -28,14 +32,17 @@ function Cell<R, SR>({
   isCopied,
   isDraggedOver,
   row,
+  rowIdx,
   dragHandle,
-  onRowClick,
-  onRowDoubleClick,
+  skipCellFocusRef,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
   onRowChange,
   selectCell,
   ...props
 }: CellRendererProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocusRef);
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -46,23 +53,37 @@ function Cell<R, SR>({
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
+  const isEditable = isCellEditable(column, row);
 
-  function selectCellWrapper(openEditor?: boolean | null) {
-    selectCell(row, column, openEditor);
+  function selectCellWrapper(openEditor?: boolean) {
+    selectCell({ rowIdx, idx: column.idx }, openEditor);
   }
 
-  function handleClick() {
-    selectCellWrapper(column.editorOptions?.editOnClick);
-    onRowClick?.(row, column);
-  }
-
-  function handleContextMenu() {
+  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (onClick) {
+      const cellEvent = createCellEvent(event);
+      onClick({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     selectCellWrapper();
   }
 
-  function handleDoubleClick() {
+  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+    if (onContextMenu) {
+      const cellEvent = createCellEvent(event);
+      onContextMenu({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
+    selectCellWrapper();
+  }
+
+  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (onDoubleClick) {
+      const cellEvent = createCellEvent(event);
+      onDoubleClick({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
     selectCellWrapper(true);
-    onRowDoubleClick?.(row, column);
   }
 
   function handleRowChange(newRow: R) {
@@ -75,7 +96,7 @@ function Cell<R, SR>({
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
-      aria-readonly={!isCellEditable(column, row) || undefined}
+      aria-readonly={!isEditable || undefined}
       ref={ref}
       tabIndex={tabIndex}
       className={className}
@@ -92,6 +113,7 @@ function Cell<R, SR>({
             column,
             row,
             isCellSelected,
+            isCellEditable: isEditable,
             onRowChange: handleRowChange
           })}
           {dragHandle}

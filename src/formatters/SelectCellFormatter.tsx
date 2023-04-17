@@ -1,6 +1,6 @@
 import { useFocusRef } from '../hooks/useFocusRef';
-import { useDefaultComponents } from '../DataGridDefaultComponentsProvider';
 import type { CheckboxFormatterProps } from '../types';
+import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
 
 type SharedInputProps = Pick<CheckboxFormatterProps, 'disabled' | 'aria-label' | 'aria-labelledby'>;
 
@@ -19,7 +19,7 @@ export function SelectCellFormatter({
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
   const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
-  const checkboxFormatter = useDefaultComponents()!.checkboxFormatter!;
+  const checkboxFormatter = useDefaultRenderers()!.checkboxFormatter!;
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
@@ -65,10 +65,7 @@ const columns: readonly Column<Row>[] = [
     formatter(props) {
       return <>{props.row.title}</>;
     },
-    editor: dropDownEditor,
-    editorOptions: {
-      editOnClick: true
-    }
+    editor: dropDownEditor
   },
   {
     key: 'firstName',
@@ -89,7 +86,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'email',
     name: 'Email',
-    width: 200,
+    width: 'max-content',
     resizable: true,
     editor: textEditor
   },
@@ -124,7 +121,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'catchPhrase',
     name: 'Catch Phrase',
-    width: 200,
+    width: 'max-content',
     resizable: true,
     editor: textEditor
   },
@@ -138,7 +135,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'sentence',
     name: 'Sentence',
-    width: 200,
+    width: 'max-content',
     resizable: true,
     editor: textEditor
   }
@@ -216,8 +213,16 @@ export default function AllFeatures({ direction }: Props) {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
-      rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+      rowClass={(row, index) =>
+        row.id.includes('7') || index === 0 ? highlightClassname : undefined
+      }
       direction={direction}
+      onCellClick={(args, event) => {
+        if (args.column.key === 'title') {
+          event.preventGridDefault();
+          args.selectCell(true);
+        }
+      }}
     />
   );
 }

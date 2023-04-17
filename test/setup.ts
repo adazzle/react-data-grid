@@ -1,6 +1,7 @@
 import { act } from 'react-dom/test-utils';
 
 if (typeof window !== 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   window.ResizeObserver ??= class {
     callback: ResizeObserverCallback;
 
@@ -18,6 +19,7 @@ if (typeof window !== 'undefined') {
     disconnect() {}
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   window.HTMLElement.prototype.scrollIntoView ??= () => {};
 
   // patch clientWidth/clientHeight to pretend we're rendering DataGrid at 1080p
@@ -71,5 +73,6 @@ if (typeof window !== 'undefined') {
     }
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   Element.prototype.setPointerCapture ??= () => {};
 }

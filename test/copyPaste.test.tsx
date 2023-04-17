@@ -1,9 +1,9 @@
 import { StrictMode, useState } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
-import { render } from '@testing-library/react';
 import { getCellsAtRowIndex, getSelectedCell, copySelectedCell, pasteSelectedCell } from './utils';
 
 interface Row {
@@ -36,7 +36,7 @@ const initialRows: readonly Row[] = [
   }
 ];
 
-const summaryRows: readonly Row[] = [
+const bottomSummaryRows: readonly Row[] = [
   {
     col: 's1'
   }
@@ -64,7 +64,7 @@ function CopyPasteTest({
     <DataGrid
       columns={columns}
       rows={rows}
-      summaryRows={summaryRows}
+      bottomSummaryRows={bottomSummaryRows}
       onRowsChange={setRows}
       onPaste={onPasteCallback ? onPaste : undefined}
       onCopy={onCopyCallback ? onCopySpy : undefined}

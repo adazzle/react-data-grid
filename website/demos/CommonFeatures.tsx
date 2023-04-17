@@ -1,17 +1,19 @@
 import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
-import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/textEditor';
-import type { Props } from './types';
 import type { Direction } from '../../src/types';
+import type { Props } from './types';
+import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 
 const toolbarClassname = css`
-  text-align: end;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
   margin-block-end: 8px;
 `;
 
@@ -98,7 +100,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'client',
       name: 'Client',
-      width: 220,
+      width: 'max-content',
       editor: textEditor
     },
     {
@@ -122,10 +124,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
             <option key={country}>{country}</option>
           ))}
         </select>
-      ),
-      editorOptions: {
-        editOnClick: true
-      }
+      )
     },
     {
       key: 'contact',
@@ -356,7 +355,8 @@ export default function CommonFeatures({ direction }: Props) {
       onRowsChange={setRows}
       sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
-      summaryRows={summaryRows}
+      topSummaryRows={summaryRows}
+      bottomSummaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
     />

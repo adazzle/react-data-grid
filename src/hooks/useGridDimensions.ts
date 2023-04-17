@@ -1,13 +1,12 @@
 import { useRef, useState } from 'react';
-import { useLayoutEffect } from './useLayoutEffect';
 
-import { ceil } from '../utils';
+import { useLayoutEffect } from './useLayoutEffect';
 
 export function useGridDimensions(): [
   ref: React.RefObject<HTMLDivElement>,
   width: number,
   height: number,
-  isWidthInitialized: boolean,
+  isWidthInitialized: boolean
 ] {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
@@ -33,7 +32,7 @@ export function useGridDimensions(): [
     const resizeObserver = new ResizeObserver((entries) => {
       // contentBoxSize is not available in Chrome <84
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (entries[0].contentBoxSize?.length > 0) {
+      if (entries?.[0].contentBoxSize?.[0]) {
         const size = entries[0].contentBoxSize[0];
         setInlineSize(size.inlineSize);
         setBlockSize(size.blockSize);

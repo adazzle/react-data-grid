@@ -93,8 +93,8 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/context-menu" end className={getActiveClassname}>
         Context Menu
       </NavLink>
-      <NavLink to="/customizable-components" end className={getActiveClassname}>
-        Customizable Components
+      <NavLink to="/customizable-renderers" end className={getActiveClassname}>
+        Customizable Renderers
       </NavLink>
       <NavLink to="/grouping" end className={getActiveClassname}>
         Grouping
@@ -128,6 +128,9 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       </NavLink>
       <NavLink to="/variable-row-height" end className={getActiveClassname}>
         Variable Row Height
+      </NavLink>
+      <NavLink to="/animation" end className={getActiveClassname}>
+        Animation
       </NavLink>
 
       <h2>Links</h2>

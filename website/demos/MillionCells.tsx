@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import DataGrid from '../../src';
 import type { Column, FormatterProps } from '../../src';
 import type { Props } from './types';
@@ -24,6 +25,7 @@ export default function MillionCells({ direction }: Props) {
         key,
         name: key,
         frozen: i < 5,
+        width: 80,
         resizable: true,
         formatter: cellFormatter
       });

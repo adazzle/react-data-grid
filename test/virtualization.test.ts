@@ -22,7 +22,8 @@ function setupGrid(
 ) {
   const columns: Column<unknown>[] = [];
   const rows = Array(rowCount);
-  const summaryRows = Array(summaryRowCount).fill(null);
+  const topSummaryRows = Array(summaryRowCount).fill(null);
+  const bottomSummaryRows = Array(summaryRowCount).fill(null);
 
   for (let i = 0; i < columnCount; i++) {
     const key = String(i);
@@ -34,7 +35,14 @@ function setupGrid(
     });
   }
 
-  return setup({ columns, rows, summaryRows, rowHeight, enableVirtualization });
+  return setup({
+    columns,
+    rows,
+    topSummaryRows,
+    bottomSummaryRows,
+    rowHeight,
+    enableVirtualization
+  });
 }
 
 function assertElements(
@@ -192,13 +200,13 @@ test('virtualization is enabled with 2 summary rows', () => {
 
   assertRowIndexes([
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-    26, 27, 28, 29, 30, 31, 100, 101
+    26, 27, 28, 29, 30, 31, 102, 103
   ]);
 
   grid.scrollTop = 1000;
   assertRowIndexes([
-    24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 100, 101
+    0, 1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 102, 103
   ]);
 });
 
