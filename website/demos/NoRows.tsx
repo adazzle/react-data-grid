@@ -1,7 +1,13 @@
 import { useState } from 'react';
+import { css } from '@linaria/core';
+
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
 import type { Props } from './types';
+
+const gridClassname = css`
+  block-size: 300px;
+`;
 
 function EmptyRowsRenderer() {
   return (
@@ -40,11 +46,11 @@ export default function NoRows({ direction }: Props) {
     <DataGrid
       columns={columns}
       rows={rows}
-      components={{ noRowsFallback: <EmptyRowsRenderer /> }}
+      renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       rowKeyGetter={rowKeyGetter}
-      className="small-grid"
+      className={gridClassname}
       direction={direction}
     />
   );

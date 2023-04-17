@@ -1,9 +1,9 @@
 import { memo } from 'react';
 
+import { useRovingCellRef } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { useRovingCellRef } from './hooks';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<
   GroupRowRendererProps<R, SR>,
@@ -53,17 +53,16 @@ function GroupCell<R, SR>({
       onClick={isLevelMatching ? toggleGroup : undefined}
       onFocus={onFocus}
     >
-      {(!column.rowGroup || groupColumnIndex === column.idx) && column.groupFormatter && (
-        <column.groupFormatter
-          groupKey={groupKey}
-          childRows={childRows}
-          column={column}
-          row={row}
-          isExpanded={isExpanded}
-          isCellSelected={isCellSelected}
-          toggleGroup={toggleGroup}
-        />
-      )}
+      {(!column.rowGroup || groupColumnIndex === column.idx) &&
+        column.groupFormatter?.({
+          groupKey,
+          childRows,
+          column,
+          row,
+          isExpanded,
+          isCellSelected,
+          toggleGroup
+        })}
     </div>
   );
 }

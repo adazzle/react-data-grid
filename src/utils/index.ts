@@ -2,11 +2,14 @@ import type { CalculatedColumn } from '../types';
 
 export * from './colSpanUtils';
 export * from './domUtils';
+export * from './eventUtils';
 export * from './keyboardUtils';
+export * from './renderMeasuringCells';
 export * from './selectedCellUtils';
 export * from './styleUtils';
 
-export const { min, max, round, floor, sign, abs, ceil } = Math;
+export const { min, max, round, floor, sign, abs } = Math;
+export const { escape: cssEscape } = CSS;
 
 export function assertIsValidKeyGetter<R, K extends React.Key>(
   keyGetter: unknown

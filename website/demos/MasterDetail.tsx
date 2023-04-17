@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
+import type { Direction } from '../../src/types';
 import { CellExpanderFormatter } from './components/Formatters';
 import type { Props } from './types';
-import type { Direction } from '../../src/types';
 
 type DepartmentRow =
   | {
@@ -113,14 +113,14 @@ export default function MasterDetail({ direction }: Props) {
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {
     const row = rows[indexes[0]];
     if (row.type === 'MASTER') {
-      if (!row.expanded) {
-        rows.splice(indexes[0] + 1, 1);
-      } else {
+      if (row.expanded) {
         rows.splice(indexes[0] + 1, 0, {
           type: 'DETAIL',
           id: row.id + 100,
           parentId: row.id
         });
+      } else {
+        rows.splice(indexes[0] + 1, 1);
       }
       setRows(rows);
     }
@@ -137,6 +137,12 @@ export default function MasterDetail({ direction }: Props) {
       className="fill-grid"
       enableVirtualization={false}
       direction={direction}
+      onCellKeyDown={(_, event) => {
+        if (event.isDefaultPrevented()) {
+          // skip parent grid keyboard navigation if nested grid handled it
+          event.preventGridDefault();
+        }
+      }}
     />
   );
 }
@@ -159,23 +165,15 @@ function ProductGrid({
   }, [isCellSelected]);
   const products = getProducts(parentId);
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.isDefaultPrevented()) {
-      event.stopPropagation();
-    }
-  }
-
   return (
-    <div onKeyDown={onKeyDown}>
-      <DataGrid
-        ref={gridRef}
-        rows={products}
-        columns={productColumns}
-        rowKeyGetter={rowKeyGetter}
-        style={{ blockSize: 250 }}
-        direction={direction}
-      />
-    </div>
+    <DataGrid
+      ref={gridRef}
+      rows={products}
+      columns={productColumns}
+      rowKeyGetter={rowKeyGetter}
+      style={{ blockSize: 250 }}
+      direction={direction}
+    />
   );
 }
 
