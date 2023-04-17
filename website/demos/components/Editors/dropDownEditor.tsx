@@ -1,5 +1,5 @@
-import { textEditorClassname } from '../../../../src/editors/textEditor';
 import type { EditorProps } from '../../../../src';
+import { textEditorClassname } from '../../../../src/editors/textEditor';
 import type { Row } from '../../AllFeatures';
 
 const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'] as const;

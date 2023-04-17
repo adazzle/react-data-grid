@@ -1,11 +1,11 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
-import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
-import SummaryCell from './SummaryCell';
 import type { RowRendererProps } from './types';
+import SummaryCell from './SummaryCell';
+import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
 
 type SharedRowRendererProps<R, SR> = Pick<
   RowRendererProps<R, SR>,

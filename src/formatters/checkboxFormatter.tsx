@@ -1,5 +1,5 @@
-import clsx from 'clsx';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
 import type { CheckboxFormatterProps } from '../types';
 

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+
 import DataGrid from '../../src';
 import type { Column, DataGridHandle } from '../../src';
 import type { Props } from './types';

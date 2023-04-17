@@ -1,14 +1,14 @@
 import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
-import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 import { textEditorClassname } from '../../src/editors/textEditor';
-import type { Props } from './types';
 import type { Direction } from '../../src/types';
+import type { Props } from './types';
+import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
 
 const toolbarClassname = css`
   display: flex;
