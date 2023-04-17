@@ -215,7 +215,9 @@ export default function AllFeatures() {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
-      rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+      rowClass={(row, index) =>
+        row.id.includes('7') || index === 0 ? highlightClassname : undefined
+      }
       direction={useDirection()}
       onCellClick={(args, event) => {
         if (args.column.key === 'title') {
