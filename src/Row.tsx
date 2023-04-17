@@ -4,8 +4,9 @@ import clsx from 'clsx';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RowRendererProps } from './types';
-import Cell from './Cell';
+import { defaultCellRenderer } from './Cell';
 import { rowClassname, rowSelectedClassname } from './style';
+import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 
 function Row<R, SR>(
   {
@@ -35,6 +36,9 @@ function Row<R, SR>(
   }: RowRendererProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
+  const defaultComponents = useDefaultRenderers<R, SR>();
+  const cellRenderer = defaultComponents?.cellRenderer ?? defaultCellRenderer;
+
   const handleRowChange = useLatestFunc((column: CalculatedColumn<R, SR>, newRow: R) => {
     onRowChange(column, rowIdx, newRow);
   });
@@ -69,25 +73,22 @@ function Row<R, SR>(
     if (isCellSelected && selectedCellEditor) {
       cells.push(selectedCellEditor);
     } else {
-      cells.push(
-        <Cell
-          key={column.key}
-          column={column}
-          colSpan={colSpan}
-          row={row}
-          rowIdx={rowIdx}
-          isCopied={copiedCellIdx === idx}
-          isDraggedOver={draggedOverCellIdx === idx}
-          isCellSelected={isCellSelected}
-          dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onClick={onCellClick}
-          onDoubleClick={onCellDoubleClick}
-          onContextMenu={onCellContextMenu}
-          onRowChange={handleRowChange}
-          selectCell={selectCell}
-          skipCellFocusRef={skipCellFocusRef}
-        />
-      );
+      cells.push(cellRenderer(column.key, {
+        column,
+        colSpan,
+        row,
+        rowIdx,
+        isCopied: copiedCellIdx === idx,
+        isDraggedOver: draggedOverCellIdx === idx,
+        isCellSelected: isCellSelected,
+        dragHandle: isCellSelected ? selectedCellDragHandle : undefined,
+        onClick: onCellClick,
+        onDoubleClick: onCellDoubleClick,
+        onContextMenu: onCellContextMenu,
+        onRowChange: handleRowChange,
+        selectCell: selectCell,
+        skipCellFocusRef: skipCellFocusRef
+      }));
     }
   }
 

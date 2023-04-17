@@ -268,6 +268,7 @@ export interface Renderers<TRow, TSummaryRow> {
     (props: CheckboxFormatterProps, ref: RefObject<HTMLInputElement>) => ReactNode
   >;
   rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  cellRenderer?: Maybe<(key: Key, props: CellRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 

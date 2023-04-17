@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { RefAttributes, forwardRef, memo } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingCellRef } from './hooks';
@@ -35,23 +35,37 @@ function Cell<R, SR>({
   rowIdx,
   dragHandle,
   skipCellFocusRef,
+  className,
   onClick,
   onDoubleClick,
   onContextMenu,
   onRowChange,
   selectCell,
   ...props
-}: CellRendererProps<R, SR>) {
+}: CellRendererProps<R, SR>,
+refComponent: React.Ref<HTMLDivElement>) {
   const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocusRef);
 
+  function setRef(element: HTMLDivElement | null) {
+    ref?.(element);
+
+    if (typeof refComponent === 'function') {
+      refComponent(element);
+    } else if (typeof refComponent === 'object' && refComponent !== null) {
+      //@ts-expect-error ref mutation
+      refComponent.current = element;
+    }
+  }
+
   const { cellClass } = column;
-  const className = getCellClassname(
+  className = getCellClassname(
     column,
     {
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass
+    typeof cellClass === 'function' ? cellClass(row) : cellClass,
+    className
   );
   const isEditable = isCellEditable(column, row);
 
@@ -97,7 +111,7 @@ function Cell<R, SR>({
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
       aria-readonly={!isEditable || undefined}
-      ref={ref}
+      ref={setRef}
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
@@ -123,4 +137,12 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => JSX.Element;
+const CellComponent = memo(forwardRef(Cell)) as <R, SR>(
+  props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+) => JSX.Element;
+
+export default CellComponent;
+
+export function defaultCellRenderer<R, SR>(key: React.Key, props: CellRendererProps<R, SR>) {
+  return <CellComponent key={key} {...props} />;
+}

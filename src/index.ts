@@ -1,6 +1,7 @@
 export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
 export { default as Row } from './Row';
+export { default as Cell } from './Cell';
 export * from './Columns';
 export * from './formatters';
 export { default as textEditor } from './editors/textEditor';
