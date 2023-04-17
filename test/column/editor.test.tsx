@@ -58,12 +58,14 @@ describe('Editor', () => {
   it('should commit changes and close editor when clicked outside', async () => {
     render(<EditorTest />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
+    const editor = screen.getByLabelText('col1-editor');
+    expect(editor).toHaveValue(1);
     await userEvent.keyboard('2222');
     await userEvent.click(screen.getByText('outside'));
     await waitFor(() => {
-      expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^22221$/);
+      expect(editor).not.toBeInTheDocument();
     });
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^22221$/);
   });
 
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
@@ -291,6 +293,9 @@ describe('Editor', () => {
       expect(col1Input).toHaveFocus();
       await userEvent.click(outerInput);
       expect(outerInput).toHaveFocus();
+      await waitFor(() => {
+        expect(col1Input).not.toBeInTheDocument();
+      });
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const col2Input = screen.getByLabelText('col2-input');

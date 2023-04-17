@@ -213,7 +213,9 @@ export default function AllFeatures({ direction }: Props) {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
-      rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+      rowClass={(row, index) =>
+        row.id.includes('7') || index === 0 ? highlightClassname : undefined
+      }
       direction={direction}
       onCellClick={(args, event) => {
         if (args.column.key === 'title') {
