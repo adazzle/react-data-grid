@@ -9,7 +9,10 @@ export * from './selectedCellUtils';
 export * from './styleUtils';
 
 export const { min, max, round, floor, sign, abs } = Math;
-export const { escape: cssEscape } = CSS;
+
+export function cssEscape(ident: string): string {
+  return CSS.escape(ident);
+}
 
 export function assertIsValidKeyGetter<R, K extends React.Key>(
   keyGetter: unknown
