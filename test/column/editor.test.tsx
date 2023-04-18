@@ -389,10 +389,6 @@ function EditorTest({
         save
       </button>
       <DataGrid
-        style={{
-          width: 1939,
-          height: 1099
-        }}
         columns={columns}
         rows={rows}
         onRowsChange={setRows}
