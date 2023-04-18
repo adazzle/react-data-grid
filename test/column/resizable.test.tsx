@@ -5,21 +5,6 @@ import { setup, getHeaderCells, getGrid } from '../utils';
 
 const pointerId = 1;
 
-// TODO: https://github.com/jsdom/jsdom/issues/2527
-class PointerEvent extends Event {
-  pointerId: number | undefined;
-  clientX: number | undefined;
-
-  constructor(type: string, { pointerId, clientX, ...rest }: PointerEventInit) {
-    super(type, rest);
-    this.pointerId = pointerId;
-    this.clientX = clientX;
-  }
-}
-
-// @ts-expect-error
-globalThis.PointerEvent = PointerEvent;
-
 interface Row {
   col1: number;
   col2: string;
