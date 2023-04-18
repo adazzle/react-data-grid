@@ -10,10 +10,6 @@ export * from './styleUtils';
 
 export const { min, max, round, floor, sign, abs } = Math;
 
-export function cssEscape(ident: string): string {
-  return CSS.escape(ident);
-}
-
 export function assertIsValidKeyGetter<R, K extends React.Key>(
   keyGetter: unknown
 ): asserts keyGetter is (row: R) => K {
