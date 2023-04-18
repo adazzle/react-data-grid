@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 

@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid, { useFocusRef } from '../../src';
 import type { Column, HeaderRendererProps } from '../../src';

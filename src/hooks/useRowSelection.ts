@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+
 import type { SelectRowEvent } from '../types';
 
 const RowSelectionContext = createContext<boolean | undefined>(undefined);

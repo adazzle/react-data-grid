@@ -1,5 +1,25 @@
 {
   "singleQuote": true,
   "trailingComma": "none",
-  "printWidth": 100
+  "printWidth": 100,
+  "pluginSearchDirs": false,
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^node:",
+    "^react$",
+    "^react-dom",
+    "^react",
+    "<THIRD_PARTY_MODULES>",
+    "^@linaria",
+    "^clsx$",
+    "",
+    "./src",
+    "./components",
+    "./hooks",
+    "./utils",
+    "./types",
+    "^\\.$",
+    "^\\./",
+    "^\\.\\./"
+  ]
 }
