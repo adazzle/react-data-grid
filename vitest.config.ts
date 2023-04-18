@@ -22,7 +22,7 @@ export default defineConfig({
       provider: 'istanbul',
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       all: true,
-      reporter: ['text', 'html', 'cobertura']
+      reporter: ['text', 'json']
     },
     useAtomics: true,
     testTimeout: 5000,
