@@ -7,6 +7,5 @@
 /.eslintcache
 /package-lock.json
 
-junit.xml
 npm-debug.log
 **.orig
