@@ -29,4 +29,7 @@ test('basic server-side rendering (SSR) support', () => {
 
   const html = renderToString(<App />);
   expect(html).not.toHaveLength(0);
+
+  // make sure `@testing-library/jest-dom` does not polyfill `window.CSS`
+  expect(typeof CSS).toBe('undefined');
 });
