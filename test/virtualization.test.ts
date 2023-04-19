@@ -95,7 +95,7 @@ function assertCellIndexes(rowIdx: number, indexes: number[]) {
   assertIndexes(getCellsAtRowIndex(rowIdx), indexes, 'aria-colindex', 1);
 }
 
-test.skip('virtualization is enabled', async () => {
+test('virtualization is enabled', async () => {
   setupGrid(true, 30, 100);
 
   const grid = getGrid();
