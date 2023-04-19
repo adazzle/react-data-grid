@@ -97,7 +97,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
     "lodash-es": "^4.17.21",
-    "next": "^13.3.1-canary.13",
+    "next": "^13.3.1-canary.14",
     "next-with-linaria": "^0.5.0",
     "postcss-nested": "^6.0.0",
     "prettier": "2.8.7",
