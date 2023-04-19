@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useSelectedLayoutSegment } from 'next/navigation';
 import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
@@ -40,25 +41,25 @@ const navClassname = css`
   }
 `;
 
-// const activeNavClassname = css`
-//   font-weight: 500;
+const activeNavClassname = css`
+  font-weight: 500;
 
-//   @media (prefers-color-scheme: light) {
-//     background-color: hsl(210deg 50% 80%);
-//   }
-//   @media (prefers-color-scheme: dark) {
-//     background-color: hsl(210deg 50% 40%);
-//   }
+  @media (prefers-color-scheme: light) {
+    background-color: hsl(210deg 50% 80%);
+  }
+  @media (prefers-color-scheme: dark) {
+    background-color: hsl(210deg 50% 40%);
+  }
 
-//   a&:hover {
-//     @media (prefers-color-scheme: light) {
-//       background-color: hsl(210deg 50% 70%);
-//     }
-//     @media (prefers-color-scheme: dark) {
-//       background-color: hsl(210deg 50% 50%);
-//     }
-//   }
-// `;
+  a&:hover {
+    @media (prefers-color-scheme: light) {
+      background-color: hsl(210deg 50% 70%);
+    }
+    @media (prefers-color-scheme: dark) {
+      background-color: hsl(210deg 50% 50%);
+    }
+  }
+`;
 
 const rtlCheckboxClassname = css`
   padding-inline-start: 8px;
@@ -75,25 +76,25 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <h1>react-data-grid</h1>
 
       <h2>Demos</h2>
-      <Link href="/common-features">Common Features</Link>
-      <Link href="/all-features">All Features</Link>
-      <Link href="/cell-navigation">Cell Navigation</Link>
-      <Link href="/column-spanning">Column Spanning</Link>
-      <Link href="/columns-reordering">Columns Reordering</Link>
-      <Link href="/context-menu">Context Menu</Link>
-      <Link href="/customizable-renderers">Customizable Renderers</Link>
-      <Link href="/grouping">Grouping</Link>
-      <Link href="/header-filters">Header Filters</Link>
-      <Link href="/infinite-scrolling">Infinite Scrolling</Link>
-      <Link href="/master-detail">Master Detail</Link>
-      <Link href="/million-cells">A Million Cells</Link>
-      <Link href="/no-rows">No Rows</Link>
-      <Link href="/resizable-grid">Resizable Grid</Link>
-      <Link href="/rows-reordering">Rows Reordering</Link>
-      <Link href="/scroll-to-row">Scroll To Row</Link>
-      <Link href="/tree-view">Tree View</Link>
-      <Link href="/variable-row-height">Variable Row Height</Link>
-      <Link href="/animation">Animation</Link>
+      <ActiveLink href="/common-features">Common Features</ActiveLink>
+      <ActiveLink href="/all-features">All Features</ActiveLink>
+      <ActiveLink href="/cell-navigation">Cell Navigation</ActiveLink>
+      <ActiveLink href="/column-spanning">Column Spanning</ActiveLink>
+      <ActiveLink href="/columns-reordering">Columns Reordering</ActiveLink>
+      <ActiveLink href="/context-menu">Context Menu</ActiveLink>
+      <ActiveLink href="/customizable-renderers">Customizable Renderers</ActiveLink>
+      <ActiveLink href="/grouping">Grouping</ActiveLink>
+      <ActiveLink href="/header-filters">Header Filters</ActiveLink>
+      <ActiveLink href="/infinite-scrolling">Infinite Scrolling</ActiveLink>
+      <ActiveLink href="/master-detail">Master Detail</ActiveLink>
+      <ActiveLink href="/million-cells">A Million Cells</ActiveLink>
+      <ActiveLink href="/no-rows">No Rows</ActiveLink>
+      <ActiveLink href="/resizable-grid">Resizable Grid</ActiveLink>
+      <ActiveLink href="/rows-reordering">Rows Reordering</ActiveLink>
+      <ActiveLink href="/scroll-to-row">Scroll To Row</ActiveLink>
+      <ActiveLink href="/tree-view">Tree View</ActiveLink>
+      <ActiveLink href="/variable-row-height">Variable Row Height</ActiveLink>
+      <ActiveLink href="/animation">Animation</ActiveLink>
 
       <h2>Links</h2>
       <a
@@ -132,4 +133,13 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       </label>
     </nav>
   );
+}
+
+function ActiveLink({ href, ...props }: React.ComponentProps<typeof Link>) {
+  // TODO: is this the best way to add styles to active link?
+  const segment = useSelectedLayoutSegment();
+  const className =
+    segment !== null && href.toString().endsWith(segment) ? activeNavClassname : undefined;
+
+  return <Link href={href} {...props} className={className} />;
 }
