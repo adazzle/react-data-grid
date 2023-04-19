@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { css } from '@linaria/core';
 
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
@@ -9,10 +10,15 @@ export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>
     <StrictMode>
       <DataGrid
         {...props}
-        style={{
-          width: 1920,
-          height: 1080
-        }}
+        className={css`
+          width: 1920px;
+          height: 1080px;
+
+          &::-webkit-scrollbar {
+            width: var(--circle-spacing);
+            height: var(--circle-spacing);
+          }
+        `}
       />
     </StrictMode>
   );
