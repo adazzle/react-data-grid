@@ -1,13 +1,13 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
-import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
-import { SELECT_COLUMN_KEY } from './Columns';
-import GroupCell from './GroupCell';
-import type { CalculatedColumn, GroupRow, Omit } from './types';
 import { RowSelectionProvider } from './hooks';
 import { getRowStyle } from './utils';
+import type { CalculatedColumn, GroupRow, Omit } from './types';
+import { SELECT_COLUMN_KEY } from './Columns';
+import GroupCell from './GroupCell';
+import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
 
 export interface GroupRowRendererProps<R, SR>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {

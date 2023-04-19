@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+
 import type { EditorProps } from '../types';
 
 const textEditorInternalClassname = css`

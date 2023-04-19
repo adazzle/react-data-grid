@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
@@ -213,7 +213,9 @@ export default function AllFeatures({ direction }: Props) {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
-      rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+      rowClass={(row, index) =>
+        row.id.includes('7') || index === 0 ? highlightClassname : undefined
+      }
       direction={direction}
       onCellClick={(args, event) => {
         if (args.column.key === 'title') {

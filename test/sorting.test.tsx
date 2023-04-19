@@ -1,9 +1,10 @@
-import userEvent from '@testing-library/user-event';
-import { getHeaderCells } from './utils';
-import type { Column, SortColumn } from '../src/types';
 import { StrictMode, useState } from 'react';
-import DataGrid from '../src';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+import DataGrid from '../src';
+import type { Column, SortColumn } from '../src/types';
+import { getHeaderCells } from './utils';
 
 const columns: readonly Column<unknown>[] = [
   { key: 'colA', name: 'colA' },

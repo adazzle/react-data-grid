@@ -4,13 +4,6 @@ import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
-  rootClassname,
-  viewportDraggingClassname,
-  focusSinkClassname,
-  rowSelected,
-  rowSelectedWithFrozenCell
-} from './style';
-import {
   useLayoutEffect,
   useGridDimensions,
   useCalculatedColumns,
@@ -20,34 +13,21 @@ import {
   RowSelectionChangeProvider,
   RowSelectionProvider
 } from './hooks';
-import HeaderRow from './HeaderRow';
-import { defaultRowRenderer } from './Row';
-import GroupRowRenderer from './GroupRow';
-import SummaryRow from './SummaryRow';
-import EditCell from './EditCell';
-import DragHandle from './DragHandle';
-import { default as defaultSortStatus } from './sortStatus';
-import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import {
-  DataGridDefaultRenderersProvider,
-  useDefaultRenderers
-} from './DataGridDefaultRenderersProvider';
-import {
+  abs,
   assertIsValidKeyGetter,
-  getNextSelectedCellPosition,
-  isSelectedCellEditable,
   canExitGrid,
+  createCellEvent,
+  getColSpan,
+  getNextSelectedCellPosition,
+  getSelectedCellColSpan,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
-  getColSpan,
-  sign,
-  abs,
-  getSelectedCellColSpan,
+  isSelectedCellEditable,
   renderMeasuringCells,
   scrollIntoView,
-  createCellEvent
+  sign
 } from './utils';
-
 import type {
   CalculatedColumn,
   Column,
@@ -68,6 +48,25 @@ import type {
   CellKeyDownArgs,
   CellKeyboardEvent
 } from './types';
+import {
+  DataGridDefaultRenderersProvider,
+  useDefaultRenderers
+} from './DataGridDefaultRenderersProvider';
+import DragHandle from './DragHandle';
+import EditCell from './EditCell';
+import GroupRowRenderer from './GroupRow';
+import HeaderRow from './HeaderRow';
+import { defaultRowRenderer } from './Row';
+import SummaryRow from './SummaryRow';
+import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
+import { default as defaultSortStatus } from './sortStatus';
+import {
+  rootClassname,
+  viewportDraggingClassname,
+  focusSinkClassname,
+  rowSelected,
+  rowSelectedWithFrozenCell
+} from './style';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -179,7 +178,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Miscellaneous
    */
   renderers?: Maybe<Renderers<R, SR>>;
-  rowClass?: Maybe<(row: R) => Maybe<string>>;
+  rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
   /** @default 'ltr' */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
@@ -429,7 +428,9 @@ function DataGrid<R, SR, K extends Key>(
       const grid = gridRef.current!;
 
       for (const column of flexWidthViewportColumns) {
-        const measuringCell = grid.querySelector(`[data-measuring-cell-key="${column.key}"]`)!;
+        const measuringCell = grid.querySelector(
+          `[data-measuring-cell-key="${CSS.escape(column.key)}"]`
+        )!;
         // Set the actual width of the column after it is rendered
         const { width } = measuringCell.getBoundingClientRect();
         newColumnWidths.set(column.key, width);
@@ -471,7 +472,7 @@ function DataGrid<R, SR, K extends Key>(
     style.gridTemplateColumns = newTemplateColumns.join(' ');
 
     const measuringCell = gridRef.current!.querySelector(
-      `[data-measuring-cell-key="${column.key}"]`
+      `[data-measuring-cell-key="${CSS.escape(column.key)}"]`
     )!;
     const measuredWidth = measuringCell.getBoundingClientRect().width;
     const measuredWidthPx = `${measuredWidth}px`;

@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+
 import { useFocusRef } from '../../../../src';
 
 const childRowActionCrossClassname = css`

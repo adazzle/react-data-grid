@@ -1,9 +1,9 @@
 import { StrictMode, useState } from 'react';
+import { fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, FillEvent } from '../src';
-import { fireEvent, render } from '@testing-library/react';
 import { getCellsAtRowIndex, getRows } from './utils';
 
 interface Row {

@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+
 import type { CalculatedColumn } from '../types';
 
 const measuringCellClassname = css`
