@@ -136,7 +136,7 @@ test('virtualization is enabled', async () => {
 
   grid.scrollTop = 1000;
   await waitFor(() => {
-    assertRows(38, 24, 61);
+    assertRows(39, 24, 62);
   });
 
   // scroll height = header height + row height * row count
