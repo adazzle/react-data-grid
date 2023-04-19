@@ -32,10 +32,10 @@ jobs:
         run: npm run prettier:check
       - name: Typecheck
         run: npm run typecheck
-      # - name: Bundle
-      #   run: |
-      #     npm run build
-      #     npm run build:types
+      - name: Bundle
+        run: |
+          # npm run build
+          npm run build:types
       - name: Test
         run: npm t -- --coverage
       - uses: codecov/codecov-action@v3
