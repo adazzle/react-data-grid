@@ -1,10 +1,10 @@
 import { StrictMode, useState } from 'react';
-import { render, within, screen } from '@testing-library/react';
+import { within, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { SelectColumn } from '../src';
 import type { Column } from '../src';
-import { getCellsAtRowIndex, getRows } from './utils';
+import { getCellsAtRowIndex, getRows, render } from './utils';
 
 interface Row {
   id: number;
@@ -162,11 +162,7 @@ test('extra keys are preserved when updating the selectedRows Set', async () => 
     );
   }
 
-  render(
-    <StrictMode>
-      <Test />
-    </StrictMode>
-  );
+  render(<Test />);
 
   const headerCheckbox = screen.getByLabelText('Select All');
 

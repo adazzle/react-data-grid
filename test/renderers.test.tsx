@@ -1,5 +1,5 @@
-import { StrictMode, useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, sortIcon } from '../src';
@@ -10,7 +10,7 @@ import type {
   SortColumn,
   SortStatusProps
 } from '../src';
-import { getHeaderCells, getRows, setup } from './utils';
+import { getHeaderCells, getRows, setup, render } from './utils';
 
 interface Row {
   id: number;
@@ -78,17 +78,15 @@ function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
 
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
-    <StrictMode>
-      <DataGridDefaultRenderersProvider
-        value={{
-          noRowsFallback: <GlobalNoRowsFallback />,
-          checkboxFormatter: globalCheckboxFormatter,
-          sortStatus: globalSortStatus
-        }}
-      >
-        <TestGrid {...props} />
-      </DataGridDefaultRenderersProvider>
-    </StrictMode>
+    <DataGridDefaultRenderersProvider
+      value={{
+        noRowsFallback: <GlobalNoRowsFallback />,
+        checkboxFormatter: globalCheckboxFormatter,
+        sortStatus: globalSortStatus
+      }}
+    >
+      <TestGrid {...props} />
+    </DataGridDefaultRenderersProvider>
   );
 }
 
