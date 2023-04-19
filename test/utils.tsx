@@ -117,8 +117,6 @@ export async function scrollGrid({
     }
 
     // let the browser fire the 'scroll' event
-    await new Promise((resolve) => {
-      requestAnimationFrame(resolve);
-    });
+    await new Promise(requestAnimationFrame);
   });
 }
