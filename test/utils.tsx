@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { css } from '@linaria/core';
 
 import DataGrid from '../src/';
@@ -96,5 +96,29 @@ export function pasteSelectedCell() {
   fireEvent.keyDown(document.activeElement!, {
     keyCode: '86',
     ctrlKey: true
+  });
+}
+
+export async function scrollGrid({
+  scrollLeft,
+  scrollTop
+}: {
+  scrollLeft?: number;
+  scrollTop?: number;
+}) {
+  const grid = getGrid();
+
+  await act(async () => {
+    if (scrollLeft !== undefined) {
+      grid.scrollLeft = scrollLeft;
+    }
+    if (scrollTop !== undefined) {
+      grid.scrollTop = scrollTop;
+    }
+
+    // let the browser fire the 'scroll' event
+    await new Promise((resolve) => {
+      requestAnimationFrame(resolve);
+    });
   });
 }
