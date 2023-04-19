@@ -10,7 +10,7 @@ export function render(child: React.ReactElement) {
 }
 
 export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
-  return rtlRender(<DataGrid {...props} />);
+  return render(<DataGrid {...props} />);
 }
 
 export function getGrid() {
