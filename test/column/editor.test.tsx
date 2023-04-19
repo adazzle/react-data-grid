@@ -281,10 +281,10 @@ describe('Editor', () => {
       ];
 
       render(
-        <>
+        <StrictMode>
           <input aria-label="outer-input" value="abc" readOnly />
           <DataGrid columns={columns} rows={[{}]} />
-        </>
+        </StrictMode>
       );
 
       const outerInput = screen.getByLabelText('outer-input');
