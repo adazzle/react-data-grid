@@ -15,8 +15,7 @@ export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>
           height: 1080px;
 
           &::-webkit-scrollbar {
-            width: var(--circle-spacing);
-            height: var(--circle-spacing);
+            display: none;
           }
         `}
       />
