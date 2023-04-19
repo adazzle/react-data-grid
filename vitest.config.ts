@@ -3,6 +3,8 @@ import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vitest/config';
 import linaria from '@linaria/vite';
 
+const isCI = process.env.CI === 'true';
+
 // https://vitest.dev/config/
 export default defineConfig({
   optimizeDeps: {
@@ -19,6 +21,7 @@ export default defineConfig({
     globals: true,
     coverage: {
       provider: 'istanbul',
+      enabled: isCI,
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       all: true,
       reporter: ['text', 'json']

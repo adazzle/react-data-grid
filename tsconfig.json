@@ -5,8 +5,8 @@
   },
   "include": [
     "rollup.config.js",
+    "vitest.config.ts",
     "webpack.config.js",
-    "vitest.config.js",
     "src/**/*",
     "test/**/*",
     "website/**/*"
