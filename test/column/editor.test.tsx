@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
+import { getCellsAtRowIndex, getSelectedCell, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -99,11 +99,8 @@ describe('Editor', () => {
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
 
-    const grid = getGrid();
-    grid.scrollTop = 2000;
-    await waitFor(() => {
-      expect(getCellsAtRowIndex(0)).toHaveLength(1);
-    });
+    await scrollGrid({ scrollTop: 2000 });
+    expect(getCellsAtRowIndex(0)).toHaveLength(1);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.keyboard('123');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1230);
@@ -232,21 +229,16 @@ describe('Editor', () => {
       }
 
       render(<EditorTest gridRows={rows} />);
-      const grid = getGrid();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       await userEvent.keyboard('abc');
 
-      grid.scrollTop = 1500;
-      await waitFor(() => {
-        expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
-      });
+      await scrollGrid({ scrollTop: 1500 });
+      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
       await userEvent.click(getCellsAtRowIndex(40)[1]);
       expect(getSelectedCell()).toHaveTextContent(/^40$/);
-      grid.scrollTop = 0;
-      await waitFor(() => {
-        expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
-      });
+      await scrollGrid({ scrollTop: 0 });
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
     });
 
     it('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
