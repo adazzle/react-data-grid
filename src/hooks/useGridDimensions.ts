@@ -16,7 +16,7 @@ export function useGridDimensions(): [
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
 
-    // don't break in Node.js (SSR), vitest/jsdom, and browsers that don't support ResizeObserver
+    // don't break in Node.js (SSR), jsdom, and browsers that don't support ResizeObserver
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 

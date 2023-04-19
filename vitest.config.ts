@@ -7,6 +7,7 @@ const isCI = process.env.CI === 'true';
 
 // https://vitest.dev/config/
 export default defineConfig({
+  // https://github.com/vitest-dev/vitest/issues/3124#issuecomment-1505908243
   optimizeDeps: {
     exclude: ['vitest/utils'],
     include: ['@vitest/utils']
@@ -27,7 +28,6 @@ export default defineConfig({
       reporter: ['text', 'json']
     },
     useAtomics: true,
-    testTimeout: 5000,
     setupFiles: ['test/setup.ts'],
     browser: {
       enabled: true,
