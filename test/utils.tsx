@@ -1,15 +1,16 @@
 import { StrictMode } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { render as rtlRender, screen, fireEvent } from '@testing-library/react';
 
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
+export function render(child: React.ReactElement) {
+  return rtlRender(<StrictMode>{child}</StrictMode>);
+}
+
 export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
-  return render(
-    <StrictMode>
-      <DataGrid {...props} />
-    </StrictMode>
-  );
+  return render(<DataGrid {...props} />);
 }
 
 export function getGrid() {
