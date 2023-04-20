@@ -1,5 +1,3 @@
-import { StrictMode } from 'react';
-import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
@@ -10,6 +8,7 @@ import {
   getSelectedCell,
   validateCellPosition,
   getCellsAtRowIndex,
+  render,
   scrollGrid
 } from './utils';
 
@@ -295,21 +294,13 @@ test('reset selected cell when column is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(
-    <StrictMode>
-      <Test columns={columns} />
-    </StrictMode>
-  );
+  const { rerender } = render(<Test columns={columns} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowright}');
   validateCellPosition(1, 1);
 
-  rerender(
-    <StrictMode>
-      <Test columns={[columns[0]]} />
-    </StrictMode>
-  );
+  rerender(<Test columns={[columns[0]]} />);
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
@@ -325,21 +316,13 @@ test('reset selected cell when row is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(
-    <StrictMode>
-      <Test rows={rows} />
-    </StrictMode>
-  );
+  const { rerender } = render(<Test rows={rows} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
   validateCellPosition(1, 2);
 
-  rerender(
-    <StrictMode>
-      <Test rows={[rows[0]]} />
-    </StrictMode>
-  );
+  rerender(<Test rows={[rows[0]]} />);
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });

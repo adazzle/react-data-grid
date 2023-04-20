@@ -1,11 +1,11 @@
-import { StrictMode, useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { setup, getCells } from '../utils';
+import { setup, getCells, render } from '../utils';
 
 interface Row {
   id: number;
@@ -87,11 +87,7 @@ describe('Custom formatter component', () => {
       );
     }
 
-    render(
-      <StrictMode>
-        <Test />
-      </StrictMode>
-    );
+    render(<Test />);
 
     const [cell] = getCells();
     expect(cell).toHaveTextContent('value: 1');

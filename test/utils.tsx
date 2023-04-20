@@ -1,25 +1,28 @@
 import { StrictMode } from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { render as rtlRender, screen, fireEvent, act } from '@testing-library/react';
 import { css } from '@linaria/core';
 
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
+export function render(child: React.ReactElement) {
+  return rtlRender(<StrictMode>{child}</StrictMode>);
+}
+
 export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
-    <StrictMode>
-      <DataGrid
-        {...props}
-        className={css`
-          width: 1920px;
-          height: 1080px;
+    <DataGrid
+      {...props}
+      className={css`
+        width: 1920px;
+        height: 1080px;
 
-          &::-webkit-scrollbar {
-            display: none;
-          }
-        `}
-      />
-    </StrictMode>
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      `}
+    />
   );
 }
 
