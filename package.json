@@ -71,7 +71,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
-    "@vitejs/plugin-react": "^3.0.1",
+    "@vitejs/plugin-react": "^4.0.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
@@ -97,7 +97,7 @@
     "react-router-dom": "~6.3.0",
     "rome": "^12.0.0",
     "typescript": "~5.0.2",
-    "vite": "^4.2.1",
+    "vite": "^4.3.0",
     "xlsx": "^0.18.5"
   },
   "peerDependencies": {
