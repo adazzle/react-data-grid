@@ -111,20 +111,18 @@ describe('Custom formatter component', () => {
   });
 });
 
-describe('formatter focus', () => {
+test.skip('Cell not steal focus when the focus is outside the grid and cell is recreated', async () => {
   const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
   function FormatterTest() {
-    const [inputValue, setInputValue] = useState('');
     const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
 
-    function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-      setInputValue(event.target.value);
+    function onClick() {
       setRows([{ id: 2 }]);
     }
 
     return (
       <>
-        <input aria-label="outer-input" value={inputValue} onChange={onChange} />
+        <button onClick={onClick}>Test</button>
         <DataGrid
           columns={columns}
           rows={rows}
@@ -135,16 +133,14 @@ describe('formatter focus', () => {
     );
   }
 
-  it.skip('should not steal focus back to the cell if the focus is outside the grid and formatter is recreated', async () => {
-    render(<FormatterTest />);
+  render(<FormatterTest />);
 
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
 
-    const input = screen.getByLabelText('outer-input');
-    expect(input).not.toHaveFocus();
-    await userEvent.type(input, 'a');
-    expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
-    expect(input).toHaveFocus();
-  });
+  const button = screen.getByRole('button', { name: 'Test' });
+  expect(button).not.toHaveFocus();
+  await userEvent.click(button);
+  expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
+  expect(button).toHaveFocus();
 });
