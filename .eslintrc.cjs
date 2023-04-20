@@ -661,6 +661,11 @@ const rules = {
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
+        },
+        {
+          name: '@testing-library/react',
+          importNames: ['render'],
+          message: 'Use the render helper from test/utils instead.'
         }
       ]
     }
