@@ -1,4 +1,4 @@
-import { StrictMode, useState } from 'react';
+import { useState } from 'react';
 import { within, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -39,11 +39,7 @@ function RowSelectionTest({ initialRows }: { initialRows: readonly Row[] }) {
 }
 
 function setup(initialRows = defaultRows) {
-  render(
-    <StrictMode>
-      <RowSelectionTest initialRows={initialRows} />
-    </StrictMode>
-  );
+  render(<RowSelectionTest initialRows={initialRows} />);
 }
 
 function testSelection(rowIdx: number, isSelected: boolean) {
@@ -111,14 +107,12 @@ test('header checkbox is not checked when there are no rows', () => {
 
 test('header checkbox is not necessarily checked when selectedRows.size === rows.length', () => {
   render(
-    <StrictMode>
-      <DataGrid
-        rowKeyGetter={rowKeyGetter}
-        columns={columns}
-        rows={defaultRows}
-        selectedRows={new Set([1, 2, 4])}
-      />
-    </StrictMode>
+    <DataGrid
+      rowKeyGetter={rowKeyGetter}
+      columns={columns}
+      rows={defaultRows}
+      selectedRows={new Set([1, 2, 4])}
+    />
   );
 
   expect(screen.getByLabelText('Select All')).not.toBeChecked();
@@ -126,14 +120,12 @@ test('header checkbox is not necessarily checked when selectedRows.size === rows
 
 test('header checkbox is not necessarily checked when selectedRows.size > rows.length', () => {
   render(
-    <StrictMode>
-      <DataGrid
-        rowKeyGetter={rowKeyGetter}
-        columns={columns}
-        rows={defaultRows}
-        selectedRows={new Set([1, 2, 4, 5])}
-      />
-    </StrictMode>
+    <DataGrid
+      rowKeyGetter={rowKeyGetter}
+      columns={columns}
+      rows={defaultRows}
+      selectedRows={new Set([1, 2, 4, 5])}
+    />
   );
 
   expect(screen.getByLabelText('Select All')).not.toBeChecked();

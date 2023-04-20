@@ -123,7 +123,7 @@ describe('formatter focus', () => {
     }
 
     return (
-      <StrictMode>
+      <>
         <input aria-label="outer-input" value={inputValue} onChange={onChange} />
         <DataGrid
           columns={columns}
@@ -131,7 +131,7 @@ describe('formatter focus', () => {
           onRowsChange={setRows}
           rowKeyGetter={(row) => row.id}
         />
-      </StrictMode>
+      </>
     );
   }
 
