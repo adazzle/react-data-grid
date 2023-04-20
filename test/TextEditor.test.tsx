@@ -1,10 +1,10 @@
-import { StrictMode, useState } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { textEditor } from '../src';
 import type { Column } from '../src';
-import { getCells } from './utils';
+import { render, getCells } from './utils';
 
 interface Row {
   readonly name: string;
@@ -20,11 +20,7 @@ function Test() {
 }
 
 test('TextEditor', async () => {
-  render(
-    <StrictMode>
-      <Test />
-    </StrictMode>
-  );
+  render(<Test />);
 
   await userEvent.dblClick(getCells()[0]);
   let input: HTMLInputElement | null = screen.getByRole<HTMLInputElement>('textbox');

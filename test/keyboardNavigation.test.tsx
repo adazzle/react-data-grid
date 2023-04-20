@@ -1,11 +1,17 @@
 import { StrictMode } from 'react';
-import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
 import DataGrid, { SelectColumn } from '../src';
 import { useFocusRef } from '../src/hooks';
-import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex, getGrid } from './utils';
+import {
+  setup,
+  getSelectedCell,
+  validateCellPosition,
+  getCellsAtRowIndex,
+  getGrid,
+  render
+} from './utils';
 
 type Row = undefined;
 
@@ -320,11 +326,7 @@ test('reset selected cell when row is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(
-    <StrictMode>
-      <Test rows={rows} />
-    </StrictMode>
-  );
+  const { rerender } = render(<Test rows={rows} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
