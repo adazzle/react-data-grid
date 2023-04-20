@@ -111,7 +111,7 @@ describe('Custom formatter component', () => {
   });
 });
 
-test.skip('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
+test.failing('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
   const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
   function FormatterTest() {
     const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
