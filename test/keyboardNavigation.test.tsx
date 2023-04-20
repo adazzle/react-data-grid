@@ -296,11 +296,7 @@ test('reset selected cell when column is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(
-    <StrictMode>
-      <Test columns={columns} />
-    </StrictMode>
-  );
+  const { rerender } = render(<Test columns={columns} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowright}');

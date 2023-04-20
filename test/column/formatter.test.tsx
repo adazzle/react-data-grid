@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { setup, getCells, render } from '../utils';
+import { setup, getCells, getCellsAtRowIndex, render } from '../utils';
 
 interface Row {
   id: number;
@@ -110,3 +110,40 @@ describe('Custom formatter component', () => {
     });
   });
 });
+
+test.failing(
+  'Cell should not steal focus when the focus is outside the grid and cell is recreated',
+  async () => {
+    const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
+    function FormatterTest() {
+      const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
+
+      function onClick() {
+        setRows([{ id: 2 }]);
+      }
+
+      return (
+        <>
+          <button onClick={onClick}>Test</button>
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            onRowsChange={setRows}
+            rowKeyGetter={(row) => row.id}
+          />
+        </>
+      );
+    }
+
+    render(<FormatterTest />);
+
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
+
+    const button = screen.getByRole('button', { name: 'Test' });
+    expect(button).not.toHaveFocus();
+    await userEvent.click(button);
+    expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
+    expect(button).toHaveFocus();
+  }
+);
