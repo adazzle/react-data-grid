@@ -76,7 +76,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
-    "@vitejs/plugin-react": "^3.1.0",
+    "@vitejs/plugin-react": "^4.0.0",
     "@vitest/browser": "^0.30.1",
     "@vitest/coverage-istanbul": "^0.30.1",
     "babel-loader": "^9.0.0",
