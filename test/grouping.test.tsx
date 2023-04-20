@@ -1,5 +1,5 @@
-import { StrictMode, useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { useState } from 'react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { groupBy as rowGrouper } from 'lodash';
 
@@ -17,7 +17,8 @@ import {
   getCellsAtRowIndex,
   getSelectedCell,
   copySelectedCell,
-  pasteSelectedCell
+  pasteSelectedCell,
+  render
 } from './utils';
 
 const rowSelectedClassname = 'rdg-row-selected';
@@ -127,11 +128,7 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
 }
 
 function setup(groupBy?: string[]) {
-  render(
-    <StrictMode>
-      <TestGrid groupBy={groupBy} />
-    </StrictMode>
-  );
+  render(<TestGrid groupBy={groupBy} />);
 }
 
 function getHeaderCellsContent() {

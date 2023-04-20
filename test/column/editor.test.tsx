@@ -1,11 +1,11 @@
-import { StrictMode, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
+import { getCellsAtRowIndex, getGrid, getSelectedCell, render } from '../utils';
 
 interface Row {
   col1: number;
@@ -373,7 +373,7 @@ function EditorTest({
   }, [editable, editorOptions, createEditorPortal]);
 
   return (
-    <StrictMode>
+    <>
       <div
         onClick={(e) => e.stopPropagation()}
         onClickCapture={(e) => e.stopPropagation()}
@@ -391,6 +391,6 @@ function EditorTest({
         onRowsChange={setRows}
         onCellKeyDown={onCellKeyDown}
       />
-    </StrictMode>
+    </>
   );
 }

@@ -1,10 +1,15 @@
-import { StrictMode, useState } from 'react';
-import { render } from '@testing-library/react';
+import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
-import { getCellsAtRowIndex, getSelectedCell, copySelectedCell, pasteSelectedCell } from './utils';
+import {
+  getCellsAtRowIndex,
+  getSelectedCell,
+  copySelectedCell,
+  pasteSelectedCell,
+  render
+} from './utils';
 
 interface Row {
   col: string;
@@ -75,11 +80,7 @@ function CopyPasteTest({
 function setup(onPasteCallback = true, onCopyCallback = false) {
   onPasteSpy.mockReset();
   onCopySpy.mockReset();
-  render(
-    <StrictMode>
-      <CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} />
-    </StrictMode>
-  );
+  render(<CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} />);
 }
 
 test('should not allow copy/paste if onPaste & onCopy is undefined', async () => {
