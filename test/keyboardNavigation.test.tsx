@@ -1,3 +1,4 @@
+import { StrictMode } from 'react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
@@ -300,7 +301,11 @@ test('reset selected cell when column is removed', async () => {
   await userEvent.keyboard('{arrowdown}{arrowright}');
   validateCellPosition(1, 1);
 
-  rerender(<Test columns={[columns[0]]} />);
+  rerender(
+    <StrictMode>
+      <Test columns={[columns[0]]} />
+    </StrictMode>
+  );
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
@@ -322,7 +327,11 @@ test('reset selected cell when row is removed', async () => {
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
   validateCellPosition(1, 2);
 
-  rerender(<Test rows={[rows[0]]} />);
+  rerender(
+    <StrictMode>
+      <Test rows={[rows[0]]} />
+    </StrictMode>
+  );
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
