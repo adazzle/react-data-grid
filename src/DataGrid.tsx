@@ -18,7 +18,6 @@ import {
   assertIsValidKeyGetter,
   canExitGrid,
   createCellEvent,
-  cssEscape,
   getColSpan,
   getNextSelectedCellPosition,
   getSelectedCellColSpan,
@@ -1361,7 +1360,7 @@ function isSamePosition(p1: Position, p2: Position) {
 }
 
 function getMeasuringCellKey(key: string) {
-  return `[data-measuring-cell-key="${cssEscape(key)}"]`;
+  return `[data-measuring-cell-key="${CSS.escape(key)}"]`;
 }
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
