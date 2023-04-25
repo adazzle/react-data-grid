@@ -6,7 +6,7 @@ export default {
   randomize: true,
   restoreMocks: true,
   setupFiles: ['./test/setup.ts'],
-  setupFilesAfterEnv: ['@testing-library/jest-dom'],
+  setupFilesAfterEnv: ['./test/setupAfterEnv.ts'],
   showSeed: true,
   testEnvironment: 'jsdom',
   testMatch: ['<rootDir>/test/**/*.test.*']
