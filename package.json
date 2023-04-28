@@ -59,7 +59,6 @@
     "@babel/runtime": "^7.17.9",
     "@faker-js/faker": "^7.1.0",
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
-    "@linaria/babel-preset": "^4.4.4",
     "@linaria/rollup": "^4.3.7",
     "@linaria/webpack5-loader": "^4.1.16",
     "@microsoft/api-extractor": "^7.23.0",
