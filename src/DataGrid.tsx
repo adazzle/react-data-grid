@@ -4,6 +4,7 @@ import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
+  useColumnWidths,
   useLayoutEffect,
   useGridDimensions,
   useCalculatedColumns,
@@ -281,7 +282,6 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
-  const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
 
   /**
    * refs
@@ -296,7 +296,6 @@ function DataGrid<R, SR, K extends Key>(
    * computed values
    */
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const [prevGridWidth, setPrevGridWidth] = useState(gridWidth);
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = direction === 'rtl';
@@ -381,19 +380,24 @@ function DataGrid<R, SR, K extends Key>(
     isGroupRow
   });
 
+  const { autoResizeColumn, columnsToMeasure, handleColumnResize } = useColumnWidths(
+    columns,
+    viewportColumns,
+    gridRef,
+    gridWidth,
+    resizedColumnWidths,
+    measuredColumnWidths,
+    setResizedColumnWidths,
+    setMeasuredColumnWidths,
+    onColumnResize
+  );
+
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
-  const columnsToMeasure = viewportColumns.filter((column) => {
-    return (
-      !resizedColumnWidths.has(column.key) &&
-      !measuredColumnWidths.has(column.key) &&
-      typeof column.width === 'string'
-    );
-  });
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -434,28 +438,6 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
-  useLayoutEffect(() => {
-    if (columnsToMeasure.length === 0) return;
-    const newMeasuredColumnWidths = new Map<string, number>();
-    const newResizedColumnWidths = new Map<string, number>();
-    for (const { key } of columnsToMeasure) {
-      const measuringCell = gridRef.current!.querySelector(getMeasuringCellKey(key))!;
-      const measuredWidth = measuringCell.getBoundingClientRect().width;
-      if (autoResizeColumn?.key === key) {
-        newResizedColumnWidths.set(key, measuredWidth);
-      } else {
-        newMeasuredColumnWidths.set(key, measuredWidth);
-      }
-    }
-    setMeasuredColumnWidths(
-      (measuredColumnWidths) => new Map([...measuredColumnWidths, ...newMeasuredColumnWidths])
-    );
-    setResizedColumnWidths(
-      (resizedColumnWidths) => new Map([...resizedColumnWidths, ...newResizedColumnWidths])
-    );
-    setAutoResizeColumn(null);
-  }, [autoResizeColumn, columnsToMeasure, gridRef]);
-
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn,
@@ -481,40 +463,6 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * event handlers
    */
-  function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
-    if (width === 'max-content') {
-      flushSync(() => {
-        resetMeasuredColumnWidths();
-        // Clear resized and measured width of the auto resized column
-        setResizedColumnWidths((resizedColumnWidths) => {
-          const newResizedColumnWidths = new Map(resizedColumnWidths);
-          newResizedColumnWidths.delete(column.key);
-          return newResizedColumnWidths;
-        });
-        setMeasuredColumnWidths((measuredColumnWidths) => {
-          const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-          newMeasuredColumnWidths.delete(column.key);
-          return newMeasuredColumnWidths;
-        });
-        setAutoResizeColumn(column);
-      });
-      const measuringCell = gridRef.current!.querySelector(getMeasuringCellKey(column.key))!;
-      const measuredWidth = measuringCell.getBoundingClientRect().width;
-      onColumnResize?.(column.idx, measuredWidth);
-      return;
-    }
-
-    flushSync(() => {
-      resetMeasuredColumnWidths();
-      setResizedColumnWidths((resizedColumnWidths) => {
-        const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.set(column.key, width);
-        return newResizedColumnWidths;
-      });
-    });
-    onColumnResize?.(column.idx, width);
-  }
-
   function selectRow(args: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
     if (args.type === 'HEADER') {
@@ -759,20 +707,6 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * utils
    */
-  function resetMeasuredColumnWidths() {
-    if (columns.length === viewportColumns.length) {
-      setMeasuredColumnWidths((measuredColumnWidths) => {
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-        for (const column of columns) {
-          if (!resizedColumnWidths.has(column.key) && typeof column.width === 'string') {
-            newMeasuredColumnWidths.delete(column.key);
-          }
-        }
-        return newMeasuredColumnWidths;
-      });
-    }
-  }
-
   function isColIdxWithinSelectionBounds(idx: number) {
     return idx >= minColIdx && idx <= maxColIdx;
   }
@@ -1181,11 +1115,6 @@ function DataGrid<R, SR, K extends Key>(
     return rowElements;
   }
 
-  if (gridWidth !== prevGridWidth) {
-    setPrevGridWidth(gridWidth);
-    resetMeasuredColumnWidths();
-  }
-
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
@@ -1357,10 +1286,6 @@ function DataGrid<R, SR, K extends Key>(
 
 function isSamePosition(p1: Position, p2: Position) {
   return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
-}
-
-function getMeasuringCellKey(key: string) {
-  return `[data-measuring-cell-key="${CSS.escape(key)}"]`;
 }
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
