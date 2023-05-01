@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 import type { CalculatedColumn, StateSetter } from '../types';
@@ -16,32 +16,27 @@ export function useColumnWidths<R, SR>(
   setMeasuredColumnWidths: StateSetter<ReadonlyMap<string, number>>,
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
-  const [prevGridWidth, setPrevGridWidth] = useState(gridWidth);
   const [autoResizeColumn, setAutoResizeColumn] = useState<CalculatedColumn<R, SR> | null>(null);
+  const prevGridWidthRef = useRef(gridWidth);
+  const columnsCanFlex: boolean = columns.length === viewportColumns.length;
+  // Allow columns to flex again when...
+  const ignorePreviouslyMeasuredColumns: boolean =
+    // there is enough space for columns to flex and...
+    columnsCanFlex &&
+    // the grid has resized, or a column is being `max-content`-sized.
+    (gridWidth !== prevGridWidthRef.current || autoResizeColumn !== null);
 
-  // TODO:
-  // can we do something like this?
-  //   const ignoreMeasuredWidths = gridWidth !== prevGridWidth;
-  //   measuredColumnWidths = ignoreMeasuredWidths ? new Map() : measuredColumnWidths;
-  // this could lead to fewer re-renders
-  // maybe we can just use `ignoreMeasuredWidths` in the `columnsToMeasure` filter?
-  if (gridWidth !== prevGridWidth) {
-    setPrevGridWidth(gridWidth);
-    resetMeasuredColumnWidths();
-  }
-
-  // TODO:
-  // when autoResizeColumn is set, can we skip calling `resetMeasuredColumnWidths`,
-  // and instead handle flex columns here?
   const columnsToMeasure = viewportColumns.filter(
     ({ key, width }) =>
       !resizedColumnWidths.has(key) &&
-      !measuredColumnWidths.has(key) &&
+      (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key)) &&
       typeof width === 'string' &&
       key !== autoResizeColumn?.key
   );
 
   useLayoutEffect(() => {
+    prevGridWidthRef.current = gridWidth;
+
     if (columnsToMeasure.length === 0) return;
 
     setMeasuredColumnWidths((measuredColumnWidths) => {
@@ -56,20 +51,20 @@ export function useColumnWidths<R, SR>(
 
       return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
     });
-  }, [columnsToMeasure, gridRef, setMeasuredColumnWidths]);
+  });
 
   function resetMeasuredColumnWidths() {
-    if (columns.length === viewportColumns.length) {
-      setMeasuredColumnWidths((measuredColumnWidths) => {
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-        for (const column of columns) {
-          if (!resizedColumnWidths.has(column.key) && typeof column.width === 'string') {
-            newMeasuredColumnWidths.delete(column.key);
-          }
+    if (!columnsCanFlex) return;
+
+    setMeasuredColumnWidths((measuredColumnWidths) => {
+      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+      for (const column of columns) {
+        if (!resizedColumnWidths.has(column.key) && typeof column.width === 'string') {
+          newMeasuredColumnWidths.delete(column.key);
         }
-        return newMeasuredColumnWidths;
-      });
-    }
+      }
+      return newMeasuredColumnWidths;
+    });
   }
 
   function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
@@ -77,7 +72,6 @@ export function useColumnWidths<R, SR>(
 
     if (width === 'max-content') {
       flushSync(() => {
-        resetMeasuredColumnWidths();
         // Clear resized and measured width of the resized column
         setResizedColumnWidths((resizedColumnWidths) => {
           const newResizedColumnWidths = new Map(resizedColumnWidths);
