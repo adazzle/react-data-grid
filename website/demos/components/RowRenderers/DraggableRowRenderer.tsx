@@ -1,6 +1,6 @@
 import { useDrag, useDrop } from 'react-dnd';
-import clsx from 'clsx';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
 import { Row } from '../../../../src';
 import type { RowRendererProps } from '../../../../src';

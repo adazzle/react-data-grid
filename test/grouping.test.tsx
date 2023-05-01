@@ -1,8 +1,13 @@
-import { StrictMode, useState } from 'react';
+import { useState } from 'react';
+import { screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { groupBy as rowGrouper } from 'lodash';
+
 import type { Column } from '../src';
 import DataGrid, { SelectColumn, textEditor } from '../src';
-import { render, screen, within } from '@testing-library/react';
+import { focusSinkClassname } from '../src/style/core';
+import { rowSelected } from '../src/style/row';
+import type { FillEvent, PasteEvent } from '../src/types';
 import {
   getGrid,
   queryGrid,
@@ -13,11 +18,9 @@ import {
   getCellsAtRowIndex,
   getSelectedCell,
   copySelectedCell,
-  pasteSelectedCell
+  pasteSelectedCell,
+  render
 } from './utils';
-import userEvent from '@testing-library/user-event';
-import type { FillEvent, PasteEvent } from '../src/types';
-import { focusSinkClassname, rowSelected } from '../src/style';
 
 const rowSelectedClassname = 'rdg-row-selected';
 
@@ -126,11 +129,7 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
 }
 
 function setup(groupBy?: string[]) {
-  render(
-    <StrictMode>
-      <TestGrid groupBy={groupBy} />
-    </StrictMode>
-  );
+  render(<TestGrid groupBy={groupBy} />);
 }
 
 function getHeaderCellsContent() {

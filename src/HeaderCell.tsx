@@ -1,10 +1,10 @@
 import { css } from '@linaria/core';
 
+import { useRovingCellRef } from './hooks';
+import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import defaultHeaderRenderer from './headerRenderer';
-import { getCellStyle, getCellClassname } from './utils';
-import { useRovingCellRef } from './hooks';
 
 const cellResizable = css`
   @layer rdg.HeaderCell {

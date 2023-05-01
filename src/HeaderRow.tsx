@@ -1,12 +1,13 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
-import HeaderCell from './HeaderCell';
-import type { CalculatedColumn, Direction } from './types';
 import { getColSpan, getRowStyle } from './utils';
+import type { CalculatedColumn, Direction } from './types';
 import type { DataGridProps } from './DataGrid';
-import { cell, cellFrozen, rowSelectedClassname } from './style';
+import HeaderCell from './HeaderCell';
+import { cell, cellFrozen } from './style/cell';
+import { rowSelectedClassname } from './style/row';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,

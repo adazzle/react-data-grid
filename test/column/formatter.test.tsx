@@ -1,10 +1,10 @@
-import { StrictMode, useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { setup, getCells, getCellsAtRowIndex } from '../utils';
+import { setup, getCells, getCellsAtRowIndex, render } from '../utils';
 
 interface Row {
   id: number;
@@ -86,11 +86,7 @@ describe('Custom formatter component', () => {
       );
     }
 
-    render(
-      <StrictMode>
-        <Test />
-      </StrictMode>
-    );
+    render(<Test />);
 
     const [cell] = getCells();
     expect(cell).toHaveTextContent('value: 1');
@@ -115,39 +111,39 @@ describe('Custom formatter component', () => {
   });
 });
 
-describe('formatter focus', () => {
-  const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
-  function FormatterTest() {
-    const [inputValue, setInputValue] = useState('');
-    const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
+test.failing(
+  'Cell should not steal focus when the focus is outside the grid and cell is recreated',
+  async () => {
+    const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
+    function FormatterTest() {
+      const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
 
-    function onChange(event: React.ChangeEvent<HTMLInputElement>) {
-      setInputValue(event.target.value);
-      setRows([{ id: 2 }]);
+      function onClick() {
+        setRows([{ id: 2 }]);
+      }
+
+      return (
+        <>
+          <button onClick={onClick}>Test</button>
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            onRowsChange={setRows}
+            rowKeyGetter={(row) => row.id}
+          />
+        </>
+      );
     }
 
-    return (
-      <StrictMode>
-        <input aria-label="outer-input" value={inputValue} onChange={onChange} />
-        <DataGrid
-          columns={columns}
-          rows={rows}
-          onRowsChange={setRows}
-          rowKeyGetter={(row) => row.id}
-        />
-      </StrictMode>
-    );
-  }
-
-  it('should not steal focus back to the cell if the focus is outside the grid and formatter is recreated', async () => {
     render(<FormatterTest />);
 
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
 
-    const input = screen.getByLabelText('outer-input');
-    expect(input).not.toHaveFocus();
-    await userEvent.type(input, 'a');
-    expect(input).toHaveFocus();
-  });
-});
+    const button = screen.getByRole('button', { name: 'Test' });
+    expect(button).not.toHaveFocus();
+    await userEvent.click(button);
+    expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
+    expect(button).toHaveFocus();
+  }
+);

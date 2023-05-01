@@ -1,9 +1,9 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
+import { useRovingCellRef } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
-import { useRovingCellRef } from './hooks';
 
 export const summaryCellClassname = css`
   @layer rdg.SummaryCell {

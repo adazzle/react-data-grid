@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn } from '../types';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style';
+import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style/cell';
 
 export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
   if (height !== undefined) {

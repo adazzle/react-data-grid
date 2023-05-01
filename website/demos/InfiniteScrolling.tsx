@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
