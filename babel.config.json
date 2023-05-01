@@ -9,8 +9,7 @@
       }
     ],
     ["@babel/react", { "runtime": "automatic" }],
-    ["@babel/typescript", { "optimizeConstEnums": true }],
-    "@linaria"
+    ["@babel/typescript", { "optimizeConstEnums": true }]
   ],
   "plugins": [
     "@babel/transform-runtime",
