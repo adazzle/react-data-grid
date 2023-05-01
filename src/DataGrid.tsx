@@ -60,13 +60,8 @@ import { defaultRowRenderer } from './Row';
 import SummaryRow from './SummaryRow';
 import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import { default as defaultSortStatus } from './sortStatus';
-import {
-  rootClassname,
-  viewportDraggingClassname,
-  focusSinkClassname,
-  rowSelected,
-  rowSelectedWithFrozenCell
-} from './style';
+import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style/core';
+import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';

@@ -5,7 +5,8 @@ import { groupBy as rowGrouper } from 'lodash';
 
 import type { Column } from '../src';
 import DataGrid, { SelectColumn, textEditor } from '../src';
-import { focusSinkClassname, rowSelected } from '../src/style';
+import { focusSinkClassname } from '../src/style/core';
+import { rowSelected } from '../src/style/row';
 import type { FillEvent, PasteEvent } from '../src/types';
 import {
   getGrid,
