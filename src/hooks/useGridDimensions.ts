@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 import { useLayoutEffect } from './useLayoutEffect';
 
@@ -24,8 +25,11 @@ export function useGridDimensions() {
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      setInlineSize(size.inlineSize);
-      setBlockSize(size.blockSize);
+      // we use flushSync here to avoid flashing scrollbars
+      flushSync(() => {
+        setInlineSize(size.inlineSize);
+        setBlockSize(size.blockSize);
+      });
     });
     resizeObserver.observe(gridRef.current!);
 
