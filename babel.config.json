@@ -2,7 +2,6 @@
   "presets": [
     ["@babel/env", { "targets": { "node": "current" } }],
     ["@babel/react", { "runtime": "automatic" }],
-    ["@babel/typescript", { "optimizeConstEnums": true }],
-    "@linaria"
+    ["@babel/typescript", { "optimizeConstEnums": true }]
   ]
 }
