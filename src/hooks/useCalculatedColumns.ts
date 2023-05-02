@@ -23,13 +23,15 @@ interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defau
   rawGroupBy: Maybe<readonly string[]>;
   viewportWidth: number;
   scrollLeft: number;
-  columnWidths: ReadonlyMap<string, number>;
+  measuredColumnWidths: ReadonlyMap<string, number>;
+  resizedColumnWidths: ReadonlyMap<string, number>;
   enableVirtualization: boolean;
 }
 
 export function useCalculatedColumns<R, SR>({
   rawColumns,
-  columnWidths,
+  measuredColumnWidths,
+  resizedColumnWidths,
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
@@ -154,7 +156,9 @@ export function useCalculatedColumns<R, SR>({
     const templateColumns: string[] = [];
 
     for (const column of columns) {
-      let width = columnWidths.get(column.key) ?? column.width;
+      let width =
+        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width;
+
       if (typeof width === 'number') {
         width = clampColumnWidth(width, column);
       } else {
@@ -172,9 +176,7 @@ export function useCalculatedColumns<R, SR>({
       totalFrozenColumnWidth = columnMetric.left + columnMetric.width;
     }
 
-    const layoutCssVars: Record<string, string> = {
-      gridTemplateColumns: templateColumns.join(' ')
-    };
+    const layoutCssVars: Record<string, string> = {};
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
@@ -182,7 +184,7 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [columnWidths, columns, lastFrozenColumnIndex]);
+  }, [measuredColumnWidths, resizedColumnWidths, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {

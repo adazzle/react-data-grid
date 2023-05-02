@@ -4,6 +4,7 @@ import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
+  useColumnWidths,
   useLayoutEffect,
   useGridDimensions,
   useCalculatedColumns,
@@ -264,7 +265,12 @@ function DataGrid<R, SR, K extends Key>(
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [columnWidths, setColumnWidths] = useState((): ReadonlyMap<string, number> => new Map());
+  const [resizedColumnWidths, setResizedColumnWidths] = useState(
+    (): ReadonlyMap<string, number> => new Map()
+  );
+  const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
+    (): ReadonlyMap<string, number> => new Map()
+  );
   const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
     () => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
@@ -284,7 +290,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const [gridRef, gridWidth, gridHeight, isWidthInitialized] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = direction === 'rtl';
@@ -324,7 +330,8 @@ function DataGrid<R, SR, K extends Key>(
     groupBy
   } = useCalculatedColumns({
     rawColumns,
-    columnWidths,
+    measuredColumnWidths,
+    resizedColumnWidths,
     scrollLeft,
     viewportWidth: gridWidth,
     defaultColumnOptions,
@@ -354,7 +361,7 @@ function DataGrid<R, SR, K extends Key>(
     enableVirtualization
   });
 
-  const { viewportColumns, flexWidthViewportColumns } = useViewportColumns({
+  const viewportColumns = useViewportColumns({
     columns,
     colSpanColumns,
     colOverscanStartIdx,
@@ -365,9 +372,21 @@ function DataGrid<R, SR, K extends Key>(
     rows,
     topSummaryRows,
     bottomSummaryRows,
-    columnWidths,
     isGroupRow
   });
+
+  const { handleColumnResize, getGridTemplateColumns } = useColumnWidths(
+    columns,
+    viewportColumns,
+    templateColumns,
+    gridRef,
+    gridWidth,
+    resizedColumnWidths,
+    measuredColumnWidths,
+    setResizedColumnWidths,
+    setMeasuredColumnWidths,
+    onColumnResize
+  );
 
   const hasGroups = groupBy.length > 0 && typeof rowGrouper === 'function';
   const minColIdx = hasGroups ? -1 : 0;
@@ -415,26 +434,6 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
-  useLayoutEffect(() => {
-    if (!isWidthInitialized || flexWidthViewportColumns.length === 0) return;
-
-    setColumnWidths((columnWidths) => {
-      const newColumnWidths = new Map(columnWidths);
-      const grid = gridRef.current!;
-
-      for (const column of flexWidthViewportColumns) {
-        const measuringCell = grid.querySelector(
-          `[data-measuring-cell-key="${CSS.escape(column.key)}"]`
-        )!;
-        // Set the actual width of the column after it is rendered
-        const { width } = measuringCell.getBoundingClientRect();
-        newColumnWidths.set(column.key, width);
-      }
-
-      return newColumnWidths;
-    });
-  }, [isWidthInitialized, flexWidthViewportColumns, gridRef]);
-
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn,
@@ -460,37 +459,6 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * event handlers
    */
-  function handleColumnResize(column: CalculatedColumn<R, SR>, width: number | 'max-content') {
-    const { style } = gridRef.current!;
-    const newTemplateColumns = [...templateColumns];
-    newTemplateColumns[column.idx] = width === 'max-content' ? width : `${width}px`;
-    style.gridTemplateColumns = newTemplateColumns.join(' ');
-
-    const measuringCell = gridRef.current!.querySelector(
-      `[data-measuring-cell-key="${CSS.escape(column.key)}"]`
-    )!;
-    const measuredWidth = measuringCell.getBoundingClientRect().width;
-    const measuredWidthPx = `${measuredWidth}px`;
-
-    // Immediately update `grid-template-columns` to prevent the column from jumping to its min/max allowed width.
-    // Only measuring cells have the min/max width set for proper colSpan support,
-    // which is why other cells may render at the previously set width, beyond the min/max.
-    // An alternative for the above would be to use flushSync.
-    // We also have to reset `max-content` so it doesn't remain stuck on `max-content`.
-    if (newTemplateColumns[column.idx] !== measuredWidthPx) {
-      newTemplateColumns[column.idx] = measuredWidthPx;
-      style.gridTemplateColumns = newTemplateColumns.join(' ');
-    }
-
-    if (columnWidths.get(column.key) === measuredWidth) return;
-
-    const newColumnWidths = new Map(columnWidths);
-    newColumnWidths.set(column.key, measuredWidth);
-    setColumnWidths(newColumnWidths);
-
-    onColumnResize?.(column.idx, measuredWidth);
-  }
-
   function selectRow(args: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
     if (args.type === 'HEADER') {
@@ -924,19 +892,6 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getLayoutCssVars() {
-    if (flexWidthViewportColumns.length === 0) return layoutCssVars;
-    const newTemplateColumns = [...templateColumns];
-    for (const column of flexWidthViewportColumns) {
-      newTemplateColumns[column.idx] = column.width as string;
-    }
-
-    return {
-      ...layoutCssVars,
-      gridTemplateColumns: newTemplateColumns.join(' ')
-    };
-  }
-
   function getDragHandle(rowIdx: number) {
     if (
       selectedPosition.rowIdx !== rowIdx ||
@@ -1193,11 +1148,12 @@ function DataGrid<R, SR, K extends Key>(
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
               : undefined,
+          gridTemplateColumns: getGridTemplateColumns(),
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
-          ...getLayoutCssVars()
+          ...layoutCssVars
         } as unknown as React.CSSProperties
       }
       dir={direction}

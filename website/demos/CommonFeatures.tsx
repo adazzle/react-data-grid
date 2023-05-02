@@ -80,7 +80,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'id',
       name: 'ID',
-      width: 60,
       frozen: true,
       resizable: false,
       summaryFormatter() {
@@ -90,7 +89,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'title',
       name: 'Task',
-      width: 120,
       frozen: true,
       editor: textEditor,
       summaryFormatter({ row }) {
@@ -106,13 +104,11 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'area',
       name: 'Area',
-      width: 120,
       editor: textEditor
     },
     {
       key: 'country',
       name: 'Country',
-      width: 180,
       editor: (p) => (
         <select
           autoFocus
@@ -129,19 +125,16 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'contact',
       name: 'Contact',
-      width: 160,
       editor: textEditor
     },
     {
       key: 'assignee',
       name: 'Assignee',
-      width: 150,
       editor: textEditor
     },
     {
       key: 'progress',
       name: 'Completion',
-      width: 110,
       formatter(props) {
         const value = props.row.progress;
         return (
@@ -186,7 +179,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'startTimestamp',
       name: 'Start date',
-      width: 100,
       formatter(props) {
         return <TimestampFormatter timestamp={props.row.startTimestamp} />;
       }
@@ -194,7 +186,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'endTimestamp',
       name: 'Deadline',
-      width: 100,
       formatter(props) {
         return <TimestampFormatter timestamp={props.row.endTimestamp} />;
       }
@@ -202,7 +193,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'budget',
       name: 'Budget',
-      width: 100,
       formatter(props) {
         return <CurrencyFormatter value={props.row.budget} />;
       }
@@ -213,8 +203,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     },
     {
       key: 'account',
-      name: 'Account',
-      width: 150
+      name: 'Account'
     },
     {
       key: 'version',
@@ -224,7 +213,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'available',
       name: 'Available',
-      width: 80,
       formatter({ row, onRowChange, isCellSelected }) {
         return (
           <SelectCellFormatter
