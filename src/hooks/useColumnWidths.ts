@@ -46,10 +46,10 @@ export function useColumnWidths<R, SR>(
 
     if (columnsToMeasure.length === 0) return;
 
-    updateMeasuredWiths(columnsToMeasure);
+    updateMeasuredWidths(columnsToMeasure);
   });
 
-  function updateMeasuredWiths(columnsToMeasure: readonly string[]) {
+  function updateMeasuredWidths(columnsToMeasure: readonly string[]) {
     setMeasuredColumnWidths((measuredColumnWidths) => {
       const newMeasuredColumnWidths = new Map(measuredColumnWidths);
       let hasChanges = false;
@@ -96,7 +96,7 @@ export function useColumnWidths<R, SR>(
         newResizedColumnWidths.set(resizingKey, measuredWidth);
         return newResizedColumnWidths;
       });
-      updateMeasuredWiths(columnsToMeasure);
+      updateMeasuredWidths(columnsToMeasure);
     });
 
     onColumnResize?.(column.idx, measuredWidth);
