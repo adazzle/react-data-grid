@@ -12,7 +12,7 @@ export default defineConfig({
     exclude: ['vitest/utils'],
     include: ['@vitest/utils']
   },
-  plugins: [react(), linaria({ preprocessor: 'none' })],
+  plugins: [react({ fastRefresh: false }), linaria({ preprocessor: 'none' })],
   css: {
     postcss: {
       plugins: [postcssNested]
