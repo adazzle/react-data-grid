@@ -100,13 +100,11 @@ export function useColumnWidths<R, SR>(
       return;
     }
 
-    flushSync(() => {
-      resetMeasuredColumnWidths();
-      setResizedColumnWidths((resizedColumnWidths) => {
-        const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.set(key, width);
-        return newResizedColumnWidths;
-      });
+    resetMeasuredColumnWidths();
+    setResizedColumnWidths((resizedColumnWidths) => {
+      const newResizedColumnWidths = new Map(resizedColumnWidths);
+      newResizedColumnWidths.set(key, width);
+      return newResizedColumnWidths;
     });
 
     onColumnResize?.(idx, width);
