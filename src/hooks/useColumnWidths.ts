@@ -84,7 +84,8 @@ export function useColumnWidths<R, SR>(
     }
 
     gridRef.current!.style.gridTemplateColumns = newTemplateColumns.join(' ');
-    const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
+    const measuredWidth =
+      typeof nextWidth === 'number' ? nextWidth : measureColumnWidth(gridRef, resizingKey)!;
 
     // TODO: remove
     // need flushSync to keep frozen column offsets in sync
