@@ -375,9 +375,10 @@ function DataGrid<R, SR, K extends Key>(
     isGroupRow
   });
 
-  const { autoResizeColumn, columnsToMeasure, handleColumnResize } = useColumnWidths(
+  const { handleColumnResize, getGridTemplateColumns } = useColumnWidths(
     columns,
     viewportColumns,
+    templateColumns,
     gridRef,
     gridWidth,
     resizedColumnWidths,
@@ -889,19 +890,6 @@ function DataGrid<R, SR, K extends Key>(
         : rowIdx > currentRowIdx && currentRowIdx >= draggedOverRowIdx;
 
     return isDraggedOver ? selectedPosition.idx : undefined;
-  }
-
-  function getGridTemplateColumns() {
-    const newTemplateColumns = [...templateColumns];
-    for (const column of columnsToMeasure) {
-      newTemplateColumns[column.idx] = column.width as string;
-    }
-
-    if (autoResizeColumn !== null) {
-      newTemplateColumns[autoResizeColumn.idx] = 'max-content';
-    }
-
-    return newTemplateColumns.join(' ');
   }
 
   function getDragHandle(rowIdx: number) {

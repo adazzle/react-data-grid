@@ -8,6 +8,7 @@ import type { DataGridProps } from '../DataGrid';
 export function useColumnWidths<R, SR>(
   columns: readonly CalculatedColumn<R, SR>[],
   viewportColumns: readonly CalculatedColumn<R, SR>[],
+  templateColumns: readonly string[],
   gridRef: React.RefObject<HTMLDivElement>,
   gridWidth: number,
   resizedColumnWidths: ReadonlyMap<string, number>,
@@ -111,10 +112,22 @@ export function useColumnWidths<R, SR>(
     onColumnResize?.(idx, width);
   }
 
+  function getGridTemplateColumns() {
+    const newTemplateColumns = [...templateColumns];
+    for (const column of columnsToMeasure) {
+      newTemplateColumns[column.idx] = column.width as string;
+    }
+
+    if (autoResizeColumn !== null) {
+      newTemplateColumns[autoResizeColumn.idx] = 'max-content';
+    }
+
+    return newTemplateColumns.join(' ');
+  }
+
   return {
-    autoResizeColumn,
-    columnsToMeasure,
-    handleColumnResize
+    handleColumnResize,
+    getGridTemplateColumns
   } as const;
 }
 
