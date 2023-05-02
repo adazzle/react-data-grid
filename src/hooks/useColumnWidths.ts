@@ -26,9 +26,7 @@ export function useColumnWidths<R, SR>(
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
 
-  for (const column of viewportColumns) {
-    const { key, idx, width } = column;
-
+  for (const { key, idx, width } of viewportColumns) {
     if (
       typeof width === 'string' &&
       (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key)) &&
