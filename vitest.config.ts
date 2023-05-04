@@ -7,7 +7,12 @@ const isCI = process.env.CI === 'true';
 
 // https://vitest.dev/config/
 export default defineConfig({
-  plugins: [react(), linaria({ preprocessor: 'none' })],
+  // https://github.com/vitest-dev/vitest/issues/3124#issuecomment-1505908243
+  optimizeDeps: {
+    exclude: ['vitest/utils'],
+    include: ['@vitest/utils']
+  },
+  plugins: [react({ fastRefresh: false }), linaria({ preprocessor: 'none' })],
   css: {
     postcss: {
       plugins: [postcssNested]
