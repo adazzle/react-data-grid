@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import linaria from '@linaria/vite';
+import linaria from '@linaria/rollup';
 import postcssNested from 'postcss-nested';
 
 export default defineConfig({
