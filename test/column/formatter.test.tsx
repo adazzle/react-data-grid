@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
+import { vi, test, expect } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
@@ -112,7 +112,7 @@ describe('Custom formatter component', () => {
   });
 });
 
-test.failing(
+test.fails(
   'Cell should not steal focus when the focus is outside the grid and cell is recreated',
   async () => {
     const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
