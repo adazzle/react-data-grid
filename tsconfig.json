@@ -5,8 +5,8 @@
   },
   "include": [
     "jest.config.js",
+    "rollup.config.js",
     "vite.config.ts",
-    "vite.lib.config.js",
     "src/**/*",
     "test/**/*",
     "website/**/*"

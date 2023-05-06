@@ -1,7 +1,18 @@
 {
   "presets": [
-    ["@babel/env", { "targets": { "node": "current" } }],
+    [
+      "@babel/env",
+      {
+        "loose": true,
+        "bugfixes": true,
+        "shippedProposals": true
+      }
+    ],
     ["@babel/react", { "runtime": "automatic" }],
     "@babel/typescript"
+  ],
+  "plugins": [
+    "@babel/transform-runtime",
+    ["optimize-clsx", { "functionNames": ["getCellClassname"] }]
   ]
 }
