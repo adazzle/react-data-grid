@@ -1,13 +1,25 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
 import linaria from '@linaria/rollup';
+import react from '@vitejs/plugin-react';
 import postcssNested from 'postcss-nested';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: 'website',
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true,
+    sourcemap: true
+  },
+  resolve: {
+    alias: {
+      lodash: 'lodash-es'
+    }
+  },
   plugins: [
     react({
       babel: {
+        babelrc: false,
+        configFile: false,
         plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
       }
     }),
@@ -20,9 +32,5 @@ export default defineConfig({
   },
   server: {
     open: true
-  },
-  build: {
-    outDir: '../dist',
-    sourcemap: 'true'
   }
 });

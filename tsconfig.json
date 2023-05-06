@@ -5,7 +5,7 @@
   },
   "include": [
     "jest.config.js",
-    "vite.config.js",
+    "vite.config.ts",
     "vite.lib.config.js",
     "src/**/*",
     "test/**/*",
