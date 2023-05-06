@@ -30,7 +30,7 @@
     "**/*.css"
   ],
   "scripts": {
-    "start": "vite serve",
+    "start": "vite serve --clearScreen false",
     "preview": "vite preview",
     "build:website": "vite build",
     "build": "vite build --config vite.lib.config.js",
