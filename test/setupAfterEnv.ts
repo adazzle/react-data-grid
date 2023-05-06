@@ -3,7 +3,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (globalThis.window !== undefined) {
   // TODO: use `await import()` instead of `require()`
-  // @ts-expect-error
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('@testing-library/jest-dom');
 }
