@@ -92,7 +92,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
     "lodash-es": "^4.17.21",
-    "playwright": "^1.33.0",
+    "playwright": "~1.33.0",
     "postcss": "^8.4.23",
     "postcss-nested": "^6.0.0",
     "prettier": "2.8.8",
