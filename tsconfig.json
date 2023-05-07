@@ -6,7 +6,7 @@
   "include": [
     "jest.config.js",
     "rollup.config.js",
-    "webpack.config.js",
+    "vite.config.ts",
     "src/**/*",
     "test/**/*",
     "website/**/*"
