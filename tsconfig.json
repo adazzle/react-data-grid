@@ -4,9 +4,9 @@
     "noEmit": true
   },
   "include": [
+    "jest.config.js",
     "rollup.config.js",
-    "vitest.config.ts",
-    "webpack.config.js",
+    "vite.config.ts",
     "src/**/*",
     "test/**/*",
     "website/**/*"
