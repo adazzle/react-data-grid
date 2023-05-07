@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: 'website',
+  base: process.env.CI === 'true' ? '/react-data-grid/' : '/',
   build: {
     outDir: '../dist',
     emptyOutDir: true,
