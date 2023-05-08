@@ -1,7 +1,6 @@
 import { StrictMode } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { render as rtlRender, screen, fireEvent, act } from '@testing-library/react';
-import { css } from '@linaria/core';
 
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
@@ -11,19 +10,7 @@ export function render(child: React.ReactElement) {
 }
 
 export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
-  return render(
-    <DataGrid
-      {...props}
-      className={css`
-        width: 1920px;
-        height: 1080px;
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-      `}
-    />
-  );
+  return render(<DataGrid {...props} />);
 }
 
 export function getGrid() {
