@@ -3,9 +3,11 @@ import react from '@vitejs/plugin-react';
 import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
 
+const isCI = process.env.CI === 'true';
+
 export default defineConfig({
   root: 'website',
-  base: process.env.CI === 'true' ? '/react-data-grid/' : '/',
+  base: isCI ? '/react-data-grid/' : '/',
   build: {
     outDir: '../dist',
     emptyOutDir: true,
@@ -33,5 +35,22 @@ export default defineConfig({
   },
   server: {
     open: true
+  },
+  test: {
+    root: '.',
+    globals: true,
+    coverage: {
+      provider: 'istanbul',
+      enabled: isCI,
+      include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
+      all: true,
+      reporter: ['text', 'json']
+    },
+    useAtomics: true,
+    setupFiles: ['test/setup.ts'],
+    restoreMocks: true,
+    sequence: {
+      shuffle: true
+    }
   }
 });
