@@ -69,7 +69,7 @@ test('should not resize column if cursor offset is not within the allowed range'
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
 });
 
-test.fails('should resize column if cursor offset is within the allowed range', () => {
+test('should resize column if cursor offset is within the allowed range', () => {
   setup({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
@@ -77,7 +77,7 @@ test.fails('should resize column if cursor offset is within the allowed range', 
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 161px' });
 });
 
-test.fails('should use the maxWidth if specified', () => {
+test('should use the maxWidth if specified', () => {
   setup({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
@@ -85,7 +85,7 @@ test.fails('should use the maxWidth if specified', () => {
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
 
-test.fails('should use the minWidth if specified', () => {
+test('should use the minWidth if specified', () => {
   setup({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });

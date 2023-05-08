@@ -34,7 +34,7 @@ jobs:
         run: npm run typecheck
       - name: Bundle
         run: |
-          # npm run build
+          npm run build
           npm run build:types
       - name: Test
         run: npm t
