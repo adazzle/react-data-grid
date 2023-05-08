@@ -1,3 +1,7 @@
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
+
 import type { Column, DataGridProps } from '../src';
 import { setup, getRows } from './utils';
 
@@ -17,7 +21,7 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
   setup({ columns, rows, rowHeight });
 }
 
-test('rowHeight is number', () => {
+test('rowHeight is number', async () => {
   setupGrid(40);
 
   const rows = getRows();
@@ -25,9 +29,18 @@ test('rowHeight is number', () => {
   expect(rows[1]).toHaveStyle({ '--rdg-row-height': '40px' });
   expect(rows[2]).toHaveStyle({ '--rdg-row-height': '40px' });
   expect(getRows()).toHaveLength(31);
+
+  await userEvent.tab();
+  const grid = screen.getByRole('grid');
+  expect(grid.scrollTop).toBe(0);
+
+  // Go to the last cell
+  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+  await userEvent.keyboard('{Control>}{end}');
+  expect(spy).toHaveBeenCalled();
 });
 
-test('rowHeight is function', () => {
+test('rowHeight is function', async () => {
   setupGrid((args) => (args.type === 'ROW' ? [40, 60, 80][args.row % 3] : 40));
 
   const rows = getRows();
@@ -36,4 +49,13 @@ test('rowHeight is function', () => {
   expect(rows[2]).toHaveStyle({ '--rdg-row-height': '80px' });
   expect(rows[3]).toHaveStyle({ '--rdg-row-height': '40px' });
   expect(rows).toHaveLength(22);
+
+  await userEvent.tab();
+  const grid = screen.getByRole('grid');
+  expect(grid.scrollTop).toBe(0);
+
+  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+  // Go to the last cell
+  await userEvent.keyboard('{Control>}{end}');
+  expect(spy).toHaveBeenCalled();
 });
