@@ -4,6 +4,7 @@ import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
 
 const isCI = process.env.CI === 'true';
+const isTest = process.env.NODE_ENV === 'test';
 
 export default defineConfig({
   root: 'website',
@@ -26,7 +27,7 @@ export default defineConfig({
         plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
       }
     }),
-    linaria({ preprocessor: 'none' })
+    !isTest && linaria({ preprocessor: 'none' })
   ],
   css: {
     postcss: {
