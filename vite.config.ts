@@ -39,7 +39,6 @@ export default defineConfig({
   },
   test: {
     root: '.',
-    environment: 'jsdom',
     globals: true,
     coverage: {
       provider: 'c8',
@@ -50,6 +49,11 @@ export default defineConfig({
     },
     useAtomics: true,
     setupFiles: ['test/setup.ts'],
+    browser: {
+      enabled: true,
+      name: 'chromium',
+      provider: 'playwright'
+    },
     restoreMocks: true,
     sequence: {
       shuffle: true
