@@ -3,12 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": [
-    "jest.config.js",
-    "rollup.config.js",
-    "vite.config.ts",
-    "src/**/*",
-    "test/**/*",
-    "website/**/*"
-  ]
+  "include": ["rollup.config.js", "vite.config.ts", "src/**/*", "test/**/*", "website/**/*"]
 }

@@ -3,9 +3,12 @@ import react from '@vitejs/plugin-react';
 import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
 
+const isCI = process.env.CI === 'true';
+const isTest = process.env.NODE_ENV === 'test';
+
 export default defineConfig({
   root: 'website',
-  base: process.env.CI === 'true' ? '/react-data-grid/' : '/',
+  base: isCI ? '/react-data-grid/' : '/',
   build: {
     outDir: '../dist',
     emptyOutDir: true,
@@ -24,7 +27,7 @@ export default defineConfig({
         plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
       }
     }),
-    linaria({ preprocessor: 'none' })
+    !isTest && linaria({ preprocessor: 'none' })
   ],
   css: {
     postcss: {
@@ -33,5 +36,23 @@ export default defineConfig({
   },
   server: {
     open: true
+  },
+  test: {
+    root: '.',
+    environment: 'jsdom',
+    globals: true,
+    coverage: {
+      provider: 'c8',
+      enabled: isCI,
+      include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
+      all: true,
+      reporter: ['text', 'json']
+    },
+    useAtomics: true,
+    setupFiles: ['test/setup.ts'],
+    restoreMocks: true,
+    sequence: {
+      shuffle: true
+    }
   }
 });

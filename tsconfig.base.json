@@ -11,6 +11,6 @@
     "pretty": true,
     "strict": true,
     "target": "esnext",
-    "types": ["jest", "@testing-library/jest-dom"]
+    "skipLibCheck": true
   }
 }

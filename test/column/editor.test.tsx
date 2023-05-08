@@ -2,10 +2,11 @@ import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndex, getGrid, getSelectedCell, render } from '../utils';
+import { getCellsAtRowIndex, getSelectedCell, render, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -68,7 +69,7 @@ describe('Editor', () => {
   });
 
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
-    const onSave = jest.fn();
+    const onSave = vi.fn();
     render(<EditorTest onSave={onSave} />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('234');
@@ -98,13 +99,12 @@ describe('Editor', () => {
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
 
-    const grid = getGrid();
-    grid.scrollTop = 2000;
+    await scrollGrid({ scrollTop: 2000 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.keyboard('123');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1230);
-    const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     await userEvent.keyboard('{enter}');
     expect(spy).toHaveBeenCalled();
   });
@@ -231,17 +231,15 @@ describe('Editor', () => {
       }
 
       render(<EditorTest gridRows={rows} />);
-      const grid = getGrid();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       await userEvent.keyboard('abc');
 
-      grid.scrollTop = 1500;
-
+      await scrollGrid({ scrollTop: 1500 });
       expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
       await userEvent.click(getCellsAtRowIndex(40)[1]);
       expect(getSelectedCell()).toHaveTextContent(/^40$/);
-      grid.scrollTop = 0;
+      await scrollGrid({ scrollTop: 0 });
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
     });
 
