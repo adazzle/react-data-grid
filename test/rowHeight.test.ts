@@ -24,7 +24,7 @@ test('rowHeight is number', () => {
   expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });
   expect(rows[1]).toHaveStyle({ '--rdg-row-height': '40px' });
   expect(rows[2]).toHaveStyle({ '--rdg-row-height': '40px' });
-  expect(getRows()).toHaveLength(30);
+  expect(getRows()).toHaveLength(31);
 });
 
 test('rowHeight is function', () => {

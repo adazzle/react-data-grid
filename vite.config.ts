@@ -39,6 +39,7 @@ export default defineConfig({
   },
   test: {
     root: '.',
+    environment: 'jsdom',
     globals: true,
     coverage: {
       provider: 'istanbul',
