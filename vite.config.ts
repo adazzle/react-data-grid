@@ -42,7 +42,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     coverage: {
-      provider: 'istanbul',
+      provider: 'c8',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       all: true,
