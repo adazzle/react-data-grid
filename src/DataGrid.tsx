@@ -375,7 +375,7 @@ function DataGrid<R, SR, K extends Key>(
     isGroupRow
   });
 
-  const { handleColumnResize, getGridTemplateColumns } = useColumnWidths(
+  const { gridTemplateColumns, handleColumnResize } = useColumnWidths(
     columns,
     viewportColumns,
     templateColumns,
@@ -1148,7 +1148,7 @@ function DataGrid<R, SR, K extends Key>(
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
               : undefined,
-          gridTemplateColumns: getGridTemplateColumns(),
+          gridTemplateColumns,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
