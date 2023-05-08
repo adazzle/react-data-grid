@@ -288,6 +288,7 @@ describe('Editor', () => {
       await waitFor(() => {
         expect(col1Input).not.toBeInTheDocument();
       });
+      expect(outerInput).toHaveFocus();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const col2Input = screen.getByLabelText('col2-input');
