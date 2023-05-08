@@ -37,7 +37,8 @@ jobs:
           npm run build
           npm run build:types
       - name: Test
-        run: npm t -- --coverage --colors
+        run: npm t
+        timeout-minutes: 4
       - uses: codecov/codecov-action@v3
 
   website:
