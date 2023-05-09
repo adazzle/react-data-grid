@@ -8,7 +8,7 @@ import type { Column, SortColumn } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
 import type { Props } from './types';
-import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
+import { exportToCsv, exportToPdf } from './exportUtils';
 
 const toolbarClassname = css`
   display: flex;
@@ -355,9 +355,6 @@ export default function CommonFeatures({ direction }: Props) {
       <div className={toolbarClassname}>
         <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
           Export to CSV
-        </ExportButton>
-        <ExportButton onExport={() => exportToXlsx(gridElement, 'CommonFeatures.xlsx')}>
-          Export to XSLX
         </ExportButton>
         <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
           Export to PDF
