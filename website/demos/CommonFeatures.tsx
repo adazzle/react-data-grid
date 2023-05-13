@@ -164,8 +164,12 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
                 onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
               />
               <menu>
-                <button onClick={() => onClose()}>Cancel</button>
-                <button onClick={() => onClose(true)}>Save</button>
+                <button type="button" onClick={() => onClose()}>
+                  Cancel
+                </button>
+                <button type="button" onClick={() => onClose(true)}>
+                  Save
+                </button>
               </menu>
             </dialog>
           </div>,
@@ -375,6 +379,7 @@ function ExportButton({
   const [exporting, setExporting] = useState(false);
   return (
     <button
+      type="button"
       disabled={exporting}
       onClick={async () => {
         setExporting(true);
