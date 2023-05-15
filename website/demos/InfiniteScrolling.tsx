@@ -57,9 +57,9 @@ function createFakeRowObjectData(index: number): Row {
   return {
     id: `id_${index}`,
     email: faker.internet.email(),
-    title: faker.name.prefix(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName()
+    title: faker.person.prefix(),
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName()
   };
 }
 
