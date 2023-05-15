@@ -126,13 +126,13 @@ function createRows(): readonly Row[] {
   for (let i = 1; i < 10000; i++) {
     rows.push({
       id: i,
-      year: 2015 + faker.datatype.number(3),
-      country: faker.address.country(),
-      sport: sports[faker.datatype.number(sports.length - 1)],
-      athlete: faker.name.fullName(),
-      gold: faker.datatype.number(5),
-      silver: faker.datatype.number(5),
-      bronze: faker.datatype.number(5)
+      year: 2015 + faker.number.int(3),
+      country: faker.location.country(),
+      sport: sports[faker.number.int(sports.length - 1)],
+      athlete: faker.person.fullName(),
+      gold: faker.number.int(5),
+      silver: faker.number.int(5),
+      bronze: faker.number.int(5)
     });
   }
 

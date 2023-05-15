@@ -330,7 +330,7 @@ function createRows() {
       complete: Math.min(100, Math.round(Math.random() * 110)),
       priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
       issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
-      developer: faker.name.fullName()
+      developer: faker.person.fullName()
     });
   }
   return rows;
