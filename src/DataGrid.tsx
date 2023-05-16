@@ -949,7 +949,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      closeEditor(true); // ??
+      closeEditor(false); // TODO: should cell be focused?
     }
 
     return (
