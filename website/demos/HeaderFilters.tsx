@@ -301,6 +301,7 @@ export default function HeaderFilters({ direction }: Props) {
 
 function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   isCellSelected,
+  isCellFocused,
   column,
   children
 }: HeaderRendererProps<R, SR> & {
@@ -311,7 +312,7 @@ function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;
-  const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<T>(isCellSelected, isCellFocused);
 
   return (
     <>

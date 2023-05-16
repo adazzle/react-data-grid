@@ -188,8 +188,16 @@ test('navigation with focusable formatter', async () => {
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  function Test({ id, isCellSelected }: { id: string; isCellSelected: boolean }) {
-    const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
+  function Test({
+    id,
+    isCellSelected,
+    isCellFocused
+  }: {
+    id: string;
+    isCellSelected: boolean;
+    isCellFocused: boolean;
+  }) {
+    const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected, isCellFocused);
 
     return <input ref={ref} tabIndex={tabIndex} id={id} />;
   }
@@ -199,20 +207,44 @@ test('navigation when header and summary rows have focusable elements', async ()
       key: 'col2',
       name: 'col2',
       headerRenderer(p) {
-        return <Test id="header-filter1" isCellSelected={p.isCellSelected} />;
+        return (
+          <Test
+            id="header-filter1"
+            isCellSelected={p.isCellSelected}
+            isCellFocused={p.isCellFocused}
+          />
+        );
       },
       summaryFormatter(p) {
-        return <Test id="summary-formatter1" isCellSelected={p.isCellSelected} />;
+        return (
+          <Test
+            id="summary-formatter1"
+            isCellSelected={p.isCellSelected}
+            isCellFocused={p.isCellFocused}
+          />
+        );
       }
     },
     {
       key: 'col3',
       name: 'col3',
       headerRenderer(p) {
-        return <Test id="header-filter2" isCellSelected={p.isCellSelected} />;
+        return (
+          <Test
+            id="header-filter2"
+            isCellSelected={p.isCellSelected}
+            isCellFocused={p.isCellFocused}
+          />
+        );
       },
       summaryFormatter(p) {
-        return <Test id="summary-formatter2" isCellSelected={p.isCellSelected} />;
+        return (
+          <Test
+            id="summary-formatter2"
+            isCellSelected={p.isCellSelected}
+            isCellFocused={p.isCellFocused}
+          />
+        );
       }
     }
   ];

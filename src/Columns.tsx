@@ -10,6 +10,7 @@ function HeaderRenderer(props: HeaderRendererProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select All"
+      isCellSelected={props.isCellSelected}
       isCellFocused={props.isCellFocused}
       value={isRowSelected}
       onChange={(checked) => {
@@ -25,6 +26,7 @@ function SelectFormatter(props: FormatterProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select"
+      isCellSelected={props.isCellSelected}
       isCellFocused={props.isCellFocused}
       value={isRowSelected}
       onChange={(checked, isShiftClick) => {
@@ -40,6 +42,7 @@ function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select Group"
+      isCellSelected={props.isCellSelected}
       isCellFocused={props.isCellFocused}
       value={isRowSelected}
       onChange={(checked) => {

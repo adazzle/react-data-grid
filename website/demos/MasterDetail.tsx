@@ -82,7 +82,7 @@ export default function MasterDetail({ direction }: Props) {
               `
             : undefined;
         },
-        formatter({ row, isCellFocused, onRowChange }) {
+        formatter({ row, isCellSelected, isCellFocused, onRowChange }) {
           if (row.type === 'DETAIL') {
             return (
               <ProductGrid
@@ -96,6 +96,7 @@ export default function MasterDetail({ direction }: Props) {
           return (
             <CellExpanderFormatter
               expanded={row.expanded}
+              isCellSelected={isCellSelected}
               isCellFocused={isCellFocused}
               onCellExpand={() => {
                 onRowChange({ ...row, expanded: !row.expanded });

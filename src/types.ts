@@ -82,6 +82,7 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
   isCellSelected: boolean;
+  isCellFocused: boolean;
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {

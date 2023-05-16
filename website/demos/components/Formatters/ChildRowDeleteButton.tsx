@@ -40,17 +40,19 @@ const childRowButtonClassname = css`
 `;
 
 interface ChildRowDeleteButtonProps {
+  isCellSelected: boolean;
   isCellFocused: boolean;
   isDeleteSubRowEnabled: boolean;
   onDeleteSubRow: () => void;
 }
 
 export function ChildRowDeleteButton({
+  isCellSelected,
   isCellFocused,
   onDeleteSubRow,
   isDeleteSubRowEnabled
 }: ChildRowDeleteButtonProps) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellFocused);
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected, isCellFocused);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === 'Enter') {

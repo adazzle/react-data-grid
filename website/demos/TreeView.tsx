@@ -134,13 +134,14 @@ export default function TreeView({ direction }: Props) {
       {
         key: 'format',
         name: 'format',
-        formatter({ row, isCellFocused }) {
+        formatter({ row, isCellSelected, isCellFocused }) {
           const hasChildren = row.children !== undefined;
           const style = hasChildren ? undefined : { marginInlineStart: 30 };
           return (
             <>
               {hasChildren && (
                 <CellExpanderFormatter
+                  isCellSelected={isCellSelected}
                   isCellFocused={isCellFocused}
                   expanded={row.isExpanded === true}
                   onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
@@ -149,6 +150,7 @@ export default function TreeView({ direction }: Props) {
               <div className="rdg-cell-value">
                 {!hasChildren && (
                   <ChildRowDeleteButton
+                    isCellSelected={isCellSelected}
                     isCellFocused={isCellFocused}
                     isDeleteSubRowEnabled={allowDelete}
                     onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}

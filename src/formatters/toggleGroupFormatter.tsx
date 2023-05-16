@@ -34,10 +34,11 @@ export function toggleGroupFormatter<R, SR>(props: GroupFormatterProps<R, SR>) {
 export function ToggleGroup<R, SR>({
   groupKey,
   isExpanded,
+  isCellSelected,
   isCellFocused,
   toggleGroup
 }: GroupFormatterProps<R, SR>) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellFocused);
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected, isCellFocused);
 
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
     if (key === 'Enter') {
