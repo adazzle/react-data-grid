@@ -878,7 +878,6 @@ function DataGrid<R, SR, K extends Key>(
       isGroupRow
     });
 
-    shouldFocusCellRef.current = true;
     selectCell(nextSelectedCellPosition);
   }
 
