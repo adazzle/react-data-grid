@@ -81,9 +81,15 @@ export default function ColumnsReordering({ direction }: Props) {
     <>
       <div className={rangeClassname}>
         Row Height
-        <button onClick={() => setRowHeight(30)}>Small</button>
-        <button onClick={() => setRowHeight(60)}>Medium</button>
-        <button onClick={() => setRowHeight(90)}>Large</button>
+        <button type="button" onClick={() => setRowHeight(30)}>
+          Small
+        </button>
+        <button type="button" onClick={() => setRowHeight(60)}>
+          Medium
+        </button>
+        <button type="button" onClick={() => setRowHeight(90)}>
+          Large
+        </button>
       </div>
       <DataGrid
         className={`${transitionClassname} fill-grid`}

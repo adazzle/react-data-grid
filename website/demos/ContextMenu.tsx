@@ -122,6 +122,7 @@ export default function ContextMenuDemo({ direction }: Props) {
           >
             <li>
               <button
+                type="button"
                 onClick={() => {
                   const { rowIdx } = contextMenuProps;
                   setRows([...rows.slice(0, rowIdx), ...rows.slice(rowIdx + 1)]);
@@ -133,6 +134,7 @@ export default function ContextMenuDemo({ direction }: Props) {
             </li>
             <li>
               <button
+                type="button"
                 onClick={() => {
                   const { rowIdx } = contextMenuProps;
                   insertRow(rowIdx);
@@ -144,6 +146,7 @@ export default function ContextMenuDemo({ direction }: Props) {
             </li>
             <li>
               <button
+                type="button"
                 onClick={() => {
                   const { rowIdx } = contextMenuProps;
                   insertRow(rowIdx + 1);
