@@ -737,6 +737,7 @@ function DataGrid<R, SR, K extends Key>(
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
     } else {
+      shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
   }
