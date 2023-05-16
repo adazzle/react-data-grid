@@ -14,7 +14,7 @@ export const summaryCellClassname = css`
 
 type SharedCellRendererProps<R, SR> = Pick<
   CellRendererProps<R, SR>,
-  'rowIdx' | 'column' | 'colSpan' | 'isCellSelected' | 'selectCell'
+  'rowIdx' | 'column' | 'colSpan' | 'isCellSelected' | 'selectCell' | 'shouldFocusCellRef'
 >;
 
 interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
@@ -27,9 +27,10 @@ function SummaryCell<R, SR>({
   row,
   rowIdx,
   isCellSelected,
+  shouldFocusCellRef,
   selectCell
 }: SummaryCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, shouldFocusCellRef);
   const { summaryCellClass } = column;
   const className = getCellClassname(
     column,

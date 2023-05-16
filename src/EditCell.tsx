@@ -163,6 +163,7 @@ export default function EditCell<R, SR>({
               row,
               isCellSelected: true,
               isCellEditable: true,
+              isCellFocused: false,
               onRowChange: onEditorRowChange
             })}
         </>

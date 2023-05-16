@@ -73,6 +73,7 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
+  isCellFocused: boolean;
   isCellEditable: boolean;
   onRowChange: (row: TRow) => void;
 }
@@ -90,6 +91,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
+  isCellFocused: boolean;
   toggleGroup: () => void;
 }
 
@@ -106,6 +108,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   priority: number | undefined;
   onSort: (ctrlClick: boolean) => void;
   isCellSelected: boolean;
+  isCellFocused: boolean;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>

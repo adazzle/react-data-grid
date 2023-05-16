@@ -31,6 +31,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'selectCell'
   | 'onColumnResize'
   | 'shouldFocusGrid'
+  | 'shouldFocusCellRef'
   | 'direction'
 >;
 
@@ -49,10 +50,11 @@ export default function HeaderCell<R, SR>({
   onSortColumnsChange,
   selectCell,
   shouldFocusGrid,
+  shouldFocusCellRef,
   direction
 }: HeaderCellProps<R, SR>) {
   const isRtl = direction === 'rtl';
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, shouldFocusCellRef);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
@@ -184,7 +186,8 @@ export default function HeaderCell<R, SR>({
         sortDirection,
         priority,
         onSort,
-        isCellSelected
+        isCellSelected,
+        isCellFocused: isCellSelected && shouldFocusCellRef.current
       })}
     </div>
   );

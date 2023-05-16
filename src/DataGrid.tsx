@@ -1048,6 +1048,7 @@ function DataGrid<R, SR, K extends Key>(
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
             isRowSelected={isGroupRowSelected}
+            shouldFocusCellRef={shouldFocusCellRef}
             selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
           />
@@ -1194,6 +1195,7 @@ function DataGrid<R, SR, K extends Key>(
               }
               selectCell={selectHeaderCellLatest}
               shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+              shouldFocusCellRef={shouldFocusCellRef}
               direction={direction}
             />
           </RowSelectionProvider>
@@ -1222,6 +1224,7 @@ function DataGrid<R, SR, K extends Key>(
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                   isTop
                   showBorder={rowIdx === topSummaryRowsCount - 1}
+                  shouldFocusCellRef={shouldFocusCellRef}
                   selectCell={selectCellLatest}
                 />
               );
@@ -1256,6 +1259,7 @@ function DataGrid<R, SR, K extends Key>(
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                   isTop={false}
                   showBorder={rowIdx === 0}
+                  shouldFocusCellRef={shouldFocusCellRef}
                   selectCell={selectCellLatest}
                 />
               );

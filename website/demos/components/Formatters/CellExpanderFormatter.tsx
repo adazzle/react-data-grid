@@ -17,17 +17,17 @@ const cellExpandClassname = css`
 `;
 
 interface CellExpanderFormatterProps {
-  isCellSelected: boolean;
+  isCellFocused: boolean;
   expanded: boolean;
   onCellExpand: () => void;
 }
 
 export function CellExpanderFormatter({
-  isCellSelected,
+  isCellFocused,
   expanded,
   onCellExpand
 }: CellExpanderFormatterProps) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellFocused);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === ' ' || e.key === 'Enter') {

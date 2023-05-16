@@ -82,11 +82,11 @@ export default function MasterDetail({ direction }: Props) {
               `
             : undefined;
         },
-        formatter({ row, isCellSelected, onRowChange }) {
+        formatter({ row, isCellFocused, onRowChange }) {
           if (row.type === 'DETAIL') {
             return (
               <ProductGrid
-                isCellSelected={isCellSelected}
+                isCellFocused={isCellFocused}
                 parentId={row.parentId}
                 direction={direction}
               />
@@ -96,7 +96,7 @@ export default function MasterDetail({ direction }: Props) {
           return (
             <CellExpanderFormatter
               expanded={row.expanded}
-              isCellSelected={isCellSelected}
+              isCellFocused={isCellFocused}
               onCellExpand={() => {
                 onRowChange({ ...row, expanded: !row.expanded });
               }}
@@ -149,20 +149,20 @@ export default function MasterDetail({ direction }: Props) {
 
 function ProductGrid({
   parentId,
-  isCellSelected,
+  isCellFocused,
   direction
 }: {
   parentId: number;
-  isCellSelected: boolean;
+  isCellFocused: boolean;
   direction: Direction;
 }) {
   const gridRef = useRef<DataGridHandle>(null);
   useEffect(() => {
-    if (!isCellSelected) return;
+    if (!isCellFocused) return;
     gridRef
       .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
       .focus({ preventScroll: true });
-  }, [isCellSelected]);
+  }, [isCellFocused]);
   const products = getProducts(parentId);
 
   return (

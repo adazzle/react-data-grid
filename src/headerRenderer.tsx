@@ -33,7 +33,7 @@ export default function headerRenderer<R, SR>({
   sortDirection,
   priority,
   onSort,
-  isCellSelected
+  isCellFocused
 }: HeaderRendererProps<R, SR>) {
   if (!column.sortable) return <>{column.name}</>;
 
@@ -42,7 +42,7 @@ export default function headerRenderer<R, SR>({
       onSort={onSort}
       sortDirection={sortDirection}
       priority={priority}
-      isCellSelected={isCellSelected}
+      isCellFocused={isCellFocused}
     >
       {column.name}
     </SortableHeaderCell>
@@ -51,7 +51,7 @@ export default function headerRenderer<R, SR>({
 
 type SharedHeaderCellProps<R, SR> = Pick<
   HeaderRendererProps<R, SR>,
-  'sortDirection' | 'onSort' | 'priority' | 'isCellSelected'
+  'sortDirection' | 'onSort' | 'priority' | 'isCellFocused'
 >;
 
 interface SortableHeaderCellProps<R, SR> extends SharedHeaderCellProps<R, SR> {
@@ -63,10 +63,10 @@ function SortableHeaderCell<R, SR>({
   sortDirection,
   priority,
   children,
-  isCellSelected
+  isCellFocused
 }: SortableHeaderCellProps<R, SR>) {
   const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellFocused);
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {

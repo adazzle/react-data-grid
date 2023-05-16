@@ -113,6 +113,7 @@ function Cell<R, SR>({
             column,
             row,
             isCellSelected,
+            isCellFocused: isCellSelected && shouldFocusCellRef.current,
             isCellEditable: isEditable,
             onRowChange: handleRowChange
           })}
