@@ -6,7 +6,6 @@ import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
-
 // https://github.com/rome/tools/issues/4485
 const pkg = JSON.parse(await readFile('./package.json', 'utf-8'));
 
