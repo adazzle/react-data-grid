@@ -58,7 +58,11 @@ const columns: readonly Column<Row>[] = [
         props.onRowChange({ ...props.row, id: props.row.id + 10 });
       }
 
-      return <button onClick={onClick}>value: {props.row.id}</button>;
+      return (
+        <button type="button" onClick={onClick}>
+          value: {props.row.id}
+        </button>
+      );
     }
   }
 ];

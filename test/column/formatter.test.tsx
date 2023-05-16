@@ -68,7 +68,11 @@ describe('Custom formatter component', () => {
           props.onRowChange({ id: props.row.id + 1 });
         }
 
-        return <button onClick={onClick}>value: {props.row.id}</button>;
+        return (
+          <button type="button" onClick={onClick}>
+            value: {props.row.id}
+          </button>
+        );
       }
     };
 
@@ -125,7 +129,9 @@ test.fails(
 
       return (
         <>
-          <button onClick={onClick}>Test</button>
+          <button type="button" onClick={onClick}>
+            Test
+          </button>
           <DataGrid
             columns={columns}
             rows={rows}
