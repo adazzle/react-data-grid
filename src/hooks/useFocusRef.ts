@@ -1,14 +1,14 @@
-import { useRef } from 'react';
-
-import { useLayoutEffect } from './useLayoutEffect';
+import { useCallback } from 'react';
 
 export function useFocusRef<T extends HTMLOrSVGElement>(isSelected: boolean, isFocused: boolean) {
-  const ref = useRef<T>(null);
-
-  useLayoutEffect(() => {
-    if (!isFocused) return;
-    ref.current?.focus({ preventScroll: true });
-  }, [isFocused]);
+  const ref = useCallback(
+    (el: T | null) => {
+      if (isFocused) {
+        el?.focus({ preventScroll: true });
+      }
+    },
+    [isFocused]
+  );
 
   return {
     ref,
