@@ -38,17 +38,11 @@ function GlobalNoRowsFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function localCheckboxFormatter(
-  props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
+function localCheckboxFormatter(props: CheckboxFormatterProps, ref: React.Ref<HTMLInputElement>) {
   return <div ref={ref}>Local checkbox</div>;
 }
 
-function globalCheckboxFormatter(
-  props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
+function globalCheckboxFormatter(props: CheckboxFormatterProps, ref: React.Ref<HTMLInputElement>) {
   return <div ref={ref}>Global checkbox</div>;
 }
 

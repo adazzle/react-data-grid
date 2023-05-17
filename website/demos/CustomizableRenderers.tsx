@@ -117,7 +117,7 @@ export default function CustomizableRenderers({ direction }: Props) {
 
 function checkboxFormatter(
   { onChange, ...props }: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
+  ref: React.Ref<HTMLInputElement>
 ) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);

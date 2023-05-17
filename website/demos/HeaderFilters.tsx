@@ -1,3 +1,4 @@
+import type { RefCallback } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
@@ -306,7 +307,7 @@ function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   children
 }: HeaderRendererProps<R, SR> & {
   children: (args: {
-    ref: React.RefObject<T>;
+    ref: RefCallback<T>;
     tabIndex: number;
     filters: Filter;
   }) => React.ReactElement;
