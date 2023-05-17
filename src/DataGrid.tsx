@@ -926,9 +926,7 @@ function DataGrid<R, SR, K extends Key>(
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
     const closeEditor = (shouldFocusCell: boolean) => {
-      if (shouldFocusCell) {
-        shouldFocusCellRef.current = true;
-      }
+      shouldFocusCellRef.current = shouldFocusCell;
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
@@ -949,7 +947,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      closeEditor(false); // TODO: should cell be focused?
+      closeEditor(false);
     }
 
     return (
