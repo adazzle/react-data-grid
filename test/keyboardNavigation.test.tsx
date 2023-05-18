@@ -207,44 +207,20 @@ test('navigation when header and summary rows have focusable elements', async ()
       key: 'col2',
       name: 'col2',
       headerRenderer(p) {
-        return (
-          <Test
-            id="header-filter1"
-            isCellSelected={p.isCellSelected}
-            isCellFocused={p.isCellFocused}
-          />
-        );
+        return <Test id="header-filter1" {...p} />;
       },
       summaryFormatter(p) {
-        return (
-          <Test
-            id="summary-formatter1"
-            isCellSelected={p.isCellSelected}
-            isCellFocused={p.isCellFocused}
-          />
-        );
+        return <Test id="summary-formatter1" {...p} />;
       }
     },
     {
       key: 'col3',
       name: 'col3',
       headerRenderer(p) {
-        return (
-          <Test
-            id="header-filter2"
-            isCellSelected={p.isCellSelected}
-            isCellFocused={p.isCellFocused}
-          />
-        );
+        return <Test id="header-filter2" {...p} />;
       },
       summaryFormatter(p) {
-        return (
-          <Test
-            id="summary-formatter2"
-            isCellSelected={p.isCellSelected}
-            isCellFocused={p.isCellFocused}
-          />
-        );
+        return <Test id="summary-formatter2" {...p} />;
       }
     }
   ];

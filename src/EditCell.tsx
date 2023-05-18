@@ -122,8 +122,8 @@ export default function EditCell<R, SR>({
     }
   }
 
-  function onEditorRowChange(row: R, commitChanges = false) {
-    onRowChange(row, commitChanges, commitChanges);
+  function onEditorRowChange(row: R, commitChangesAndFocus = false) {
+    onRowChange(row, commitChangesAndFocus, commitChangesAndFocus);
   }
 
   function onEditorClose(commitChanges = false) {
