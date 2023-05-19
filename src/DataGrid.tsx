@@ -437,7 +437,7 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
-    const cell = getCellToFocus(gridRef.current!);
+    const cell = getCellToScroll(gridRef.current!);
     if (cell === null) return;
 
     scrollIntoView(cell);
@@ -747,7 +747,7 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
-      scrollIntoView(getCellToFocus(gridRef.current!));
+      scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
       shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
@@ -1279,7 +1279,7 @@ function DataGrid<R, SR, K extends Key>(
   );
 }
 
-function getCellToFocus(gridEl: HTMLDivElement) {
+function getCellToScroll(gridEl: HTMLDivElement) {
   const cells = gridEl.querySelectorAll<HTMLDivElement>('.rdg-cell[tabindex="0"]');
   if (cells.length === 0) return null;
 
