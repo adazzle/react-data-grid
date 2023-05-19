@@ -217,7 +217,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'available',
       name: 'Available',
-      formatter({ row, onRowChange, isCellSelected, isCellFocused }) {
+      formatter({ row, onRowChange, isCellSelected }) {
         return (
           <SelectCellFormatter
             value={row.available}
@@ -225,7 +225,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
               onRowChange({ ...row, available: !row.available });
             }}
             isCellSelected={isCellSelected}
-            isCellFocused={isCellFocused}
           />
         );
       },

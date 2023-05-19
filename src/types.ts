@@ -1,4 +1,4 @@
-import type { Key, MutableRefObject, ReactElement, ReactNode, Ref } from 'react';
+import type { Key, ReactElement, ReactNode, Ref } from 'react';
 
 import type { DataGridProps } from './DataGrid';
 
@@ -73,7 +73,6 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
-  isCellFocused: boolean;
   isCellEditable: boolean;
   onRowChange: (row: TRow) => void;
 }
@@ -82,7 +81,6 @@ export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
   isCellSelected: boolean;
-  isCellFocused: boolean;
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
@@ -92,7 +90,6 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   childRows: readonly TRow[];
   isExpanded: boolean;
   isCellSelected: boolean;
-  isCellFocused: boolean;
   toggleGroup: () => void;
 }
 
@@ -109,14 +106,10 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   priority: number | undefined;
   onSort: (ctrlClick: boolean) => void;
   isCellSelected: boolean;
-  isCellFocused: boolean;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<
-      RowRendererProps<TRow, TSummaryRow>,
-      'row' | 'rowIdx' | 'selectCell' | 'shouldFocusCellRef'
-    >,
+  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
       'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
@@ -187,7 +180,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  shouldFocusCellRef: MutableRefObject<boolean>;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;

@@ -1,9 +1,8 @@
-import type { RefCallback } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
-import DataGrid, { useFocusRef } from '../../src';
+import DataGrid from '../../src';
 import type { Column, HeaderRendererProps } from '../../src';
 import type { Omit } from '../../src/types';
 import type { Props } from './types';
@@ -302,23 +301,16 @@ export default function HeaderFilters({ direction }: Props) {
 
 function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
   isCellSelected,
-  isCellFocused,
   column,
   children
 }: HeaderRendererProps<R, SR> & {
-  children: (args: {
-    ref: RefCallback<T>;
-    tabIndex: number;
-    filters: Filter;
-  }) => React.ReactElement;
+  children: (args: { tabIndex: number; filters: Filter }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;
-  const { ref, tabIndex } = useFocusRef<T>(isCellSelected, isCellFocused);
-
   return (
     <>
       <div>{column.name}</div>
-      {filters.enabled && <div>{children({ ref, tabIndex, filters })}</div>}
+      {filters.enabled && <div>{children({ tabIndex: isCellSelected ? 0 : -1, filters })}</div>}
     </>
   );
 }

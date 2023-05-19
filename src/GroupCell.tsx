@@ -7,7 +7,7 @@ import type { GroupRowRendererProps } from './GroupRow';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<
   GroupRowRendererProps<R, SR>,
-  'id' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup' | 'shouldFocusCellRef'
+  'id' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup'
 >;
 
 interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
@@ -26,10 +26,9 @@ function GroupCell<R, SR>({
   column,
   row,
   groupColumnIndex,
-  shouldFocusCellRef,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, shouldFocusCellRef);
+  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   function toggleGroup() {
     toggleGroupWrapper(id);
@@ -43,7 +42,6 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       aria-selected={isCellSelected}
-      ref={ref}
       tabIndex={tabIndex}
       key={column.key}
       className={getCellClassname(column)}
@@ -62,7 +60,6 @@ function GroupCell<R, SR>({
           row,
           isExpanded,
           isCellSelected,
-          isCellFocused: isCellSelected && shouldFocusCellRef.current,
           toggleGroup
         })}
     </div>

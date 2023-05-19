@@ -434,6 +434,22 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
+  useLayoutEffect(() => {
+    if (!shouldFocusCellRef.current) return;
+    shouldFocusCellRef.current = false;
+    const cell = gridRef.current!.querySelector<HTMLDivElement>('.rdg-cell[tabindex="0"]');
+    if (cell !== null) {
+      scrollIntoView(cell);
+      // Check if formatter needs to be focused instead
+      const focusableFormatter = cell.querySelector('[tabindex="0"]');
+      if (focusableFormatter !== null && focusableFormatter instanceof HTMLOrSVGElement) {
+        focusableFormatter.focus({ preventScroll: true });
+      } else {
+        cell.focus({ preventScroll: true });
+      }
+    }
+  });
+
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn,
@@ -1046,7 +1062,6 @@ function DataGrid<R, SR, K extends Key>(
             isExpanded={row.isExpanded}
             selectedCellIdx={selectedRowIdx === rowIdx ? selectedIdx : undefined}
             isRowSelected={isGroupRowSelected}
-            shouldFocusCellRef={shouldFocusCellRef}
             selectGroup={selectGroupLatest}
             toggleGroup={toggleGroupLatest}
           />
@@ -1091,8 +1106,7 @@ function DataGrid<R, SR, K extends Key>(
           onRowChange: handleFormatterRowChangeLatest,
           selectCell: selectCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
-          selectedCellEditor: getCellEditor(rowIdx),
-          shouldFocusCellRef
+          selectedCellEditor: getCellEditor(rowIdx)
         })
       );
     }
@@ -1193,7 +1207,6 @@ function DataGrid<R, SR, K extends Key>(
               }
               selectCell={selectHeaderCellLatest}
               shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-              shouldFocusCellRef={shouldFocusCellRef}
               direction={direction}
             />
           </RowSelectionProvider>
@@ -1222,7 +1235,6 @@ function DataGrid<R, SR, K extends Key>(
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                   isTop
                   showBorder={rowIdx === topSummaryRowsCount - 1}
-                  shouldFocusCellRef={shouldFocusCellRef}
                   selectCell={selectCellLatest}
                 />
               );
@@ -1257,7 +1269,6 @@ function DataGrid<R, SR, K extends Key>(
                   selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                   isTop={false}
                   showBorder={rowIdx === 0}
-                  shouldFocusCellRef={shouldFocusCellRef}
                   selectCell={selectCellLatest}
                 />
               );
