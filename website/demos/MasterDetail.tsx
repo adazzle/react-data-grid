@@ -143,13 +143,6 @@ export default function MasterDetail({ direction }: Props) {
 
 function ProductGrid({ parentId, direction }: { parentId: number; direction: Direction }) {
   const gridRef = useRef<DataGridHandle>(null);
-  // TODO
-  // useEffect(() => {
-  //   if (!isCellFocused) return;
-  //   gridRef
-  //     .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
-  //     .focus({ preventScroll: true });
-  // }, [isCellFocused]);
   const products = getProducts(parentId);
 
   return (

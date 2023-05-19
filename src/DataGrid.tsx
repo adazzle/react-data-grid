@@ -437,8 +437,14 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
-    const cell = gridRef.current!.querySelector<HTMLDivElement>('.rdg-cell[tabindex="0"]');
-    if (cell === null) return;
+    const cells = gridRef.current!.querySelectorAll<HTMLDivElement>('.rdg-cell[tabindex="0"]');
+    if (cells.length === 0) return;
+
+    const cell =
+      cells.length === 1
+        ? cells[0]
+        : Array.from(cells).find((cell) => cell.closest('.rdg') === gridRef.current)!;
+
     scrollIntoView(cell);
     // Focus cell content when available instead of the cell itself
     const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
