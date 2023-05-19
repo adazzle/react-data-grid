@@ -34,7 +34,6 @@ function Cell<R, SR>({
   row,
   rowIdx,
   dragHandle,
-  skipCellFocusRef,
   onClick,
   onDoubleClick,
   onContextMenu,
@@ -42,7 +41,7 @@ function Cell<R, SR>({
   selectCell,
   ...props
 }: CellRendererProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocusRef);
+  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -97,7 +96,6 @@ function Cell<R, SR>({
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
       aria-readonly={!isEditable || undefined}
-      ref={ref}
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}

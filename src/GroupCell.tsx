@@ -28,7 +28,7 @@ function GroupCell<R, SR>({
   groupColumnIndex,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
 
   function toggleGroup() {
     toggleGroupWrapper(id);
@@ -42,7 +42,6 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       aria-selected={isCellSelected}
-      ref={ref}
       tabIndex={tabIndex}
       key={column.key}
       className={getCellClassname(column)}

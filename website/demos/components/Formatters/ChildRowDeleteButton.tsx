@@ -1,7 +1,5 @@
 import { css } from '@linaria/core';
 
-import { useFocusRef } from '../../../../src';
-
 const childRowActionCrossClassname = css`
   &::before,
   &::after {
@@ -50,8 +48,6 @@ export function ChildRowDeleteButton({
   onDeleteSubRow,
   isDeleteSubRowEnabled
 }: ChildRowDeleteButtonProps) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
-
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -64,7 +60,7 @@ export function ChildRowDeleteButton({
       <div className={childRowActionCrossClassname} />
       {isDeleteSubRowEnabled && (
         <div className={childRowButtonClassname} onClick={onDeleteSubRow}>
-          <span ref={ref} tabIndex={tabIndex} onKeyDown={handleKeyDown}>
+          <span tabIndex={isCellSelected ? 0 : -1} onKeyDown={handleKeyDown}>
             ❌
           </span>
         </div>

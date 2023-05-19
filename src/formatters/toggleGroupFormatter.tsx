@@ -1,6 +1,5 @@
 import { css } from '@linaria/core';
 
-import { useFocusRef } from '../hooks/useFocusRef';
 import type { GroupFormatterProps } from '../types';
 
 const groupCellContent = css`
@@ -37,8 +36,6 @@ export function ToggleGroup<R, SR>({
   isCellSelected,
   toggleGroup
 }: GroupFormatterProps<R, SR>) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
-
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
     if (key === 'Enter') {
       toggleGroup();
@@ -49,9 +46,8 @@ export function ToggleGroup<R, SR>({
 
   return (
     <span
-      ref={ref}
       className={groupCellContentClassname}
-      tabIndex={tabIndex}
+      tabIndex={isCellSelected ? 0 : -1}
       onKeyDown={handleKeyDown}
     >
       {groupKey as string}

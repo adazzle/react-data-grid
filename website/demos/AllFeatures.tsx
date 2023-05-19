@@ -54,7 +54,9 @@ const columns: readonly Column<Row>[] = [
     name: 'Avatar',
     width: 40,
     resizable: true,
-    headerRenderer: () => <ImageFormatter value={faker.image.cats()} />,
+    headerRenderer: () => (
+      <ImageFormatter value={faker.image.urlLoremFlickr({ category: 'cats' })} />
+    ),
     formatter: ({ row }) => <ImageFormatter value={row.avatar} />
   },
   {
@@ -149,13 +151,13 @@ function createRows(): Row[] {
       id: `id_${i}`,
       avatar: faker.image.avatar(),
       email: faker.internet.email(),
-      title: faker.name.prefix(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      street: faker.address.street(),
-      zipCode: faker.address.zipCode(),
+      title: faker.person.prefix(),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      street: faker.location.street(),
+      zipCode: faker.location.zipCode(),
       date: faker.date.past().toLocaleDateString(),
-      bs: faker.company.bs(),
+      bs: faker.company.buzzPhrase(),
       catchPhrase: faker.company.catchPhrase(),
       companyName: faker.company.name(),
       words: faker.lorem.words(),
