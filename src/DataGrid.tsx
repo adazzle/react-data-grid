@@ -440,12 +440,12 @@ function DataGrid<R, SR, K extends Key>(
     const cell = gridRef.current!.querySelector<HTMLDivElement>('.rdg-cell[tabindex="0"]');
     if (cell !== null) {
       scrollIntoView(cell);
-      // Check if formatter needs to be focused instead
-      const focusableFormatter = cell.querySelector('[tabindex="0"]');
-      if (focusableFormatter !== null && focusableFormatter instanceof HTMLElement) {
-        focusableFormatter.focus({ preventScroll: true });
-      } else {
+      // Check if cell renderer content should be focused instead
+      const elementToFocus = cell.querySelector('[tabindex="0"]');
+      if (elementToFocus === null) {
         cell.focus({ preventScroll: true });
+      } else if (elementToFocus instanceof HTMLElement || elementToFocus instanceof SVGElement) {
+        elementToFocus.focus({ preventScroll: true });
       }
     }
   });
