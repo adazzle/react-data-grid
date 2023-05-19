@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
-import DataGrid, { useFocusRef } from '../../src';
+import DataGrid from '../../src';
 import type { Column, HeaderRendererProps } from '../../src';
 import type { Omit } from '../../src/types';
 import type { Props } from './types';
@@ -108,7 +108,7 @@ export default function HeaderFilters({ direction }: Props) {
         name: 'Title',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
                 {...rest}
@@ -131,7 +131,7 @@ export default function HeaderFilters({ direction }: Props) {
         name: 'Priority',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLSelectElement> {...p}>
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
                 {...rest}
@@ -160,7 +160,7 @@ export default function HeaderFilters({ direction }: Props) {
         name: 'Issue Type',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLSelectElement> {...p}>
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
                 {...rest}
@@ -189,7 +189,7 @@ export default function HeaderFilters({ direction }: Props) {
         name: 'Developer',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
                 {...rest}
@@ -213,7 +213,7 @@ export default function HeaderFilters({ direction }: Props) {
         name: '% Complete',
         headerCellClass: filterColumnClassName,
         headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
                 {...rest}
@@ -299,24 +299,18 @@ export default function HeaderFilters({ direction }: Props) {
   );
 }
 
-function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
+function FilterRenderer<R>({
   isCellSelected,
   column,
   children
-}: HeaderRendererProps<R, SR> & {
-  children: (args: {
-    ref: React.RefObject<T>;
-    tabIndex: number;
-    filters: Filter;
-  }) => React.ReactElement;
+}: HeaderRendererProps<R> & {
+  children: (args: { tabIndex: number; filters: Filter }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;
-  const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
-
   return (
     <>
       <div>{column.name}</div>
-      {filters.enabled && <div>{children({ ref, tabIndex, filters })}</div>}
+      {filters.enabled && <div>{children({ tabIndex: isCellSelected ? 0 : -1, filters })}</div>}
     </>
   );
 }

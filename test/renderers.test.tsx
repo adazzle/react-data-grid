@@ -3,13 +3,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, sortIcon } from '../src';
-import type {
-  Column,
-  DataGridProps,
-  CheckboxFormatterProps,
-  SortColumn,
-  SortStatusProps
-} from '../src';
+import type { Column, DataGridProps, SortColumn, SortStatusProps } from '../src';
 import { getHeaderCells, getRows, setup, render } from './utils';
 
 interface Row {
@@ -38,18 +32,12 @@ function GlobalNoRowsFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function localCheckboxFormatter(
-  props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
-  return <div ref={ref}>Local checkbox</div>;
+function localCheckboxFormatter() {
+  return <div>Local checkbox</div>;
 }
 
-function globalCheckboxFormatter(
-  props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
-  return <div ref={ref}>Global checkbox</div>;
+function globalCheckboxFormatter() {
+  return <div>Global checkbox</div>;
 }
 
 function globalSortStatus({ sortDirection, priority }: SortStatusProps) {

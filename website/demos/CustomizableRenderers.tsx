@@ -115,15 +115,12 @@ export default function CustomizableRenderers({ direction }: Props) {
   );
 }
 
-function checkboxFormatter(
-  { onChange, ...props }: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
+function checkboxFormatter({ onChange, ...props }: CheckboxFormatterProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
-  return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
+  return <input type="checkbox" {...props} onChange={handleChange} />;
 }
 
 function sortStatus({ sortDirection, priority }: SortStatusProps) {

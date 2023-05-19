@@ -1,4 +1,4 @@
-import type { Key, MutableRefObject, ReactElement, ReactNode, RefObject } from 'react';
+import type { Key, ReactElement, ReactNode } from 'react';
 
 import type { DataGridProps } from './DataGrid';
 
@@ -109,10 +109,7 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<
-      RowRendererProps<TRow, TSummaryRow>,
-      'row' | 'rowIdx' | 'selectCell' | 'skipCellFocusRef'
-    >,
+  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
       'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
@@ -183,7 +180,6 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  skipCellFocusRef: MutableRefObject<boolean>;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
@@ -266,9 +262,7 @@ export interface CheckboxFormatterProps
 
 export interface Renderers<TRow, TSummaryRow> {
   sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
-  checkboxFormatter?: Maybe<
-    (props: CheckboxFormatterProps, ref: RefObject<HTMLInputElement>) => ReactNode
-  >;
+  checkboxFormatter?: Maybe<(props: CheckboxFormatterProps) => ReactNode>;
   rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
