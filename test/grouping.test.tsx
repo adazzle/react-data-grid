@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { groupBy as rowGrouper } from 'lodash';
+import { groupBy as rowGrouper } from 'lodash-es';
 
 import type { Column } from '../src';
 import DataGrid, { SelectColumn, textEditor } from '../src';
