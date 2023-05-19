@@ -106,15 +106,15 @@ export default function EditCell<R, SR>({
 
     if (event.key === 'Escape') {
       // Discard changes
-      onClose(false, true);
+      onClose(false);
     } else if (event.key === 'Enter') {
-      onClose(true, true);
+      onClose(true);
     } else if (onEditorNavigation(event)) {
       navigate(event);
     }
   }
 
-  function onClose(commitChanges: boolean, shouldFocusCell: boolean) {
+  function onClose(commitChanges: boolean, shouldFocusCell = true) {
     if (commitChanges) {
       onRowChange(row, true, shouldFocusCell);
     } else {
@@ -127,7 +127,7 @@ export default function EditCell<R, SR>({
   }
 
   function onEditorClose(commitChanges = false) {
-    onClose(commitChanges, true);
+    onClose(commitChanges);
   }
 
   const { cellClass } = column;
