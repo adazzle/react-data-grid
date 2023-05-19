@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { groupBy as rowGrouper } from 'lodash';
+import { groupBy as rowGrouper } from 'lodash-es';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn } from '../../src';
