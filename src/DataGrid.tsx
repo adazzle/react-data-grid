@@ -437,13 +437,8 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
-    const cells = gridRef.current!.querySelectorAll<HTMLDivElement>('.rdg-cell[tabindex="0"]');
-    if (cells.length === 0) return;
-
-    const cell =
-      cells.length === 1
-        ? cells[0]
-        : Array.from(cells).find((cell) => cell.closest('.rdg') === gridRef.current)!;
+    const cell = getCellToFocus(gridRef.current!);
+    if (cell === null) return;
 
     scrollIntoView(cell);
     // Focus cell content when available instead of the cell itself
@@ -752,7 +747,7 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
-      scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
+      scrollIntoView(getCellToFocus(gridRef.current!));
     } else {
       shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
@@ -1282,6 +1277,15 @@ function DataGrid<R, SR, K extends Key>(
       </DataGridDefaultRenderersProvider>
     </div>
   );
+}
+
+function getCellToFocus(gridEl: HTMLDivElement) {
+  const cells = gridEl.querySelectorAll<HTMLDivElement>('.rdg-cell[tabindex="0"]');
+  if (cells.length === 0) return null;
+
+  return cells.length === 1
+    ? cells[0]
+    : Array.from(cells).find((cell) => cell.closest('.rdg') === gridEl)!;
 }
 
 function isSamePosition(p1: Position, p2: Position) {
