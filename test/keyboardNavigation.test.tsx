@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
 import DataGrid, { SelectColumn } from '../src';
-import { useFocusRef } from '../src/hooks';
 import {
   setup,
   getSelectedCell,
@@ -188,18 +187,8 @@ test('navigation with focusable formatter', async () => {
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  function Test({
-    id,
-    isCellSelected,
-    isCellFocused
-  }: {
-    id: string;
-    isCellSelected: boolean;
-    isCellFocused: boolean;
-  }) {
-    const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected, isCellFocused);
-
-    return <input ref={ref} tabIndex={tabIndex} id={id} />;
+  function Test({ id, isCellSelected }: { id: string; isCellSelected: boolean }) {
+    return <input tabIndex={isCellSelected ? 0 : -1} id={id} />;
   }
 
   const columns: readonly Column<Row>[] = [

@@ -10,7 +10,7 @@ import { rowClassname, rowSelectedClassname } from './style/row';
 
 type SharedRowRendererProps<R, SR> = Pick<
   RowRendererProps<R, SR>,
-  'viewportColumns' | 'rowIdx' | 'gridRowStart' | 'selectCell' | 'shouldFocusCellRef'
+  'viewportColumns' | 'rowIdx' | 'gridRowStart' | 'selectCell'
 >;
 
 interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
@@ -77,7 +77,6 @@ function SummaryRow<R, SR>({
   selectedCellIdx,
   isTop,
   showBorder,
-  shouldFocusCellRef,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -99,7 +98,6 @@ function SummaryRow<R, SR>({
         row={row}
         rowIdx={rowIdx}
         isCellSelected={isCellSelected}
-        shouldFocusCellRef={shouldFocusCellRef}
         selectCell={selectCell}
       />
     );

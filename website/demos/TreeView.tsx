@@ -134,7 +134,7 @@ export default function TreeView({ direction }: Props) {
       {
         key: 'format',
         name: 'format',
-        formatter({ row, isCellSelected, isCellFocused }) {
+        formatter({ row, isCellSelected }) {
           const hasChildren = row.children !== undefined;
           const style = hasChildren ? undefined : { marginInlineStart: 30 };
           return (
@@ -142,7 +142,6 @@ export default function TreeView({ direction }: Props) {
               {hasChildren && (
                 <CellExpanderFormatter
                   isCellSelected={isCellSelected}
-                  isCellFocused={isCellFocused}
                   expanded={row.isExpanded === true}
                   onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
                 />
@@ -151,7 +150,6 @@ export default function TreeView({ direction }: Props) {
                 {!hasChildren && (
                   <ChildRowDeleteButton
                     isCellSelected={isCellSelected}
-                    isCellFocused={isCellFocused}
                     isDeleteSubRowEnabled={allowDelete}
                     onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
                   />

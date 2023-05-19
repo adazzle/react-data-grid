@@ -1,6 +1,5 @@
 import { css } from '@linaria/core';
 
-import { useFocusRef } from './hooks';
 import type { HeaderRendererProps } from './types';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 
@@ -33,8 +32,7 @@ export default function headerRenderer<R, SR>({
   sortDirection,
   priority,
   onSort,
-  isCellSelected,
-  isCellFocused
+  isCellSelected
 }: HeaderRendererProps<R, SR>) {
   if (!column.sortable) return <>{column.name}</>;
 
@@ -44,7 +42,6 @@ export default function headerRenderer<R, SR>({
       sortDirection={sortDirection}
       priority={priority}
       isCellSelected={isCellSelected}
-      isCellFocused={isCellFocused}
     >
       {column.name}
     </SortableHeaderCell>
@@ -53,7 +50,7 @@ export default function headerRenderer<R, SR>({
 
 type SharedHeaderCellProps<R, SR> = Pick<
   HeaderRendererProps<R, SR>,
-  'sortDirection' | 'onSort' | 'priority' | 'isCellSelected' | 'isCellFocused'
+  'sortDirection' | 'onSort' | 'priority' | 'isCellSelected'
 >;
 
 interface SortableHeaderCellProps<R, SR> extends SharedHeaderCellProps<R, SR> {
@@ -65,12 +62,9 @@ function SortableHeaderCell<R, SR>({
   sortDirection,
   priority,
   children,
-  isCellSelected,
-  isCellFocused
+  isCellSelected
 }: SortableHeaderCellProps<R, SR>) {
   const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected, isCellFocused);
-
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {
       // stop propagation to prevent scrolling
@@ -85,8 +79,7 @@ function SortableHeaderCell<R, SR>({
 
   return (
     <span
-      ref={ref}
-      tabIndex={tabIndex}
+      tabIndex={isCellSelected ? 0 : -1}
       className={headerSortCellClassname}
       onClick={handleClick}
       onKeyDown={handleKeyDown}

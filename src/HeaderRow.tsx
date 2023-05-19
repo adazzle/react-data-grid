@@ -1,4 +1,4 @@
-import { memo, type MutableRefObject } from 'react';
+import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -21,7 +21,6 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
-  shouldFocusCellRef: MutableRefObject<boolean>;
   direction: Direction;
 }
 
@@ -56,7 +55,6 @@ function HeaderRow<R, SR, K extends React.Key>({
   selectedCellIdx,
   selectCell,
   shouldFocusGrid,
-  shouldFocusCellRef,
   direction
 }: HeaderRowProps<R, SR, K>) {
   const cells = [];
@@ -78,7 +76,6 @@ function HeaderRow<R, SR, K extends React.Key>({
         sortColumns={sortColumns}
         selectCell={selectCell}
         shouldFocusGrid={shouldFocusGrid && index === 0}
-        shouldFocusCellRef={shouldFocusCellRef}
         direction={direction}
       />
     );

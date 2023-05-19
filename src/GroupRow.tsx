@@ -1,4 +1,3 @@
-import type { MutableRefObject } from 'react';
 import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
@@ -25,7 +24,6 @@ export interface GroupRowRendererProps<R, SR>
   selectedCellIdx: number | undefined;
   isExpanded: boolean;
   isRowSelected: boolean;
-  shouldFocusCellRef: MutableRefObject<boolean>;
   selectGroup: (rowIdx: number) => void;
   toggleGroup: (expandedGroupId: unknown) => void;
 }
@@ -57,7 +55,6 @@ function GroupedRow<R, SR>({
   isExpanded,
   selectedCellIdx,
   isRowSelected,
-  shouldFocusCellRef,
   selectGroup,
   toggleGroup,
   ...props
@@ -98,7 +95,6 @@ function GroupedRow<R, SR>({
             column={column}
             row={row}
             groupColumnIndex={idx}
-            shouldFocusCellRef={shouldFocusCellRef}
             toggleGroup={toggleGroup}
           />
         ))}

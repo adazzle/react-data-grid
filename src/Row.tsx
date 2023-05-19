@@ -22,7 +22,6 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
-    shouldFocusCellRef,
     onCellClick,
     onCellDoubleClick,
     onCellContextMenu,
@@ -85,7 +84,6 @@ function Row<R, SR>(
           onContextMenu={onCellContextMenu}
           onRowChange={handleRowChange}
           selectCell={selectCell}
-          shouldFocusCellRef={shouldFocusCellRef}
         />
       );
     }
