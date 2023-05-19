@@ -438,16 +438,11 @@ function DataGrid<R, SR, K extends Key>(
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
     const cell = gridRef.current!.querySelector<HTMLDivElement>('.rdg-cell[tabindex="0"]');
-    if (cell !== null) {
-      scrollIntoView(cell);
-      // Check if cell renderer content should be focused instead
-      const elementToFocus = cell.querySelector('[tabindex="0"]');
-      if (elementToFocus === null) {
-        cell.focus({ preventScroll: true });
-      } else if (elementToFocus instanceof HTMLElement || elementToFocus instanceof SVGElement) {
-        elementToFocus.focus({ preventScroll: true });
-      }
-    }
+    if (cell === null) return;
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
   });
 
   useImperativeHandle(ref, () => ({
