@@ -68,7 +68,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.1.1",
-    "@types/lodash": "^4.14.184",
+    "@types/lodash-es": "^4.17.7",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
@@ -99,7 +99,7 @@
     "react-router-dom": "^6.11.1",
     "rollup": "^3.21.5",
     "rollup-plugin-postcss": "^4.0.2",
-    "rome": "12.1.0",
+    "rome": "12.1.2",
     "typescript": "~5.0.2",
     "vite": "^4.3.5",
     "vitest": "^0.31.0"
