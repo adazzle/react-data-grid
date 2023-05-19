@@ -1,6 +1,5 @@
 import { css } from '@linaria/core';
 
-import { useFocusRef } from './hooks';
 import type { HeaderRendererProps } from './types';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 
@@ -66,8 +65,6 @@ function SortableHeaderCell<R, SR>({
   isCellSelected
 }: SortableHeaderCellProps<R, SR>) {
   const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
-
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {
       // stop propagation to prevent scrolling
@@ -82,8 +79,7 @@ function SortableHeaderCell<R, SR>({
 
   return (
     <span
-      ref={ref}
-      tabIndex={tabIndex}
+      tabIndex={isCellSelected ? 0 : -1}
       className={headerSortCellClassname}
       onClick={handleClick}
       onKeyDown={handleKeyDown}

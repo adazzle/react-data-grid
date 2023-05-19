@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
@@ -84,13 +84,7 @@ export default function MasterDetail({ direction }: Props) {
         },
         formatter({ row, isCellSelected, onRowChange }) {
           if (row.type === 'DETAIL') {
-            return (
-              <ProductGrid
-                isCellSelected={isCellSelected}
-                parentId={row.parentId}
-                direction={direction}
-              />
-            );
+            return <ProductGrid parentId={row.parentId} direction={direction} />;
           }
 
           return (
@@ -147,22 +141,8 @@ export default function MasterDetail({ direction }: Props) {
   );
 }
 
-function ProductGrid({
-  parentId,
-  isCellSelected,
-  direction
-}: {
-  parentId: number;
-  isCellSelected: boolean;
-  direction: Direction;
-}) {
+function ProductGrid({ parentId, direction }: { parentId: number; direction: Direction }) {
   const gridRef = useRef<DataGridHandle>(null);
-  useEffect(() => {
-    if (!isCellSelected) return;
-    gridRef
-      .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
-      .focus({ preventScroll: true });
-  }, [isCellSelected]);
   const products = getProducts(parentId);
 
   return (

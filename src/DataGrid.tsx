@@ -285,7 +285,7 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const rowRef = useRef<HTMLDivElement>(null);
-  const skipCellFocusRef = useRef(false);
+  const shouldFocusCellRef = useRef(false);
 
   /**
    * computed values
@@ -432,6 +432,18 @@ function DataGrid<R, SR, K extends Key>(
       rowRef.current!.focus({ preventScroll: true });
       scrollIntoView(rowRef.current);
     }
+  });
+
+  useLayoutEffect(() => {
+    if (!shouldFocusCellRef.current) return;
+    shouldFocusCellRef.current = false;
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
   });
 
   useImperativeHandle(ref, () => ({
@@ -735,8 +747,9 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (isSamePosition(selectedPosition, position)) {
       // Avoid re-renders if the selected cell state is the same
-      scrollIntoView(gridRef.current?.querySelector('[tabindex="0"]'));
+      scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
+      shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
   }
@@ -924,11 +937,12 @@ function DataGrid<R, SR, K extends Key>(
     const column = columns[idx];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
-    const closeEditor = () => {
+    const closeEditor = (shouldFocusCell: boolean) => {
+      shouldFocusCellRef.current = shouldFocusCell;
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
-    const onRowChange = (row: R, commitChanges?: boolean) => {
+    const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
       if (commitChanges) {
         // Prevents two issues when editor is closed by clicking on a different cell
         //
@@ -936,7 +950,7 @@ function DataGrid<R, SR, K extends Key>(
         // SELECT and this results in onRowChange getting called twice.
         flushSync(() => {
           updateRow(column, selectedPosition.rowIdx, row);
-          closeEditor();
+          closeEditor(shouldFocusCell);
         });
       } else {
         setSelectedPosition((position) => ({ ...position, row }));
@@ -945,7 +959,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      closeEditor();
+      closeEditor(false);
     }
 
     return (
@@ -955,7 +969,6 @@ function DataGrid<R, SR, K extends Key>(
         colSpan={colSpan}
         row={row}
         rowIdx={rowIdx}
-        skipCellFocusRef={skipCellFocusRef}
         onRowChange={onRowChange}
         closeEditor={closeEditor}
         onKeyDown={onCellKeyDown}
@@ -1089,8 +1102,7 @@ function DataGrid<R, SR, K extends Key>(
           onRowChange: handleFormatterRowChangeLatest,
           selectCell: selectCellLatest,
           selectedCellDragHandle: getDragHandle(rowIdx),
-          selectedCellEditor: getCellEditor(rowIdx),
-          skipCellFocusRef
+          selectedCellEditor: getCellEditor(rowIdx)
         })
       );
     }
@@ -1265,6 +1277,14 @@ function DataGrid<R, SR, K extends Key>(
       </DataGridDefaultRenderersProvider>
     </div>
   );
+}
+
+let getCellToScrollExpression: XPathExpression | undefined;
+
+function getCellToScroll(gridEl: HTMLDivElement) {
+  getCellToScrollExpression ??= document.createExpression('div[@role="row"]/div[@tabindex="0"]');
+  // XPathResult.ANY_UNORDERED_NODE_TYPE === 8
+  return getCellToScrollExpression.evaluate(gridEl, 8).singleNodeValue as HTMLDivElement | null;
 }
 
 function isSamePosition(p1: Position, p2: Position) {

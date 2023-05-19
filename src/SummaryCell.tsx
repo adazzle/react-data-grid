@@ -29,7 +29,7 @@ function SummaryCell<R, SR>({
   isCellSelected,
   selectCell
 }: SummaryCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
   const { summaryCellClass } = column;
   const className = getCellClassname(
     column,
@@ -47,7 +47,6 @@ function SummaryCell<R, SR>({
       aria-colindex={column.idx + 1}
       aria-colspan={colSpan}
       aria-selected={isCellSelected}
-      ref={ref}
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
