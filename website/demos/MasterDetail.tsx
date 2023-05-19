@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
@@ -143,12 +143,13 @@ export default function MasterDetail({ direction }: Props) {
 
 function ProductGrid({ parentId, direction }: { parentId: number; direction: Direction }) {
   const gridRef = useRef<DataGridHandle>(null);
-  useEffect(() => {
-    if (!isCellFocused) return;
-    gridRef
-      .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
-      .focus({ preventScroll: true });
-  }, [isCellFocused]);
+  // TODO
+  // useEffect(() => {
+  //   if (!isCellFocused) return;
+  //   gridRef
+  //     .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
+  //     .focus({ preventScroll: true });
+  // }, [isCellFocused]);
   const products = getProducts(parentId);
 
   return (
