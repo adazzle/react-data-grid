@@ -1279,13 +1279,12 @@ function DataGrid<R, SR, K extends Key>(
   );
 }
 
-function getCellToScroll(gridEl: HTMLDivElement) {
-  const cells = gridEl.querySelectorAll<HTMLDivElement>('.rdg-cell[tabindex="0"]');
-  if (cells.length === 0) return null;
+let getCellToFocusExpression: XPathExpression | undefined;
 
-  return cells.length === 1
-    ? cells[0]
-    : Array.from(cells).find((cell) => cell.closest('.rdg') === gridEl)!;
+function getCellToScroll(gridEl: HTMLDivElement) {
+  getCellToFocusExpression ??= document.createExpression('div[@role="row"]/div[@tabindex="0"]');
+  // XPathResult.ANY_UNORDERED_NODE_TYPE === 8
+  return getCellToFocusExpression.evaluate(gridEl, 8).singleNodeValue as HTMLDivElement | null;
 }
 
 function isSamePosition(p1: Position, p2: Position) {
