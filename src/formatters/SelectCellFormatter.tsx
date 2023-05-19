@@ -21,17 +21,14 @@ export function SelectCellFormatter({
 
   return (
     <>
-      {checkboxFormatter(
-        {
-          'aria-label': ariaLabel,
-          'aria-labelledby': ariaLabelledBy,
-          tabIndex: isCellSelected ? 0 : -1,
-          disabled,
-          checked: value,
-          onChange
-        },
-        null
-      )}
+      {checkboxFormatter({
+        'aria-label': ariaLabel,
+        'aria-labelledby': ariaLabelledBy,
+        tabIndex: isCellSelected ? 0 : -1,
+        disabled,
+        checked: value,
+        onChange
+      })}
     </>
   );
 }

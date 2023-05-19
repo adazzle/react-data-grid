@@ -1,4 +1,4 @@
-import type { Key, ReactElement, ReactNode, Ref } from 'react';
+import type { Key, ReactElement, ReactNode } from 'react';
 
 import type { DataGridProps } from './DataGrid';
 
@@ -262,9 +262,7 @@ export interface CheckboxFormatterProps
 
 export interface Renderers<TRow, TSummaryRow> {
   sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
-  checkboxFormatter?: Maybe<
-    (props: CheckboxFormatterProps, ref: Ref<HTMLInputElement>) => ReactNode
-  >;
+  checkboxFormatter?: Maybe<(props: CheckboxFormatterProps) => ReactNode>;
   rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
