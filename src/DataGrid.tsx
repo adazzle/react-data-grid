@@ -442,7 +442,7 @@ function DataGrid<R, SR, K extends Key>(
       scrollIntoView(cell);
       // Check if formatter needs to be focused instead
       const focusableFormatter = cell.querySelector('[tabindex="0"]');
-      if (focusableFormatter !== null && focusableFormatter instanceof HTMLOrSVGElement) {
+      if (focusableFormatter !== null && focusableFormatter instanceof HTMLElement) {
         focusableFormatter.focus({ preventScroll: true });
       } else {
         cell.focus({ preventScroll: true });
