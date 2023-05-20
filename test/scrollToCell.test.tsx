@@ -1,10 +1,11 @@
 import { StrictMode, useRef } from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column, DataGridHandle } from '../src';
 import DataGrid from '../src';
 import type { PartialPosition } from '../src/ScrollToCell';
+import { render } from './utils';
 
 type Row = undefined;
 
