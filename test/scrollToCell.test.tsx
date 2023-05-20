@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import type { Column, DataGridHandle } from '../src';
 import DataGrid from '../src';
 import type { PartialPosition } from '../src/ScrollToCell';
+
 type Row = undefined;
 
 const rows: readonly Row[] = Array(50);
@@ -33,7 +34,13 @@ function Grid() {
       >
         Scroll to cell
       </button>
-      <DataGrid ref={ref} columns={columns} rows={rows} summaryRows={summaryRows} rowHeight={60} />
+      <DataGrid
+        ref={ref}
+        columns={columns}
+        rows={rows}
+        topSummaryRows={summaryRows}
+        rowHeight={60}
+      />
     </>
   );
 }
