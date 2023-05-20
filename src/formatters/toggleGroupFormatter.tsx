@@ -1,35 +1,41 @@
 import { css } from '@linaria/core';
+
 import type { GroupFormatterProps } from '../types';
-import { useFocusRef } from '../hooks/useFocusRef';
 
 const groupCellContent = css`
-  outline: none;
+  @layer rdg.GroupCellContent {
+    outline: none;
+  }
 `;
 
 const groupCellContentClassname = `rdg-group-cell-content ${groupCellContent}`;
 
 const caret = css`
-  margin-inline-start: 4px;
-  stroke: currentColor;
-  stroke-width: 1.5px;
-  fill: transparent;
-  vertical-align: middle;
+  @layer rdg.GroupCellCaret {
+    margin-inline-start: 4px;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    fill: transparent;
+    vertical-align: middle;
 
-  > path {
-    transition: d 0.1s;
+    > path {
+      transition: d 0.1s;
+    }
   }
 `;
 
 const caretClassname = `rdg-caret ${caret}`;
 
-export function ToggleGroupFormatter<R, SR>({
+export function toggleGroupFormatter<R, SR>(props: GroupFormatterProps<R, SR>) {
+  return <ToggleGroup {...props} />;
+}
+
+export function ToggleGroup<R, SR>({
   groupKey,
   isExpanded,
   isCellSelected,
   toggleGroup
 }: GroupFormatterProps<R, SR>) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
-
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
     if (key === 'Enter') {
       toggleGroup();
@@ -40,9 +46,8 @@ export function ToggleGroupFormatter<R, SR>({
 
   return (
     <span
-      ref={ref}
       className={groupCellContentClassname}
-      tabIndex={tabIndex}
+      tabIndex={isCellSelected ? 0 : -1}
       onKeyDown={handleKeyDown}
     >
       {groupKey as string}

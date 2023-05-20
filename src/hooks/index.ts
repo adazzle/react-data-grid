@@ -1,5 +1,5 @@
 export * from './useCalculatedColumns';
-export * from './useFocusRef';
+export * from './useColumnWidths';
 export * from './useGridDimensions';
 export * from './useLatestFunc';
 export * from './useLayoutEffect';

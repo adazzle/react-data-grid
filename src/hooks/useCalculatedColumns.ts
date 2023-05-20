@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
+import { clampColumnWidth, max, min } from '../utils';
 import type { CalculatedColumn, Column, Maybe } from '../types';
-import type { DataGridProps } from '../DataGrid';
-import { ValueFormatter, ToggleGroupFormatter } from '../formatters';
 import { SELECT_COLUMN_KEY } from '../Columns';
-import { clampColumnWidth, floor, max, min, round } from '../utils';
+import type { DataGridProps } from '../DataGrid';
+import { valueFormatter, toggleGroupFormatter } from '../formatters';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -15,28 +15,33 @@ interface ColumnMetric {
   left: number;
 }
 
+const DEFAULT_COLUMN_WIDTH = 'auto';
+const DEFAULT_COLUMN_MIN_WIDTH = 80;
+
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
   rawGroupBy: Maybe<readonly string[]>;
   viewportWidth: number;
   scrollLeft: number;
-  columnWidths: ReadonlyMap<string, number>;
+  measuredColumnWidths: ReadonlyMap<string, number>;
+  resizedColumnWidths: ReadonlyMap<string, number>;
   enableVirtualization: boolean;
 }
 
 export function useCalculatedColumns<R, SR>({
   rawColumns,
-  columnWidths,
+  measuredColumnWidths,
+  resizedColumnWidths,
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
   rawGroupBy,
   enableVirtualization
 }: CalculatedColumnsArgs<R, SR>) {
-  const defaultWidth = defaultColumnOptions?.width;
-  const defaultMinWidth = defaultColumnOptions?.minWidth ?? 80;
-  const defaultMaxWidth = defaultColumnOptions?.maxWidth;
-  const defaultFormatter = defaultColumnOptions?.formatter ?? ValueFormatter;
+  const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
+  const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
+  const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
+  const defaultFormatter = defaultColumnOptions?.formatter ?? valueFormatter;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
@@ -70,7 +75,7 @@ export function useCalculatedColumns<R, SR>({
       };
 
       if (rowGroup) {
-        column.groupFormatter ??= ToggleGroupFormatter;
+        column.groupFormatter ??= toggleGroupFormatter;
       }
 
       if (frozen) {
@@ -139,7 +144,8 @@ export function useCalculatedColumns<R, SR>({
     rawGroupBy
   ]);
 
-  const { layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+  const { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+    templateColumns: readonly string[];
     layoutCssVars: Readonly<Record<string, string>>;
     totalFrozenColumnWidth: number;
     columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
@@ -147,39 +153,22 @@ export function useCalculatedColumns<R, SR>({
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalFrozenColumnWidth = 0;
-    let templateColumns = '';
-    let allocatedWidth = 0;
-    let unassignedColumnsCount = 0;
+    const templateColumns: string[] = [];
 
     for (const column of columns) {
-      let width = getSpecifiedWidth(column, columnWidths, viewportWidth);
+      let width =
+        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width;
 
-      if (width === undefined) {
-        unassignedColumnsCount++;
-      } else {
+      if (typeof width === 'number') {
         width = clampColumnWidth(width, column);
-        allocatedWidth += width;
-        columnMetrics.set(column, { width, left: 0 });
-      }
-    }
-
-    for (const column of columns) {
-      let width: number;
-      if (columnMetrics.has(column)) {
-        const columnMetric = columnMetrics.get(column)!;
-        columnMetric.left = left;
-        ({ width } = columnMetric);
       } else {
-        // avoid decimals as subpixel positioning can lead to cell borders not being displayed
-        const unallocatedWidth = viewportWidth - allocatedWidth;
-        const unallocatedColumnWidth = round(unallocatedWidth / unassignedColumnsCount);
-        width = clampColumnWidth(unallocatedColumnWidth, column);
-        allocatedWidth += width;
-        unassignedColumnsCount--;
-        columnMetrics.set(column, { width, left });
+        // This is a placeholder width so we can continue to use virtualization.
+        // The actual value is set after the column is rendered
+        width = column.minWidth;
       }
+      templateColumns.push(`${width}px`);
+      columnMetrics.set(column, { width, left });
       left += width;
-      templateColumns += `${width}px `;
     }
 
     if (lastFrozenColumnIndex !== -1) {
@@ -187,17 +176,15 @@ export function useCalculatedColumns<R, SR>({
       totalFrozenColumnWidth = columnMetric.left + columnMetric.width;
     }
 
-    const layoutCssVars: Record<string, string> = {
-      gridTemplateColumns: templateColumns
-    };
+    const layoutCssVars: Record<string, string> = {};
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
       layoutCssVars[`--rdg-frozen-left-${column.idx}`] = `${columnMetrics.get(column)!.left}px`;
     }
 
-    return { layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [columnWidths, columns, viewportWidth, lastFrozenColumnIndex]);
+    return { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics };
+  }, [measuredColumnWidths, resizedColumnWidths, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
@@ -258,28 +245,10 @@ export function useCalculatedColumns<R, SR>({
     colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
+    templateColumns,
     layoutCssVars,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
   };
-}
-
-function getSpecifiedWidth<R, SR>(
-  { key, width }: Column<R, SR>,
-  columnWidths: ReadonlyMap<string, number>,
-  viewportWidth: number
-): number | undefined {
-  if (columnWidths.has(key)) {
-    // Use the resized width if available
-    return columnWidths.get(key);
-  }
-
-  if (typeof width === 'number') {
-    return width;
-  }
-  if (typeof width === 'string' && /^\d+%$/.test(width)) {
-    return floor((viewportWidth * parseInt(width, 10)) / 100);
-  }
-  return undefined;
 }

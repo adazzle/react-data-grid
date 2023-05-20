@@ -1,10 +1,13 @@
-import { isAbsolute } from 'path';
+import { readFile } from 'node:fs/promises';
+import { isAbsolute } from 'node:path';
 import linaria from '@linaria/rollup';
 import postcss from 'rollup-plugin-postcss';
 import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import pkg from './package.json';
+
+// https://github.com/rome/tools/issues/4485
+const pkg = JSON.parse(await readFile('./package.json', 'utf-8'));
 
 const extensions = ['.ts', '.tsx'];
 
@@ -21,8 +24,7 @@ export default {
       file: './lib/bundle.cjs',
       format: 'cjs',
       generatedCode: 'es2015',
-      sourcemap: true,
-      interop: false
+      sourcemap: true
     }
   ],
   external: (id) => !id.startsWith('.') && !id.startsWith('@linaria:') && !isAbsolute(id),
@@ -32,13 +34,12 @@ export default {
       classNameSlug(hash) {
         // We add the package version as suffix to avoid style conflicts
         // between multiple versions of RDG on the same page.
-        return `${hash}${pkg.version.replaceAll('.', '')}`;
+        return `${hash}${pkg.version.replaceAll('.', '-')}`;
       }
     }),
     postcss({
       plugins: [postcssNested],
-      minimize: true,
-      inject: { insertAt: 'top' }
+      extract: 'styles.css'
     }),
     babel({
       babelHelpers: 'runtime',

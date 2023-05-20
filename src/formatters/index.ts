@@ -1,4 +1,4 @@
-export * from './CheckboxFormatter';
+export * from './checkboxFormatter';
 export * from './SelectCellFormatter';
-export * from './ValueFormatter';
-export * from './ToggleGroupFormatter';
+export * from './valueFormatter';
+export * from './toggleGroupFormatter';

@@ -18,7 +18,7 @@
 
 ## Features
 
-- [React 16.14+, 17.0+, and 18.0+](package.json) support
+- [React 18.0+](package.json) support
 - [Evergreen browsers and server-side rendering](browserslist) support
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
@@ -40,7 +40,7 @@
 - [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
-- [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
+- [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/customizable-renderers)
 - Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
@@ -62,6 +62,7 @@ npm install react-data-grid
 ## Quick start
 
 ```jsx
+import 'react-data-grid/lib/styles.css';
 import DataGrid from 'react-data-grid';
 
 const columns = [
@@ -99,7 +100,9 @@ An array describing the grid's columns.
 
 An array of rows, the rows data can be of any type.
 
-###### `summaryRows?: Maybe<readonly SR[]>`
+###### `topSummaryRows?: Maybe<readonly SR[]>`
+
+###### `bottomSummaryRows?: Maybe<readonly SR[]>`
 
 An optional array of summary rows, usually used to display total values for example.
 
@@ -185,31 +188,32 @@ A number defining the height of summary rows.
 
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
-###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-###### `onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+
+###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+
+###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
 
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
 
-###### `cellNavigationMode?: Maybe<CellNavigationMode>`
-
 ###### `enableVirtualization?: Maybe<boolean>`
 
-###### `components?: Maybe<Components<R, SR>>`
+###### `renderers?: Maybe<Renderers<R, SR>>`
 
-This prop can be used to override the internal components. The prop accepts an object of type
+This prop can be used to override the internal renderers. The prop accepts an object of type
 
 ```tsx
-interface Components<TRow, TSummaryRow> {
-  sortIcon?: Maybe<ComponentType<SortIconProps>>;
+interface Renderers<TRow, TSummaryRow> {
+  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
   checkboxFormatter?: Maybe<
-    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
-    | ComponentType<CheckboxFormatterProps>
+    (props: CheckboxFormatterProps>) => ReactNode
   >;
-  rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
-  noRowsFallback?: Maybe<React.ReactNode>;
+  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  noRowsFallback?: Maybe<ReactNode>;
 }
 ```
 
@@ -218,16 +222,16 @@ For example, the default `<Row />` component can be wrapped via the `rowRenderer
 ```tsx
 import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
 
-function MyRowRenderer(props: RowRendererProps<Row>) {
+function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
   return (
-    <MyContext.Provider value={123}>
+    <MyContext.Provider key={key} value={123}>
       <Row {...props} />
     </MyContext.Provider>
   );
 }
 
 function MyGrid() {
-  return <DataGrid columns={columns} rows={rows} components={{ rowRenderer: MyRowRenderer }} />;
+  return <DataGrid columns={columns} rows={rows} renderers={{ rowRenderer: myRowRenderer }} />;
 }
 ```
 
@@ -264,7 +268,7 @@ See [`EditorProps`](#editorprops)
 
 #### `<Row />`
 
-See [`components`](#components-maybecomponentsr-sr)
+See [`renderers`](#renderers-mayberenderersr-sr)
 
 ##### Props
 

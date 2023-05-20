@@ -1,6 +1,6 @@
 import { useDrag, useDrop } from 'react-dnd';
 
-import { HeaderRenderer } from '../../../../src';
+import { headerRenderer } from '../../../../src';
 import type { HeaderRendererProps } from '../../../../src';
 
 interface DraggableHeaderRendererProps<R> extends HeaderRendererProps<R> {
@@ -43,7 +43,7 @@ export function DraggableHeaderRenderer<R>({
         cursor: 'move'
       }}
     >
-      <HeaderRenderer column={column} {...props} />
+      {headerRenderer({ column, ...props })}
     </div>
   );
 }

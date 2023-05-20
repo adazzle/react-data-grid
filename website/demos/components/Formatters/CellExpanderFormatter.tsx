@@ -1,5 +1,4 @@
 import { css } from '@linaria/core';
-import { useFocusRef } from '../../../../src/hooks';
 
 const cellExpandClassname = css`
   /* needed on chrome */
@@ -26,8 +25,6 @@ export function CellExpanderFormatter({
   expanded,
   onCellExpand
 }: CellExpanderFormatterProps) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
-
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
@@ -38,9 +35,7 @@ export function CellExpanderFormatter({
   return (
     <div className={cellExpandClassname}>
       <span onClick={onCellExpand} onKeyDown={handleKeyDown}>
-        <span ref={ref} tabIndex={tabIndex}>
-          {expanded ? '\u25BC' : '\u25B6'}
-        </span>
+        <span tabIndex={isCellSelected ? 0 : -1}>{expanded ? '\u25BC' : '\u25B6'}</span>
       </span>
     </div>
   );

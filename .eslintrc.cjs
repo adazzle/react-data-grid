@@ -322,7 +322,7 @@ const rules = {
   'react/no-this-in-sfc': 0,
   'react/no-typos': 2,
   'react/no-unescaped-entities': 0,
-  'react/no-unknown-property': 2,
+  'react/no-unknown-property': 0,
   'react/no-unsafe': 2,
   'react/no-unstable-nested-components': 0,
   'react/no-unused-prop-types': 0,
@@ -416,7 +416,7 @@ const rules = {
   'jest/no-alias-methods': 1,
   'jest/no-commented-out-tests': 1,
   'jest/no-conditional-expect': 1,
-  'jest/no-deprecated-functions': 1,
+  'jest/no-deprecated-functions': 0,
   'jest/no-disabled-tests': 0,
   'jest/no-done-callback': 0,
   'jest/no-duplicate-hooks': 2,
@@ -427,14 +427,15 @@ const rules = {
   'jest/no-if': 1,
   'jest/no-interpolation-in-snapshots': 0,
   'jest/no-jasmine-globals': 1,
-  'jest/no-jest-import': 1,
   'jest/no-large-snapshots': 0,
   'jest/no-mocks-import': 1,
   'jest/no-restricted-matchers': [
     1,
     {
       toBeTruthy: 'Use toBe(true) instead.',
-      toBeFalsy: 'Use toBe(false) instead.'
+      'not.toBeTruthy': null,
+      toBeFalsy: 'Use toBe(false) instead.',
+      'not.toBeFalsy': null
     }
   ],
   'jest/no-standalone-expect': 2,
@@ -561,7 +562,7 @@ const rules = {
   '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
   '@typescript-eslint/no-unnecessary-condition': 1,
   '@typescript-eslint/no-unnecessary-qualifier': 0,
-  '@typescript-eslint/no-unnecessary-type-arguments': 0,
+  '@typescript-eslint/no-unnecessary-type-arguments': 1,
   '@typescript-eslint/no-unnecessary-type-assertion': 1,
   '@typescript-eslint/no-unnecessary-type-constraint': 1,
   '@typescript-eslint/no-unsafe-argument': 0,
@@ -582,7 +583,8 @@ const rules = {
     1,
     {
       ignoreConditionalTests: false,
-      ignoreMixedLogicalExpressions: true
+      ignoreTernaryTests: false,
+      ignoreMixedLogicalExpressions: false
     }
   ],
   '@typescript-eslint/prefer-optional-chain': 1,
@@ -659,6 +661,15 @@ const rules = {
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
+        },
+        {
+          name: '@testing-library/react',
+          importNames: ['render'],
+          message: 'Use the render helper from test/utils instead.'
+        },
+        {
+          name: 'lodash',
+          message: 'Import lodash-es instead.'
         }
       ]
     }
@@ -691,17 +702,32 @@ module.exports = {
   reportUnusedDisableDirectives: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './tsconfig.eslint.json',
-    ecmaVersion: 2020,
+    project: './tsconfig.json',
+    ecmaVersion: 'latest',
     sourceType: 'module'
   },
   env: {
     es6: true
   },
-  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
+  plugins: [
+    'node',
+    'react',
+    'react-hooks',
+    'jest',
+    'jest-dom',
+    'sonarjs',
+    '@typescript-eslint',
+    'testing-library'
+  ],
   overrides: [
     {
-      files: ['*.js', '*.jsx', '*.cjs', '*.mjs'],
+      files: ['test/**/*'],
+      rules: {
+        '@typescript-eslint/no-floating-promises': 1
+      }
+    },
+    {
+      files: ['*.js', '*.cjs'],
       rules: {
         'no-undef': 2,
         'no-use-before-define': [2, { functions: false, classes: false, variables: false }]
@@ -766,7 +792,19 @@ module.exports = {
         'node/prefer-global/url-search-params': 1,
         'node/prefer-global/url': 1,
         'node/prefer-promises/dns': 1,
-        'node/prefer-promises/fs': 1
+        'node/prefer-promises/fs': 1,
+
+        // eslint-plugin-testing-library Rules
+        // https://github.com/testing-library/eslint-plugin-testing-library#supported-rules
+        'testing-library/no-wait-for-multiple-assertions': 1,
+        'testing-library/no-unnecessary-act': 1,
+        'testing-library/no-wait-for-empty-callback': 1,
+        'testing-library/no-wait-for-side-effects': 1,
+        'testing-library/prefer-explicit-assert': 1,
+        'testing-library/prefer-find-by': 1,
+        'testing-library/prefer-presence-queries': 1,
+        'testing-library/prefer-query-by-disappearance': 1,
+        'testing-library/prefer-screen-queries': 1
       }
     }
   ],

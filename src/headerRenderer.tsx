@@ -1,30 +1,33 @@
 import { css } from '@linaria/core';
 
-import { useFocusRef } from './hooks';
 import type { HeaderRendererProps } from './types';
-import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
+import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 
 const headerSortCell = css`
-  cursor: pointer;
-  display: flex;
+  @layer rdg.SortableHeaderCell {
+    cursor: pointer;
+    display: flex;
 
-  &:focus {
-    outline: none;
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
 const headerSortCellClassname = `rdg-header-sort-cell ${headerSortCell}`;
 
 const headerSortName = css`
-  flex-grow: 1;
-  overflow: hidden;
-  overflow: clip;
-  text-overflow: ellipsis;
+  @layer rdg.SortableHeaderCellName {
+    flex-grow: 1;
+    overflow: hidden;
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
 `;
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-export default function HeaderRenderer<R, SR>({
+export default function headerRenderer<R, SR>({
   column,
   sortDirection,
   priority,
@@ -61,9 +64,7 @@ function SortableHeaderCell<R, SR>({
   children,
   isCellSelected
 }: SortableHeaderCellProps<R, SR>) {
-  const SortIcon = useDefaultComponents<R, SR>()!.sortIcon!;
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
-
+  const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {
       // stop propagation to prevent scrolling
@@ -78,17 +79,13 @@ function SortableHeaderCell<R, SR>({
 
   return (
     <span
-      ref={ref}
-      tabIndex={tabIndex}
+      tabIndex={isCellSelected ? 0 : -1}
       className={headerSortCellClassname}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       <span className={headerSortNameClassname}>{children}</span>
-      <span>
-        <SortIcon sortDirection={sortDirection} />
-        {priority}
-      </span>
+      <span>{sortStatus({ sortDirection, priority })}</span>
     </span>
   );
 }

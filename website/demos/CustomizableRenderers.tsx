@@ -1,8 +1,8 @@
-import { useMemo, useState, forwardRef } from 'react';
+import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn, TextEditor } from '../../src';
-import type { Column, CheckboxFormatterProps, SortColumn, SortIconProps } from '../../src';
+import DataGrid, { SelectColumn, textEditor } from '../../src';
+import type { Column, CheckboxFormatterProps, SortColumn, SortStatusProps } from '../../src';
 import type { Props } from './types';
 
 const selectCellClassname = css`
@@ -15,6 +15,11 @@ const selectCellClassname = css`
   }
 `;
 
+const sortPriorityClassname = css`
+  color: grey;
+  margin-left: 2px;
+`;
+
 interface Row {
   id: number;
   task: string;
@@ -24,7 +29,8 @@ interface Row {
 }
 
 function createRows(): readonly Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 500; i++) {
     rows.push({
       id: i,
@@ -52,7 +58,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: TextEditor,
+    editor: textEditor,
     sortable: true
   },
   {
@@ -72,7 +78,7 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function CustomizableComponents({ direction }: Props) {
+export default function CustomizableRenderers({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
@@ -103,26 +109,28 @@ export default function CustomizableComponents({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      components={{ sortIcon: SortIcon, checkboxFormatter: CheckboxFormatter }}
+      renderers={{ sortStatus, checkboxFormatter }}
       direction={direction}
     />
   );
 }
 
-const CheckboxFormatter = forwardRef<HTMLInputElement, CheckboxFormatterProps>(
-  function CheckboxFormatter({ disabled, onChange, ...props }, ref) {
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
-    }
-
-    return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
+function checkboxFormatter({ onChange, ...props }: CheckboxFormatterProps) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
-);
 
-function SortIcon({ sortDirection }: SortIconProps) {
-  return sortDirection !== undefined ? <>{sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F'} </> : null;
+  return <input type="checkbox" {...props} onChange={handleChange} />;
 }
 
+function sortStatus({ sortDirection, priority }: SortStatusProps) {
+  return (
+    <>
+      {sortDirection !== undefined ? (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F') : null}
+      <span className={sortPriorityClassname}>{priority}</span>
+    </>
+  );
+}
 function rowKeyGetter(row: Row) {
   return row.id;
 }

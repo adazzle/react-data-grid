@@ -1,8 +1,12 @@
-import type { ReactElement, ComponentType, ForwardRefExoticComponent, RefAttributes } from 'react';
+import type { Key, ReactElement, ReactNode } from 'react';
+
+import type { DataGridProps } from './DataGrid';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export type Maybe<T> = T | undefined | null;
+
+export type StateSetter<S> = React.Dispatch<React.SetStateAction<S>>;
 
 export interface Column<TRow, TSummaryRow = unknown> {
   /** The name of the column. By default it will be displayed in the header cell */
@@ -19,11 +23,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly headerCellClass?: Maybe<string>;
   readonly summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>;
   /** Formatter to be used to render the cell content */
-  readonly formatter?: Maybe<ComponentType<FormatterProps<TRow, TSummaryRow>>>;
+  readonly formatter?: Maybe<(props: FormatterProps<TRow, TSummaryRow>) => ReactNode>;
   /** Formatter to be used to render the summary cell content */
-  readonly summaryFormatter?: Maybe<ComponentType<SummaryFormatterProps<TSummaryRow, TRow>>>;
+  readonly summaryFormatter?: Maybe<(props: SummaryFormatterProps<TSummaryRow, TRow>) => ReactNode>;
   /** Formatter to be used to render the group cell content */
-  readonly groupFormatter?: Maybe<ComponentType<GroupFormatterProps<TRow, TSummaryRow>>>;
+  readonly groupFormatter?: Maybe<(props: GroupFormatterProps<TRow, TSummaryRow>) => ReactNode>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
   readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
@@ -36,32 +40,28 @@ export interface Column<TRow, TSummaryRow = unknown> {
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   readonly sortDescendingFirst?: Maybe<boolean>;
   /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  readonly editor?: Maybe<ComponentType<EditorProps<TRow, TSummaryRow>>>;
+  readonly editor?: Maybe<(props: EditorProps<TRow, TSummaryRow>) => ReactNode>;
   readonly editorOptions?: Maybe<{
     /** @default false */
     readonly renderFormatter?: Maybe<boolean>;
-    /** @default false */
-    readonly editOnClick?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
-    /** Prevent default to cancel editing */
-    readonly onCellKeyDown?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => void>;
-    /** Control the default cell navigation behavior while the editor is open */
-    readonly onNavigation?: Maybe<(event: React.KeyboardEvent<HTMLDivElement>) => boolean>;
   }>;
   /** Header renderer for each header cell */
-  readonly headerRenderer?: Maybe<ComponentType<HeaderRendererProps<TRow, TSummaryRow>>>;
+  readonly headerRenderer?: Maybe<(props: HeaderRendererProps<TRow, TSummaryRow>) => ReactNode>;
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
   readonly idx: number;
+  readonly width: number | string;
   readonly minWidth: number;
+  readonly maxWidth: number | undefined;
   readonly resizable: boolean;
   readonly sortable: boolean;
   readonly frozen: boolean;
   readonly isLastFrozenColumn: boolean;
   readonly rowGroup: boolean;
-  readonly formatter: ComponentType<FormatterProps<TRow, TSummaryRow>>;
+  readonly formatter: (props: FormatterProps<TRow, TSummaryRow>) => ReactNode;
 }
 
 export interface Position {
@@ -73,6 +73,7 @@ export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   isCellSelected: boolean;
+  isCellEditable: boolean;
   onRowChange: (row: TRow) => void;
 }
 
@@ -104,29 +105,69 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
   onSort: (ctrlClick: boolean) => void;
-  allRowsSelected: boolean;
-  onAllRowsSelectionChange: (checked: boolean) => void;
   isCellSelected: boolean;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<
-      RowRendererProps<TRow, TSummaryRow>,
-      'onRowClick' | 'onRowDoubleClick' | 'selectCell'
-    >,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
+    Omit<
+      React.HTMLAttributes<HTMLDivElement>,
+      'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+    > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
-  row: TRow;
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  onRowChange: (newRow: TRow) => void;
+  onClick: RowRendererProps<TRow, TSummaryRow>['onCellClick'];
+  onDoubleClick: RowRendererProps<TRow, TSummaryRow>['onCellDoubleClick'];
+  onContextMenu: RowRendererProps<TRow, TSummaryRow>['onCellContextMenu'];
+  onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
+export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
+  preventGridDefault: () => void;
+  isGridDefaultPrevented: () => boolean;
+};
+
+export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
+
+export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
+
+export interface CellClickArgs<TRow, TSummaryRow = unknown> {
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  selectCell: (enableEditor?: boolean) => void;
+}
+
+interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
+  mode: 'SELECT';
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  rowIdx: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
+  mode: 'EDIT';
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  rowIdx: number;
+  navigate: () => void;
+  onClose: (commitChanges?: boolean) => void;
+}
+
+export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
+  | SelectCellKeyDownArgs<TRow, TSummaryRow>
+  | EditCellKeyDownArgs<TRow, TSummaryRow>;
+
 export interface RowRendererProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
+    Pick<
+      DataGridProps<TRow, TSummaryRow>,
+      'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+    > {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   row: TRow;
   rowIdx: number;
@@ -139,16 +180,10 @@ export interface RowRendererProps<TRow, TSummaryRow = unknown>
   height: number;
   selectedCellEditor: ReactElement<EditorProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  onRowChange: (rowIdx: number, newRow: TRow) => void;
-  onRowClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
-  onRowDoubleClick: Maybe<(row: TRow, column: CalculatedColumn<TRow, TSummaryRow>) => void>;
-  rowClass: Maybe<(row: TRow) => Maybe<string>>;
+  onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
+  rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
-  selectCell: (
-    row: TRow,
-    column: CalculatedColumn<TRow, TSummaryRow>,
-    enableEditor?: Maybe<boolean>
-  ) => void;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface RowsChangeData<R, SR = unknown> {
@@ -156,11 +191,9 @@ export interface RowsChangeData<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
 }
 
-export interface SelectRowEvent<TRow> {
-  row: TRow;
-  checked: boolean;
-  isShiftClick: boolean;
-}
+export type SelectRowEvent<TRow> =
+  | { type: 'HEADER'; checked: boolean }
+  | { type: 'ROW'; row: TRow; checked: boolean; isShiftClick: boolean };
 
 export interface FillEvent<TRow> {
   columnKey: string;
@@ -197,7 +230,7 @@ export interface SortColumn {
   readonly direction: SortDirection;
 }
 
-export type CellNavigationMode = 'NONE' | 'CHANGE_ROW' | 'LOOP_OVER_ROW';
+export type CellNavigationMode = 'NONE' | 'CHANGE_ROW';
 export type SortDirection = 'ASC' | 'DESC';
 
 export type ColSpanArgs<TRow, TSummaryRow> =
@@ -213,6 +246,12 @@ export interface SortIconProps {
   sortDirection: SortDirection | undefined;
 }
 
+export interface SortPriorityProps {
+  priority: number | undefined;
+}
+
+export interface SortStatusProps extends SortIconProps, SortPriorityProps {}
+
 export interface CheckboxFormatterProps
   extends Pick<
     React.InputHTMLAttributes<HTMLInputElement>,
@@ -221,14 +260,11 @@ export interface CheckboxFormatterProps
   onChange: (checked: boolean, shift: boolean) => void;
 }
 
-export interface Components<TRow, TSummaryRow> {
-  sortIcon?: Maybe<ComponentType<SortIconProps>>;
-  checkboxFormatter?: Maybe<
-    | ForwardRefExoticComponent<CheckboxFormatterProps & RefAttributes<HTMLOrSVGElement>>
-    | ComponentType<CheckboxFormatterProps>
-  >;
-  rowRenderer?: Maybe<ComponentType<RowRendererProps<TRow, TSummaryRow>>>;
-  noRowsFallback?: Maybe<React.ReactNode>;
+export interface Renderers<TRow, TSummaryRow> {
+  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
+  checkboxFormatter?: Maybe<(props: CheckboxFormatterProps) => ReactNode>;
+  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  noRowsFallback?: Maybe<ReactNode>;
 }
 
 export type Direction = 'ltr' | 'rtl';

@@ -1,5 +1,4 @@
-import { useCallback, useState } from 'react';
-import { scrollIntoView } from '../utils';
+import { useState } from 'react';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
 export function useRovingCellRef(isSelected: boolean) {
@@ -10,24 +9,16 @@ export function useRovingCellRef(isSelected: boolean) {
     setIsChildFocused(false);
   }
 
-  const ref = useCallback((cell: HTMLDivElement | null) => {
-    if (cell === null) return;
-    scrollIntoView(cell);
-    if (cell.contains(document.activeElement)) return;
-    cell.focus({ preventScroll: true });
-  }, []);
-
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
     if (event.target !== event.currentTarget) {
       setIsChildFocused(true);
     }
   }
 
-  const isFocused = isSelected && !isChildFocused;
+  const isFocusable = isSelected && !isChildFocused;
 
   return {
-    ref: isSelected ? ref : undefined,
-    tabIndex: isFocused ? 0 : -1,
+    tabIndex: isFocusable ? 0 : -1,
     onFocus: isSelected ? onFocus : undefined
   };
 }

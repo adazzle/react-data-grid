@@ -7,7 +7,7 @@ interface Row {
 }
 
 test('headerRenderer is either undefined or a component', () => {
-  function Header({ column }: HeaderRendererProps<Row>) {
+  function headerRenderer({ column }: HeaderRendererProps<Row>) {
     return <>Fancy! {column.name}</>;
   }
 
@@ -19,7 +19,7 @@ test('headerRenderer is either undefined or a component', () => {
     {
       key: 'name',
       name: 'Name',
-      headerRenderer: Header
+      headerRenderer
     }
   ];
 

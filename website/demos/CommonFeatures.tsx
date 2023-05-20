@@ -1,17 +1,19 @@
 import { useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
-import faker from '@faker-js/faker';
 
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectColumn, textEditor, SelectCellFormatter } from '../../src';
 import type { Column, SortColumn } from '../../src';
-import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
-import { textEditorClassname } from '../../src/editors/TextEditor';
-import type { Props } from './types';
+import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
+import type { Props } from './types';
+import { exportToCsv, exportToPdf } from './exportUtils';
 
 const toolbarClassname = css`
-  text-align: end;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
   margin-block-end: 8px;
 `;
 
@@ -78,7 +80,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'id',
       name: 'ID',
-      width: 60,
       frozen: true,
       resizable: false,
       summaryFormatter() {
@@ -88,9 +89,8 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'title',
       name: 'Task',
-      width: 120,
       frozen: true,
-      editor: TextEditor,
+      editor: textEditor,
       summaryFormatter({ row }) {
         return <>{row.totalCount} records</>;
       }
@@ -98,19 +98,17 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'client',
       name: 'Client',
-      width: 220,
-      editor: TextEditor
+      width: 'max-content',
+      editor: textEditor
     },
     {
       key: 'area',
       name: 'Area',
-      width: 120,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'country',
       name: 'Country',
-      width: 180,
       editor: (p) => (
         <select
           autoFocus
@@ -122,27 +120,21 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
             <option key={country}>{country}</option>
           ))}
         </select>
-      ),
-      editorOptions: {
-        editOnClick: true
-      }
+      )
     },
     {
       key: 'contact',
       name: 'Contact',
-      width: 160,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'assignee',
       name: 'Assignee',
-      width: 150,
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'progress',
       name: 'Completion',
-      width: 110,
       formatter(props) {
         const value = props.row.progress;
         return (
@@ -172,8 +164,12 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
                 onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
               />
               <menu>
-                <button onClick={() => onClose()}>Cancel</button>
-                <button onClick={() => onClose(true)}>Save</button>
+                <button type="button" onClick={() => onClose()}>
+                  Cancel
+                </button>
+                <button type="button" onClick={() => onClose(true)}>
+                  Save
+                </button>
               </menu>
             </dialog>
           </div>,
@@ -187,7 +183,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'startTimestamp',
       name: 'Start date',
-      width: 100,
       formatter(props) {
         return <TimestampFormatter timestamp={props.row.startTimestamp} />;
       }
@@ -195,7 +190,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'endTimestamp',
       name: 'Deadline',
-      width: 100,
       formatter(props) {
         return <TimestampFormatter timestamp={props.row.endTimestamp} />;
       }
@@ -203,7 +197,6 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'budget',
       name: 'Budget',
-      width: 100,
       formatter(props) {
         return <CurrencyFormatter value={props.row.budget} />;
       }
@@ -214,18 +207,16 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     },
     {
       key: 'account',
-      name: 'Account',
-      width: 150
+      name: 'Account'
     },
     {
       key: 'version',
       name: 'Version',
-      editor: TextEditor
+      editor: textEditor
     },
     {
       key: 'available',
       name: 'Available',
-      width: 80,
       formatter({ row, onRowChange, isCellSelected }) {
         return (
           <SelectCellFormatter
@@ -256,11 +247,11 @@ function createRows(): readonly Row[] {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
-      client: faker.company.companyName(),
-      area: faker.name.jobArea(),
-      country: faker.address.country(),
+      client: faker.company.name(),
+      area: faker.person.jobArea(),
+      country: faker.location.country(),
       contact: faker.internet.exampleEmail(),
-      assignee: faker.name.findName(),
+      assignee: faker.person.fullName(),
       progress: Math.random() * 100,
       startTimestamp: now - Math.round(Math.random() * 1e10),
       endTimestamp: now + Math.round(Math.random() * 1e10),
@@ -356,7 +347,8 @@ export default function CommonFeatures({ direction }: Props) {
       onRowsChange={setRows}
       sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
-      summaryRows={summaryRows}
+      topSummaryRows={summaryRows}
+      bottomSummaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
     />
@@ -367,9 +359,6 @@ export default function CommonFeatures({ direction }: Props) {
       <div className={toolbarClassname}>
         <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
           Export to CSV
-        </ExportButton>
-        <ExportButton onExport={() => exportToXlsx(gridElement, 'CommonFeatures.xlsx')}>
-          Export to XSLX
         </ExportButton>
         <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
           Export to PDF
@@ -390,6 +379,7 @@ function ExportButton({
   const [exporting, setExporting] = useState(false);
   return (
     <button
+      type="button"
       disabled={exporting}
       onClick={async () => {
         setExporting(true);

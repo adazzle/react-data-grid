@@ -1,6 +1,6 @@
 import type { Column } from '../../src';
+import { cellClassname } from '../../src/style/cell';
 import { setup, getCells } from '../utils';
-import { cellClassname } from '../../src/style';
 
 interface Row {
   id: number;

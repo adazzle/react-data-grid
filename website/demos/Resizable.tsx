@@ -5,7 +5,7 @@ import type { Props } from './types';
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
 
-function CellFormatter(props: FormatterProps<Row>) {
+function cellFormatter(props: FormatterProps<Row>) {
   return (
     <>
       {props.column.key}&times;{props.row}
@@ -20,7 +20,7 @@ for (let i = 0; i < 50; i++) {
   columns.push({
     key,
     name: key,
-    formatter: CellFormatter
+    formatter: cellFormatter
   });
 }
 
