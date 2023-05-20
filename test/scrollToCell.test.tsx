@@ -28,6 +28,7 @@ function Grid() {
   return (
     <>
       <button
+        type="button"
         onClick={() => {
           ref.current!.scrollToCell(position);
         }}
