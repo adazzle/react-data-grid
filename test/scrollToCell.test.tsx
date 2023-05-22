@@ -1,6 +1,7 @@
-import { StrictMode, useRef } from 'react';
+import { useRef } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import type { Column, DataGridHandle } from '../src';
 import DataGrid from '../src';
@@ -48,7 +49,7 @@ function Grid() {
 }
 
 async function testScroll(p: PartialPosition, didScroll: boolean) {
-  const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   position = p;
   await userEvent.click(screen.getByRole('button'));
   if (didScroll) {
@@ -60,11 +61,7 @@ async function testScroll(p: PartialPosition, didScroll: boolean) {
 }
 
 test('scrollToCell', async () => {
-  render(
-    <StrictMode>
-      <Grid />
-    </StrictMode>
-  );
+  render(<Grid />);
   // should scroll to a cell when a valid position is specified
   await testScroll({ idx: 30, rowIdx: 30 }, true);
 
