@@ -38,7 +38,7 @@ const childRowButtonClassname = css`
 `;
 
 interface ChildRowDeleteButtonProps {
-  isCellSelected: boolean;
+  tabIndex: number;
   isDeleteSubRowEnabled: boolean;
   onDeleteSubRow: () => void;
 }

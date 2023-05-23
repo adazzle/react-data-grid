@@ -163,6 +163,7 @@ export default function EditCell<R, SR>({
               row,
               isCellSelected: true,
               isCellEditable: true,
+              tabIndex: -1,
               onRowChange: onEditorRowChange
             })}
         </>

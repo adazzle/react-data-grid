@@ -1,10 +1,12 @@
 import type { CheckboxFormatterProps } from '../types';
 import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
 
-type SharedInputProps = Pick<CheckboxFormatterProps, 'disabled' | 'aria-label' | 'aria-labelledby'>;
+type SharedInputProps = Pick<
+  CheckboxFormatterProps,
+  'disabled' | 'tabIndex' | 'aria-label' | 'aria-labelledby'
+>;
 
 interface SelectCellFormatterProps extends SharedInputProps {
-  isCellSelected: boolean;
   value: boolean;
   onChange: (value: boolean, isShiftClick: boolean) => void;
 }
