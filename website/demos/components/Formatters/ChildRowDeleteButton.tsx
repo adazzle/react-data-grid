@@ -44,7 +44,7 @@ interface ChildRowDeleteButtonProps {
 }
 
 export function ChildRowDeleteButton({
-  isCellSelected,
+  tabIndex,
   onDeleteSubRow,
   isDeleteSubRowEnabled
 }: ChildRowDeleteButtonProps) {
@@ -60,7 +60,7 @@ export function ChildRowDeleteButton({
       <div className={childRowActionCrossClassname} />
       {isDeleteSubRowEnabled && (
         <div className={childRowButtonClassname} onClick={onDeleteSubRow}>
-          <span tabIndex={isCellSelected ? 0 : -1} onKeyDown={handleKeyDown}>
+          <span tabIndex={tabIndex} onKeyDown={handleKeyDown}>
             ❌
           </span>
         </div>

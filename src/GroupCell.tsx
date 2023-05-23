@@ -60,6 +60,7 @@ function GroupCell<R, SR>({
           row,
           isExpanded,
           isCellSelected,
+          tabIndex,
           toggleGroup
         })}
     </div>

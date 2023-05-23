@@ -112,6 +112,7 @@ function Cell<R, SR>({
             row,
             isCellSelected,
             isCellEditable: isEditable,
+            tabIndex,
             onRowChange: handleRowChange
           })}
           {dragHandle}

@@ -11,7 +11,7 @@ interface SelectCellFormatterProps extends SharedInputProps {
 
 export function SelectCellFormatter({
   value,
-  isCellSelected,
+  tabIndex,
   disabled,
   onChange,
   'aria-label': ariaLabel,
@@ -24,7 +24,7 @@ export function SelectCellFormatter({
       {checkboxFormatter({
         'aria-label': ariaLabel,
         'aria-labelledby': ariaLabelledBy,
-        tabIndex: isCellSelected ? 0 : -1,
+        tabIndex,
         disabled,
         checked: value,
         onChange
