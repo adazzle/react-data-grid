@@ -104,7 +104,7 @@
     "rome": "12.1.2",
     "typescript": "~5.0.2",
     "vite": "^4.3.5",
-    "vitest": "^0.31.0"
+    "vitest": "^0.31.1"
   },
   "peerDependencies": {
     "react": "^18.0",
