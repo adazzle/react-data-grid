@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import DataGrid from '../../src';
 import type { Column, FormatterProps, DataGridHandle } from '../../src';
@@ -6,28 +6,23 @@ import type { Props } from './types';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(200).keys()];
+const columns: Column<Row>[] = [];
+for (let i = 0; i < 200; i++) {
+  const key = String(i);
+  columns.push({
+    key,
+    name: key,
+    width: 120,
+    frozen: i < 5,
+    resizable: true,
+    formatter: cellFormatter
+  });
+}
 
 export default function ScrollToCell({ direction }: Props) {
   const [idx, setIdx] = useState<number | undefined>(10);
   const [rowIdx, setRowIdx] = useState<number | undefined>(10);
   const gridRef = useRef<DataGridHandle>(null);
-  const columns = useMemo((): readonly Column<Row>[] => {
-    const columns: Column<Row>[] = [];
-
-    for (let i = 0; i < 200; i++) {
-      const key = String(i);
-      columns.push({
-        key,
-        name: key,
-        width: 120,
-        frozen: i < 5,
-        resizable: true,
-        formatter: cellFormatter
-      });
-    }
-
-    return columns;
-  }, []);
 
   function scrollToCell() {
     gridRef.current!.scrollToCell({ idx, rowIdx });
