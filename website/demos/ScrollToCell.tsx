@@ -5,7 +5,7 @@ import type { Column, FormatterProps, DataGridHandle } from '../../src';
 import type { Props } from './types';
 
 type Row = number;
-const rows: readonly Row[] = [...Array(200).keys()];
+const rows: readonly Row[] = Array.from({ length: 200 }, (_, i) => i);
 const columns: Column<Row>[] = [];
 for (let i = 0; i < 200; i++) {
   const key = String(i);
