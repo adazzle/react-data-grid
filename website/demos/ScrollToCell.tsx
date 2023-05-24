@@ -7,14 +7,6 @@ import type { Props } from './types';
 type Row = number;
 const rows: readonly Row[] = [...Array(200).keys()];
 
-function CellFormatter(props: FormatterProps<Row>) {
-  return (
-    <>
-      {props.column.key}&times;{props.row}
-    </>
-  );
-}
-
 export default function ScrollToCell({ direction }: Props) {
   const [idx, setIdx] = useState<number | undefined>(10);
   const [rowIdx, setRowIdx] = useState<number | undefined>(10);
@@ -30,7 +22,7 @@ export default function ScrollToCell({ direction }: Props) {
         width: 120,
         frozen: i < 5,
         resizable: true,
-        formatter: CellFormatter
+        formatter: cellFormatter
       });
     }
 
@@ -82,6 +74,14 @@ export default function ScrollToCell({ direction }: Props) {
         className="fill-grid"
         direction={direction}
       />
+    </>
+  );
+}
+
+function cellFormatter(props: FormatterProps<Row>) {
+  return (
+    <>
+      {props.column.key}&times;{props.row}
     </>
   );
 }
