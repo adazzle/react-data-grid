@@ -187,8 +187,8 @@ test('navigation with focusable formatter', async () => {
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  function Test({ id, tabIndex }: { id: string; tabIndex: number }) {
-    return <input tabIndex={tabIndex} id={id} />;
+  function Test(props: { id: string; tabIndex: number }) {
+    return <input {...props} />;
   }
 
   const columns: readonly Column<Row>[] = [
