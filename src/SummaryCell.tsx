@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
-import { useRovingCellRef } from './hooks';
+import { useRovingTabIndex } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CellRendererProps } from './types';
 
@@ -29,7 +29,7 @@ function SummaryCell<R, SR>({
   isCellSelected,
   selectCell
 }: SummaryCellProps<R, SR>) {
-  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const { summaryCellClass } = column;
   const className = getCellClassname(
     column,
@@ -53,7 +53,7 @@ function SummaryCell<R, SR>({
       onClick={onClick}
       onFocus={onFocus}
     >
-      {column.summaryFormatter?.({ column, row, isCellSelected })}
+      {column.summaryFormatter?.({ column, row, isCellSelected, tabIndex: childTabIndex })}
     </div>
   );
 }

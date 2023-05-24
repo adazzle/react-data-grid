@@ -10,7 +10,7 @@ function HeaderRenderer(props: HeaderRendererProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select All"
-      isCellSelected={props.isCellSelected}
+      tabIndex={props.tabIndex}
       value={isRowSelected}
       onChange={(checked) => {
         onRowSelectionChange({ type: 'HEADER', checked });
@@ -25,7 +25,7 @@ function SelectFormatter(props: FormatterProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select"
-      isCellSelected={props.isCellSelected}
+      tabIndex={props.tabIndex}
       value={isRowSelected}
       onChange={(checked, isShiftClick) => {
         onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick });
@@ -40,7 +40,7 @@ function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
   return (
     <SelectCellFormatter
       aria-label="Select Group"
-      isCellSelected={props.isCellSelected}
+      tabIndex={props.tabIndex}
       value={isRowSelected}
       onChange={(checked) => {
         onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick: false });

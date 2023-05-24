@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { useRovingCellRef } from './hooks';
+import { useRovingTabIndex } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
@@ -28,7 +28,7 @@ function GroupCell<R, SR>({
   groupColumnIndex,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
-  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   function toggleGroup() {
     toggleGroupWrapper(id);
@@ -60,6 +60,7 @@ function GroupCell<R, SR>({
           row,
           isExpanded,
           isCellSelected,
+          tabIndex: childTabIndex,
           toggleGroup
         })}
     </div>

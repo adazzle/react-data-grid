@@ -300,7 +300,7 @@ export default function HeaderFilters({ direction }: Props) {
 }
 
 function FilterRenderer<R>({
-  isCellSelected,
+  tabIndex,
   column,
   children
 }: HeaderRendererProps<R> & {
@@ -310,7 +310,7 @@ function FilterRenderer<R>({
   return (
     <>
       <div>{column.name}</div>
-      {filters.enabled && <div>{children({ tabIndex: isCellSelected ? 0 : -1, filters })}</div>}
+      {filters.enabled && <div>{children({ tabIndex, filters })}</div>}
     </>
   );
 }

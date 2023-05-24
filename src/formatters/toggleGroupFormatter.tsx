@@ -33,7 +33,7 @@ export function toggleGroupFormatter<R, SR>(props: GroupFormatterProps<R, SR>) {
 export function ToggleGroup<R, SR>({
   groupKey,
   isExpanded,
-  isCellSelected,
+  tabIndex,
   toggleGroup
 }: GroupFormatterProps<R, SR>) {
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
@@ -45,11 +45,7 @@ export function ToggleGroup<R, SR>({
   const d = isExpanded ? 'M1 1 L 7 7 L 13 1' : 'M1 7 L 7 1 L 13 7';
 
   return (
-    <span
-      className={groupCellContentClassname}
-      tabIndex={isCellSelected ? 0 : -1}
-      onKeyDown={handleKeyDown}
-    >
+    <span className={groupCellContentClassname} tabIndex={tabIndex} onKeyDown={handleKeyDown}>
       {groupKey as string}
       <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname} aria-hidden>
         <path d={d} />

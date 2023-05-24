@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import { useRovingCellRef } from './hooks';
+import { useRovingTabIndex } from './hooks';
 import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
@@ -52,7 +52,7 @@ export default function HeaderCell<R, SR>({
   direction
 }: HeaderCellProps<R, SR>) {
   const isRtl = direction === 'rtl';
-  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
@@ -183,7 +183,8 @@ export default function HeaderCell<R, SR>({
         sortDirection,
         priority,
         onSort,
-        isCellSelected
+        isCellSelected,
+        tabIndex: childTabIndex
       })}
     </div>
   );

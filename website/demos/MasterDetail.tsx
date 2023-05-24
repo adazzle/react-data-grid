@@ -82,7 +82,7 @@ export default function MasterDetail({ direction }: Props) {
               `
             : undefined;
         },
-        formatter({ row, isCellSelected, onRowChange }) {
+        formatter({ row, tabIndex, onRowChange }) {
           if (row.type === 'DETAIL') {
             return <ProductGrid parentId={row.parentId} direction={direction} />;
           }
@@ -90,7 +90,7 @@ export default function MasterDetail({ direction }: Props) {
           return (
             <CellExpanderFormatter
               expanded={row.expanded}
-              isCellSelected={isCellSelected}
+              tabIndex={tabIndex}
               onCellExpand={() => {
                 onRowChange({ ...row, expanded: !row.expanded });
               }}
