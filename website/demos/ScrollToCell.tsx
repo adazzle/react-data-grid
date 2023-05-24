@@ -51,7 +51,7 @@ export default function ScrollToCell({ direction }: Props) {
           <input
             style={{ inlineSize: 50 }}
             type="number"
-            value={rowIdx}
+            value={rowIdx ?? ''}
             onChange={(event) => {
               const { valueAsNumber } = event.target;
               setRowIdx(Number.isNaN(valueAsNumber) ? undefined : valueAsNumber);
