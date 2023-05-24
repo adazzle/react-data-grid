@@ -110,7 +110,6 @@ function Cell<R, SR>({
           {column.formatter({
             column,
             row,
-            isCellSelected,
             isCellEditable: isEditable,
             tabIndex: childTabIndex,
             onRowChange: handleRowChange

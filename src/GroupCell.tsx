@@ -59,7 +59,6 @@ function GroupCell<R, SR>({
           column,
           row,
           isExpanded,
-          isCellSelected,
           tabIndex: childTabIndex,
           toggleGroup
         })}

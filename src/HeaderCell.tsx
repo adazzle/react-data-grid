@@ -183,7 +183,6 @@ export default function HeaderCell<R, SR>({
         sortDirection,
         priority,
         onSort,
-        isCellSelected,
         tabIndex: childTabIndex
       })}
     </div>

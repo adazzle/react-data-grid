@@ -286,7 +286,7 @@ The `ref` prop is supported.
 
 ###### `priority: number | undefined`
 
-###### `isCellSelected: boolean`
+###### `tabIndex: number`
 
 ###### `children: React.ReactNode`
 
@@ -302,7 +302,7 @@ See [`FormatterProps`](#formatterprops)
 
 ###### `value: boolean`
 
-###### `isCellSelected: boolean`
+###### `tabIndex: number`
 
 ###### `disabled?: boolean | undefined`
 
