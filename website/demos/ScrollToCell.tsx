@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column, FormatterProps, DataGridHandle } from '../../src';
@@ -19,6 +20,12 @@ for (let i = 0; i < 200; i++) {
   });
 }
 
+const flexClassname = css`
+  display: flex;
+  gap: 5px;
+  margin-block-end: 5px;
+`;
+
 export default function ScrollToCell({ direction }: Props) {
   const [idx, setIdx] = useState<number | undefined>(10);
   const [rowIdx, setRowIdx] = useState<number | undefined>(10);
@@ -32,11 +39,15 @@ export default function ScrollToCell({ direction }: Props) {
     gridRef.current!.scrollToCell({ rowIdx });
   }
 
+  function scrollToCell() {
+    gridRef.current!.scrollToCell({ idx, rowIdx });
+  }
+
   return (
     <>
-      <div style={{ marginBlockEnd: 5 }}>
+      <div className={flexClassname}>
         <label>
-          <span style={{ marginInlineEnd: 5 }}>Column index: </span>
+          <span>Column index: </span>
           <input
             style={{ inlineSize: 50 }}
             type="number"
@@ -47,11 +58,8 @@ export default function ScrollToCell({ direction }: Props) {
             }}
           />
         </label>
-        <button type="button" onClick={scrollToColumn}>
-          Scroll to column
-        </button>
         <label>
-          <span style={{ marginInline: 5 }}>Row index: </span>
+          <span>Row index: </span>
           <input
             style={{ inlineSize: 50 }}
             type="number"
@@ -61,10 +69,18 @@ export default function ScrollToCell({ direction }: Props) {
               setRowIdx(Number.isNaN(valueAsNumber) ? undefined : valueAsNumber);
             }}
           />
-          <button type="button" onClick={scrollToRow}>
-            Scroll to row
-          </button>
         </label>
+      </div>
+      <div className={flexClassname}>
+        <button type="button" onClick={scrollToCell}>
+          Scroll to cell
+        </button>
+        <button type="button" onClick={scrollToColumn}>
+          Scroll to column
+        </button>
+        <button type="button" onClick={scrollToRow}>
+          Scroll to row
+        </button>
       </div>
       <DataGrid
         ref={gridRef}
