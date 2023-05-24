@@ -161,8 +161,8 @@ export default function EditCell<R, SR>({
             column.formatter({
               column,
               row,
-              isCellSelected: true,
               isCellEditable: true,
+              tabIndex: -1,
               onRowChange: onEditorRowChange
             })}
         </>
