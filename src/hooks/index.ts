@@ -3,7 +3,7 @@ export * from './useColumnWidths';
 export * from './useGridDimensions';
 export * from './useLatestFunc';
 export * from './useLayoutEffect';
-export * from './useRovingCellTabIndex';
+export * from './useRovingTabIndex';
 export * from './useRowSelection';
 export * from './useViewportColumns';
 export * from './useViewportRows';

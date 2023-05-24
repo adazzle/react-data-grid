@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
-export function useRovingCellTabIndex(isSelected: boolean) {
+export function useRovingTabIndex(isSelected: boolean) {
   // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
   const [isChildFocused, setIsChildFocused] = useState(false);
 
