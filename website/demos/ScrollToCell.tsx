@@ -24,8 +24,12 @@ export default function ScrollToCell({ direction }: Props) {
   const [rowIdx, setRowIdx] = useState<number | undefined>(10);
   const gridRef = useRef<DataGridHandle>(null);
 
-  function scrollToCell() {
-    gridRef.current!.scrollToCell({ idx, rowIdx });
+  function scrollToColumn() {
+    gridRef.current!.scrollToCell({ idx });
+  }
+
+  function scrollToRow() {
+    gridRef.current!.scrollToCell({ rowIdx });
   }
 
   return (
@@ -43,7 +47,7 @@ export default function ScrollToCell({ direction }: Props) {
             }}
           />
         </label>
-        <button type="button" onClick={scrollToCell}>
+        <button type="button" onClick={scrollToColumn}>
           Scroll to column
         </button>
         <label>
@@ -57,7 +61,7 @@ export default function ScrollToCell({ direction }: Props) {
               setRowIdx(Number.isNaN(valueAsNumber) ? undefined : valueAsNumber);
             }}
           />
-          <button type="button" onClick={scrollToCell}>
+          <button type="button" onClick={scrollToRow}>
             Scroll to row
           </button>
         </label>
