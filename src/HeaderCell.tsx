@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import { useRovingCellRef } from './hooks';
+import { useRovingCellTabIndex } from './hooks';
 import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
@@ -52,9 +52,7 @@ export default function HeaderCell<R, SR>({
   direction
 }: HeaderCellProps<R, SR>) {
   const isRtl = direction === 'rtl';
-  const { tabIndex: cellTabIndex, onFocus } = useRovingCellRef(isCellSelected);
-  // set the tabIndex to 0 when there is no selected cell so grid can receive focus
-  const tabIndex = shouldFocusGrid ? 0 : cellTabIndex;
+  const { tabIndex, childTabIndex, onFocus } = useRovingCellTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
@@ -171,7 +169,8 @@ export default function HeaderCell<R, SR>({
       aria-selected={isCellSelected}
       aria-sort={ariaSort}
       aria-colspan={colSpan}
-      tabIndex={tabIndex}
+      // set the tabIndex to 0 when there is no selected cell so grid can receive focus
+      tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
       onFocus={handleFocus}
@@ -185,7 +184,7 @@ export default function HeaderCell<R, SR>({
         priority,
         onSort,
         isCellSelected,
-        tabIndex
+        tabIndex: childTabIndex
       })}
     </div>
   );
