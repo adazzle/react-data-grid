@@ -247,7 +247,6 @@ export function useCalculatedColumns<R, SR>({
     colOverscanEndIdx,
     templateColumns,
     layoutCssVars,
-    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
