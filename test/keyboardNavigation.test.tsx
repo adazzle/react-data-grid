@@ -187,8 +187,8 @@ test('navigation with focusable formatter', async () => {
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  function Test({ id, isCellSelected }: { id: string; isCellSelected: boolean }) {
-    return <input tabIndex={isCellSelected ? 0 : -1} id={id} />;
+  function Test(props: { id: string; tabIndex: number }) {
+    return <input {...props} />;
   }
 
   const columns: readonly Column<Row>[] = [
@@ -196,20 +196,20 @@ test('navigation when header and summary rows have focusable elements', async ()
       key: 'col2',
       name: 'col2',
       headerRenderer(p) {
-        return <Test id="header-filter1" isCellSelected={p.isCellSelected} />;
+        return <Test id="header-filter1" tabIndex={p.tabIndex} />;
       },
       summaryFormatter(p) {
-        return <Test id="summary-formatter1" isCellSelected={p.isCellSelected} />;
+        return <Test id="summary-formatter1" tabIndex={p.tabIndex} />;
       }
     },
     {
       key: 'col3',
       name: 'col3',
       headerRenderer(p) {
-        return <Test id="header-filter2" isCellSelected={p.isCellSelected} />;
+        return <Test id="header-filter2" tabIndex={p.tabIndex} />;
       },
       summaryFormatter(p) {
-        return <Test id="summary-formatter2" isCellSelected={p.isCellSelected} />;
+        return <Test id="summary-formatter2" tabIndex={p.tabIndex} />;
       }
     }
   ];

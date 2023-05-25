@@ -217,14 +217,14 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'available',
       name: 'Available',
-      formatter({ row, onRowChange, isCellSelected }) {
+      formatter({ row, onRowChange, tabIndex }) {
         return (
           <SelectCellFormatter
             value={row.available}
             onChange={() => {
               onRowChange({ ...row, available: !row.available });
             }}
-            isCellSelected={isCellSelected}
+            tabIndex={tabIndex}
           />
         );
       },

@@ -72,15 +72,15 @@ export interface Position {
 export interface FormatterProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
-  isCellSelected: boolean;
   isCellEditable: boolean;
+  tabIndex: number;
   onRowChange: (row: TRow) => void;
 }
 
 export interface SummaryFormatterProps<TSummaryRow, TRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TSummaryRow;
-  isCellSelected: boolean;
+  tabIndex: number;
 }
 
 export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
@@ -89,7 +89,7 @@ export interface GroupFormatterProps<TRow, TSummaryRow = unknown> {
   row: GroupRow<TRow>;
   childRows: readonly TRow[];
   isExpanded: boolean;
-  isCellSelected: boolean;
+  tabIndex: number;
   toggleGroup: () => void;
 }
 
@@ -104,8 +104,8 @@ export interface HeaderRendererProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
+  tabIndex: number;
   onSort: (ctrlClick: boolean) => void;
-  isCellSelected: boolean;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>

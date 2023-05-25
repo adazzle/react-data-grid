@@ -32,7 +32,7 @@ export default function headerRenderer<R, SR>({
   sortDirection,
   priority,
   onSort,
-  isCellSelected
+  tabIndex
 }: HeaderRendererProps<R, SR>) {
   if (!column.sortable) return <>{column.name}</>;
 
@@ -41,7 +41,7 @@ export default function headerRenderer<R, SR>({
       onSort={onSort}
       sortDirection={sortDirection}
       priority={priority}
-      isCellSelected={isCellSelected}
+      tabIndex={tabIndex}
     >
       {column.name}
     </SortableHeaderCell>
@@ -50,7 +50,7 @@ export default function headerRenderer<R, SR>({
 
 type SharedHeaderCellProps<R, SR> = Pick<
   HeaderRendererProps<R, SR>,
-  'sortDirection' | 'onSort' | 'priority' | 'isCellSelected'
+  'sortDirection' | 'onSort' | 'priority' | 'tabIndex'
 >;
 
 interface SortableHeaderCellProps<R, SR> extends SharedHeaderCellProps<R, SR> {
@@ -62,7 +62,7 @@ function SortableHeaderCell<R, SR>({
   sortDirection,
   priority,
   children,
-  isCellSelected
+  tabIndex
 }: SortableHeaderCellProps<R, SR>) {
   const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
@@ -79,7 +79,7 @@ function SortableHeaderCell<R, SR>({
 
   return (
     <span
-      tabIndex={isCellSelected ? 0 : -1}
+      tabIndex={tabIndex}
       className={headerSortCellClassname}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
