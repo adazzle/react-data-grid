@@ -1156,7 +1156,22 @@ function DataGrid<R, SR, K extends Key>(
       {scrollToPosition !== null && (
         <ScrollToCell
           scrollToPosition={scrollToPosition}
-          setScrollToCellPosition={setScrollToPosition}
+          onScroll={() => {
+            if (scrollToPosition.idx !== undefined) {
+              const { key, width } = columns[scrollToPosition.idx];
+              if (
+                // with auto-sized column we need to keep scrolling
+                // until the column width is set and it is in the viewport
+                typeof width === 'string' &&
+                !measuredColumnWidths.has(key) &&
+                !resizedColumnWidths.has(key)
+              ) {
+                return;
+              }
+            }
+
+            setScrollToPosition(null);
+          }}
         />
       )}
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>

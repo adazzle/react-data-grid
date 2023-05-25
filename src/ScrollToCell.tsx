@@ -1,3 +1,6 @@
+import { useRef } from 'react';
+
+import { useLayoutEffect } from './hooks';
 import { scrollIntoView } from './utils';
 
 export interface PartialPosition {
@@ -7,16 +10,17 @@ export interface PartialPosition {
 
 export default function ScrollToCell({
   scrollToPosition: { idx, rowIdx },
-  setScrollToCellPosition
+  onScroll
 }: {
   scrollToPosition: PartialPosition;
-  setScrollToCellPosition: (cell: null) => void;
+  onScroll: () => void;
 }) {
-  function ref(node: HTMLDivElement | null) {
-    if (node === null) return;
-    scrollIntoView(node, 'smooth');
-    setScrollToCellPosition(null);
-  }
+  const ref = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    scrollIntoView(ref.current);
+    onScroll();
+  });
 
   return (
     <div
