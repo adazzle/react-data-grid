@@ -20,6 +20,12 @@ export default function ScrollToCell({
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
+    // scroll until the cell is completely visible
+    // this is needed if the grid has auto-sized columns
+    scrollIntoView(ref.current);
+  });
+
+  useLayoutEffect(() => {
     function removeScrollToCell() {
       setScrollToCellPosition(null);
     }
@@ -35,12 +41,6 @@ export default function ScrollToCell({
       observer.disconnect();
     };
   }, [gridElement, setScrollToCellPosition]);
-
-  useLayoutEffect(() => {
-    // scroll until the cell is completely visible
-    // this is needed if the grid has auto-sized columns
-    scrollIntoView(ref.current);
-  });
 
   return (
     <div
