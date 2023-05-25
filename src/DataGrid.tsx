@@ -1113,17 +1113,10 @@ function DataGrid<R, SR, K extends Key>(
         {
           ...style,
           // set scrollPadding to correctly position non-sticky cells after scrolling
-          scrollPaddingInlineStart:
-            selectedPosition.idx > lastFrozenColumnIndex || scrollToPosition?.idx !== undefined
-              ? `${totalFrozenColumnWidth}px`
-              : undefined,
-          scrollPaddingBlock:
-            isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
-            scrollToPosition?.rowIdx !== undefined
-              ? `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
-                  bottomSummaryRowsCount * summaryRowHeight
-                }px`
-              : undefined,
+          scrollPaddingInlineStart: `${totalFrozenColumnWidth}px`,
+          scrollPaddingBlock: `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
+            bottomSummaryRowsCount * summaryRowHeight
+          }px`,
           gridTemplateColumns,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
@@ -1156,22 +1149,8 @@ function DataGrid<R, SR, K extends Key>(
       {scrollToPosition !== null && (
         <ScrollToCell
           scrollToPosition={scrollToPosition}
-          onScroll={() => {
-            if (scrollToPosition.idx !== undefined) {
-              const { key, width } = columns[scrollToPosition.idx];
-              if (
-                // with auto-sized column we need to keep scrolling
-                // until the column width is set and it is in the viewport
-                typeof width === 'string' &&
-                !measuredColumnWidths.has(key) &&
-                !resizedColumnWidths.has(key)
-              ) {
-                return;
-              }
-            }
-
-            setScrollToPosition(null);
-          }}
+          setScrollToCellPosition={setScrollToPosition}
+          gridElement={gridRef.current!}
         />
       )}
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>

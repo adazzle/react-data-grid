@@ -10,16 +10,34 @@ export interface PartialPosition {
 
 export default function ScrollToCell({
   scrollToPosition: { idx, rowIdx },
-  onScroll
+  gridElement,
+  setScrollToCellPosition
 }: {
   scrollToPosition: PartialPosition;
-  onScroll: () => void;
+  gridElement: HTMLDivElement;
+  setScrollToCellPosition: (cell: null) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
+    function removeScrollToCell() {
+      setScrollToCellPosition(null);
+    }
+
+    const observer = new IntersectionObserver(removeScrollToCell, {
+      root: gridElement,
+      threshold: 1.0
+    });
+
+    observer.observe(ref.current!);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [gridElement, setScrollToCellPosition]);
+
+  useLayoutEffect(() => {
     scrollIntoView(ref.current);
-    onScroll();
   });
 
   return (
