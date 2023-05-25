@@ -16,6 +16,19 @@ if (typeof window !== 'undefined') {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  window.IntersectionObserver ??= class IntersectionObserver {
+    root = null;
+    rootMargin = '';
+    thresholds = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   window.HTMLElement.prototype.scrollIntoView ??= () => {};
 
   // patch clientWidth/clientHeight to pretend we're rendering DataGrid at 1080p

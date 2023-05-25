@@ -43,7 +43,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
-export function getSelectedCellColSpan<R, SR>({
+function getSelectedCellColSpan<R, SR>({
   rows,
   topSummaryRows,
   bottomSummaryRows,

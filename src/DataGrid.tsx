@@ -21,7 +21,6 @@ import {
   createCellEvent,
   getColSpan,
   getNextSelectedCellPosition,
-  getSelectedCellColSpan,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   isSelectedCellEditable,
@@ -58,6 +57,8 @@ import EditCell from './EditCell';
 import GroupRowRenderer from './GroupRow';
 import HeaderRow from './HeaderRow';
 import { defaultRowRenderer } from './Row';
+import type { PartialPosition } from './ScrollToCell';
+import ScrollToCell from './ScrollToCell';
 import SummaryRow from './SummaryRow';
 import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
 import { default as defaultSortStatus } from './sortStatus';
@@ -81,8 +82,7 @@ type DefaultColumnOptions<R, SR> = Pick<
 
 export interface DataGridHandle {
   element: HTMLDivElement | null;
-  scrollToColumn: (colIdx: number) => void;
-  scrollToRow: (rowIdx: number) => void;
+  scrollToCell: (position: PartialPosition) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
@@ -277,6 +277,7 @@ function DataGrid<R, SR, K extends Key>(
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
 
   /**
    * refs
@@ -324,7 +325,6 @@ function DataGrid<R, SR, K extends Key>(
     colOverscanEndIdx,
     templateColumns,
     layoutCssVars,
-    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy
@@ -448,14 +448,15 @@ function DataGrid<R, SR, K extends Key>(
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
-    scrollToColumn,
-    scrollToRow(rowIdx: number) {
-      const { current } = gridRef;
-      if (!current) return;
-      current.scrollTo({
-        top: getRowTop(rowIdx),
-        behavior: 'smooth'
-      });
+    scrollToCell({ idx, rowIdx }) {
+      const scrollToIdx =
+        idx !== undefined && idx > lastFrozenColumnIndex && idx < columns.length ? idx : undefined;
+      const scrollToRowIdx =
+        rowIdx !== undefined && isRowIdxWithinViewportBounds(rowIdx) ? rowIdx : undefined;
+
+      if (scrollToIdx !== undefined || scrollToRowIdx !== undefined) {
+        setScrollToPosition({ idx: scrollToIdx, rowIdx: scrollToRowIdx });
+      }
     },
     selectCell
   }));
@@ -751,44 +752,6 @@ function DataGrid<R, SR, K extends Key>(
     } else {
       shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
-    }
-  }
-
-  function scrollToColumn(idx: number): void {
-    const { current } = gridRef;
-    if (!current) return;
-
-    if (idx > lastFrozenColumnIndex) {
-      const { rowIdx } = selectedPosition;
-      if (!isCellWithinSelectionBounds({ rowIdx, idx })) return;
-      const { clientWidth } = current;
-      const column = columns[idx];
-      const { left, width } = columnMetrics.get(column)!;
-      let right = left + width;
-
-      const colSpan = getSelectedCellColSpan({
-        rows,
-        topSummaryRows,
-        bottomSummaryRows,
-        rowIdx,
-        lastFrozenColumnIndex,
-        column,
-        isGroupRow
-      });
-
-      if (colSpan !== undefined) {
-        const { left, width } = columnMetrics.get(columns[column.idx + colSpan - 1])!;
-        right = left + width;
-      }
-
-      const isCellAtLeftBoundary = left < scrollLeft + totalFrozenColumnWidth;
-      const isCellAtRightBoundary = right > clientWidth + scrollLeft;
-      const sign = isRtl ? -1 : 1;
-      if (isCellAtLeftBoundary) {
-        current.scrollLeft = (left - totalFrozenColumnWidth) * sign;
-      } else if (isCellAtRightBoundary) {
-        current.scrollLeft = (right - clientWidth) * sign;
-      }
     }
   }
 
@@ -1151,11 +1114,12 @@ function DataGrid<R, SR, K extends Key>(
           ...style,
           // set scrollPadding to correctly position non-sticky cells after scrolling
           scrollPaddingInlineStart:
-            selectedPosition.idx > lastFrozenColumnIndex
+            selectedPosition.idx > lastFrozenColumnIndex || scrollToPosition?.idx !== undefined
               ? `${totalFrozenColumnWidth}px`
               : undefined,
           scrollPaddingBlock:
-            selectedPosition.rowIdx >= 0 && selectedPosition.rowIdx < rows.length
+            isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
+            scrollToPosition?.rowIdx !== undefined
               ? `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
@@ -1187,6 +1151,13 @@ function DataGrid<R, SR, K extends Key>(
             gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
           }}
           onKeyDown={handleKeyDown}
+        />
+      )}
+      {scrollToPosition !== null && (
+        <ScrollToCell
+          scrollToPosition={scrollToPosition}
+          setScrollToCellPosition={setScrollToPosition}
+          gridElement={gridRef.current!}
         />
       )}
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
