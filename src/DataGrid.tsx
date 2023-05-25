@@ -1113,10 +1113,17 @@ function DataGrid<R, SR, K extends Key>(
         {
           ...style,
           // set scrollPadding to correctly position non-sticky cells after scrolling
-          scrollPaddingInlineStart: `${totalFrozenColumnWidth}px`,
-          scrollPaddingBlock: `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
-            bottomSummaryRowsCount * summaryRowHeight
-          }px`,
+          scrollPaddingInlineStart:
+            selectedPosition.idx > lastFrozenColumnIndex || scrollToPosition?.idx !== undefined
+              ? `${totalFrozenColumnWidth}px`
+              : undefined,
+          scrollPaddingBlock:
+            isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
+            scrollToPosition?.rowIdx !== undefined
+              ? `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
+                  bottomSummaryRowsCount * summaryRowHeight
+                }px`
+              : undefined,
           gridTemplateColumns,
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
