@@ -1,5 +1,5 @@
-import type { FormatterProps } from '../../../../src';
+import type { RenderCellProps } from '../../../../src';
 
-export function renderCoordinates(props: FormatterProps<number>) {
+export function renderCoordinates(props: RenderCellProps<number>) {
   return `${props.column.key}×${props.row}`;
 }

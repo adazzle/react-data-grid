@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { EditorProps } from '../types';
+import type { RenderEditCellProps } from '../types';
 
 const textEditorInternalClassname = css`
   @layer rdg.TextEditor {
@@ -43,7 +43,7 @@ export default function textEditor<TRow, TSummaryRow>({
   column,
   onRowChange,
   onClose
-}: EditorProps<TRow, TSummaryRow>) {
+}: RenderEditCellProps<TRow, TSummaryRow>) {
   return (
     <input
       className={textEditorClassname}

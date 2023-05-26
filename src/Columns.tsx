@@ -1,10 +1,10 @@
 import { useRowSelection } from './hooks/useRowSelection';
-import type { Column, FormatterProps, GroupFormatterProps, HeaderRendererProps } from './types';
+import type { Column, RenderCellProps, RenderGroupCellProps, RenderHeaderCellProps } from './types';
 import { SelectCellFormatter } from './cellRenderers';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
-function HeaderRenderer(props: HeaderRendererProps<unknown>) {
+function HeaderRenderer(props: RenderHeaderCellProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (
@@ -19,7 +19,7 @@ function HeaderRenderer(props: HeaderRendererProps<unknown>) {
   );
 }
 
-function SelectFormatter(props: FormatterProps<unknown>) {
+function SelectFormatter(props: RenderCellProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (
@@ -34,7 +34,7 @@ function SelectFormatter(props: FormatterProps<unknown>) {
   );
 }
 
-function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
+function SelectGroupFormatter(props: RenderGroupCellProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (

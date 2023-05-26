@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { HeaderRendererProps } from './types';
+import type { RenderHeaderCellProps } from './types';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 
 const headerSortCell = css`
@@ -33,7 +33,7 @@ export default function headerRenderer<R, SR>({
   priority,
   onSort,
   tabIndex
-}: HeaderRendererProps<R, SR>) {
+}: RenderHeaderCellProps<R, SR>) {
   if (!column.sortable) return column.name;
 
   return (
@@ -49,7 +49,7 @@ export default function headerRenderer<R, SR>({
 }
 
 type SharedHeaderCellProps<R, SR> = Pick<
-  HeaderRendererProps<R, SR>,
+  RenderHeaderCellProps<R, SR>,
   'sortDirection' | 'onSort' | 'priority' | 'tabIndex'
 >;
 

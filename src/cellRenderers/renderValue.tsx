@@ -1,6 +1,6 @@
-import type { FormatterProps } from '../types';
+import type { RenderCellProps } from '../types';
 
-export function renderValue<R, SR>(props: FormatterProps<R, SR>) {
+export function renderValue<R, SR>(props: RenderCellProps<R, SR>) {
   try {
     return props.row[props.column.key as keyof R] as React.ReactNode;
   } catch {

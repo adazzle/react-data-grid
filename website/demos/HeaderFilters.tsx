@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, HeaderRendererProps } from '../../src';
+import type { Column, RenderHeaderCellProps } from '../../src';
 import type { Omit } from '../../src/types';
 import type { Props } from './types';
 
@@ -303,7 +303,7 @@ function FilterRenderer<R>({
   tabIndex,
   column,
   children
-}: HeaderRendererProps<R> & {
+}: RenderHeaderCellProps<R> & {
   children: (args: { tabIndex: number; filters: Filter }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;

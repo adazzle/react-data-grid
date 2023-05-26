@@ -7,7 +7,7 @@ import type {
   CellKeyboardEvent,
   CellRendererProps,
   EditCellKeyDownArgs,
-  EditorProps,
+  RenderEditCellProps,
   Maybe,
   Omit
 } from './types';
@@ -37,7 +37,7 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends Omit<EditorProps<R, SR>, 'onRowChange' | 'onClose'>,
+  extends Omit<RenderEditCellProps<R, SR>, 'onRowChange' | 'onClose'>,
     SharedCellRendererProps<R, SR> {
   rowIdx: number;
   onRowChange: (row: R, commitChanges: boolean, shouldFocusCell: boolean) => void;

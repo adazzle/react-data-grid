@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import DataGrid from '../../src';
-import type { Column, HeaderRendererProps, SortColumn } from '../../src';
+import type { Column, RenderHeaderCellProps, SortColumn } from '../../src';
 import { DraggableHeaderRenderer } from './components/HeaderRenderers';
 import type { Props } from './types';
 
@@ -74,7 +74,7 @@ export default function ColumnsReordering({ direction }: Props) {
   }, []);
 
   const draggableColumns = useMemo(() => {
-    function renderHeaderCell(props: HeaderRendererProps<Row>) {
+    function renderHeaderCell(props: RenderHeaderCellProps<Row>) {
       return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
     }
 
