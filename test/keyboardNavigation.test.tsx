@@ -195,7 +195,7 @@ test('navigation when header and summary rows have focusable elements', async ()
         return <input id="header-filter1" tabIndex={p.tabIndex} />;
       },
       renderSummaryCell(p) {
-        return <input id="summary-" tabIndex={p.tabIndex} />;
+        return <input id="summary-1" tabIndex={p.tabIndex} />;
       }
     },
     {
