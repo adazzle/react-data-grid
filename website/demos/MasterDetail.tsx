@@ -82,7 +82,7 @@ export default function MasterDetail({ direction }: Props) {
               `
             : undefined;
         },
-        formatter({ row, tabIndex, onRowChange }) {
+        renderCell({ row, tabIndex, onRowChange }) {
           if (row.type === 'DETAIL') {
             return <ProductGrid parentId={row.parentId} direction={direction} />;
           }

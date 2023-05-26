@@ -21,7 +21,7 @@ export function isSelectedCellEditable<R, SR>({
 
 export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return (
-    column.editor != null &&
+    column.renderEditCell != null &&
     !column.rowGroup &&
     (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false
   );

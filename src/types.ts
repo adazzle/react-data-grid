@@ -22,12 +22,18 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>;
   readonly headerCellClass?: Maybe<string>;
   readonly summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>;
-  /** Formatter to be used to render the cell content */
-  readonly formatter?: Maybe<(props: FormatterProps<TRow, TSummaryRow>) => ReactNode>;
-  /** Formatter to be used to render the summary cell content */
-  readonly summaryFormatter?: Maybe<(props: SummaryFormatterProps<TSummaryRow, TRow>) => ReactNode>;
+  /** Render function used to render the content of the column's header cell */
+  readonly renderHeaderCell?: Maybe<(props: HeaderRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  /** Render function used to render the content of cells */
+  readonly renderCell?: Maybe<(props: FormatterProps<TRow, TSummaryRow>) => ReactNode>;
+  /** Render function used to render the content of summary cells */
+  readonly renderSummaryCell?: Maybe<
+    (props: SummaryFormatterProps<TSummaryRow, TRow>) => ReactNode
+  >;
   /** Formatter to be used to render the group cell content */
-  readonly groupFormatter?: Maybe<(props: GroupFormatterProps<TRow, TSummaryRow>) => ReactNode>;
+  readonly renderGroupCell?: Maybe<(props: GroupFormatterProps<TRow, TSummaryRow>) => ReactNode>;
+  /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
+  readonly renderEditCell?: Maybe<(props: EditorProps<TRow, TSummaryRow>) => ReactNode>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
   readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
@@ -39,16 +45,17 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly sortable?: Maybe<boolean>;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   readonly sortDescendingFirst?: Maybe<boolean>;
-  /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
-  readonly editor?: Maybe<(props: EditorProps<TRow, TSummaryRow>) => ReactNode>;
   readonly editorOptions?: Maybe<{
-    /** @default false */
-    readonly renderFormatter?: Maybe<boolean>;
+    /**
+     * Render the cell content in addition to the edit cell.
+     * Enable this option when the editor is rendered outside the grid, like a modal for example.
+     * By default, the cell content is not rendered when the edit cell is open.
+     * @default false
+     */
+    readonly displayCell?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
   }>;
-  /** Header renderer for each header cell */
-  readonly headerRenderer?: Maybe<(props: HeaderRendererProps<TRow, TSummaryRow>) => ReactNode>;
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
@@ -61,7 +68,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly frozen: boolean;
   readonly isLastFrozenColumn: boolean;
   readonly rowGroup: boolean;
-  readonly formatter: (props: FormatterProps<TRow, TSummaryRow>) => ReactNode;
+  readonly renderCell: (props: FormatterProps<TRow, TSummaryRow>) => ReactNode;
 }
 
 export interface Position {

@@ -34,7 +34,7 @@ export default function headerRenderer<R, SR>({
   onSort,
   tabIndex
 }: HeaderRendererProps<R, SR>) {
-  if (!column.sortable) return <>{column.name}</>;
+  if (!column.sortable) return column.name;
 
   return (
     <SortableHeaderCell

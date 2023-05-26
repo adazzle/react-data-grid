@@ -10,7 +10,7 @@ interface Row {
   readonly name: string;
 }
 
-const columns: readonly Column<Row>[] = [{ key: 'name', name: 'Name', editor: textEditor }];
+const columns: readonly Column<Row>[] = [{ key: 'name', name: 'Name', renderEditCell: textEditor }];
 const initialRows: readonly Row[] = [{ name: 'Tacitus Kilgore' }];
 
 function Test() {

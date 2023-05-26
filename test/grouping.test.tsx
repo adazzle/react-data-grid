@@ -44,7 +44,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'country',
     name: 'Country',
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'year',
@@ -53,7 +53,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'id',
     name: 'Id',
-    formatter(props) {
+    renderCell(props) {
       function onClick() {
         props.onRowChange({ ...props.row, id: props.row.id + 10 });
       }

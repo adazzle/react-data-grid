@@ -15,7 +15,7 @@ const columns: readonly Column<unknown, SummaryRow>[] = [
   {
     key: 'col1',
     name: 'Col1',
-    summaryFormatter(props) {
+    renderSummaryCell(props) {
       return `Summary: ${props.row.id}`;
     }
   },

@@ -53,7 +53,7 @@ function GroupCell<R, SR>({
       onFocus={onFocus}
     >
       {(!column.rowGroup || groupColumnIndex === column.idx) &&
-        column.groupFormatter?.({
+        column.renderGroupCell?.({
           groupKey,
           childRows,
           column,

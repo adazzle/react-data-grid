@@ -2,7 +2,7 @@ export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
 export { default as Row } from './Row';
 export * from './Columns';
-export * from './formatters';
+export * from './cellRenderers';
 export { default as textEditor } from './editors/textEditor';
 export { default as headerRenderer } from './headerRenderer';
 export { sortIcon, sortPriority } from './sortStatus';

@@ -107,7 +107,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'task',
         name: 'Title',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
@@ -130,7 +130,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'priority',
         name: 'Priority',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
@@ -159,7 +159,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'issueType',
         name: 'Issue Type',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
@@ -188,7 +188,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'developer',
         name: 'Developer',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
@@ -212,7 +212,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'complete',
         name: '% Complete',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input

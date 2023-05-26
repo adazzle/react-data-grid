@@ -74,7 +74,7 @@ export default function ColumnsReordering({ direction }: Props) {
   }, []);
 
   const draggableColumns = useMemo(() => {
-    function headerRenderer(props: HeaderRendererProps<Row>) {
+    function renderHeaderCell(props: HeaderRendererProps<Row>) {
       return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
     }
 
@@ -94,7 +94,7 @@ export default function ColumnsReordering({ direction }: Props) {
 
     return columns.map((c) => {
       if (c.key === 'id') return c;
-      return { ...c, headerRenderer };
+      return { ...c, renderHeaderCell };
     });
   }, [columns]);
 

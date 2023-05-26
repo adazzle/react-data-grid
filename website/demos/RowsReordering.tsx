@@ -40,7 +40,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'priority',

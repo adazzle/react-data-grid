@@ -107,7 +107,7 @@ function Cell<R, SR>({
     >
       {!column.rowGroup && (
         <>
-          {column.formatter({
+          {column.renderCell({
             column,
             row,
             isCellEditable: isEditable,

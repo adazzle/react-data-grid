@@ -1,6 +1,6 @@
 import { useRowSelection } from './hooks/useRowSelection';
 import type { Column, FormatterProps, GroupFormatterProps, HeaderRendererProps } from './types';
-import { SelectCellFormatter } from './formatters';
+import { SelectCellFormatter } from './cellRenderers';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
@@ -59,13 +59,13 @@ export const SelectColumn: Column<any, any> = {
   resizable: false,
   sortable: false,
   frozen: true,
-  headerRenderer(props) {
+  renderHeaderCell(props) {
     return <HeaderRenderer {...props} />;
   },
-  formatter(props) {
+  renderCell(props) {
     return <SelectFormatter {...props} />;
   },
-  groupFormatter(props) {
+  renderGroupCell(props) {
     return <SelectGroupFormatter {...props} />;
   }
 };

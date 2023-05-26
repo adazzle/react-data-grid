@@ -120,7 +120,8 @@ const defaultRows = createRows();
 export default function TreeView({ direction }: Props) {
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
-  const columns: Column<Row>[] = useMemo(() => {
+
+  const columns = useMemo((): readonly Column<Row>[] => {
     return [
       {
         key: 'id',
@@ -134,7 +135,7 @@ export default function TreeView({ direction }: Props) {
       {
         key: 'format',
         name: 'format',
-        formatter({ row, tabIndex }) {
+        renderCell({ row, tabIndex }) {
           const hasChildren = row.children !== undefined;
           const style = hasChildren ? undefined : { marginInlineStart: 30 };
           return (

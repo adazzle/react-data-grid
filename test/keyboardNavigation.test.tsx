@@ -187,29 +187,25 @@ test('navigation with focusable formatter', async () => {
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  function Test(props: { id: string; tabIndex: number }) {
-    return <input {...props} />;
-  }
-
   const columns: readonly Column<Row>[] = [
     {
       key: 'col2',
       name: 'col2',
-      headerRenderer(p) {
-        return <Test id="header-filter1" tabIndex={p.tabIndex} />;
+      renderHeaderCell(p) {
+        return <input id="header-filter1" tabIndex={p.tabIndex} />;
       },
-      summaryFormatter(p) {
-        return <Test id="summary-formatter1" tabIndex={p.tabIndex} />;
+      renderSummaryCell(p) {
+        return <input id="summary-formatter1" tabIndex={p.tabIndex} />;
       }
     },
     {
       key: 'col3',
       name: 'col3',
-      headerRenderer(p) {
-        return <Test id="header-filter2" tabIndex={p.tabIndex} />;
+      renderHeaderCell(p) {
+        return <input id="header-filter2" tabIndex={p.tabIndex} />;
       },
-      summaryFormatter(p) {
-        return <Test id="summary-formatter2" tabIndex={p.tabIndex} />;
+      renderSummaryCell(p) {
+        return <input id="summary-formatter2" tabIndex={p.tabIndex} />;
       }
     }
   ];

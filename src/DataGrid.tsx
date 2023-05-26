@@ -60,7 +60,7 @@ import { defaultRowRenderer } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import SummaryRow from './SummaryRow';
-import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
+import { checkboxFormatter as defaultCheckboxFormatter } from './cellRenderers';
 import { default as defaultSortStatus } from './sortStatus';
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
@@ -77,7 +77,7 @@ interface EditCellState<R> extends Position {
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
-  'formatter' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
+  'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
 >;
 
 export interface DataGridHandle {

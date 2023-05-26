@@ -39,12 +39,12 @@ describe('Custom formatter component', () => {
     {
       key: 'id',
       name: 'ID',
-      formatter: (props) => <>#{props.row.id}</>
+      renderCell: (props) => `#${props.row.id}`
     },
     {
       key: 'name',
       name: 'Name',
-      formatter: () => <>No name</>
+      renderCell: () => 'No name'
     }
   ];
 
@@ -63,7 +63,7 @@ describe('Custom formatter component', () => {
     const column: Column<Row> = {
       key: 'test',
       name: 'test',
-      formatter(props) {
+      renderCell(props) {
         function onClick() {
           props.onRowChange({ id: props.row.id + 1 });
         }

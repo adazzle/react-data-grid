@@ -15,7 +15,7 @@ const columns: readonly Column<Row>[] = [
     key: 'col',
     name: 'Col',
     editable: (row) => row.col !== 'a4',
-    editor() {
+    renderEditCell() {
       return null;
     }
   }

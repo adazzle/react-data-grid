@@ -65,7 +65,7 @@ export default function HeaderCell<R, SR>({
     [cellResizableClassname]: column.resizable
   });
 
-  const headerRenderer = column.headerRenderer ?? defaultHeaderRenderer;
+  const headerRenderer = column.renderHeaderCell ?? defaultHeaderRenderer;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
