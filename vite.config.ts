@@ -21,19 +21,18 @@ export default defineConfig({
     }
   },
   plugins: [
-    isTest &&
-      babel({
-        babelHelpers: 'runtime',
-        extensions: ['.ts', '.tsx']
-      }),
-    !isTest &&
-      react({
-        babel: {
-          babelrc: false,
-          configFile: false,
-          plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
-        }
-      }),
+    isTest
+      ? babel({
+          babelHelpers: 'runtime',
+          extensions: ['.ts', '.tsx']
+        })
+      : react({
+          babel: {
+            babelrc: false,
+            configFile: false,
+            plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
+          }
+        }),
     linaria({ preprocessor: 'none' })
   ],
   css: {
