@@ -61,7 +61,7 @@ import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import SummaryRow from './SummaryRow';
 import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
-import { default as defaultSortStatus } from './sortStatus';
+import { default as defaultRenderSortStatus } from './sortStatus';
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
 
@@ -246,7 +246,8 @@ function DataGrid<R, SR, K extends Key>(
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const renderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
-  const sortStatus = renderers?.sortStatus ?? defaultRenderers?.sortStatus ?? defaultSortStatus;
+  const renderSortStatus =
+    renderers?.renderSortStatus ?? defaultRenderers?.renderSortStatus ?? defaultRenderSortStatus;
   const renderCheckbox =
     renderers?.renderCheckbox ?? defaultRenderers?.renderCheckbox ?? defaultRenderCheckbox;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultRenderers?.noRowsFallback;
@@ -300,10 +301,10 @@ function DataGrid<R, SR, K extends Key>(
 
   const defaultGridComponents = useMemo(
     () => ({
-      sortStatus,
-      renderCheckbox
+      renderCheckbox,
+      renderSortStatus
     }),
-    [sortStatus, renderCheckbox]
+    [renderCheckbox, renderSortStatus]
   );
 
   const allRowsSelected = useMemo((): boolean => {

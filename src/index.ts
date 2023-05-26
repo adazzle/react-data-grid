@@ -5,7 +5,7 @@ export * from './Columns';
 export * from './cellRenderers';
 export { default as textEditor } from './editors/textEditor';
 export { default as renderHeaderCell } from './renderHeaderCell';
-export { sortIcon, sortPriority } from './sortStatus';
+export { renderSortIcon, renderSortPriority } from './sortStatus';
 export { useRowSelection } from './hooks';
 export type {
   Column,
@@ -27,9 +27,9 @@ export type {
   ColSpanArgs,
   RowHeightArgs,
   RenderCheckboxProps,
-  SortIconProps,
-  SortPriorityProps,
-  SortStatusProps,
+  RenderSortIconProps,
+  RenderSortPriorityProps,
+  RenderSortStatusProps,
   Renderers,
   CellMouseEvent,
   CellClickArgs,

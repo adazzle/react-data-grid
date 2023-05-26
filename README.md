@@ -208,9 +208,9 @@ This prop can be used to override the internal renderers. The prop accepts an ob
 
 ```tsx
 interface Renderers<TRow, TSummaryRow> {
-  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
   renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
   renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
+  renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 ```

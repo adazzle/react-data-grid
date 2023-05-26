@@ -64,7 +64,8 @@ function SortableHeaderCell<R, SR>({
   children,
   tabIndex
 }: SortableHeaderCellProps<R, SR>) {
-  const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
+  const renderSortStatus = useDefaultRenderers<R, SR>()!.renderSortStatus!;
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {
       // stop propagation to prevent scrolling
@@ -85,7 +86,7 @@ function SortableHeaderCell<R, SR>({
       onKeyDown={handleKeyDown}
     >
       <span className={headerSortNameClassname}>{children}</span>
-      <span>{sortStatus({ sortDirection, priority })}</span>
+      <span>{renderSortStatus({ sortDirection, priority })}</span>
     </span>
   );
 }

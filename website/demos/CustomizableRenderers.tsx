@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { Column, RenderCheckboxProps, SortColumn, SortStatusProps } from '../../src';
+import type { Column, RenderCheckboxProps, SortColumn, RenderSortStatusProps } from '../../src';
 import type { Props } from './types';
 
 const selectCellClassname = css`
@@ -109,7 +109,7 @@ export default function CustomizableRenderers({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      renderers={{ sortStatus, renderCheckbox }}
+      renderers={{ renderSortStatus, renderCheckbox }}
       direction={direction}
     />
   );
@@ -123,7 +123,7 @@ function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
   return <input type="checkbox" {...props} onChange={handleChange} />;
 }
 
-function sortStatus({ sortDirection, priority }: SortStatusProps) {
+function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
       {sortDirection !== undefined ? (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F') : null}

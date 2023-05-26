@@ -249,15 +249,15 @@ export type RowHeightArgs<TRow> =
   | { type: 'ROW'; row: TRow }
   | { type: 'GROUP'; row: GroupRow<TRow> };
 
-export interface SortIconProps {
+export interface RenderSortIconProps {
   sortDirection: SortDirection | undefined;
 }
 
-export interface SortPriorityProps {
+export interface RenderSortPriorityProps {
   priority: number | undefined;
 }
 
-export interface SortStatusProps extends SortIconProps, SortPriorityProps {}
+export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 
 export interface RenderCheckboxProps
   extends Pick<
@@ -268,9 +268,9 @@ export interface RenderCheckboxProps
 }
 
 export interface Renderers<TRow, TSummaryRow> {
-  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
   renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
   renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
+  renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 

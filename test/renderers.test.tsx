@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, sortIcon } from '../src';
-import type { Column, DataGridProps, SortColumn, SortStatusProps } from '../src';
+import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, renderSortIcon } from '../src';
+import type { Column, DataGridProps, SortColumn, RenderSortStatusProps } from '../src';
 import { getHeaderCells, getRows, setup, render } from './utils';
 
 interface Row {
@@ -40,19 +40,19 @@ function globalRenderCheckbox() {
   return <div>Global checkbox</div>;
 }
 
-function globalSortStatus({ sortDirection, priority }: SortStatusProps) {
+function globalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortIcon({ sortDirection })}
+      {renderSortIcon({ sortDirection })}
       <span data-testid="global-sort-priority">{priority}</span>
     </>
   );
 }
 
-function sortStatus({ sortDirection, priority }: SortStatusProps) {
+function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortIcon({ sortDirection })}
+      {renderSortIcon({ sortDirection })}
       <span data-testid="local-sort-priority">{priority}</span>
     </>
   );
@@ -70,7 +70,7 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
       value={{
         noRowsFallback: <GlobalNoRowsFallback />,
         renderCheckbox: globalRenderCheckbox,
-        sortStatus: globalSortStatus
+        renderSortStatus: globalSortStatus
       }}
     >
       <TestGrid {...props} />
@@ -160,7 +160,7 @@ test('sortPriority defined using both providers', async () => {
 });
 
 test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: [], renderers: { sortStatus } });
+  setupProvider({ columns, rows: [], renderers: { renderSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
