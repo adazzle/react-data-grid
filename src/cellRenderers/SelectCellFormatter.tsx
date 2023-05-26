@@ -1,8 +1,8 @@
-import type { CheckboxFormatterProps } from '../types';
+import type { RenderCheckboxProps } from '../types';
 import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
 
 type SharedInputProps = Pick<
-  CheckboxFormatterProps,
+  RenderCheckboxProps,
   'disabled' | 'tabIndex' | 'aria-label' | 'aria-labelledby'
 >;
 
@@ -19,11 +19,11 @@ export function SelectCellFormatter({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCellFormatterProps) {
-  const checkboxFormatter = useDefaultRenderers()!.checkboxFormatter!;
+  const renderCheckbox = useDefaultRenderers()!.renderCheckbox!;
 
   return (
     <>
-      {checkboxFormatter({
+      {renderCheckbox({
         'aria-label': ariaLabel,
         'aria-labelledby': ariaLabelledBy,
         tabIndex,

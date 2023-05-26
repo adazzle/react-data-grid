@@ -56,11 +56,11 @@ import DragHandle from './DragHandle';
 import EditCell from './EditCell';
 import GroupRowRenderer from './GroupRow';
 import HeaderRow from './HeaderRow';
-import { defaultRowRenderer } from './Row';
+import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import SummaryRow from './SummaryRow';
-import { checkboxFormatter as defaultCheckboxFormatter } from './cellRenderers';
+import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import { default as defaultSortStatus } from './sortStatus';
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
@@ -245,10 +245,10 @@ function DataGrid<R, SR, K extends Key>(
   const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
-  const rowRenderer = renderers?.rowRenderer ?? defaultRenderers?.rowRenderer ?? defaultRowRenderer;
+  const rowRenderer = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const sortStatus = renderers?.sortStatus ?? defaultRenderers?.sortStatus ?? defaultSortStatus;
-  const checkboxFormatter =
-    renderers?.checkboxFormatter ?? defaultRenderers?.checkboxFormatter ?? defaultCheckboxFormatter;
+  const renderCheckbox =
+    renderers?.renderCheckbox ?? defaultRenderers?.renderCheckbox ?? defaultRenderCheckbox;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultRenderers?.noRowsFallback;
   const enableVirtualization = rawEnableVirtualization ?? true;
   const direction = rawDirection ?? 'ltr';
@@ -301,9 +301,9 @@ function DataGrid<R, SR, K extends Key>(
   const defaultGridComponents = useMemo(
     () => ({
       sortStatus,
-      checkboxFormatter
+      renderCheckbox
     }),
-    [sortStatus, checkboxFormatter]
+    [sortStatus, renderCheckbox]
   );
 
   const allRowsSelected = useMemo((): boolean => {

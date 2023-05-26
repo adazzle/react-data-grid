@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import DataGrid, { textEditor } from '../../src';
-import type { Column, RowRendererProps } from '../../src';
+import type { Column, RenderRowProps } from '../../src';
 import { DraggableRowRenderer } from './components';
 import type { Props } from './types';
 
@@ -59,7 +59,7 @@ const columns: readonly Column<Row>[] = [
 export default function RowsReordering({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
 
-  const rowRenderer = useCallback((key: React.Key, props: RowRendererProps<Row>) => {
+  const renderRow = useCallback((key: React.Key, props: RenderRowProps<Row>) => {
     function onRowReorder(fromIndex: number, toIndex: number) {
       setRows((rows) => {
         const newRows = [...rows];
@@ -77,7 +77,7 @@ export default function RowsReordering({ direction }: Props) {
         columns={columns}
         rows={rows}
         onRowsChange={setRows}
-        renderers={{ rowRenderer }}
+        renderers={{ renderRow }}
         direction={direction}
       />
     </DndProvider>

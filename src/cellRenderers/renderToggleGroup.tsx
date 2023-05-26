@@ -26,7 +26,7 @@ const caret = css`
 
 const caretClassname = `rdg-caret ${caret}`;
 
-export function toggleGroupFormatter<R, SR>(props: RenderGroupCellProps<R, SR>) {
+export function renderToggleGroup<R, SR>(props: RenderGroupCellProps<R, SR>) {
   return <ToggleGroup {...props} />;
 }
 

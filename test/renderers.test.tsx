@@ -32,11 +32,11 @@ function GlobalNoRowsFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function localCheckboxFormatter() {
+function localRenderCheckbox() {
   return <div>Local checkbox</div>;
 }
 
-function globalCheckboxFormatter() {
+function globalRenderCheckbox() {
   return <div>Global checkbox</div>;
 }
 
@@ -69,7 +69,7 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
     <DataGridDefaultRenderersProvider
       value={{
         noRowsFallback: <GlobalNoRowsFallback />,
-        checkboxFormatter: globalCheckboxFormatter,
+        renderCheckbox: globalRenderCheckbox,
         sortStatus: globalSortStatus
       }}
     >
@@ -122,7 +122,7 @@ test('fallback defined using both provider and renderers with a row', () => {
 });
 
 test('checkbox defined using renderers prop', () => {
-  setup({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
+  setup({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -136,7 +136,7 @@ test('checkbox defined using provider', () => {
 });
 
 test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
+  setupProvider({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();

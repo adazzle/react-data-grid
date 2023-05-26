@@ -4,7 +4,7 @@ import { clampColumnWidth, max, min } from '../utils';
 import type { CalculatedColumn, Column, Maybe } from '../types';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import type { DataGridProps } from '../DataGrid';
-import { renderValue, toggleGroupFormatter } from '../cellRenderers';
+import { renderValue, renderToggleGroup } from '../cellRenderers';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -75,7 +75,7 @@ export function useCalculatedColumns<R, SR>({
       };
 
       if (rowGroup) {
-        column.renderGroupCell ??= toggleGroupFormatter;
+        column.renderGroupCell ??= renderToggleGroup;
       }
 
       if (frozen) {

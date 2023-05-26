@@ -116,7 +116,7 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<RowRendererProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
+  extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
       'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
@@ -127,9 +127,9 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isDraggedOver: boolean;
   isCellSelected: boolean;
   dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
-  onClick: RowRendererProps<TRow, TSummaryRow>['onCellClick'];
-  onDoubleClick: RowRendererProps<TRow, TSummaryRow>['onCellDoubleClick'];
-  onContextMenu: RowRendererProps<TRow, TSummaryRow>['onCellContextMenu'];
+  onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
+  onDoubleClick: RenderRowProps<TRow, TSummaryRow>['onCellDoubleClick'];
+  onContextMenu: RenderRowProps<TRow, TSummaryRow>['onCellContextMenu'];
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
@@ -169,7 +169,7 @@ export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
   | SelectCellKeyDownArgs<TRow, TSummaryRow>
   | EditCellKeyDownArgs<TRow, TSummaryRow>;
 
-export interface RowRendererProps<TRow, TSummaryRow = unknown>
+export interface RenderRowProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
@@ -259,7 +259,7 @@ export interface SortPriorityProps {
 
 export interface SortStatusProps extends SortIconProps, SortPriorityProps {}
 
-export interface CheckboxFormatterProps
+export interface RenderCheckboxProps
   extends Pick<
     React.InputHTMLAttributes<HTMLInputElement>,
     'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
@@ -269,8 +269,8 @@ export interface CheckboxFormatterProps
 
 export interface Renderers<TRow, TSummaryRow> {
   sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
-  checkboxFormatter?: Maybe<(props: CheckboxFormatterProps) => ReactNode>;
-  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
+  renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 
