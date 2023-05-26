@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { Column, CheckboxFormatterProps, SortColumn, SortStatusProps } from '../../src';
+import type { Column, RenderCheckboxProps, SortColumn, RenderSortStatusProps } from '../../src';
 import type { Props } from './types';
 
 const selectCellClassname = css`
@@ -58,7 +58,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: textEditor,
+    renderEditCell: textEditor,
     sortable: true
   },
   {
@@ -109,13 +109,13 @@ export default function CustomizableRenderers({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      renderers={{ sortStatus, checkboxFormatter }}
+      renderers={{ renderSortStatus, renderCheckbox }}
       direction={direction}
     />
   );
 }
 
-function checkboxFormatter({ onChange, ...props }: CheckboxFormatterProps) {
+function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
@@ -123,7 +123,7 @@ function checkboxFormatter({ onChange, ...props }: CheckboxFormatterProps) {
   return <input type="checkbox" {...props} onChange={handleChange} />;
 }
 
-function sortStatus({ sortDirection, priority }: SortStatusProps) {
+function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
       {sortDirection !== undefined ? (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F') : null}

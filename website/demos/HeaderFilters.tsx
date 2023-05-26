@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, HeaderRendererProps } from '../../src';
+import type { Column, RenderHeaderCellProps } from '../../src';
 import type { Omit } from '../../src/types';
 import type { Props } from './types';
 
@@ -107,7 +107,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'task',
         name: 'Title',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
@@ -130,7 +130,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'priority',
         name: 'Priority',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
@@ -159,7 +159,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'issueType',
         name: 'Issue Type',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
@@ -188,7 +188,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'developer',
         name: 'Developer',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
@@ -212,7 +212,7 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'complete',
         name: '% Complete',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
+        renderHeaderCell: (p) => (
           <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
@@ -303,7 +303,7 @@ function FilterRenderer<R>({
   tabIndex,
   column,
   children
-}: HeaderRendererProps<R> & {
+}: RenderHeaderCellProps<R> & {
   children: (args: { tabIndex: number; filters: Filter }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;

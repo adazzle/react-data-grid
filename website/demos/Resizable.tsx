@@ -1,17 +1,10 @@
 import DataGrid from '../../src';
-import type { Column, FormatterProps } from '../../src';
+import type { Column } from '../../src';
+import { renderCoordinates } from './renderers';
 import type { Props } from './types';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
-
-function cellFormatter(props: FormatterProps<Row>) {
-  return (
-    <>
-      {props.column.key}&times;{props.row}
-    </>
-  );
-}
 
 const columns: Column<Row>[] = [];
 
@@ -20,7 +13,7 @@ for (let i = 0; i < 50; i++) {
   columns.push({
     key,
     name: key,
-    formatter: cellFormatter
+    renderCell: renderCoordinates
   });
 }
 

@@ -4,8 +4,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
-import dropDownEditor from './components/Editors/dropDownEditor';
-import { ImageFormatter } from './components/Formatters';
+import { renderAvatar, renderDropdown } from './renderers';
 import type { Props } from './types';
 
 const highlightClassname = css`
@@ -54,20 +53,14 @@ const columns: readonly Column<Row>[] = [
     name: 'Avatar',
     width: 40,
     resizable: true,
-    headerRenderer: () => (
-      <ImageFormatter value={faker.image.urlLoremFlickr({ category: 'cats' })} />
-    ),
-    formatter: ({ row }) => <ImageFormatter value={row.avatar} />
+    renderCell: renderAvatar
   },
   {
     key: 'title',
     name: 'Title',
     width: 200,
     resizable: true,
-    formatter(props) {
-      return <>{props.row.title}</>;
-    },
-    editor: dropDownEditor
+    renderEditCell: renderDropdown
   },
   {
     key: 'firstName',
@@ -75,7 +68,7 @@ const columns: readonly Column<Row>[] = [
     width: 200,
     resizable: true,
     frozen: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'lastName',
@@ -83,63 +76,63 @@ const columns: readonly Column<Row>[] = [
     width: 200,
     resizable: true,
     frozen: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'email',
     name: 'Email',
     width: 'max-content',
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'street',
     name: 'Street',
     width: 200,
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'zipCode',
     name: 'ZipCode',
     width: 200,
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'date',
     name: 'Date',
     width: 200,
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'bs',
     name: 'bs',
     width: 200,
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'catchPhrase',
     name: 'Catch Phrase',
     width: 'max-content',
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'companyName',
     name: 'Company Name',
     width: 200,
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'sentence',
     name: 'Sentence',
     width: 'max-content',
     resizable: true,
-    editor: textEditor
+    renderEditCell: textEditor
   }
 ];
 

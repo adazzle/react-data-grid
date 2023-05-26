@@ -56,12 +56,12 @@ import DragHandle from './DragHandle';
 import EditCell from './EditCell';
 import GroupRowRenderer from './GroupRow';
 import HeaderRow from './HeaderRow';
-import { defaultRowRenderer } from './Row';
+import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import SummaryRow from './SummaryRow';
-import { checkboxFormatter as defaultCheckboxFormatter } from './formatters';
-import { default as defaultSortStatus } from './sortStatus';
+import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
+import { default as defaultRenderSortStatus } from './sortStatus';
 import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
 
@@ -77,7 +77,7 @@ interface EditCellState<R> extends Position {
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
-  'formatter' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
+  'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
 >;
 
 export interface DataGridHandle {
@@ -245,10 +245,11 @@ function DataGrid<R, SR, K extends Key>(
   const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
-  const rowRenderer = renderers?.rowRenderer ?? defaultRenderers?.rowRenderer ?? defaultRowRenderer;
-  const sortStatus = renderers?.sortStatus ?? defaultRenderers?.sortStatus ?? defaultSortStatus;
-  const checkboxFormatter =
-    renderers?.checkboxFormatter ?? defaultRenderers?.checkboxFormatter ?? defaultCheckboxFormatter;
+  const renderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
+  const renderSortStatus =
+    renderers?.renderSortStatus ?? defaultRenderers?.renderSortStatus ?? defaultRenderSortStatus;
+  const renderCheckbox =
+    renderers?.renderCheckbox ?? defaultRenderers?.renderCheckbox ?? defaultRenderCheckbox;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultRenderers?.noRowsFallback;
   const enableVirtualization = rawEnableVirtualization ?? true;
   const direction = rawDirection ?? 'ltr';
@@ -300,10 +301,10 @@ function DataGrid<R, SR, K extends Key>(
 
   const defaultGridComponents = useMemo(
     () => ({
-      sortStatus,
-      checkboxFormatter
+      renderCheckbox,
+      renderSortStatus
     }),
-    [sortStatus, checkboxFormatter]
+    [renderCheckbox, renderSortStatus]
   );
 
   const allRowsSelected = useMemo((): boolean => {
@@ -1039,7 +1040,7 @@ function DataGrid<R, SR, K extends Key>(
       }
 
       rowElements.push(
-        rowRenderer(key, {
+        renderRow(key, {
           // aria-rowindex is 1 based
           'aria-rowindex': headerAndTopSummaryRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1,
           'aria-selected': isSelectable ? isRowSelected : undefined,

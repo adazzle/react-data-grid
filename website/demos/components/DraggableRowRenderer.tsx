@@ -2,8 +2,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { Row } from '../../../../src';
-import type { RowRendererProps } from '../../../../src';
+import { Row, type RenderRowProps } from '../../../src';
 
 const rowDraggingClassname = css`
   opacity: 0.5;
@@ -13,7 +12,7 @@ const rowOverClassname = css`
   background-color: #ececec;
 `;
 
-interface DraggableRowRenderProps<R, SR> extends RowRendererProps<R, SR> {
+interface DraggableRowRenderProps<R, SR> extends RenderRowProps<R, SR> {
   onRowReorder: (sourceIndex: number, targetIndex: number) => void;
 }
 

@@ -144,7 +144,7 @@ describe('Editor', () => {
 
   describe('editorOptions', () => {
     it('should detect outside click if editor is rendered in a portal', async () => {
-      render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
+      render(<EditorTest createEditorPortal editorOptions={{ displayCellContent: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const editor1 = screen.getByLabelText('col2-editor');
       expect(editor1).toHaveValue('a1');
@@ -248,14 +248,14 @@ describe('Editor', () => {
         {
           key: 'col1',
           name: 'Column1',
-          editor() {
+          renderEditCell() {
             return <input aria-label="col1-input" value="123" readOnly autoFocus />;
           }
         },
         {
           key: 'col2',
           name: 'Column2',
-          editor({ onClose }) {
+          renderEditCell({ onClose }) {
             return (
               <input
                 aria-label="col2-input"
@@ -337,7 +337,7 @@ function EditorTest({
       {
         key: 'col1',
         name: 'Col1',
-        editor(p) {
+        renderEditCell(p) {
           return (
             <input
               autoFocus
@@ -353,7 +353,7 @@ function EditorTest({
         key: 'col2',
         name: 'Col2',
         editable,
-        editor({ row, onRowChange }) {
+        renderEditCell({ row, onRowChange }) {
           const editor = (
             <input
               autoFocus

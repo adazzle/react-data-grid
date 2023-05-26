@@ -168,13 +168,13 @@ test('grid enter/exit', async () => {
   expect(document.body).toHaveFocus();
 });
 
-test('navigation with focusable formatter', async () => {
+test('navigation with focusable cell renderer', async () => {
   setup({ columns, rows: Array(1), bottomSummaryRows });
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
 
-  // cell should not set tabIndex to 0 if it contains a focusable formatter
+  // cell should not set tabIndex to 0 if it contains a focusable cell renderer
   expect(getSelectedCell()).toHaveAttribute('tabIndex', '-1');
   const checkbox = getSelectedCell()!.querySelector('input');
   expect(checkbox).toHaveFocus();
@@ -182,34 +182,30 @@ test('navigation with focusable formatter', async () => {
 
   await userEvent.tab();
   validateCellPosition(1, 1);
-  // cell should set tabIndex to 0 if it does not have focusable formatter
+  // cell should set tabIndex to 0 if it does not have focusable cell renderer
   expect(getSelectedCell()).toHaveAttribute('tabIndex', '0');
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  function Test(props: { id: string; tabIndex: number }) {
-    return <input {...props} />;
-  }
-
   const columns: readonly Column<Row>[] = [
     {
       key: 'col2',
       name: 'col2',
-      headerRenderer(p) {
-        return <Test id="header-filter1" tabIndex={p.tabIndex} />;
+      renderHeaderCell(p) {
+        return <input id="header-filter1" tabIndex={p.tabIndex} />;
       },
-      summaryFormatter(p) {
-        return <Test id="summary-formatter1" tabIndex={p.tabIndex} />;
+      renderSummaryCell(p) {
+        return <input id="summary-1" tabIndex={p.tabIndex} />;
       }
     },
     {
       key: 'col3',
       name: 'col3',
-      headerRenderer(p) {
-        return <Test id="header-filter2" tabIndex={p.tabIndex} />;
+      renderHeaderCell(p) {
+        return <input id="header-filter2" tabIndex={p.tabIndex} />;
       },
-      summaryFormatter(p) {
-        return <Test id="summary-formatter2" tabIndex={p.tabIndex} />;
+      renderSummaryCell(p) {
+        return <input id="summary-2" tabIndex={p.tabIndex} />;
       }
     }
   ];
@@ -238,10 +234,10 @@ test('navigation when header and summary rows have focusable elements', async ()
   validateCellPosition(1, 2);
 
   await userEvent.tab();
-  expect(document.getElementById('summary-formatter1')).toHaveFocus();
+  expect(document.getElementById('summary-1')).toHaveFocus();
 
   await userEvent.tab();
-  expect(document.getElementById('summary-formatter2')).toHaveFocus();
+  expect(document.getElementById('summary-2')).toHaveFocus();
 
   await userEvent.tab({ shift: true });
   await userEvent.tab({ shift: true });

@@ -7,7 +7,7 @@ import type {
   CellKeyboardEvent,
   CellRendererProps,
   EditCellKeyDownArgs,
-  EditorProps,
+  RenderEditCellProps,
   Maybe,
   Omit
 } from './types';
@@ -37,7 +37,7 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends Omit<EditorProps<R, SR>, 'onRowChange' | 'onClose'>,
+  extends Omit<RenderEditCellProps<R, SR>, 'onRowChange' | 'onClose'>,
     SharedCellRendererProps<R, SR> {
   rowIdx: number;
   onRowChange: (row: R, commitChanges: boolean, shouldFocusCell: boolean) => void;
@@ -134,7 +134,7 @@ export default function EditCell<R, SR>({
   const className = getCellClassname(
     column,
     'rdg-editor-container',
-    !column.editorOptions?.renderFormatter && cellEditing,
+    !column.editorOptions?.displayCellContent && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
@@ -149,16 +149,16 @@ export default function EditCell<R, SR>({
       onKeyDown={handleKeyDown}
       onMouseDownCapture={cancelFrameRequest}
     >
-      {column.editor != null && (
+      {column.renderEditCell != null && (
         <>
-          {column.editor({
+          {column.renderEditCell({
             column,
             row,
             onRowChange: onEditorRowChange,
             onClose: onEditorClose
           })}
-          {column.editorOptions?.renderFormatter &&
-            column.formatter({
+          {column.editorOptions?.displayCellContent &&
+            column.renderCell({
               column,
               row,
               isCellEditable: true,

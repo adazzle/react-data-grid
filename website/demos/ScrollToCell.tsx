@@ -2,7 +2,8 @@ import { useRef, useState } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, FormatterProps, DataGridHandle } from '../../src';
+import type { Column, DataGridHandle } from '../../src';
+import { renderCoordinates } from './renderers';
 import type { Props } from './types';
 
 type Row = number;
@@ -16,7 +17,7 @@ for (let i = 0; i < 200; i++) {
     width: 120,
     frozen: i < 5,
     resizable: true,
-    formatter: cellFormatter
+    renderCell: renderCoordinates
   });
 }
 
@@ -89,14 +90,6 @@ export default function ScrollToCell({ direction }: Props) {
         className="fill-grid"
         direction={direction}
       />
-    </>
-  );
-}
-
-function cellFormatter(props: FormatterProps<Row>) {
-  return (
-    <>
-      {props.column.key}&times;{props.row}
     </>
   );
 }

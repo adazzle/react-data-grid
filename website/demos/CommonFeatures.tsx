@@ -42,14 +42,6 @@ const currencyFormatter = new Intl.NumberFormat(navigator.language, {
   currency: 'eur'
 });
 
-function TimestampFormatter({ timestamp }: { timestamp: number }) {
-  return <>{dateFormatter.format(timestamp)}</>;
-}
-
-function CurrencyFormatter({ value }: { value: number }) {
-  return <>{currencyFormatter.format(value)}</>;
-}
-
 interface SummaryRow {
   id: string;
   totalCount: number;
@@ -74,7 +66,10 @@ interface Row {
   available: boolean;
 }
 
-function getColumns(countries: string[], direction: Direction): readonly Column<Row, SummaryRow>[] {
+function getColumns(
+  countries: readonly string[],
+  direction: Direction
+): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
     {
@@ -82,7 +77,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       name: 'ID',
       frozen: true,
       resizable: false,
-      summaryFormatter() {
+      renderSummaryCell() {
         return <strong>Total</strong>;
       }
     },
@@ -90,26 +85,26 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
       key: 'title',
       name: 'Task',
       frozen: true,
-      editor: textEditor,
-      summaryFormatter({ row }) {
-        return <>{row.totalCount} records</>;
+      renderEditCell: textEditor,
+      renderSummaryCell({ row }) {
+        return `${row.totalCount} records`;
       }
     },
     {
       key: 'client',
       name: 'Client',
       width: 'max-content',
-      editor: textEditor
+      renderEditCell: textEditor
     },
     {
       key: 'area',
       name: 'Area',
-      editor: textEditor
+      renderEditCell: textEditor
     },
     {
       key: 'country',
       name: 'Country',
-      editor: (p) => (
+      renderEditCell: (p) => (
         <select
           autoFocus
           className={textEditorClassname}
@@ -125,17 +120,17 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'contact',
       name: 'Contact',
-      editor: textEditor
+      renderEditCell: textEditor
     },
     {
       key: 'assignee',
       name: 'Assignee',
-      editor: textEditor
+      renderEditCell: textEditor
     },
     {
       key: 'progress',
       name: 'Completion',
-      formatter(props) {
+      renderCell(props) {
         const value = props.row.progress;
         return (
           <>
@@ -143,7 +138,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
           </>
         );
       },
-      editor({ row, onRowChange, onClose }) {
+      renderEditCell({ row, onRowChange, onClose }) {
         return createPortal(
           <div
             dir={direction}
@@ -177,28 +172,28 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
         );
       },
       editorOptions: {
-        renderFormatter: true
+        displayCellContent: true
       }
     },
     {
       key: 'startTimestamp',
       name: 'Start date',
-      formatter(props) {
-        return <TimestampFormatter timestamp={props.row.startTimestamp} />;
+      renderCell(props) {
+        return dateFormatter.format(props.row.startTimestamp);
       }
     },
     {
       key: 'endTimestamp',
       name: 'Deadline',
-      formatter(props) {
-        return <TimestampFormatter timestamp={props.row.endTimestamp} />;
+      renderCell(props) {
+        return dateFormatter.format(props.row.endTimestamp);
       }
     },
     {
       key: 'budget',
       name: 'Budget',
-      formatter(props) {
-        return <CurrencyFormatter value={props.row.budget} />;
+      renderCell(props) {
+        return currencyFormatter.format(props.row.budget);
       }
     },
     {
@@ -212,12 +207,12 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     {
       key: 'version',
       name: 'Version',
-      editor: textEditor
+      renderEditCell: textEditor
     },
     {
       key: 'available',
       name: 'Available',
-      formatter({ row, onRowChange, tabIndex }) {
+      renderCell({ row, onRowChange, tabIndex }) {
         return (
           <SelectCellFormatter
             value={row.available}
@@ -228,8 +223,8 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
           />
         );
       },
-      summaryFormatter({ row: { yesCount, totalCount } }) {
-        return <>{`${Math.floor((100 * yesCount) / totalCount)}% ✔️`}</>;
+      renderSummaryCell({ row: { yesCount, totalCount } }) {
+        return `${Math.floor((100 * yesCount) / totalCount)}% ✔️`;
       }
     }
   ];
@@ -301,21 +296,22 @@ function getComparator(sortColumn: string): Comparator {
 export default function CommonFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
 
-  const countries = useMemo(() => {
+  const countries = useMemo((): readonly string[] => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns = useMemo(() => getColumns(countries, direction), [countries, direction]);
 
-  const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = {
-      id: 'total_0',
-      totalCount: rows.length,
-      yesCount: rows.filter((r) => r.available).length
-    };
-    return [summaryRow];
+  const summaryRows = useMemo((): readonly SummaryRow[] => {
+    return [
+      {
+        id: 'total_0',
+        totalCount: rows.length,
+        yesCount: rows.filter((r) => r.available).length
+      }
+    ];
   }, [rows]);
 
   const sortedRows = useMemo((): readonly Row[] => {

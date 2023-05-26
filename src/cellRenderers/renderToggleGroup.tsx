@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { GroupFormatterProps } from '../types';
+import type { RenderGroupCellProps } from '../types';
 
 const groupCellContent = css`
   @layer rdg.GroupCellContent {
@@ -26,7 +26,7 @@ const caret = css`
 
 const caretClassname = `rdg-caret ${caret}`;
 
-export function toggleGroupFormatter<R, SR>(props: GroupFormatterProps<R, SR>) {
+export function renderToggleGroup<R, SR>(props: RenderGroupCellProps<R, SR>) {
   return <ToggleGroup {...props} />;
 }
 
@@ -35,7 +35,7 @@ export function ToggleGroup<R, SR>({
   isExpanded,
   tabIndex,
   toggleGroup
-}: GroupFormatterProps<R, SR>) {
+}: RenderGroupCellProps<R, SR>) {
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
     if (key === 'Enter') {
       toggleGroup();

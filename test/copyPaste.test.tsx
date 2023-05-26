@@ -21,11 +21,11 @@ const columns: readonly Column<Row, Row>[] = [
     key: 'col',
     name: 'Col',
     editable: (row) => row.col !== 'a3',
-    editor() {
+    renderEditCell() {
       return null;
     },
-    summaryFormatter({ row }) {
-      return <>{row.col}</>;
+    renderSummaryCell({ row }) {
+      return row.col;
     }
   }
 ];

@@ -4,7 +4,7 @@ import { clampColumnWidth, max, min } from '../utils';
 import type { CalculatedColumn, Column, Maybe } from '../types';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import type { DataGridProps } from '../DataGrid';
-import { valueFormatter, toggleGroupFormatter } from '../formatters';
+import { renderValue, renderToggleGroup } from '../cellRenderers';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -41,7 +41,7 @@ export function useCalculatedColumns<R, SR>({
   const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
-  const defaultFormatter = defaultColumnOptions?.formatter ?? valueFormatter;
+  const defaultFormatter = defaultColumnOptions?.renderCell ?? renderValue;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
@@ -71,11 +71,11 @@ export function useCalculatedColumns<R, SR>({
         maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
-        formatter: rawColumn.formatter ?? defaultFormatter
+        renderCell: rawColumn.renderCell ?? defaultFormatter
       };
 
       if (rowGroup) {
-        column.groupFormatter ??= toggleGroupFormatter;
+        column.renderGroupCell ??= renderToggleGroup;
       }
 
       if (frozen) {

@@ -4,7 +4,7 @@ import { useRovingTabIndex } from './hooks';
 import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import defaultHeaderRenderer from './headerRenderer';
+import defaultRenderHeaderCell from './renderHeaderCell';
 
 const cellResizable = css`
   @layer rdg.HeaderCell {
@@ -65,7 +65,7 @@ export default function HeaderCell<R, SR>({
     [cellResizableClassname]: column.resizable
   });
 
-  const headerRenderer = column.headerRenderer ?? defaultHeaderRenderer;
+  const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -178,7 +178,7 @@ export default function HeaderCell<R, SR>({
       onDoubleClick={column.resizable ? onDoubleClick : undefined}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
-      {headerRenderer({
+      {renderHeaderCell({
         column,
         sortDirection,
         priority,

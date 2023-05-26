@@ -208,21 +208,19 @@ This prop can be used to override the internal renderers. The prop accepts an ob
 
 ```tsx
 interface Renderers<TRow, TSummaryRow> {
-  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
-  checkboxFormatter?: Maybe<
-    (props: CheckboxFormatterProps>) => ReactNode
-  >;
-  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
+  renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
+  renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 ```
 
-For example, the default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props
+For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add context providers or tweak props
 
 ```tsx
-import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
+import DataGrid, { Row, RenderRowProps } from 'react-data-grid';
 
-function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
+function myRowRenderer(key: React.Key, props: RenderRowProps<Row>) {
   return (
     <MyContext.Provider key={key} value={123}>
       <Row {...props} />
@@ -231,11 +229,11 @@ function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
 }
 
 function MyGrid() {
-  return <DataGrid columns={columns} rows={rows} renderers={{ rowRenderer: myRowRenderer }} />;
+  return <DataGrid columns={columns} rows={rows} renderers={{ renderRow: myRowRenderer }} />;
 }
 ```
 
-:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
+:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `renderRow`.
 
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
 
@@ -264,7 +262,7 @@ This property sets the text direction of the grid, it defaults to `'ltr'` (left-
 
 ##### Props
 
-See [`EditorProps`](#editorprops)
+See [`RenderEditCellProps`](#rendereditcellprops)
 
 #### `<Row />`
 
@@ -272,7 +270,7 @@ See [`renderers`](#renderers-mayberenderersr-sr)
 
 ##### Props
 
-See [`RowRendererProps`](#rowrendererprops)
+See [`RenderRowProps`](#renderrowprops)
 
 The `ref` prop is supported.
 
@@ -318,7 +316,7 @@ See [`FormatterProps`](#formatterprops)
 
 ##### Props
 
-See [`GroupFormatterProps`](#groupformatterprops)
+See [`RenderGroupCellProps`](#rendergroupcellprops)
 
 ### Hooks
 
@@ -336,13 +334,13 @@ See [`GroupFormatterProps`](#groupformatterprops)
 
 #### `DataGridHandle`
 
-#### `EditorProps`
+#### `RenderEditCellProps`
 
-#### `FormatterProps`
+#### `RenderCellProps`
 
-#### `GroupFormatterProps`
+#### `RenderGroupCellProps`
 
-#### `RowRendererProps`
+#### `RenderRowProps`
 
 ### Generics
 

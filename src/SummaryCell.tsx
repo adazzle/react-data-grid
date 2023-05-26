@@ -53,7 +53,7 @@ function SummaryCell<R, SR>({
       onClick={onClick}
       onFocus={onFocus}
     >
-      {column.summaryFormatter?.({ column, row, tabIndex: childTabIndex })}
+      {column.renderSummaryCell?.({ column, row, tabIndex: childTabIndex })}
     </div>
   );
 }

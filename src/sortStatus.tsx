@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { SortStatusProps, SortIconProps, SortPriorityProps } from './types';
+import type { RenderSortStatusProps, RenderSortIconProps, RenderSortPriorityProps } from './types';
 
 const arrow = css`
   @layer rdg.SortIcon {
@@ -14,16 +14,16 @@ const arrow = css`
 
 const arrowClassname = `rdg-sort-arrow ${arrow}`;
 
-export default function sortStatus({ sortDirection, priority }: SortStatusProps) {
+export default function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortIcon({ sortDirection })}
-      {sortPriority({ priority })}
+      {renderSortIcon({ sortDirection })}
+      {renderSortPriority({ priority })}
     </>
   );
 }
 
-export function sortIcon({ sortDirection }: SortIconProps) {
+export function renderSortIcon({ sortDirection }: RenderSortIconProps) {
   if (sortDirection === undefined) return null;
 
   return (
@@ -33,6 +33,6 @@ export function sortIcon({ sortDirection }: SortIconProps) {
   );
 }
 
-export function sortPriority({ priority }: SortPriorityProps) {
+export function renderSortPriority({ priority }: RenderSortPriorityProps) {
   return priority;
 }
