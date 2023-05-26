@@ -87,32 +87,32 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'gold',
     name: 'Gold',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { gold }) => prev + gold, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, { gold }) => prev + gold, 0);
     }
   },
   {
     key: 'silver',
     name: 'Silver',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, { silver }) => prev + silver, 0);
     }
   },
   {
     key: 'bronze',
     name: 'Bronze',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, { silver }) => prev + silver, 0);
     }
   },
   {
     key: 'total',
     name: 'Total',
-    formatter({ row }) {
-      return <>{row.gold + row.silver + row.bronze}</>;
+    renderCell({ row }) {
+      return row.gold + row.silver + row.bronze;
     },
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0);
     }
   }
 ];

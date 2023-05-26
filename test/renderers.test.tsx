@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, sortIcon } from '../src';
-import type { Column, DataGridProps, SortColumn, SortStatusProps } from '../src';
+import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, renderSortIcon } from '../src';
+import type { Column, DataGridProps, SortColumn, RenderSortStatusProps } from '../src';
 import { getHeaderCells, getRows, setup, render } from './utils';
 
 interface Row {
@@ -32,27 +32,27 @@ function GlobalNoRowsFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function localCheckboxFormatter() {
+function localRenderCheckbox() {
   return <div>Local checkbox</div>;
 }
 
-function globalCheckboxFormatter() {
+function globalRenderCheckbox() {
   return <div>Global checkbox</div>;
 }
 
-function globalSortStatus({ sortDirection, priority }: SortStatusProps) {
+function globalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortIcon({ sortDirection })}
+      {renderSortIcon({ sortDirection })}
       <span data-testid="global-sort-priority">{priority}</span>
     </>
   );
 }
 
-function sortStatus({ sortDirection, priority }: SortStatusProps) {
+function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortIcon({ sortDirection })}
+      {renderSortIcon({ sortDirection })}
       <span data-testid="local-sort-priority">{priority}</span>
     </>
   );
@@ -69,8 +69,8 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
     <DataGridDefaultRenderersProvider
       value={{
         noRowsFallback: <GlobalNoRowsFallback />,
-        checkboxFormatter: globalCheckboxFormatter,
-        sortStatus: globalSortStatus
+        renderCheckbox: globalRenderCheckbox,
+        renderSortStatus: globalSortStatus
       }}
     >
       <TestGrid {...props} />
@@ -122,7 +122,7 @@ test('fallback defined using both provider and renderers with a row', () => {
 });
 
 test('checkbox defined using renderers prop', () => {
-  setup({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
+  setup({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -136,7 +136,7 @@ test('checkbox defined using provider', () => {
 });
 
 test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
+  setupProvider({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -160,7 +160,7 @@ test('sortPriority defined using both providers', async () => {
 });
 
 test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: [], renderers: { sortStatus } });
+  setupProvider({ columns, rows: [], renderers: { renderSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();

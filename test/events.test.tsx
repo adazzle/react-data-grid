@@ -14,7 +14,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'col1',
     name: 'Col1',
-    editor(p) {
+    renderEditCell(p) {
       return (
         <input
           autoFocus
@@ -29,7 +29,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'col2',
     name: 'Col2',
-    editor({ row, onRowChange }) {
+    renderEditCell({ row, onRowChange }) {
       return (
         <input
           autoFocus

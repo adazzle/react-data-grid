@@ -21,7 +21,7 @@ export function isSelectedCellEditable<R, SR>({
 
 export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return (
-    column.editor != null &&
+    column.renderEditCell != null &&
     !column.rowGroup &&
     (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false
   );
@@ -43,7 +43,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
-export function getSelectedCellColSpan<R, SR>({
+function getSelectedCellColSpan<R, SR>({
   rows,
   topSummaryRows,
   bottomSummaryRows,

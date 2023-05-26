@@ -15,13 +15,13 @@ const cellExpandClassname = css`
 `;
 
 interface CellExpanderFormatterProps {
-  isCellSelected: boolean;
+  tabIndex: number;
   expanded: boolean;
   onCellExpand: () => void;
 }
 
 export function CellExpanderFormatter({
-  isCellSelected,
+  tabIndex,
   expanded,
   onCellExpand
 }: CellExpanderFormatterProps) {
@@ -35,7 +35,7 @@ export function CellExpanderFormatter({
   return (
     <div className={cellExpandClassname}>
       <span onClick={onCellExpand} onKeyDown={handleKeyDown}>
-        <span tabIndex={isCellSelected ? 0 : -1}>{expanded ? '\u25BC' : '\u25B6'}</span>
+        <span tabIndex={tabIndex}>{expanded ? '\u25BC' : '\u25B6'}</span>
       </span>
     </div>
   );

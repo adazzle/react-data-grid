@@ -1,4 +1,4 @@
-import type { Column, HeaderRendererProps } from '../../src';
+import type { Column } from '../../src';
 import { setup, getHeaderCells } from '../utils';
 
 interface Row {
@@ -6,11 +6,7 @@ interface Row {
   name: string;
 }
 
-test('headerRenderer is either undefined or a component', () => {
-  function headerRenderer({ column }: HeaderRendererProps<Row>) {
-    return <>Fancy! {column.name}</>;
-  }
-
+test('renderHeaderCell is either undefined or a component', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
@@ -19,7 +15,7 @@ test('headerRenderer is either undefined or a component', () => {
     {
       key: 'name',
       name: 'Name',
-      headerRenderer
+      renderHeaderCell: ({ column }) => `Fancy! ${column.name}`
     }
   ];
 

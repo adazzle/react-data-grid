@@ -1,10 +1,10 @@
 import { css } from '@linaria/core';
 
-import { useRovingCellRef } from './hooks';
+import { useRovingTabIndex } from './hooks';
 import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import defaultHeaderRenderer from './headerRenderer';
+import defaultRenderHeaderCell from './renderHeaderCell';
 
 const cellResizable = css`
   @layer rdg.HeaderCell {
@@ -52,7 +52,7 @@ export default function HeaderCell<R, SR>({
   direction
 }: HeaderCellProps<R, SR>) {
   const isRtl = direction === 'rtl';
-  const { tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
@@ -65,7 +65,7 @@ export default function HeaderCell<R, SR>({
     [cellResizableClassname]: column.resizable
   });
 
-  const headerRenderer = column.headerRenderer ?? defaultHeaderRenderer;
+  const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -178,12 +178,12 @@ export default function HeaderCell<R, SR>({
       onDoubleClick={column.resizable ? onDoubleClick : undefined}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
-      {headerRenderer({
+      {renderHeaderCell({
         column,
         sortDirection,
         priority,
         onSort,
-        isCellSelected
+        tabIndex: childTabIndex
       })}
     </div>
   );

@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 import DataGrid from '../../src';
 import type { Column, RowsChangeData, DataGridHandle } from '../../src';
 import type { Direction } from '../../src/types';
-import { CellExpanderFormatter } from './components/Formatters';
+import { CellExpanderFormatter } from './components';
 import type { Props } from './types';
 
 type DepartmentRow =
@@ -82,7 +82,7 @@ export default function MasterDetail({ direction }: Props) {
               `
             : undefined;
         },
-        formatter({ row, isCellSelected, onRowChange }) {
+        renderCell({ row, tabIndex, onRowChange }) {
           if (row.type === 'DETAIL') {
             return <ProductGrid parentId={row.parentId} direction={direction} />;
           }
@@ -90,7 +90,7 @@ export default function MasterDetail({ direction }: Props) {
           return (
             <CellExpanderFormatter
               expanded={row.expanded}
-              isCellSelected={isCellSelected}
+              tabIndex={tabIndex}
               onCellExpand={() => {
                 onRowChange({ ...row, expanded: !row.expanded });
               }}

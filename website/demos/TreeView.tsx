@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
+import { CellExpanderFormatter, ChildRowDeleteButton } from './components';
 import type { Props } from './types';
 
 const gridClassname = css`
@@ -120,7 +120,8 @@ const defaultRows = createRows();
 export default function TreeView({ direction }: Props) {
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
-  const columns: Column<Row>[] = useMemo(() => {
+
+  const columns = useMemo((): readonly Column<Row>[] => {
     return [
       {
         key: 'id',
@@ -134,14 +135,14 @@ export default function TreeView({ direction }: Props) {
       {
         key: 'format',
         name: 'format',
-        formatter({ row, isCellSelected }) {
+        renderCell({ row, tabIndex }) {
           const hasChildren = row.children !== undefined;
           const style = hasChildren ? undefined : { marginInlineStart: 30 };
           return (
             <>
               {hasChildren && (
                 <CellExpanderFormatter
-                  isCellSelected={isCellSelected}
+                  tabIndex={tabIndex}
                   expanded={row.isExpanded === true}
                   onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
                 />
@@ -149,7 +150,7 @@ export default function TreeView({ direction }: Props) {
               <div className="rdg-cell-value">
                 {!hasChildren && (
                   <ChildRowDeleteButton
-                    isCellSelected={isCellSelected}
+                    tabIndex={tabIndex}
                     isDeleteSubRowEnabled={allowDelete}
                     onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
                   />

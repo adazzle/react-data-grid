@@ -5,7 +5,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "pretty": true,

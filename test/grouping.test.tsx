@@ -44,7 +44,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'country',
     name: 'Country',
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'year',
@@ -53,7 +53,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'id',
     name: 'Id',
-    formatter(props) {
+    renderCell(props) {
       function onClick() {
         props.onRowChange({ ...props.row, id: props.row.id + 10 });
       }
@@ -396,12 +396,12 @@ test('copy/paste when grouping is enabled', async () => {
   expect(getSelectedCell()).toHaveTextContent('USA');
 });
 
-test('update row using formatter', async () => {
+test('update row using cell renderer', async () => {
   setup(['year']);
   await userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
   await userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
   await userEvent.keyboard('{arrowright}{arrowright}');
   expect(getSelectedCell()).toHaveTextContent('value: 2');
-  await userEvent.click(screen.getByText('value: 2'));
+  await userEvent.click(screen.getByRole('button', { name: 'value: 2' }));
   expect(getSelectedCell()).toHaveTextContent('value: 12');
 });
