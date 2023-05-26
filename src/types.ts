@@ -30,9 +30,9 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly renderSummaryCell?: Maybe<
     (props: SummaryFormatterProps<TSummaryRow, TRow>) => ReactNode
   >;
-  /** Formatter to be used to render the group cell content */
+  /** Render function used to render the content of group cells */
   readonly renderGroupCell?: Maybe<(props: GroupFormatterProps<TRow, TSummaryRow>) => ReactNode>;
-  /** Editor to be rendered when cell of column is being edited. If set, then the column is automatically set to be editable */
+  /** Render function used to render the content of edit cells. When set, the column is automatically set to be editable */
   readonly renderEditCell?: Maybe<(props: EditorProps<TRow, TSummaryRow>) => ReactNode>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
