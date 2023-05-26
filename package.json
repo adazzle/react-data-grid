@@ -74,7 +74,7 @@
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "@vitejs/plugin-react": "^4.0.0",
-    "@vitest/browser": "^0.31.0",
+    "@vitest/browser": "^0.31.1",
     "@vitest/coverage-istanbul": "^0.31.1",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "eslint": "^8.14.0",
@@ -90,7 +90,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
     "lodash-es": "^4.17.21",
-    "playwright": "^1.33.0",
+    "playwright": "^1.34.3",
     "postcss": "^8.4.23",
     "postcss-nested": "^6.0.0",
     "prettier": "2.8.8",
@@ -103,7 +103,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rome": "12.1.2",
     "typescript": "~5.0.2",
-    "vite": "^4.3.8",
+    "vite": "^4.3.9",
     "vitest": "^0.31.1"
   },
   "peerDependencies": {
