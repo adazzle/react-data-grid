@@ -245,7 +245,7 @@ function DataGrid<R, SR, K extends Key>(
   const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
-  const rowRenderer = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
+  const renderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const sortStatus = renderers?.sortStatus ?? defaultRenderers?.sortStatus ?? defaultSortStatus;
   const renderCheckbox =
     renderers?.renderCheckbox ?? defaultRenderers?.renderCheckbox ?? defaultRenderCheckbox;
@@ -1039,7 +1039,7 @@ function DataGrid<R, SR, K extends Key>(
       }
 
       rowElements.push(
-        rowRenderer(key, {
+        renderRow(key, {
           // aria-rowindex is 1 based
           'aria-rowindex': headerAndTopSummaryRowsCount + (hasGroups ? startRowIndex : rowIdx) + 1,
           'aria-selected': isSelectable ? isRowSelected : undefined,

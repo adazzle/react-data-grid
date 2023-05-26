@@ -6,7 +6,7 @@ interface Row {
   name: string;
 }
 
-test('headerRenderer is either undefined or a component', () => {
+test('renderHeaderCell is either undefined or a component', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',

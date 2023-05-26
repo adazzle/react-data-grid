@@ -4,7 +4,7 @@ export { default as Row } from './Row';
 export * from './Columns';
 export * from './cellRenderers';
 export { default as textEditor } from './editors/textEditor';
-export { default as headerRenderer } from './headerRenderer';
+export { default as renderHeaderCell } from './renderHeaderCell';
 export { sortIcon, sortPriority } from './sortStatus';
 export { useRowSelection } from './hooks';
 export type {

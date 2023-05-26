@@ -11,7 +11,7 @@ interface Row {
   id: number;
 }
 
-describe('ValueFormatter', () => {
+describe('renderValue', () => {
   const columns: readonly Column<Row | null>[] = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' }
@@ -34,7 +34,7 @@ describe('ValueFormatter', () => {
   });
 });
 
-describe('Custom formatter component', () => {
+describe('Custom cell renderer', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
@@ -50,7 +50,7 @@ describe('Custom formatter component', () => {
 
   const rows: readonly Row[] = [{ id: 101 }];
 
-  it('should replace the default formatter', () => {
+  it('should replace the default cell renderer', () => {
     setup({ columns, rows });
     const [cell1, cell2] = getCells();
     expect(cell1).toHaveTextContent('#101');
