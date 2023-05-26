@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { renderCoordinates } from './components/Formatters';
+import { renderCoordinates } from './renderers';
 import type { Props } from './types';
 
 type Row = number;

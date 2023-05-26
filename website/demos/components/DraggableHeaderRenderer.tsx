@@ -1,7 +1,6 @@
 import { useDrag, useDrop } from 'react-dnd';
 
-import { headerRenderer } from '../../../../src';
-import type { RenderHeaderCellProps } from '../../../../src';
+import { headerRenderer, type RenderHeaderCellProps } from '../../../src';
 
 interface DraggableHeaderRendererProps<R> extends RenderHeaderCellProps<R> {
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;

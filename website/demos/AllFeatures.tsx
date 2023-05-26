@@ -4,8 +4,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
-import dropDownEditor from './components/Editors/dropDownEditor';
-import { ImageFormatter } from './components/Formatters';
+import { renderAvatar, renderDropdown } from './renderers';
 import type { Props } from './types';
 
 const highlightClassname = css`
@@ -54,17 +53,14 @@ const columns: readonly Column<Row>[] = [
     name: 'Avatar',
     width: 40,
     resizable: true,
-    renderHeaderCell: () => (
-      <ImageFormatter value={faker.image.urlLoremFlickr({ category: 'cats' })} />
-    ),
-    renderCell: ({ row }) => <ImageFormatter value={row.avatar} />
+    renderCell: renderAvatar
   },
   {
     key: 'title',
     name: 'Title',
     width: 200,
     resizable: true,
-    renderEditCell: dropDownEditor
+    renderEditCell: renderDropdown
   },
   {
     key: 'firstName',

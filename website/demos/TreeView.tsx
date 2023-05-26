@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { CellExpanderFormatter, ChildRowDeleteButton } from './components/Formatters';
+import { CellExpanderFormatter, ChildRowDeleteButton } from './components';
 import type { Props } from './types';
 
 const gridClassname = css`

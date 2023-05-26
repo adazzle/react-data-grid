@@ -4,7 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import DataGrid from '../../src';
 import type { Column, RenderHeaderCellProps, SortColumn } from '../../src';
-import { DraggableHeaderRenderer } from './components/HeaderRenderers';
+import { DraggableHeaderRenderer } from './components';
 import type { Props } from './types';
 
 interface Row {

@@ -4,7 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import DataGrid, { textEditor } from '../../src';
 import type { Column, RowRendererProps } from '../../src';
-import { DraggableRowRenderer } from './components/RowRenderers';
+import { DraggableRowRenderer } from './components';
 import type { Props } from './types';
 
 interface Row {
