@@ -144,7 +144,7 @@ describe('Editor', () => {
 
   describe('editorOptions', () => {
     it('should detect outside click if editor is rendered in a portal', async () => {
-      render(<EditorTest createEditorPortal editorOptions={{ displayCell: true }} />);
+      render(<EditorTest createEditorPortal editorOptions={{ displayCellContent: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const editor1 = screen.getByLabelText('col2-editor');
       expect(editor1).toHaveValue('a1');

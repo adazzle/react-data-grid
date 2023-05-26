@@ -134,7 +134,7 @@ export default function EditCell<R, SR>({
   const className = getCellClassname(
     column,
     'rdg-editor-container',
-    !column.editorOptions?.displayCell && cellEditing,
+    !column.editorOptions?.displayCellContent && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
@@ -157,7 +157,7 @@ export default function EditCell<R, SR>({
             onRowChange: onEditorRowChange,
             onClose: onEditorClose
           })}
-          {column.editorOptions?.displayCell &&
+          {column.editorOptions?.displayCellContent &&
             column.renderCell({
               column,
               row,

@@ -172,7 +172,7 @@ function getColumns(
         );
       },
       editorOptions: {
-        displayCell: true
+        displayCellContent: true
       }
     },
     {

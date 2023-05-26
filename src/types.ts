@@ -52,7 +52,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
      * By default, the cell content is not rendered when the edit cell is open.
      * @default false
      */
-    readonly displayCell?: Maybe<boolean>;
+    readonly displayCellContent?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
   }>;
