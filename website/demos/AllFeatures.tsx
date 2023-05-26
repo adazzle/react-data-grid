@@ -64,9 +64,6 @@ const columns: readonly Column<Row>[] = [
     name: 'Title',
     width: 200,
     resizable: true,
-    renderCell(props) {
-      return props.row.title;
-    },
     renderEditCell: dropDownEditor
   },
   {
