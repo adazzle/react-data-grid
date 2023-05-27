@@ -1,5 +1,4 @@
 import linaria from '@linaria/rollup';
-import babel from '@rollup/plugin-babel';
 import react from '@vitejs/plugin-react';
 import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
@@ -17,22 +16,19 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      lodash: isTest ? 'lodash' : 'lodash-es'
+      lodash: isTest ? 'lodash' : 'lodash-es',
+      'lodash-es': isTest ? 'lodash' : 'lodash-es'
     }
   },
   plugins: [
-    isTest
-      ? babel({
-          babelHelpers: 'runtime',
-          extensions: ['.ts', '.tsx']
-        })
-      : react({
-          babel: {
-            babelrc: false,
-            configFile: false,
-            plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
-          }
-        }),
+    !isTest &&
+      react({
+        babel: {
+          babelrc: false,
+          configFile: false,
+          plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
+        }
+      }),
     linaria({ preprocessor: 'none' })
   ],
   css: {
