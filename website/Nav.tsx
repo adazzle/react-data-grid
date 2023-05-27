@@ -93,8 +93,8 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/context-menu" end className={getActiveClassname}>
         Context Menu
       </NavLink>
-      <NavLink to="/customizable-components" end className={getActiveClassname}>
-        Customizable Components
+      <NavLink to="/customizable-renderers" end className={getActiveClassname}>
+        Customizable Renderers
       </NavLink>
       <NavLink to="/grouping" end className={getActiveClassname}>
         Grouping
@@ -120,8 +120,8 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/rows-reordering" end className={getActiveClassname}>
         Rows Reordering
       </NavLink>
-      <NavLink to="/scroll-to-row" end className={getActiveClassname}>
-        Scroll To Row
+      <NavLink to="/scroll-to-cell" end className={getActiveClassname}>
+        Scroll To Cell
       </NavLink>
       <NavLink to="/tree-view" end className={getActiveClassname}>
         Tree View

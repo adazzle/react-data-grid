@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, FormatterProps } from '../../src';
+import type { Column } from '../../src';
+import { renderCoordinates } from './renderers';
 import type { Props } from './types';
 
 type Row = number;
@@ -13,14 +14,6 @@ const colSpanClassname = css`
   color: black;
   text-align: center;
 `;
-
-function cellFormatter(props: FormatterProps<Row>) {
-  return (
-    <>
-      {props.column.key}&times;{props.row}
-    </>
-  );
-}
 
 export default function ColumnSpanning({ direction }: Props) {
   const columns = useMemo((): readonly Column<Row>[] => {
@@ -33,7 +26,7 @@ export default function ColumnSpanning({ direction }: Props) {
         name: key,
         frozen: i < 5,
         resizable: true,
-        formatter: cellFormatter,
+        renderCell: renderCoordinates,
         colSpan(args) {
           if (args.type === 'ROW') {
             if (key === '2' && args.row === 2) return 3;

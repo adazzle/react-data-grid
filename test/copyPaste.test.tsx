@@ -1,10 +1,16 @@
-import { StrictMode, useState } from 'react';
+import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
-import { render } from '@testing-library/react';
-import { getCellsAtRowIndex, getSelectedCell, copySelectedCell, pasteSelectedCell } from './utils';
+import {
+  getCellsAtRowIndex,
+  getSelectedCell,
+  copySelectedCell,
+  pasteSelectedCell,
+  render
+} from './utils';
 
 interface Row {
   col: string;
@@ -15,11 +21,11 @@ const columns: readonly Column<Row, Row>[] = [
     key: 'col',
     name: 'Col',
     editable: (row) => row.col !== 'a3',
-    editor() {
+    renderEditCell() {
       return null;
     },
-    summaryFormatter({ row }) {
-      return <>{row.col}</>;
+    renderSummaryCell({ row }) {
+      return row.col;
     }
   }
 ];
@@ -43,8 +49,8 @@ const bottomSummaryRows: readonly Row[] = [
 ];
 
 const copyCellClassName = 'rdg-cell-copied';
-const onPasteSpy = jest.fn();
-const onCopySpy = jest.fn();
+const onPasteSpy = vi.fn();
+const onCopySpy = vi.fn();
 
 function CopyPasteTest({
   onPasteCallback = true,
@@ -75,11 +81,7 @@ function CopyPasteTest({
 function setup(onPasteCallback = true, onCopyCallback = false) {
   onPasteSpy.mockReset();
   onCopySpy.mockReset();
-  render(
-    <StrictMode>
-      <CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} />
-    </StrictMode>
-  );
+  render(<CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} />);
 }
 
 test('should not allow copy/paste if onPaste & onCopy is undefined', async () => {

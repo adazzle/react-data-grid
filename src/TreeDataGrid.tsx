@@ -1,9 +1,7 @@
 import React, { forwardRef, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
-import DataGrid from './DataGrid';
-import type { DataGridProps, DataGridHandle } from './DataGrid';
-import { groupRowRenderer } from './GroupRow';
+import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
 import type {
   RowsChangeData,
   RowHeightArgs,
@@ -13,12 +11,14 @@ import type {
   GroupRowHeightArgs,
   SelectRowEvent,
   CellKeyDownArgs,
-  RowRendererProps
+  RenderRowProps
 } from './types';
-import { SELECT_COLUMN_KEY, toggleGroupFormatter } from '.';
-import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
-import { defaultRowRenderer } from './Row';
-import { useDefaultComponents } from './DataGridDefaultComponentsProvider';
+import { SELECT_COLUMN_KEY } from '.';
+import DataGrid from './DataGrid';
+import type { DataGridProps, DataGridHandle } from './DataGrid';
+import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
+import { groupRowRenderer } from './GroupRow';
+import { defaultRenderRow } from './Row';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<DataGridProps<R, SR, K>, 'rowHeight' | 'onFill'> {
@@ -56,9 +56,8 @@ function TreeDataGrid<R, SR, K extends Key>(
   }: TreeDataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
-  const defaultComponents = useDefaultComponents<R, SR>();
-  const rawRowRenderer =
-    renderers?.rowRenderer ?? defaultComponents?.rowRenderer ?? defaultRowRenderer;
+  const defaultComponents = useDefaultRenderers<R, SR>();
+  const rawRenderRow = renderers?.renderRow ?? defaultComponents?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = props.direction === 'rtl';
@@ -91,8 +90,8 @@ function TreeDataGrid<R, SR, K extends Key>(
         columns[index] = {
           ...column,
           frozen: true,
-          formatter: () => null,
-          groupFormatter: column.groupFormatter ?? toggleGroupFormatter,
+          renderCell: () => null,
+          renderGroupCell: column.renderGroupCell ?? groupRowRenderer,
           editable: false
         };
       }
@@ -220,7 +219,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     });
   }
 
-  function handleKeyDown(args: CellKeyDownArgs, event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(args: CellKeyDownArgs<R, SR>, event: React.KeyboardEvent<HTMLDivElement>) {
     if (args.mode === 'EDIT') return;
     const { idx, rowIdx, selectCell } = args;
     const row = rows[rowIdx];
@@ -291,13 +290,13 @@ function TreeDataGrid<R, SR, K extends Key>(
     onSelectedRowsChange(newSelectedRows);
   }
 
-  function rowRenderer(
+  function renderRow(
     rawKey: Key,
     {
       row,
       rowClass,
-      onRowClick,
-      onRowDoubleClick,
+      onCellClick,
+      onCellDoubleClick,
       onRowChange,
       isRowSelected,
       copiedCellIdx,
@@ -306,7 +305,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       selectedCellEditor,
       selectedCellDragHandle,
       ...rowProps
-    }: RowRendererProps<R, SR>
+    }: RenderRowProps<R, SR>
   ) {
     if (isGroupRow(row)) {
       const { startRowIndex } = row;
@@ -332,13 +331,13 @@ function TreeDataGrid<R, SR, K extends Key>(
       ariaRowIndex = startRowIndex + headerAndTopSummaryRowsCount + groupIndex + 2;
     }
 
-    return rawRowRenderer(key, {
+    return rawRenderRow(key, {
       ...rowProps,
       'aria-rowindex': ariaRowIndex,
       row,
       rowClass,
-      onRowClick,
-      onRowDoubleClick,
+      onCellClick,
+      onCellDoubleClick,
       onRowChange,
       isRowSelected,
       copiedCellIdx,
@@ -367,7 +366,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       onCellKeyDown={handleKeyDown}
       renderers={{
         ...renderers,
-        rowRenderer
+        renderRow
       }}
     />
   );

@@ -1,14 +1,16 @@
 import { StrictMode } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { render as rtlRender, screen, fireEvent, act } from '@testing-library/react';
+
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
+export function render(child: React.ReactElement) {
+  return rtlRender(<StrictMode>{child}</StrictMode>);
+}
+
 export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
-  return render(
-    <StrictMode>
-      <DataGrid {...props} />
-    </StrictMode>
-  );
+  return render(<DataGrid {...props} />);
 }
 
 export function getGrid() {
@@ -76,5 +78,27 @@ export function pasteSelectedCell() {
   fireEvent.keyDown(document.activeElement!, {
     keyCode: '86',
     ctrlKey: true
+  });
+}
+
+export async function scrollGrid({
+  scrollLeft,
+  scrollTop
+}: {
+  scrollLeft?: number;
+  scrollTop?: number;
+}) {
+  const grid = getGrid();
+
+  await act(async () => {
+    if (scrollLeft !== undefined) {
+      grid.scrollLeft = scrollLeft;
+    }
+    if (scrollTop !== undefined) {
+      grid.scrollTop = scrollTop;
+    }
+
+    // let the browser fire the 'scroll' event
+    await new Promise(requestAnimationFrame);
   });
 }

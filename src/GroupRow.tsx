@@ -1,14 +1,14 @@
-import type { RefAttributes } from 'react';
-import { forwardRef, memo } from 'react';
-import clsx from 'clsx';
+import { forwardRef, memo, type RefAttributes } from 'react';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
-import { cell, cellFrozenLast, rowClassname, rowSelectedClassname } from './style';
-import { SELECT_COLUMN_KEY } from './Columns';
-import GroupCell from './GroupCell';
-import type { GroupRow, BaseRowRendererProps, SelectRowEvent } from './types';
 import { RowSelectionChangeProvider, RowSelectionProvider } from './hooks';
 import { getRowStyle } from './utils';
+import type { GroupRow, BaseRenderRowProps, SelectRowEvent } from './types';
+import { SELECT_COLUMN_KEY } from './Columns';
+import GroupCell from './GroupCell';
+import { cell, cellFrozenLast } from './style/cell';
+import { rowClassname, rowSelectedClassname } from './style/row';
 
 const groupRow = css`
   @layer rdg.GroupedRow {
@@ -24,7 +24,7 @@ const groupRow = css`
 
 const groupRowClassname = `rdg-group-row ${groupRow}`;
 
-interface GroupRowRendererProps<R, SR> extends BaseRowRendererProps<R, SR> {
+interface GroupRowRendererProps<R, SR> extends BaseRenderRowProps<R, SR> {
   row: GroupRow<R>;
   toggleGroup: (expandedGroupId: unknown) => void;
   toggleGroupSelection: (selectRowEvent: SelectRowEvent<GroupRow<R>>) => void;

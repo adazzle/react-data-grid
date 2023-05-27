@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
+import { useRovingTabIndex } from './hooks';
 import { getCellStyle, getCellClassname } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
-import { useRovingCellRef } from './hooks';
 import { SELECT_COLUMN_KEY } from './Columns';
 
 interface GroupCellProps<R, SR> {
@@ -28,7 +28,7 @@ function GroupCell<R, SR>({
   groupColumnIndex,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   function toggleGroup() {
     toggleGroupWrapper(id);
@@ -42,7 +42,6 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       aria-selected={isCellSelected}
-      ref={ref}
       tabIndex={tabIndex}
       key={column.key}
       className={getCellClassname(column)}
@@ -54,13 +53,13 @@ function GroupCell<R, SR>({
       onFocus={onFocus}
     >
       {(isLevelMatching || column.key === SELECT_COLUMN_KEY) &&
-        column.groupFormatter?.({
+        column.renderGroupCell?.({
           groupKey,
           childRows,
           column,
           row,
           isExpanded,
-          isCellSelected,
+          tabIndex: childTabIndex,
           toggleGroup
         })}
     </div>

@@ -1,16 +1,10 @@
-import { StrictMode, useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { DataGridDefaultComponentsProvider, SelectColumn, sortIcon } from '../src';
-import type {
-  Column,
-  DataGridProps,
-  CheckboxFormatterProps,
-  SortColumn,
-  SortStatusProps
-} from '../src';
-import { getHeaderCells, getRows, setup } from './utils';
+import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, renderSortIcon } from '../src';
+import type { Column, DataGridProps, SortColumn, RenderSortStatusProps } from '../src';
+import { getHeaderCells, getRows, setup, render } from './utils';
 
 interface Row {
   id: number;
@@ -38,33 +32,27 @@ function GlobalNoRowsFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function localCheckboxFormatter(
-  props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
-  return <div ref={ref}>Local checkbox</div>;
+function localRenderCheckbox() {
+  return <div>Local checkbox</div>;
 }
 
-function globalCheckboxFormatter(
-  props: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
-  return <div ref={ref}>Global checkbox</div>;
+function globalRenderCheckbox() {
+  return <div>Global checkbox</div>;
 }
 
-function globalSortStatus({ sortDirection, priority }: SortStatusProps) {
+function globalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortIcon({ sortDirection })}
+      {renderSortIcon({ sortDirection })}
       <span data-testid="global-sort-priority">{priority}</span>
     </>
   );
 }
 
-function sortStatus({ sortDirection, priority }: SortStatusProps) {
+function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortIcon({ sortDirection })}
+      {renderSortIcon({ sortDirection })}
       <span data-testid="local-sort-priority">{priority}</span>
     </>
   );
@@ -78,17 +66,15 @@ function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
 
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
-    <StrictMode>
-      <DataGridDefaultComponentsProvider
-        value={{
-          noRowsFallback: <GlobalNoRowsFallback />,
-          checkboxFormatter: globalCheckboxFormatter,
-          sortStatus: globalSortStatus
-        }}
-      >
-        <TestGrid {...props} />
-      </DataGridDefaultComponentsProvider>
-    </StrictMode>
+    <DataGridDefaultRenderersProvider
+      value={{
+        noRowsFallback: <GlobalNoRowsFallback />,
+        renderCheckbox: globalRenderCheckbox,
+        renderSortStatus: globalSortStatus
+      }}
+    >
+      <TestGrid {...props} />
+    </DataGridDefaultRenderersProvider>
   );
 }
 
@@ -136,7 +122,7 @@ test('fallback defined using both provider and renderers with a row', () => {
 });
 
 test('checkbox defined using renderers prop', () => {
-  setup({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
+  setup({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -150,7 +136,7 @@ test('checkbox defined using provider', () => {
 });
 
 test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: [], renderers: { checkboxFormatter: localCheckboxFormatter } });
+  setupProvider({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -174,7 +160,7 @@ test('sortPriority defined using both providers', async () => {
 });
 
 test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: [], renderers: { sortStatus } });
+  setupProvider({ columns, rows: [], renderers: { renderSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();

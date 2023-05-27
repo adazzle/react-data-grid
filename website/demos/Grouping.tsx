@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { groupBy as rowGrouper } from 'lodash';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { groupBy as rowGrouper } from 'lodash-es';
+import { css } from '@linaria/core';
 
 import { TreeDataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
@@ -87,32 +87,32 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'gold',
     name: 'Gold',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { gold }) => prev + gold, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, { gold }) => prev + gold, 0);
     }
   },
   {
     key: 'silver',
     name: 'Silver',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, { silver }) => prev + silver, 0);
     }
   },
   {
     key: 'bronze',
     name: 'Bronze',
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, { silver }) => prev + silver, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, { silver }) => prev + silver, 0);
     }
   },
   {
     key: 'total',
     name: 'Total',
-    formatter({ row }) {
-      return <>{row.gold + row.silver + row.bronze}</>;
+    renderCell({ row }) {
+      return row.gold + row.silver + row.bronze;
     },
-    groupFormatter({ childRows }) {
-      return <>{childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0)}</>;
+    renderGroupCell({ childRows }) {
+      return childRows.reduce((prev, row) => prev + row.gold + row.silver + row.bronze, 0);
     }
   }
 ];
@@ -126,13 +126,13 @@ function createRows(): readonly Row[] {
   for (let i = 1; i < 10000; i++) {
     rows.push({
       id: i,
-      year: 2015 + faker.datatype.number(3),
-      country: faker.address.country(),
-      sport: sports[faker.datatype.number(sports.length - 1)],
-      athlete: faker.name.fullName(),
-      gold: faker.datatype.number(5),
-      silver: faker.datatype.number(5),
-      bronze: faker.datatype.number(5)
+      year: 2015 + faker.number.int(3),
+      country: faker.location.country(),
+      sport: sports[faker.number.int(sports.length - 1)],
+      athlete: faker.person.fullName(),
+      gold: faker.number.int(5),
+      silver: faker.number.int(5),
+      bronze: faker.number.int(5)
     });
   }
 
