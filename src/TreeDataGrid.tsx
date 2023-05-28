@@ -18,7 +18,7 @@ import { SELECT_COLUMN_KEY, renderToggleGroup } from '.';
 import DataGrid from './DataGrid';
 import type { DataGridProps, DataGridHandle } from './DataGrid';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
-import { groupRowRenderer } from './GroupRow';
+import { renderGroupRow } from './GroupRow';
 import { defaultRenderRow } from './Row';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
@@ -315,7 +315,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     if (isGroupRow(row)) {
       const { startRowIndex } = row;
       const isRowSelected = isGroupRowSelected(row);
-      return groupRowRenderer(startRowIndex, {
+      return renderGroupRow(startRowIndex, {
         ...rowProps,
         'aria-rowindex': startRowIndex + headerAndTopSummaryRowsCount + 1,
         'aria-selected': isSelectable ? isRowSelected : undefined,

@@ -105,6 +105,6 @@ const GroupRowComponent = memo(forwardRef(GroupedRow)) as <R, SR>(
 
 export default GroupRowComponent;
 
-export function groupRowRenderer<R, SR>(key: React.Key, props: GroupRowRendererProps<R, SR>) {
+export function renderGroupRow<R, SR>(key: React.Key, props: GroupRowRendererProps<R, SR>) {
   return <GroupRowComponent key={key} {...props} />;
 }
