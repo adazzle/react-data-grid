@@ -11,9 +11,10 @@ import type {
   GroupRowHeightArgs,
   SelectRowEvent,
   CellKeyDownArgs,
+  CellKeyboardEvent,
   RenderRowProps
 } from './types';
-import { SELECT_COLUMN_KEY } from '.';
+import { SELECT_COLUMN_KEY, renderToggleGroup } from '.';
 import DataGrid from './DataGrid';
 import type { DataGridProps, DataGridHandle } from './DataGrid';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
@@ -56,8 +57,8 @@ function TreeDataGrid<R, SR, K extends Key>(
   }: TreeDataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
 ) {
-  const defaultComponents = useDefaultRenderers<R, SR>();
-  const rawRenderRow = renderers?.renderRow ?? defaultComponents?.renderRow ?? defaultRenderRow;
+  const defaultRenderers = useDefaultRenderers<R, SR>();
+  const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = props.direction === 'rtl';
@@ -91,7 +92,7 @@ function TreeDataGrid<R, SR, K extends Key>(
           ...column,
           frozen: true,
           renderCell: () => null,
-          renderGroupCell: column.renderGroupCell ?? groupRowRenderer,
+          renderGroupCell: column.renderGroupCell ?? renderToggleGroup,
           editable: false
         };
       }
@@ -219,9 +220,11 @@ function TreeDataGrid<R, SR, K extends Key>(
     });
   }
 
-  function handleKeyDown(args: CellKeyDownArgs<R, SR>, event: React.KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
     if (args.mode === 'EDIT') return;
-    const { idx, rowIdx, selectCell } = args;
+    const { column, rowIdx, selectCell } = args;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const idx = column?.idx ?? -1;
     const row = rows[rowIdx];
     if (!isGroupRow(row)) return;
     if (
@@ -232,6 +235,7 @@ function TreeDataGrid<R, SR, K extends Key>(
         (event.key === rightKey && !row.isExpanded))
     ) {
       event.preventDefault(); // Prevents scrolling
+      event.preventGridDefault();
       toggleGroup(row.id);
     }
 
@@ -239,13 +243,13 @@ function TreeDataGrid<R, SR, K extends Key>(
     if (idx === -1 && event.key === leftKey && !row.isExpanded && row.level !== 0) {
       const parentRowAndIndex = getParentRowAndIndex(row);
       if (parentRowAndIndex !== undefined) {
-        event.preventDefault();
+        event.preventGridDefault();
         selectCell({ idx, rowIdx: parentRowAndIndex[1] });
       }
     }
 
     if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
-      event.preventDefault();
+      event.preventGridDefault();
     }
   }
 
@@ -275,8 +279,9 @@ function TreeDataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function toggleGroupSelection({ row, checked }: SelectRowEvent<GroupRow<R>>) {
-    if (!onSelectedRowsChange) return;
+  function toggleGroupSelection(event: SelectRowEvent<GroupRow<R>>) {
+    if (!onSelectedRowsChange || event.type === 'HEADER') return;
+    const { row, checked } = event;
     assertIsValidKeyGetter<R, K>(rawRowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
     for (const childRow of row.childRows) {

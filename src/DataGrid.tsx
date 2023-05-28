@@ -291,7 +291,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
-  const isTreeDataGrid = role === 'treegrid';
+  const hasGroups = role === 'treegrid';
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
@@ -381,7 +381,7 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize
   );
 
-  const minColIdx = isTreeDataGrid ? -1 : 0;
+  const minColIdx = hasGroups ? -1 : 0;
   const maxColIdx = columns.length - 1;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
@@ -531,7 +531,7 @@ function DataGrid<R, SR, K extends Key>(
     }
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
-    const isRowEvent = isTreeDataGrid && event.target === rowRef.current;
+    const isRowEvent = hasGroups && event.target === rowRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { keyCode } = event;
@@ -1025,7 +1025,7 @@ function DataGrid<R, SR, K extends Key>(
       data-testid={testId}
     >
       {/* extra div is needed for row navigation in a treegrid */}
-      {isTreeDataGrid && (
+      {hasGroups && (
         <div
           ref={rowRef}
           tabIndex={isGroupRowFocused ? 0 : -1}
