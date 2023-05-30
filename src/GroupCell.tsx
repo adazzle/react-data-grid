@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { useRovingTabIndex } from './hooks';
-import { getCellStyle, getCellClassname } from './utils';
+import { getCellClassname, getCellStyle } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
 

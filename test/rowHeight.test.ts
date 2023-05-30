@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import type { Column, DataGridProps } from '../src';
-import { setup, getRows } from './utils';
+import { getRows, setup } from './utils';
 
 type Row = number;
 function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {

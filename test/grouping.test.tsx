@@ -9,16 +9,16 @@ import { focusSinkClassname } from '../src/style/core';
 import { rowSelected } from '../src/style/row';
 import type { FillEvent, PasteEvent } from '../src/types';
 import {
-  getGrid,
-  queryGrid,
-  getRows,
-  queryTreeGrid,
-  getTreeGrid,
-  getHeaderCells,
-  getCellsAtRowIndex,
-  getSelectedCell,
   copySelectedCell,
+  getCellsAtRowIndex,
+  getGrid,
+  getHeaderCells,
+  getRows,
+  getSelectedCell,
+  getTreeGrid,
   pasteSelectedCell,
+  queryGrid,
+  queryTreeGrid,
   render
 } from './utils';
 

@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import type { RenderSortStatusProps, RenderSortIconProps, RenderSortPriorityProps } from './types';
+import type { RenderSortIconProps, RenderSortPriorityProps, RenderSortStatusProps } from './types';
 
 const arrow = css`
   @layer rdg.SortIcon {

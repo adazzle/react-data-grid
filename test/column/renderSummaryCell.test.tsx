@@ -3,7 +3,7 @@ import {
   bottomSummaryRowBorderClassname,
   topSummaryRowBorderClassname
 } from '../../src/SummaryRow';
-import { setup, getCells, getRows } from '../utils';
+import { getCells, getRows, setup } from '../utils';
 
 interface SummaryRow {
   id: number;

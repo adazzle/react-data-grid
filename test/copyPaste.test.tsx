@@ -5,9 +5,9 @@ import { vi } from 'vitest';
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
 import {
+  copySelectedCell,
   getCellsAtRowIndex,
   getSelectedCell,
-  copySelectedCell,
   pasteSelectedCell,
   render
 } from './utils';

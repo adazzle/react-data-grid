@@ -1,4 +1,4 @@
-import { useState, useReducer, useMemo } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';

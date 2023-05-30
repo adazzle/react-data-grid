@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import DataGrid from '../../src';
-import type { Column, CellKeyDownArgs, CellKeyboardEvent } from '../../src';
+import type { CellKeyboardEvent, CellKeyDownArgs, Column } from '../../src';
 import type { Props } from './types';
 
 interface Row {

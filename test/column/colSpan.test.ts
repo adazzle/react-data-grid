@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 import type { Column } from '../../src';
-import { setup, getCellsAtRowIndex, getHeaderCells, validateCellPosition } from '../utils';
+import { getCellsAtRowIndex, getHeaderCells, setup, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {
