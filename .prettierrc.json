@@ -5,7 +5,7 @@
   "pluginSearchDirs": false,
   "plugins": ["@ianvs/prettier-plugin-sort-imports"],
   "importOrder": [
-    "^node:",
+    "<BUILTIN_MODULES>",
     "^react$",
     "^react-dom",
     "^react",

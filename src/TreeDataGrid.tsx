@@ -3,20 +3,20 @@ import type { Key, RefAttributes } from 'react';
 
 import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
 import type {
-  RowsChangeData,
-  RowHeightArgs,
-  Maybe,
-  GroupRow,
-  Omit,
-  GroupRowHeightArgs,
-  SelectRowEvent,
-  CellKeyDownArgs,
   CellKeyboardEvent,
-  RenderRowProps
+  CellKeyDownArgs,
+  GroupRow,
+  GroupRowHeightArgs,
+  Maybe,
+  Omit,
+  RenderRowProps,
+  RowHeightArgs,
+  RowsChangeData,
+  SelectRowEvent
 } from './types';
-import { SELECT_COLUMN_KEY, renderToggleGroup } from '.';
+import { renderToggleGroup, SELECT_COLUMN_KEY } from '.';
 import DataGrid from './DataGrid';
-import type { DataGridProps, DataGridHandle } from './DataGrid';
+import type { DataGridHandle, DataGridProps } from './DataGrid';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 import { renderGroupRow } from './GroupRow';
 import { defaultRenderRow } from './Row';

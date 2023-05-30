@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi, test, expect } from 'vitest';
+import { expect, test, vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { setup, getCells, getCellsAtRowIndex, render } from '../utils';
+import { getCells, getCellsAtRowIndex, render, setup } from '../utils';
 
 interface Row {
   id: number;

@@ -4,9 +4,9 @@ import clsx from 'clsx';
 
 import { getColSpan, getRowStyle } from './utils';
 import type { RenderRowProps } from './types';
-import SummaryCell from './SummaryCell';
 import { cell, cellFrozen } from './style/cell';
 import { rowClassname, rowSelectedClassname } from './style/row';
+import SummaryCell from './SummaryCell';
 
 type SharedRenderRowProps<R, SR> = Pick<
   RenderRowProps<R, SR>,

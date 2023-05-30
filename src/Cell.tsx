@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
-import { getCellStyle, getCellClassname, isCellEditable, createCellEvent } from './utils';
+import { createCellEvent, getCellClassname, getCellStyle, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`

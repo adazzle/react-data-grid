@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { groupBy as rowGrouper } from 'lodash-es';
 import { css } from '@linaria/core';
 
-import { TreeDataGrid, SelectColumn } from '../../src';
+import { SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
 import type { Props } from './types';
 

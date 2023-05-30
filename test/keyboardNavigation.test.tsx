@@ -4,12 +4,12 @@ import userEvent from '@testing-library/user-event';
 import type { Column } from '../src';
 import DataGrid, { SelectColumn } from '../src';
 import {
-  setup,
-  getSelectedCell,
-  validateCellPosition,
   getCellsAtRowIndex,
+  getSelectedCell,
   render,
-  scrollGrid
+  scrollGrid,
+  setup,
+  validateCellPosition
 } from './utils';
 
 type Row = undefined;

@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 import { RowSelectionChangeProvider, RowSelectionProvider } from './hooks';
 import { getRowStyle } from './utils';
-import type { GroupRow, BaseRenderRowProps, SelectRowEvent } from './types';
+import type { BaseRenderRowProps, GroupRow, SelectRowEvent } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import { cell, cellFrozenLast } from './style/cell';

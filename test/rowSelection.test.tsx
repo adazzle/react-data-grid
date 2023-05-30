@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { within, screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { SelectColumn } from '../src';

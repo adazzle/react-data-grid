@@ -1,7 +1,7 @@
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
-import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
+import { clampColumnWidth, getCellClassname, getCellStyle } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import defaultRenderHeaderCell from './renderHeaderCell';

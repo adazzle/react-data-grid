@@ -7,8 +7,8 @@ import {
   queryCells,
   queryHeaderCells,
   queryRows,
-  setup,
-  scrollGrid
+  scrollGrid,
+  setup
 } from './utils';
 
 const rowHeight = 35;

@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import { clampColumnWidth, max, min } from '../utils';
 import type { CalculatedColumn, Column } from '../types';
+import { renderValue } from '../cellRenderers';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import type { DataGridProps } from '../DataGrid';
-import { renderValue } from '../cellRenderers';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];

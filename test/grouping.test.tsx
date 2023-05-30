@@ -4,17 +4,17 @@ import userEvent from '@testing-library/user-event';
 import { groupBy as rowGrouper } from 'lodash-es';
 
 import type { Column } from '../src';
-import { TreeDataGrid, SelectColumn, textEditor } from '../src';
+import { SelectColumn, textEditor, TreeDataGrid } from '../src';
 import { focusSinkClassname } from '../src/style/core';
 import { rowSelected } from '../src/style/row';
 import type { PasteEvent } from '../src/types';
 import {
-  getRows,
-  getTreeGrid,
-  getHeaderCells,
-  getCellsAtRowIndex,
-  getSelectedCell,
   copySelectedCell,
+  getCellsAtRowIndex,
+  getHeaderCells,
+  getRows,
+  getSelectedCell,
+  getTreeGrid,
   pasteSelectedCell,
   render
 } from './utils';

@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { render } from '@testing-library/react';
 
-import DataGrid, { TreeDataGrid, SelectColumn } from '../src';
+import DataGrid, { SelectColumn, TreeDataGrid } from '../src';
 import type { Column } from '../src';
 import { getHeaderCells } from './utils';
 
