@@ -59,7 +59,7 @@
     "@babel/preset-typescript": "^7.18.6",
     "@babel/runtime": "^7.21.5",
     "@faker-js/faker": "^8.0.0",
-    "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
+    "@ianvs/prettier-plugin-sort-imports": "^4.0.0",
     "@linaria/rollup": "^4.3.8",
     "@linaria/vite": "^4.2.11",
     "@microsoft/api-extractor": "^7.23.0",

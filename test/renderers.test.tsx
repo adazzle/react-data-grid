@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { DataGridDefaultRenderersProvider, SelectColumn, renderSortIcon } from '../src';
-import type { Column, DataGridProps, SortColumn, RenderSortStatusProps } from '../src';
-import { getHeaderCells, getRows, setup, render } from './utils';
+import DataGrid, { DataGridDefaultRenderersProvider, renderSortIcon, SelectColumn } from '../src';
+import type { Column, DataGridProps, RenderSortStatusProps, SortColumn } from '../src';
+import { getHeaderCells, getRows, render, setup } from './utils';
 
 interface Row {
   id: number;

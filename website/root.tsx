@@ -1,11 +1,11 @@
 import './root.css';
+
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Navigate, Route, HashRouter as Router, Routes } from 'react-router-dom';
 import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
-import Nav from './Nav';
 import AllFeatures from './demos/AllFeatures';
 import Animation from './demos/Animation';
 import CellNavigation from './demos/CellNavigation';
@@ -25,6 +25,7 @@ import RowsReordering from './demos/RowsReordering';
 import ScrollToCell from './demos/ScrollToCell';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
+import Nav from './Nav';
 
 const mainClassname = css`
   display: flex;

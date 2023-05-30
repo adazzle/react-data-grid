@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { render as rtlRender, screen, fireEvent, act } from '@testing-library/react';
+import { act, fireEvent, render as rtlRender, screen } from '@testing-library/react';
 import { css } from '@linaria/core';
 
 import DataGrid from '../src/';

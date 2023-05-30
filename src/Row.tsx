@@ -1,4 +1,4 @@
-import { memo, forwardRef, type RefAttributes } from 'react';
+import { forwardRef, memo, type RefAttributes } from 'react';
 import clsx from 'clsx';
 
 import { RowSelectionProvider, useLatestFunc } from './hooks';

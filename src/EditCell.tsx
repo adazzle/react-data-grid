@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
-import { getCellStyle, getCellClassname, onEditorNavigation, createCellEvent } from './utils';
+import { createCellEvent, getCellClassname, getCellStyle, onEditorNavigation } from './utils';
 import type {
   CellKeyboardEvent,
   CellRendererProps,
   EditCellKeyDownArgs,
-  RenderEditCellProps,
   Maybe,
-  Omit
+  Omit,
+  RenderEditCellProps
 } from './types';
 
 /*

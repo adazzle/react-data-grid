@@ -1,4 +1,4 @@
-import type { CalculatedColumn, Position, GroupRow, CellNavigationMode, Maybe } from '../types';
+import type { CalculatedColumn, CellNavigationMode, GroupRow, Maybe, Position } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {

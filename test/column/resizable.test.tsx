@@ -2,7 +2,7 @@ import { fireEvent } from '@testing-library/react';
 import { expect, test } from 'vitest';
 
 import type { Column } from '../../src';
-import { setup, getHeaderCells, getGrid } from '../utils';
+import { getGrid, getHeaderCells, setup } from '../utils';
 
 const pointerId = 1;
 
