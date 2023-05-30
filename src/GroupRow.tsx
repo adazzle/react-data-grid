@@ -99,12 +99,6 @@ function GroupedRow<R, SR>(
   );
 }
 
-const GroupRowComponent = memo(forwardRef(GroupedRow)) as <R, SR>(
+export default memo(forwardRef(GroupedRow)) as <R, SR>(
   props: GroupRowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
-
-export default GroupRowComponent;
-
-export function renderGroupRow<R, SR>(key: React.Key, props: GroupRowRendererProps<R, SR>) {
-  return <GroupRowComponent key={key} {...props} />;
-}

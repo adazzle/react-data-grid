@@ -229,7 +229,7 @@ function DataGrid<R, SR, K extends Key>(
     rowClass,
     direction: rawDirection,
     // ARIA
-    role = 'grid',
+    role: rawRole,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
@@ -241,6 +241,7 @@ function DataGrid<R, SR, K extends Key>(
    * defaults
    */
   const defaultRenderers = useDefaultRenderers<R, SR>();
+  const role = rawRole ?? 'grid'
   const rowHeight = rawRowHeight ?? 35;
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
