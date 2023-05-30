@@ -1,4 +1,4 @@
-import { forwardRef, memo, type RefAttributes } from 'react';
+import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -99,6 +99,4 @@ function GroupedRow<R, SR>(
   );
 }
 
-export default memo(forwardRef(GroupedRow)) as <R, SR>(
-  props: GroupRowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
-) => JSX.Element;
+export default memo(GroupedRow) as <R, SR>(props: GroupRowRendererProps<R, SR>) => JSX.Element;
