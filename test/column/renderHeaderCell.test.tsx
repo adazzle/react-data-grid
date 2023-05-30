@@ -1,5 +1,5 @@
 import type { Column } from '../../src';
-import { setup, getHeaderCells } from '../utils';
+import { getHeaderCells, setup } from '../utils';
 
 interface Row {
   id: number;

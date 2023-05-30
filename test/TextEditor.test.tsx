@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid, { textEditor } from '../src';
 import type { Column } from '../src';
-import { render, getCells } from './utils';
+import { getCells, render } from './utils';
 
 interface Row {
   readonly name: string;

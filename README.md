@@ -63,6 +63,7 @@ npm install react-data-grid
 
 ```jsx
 import 'react-data-grid/lib/styles.css';
+
 import DataGrid from 'react-data-grid';
 
 const columns = [
@@ -218,7 +219,7 @@ interface Renderers<TRow, TSummaryRow> {
 For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add context providers or tweak props
 
 ```tsx
-import DataGrid, { Row, RenderRowProps } from 'react-data-grid';
+import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 
 function myRowRenderer(key: React.Key, props: RenderRowProps<Row>) {
   return (

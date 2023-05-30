@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
+import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
 import { renderAvatar, renderDropdown } from './renderers';
 import type { Props } from './types';
 

@@ -1,18 +1,18 @@
-import { forwardRef, useState, useRef, useImperativeHandle, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes, KeyboardEvent } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import type { Key, KeyboardEvent, RefAttributes } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
-  useColumnWidths,
-  useLayoutEffect,
-  useGridDimensions,
-  useCalculatedColumns,
-  useViewportColumns,
-  useViewportRows,
-  useLatestFunc,
   RowSelectionChangeProvider,
-  RowSelectionProvider
+  RowSelectionProvider,
+  useCalculatedColumns,
+  useColumnWidths,
+  useGridDimensions,
+  useLatestFunc,
+  useLayoutEffect,
+  useViewportColumns,
+  useViewportRows
 } from './hooks';
 import {
   abs,
@@ -30,24 +30,25 @@ import {
 } from './utils';
 import type {
   CalculatedColumn,
+  CellClickArgs,
+  CellKeyboardEvent,
+  CellKeyDownArgs,
+  CellMouseEvent,
+  CellNavigationMode,
   Column,
+  CopyEvent,
+  Direction,
+  FillEvent,
+  Maybe,
+  PasteEvent,
   Position,
+  Renderers,
+  RowHeightArgs,
   RowsChangeData,
   SelectRowEvent,
-  FillEvent,
-  CopyEvent,
-  PasteEvent,
-  CellNavigationMode,
-  SortColumn,
-  RowHeightArgs,
-  Maybe,
-  Renderers,
-  Direction,
-  CellMouseEvent,
-  CellClickArgs,
-  CellKeyDownArgs,
-  CellKeyboardEvent
+  SortColumn
 } from './types';
+import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import {
   DataGridDefaultRenderersProvider,
   useDefaultRenderers
@@ -59,11 +60,10 @@ import HeaderRow from './HeaderRow';
 import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
-import SummaryRow from './SummaryRow';
-import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import { default as defaultRenderSortStatus } from './sortStatus';
-import { rootClassname, viewportDraggingClassname, focusSinkClassname } from './style/core';
+import { focusSinkClassname, rootClassname, viewportDraggingClassname } from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
+import SummaryRow from './SummaryRow';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';

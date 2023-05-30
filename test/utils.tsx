@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { render as rtlRender, screen, fireEvent, act } from '@testing-library/react';
+import { act, fireEvent, render as rtlRender, screen } from '@testing-library/react';
 
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
