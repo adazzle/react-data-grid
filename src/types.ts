@@ -262,7 +262,7 @@ export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPr
 export interface RenderCheckboxProps
   extends Pick<
     React.InputHTMLAttributes<HTMLInputElement>,
-    'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
+    'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled' | 'onClick'
   > {
   onChange: (checked: boolean, shift: boolean) => void;
 }

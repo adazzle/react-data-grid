@@ -3,7 +3,7 @@ import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
 
 type SharedInputProps = Pick<
   RenderCheckboxProps,
-  'disabled' | 'tabIndex' | 'aria-label' | 'aria-labelledby'
+  'aria-label' | 'aria-labelledby' | 'disabled' | 'tabIndex' | 'onClick'
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {
@@ -15,6 +15,7 @@ export function SelectCellFormatter({
   value,
   tabIndex,
   disabled,
+  onClick,
   onChange,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
@@ -29,6 +30,7 @@ export function SelectCellFormatter({
         tabIndex,
         disabled,
         checked: value,
+        onClick,
         onChange
       })}
     </>
