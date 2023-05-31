@@ -143,13 +143,14 @@ const options = ['country', 'year', 'sport', 'athlete'] as const;
 
 export default function Grouping({ direction }: Props) {
   const [rows] = useState(createRows);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
   const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([
     options[0],
     options[1]
   ]);
-  const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
-    () => new Set<unknown>(['United States of America', 'United States of America__2015'])
+  const [expandedGroupIds, setExpandedGroupIds] = useState(
+    (): ReadonlySet<unknown> =>
+      new Set<unknown>(['United States of America', 'United States of America__2015'])
   );
 
   function toggleOption(option: string, enabled: boolean) {
