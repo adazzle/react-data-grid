@@ -30,24 +30,21 @@ interface GroupRowRendererProps<R, SR> extends BaseRenderRowProps<R, SR> {
   toggleGroupSelection: (selectRowEvent: SelectRowEvent<GroupRow<R>>) => void;
 }
 
-function GroupedRow<R, SR>(
-  {
-    className,
-    row,
-    rowIdx,
-    viewportColumns,
-    selectedCellIdx,
-    lastFrozenColumnIndex,
-    isRowSelected,
-    selectCell,
-    gridRowStart,
-    height,
-    toggleGroup,
-    toggleGroupSelection,
-    ...props
-  }: GroupRowRendererProps<R, SR>,
-  ref: React.Ref<HTMLDivElement>
-) {
+function GroupedRow<R, SR>({
+  className,
+  row,
+  rowIdx,
+  viewportColumns,
+  selectedCellIdx,
+  lastFrozenColumnIndex,
+  isRowSelected,
+  selectCell,
+  gridRowStart,
+  height,
+  toggleGroup,
+  toggleGroupSelection,
+  ...props
+}: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
   className = clsx(className, {
@@ -67,7 +64,6 @@ function GroupedRow<R, SR>(
           aria-setsize={row.setSize}
           aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
           aria-expanded={row.isExpanded}
-          ref={ref}
           key={row.id}
           className={clsx(
             rowClassname,
