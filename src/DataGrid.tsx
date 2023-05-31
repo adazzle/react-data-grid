@@ -1151,7 +1151,6 @@ function DataGrid<R, SR, K extends Key>(
           style={{
             gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
           }}
-          onKeyDown={handleKeyDown}
         />
       )}
       {scrollToPosition !== null && (
