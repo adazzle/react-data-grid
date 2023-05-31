@@ -992,7 +992,7 @@ function DataGrid<R, SR, K extends Key>(
       const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
-        let isGroupRowSelected;
+        let isGroupRowSelected = false;
         if (isSelectable) {
           assertIsValidKeyGetter<R, K>(rowKeyGetter);
           isGroupRowSelected = row.childRows.every((cr) => selectedRows.has(rowKeyGetter(cr)));
@@ -1004,7 +1004,7 @@ function DataGrid<R, SR, K extends Key>(
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
             aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
-            aria-selected={isGroupRowSelected}
+            aria-selected={isSelectable ? isGroupRowSelected : undefined}
             key={row.id}
             id={row.id}
             groupKey={row.groupKey}
