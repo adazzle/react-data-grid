@@ -321,7 +321,7 @@ function TreeDataGrid<R, SR, K extends Key>(
           {...rowProps}
           aria-rowindex={startRowIndex + headerAndTopSummaryRowsCount + 1}
           aria-selected={isSelectable ? isRowSelected : undefined}
-          isRowSelected
+          isRowSelected={isRowSelected}
           row={row}
           toggleGroup={toggleGroup}
           toggleGroupSelection={toggleGroupSelection}
