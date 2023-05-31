@@ -25,7 +25,7 @@ function rowKeyGetter(row: Row) {
 }
 
 function RowSelectionTest({ initialRows }: { initialRows: readonly Row[] }) {
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(new Set());
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
 
   return (
     <DataGrid

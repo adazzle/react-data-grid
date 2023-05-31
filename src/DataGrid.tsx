@@ -272,8 +272,8 @@ function DataGrid<R, SR, K extends Key>(
   const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
     (): ReadonlyMap<string, number> => new Map()
   );
-  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
-    () => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
+  const [selectedPosition, setSelectedPosition] = useState(
+    (): SelectCellState | EditCellState<R> => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
@@ -475,14 +475,24 @@ function DataGrid<R, SR, K extends Key>(
    */
   function selectRow(args: SelectRowEvent<R>) {
     if (!onSelectedRowsChange) return;
+
+    assertIsValidKeyGetter<R, K>(rowKeyGetter);
+
     if (args.type === 'HEADER') {
-      selectAllRows(args.checked);
+      const newSelectedRows = new Set(selectedRows);
+      for (const row of rawRows) {
+        const rowKey = rowKeyGetter(row);
+        if (args.checked) {
+          newSelectedRows.add(rowKey);
+        } else {
+          newSelectedRows.delete(rowKey);
+        }
+      }
+      onSelectedRowsChange(newSelectedRows);
       return;
     }
 
     const { row, checked, isShiftClick } = args;
-
-    assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const newSelectedRows = new Set(selectedRows);
     if (isGroupRow(row)) {
       for (const childRow of row.childRows) {
@@ -514,24 +524,6 @@ function DataGrid<R, SR, K extends Key>(
     } else {
       newSelectedRows.delete(rowKey);
       lastSelectedRowIdx.current = -1;
-    }
-
-    onSelectedRowsChange(newSelectedRows);
-  }
-
-  function selectAllRows(checked: boolean) {
-    if (!onSelectedRowsChange) return;
-
-    assertIsValidKeyGetter<R, K>(rowKeyGetter);
-    const newSelectedRows = new Set(selectedRows);
-
-    for (const row of rawRows) {
-      const rowKey = rowKeyGetter(row);
-      if (checked) {
-        newSelectedRows.add(rowKey);
-      } else {
-        newSelectedRows.delete(rowKey);
-      }
     }
 
     onSelectedRowsChange(newSelectedRows);
