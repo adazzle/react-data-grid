@@ -93,9 +93,9 @@ function rowKeyGetter(row: Row) {
 
 function TestGrid({ groupBy }: { groupBy: string[] }) {
   const [rows, setRows] = useState(initialRows);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
-  const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
-    () => new Set<unknown>([])
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
+  const [expandedGroupIds, setExpandedGroupIds] = useState(
+    (): ReadonlySet<unknown> => new Set<unknown>([])
   );
 
   function onPaste(event: PasteEvent<Row>) {
