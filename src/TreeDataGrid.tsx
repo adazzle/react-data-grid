@@ -22,7 +22,7 @@ import GroupedRow from './GroupRow';
 import { defaultRenderRow } from './Row';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
-  extends Omit<DataGridProps<R, SR, K>, 'rowHeight' | 'onFill'> {
+  extends Omit<DataGridProps<R, SR, K>, 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'> {
   rowHeight?: Maybe<number | ((args: GroupRowHeightArgs<R>) => number)>;
   groupBy: readonly string[];
   rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
@@ -45,6 +45,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     rows: rawRows,
     rowHeight: rawRowHeight,
     rowKeyGetter: rawRowKeyGetter,
+    onCellKeyDown: rawOnCellKeyDown,
     onRowsChange,
     selectedRows,
     onSelectedRowsChange,
@@ -221,6 +222,9 @@ function TreeDataGrid<R, SR, K extends Key>(
   }
 
   function handleKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
+    rawOnCellKeyDown?.(args, event);
+    if (event.isGridDefaultPrevented()) return;
+
     if (args.mode === 'EDIT') return;
     const { column, rowIdx, selectCell } = args;
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
