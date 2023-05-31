@@ -163,7 +163,7 @@ function createRows(): Row[] {
 
 export default function AllFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<string> => new Set());
 
   function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };

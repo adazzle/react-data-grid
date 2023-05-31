@@ -272,8 +272,8 @@ function DataGrid<R, SR, K extends Key>(
   const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
     (): ReadonlyMap<string, number> => new Map()
   );
-  const [selectedPosition, setSelectedPosition] = useState<SelectCellState | EditCellState<R>>(
-    () => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
+  const [selectedPosition, setSelectedPosition] = useState(
+    (): SelectCellState | EditCellState<R> => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
   const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
