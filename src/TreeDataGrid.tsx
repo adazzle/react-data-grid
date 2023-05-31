@@ -1,7 +1,7 @@
-import React, { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
-import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
+import { isCtrlKeyHeldDown } from './utils';
 import type {
   CellKeyboardEvent,
   CellKeyDownArgs,
@@ -11,8 +11,7 @@ import type {
   Omit,
   RenderRowProps,
   RowHeightArgs,
-  RowsChangeData,
-  SelectRowEvent
+  RowsChangeData
 } from './types';
 import { renderToggleGroup, SELECT_COLUMN_KEY } from '.';
 import DataGrid from './DataGrid';
@@ -47,8 +46,8 @@ function TreeDataGrid<R, SR, K extends Key>(
     rowKeyGetter: rawRowKeyGetter,
     onCellKeyDown: rawOnCellKeyDown,
     onRowsChange,
-    selectedRows,
-    onSelectedRowsChange,
+    selectedRows: rawSelectedRows,
+    onSelectedRowsChange: rawOnSelectedRowsChange,
     renderers,
     groupBy: rawGroupBy,
     rowGrouper,
@@ -61,7 +60,6 @@ function TreeDataGrid<R, SR, K extends Key>(
   const defaultRenderers = useDefaultRenderers<R, SR>();
   const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
-  const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = props.direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
@@ -192,34 +190,59 @@ function TreeDataGrid<R, SR, K extends Key>(
     return rawRowHeight;
   }, [isGroupRow, rawRowHeight]);
 
-  const rowKeyGetter = useMemo(() => {
-    // TODO: fix row key on child rows
-    if (typeof rawRowKeyGetter === 'function') {
-      return (row: R | GroupRow<R>): K => {
-        if (isGroupRow(row)) {
-          return row.id as K;
+  const getParentRowAndIndex = useCallback(
+    (row: R | GroupRow<R>) => {
+      const rowIdx = rows.indexOf(row);
+      for (let i = rowIdx - 1; i >= 0; i--) {
+        const parentRow = rows[i];
+        if (isGroupRow(parentRow) && (!isGroupRow(row) || row.parentId === parentRow.id)) {
+          return [parentRow, i] as const;
         }
+      }
+
+      return undefined;
+    },
+    [isGroupRow, rows]
+  );
+
+  const rowKeyGetter = useCallback(
+    (row: R | GroupRow<R>) => {
+      if (isGroupRow(row)) {
+        return row.id;
+      }
+
+      if (typeof rawRowKeyGetter === 'function') {
         return rawRowKeyGetter(row);
-      };
+      }
+
+      const parentRowAndIndex = getParentRowAndIndex(row);
+      if (parentRowAndIndex !== undefined) {
+        const { startRowIndex, childRows } = parentRowAndIndex[0];
+        const groupIndex = childRows.indexOf(row);
+        return startRowIndex + groupIndex + 1;
+      }
+
+      return rows.indexOf(row);
+    },
+    [getParentRowAndIndex, isGroupRow, rawRowKeyGetter, rows]
+  );
+
+  const selectedRows = useMemo((): Maybe<ReadonlySet<string | number>> => {
+    if (rawSelectedRows == null) return null;
+    const selectedRows = new Set<string | number>(rawSelectedRows);
+    for (const row of rows) {
+      if (isGroupRow(row)) {
+        const isGroupRowSelected = row.childRows.every((cr) =>
+          rawSelectedRows.has(rawRowKeyGetter!(cr))
+        );
+        if (isGroupRowSelected) {
+          selectedRows.add(row.id);
+        }
+      }
     }
 
-    return rawRowKeyGetter;
-  }, [isGroupRow, rawRowKeyGetter]);
-
-  function handleRowsChange(updatedRows: R[], { indexes, column }: RowsChangeData<R, SR>) {
-    if (!onRowsChange) return;
-    const updatedRawRows = [...rawRows];
-    const rawIndexes: number[] = [];
-    indexes.forEach((index) => {
-      const rawIndex = rawRows.indexOf(rows[index] as R);
-      updatedRawRows[rawIndex] = updatedRows[index];
-      rawIndexes.push(rawIndex);
-    });
-    onRowsChange(updatedRawRows, {
-      indexes: rawIndexes,
-      column
-    });
-  }
+    return selectedRows;
+  }, [isGroupRow, rawRowKeyGetter, rawSelectedRows, rows]);
 
   function handleKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
     rawOnCellKeyDown?.(args, event);
@@ -257,20 +280,19 @@ function TreeDataGrid<R, SR, K extends Key>(
     }
   }
 
-  function isGroupRowSelected(row: GroupRow<R>): boolean {
-    return selectedRows != null && row.childRows.every((cr) => selectedRows.has(rowKeyGetter!(cr)));
-  }
-
-  function getParentRowAndIndex(row: R | GroupRow<R>) {
-    const rowIdx = rows.indexOf(row);
-    for (let i = rowIdx - 1; i >= 0; i--) {
-      const parentRow = rows[i];
-      if (isGroupRow(parentRow) && (!isGroupRow(row) || row.parentId === parentRow.id)) {
-        return [parentRow, i] as const;
-      }
-    }
-
-    return undefined;
+  function handleRowsChange(updatedRows: R[], { indexes, column }: RowsChangeData<R, SR>) {
+    if (!onRowsChange) return;
+    const updatedRawRows = [...rawRows];
+    const rawIndexes: number[] = [];
+    indexes.forEach((index) => {
+      const rawIndex = rawRows.indexOf(rows[index] as R);
+      updatedRawRows[rawIndex] = updatedRows[index];
+      rawIndexes.push(rawIndex);
+    });
+    onRowsChange(updatedRawRows, {
+      indexes: rawIndexes,
+      column
+    });
   }
 
   function toggleGroup(expandedGroupId: unknown) {
@@ -283,24 +305,36 @@ function TreeDataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function toggleGroupSelection(event: SelectRowEvent<GroupRow<R>>) {
-    if (!onSelectedRowsChange || event.type === 'HEADER') return;
-    const { row, checked } = event;
-    assertIsValidKeyGetter<R, K>(rawRowKeyGetter);
-    const newSelectedRows = new Set(selectedRows);
-    for (const childRow of row.childRows) {
-      const rowKey = rawRowKeyGetter(childRow);
-      if (checked) {
-        newSelectedRows.add(rowKey);
-      } else {
-        newSelectedRows.delete(rowKey);
+  function onSelectedRowsChange(newSelectedRows: Set<string | number>) {
+    if (!rawOnSelectedRowsChange) return;
+    const newRawSelectedRows = new Set(rawSelectedRows);
+    for (const row of rows) {
+      const key = rowKeyGetter(row);
+      // TODO: check types
+      if (selectedRows!.has(key) && !newSelectedRows.has(key)) {
+        if (isGroupRow(row)) {
+          for (const cr of row.childRows) {
+            newRawSelectedRows.delete(rowKeyGetter(cr) as K);
+          }
+        } else {
+          newRawSelectedRows.delete(key as K);
+        }
+      } else if (!selectedRows!.has(key) && newSelectedRows.has(key)) {
+        if (isGroupRow(row)) {
+          for (const cr of row.childRows) {
+            newRawSelectedRows.add(rowKeyGetter(cr) as K);
+          }
+        } else {
+          newRawSelectedRows.add(key as K);
+        }
       }
     }
-    onSelectedRowsChange(newSelectedRows);
+
+    rawOnSelectedRowsChange(newRawSelectedRows);
   }
 
   function renderRow(
-    rawKey: Key,
+    key: Key,
     {
       row,
       rowClass,
@@ -308,7 +342,6 @@ function TreeDataGrid<R, SR, K extends Key>(
       onCellDoubleClick,
       onCellContextMenu,
       onRowChange,
-      isRowSelected,
       copiedCellIdx,
       draggedOverCellIdx,
       setDraggedOverRowIdx,
@@ -319,28 +352,22 @@ function TreeDataGrid<R, SR, K extends Key>(
   ) {
     if (isGroupRow(row)) {
       const { startRowIndex } = row;
-      const isRowSelected = isGroupRowSelected(row);
       return (
         <GroupedRow
-          key={startRowIndex}
+          key={key}
           {...rowProps}
-          aria-rowindex={startRowIndex + headerAndTopSummaryRowsCount + 1}
-          aria-selected={isSelectable ? isRowSelected : undefined}
-          isRowSelected={isRowSelected}
+          aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1}
           row={row}
           toggleGroup={toggleGroup}
-          toggleGroupSelection={toggleGroupSelection}
         />
       );
     }
 
-    let key = rawKey;
     let ariaRowIndex = rowProps['aria-rowindex'];
     const parentRowAndIndex = getParentRowAndIndex(row);
     if (parentRowAndIndex !== undefined) {
       const { startRowIndex, childRows } = parentRowAndIndex[0];
       const groupIndex = childRows.indexOf(row);
-      key = startRowIndex + groupIndex + 1;
       ariaRowIndex = startRowIndex + headerAndTopSummaryRowsCount + groupIndex + 2;
     }
 
@@ -353,7 +380,6 @@ function TreeDataGrid<R, SR, K extends Key>(
       onCellDoubleClick,
       onCellContextMenu,
       onRowChange,
-      isRowSelected,
       copiedCellIdx,
       draggedOverCellIdx,
       setDraggedOverRowIdx,
@@ -363,7 +389,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   }
 
   return (
-    <DataGrid
+    <DataGrid<R, SR, string | number>
       {...props}
       role="treegrid"
       aria-rowcount={
@@ -371,7 +397,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       }
       ref={ref}
       columns={columns}
-      rows={rows as R[]}
+      rows={rows as R[]} // TODO: check types
       rowHeight={rowHeight}
       rowKeyGetter={rowKeyGetter}
       onRowsChange={handleRowsChange}

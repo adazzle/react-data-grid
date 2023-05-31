@@ -2,9 +2,9 @@ import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { RowSelectionChangeProvider, RowSelectionProvider } from './hooks';
+import { RowSelectionProvider } from './hooks';
 import { getRowStyle } from './utils';
-import type { BaseRenderRowProps, GroupRow, SelectRowEvent } from './types';
+import type { BaseRenderRowProps, GroupRow } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
 import { cell, cellFrozenLast } from './style/cell';
@@ -27,7 +27,6 @@ const groupRowClassname = `rdg-group-row ${groupRow}`;
 interface GroupRowRendererProps<R, SR> extends BaseRenderRowProps<R, SR> {
   row: GroupRow<R>;
   toggleGroup: (expandedGroupId: unknown) => void;
-  toggleGroupSelection: (selectRowEvent: SelectRowEvent<GroupRow<R>>) => void;
 }
 
 function GroupedRow<R, SR>({
@@ -42,7 +41,6 @@ function GroupedRow<R, SR>({
   gridRowStart,
   height,
   toggleGroup,
-  toggleGroupSelection,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
@@ -56,42 +54,40 @@ function GroupedRow<R, SR>({
   }
 
   return (
-    <RowSelectionChangeProvider value={toggleGroupSelection}>
-      <RowSelectionProvider value={isRowSelected}>
-        <div
-          role="row"
-          aria-level={row.level + 1} // aria-level is 1-based
-          aria-setsize={row.setSize}
-          aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
-          aria-expanded={row.isExpanded}
-          key={row.id}
-          className={clsx(
-            rowClassname,
-            groupRowClassname,
-            `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
-            className
-          )}
-          onClick={handleSelectGroup}
-          style={getRowStyle(gridRowStart, height)}
-          {...props}
-        >
-          {viewportColumns.map((column) => (
-            <GroupCell
-              key={column.key}
-              id={row.id}
-              groupKey={row.groupKey}
-              childRows={row.childRows}
-              isExpanded={row.isExpanded}
-              isCellSelected={selectedCellIdx === column.idx}
-              column={column}
-              row={row}
-              groupColumnIndex={idx}
-              toggleGroup={toggleGroup}
-            />
-          ))}
-        </div>
-      </RowSelectionProvider>
-    </RowSelectionChangeProvider>
+    <RowSelectionProvider value={isRowSelected}>
+      <div
+        role="row"
+        aria-level={row.level + 1} // aria-level is 1-based
+        aria-setsize={row.setSize}
+        aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
+        aria-expanded={row.isExpanded}
+        key={row.id}
+        className={clsx(
+          rowClassname,
+          groupRowClassname,
+          `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+          className
+        )}
+        onClick={handleSelectGroup}
+        style={getRowStyle(gridRowStart, height)}
+        {...props}
+      >
+        {viewportColumns.map((column) => (
+          <GroupCell
+            key={column.key}
+            id={row.id}
+            groupKey={row.groupKey}
+            childRows={row.childRows}
+            isExpanded={row.isExpanded}
+            isCellSelected={selectedCellIdx === column.idx}
+            column={column}
+            row={row}
+            groupColumnIndex={idx}
+            toggleGroup={toggleGroup}
+          />
+        ))}
+      </div>
+    </RowSelectionProvider>
   );
 }
 
