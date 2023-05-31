@@ -992,15 +992,19 @@ function DataGrid<R, SR, K extends Key>(
       const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
       if (isGroupRow(row)) {
         ({ startRowIndex } = row);
-        const isGroupRowSelected =
-          isSelectable && row.childRows.every((cr) => selectedRows.has(rowKeyGetter!(cr)));
+        let isGroupRowSelected;
+        if (isSelectable) {
+          assertIsValidKeyGetter<R, K>(rowKeyGetter);
+          isGroupRowSelected = row.childRows.every((cr) => selectedRows.has(rowKeyGetter(cr)));
+        }
+
         rowElements.push(
           <GroupRowRenderer
             aria-level={row.level + 1} // aria-level is 1-based
             aria-setsize={row.setSize}
             aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
             aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1} // aria-rowindex is 1 based
-            aria-selected={isSelectable ? isGroupRowSelected : undefined}
+            aria-selected={isGroupRowSelected}
             key={row.id}
             id={row.id}
             groupKey={row.groupKey}
