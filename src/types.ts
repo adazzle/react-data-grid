@@ -104,7 +104,7 @@ export interface RenderEditCellProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   onRowChange: (row: TRow, commitChanges?: boolean) => void;
-  onClose: (commitChanges?: boolean) => void;
+  onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
 }
 
 export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {

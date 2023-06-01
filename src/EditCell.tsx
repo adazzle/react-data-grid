@@ -126,10 +126,6 @@ export default function EditCell<R, SR>({
     onRowChange(row, commitChangesAndFocus, commitChangesAndFocus);
   }
 
-  function onEditorClose(commitChanges = false) {
-    onClose(commitChanges);
-  }
-
   const { cellClass } = column;
   const className = getCellClassname(
     column,
@@ -155,7 +151,7 @@ export default function EditCell<R, SR>({
             column,
             row,
             onRowChange: onEditorRowChange,
-            onClose: onEditorClose
+            onClose
           })}
           {column.editorOptions?.displayCellContent &&
             column.renderCell({
