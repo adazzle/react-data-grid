@@ -76,7 +76,7 @@ function getSelectedCellColSpan<R, SR>({
     if (!isGroupRow(row)) {
       return getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     }
-    return undefined;
+    return;
   }
 
   if (bottomSummaryRows) {
