@@ -8,7 +8,7 @@ interface Row {
 
 test('name is either a string or an element', () => {
   function Header() {
-    return <>Fancy</>;
+    return 'Fancy';
   }
 
   const columns: readonly Column<Row>[] = [
