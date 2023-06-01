@@ -373,7 +373,7 @@ const rules = {
   'react/jsx-no-script-url': 2,
   'react/jsx-no-target-blank': 0,
   'react/jsx-no-undef': 0,
-  'react/jsx-no-useless-fragment': [1, { allowExpressions: true }], // TODO: https://github.com/microsoft/TypeScript/issues/21699
+  'react/jsx-no-useless-fragment': 1,
   'react/jsx-one-expression-per-line': 0,
   'react/jsx-pascal-case': 1,
   'react/jsx-props-no-multi-spaces': 1,

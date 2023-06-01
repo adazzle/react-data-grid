@@ -21,16 +21,12 @@ export function SelectCellFormatter({
 }: SelectCellFormatterProps) {
   const renderCheckbox = useDefaultRenderers()!.renderCheckbox!;
 
-  return (
-    <>
-      {renderCheckbox({
-        'aria-label': ariaLabel,
-        'aria-labelledby': ariaLabelledBy,
-        tabIndex,
-        disabled,
-        checked: value,
-        onChange
-      })}
-    </>
-  );
+  return renderCheckbox({
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
+    tabIndex,
+    disabled,
+    checked: value,
+    onChange
+  });
 }
