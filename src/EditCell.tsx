@@ -97,7 +97,7 @@ export default function EditCell<R, SR>({
           navigate() {
             navigate(event);
           },
-          onClose: onEditorClose
+          onClose
         },
         cellEvent
       );
@@ -106,7 +106,7 @@ export default function EditCell<R, SR>({
 
     if (event.key === 'Escape') {
       // Discard changes
-      onClose(false);
+      onClose();
     } else if (event.key === 'Enter') {
       onClose(true);
     } else if (onEditorNavigation(event)) {
@@ -114,7 +114,7 @@ export default function EditCell<R, SR>({
     }
   }
 
-  function onClose(commitChanges: boolean, shouldFocusCell = true) {
+  function onClose(commitChanges = false, shouldFocusCell = true) {
     if (commitChanges) {
       onRowChange(row, true, shouldFocusCell);
     } else {

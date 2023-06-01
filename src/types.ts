@@ -162,7 +162,7 @@ export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   rowIdx: number;
   navigate: () => void;
-  onClose: (commitChanges?: boolean) => void;
+  onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
 }
 
 export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
