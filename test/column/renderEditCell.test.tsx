@@ -263,7 +263,7 @@ describe('Editor', () => {
                 readOnly
                 autoFocus
                 onBlur={() => {
-                  onClose(true);
+                  onClose(true, false);
                 }}
               />
             );
