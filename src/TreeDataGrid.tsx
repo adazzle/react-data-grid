@@ -1,6 +1,7 @@
 import { forwardRef, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
+import { useLatestFunc } from './hooks';
 import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
 import type {
   CellKeyboardEvent,
@@ -63,6 +64,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   const isRtl = props.direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   const { columns, groupBy } = useMemo(() => {
     const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
@@ -363,7 +365,7 @@ function TreeDataGrid<R, SR, K extends Key>(
           {...rowProps}
           aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1}
           row={row}
-          toggleGroup={toggleGroup}
+          toggleGroup={toggleGroupLatest}
         />
       );
     }
