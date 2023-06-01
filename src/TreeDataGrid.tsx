@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
-import { isCtrlKeyHeldDown } from './utils';
+import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
 import type {
   CellKeyboardEvent,
   CellKeyDownArgs,
@@ -227,13 +227,16 @@ function TreeDataGrid<R, SR, K extends Key>(
     [getParentRowAndIndex, isGroupRow, rawRowKeyGetter, rows]
   );
 
-  const selectedRows = useMemo((): Maybe<ReadonlySet<string | number>> => {
+  const selectedRows = useMemo((): Maybe<ReadonlySet<Key>> => {
     if (rawSelectedRows == null) return null;
-    const selectedRows = new Set<string | number>(rawSelectedRows);
+
+    assertIsValidKeyGetter<R, K>(rawRowKeyGetter);
+
+    const selectedRows = new Set<Key>(rawSelectedRows);
     for (const row of rows) {
       if (isGroupRow(row)) {
         const isGroupRowSelected = row.childRows.every((cr) =>
-          rawSelectedRows.has(rawRowKeyGetter!(cr))
+          rawSelectedRows.has(rawRowKeyGetter(cr))
         );
         if (isGroupRowSelected) {
           selectedRows.add(row.id);
@@ -243,6 +246,36 @@ function TreeDataGrid<R, SR, K extends Key>(
 
     return selectedRows;
   }, [isGroupRow, rawRowKeyGetter, rawSelectedRows, rows]);
+
+  function onSelectedRowsChange(newSelectedRows: Set<Key>) {
+    if (!rawOnSelectedRowsChange) return;
+
+    assertIsValidKeyGetter<R, K>(rawRowKeyGetter);
+
+    const newRawSelectedRows = new Set(rawSelectedRows);
+    for (const row of rows) {
+      const key = rowKeyGetter(row);
+      if (selectedRows?.has(key) && !newSelectedRows.has(key)) {
+        if (isGroupRow(row)) {
+          for (const cr of row.childRows) {
+            newRawSelectedRows.delete(rawRowKeyGetter(cr));
+          }
+        } else {
+          newRawSelectedRows.delete(key as K);
+        }
+      } else if (!selectedRows?.has(key) && newSelectedRows.has(key)) {
+        if (isGroupRow(row)) {
+          for (const cr of row.childRows) {
+            newRawSelectedRows.add(rawRowKeyGetter(cr));
+          }
+        } else {
+          newRawSelectedRows.add(key as K);
+        }
+      }
+    }
+
+    rawOnSelectedRowsChange(newRawSelectedRows);
+  }
 
   function handleKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
     rawOnCellKeyDown?.(args, event);
@@ -305,34 +338,6 @@ function TreeDataGrid<R, SR, K extends Key>(
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
 
-  function onSelectedRowsChange(newSelectedRows: Set<string | number>) {
-    if (!rawOnSelectedRowsChange) return;
-    const newRawSelectedRows = new Set(rawSelectedRows);
-    for (const row of rows) {
-      const key = rowKeyGetter(row);
-      // TODO: check types
-      if (selectedRows!.has(key) && !newSelectedRows.has(key)) {
-        if (isGroupRow(row)) {
-          for (const cr of row.childRows) {
-            newRawSelectedRows.delete(rowKeyGetter(cr) as K);
-          }
-        } else {
-          newRawSelectedRows.delete(key as K);
-        }
-      } else if (!selectedRows!.has(key) && newSelectedRows.has(key)) {
-        if (isGroupRow(row)) {
-          for (const cr of row.childRows) {
-            newRawSelectedRows.add(rowKeyGetter(cr) as K);
-          }
-        } else {
-          newRawSelectedRows.add(key as K);
-        }
-      }
-    }
-
-    rawOnSelectedRowsChange(newRawSelectedRows);
-  }
-
   function renderRow(
     key: Key,
     {
@@ -389,7 +394,7 @@ function TreeDataGrid<R, SR, K extends Key>(
   }
 
   return (
-    <DataGrid<R, SR, string | number>
+    <DataGrid<R, SR, Key>
       {...props}
       role="treegrid"
       aria-rowcount={
