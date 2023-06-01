@@ -249,6 +249,26 @@ describe('Editor', () => {
           renderEditCell() {
             return <input aria-label="col1-input" value="123" readOnly autoFocus />;
           }
+        },
+        {
+          key: 'col2',
+          name: 'Column2',
+          renderEditCell({ onClose }) {
+            return (
+              <input
+                aria-label="col2-input"
+                value="123"
+                readOnly
+                autoFocus
+                onBlur={() => {
+                  onClose(true);
+                }}
+              />
+            );
+          },
+          editorOptions: {
+            commitOnOutsideClick: false
+          }
         }
       ];
 
@@ -265,7 +285,17 @@ describe('Editor', () => {
       expect(col1Input).toHaveFocus();
       await userEvent.click(outerInput);
       expect(outerInput).toHaveFocus();
-      expect(col1Input).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(col1Input).not.toBeInTheDocument();
+      });
+      expect(outerInput).toHaveFocus();
+
+      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const col2Input = screen.getByLabelText('col2-input');
+      expect(col2Input).toHaveFocus();
+      await userEvent.click(outerInput);
+      expect(outerInput).toHaveFocus();
+      expect(col2Input).not.toBeInTheDocument();
       expect(outerInput).toHaveFocus();
     });
   });
