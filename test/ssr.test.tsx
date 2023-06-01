@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { renderToString } from 'react-dom/server';
 
 import DataGrid from '../src';
