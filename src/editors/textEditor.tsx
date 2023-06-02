@@ -50,7 +50,7 @@ export default function textEditor<TRow, TSummaryRow>({
       ref={autoFocusAndSelect}
       value={row[column.key as keyof TRow] as unknown as string}
       onChange={(event) => onRowChange({ ...row, [column.key]: event.target.value })}
-      onBlur={() => onClose(true)}
+      onBlur={() => onClose(true, false)}
     />
   );
 }
