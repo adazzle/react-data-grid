@@ -45,9 +45,6 @@ function GroupedRow<R, SR>({
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
-  className = clsx(className, {
-    [rowSelectedClassname]: selectedCellIdx === -1
-  });
 
   function handleSelectGroup() {
     selectCell({ rowIdx, idx: -1 });
@@ -66,6 +63,7 @@ function GroupedRow<R, SR>({
           rowClassname,
           groupRowClassname,
           `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
+          selectedCellIdx === -1 && rowSelectedClassname,
           className
         )}
         onClick={handleSelectGroup}

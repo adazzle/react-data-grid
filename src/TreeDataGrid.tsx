@@ -330,12 +330,12 @@ function TreeDataGrid<R, SR, K extends Key>(
     });
   }
 
-  function toggleGroup(expandedGroupId: unknown) {
+  function toggleGroup(groupId: unknown) {
     const newExpandedGroupIds = new Set(expandedGroupIds);
-    if (newExpandedGroupIds.has(expandedGroupId)) {
-      newExpandedGroupIds.delete(expandedGroupId);
+    if (newExpandedGroupIds.has(groupId)) {
+      newExpandedGroupIds.delete(groupId);
     } else {
-      newExpandedGroupIds.add(expandedGroupId);
+      newExpandedGroupIds.add(groupId);
     }
     onExpandedGroupIdsChange(newExpandedGroupIds);
   }
