@@ -908,13 +908,11 @@ function DataGrid<R, SR, K extends Key>(
 
       const row = rows[rowIdx];
       const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
-      let key;
+      let key: K | number = rowIdx;
       let isRowSelected = false;
       if (typeof rowKeyGetter === 'function') {
         key = rowKeyGetter(row);
         isRowSelected = selectedRows?.has(key) ?? false;
-      } else {
-        key = rowIdx;
       }
 
       rowElements.push(
