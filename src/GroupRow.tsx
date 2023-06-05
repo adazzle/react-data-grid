@@ -57,7 +57,6 @@ function GroupedRow<R, SR>({
         aria-setsize={row.setSize}
         aria-posinset={row.posInSet + 1} // aria-posinset is 1-based
         aria-expanded={row.isExpanded}
-        key={row.id}
         className={clsx(
           rowClassname,
           groupRowClassname,
