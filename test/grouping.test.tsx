@@ -132,7 +132,7 @@ function getHeaderCellsContent() {
   return getHeaderCells().map((cell) => cell.textContent);
 }
 
-test('should not group if groupBy is not specified', () => {
+test('should not group if groupBy is empty', () => {
   setup([]);
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
   expect(getHeaderCellsContent()).toStrictEqual(['', 'Sport', 'Country', 'Year', 'Id']);
