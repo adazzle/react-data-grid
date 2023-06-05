@@ -105,7 +105,7 @@ describe('Custom cell renderer', () => {
         idx: 0,
         isLastFrozenColumn: false,
         maxWidth: undefined,
-        minWidth: 80,
+        minWidth: 50,
         resizable: false,
         rowGroup: false,
         sortable: false,
