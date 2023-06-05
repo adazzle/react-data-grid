@@ -35,7 +35,6 @@ function GroupedRow<R, SR>({
   rowIdx,
   viewportColumns,
   selectedCellIdx,
-  lastFrozenColumnIndex,
   isRowSelected,
   selectCell,
   gridRowStart,
