@@ -17,7 +17,7 @@ For maintainers only.
     - `npm version prerelease --preid=beta -m "Publish %s"`
     - `npm publish --tag beta`
   - Relevant docs:
-    - https://docs.npmjs.com/cli/v7/commands/npm-version
-    - https://docs.npmjs.com/cli/v7/commands/npm-publish
-    - https://docs.npmjs.com/cli/v7/using-npm/scripts
+    - https://docs.npmjs.com/cli/commands/npm-version
+    - https://docs.npmjs.com/cli/commands/npm-publish
+    - https://docs.npmjs.com/cli/using-npm/scripts
     - https://git-scm.com/docs/git-push
