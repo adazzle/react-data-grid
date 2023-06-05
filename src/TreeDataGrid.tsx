@@ -237,6 +237,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     const selectedRows = new Set<Key>(rawSelectedRows);
     for (const row of rows) {
       if (isGroupRow(row)) {
+        // select parent row if all the children are selected
         const isGroupRowSelected = row.childRows.every((cr) =>
           rawSelectedRows.has(rawRowKeyGetter(cr))
         );
@@ -259,6 +260,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       const key = rowKeyGetter(row);
       if (selectedRows?.has(key) && !newSelectedRows.has(key)) {
         if (isGroupRow(row)) {
+          // select all children if the parent row is selected
           for (const cr of row.childRows) {
             newRawSelectedRows.delete(rawRowKeyGetter(cr));
           }
@@ -267,6 +269,7 @@ function TreeDataGrid<R, SR, K extends Key>(
         }
       } else if (!selectedRows?.has(key) && newSelectedRows.has(key)) {
         if (isGroupRow(row)) {
+          // unselect all children if the parent row is unselected
           for (const cr of row.childRows) {
             newRawSelectedRows.add(rawRowKeyGetter(cr));
           }
