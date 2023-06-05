@@ -16,7 +16,7 @@ interface ColumnMetric {
 }
 
 const DEFAULT_COLUMN_WIDTH = 'auto';
-const DEFAULT_COLUMN_MIN_WIDTH = 80;
+const DEFAULT_COLUMN_MIN_WIDTH = 50;
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
