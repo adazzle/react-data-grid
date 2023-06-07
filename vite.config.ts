@@ -43,7 +43,7 @@ export default defineConfig({
     root: '.',
     globals: true,
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       all: true,
