@@ -81,7 +81,7 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
-    function onPointerMove(event: PointerEvent) {
+    function onPointerMove(event: PointerEvent | MouseEvent) {
       // prevents text selection in Chrome, which fixes scrolling the grid while dragging, and fixes re-size on an autosized column
       event.preventDefault();
       const { right, left } = currentTarget.getBoundingClientRect();
@@ -96,9 +96,15 @@ export default function HeaderCell<R, SR>({
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
-    currentTarget.setPointerCapture(pointerId);
-    currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
+    // user-event cannot simulate native user interactions in real browsers
+    if (process.env.NODE_ENV === 'test') {
+      currentTarget.addEventListener('mousemove', onPointerMove);
+      currentTarget.addEventListener('pointerup', onLostPointerCapture);
+    } else {
+      currentTarget.setPointerCapture(pointerId);
+      currentTarget.addEventListener('pointermove', onPointerMove);
+      currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
+    }
   }
 
   function onSort(ctrlClick: boolean) {
