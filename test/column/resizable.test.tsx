@@ -1,6 +1,8 @@
 import { fireEvent } from '@testing-library/react';
+import { expect, test } from 'vitest';
+
 import type { Column } from '../../src';
-import { setup, getHeaderCells, getGrid } from '../utils';
+import { getGrid, getHeaderCells, setup } from '../utils';
 
 const pointerId = 1;
 
@@ -82,11 +84,26 @@ test('should not resize column if cursor offset is not within the allowed range'
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
 });
 
-test("measuring cells should have the column's min/max widths set", () => {
+test('should resize column if cursor offset is within the allowed range', () => {
   setup({ columns, rows: [] });
-  expect(document.querySelector('[data-measuring-cell-key="col2"]')).toHaveStyle({
-    gridColumnStart: 2,
-    minWidth: '100px',
-    maxWidth: '400px'
-  });
+  const [, col2] = getHeaderCells();
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  resize({ column: col2, clientXStart: 289, clientXEnd: 250, rect: { right: 300, left: 100 } });
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 161px' });
+});
+
+test('should use the maxWidth if specified', () => {
+  setup({ columns, rows: [] });
+  const [, col2] = getHeaderCells();
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  resize({ column: col2, clientXStart: 295, clientXEnd: 1000, rect: { right: 300, left: 100 } });
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
+});
+
+test('should use the minWidth if specified', () => {
+  setup({ columns, rows: [] });
+  const [, col2] = getHeaderCells();
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  resize({ column: col2, clientXStart: 295, clientXEnd: 100, rect: { right: 300, left: 100 } });
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
 });

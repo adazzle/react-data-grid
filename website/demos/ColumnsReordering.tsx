@@ -1,18 +1,18 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { DraggableHeaderRenderer } from './components/HeaderRenderers';
 import DataGrid from '../../src';
-import type { Column, HeaderRendererProps, SortColumn } from '../../src';
+import type { Column, RenderHeaderCellProps, SortColumn } from '../../src';
+import { DraggableHeaderRenderer } from './components';
 import type { Props } from './types';
 
 interface Row {
-  id: number;
-  task: string;
-  complete: number;
-  priority: string;
-  issueType: string;
+  readonly id: number;
+  readonly task: string;
+  readonly complete: number;
+  readonly priority: string;
+  readonly issueType: string;
 }
 
 function createRows(): Row[] {
@@ -74,7 +74,7 @@ export default function ColumnsReordering({ direction }: Props) {
   }, []);
 
   const draggableColumns = useMemo(() => {
-    function headerRenderer(props: HeaderRendererProps<Row>) {
+    function renderHeaderCell(props: RenderHeaderCellProps<Row>) {
       return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
     }
 
@@ -94,7 +94,7 @@ export default function ColumnsReordering({ direction }: Props) {
 
     return columns.map((c) => {
       if (c.key === 'id') return c;
-      return { ...c, headerRenderer };
+      return { ...c, renderHeaderCell };
     });
   }, [columns]);
 

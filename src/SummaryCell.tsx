@@ -1,9 +1,9 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
-import { getCellStyle, getCellClassname } from './utils';
-import type { CalculatedColumn, CellRendererProps } from './types';
-import { useRovingCellRef } from './hooks';
+import { useRovingTabIndex } from './hooks';
+import { getCellClassname, getCellStyle } from './utils';
+import type { CellRendererProps } from './types';
 
 export const summaryCellClassname = css`
   @layer rdg.SummaryCell {
@@ -12,10 +12,10 @@ export const summaryCellClassname = css`
   }
 `;
 
-interface SharedCellRendererProps<R, SR>
-  extends Pick<CellRendererProps<R, SR>, 'column' | 'colSpan' | 'isCellSelected'> {
-  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
-}
+type SharedCellRendererProps<R, SR> = Pick<
+  CellRendererProps<R, SR>,
+  'rowIdx' | 'column' | 'colSpan' | 'isCellSelected' | 'selectCell'
+>;
 
 interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
@@ -25,10 +25,11 @@ function SummaryCell<R, SR>({
   column,
   colSpan,
   row,
+  rowIdx,
   isCellSelected,
   selectCell
 }: SummaryCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const { summaryCellClass } = column;
   const className = getCellClassname(
     column,
@@ -37,7 +38,7 @@ function SummaryCell<R, SR>({
   );
 
   function onClick() {
-    selectCell(row, column);
+    selectCell({ rowIdx, idx: column.idx });
   }
 
   return (
@@ -46,14 +47,13 @@ function SummaryCell<R, SR>({
       aria-colindex={column.idx + 1}
       aria-colspan={colSpan}
       aria-selected={isCellSelected}
-      ref={ref}
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
       onClick={onClick}
       onFocus={onFocus}
     >
-      {column.summaryFormatter?.({ column, row, isCellSelected })}
+      {column.renderSummaryCell?.({ column, row, tabIndex: childTabIndex })}
     </div>
   );
 }

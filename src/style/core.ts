@@ -1,4 +1,5 @@
 import { css } from '@linaria/core';
+
 import { row } from './row';
 
 const lightTheme = `
@@ -37,6 +38,9 @@ const root = css`
   @layer rdg {
     @layer Defaults,
       FocusSink,
+      CheckboxInput,
+      CheckboxIcon,
+      CheckboxLabel,
       Cell,
       HeaderCell,
       SummaryCell,

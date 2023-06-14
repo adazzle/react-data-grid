@@ -29,7 +29,7 @@ export const rowSelected = css`
   }
 `;
 
-export const rowSelectedClassname = `rdg-row-selected`;
+export const rowSelectedClassname = 'rdg-row-selected';
 
 export const rowSelectedWithFrozenCell = css`
   @layer rdg.FocusSink {

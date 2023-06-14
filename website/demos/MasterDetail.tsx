@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { css } from '@linaria/core';
+import { useMemo, useRef, useState } from 'react';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, RowsChangeData, DataGridHandle } from '../../src';
-import { CellExpanderFormatter } from './components/Formatters';
-import type { Props } from './types';
+import type { Column, DataGridHandle, RowsChangeData } from '../../src';
 import type { Direction } from '../../src/types';
+import { CellExpanderFormatter } from './components';
+import type { Props } from './types';
 
 type DepartmentRow =
   | {
@@ -82,21 +82,15 @@ export default function MasterDetail({ direction }: Props) {
               `
             : undefined;
         },
-        formatter({ row, isCellSelected, onRowChange }) {
+        renderCell({ row, tabIndex, onRowChange }) {
           if (row.type === 'DETAIL') {
-            return (
-              <ProductGrid
-                isCellSelected={isCellSelected}
-                parentId={row.parentId}
-                direction={direction}
-              />
-            );
+            return <ProductGrid parentId={row.parentId} direction={direction} />;
           }
 
           return (
             <CellExpanderFormatter
               expanded={row.expanded}
-              isCellSelected={isCellSelected}
+              tabIndex={tabIndex}
               onCellExpand={() => {
                 onRowChange({ ...row, expanded: !row.expanded });
               }}
@@ -113,14 +107,14 @@ export default function MasterDetail({ direction }: Props) {
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {
     const row = rows[indexes[0]];
     if (row.type === 'MASTER') {
-      if (!row.expanded) {
-        rows.splice(indexes[0] + 1, 1);
-      } else {
+      if (row.expanded) {
         rows.splice(indexes[0] + 1, 0, {
           type: 'DETAIL',
           id: row.id + 100,
           parentId: row.id
         });
+      } else {
+        rows.splice(indexes[0] + 1, 1);
       }
       setRows(rows);
     }
@@ -137,45 +131,29 @@ export default function MasterDetail({ direction }: Props) {
       className="fill-grid"
       enableVirtualization={false}
       direction={direction}
+      onCellKeyDown={(_, event) => {
+        if (event.isDefaultPrevented()) {
+          // skip parent grid keyboard navigation if nested grid handled it
+          event.preventGridDefault();
+        }
+      }}
     />
   );
 }
 
-function ProductGrid({
-  parentId,
-  isCellSelected,
-  direction
-}: {
-  parentId: number;
-  isCellSelected: boolean;
-  direction: Direction;
-}) {
+function ProductGrid({ parentId, direction }: { parentId: number; direction: Direction }) {
   const gridRef = useRef<DataGridHandle>(null);
-  useEffect(() => {
-    if (!isCellSelected) return;
-    gridRef
-      .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
-      .focus({ preventScroll: true });
-  }, [isCellSelected]);
   const products = getProducts(parentId);
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.isDefaultPrevented()) {
-      event.stopPropagation();
-    }
-  }
-
   return (
-    <div onKeyDown={onKeyDown}>
-      <DataGrid
-        ref={gridRef}
-        rows={products}
-        columns={productColumns}
-        rowKeyGetter={rowKeyGetter}
-        style={{ blockSize: 250 }}
-        direction={direction}
-      />
-    </div>
+    <DataGrid
+      ref={gridRef}
+      rows={products}
+      columns={productColumns}
+      rowKeyGetter={rowKeyGetter}
+      style={{ blockSize: 250 }}
+      direction={direction}
+    />
   );
 }
 

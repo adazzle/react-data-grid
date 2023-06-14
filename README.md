@@ -40,7 +40,7 @@
 - [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
-- [Customizable Components](https://adazzle.github.io/react-data-grid/#/customizable-components)
+- [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/customizable-renderers)
 - Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
@@ -63,6 +63,7 @@ npm install react-data-grid
 
 ```jsx
 import 'react-data-grid/lib/styles.css';
+
 import DataGrid from 'react-data-grid';
 
 const columns = [
@@ -188,15 +189,17 @@ A number defining the height of summary rows.
 
 ###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
 
-###### `onRowClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-###### `onRowDoubleClick?: Maybe<(row: R, column: CalculatedColumn<R, SR>) => void>`
+###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+
+###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+
+###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
 
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
-
-###### `cellNavigationMode?: Maybe<CellNavigationMode>`
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
@@ -206,21 +209,19 @@ This prop can be used to override the internal renderers. The prop accepts an ob
 
 ```tsx
 interface Renderers<TRow, TSummaryRow> {
-  sortStatus?: Maybe<(props: SortStatusProps) => ReactNode>;
-  checkboxFormatter?: Maybe<
-    (props: CheckboxFormatterProps, ref: Ref<HTMLInputElement>) => ReactNode
-  >;
-  rowRenderer?: Maybe<(key: Key, props: RowRendererProps<TRow, TSummaryRow>) => ReactNode>;
+  renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
+  renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
+  renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 ```
 
-For example, the default `<Row />` component can be wrapped via the `rowRenderer` prop to add context providers or tweak props
+For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add context providers or tweak props
 
 ```tsx
-import DataGrid, { Row, RowRendererProps } from 'react-data-grid';
+import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 
-function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
+function myRowRenderer(key: React.Key, props: RenderRowProps<Row>) {
   return (
     <MyContext.Provider key={key} value={123}>
       <Row {...props} />
@@ -229,11 +230,11 @@ function myRowRenderer(key: React.Key, props: RowRendererProps<Row>) {
 }
 
 function MyGrid() {
-  return <DataGrid columns={columns} rows={rows} renderers={{ rowRenderer: myRowRenderer }} />;
+  return <DataGrid columns={columns} rows={rows} renderers={{ renderRow: myRowRenderer }} />;
 }
 ```
 
-:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `rowRenderer`.
+:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `renderRow`.
 
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
 
@@ -262,7 +263,7 @@ This property sets the text direction of the grid, it defaults to `'ltr'` (left-
 
 ##### Props
 
-See [`EditorProps`](#editorprops)
+See [`RenderEditCellProps`](#rendereditcellprops)
 
 #### `<Row />`
 
@@ -270,7 +271,7 @@ See [`renderers`](#renderers-mayberenderersr-sr)
 
 ##### Props
 
-See [`RowRendererProps`](#rowrendererprops)
+See [`RenderRowProps`](#renderrowprops)
 
 The `ref` prop is supported.
 
@@ -284,7 +285,7 @@ The `ref` prop is supported.
 
 ###### `priority: number | undefined`
 
-###### `isCellSelected: boolean`
+###### `tabIndex: number`
 
 ###### `children: React.ReactNode`
 
@@ -300,7 +301,7 @@ See [`FormatterProps`](#formatterprops)
 
 ###### `value: boolean`
 
-###### `isCellSelected: boolean`
+###### `tabIndex: number`
 
 ###### `disabled?: boolean | undefined`
 
@@ -316,7 +317,7 @@ See [`FormatterProps`](#formatterprops)
 
 ##### Props
 
-See [`GroupFormatterProps`](#groupformatterprops)
+See [`RenderGroupCellProps`](#rendergroupcellprops)
 
 ### Hooks
 
@@ -334,13 +335,13 @@ See [`GroupFormatterProps`](#groupformatterprops)
 
 #### `DataGridHandle`
 
-#### `EditorProps`
+#### `RenderEditCellProps`
 
-#### `FormatterProps`
+#### `RenderCellProps`
 
-#### `GroupFormatterProps`
+#### `RenderGroupCellProps`
 
-#### `RowRendererProps`
+#### `RenderRowProps`
 
 ### Generics
 

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import type { CalculatedColumn, Column, Maybe } from '../types';
-import type { DataGridProps } from '../DataGrid';
-import { valueFormatter, toggleGroupFormatter } from '../formatters';
-import { SELECT_COLUMN_KEY } from '../Columns';
 import { clampColumnWidth, max, min } from '../utils';
+import type { CalculatedColumn, Column, Maybe } from '../types';
+import { renderToggleGroup, renderValue } from '../cellRenderers';
+import { SELECT_COLUMN_KEY } from '../Columns';
+import type { DataGridProps } from '../DataGrid';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -16,20 +16,22 @@ interface ColumnMetric {
 }
 
 const DEFAULT_COLUMN_WIDTH = 'auto';
-const DEFAULT_COLUMN_MIN_WIDTH = 80;
+const DEFAULT_COLUMN_MIN_WIDTH = 50;
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
   rawColumns: readonly Column<R, SR>[];
   rawGroupBy: Maybe<readonly string[]>;
   viewportWidth: number;
   scrollLeft: number;
-  columnWidths: ReadonlyMap<string, number>;
+  measuredColumnWidths: ReadonlyMap<string, number>;
+  resizedColumnWidths: ReadonlyMap<string, number>;
   enableVirtualization: boolean;
 }
 
 export function useCalculatedColumns<R, SR>({
   rawColumns,
-  columnWidths,
+  measuredColumnWidths,
+  resizedColumnWidths,
   viewportWidth,
   scrollLeft,
   defaultColumnOptions,
@@ -39,7 +41,7 @@ export function useCalculatedColumns<R, SR>({
   const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
-  const defaultFormatter = defaultColumnOptions?.formatter ?? valueFormatter;
+  const defaultFormatter = defaultColumnOptions?.renderCell ?? renderValue;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
@@ -69,11 +71,11 @@ export function useCalculatedColumns<R, SR>({
         maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
-        formatter: rawColumn.formatter ?? defaultFormatter
+        renderCell: rawColumn.renderCell ?? defaultFormatter
       };
 
       if (rowGroup) {
-        column.groupFormatter ??= toggleGroupFormatter;
+        column.renderGroupCell ??= renderToggleGroup;
       }
 
       if (frozen) {
@@ -154,7 +156,9 @@ export function useCalculatedColumns<R, SR>({
     const templateColumns: string[] = [];
 
     for (const column of columns) {
-      let width = columnWidths.get(column.key) ?? column.width;
+      let width =
+        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width;
+
       if (typeof width === 'number') {
         width = clampColumnWidth(width, column);
       } else {
@@ -172,9 +176,7 @@ export function useCalculatedColumns<R, SR>({
       totalFrozenColumnWidth = columnMetric.left + columnMetric.width;
     }
 
-    const layoutCssVars: Record<string, string> = {
-      gridTemplateColumns: templateColumns.join(' ')
-    };
+    const layoutCssVars: Record<string, string> = {};
 
     for (let i = 0; i <= lastFrozenColumnIndex; i++) {
       const column = columns[i];
@@ -182,7 +184,7 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [columnWidths, columns, lastFrozenColumnIndex]);
+  }, [measuredColumnWidths, resizedColumnWidths, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
@@ -245,7 +247,6 @@ export function useCalculatedColumns<R, SR>({
     colOverscanEndIdx,
     templateColumns,
     layoutCssVars,
-    columnMetrics,
     lastFrozenColumnIndex,
     totalFrozenColumnWidth,
     groupBy

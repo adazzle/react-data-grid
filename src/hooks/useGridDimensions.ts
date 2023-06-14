@@ -1,21 +1,17 @@
 import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+
 import { useLayoutEffect } from './useLayoutEffect';
 
-export function useGridDimensions(): [
-  ref: React.RefObject<HTMLDivElement>,
-  width: number,
-  height: number,
-  isWidthInitialized: boolean
-] {
+export function useGridDimensions() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
-  const [isWidthInitialized, setWidthInitialized] = useState(false);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
 
-    // don't break in Node.js (SSR), jest/jsdom, and browsers that don't support ResizeObserver
+    // don't break in Node.js (SSR), jsdom, and browsers that don't support ResizeObserver
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (ResizeObserver == null) return;
 
@@ -26,16 +22,17 @@ export function useGridDimensions(): [
 
     setInlineSize(initialWidth);
     setBlockSize(initialHeight);
-    setWidthInitialized(true);
 
-    const resizeObserver = new ResizeObserver((entries) => {
+    const resizeObserver = new ResizeObserver(entries => {
       window.requestAnimationFrame(() => {
-        if (!Array.isArray(entries) || !entries.length) {
-          return;
-        }
-        const size = entries[0].contentBoxSize[0];
-        setInlineSize(size.inlineSize);
-        setBlockSize(size.blockSize);
+          if (!Array.isArray(entries) || !entries.length) {
+              return;
+          }
+          const size = entries[0].contentBoxSize[0];
+          flushSync(() => {
+              setInlineSize(size.inlineSize);
+              setBlockSize(size.blockSize);
+          });
       });
     });
     resizeObserver.observe(gridRef.current!);
@@ -45,5 +42,5 @@ export function useGridDimensions(): [
     };
   }, []);
 
-  return [gridRef, inlineSize, blockSize, isWidthInitialized];
+  return [gridRef, inlineSize, blockSize] as const;
 }

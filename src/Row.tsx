@@ -1,12 +1,11 @@
-import { memo, forwardRef } from 'react';
-import type { RefAttributes } from 'react';
+import { forwardRef, memo, type RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import Cell from './Cell';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
-import { rowClassname, rowSelectedClassname } from './style';
-import type { CalculatedColumn, RowRendererProps } from './types';
+import type { CalculatedColumn, RenderRowProps } from './types';
+import Cell from './Cell';
+import { rowClassname, rowSelectedClassname } from './style/row';
 
 function Row<R, SR>(
   {
@@ -23,15 +22,16 @@ function Row<R, SR>(
     viewportColumns,
     selectedCellEditor,
     selectedCellDragHandle,
-    onRowClick,
-    onRowDoubleClick,
+    onCellClick,
+    onCellDoubleClick,
+    onCellContextMenu,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
     onRowChange,
     selectCell,
     ...props
-  }: RowRendererProps<R, SR>,
+  }: RenderRowProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
   const handleRowChange = useLatestFunc((column: CalculatedColumn<R, SR>, newRow: R) => {
@@ -49,7 +49,7 @@ function Row<R, SR>(
     {
       [rowSelectedClassname]: selectedCellIdx === -1
     },
-    rowClass?.(row),
+    rowClass?.(row, rowIdx),
     className
   );
 
@@ -74,12 +74,14 @@ function Row<R, SR>(
           column={column}
           colSpan={colSpan}
           row={row}
+          rowIdx={rowIdx}
           isCopied={copiedCellIdx === idx}
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
           dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
-          onRowClick={onRowClick}
-          onRowDoubleClick={onRowDoubleClick}
+          onClick={onCellClick}
+          onDoubleClick={onCellDoubleClick}
+          onContextMenu={onCellContextMenu}
           onRowChange={handleRowChange}
           selectCell={selectCell}
         />
@@ -104,11 +106,11 @@ function Row<R, SR>(
 }
 
 const RowComponent = memo(forwardRef(Row)) as <R, SR>(
-  props: RowRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+  props: RenderRowProps<R, SR> & RefAttributes<HTMLDivElement>
 ) => JSX.Element;
 
 export default RowComponent;
 
-export function defaultRowRenderer<R, SR>(key: React.Key, props: RowRendererProps<R, SR>) {
+export function defaultRenderRow<R, SR>(key: React.Key, props: RenderRowProps<R, SR>) {
   return <RowComponent key={key} {...props} />;
 }

@@ -1,9 +1,9 @@
 import { memo } from 'react';
 
-import { getCellStyle, getCellClassname } from './utils';
+import { useRovingTabIndex } from './hooks';
+import { getCellClassname, getCellStyle } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
 import type { GroupRowRendererProps } from './GroupRow';
-import { useRovingCellRef } from './hooks';
 
 type SharedGroupRowRendererProps<R, SR> = Pick<
   GroupRowRendererProps<R, SR>,
@@ -28,7 +28,7 @@ function GroupCell<R, SR>({
   groupColumnIndex,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   function toggleGroup() {
     toggleGroupWrapper(id);
@@ -42,7 +42,6 @@ function GroupCell<R, SR>({
       role="gridcell"
       aria-colindex={column.idx + 1}
       aria-selected={isCellSelected}
-      ref={ref}
       tabIndex={tabIndex}
       key={column.key}
       className={getCellClassname(column)}
@@ -54,13 +53,13 @@ function GroupCell<R, SR>({
       onFocus={onFocus}
     >
       {(!column.rowGroup || groupColumnIndex === column.idx) &&
-        column.groupFormatter?.({
+        column.renderGroupCell?.({
           groupKey,
           childRows,
           column,
           row,
           isExpanded,
-          isCellSelected,
+          tabIndex: childTabIndex,
           toggleGroup
         })}
     </div>

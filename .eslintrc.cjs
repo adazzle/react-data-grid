@@ -373,7 +373,7 @@ const rules = {
   'react/jsx-no-script-url': 2,
   'react/jsx-no-target-blank': 0,
   'react/jsx-no-undef': 0,
-  'react/jsx-no-useless-fragment': [1, { allowExpressions: true }], // TODO: https://github.com/microsoft/TypeScript/issues/21699
+  'react/jsx-no-useless-fragment': 1,
   'react/jsx-one-expression-per-line': 0,
   'react/jsx-pascal-case': 1,
   'react/jsx-props-no-multi-spaces': 1,
@@ -416,7 +416,7 @@ const rules = {
   'jest/no-alias-methods': 1,
   'jest/no-commented-out-tests': 1,
   'jest/no-conditional-expect': 1,
-  'jest/no-deprecated-functions': 1,
+  'jest/no-deprecated-functions': 0,
   'jest/no-disabled-tests': 0,
   'jest/no-done-callback': 0,
   'jest/no-duplicate-hooks': 2,
@@ -661,6 +661,15 @@ const rules = {
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
+        },
+        {
+          name: '@testing-library/react',
+          importNames: ['render'],
+          message: 'Use the render helper from test/utils instead.'
+        },
+        {
+          name: 'lodash',
+          message: 'Import lodash-es instead.'
         }
       ]
     }
@@ -700,7 +709,16 @@ module.exports = {
   env: {
     es6: true
   },
-  plugins: ['node', 'react', 'react-hooks', 'jest', 'jest-dom', 'sonarjs', '@typescript-eslint'],
+  plugins: [
+    'node',
+    'react',
+    'react-hooks',
+    'jest',
+    'jest-dom',
+    'sonarjs',
+    '@typescript-eslint',
+    'testing-library'
+  ],
   overrides: [
     {
       files: ['test/**/*'],
@@ -774,7 +792,19 @@ module.exports = {
         'node/prefer-global/url-search-params': 1,
         'node/prefer-global/url': 1,
         'node/prefer-promises/dns': 1,
-        'node/prefer-promises/fs': 1
+        'node/prefer-promises/fs': 1,
+
+        // eslint-plugin-testing-library Rules
+        // https://github.com/testing-library/eslint-plugin-testing-library#supported-rules
+        'testing-library/no-wait-for-multiple-assertions': 1,
+        'testing-library/no-unnecessary-act': 1,
+        'testing-library/no-wait-for-empty-callback': 1,
+        'testing-library/no-wait-for-side-effects': 1,
+        'testing-library/prefer-explicit-assert': 1,
+        'testing-library/prefer-find-by': 1,
+        'testing-library/prefer-presence-queries': 1,
+        'testing-library/prefer-query-by-disappearance': 1,
+        'testing-library/prefer-screen-queries': 1
       }
     }
   ],
