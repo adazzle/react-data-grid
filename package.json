@@ -74,8 +74,8 @@
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "@vitejs/plugin-react": "^4.0.0",
-    "@vitest/browser": "^0.32.0",
-    "@vitest/coverage-istanbul": "^0.32.0",
+    "@vitest/browser": "^0.32.2",
+    "@vitest/coverage-istanbul": "^0.32.2",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
@@ -89,7 +89,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
     "lodash-es": "^4.17.21",
-    "playwright": "~1.35.0",
+    "playwright": "~1.35.1",
     "postcss": "^8.4.23",
     "postcss-nested": "^6.0.0",
     "prettier": "2.8.8",
@@ -103,7 +103,7 @@
     "rome": "12.1.3",
     "typescript": "~5.1.3",
     "vite": "^4.3.9",
-    "vitest": "^0.32.0"
+    "vitest": "^0.32.2"
   },
   "peerDependencies": {
     "react": "^18.0",
