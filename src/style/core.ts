@@ -71,7 +71,7 @@ const root = css`
       /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
       /* We set a stacking context so internal elements don't render on top of external elements. */
       /* size containment is not used as it could break "width: min-content" for example, and the grid would infinitely resize on Chromium browsers */
-      contain: layout paint style;
+      contain: content;
       content-visibility: auto;
       block-size: 350px;
       border: 1px solid var(--rdg-border-color);
