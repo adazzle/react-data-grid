@@ -3,7 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "exactOptionalPropertyTypes": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
     "noImplicitReturns": true,
