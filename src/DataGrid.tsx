@@ -1140,30 +1140,6 @@ function DataGrid<R, SR, K extends Key>(
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
-      {/* extra div is needed for row navigation in a treegrid */}
-      {hasGroups && (
-        <div
-          ref={rowRef}
-          tabIndex={isGroupRowFocused ? 0 : -1}
-          className={clsx(focusSinkClassname, {
-            [focusSinkHeaderAndSummaryClassname]: !isRowIdxWithinViewportBounds(
-              selectedPosition.rowIdx
-            ),
-            [rowSelected]: isGroupRowFocused,
-            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
-          })}
-          style={{
-            gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
-          }}
-        />
-      )}
-      {scrollToPosition !== null && (
-        <ScrollToCell
-          scrollToPosition={scrollToPosition}
-          setScrollToCellPosition={setScrollToPosition}
-          gridElement={gridRef.current!}
-        />
-      )}
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <RowSelectionChangeProvider value={selectRowLatest}>
           <RowSelectionProvider value={allRowsSelected}>
@@ -1244,10 +1220,36 @@ function DataGrid<R, SR, K extends Key>(
             </>
           )}
         </RowSelectionChangeProvider>
-
-        {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
-        {renderMeasuringCells(viewportColumns)}
       </DataGridDefaultRenderersProvider>
+
+      {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
+      {renderMeasuringCells(viewportColumns)}
+
+      {/* extra div is needed for row navigation in a treegrid */}
+      {hasGroups && (
+        <div
+          ref={rowRef}
+          tabIndex={isGroupRowFocused ? 0 : -1}
+          className={clsx(focusSinkClassname, {
+            [focusSinkHeaderAndSummaryClassname]: !isRowIdxWithinViewportBounds(
+              selectedPosition.rowIdx
+            ),
+            [rowSelected]: isGroupRowFocused,
+            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
+          })}
+          style={{
+            gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
+          }}
+        />
+      )}
+
+      {scrollToPosition !== null && (
+        <ScrollToCell
+          scrollToPosition={scrollToPosition}
+          setScrollToCellPosition={setScrollToPosition}
+          gridElement={gridRef.current!}
+        />
+      )}
     </div>
   );
 }
