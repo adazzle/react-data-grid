@@ -61,7 +61,12 @@ import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import { default as defaultRenderSortStatus } from './sortStatus';
-import { focusSinkClassname, rootClassname, viewportDraggingClassname } from './style/core';
+import {
+  focusSinkClassname,
+  focusSinkHeaderAndSummaryClassname,
+  rootClassname,
+  viewportDraggingClassname
+} from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
 import SummaryRow from './SummaryRow';
 
@@ -286,7 +291,7 @@ function DataGrid<R, SR, K extends Key>(
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
-  const rowRef = useRef<HTMLDivElement>(null);
+  const focusSinkRef = useRef<HTMLDivElement>(null);
   const shouldFocusCellRef = useRef(false);
 
   /**
@@ -430,8 +435,8 @@ function DataGrid<R, SR, K extends Key>(
     prevSelectedPosition.current = selectedPosition;
 
     if (selectedPosition.idx === -1) {
-      rowRef.current!.focus({ preventScroll: true });
-      scrollIntoView(rowRef.current);
+      focusSinkRef.current!.focus({ preventScroll: true });
+      scrollIntoView(focusSinkRef.current);
     }
   });
 
@@ -561,7 +566,7 @@ function DataGrid<R, SR, K extends Key>(
     }
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
-    const isRowEvent = hasGroups && event.target === rowRef.current;
+    const isRowEvent = hasGroups && event.target === focusSinkRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
@@ -1135,27 +1140,6 @@ function DataGrid<R, SR, K extends Key>(
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
-      {/* extra div is needed for row navigation in a treegrid */}
-      {hasGroups && (
-        <div
-          ref={rowRef}
-          tabIndex={isGroupRowFocused ? 0 : -1}
-          className={clsx(focusSinkClassname, {
-            [rowSelected]: isGroupRowFocused,
-            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
-          })}
-          style={{
-            gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
-          }}
-        />
-      )}
-      {scrollToPosition !== null && (
-        <ScrollToCell
-          scrollToPosition={scrollToPosition}
-          setScrollToCellPosition={setScrollToPosition}
-          gridElement={gridRef.current!}
-        />
-      )}
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <RowSelectionChangeProvider value={selectRowLatest}>
           <RowSelectionProvider value={allRowsSelected}>
@@ -1236,10 +1220,36 @@ function DataGrid<R, SR, K extends Key>(
             </>
           )}
         </RowSelectionChangeProvider>
-
-        {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
-        {renderMeasuringCells(viewportColumns)}
       </DataGridDefaultRenderersProvider>
+
+      {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
+      {renderMeasuringCells(viewportColumns)}
+
+      {/* extra div is needed for row navigation in a treegrid */}
+      {hasGroups && (
+        <div
+          ref={focusSinkRef}
+          tabIndex={isGroupRowFocused ? 0 : -1}
+          className={clsx(focusSinkClassname, {
+            [focusSinkHeaderAndSummaryClassname]: !isRowIdxWithinViewportBounds(
+              selectedPosition.rowIdx
+            ),
+            [rowSelected]: isGroupRowFocused,
+            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
+          })}
+          style={{
+            gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
+          }}
+        />
+      )}
+
+      {scrollToPosition !== null && (
+        <ScrollToCell
+          scrollToPosition={scrollToPosition}
+          setScrollToCellPosition={setScrollToPosition}
+          gridElement={gridRef.current!}
+        />
+      )}
     </div>
   );
 }

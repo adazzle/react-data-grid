@@ -32,14 +32,14 @@ const headerRow = css`
     font-weight: bold;
 
     & > .${cell} {
-      /* Should have a higher value than 0 to show up above regular cells */
-      z-index: 1;
+      /* Should have a higher value than 1 to show up above regular cells and the focus sink */
+      z-index: 2;
       position: sticky;
       inset-block-start: 0;
     }
 
     & > .${cellFrozen} {
-      z-index: 2;
+      z-index: 3;
     }
   }
 `;
