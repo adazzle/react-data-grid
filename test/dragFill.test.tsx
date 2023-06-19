@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/prefer-user-event */
 import { useState } from 'react';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

@@ -118,6 +118,7 @@ describe('Custom cell renderer', () => {
 
 test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
   const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
+
   function FormatterTest() {
     const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
 

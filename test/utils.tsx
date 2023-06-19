@@ -76,6 +76,7 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
 }
 
 export function copySelectedCell() {
+  // eslint-disable-next-line testing-library/prefer-user-event
   fireEvent.keyDown(document.activeElement!, {
     keyCode: '67',
     ctrlKey: true
@@ -83,6 +84,7 @@ export function copySelectedCell() {
 }
 
 export function pasteSelectedCell() {
+  // eslint-disable-next-line testing-library/prefer-user-event
   fireEvent.keyDown(document.activeElement!, {
     keyCode: '86',
     ctrlKey: true

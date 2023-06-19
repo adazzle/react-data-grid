@@ -75,12 +75,14 @@ describe('Editor', () => {
     await userEvent.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = screen.getByRole('button', { name: 'save' });
+    // eslint-disable-next-line testing-library/prefer-user-event
     fireEvent.mouseDown(saveButton);
     // await userEvent.click() triggers both mousedown and click, but without delay,
     // which isn't realistic, and isn't enough to trigger outside click detection
     await act(async () => {
       await new Promise(requestAnimationFrame);
     });
+    // eslint-disable-next-line testing-library/prefer-user-event
     fireEvent.click(saveButton);
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith([
