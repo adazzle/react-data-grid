@@ -549,10 +549,7 @@ const rules = {
     { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }
   ],
   '@typescript-eslint/consistent-type-definitions': 1,
-  '@typescript-eslint/consistent-type-exports': [
-    1,
-    { fixMixedExportsWithInlineTypeSpecifier: true }
-  ],
+  '@typescript-eslint/consistent-type-exports': 0,
   '@typescript-eslint/consistent-type-imports': [1, { fixStyle: 'inline-type-imports' }],
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
