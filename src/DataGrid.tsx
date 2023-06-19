@@ -61,7 +61,12 @@ import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import { default as defaultRenderSortStatus } from './sortStatus';
-import { focusSinkClassname, rootClassname, viewportDraggingClassname } from './style/core';
+import {
+  focusSinkClassname,
+  focusSinkHeaderAndSummaryClassname,
+  rootClassname,
+  viewportDraggingClassname
+} from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
 import SummaryRow from './SummaryRow';
 
@@ -1141,6 +1146,9 @@ function DataGrid<R, SR, K extends Key>(
           ref={rowRef}
           tabIndex={isGroupRowFocused ? 0 : -1}
           className={clsx(focusSinkClassname, {
+            [focusSinkHeaderAndSummaryClassname]: !isRowIdxWithinViewportBounds(
+              selectedPosition.rowIdx
+            ),
             [rowSelected]: isGroupRowFocused,
             [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
           })}
