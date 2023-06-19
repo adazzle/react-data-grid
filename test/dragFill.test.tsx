@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
@@ -79,9 +78,11 @@ test('should allow dragFill if onFill is specified', async () => {
 test('should update single row using mouse', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
-  fireEvent.mouseEnter(getRows()[1]);
-  fireEvent.mouseUp(window);
+  await userEvent.pointer([
+    { keys: '[MouseLeft>]', target: getDragHandle()! },
+    { target: getRows()[1] },
+    { keys: '[/MouseLeft]' }
+  ]);
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
 });
@@ -89,9 +90,11 @@ test('should update single row using mouse', async () => {
 test('should update multiple rows using mouse', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
-  fireEvent.mouseEnter(getRows()[3]);
-  fireEvent.mouseUp(window);
+  await userEvent.pointer([
+    { keys: '[MouseLeft>]', target: getDragHandle()! },
+    { target: getRows()[3] },
+    { keys: '[/MouseLeft]' }
+  ]);
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
@@ -100,9 +103,11 @@ test('should update multiple rows using mouse', async () => {
 test('should allow drag up using mouse', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(3)[0]);
-  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
-  fireEvent.mouseEnter(getRows()[0]);
-  fireEvent.mouseUp(window);
+  await userEvent.pointer([
+    { keys: '[MouseLeft>]', target: getDragHandle()! },
+    { target: getRows()[0] },
+    { keys: '[/MouseLeft]' }
+  ]);
   expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('a4');
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a4');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a4');
