@@ -79,7 +79,7 @@ const rules = {
   'default-case': 1,
   'default-case-last': 1,
   'default-param-last': 0, // replaced by @typescript-eslint/default-param-last
-  'dot-notation': 1,
+  'dot-notation': 0, // replaced by @typescript-eslint/dot-notation
   eqeqeq: [1, 'always', { null: 'ignore' }],
   'func-name-matching': 0,
   'func-names': 0,
@@ -164,7 +164,7 @@ const rules = {
   'no-restricted-properties': 0,
   'no-restricted-syntax': 0,
   'no-return-assign': 0,
-  'no-return-await': 1,
+  'no-return-await': 0, // replaced by @typescript-eslint/return-await
   'no-script-url': 1,
   'no-sequences': [1, { allowInParentheses: false }],
   'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
@@ -208,7 +208,7 @@ const rules = {
   'prefer-template': 1,
   'quote-props': [1, 'as-needed'],
   radix: 1,
-  'require-await': 1,
+  'require-await': 0, // replaced by @typescript-eslint/require-await
   'require-unicode-regexp': 0,
   'require-yield': 1,
   'sort-imports': 0,
@@ -651,7 +651,7 @@ const rules = {
   '@typescript-eslint/comma-dangle': 0,
   '@typescript-eslint/comma-spacing': 0,
   '@typescript-eslint/default-param-last': 0,
-  '@typescript-eslint/dot-notation': 0,
+  '@typescript-eslint/dot-notation': 1,
   '@typescript-eslint/func-call-spacing': 0,
   '@typescript-eslint/indent': 0,
   '@typescript-eslint/init-declarations': 0,
@@ -726,8 +726,8 @@ const rules = {
     }
   ],
   '@typescript-eslint/quotes': 0,
-  '@typescript-eslint/require-await': 0,
-  '@typescript-eslint/return-await': 0,
+  '@typescript-eslint/require-await': 1,
+  '@typescript-eslint/return-await': 1,
   '@typescript-eslint/semi': 0,
   '@typescript-eslint/space-before-blocks': 0,
   '@typescript-eslint/space-before-function-paren': 0,
