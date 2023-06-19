@@ -80,8 +80,8 @@ describe('Editor', () => {
     // await userEvent.click() triggers both mousedown and click, but without delay,
     // which isn't realistic, and isn't enough to trigger outside click detection
     await user.pointer([{ keys: '[MouseLeft>]', target: saveButton }]);
-    await new Promise((resolve) => {
-      requestAnimationFrame(resolve);
+    await act(async () => {
+      await new Promise(requestAnimationFrame);
     });
     await user.pointer({ keys: '[/MouseLeft]' });
 
