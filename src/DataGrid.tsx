@@ -291,7 +291,7 @@ function DataGrid<R, SR, K extends Key>(
   const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
-  const rowRef = useRef<HTMLDivElement>(null);
+  const focusSinkRef = useRef<HTMLDivElement>(null);
   const shouldFocusCellRef = useRef(false);
 
   /**
@@ -435,8 +435,8 @@ function DataGrid<R, SR, K extends Key>(
     prevSelectedPosition.current = selectedPosition;
 
     if (selectedPosition.idx === -1) {
-      rowRef.current!.focus({ preventScroll: true });
-      scrollIntoView(rowRef.current);
+      focusSinkRef.current!.focus({ preventScroll: true });
+      scrollIntoView(focusSinkRef.current);
     }
   });
 
@@ -566,7 +566,7 @@ function DataGrid<R, SR, K extends Key>(
     }
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
-    const isRowEvent = hasGroups && event.target === rowRef.current;
+    const isRowEvent = hasGroups && event.target === focusSinkRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
     const { key, keyCode } = event;
@@ -1228,7 +1228,7 @@ function DataGrid<R, SR, K extends Key>(
       {/* extra div is needed for row navigation in a treegrid */}
       {hasGroups && (
         <div
-          ref={rowRef}
+          ref={focusSinkRef}
           tabIndex={isGroupRowFocused ? 0 : -1}
           className={clsx(focusSinkClassname, {
             [focusSinkHeaderAndSummaryClassname]: !isRowIdxWithinViewportBounds(
