@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
@@ -71,17 +71,20 @@ describe('Editor', () => {
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
     const onSave = vi.fn();
     render(<EditorTest onSave={onSave} />);
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    await userEvent.keyboard('234');
+    const user = userEvent.setup();
+    await user.dblClick(getCellsAtRowIndex(0)[0]);
+    await user.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = screen.getByRole('button', { name: 'save' });
-    fireEvent.mouseDown(saveButton);
+
     // await userEvent.click() triggers both mousedown and click, but without delay,
     // which isn't realistic, and isn't enough to trigger outside click detection
+    await user.pointer([{ keys: '[MouseLeft>]', target: saveButton }]);
     await act(async () => {
       await new Promise(requestAnimationFrame);
     });
-    fireEvent.click(saveButton);
+    await user.pointer({ keys: '[/MouseLeft]' });
+
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith([
       { col1: 2341, col2: 'a1' },

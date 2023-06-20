@@ -37,11 +37,11 @@ const summaryRow = css`
 const topSummaryRow = css`
   @layer rdg.SummaryRow {
     > .${cell} {
-      z-index: 1;
+      z-index: 2;
     }
 
     > .${cellFrozen} {
-      z-index: 2;
+      z-index: 3;
     }
   }
 `;

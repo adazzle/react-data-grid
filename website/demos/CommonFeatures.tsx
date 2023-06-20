@@ -262,6 +262,7 @@ function createRows(): readonly Row[] {
 }
 
 type Comparator = (a: Row, b: Row) => number;
+
 function getComparator(sortColumn: string): Comparator {
   switch (sortColumn) {
     case 'assignee':
