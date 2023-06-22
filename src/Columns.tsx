@@ -1,4 +1,5 @@
 import { useRowSelection } from './hooks/useRowSelection';
+import { stopPropagation } from './utils';
 import type { Column, RenderCellProps, RenderGroupCellProps, RenderHeaderCellProps } from './types';
 import { SelectCellFormatter } from './cellRenderers';
 
@@ -42,6 +43,7 @@ function SelectGroupFormatter(props: RenderGroupCellProps<unknown>) {
       aria-label="Select Group"
       tabIndex={props.tabIndex}
       value={isRowSelected}
+      onClick={stopPropagation}
       onChange={(checked) => {
         onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick: false });
       }}

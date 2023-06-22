@@ -277,12 +277,15 @@ test('should select rows in a group', async () => {
   await userEvent.click(checkbox);
   selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);
+  // clicking on the checkbox should select the row
+  expect(getRows()[4]).toHaveClass(rowSelectedClassname);
 
   // unselect child group
-  await userEvent.click(checkbox);
+  await userEvent.keyboard('{arrowright}" "');
   selectedRows = screen.getAllByRole('row', { selected: true });
   // eslint-disable-next-line jest-dom/prefer-in-document
   expect(selectedRows).toHaveLength(1);
+  expect(getRows()[4]).not.toHaveClass(rowSelectedClassname);
 
   await userEvent.click(screen.getByRole('gridcell', { name: '2020' }));
   await userEvent.click(screen.getByRole('gridcell', { name: '2022' }));
