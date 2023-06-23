@@ -25,6 +25,7 @@ for (let i = 0; i < 50; i++) {
 }
 
 let position: PartialPosition;
+
 function Grid() {
   const ref = useRef<DataGridHandle>(null);
   return (

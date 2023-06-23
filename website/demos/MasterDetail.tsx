@@ -42,6 +42,7 @@ function createDepartments(): readonly DepartmentRow[] {
 }
 
 const productsMap = new Map<number, readonly ProductRow[]>();
+
 function getProducts(parentId: number): readonly ProductRow[] {
   if (productsMap.has(parentId)) return productsMap.get(parentId)!;
   const products: ProductRow[] = [];

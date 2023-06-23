@@ -6,6 +6,7 @@ import type { Column, DataGridProps } from '../src';
 import { getRows, setup } from './utils';
 
 type Row = number;
+
 function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
   const columns: Column<Row>[] = [];
   const rows: readonly Row[] = [...Array(50).keys()];
