@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { groupBy as rowGrouper } from 'lodash-es';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn } from '../../src';
+import { SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
 import type { Props } from './types';
 
@@ -185,7 +185,7 @@ export default function Grouping({ direction }: Props) {
         ))}
       </div>
 
-      <DataGrid
+      <TreeDataGrid
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}

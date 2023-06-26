@@ -1,28 +1,25 @@
-import type { CalculatedColumn, CellNavigationMode, GroupRow, Maybe, Position } from '../types';
+import type { CalculatedColumn, CellNavigationMode, Maybe, Position } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
   selectedPosition: Position;
   columns: readonly CalculatedColumn<R, SR>[];
-  rows: readonly (R | GroupRow<R>)[];
-  isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
+  rows: readonly R[];
 }
 
 export function isSelectedCellEditable<R, SR>({
   selectedPosition,
   columns,
-  rows,
-  isGroupRow
+  rows
 }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
-  return !isGroupRow(row) && isCellEditable(column, row);
+  return isCellEditable(column, row);
 }
 
 export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return (
     column.renderEditCell != null &&
-    !column.rowGroup &&
     (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false
   );
 }
@@ -31,7 +28,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   cellNavigationMode: CellNavigationMode;
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
-  rows: readonly (R | GroupRow<R>)[];
+  rows: readonly R[];
   topSummaryRows: Maybe<readonly SR[]>;
   bottomSummaryRows: Maybe<readonly SR[]>;
   minRowIdx: number;
@@ -40,7 +37,6 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   nextPosition: Position;
   lastFrozenColumnIndex: number;
   isCellWithinBounds: (position: Position) => boolean;
-  isGroupRow: (row: R | GroupRow<R>) => row is GroupRow<R>;
 }
 
 function getSelectedCellColSpan<R, SR>({
@@ -49,11 +45,10 @@ function getSelectedCellColSpan<R, SR>({
   bottomSummaryRows,
   rowIdx,
   lastFrozenColumnIndex,
-  column,
-  isGroupRow
+  column
 }: Pick<
   GetNextSelectedCellPositionOpts<R, SR>,
-  'rows' | 'topSummaryRows' | 'bottomSummaryRows' | 'isGroupRow' | 'lastFrozenColumnIndex'
+  'rows' | 'topSummaryRows' | 'bottomSummaryRows' | 'lastFrozenColumnIndex'
 > & {
   rowIdx: number;
   column: CalculatedColumn<R, SR>;
@@ -73,10 +68,7 @@ function getSelectedCellColSpan<R, SR>({
 
   if (rowIdx >= 0 && rowIdx < rows.length) {
     const row = rows[rowIdx];
-    if (!isGroupRow(row)) {
-      return getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
-    }
-    return;
+    return getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
   }
 
   if (bottomSummaryRows) {
@@ -101,16 +93,11 @@ export function getNextSelectedCellPosition<R, SR>({
   currentPosition: { idx: currentIdx },
   nextPosition,
   lastFrozenColumnIndex,
-  isCellWithinBounds,
-  isGroupRow
+  isCellWithinBounds
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
   const setColSpan = (moveRight: boolean) => {
-    if (nextRowIdx >= 0 && nextRowIdx < rows.length) {
-      const row = rows[nextRowIdx];
-      if (isGroupRow(row)) return;
-    }
     // If a cell within the colspan range is selected then move to the
     // previous or the next cell depending on the navigation direction
     for (const column of colSpanColumns) {
@@ -122,8 +109,7 @@ export function getNextSelectedCellPosition<R, SR>({
         bottomSummaryRows,
         rowIdx: nextRowIdx,
         lastFrozenColumnIndex,
-        column,
-        isGroupRow
+        column
       });
 
       if (colSpan && nextIdx > colIdx && nextIdx < colSpan + colIdx) {
