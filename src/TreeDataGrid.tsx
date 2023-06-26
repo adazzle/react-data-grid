@@ -292,8 +292,26 @@ function TreeDataGrid<R, SR, K extends Key>(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const idx = column?.idx ?? -1;
     const row = rows[rowIdx];
-    if (!isGroupRow(row)) return;
+
     if (idx === -1) {
+      if (event.key === 'Home') {
+        event.preventGridDefault();
+        // If row is selected then move focus to the first row
+        const minRowIdx = -headerAndTopSummaryRowsCount;
+        selectCell({ idx, rowIdx: minRowIdx });
+        return;
+      }
+
+      if (event.key === 'End') {
+        event.preventGridDefault();
+        // If row is selected then move focus to the last row.
+        const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
+        selectCell({ idx, rowIdx: maxRowIdx });
+        return;
+      }
+
+      if (!isGroupRow(row)) return;
+
       if (
         // Collapse the current group row if it is focused and is in expanded state
         (event.key === leftKey && row.isExpanded) ||
@@ -305,24 +323,12 @@ function TreeDataGrid<R, SR, K extends Key>(
         toggleGroup(row.id);
       }
 
-      if (event.key === leftKey) {
-        if (!row.isExpanded && row.level !== 0) {
-          const parentRowAndIndex = getParentRowAndIndex(row);
-          if (parentRowAndIndex !== undefined) {
-            event.preventGridDefault();
-            selectCell({ idx, rowIdx: parentRowAndIndex[1] });
-          }
+      if (event.key === leftKey && !row.isExpanded && row.level !== 0) {
+        const parentRowAndIndex = getParentRowAndIndex(row);
+        if (parentRowAndIndex !== undefined) {
+          event.preventGridDefault();
+          selectCell({ idx, rowIdx: parentRowAndIndex[1] });
         }
-      } else if (event.key === 'Home') {
-        event.preventGridDefault();
-        // If row is selected then move focus to the first row
-        const minRowIdx = -headerAndTopSummaryRowsCount;
-        selectCell({ idx, rowIdx: minRowIdx });
-      } else if (event.key === 'End') {
-        event.preventGridDefault();
-        // If row is selected then move focus to the last row.
-        const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
-        selectCell({ idx, rowIdx: maxRowIdx });
       }
     }
 
