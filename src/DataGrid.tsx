@@ -697,6 +697,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
+    const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
 
     switch (key) {
       case 'ArrowUp':
@@ -710,8 +711,12 @@ function DataGrid<R, SR, K extends Key>(
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
+        // If row is selected then move focus to the first row
+        if (isRowSelected) return { idx, rowIdx: minRowIdx };
         return { idx: 0, rowIdx: ctrlKey ? minRowIdx : rowIdx };
       case 'End':
+        // If row is selected then move focus to the last row.
+        if (isRowSelected) return { idx, rowIdx: maxRowIdx };
         return { idx: maxColIdx, rowIdx: ctrlKey ? maxRowIdx : rowIdx };
       case 'PageUp': {
         if (selectedPosition.rowIdx === minRowIdx) return selectedPosition;
