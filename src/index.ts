@@ -26,6 +26,7 @@ export type {
   SortDirection,
   SortColumn,
   ColSpanArgs,
+  RowHeightArgs,
   RenderCheckboxProps,
   RenderSortIconProps,
   RenderSortPriorityProps,
