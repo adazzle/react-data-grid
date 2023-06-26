@@ -512,8 +512,8 @@ function DataGrid<R, SR, K extends Key>(
     const { idx, rowIdx, mode } = selectedPosition;
     if (mode === 'EDIT') return;
 
-    const row = rows[rowIdx];
-    if (onCellKeyDown) {
+    if (onCellKeyDown && isRowIdxWithinViewportBounds(rowIdx)) {
+      const row = rows[rowIdx];
       const cellEvent = createCellEvent(event);
       onCellKeyDown(
         {
