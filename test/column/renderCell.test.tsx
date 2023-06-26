@@ -107,7 +107,6 @@ describe('Custom cell renderer', () => {
         maxWidth: undefined,
         minWidth: 50,
         resizable: false,
-        rowGroup: false,
         sortable: false,
         width: 'auto'
       },

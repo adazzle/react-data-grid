@@ -17,16 +17,8 @@ export function getGrid() {
   return screen.getByRole('grid');
 }
 
-export function queryGrid() {
-  return screen.queryByRole('grid');
-}
-
 export function getTreeGrid() {
   return screen.getByRole('treegrid');
-}
-
-export function queryTreeGrid() {
-  return screen.queryByRole('treegrid');
 }
 
 export function getRows() {

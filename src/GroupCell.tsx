@@ -3,14 +3,14 @@ import { memo } from 'react';
 import { useRovingTabIndex } from './hooks';
 import { getCellClassname, getCellStyle } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
-import type { GroupRowRendererProps } from './GroupRow';
+import { SELECT_COLUMN_KEY } from './Columns';
 
-type SharedGroupRowRendererProps<R, SR> = Pick<
-  GroupRowRendererProps<R, SR>,
-  'id' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup'
->;
-
-interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
+interface GroupCellProps<R, SR> {
+  id: string;
+  groupKey: unknown;
+  childRows: readonly R[];
+  toggleGroup: (expandedGroupId: unknown) => void;
+  isExpanded: boolean;
   column: CalculatedColumn<R, SR>;
   row: GroupRow<R>;
   isCellSelected: boolean;
@@ -35,7 +35,7 @@ function GroupCell<R, SR>({
   }
 
   // Only make the cell clickable if the group level matches
-  const isLevelMatching = column.rowGroup && groupColumnIndex === column.idx;
+  const isLevelMatching = groupColumnIndex === column.idx;
 
   return (
     <div
@@ -52,7 +52,7 @@ function GroupCell<R, SR>({
       onClick={isLevelMatching ? toggleGroup : undefined}
       onFocus={onFocus}
     >
-      {(!column.rowGroup || groupColumnIndex === column.idx) &&
+      {(isLevelMatching || column.key === SELECT_COLUMN_KEY) &&
         column.renderGroupCell?.({
           groupKey,
           childRows,

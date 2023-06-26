@@ -105,18 +105,14 @@ function Cell<R, SR>({
       onFocus={onFocus}
       {...props}
     >
-      {!column.rowGroup && (
-        <>
-          {column.renderCell({
-            column,
-            row,
-            isCellEditable: isEditable,
-            tabIndex: childTabIndex,
-            onRowChange: handleRowChange
-          })}
-          {dragHandle}
-        </>
-      )}
+      {column.renderCell({
+        column,
+        row,
+        isCellEditable: isEditable,
+        tabIndex: childTabIndex,
+        onRowChange: handleRowChange
+      })}
+      {dragHandle}
     </div>
   );
 }

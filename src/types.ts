@@ -67,7 +67,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly sortable: boolean;
   readonly frozen: boolean;
   readonly isLastFrozenColumn: boolean;
-  readonly rowGroup: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
 
@@ -169,28 +168,32 @@ export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
   | SelectCellKeyDownArgs<TRow, TSummaryRow>
   | EditCellKeyDownArgs<TRow, TSummaryRow>;
 
-export interface RenderRowProps<TRow, TSummaryRow = unknown>
+export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
       'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
     > {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
-  row: TRow;
   rowIdx: number;
   selectedCellIdx: number | undefined;
-  copiedCellIdx: number | undefined;
-  draggedOverCellIdx: number | undefined;
-  lastFrozenColumnIndex: number;
   isRowSelected: boolean;
   gridRowStart: number;
   height: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface RenderRowProps<TRow, TSummaryRow = unknown>
+  extends BaseRenderRowProps<TRow, TSummaryRow> {
+  row: TRow;
+  lastFrozenColumnIndex: number;
+  copiedCellIdx: number | undefined;
+  draggedOverCellIdx: number | undefined;
   selectedCellEditor: ReactElement<RenderEditCellProps<TRow>> | undefined;
   selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface RowsChangeData<R, SR = unknown> {
@@ -245,9 +248,12 @@ export type ColSpanArgs<TRow, TSummaryRow> =
   | { type: 'ROW'; row: TRow }
   | { type: 'SUMMARY'; row: TSummaryRow };
 
-export type RowHeightArgs<TRow> =
-  | { type: 'ROW'; row: TRow }
-  | { type: 'GROUP'; row: GroupRow<TRow> };
+export interface RowHeightArgs<TRow> {
+  type: 'ROW';
+  row: TRow;
+}
+
+export type GroupRowHeightArgs<TRow> = RowHeightArgs<TRow> | { type: 'GROUP'; row: GroupRow<TRow> };
 
 export interface RenderSortIconProps {
   sortDirection: SortDirection | undefined;
