@@ -1019,7 +1019,7 @@ function DataGrid<R, SR, K extends Key>(
         <RowSelectionChangeProvider value={selectRowLatest}>
           <RowSelectionProvider value={allRowsSelected}>
             <HeaderRow
-              columns={getRowViewportColumns(-1)}
+              columns={getRowViewportColumns(minRowIdx)}
               onColumnResize={handleColumnResizeLatest}
               sortColumns={sortColumns}
               onSortColumnsChange={onSortColumnsChangeLatest}
