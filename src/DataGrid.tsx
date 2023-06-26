@@ -854,10 +854,9 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getRowViewportColumns(rowIdx: number) {
-    const selectedColumn = columns[selectedPosition.idx];
+    // idx can be -1 if grouping is enabled
+    const selectedColumn = selectedPosition.idx === -1 ? undefined : columns[selectedPosition.idx];
     if (
-      // idx can be -1 if grouping is enabled
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       selectedColumn !== undefined &&
       selectedPosition.rowIdx === rowIdx &&
       !viewportColumns.includes(selectedColumn)
@@ -894,8 +893,7 @@ function DataGrid<R, SR, K extends Key>(
       const rowIdx = isRowOutsideViewport ? selectedRowIdx : viewportRowIdx;
 
       let rowColumns = viewportColumns;
-      const selectedColumn = columns[selectedIdx];
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const selectedColumn = selectedIdx === -1 ? undefined : columns[selectedIdx];
       if (selectedColumn !== undefined) {
         if (isRowOutsideViewport) {
           // if the row is outside the viewport then only render the selected cell
