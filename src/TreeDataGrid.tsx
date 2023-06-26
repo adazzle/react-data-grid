@@ -321,6 +321,7 @@ function TreeDataGrid<R, SR, K extends Key>(
         event.preventDefault(); // Prevents scrolling
         event.preventGridDefault();
         toggleGroup(row.id);
+        return;
       }
 
       if (event.key === leftKey && !row.isExpanded && row.level !== 0) {
