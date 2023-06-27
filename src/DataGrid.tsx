@@ -85,6 +85,7 @@ const initialPosition: SelectCellState = {
 
 export interface DataGridHandle {
   element: HTMLDivElement | null;
+  selectedCell: Position;
   scrollToColumn: (colIdx: number) => void;
   scrollToRow: (rowIdx: number) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
@@ -430,6 +431,7 @@ function DataGrid<R, SR, K extends Key>(
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
+    selectedCell: selectedPosition,
     scrollToColumn,
     scrollToRow(rowIdx: number) {
       const { current } = gridRef;
