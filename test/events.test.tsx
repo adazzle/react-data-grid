@@ -1,10 +1,9 @@
-import { StrictMode } from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, DataGridProps } from '../src';
-import { getCellsAtRowIndex } from './utils';
+import { getCellsAtRowIndex, render } from './utils';
 
 interface Row {
   col1: number;
@@ -15,7 +14,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'col1',
     name: 'Col1',
-    editor(p) {
+    renderEditCell(p) {
       return (
         <input
           autoFocus
@@ -30,7 +29,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'col2',
     name: 'Col2',
-    editor({ row, onRowChange }) {
+    renderEditCell({ row, onRowChange }) {
       return (
         <input
           autoFocus
@@ -127,9 +126,5 @@ type EventProps = Pick<
 >;
 
 function EventTest(props: EventProps) {
-  return (
-    <StrictMode>
-      <DataGrid columns={columns} rows={rows} {...props} />
-    </StrictMode>
-  );
+  return <DataGrid columns={columns} rows={rows} {...props} />;
 }

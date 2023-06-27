@@ -7,5 +7,6 @@
   "[javascript]": {
     "editor.defaultFormatter": "rome.rome"
   },
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib"
 }

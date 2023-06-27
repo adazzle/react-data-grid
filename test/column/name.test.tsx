@@ -1,5 +1,5 @@
 import type { Column } from '../../src';
-import { setup, getHeaderCells } from '../utils';
+import { getHeaderCells, setup } from '../utils';
 
 interface Row {
   id: number;
@@ -8,7 +8,7 @@ interface Row {
 
 test('name is either a string or an element', () => {
   function Header() {
-    return <>Fancy</>;
+    return 'Fancy';
   }
 
   const columns: readonly Column<Row>[] = [

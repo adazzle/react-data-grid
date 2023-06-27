@@ -1,8 +1,8 @@
 import { RefAttributes, forwardRef, memo } from 'react';
 import { css } from '@linaria/core';
 
-import { useRovingCellRef } from './hooks';
-import { getCellStyle, getCellClassname, isCellEditable, createCellEvent } from './utils';
+import { useRovingTabIndex } from './hooks';
+import { createCellEvent, getCellClassname, getCellStyle, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`
@@ -25,37 +25,27 @@ const cellDraggedOver = css`
 
 const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;
 
-function Cell<R, SR>({
-  column,
-  colSpan,
-  isCellSelected,
-  isCopied,
-  isDraggedOver,
-  row,
-  rowIdx,
-  dragHandle,
-  skipCellFocusRef,
-  className,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
-  onRowChange,
-  selectCell,
-  ...props
-}: CellRendererProps<R, SR>,
-refComponent: React.Ref<HTMLDivElement>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocusRef);
-
-  function setRef(element: HTMLDivElement | null) {
-    ref?.(element);
-
-    if (typeof refComponent === 'function') {
-      refComponent(element);
-    } else if (typeof refComponent === 'object' && refComponent !== null) {
-      //@ts-expect-error ref mutation
-      refComponent.current = element;
-    }
-  }
+function Cell<R, SR>(
+  {
+    column,
+    colSpan,
+    isCellSelected,
+    isCopied,
+    isDraggedOver,
+    row,
+    rowIdx,
+    dragHandle,
+    className,
+    onClick,
+    onDoubleClick,
+    onContextMenu,
+    onRowChange,
+    selectCell,
+    ...props
+  }: CellRendererProps<R, SR>,
+  refComponent: React.Ref<HTMLDivElement>
+) {
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   const { cellClass } = column;
   className = getCellClassname(
@@ -111,7 +101,7 @@ refComponent: React.Ref<HTMLDivElement>) {
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
       aria-readonly={!isEditable || undefined}
-      ref={setRef}
+      ref={refComponent}
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
@@ -121,18 +111,14 @@ refComponent: React.Ref<HTMLDivElement>) {
       onFocus={onFocus}
       {...props}
     >
-      {!column.rowGroup && (
-        <>
-          {column.formatter({
-            column,
-            row,
-            isCellSelected,
-            isCellEditable: isEditable,
-            onRowChange: handleRowChange
-          })}
-          {dragHandle}
-        </>
-      )}
+      {column.renderCell({
+        column,
+        row,
+        isCellEditable: isEditable,
+        tabIndex: childTabIndex,
+        onRowChange: handleRowChange
+      })}
+      {dragHandle}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { Column, CheckboxFormatterProps, SortColumn, SortStatusProps } from '../../src';
+import type { Column, RenderCheckboxProps, RenderSortStatusProps, SortColumn } from '../../src';
 import type { Props } from './types';
 
 const selectCellClassname = css`
@@ -58,7 +58,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: textEditor,
+    renderEditCell: textEditor,
     sortable: true
   },
   {
@@ -81,7 +81,7 @@ const columns: readonly Column<Row>[] = [
 export default function CustomizableRenderers({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
 
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
@@ -109,24 +109,21 @@ export default function CustomizableRenderers({ direction }: Props) {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      renderers={{ sortStatus, checkboxFormatter }}
+      renderers={{ renderSortStatus, renderCheckbox }}
       direction={direction}
     />
   );
 }
 
-function checkboxFormatter(
-  { onChange, ...props }: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
+function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
-  return <input type="checkbox" ref={ref} {...props} onChange={handleChange} />;
+  return <input type="checkbox" {...props} onChange={handleChange} />;
 }
 
-function sortStatus({ sortDirection, priority }: SortStatusProps) {
+function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
       {sortDirection !== undefined ? (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F') : null}
@@ -134,11 +131,13 @@ function sortStatus({ sortDirection, priority }: SortStatusProps) {
     </>
   );
 }
+
 function rowKeyGetter(row: Row) {
   return row.id;
 }
 
 type Comparator = (a: Row, b: Row) => number;
+
 function getComparator(sortColumn: string): Comparator {
   switch (sortColumn) {
     case 'task':

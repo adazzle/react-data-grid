@@ -1,16 +1,16 @@
 import { memo } from 'react';
 
-import { useRovingCellRef } from './hooks';
-import { getCellStyle, getCellClassname } from './utils';
+import { useRovingTabIndex } from './hooks';
+import { getCellClassname, getCellStyle } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
-import type { GroupRowRendererProps } from './GroupRow';
+import { SELECT_COLUMN_KEY } from './Columns';
 
-type SharedGroupRowRendererProps<R, SR> = Pick<
-  GroupRowRendererProps<R, SR>,
-  'id' | 'groupKey' | 'childRows' | 'isExpanded' | 'toggleGroup'
->;
-
-interface GroupCellProps<R, SR> extends SharedGroupRowRendererProps<R, SR> {
+interface GroupCellProps<R, SR> {
+  id: string;
+  groupKey: unknown;
+  childRows: readonly R[];
+  toggleGroup: (expandedGroupId: unknown) => void;
+  isExpanded: boolean;
   column: CalculatedColumn<R, SR>;
   row: GroupRow<R>;
   isCellSelected: boolean;
@@ -28,21 +28,20 @@ function GroupCell<R, SR>({
   groupColumnIndex,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   function toggleGroup() {
     toggleGroupWrapper(id);
   }
 
   // Only make the cell clickable if the group level matches
-  const isLevelMatching = column.rowGroup && groupColumnIndex === column.idx;
+  const isLevelMatching = groupColumnIndex === column.idx;
 
   return (
     <div
       role="gridcell"
       aria-colindex={column.idx + 1}
       aria-selected={isCellSelected}
-      ref={ref}
       tabIndex={tabIndex}
       key={column.key}
       className={getCellClassname(column)}
@@ -53,14 +52,14 @@ function GroupCell<R, SR>({
       onClick={isLevelMatching ? toggleGroup : undefined}
       onFocus={onFocus}
     >
-      {(!column.rowGroup || groupColumnIndex === column.idx) &&
-        column.groupFormatter?.({
+      {(isLevelMatching || column.key === SELECT_COLUMN_KEY) &&
+        column.renderGroupCell?.({
           groupKey,
           childRows,
           column,
           row,
           isExpanded,
-          isCellSelected,
+          tabIndex: childTabIndex,
           toggleGroup
         })}
     </div>

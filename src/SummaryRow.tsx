@@ -3,16 +3,17 @@ import { css } from '@linaria/core';
 import clsx from 'clsx';
 
 import { getColSpan, getRowStyle } from './utils';
-import type { RowRendererProps } from './types';
+import type { RenderRowProps } from './types';
+import { cell, cellFrozen } from './style/cell';
+import { rowClassname, rowSelectedClassname } from './style/row';
 import SummaryCell from './SummaryCell';
-import { cell, cellFrozen, rowClassname, rowSelectedClassname } from './style';
 
-type SharedRowRendererProps<R, SR> = Pick<
-  RowRendererProps<R, SR>,
+type SharedRenderRowProps<R, SR> = Pick<
+  RenderRowProps<R, SR>,
   'viewportColumns' | 'rowIdx' | 'gridRowStart' | 'selectCell'
 >;
 
-interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
+interface SummaryRowProps<R, SR> extends SharedRenderRowProps<R, SR> {
   'aria-rowindex': number;
   row: SR;
   top: number | undefined;
@@ -36,11 +37,11 @@ const summaryRow = css`
 const topSummaryRow = css`
   @layer rdg.SummaryRow {
     > .${cell} {
-      z-index: 1;
+      z-index: 2;
     }
 
     > .${cellFrozen} {
-      z-index: 2;
+      z-index: 3;
     }
   }
 `;

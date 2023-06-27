@@ -1,7 +1,7 @@
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import type { CheckboxFormatterProps } from '../types';
+import type { RenderCheckboxProps } from '../types';
 
 const checkboxLabel = css`
   @layer rdg.CheckboxLabel {
@@ -60,10 +60,7 @@ const checkboxLabelDisabled = css`
 
 const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
 
-export function checkboxFormatter(
-  { onChange, ...props }: CheckboxFormatterProps,
-  ref: React.RefObject<HTMLInputElement>
-) {
+export function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
@@ -76,7 +73,6 @@ export function checkboxFormatter(
     >
       <input
         type="checkbox"
-        ref={ref}
         {...props}
         className={checkboxInputClassname}
         onChange={handleChange}

@@ -1,11 +1,12 @@
-import { StrictMode, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
+import { getCellsAtRowIndex, getSelectedCell, render, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -68,19 +69,22 @@ describe('Editor', () => {
   });
 
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
-    const onSave = jest.fn();
+    const onSave = vi.fn();
     render(<EditorTest onSave={onSave} />);
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    await userEvent.keyboard('234');
+    const user = userEvent.setup();
+    await user.dblClick(getCellsAtRowIndex(0)[0]);
+    await user.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = screen.getByRole('button', { name: 'save' });
-    fireEvent.mouseDown(saveButton);
+
     // await userEvent.click() triggers both mousedown and click, but without delay,
     // which isn't realistic, and isn't enough to trigger outside click detection
+    await user.pointer([{ keys: '[MouseLeft>]', target: saveButton }]);
     await act(async () => {
       await new Promise(requestAnimationFrame);
     });
-    fireEvent.click(saveButton);
+    await user.pointer({ keys: '[/MouseLeft]' });
+
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith([
       { col1: 2341, col2: 'a1' },
@@ -98,13 +102,12 @@ describe('Editor', () => {
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
 
-    const grid = getGrid();
-    grid.scrollTop = 2000;
+    await scrollGrid({ scrollTop: 2000 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.keyboard('123');
     expect(screen.getByLabelText('col1-editor')).toHaveValue(1230);
-    const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     await userEvent.keyboard('{enter}');
     expect(spy).toHaveBeenCalled();
   });
@@ -144,7 +147,7 @@ describe('Editor', () => {
 
   describe('editorOptions', () => {
     it('should detect outside click if editor is rendered in a portal', async () => {
-      render(<EditorTest createEditorPortal editorOptions={{ renderFormatter: true }} />);
+      render(<EditorTest createEditorPortal editorOptions={{ displayCellContent: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const editor1 = screen.getByLabelText('col2-editor');
       expect(editor1).toHaveValue('a1');
@@ -231,17 +234,15 @@ describe('Editor', () => {
       }
 
       render(<EditorTest gridRows={rows} />);
-      const grid = getGrid();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       await userEvent.keyboard('abc');
 
-      grid.scrollTop = 1500;
-
+      await scrollGrid({ scrollTop: 1500 });
       expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
       await userEvent.click(getCellsAtRowIndex(40)[1]);
       expect(getSelectedCell()).toHaveTextContent(/^40$/);
-      grid.scrollTop = 0;
+      await scrollGrid({ scrollTop: 0 });
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
     });
 
@@ -250,14 +251,14 @@ describe('Editor', () => {
         {
           key: 'col1',
           name: 'Column1',
-          editor() {
+          renderEditCell() {
             return <input aria-label="col1-input" value="123" readOnly autoFocus />;
           }
         },
         {
           key: 'col2',
           name: 'Column2',
-          editor({ onClose }) {
+          renderEditCell({ onClose }) {
             return (
               <input
                 aria-label="col2-input"
@@ -265,7 +266,7 @@ describe('Editor', () => {
                 readOnly
                 autoFocus
                 onBlur={() => {
-                  onClose(true);
+                  onClose(true, false);
                 }}
               />
             );
@@ -339,7 +340,7 @@ function EditorTest({
       {
         key: 'col1',
         name: 'Col1',
-        editor(p) {
+        renderEditCell(p) {
           return (
             <input
               autoFocus
@@ -355,7 +356,7 @@ function EditorTest({
         key: 'col2',
         name: 'Col2',
         editable,
-        editor({ row, onRowChange }) {
+        renderEditCell({ row, onRowChange }) {
           const editor = (
             <input
               autoFocus
@@ -373,7 +374,7 @@ function EditorTest({
   }, [editable, editorOptions, createEditorPortal]);
 
   return (
-    <StrictMode>
+    <>
       <div
         onClick={(e) => e.stopPropagation()}
         onClickCapture={(e) => e.stopPropagation()}
@@ -391,6 +392,6 @@ function EditorTest({
         onRowsChange={setRows}
         onCellKeyDown={onCellKeyDown}
       />
-    </StrictMode>
+    </>
   );
 }

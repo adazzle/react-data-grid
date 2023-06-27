@@ -1,15 +1,15 @@
-import { useEffect, useRef, type MutableRefObject, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
-import { getCellStyle, getCellClassname, onEditorNavigation, createCellEvent } from './utils';
+import { createCellEvent, getCellClassname, getCellStyle, onEditorNavigation } from './utils';
 import type {
   CellKeyboardEvent,
   CellRendererProps,
   EditCellKeyDownArgs,
-  EditorProps,
   Maybe,
-  Omit
+  Omit,
+  RenderEditCellProps
 } from './types';
 
 /*
@@ -37,11 +37,11 @@ const cellEditing = css`
 type SharedCellRendererProps<R, SR> = Pick<CellRendererProps<R, SR>, 'colSpan'>;
 
 interface EditCellProps<R, SR>
-  extends Omit<EditorProps<R, SR>, 'onClose'>,
+  extends Omit<RenderEditCellProps<R, SR>, 'onRowChange' | 'onClose'>,
     SharedCellRendererProps<R, SR> {
   rowIdx: number;
-  skipCellFocusRef: MutableRefObject<boolean>;
-  closeEditor: () => void;
+  onRowChange: (row: R, commitChanges: boolean, shouldFocusCell: boolean) => void;
+  closeEditor: (shouldFocusCell: boolean) => void;
   navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   onKeyDown: Maybe<(args: EditCellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
 }
@@ -51,7 +51,6 @@ export default function EditCell<R, SR>({
   colSpan,
   row,
   rowIdx,
-  skipCellFocusRef,
   onRowChange,
   closeEditor,
   onKeyDown,
@@ -64,22 +63,14 @@ export default function EditCell<R, SR>({
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
   // To that end we instead access the latest props via useLatestFunc.
   const commitOnOutsideMouseDown = useLatestFunc(() => {
-    onClose(true);
+    onClose(true, false);
   });
 
-  const cancelFrameRequest = useCallback(() => {
-    skipCellFocusRef.current = false;
-    if (commitOnOutsideClick) {
-      cancelAnimationFrame(frameRequestRef.current!);
-    }
-  }, [commitOnOutsideClick, skipCellFocusRef]);
-
   useEffect(() => {
+    if (!commitOnOutsideClick) return;
+
     function onWindowCaptureMouseDown() {
-      skipCellFocusRef.current = true;
-      if (commitOnOutsideClick) {
-        frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
-      }
+      frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
     }
 
     addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
@@ -88,7 +79,11 @@ export default function EditCell<R, SR>({
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
       cancelFrameRequest();
     };
-  }, [cancelFrameRequest, commitOnOutsideClick, commitOnOutsideMouseDown, skipCellFocusRef]);
+  }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
+
+  function cancelFrameRequest() {
+    cancelAnimationFrame(frameRequestRef.current!);
+  }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (onKeyDown) {
@@ -119,19 +114,23 @@ export default function EditCell<R, SR>({
     }
   }
 
-  function onClose(commitChanges?: boolean) {
+  function onClose(commitChanges = false, shouldFocusCell = true) {
     if (commitChanges) {
-      onRowChange(row, true);
+      onRowChange(row, true, shouldFocusCell);
     } else {
-      closeEditor();
+      closeEditor(shouldFocusCell);
     }
+  }
+
+  function onEditorRowChange(row: R, commitChangesAndFocus = false) {
+    onRowChange(row, commitChangesAndFocus, commitChangesAndFocus);
   }
 
   const { cellClass } = column;
   const className = getCellClassname(
     column,
     'rdg-editor-container',
-    !column.editorOptions?.renderFormatter && cellEditing,
+    !column.editorOptions?.displayCellContent && cellEditing,
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
 
@@ -146,21 +145,21 @@ export default function EditCell<R, SR>({
       onKeyDown={handleKeyDown}
       onMouseDownCapture={cancelFrameRequest}
     >
-      {column.editor != null && (
+      {column.renderEditCell != null && (
         <>
-          {column.editor({
+          {column.renderEditCell({
             column,
             row,
-            onRowChange,
+            onRowChange: onEditorRowChange,
             onClose
           })}
-          {column.editorOptions?.renderFormatter &&
-            column.formatter({
+          {column.editorOptions?.displayCellContent &&
+            column.renderCell({
               column,
               row,
-              isCellSelected: true,
               isCellEditable: true,
-              onRowChange
+              tabIndex: -1,
+              onRowChange: onEditorRowChange
             })}
         </>
       )}

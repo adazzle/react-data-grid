@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, RowsChangeData, DataGridHandle } from '../../src';
+import type { Column, DataGridHandle, RowsChangeData } from '../../src';
 import type { Direction } from '../../src/types';
-import { CellExpanderFormatter } from './components/Formatters';
+import { CellExpanderFormatter } from './components';
 import type { Props } from './types';
 
 type DepartmentRow =
@@ -42,6 +42,7 @@ function createDepartments(): readonly DepartmentRow[] {
 }
 
 const productsMap = new Map<number, readonly ProductRow[]>();
+
 function getProducts(parentId: number): readonly ProductRow[] {
   if (productsMap.has(parentId)) return productsMap.get(parentId)!;
   const products: ProductRow[] = [];
@@ -82,21 +83,15 @@ export default function MasterDetail({ direction }: Props) {
               `
             : undefined;
         },
-        formatter({ row, isCellSelected, onRowChange }) {
+        renderCell({ row, tabIndex, onRowChange }) {
           if (row.type === 'DETAIL') {
-            return (
-              <ProductGrid
-                isCellSelected={isCellSelected}
-                parentId={row.parentId}
-                direction={direction}
-              />
-            );
+            return <ProductGrid parentId={row.parentId} direction={direction} />;
           }
 
           return (
             <CellExpanderFormatter
               expanded={row.expanded}
-              isCellSelected={isCellSelected}
+              tabIndex={tabIndex}
               onCellExpand={() => {
                 onRowChange({ ...row, expanded: !row.expanded });
               }}
@@ -133,7 +128,7 @@ export default function MasterDetail({ direction }: Props) {
       rows={rows}
       onRowsChange={onRowsChange}
       headerRowHeight={45}
-      rowHeight={(args) => (args.type === 'ROW' && args.row.type === 'DETAIL' ? 300 : 45)}
+      rowHeight={(args) => (args.row.type === 'DETAIL' ? 300 : 45)}
       className="fill-grid"
       enableVirtualization={false}
       direction={direction}
@@ -147,22 +142,8 @@ export default function MasterDetail({ direction }: Props) {
   );
 }
 
-function ProductGrid({
-  parentId,
-  isCellSelected,
-  direction
-}: {
-  parentId: number;
-  isCellSelected: boolean;
-  direction: Direction;
-}) {
+function ProductGrid({ parentId, direction }: { parentId: number; direction: Direction }) {
   const gridRef = useRef<DataGridHandle>(null);
-  useEffect(() => {
-    if (!isCellSelected) return;
-    gridRef
-      .current!.element!.querySelector<HTMLDivElement>('[tabindex="0"]')!
-      .focus({ preventScroll: true });
-  }, [isCellSelected]);
   const products = getProducts(parentId);
 
   return (
