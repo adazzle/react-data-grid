@@ -43,7 +43,6 @@ import type {
   PasteEvent,
   Position,
   Renderers,
-  RowHeightArgs,
   RowsChangeData,
   SelectRowEvent,
   SortColumn
@@ -128,7 +127,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * The height of each row in pixels
    * @default 35
    */
-  rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
+  rowHeight?: Maybe<number | ((row: R) => number)>;
   /**
    * The height of the header row in pixels
    * @default 35
