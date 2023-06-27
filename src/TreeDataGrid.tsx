@@ -60,7 +60,6 @@ function TreeDataGrid<R, SR, K extends Key>(
   const defaultRenderers = useDefaultRenderers<R, SR>();
   const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
-  const bottomSummaryRowsCount = props.bottomSummaryRows?.length ?? 0;
   const isRtl = props.direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
@@ -291,37 +290,26 @@ function TreeDataGrid<R, SR, K extends Key>(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const idx = column?.idx ?? -1;
     const row = rows[rowIdx];
-    if (!isGroupRow(row)) return;
-    if (idx === -1) {
-      if (
-        // Collapse the current group row if it is focused and is in expanded state
-        (event.key === leftKey && row.isExpanded) ||
-        // Expand the current group row if it is focused and is in collapsed state
-        (event.key === rightKey && !row.isExpanded)
-      ) {
-        event.preventDefault(); // Prevents scrolling
-        event.preventGridDefault();
-        toggleGroup(row.id);
-      }
 
-      if (event.key === leftKey) {
-        if (!row.isExpanded && row.level !== 0) {
-          const parentRowAndIndex = getParentRowAndIndex(row);
-          if (parentRowAndIndex !== undefined) {
-            event.preventGridDefault();
-            selectCell({ idx, rowIdx: parentRowAndIndex[1] });
-          }
-        }
-      } else if (event.key === 'Home') {
+    if (!isGroupRow(row)) return;
+    if (
+      idx === -1 &&
+      // Collapse the current group row if it is focused and is in expanded state
+      ((event.key === leftKey && row.isExpanded) ||
+        // Expand the current group row if it is focused and is in collapsed state
+        (event.key === rightKey && !row.isExpanded))
+    ) {
+      event.preventDefault(); // Prevents scrolling
+      event.preventGridDefault();
+      toggleGroup(row.id);
+    }
+
+    // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
+    if (idx === -1 && event.key === leftKey && !row.isExpanded && row.level !== 0) {
+      const parentRowAndIndex = getParentRowAndIndex(row);
+      if (parentRowAndIndex !== undefined) {
         event.preventGridDefault();
-        // If row is selected then move focus to the first row
-        const minRowIdx = -headerAndTopSummaryRowsCount;
-        selectCell({ idx, rowIdx: minRowIdx });
-      } else if (event.key === 'End') {
-        event.preventGridDefault();
-        // If row is selected then move focus to the last row.
-        const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
-        selectCell({ idx, rowIdx: maxRowIdx });
+        selectCell({ idx, rowIdx: parentRowAndIndex[1] });
       }
     }
 

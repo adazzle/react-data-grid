@@ -511,8 +511,8 @@ function DataGrid<R, SR, K extends Key>(
     const { idx, rowIdx, mode } = selectedPosition;
     if (mode === 'EDIT') return;
 
-    const row = rows[rowIdx];
-    if (onCellKeyDown) {
+    if (onCellKeyDown && isRowIdxWithinViewportBounds(rowIdx)) {
+      const row = rows[rowIdx];
       const cellEvent = createCellEvent(event);
       onCellKeyDown(
         {
@@ -696,6 +696,7 @@ function DataGrid<R, SR, K extends Key>(
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
+    const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
 
     switch (key) {
       case 'ArrowUp':
@@ -709,8 +710,12 @@ function DataGrid<R, SR, K extends Key>(
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
+        // If row is selected then move focus to the first row
+        if (isRowSelected) return { idx, rowIdx: minRowIdx };
         return { idx: 0, rowIdx: ctrlKey ? minRowIdx : rowIdx };
       case 'End':
+        // If row is selected then move focus to the last row.
+        if (isRowSelected) return { idx, rowIdx: maxRowIdx };
         return { idx: maxColIdx, rowIdx: ctrlKey ? maxRowIdx : rowIdx };
       case 'PageUp': {
         if (selectedPosition.rowIdx === minRowIdx) return selectedPosition;
@@ -853,10 +858,9 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getRowViewportColumns(rowIdx: number) {
-    const selectedColumn = columns[selectedPosition.idx];
+    // idx can be -1 if grouping is enabled
+    const selectedColumn = selectedPosition.idx === -1 ? undefined : columns[selectedPosition.idx];
     if (
-      // idx can be -1 if grouping is enabled
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       selectedColumn !== undefined &&
       selectedPosition.rowIdx === rowIdx &&
       !viewportColumns.includes(selectedColumn)
@@ -893,8 +897,7 @@ function DataGrid<R, SR, K extends Key>(
       const rowIdx = isRowOutsideViewport ? selectedRowIdx : viewportRowIdx;
 
       let rowColumns = viewportColumns;
-      const selectedColumn = columns[selectedIdx];
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const selectedColumn = selectedIdx === -1 ? undefined : columns[selectedIdx];
       if (selectedColumn !== undefined) {
         if (isRowOutsideViewport) {
           // if the row is outside the viewport then only render the selected cell
@@ -1018,7 +1021,7 @@ function DataGrid<R, SR, K extends Key>(
         <RowSelectionChangeProvider value={selectRowLatest}>
           <RowSelectionProvider value={allRowsSelected}>
             <HeaderRow
-              columns={getRowViewportColumns(-1)}
+              columns={getRowViewportColumns(minRowIdx)}
               onColumnResize={handleColumnResizeLatest}
               sortColumns={sortColumns}
               onSortColumnsChange={onSortColumnsChangeLatest}
