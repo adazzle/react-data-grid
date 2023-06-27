@@ -1,4 +1,4 @@
-import { RefAttributes, forwardRef, memo } from 'react';
+import { forwardRef, memo, RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -129,6 +129,6 @@ const CellComponent = memo(forwardRef(Cell)) as <R, SR>(
 
 export default CellComponent;
 
-export function defaultCellRenderer<R, SR>(key: React.Key, props: CellRendererProps<R, SR>) {
+export function defaultRenderCell<R, SR>(key: React.Key, props: CellRendererProps<R, SR>) {
   return <CellComponent key={key} {...props} />;
 }

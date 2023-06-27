@@ -48,7 +48,8 @@ import type {
   SelectRowEvent,
   SortColumn
 } from './types';
-import { defaultCellRenderer } from './Cell';
+import { defaultRenderCell } from './Cell';
+import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import {
   DataGridDefaultRenderersProvider,
   useDefaultRenderers
@@ -59,8 +60,6 @@ import HeaderRow from './HeaderRow';
 import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
-import SummaryRow from './SummaryRow';
-import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import { default as defaultRenderSortStatus } from './sortStatus';
 import {
   focusSinkClassname,
@@ -69,6 +68,7 @@ import {
   viewportDraggingClassname
 } from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
+import SummaryRow from './SummaryRow';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -252,8 +252,7 @@ function DataGrid<R, SR, K extends Key>(
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const renderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
-  const cellRenderer =
-    renderers?.cellRenderer ?? defaultRenderers?.cellRenderer ?? defaultCellRenderer;
+  const renderCell = renderers?.renderCell ?? defaultRenderers?.renderCell ?? defaultRenderCell;
   const renderSortStatus =
     renderers?.renderSortStatus ?? defaultRenderers?.renderSortStatus ?? defaultRenderSortStatus;
   const renderCheckbox =
@@ -314,9 +313,9 @@ function DataGrid<R, SR, K extends Key>(
     () => ({
       renderCheckbox,
       renderSortStatus,
-      cellRenderer
+      renderCell
     }),
-    [renderCheckbox, renderSortStatus, cellRenderer]
+    [renderCheckbox, renderSortStatus, renderCell]
   );
 
   const allRowsSelected = useMemo((): boolean => {
