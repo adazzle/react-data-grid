@@ -1,16 +1,16 @@
-import { StrictMode, useState } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, { TextEditor } from '../src';
+import DataGrid, { textEditor } from '../src';
 import type { Column } from '../src';
-import { getCells } from './utils';
+import { getCells, render } from './utils';
 
 interface Row {
   readonly name: string;
 }
 
-const columns: readonly Column<Row>[] = [{ key: 'name', name: 'Name', editor: TextEditor }];
+const columns: readonly Column<Row>[] = [{ key: 'name', name: 'Name', renderEditCell: textEditor }];
 const initialRows: readonly Row[] = [{ name: 'Tacitus Kilgore' }];
 
 function Test() {
@@ -20,11 +20,7 @@ function Test() {
 }
 
 test('TextEditor', async () => {
-  render(
-    <StrictMode>
-      <Test />
-    </StrictMode>
-  );
+  render(<Test />);
 
   await userEvent.dblClick(getCells()[0]);
   let input: HTMLInputElement | null = screen.getByRole<HTMLInputElement>('textbox');

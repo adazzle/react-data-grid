@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn, TextEditor } from '../../src';
-import type { Column, FillEvent, CopyEvent, PasteEvent } from '../../src';
-import DropDownEditor from './components/Editors/DropDownEditor';
-import { ImageFormatter } from './components/Formatters';
+import DataGrid, { SelectColumn, textEditor } from '../../src';
+import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
+import { renderAvatar, renderDropdown } from './renderers';
 import type { Props } from './types';
 
 const highlightClassname = css`
@@ -54,21 +53,14 @@ const columns: readonly Column<Row>[] = [
     name: 'Avatar',
     width: 40,
     resizable: true,
-    headerRenderer: () => <ImageFormatter value={faker.image.cats()} />,
-    formatter: ({ row }) => <ImageFormatter value={row.avatar} />
+    renderCell: renderAvatar
   },
   {
     key: 'title',
     name: 'Title',
     width: 200,
     resizable: true,
-    formatter(props) {
-      return <>{props.row.title}</>;
-    },
-    editor: DropDownEditor,
-    editorOptions: {
-      editOnClick: true
-    }
+    renderEditCell: renderDropdown
   },
   {
     key: 'firstName',
@@ -76,7 +68,7 @@ const columns: readonly Column<Row>[] = [
     width: 200,
     resizable: true,
     frozen: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'lastName',
@@ -84,63 +76,63 @@ const columns: readonly Column<Row>[] = [
     width: 200,
     resizable: true,
     frozen: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'email',
     name: 'Email',
-    width: 200,
+    width: 'max-content',
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'street',
     name: 'Street',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'zipCode',
     name: 'ZipCode',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'date',
     name: 'Date',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'bs',
     name: 'bs',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'catchPhrase',
     name: 'Catch Phrase',
-    width: 200,
+    width: 'max-content',
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'companyName',
     name: 'Company Name',
     width: 200,
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'sentence',
     name: 'Sentence',
-    width: 200,
+    width: 'max-content',
     resizable: true,
-    editor: TextEditor
+    renderEditCell: textEditor
   }
 ];
 
@@ -152,15 +144,15 @@ function createRows(): Row[] {
       id: `id_${i}`,
       avatar: faker.image.avatar(),
       email: faker.internet.email(),
-      title: faker.name.prefix(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      street: faker.address.streetName(),
-      zipCode: faker.address.zipCode(),
+      title: faker.person.prefix(),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      street: faker.location.street(),
+      zipCode: faker.location.zipCode(),
       date: faker.date.past().toLocaleDateString(),
-      bs: faker.company.bs(),
+      bs: faker.company.buzzPhrase(),
       catchPhrase: faker.company.catchPhrase(),
-      companyName: faker.company.companyName(),
+      companyName: faker.company.name(),
       words: faker.lorem.words(),
       sentence: faker.lorem.sentence()
     });
@@ -171,7 +163,7 @@ function createRows(): Row[] {
 
 export default function AllFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(() => new Set());
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<string> => new Set());
 
   function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
@@ -216,8 +208,16 @@ export default function AllFeatures({ direction }: Props) {
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
-      rowClass={(row) => (row.id.includes('7') ? highlightClassname : undefined)}
+      rowClass={(row, index) =>
+        row.id.includes('7') || index === 0 ? highlightClassname : undefined
+      }
       direction={direction}
+      onCellClick={(args, event) => {
+        if (args.column.key === 'title') {
+          event.preventGridDefault();
+          args.selectCell(true);
+        }
+      }}
     />
   );
 }

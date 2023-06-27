@@ -1,17 +1,19 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn, TextEditor, SelectCellFormatter } from '../../src';
+import DataGrid, { SelectCellFormatter, SelectColumn, textEditor } from '../../src';
 import type { Column, SortColumn } from '../../src';
-import { exportToCsv, exportToXlsx, exportToPdf } from './exportUtils';
-import { textEditorClassname } from '../../src/editors/TextEditor';
-import type { Props } from './types';
+import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
+import type { Props } from './types';
+import { exportToCsv, exportToPdf } from './exportUtils';
 
 const toolbarClassname = css`
-  text-align: end;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
   margin-block-end: 8px;
 `;
 
@@ -40,14 +42,6 @@ const currencyFormatter = new Intl.NumberFormat(navigator.language, {
   currency: 'eur'
 });
 
-function TimestampFormatter({ timestamp }: { timestamp: number }) {
-  return <>{dateFormatter.format(timestamp)}</>;
-}
-
-function CurrencyFormatter({ value }: { value: number }) {
-  return <>{currencyFormatter.format(value)}</>;
-}
-
 interface SummaryRow {
   id: string;
   totalCount: number;
@@ -72,46 +66,45 @@ interface Row {
   available: boolean;
 }
 
-function getColumns(countries: string[], direction: Direction): readonly Column<Row, SummaryRow>[] {
+function getColumns(
+  countries: readonly string[],
+  direction: Direction
+): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
     {
       key: 'id',
       name: 'ID',
-      width: 60,
       frozen: true,
       resizable: false,
-      summaryFormatter() {
+      renderSummaryCell() {
         return <strong>Total</strong>;
       }
     },
     {
       key: 'title',
       name: 'Task',
-      width: 120,
       frozen: true,
-      editor: TextEditor,
-      summaryFormatter({ row }) {
-        return <>{row.totalCount} records</>;
+      renderEditCell: textEditor,
+      renderSummaryCell({ row }) {
+        return `${row.totalCount} records`;
       }
     },
     {
       key: 'client',
       name: 'Client',
-      width: 220,
-      editor: TextEditor
+      width: 'max-content',
+      renderEditCell: textEditor
     },
     {
       key: 'area',
       name: 'Area',
-      width: 120,
-      editor: TextEditor
+      renderEditCell: textEditor
     },
     {
       key: 'country',
       name: 'Country',
-      width: 180,
-      editor: (p) => (
+      renderEditCell: (p) => (
         <select
           autoFocus
           className={textEditorClassname}
@@ -122,28 +115,22 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
             <option key={country}>{country}</option>
           ))}
         </select>
-      ),
-      editorOptions: {
-        editOnClick: true
-      }
+      )
     },
     {
       key: 'contact',
       name: 'Contact',
-      width: 160,
-      editor: TextEditor
+      renderEditCell: textEditor
     },
     {
       key: 'assignee',
       name: 'Assignee',
-      width: 150,
-      editor: TextEditor
+      renderEditCell: textEditor
     },
     {
       key: 'progress',
       name: 'Completion',
-      width: 110,
-      formatter(props) {
+      renderCell(props) {
         const value = props.row.progress;
         return (
           <>
@@ -151,7 +138,7 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
           </>
         );
       },
-      editor({ row, onRowChange, onClose }) {
+      renderEditCell({ row, onRowChange, onClose }) {
         return createPortal(
           <div
             dir={direction}
@@ -172,8 +159,12 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
                 onChange={(e) => onRowChange({ ...row, progress: e.target.valueAsNumber })}
               />
               <menu>
-                <button onClick={() => onClose()}>Cancel</button>
-                <button onClick={() => onClose(true)}>Save</button>
+                <button type="button" onClick={() => onClose()}>
+                  Cancel
+                </button>
+                <button type="button" onClick={() => onClose(true)}>
+                  Save
+                </button>
               </menu>
             </dialog>
           </div>,
@@ -181,31 +172,28 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
         );
       },
       editorOptions: {
-        renderFormatter: true
+        displayCellContent: true
       }
     },
     {
       key: 'startTimestamp',
       name: 'Start date',
-      width: 100,
-      formatter(props) {
-        return <TimestampFormatter timestamp={props.row.startTimestamp} />;
+      renderCell(props) {
+        return dateFormatter.format(props.row.startTimestamp);
       }
     },
     {
       key: 'endTimestamp',
       name: 'Deadline',
-      width: 100,
-      formatter(props) {
-        return <TimestampFormatter timestamp={props.row.endTimestamp} />;
+      renderCell(props) {
+        return dateFormatter.format(props.row.endTimestamp);
       }
     },
     {
       key: 'budget',
       name: 'Budget',
-      width: 100,
-      formatter(props) {
-        return <CurrencyFormatter value={props.row.budget} />;
+      renderCell(props) {
+        return currencyFormatter.format(props.row.budget);
       }
     },
     {
@@ -214,31 +202,29 @@ function getColumns(countries: string[], direction: Direction): readonly Column<
     },
     {
       key: 'account',
-      name: 'Account',
-      width: 150
+      name: 'Account'
     },
     {
       key: 'version',
       name: 'Version',
-      editor: TextEditor
+      renderEditCell: textEditor
     },
     {
       key: 'available',
       name: 'Available',
-      width: 80,
-      formatter({ row, onRowChange, isCellSelected }) {
+      renderCell({ row, onRowChange, tabIndex }) {
         return (
           <SelectCellFormatter
             value={row.available}
             onChange={() => {
               onRowChange({ ...row, available: !row.available });
             }}
-            isCellSelected={isCellSelected}
+            tabIndex={tabIndex}
           />
         );
       },
-      summaryFormatter({ row: { yesCount, totalCount } }) {
-        return <>{`${Math.floor((100 * yesCount) / totalCount)}% ✔️`}</>;
+      renderSummaryCell({ row: { yesCount, totalCount } }) {
+        return `${Math.floor((100 * yesCount) / totalCount)}% ✔️`;
       }
     }
   ];
@@ -256,11 +242,11 @@ function createRows(): readonly Row[] {
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
-      client: faker.company.companyName(),
-      area: faker.name.jobArea(),
-      country: faker.address.country(),
+      client: faker.company.name(),
+      area: faker.person.jobArea(),
+      country: faker.location.country(),
       contact: faker.internet.exampleEmail(),
-      assignee: faker.name.findName(),
+      assignee: faker.person.fullName(),
       progress: Math.random() * 100,
       startTimestamp: now - Math.round(Math.random() * 1e10),
       endTimestamp: now + Math.round(Math.random() * 1e10),
@@ -276,6 +262,7 @@ function createRows(): readonly Row[] {
 }
 
 type Comparator = (a: Row, b: Row) => number;
+
 function getComparator(sortColumn: string): Comparator {
   switch (sortColumn) {
     case 'assignee':
@@ -310,21 +297,22 @@ function getComparator(sortColumn: string): Comparator {
 export default function CommonFeatures({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
 
-  const countries = useMemo(() => {
+  const countries = useMemo((): readonly string[] => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns = useMemo(() => getColumns(countries, direction), [countries, direction]);
 
-  const summaryRows = useMemo(() => {
-    const summaryRow: SummaryRow = {
-      id: 'total_0',
-      totalCount: rows.length,
-      yesCount: rows.filter((r) => r.available).length
-    };
-    return [summaryRow];
+  const summaryRows = useMemo((): readonly SummaryRow[] => {
+    return [
+      {
+        id: 'total_0',
+        totalCount: rows.length,
+        yesCount: rows.filter((r) => r.available).length
+      }
+    ];
   }, [rows]);
 
   const sortedRows = useMemo((): readonly Row[] => {
@@ -356,7 +344,8 @@ export default function CommonFeatures({ direction }: Props) {
       onRowsChange={setRows}
       sortColumns={sortColumns}
       onSortColumnsChange={setSortColumns}
-      summaryRows={summaryRows}
+      topSummaryRows={summaryRows}
+      bottomSummaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
     />
@@ -367,9 +356,6 @@ export default function CommonFeatures({ direction }: Props) {
       <div className={toolbarClassname}>
         <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
           Export to CSV
-        </ExportButton>
-        <ExportButton onExport={() => exportToXlsx(gridElement, 'CommonFeatures.xlsx')}>
-          Export to XSLX
         </ExportButton>
         <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
           Export to PDF
@@ -390,6 +376,7 @@ function ExportButton({
   const [exporting, setExporting] = useState(false);
   return (
     <button
+      type="button"
       disabled={exporting}
       onClick={async () => {
         setExporting(true);

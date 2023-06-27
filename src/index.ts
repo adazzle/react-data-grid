@@ -1,32 +1,40 @@
 export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
-export { DataGridDefaultComponentsProvider } from './DataGridDefaultComponentsProvider';
+export { default as TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
+export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
 export { default as Row } from './Row';
 export * from './Columns';
-export * from './formatters';
-export { default as TextEditor } from './editors/TextEditor';
-export { default as HeaderRenderer } from './HeaderRenderer';
+export * from './cellRenderers';
+export { default as textEditor } from './editors/textEditor';
+export { default as renderHeaderCell } from './renderHeaderCell';
+export { renderSortIcon, renderSortPriority } from './sortStatus';
 export { useRowSelection } from './hooks';
 export type {
   Column,
   Position,
   CalculatedColumn,
-  FormatterProps,
-  SummaryFormatterProps,
-  GroupFormatterProps,
-  EditorProps,
-  HeaderRendererProps,
+  RenderCellProps,
+  RenderSummaryCellProps,
+  RenderGroupCellProps,
+  RenderEditCellProps,
+  RenderHeaderCellProps,
   CellRendererProps,
-  RowRendererProps,
+  RenderRowProps,
   RowsChangeData,
   SelectRowEvent,
   FillEvent,
   CopyEvent,
   PasteEvent,
-  CellNavigationMode,
   SortDirection,
   SortColumn,
   ColSpanArgs,
   RowHeightArgs,
-  CheckboxFormatterProps,
-  SortIconProps
+  RenderCheckboxProps,
+  RenderSortIconProps,
+  RenderSortPriorityProps,
+  RenderSortStatusProps,
+  Renderers,
+  CellMouseEvent,
+  CellClickArgs,
+  CellKeyDownArgs,
+  CellKeyboardEvent
 } from './types';

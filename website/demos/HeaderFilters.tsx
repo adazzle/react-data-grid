@@ -1,11 +1,10 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { css } from '@linaria/core';
 import { faker } from '@faker-js/faker';
+import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, HeaderRendererProps } from '../../src';
+import type { Column, RenderHeaderCellProps } from '../../src';
 import type { Omit } from '../../src/types';
-import { useFocusRef } from '../../src/hooks';
 import type { Props } from './types';
 
 const rootClassname = css`
@@ -79,14 +78,16 @@ function selectStopPropagation(event: React.KeyboardEvent<HTMLSelectElement>) {
 
 export default function HeaderFilters({ direction }: Props) {
   const [rows] = useState(createRows);
-  const [filters, setFilters] = useState<Filter>({
-    task: '',
-    priority: 'Critical',
-    issueType: 'All',
-    developer: '',
-    complete: undefined,
-    enabled: true
-  });
+  const [filters, setFilters] = useState(
+    (): Filter => ({
+      task: '',
+      priority: 'Critical',
+      issueType: 'All',
+      developer: '',
+      complete: undefined,
+      enabled: true
+    })
+  );
 
   const developerOptions = useMemo(
     () =>
@@ -108,8 +109,8 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'task',
         name: 'Title',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+        renderHeaderCell: (p) => (
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
                 {...rest}
@@ -131,8 +132,8 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'priority',
         name: 'Priority',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLSelectElement> {...p}>
+        renderHeaderCell: (p) => (
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
                 {...rest}
@@ -160,8 +161,8 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'issueType',
         name: 'Issue Type',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLSelectElement> {...p}>
+        renderHeaderCell: (p) => (
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <select
                 {...rest}
@@ -189,8 +190,8 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'developer',
         name: 'Developer',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+        renderHeaderCell: (p) => (
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
                 {...rest}
@@ -213,8 +214,8 @@ export default function HeaderFilters({ direction }: Props) {
         key: 'complete',
         name: '% Complete',
         headerCellClass: filterColumnClassName,
-        headerRenderer: (p) => (
-          <FilterRenderer<Row, unknown, HTMLInputElement> {...p}>
+        renderHeaderCell: (p) => (
+          <FilterRenderer<Row> {...p}>
             {({ filters, ...rest }) => (
               <input
                 {...rest}
@@ -300,24 +301,18 @@ export default function HeaderFilters({ direction }: Props) {
   );
 }
 
-function FilterRenderer<R, SR, T extends HTMLOrSVGElement>({
-  isCellSelected,
+function FilterRenderer<R>({
+  tabIndex,
   column,
   children
-}: HeaderRendererProps<R, SR> & {
-  children: (args: {
-    ref: React.RefObject<T>;
-    tabIndex: number;
-    filters: Filter;
-  }) => React.ReactElement;
+}: RenderHeaderCellProps<R> & {
+  children: (args: { tabIndex: number; filters: Filter }) => React.ReactElement;
 }) {
   const filters = useContext(FilterContext)!;
-  const { ref, tabIndex } = useFocusRef<T>(isCellSelected);
-
   return (
     <>
       <div>{column.name}</div>
-      {filters.enabled && <div>{children({ ref, tabIndex, filters })}</div>}
+      {filters.enabled && <div>{children({ tabIndex, filters })}</div>}
     </>
   );
 }
@@ -331,7 +326,7 @@ function createRows() {
       complete: Math.min(100, Math.round(Math.random() * 110)),
       priority: ['Critical', 'High', 'Medium', 'Low'][Math.floor(Math.random() * 4)],
       issueType: ['Bug', 'Improvement', 'Epic', 'Story'][Math.floor(Math.random() * 4)],
-      developer: faker.name.findName()
+      developer: faker.person.fullName()
     });
   }
   return rows;

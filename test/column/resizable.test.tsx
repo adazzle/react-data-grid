@@ -1,6 +1,8 @@
 import { fireEvent } from '@testing-library/react';
+import { expect, test } from 'vitest';
+
 import type { Column } from '../../src';
-import { setup, getHeaderCells, getGrid } from '../utils';
+import { getGrid, getHeaderCells, setup } from '../utils';
 
 const pointerId = 1;
 
@@ -42,10 +44,12 @@ function resize<K extends keyof DOMRect>({
     ...original(),
     ...rect
   });
+  // eslint-disable-next-line testing-library/prefer-user-event
   fireEvent.pointerDown(
     column,
     new PointerEvent('pointerdown', { pointerId, clientX: clientXStart })
   );
+  // eslint-disable-next-line testing-library/prefer-user-event
   fireEvent.pointerMove(column, new PointerEvent('pointermove', { clientX: clientXEnd }));
   fireEvent.lostPointerCapture(column, new PointerEvent('lostpointercapture', {}));
 }

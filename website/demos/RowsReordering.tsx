@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { DraggableRowRenderer } from './components/RowRenderers';
-import DataGrid, { TextEditor } from '../../src';
-import type { Column, RowRendererProps } from '../../src';
+import DataGrid, { textEditor } from '../../src';
+import type { Column, RenderRowProps } from '../../src';
+import { DraggableRowRenderer } from './components';
 import type { Props } from './types';
 
 interface Row {
@@ -16,7 +16,8 @@ interface Row {
 }
 
 function createRows(): readonly Row[] {
-  const rows = [];
+  const rows: Row[] = [];
+
   for (let i = 1; i < 500; i++) {
     rows.push({
       id: i,
@@ -39,7 +40,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'task',
     name: 'Title',
-    editor: TextEditor
+    renderEditCell: textEditor
   },
   {
     key: 'priority',
@@ -58,7 +59,7 @@ const columns: readonly Column<Row>[] = [
 export default function RowsReordering({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
 
-  const RowRenderer = useCallback((props: RowRendererProps<Row>) => {
+  const renderRow = useCallback((key: React.Key, props: RenderRowProps<Row>) => {
     function onRowReorder(fromIndex: number, toIndex: number) {
       setRows((rows) => {
         const newRows = [...rows];
@@ -67,7 +68,7 @@ export default function RowsReordering({ direction }: Props) {
       });
     }
 
-    return <DraggableRowRenderer {...props} onRowReorder={onRowReorder} />;
+    return <DraggableRowRenderer key={key} {...props} onRowReorder={onRowReorder} />;
   }, []);
 
   return (
@@ -76,7 +77,7 @@ export default function RowsReordering({ direction }: Props) {
         columns={columns}
         rows={rows}
         onRowsChange={setRows}
-        components={{ rowRenderer: RowRenderer }}
+        renderers={{ renderRow }}
         direction={direction}
       />
     </DndProvider>

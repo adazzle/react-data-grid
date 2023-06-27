@@ -1,34 +1,49 @@
-import { SelectCellFormatter } from './formatters';
 import { useRowSelection } from './hooks/useRowSelection';
-import type { Column, FormatterProps, GroupFormatterProps } from './types';
+import type { Column, RenderCellProps, RenderGroupCellProps, RenderHeaderCellProps } from './types';
+import { SelectCellFormatter } from './cellRenderers';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
-function SelectFormatter(props: FormatterProps<unknown>) {
+function HeaderRenderer(props: RenderHeaderCellProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (
     <SelectCellFormatter
-      aria-label="Select"
-      isCellSelected={props.isCellSelected}
+      aria-label="Select All"
+      tabIndex={props.tabIndex}
       value={isRowSelected}
-      onChange={(checked, isShiftClick) => {
-        onRowSelectionChange({ row: props.row, checked, isShiftClick });
+      onChange={(checked) => {
+        onRowSelectionChange({ type: 'HEADER', checked });
       }}
     />
   );
 }
 
-function SelectGroupFormatter(props: GroupFormatterProps<unknown>) {
+function SelectFormatter(props: RenderCellProps<unknown>) {
+  const [isRowSelected, onRowSelectionChange] = useRowSelection();
+
+  return (
+    <SelectCellFormatter
+      aria-label="Select"
+      tabIndex={props.tabIndex}
+      value={isRowSelected}
+      onChange={(checked, isShiftClick) => {
+        onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick });
+      }}
+    />
+  );
+}
+
+function SelectGroupFormatter(props: RenderGroupCellProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
 
   return (
     <SelectCellFormatter
       aria-label="Select Group"
-      isCellSelected={props.isCellSelected}
+      tabIndex={props.tabIndex}
       value={isRowSelected}
       onChange={(checked) => {
-        onRowSelectionChange({ row: props.row, checked, isShiftClick: false });
+        onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick: false });
       }}
     />
   );
@@ -44,16 +59,13 @@ export const SelectColumn: Column<any, any> = {
   resizable: false,
   sortable: false,
   frozen: true,
-  headerRenderer(props) {
-    return (
-      <SelectCellFormatter
-        aria-label="Select All"
-        isCellSelected={props.isCellSelected}
-        value={props.allRowsSelected}
-        onChange={props.onAllRowsSelectionChange}
-      />
-    );
+  renderHeaderCell(props) {
+    return <HeaderRenderer {...props} />;
   },
-  formatter: SelectFormatter,
-  groupFormatter: SelectGroupFormatter
+  renderCell(props) {
+    return <SelectFormatter {...props} />;
+  },
+  renderGroupCell(props) {
+    return <SelectGroupFormatter {...props} />;
+  }
 };

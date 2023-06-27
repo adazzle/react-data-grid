@@ -1,43 +1,70 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
-import { cell, row, rowClassname, rowSelectedClassname } from './style';
 import { getColSpan, getRowStyle } from './utils';
+import type { RenderRowProps } from './types';
+import { cell, cellFrozen } from './style/cell';
+import { rowClassname, rowSelectedClassname } from './style/row';
 import SummaryCell from './SummaryCell';
-import type { CalculatedColumn, RowRendererProps } from './types';
 
-type SharedRowRendererProps<R, SR> = Pick<
-  RowRendererProps<R, SR>,
-  'viewportColumns' | 'rowIdx' | 'gridRowStart'
+type SharedRenderRowProps<R, SR> = Pick<
+  RenderRowProps<R, SR>,
+  'viewportColumns' | 'rowIdx' | 'gridRowStart' | 'selectCell'
 >;
 
-interface SummaryRowProps<R, SR> extends SharedRowRendererProps<R, SR> {
+interface SummaryRowProps<R, SR> extends SharedRenderRowProps<R, SR> {
   'aria-rowindex': number;
   row: SR;
   top: number | undefined;
   bottom: number | undefined;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
-  selectCell: (row: SR, column: CalculatedColumn<R, SR>) => void;
+  isTop: boolean;
+  showBorder: boolean;
 }
 
 const summaryRow = css`
-  &.${row} {
+  @layer rdg.SummaryRow {
     line-height: var(--rdg-summary-row-height);
+
     > .${cell} {
       position: sticky;
     }
   }
 `;
 
-const summaryRowBorderClassname = css`
-  & > .${cell} {
-    border-block-start: 2px solid var(--rdg-summary-border-color);
+const topSummaryRow = css`
+  @layer rdg.SummaryRow {
+    > .${cell} {
+      z-index: 2;
+    }
+
+    > .${cellFrozen} {
+      z-index: 3;
+    }
+  }
+`;
+
+export const topSummaryRowBorderClassname = css`
+  @layer rdg.SummaryRow {
+    > .${cell} {
+      border-block-end: 2px solid var(--rdg-summary-border-color);
+    }
+  }
+`;
+
+export const bottomSummaryRowBorderClassname = css`
+  @layer rdg.SummaryRow {
+    > .${cell} {
+      border-block-start: 2px solid var(--rdg-summary-border-color);
+    }
   }
 `;
 
 const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
+
+const topSummaryRowClassname = `rdg-top-summary-row ${topSummaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
@@ -48,6 +75,8 @@ function SummaryRow<R, SR>({
   bottom,
   lastFrozenColumnIndex,
   selectedCellIdx,
+  isTop,
+  showBorder,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -67,6 +96,7 @@ function SummaryRow<R, SR>({
         column={column}
         colSpan={colSpan}
         row={row}
+        rowIdx={rowIdx}
         isCellSelected={isCellSelected}
         selectCell={selectCell}
       />
@@ -82,8 +112,11 @@ function SummaryRow<R, SR>({
         `rdg-row-${rowIdx % 2 === 0 ? 'even' : 'odd'}`,
         summaryRowClassname,
         {
-          [summaryRowBorderClassname]: rowIdx === 0,
-          [rowSelectedClassname]: selectedCellIdx === -1
+          [rowSelectedClassname]: selectedCellIdx === -1,
+          [topSummaryRowClassname]: isTop,
+          [topSummaryRowBorderClassname]: isTop && showBorder,
+          [bottomSummaryRowBorderClassname]: !isTop && showBorder,
+          'rdg-bottom-summary-row': !isTop
         }
       )}
       style={

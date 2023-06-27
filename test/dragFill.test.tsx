@@ -1,10 +1,9 @@
-import { StrictMode, useState } from 'react';
+import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, FillEvent } from '../src';
-import { fireEvent, render } from '@testing-library/react';
-import { getCellsAtRowIndex, getRows } from './utils';
+import { getCellsAtRowIndex, getRows, render } from './utils';
 
 interface Row {
   col: string;
@@ -15,7 +14,7 @@ const columns: readonly Column<Row>[] = [
     key: 'col',
     name: 'Col',
     editable: (row) => row.col !== 'a4',
-    editor() {
+    renderEditCell() {
       return null;
     }
   }
@@ -37,11 +36,7 @@ const initialRows: readonly Row[] = [
 ];
 
 function setup(allowDragFill = true) {
-  render(
-    <StrictMode>
-      <DragFillTest allowDragFill={allowDragFill} />
-    </StrictMode>
-  );
+  render(<DragFillTest allowDragFill={allowDragFill} />);
 }
 
 function DragFillTest({ allowDragFill = true }: { allowDragFill?: boolean }) {
@@ -83,9 +78,11 @@ test('should allow dragFill if onFill is specified', async () => {
 test('should update single row using mouse', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
-  fireEvent.mouseEnter(getRows()[1]);
-  fireEvent.mouseUp(window);
+  await userEvent.pointer([
+    { keys: '[MouseLeft>]', target: getDragHandle()! },
+    { target: getRows()[1] },
+    { keys: '[/MouseLeft]' }
+  ]);
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
 });
@@ -93,9 +90,11 @@ test('should update single row using mouse', async () => {
 test('should update multiple rows using mouse', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
-  fireEvent.mouseEnter(getRows()[3]);
-  fireEvent.mouseUp(window);
+  await userEvent.pointer([
+    { keys: '[MouseLeft>]', target: getDragHandle()! },
+    { target: getRows()[3] },
+    { keys: '[/MouseLeft]' }
+  ]);
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
@@ -104,9 +103,11 @@ test('should update multiple rows using mouse', async () => {
 test('should allow drag up using mouse', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(3)[0]);
-  fireEvent.mouseDown(getDragHandle()!, { buttons: 1 });
-  fireEvent.mouseEnter(getRows()[0]);
-  fireEvent.mouseUp(window);
+  await userEvent.pointer([
+    { keys: '[MouseLeft>]', target: getDragHandle()! },
+    { target: getRows()[0] },
+    { keys: '[/MouseLeft]' }
+  ]);
   expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('a4');
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a4');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a4');
