@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type { Renderers, Maybe } from './types';
+import type { Maybe, Renderers } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DataGridDefaultRenderersContext = createContext<Maybe<Renderers<any, any>>>(undefined);

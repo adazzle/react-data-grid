@@ -1,11 +1,11 @@
 import './root.css';
+
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Navigate, Route, HashRouter as Router, Routes } from 'react-router-dom';
 import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
-import Nav from './Nav';
 import AllFeatures from './demos/AllFeatures';
 import Animation from './demos/Animation';
 import CellNavigation from './demos/CellNavigation';
@@ -22,9 +22,10 @@ import MillionCells from './demos/MillionCells';
 import NoRows from './demos/NoRows';
 import ResizableGrid from './demos/Resizable';
 import RowsReordering from './demos/RowsReordering';
-import ScrollToRow from './demos/ScrollToRow';
+import ScrollToCell from './demos/ScrollToCell';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
+import Nav from './Nav';
 
 const mainClassname = css`
   display: flex;
@@ -61,7 +62,7 @@ function Root() {
           <Route path="no-rows" element={<NoRows direction={direction} />} />
           <Route path="resizable-grid" element={<ResizableGrid direction={direction} />} />
           <Route path="rows-reordering" element={<RowsReordering direction={direction} />} />
-          <Route path="scroll-to-row" element={<ScrollToRow direction={direction} />} />
+          <Route path="scroll-to-cell" element={<ScrollToCell direction={direction} />} />
           <Route path="tree-view" element={<TreeView direction={direction} />} />
           <Route path="variable-row-height" element={<VariableRowHeight direction={direction} />} />
           <Route path="animation" element={<Animation direction={direction} />} />

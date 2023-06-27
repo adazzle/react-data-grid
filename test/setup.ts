@@ -1,22 +1,31 @@
 import { act } from 'react-dom/test-utils';
 
+// Allow node-environment tests to properly fail when accessing DOM APIs,
+// as @testing-library/jest-dom may polyfill some DOM APIs like `window.CSS`
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+if (globalThis.window !== undefined) {
+  await import('@testing-library/jest-dom');
+}
+
 if (typeof window !== 'undefined') {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   window.ResizeObserver ??= class {
-    callback: ResizeObserverCallback;
-
-    constructor(callback: ResizeObserverCallback) {
-      this.callback = callback;
-    }
-
-    observe() {
-      // patch inlineSize/blockSize to pretend we're rendering DataGrid at 1920p/1080p
-      // @ts-expect-error
-      this.callback([{ contentBoxSize: [{ inlineSize: 1920, blockSize: 1080 }] }], this);
-    }
-
+    observe() {}
     unobserve() {}
     disconnect() {}
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  window.IntersectionObserver ??= class IntersectionObserver {
+    root = null;
+    rootMargin = '';
+    thresholds = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

@@ -1,7 +1,6 @@
 import { css } from '@linaria/core';
 
-import { useFocusRef } from '../hooks/useFocusRef';
-import type { GroupFormatterProps } from '../types';
+import type { RenderGroupCellProps } from '../types';
 
 const groupCellContent = css`
   @layer rdg.GroupCellContent {
@@ -27,18 +26,16 @@ const caret = css`
 
 const caretClassname = `rdg-caret ${caret}`;
 
-export function toggleGroupFormatter<R, SR>(props: GroupFormatterProps<R, SR>) {
+export function renderToggleGroup<R, SR>(props: RenderGroupCellProps<R, SR>) {
   return <ToggleGroup {...props} />;
 }
 
 export function ToggleGroup<R, SR>({
   groupKey,
   isExpanded,
-  isCellSelected,
+  tabIndex,
   toggleGroup
-}: GroupFormatterProps<R, SR>) {
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
-
+}: RenderGroupCellProps<R, SR>) {
   function handleKeyDown({ key }: React.KeyboardEvent<HTMLSpanElement>) {
     if (key === 'Enter') {
       toggleGroup();
@@ -48,12 +45,7 @@ export function ToggleGroup<R, SR>({
   const d = isExpanded ? 'M1 1 L 7 7 L 13 1' : 'M1 7 L 7 1 L 13 7';
 
   return (
-    <span
-      ref={ref}
-      className={groupCellContentClassname}
-      tabIndex={tabIndex}
-      onKeyDown={handleKeyDown}
-    >
+    <span className={groupCellContentClassname} tabIndex={tabIndex} onKeyDown={handleKeyDown}>
       {groupKey as string}
       <svg viewBox="0 0 14 8" width="14" height="8" className={caretClassname} aria-hidden>
         <path d={d} />

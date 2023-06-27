@@ -1,10 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 import type { Column, DataGridProps } from '../src';
-import { setup, getRows } from './utils';
+import { getRows, setup } from './utils';
 
 type Row = number;
+
 function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
   const columns: Column<Row>[] = [];
   const rows: readonly Row[] = [...Array(50).keys()];
@@ -34,13 +36,13 @@ test('rowHeight is number', async () => {
   expect(grid.scrollTop).toBe(0);
 
   // Go to the last cell
-  const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   await userEvent.keyboard('{Control>}{end}');
   expect(spy).toHaveBeenCalled();
 });
 
 test('rowHeight is function', async () => {
-  setupGrid((args) => (args.type === 'ROW' ? [40, 60, 80][args.row % 3] : 40));
+  setupGrid((args) => [40, 60, 80][args.row % 3]);
 
   const rows = getRows();
   expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });
@@ -53,7 +55,7 @@ test('rowHeight is function', async () => {
   const grid = screen.getByRole('grid');
   expect(grid.scrollTop).toBe(0);
 
-  const spy = jest.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   // Go to the last cell
   await userEvent.keyboard('{Control>}{end}');
   expect(spy).toHaveBeenCalled();

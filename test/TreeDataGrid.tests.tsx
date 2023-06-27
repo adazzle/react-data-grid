@@ -1,23 +1,22 @@
-import { StrictMode, useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { useState } from 'react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { groupBy as rowGrouper } from 'lodash';
+import { groupBy as rowGrouper } from 'lodash-es';
 
 import type { Column } from '../src';
-import DataGrid, { SelectColumn, textEditor } from '../src';
-import { focusSinkClassname, rowSelected } from '../src/style';
-import type { FillEvent, PasteEvent } from '../src/types';
+import { SelectColumn, textEditor, TreeDataGrid } from '../src';
+import { focusSinkClassname } from '../src/style/core';
+import { rowSelected } from '../src/style/row';
+import type { PasteEvent } from '../src/types';
 import {
-  getGrid,
-  queryGrid,
-  getRows,
-  queryTreeGrid,
-  getTreeGrid,
-  getHeaderCells,
-  getCellsAtRowIndex,
-  getSelectedCell,
   copySelectedCell,
-  pasteSelectedCell
+  getCellsAtRowIndex,
+  getHeaderCells,
+  getRows,
+  getSelectedCell,
+  getTreeGrid,
+  pasteSelectedCell,
+  render
 } from './utils';
 
 const rowSelectedClassname = 'rdg-row-selected';
@@ -42,7 +41,7 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'country',
     name: 'Country',
-    editor: textEditor
+    renderEditCell: textEditor
   },
   {
     key: 'year',
@@ -51,12 +50,16 @@ const columns: readonly Column<Row>[] = [
   {
     key: 'id',
     name: 'Id',
-    formatter(props) {
+    renderCell(props) {
       function onClick() {
         props.onRowChange({ ...props.row, id: props.row.id + 10 });
       }
 
-      return <button onClick={onClick}>value: {props.row.id}</button>;
+      return (
+        <button type="button" onClick={onClick}>
+          value: {props.row.id}
+        </button>
+      );
     }
   }
 ];
@@ -88,16 +91,12 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
+function TestGrid({ groupBy }: { groupBy: string[] }) {
   const [rows, setRows] = useState(initialRows);
-  const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
-  const [expandedGroupIds, setExpandedGroupIds] = useState<ReadonlySet<unknown>>(
-    () => new Set<unknown>([])
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
+  const [expandedGroupIds, setExpandedGroupIds] = useState(
+    (): ReadonlySet<unknown> => new Set<unknown>([])
   );
-
-  function onFill(event: FillEvent<Row>) {
-    return event.targetRow;
-  }
 
   function onPaste(event: PasteEvent<Row>) {
     return {
@@ -107,7 +106,7 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
   }
 
   return (
-    <DataGrid
+    <TreeDataGrid
       columns={columns}
       rows={rows}
       topSummaryRows={topSummaryRows}
@@ -120,41 +119,34 @@ function TestGrid({ groupBy }: { groupBy: string[] | undefined }) {
       expandedGroupIds={expandedGroupIds}
       onExpandedGroupIdsChange={setExpandedGroupIds}
       onRowsChange={setRows}
-      onFill={onFill}
       onPaste={onPaste}
     />
   );
 }
 
-function setup(groupBy?: string[]) {
-  render(
-    <StrictMode>
-      <TestGrid groupBy={groupBy} />
-    </StrictMode>
-  );
+function setup(groupBy: string[]) {
+  render(<TestGrid groupBy={groupBy} />);
 }
 
 function getHeaderCellsContent() {
   return getHeaderCells().map((cell) => cell.textContent);
 }
 
-test('should not group if groupBy is not specified', () => {
-  setup();
-  expect(queryTreeGrid()).not.toBeInTheDocument();
-  expect(getGrid()).toHaveAttribute('aria-rowcount', '7');
+test('should not group if groupBy is empty', () => {
+  setup([]);
+  expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
   expect(getHeaderCellsContent()).toStrictEqual(['', 'Sport', 'Country', 'Year', 'Id']);
   expect(getRows()).toHaveLength(6);
 });
 
 test('should not group if column does not exist', () => {
   setup(['abc']);
-  expect(getGrid()).toHaveAttribute('aria-rowcount', '7');
+  expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
   expect(getRows()).toHaveLength(6);
 });
 
 test('should group by single column', () => {
   setup(['country']);
-  expect(queryGrid()).not.toBeInTheDocument();
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '9');
   expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Sport', 'Year', 'Id']);
   expect(getRows()).toHaveLength(4);
@@ -375,13 +367,6 @@ test('cell navigation in a treegrid', async () => {
   expect(getRows()).toHaveLength(4);
 });
 
-test('onFill is not supported when grouping is enabled', async () => {
-  setup(['year']);
-  await userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
-  await userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
-  expect(document.querySelector('.rdg-cell-drag-handle')).not.toBeInTheDocument();
-});
-
 test('copy/paste when grouping is enabled', async () => {
   setup(['year']);
   await userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
@@ -394,12 +379,12 @@ test('copy/paste when grouping is enabled', async () => {
   expect(getSelectedCell()).toHaveTextContent('USA');
 });
 
-test('update row using formatter', async () => {
+test('update row using cell renderer', async () => {
   setup(['year']);
   await userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
   await userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
   await userEvent.keyboard('{arrowright}{arrowright}');
   expect(getSelectedCell()).toHaveTextContent('value: 2');
-  await userEvent.click(screen.getByText('value: 2'));
+  await userEvent.click(screen.getByRole('button', { name: 'value: 2' }));
   expect(getSelectedCell()).toHaveTextContent('value: 12');
 });

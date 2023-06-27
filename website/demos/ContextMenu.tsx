@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { useState, useReducer, useRef, useLayoutEffect } from 'react';
+import { useLayoutEffect, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
@@ -122,6 +122,7 @@ export default function ContextMenuDemo({ direction }: Props) {
           >
             <li>
               <button
+                type="button"
                 onClick={() => {
                   const { rowIdx } = contextMenuProps;
                   setRows([...rows.slice(0, rowIdx), ...rows.slice(rowIdx + 1)]);
@@ -133,6 +134,7 @@ export default function ContextMenuDemo({ direction }: Props) {
             </li>
             <li>
               <button
+                type="button"
                 onClick={() => {
                   const { rowIdx } = contextMenuProps;
                   insertRow(rowIdx);
@@ -144,6 +146,7 @@ export default function ContextMenuDemo({ direction }: Props) {
             </li>
             <li>
               <button
+                type="button"
                 onClick={() => {
                   const { rowIdx } = contextMenuProps;
                   insertRow(rowIdx + 1);

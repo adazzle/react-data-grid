@@ -15,20 +15,6 @@ export async function exportToCsv<R, SR>(
   downloadFile(fileName, new Blob([content], { type: 'text/csv;charset=utf-8;' }));
 }
 
-export async function exportToXlsx<R, SR>(
-  gridElement: ReactElement<DataGridProps<R, SR>>,
-  fileName: string
-) {
-  const [{ utils, writeFile }, { head, body, foot }] = await Promise.all([
-    import('xlsx'),
-    getGridContent(gridElement)
-  ]);
-  const wb = utils.book_new();
-  const ws = utils.aoa_to_sheet([...head, ...body, ...foot]);
-  utils.book_append_sheet(wb, ws, 'Sheet 1');
-  writeFile(wb, fileName);
-}
-
 export async function exportToPdf<R, SR>(
   gridElement: ReactElement<DataGridProps<R, SR>>,
   fileName: string

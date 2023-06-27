@@ -1,16 +1,17 @@
-import { StrictMode, useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { expect, test, vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { setup, getCells } from '../utils';
+import { getCells, getCellsAtRowIndex, render, setup } from '../utils';
 
 interface Row {
   id: number;
 }
 
-describe('ValueFormatter', () => {
+describe('renderValue', () => {
   const columns: readonly Column<Row | null>[] = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' }
@@ -33,23 +34,23 @@ describe('ValueFormatter', () => {
   });
 });
 
-describe('Custom formatter component', () => {
+describe('Custom cell renderer', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
       name: 'ID',
-      formatter: (props) => <>#{props.row.id}</>
+      renderCell: (props) => `#${props.row.id}`
     },
     {
       key: 'name',
       name: 'Name',
-      formatter: () => <>No name</>
+      renderCell: () => 'No name'
     }
   ];
 
   const rows: readonly Row[] = [{ id: 101 }];
 
-  it('should replace the default formatter', () => {
+  it('should replace the default cell renderer', () => {
     setup({ columns, rows });
     const [cell1, cell2] = getCells();
     expect(cell1).toHaveTextContent('#101');
@@ -57,17 +58,21 @@ describe('Custom formatter component', () => {
   });
 
   it('can update rows', async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     const column: Column<Row> = {
       key: 'test',
       name: 'test',
-      formatter(props) {
+      renderCell(props) {
         function onClick() {
           props.onRowChange({ id: props.row.id + 1 });
         }
 
-        return <button onClick={onClick}>value: {props.row.id}</button>;
+        return (
+          <button type="button" onClick={onClick}>
+            value: {props.row.id}
+          </button>
+        );
       }
     };
 
@@ -86,11 +91,7 @@ describe('Custom formatter component', () => {
       );
     }
 
-    render(
-      <StrictMode>
-        <Test />
-      </StrictMode>
-    );
+    render(<Test />);
 
     const [cell] = getCells();
     expect(cell).toHaveTextContent('value: 1');
@@ -104,13 +105,49 @@ describe('Custom formatter component', () => {
         idx: 0,
         isLastFrozenColumn: false,
         maxWidth: undefined,
-        minWidth: 80,
+        minWidth: 50,
         resizable: false,
-        rowGroup: false,
         sortable: false,
         width: 'auto'
       },
       indexes: [0]
     });
   });
+});
+
+test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
+  const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
+
+  function FormatterTest() {
+    const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
+
+    function onClick() {
+      setRows([{ id: 2 }]);
+    }
+
+    return (
+      <>
+        <button type="button" onClick={onClick}>
+          Test
+        </button>
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          onRowsChange={setRows}
+          rowKeyGetter={(row) => row.id}
+        />
+      </>
+    );
+  }
+
+  render(<FormatterTest />);
+
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
+
+  const button = screen.getByRole('button', { name: 'Test' });
+  expect(button).not.toHaveFocus();
+  await userEvent.click(button);
+  expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
+  expect(button).toHaveFocus();
 });

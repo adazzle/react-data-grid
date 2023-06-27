@@ -1,19 +1,12 @@
 import { useMemo } from 'react';
 
 import DataGrid from '../../src';
-import type { Column, FormatterProps } from '../../src';
+import type { Column } from '../../src';
+import { renderCoordinates } from './renderers';
 import type { Props } from './types';
 
 type Row = number;
 const rows: readonly Row[] = [...Array(500).keys()];
-
-function cellFormatter(props: FormatterProps<Row>) {
-  return (
-    <>
-      {props.column.key}&times;{props.row}
-    </>
-  );
-}
 
 export default function VariableRowHeight({ direction }: Props) {
   const columns = useMemo((): readonly Column<Row>[] => {
@@ -26,7 +19,7 @@ export default function VariableRowHeight({ direction }: Props) {
         name: key,
         frozen: i < 5,
         resizable: true,
-        formatter: cellFormatter
+        renderCell: renderCoordinates
       });
     }
 

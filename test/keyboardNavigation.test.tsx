@@ -1,11 +1,16 @@
 import { StrictMode } from 'react';
-import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
 import DataGrid, { SelectColumn } from '../src';
-import { useFocusRef } from '../src/hooks';
-import { setup, getSelectedCell, validateCellPosition, getCellsAtRowIndex, getGrid } from './utils';
+import {
+  getCellsAtRowIndex,
+  getSelectedCell,
+  render,
+  scrollGrid,
+  setup,
+  validateCellPosition
+} from './utils';
 
 type Row = undefined;
 
@@ -163,13 +168,13 @@ test('grid enter/exit', async () => {
   expect(document.body).toHaveFocus();
 });
 
-test('navigation with focusable formatter', async () => {
+test('navigation with focusable cell renderer', async () => {
   setup({ columns, rows: Array(1), bottomSummaryRows });
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
 
-  // cell should not set tabIndex to 0 if it contains a focusable formatter
+  // cell should not set tabIndex to 0 if it contains a focusable cell renderer
   expect(getSelectedCell()).toHaveAttribute('tabIndex', '-1');
   const checkbox = getSelectedCell()!.querySelector('input');
   expect(checkbox).toHaveFocus();
@@ -177,36 +182,30 @@ test('navigation with focusable formatter', async () => {
 
   await userEvent.tab();
   validateCellPosition(1, 1);
-  // cell should set tabIndex to 0 if it does not have focusable formatter
+  // cell should set tabIndex to 0 if it does not have focusable cell renderer
   expect(getSelectedCell()).toHaveAttribute('tabIndex', '0');
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  function Test({ id, isCellSelected }: { id: string; isCellSelected: boolean }) {
-    const { ref, tabIndex } = useFocusRef<HTMLInputElement>(isCellSelected);
-
-    return <input ref={ref} tabIndex={tabIndex} id={id} />;
-  }
-
   const columns: readonly Column<Row>[] = [
     {
       key: 'col2',
       name: 'col2',
-      headerRenderer(p) {
-        return <Test id="header-filter1" isCellSelected={p.isCellSelected} />;
+      renderHeaderCell(p) {
+        return <input id="header-filter1" tabIndex={p.tabIndex} />;
       },
-      summaryFormatter(p) {
-        return <Test id="summary-formatter1" isCellSelected={p.isCellSelected} />;
+      renderSummaryCell(p) {
+        return <input id="summary-1" tabIndex={p.tabIndex} />;
       }
     },
     {
       key: 'col3',
       name: 'col3',
-      headerRenderer(p) {
-        return <Test id="header-filter2" isCellSelected={p.isCellSelected} />;
+      renderHeaderCell(p) {
+        return <input id="header-filter2" tabIndex={p.tabIndex} />;
       },
-      summaryFormatter(p) {
-        return <Test id="summary-formatter2" isCellSelected={p.isCellSelected} />;
+      renderSummaryCell(p) {
+        return <input id="summary-2" tabIndex={p.tabIndex} />;
       }
     }
   ];
@@ -235,10 +234,10 @@ test('navigation when header and summary rows have focusable elements', async ()
   validateCellPosition(1, 2);
 
   await userEvent.tab();
-  expect(document.getElementById('summary-formatter1')).toHaveFocus();
+  expect(document.getElementById('summary-1')).toHaveFocus();
 
   await userEvent.tab();
-  expect(document.getElementById('summary-formatter2')).toHaveFocus();
+  expect(document.getElementById('summary-2')).toHaveFocus();
 
   await userEvent.tab({ shift: true });
   await userEvent.tab({ shift: true });
@@ -255,18 +254,17 @@ test('navigation when selected cell not in the viewport', async () => {
   await userEvent.tab();
   validateCellPosition(0, 0);
 
-  const grid = getGrid();
   await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
   validateCellPosition(99, 100);
   expect(getCellsAtRowIndex(100)).not.toHaveLength(1);
 
-  grid.scrollTop = 0;
+  await scrollGrid({ scrollTop: 0 });
   expect(getCellsAtRowIndex(99)).toHaveLength(1);
   await userEvent.keyboard('{arrowup}');
   validateCellPosition(99, 99);
   expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
 
-  grid.scrollLeft = 0;
+  await scrollGrid({ scrollLeft: 0 });
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(99, 100);
 
@@ -274,7 +272,7 @@ test('navigation when selected cell not in the viewport', async () => {
     '{home}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
   );
   validateCellPosition(7, 100);
-  grid.scrollLeft = 2000;
+  await scrollGrid({ scrollLeft: 2000 });
   await userEvent.keyboard('{arrowleft}');
   validateCellPosition(6, 100);
 });
@@ -290,11 +288,7 @@ test('reset selected cell when column is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(
-    <StrictMode>
-      <Test columns={columns} />
-    </StrictMode>
-  );
+  const { rerender } = render(<Test columns={columns} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowright}');
@@ -320,11 +314,7 @@ test('reset selected cell when row is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(
-    <StrictMode>
-      <Test rows={rows} />
-    </StrictMode>
-  );
+  const { rerender } = render(<Test rows={rows} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');

@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import { css } from '@linaria/core';
 
-import { useRovingCellRef } from './hooks';
-import { getCellStyle, getCellClassname, isCellEditable, createCellEvent } from './utils';
+import { useRovingTabIndex } from './hooks';
+import { createCellEvent, getCellClassname, getCellStyle, isCellEditable } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`
@@ -34,7 +34,6 @@ function Cell<R, SR>({
   row,
   rowIdx,
   dragHandle,
-  skipCellFocusRef,
   onClick,
   onDoubleClick,
   onContextMenu,
@@ -42,7 +41,7 @@ function Cell<R, SR>({
   selectCell,
   ...props
 }: CellRendererProps<R, SR>) {
-  const { ref, tabIndex, onFocus } = useRovingCellRef(isCellSelected, skipCellFocusRef);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   const { cellClass } = column;
   const className = getCellClassname(
@@ -97,7 +96,6 @@ function Cell<R, SR>({
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
       aria-readonly={!isEditable || undefined}
-      ref={ref}
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
@@ -107,18 +105,14 @@ function Cell<R, SR>({
       onFocus={onFocus}
       {...props}
     >
-      {!column.rowGroup && (
-        <>
-          {column.formatter({
-            column,
-            row,
-            isCellSelected,
-            isCellEditable: isEditable,
-            onRowChange: handleRowChange
-          })}
-          {dragHandle}
-        </>
-      )}
+      {column.renderCell({
+        column,
+        row,
+        isCellEditable: isEditable,
+        tabIndex: childTabIndex,
+        onRowChange: handleRowChange
+      })}
+      {dragHandle}
     </div>
   );
 }

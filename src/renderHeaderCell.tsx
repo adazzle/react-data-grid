@@ -1,7 +1,6 @@
 import { css } from '@linaria/core';
 
-import { useFocusRef } from './hooks';
-import type { HeaderRendererProps } from './types';
+import type { RenderHeaderCellProps } from './types';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 
 const headerSortCell = css`
@@ -28,21 +27,21 @@ const headerSortName = css`
 
 const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
 
-export default function headerRenderer<R, SR>({
+export default function renderHeaderCell<R, SR>({
   column,
   sortDirection,
   priority,
   onSort,
-  isCellSelected
-}: HeaderRendererProps<R, SR>) {
-  if (!column.sortable) return <>{column.name}</>;
+  tabIndex
+}: RenderHeaderCellProps<R, SR>) {
+  if (!column.sortable) return column.name;
 
   return (
     <SortableHeaderCell
       onSort={onSort}
       sortDirection={sortDirection}
       priority={priority}
-      isCellSelected={isCellSelected}
+      tabIndex={tabIndex}
     >
       {column.name}
     </SortableHeaderCell>
@@ -50,8 +49,8 @@ export default function headerRenderer<R, SR>({
 }
 
 type SharedHeaderCellProps<R, SR> = Pick<
-  HeaderRendererProps<R, SR>,
-  'sortDirection' | 'onSort' | 'priority' | 'isCellSelected'
+  RenderHeaderCellProps<R, SR>,
+  'sortDirection' | 'onSort' | 'priority' | 'tabIndex'
 >;
 
 interface SortableHeaderCellProps<R, SR> extends SharedHeaderCellProps<R, SR> {
@@ -63,10 +62,9 @@ function SortableHeaderCell<R, SR>({
   sortDirection,
   priority,
   children,
-  isCellSelected
+  tabIndex
 }: SortableHeaderCellProps<R, SR>) {
-  const sortStatus = useDefaultRenderers<R, SR>()!.sortStatus!;
-  const { ref, tabIndex } = useFocusRef<HTMLSpanElement>(isCellSelected);
+  const renderSortStatus = useDefaultRenderers<R, SR>()!.renderSortStatus!;
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
     if (event.key === ' ' || event.key === 'Enter') {
@@ -82,14 +80,13 @@ function SortableHeaderCell<R, SR>({
 
   return (
     <span
-      ref={ref}
       tabIndex={tabIndex}
       className={headerSortCellClassname}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       <span className={headerSortNameClassname}>{children}</span>
-      <span>{sortStatus({ sortDirection, priority })}</span>
+      <span>{renderSortStatus({ sortDirection, priority })}</span>
     </span>
   );
 }
