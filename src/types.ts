@@ -248,12 +248,9 @@ export type ColSpanArgs<TRow, TSummaryRow> =
   | { type: 'ROW'; row: TRow }
   | { type: 'SUMMARY'; row: TSummaryRow };
 
-export interface RowHeightArgs<TRow> {
-  type: 'ROW';
-  row: TRow;
-}
-
-export type GroupRowHeightArgs<TRow> = RowHeightArgs<TRow> | { type: 'GROUP'; row: GroupRow<TRow> };
+export type RowHeightArgs<TRow> =
+  | { type: 'ROW'; row: TRow }
+  | { type: 'GROUP'; row: GroupRow<TRow> };
 
 export interface RenderSortIconProps {
   sortDirection: SortDirection | undefined;

@@ -7,7 +7,6 @@ import type {
   CellKeyboardEvent,
   CellKeyDownArgs,
   GroupRow,
-  GroupRowHeightArgs,
   Maybe,
   Omit,
   RenderRowProps,
@@ -23,7 +22,7 @@ import { defaultRenderRow } from './Row';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<DataGridProps<R, SR, K>, 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'> {
-  rowHeight?: Maybe<number | ((args: GroupRowHeightArgs<R>) => number)>;
+  rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
   groupBy: readonly string[];
   rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
   expandedGroupIds: ReadonlySet<unknown>;
@@ -182,11 +181,11 @@ function TreeDataGrid<R, SR, K extends Key>(
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
-      return ({ row, type }: RowHeightArgs<R | GroupRow<R>>): number => {
+      return (row: R | GroupRow<R>): number => {
         if (isGroupRow(row)) {
           return rawRowHeight({ type: 'GROUP', row });
         }
-        return rawRowHeight({ row, type });
+        return rawRowHeight({ type: 'ROW', row });
       };
     }
 
