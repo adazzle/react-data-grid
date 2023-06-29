@@ -28,8 +28,8 @@ test('rowHeight is number', () => {
   expect(getRows()).toHaveLength(30);
 });
 
-test('rowHeight is function', () => {
-  setupGrid((args) => [40, 60, 80][args.row % 3]);
+test('rowHeight is function', async () => {
+  setupGrid((row) => [40, 60, 80][row % 3]);
 
   const rows = getRows();
   expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });

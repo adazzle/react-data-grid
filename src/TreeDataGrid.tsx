@@ -7,7 +7,6 @@ import type {
   CellKeyboardEvent,
   CellKeyDownArgs,
   GroupRow,
-  GroupRowHeightArgs,
   Maybe,
   Omit,
   RenderRowProps,
@@ -23,7 +22,7 @@ import { defaultRenderRow } from './Row';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<DataGridProps<R, SR, K>, 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'> {
-  rowHeight?: Maybe<number | ((args: GroupRowHeightArgs<R>) => number)>;
+  rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
   groupBy: readonly string[];
   rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
   expandedGroupIds: ReadonlySet<unknown>;
@@ -61,7 +60,6 @@ function TreeDataGrid<R, SR, K extends Key>(
   const defaultRenderers = useDefaultRenderers<R, SR>();
   const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
-  const bottomSummaryRowsCount = props.bottomSummaryRows?.length ?? 0;
   const isRtl = props.direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
   const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
@@ -182,11 +180,11 @@ function TreeDataGrid<R, SR, K extends Key>(
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
-      return ({ row, type }: RowHeightArgs<R | GroupRow<R>>): number => {
+      return (row: R | GroupRow<R>): number => {
         if (isGroupRow(row)) {
           return rawRowHeight({ type: 'GROUP', row });
         }
-        return rawRowHeight({ row, type });
+        return rawRowHeight({ type: 'ROW', row });
       };
     }
 
@@ -292,37 +290,26 @@ function TreeDataGrid<R, SR, K extends Key>(
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const idx = column?.idx ?? -1;
     const row = rows[rowIdx];
-    if (!isGroupRow(row)) return;
-    if (idx === -1) {
-      if (
-        // Collapse the current group row if it is focused and is in expanded state
-        (event.key === leftKey && row.isExpanded) ||
-        // Expand the current group row if it is focused and is in collapsed state
-        (event.key === rightKey && !row.isExpanded)
-      ) {
-        event.preventDefault(); // Prevents scrolling
-        event.preventGridDefault();
-        toggleGroup(row.id);
-      }
 
-      if (event.key === leftKey) {
-        if (!row.isExpanded && row.level !== 0) {
-          const parentRowAndIndex = getParentRowAndIndex(row);
-          if (parentRowAndIndex !== undefined) {
-            event.preventGridDefault();
-            selectCell({ idx, rowIdx: parentRowAndIndex[1] });
-          }
-        }
-      } else if (event.key === 'Home') {
+    if (!isGroupRow(row)) return;
+    if (
+      idx === -1 &&
+      // Collapse the current group row if it is focused and is in expanded state
+      ((event.key === leftKey && row.isExpanded) ||
+        // Expand the current group row if it is focused and is in collapsed state
+        (event.key === rightKey && !row.isExpanded))
+    ) {
+      event.preventDefault(); // Prevents scrolling
+      event.preventGridDefault();
+      toggleGroup(row.id);
+    }
+
+    // If a group row is focused, and it is collapsed, move to the parent group row (if there is one).
+    if (idx === -1 && event.key === leftKey && !row.isExpanded && row.level !== 0) {
+      const parentRowAndIndex = getParentRowAndIndex(row);
+      if (parentRowAndIndex !== undefined) {
         event.preventGridDefault();
-        // If row is selected then move focus to the first row
-        const minRowIdx = -headerAndTopSummaryRowsCount;
-        selectCell({ idx, rowIdx: minRowIdx });
-      } else if (event.key === 'End') {
-        event.preventGridDefault();
-        // If row is selected then move focus to the last row.
-        const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
-        selectCell({ idx, rowIdx: maxRowIdx });
+        selectCell({ idx, rowIdx: parentRowAndIndex[1] });
       }
     }
 

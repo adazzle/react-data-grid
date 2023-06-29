@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 
 import { floor, max, min } from '../utils';
-import type { RowHeightArgs } from '../types';
 
 interface ViewportRowsArgs<R> {
   rows: readonly R[];
-  rowHeight: number | ((args: RowHeightArgs<R>) => number);
+  rowHeight: number | ((row: R) => number);
   clientHeight: number;
   scrollTop: number;
   enableVirtualization: boolean;
@@ -35,7 +34,7 @@ export function useViewportRows<R>({
     // and we can consider using a similar approach as react-window
     // https://github.com/bvaughn/react-window/blob/b0a470cc264e9100afcaa1b78ed59d88f7914ad4/src/VariableSizeList.js#L68
     const rowPositions = rows.map((row) => {
-      const currentRowHeight = rowHeight({ type: 'ROW', row });
+      const currentRowHeight = rowHeight(row);
       const position = { top: totalRowHeight, height: currentRowHeight };
       gridTemplateRows += `${currentRowHeight}px `;
       totalRowHeight += currentRowHeight;
