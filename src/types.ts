@@ -212,11 +212,13 @@ export interface FillEvent<TRow> {
 }
 
 export interface CopyEvent<TRow> {
+  event: React.KeyboardEvent<HTMLDivElement>;
   sourceColumnKey: string;
   sourceRow: TRow;
 }
 
 export interface PasteEvent<TRow> {
+  event: React.KeyboardEvent<HTMLDivElement>;
   sourceColumnKey: string;
   sourceRow: TRow;
   targetColumnKey: string;

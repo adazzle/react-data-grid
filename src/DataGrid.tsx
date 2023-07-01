@@ -543,11 +543,11 @@ function DataGrid<R, SR, K extends Key>(
       const cKey = 67;
       const vKey = 86;
       if (keyCode === cKey) {
-        handleCopy();
+        handleCopy(event);
         return;
       }
       if (keyCode === vKey) {
-        handlePaste();
+        handlePaste(event);
         return;
       }
     }
@@ -599,15 +599,15 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(columns[selectedPosition.idx], selectedPosition.rowIdx, selectedPosition.row);
   }
 
-  function handleCopy() {
+  function handleCopy(event: KeyboardEvent<HTMLDivElement>) {
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];
     const sourceColumnKey = columns[idx].key;
     setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
-    onCopy?.({ sourceRow, sourceColumnKey });
+    onCopy?.({ event, sourceRow, sourceColumnKey });
   }
 
-  function handlePaste() {
+  function handlePaste(event: KeyboardEvent<HTMLDivElement>) {
     if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
       return;
     }
@@ -617,6 +617,7 @@ function DataGrid<R, SR, K extends Key>(
     const targetRow = rows[rowIdx];
 
     const updatedTargetRow = onPaste({
+      event,
       sourceRow: copiedCell.row,
       sourceColumnKey: copiedCell.columnKey,
       targetRow,
