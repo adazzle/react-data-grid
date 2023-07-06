@@ -2,7 +2,6 @@
   "singleQuote": true,
   "trailingComma": "none",
   "printWidth": 100,
-  "pluginSearchDirs": false,
   "plugins": ["@ianvs/prettier-plugin-sort-imports"],
   "importOrder": [
     "<BUILTIN_MODULES>",
