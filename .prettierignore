@@ -1,7 +1,2 @@
-/coverage
-/dist
-/lib
-/node_modules
-/package-lock.json
 *.js
 *.cjs
