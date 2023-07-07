@@ -5,5 +5,5 @@ export function stopPropagation(event: React.SyntheticEvent) {
 }
 
 export function scrollIntoView(element: Maybe<Element>) {
-  element?.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+  element?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
 }
