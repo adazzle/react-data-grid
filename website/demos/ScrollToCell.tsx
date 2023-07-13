@@ -41,7 +41,7 @@ export default function ScrollToCell({ direction }: Props) {
   }
 
   function scrollToCell() {
-    gridRef.current!.scrollToCell({ idx, rowIdx });
+    gridRef.current!.scrollToCell({ idx, rowIdx }, { behavior: 'smooth' }); // smooth transition
   }
 
   return (

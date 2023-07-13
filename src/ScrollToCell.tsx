@@ -11,18 +11,20 @@ export interface PartialPosition {
 export default function ScrollToCell({
   scrollToPosition: { idx, rowIdx },
   gridElement,
-  setScrollToCellPosition
+  setScrollToCellPosition,
+  scrollIntoViewOptions
 }: {
   scrollToPosition: PartialPosition;
   gridElement: HTMLDivElement;
   setScrollToCellPosition: (cell: null) => void;
+  scrollIntoViewOptions?: boolean | ScrollIntoViewOptions | undefined;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     // scroll until the cell is completely visible
     // this is needed if the grid has auto-sized columns
-    scrollIntoView(ref.current);
+    scrollIntoView(ref.current, scrollIntoViewOptions);
   });
 
   useLayoutEffect(() => {
