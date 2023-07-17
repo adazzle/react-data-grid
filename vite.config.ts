@@ -7,7 +7,6 @@ const isCI = process.env.CI === 'true';
 const isTest = process.env.NODE_ENV === 'test';
 
 export default defineConfig({
-  root: 'website',
   base: isCI ? '/react-data-grid/' : '/',
   build: {
     outDir: '../dist',
