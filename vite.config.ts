@@ -9,7 +9,6 @@ const isTest = process.env.NODE_ENV === 'test';
 export default defineConfig({
   base: isCI ? '/react-data-grid/' : '/',
   build: {
-    outDir: '../dist',
     emptyOutDir: true,
     sourcemap: true
   },
