@@ -36,6 +36,7 @@ import type {
   CellMouseEvent,
   CellNavigationMode,
   Column,
+  ColumnGroup,
   CopyEvent,
   Direction,
   FillEvent,
@@ -105,7 +106,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Grid and data Props
    */
   /** An array of objects representing each column on the grid */
-  columns: readonly Column<R, SR>[];
+  columns: ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>>;
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
