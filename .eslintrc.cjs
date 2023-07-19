@@ -25,7 +25,7 @@ const rules = {
   'no-dupe-else-if': 1,
   'no-dupe-keys': 1,
   'no-duplicate-case': 1,
-  'no-duplicate-imports': 0, // replaced by @typescript-eslint/no-duplicate-imports
+  'no-duplicate-imports': 0,
   'no-empty-character-class': 1,
   'no-empty-pattern': 1,
   'no-ex-assign': 1,
@@ -570,7 +570,6 @@ const rules = {
   '@typescript-eslint/no-extraneous-class': 1,
   '@typescript-eslint/no-floating-promises': 0,
   '@typescript-eslint/no-for-in-array': 1,
-  '@typescript-eslint/no-implicit-any-catch': 0,
   '@typescript-eslint/no-import-type-side-effects': 0,
   '@typescript-eslint/no-inferrable-types': 1,
   '@typescript-eslint/no-invalid-void-type': 1,
@@ -582,7 +581,6 @@ const rules = {
   '@typescript-eslint/no-non-null-asserted-nullish-coalescing': 1,
   '@typescript-eslint/no-non-null-asserted-optional-chain': 1,
   '@typescript-eslint/no-non-null-assertion': 0,
-  '@typescript-eslint/no-parameter-properties': 0,
   '@typescript-eslint/no-redundant-type-constituents': 1,
   '@typescript-eslint/no-require-imports': 1,
   '@typescript-eslint/no-this-alias': 0,
@@ -613,11 +611,7 @@ const rules = {
   '@typescript-eslint/prefer-namespace-keyword': 0,
   '@typescript-eslint/prefer-nullish-coalescing': [
     1,
-    {
-      ignoreConditionalTests: false,
-      ignoreTernaryTests: false,
-      ignoreMixedLogicalExpressions: false
-    }
+    { ignorePrimitives: { boolean: true, string: true } }
   ],
   '@typescript-eslint/prefer-optional-chain': 1,
   '@typescript-eslint/prefer-readonly': 1,
@@ -632,7 +626,6 @@ const rules = {
   '@typescript-eslint/restrict-plus-operands': 0,
   '@typescript-eslint/restrict-template-expressions': 0,
   '@typescript-eslint/sort-type-constituents': 0,
-  '@typescript-eslint/sort-type-union-intersection-members': 0,
   '@typescript-eslint/strict-boolean-expressions': 0,
   '@typescript-eslint/switch-exhaustiveness-check': 1,
   '@typescript-eslint/triple-slash-reference': [1, { path: 'never', types: 'never', lib: 'never' }],
@@ -658,7 +651,6 @@ const rules = {
   '@typescript-eslint/lines-between-class-members': 0,
   '@typescript-eslint/no-array-constructor': 1,
   '@typescript-eslint/no-dupe-class-members': 0,
-  '@typescript-eslint/no-duplicate-imports': 1,
   '@typescript-eslint/no-empty-function': 0,
   '@typescript-eslint/no-extra-parens': 0,
   '@typescript-eslint/no-extra-semi': 0,
