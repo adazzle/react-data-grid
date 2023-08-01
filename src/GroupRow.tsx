@@ -82,7 +82,7 @@ function GroupedRow<R, SR>({
             row={row}
             groupColumnIndex={idx}
             toggleGroup={toggleGroup}
-            rowGroup={groupBy.includes(column.key)}
+            isGroupByColumn={groupBy.includes(column.key)}
           />
         ))}
       </div>

@@ -14,7 +14,7 @@ interface GroupCellProps<R, SR> {
   row: GroupRow<R>;
   isCellSelected: boolean;
   groupColumnIndex: number;
-  rowGroup: boolean;
+  isGroupByColumn: boolean;
 }
 
 function GroupCell<R, SR>({
@@ -26,7 +26,7 @@ function GroupCell<R, SR>({
   column,
   row,
   groupColumnIndex,
-  rowGroup,
+  isGroupByColumn,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
@@ -36,7 +36,7 @@ function GroupCell<R, SR>({
   }
 
   // Only make the cell clickable if the group level matches
-  const isLevelMatching = rowGroup && groupColumnIndex === column.idx;
+  const isLevelMatching = isGroupByColumn && groupColumnIndex === column.idx;
 
   return (
     <div
@@ -53,7 +53,7 @@ function GroupCell<R, SR>({
       onClick={isLevelMatching ? toggleGroup : undefined}
       onFocus={onFocus}
     >
-      {(!rowGroup || isLevelMatching) &&
+      {(!isGroupByColumn || isLevelMatching) &&
         column.renderGroupCell?.({
           groupKey,
           childRows,
