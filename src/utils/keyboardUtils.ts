@@ -69,8 +69,9 @@ export function onEditorNavigation({ key, target }: React.KeyboardEvent<HTMLDivE
       target instanceof HTMLTextAreaElement ||
       target instanceof HTMLSelectElement)
   ) {
-    return target.matches(
-      '.rdg-editor-container > :only-child, .rdg-editor-container > label:only-child > :only-child, .rdg-editor-container > div:only-child > label:only-child > :only-child'
+    return (
+      target.closest('.rdg-editor-container')?.querySelectorAll('input, textarea, select')
+        .length === 1
     );
   }
   return false;
