@@ -60,6 +60,9 @@ const columns: readonly Column<Row>[] = [
           value: {props.row.id}
         </button>
       );
+    },
+    renderGroupCell({ childRows }) {
+      return Math.min(...childRows.map((c) => c.id));
     }
   }
 ];
@@ -356,13 +359,13 @@ test('cell navigation in a treegrid', async () => {
   expect(getRows()[1]).toHaveClass(rowSelectedClassname);
 
   await userEvent.keyboard('{end}');
-  expect(getRows()[4]).toHaveClass(rowSelectedClassname);
+  expect(getRows()[5]).toHaveClass(rowSelectedClassname);
 
   await userEvent.keyboard('{home}');
-  expect(getRows()[1]).toHaveClass(rowSelectedClassname);
+  expect(screen.getAllByRole('row')[0]).toHaveClass(rowSelectedClassname);
 
   // collpase parent group
-  await userEvent.keyboard('{arrowleft}');
+  await userEvent.keyboard('{arrowdown}{arrowdown}{arrowleft}');
   expect(screen.queryByRole('gridcell', { name: '2021' })).not.toBeInTheDocument();
   expect(getRows()).toHaveLength(4);
 });
@@ -387,4 +390,10 @@ test('update row using cell renderer', async () => {
   expect(getSelectedCell()).toHaveTextContent('value: 2');
   await userEvent.click(screen.getByRole('button', { name: 'value: 2' }));
   expect(getSelectedCell()).toHaveTextContent('value: 12');
+});
+
+test('custom renderGroupCell', () => {
+  setup(['country']);
+  expect(getCellsAtRowIndex(1)[4]).toHaveTextContent('1');
+  expect(getCellsAtRowIndex(4)[4]).toHaveTextContent('3');
 });
