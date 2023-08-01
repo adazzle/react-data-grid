@@ -1131,12 +1131,8 @@ function DataGrid<R, SR, K extends Key>(
   );
 }
 
-let getCellToScrollExpression: XPathExpression | undefined;
-
 function getCellToScroll(gridEl: HTMLDivElement) {
-  getCellToScrollExpression ??= document.createExpression('div[@role="row"]/div[@tabindex="0"]');
-  // XPathResult.ANY_UNORDERED_NODE_TYPE === 8
-  return getCellToScrollExpression.evaluate(gridEl, 8).singleNodeValue as HTMLDivElement | null;
+  return gridEl.querySelector<HTMLDivElement>(':scope > [role="row"] > [tabindex="0"]');
 }
 
 function isSamePosition(p1: Position, p2: Position) {
