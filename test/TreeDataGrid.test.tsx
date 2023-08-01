@@ -392,10 +392,8 @@ test('update row using cell renderer', async () => {
   expect(getSelectedCell()).toHaveTextContent('value: 12');
 });
 
-test('custom renderGroupCell', async () => {
+test('custom renderGroupCell', () => {
   setup(['country']);
-  await userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
-  await userEvent.click(screen.getByRole('gridcell', { name: 'Canada' }));
   expect(getCellsAtRowIndex(1)[4]).toHaveTextContent('1');
-  expect(getCellsAtRowIndex(2)[4]).toHaveTextContent('3');
+  expect(getCellsAtRowIndex(4)[4]).toHaveTextContent('3');
 });
