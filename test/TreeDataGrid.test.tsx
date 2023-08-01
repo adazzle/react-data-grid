@@ -60,6 +60,9 @@ const columns: readonly Column<Row>[] = [
           value: {props.row.id}
         </button>
       );
+    },
+    renderGroupCell({ childRows }) {
+      return Math.min(...childRows.map((c) => c.id));
     }
   }
 ];
