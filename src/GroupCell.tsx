@@ -3,7 +3,6 @@ import { memo } from 'react';
 import { useRovingTabIndex } from './hooks';
 import { getCellClassname, getCellStyle } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
-import { SELECT_COLUMN_KEY } from './Columns';
 
 interface GroupCellProps<R, SR> {
   id: string;
@@ -15,6 +14,7 @@ interface GroupCellProps<R, SR> {
   row: GroupRow<R>;
   isCellSelected: boolean;
   groupColumnIndex: number;
+  rowGroup: boolean;
 }
 
 function GroupCell<R, SR>({
@@ -26,6 +26,7 @@ function GroupCell<R, SR>({
   column,
   row,
   groupColumnIndex,
+  rowGroup,
   toggleGroup: toggleGroupWrapper
 }: GroupCellProps<R, SR>) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
@@ -35,7 +36,7 @@ function GroupCell<R, SR>({
   }
 
   // Only make the cell clickable if the group level matches
-  const isLevelMatching = groupColumnIndex === column.idx;
+  const isLevelMatching = rowGroup && groupColumnIndex === column.idx;
 
   return (
     <div
@@ -52,7 +53,7 @@ function GroupCell<R, SR>({
       onClick={isLevelMatching ? toggleGroup : undefined}
       onFocus={onFocus}
     >
-      {(isLevelMatching || column.key === SELECT_COLUMN_KEY) &&
+      {(!rowGroup || isLevelMatching) &&
         column.renderGroupCell?.({
           groupKey,
           childRows,
