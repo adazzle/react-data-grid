@@ -60,6 +60,9 @@ const columns: readonly Column<Row>[] = [
           value: {props.row.id}
         </button>
       );
+    },
+    renderGroupCell({ childRows }) {
+      return Math.min(...childRows.map((c) => c.id));
     }
   }
 ];
@@ -387,4 +390,12 @@ test('update row using cell renderer', async () => {
   expect(getSelectedCell()).toHaveTextContent('value: 2');
   await userEvent.click(screen.getByRole('button', { name: 'value: 2' }));
   expect(getSelectedCell()).toHaveTextContent('value: 12');
+});
+
+test.only('custom renderGroupCell', async () => {
+  setup(['country']);
+  await userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
+  await userEvent.click(screen.getByRole('gridcell', { name: 'Canada' }));
+  expect(getCellsAtRowIndex(1)[4]).toHaveTextContent('1');
+  expect(getCellsAtRowIndex(2)[4]).toHaveTextContent('3');
 });
