@@ -246,7 +246,6 @@ test('should select rows in a group', async () => {
   const groupCell2 = screen.getByRole('gridcell', { name: 'Canada' });
   await userEvent.click(groupCell2);
 
-  // eslint-disable-next-line jest-dom/prefer-in-document
   expect(screen.queryAllByRole('row', { selected: true })).toHaveLength(0);
 
   // select parent row
@@ -261,7 +260,6 @@ test('should select rows in a group', async () => {
   // unselecting child should unselect the parent row
   await userEvent.click(within(selectedRows[3]).getByLabelText('Select'));
   selectedRows = screen.getAllByRole('row', { selected: true });
-  // eslint-disable-next-line jest-dom/prefer-in-document
   expect(selectedRows).toHaveLength(1);
   expect(selectedRows[0]).toHaveAttribute('aria-rowindex', '7');
 
@@ -274,7 +272,6 @@ test('should select rows in a group', async () => {
   // unselect child group
   await userEvent.click(checkbox);
   selectedRows = screen.getAllByRole('row', { selected: true });
-  // eslint-disable-next-line jest-dom/prefer-in-document
   expect(selectedRows).toHaveLength(1);
 
   await userEvent.click(screen.getByRole('gridcell', { name: '2020' }));
