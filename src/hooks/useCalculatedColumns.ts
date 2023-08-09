@@ -51,8 +51,7 @@ export function useCalculatedColumns<R, SR>({
     let lastFrozenColumnIndex = -1;
 
     const columns = rawColumns.map((rawColumn) => {
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      const frozen = rawColumn.frozen || false;
+      const frozen = rawColumn.frozen ?? false;
 
       const column: Mutable<CalculatedColumn<R, SR>> = {
         ...rawColumn,

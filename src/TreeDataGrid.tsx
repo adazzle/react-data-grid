@@ -370,6 +370,7 @@ function TreeDataGrid<R, SR, K extends Key>(
           {...rowProps}
           aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1}
           row={row}
+          groupBy={groupBy}
           toggleGroup={toggleGroupLatest}
         />
       );
