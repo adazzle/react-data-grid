@@ -24,6 +24,7 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   isSelectedCellEditable,
+  iterateOverColumns,
   renderMeasuringCells,
   scrollIntoView,
   sign
@@ -37,6 +38,7 @@ import type {
   CellNavigationMode,
   Column,
   ColumnGroup,
+  ColumnOrColumnGroup,
   CopyEvent,
   Direction,
   FillEvent,
@@ -106,7 +108,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Grid and data Props
    */
   /** An array of objects representing each column on the grid */
-  columns: ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>>;
+  columns: readonly ColumnOrColumnGroup<R, SR>[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
@@ -259,13 +261,25 @@ function DataGrid<R, SR, K extends Key>(
   const enableVirtualization = rawEnableVirtualization ?? true;
   const direction = rawDirection ?? 'ltr';
 
-  const headerRowsCount = 1;
+  /**
+   * computed values
+   */
+  const columnGroupRows = getColumnGroupRows(rawColumns);
+  const headerRowsCount = 1 + columnGroupRows.length;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
   const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
   const headerAndTopSummaryRowsCount = headerRowsCount + topSummaryRowsCount;
   const minRowIdx = -headerAndTopSummaryRowsCount;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
+  const isTreeGrid = role === 'treegrid';
+  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
+  const isSelectable = selectedRows != null && onSelectedRowsChange != null;
+  const isRtl = direction === 'rtl';
+  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const ariaRowCount = rawAriaRowCount ?? headerRowsCount + rows.length + summaryRowsCount;
 
   /**
    * states
@@ -294,18 +308,6 @@ function DataGrid<R, SR, K extends Key>(
   const lastSelectedRowIdx = useRef(-1);
   const focusSinkRef = useRef<HTMLDivElement>(null);
   const shouldFocusCellRef = useRef(false);
-
-  /**
-   * computed values
-   */
-  const isTreeGrid = role === 'treegrid';
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
-  const isSelectable = selectedRows != null && onSelectedRowsChange != null;
-  const isRtl = direction === 'rtl';
-  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
-  const ariaRowCount = rawAriaRowCount ?? headerRowsCount + rows.length + summaryRowsCount;
 
   const defaultGridComponents = useMemo(
     () => ({
@@ -1021,7 +1023,9 @@ function DataGrid<R, SR, K extends Key>(
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <RowSelectionChangeProvider value={selectRowLatest}>
           <RowSelectionProvider value={allRowsSelected}>
+            {columnGroupRows}
             <HeaderRow
+              rowIdx={headerRowsCount}
               columns={getRowViewportColumns(minRowIdx)}
               onColumnResize={handleColumnResizeLatest}
               sortColumns={sortColumns}
@@ -1138,6 +1142,92 @@ function getCellToScroll(gridEl: HTMLDivElement) {
 
 function isSamePosition(p1: Position, p2: Position) {
   return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
+}
+
+function getColumnGroupRows<R, SR>(rawColumns: readonly ColumnOrColumnGroup<R, SR>[]) {
+  const rows: ColumnGroup<R, SR>[][] = [];
+  fdsfdsfs(rawColumns, rows, 0);
+
+  const headerRows = [];
+  let startRowIdx = 1;
+
+  for (const row of rows) {
+    if (row.length === 0) continue;
+
+    headerRows.push(
+      <div key={startRowIdx} style={{ display: 'contents' }}>
+        {row.map((columnGroup, index) => {
+          let gridColumnStart = -1;
+          const span = 1;
+          for (const rawColumn of iterateOverColumns(columnGroup.children)) {
+            if (gridColumnStart === -1) {
+              let idx = -1;
+              for (const c of iterateOverColumns(rawColumns)) {
+                idx++;
+                if (c === rawColumn) {
+                  gridColumnStart = idx;
+                  break;
+                }
+              }
+            }
+            // span += getColSpan(column);
+          }
+
+          return (
+            <div
+              key={index}
+              style={{
+                gridRowStart: startRowIdx,
+                gridColumnStart,
+                gridColumnEnd: gridColumnStart + span
+              }}
+            >
+              {columnGroup.name}
+            </div>
+          );
+        })}
+      </div>
+    );
+
+    startRowIdx++;
+  }
+
+  return headerRows;
+}
+
+function fdsfdsfs<R, SR>(
+  rawColumns: readonly ColumnOrColumnGroup<R, SR>[],
+  rows: ColumnGroup<R, SR>[][],
+  depth: number
+) {
+  if (rows.length === depth) {
+    rows.push([]);
+  }
+
+  const row = rows[depth];
+
+  for (const rawColumn of rawColumns) {
+    if ('children' in rawColumn) {
+      row.push(rawColumn);
+      fdsfdsfs(rawColumn.children, rows, depth + 1);
+    }
+  }
+}
+
+function* iterateOverColumnGroups<R, SR>(
+  rawColumns: readonly ColumnOrColumnGroup<R, SR>[],
+  rows: ColumnGroup<R, SR>[][]
+) {
+  for (const rawColumn of rawColumns) {
+    if ('children' in rawColumn) {
+      const hasChildren = false;
+
+      for (const child of rawColumn.children) {
+      }
+
+      yield <div style={{ gridColumn: -1, gridRow: 1 }}>{rawColumn.name}</div>;
+    }
+  }
 }
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(

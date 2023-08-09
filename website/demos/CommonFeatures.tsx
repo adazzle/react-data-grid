@@ -3,8 +3,13 @@ import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectCellFormatter, SelectColumn, textEditor } from '../../src';
-import type { Column, SortColumn } from '../../src';
+import DataGrid, {
+  SelectCellFormatter,
+  SelectColumn,
+  textEditor,
+  type ColumnOrColumnGroup,
+  type SortColumn
+} from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
 import type { Props } from './types';
@@ -69,7 +74,7 @@ interface Row {
 function getColumns(
   countries: readonly string[],
   direction: Direction
-): readonly Column<Row, SummaryRow>[] {
+): readonly ColumnOrColumnGroup<Row, SummaryRow>[] {
   return [
     SelectColumn,
     {
@@ -82,19 +87,24 @@ function getColumns(
       }
     },
     {
-      key: 'title',
-      name: 'Task',
-      frozen: true,
-      renderEditCell: textEditor,
-      renderSummaryCell({ row }) {
-        return `${row.totalCount} records`;
-      }
-    },
-    {
-      key: 'client',
-      name: 'Client',
-      width: 'max-content',
-      renderEditCell: textEditor
+      name: 'My Group',
+      children: [
+        {
+          key: 'title',
+          name: 'Task',
+          frozen: true,
+          renderEditCell: textEditor,
+          renderSummaryCell({ row }) {
+            return `${row.totalCount} records`;
+          }
+        },
+        {
+          key: 'client',
+          name: 'Client',
+          width: 'max-content',
+          renderEditCell: textEditor
+        }
+      ]
     },
     {
       key: 'area',

@@ -73,8 +73,10 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
 export interface ColumnGroup<R, SR> {
   /** The name of the column group. By default it will be displayed in the header cell */
   readonly name: string | ReactElement;
-  readonly children: readonly Column<R, SR>[]; // TODO: use ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>> to support multiple header rows
+  readonly children: readonly ColumnOrColumnGroup<R, SR>[]; // TODO: use ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>> to support multiple header rows
 }
+
+export type ColumnOrColumnGroup<R, SR> = Column<R, SR> | ColumnGroup<R, SR>;
 
 export interface Position {
   readonly idx: number;

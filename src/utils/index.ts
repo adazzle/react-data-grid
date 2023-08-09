@@ -1,4 +1,4 @@
-import type { CalculatedColumn } from '../types';
+import type { CalculatedColumn, Column, ColumnOrColumnGroup } from '../types';
 
 export * from './colSpanUtils';
 export * from './domUtils';
@@ -30,4 +30,16 @@ export function clampColumnWidth<R, SR>(
   }
 
   return width;
+}
+
+export function* iterateOverColumns<R, SR>(
+  rawColumns: readonly ColumnOrColumnGroup<R, SR>[]
+): Generator<Column<R, SR>> {
+  for (const rawColumn of rawColumns) {
+    if ('children' in rawColumn) {
+      yield* iterateOverColumns(rawColumn.children);
+    } else {
+      yield rawColumn;
+    }
+  }
 }

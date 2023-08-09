@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { clampColumnWidth, max, min } from '../utils';
-import type { CalculatedColumn, Column } from '../types';
+import { clampColumnWidth, iterateOverColumns, max, min } from '../utils';
+import type { CalculatedColumn, ColumnOrColumnGroup } from '../types';
 import { renderValue } from '../cellRenderers';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import type { DataGridProps } from '../DataGrid';
@@ -19,7 +19,7 @@ const DEFAULT_COLUMN_WIDTH = 'auto';
 const DEFAULT_COLUMN_MIN_WIDTH = 50;
 
 interface CalculatedColumnsArgs<R, SR> extends Pick<DataGridProps<R, SR>, 'defaultColumnOptions'> {
-  rawColumns: readonly Column<R, SR>[];
+  rawColumns: readonly ColumnOrColumnGroup<R, SR>[];
   viewportWidth: number;
   scrollLeft: number;
   measuredColumnWidths: ReadonlyMap<string, number>;
@@ -39,7 +39,7 @@ export function useCalculatedColumns<R, SR>({
   const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
-  const defaultFormatter = defaultColumnOptions?.renderCell ?? renderValue;
+  const defaultCellRenderer = defaultColumnOptions?.renderCell ?? renderValue;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
@@ -50,10 +50,12 @@ export function useCalculatedColumns<R, SR>({
   } => {
     let lastFrozenColumnIndex = -1;
 
-    const columns = rawColumns.map((rawColumn) => {
+    const columns: Mutable<CalculatedColumn<R, SR>>[] = [];
+
+    for (const rawColumn of iterateOverColumns(rawColumns)) {
       const frozen = rawColumn.frozen ?? false;
 
-      const column: Mutable<CalculatedColumn<R, SR>> = {
+      columns.push({
         ...rawColumn,
         idx: 0,
         frozen,
@@ -63,15 +65,13 @@ export function useCalculatedColumns<R, SR>({
         maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
         sortable: rawColumn.sortable ?? defaultSortable,
         resizable: rawColumn.resizable ?? defaultResizable,
-        renderCell: rawColumn.renderCell ?? defaultFormatter
-      };
+        renderCell: rawColumn.renderCell ?? defaultCellRenderer
+      });
 
       if (frozen) {
         lastFrozenColumnIndex++;
       }
-
-      return column;
-    });
+    }
 
     columns.sort(({ key: aKey, frozen: frozenA }, { key: bKey, frozen: frozenB }) => {
       // Sort select column first:
@@ -112,7 +112,7 @@ export function useCalculatedColumns<R, SR>({
     defaultWidth,
     defaultMinWidth,
     defaultMaxWidth,
-    defaultFormatter,
+    defaultCellRenderer,
     defaultResizable,
     defaultSortable
   ]);
