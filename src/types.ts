@@ -59,6 +59,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+  readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
   readonly idx: number;
   readonly width: number | string;
   readonly minWidth: number;
@@ -74,6 +75,15 @@ export interface ColumnGroup<R, SR> {
   /** The name of the column group. By default it will be displayed in the header cell */
   readonly name: string | ReactElement;
   readonly children: readonly ColumnOrColumnGroup<R, SR>[]; // TODO: use ReadonlyArray<Column<R, SR> | ColumnGroup<R, SR>> to support multiple header rows
+}
+
+export type CalculatedColumnOrColumnGroup<R, SR> =
+  | CalculatedColumnParent<R, SR>
+  | CalculatedColumn<R, SR>;
+
+export interface CalculatedColumnParent<R, SR> {
+  readonly parent: CalculatedColumnParent<R, SR> | undefined;
+  readonly children: readonly CalculatedColumnOrColumnGroup<R, SR>[];
 }
 
 export type ColumnOrColumnGroup<R, SR> = Column<R, SR> | ColumnGroup<R, SR>;

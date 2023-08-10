@@ -1,7 +1,12 @@
 import { useMemo } from 'react';
 
-import { clampColumnWidth, iterateOverColumns, max, min } from '../utils';
-import type { CalculatedColumn, ColumnOrColumnGroup } from '../types';
+import { clampColumnWidth, max, min } from '../utils';
+import type {
+  CalculatedColumn,
+  CalculatedColumnOrColumnGroup,
+  CalculatedColumnParent,
+  ColumnOrColumnGroup
+} from '../types';
 import { renderValue } from '../cellRenderers';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import type { DataGridProps } from '../DataGrid';
@@ -51,25 +56,56 @@ export function useCalculatedColumns<R, SR>({
     let lastFrozenColumnIndex = -1;
 
     const columns: Mutable<CalculatedColumn<R, SR>>[] = [];
+    const columnGroups: CalculatedColumnParent<R, SR>[] = [];
 
-    for (const rawColumn of iterateOverColumns(rawColumns)) {
-      const frozen = rawColumn.frozen ?? false;
+    type MutableCalculatedColumnParent<R, SR> = CalculatedColumnParent<R, SR> & {
+      readonly children: CalculatedColumnOrColumnGroup<R, SR>[];
+    };
 
-      columns.push({
-        ...rawColumn,
-        idx: 0,
-        frozen,
-        isLastFrozenColumn: false,
-        width: rawColumn.width ?? defaultWidth,
-        minWidth: rawColumn.minWidth ?? defaultMinWidth,
-        maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
-        sortable: rawColumn.sortable ?? defaultSortable,
-        resizable: rawColumn.resizable ?? defaultResizable,
-        renderCell: rawColumn.renderCell ?? defaultCellRenderer
-      });
+    iterateRawColumns(rawColumns);
 
-      if (frozen) {
-        lastFrozenColumnIndex++;
+    function iterateRawColumns(
+      rawColumns: readonly ColumnOrColumnGroup<R, SR>[],
+      parent?: MutableCalculatedColumnParent<R, SR>
+    ) {
+      for (const rawColumn of rawColumns) {
+        if ('children' in rawColumn) {
+          const calculatedColumnParent: MutableCalculatedColumnParent<R, SR> = {
+            parent,
+            children: []
+          };
+
+          if (parent === undefined) {
+            columnGroups.push(calculatedColumnParent);
+          } else {
+            parent.children.push(calculatedColumnParent);
+          }
+
+          iterateRawColumns(rawColumn.children, calculatedColumnParent);
+          continue;
+        }
+
+        const frozen = rawColumn.frozen ?? false;
+
+        const column: CalculatedColumn<R, SR> = {
+          ...rawColumn,
+          parent,
+          idx: 0,
+          frozen,
+          isLastFrozenColumn: false,
+          width: rawColumn.width ?? defaultWidth,
+          minWidth: rawColumn.minWidth ?? defaultMinWidth,
+          maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
+          sortable: rawColumn.sortable ?? defaultSortable,
+          resizable: rawColumn.resizable ?? defaultResizable,
+          renderCell: rawColumn.renderCell ?? defaultCellRenderer
+        };
+
+        columns.push(column);
+
+        if (frozen) {
+          lastFrozenColumnIndex++;
+        }
       }
     }
 
