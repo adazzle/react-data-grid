@@ -11,6 +11,7 @@ import {
   useGridDimensions,
   useLatestFunc,
   useLayoutEffect,
+  useMoreCalculatedColumnsStuff,
   useViewportColumns,
   useViewportRows
 } from './hooks';
@@ -264,8 +265,11 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * computed values
    */
+  const { columns, colSpanColumns, lastFrozenColumnIndex, headerRowsCount } = useCalculatedColumns(
+    rawColumns,
+    defaultColumnOptions
+  );
   const columnGroupRows = getColumnGroupRows(rawColumns);
-  const headerRowsCount = 1 + columnGroupRows.length;
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
   const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
@@ -330,21 +334,18 @@ function DataGrid<R, SR, K extends Key>(
   }, [rows, selectedRows, rowKeyGetter]);
 
   const {
-    columns,
-    colSpanColumns,
     colOverscanStartIdx,
     colOverscanEndIdx,
     templateColumns,
     layoutCssVars,
-    lastFrozenColumnIndex,
     totalFrozenColumnWidth
-  } = useCalculatedColumns({
-    rawColumns,
+  } = useMoreCalculatedColumnsStuff({
+    columns,
+    lastFrozenColumnIndex,
     measuredColumnWidths,
     resizedColumnWidths,
     scrollLeft,
     viewportWidth: gridWidth,
-    defaultColumnOptions,
     enableVirtualization
   });
 
@@ -1210,22 +1211,6 @@ function fdsfdsfs<R, SR>(
     if ('children' in rawColumn) {
       row.push(rawColumn);
       fdsfdsfs(rawColumn.children, rows, depth + 1);
-    }
-  }
-}
-
-function* iterateOverColumnGroups<R, SR>(
-  rawColumns: readonly ColumnOrColumnGroup<R, SR>[],
-  rows: ColumnGroup<R, SR>[][]
-) {
-  for (const rawColumn of rawColumns) {
-    if ('children' in rawColumn) {
-      const hasChildren = false;
-
-      for (const child of rawColumn.children) {
-      }
-
-      yield <div style={{ gridColumn: -1, gridRow: 1 }}>{rawColumn.name}</div>;
     }
   }
 }
