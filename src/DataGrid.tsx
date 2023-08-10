@@ -25,7 +25,6 @@ import {
   isCtrlKeyHeldDown,
   isDefaultCellInput,
   isSelectedCellEditable,
-  iterateOverColumns,
   renderMeasuringCells,
   scrollIntoView,
   sign
@@ -38,7 +37,6 @@ import type {
   CellMouseEvent,
   CellNavigationMode,
   Column,
-  ColumnGroup,
   ColumnOrColumnGroup,
   CopyEvent,
   Direction,
@@ -269,7 +267,6 @@ function DataGrid<R, SR, K extends Key>(
     rawColumns,
     defaultColumnOptions
   );
-  const columnGroupRows = getColumnGroupRows(rawColumns);
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
   const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
@@ -1024,21 +1021,23 @@ function DataGrid<R, SR, K extends Key>(
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <RowSelectionChangeProvider value={selectRowLatest}>
           <RowSelectionProvider value={allRowsSelected}>
-            {columnGroupRows}
-            <HeaderRow
-              rowIdx={headerRowsCount}
-              columns={getRowViewportColumns(minRowIdx)}
-              onColumnResize={handleColumnResizeLatest}
-              sortColumns={sortColumns}
-              onSortColumnsChange={onSortColumnsChangeLatest}
-              lastFrozenColumnIndex={lastFrozenColumnIndex}
-              selectedCellIdx={
-                selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined
-              }
-              selectCell={selectHeaderCellLatest}
-              shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-              direction={direction}
-            />
+            {Array.from({ length: headerRowsCount }, (_, index) => (
+              <HeaderRow
+                key={index}
+                rowIdx={index + 1}
+                columns={getRowViewportColumns(minRowIdx)} // TODO: FIXME
+                onColumnResize={handleColumnResizeLatest}
+                sortColumns={sortColumns}
+                onSortColumnsChange={onSortColumnsChangeLatest}
+                lastFrozenColumnIndex={lastFrozenColumnIndex}
+                selectedCellIdx={
+                  selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined
+                }
+                selectCell={selectHeaderCellLatest}
+                shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+                direction={direction}
+              />
+            ))}
           </RowSelectionProvider>
           {rows.length === 0 && noRowsFallback ? (
             noRowsFallback
@@ -1143,76 +1142,6 @@ function getCellToScroll(gridEl: HTMLDivElement) {
 
 function isSamePosition(p1: Position, p2: Position) {
   return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
-}
-
-function getColumnGroupRows<R, SR>(rawColumns: readonly ColumnOrColumnGroup<R, SR>[]) {
-  const rows: ColumnGroup<R, SR>[][] = [];
-  fdsfdsfs(rawColumns, rows, 0);
-
-  const headerRows = [];
-  let startRowIdx = 1;
-
-  for (const row of rows) {
-    if (row.length === 0) continue;
-
-    headerRows.push(
-      <div key={startRowIdx} style={{ display: 'contents' }}>
-        {row.map((columnGroup, index) => {
-          let gridColumnStart = -1;
-          const span = 1;
-          for (const rawColumn of iterateOverColumns(columnGroup.children)) {
-            if (gridColumnStart === -1) {
-              let idx = -1;
-              for (const c of iterateOverColumns(rawColumns)) {
-                idx++;
-                if (c === rawColumn) {
-                  gridColumnStart = idx;
-                  break;
-                }
-              }
-            }
-            // span += getColSpan(column);
-          }
-
-          return (
-            <div
-              key={index}
-              style={{
-                gridRowStart: startRowIdx,
-                gridColumnStart,
-                gridColumnEnd: gridColumnStart + span
-              }}
-            >
-              {columnGroup.name}
-            </div>
-          );
-        })}
-      </div>
-    );
-
-    startRowIdx++;
-  }
-
-  return headerRows;
-}
-
-function fdsfdsfs<R, SR>(
-  rawColumns: readonly ColumnOrColumnGroup<R, SR>[],
-  rows: ColumnGroup<R, SR>[][],
-  depth: number
-) {
-  if (rows.length === depth) {
-    rows.push([]);
-  }
-
-  const row = rows[depth];
-
-  for (const rawColumn of rawColumns) {
-    if ('children' in rawColumn) {
-      row.push(rawColumn);
-      fdsfdsfs(rawColumn.children, rows, depth + 1);
-    }
-  }
 }
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
