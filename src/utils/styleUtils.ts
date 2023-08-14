@@ -14,6 +14,13 @@ export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
   return { '--rdg-grid-row-start': rowIdx } as unknown as CSSProperties;
 }
 
+export function getHeaderRowStyle(rowIdx: number, top: number): CSSProperties {
+  return {
+    '--rdg-grid-row-start': rowIdx,
+    '--rdg-header-row-top': `${top}px`
+  } as unknown as CSSProperties;
+}
+
 export function getCellStyle<R, SR>(
   column: CalculatedColumn<R, SR>,
   colSpan?: number

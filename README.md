@@ -31,6 +31,7 @@
   - Click on a sortable column header to toggle between its ascending/descending sort order
   - Ctrl+Click / Meta+Click to sort an additional column
 - [Column spanning](https://adazzle.github.io/react-data-grid/#/column-spanning)
+- Column grouping
 - [Row selection](https://adazzle.github.io/react-data-grid/#/common-features)
 - [Row grouping](https://adazzle.github.io/react-data-grid/#/grouping)
 - [Summary rows](https://adazzle.github.io/react-data-grid/#/common-features)

@@ -61,6 +61,7 @@ export function useCalculatedColumns<R, SR>(
       for (const rawColumn of rawColumns) {
         if ('children' in rawColumn) {
           const calculatedColumnParent: MutableCalculatedColumnParent<R, SR> = {
+            name: rawColumn.name,
             parent,
             children: [],
             level,
@@ -93,6 +94,10 @@ export function useCalculatedColumns<R, SR>(
         };
 
         columns.push(column);
+
+        if (parent !== undefined) {
+          parent.children.push(column);
+        }
 
         if (frozen) {
           lastFrozenColumnIndex++;

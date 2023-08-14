@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { getColSpan, getRowStyle } from './utils';
+import { getColSpan, getHeaderRowStyle } from './utils';
 import type { CalculatedColumn, Direction } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
@@ -16,6 +16,7 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   rowIdx: number;
+  top: number;
   columns: readonly CalculatedColumn<R, SR>[];
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
   selectCell: (columnIdx: number) => void;
@@ -36,7 +37,7 @@ const headerRow = css`
       /* Should have a higher value than 1 to show up above regular cells and the focus sink */
       z-index: 2;
       position: sticky;
-      inset-block-start: 0;
+      inset-block-start: var(--rdg-header-row-top);
     }
 
     & > .${cellFrozen} {
@@ -45,10 +46,11 @@ const headerRow = css`
   }
 `;
 
-const headerRowClassname = `rdg-header-row ${headerRow}`;
+export const headerRowClassname = `rdg-header-row ${headerRow}`;
 
 function HeaderRow<R, SR, K extends React.Key>({
   rowIdx,
+  top,
   columns,
   onColumnResize,
   sortColumns,
@@ -90,7 +92,7 @@ function HeaderRow<R, SR, K extends React.Key>({
       className={clsx(headerRowClassname, {
         [rowSelectedClassname]: selectedCellIdx === -1
       })}
-      style={getRowStyle(rowIdx)}
+      style={getHeaderRowStyle(rowIdx, top)}
     >
       {cells}
     </div>

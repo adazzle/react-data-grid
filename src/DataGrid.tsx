@@ -56,6 +56,7 @@ import {
 } from './DataGridDefaultRenderersProvider';
 import DragHandle from './DragHandle';
 import EditCell from './EditCell';
+import GroupedColumnHeaderRow from './GroupedColumnHeaderRow';
 import HeaderRow from './HeaderRow';
 import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
@@ -271,11 +272,14 @@ function DataGrid<R, SR, K extends Key>(
   const bottomSummaryRowsCount = bottomSummaryRows?.length ?? 0;
   const summaryRowsCount = topSummaryRowsCount + bottomSummaryRowsCount;
   const headerAndTopSummaryRowsCount = headerRowsCount + topSummaryRowsCount;
+  const groupedColumnHeaderRowsCount = headerRowsCount - 1;
   const minRowIdx = -headerAndTopSummaryRowsCount;
+  const mainHeaderIndex = minRowIdx + groupedColumnHeaderRowsCount;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
   const isTreeGrid = role === 'treegrid';
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const clientHeight = gridHeight - headerRowHeight - summaryRowsCount * summaryRowHeight;
+  const clientHeight =
+    gridHeight - headerRowsCount * headerRowHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
@@ -959,7 +963,7 @@ function DataGrid<R, SR, K extends Key>(
     setDraggedOverRowIdx(undefined);
   }
 
-  let templateRows = `${headerRowHeight}px`;
+  let templateRows = `repeat(${headerRowsCount}, ${headerRowHeight}px)`;
   if (topSummaryRowsCount > 0) {
     templateRows += ` repeat(${topSummaryRowsCount}, ${summaryRowHeight}px)`;
   }
@@ -1021,38 +1025,49 @@ function DataGrid<R, SR, K extends Key>(
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <RowSelectionChangeProvider value={selectRowLatest}>
           <RowSelectionProvider value={allRowsSelected}>
-            {Array.from({ length: headerRowsCount }, (_, index) => (
-              <HeaderRow
+            {Array.from({ length: groupedColumnHeaderRowsCount }, (_, index) => (
+              <GroupedColumnHeaderRow
                 key={index}
+                top={index * headerRowHeight}
                 rowIdx={index + 1}
-                columns={getRowViewportColumns(minRowIdx)} // TODO: FIXME
-                onColumnResize={handleColumnResizeLatest}
-                sortColumns={sortColumns}
-                onSortColumnsChange={onSortColumnsChangeLatest}
-                lastFrozenColumnIndex={lastFrozenColumnIndex}
+                depth={groupedColumnHeaderRowsCount - index}
+                columns={getRowViewportColumns(minRowIdx + index)}
                 selectedCellIdx={
-                  selectedPosition.rowIdx === minRowIdx ? selectedPosition.idx : undefined
+                  selectedPosition.rowIdx === minRowIdx + index ? selectedPosition.idx : undefined
                 }
                 selectCell={selectHeaderCellLatest}
-                shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
-                direction={direction}
               />
             ))}
+            <HeaderRow
+              rowIdx={headerRowsCount}
+              top={groupedColumnHeaderRowsCount * headerRowHeight}
+              columns={getRowViewportColumns(mainHeaderIndex)}
+              onColumnResize={handleColumnResizeLatest}
+              sortColumns={sortColumns}
+              onSortColumnsChange={onSortColumnsChangeLatest}
+              lastFrozenColumnIndex={lastFrozenColumnIndex}
+              selectedCellIdx={
+                selectedPosition.rowIdx === mainHeaderIndex ? selectedPosition.idx : undefined
+              }
+              selectCell={selectHeaderCellLatest}
+              shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
+              direction={direction}
+            />
           </RowSelectionProvider>
           {rows.length === 0 && noRowsFallback ? (
             noRowsFallback
           ) : (
             <>
               {topSummaryRows?.map((row, rowIdx) => {
-                const gridRowStart = headerRowsCount + rowIdx + 1;
-                const summaryRowIdx = rowIdx + minRowIdx + 1;
+                const gridRowStart = headerRowsCount + 1 + rowIdx;
+                const summaryRowIdx = mainHeaderIndex + 1 + rowIdx;
                 const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
-                const top = headerRowHeight + summaryRowHeight * rowIdx;
+                const top = headerRowsCount * headerRowHeight + summaryRowHeight * rowIdx;
 
                 return (
                   <SummaryRow
-                    aria-rowindex={gridRowStart}
                     key={rowIdx}
+                    aria-rowindex={gridRowStart}
                     rowIdx={summaryRowIdx}
                     gridRowStart={gridRowStart}
                     row={row}
