@@ -60,7 +60,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
   readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
-  readonly level: number;
   readonly idx: number;
   readonly width: number | string;
   readonly minWidth: number;
@@ -86,7 +85,6 @@ export interface CalculatedColumnParent<R, SR> {
   readonly name: string | ReactElement;
   readonly parent: CalculatedColumnParent<R, SR> | undefined;
   readonly children: readonly CalculatedColumnOrColumnGroup<R, SR>[];
-  readonly level: number;
   readonly idx: number;
 }
 

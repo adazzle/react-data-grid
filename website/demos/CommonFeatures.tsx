@@ -77,7 +77,7 @@ function getColumns(
 ): readonly ColumnOrColumnGroup<Row, SummaryRow>[] {
   return [
     SelectColumn,
-    // { name: 'empty', children: [{ name: 'empty', children: [{ name: 'empty', children: [] }] }] },
+    { name: 'empty', children: [{ name: 'empty', children: [{ name: 'empty', children: [] }] }] },
     {
       key: 'id',
       name: 'ID',

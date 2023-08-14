@@ -49,22 +49,19 @@ export function useCalculatedColumns<R, SR>(
     const columns: MutableCalculatedColumn<R, SR>[] = [];
     let headerRowsCount = 1;
 
-    iterateRawColumns(rawColumns, 1);
+    collectColumns(rawColumns, 1);
 
-    function iterateRawColumns(
+    function collectColumns(
       rawColumns: readonly ColumnOrColumnGroup<R, SR>[],
       level: number,
       parent?: MutableCalculatedColumnParent<R, SR>
     ) {
-      if (level > headerRowsCount) headerRowsCount = level;
-
       for (const rawColumn of rawColumns) {
         if ('children' in rawColumn) {
           const calculatedColumnParent: MutableCalculatedColumnParent<R, SR> = {
             name: rawColumn.name,
             parent,
             children: [],
-            level,
             idx: 0
           };
 
@@ -72,7 +69,7 @@ export function useCalculatedColumns<R, SR>(
             parent.children.push(calculatedColumnParent);
           }
 
-          iterateRawColumns(rawColumn.children, level + 1, calculatedColumnParent);
+          collectColumns(rawColumn.children, level + 1, calculatedColumnParent);
           continue;
         }
 
@@ -81,7 +78,6 @@ export function useCalculatedColumns<R, SR>(
         const column: MutableCalculatedColumn<R, SR> = {
           ...rawColumn,
           parent,
-          level,
           idx: 0,
           frozen,
           isLastFrozenColumn: false,
@@ -101,6 +97,10 @@ export function useCalculatedColumns<R, SR>(
 
         if (frozen) {
           lastFrozenColumnIndex++;
+        }
+
+        if (level > headerRowsCount) {
+          headerRowsCount = level;
         }
       }
     }
