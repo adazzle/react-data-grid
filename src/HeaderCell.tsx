@@ -71,7 +71,7 @@ export default function HeaderCell<R, SR>({
   const priority = sortColumn !== undefined && sortColumns!.length > 1 ? sortIndex! + 1 : undefined;
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
-  const { resizable, dragging } = column;
+  const { resizable, draggable } = column;
 
   const className = getCellClassname(column, column.headerCellClass, {
     [cellResizableClassname]: resizable,
@@ -214,7 +214,7 @@ export default function HeaderCell<R, SR>({
       aria-selected={isCellSelected}
       aria-sort={ariaSort}
       aria-colspan={colSpan}
-      draggable={dragging ? true : undefined}
+      draggable={draggable ? true : undefined}
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
@@ -224,13 +224,13 @@ export default function HeaderCell<R, SR>({
       onDoubleClick={resizable ? onDoubleClick : undefined}
       onPointerDown={resizable ? onPointerDown : undefined}
       /* events fired on the draggable target */
-      onDragStart={dragging ? handleDragStart : undefined}
-      onDragEnd={dragging ? handleDragEnd : undefined}
+      onDragStart={draggable ? handleDragStart : undefined}
+      onDragEnd={draggable ? handleDragEnd : undefined}
       /* events fired on the drop targets */
-      onDragOver={dragging ? handleDragOver : undefined}
-      onDragEnter={dragging ? handleDragEnter : undefined}
-      onDragLeave={dragging ? handleDragLeave : undefined}
-      onDrop={dragging ? handleDrop : undefined}
+      onDragOver={draggable ? handleDragOver : undefined}
+      onDragEnter={draggable ? handleDragEnter : undefined}
+      onDragLeave={draggable ? handleDragLeave : undefined}
+      onDrop={draggable ? handleDrop : undefined}
     >
       {renderHeaderCell({
         column,

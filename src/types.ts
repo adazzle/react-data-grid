@@ -67,7 +67,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly maxWidth: number | undefined;
   readonly resizable: boolean;
   readonly sortable: boolean;
-  readonly dragging: boolean;
+  readonly draggable: boolean;
   readonly frozen: boolean;
   readonly isLastFrozenColumn: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
