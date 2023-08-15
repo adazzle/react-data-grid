@@ -80,7 +80,7 @@ interface EditCellState<R> extends Position {
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
-  'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
+  'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable' | 'draggable'
 >;
 
 export interface DataGridHandle {

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -23,6 +24,13 @@ const cellResizable = css`
 `;
 
 const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
+
+const draggingClassname = css`
+  opacity: 0.5;
+`;
+const overClassname = css`
+  background-color: var(--rdg-header-draggable-background-color);
+`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
@@ -51,8 +59,11 @@ export default function HeaderCell<R, SR>({
   shouldFocusGrid,
   direction
 }: HeaderCellProps<R, SR>) {
-  const isRtl = direction === 'rtl';
+  const [isDragging, toggleDragging] = useState(false);
+  const [isOver, toggleIsOver] = useState(false);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
+
+  const isRtl = direction === 'rtl';
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
@@ -60,9 +71,12 @@ export default function HeaderCell<R, SR>({
   const priority = sortColumn !== undefined && sortColumns!.length > 1 ? sortIndex! + 1 : undefined;
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
+  const { resizable, dragging } = column;
 
   const className = getCellClassname(column, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable
+    [cellResizableClassname]: resizable,
+    [draggingClassname]: isDragging,
+    [overClassname]: isOver
   });
 
   const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
@@ -162,6 +176,37 @@ export default function HeaderCell<R, SR>({
     }
   }
 
+  function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
+    event.dataTransfer.setData('text/plain', column.key);
+    toggleDragging(true);
+  }
+
+  function handleDragEnd() {
+    toggleDragging(false);
+  }
+
+  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+    // prevent default to allow drop
+    event.preventDefault();
+  }
+
+  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
+    const sourceKey = event.dataTransfer.getData('text/plain');
+    if (sourceKey !== column.key) {
+      event.preventDefault();
+      // onColumnsReorder(sourceKey, column.key);
+    }
+    toggleIsOver(false);
+  }
+
+  function handleDragEnter() {
+    toggleIsOver(true);
+  }
+
+  function handleDragLeave() {
+    toggleIsOver(false);
+  }
+
   return (
     <div
       role="columnheader"
@@ -169,14 +214,23 @@ export default function HeaderCell<R, SR>({
       aria-selected={isCellSelected}
       aria-sort={ariaSort}
       aria-colspan={colSpan}
+      draggable={dragging ? true : undefined}
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
       onFocus={handleFocus}
       onClick={onClick}
-      onDoubleClick={column.resizable ? onDoubleClick : undefined}
-      onPointerDown={column.resizable ? onPointerDown : undefined}
+      onDoubleClick={resizable ? onDoubleClick : undefined}
+      onPointerDown={resizable ? onPointerDown : undefined}
+      /* events fired on the draggable target */
+      onDragStart={dragging ? handleDragStart : undefined}
+      onDragEnd={dragging ? handleDragEnd : undefined}
+      /* events fired on the drop targets */
+      onDragOver={dragging ? handleDragOver : undefined}
+      onDragEnter={dragging ? handleDragEnter : undefined}
+      onDragLeave={dragging ? handleDragLeave : undefined}
+      onDrop={dragging ? handleDrop : undefined}
     >
       {renderHeaderCell({
         column,
