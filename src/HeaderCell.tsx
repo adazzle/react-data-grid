@@ -1,7 +1,7 @@
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
-import { clampColumnWidth, getCellClassname, getCellStyle } from './utils';
+import { clampColumnWidth, getCellClassname, getCellStyle, getHeaderCellStyle } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import defaultRenderHeaderCell from './renderHeaderCell';
@@ -37,12 +37,14 @@ type SharedHeaderRowProps<R, SR> = Pick<
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
+  rowIdx: number;
   isCellSelected: boolean;
 }
 
 export default function HeaderCell<R, SR>({
   column,
   colSpan,
+  rowIdx,
   isCellSelected,
   onColumnResize,
   sortColumns,
@@ -172,7 +174,10 @@ export default function HeaderCell<R, SR>({
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={{
+        ...getHeaderCellStyle(column, rowIdx),
+        ...getCellStyle(column, colSpan)
+      }}
       onFocus={handleFocus}
       onClick={onClick}
       onDoubleClick={column.resizable ? onDoubleClick : undefined}

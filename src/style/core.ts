@@ -82,6 +82,7 @@ const root = css`
       font-size: var(--rdg-font-size);
 
       /* needed on Firefox */
+      /* TODO: review */
       &::before {
         content: '';
         grid-column: 1/-1;

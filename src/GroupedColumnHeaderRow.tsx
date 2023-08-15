@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import { getHeaderRowStyle } from './utils';
 import type { CalculatedColumn } from './types';
 import GroupedColumnHeaderCell from './GroupedColumnHeaderCell';
 import { headerRowClassname } from './HeaderRow';
@@ -9,7 +8,6 @@ import { rowSelectedClassname } from './style/row';
 
 export interface GroupedColumnHeaderRowProps<R, SR> {
   rowIdx: number;
-  top: number;
   depth: number;
   columns: readonly CalculatedColumn<R, SR>[];
   selectCell: (columnIdx: number) => void;
@@ -18,7 +16,6 @@ export interface GroupedColumnHeaderRowProps<R, SR> {
 
 function GroupedColumnHeaderRow<R, SR>({
   rowIdx,
-  top,
   depth,
   columns,
   selectedCellIdx,
@@ -41,6 +38,7 @@ function GroupedColumnHeaderRow<R, SR>({
         <GroupedColumnHeaderCell<R, SR>
           key={idx}
           column={parent}
+          rowIdx={rowIdx}
           isCellSelected={selectedCellIdx === idx}
           selectCell={selectCell}
         />
@@ -56,7 +54,6 @@ function GroupedColumnHeaderRow<R, SR>({
       className={clsx(headerRowClassname, {
         [rowSelectedClassname]: selectedCellIdx === -1
       })}
-      style={getHeaderRowStyle(rowIdx, top)}
     >
       {cells}
     </div>

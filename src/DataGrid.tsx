@@ -1028,7 +1028,6 @@ function DataGrid<R, SR, K extends Key>(
             {Array.from({ length: groupedColumnHeaderRowsCount }, (_, index) => (
               <GroupedColumnHeaderRow
                 key={index}
-                top={index * headerRowHeight}
                 rowIdx={index + 1}
                 depth={groupedColumnHeaderRowsCount - index}
                 columns={getRowViewportColumns(minRowIdx + index)}
@@ -1040,7 +1039,6 @@ function DataGrid<R, SR, K extends Key>(
             ))}
             <HeaderRow
               rowIdx={headerRowsCount}
-              top={groupedColumnHeaderRowsCount * headerRowHeight}
               columns={getRowViewportColumns(mainHeaderIndex)}
               onColumnResize={handleColumnResizeLatest}
               sortColumns={sortColumns}

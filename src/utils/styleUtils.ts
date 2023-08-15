@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import type { CalculatedColumn } from '../types';
+import type { CalculatedColumn, CalculatedColumnOrColumnGroup } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style/cell';
 
 export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
@@ -11,14 +11,26 @@ export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
       '--rdg-row-height': `${height}px`
     } as unknown as CSSProperties;
   }
+
   return { '--rdg-grid-row-start': rowIdx } as unknown as CSSProperties;
 }
 
-export function getHeaderRowStyle(rowIdx: number, top: number): CSSProperties {
+export function getHeaderCellStyle<R, SR>(
+  column: CalculatedColumnOrColumnGroup<R, SR>,
+  rowIdx: number
+): React.CSSProperties {
+  if (column.parent === undefined) {
+    return {
+      insetBlockStart: 0,
+      gridRowStart: 1,
+      gridRowEnd: rowIdx + 1
+    };
+  }
+
   return {
-    '--rdg-grid-row-start': rowIdx,
-    '--rdg-header-row-top': `${top}px`
-  } as unknown as CSSProperties;
+    insetBlockStart: `calc((${rowIdx} - 1) * var(--rdg-header-row-height))`,
+    gridRowStart: rowIdx
+  };
 }
 
 export function getCellStyle<R, SR>(

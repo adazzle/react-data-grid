@@ -77,7 +77,6 @@ function getColumns(
 ): readonly ColumnOrColumnGroup<Row, SummaryRow>[] {
   return [
     SelectColumn,
-    { name: 'empty', children: [{ name: 'empty', children: [{ name: 'empty', children: [] }] }] },
     {
       key: 'id',
       name: 'ID',
@@ -107,14 +106,19 @@ function getColumns(
         }
       ]
     },
-    { name: 'empty', children: [] },
+    { name: 'empty', children: [{ name: 'empty', children: [{ name: 'empty', children: [] }] }] },
     {
       name: 'Second group',
       children: [
         {
-          key: 'area',
-          name: 'Area',
-          renderEditCell: textEditor
+          name: 'Sub-group',
+          children: [
+            {
+              key: 'area',
+              name: 'Area',
+              renderEditCell: textEditor
+            }
+          ]
         }
       ]
     },
