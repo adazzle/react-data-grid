@@ -81,7 +81,7 @@ export default function HeaderCell<R, SR>({
 
   const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
 
-  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
     }
@@ -152,11 +152,11 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function onClick() {
+  function handleClick() {
     selectCell(column.idx);
   }
 
-  function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     const { right, left } = event.currentTarget.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
 
@@ -220,9 +220,9 @@ export default function HeaderCell<R, SR>({
       className={className}
       style={getCellStyle(column, colSpan)}
       onFocus={handleFocus}
-      onClick={onClick}
-      onDoubleClick={resizable ? onDoubleClick : undefined}
-      onPointerDown={resizable ? onPointerDown : undefined}
+      onClick={handleClick}
+      onDoubleClick={resizable ? handleDoubleClick : undefined}
+      onPointerDown={resizable ? handlePointerDown : undefined}
       /* events fired on the draggable target */
       onDragStart={draggable ? handleDragStart : undefined}
       onDragEnd={draggable ? handleDragEnd : undefined}
