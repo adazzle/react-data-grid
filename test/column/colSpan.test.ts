@@ -1,5 +1,4 @@
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
 
 import type { Column } from '../../src';
 import { getCellsAtRowIndex, getHeaderCells, setup, validateCellPosition } from '../utils';
