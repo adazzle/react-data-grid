@@ -1,5 +1,4 @@
 import { fireEvent } from '@testing-library/react';
-import { expect, test } from 'vitest';
 
 import type { Column } from '../../src';
 import { getGrid, getHeaderCells, setup } from '../utils';

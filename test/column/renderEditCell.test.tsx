@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
