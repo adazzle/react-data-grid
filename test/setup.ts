@@ -4,7 +4,8 @@ import { act } from 'react-dom/test-utils';
 // as @testing-library/jest-dom may polyfill some DOM APIs like `window.CSS`
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (globalThis.window !== undefined) {
-  await import('@testing-library/jest-dom');
+  // @ts-expect-error
+  await import('@testing-library/jest-dom/vitest');
 }
 
 if (typeof window !== 'undefined') {
