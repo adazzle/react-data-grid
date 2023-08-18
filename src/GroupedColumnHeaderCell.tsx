@@ -32,6 +32,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
       aria-colindex={index}
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
+      aria-rowspan={column.parent === undefined ? rowIdx : 1}
       tabIndex={tabIndex}
       className={cellClassname}
       style={{
