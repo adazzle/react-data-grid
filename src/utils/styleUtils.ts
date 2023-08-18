@@ -20,20 +20,22 @@ export function getHeaderCellStyle<R, SR>(
   rowIdx: number,
   rowSpan: number
 ): React.CSSProperties {
-  const topOffset = `calc((${rowIdx} - 1) * var(--rdg-header-row-height))`;
+  const paddingBlockStart = `calc(${rowSpan - 1} * var(--rdg-header-row-height))`;
 
   if (column.parent === undefined) {
     return {
       insetBlockStart: 0,
       gridRowStart: 1,
       gridRowEnd: rowIdx + 1,
-      paddingBlockStart: topOffset
+      paddingBlockStart
     };
   }
 
   return {
-    insetBlockStart: topOffset,
-    gridRowStart: rowIdx
+    insetBlockStart: `calc(${rowIdx - rowSpan} * var(--rdg-header-row-height))`,
+    gridRowStart: rowIdx - rowSpan + 1,
+    gridRowEnd: rowIdx + 1,
+    paddingBlockStart
   };
 }
 
