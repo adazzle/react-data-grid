@@ -1029,7 +1029,7 @@ function DataGrid<R, SR, K extends Key>(
               <GroupedColumnHeaderRow
                 key={index}
                 rowIdx={index + 1}
-                depth={groupedColumnHeaderRowsCount - index}
+                level={-groupedColumnHeaderRowsCount + index}
                 columns={getRowViewportColumns(minRowIdx + index)}
                 selectedCellIdx={
                   selectedPosition.rowIdx === minRowIdx + index ? selectedPosition.idx : undefined

@@ -4,11 +4,13 @@ import type { CalculatedColumnParent } from './types';
 import { type GroupedColumnHeaderRowProps } from './GroupedColumnHeaderRow';
 import { cellClassname } from './style/cell';
 
-type SharedHeaderRowProps<R, SR> = Pick<GroupedColumnHeaderRowProps<R, SR>, 'selectCell'>;
+type SharedGroupedColumnHeaderRowProps<R, SR> = Pick<
+  GroupedColumnHeaderRowProps<R, SR>,
+  'rowIdx' | 'selectCell'
+>;
 
-export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
+interface GroupedColumnHeaderCellProps<R, SR> extends SharedGroupedColumnHeaderRowProps<R, SR> {
   column: CalculatedColumnParent<R, SR>;
-  rowIdx: number;
   isCellSelected: boolean;
 }
 
@@ -17,7 +19,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
   rowIdx,
   isCellSelected,
   selectCell
-}: HeaderCellProps<R, SR>) {
+}: GroupedColumnHeaderCellProps<R, SR>) {
   const { tabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const { colSpan } = column;
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);

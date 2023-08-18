@@ -8,7 +8,7 @@ import { rowSelectedClassname } from './style/row';
 
 export interface GroupedColumnHeaderRowProps<R, SR> {
   rowIdx: number;
-  depth: number;
+  level: number;
   columns: readonly CalculatedColumn<R, SR>[];
   selectCell: (columnIdx: number) => void;
   selectedCellIdx: number | undefined;
@@ -16,7 +16,7 @@ export interface GroupedColumnHeaderRowProps<R, SR> {
 
 function GroupedColumnHeaderRow<R, SR>({
   rowIdx,
-  depth,
+  level,
   columns,
   selectedCellIdx,
   selectCell
@@ -26,14 +26,15 @@ function GroupedColumnHeaderRow<R, SR>({
 
   for (const column of columns) {
     let { parent } = column;
-    let currentDepth = 1;
 
-    while (currentDepth < depth) {
-      parent = parent?.parent;
-      currentDepth++;
+    if (parent === undefined) continue;
+
+    while (parent.level > level) {
+      if (parent.parent === undefined) break;
+      parent = parent.parent;
     }
 
-    if (parent !== undefined && !renderedParents.has(parent)) {
+    if (parent.level === level && !renderedParents.has(parent)) {
       renderedParents.add(parent);
       const { idx } = parent;
       cells.push(
