@@ -17,7 +17,8 @@ export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
 
 export function getHeaderCellStyle<R, SR>(
   column: CalculatedColumnOrColumnGroup<R, SR>,
-  rowIdx: number
+  rowIdx: number,
+  rowSpan: number
 ): React.CSSProperties {
   const topOffset = `calc((${rowIdx} - 1) * var(--rdg-header-row-height))`;
 

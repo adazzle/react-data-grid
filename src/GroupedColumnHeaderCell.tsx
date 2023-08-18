@@ -1,5 +1,5 @@
 import { useRovingTabIndex } from './hooks';
-import { getHeaderCellStyle } from './utils';
+import { getHeaderCellRowSpan, getHeaderCellStyle } from './utils';
 import type { CalculatedColumnParent } from './types';
 import { type GroupedColumnHeaderRowProps } from './GroupedColumnHeaderRow';
 import { cellClassname } from './style/cell';
@@ -20,6 +20,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
 }: HeaderCellProps<R, SR>) {
   const { tabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const { colSpan } = column;
+  const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const index = column.idx + 1;
 
   function onClick() {
@@ -32,11 +33,11 @@ export default function GroupedColumnHeaderCell<R, SR>({
       aria-colindex={index}
       aria-selected={isCellSelected}
       aria-colspan={colSpan}
-      aria-rowspan={column.parent === undefined ? rowIdx : 1}
+      aria-rowspan={rowSpan}
       tabIndex={tabIndex}
       className={cellClassname}
       style={{
-        ...getHeaderCellStyle(column, rowIdx),
+        ...getHeaderCellStyle(column, rowIdx, rowSpan),
         gridColumnStart: index,
         gridColumnEnd: index + colSpan
       }}

@@ -148,13 +148,13 @@ function getColumns(
               key: 'contact',
               name: 'Contact',
               renderEditCell: textEditor
-            },
-            {
-              key: 'assignee',
-              name: 'Assignee',
-              renderEditCell: textEditor
             }
           ]
+        },
+        {
+          key: 'assignee',
+          name: 'Assignee',
+          renderEditCell: textEditor
         }
       ]
     },

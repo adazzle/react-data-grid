@@ -63,7 +63,8 @@ export function useCalculatedColumns<R, SR>(
             parent,
             children: [],
             idx: -1,
-            colSpan: 0
+            colSpan: 0,
+            level: 0
           };
 
           if (parent !== undefined) {
@@ -80,6 +81,7 @@ export function useCalculatedColumns<R, SR>(
           ...rawColumn,
           parent,
           idx: 0,
+          level: 0,
           frozen,
           isLastFrozenColumn: false,
           width: rawColumn.width ?? defaultWidth,
@@ -127,7 +129,7 @@ export function useCalculatedColumns<R, SR>(
     const colSpanColumns: CalculatedColumn<R, SR>[] = [];
     columns.forEach((column, idx) => {
       column.idx = idx;
-      updateColumnParent(column, idx);
+      updateColumnParent(column, idx, 0);
 
       if (column.colSpan != null) {
         colSpanColumns.push(column);
@@ -155,14 +157,22 @@ export function useCalculatedColumns<R, SR>(
   ]);
 }
 
-function updateColumnParent<R, SR>(column: WithParent<R, SR>, index: number) {
+function updateColumnParent<R, SR>(
+  column: MutableCalculatedColumn<R, SR> | MutableCalculatedColumnParent<R, SR>,
+  index: number,
+  level: number
+) {
+  if (level < column.level) {
+    column.level = level;
+  }
+
   if (column.parent !== undefined) {
     const { parent } = column;
     if (parent.idx === -1 && parent.children[0] === column) {
       parent.idx = index;
     }
     parent.colSpan += 1;
-    updateColumnParent(parent, index);
+    updateColumnParent(parent, index, level - 1);
   }
 }
 

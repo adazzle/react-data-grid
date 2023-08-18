@@ -1,4 +1,4 @@
-import type { CalculatedColumn } from '../types';
+import type { CalculatedColumn, CalculatedColumnOrColumnGroup } from '../types';
 
 export * from './colSpanUtils';
 export * from './domUtils';
@@ -30,4 +30,11 @@ export function clampColumnWidth<R, SR>(
   }
 
   return width;
+}
+
+export function getHeaderCellRowSpan<R, SR>(
+  column: CalculatedColumnOrColumnGroup<R, SR>,
+  rowIdx: number
+) {
+  return column.parent === undefined ? rowIdx : column.level - column.parent.level;
 }
