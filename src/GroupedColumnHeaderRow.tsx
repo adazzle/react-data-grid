@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import type { CalculatedColumn } from './types';
+import type { CalculatedColumn, CalculatedColumnParent } from './types';
 import GroupedColumnHeaderCell from './GroupedColumnHeaderCell';
 import { headerRowClassname } from './HeaderRow';
 import { rowSelectedClassname } from './style/row';
@@ -22,9 +22,10 @@ function GroupedColumnHeaderRow<R, SR>({
   selectCell
 }: GroupedColumnHeaderRowProps<R, SR>) {
   const cells = [];
+  const renderedParents = new Set<CalculatedColumnParent<R, SR>>();
 
-  for (let index = 0; index < columns.length; index++) {
-    let { parent } = columns[index];
+  for (const column of columns) {
+    let { parent } = column;
     let currentDepth = 1;
 
     while (currentDepth < depth) {
@@ -32,7 +33,8 @@ function GroupedColumnHeaderRow<R, SR>({
       currentDepth++;
     }
 
-    if (parent !== undefined) {
+    if (parent !== undefined && !renderedParents.has(parent)) {
+      renderedParents.add(parent);
       const { idx } = parent;
       cells.push(
         <GroupedColumnHeaderCell<R, SR>
@@ -43,7 +45,6 @@ function GroupedColumnHeaderRow<R, SR>({
           selectCell={selectCell}
         />
       );
-      index += parent.children.length - 1;
     }
   }
 
