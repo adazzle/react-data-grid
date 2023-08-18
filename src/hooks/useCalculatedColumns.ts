@@ -62,7 +62,8 @@ export function useCalculatedColumns<R, SR>(
             name: rawColumn.name,
             parent,
             children: [],
-            idx: 0
+            idx: -1,
+            colSpan: 0
           };
 
           if (parent !== undefined) {
@@ -126,7 +127,7 @@ export function useCalculatedColumns<R, SR>(
     const colSpanColumns: CalculatedColumn<R, SR>[] = [];
     columns.forEach((column, idx) => {
       column.idx = idx;
-      setColumnGroupIndex(column, idx);
+      updateColumnParent(column, idx);
 
       if (column.colSpan != null) {
         colSpanColumns.push(column);
@@ -154,10 +155,14 @@ export function useCalculatedColumns<R, SR>(
   ]);
 }
 
-function setColumnGroupIndex<R, SR>(column: WithParent<R, SR>, index: number) {
-  if (column.parent?.children[0] === column) {
-    column.parent.idx = index;
-    setColumnGroupIndex(column.parent, index);
+function updateColumnParent<R, SR>(column: WithParent<R, SR>, index: number) {
+  if (column.parent !== undefined) {
+    const { parent } = column;
+    if (parent.idx === -1 && parent.children[0] === column) {
+      parent.idx = index;
+    }
+    parent.colSpan += 1;
+    updateColumnParent(parent, index);
   }
 }
 

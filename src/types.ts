@@ -86,6 +86,7 @@ export interface CalculatedColumnParent<R, SR> {
   readonly parent: CalculatedColumnParent<R, SR> | undefined;
   readonly children: readonly CalculatedColumnOrColumnGroup<R, SR>[];
   readonly idx: number;
+  readonly colSpan: number;
 }
 
 export type ColumnOrColumnGroup<R, SR> = Column<R, SR> | ColumnGroup<R, SR>;

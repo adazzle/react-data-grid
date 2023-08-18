@@ -19,7 +19,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
   selectCell
 }: HeaderCellProps<R, SR>) {
   const { tabIndex, onFocus } = useRovingTabIndex(isCellSelected);
-  const colSpan = column.children.length;
+  const { colSpan } = column;
   const index = column.idx + 1;
 
   function onClick() {

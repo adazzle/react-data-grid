@@ -142,14 +142,19 @@ function getColumns(
       name: 'Some other group',
       children: [
         {
-          key: 'contact',
-          name: 'Contact',
-          renderEditCell: textEditor
-        },
-        {
-          key: 'assignee',
-          name: 'Assignee',
-          renderEditCell: textEditor
+          name: 'Sub-group',
+          children: [
+            {
+              key: 'contact',
+              name: 'Contact',
+              renderEditCell: textEditor
+            },
+            {
+              key: 'assignee',
+              name: 'Assignee',
+              renderEditCell: textEditor
+            }
+          ]
         }
       ]
     },
