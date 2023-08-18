@@ -19,16 +19,19 @@ export function getHeaderCellStyle<R, SR>(
   column: CalculatedColumnOrColumnGroup<R, SR>,
   rowIdx: number
 ): React.CSSProperties {
+  const topOffset = `calc((${rowIdx} - 1) * var(--rdg-header-row-height))`;
+
   if (column.parent === undefined) {
     return {
       insetBlockStart: 0,
       gridRowStart: 1,
-      gridRowEnd: rowIdx + 1
+      gridRowEnd: rowIdx + 1,
+      paddingBlockStart: topOffset
     };
   }
 
   return {
-    insetBlockStart: `calc((${rowIdx} - 1) * var(--rdg-header-row-height))`,
+    insetBlockStart: topOffset,
     gridRowStart: rowIdx
   };
 }
