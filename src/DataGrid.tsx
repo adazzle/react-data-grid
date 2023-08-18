@@ -1004,7 +1004,7 @@ function DataGrid<R, SR, K extends Key>(
           scrollPaddingBlock:
             isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
             scrollToPosition?.rowIdx !== undefined
-              ? `${headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
+              ? `${headerRowsCount * headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
               : undefined,
