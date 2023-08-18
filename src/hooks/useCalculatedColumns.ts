@@ -61,15 +61,10 @@ export function useCalculatedColumns<R, SR>(
           const calculatedColumnParent: MutableCalculatedColumnParent<R, SR> = {
             name: rawColumn.name,
             parent,
-            children: [],
             idx: -1,
             colSpan: 0,
             level: 0
           };
-
-          if (parent !== undefined) {
-            parent.children.push(calculatedColumnParent);
-          }
 
           collectColumns(rawColumn.children, level + 1, calculatedColumnParent);
           continue;
@@ -93,10 +88,6 @@ export function useCalculatedColumns<R, SR>(
         };
 
         columns.push(column);
-
-        if (parent !== undefined) {
-          parent.children.push(column);
-        }
 
         if (frozen) {
           lastFrozenColumnIndex++;
@@ -168,7 +159,7 @@ function updateColumnParent<R, SR>(
 
   if (column.parent !== undefined) {
     const { parent } = column;
-    if (parent.idx === -1 && parent.children[0] === column) {
+    if (parent.idx === -1) {
       parent.idx = index;
     }
     parent.colSpan += 1;

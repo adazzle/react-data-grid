@@ -85,7 +85,6 @@ export type CalculatedColumnOrColumnGroup<R, SR> =
 export interface CalculatedColumnParent<R, SR> {
   readonly name: string | ReactElement;
   readonly parent: CalculatedColumnParent<R, SR> | undefined;
-  readonly children: readonly CalculatedColumnOrColumnGroup<R, SR>[];
   readonly idx: number;
   readonly colSpan: number;
   readonly level: number;
