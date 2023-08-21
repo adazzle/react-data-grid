@@ -90,7 +90,7 @@ export interface CalculatedColumnParent<R, SR> {
   readonly level: number;
 }
 
-export type ColumnOrColumnGroup<R, SR> = Column<R, SR> | ColumnGroup<R, SR>;
+export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
 
 export interface Position {
   readonly idx: number;
