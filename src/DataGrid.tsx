@@ -310,8 +310,8 @@ function DataGrid<R, SR, K extends Key>(
    */
   const isTreeGrid = role === 'treegrid';
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const clientHeight =
-    gridHeight - headerRowsCount * headerRowHeight - summaryRowsCount * summaryRowHeight;
+  const headerRowsHeight = headerRowsCount * headerRowHeight;
+  const clientHeight = gridHeight - headerRowsHeight - summaryRowsCount * summaryRowHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
@@ -1008,7 +1008,7 @@ function DataGrid<R, SR, K extends Key>(
           scrollPaddingBlock:
             isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
             scrollToPosition?.rowIdx !== undefined
-              ? `${headerRowsCount * headerRowHeight + topSummaryRowsCount * summaryRowHeight}px ${
+              ? `${headerRowsHeight + topSummaryRowsCount * summaryRowHeight}px ${
                   bottomSummaryRowsCount * summaryRowHeight
                 }px`
               : undefined,
@@ -1064,7 +1064,7 @@ function DataGrid<R, SR, K extends Key>(
                 const gridRowStart = headerRowsCount + 1 + rowIdx;
                 const summaryRowIdx = mainHeaderIndex + 1 + rowIdx;
                 const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
-                const top = headerRowsCount * headerRowHeight + summaryRowHeight * rowIdx;
+                const top = headerRowsHeight + summaryRowHeight * rowIdx;
 
                 return (
                   <SummaryRow
