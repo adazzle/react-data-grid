@@ -1,8 +1,7 @@
-import { useRef } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
-import { clampColumnWidth, getCellClassname, getCellStyle } from './utils';
+import { clampColumnWidth, getCellClassname, getCellStyle, stopPropagation } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import defaultRenderHeaderCell from './renderHeaderCell';
@@ -16,20 +15,21 @@ const cellSortableClassname = css`
 const cellResizable = css`
   @layer rdg.HeaderCell {
     touch-action: none;
-
-    &::after {
-      content: '';
-      cursor: col-resize;
-      position: absolute;
-      inset-block-start: 0;
-      inset-inline-end: 0;
-      inset-block-end: 0;
-      inline-size: 10px;
-    }
   }
 `;
 
 const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
+
+export const resizeHandleClassname = css`
+  @layer rdg.HeaderCell {
+    cursor: col-resize;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inline-size: 10px;
+  }
+`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
@@ -58,8 +58,6 @@ export default function HeaderCell<R, SR>({
   shouldFocusGrid,
   direction
 }: HeaderCellProps<R, SR>) {
-  const ignoreClickRef = useRef(false);
-
   const isRtl = direction === 'rtl';
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
@@ -77,31 +75,21 @@ export default function HeaderCell<R, SR>({
 
   const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
 
-  function getPointerOffset(event: React.MouseEvent<HTMLDivElement>) {
-    const { right, left } = event.currentTarget.getBoundingClientRect();
-    return isRtl ? event.clientX - left : right - event.clientX;
-  }
-
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
     }
 
-    const offset = getPointerOffset(event);
-
-    if (offset > 11) {
-      // +1px to account for the border size
-      return;
-    }
-
-    // prevent selecting/sorting if we started resizing the column, including double-clicking
-    ignoreClickRef.current = true;
+    const { currentTarget, pointerId } = event;
+    const headerCell = currentTarget.parentElement!;
+    const { right, left } = headerCell.getBoundingClientRect();
+    const offset = isRtl ? event.clientX - left : right - event.clientX;
 
     function onPointerMove(event: PointerEvent) {
       // prevents text selection in Chrome, which fixes scrolling the grid while dragging, and fixes re-size on an autosized column
       event.preventDefault();
 
-      const { right, left } = currentTarget.getBoundingClientRect();
+      const { right, left } = headerCell.getBoundingClientRect();
       const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
         onColumnResize(column, clampColumnWidth(width, column));
@@ -109,12 +97,10 @@ export default function HeaderCell<R, SR>({
     }
 
     function onLostPointerCapture() {
-      ignoreClickRef.current = false;
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
-    const { currentTarget, pointerId } = event;
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
     currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
@@ -158,8 +144,6 @@ export default function HeaderCell<R, SR>({
   }
 
   function onClick(event: React.MouseEvent<HTMLSpanElement>) {
-    if (ignoreClickRef.current) return;
-
     selectCell(column.idx);
 
     if (column.sortable) {
@@ -167,12 +151,7 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (getPointerOffset(event) > 11) {
-      // +1px to account for the border size
-      return;
-    }
-
+  function onDoubleClick() {
     onColumnResize(column, 'max-content');
   }
 
@@ -205,8 +184,6 @@ export default function HeaderCell<R, SR>({
       style={getCellStyle(column, colSpan)}
       onFocus={handleFocus}
       onClick={onClick}
-      onDoubleClick={column.resizable ? onDoubleClick : undefined}
-      onPointerDown={column.resizable ? onPointerDown : undefined}
       onKeyDown={column.sortable ? onKeyDown : undefined}
     >
       {renderHeaderCell({
@@ -215,6 +192,15 @@ export default function HeaderCell<R, SR>({
         priority,
         tabIndex: childTabIndex
       })}
+
+      {column.resizable && (
+        <div
+          className={resizeHandleClassname}
+          onClick={stopPropagation}
+          onDoubleClick={onDoubleClick}
+          onPointerDown={onPointerDown}
+        />
+      )}
     </div>
   );
 }
