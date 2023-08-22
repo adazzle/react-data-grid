@@ -262,7 +262,7 @@ function DataGrid<R, SR, K extends Key>(
   const direction = rawDirection ?? 'ltr';
 
   /**
-   * computed values
+   * columns, counts, indexes
    */
   const { columns, colSpanColumns, lastFrozenColumnIndex, headerRowsCount } = useCalculatedColumns(
     rawColumns,
@@ -276,15 +276,6 @@ function DataGrid<R, SR, K extends Key>(
   const minRowIdx = -headerAndTopSummaryRowsCount;
   const mainHeaderIndex = minRowIdx + groupedColumnHeaderRowsCount;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
-  const isTreeGrid = role === 'treegrid';
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
-  const clientHeight =
-    gridHeight - headerRowsCount * headerRowHeight - summaryRowsCount * summaryRowHeight;
-  const isSelectable = selectedRows != null && onSelectedRowsChange != null;
-  const isRtl = direction === 'rtl';
-  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
-  const ariaRowCount = rawAriaRowCount ?? headerRowsCount + rows.length + summaryRowsCount;
 
   /**
    * states
@@ -313,6 +304,19 @@ function DataGrid<R, SR, K extends Key>(
   const lastSelectedRowIdx = useRef(-1);
   const focusSinkRef = useRef<HTMLDivElement>(null);
   const shouldFocusCellRef = useRef(false);
+
+  /**
+   * computed values
+   */
+  const isTreeGrid = role === 'treegrid';
+  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const clientHeight =
+    gridHeight - headerRowsCount * headerRowHeight - summaryRowsCount * summaryRowHeight;
+  const isSelectable = selectedRows != null && onSelectedRowsChange != null;
+  const isRtl = direction === 'rtl';
+  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const ariaRowCount = rawAriaRowCount ?? headerRowsCount + rows.length + summaryRowsCount;
 
   const defaultGridComponents = useMemo(
     () => ({
