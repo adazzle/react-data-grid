@@ -33,7 +33,7 @@ const mainClassname = css`
   box-sizing: border-box;
   block-size: 100vh;
   padding: 8px;
-  overflow: hidden;
+  overflow: clip;
 `;
 
 function Root() {

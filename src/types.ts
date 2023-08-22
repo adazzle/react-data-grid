@@ -111,7 +111,6 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
   tabIndex: number;
-  onSort: (ctrlClick: boolean) => void;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>

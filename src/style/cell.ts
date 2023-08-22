@@ -17,7 +17,6 @@ export const cell = css`
     background-color: inherit;
 
     white-space: nowrap;
-    overflow: hidden;
     overflow: clip;
     text-overflow: ellipsis;
     outline: none;
