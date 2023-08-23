@@ -81,8 +81,7 @@ const root = css`
       color: var(--rdg-color);
       font-size: var(--rdg-font-size);
 
-      /* needed on Firefox */
-      /* TODO: review */
+      /* needed on Firefox to fix scrollbars */
       &::before {
         content: '';
         grid-column: 1/-1;
