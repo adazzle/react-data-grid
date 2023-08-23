@@ -79,10 +79,6 @@ export interface ColumnGroup<R, SR = unknown> {
   readonly children: readonly ColumnOrColumnGroup<R, SR>[];
 }
 
-export type CalculatedColumnOrColumnGroup<R, SR> =
-  | CalculatedColumnParent<R, SR>
-  | CalculatedColumn<R, SR>;
-
 export interface CalculatedColumnParent<R, SR> {
   readonly name: string | ReactElement;
   readonly parent: CalculatedColumnParent<R, SR> | undefined;
@@ -93,6 +89,10 @@ export interface CalculatedColumnParent<R, SR> {
 }
 
 export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
+
+export type CalculatedColumnOrColumnGroup<R, SR> =
+  | CalculatedColumnParent<R, SR>
+  | CalculatedColumn<R, SR>;
 
 export interface Position {
   readonly idx: number;
