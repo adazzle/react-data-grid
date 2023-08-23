@@ -72,9 +72,10 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
 
-export interface ColumnGroup<R, SR> {
-  /** The name of the column group. By default it will be displayed in the header cell */
+export interface ColumnGroup<R, SR = unknown> {
+  /** The name of the column group, it will be displayed in the header cell */
   readonly name: string | ReactElement;
+  readonly headerCellClass?: Maybe<string>;
   readonly children: readonly ColumnOrColumnGroup<R, SR>[];
 }
 
@@ -88,6 +89,7 @@ export interface CalculatedColumnParent<R, SR> {
   readonly idx: number;
   readonly colSpan: number;
   readonly level: number;
+  readonly headerCellClass?: Maybe<string>;
 }
 
 export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;

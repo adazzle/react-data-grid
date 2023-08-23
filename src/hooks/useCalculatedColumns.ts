@@ -63,7 +63,8 @@ export function useCalculatedColumns<R, SR>(
             parent,
             idx: -1,
             colSpan: 0,
-            level: 0
+            level: 0,
+            headerCellClass: rawColumn.headerCellClass
           };
 
           collectColumns(rawColumn.children, level + 1, calculatedColumnParent);
