@@ -27,10 +27,25 @@ interface ColumnMetric {
 const DEFAULT_COLUMN_WIDTH = 'auto';
 const DEFAULT_COLUMN_MIN_WIDTH = 50;
 
-export function useCalculatedColumns<R, SR>(
-  rawColumns: readonly ColumnOrColumnGroup<R, SR>[],
-  defaultColumnOptions: DataGridProps<R, SR>['defaultColumnOptions']
-) {
+interface CalculatedColumnsArgs<R, SR> {
+  rawColumns: readonly ColumnOrColumnGroup<R, SR>[];
+  defaultColumnOptions: DataGridProps<R, SR>['defaultColumnOptions'];
+  viewportWidth: number;
+  scrollLeft: number;
+  measuredColumnWidths: ReadonlyMap<string, number>;
+  resizedColumnWidths: ReadonlyMap<string, number>;
+  enableVirtualization: boolean;
+}
+
+export function useCalculatedColumns<R, SR>({
+  rawColumns,
+  defaultColumnOptions,
+  measuredColumnWidths,
+  resizedColumnWidths,
+  viewportWidth,
+  scrollLeft,
+  enableVirtualization
+}: CalculatedColumnsArgs<R, SR>) {
   const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
@@ -38,7 +53,7 @@ export function useCalculatedColumns<R, SR>(
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
 
-  return useMemo((): {
+  const { columns, colSpanColumns, lastFrozenColumnIndex, headerRowsCount } = useMemo((): {
     readonly columns: readonly CalculatedColumn<R, SR>[];
     readonly colSpanColumns: readonly CalculatedColumn<R, SR>[];
     readonly lastFrozenColumnIndex: number;
@@ -146,46 +161,7 @@ export function useCalculatedColumns<R, SR>(
     defaultResizable,
     defaultSortable
   ]);
-}
 
-function updateColumnParent<R, SR>(
-  column: MutableCalculatedColumn<R, SR> | MutableCalculatedColumnParent<R, SR>,
-  index: number,
-  level: number
-) {
-  if (level < column.level) {
-    column.level = level;
-  }
-
-  if (column.parent !== undefined) {
-    const { parent } = column;
-    if (parent.idx === -1) {
-      parent.idx = index;
-    }
-    parent.colSpan += 1;
-    updateColumnParent(parent, index, level - 1);
-  }
-}
-
-interface CalculatedColumnsArgs<R, SR> {
-  columns: readonly CalculatedColumn<R, SR>[];
-  lastFrozenColumnIndex: number;
-  viewportWidth: number;
-  scrollLeft: number;
-  measuredColumnWidths: ReadonlyMap<string, number>;
-  resizedColumnWidths: ReadonlyMap<string, number>;
-  enableVirtualization: boolean;
-}
-
-export function useMoreCalculatedColumnsStuff<R, SR>({
-  columns,
-  lastFrozenColumnIndex,
-  measuredColumnWidths,
-  resizedColumnWidths,
-  viewportWidth,
-  scrollLeft,
-  enableVirtualization
-}: CalculatedColumnsArgs<R, SR>) {
   const { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
     templateColumns: readonly string[];
     layoutCssVars: Readonly<Record<string, string>>;
@@ -283,10 +259,33 @@ export function useMoreCalculatedColumnsStuff<R, SR>({
   ]);
 
   return {
+    columns,
+    colSpanColumns,
+    lastFrozenColumnIndex,
+    headerRowsCount,
     colOverscanStartIdx,
     colOverscanEndIdx,
     templateColumns,
     layoutCssVars,
     totalFrozenColumnWidth
   };
+}
+
+function updateColumnParent<R, SR>(
+  column: MutableCalculatedColumn<R, SR> | MutableCalculatedColumnParent<R, SR>,
+  index: number,
+  level: number
+) {
+  if (level < column.level) {
+    column.level = level;
+  }
+
+  if (column.parent !== undefined) {
+    const { parent } = column;
+    if (parent.idx === -1) {
+      parent.idx = index;
+    }
+    parent.colSpan += 1;
+    updateColumnParent(parent, index, level - 1);
+  }
 }
