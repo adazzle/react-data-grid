@@ -13,6 +13,8 @@ export type {
   ColumnGroup,
   ColumnOrColumnGroup,
   CalculatedColumn,
+  CalculatedColumnParent,
+  CalculatedColumnOrColumnGroup,
   RenderCellProps,
   RenderSummaryCellProps,
   RenderGroupCellProps,
