@@ -96,8 +96,8 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/customizable-renderers" end className={getActiveClassname}>
         Customizable Renderers
       </NavLink>
-      <NavLink to="/grouping" end className={getActiveClassname}>
-        Grouping
+      <NavLink to="/row-grouping" end className={getActiveClassname}>
+        Row Grouping
       </NavLink>
       <NavLink to="/header-filters" end className={getActiveClassname}>
         Header Filters

@@ -14,13 +14,13 @@ import ColumnsReordering from './demos/ColumnsReordering';
 import CommonFeatures from './demos/CommonFeatures';
 import ContextMenuDemo from './demos/ContextMenu';
 import CustomizableRenderers from './demos/CustomizableRenderers';
-import Grouping from './demos/Grouping';
 import HeaderFilters from './demos/HeaderFilters';
 import InfiniteScrolling from './demos/InfiniteScrolling';
 import MasterDetail from './demos/MasterDetail';
 import MillionCells from './demos/MillionCells';
 import NoRows from './demos/NoRows';
 import ResizableGrid from './demos/Resizable';
+import RowGrouping from './demos/RowGrouping';
 import RowsReordering from './demos/RowsReordering';
 import ScrollToCell from './demos/ScrollToCell';
 import TreeView from './demos/TreeView';
@@ -54,7 +54,7 @@ function Root() {
             path="customizable-renderers"
             element={<CustomizableRenderers direction={direction} />}
           />
-          <Route path="grouping" element={<Grouping direction={direction} />} />
+          <Route path="row-grouping" element={<RowGrouping direction={direction} />} />
           <Route path="header-filters" element={<HeaderFilters direction={direction} />} />
           <Route path="infinite-scrolling" element={<InfiniteScrolling direction={direction} />} />
           <Route path="master-detail" element={<MasterDetail direction={direction} />} />

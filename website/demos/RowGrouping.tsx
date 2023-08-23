@@ -141,7 +141,7 @@ function createRows(): readonly Row[] {
 
 const options = ['country', 'year', 'sport', 'athlete'] as const;
 
-export default function Grouping({ direction }: Props) {
+export default function RowGrouping({ direction }: Props) {
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
   const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([
