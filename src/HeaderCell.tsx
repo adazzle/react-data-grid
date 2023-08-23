@@ -168,7 +168,7 @@ export default function HeaderCell<R, SR>({
     onFocus?.(event);
     if (shouldFocusGrid) {
       // Select the first header cell if there is no selected cell
-      selectCell(0);
+      selectCell({ idx: 0, rowIdx });
     }
   }
 
