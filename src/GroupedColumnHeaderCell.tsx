@@ -26,7 +26,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
   const index = column.idx + 1;
 
   function onClick() {
-    selectCell(column.idx);
+    selectCell({ idx: column.idx, rowIdx });
   }
 
   return (

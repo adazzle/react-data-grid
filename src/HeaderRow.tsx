@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 import clsx from 'clsx';
 
 import { getColSpan } from './utils';
-import type { CalculatedColumn, Direction } from './types';
+import type { CalculatedColumn, Direction, Position } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
 import { cell, cellFrozen } from './style/cell';
@@ -18,7 +18,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   rowIdx: number;
   columns: readonly CalculatedColumn<R, SR>[];
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
-  selectCell: (columnIdx: number) => void;
+  selectCell: (position: Position) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;

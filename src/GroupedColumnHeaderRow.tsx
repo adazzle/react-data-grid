@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import type { CalculatedColumn, CalculatedColumnParent } from './types';
+import type { CalculatedColumn, CalculatedColumnParent, Position } from './types';
 import GroupedColumnHeaderCell from './GroupedColumnHeaderCell';
 import { headerRowClassname } from './HeaderRow';
 import { rowSelectedClassname } from './style/row';
@@ -10,7 +10,7 @@ export interface GroupedColumnHeaderRowProps<R, SR> {
   rowIdx: number;
   level: number;
   columns: readonly CalculatedColumn<R, SR>[];
-  selectCell: (columnIdx: number) => void;
+  selectCell: (position: Position) => void;
   selectedCellIdx: number | undefined;
 }
 

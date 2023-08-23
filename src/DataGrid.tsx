@@ -412,8 +412,8 @@ function DataGrid<R, SR, K extends Key>(
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectCellLatest = useLatestFunc(selectCell);
-  const selectHeaderCellLatest = useLatestFunc((idx: number) => {
-    selectCell({ rowIdx: minRowIdx, idx });
+  const selectHeaderCellLatest = useLatestFunc(({ idx, rowIdx }: Position) => {
+    selectCell({ rowIdx: minRowIdx + rowIdx - 1, idx });
   });
 
   /**

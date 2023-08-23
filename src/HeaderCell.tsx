@@ -153,7 +153,7 @@ export default function HeaderCell<R, SR>({
   }
 
   function onClick(event: React.MouseEvent<HTMLSpanElement>) {
-    selectCell(column.idx);
+    selectCell({ idx: column.idx, rowIdx });
 
     if (column.sortable) {
       onSort(event.ctrlKey || event.metaKey);
