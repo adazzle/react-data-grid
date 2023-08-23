@@ -9,6 +9,7 @@ import type { Direction } from '../src/types';
 import AllFeatures from './demos/AllFeatures';
 import Animation from './demos/Animation';
 import CellNavigation from './demos/CellNavigation';
+import ColumnGrouping from './demos/ColumnGrouping';
 import ColumnSpanning from './demos/ColumnSpanning';
 import ColumnsReordering from './demos/ColumnsReordering';
 import CommonFeatures from './demos/CommonFeatures';
@@ -48,6 +49,7 @@ function Root() {
           <Route path="all-features" element={<AllFeatures direction={direction} />} />
           <Route path="cell-navigation" element={<CellNavigation direction={direction} />} />
           <Route path="column-spanning" element={<ColumnSpanning direction={direction} />} />
+          <Route path="column-grouping" element={<ColumnGrouping direction={direction} />} />
           <Route path="columns-reordering" element={<ColumnsReordering direction={direction} />} />
           <Route path="context-menu" element={<ContextMenuDemo direction={direction} />} />
           <Route
