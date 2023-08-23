@@ -45,9 +45,8 @@ export function useCalculatedColumns<R, SR>(
     readonly headerRowsCount: number;
   } => {
     let lastFrozenColumnIndex = -1;
-
-    const columns: MutableCalculatedColumn<R, SR>[] = [];
     let headerRowsCount = 1;
+    const columns: MutableCalculatedColumn<R, SR>[] = [];
 
     collectColumns(rawColumns, 1);
 

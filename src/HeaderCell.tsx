@@ -184,10 +184,10 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
-      aria-selected={isCellSelected}
-      aria-sort={ariaSort}
       aria-colspan={colSpan}
       aria-rowspan={rowSpan}
+      aria-selected={isCellSelected}
+      aria-sort={ariaSort}
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}

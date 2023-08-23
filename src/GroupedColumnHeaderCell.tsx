@@ -35,9 +35,9 @@ export default function GroupedColumnHeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={index}
-      aria-selected={isCellSelected}
       aria-colspan={colSpan}
       aria-rowspan={rowSpan}
+      aria-selected={isCellSelected}
       tabIndex={tabIndex}
       className={clsx(cellClassname, column.headerCellClass)}
       style={{
