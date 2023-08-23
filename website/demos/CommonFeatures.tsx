@@ -7,7 +7,7 @@ import DataGrid, {
   SelectCellFormatter,
   SelectColumn,
   textEditor,
-  type ColumnOrColumnGroup,
+  type Column,
   type SortColumn
 } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
@@ -74,7 +74,7 @@ interface Row {
 function getColumns(
   countries: readonly string[],
   direction: Direction
-): readonly ColumnOrColumnGroup<Row, SummaryRow>[] {
+): readonly Column<Row, SummaryRow>[] {
   return [
     SelectColumn,
     {
@@ -87,40 +87,24 @@ function getColumns(
       }
     },
     {
-      name: 'My Group',
-      children: [
-        {
-          key: 'title',
-          name: 'Task',
-          frozen: true,
-          renderEditCell: textEditor,
-          renderSummaryCell({ row }) {
-            return `${row.totalCount} records`;
-          }
-        },
-        {
-          key: 'client',
-          name: 'Client',
-          width: 'max-content',
-          renderEditCell: textEditor
-        }
-      ]
+      key: 'title',
+      name: 'Task',
+      frozen: true,
+      renderEditCell: textEditor,
+      renderSummaryCell({ row }) {
+        return `${row.totalCount} records`;
+      }
     },
-    { name: 'empty', children: [{ name: 'empty', children: [{ name: 'empty', children: [] }] }] },
     {
-      name: 'Second group',
-      children: [
-        {
-          name: 'Sub-group',
-          children: [
-            {
-              key: 'area',
-              name: 'Area',
-              renderEditCell: textEditor
-            }
-          ]
-        }
-      ]
+      key: 'client',
+      name: 'Client',
+      width: 'max-content',
+      renderEditCell: textEditor
+    },
+    {
+      key: 'area',
+      name: 'Area',
+      renderEditCell: textEditor
     },
     {
       key: 'country',
@@ -139,24 +123,14 @@ function getColumns(
       )
     },
     {
-      name: 'Some other group',
-      children: [
-        {
-          name: 'Sub-group',
-          children: [
-            {
-              key: 'contact',
-              name: 'Contact',
-              renderEditCell: textEditor
-            }
-          ]
-        },
-        {
-          key: 'assignee',
-          name: 'Assignee',
-          renderEditCell: textEditor
-        }
-      ]
+      key: 'contact',
+      name: 'Contact',
+      renderEditCell: textEditor
+    },
+    {
+      key: 'assignee',
+      name: 'Assignee',
+      renderEditCell: textEditor
     },
     {
       key: 'progress',
