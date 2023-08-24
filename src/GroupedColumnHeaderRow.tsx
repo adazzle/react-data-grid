@@ -1,10 +1,8 @@
 import { memo } from 'react';
-import clsx from 'clsx';
 
 import type { CalculatedColumn, CalculatedColumnParent, Position } from './types';
 import GroupedColumnHeaderCell from './GroupedColumnHeaderCell';
 import { headerRowClassname } from './HeaderRow';
-import { rowSelectedClassname } from './style/row';
 
 export interface GroupedColumnHeaderRowProps<R, SR> {
   rowIdx: number;
@@ -53,9 +51,7 @@ function GroupedColumnHeaderRow<R, SR>({
     <div
       role="row"
       aria-rowindex={rowIdx} // aria-rowindex is 1 based
-      className={clsx(headerRowClassname, {
-        [rowSelectedClassname]: selectedCellIdx === -1
-      })}
+      className={headerRowClassname}
     >
       {cells}
     </div>
