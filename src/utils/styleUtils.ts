@@ -42,11 +42,12 @@ export function getHeaderCellStyle<R, SR>(
 
 export function getCellStyle<R, SR>(
   column: CalculatedColumn<R, SR>,
-  colSpan?: number
+  colSpan = 1
 ): React.CSSProperties {
+  const index = column.idx + 1;
   return {
-    gridColumnStart: column.idx + 1,
-    gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
+    gridColumnStart: index,
+    gridColumnEnd: index + colSpan,
     insetInlineStart: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
   };
 }
