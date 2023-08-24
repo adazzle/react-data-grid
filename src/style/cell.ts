@@ -4,10 +4,10 @@ export const cell = css`
   @layer rdg.Cell {
     /* max-content does not work with size containment
      * dynamically switching between different containment styles incurs a heavy relayout penalty
-     * Chromium bug: at odd zoom levels or subpixel positioning, layout/paint containment can make cell borders disappear
+     * Chromium bug: at odd zoom levels or subpixel positioning,
+     * layout/paint/style containment can make cell borders disappear
      *   https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
      */
-    contain: style;
     position: relative; /* needed for absolute positioning to work */
     padding-block: 0;
     padding-inline: 8px;

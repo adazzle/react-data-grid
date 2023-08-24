@@ -1,7 +1,14 @@
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
-import { clampColumnWidth, getCellClassname, getCellStyle, stopPropagation } from './utils';
+import {
+  clampColumnWidth,
+  getCellClassname,
+  getCellStyle,
+  getHeaderCellRowSpan,
+  getHeaderCellStyle,
+  stopPropagation
+} from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
 import defaultRenderHeaderCell from './renderHeaderCell';
@@ -44,12 +51,14 @@ type SharedHeaderRowProps<R, SR> = Pick<
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
+  rowIdx: number;
   isCellSelected: boolean;
 }
 
 export default function HeaderCell<R, SR>({
   column,
   colSpan,
+  rowIdx,
   isCellSelected,
   onColumnResize,
   sortColumns,
@@ -59,6 +68,7 @@ export default function HeaderCell<R, SR>({
   direction
 }: HeaderCellProps<R, SR>) {
   const isRtl = direction === 'rtl';
+  const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
@@ -143,7 +153,7 @@ export default function HeaderCell<R, SR>({
   }
 
   function onClick(event: React.MouseEvent<HTMLSpanElement>) {
-    selectCell(column.idx);
+    selectCell({ idx: column.idx, rowIdx });
 
     if (column.sortable) {
       onSort(event.ctrlKey || event.metaKey);
@@ -158,7 +168,7 @@ export default function HeaderCell<R, SR>({
     onFocus?.(event);
     if (shouldFocusGrid) {
       // Select the first header cell if there is no selected cell
-      selectCell(0);
+      selectCell({ idx: 0, rowIdx });
     }
   }
 
@@ -174,13 +184,17 @@ export default function HeaderCell<R, SR>({
     <div
       role="columnheader"
       aria-colindex={column.idx + 1}
+      aria-colspan={colSpan}
+      aria-rowspan={rowSpan}
       aria-selected={isCellSelected}
       aria-sort={ariaSort}
-      aria-colspan={colSpan}
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={{
+        ...getHeaderCellStyle(column, rowIdx, rowSpan),
+        ...getCellStyle(column, colSpan)
+      }}
       onFocus={handleFocus}
       onClick={onClick}
       onKeyDown={column.sortable ? onKeyDown : undefined}

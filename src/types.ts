@@ -59,7 +59,9 @@ export interface Column<TRow, TSummaryRow = unknown> {
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+  readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
   readonly idx: number;
+  readonly level: number;
   readonly width: number | string;
   readonly minWidth: number;
   readonly maxWidth: number | undefined;
@@ -69,6 +71,28 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly isLastFrozenColumn: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
+
+export interface ColumnGroup<R, SR = unknown> {
+  /** The name of the column group, it will be displayed in the header cell */
+  readonly name: string | ReactElement;
+  readonly headerCellClass?: Maybe<string>;
+  readonly children: readonly ColumnOrColumnGroup<R, SR>[];
+}
+
+export interface CalculatedColumnParent<R, SR> {
+  readonly name: string | ReactElement;
+  readonly parent: CalculatedColumnParent<R, SR> | undefined;
+  readonly idx: number;
+  readonly colSpan: number;
+  readonly level: number;
+  readonly headerCellClass?: Maybe<string>;
+}
+
+export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
+
+export type CalculatedColumnOrColumnGroup<R, SR> =
+  | CalculatedColumnParent<R, SR>
+  | CalculatedColumn<R, SR>;
 
 export interface Position {
   readonly idx: number;

@@ -3,8 +3,13 @@ import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectCellFormatter, SelectColumn, textEditor } from '../../src';
-import type { Column, SortColumn } from '../../src';
+import DataGrid, {
+  SelectCellFormatter,
+  SelectColumn,
+  textEditor,
+  type Column,
+  type SortColumn
+} from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
 import type { Props } from './types';
