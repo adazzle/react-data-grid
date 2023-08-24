@@ -261,12 +261,12 @@ export function useCalculatedColumns<R, SR>({
   return {
     columns,
     colSpanColumns,
-    lastFrozenColumnIndex,
-    headerRowsCount,
     colOverscanStartIdx,
     colOverscanEndIdx,
     templateColumns,
     layoutCssVars,
+    headerRowsCount,
+    lastFrozenColumnIndex,
     totalFrozenColumnWidth
   };
 }
