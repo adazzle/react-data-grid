@@ -7,7 +7,10 @@
     "react",
     "data grid"
   ],
-  "repository": "github:adazzle/react-data-grid",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adazzle/react-data-grid.git"
+  },
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
   "exports": {
