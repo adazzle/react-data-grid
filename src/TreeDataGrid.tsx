@@ -6,6 +6,7 @@ import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
 import type {
   CellKeyboardEvent,
   CellKeyDownArgs,
+  Column,
   GroupRow,
   Maybe,
   Omit,
@@ -21,7 +22,11 @@ import GroupedRow from './GroupRow';
 import { defaultRenderRow } from './Row';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
-  extends Omit<DataGridProps<R, SR, K>, 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'> {
+  extends Omit<
+    DataGridProps<R, SR, K>,
+    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'
+  > {
+  columns: readonly Column<R, SR>[];
   rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
   groupBy: readonly string[];
   rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;

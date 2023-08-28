@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
-import type { CalculatedColumn } from '../types';
+import type { CalculatedColumn, CalculatedColumnOrColumnGroup } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style/cell';
 
 export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
@@ -11,16 +11,43 @@ export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
       '--rdg-row-height': `${height}px`
     } as unknown as CSSProperties;
   }
+
   return { '--rdg-grid-row-start': rowIdx } as unknown as CSSProperties;
+}
+
+export function getHeaderCellStyle<R, SR>(
+  column: CalculatedColumnOrColumnGroup<R, SR>,
+  rowIdx: number,
+  rowSpan: number
+): React.CSSProperties {
+  const gridRowEnd = rowIdx + 1;
+  const paddingBlockStart = `calc(${rowSpan - 1} * var(--rdg-header-row-height))`;
+
+  if (column.parent === undefined) {
+    return {
+      insetBlockStart: 0,
+      gridRowStart: 1,
+      gridRowEnd,
+      paddingBlockStart
+    };
+  }
+
+  return {
+    insetBlockStart: `calc(${rowIdx - rowSpan} * var(--rdg-header-row-height))`,
+    gridRowStart: gridRowEnd - rowSpan,
+    gridRowEnd,
+    paddingBlockStart
+  };
 }
 
 export function getCellStyle<R, SR>(
   column: CalculatedColumn<R, SR>,
-  colSpan?: number
+  colSpan = 1
 ): React.CSSProperties {
+  const index = column.idx + 1;
   return {
-    gridColumnStart: column.idx + 1,
-    gridColumnEnd: colSpan !== undefined ? `span ${colSpan}` : undefined,
+    gridColumnStart: index,
+    gridColumnEnd: index + colSpan,
     insetInlineStart: column.frozen ? `var(--rdg-frozen-left-${column.idx})` : undefined
   };
 }

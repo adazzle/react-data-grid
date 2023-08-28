@@ -50,7 +50,7 @@ describe('colSpan', () => {
     expect(topSummarryRow1[7]).toHaveAttribute('aria-colspan', '2');
     expect(topSummarryRow1[7]).toHaveStyle({
       'grid-column-start': '8',
-      'grid-column-end': 'span 2'
+      'grid-column-end': '10'
     });
     expect(getCellsAtRowIndex(1)).toHaveLength(15);
 
@@ -62,7 +62,7 @@ describe('colSpan', () => {
     expect(row1[6]).toHaveAttribute('aria-colspan', '2');
     expect(row1[6]).toHaveStyle({
       'grid-column-start': '7',
-      'grid-column-end': 'span 2'
+      'grid-column-end': '9'
     });
     expect(row1[7]).toHaveAttribute('aria-colindex', '9');
     expect(row1[7]).not.toHaveAttribute('aria-colspan');
@@ -73,14 +73,14 @@ describe('colSpan', () => {
     expect(row2[2]).toHaveAttribute('aria-colindex', '3');
     expect(row2[2]).toHaveStyle({
       'grid-column-start': '3',
-      'grid-column-end': 'span 3'
+      'grid-column-end': '6'
     });
     expect(row2[2]).toHaveAttribute('aria-colspan', '3');
     expect(row2[3]).toHaveAttribute('aria-colindex', '6');
     expect(row2[4]).toHaveAttribute('aria-colindex', '7');
     expect(row2[4]).toHaveStyle({
       'grid-column-start': '7',
-      'grid-column-end': 'span 2'
+      'grid-column-end': '9'
     });
     expect(row2[5]).toHaveAttribute('aria-colindex', '9');
 

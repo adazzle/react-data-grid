@@ -1,13 +1,16 @@
 {
   "name": "react-data-grid",
-  "version": "7.0.0-beta.36",
+  "version": "7.0.0-beta.37",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
   "keywords": [
     "react",
     "data grid"
   ],
-  "repository": "github:adazzle/react-data-grid",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adazzle/react-data-grid.git"
+  },
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
   "exports": {
@@ -83,7 +86,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-sonarjs": "^0.20.0",
+    "eslint-plugin-sonarjs": "^0.21.0",
     "eslint-plugin-testing-library": "^5.11.0",
     "jsdom": "^22.0.0",
     "jspdf": "^2.5.1",
