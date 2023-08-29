@@ -150,5 +150,8 @@
         "useValidTypeof": "error"
       }
     }
+  },
+  "organizeImports": {
+    "enabled": false
   }
 }
