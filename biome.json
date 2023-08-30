@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/rome/configuration_schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
     "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*", "*.json"]
   },
@@ -42,7 +42,6 @@
       },
       "complexity": {
         "noExtraBooleanCast": "error",
-        "noExtraSemicolon": "error",
         "noMultipleSpacesInRegularExpressionLiterals": "error",
         "noUselessCatch": "error",
         "noUselessConstructor": "error",
@@ -151,5 +150,8 @@
         "useValidTypeof": "error"
       }
     }
+  },
+  "organizeImports": {
+    "enabled": false
   }
 }
