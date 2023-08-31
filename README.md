@@ -198,6 +198,17 @@ A number defining the height of summary rows.
 
 ###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
 
+###### `onCellSelected?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
+
+Triggered when a cell is selected by click, double click, right click, Page{Up|Down|Left|Right} key, Tab key, or any other actions.
+
+Arguments:
+
+- `args.idx`: `number` - column index
+- `args.rowIdx`: `number` - row index
+- `args.row`: `R` - row object of the currently selected cell
+- `args.column`: `CalculatedColumn<TRow, TSummaryRow>` - column object of the currently selected cell
+
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
