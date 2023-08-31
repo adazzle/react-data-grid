@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
-import type { Column, DataGridProps } from '../src';
+import type { CalculatedColumn, Column, DataGridProps } from '../src';
 import { getCellsAtRowIndex, render } from './utils';
 
 interface Row {
@@ -118,11 +118,162 @@ describe('Events', () => {
     await userEvent.pointer({ target: getCellsAtRowIndex(0)[1], keys: '[MouseRight]' });
     expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
+
+  it('should call onCellSelected when cell is clicked', async () => {
+    let idx;
+    let rowIdx;
+    let row;
+    let column: CalculatedColumn<Row> | undefined;
+
+    render(
+      <EventTest
+        onCellSelected={(args) => {
+          idx = args.idx;
+          rowIdx = args.rowIdx;
+          row = args.row;
+          column = args.column;
+        }}
+      />
+    );
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'true');
+    expect(idx).toBe(0);
+    expect(rowIdx).toBe(0);
+    expect(row).toStrictEqual({
+      col1: 1,
+      col2: 'a1'
+    });
+    expect(column?.key).toBe('col1');
+  });
+
+  it('should call onCellSelected when cell is double clicked', async () => {
+    let idx;
+    let rowIdx;
+    let row;
+    let column: CalculatedColumn<Row> | undefined;
+
+    render(
+      <EventTest
+        onCellSelected={(args) => {
+          idx = args.idx;
+          rowIdx = args.rowIdx;
+          row = args.row;
+          column = args.column;
+        }}
+      />
+    );
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'true');
+    expect(idx).toBe(0);
+    expect(rowIdx).toBe(0);
+    expect(row).toStrictEqual({
+      col1: 1,
+      col2: 'a1'
+    });
+    expect(column?.key).toBe('col1');
+  });
+
+  it('should call onCellSelected when cell is right-clicked', async () => {
+    let idx;
+    let rowIdx;
+    let row;
+    let column: CalculatedColumn<Row> | undefined;
+
+    render(
+      <EventTest
+        onCellSelected={(args) => {
+          idx = args.idx;
+          rowIdx = args.rowIdx;
+          row = args.row;
+          column = args.column;
+        }}
+      />
+    );
+    await userEvent.pointer({ target: getCellsAtRowIndex(0)[0], keys: '[MouseLeft]' });
+
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'true');
+    expect(idx).toBe(0);
+    expect(rowIdx).toBe(0);
+    expect(row).toStrictEqual({
+      col1: 1,
+      col2: 'a1'
+    });
+    expect(column?.key).toBe('col1');
+  });
+
+  it('should call onCellSelected when selected cell is moved by ←↑→↓ keys', async () => {
+    let idx;
+    let rowIdx;
+    let row;
+    let column: CalculatedColumn<Row> | undefined;
+
+    render(
+      <EventTest
+        onCellSelected={(args) => {
+          idx = args.idx;
+          rowIdx = args.rowIdx;
+          row = args.row;
+          column = args.column;
+        }}
+      />
+    );
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    await userEvent.keyboard('{ArrowDown}');
+
+    expect(getCellsAtRowIndex(1)[0]).toHaveAttribute('aria-selected', 'true');
+    expect(idx).toBe(0);
+    expect(rowIdx).toBe(1);
+    expect(row).toStrictEqual({
+      col1: 2,
+      col2: 'a2'
+    });
+    expect(column?.key).toBe('col1');
+  });
+
+  it('should call onCellSelected when selected cell is moved by tab keys', async () => {
+    let idx;
+    let rowIdx;
+    let row;
+    let column: CalculatedColumn<Row> | undefined;
+
+    render(
+      <EventTest
+        onCellSelected={(args) => {
+          idx = args.idx;
+          rowIdx = args.rowIdx;
+          row = args.row;
+          column = args.column;
+        }}
+      />
+    );
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    await userEvent.keyboard('{Tab}');
+
+    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
+    expect(idx).toBe(1);
+    expect(rowIdx).toBe(0);
+    expect(row).toStrictEqual({
+      col1: 1,
+      col2: 'a1'
+    });
+    expect(column?.key).toBe('col2');
+  });
+
+  it('should call onCellSelected only once when cell is double clicked', async () => {
+    let timesToBeCalled = 0;
+
+    render(<EventTest onCellSelected={() => timesToBeCalled++} />);
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+
+    expect(timesToBeCalled).toBe(1);
+  });
 });
 
 type EventProps = Pick<
   DataGridProps<Row>,
-  'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+  'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu' | 'onCellSelected'
 >;
 
 function EventTest(props: EventProps) {
