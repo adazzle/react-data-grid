@@ -104,10 +104,6 @@ export function getNextSelectedCellPosition<R, SR>({
   isCellWithinBounds
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
-  const moveRight = nextIdx - currentIdx > 0;
-  const moveLeft = nextIdx - currentIdx < 0;
-  const moveDown = nextRowIdx - currentRowIdx > 0;
-  const moveUp = nextRowIdx - currentRowIdx < 0;
 
   const setColSpan = (moveRight: boolean) => {
     // If a cell within the colspan range is selected then move to the
@@ -160,14 +156,15 @@ export function getNextSelectedCellPosition<R, SR>({
     return parent.level + mainHeaderIndex;
   };
 
-  const setParentCompatibleWithNewPosition = () => {
+  const setLastParentThatCanBeReachedFromTheTop = () => {
+    if (nextIdx === -1 || nextIdx === columns.length) return;
     let found = false;
-    const column = columns[nextIdx];
-    let parent = column.parent;
-    const nextHeaderRowIdx = nextRowIdx;
+    const nextColumn = columns[nextIdx];
+    let parent = nextColumn.parent;
+    const nextParentRowIdx = nextRowIdx;
     while (parent !== undefined) {
       const parentRowIdx = getParentRowIdx(parent);
-      if (parentRowIdx >= nextHeaderRowIdx) {
+      if (parentRowIdx >= nextParentRowIdx) {
         nextRowIdx = parentRowIdx;
         nextIdx = parent.idx;
         found = true;
@@ -176,15 +173,22 @@ export function getNextSelectedCellPosition<R, SR>({
     }
 
     if (!found) {
+      // if parent is not found then go to the main header
       nextRowIdx = mainHeaderIndex;
     }
   };
 
   if (nextRowIdx < mainHeaderIndex) {
+    const moveRight = nextIdx - currentIdx > 0;
+    const moveLeft = nextIdx - currentIdx < 0;
+    const moveDown = nextRowIdx - currentRowIdx > 0;
+    const moveUp = nextRowIdx - currentRowIdx < 0;
+
     if (moveUp) {
-      const column = columns[currentIdx];
-      let parent = column.parent;
+      const currentColumn = columns[currentIdx];
+      let parent = currentColumn.parent;
       let found = false;
+      // find the first parent that can be reached
       while (parent !== undefined) {
         const parentRowIdx = getParentRowIdx(parent);
         if (nextRowIdx >= parentRowIdx) {
@@ -195,15 +199,16 @@ export function getNextSelectedCellPosition<R, SR>({
         }
         parent = parent.parent;
       }
+
       if (!found) {
-        nextRowIdx = minRowIdx - 1;
+        // keep the current position if there is no parent matching the new row position
+        nextRowIdx = currentRowIdx;
       }
     } else if (moveDown) {
-      setParentCompatibleWithNewPosition();
+      setLastParentThatCanBeReachedFromTheTop();
     } else if (moveRight) {
       const column = columns[currentIdx];
       let parent = column.parent;
-      // find the parent matching the level
       while (parent !== undefined) {
         const parentRowIdx = getParentRowIdx(parent);
         if (nextRowIdx === parentRowIdx) {
@@ -213,11 +218,10 @@ export function getNextSelectedCellPosition<R, SR>({
         parent = parent.parent;
       }
 
-      setParentCompatibleWithNewPosition();
-    } else if (moveLeft) {
+      setLastParentThatCanBeReachedFromTheTop();
+    } else if (moveLeft && nextIdx >= 0 && nextIdx <= columns.length) {
       const nextColumn = columns[nextIdx];
       let parent = nextColumn.parent;
-      // find the parent matching the level
       while (parent !== undefined) {
         const parentRowIdx = getParentRowIdx(parent);
         if (nextRowIdx === parentRowIdx) {
@@ -227,7 +231,7 @@ export function getNextSelectedCellPosition<R, SR>({
         parent = parent.parent;
       }
 
-      setParentCompatibleWithNewPosition();
+      setLastParentThatCanBeReachedFromTheTop();
     }
   }
 
