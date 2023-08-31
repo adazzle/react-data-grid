@@ -1,10 +1,4 @@
-import type {
-  CalculatedColumn,
-  CalculatedColumnParent,
-  CellNavigationMode,
-  Maybe,
-  Position
-} from '../types';
+import type { CalculatedColumn, CellNavigationMode, Maybe, Position } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -38,7 +32,6 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   topSummaryRows: Maybe<readonly SR[]>;
   bottomSummaryRows: Maybe<readonly SR[]>;
   minRowIdx: number;
-  mainHeaderIndex: number;
   maxRowIdx: number;
   currentPosition: Position;
   nextPosition: Position;
@@ -96,9 +89,8 @@ export function getNextSelectedCellPosition<R, SR>({
   topSummaryRows,
   bottomSummaryRows,
   minRowIdx,
-  mainHeaderIndex,
   maxRowIdx,
-  currentPosition: { idx: currentIdx, rowIdx: currentRowIdx },
+  currentPosition: { idx: currentIdx },
   nextPosition,
   lastFrozenColumnIndex,
   isCellWithinBounds
@@ -149,92 +141,6 @@ export function getNextSelectedCellPosition<R, SR>({
         nextIdx = columnsCount - 1;
       }
       setColSpan(false);
-    }
-  }
-
-  const getParentRowIdx = (parent: CalculatedColumnParent<R, SR>) => {
-    return parent.level + mainHeaderIndex;
-  };
-
-  const findFirstParentReachableFromTheBottom = () => {
-    const currentColumn = columns[currentIdx];
-    let parent = currentColumn.parent;
-    let found = false;
-    while (parent !== undefined) {
-      const parentRowIdx = getParentRowIdx(parent);
-      if (nextRowIdx >= parentRowIdx) {
-        nextRowIdx = parentRowIdx;
-        nextIdx = parent.idx;
-        found = true;
-        break;
-      }
-      parent = parent.parent;
-    }
-
-    if (!found) {
-      // keep the current position if there is no parent matching the new row position
-      nextRowIdx = currentRowIdx;
-    }
-  };
-
-  const findLastParentReachableFromTheTop = () => {
-    if (nextIdx === -1 || nextIdx === columns.length) return;
-    let found = false;
-    const nextColumn = columns[nextIdx];
-    let parent = nextColumn.parent;
-    const nextParentRowIdx = nextRowIdx;
-    while (parent !== undefined) {
-      const parentRowIdx = getParentRowIdx(parent);
-      if (parentRowIdx >= nextParentRowIdx) {
-        nextRowIdx = parentRowIdx;
-        nextIdx = parent.idx;
-        found = true;
-      }
-      parent = parent.parent;
-    }
-
-    if (!found) {
-      // if parent is not found then go to the main header
-      nextRowIdx = mainHeaderIndex;
-    }
-  };
-
-  if (nextRowIdx < mainHeaderIndex) {
-    const moveRight = nextIdx - currentIdx > 0;
-    const moveLeft = nextIdx - currentIdx < 0;
-    const moveDown = nextRowIdx - currentRowIdx > 0;
-    const moveUp = nextRowIdx - currentRowIdx < 0;
-
-    if (moveUp) {
-      findFirstParentReachableFromTheBottom();
-    } else if (moveDown) {
-      findLastParentReachableFromTheTop();
-    } else if (moveRight) {
-      const column = columns[currentIdx];
-      let parent = column.parent;
-      while (parent !== undefined) {
-        const parentRowIdx = getParentRowIdx(parent);
-        if (nextRowIdx === parentRowIdx) {
-          nextIdx = parent.idx + parent.colSpan;
-          break;
-        }
-        parent = parent.parent;
-      }
-
-      findLastParentReachableFromTheTop();
-    } else if (moveLeft && nextIdx >= 0 && nextIdx <= columns.length) {
-      const nextColumn = columns[nextIdx];
-      let parent = nextColumn.parent;
-      while (parent !== undefined) {
-        const parentRowIdx = getParentRowIdx(parent);
-        if (nextRowIdx === parentRowIdx) {
-          nextIdx = parent.idx;
-          break;
-        }
-        parent = parent.parent;
-      }
-
-      findLastParentReachableFromTheTop();
     }
   }
 
