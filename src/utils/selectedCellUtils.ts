@@ -1,4 +1,10 @@
-import type { CalculatedColumn, CellNavigationMode, Maybe, Position } from '../types';
+import type {
+  CalculatedColumn,
+  CalculatedColumnParent,
+  CellNavigationMode,
+  Maybe,
+  Position
+} from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -32,6 +38,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   topSummaryRows: Maybe<readonly SR[]>;
   bottomSummaryRows: Maybe<readonly SR[]>;
   minRowIdx: number;
+  mainHeaderIndex: number;
   maxRowIdx: number;
   currentPosition: Position;
   nextPosition: Position;
@@ -89,13 +96,18 @@ export function getNextSelectedCellPosition<R, SR>({
   topSummaryRows,
   bottomSummaryRows,
   minRowIdx,
+  mainHeaderIndex,
   maxRowIdx,
-  currentPosition: { idx: currentIdx },
+  currentPosition: { idx: currentIdx, rowIdx: currentRowIdx },
   nextPosition,
   lastFrozenColumnIndex,
   isCellWithinBounds
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
+  const moveRight = nextIdx - currentIdx > 0;
+  const moveLeft = nextIdx - currentIdx < 0;
+  const moveDown = nextRowIdx - currentRowIdx > 0;
+  const moveUp = nextRowIdx - currentRowIdx < 0;
 
   const setColSpan = (moveRight: boolean) => {
     // If a cell within the colspan range is selected then move to the
@@ -141,6 +153,81 @@ export function getNextSelectedCellPosition<R, SR>({
         nextIdx = columnsCount - 1;
       }
       setColSpan(false);
+    }
+  }
+
+  const getParentRowIdx = (parent: CalculatedColumnParent<R, SR>) => {
+    return parent.level + mainHeaderIndex;
+  };
+
+  const setParentCompatibleWithNewPosition = () => {
+    let found = false;
+    const column = columns[nextIdx];
+    let parent = column.parent;
+    const nextHeaderRowIdx = nextRowIdx;
+    while (parent !== undefined) {
+      const parentRowIdx = getParentRowIdx(parent);
+      if (parentRowIdx >= nextHeaderRowIdx) {
+        nextRowIdx = parentRowIdx;
+        nextIdx = parent.idx;
+        found = true;
+      }
+      parent = parent.parent;
+    }
+
+    if (!found) {
+      nextRowIdx = mainHeaderIndex;
+    }
+  };
+
+  if (nextRowIdx < mainHeaderIndex) {
+    if (moveUp) {
+      const column = columns[currentIdx];
+      let parent = column.parent;
+      let found = false;
+      while (parent !== undefined) {
+        const parentRowIdx = getParentRowIdx(parent);
+        if (nextRowIdx >= parentRowIdx) {
+          nextRowIdx = parentRowIdx;
+          nextIdx = parent.idx;
+          found = true;
+          break;
+        }
+        parent = parent.parent;
+      }
+      if (!found) {
+        nextRowIdx = minRowIdx - 1;
+      }
+    } else if (moveDown) {
+      setParentCompatibleWithNewPosition();
+    } else if (moveRight) {
+      const column = columns[currentIdx];
+      let parent = column.parent;
+      // find the parent matching the level
+      while (parent !== undefined) {
+        const parentRowIdx = getParentRowIdx(parent);
+        if (nextRowIdx === parentRowIdx) {
+          nextIdx = parent.idx + parent.colSpan;
+          break;
+        }
+        parent = parent.parent;
+      }
+
+      setParentCompatibleWithNewPosition();
+    } else if (moveLeft) {
+      const nextColumn = columns[nextIdx];
+      let parent = nextColumn.parent;
+      // find the parent matching the level
+      while (parent !== undefined) {
+        const parentRowIdx = getParentRowIdx(parent);
+        if (nextRowIdx === parentRowIdx) {
+          nextIdx = parent.idx;
+          break;
+        }
+        parent = parent.parent;
+      }
+
+      setParentCompatibleWithNewPosition();
     }
   }
 

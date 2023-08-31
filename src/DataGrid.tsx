@@ -773,6 +773,7 @@ function DataGrid<R, SR, K extends Key>(
       topSummaryRows,
       bottomSummaryRows,
       minRowIdx,
+      mainHeaderIndex,
       maxRowIdx,
       lastFrozenColumnIndex,
       cellNavigationMode,
