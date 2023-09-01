@@ -304,7 +304,7 @@ function DataGrid<R, SR, K extends Key>(
   const headerAndTopSummaryRowsCount = headerRowsCount + topSummaryRowsCount;
   const groupedColumnHeaderRowsCount = headerRowsCount - 1;
   const minRowIdx = -headerAndTopSummaryRowsCount;
-  const mainHeaderIndex = minRowIdx + groupedColumnHeaderRowsCount;
+  const mainHeaderRowIdx = minRowIdx + groupedColumnHeaderRowsCount;
   const maxRowIdx = rows.length + bottomSummaryRowsCount - 1;
 
   const [selectedPosition, setSelectedPosition] = useState(
@@ -702,12 +702,12 @@ function DataGrid<R, SR, K extends Key>(
   }
 
   function getParentRowIdx(parent: CalculatedColumnParent<R, SR>) {
-    return parent.level + mainHeaderIndex;
+    return parent.level + mainHeaderRowIdx;
   }
 
   function findLastReachableColumnGroup(position: Position): Position {
     let { idx: nextIdx, rowIdx: nextRowIdx } = position;
-    if (!isCellWithinSelectionBounds(position) || nextRowIdx >= mainHeaderIndex) return position;
+    if (!isCellWithinSelectionBounds(position) || nextRowIdx >= mainHeaderRowIdx) return position;
     let found = false;
     const nextColumn = columns[nextIdx];
     let parent = nextColumn.parent;
@@ -724,7 +724,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (!found) {
       // if parent is not found then go to the main header
-      nextRowIdx = mainHeaderIndex;
+      nextRowIdx = mainHeaderRowIdx;
     }
 
     return { idx: nextIdx, rowIdx: nextRowIdx };
@@ -737,9 +737,9 @@ function DataGrid<R, SR, K extends Key>(
     switch (key) {
       case 'ArrowUp': {
         const nextRowIdx = rowIdx - 1;
-        if (nextRowIdx > minRowIdx && nextRowIdx < mainHeaderIndex) {
-          const currentColumn = columns[idx];
-          let parent = currentColumn.parent;
+        if (nextRowIdx > minRowIdx && nextRowIdx < mainHeaderRowIdx) {
+          const column = columns[idx];
+          let parent = column.parent;
           while (parent !== undefined) {
             const parentRowIdx = getParentRowIdx(parent);
             if (nextRowIdx >= parentRowIdx) {
@@ -759,8 +759,8 @@ function DataGrid<R, SR, K extends Key>(
         return findLastReachableColumnGroup({ idx: idx - 1, rowIdx });
       case rightKey: {
         let nextIdx = idx + 1;
-        if (rowIdx < mainHeaderIndex) {
-          const column = columns[selectedPosition.idx];
+        if (rowIdx < mainHeaderRowIdx) {
+          const column = columns[idx];
           let parent = column.parent;
           while (parent !== undefined) {
             const parentRowIdx = getParentRowIdx(parent);
@@ -842,6 +842,7 @@ function DataGrid<R, SR, K extends Key>(
       topSummaryRows,
       bottomSummaryRows,
       minRowIdx,
+      mainHeaderRowIdx,
       maxRowIdx,
       lastFrozenColumnIndex,
       cellNavigationMode,
@@ -1109,13 +1110,13 @@ function DataGrid<R, SR, K extends Key>(
             ))}
             <HeaderRow
               rowIdx={headerRowsCount}
-              columns={getRowViewportColumns(mainHeaderIndex)}
+              columns={getRowViewportColumns(mainHeaderRowIdx)}
               onColumnResize={handleColumnResizeLatest}
               sortColumns={sortColumns}
               onSortColumnsChange={onSortColumnsChangeLatest}
               lastFrozenColumnIndex={lastFrozenColumnIndex}
               selectedCellIdx={
-                selectedPosition.rowIdx === mainHeaderIndex ? selectedPosition.idx : undefined
+                selectedPosition.rowIdx === mainHeaderRowIdx ? selectedPosition.idx : undefined
               }
               selectCell={selectHeaderCellLatest}
               shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
@@ -1128,7 +1129,7 @@ function DataGrid<R, SR, K extends Key>(
             <>
               {topSummaryRows?.map((row, rowIdx) => {
                 const gridRowStart = headerRowsCount + 1 + rowIdx;
-                const summaryRowIdx = mainHeaderIndex + 1 + rowIdx;
+                const summaryRowIdx = mainHeaderRowIdx + 1 + rowIdx;
                 const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
                 const top = headerRowsHeight + summaryRowHeight * rowIdx;
 

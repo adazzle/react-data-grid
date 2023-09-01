@@ -32,6 +32,7 @@ interface GetNextSelectedCellPositionOpts<R, SR> {
   topSummaryRows: Maybe<readonly SR[]>;
   bottomSummaryRows: Maybe<readonly SR[]>;
   minRowIdx: number;
+  mainHeaderRowIdx: number;
   maxRowIdx: number;
   currentPosition: Position;
   nextPosition: Position;
@@ -44,22 +45,26 @@ function getSelectedCellColSpan<R, SR>({
   topSummaryRows,
   bottomSummaryRows,
   rowIdx,
+  mainHeaderRowIdx,
   lastFrozenColumnIndex,
   column
 }: Pick<
   GetNextSelectedCellPositionOpts<R, SR>,
-  'rows' | 'topSummaryRows' | 'bottomSummaryRows' | 'lastFrozenColumnIndex'
+  'rows' | 'topSummaryRows' | 'bottomSummaryRows' | 'lastFrozenColumnIndex' | 'mainHeaderRowIdx'
 > & {
   rowIdx: number;
   column: CalculatedColumn<R, SR>;
 }) {
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
-  const minRowIdx = -1 - topSummaryRowsCount;
-  if (rowIdx === minRowIdx) {
+  if (rowIdx === mainHeaderRowIdx) {
     return getColSpan(column, lastFrozenColumnIndex, { type: 'HEADER' });
   }
 
-  if (topSummaryRows && rowIdx > minRowIdx && rowIdx <= topSummaryRowsCount + minRowIdx) {
+  if (
+    topSummaryRows &&
+    rowIdx > mainHeaderRowIdx &&
+    rowIdx <= topSummaryRowsCount + mainHeaderRowIdx
+  ) {
     return getColSpan(column, lastFrozenColumnIndex, {
       type: 'SUMMARY',
       row: topSummaryRows[rowIdx + topSummaryRowsCount]
@@ -89,6 +94,7 @@ export function getNextSelectedCellPosition<R, SR>({
   topSummaryRows,
   bottomSummaryRows,
   minRowIdx,
+  mainHeaderRowIdx,
   maxRowIdx,
   currentPosition: { idx: currentIdx },
   nextPosition,
@@ -108,6 +114,7 @@ export function getNextSelectedCellPosition<R, SR>({
         topSummaryRows,
         bottomSummaryRows,
         rowIdx: nextRowIdx,
+        mainHeaderRowIdx,
         lastFrozenColumnIndex,
         column
       });
@@ -166,6 +173,7 @@ export function canExitGrid({
   const atLastCellInRow = idx === maxColIdx;
   const atFirstCellInRow = idx === 0;
   const atLastRow = rowIdx === maxRowIdx;
+  // TODO: handle column groups
   const atFirstRow = rowIdx === minRowIdx;
 
   return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
