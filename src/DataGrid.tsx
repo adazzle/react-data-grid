@@ -705,35 +705,9 @@ function DataGrid<R, SR, K extends Key>(
     return parent.level + mainHeaderIndex;
   }
 
-  function findFirstColumnReachableFromTheBottom(position: Position): Position {
+  function findLastReachableColumnGroup(position: Position): Position {
     let { idx: nextIdx, rowIdx: nextRowIdx } = position;
-    if (nextRowIdx >= mainHeaderIndex) return position;
-    const currentColumn = columns[nextIdx];
-    let parent = currentColumn.parent;
-    let found = false;
-    while (parent !== undefined) {
-      const parentRowIdx = getParentRowIdx(parent);
-      if (nextRowIdx >= parentRowIdx) {
-        nextRowIdx = parentRowIdx;
-        nextIdx = parent.idx;
-        found = true;
-        break;
-      }
-      parent = parent.parent;
-    }
-
-    if (!found) {
-      // keep the current position if there is no parent matching the new row position
-      nextRowIdx = selectedPosition.rowIdx;
-    }
-
-    return { idx: nextIdx, rowIdx: nextRowIdx };
-  }
-
-  function findLastColumnGroupReachableFromTheTop(position: Position): Position {
-    let { idx: nextIdx, rowIdx: nextRowIdx } = position;
-    if (nextRowIdx >= mainHeaderIndex) return position;
-    if (nextIdx === -1 || nextIdx === columns.length) return position;
+    if (!isCellWithinSelectionBounds(position) || nextRowIdx >= mainHeaderIndex) return position;
     let found = false;
     const nextColumn = columns[nextIdx];
     let parent = nextColumn.parent;
@@ -761,12 +735,28 @@ function DataGrid<R, SR, K extends Key>(
     const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
 
     switch (key) {
-      case 'ArrowUp':
-        return findFirstColumnReachableFromTheBottom({ idx, rowIdx: rowIdx - 1 });
+      case 'ArrowUp': {
+        const nextRowIdx = rowIdx - 1;
+        if (nextRowIdx > minRowIdx && nextRowIdx < mainHeaderIndex) {
+          const currentColumn = columns[idx];
+          let parent = currentColumn.parent;
+          while (parent !== undefined) {
+            const parentRowIdx = getParentRowIdx(parent);
+            if (nextRowIdx >= parentRowIdx) {
+              return { idx: parent.idx, rowIdx: parentRowIdx };
+            }
+            parent = parent.parent;
+          }
+
+          // keep the current position if there is no parent matching the new row position
+          return selectedPosition;
+        }
+        return { idx, rowIdx: rowIdx - 1 };
+      }
       case 'ArrowDown':
-        return findLastColumnGroupReachableFromTheTop({ idx, rowIdx: rowIdx + 1 });
+        return findLastReachableColumnGroup({ idx, rowIdx: rowIdx + 1 });
       case leftKey:
-        return findLastColumnGroupReachableFromTheTop({ idx: idx - 1, rowIdx });
+        return findLastReachableColumnGroup({ idx: idx - 1, rowIdx });
       case rightKey: {
         let nextIdx = idx + 1;
         if (rowIdx < mainHeaderIndex) {
@@ -781,7 +771,7 @@ function DataGrid<R, SR, K extends Key>(
             parent = parent.parent;
           }
 
-          return findLastColumnGroupReachableFromTheTop({ idx: nextIdx, rowIdx });
+          return findLastReachableColumnGroup({ idx: nextIdx, rowIdx });
         }
 
         return { idx: nextIdx, rowIdx };
@@ -791,14 +781,14 @@ function DataGrid<R, SR, K extends Key>(
       case 'Home':
         // If row is selected then move focus to the first row
         if (isRowSelected) return { idx, rowIdx: minRowIdx };
-        return findLastColumnGroupReachableFromTheTop({
+        return findLastReachableColumnGroup({
           idx: 0,
           rowIdx: ctrlKey ? minRowIdx : rowIdx
         });
       case 'End':
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: maxRowIdx };
-        return findLastColumnGroupReachableFromTheTop({
+        return findLastReachableColumnGroup({
           idx: maxColIdx,
           rowIdx: ctrlKey ? maxRowIdx : rowIdx
         });
