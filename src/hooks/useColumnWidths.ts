@@ -96,9 +96,7 @@ export function useColumnWidths<R, SR>(
       updateMeasuredWidths(columnsToMeasure);
     });
 
-    const originalColumnIdx = columns.find((column) => column.key === resizingKey)?.idx;
-
-    onColumnResize?.(originalColumnIdx || column.idx, measuredWidth);
+    onColumnResize?.(column.idx, measuredWidth, column);
   }
 
   return {
