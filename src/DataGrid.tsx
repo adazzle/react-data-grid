@@ -30,7 +30,6 @@ import {
 } from './utils';
 import type {
   CalculatedColumn,
-  CalculatedColumnParent,
   CellClickArgs,
   CellKeyboardEvent,
   CellKeyDownArgs,
@@ -701,35 +700,6 @@ function DataGrid<R, SR, K extends Key>(
     }
   }
 
-  function getParentRowIdx(parent: CalculatedColumnParent<R, SR>) {
-    return parent.level + mainHeaderRowIdx;
-  }
-
-  function findLastReachableColumnGroup(position: Position): Position {
-    let { idx: nextIdx, rowIdx: nextRowIdx } = position;
-    if (!isCellWithinSelectionBounds(position) || nextRowIdx >= mainHeaderRowIdx) return position;
-    let found = false;
-    const nextColumn = columns[nextIdx];
-    let parent = nextColumn.parent;
-    const nextParentRowIdx = nextRowIdx;
-    while (parent !== undefined) {
-      const parentRowIdx = getParentRowIdx(parent);
-      if (parentRowIdx >= nextParentRowIdx) {
-        nextRowIdx = parentRowIdx;
-        nextIdx = parent.idx;
-        found = true;
-      }
-      parent = parent.parent;
-    }
-
-    if (!found) {
-      // if parent is not found then go to the main header
-      nextRowIdx = mainHeaderRowIdx;
-    }
-
-    return { idx: nextIdx, rowIdx: nextRowIdx };
-  }
-
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
     const { idx, rowIdx } = selectedPosition;
     const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
@@ -741,7 +711,7 @@ function DataGrid<R, SR, K extends Key>(
           const column = columns[idx];
           let parent = column.parent;
           while (parent !== undefined) {
-            const parentRowIdx = getParentRowIdx(parent);
+            const parentRowIdx = parent.level + mainHeaderRowIdx;
             if (nextRowIdx >= parentRowIdx) {
               return { idx: parent.idx, rowIdx: parentRowIdx };
             }
@@ -754,44 +724,21 @@ function DataGrid<R, SR, K extends Key>(
         return { idx, rowIdx: rowIdx - 1 };
       }
       case 'ArrowDown':
-        return findLastReachableColumnGroup({ idx, rowIdx: rowIdx + 1 });
+        return { idx, rowIdx: rowIdx + 1 };
       case leftKey:
-        return findLastReachableColumnGroup({ idx: idx - 1, rowIdx });
-      case rightKey: {
-        let nextIdx = idx + 1;
-        if (rowIdx < mainHeaderRowIdx) {
-          const column = columns[idx];
-          let parent = column.parent;
-          while (parent !== undefined) {
-            const parentRowIdx = getParentRowIdx(parent);
-            if (rowIdx === parentRowIdx) {
-              nextIdx = parent.idx + parent.colSpan;
-              break;
-            }
-            parent = parent.parent;
-          }
-
-          return findLastReachableColumnGroup({ idx: nextIdx, rowIdx });
-        }
-
-        return { idx: nextIdx, rowIdx };
-      }
+        return { idx: idx - 1, rowIdx };
+      case rightKey:
+        return { idx: idx + 1, rowIdx };
       case 'Tab':
         return { idx: idx + (shiftKey ? -1 : 1), rowIdx };
       case 'Home':
         // If row is selected then move focus to the first row
         if (isRowSelected) return { idx, rowIdx: minRowIdx };
-        return findLastReachableColumnGroup({
-          idx: 0,
-          rowIdx: ctrlKey ? minRowIdx : rowIdx
-        });
+        return { idx: 0, rowIdx: ctrlKey ? minRowIdx : rowIdx };
       case 'End':
         // If row is selected then move focus to the last row.
         if (isRowSelected) return { idx, rowIdx: maxRowIdx };
-        return findLastReachableColumnGroup({
-          idx: maxColIdx,
-          rowIdx: ctrlKey ? maxRowIdx : rowIdx
-        });
+        return { idx: maxColIdx, rowIdx: ctrlKey ? maxRowIdx : rowIdx };
       case 'PageUp': {
         if (selectedPosition.rowIdx === minRowIdx) return selectedPosition;
         const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;

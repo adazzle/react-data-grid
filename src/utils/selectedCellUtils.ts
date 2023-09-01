@@ -1,4 +1,10 @@
-import type { CalculatedColumn, CellNavigationMode, Maybe, Position } from '../types';
+import type {
+  CalculatedColumn,
+  CalculatedColumnParent,
+  CellNavigationMode,
+  Maybe,
+  Position
+} from '../types';
 import { getColSpan } from './colSpanUtils';
 
 interface IsSelectedCellEditableOpts<R, SR> {
@@ -103,6 +109,25 @@ export function getNextSelectedCellPosition<R, SR>({
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
 
+  const getParentRowIdx = (parent: CalculatedColumnParent<R, SR>) => {
+    return parent.level + mainHeaderRowIdx;
+  };
+
+  const setLastReachableRowIdx = () => {
+    const nextColumn = columns[nextIdx];
+    let parent = nextColumn.parent;
+    const nextParentRowIdx = nextRowIdx;
+    nextRowIdx = mainHeaderRowIdx;
+    while (parent !== undefined) {
+      const parentRowIdx = getParentRowIdx(parent);
+      if (parentRowIdx >= nextParentRowIdx) {
+        nextRowIdx = parentRowIdx;
+        nextIdx = parent.idx;
+      }
+      parent = parent.parent;
+    }
+  };
+
   const setColSpan = (moveRight: boolean) => {
     // If a cell within the colspan range is selected then move to the
     // previous or the next cell depending on the navigation direction
@@ -124,10 +149,27 @@ export function getNextSelectedCellPosition<R, SR>({
         break;
       }
     }
+
+    if (moveRight && nextRowIdx < mainHeaderRowIdx) {
+      const nextColumn = columns[nextIdx];
+      let parent = nextColumn.parent;
+      while (parent !== undefined) {
+        const parentRowIdx = getParentRowIdx(parent);
+        if (nextRowIdx === parentRowIdx) {
+          nextIdx = parent.idx + parent.colSpan;
+          break;
+        }
+        parent = parent.parent;
+      }
+    }
   };
 
   if (isCellWithinBounds(nextPosition)) {
     setColSpan(nextIdx - currentIdx > 0);
+  }
+
+  if (nextRowIdx < mainHeaderRowIdx) {
+    setLastReachableRowIdx();
   }
 
   if (cellNavigationMode === 'CHANGE_ROW') {
