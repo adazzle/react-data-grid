@@ -108,24 +108,10 @@ export function getNextSelectedCellPosition<R, SR>({
   isCellWithinBounds
 }: GetNextSelectedCellPositionOpts<R, SR>): Position {
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
+  const columnsCount = columns.length;
 
   const getParentRowIdx = (parent: CalculatedColumnParent<R, SR>) => {
     return parent.level + mainHeaderRowIdx;
-  };
-
-  const setLastReachableRowIdx = () => {
-    const nextColumn = columns[nextIdx];
-    let parent = nextColumn.parent;
-    const nextParentRowIdx = nextRowIdx;
-    nextRowIdx = mainHeaderRowIdx;
-    while (parent !== undefined) {
-      const parentRowIdx = getParentRowIdx(parent);
-      if (parentRowIdx >= nextParentRowIdx) {
-        nextRowIdx = parentRowIdx;
-        nextIdx = parent.idx;
-      }
-      parent = parent.parent;
-    }
   };
 
   const setColSpan = (moveRight: boolean) => {
@@ -153,28 +139,24 @@ export function getNextSelectedCellPosition<R, SR>({
 
   if (isCellWithinBounds(nextPosition)) {
     const moveRight = nextIdx - currentIdx > 0;
-    setColSpan(nextIdx - currentIdx > 0);
 
-    if (nextRowIdx < mainHeaderRowIdx) {
-      if (moveRight) {
-        const nextColumn = columns[nextIdx];
-        let parent = nextColumn.parent;
-        while (parent !== undefined) {
-          const parentRowIdx = getParentRowIdx(parent);
-          if (nextRowIdx === parentRowIdx) {
-            nextIdx = parent.idx + parent.colSpan;
-            break;
-          }
-          parent = parent.parent;
+    setColSpan(moveRight);
+
+    if (nextRowIdx < mainHeaderRowIdx && moveRight) {
+      const nextColumn = columns[nextIdx];
+      let parent = nextColumn.parent;
+      while (parent !== undefined) {
+        const parentRowIdx = getParentRowIdx(parent);
+        if (nextRowIdx === parentRowIdx) {
+          nextIdx = parent.idx + parent.colSpan;
+          break;
         }
+        parent = parent.parent;
       }
-
-      setLastReachableRowIdx();
     }
   }
 
   if (cellNavigationMode === 'CHANGE_ROW') {
-    const columnsCount = columns.length;
     const isAfterLastColumn = nextIdx === columnsCount;
     const isBeforeFirstColumn = nextIdx === -1;
 
@@ -191,6 +173,22 @@ export function getNextSelectedCellPosition<R, SR>({
         nextIdx = columnsCount - 1;
       }
       setColSpan(false);
+    }
+  }
+
+  if (nextRowIdx < mainHeaderRowIdx && nextIdx >= 0 && nextIdx < columnsCount) {
+    // set last reachable rowIdx
+    const nextColumn = columns[nextIdx];
+    let parent = nextColumn.parent;
+    const nextParentRowIdx = nextRowIdx;
+    nextRowIdx = mainHeaderRowIdx;
+    while (parent !== undefined) {
+      const parentRowIdx = getParentRowIdx(parent);
+      if (parentRowIdx >= nextParentRowIdx) {
+        nextRowIdx = parentRowIdx;
+        nextIdx = parent.idx;
+      }
+      parent = parent.parent;
     }
   }
 
