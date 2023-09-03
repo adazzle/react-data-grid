@@ -149,27 +149,28 @@ export function getNextSelectedCellPosition<R, SR>({
         break;
       }
     }
-
-    if (moveRight && nextRowIdx < mainHeaderRowIdx) {
-      const nextColumn = columns[nextIdx];
-      let parent = nextColumn.parent;
-      while (parent !== undefined) {
-        const parentRowIdx = getParentRowIdx(parent);
-        if (nextRowIdx === parentRowIdx) {
-          nextIdx = parent.idx + parent.colSpan;
-          break;
-        }
-        parent = parent.parent;
-      }
-    }
   };
 
   if (isCellWithinBounds(nextPosition)) {
+    const moveRight = nextIdx - currentIdx > 0;
     setColSpan(nextIdx - currentIdx > 0);
-  }
 
-  if (nextRowIdx < mainHeaderRowIdx) {
-    setLastReachableRowIdx();
+    if (nextRowIdx < mainHeaderRowIdx) {
+      if (moveRight) {
+        const nextColumn = columns[nextIdx];
+        let parent = nextColumn.parent;
+        while (parent !== undefined) {
+          const parentRowIdx = getParentRowIdx(parent);
+          if (nextRowIdx === parentRowIdx) {
+            nextIdx = parent.idx + parent.colSpan;
+            break;
+          }
+          parent = parent.parent;
+        }
+      }
+
+      setLastReachableRowIdx();
+    }
   }
 
   if (cellNavigationMode === 'CHANGE_ROW') {

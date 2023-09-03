@@ -252,6 +252,8 @@ test('keyboard navigation', async () => {
 
   await userEvent.tab();
   validateCellPosition(0, 3);
+
+  // arrow navigation
   await userEvent.keyboard('{arrowup}');
   validateCellPosition(0, 3);
   await userEvent.keyboard('{arrowright}');
@@ -304,10 +306,25 @@ test('keyboard navigation', async () => {
   validateCellPosition(8, 0);
   await userEvent.keyboard('{arrowleft}');
   validateCellPosition(4, 0);
+
+  // home/end navigation
   await userEvent.keyboard('{home}');
   validateCellPosition(0, 3);
   await userEvent.keyboard('{end}');
   validateCellPosition(11, 3);
   await userEvent.keyboard('{arrowleft}');
   validateCellPosition(10, 3);
+
+  // tab navigation
+  await userEvent.tab();
+  validateCellPosition(11, 3);
+  await userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
+  validateCellPosition(8, 3);
+  await userEvent.keyboard('{arrowup}');
+  await userEvent.tab({ shift: true });
+  validateCellPosition(4, 0);
+  await userEvent.tab();
+  validateCellPosition(8, 0);
 });
