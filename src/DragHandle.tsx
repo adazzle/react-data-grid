@@ -1,41 +1,35 @@
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { getCellStyle } from './utils';
 import type { CalculatedColumn, FillEvent, Position } from './types';
 import type { DataGridProps, SelectCellState } from './DataGrid';
 
-const cellDragHandleContainerClassname = css`
-  @layer rdg.DragHandle {
-    position: relative;
-    pointer-events: none;
-  }
-`;
-
-const cellDragHandleContainerFrozenClassname = css`
-  @layer rdg.DragHandle {
-    z-index: 1;
-    position: sticky;
-  }
-`;
-
 const cellDragHandle = css`
   @layer rdg.DragHandle {
-    pointer-events: auto;
     z-index: 0;
-    position: absolute;
-    inset-inline-end: 0;
-    inset-block-end: 0;
     cursor: move;
     inline-size: 8px;
     block-size: 8px;
     background-color: var(--rdg-selection-color);
+    align-self: end;
+    justify-self: end;
 
     &:hover {
       inline-size: 16px;
       block-size: 16px;
       border: 2px solid var(--rdg-selection-color);
       background-color: var(--rdg-background-color);
+    }
+  }
+`;
+
+const cellDragHandleFrozenClassname = css`
+  @layer rdg.DragHandle {
+    z-index: 1;
+    position: sticky;
+
+    &:hover {
+      margin-inline-end: 16px;
     }
   }
 `;
@@ -126,17 +120,17 @@ export default function DragHandle<R, SR>({
 
   return (
     <div
-      className={clsx(
-        cellDragHandleContainerClassname,
-        column.frozen && cellDragHandleContainerFrozenClassname
-      )}
-      style={{ gridRowStart, ...getCellStyle(column) }}
-    >
-      <div
-        className={cellDragHandleClassname}
-        onMouseDown={handleMouseDown}
-        onDoubleClick={handleDoubleClick}
-      />
-    </div>
+      style={{
+        gridColumnStart: column.idx + 1,
+        gridRowStart,
+        insetInlineStart:
+          column.frozen && typeof column.width === 'number'
+            ? `calc(var(--rdg-frozen-left-${column.idx}) + ${column.width - 8}px)`
+            : undefined
+      }}
+      className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
+      onMouseDown={handleMouseDown}
+      onDoubleClick={handleDoubleClick}
+    />
   );
 }
