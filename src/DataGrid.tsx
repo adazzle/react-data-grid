@@ -810,7 +810,7 @@ function DataGrid<R, SR, K extends Key>(
 
     return (
       <DragHandle
-        gridRowStart={headerAndTopSummaryRowsCount + +selectedPosition.rowIdx + 1}
+        gridRowStart={headerAndTopSummaryRowsCount + selectedPosition.rowIdx + 1}
         rows={rows}
         columns={columns}
         selectedPosition={selectedPosition}
