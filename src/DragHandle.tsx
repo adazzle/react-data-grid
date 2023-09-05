@@ -7,18 +7,17 @@ import type { DataGridProps, SelectCellState } from './DataGrid';
 
 const cellDragHandle = css`
   @layer rdg.DragHandle {
-    --rdg-drag-handle-width: 8px;
+    --rdg-drag-handle-size: 8px;
     z-index: 0;
     cursor: move;
-    inline-size: 8px;
-    block-size: 8px;
+    inline-size: var(--rdg-drag-handle-size);
+    block-size: var(--rdg-drag-handle-size);
     background-color: var(--rdg-selection-color);
     align-self: end;
     justify-self: end;
 
     &:hover {
-      inline-size: 16px;
-      block-size: 16px;
+      --rdg-drag-handle-size: 16px;
       border: 2px solid var(--rdg-selection-color);
       background-color: var(--rdg-background-color);
     }
@@ -29,10 +28,6 @@ const cellDragHandleFrozenClassname = css`
   @layer rdg.DragHandle {
     z-index: 1;
     position: sticky;
-
-    &:hover {
-      --rdg-drag-handle-width: 16px;
-    }
   }
 `;
 
@@ -130,7 +125,7 @@ export default function DragHandle<R, SR>({
         gridRowStart,
         insetInlineStart:
           style.insetInlineStart && typeof column.width === 'number'
-            ? `calc(${style.insetInlineStart} + ${column.width}px - var(--rdg-drag-handle-width))`
+            ? `calc(${style.insetInlineStart} + ${column.width}px - var(--rdg-drag-handle-size))`
             : undefined
       }}
       className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
