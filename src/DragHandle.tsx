@@ -1,6 +1,7 @@
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
+import { getCellStyle } from './utils';
 import type { CalculatedColumn, FillEvent, Position } from './types';
 import type { DataGridProps, SelectCellState } from './DataGrid';
 
@@ -119,14 +120,17 @@ export default function DragHandle<R, SR>({
     }
   }
 
+  const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
+  const style = getCellStyle(column, colSpan);
+
   return (
     <div
       style={{
-        gridColumnStart: column.idx + 1,
+        ...style,
         gridRowStart,
         insetInlineStart:
-          column.frozen && typeof column.width === 'number'
-            ? `calc(var(--rdg-frozen-left-${column.idx}) + ${column.width}px - var(--rdg-drag-handle-width))`
+          style.insetInlineStart && typeof column.width === 'number'
+            ? `calc(${style.insetInlineStart} + ${column.width}px - var(--rdg-drag-handle-width))`
             : undefined
       }}
       className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
