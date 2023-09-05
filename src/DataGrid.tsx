@@ -705,24 +705,8 @@ function DataGrid<R, SR, K extends Key>(
     const isRowSelected = selectedCellIsWithinSelectionBounds && idx === -1;
 
     switch (key) {
-      case 'ArrowUp': {
-        const nextRowIdx = rowIdx - 1;
-        if (nextRowIdx > minRowIdx && nextRowIdx < mainHeaderRowIdx) {
-          const column = columns[idx];
-          let parent = column.parent;
-          while (parent !== undefined) {
-            const parentRowIdx = parent.level + mainHeaderRowIdx;
-            if (nextRowIdx >= parentRowIdx) {
-              return { idx: parent.idx, rowIdx: parentRowIdx };
-            }
-            parent = parent.parent;
-          }
-
-          // keep the current position if there is no parent matching the new row position
-          return selectedPosition;
-        }
+      case 'ArrowUp':
         return { idx, rowIdx: rowIdx - 1 };
-      }
       case 'ArrowDown':
         return { idx, rowIdx: rowIdx + 1 };
       case leftKey:
@@ -783,6 +767,8 @@ function DataGrid<R, SR, K extends Key>(
     if (isSamePosition(selectedPosition, nextPosition)) return;
 
     const nextSelectedCellPosition = getNextSelectedCellPosition({
+      key,
+      shiftKey,
       columns,
       colSpanColumns,
       rows,

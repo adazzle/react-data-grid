@@ -327,4 +327,10 @@ test('keyboard navigation', async () => {
   validateCellPosition(4, 0);
   await userEvent.tab();
   validateCellPosition(8, 0);
+
+  await userEvent.keyboard('{home}{end}');
+  await userEvent.tab();
+  validateCellPosition(0, 4);
+  await userEvent.tab({ shift: true });
+  validateCellPosition(11, 3);
 });
