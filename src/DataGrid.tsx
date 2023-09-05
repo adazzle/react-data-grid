@@ -767,8 +767,8 @@ function DataGrid<R, SR, K extends Key>(
     if (isSamePosition(selectedPosition, nextPosition)) return;
 
     const nextSelectedCellPosition = getNextSelectedCellPosition({
-      key,
-      shiftKey,
+      moveUp: key === 'ArrowUp',
+      moveNext: key === rightKey || (key === 'Tab' && !shiftKey),
       columns,
       colSpanColumns,
       rows,

@@ -31,8 +31,8 @@ export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): 
 }
 
 interface GetNextSelectedCellPositionOpts<R, SR> {
-  key: string;
-  shiftKey: boolean;
+  moveUp: boolean;
+  moveNext: boolean;
   cellNavigationMode: CellNavigationMode;
   columns: readonly CalculatedColumn<R, SR>[];
   colSpanColumns: readonly CalculatedColumn<R, SR>[];
@@ -95,8 +95,8 @@ function getSelectedCellColSpan<R, SR>({
 }
 
 export function getNextSelectedCellPosition<R, SR>({
-  key,
-  shiftKey,
+  moveUp,
+  moveNext,
   cellNavigationMode,
   columns,
   colSpanColumns,
@@ -114,7 +114,7 @@ export function getNextSelectedCellPosition<R, SR>({
   let { idx: nextIdx, rowIdx: nextRowIdx } = nextPosition;
   const columnsCount = columns.length;
 
-  const setColSpan = (moveRight: boolean) => {
+  const setColSpan = (moveNext: boolean) => {
     // If a cell within the colspan range is selected then move to the
     // previous or the next cell depending on the navigation direction
     for (const column of colSpanColumns) {
@@ -131,7 +131,7 @@ export function getNextSelectedCellPosition<R, SR>({
       });
 
       if (colSpan && nextIdx > colIdx && nextIdx < colSpan + colIdx) {
-        nextIdx = colIdx + (moveRight ? colSpan : 0);
+        nextIdx = colIdx + (moveNext ? colSpan : 0);
         break;
       }
     }
@@ -141,8 +141,8 @@ export function getNextSelectedCellPosition<R, SR>({
     return parent.level + mainHeaderRowIdx;
   };
 
-  const setHeaderGroupColAndRowSpan = (moveRight: boolean) => {
-    if (moveRight) {
+  const setHeaderGroupColAndRowSpan = () => {
+    if (moveNext) {
       // find the parent at the same row level
       const nextColumn = columns[nextIdx];
       let parent = nextColumn.parent;
@@ -154,7 +154,7 @@ export function getNextSelectedCellPosition<R, SR>({
         }
         parent = parent.parent;
       }
-    } else if (key === 'ArrowUp') {
+    } else if (moveUp) {
       // find the first reachable parent
       const nextColumn = columns[nextIdx];
       let parent = nextColumn.parent;
@@ -179,12 +179,10 @@ export function getNextSelectedCellPosition<R, SR>({
   };
 
   if (isCellWithinBounds(nextPosition)) {
-    const moveRight = key === 'ArrowRight' || (key === 'Tab' && !shiftKey);
-
-    setColSpan(moveRight);
+    setColSpan(moveNext);
 
     if (nextRowIdx < mainHeaderRowIdx) {
-      setHeaderGroupColAndRowSpan(moveRight);
+      setHeaderGroupColAndRowSpan();
     }
   }
 
