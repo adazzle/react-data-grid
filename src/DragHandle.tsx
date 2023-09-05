@@ -27,10 +27,6 @@ const cellDragHandleFrozenClassname = css`
   @layer rdg.DragHandle {
     z-index: 1;
     position: sticky;
-
-    &:hover {
-      margin-inline-end: 16px;
-    }
   }
 `;
 
