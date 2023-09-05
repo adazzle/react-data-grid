@@ -248,7 +248,6 @@ export function canExitGrid({
   const atLastCellInRow = idx === maxColIdx;
   const atFirstCellInRow = idx === 0;
   const atLastRow = rowIdx === maxRowIdx;
-  // TODO: handle column groups
   const atFirstRow = rowIdx === minRowIdx;
 
   return shiftKey ? atFirstCellInRow && atFirstRow : atLastCellInRow && atLastRow;
