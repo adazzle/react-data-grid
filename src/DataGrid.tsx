@@ -796,13 +796,18 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function getDragHandle(rowIdx: number) {
-    if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'EDIT' || onFill == null) {
+  function renderDragHandle() {
+    if (
+      !isCellWithinViewportBounds(selectedPosition) ||
+      selectedPosition.mode === 'EDIT' ||
+      onFill == null
+    ) {
       return;
     }
 
     return (
       <DragHandle
+        gridRowStart={headerAndTopSummaryRowsCount + +selectedPosition.rowIdx + 1}
         rows={rows}
         columns={columns}
         selectedPosition={selectedPosition}
@@ -949,7 +954,6 @@ function DataGrid<R, SR, K extends Key>(
           lastFrozenColumnIndex,
           onRowChange: handleFormatterRowChangeLatest,
           selectCell: selectCellLatest,
-          selectedCellDragHandle: getDragHandle(rowIdx),
           selectedCellEditor: getCellEditor(rowIdx)
         })
       );
@@ -1117,6 +1121,8 @@ function DataGrid<R, SR, K extends Key>(
           )}
         </RowSelectionChangeProvider>
       </DataGridDefaultRenderersProvider>
+
+      {renderDragHandle()}
 
       {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
       {renderMeasuringCells(viewportColumns)}
