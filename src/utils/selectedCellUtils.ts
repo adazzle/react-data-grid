@@ -210,7 +210,7 @@ export function getNextSelectedCellPosition<R, SR>({
 
   if (nextRowIdx < mainHeaderRowIdx) {
     // Find the last reachable parent for the new rowIdx
-    // This check is needed when navigating from to a column
+    // This check is needed when navigating to a column
     // that does not have a parent matching the new rowIdx
     const nextColumn = columns[nextIdx];
     let parent = nextColumn.parent;
