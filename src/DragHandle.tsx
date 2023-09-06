@@ -13,8 +13,7 @@ const cellDragHandle = css`
     inline-size: var(--rdg-drag-handle-size);
     block-size: var(--rdg-drag-handle-size);
     background-color: var(--rdg-selection-color);
-    align-self: end;
-    justify-self: end;
+    place-self: end;
 
     &:hover {
       --rdg-drag-handle-size: 16px;
