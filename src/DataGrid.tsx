@@ -801,9 +801,9 @@ function DataGrid<R, SR, K extends Key>(
 
   function renderDragHandle() {
     if (
-      !isCellWithinViewportBounds(selectedPosition) ||
+      onFill == null ||
       selectedPosition.mode === 'EDIT' ||
-      onFill == null
+      !isCellWithinViewportBounds(selectedPosition) ||
     ) {
       return;
     }
