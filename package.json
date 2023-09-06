@@ -95,7 +95,7 @@
     "lodash-es": "^4.17.21",
     "postcss": "^8.4.25",
     "postcss-nested": "^6.0.1",
-    "prettier": "3.0.2",
+    "prettier": "3.0.3",
     "react": "^18.1.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -103,7 +103,7 @@
     "react-router-dom": "^6.11.1",
     "rollup": "^3.26.2",
     "rollup-plugin-postcss": "^4.0.2",
-    "typescript": "~5.1.6",
+    "typescript": "~5.2.2",
     "vite": "^4.4.2",
     "vitest": "^0.34.1"
   },
