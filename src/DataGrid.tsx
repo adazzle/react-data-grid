@@ -803,7 +803,7 @@ function DataGrid<R, SR, K extends Key>(
     if (
       onFill == null ||
       selectedPosition.mode === 'EDIT' ||
-      !isCellWithinViewportBounds(selectedPosition) ||
+      !isCellWithinViewportBounds(selectedPosition)
     ) {
       return;
     }
