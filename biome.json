@@ -1,12 +1,17 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*", "*.json"]
+    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"]
   },
   "formatter": {
     "ignore": ["*.ts", "*.tsx"],
     "indentStyle": "space",
     "lineWidth": 100
+  },
+  "json": {
+    "parser": {
+      "allowComments": true
+    }
   },
   "javascript": {
     "formatter": {
@@ -31,6 +36,7 @@
         "useAnchorContent": "error",
         "useAriaPropsForRole": "error",
         "useButtonType": "error",
+        "useHeadingContent": "error",
         "useHtmlLang": "error",
         "useIframeTitle": "off",
         "useKeyWithClickEvents": "off",
@@ -42,6 +48,7 @@
       },
       "complexity": {
         "noExtraBooleanCast": "error",
+        "noForEach": "off",
         "noMultipleSpacesInRegularExpressionLiterals": "error",
         "noUselessCatch": "error",
         "noUselessConstructor": "error",
@@ -49,9 +56,12 @@
         "noUselessLabel": "error",
         "noUselessRename": "error",
         "noUselessSwitchCase": "error",
+        "noUselessTypeConstraint": "error",
         "noWith": "error",
         "useFlatMap": "error",
+        "useLiteralKeys": "error",
         "useOptionalChain": "error",
+        "useSimpleNumberKeys": "error",
         "useSimplifiedLogicExpression": "off"
       },
       "correctness": {
@@ -75,9 +85,10 @@
         "noUnsafeFinally": "error",
         "noUnsafeOptionalChaining": "error",
         "noUnusedLabels": "error",
-        "noUnusedVariables": "off",
+        "noUnusedVariables": "error",
         "noVoidElementsWithChildren": "error",
         "noVoidTypeReturn": "error",
+        "useIsNan": "error",
         "useValidForDirection": "error",
         "useYield": "error"
       },
@@ -125,11 +136,13 @@
         "noCommentText": "error",
         "noCompareNegZero": "error",
         "noConfusingLabels": "error",
+        "noConsoleLog": "off",
         "noConstEnum": "error",
         "noDebugger": "error",
         "noDoubleEquals": "error",
         "noDuplicateCase": "error",
         "noDuplicateClassMembers": "error",
+        "noDuplicateJsxProps": "error",
         "noDuplicateObjectKeys": "error",
         "noDuplicateParameters": "error",
         "noEmptyInterface": "error",
