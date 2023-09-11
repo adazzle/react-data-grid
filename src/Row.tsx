@@ -79,12 +79,12 @@ function Row<R, SR>(
           rowIdx,
           isCopied: copiedCellIdx === idx,
           isDraggedOver: draggedOverCellIdx === idx,
-          isCellSelected: isCellSelected,
+          isCellSelected,
           onClick: onCellClick,
           onDoubleClick: onCellDoubleClick,
           onContextMenu: onCellContextMenu,
           onRowChange: handleRowChange,
-          selectCell: selectCell
+          selectCell
         })
       );
     }

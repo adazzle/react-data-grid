@@ -1,4 +1,4 @@
-import { forwardRef, memo, RefAttributes } from 'react';
+import { forwardRef, memo, type RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
