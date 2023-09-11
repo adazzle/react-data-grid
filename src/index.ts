@@ -11,7 +11,11 @@ export { useRowSelection } from './hooks';
 export type {
   Column,
   Position,
+  ColumnGroup,
+  ColumnOrColumnGroup,
   CalculatedColumn,
+  CalculatedColumnParent,
+  CalculatedColumnOrColumnGroup,
   RenderCellProps,
   RenderSummaryCellProps,
   RenderGroupCellProps,

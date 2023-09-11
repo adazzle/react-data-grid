@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { expect, test, vi } from 'vitest';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
@@ -104,8 +103,10 @@ describe('Custom cell renderer', () => {
         frozen: false,
         idx: 0,
         isLastFrozenColumn: false,
+        level: 0,
         maxWidth: undefined,
         minWidth: 50,
+        parent: undefined,
         resizable: false,
         sortable: false,
         width: 'auto'

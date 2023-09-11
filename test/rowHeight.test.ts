@@ -1,6 +1,5 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
 
 import type { Column, DataGridProps } from '../src';
 import { getRows, setup } from './utils';
@@ -42,7 +41,7 @@ test('rowHeight is number', async () => {
 });
 
 test('rowHeight is function', async () => {
-  setupGrid((args) => [40, 60, 80][args.row % 3]);
+  setupGrid((row) => [40, 60, 80][row % 3]);
 
   const rows = getRows();
   expect(rows[0]).toHaveStyle({ '--rdg-row-height': '40px' });
