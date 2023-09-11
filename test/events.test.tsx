@@ -191,7 +191,7 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.pointer({ target: getCellsAtRowIndex(0)[0], keys: '[MouseLeft]' });
+    await userEvent.pointer({ target: getCellsAtRowIndex(0)[0], keys: '[MouseRight]' });
 
     expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'true');
     expect(idx).toBe(0);
