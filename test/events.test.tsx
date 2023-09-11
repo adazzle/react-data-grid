@@ -120,9 +120,9 @@ describe('Events', () => {
   });
 
   it('should call onCellSelected when cell is clicked', async () => {
-    let idx;
-    let rowIdx;
-    let row;
+    let idx: number;
+    let rowIdx: number;
+    let row: Row;
     let column: CalculatedColumn<Row> | undefined;
 
     render(
@@ -135,130 +135,38 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
 
-    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'true');
-    expect(idx).toBe(0);
-    expect(rowIdx).toBe(0);
-    expect(row).toStrictEqual({
-      col1: 1,
-      col2: 'a1'
-    });
-    expect(column?.key).toBe('col1');
-  });
+    const expectOnCellSelectedFired = () => {
+      expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
+      expect(idx).toBe(1);
+      expect(rowIdx).toBe(0);
+      expect(row).toStrictEqual({
+        col1: 1,
+        col2: 'a1'
+      });
+      expect(column?.key).toBe('col2');
+    };
 
-  it('should call onCellSelected when cell is double clicked', async () => {
-    let idx;
-    let rowIdx;
-    let row;
-    let column: CalculatedColumn<Row> | undefined;
+    // Selected by click
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
+    expectOnCellSelectedFired();
 
-    render(
-      <EventTest
-        onCellSelected={(args) => {
-          idx = args.idx;
-          rowIdx = args.rowIdx;
-          row = args.row;
-          column = args.column;
-        }}
-      />
-    );
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    // Selected by double click
+    await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+    expectOnCellSelectedFired();
 
-    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'true');
-    expect(idx).toBe(0);
-    expect(rowIdx).toBe(0);
-    expect(row).toStrictEqual({
-      col1: 1,
-      col2: 'a1'
-    });
-    expect(column?.key).toBe('col1');
-  });
+    // Selected by right-click
+    await userEvent.pointer({ target: getCellsAtRowIndex(0)[1], keys: '[MouseRight]' });
+    expectOnCellSelectedFired();
 
-  it('should call onCellSelected when cell is right-clicked', async () => {
-    let idx;
-    let rowIdx;
-    let row;
-    let column: CalculatedColumn<Row> | undefined;
+    // Selected by ←↑→↓ keys
+    await userEvent.click(getCellsAtRowIndex(1)[1]);
+    await userEvent.keyboard('{ArrowUp}');
+    expectOnCellSelectedFired();
 
-    render(
-      <EventTest
-        onCellSelected={(args) => {
-          idx = args.idx;
-          rowIdx = args.rowIdx;
-          row = args.row;
-          column = args.column;
-        }}
-      />
-    );
-    await userEvent.pointer({ target: getCellsAtRowIndex(0)[0], keys: '[MouseRight]' });
-
-    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'true');
-    expect(idx).toBe(0);
-    expect(rowIdx).toBe(0);
-    expect(row).toStrictEqual({
-      col1: 1,
-      col2: 'a1'
-    });
-    expect(column?.key).toBe('col1');
-  });
-
-  it('should call onCellSelected when selected cell is moved by ←↑→↓ keys', async () => {
-    let idx;
-    let rowIdx;
-    let row;
-    let column: CalculatedColumn<Row> | undefined;
-
-    render(
-      <EventTest
-        onCellSelected={(args) => {
-          idx = args.idx;
-          rowIdx = args.rowIdx;
-          row = args.row;
-          column = args.column;
-        }}
-      />
-    );
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
-    await userEvent.keyboard('{ArrowDown}');
-
-    expect(getCellsAtRowIndex(1)[0]).toHaveAttribute('aria-selected', 'true');
-    expect(idx).toBe(0);
-    expect(rowIdx).toBe(1);
-    expect(row).toStrictEqual({
-      col1: 2,
-      col2: 'a2'
-    });
-    expect(column?.key).toBe('col1');
-  });
-
-  it('should call onCellSelected when selected cell is moved by tab keys', async () => {
-    let idx;
-    let rowIdx;
-    let row;
-    let column: CalculatedColumn<Row> | undefined;
-
-    render(
-      <EventTest
-        onCellSelected={(args) => {
-          idx = args.idx;
-          rowIdx = args.rowIdx;
-          row = args.row;
-          column = args.column;
-        }}
-      />
-    );
+    // Selected by tab key
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('{Tab}');
-
-    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
-    expect(idx).toBe(1);
-    expect(rowIdx).toBe(0);
-    expect(row).toStrictEqual({
-      col1: 1,
-      col2: 'a1'
-    });
-    expect(column?.key).toBe('col2');
   });
 
   it('should call onCellSelected only once when cell is double clicked', async () => {
