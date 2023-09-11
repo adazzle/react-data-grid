@@ -168,7 +168,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
   /** Function called whenever a cell is selected */
-  onCellSelected?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
+  onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -224,7 +224,7 @@ function DataGrid<R, SR, K extends Key>(
     onCellDoubleClick,
     onCellContextMenu,
     onCellKeyDown,
-    onCellSelected,
+    onSelectedCellChange,
     onScroll,
     onColumnResize,
     onFill,
@@ -705,9 +705,9 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
 
-    if (onCellSelected && !samePosition) {
+    if (onSelectedCellChange && !samePosition) {
       const column = columns[position.idx];
-      onCellSelected({
+      onSelectedCellChange({
         idx: position.idx,
         rowIdx: position.rowIdx,
         row,

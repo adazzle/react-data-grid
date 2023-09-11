@@ -119,7 +119,7 @@ describe('Events', () => {
     expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should call onCellSelected when cell is clicked', async () => {
+  it('should call onSelectedCellChange when cell is clicked', async () => {
     let idx: number;
     let rowIdx: number;
     let row: Row;
@@ -127,7 +127,7 @@ describe('Events', () => {
 
     render(
       <EventTest
-        onCellSelected={(args) => {
+        onSelectedCellChange={(args) => {
           idx = args.idx;
           rowIdx = args.rowIdx;
           row = args.row;
@@ -169,10 +169,10 @@ describe('Events', () => {
     await userEvent.keyboard('{Tab}');
   });
 
-  it('should call onCellSelected only once when cell is double clicked', async () => {
+  it('should call onSelectedCellChange only once when cell is double clicked', async () => {
     let timesToBeCalled = 0;
 
-    render(<EventTest onCellSelected={() => timesToBeCalled++} />);
+    render(<EventTest onSelectedCellChange={() => timesToBeCalled++} />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
 
     expect(timesToBeCalled).toBe(1);
@@ -181,7 +181,7 @@ describe('Events', () => {
 
 type EventProps = Pick<
   DataGridProps<Row>,
-  'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu' | 'onCellSelected'
+  'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu' | 'onSelectedCellChange'
 >;
 
 function EventTest(props: EventProps) {
