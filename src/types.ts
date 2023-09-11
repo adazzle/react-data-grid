@@ -59,7 +59,9 @@ export interface Column<TRow, TSummaryRow = unknown> {
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+  readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
   readonly idx: number;
+  readonly level: number;
   readonly width: number | string;
   readonly minWidth: number;
   readonly maxWidth: number | undefined;
@@ -69,6 +71,28 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly isLastFrozenColumn: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
+
+export interface ColumnGroup<R, SR = unknown> {
+  /** The name of the column group, it will be displayed in the header cell */
+  readonly name: string | ReactElement;
+  readonly headerCellClass?: Maybe<string>;
+  readonly children: readonly ColumnOrColumnGroup<R, SR>[];
+}
+
+export interface CalculatedColumnParent<R, SR> {
+  readonly name: string | ReactElement;
+  readonly parent: CalculatedColumnParent<R, SR> | undefined;
+  readonly idx: number;
+  readonly colSpan: number;
+  readonly level: number;
+  readonly headerCellClass?: Maybe<string>;
+}
+
+export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
+
+export type CalculatedColumnOrColumnGroup<R, SR> =
+  | CalculatedColumnParent<R, SR>
+  | CalculatedColumn<R, SR>;
 
 export interface Position {
   readonly idx: number;
@@ -111,7 +135,6 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
   tabIndex: number;
-  onSort: (ctrlClick: boolean) => void;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
@@ -125,7 +148,6 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  dragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
   onDoubleClick: RenderRowProps<TRow, TSummaryRow>['onCellDoubleClick'];
   onContextMenu: RenderRowProps<TRow, TSummaryRow>['onCellContextMenu'];
@@ -190,7 +212,6 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown>
   copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
   selectedCellEditor: ReactElement<RenderEditCellProps<TRow>> | undefined;
-  selectedCellDragHandle: ReactElement<React.HTMLAttributes<HTMLDivElement>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
   setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
@@ -248,12 +269,9 @@ export type ColSpanArgs<TRow, TSummaryRow> =
   | { type: 'ROW'; row: TRow }
   | { type: 'SUMMARY'; row: TSummaryRow };
 
-export interface RowHeightArgs<TRow> {
-  type: 'ROW';
-  row: TRow;
-}
-
-export type GroupRowHeightArgs<TRow> = RowHeightArgs<TRow> | { type: 'GROUP'; row: GroupRow<TRow> };
+export type RowHeightArgs<TRow> =
+  | { type: 'ROW'; row: TRow }
+  | { type: 'GROUP'; row: GroupRow<TRow> };
 
 export interface RenderSortIconProps {
   sortDirection: SortDirection | undefined;

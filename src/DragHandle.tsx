@@ -1,30 +1,39 @@
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
+import { getCellStyle } from './utils';
 import type { CalculatedColumn, FillEvent, Position } from './types';
 import type { DataGridProps, SelectCellState } from './DataGrid';
 
 const cellDragHandle = css`
   @layer rdg.DragHandle {
+    --rdg-drag-handle-size: 8px;
+    z-index: 0;
     cursor: move;
-    position: absolute;
-    inset-inline-end: 0;
-    inset-block-end: 0;
-    inline-size: 8px;
-    block-size: 8px;
+    inline-size: var(--rdg-drag-handle-size);
+    block-size: var(--rdg-drag-handle-size);
     background-color: var(--rdg-selection-color);
+    place-self: end;
 
     &:hover {
-      inline-size: 16px;
-      block-size: 16px;
+      --rdg-drag-handle-size: 16px;
       border: 2px solid var(--rdg-selection-color);
       background-color: var(--rdg-background-color);
     }
   }
 `;
 
+const cellDragHandleFrozenClassname = css`
+  @layer rdg.DragHandle {
+    z-index: 1;
+    position: sticky;
+  }
+`;
+
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
+  gridRowStart: number;
   columns: readonly CalculatedColumn<R, SR>[];
   selectedPosition: SelectCellState;
   latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
@@ -35,6 +44,7 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
 }
 
 export default function DragHandle<R, SR>({
+  gridRowStart,
   rows,
   columns,
   selectedPosition,
@@ -45,6 +55,9 @@ export default function DragHandle<R, SR>({
   setDragging,
   setDraggedOverRowIdx
 }: Props<R, SR>) {
+  const { idx, rowIdx } = selectedPosition;
+  const column = columns[idx];
+
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     if (event.buttons !== 1) return;
     setDragging(true);
@@ -70,7 +83,6 @@ export default function DragHandle<R, SR>({
     const overRowIdx = latestDraggedOverRowIdx.current;
     if (overRowIdx === undefined) return;
 
-    const { rowIdx } = selectedPosition;
     const startRowIndex = rowIdx < overRowIdx ? rowIdx + 1 : overRowIdx;
     const endRowIndex = rowIdx < overRowIdx ? overRowIdx + 1 : rowIdx;
     updateRows(startRowIndex, endRowIndex);
@@ -79,11 +91,10 @@ export default function DragHandle<R, SR>({
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     event.stopPropagation();
-    updateRows(selectedPosition.rowIdx + 1, rows.length);
+    updateRows(rowIdx + 1, rows.length);
   }
 
   function updateRows(startRowIdx: number, endRowIdx: number) {
-    const { idx, rowIdx } = selectedPosition;
     const column = columns[idx];
     const sourceRow = rows[rowIdx];
     const updatedRows = [...rows];
@@ -103,9 +114,20 @@ export default function DragHandle<R, SR>({
     }
   }
 
+  const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
+  const style = getCellStyle(column, colSpan);
+
   return (
     <div
-      className={cellDragHandleClassname}
+      style={{
+        ...style,
+        gridRowStart,
+        insetInlineStart:
+          style.insetInlineStart && typeof column.width === 'number'
+            ? `calc(${style.insetInlineStart} + ${column.width}px - var(--rdg-drag-handle-size))`
+            : undefined
+      }}
+      className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
     />

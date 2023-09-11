@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
 
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
