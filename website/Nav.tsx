@@ -87,6 +87,9 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/column-spanning" end className={getActiveClassname}>
         Column Spanning
       </NavLink>
+      <NavLink to="/column-grouping" end className={getActiveClassname}>
+        Column Grouping
+      </NavLink>
       <NavLink to="/columns-reordering" end className={getActiveClassname}>
         Columns Reordering
       </NavLink>
@@ -96,8 +99,8 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/customizable-renderers" end className={getActiveClassname}>
         Customizable Renderers
       </NavLink>
-      <NavLink to="/grouping" end className={getActiveClassname}>
-        Grouping
+      <NavLink to="/row-grouping" end className={getActiveClassname}>
+        Row Grouping
       </NavLink>
       <NavLink to="/header-filters" end className={getActiveClassname}>
         Header Filters

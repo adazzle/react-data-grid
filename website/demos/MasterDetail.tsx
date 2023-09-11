@@ -128,7 +128,7 @@ export default function MasterDetail({ direction }: Props) {
       rows={rows}
       onRowsChange={onRowsChange}
       headerRowHeight={45}
-      rowHeight={(args) => (args.row.type === 'DETAIL' ? 300 : 45)}
+      rowHeight={(row) => (row.type === 'DETAIL' ? 300 : 45)}
       className="fill-grid"
       enableVirtualization={false}
       direction={direction}

@@ -2,8 +2,8 @@ import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { getColSpan, getRowStyle } from './utils';
-import type { CalculatedColumn, Direction } from './types';
+import { getColSpan } from './utils';
+import type { CalculatedColumn, Direction, Position } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
 import { cell, cellFrozen } from './style/cell';
@@ -15,9 +15,10 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
 >;
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
+  rowIdx: number;
   columns: readonly CalculatedColumn<R, SR>[];
   onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
-  selectCell: (columnIdx: number) => void;
+  selectCell: (position: Position) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
@@ -35,7 +36,6 @@ const headerRow = css`
       /* Should have a higher value than 1 to show up above regular cells and the focus sink */
       z-index: 2;
       position: sticky;
-      inset-block-start: 0;
     }
 
     & > .${cellFrozen} {
@@ -44,9 +44,10 @@ const headerRow = css`
   }
 `;
 
-const headerRowClassname = `rdg-header-row ${headerRow}`;
+export const headerRowClassname = `rdg-header-row ${headerRow}`;
 
 function HeaderRow<R, SR, K extends React.Key>({
+  rowIdx,
   columns,
   onColumnResize,
   sortColumns,
@@ -70,6 +71,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         key={column.key}
         column={column}
         colSpan={colSpan}
+        rowIdx={rowIdx}
         isCellSelected={selectedCellIdx === column.idx}
         onColumnResize={onColumnResize}
         onSortColumnsChange={onSortColumnsChange}
@@ -84,11 +86,10 @@ function HeaderRow<R, SR, K extends React.Key>({
   return (
     <div
       role="row"
-      aria-rowindex={1} // aria-rowindex is 1 based
+      aria-rowindex={rowIdx} // aria-rowindex is 1 based
       className={clsx(headerRowClassname, {
         [rowSelectedClassname]: selectedCellIdx === -1
       })}
-      style={getRowStyle(1)}
     >
       {cells}
     </div>

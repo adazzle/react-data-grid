@@ -11,7 +11,11 @@ export { renderSortIcon, renderSortPriority } from './sortStatus';
 export { useRowSelection } from './hooks';
 export type {
   Column,
+  ColumnGroup,
+  ColumnOrColumnGroup,
   CalculatedColumn,
+  CalculatedColumnParent,
+  CalculatedColumnOrColumnGroup,
   RenderCellProps,
   RenderSummaryCellProps,
   RenderGroupCellProps,

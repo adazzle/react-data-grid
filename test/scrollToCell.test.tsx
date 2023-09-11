@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi } from 'vitest';
 
 import type { Column, DataGridHandle } from '../src';
 import DataGrid from '../src';

@@ -34,7 +34,6 @@ function Cell<R, SR>(
     isDraggedOver,
     row,
     rowIdx,
-    dragHandle,
     className,
     onClick,
     onDoubleClick,
@@ -98,8 +97,8 @@ function Cell<R, SR>(
     <div
       role="gridcell"
       aria-colindex={column.idx + 1} // aria-colindex is 1-based
-      aria-selected={isCellSelected}
       aria-colspan={colSpan}
+      aria-selected={isCellSelected}
       aria-readonly={!isEditable || undefined}
       ref={refComponent}
       tabIndex={tabIndex}
@@ -118,7 +117,6 @@ function Cell<R, SR>(
         tabIndex: childTabIndex,
         onRowChange: handleRowChange
       })}
-      {dragHandle}
     </div>
   );
 }
