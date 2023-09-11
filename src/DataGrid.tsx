@@ -693,7 +693,6 @@ function DataGrid<R, SR, K extends Key>(
     commitEditorChanges();
 
     const row = rows[position.rowIdx];
-    const column = columns[position.idx];
     const samePosition = isSamePosition(selectedPosition, position);
 
     if (enableEditor && isCellEditable(position)) {
@@ -707,6 +706,7 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     if (onCellSelected && !samePosition) {
+      const column = columns[position.idx];
       onCellSelected({
         idx: position.idx,
         rowIdx: position.rowIdx,
