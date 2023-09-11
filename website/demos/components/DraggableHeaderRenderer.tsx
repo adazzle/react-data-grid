@@ -11,25 +11,25 @@ export function DraggableHeaderRenderer<R>({
   column,
   ...props
 }: DraggableHeaderRendererProps<R>) {
-  const [isDragging, toggleDragging] = useState(false);
-  const [isOver, toggleIsOver] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isOver, setIsOver] = useState(false);
 
   function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData('text/plain', column.key);
     event.dataTransfer.setDragImage(event.currentTarget.closest('.rdg-cell')!, 0, 0);
-    toggleDragging(true);
+    setIsDragging(true);
   }
 
   function handleDragEnd() {
-    toggleDragging(false);
+    setIsDragging(false);
   }
 
   function handleDragEnter() {
-    toggleIsOver(true);
+    setIsOver(true);
   }
 
   function handleDragLeave() {
-    toggleIsOver(false);
+    setIsOver(false);
   }
 
   function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -38,12 +38,12 @@ export function DraggableHeaderRenderer<R>({
   }
 
   function handleDrop(event: React.DragEvent<HTMLDivElement>) {
+    setIsOver(false);
     const sourceKey = event.dataTransfer.getData('text/plain');
     if (sourceKey !== column.key) {
       event.preventDefault();
       onColumnsReorder(sourceKey, column.key);
     }
-    toggleIsOver(false);
   }
 
   return (
