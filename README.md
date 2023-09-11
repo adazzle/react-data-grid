@@ -200,7 +200,7 @@ A number defining the height of summary rows.
 
 ###### `onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
 
-Triggered when a cell is selected by click, double click, right click, Page{Up|Down|Left|Right} key, Tab key, or any other actions.
+Triggered when the selected cell is changed.
 
 Arguments:
 
