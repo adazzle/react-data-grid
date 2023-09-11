@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import DataGrid from '../../src';
 import type { Column, RenderHeaderCellProps, SortColumn } from '../../src';
@@ -119,15 +117,13 @@ export default function ColumnsReordering({ direction }: Props) {
   }, [rows, sortColumns]);
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <DataGrid
-        columns={draggableColumns}
-        rows={sortedRows}
-        sortColumns={sortColumns}
-        onSortColumnsChange={onSortColumnsChange}
-        direction={direction}
-        defaultColumnOptions={{ width: '1fr' }}
-      />
-    </DndProvider>
+    <DataGrid
+      columns={draggableColumns}
+      rows={sortedRows}
+      sortColumns={sortColumns}
+      onSortColumnsChange={onSortColumnsChange}
+      direction={direction}
+      defaultColumnOptions={{ width: '1fr' }}
+    />
   );
 }
