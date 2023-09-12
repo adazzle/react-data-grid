@@ -39,11 +39,11 @@ export const resizeHandleClassname = css`
   }
 `;
 
-const draggingClassname = css`
+const cellDraggingClassname = css`
   opacity: 0.5;
 `;
 
-const overClassname = css`
+const cellOverClassname = css`
   background-color: var(--rdg-header-draggable-background-color);
 `;
 
@@ -95,8 +95,8 @@ export default function HeaderCell<R, SR>({
   const className = getCellClassname(column, column.headerCellClass, {
     [cellSortableClassname]: sortable,
     [cellResizableClassname]: resizable,
-    [draggingClassname]: isDragging,
-    [overClassname]: isOver
+    [cellDraggingClassname]: isDragging,
+    [cellOverClassname]: isOver
   });
 
   const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
