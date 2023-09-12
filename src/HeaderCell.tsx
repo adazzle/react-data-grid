@@ -222,7 +222,6 @@ export default function HeaderCell<R, SR>({
   }
 
   function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
-    console.log(event.target);
     if (isEventPertinent(event)) {
       setIsOver(true);
     }
