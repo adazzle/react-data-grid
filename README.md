@@ -213,6 +213,7 @@ interface Renderers<TRow, TSummaryRow> {
   renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
   renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
   renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
+  renderCell?: Maybe<(key: Key, props: CellRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 ```
