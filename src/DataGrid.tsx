@@ -171,7 +171,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
   /** Called when a column is reordered */
-  onColumnReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
+  onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
 
   /**
    * Toggles and modes
@@ -225,6 +225,7 @@ function DataGrid<R, SR, K extends Key>(
     onCellKeyDown,
     onScroll,
     onColumnResize,
+    onColumnsReorder,
     onFill,
     onCopy,
     onPaste,
@@ -1051,6 +1052,7 @@ function DataGrid<R, SR, K extends Key>(
               rowIdx={headerRowsCount}
               columns={getRowViewportColumns(mainHeaderRowIdx)}
               onColumnResize={handleColumnResizeLatest}
+              onColumnsReorder={onColumnsReorder}
               sortColumns={sortColumns}
               onSortColumnsChange={onSortColumnsChangeLatest}
               lastFrozenColumnIndex={lastFrozenColumnIndex}

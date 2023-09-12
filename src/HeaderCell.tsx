@@ -55,7 +55,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onColumnResize'
   | 'shouldFocusGrid'
   | 'direction'
-  | 'onColumnReorder'
+  | 'onColumnsReorder'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -71,7 +71,7 @@ export default function HeaderCell<R, SR>({
   rowIdx,
   isCellSelected,
   onColumnResize,
-  onColumnReorder,
+  onColumnsReorder,
   sortColumns,
   onSortColumnsChange,
   selectCell,
@@ -215,7 +215,7 @@ export default function HeaderCell<R, SR>({
     const sourceKey = event.dataTransfer.getData('text/plain');
     if (sourceKey !== column.key) {
       event.preventDefault();
-      onColumnReorder?.(sourceKey, column.key);
+      onColumnsReorder?.(sourceKey, column.key);
     }
   }
 
@@ -238,6 +238,7 @@ export default function HeaderCell<R, SR>({
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
+      draggable={draggable ? true : undefined}
       style={{
         ...getHeaderCellStyle(column, rowIdx, rowSpan),
         ...getCellStyle(column, colSpan)

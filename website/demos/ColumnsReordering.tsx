@@ -40,25 +40,29 @@ function createColumns(): Column<Row>[] {
       key: 'task',
       name: 'Title',
       resizable: true,
-      sortable: true
+      sortable: true,
+      draggable: true
     },
     {
       key: 'priority',
       name: 'Priority',
       resizable: true,
-      sortable: true
+      sortable: true,
+      draggable: true
     },
     {
       key: 'issueType',
       name: 'Issue Type',
       resizable: true,
-      sortable: true
+      sortable: true,
+      draggable: true
     },
     {
       key: 'complete',
       name: '% Complete',
       resizable: true,
-      sortable: true
+      sortable: true,
+      draggable: true
     }
   ];
 }
@@ -71,12 +75,8 @@ export default function ColumnsReordering({ direction }: Props) {
     setSortColumns(sortColumns.slice(-1));
   }, []);
 
-  const draggableColumns = useMemo(() => {
-    function renderHeaderCell(props: RenderHeaderCellProps<Row>) {
-      return <DraggableHeaderRenderer {...props} onColumnsReorder={handleColumnsReorder} />;
-    }
-
-    function handleColumnsReorder(sourceKey: string, targetKey: string) {
+  const onColumnsReorder = useCallback((sourceKey: string, targetKey: string) => {
+    setColumns((columns) => {
       const sourceColumnIndex = columns.findIndex((c) => c.key === sourceKey);
       const targetColumnIndex = columns.findIndex((c) => c.key === targetKey);
       const reorderedColumns = [...columns];
@@ -86,15 +86,9 @@ export default function ColumnsReordering({ direction }: Props) {
         0,
         reorderedColumns.splice(sourceColumnIndex, 1)[0]
       );
-
-      setColumns(reorderedColumns);
-    }
-
-    return columns.map((c) => {
-      if (c.key === 'id') return c;
-      return { ...c, renderHeaderCell };
+      return reorderedColumns;
     });
-  }, [columns]);
+  }, []);
 
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
@@ -118,12 +112,13 @@ export default function ColumnsReordering({ direction }: Props) {
 
   return (
     <DataGrid
-      columns={draggableColumns}
+      columns={columns}
       rows={sortedRows}
       sortColumns={sortColumns}
       onSortColumnsChange={onSortColumnsChange}
       direction={direction}
       defaultColumnOptions={{ width: '1fr' }}
+      onColumnsReorder={onColumnsReorder}
     />
   );
 }
