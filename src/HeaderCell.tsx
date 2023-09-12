@@ -42,6 +42,7 @@ export const resizeHandleClassname = css`
 const draggingClassname = css`
   opacity: 0.5;
 `;
+
 const overClassname = css`
   background-color: var(--rdg-header-draggable-background-color);
 `;
@@ -54,6 +55,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onColumnResize'
   | 'shouldFocusGrid'
   | 'direction'
+  | 'onColumnReorder'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -69,14 +71,15 @@ export default function HeaderCell<R, SR>({
   rowIdx,
   isCellSelected,
   onColumnResize,
+  onColumnReorder,
   sortColumns,
   onSortColumnsChange,
   selectCell,
   shouldFocusGrid,
   direction
 }: HeaderCellProps<R, SR>) {
-  const [isDragging, toggleDragging] = useState(false);
-  const [isOver, toggleIsOver] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
@@ -195,11 +198,11 @@ export default function HeaderCell<R, SR>({
 
   function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData('text/plain', column.key);
-    toggleDragging(true);
+    setIsDragging(true);
   }
 
   function handleDragEnd() {
-    toggleDragging(false);
+    setIsDragging(false);
   }
 
   function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -208,20 +211,20 @@ export default function HeaderCell<R, SR>({
   }
 
   function handleDrop(event: React.DragEvent<HTMLDivElement>) {
+    setIsOver(false);
     const sourceKey = event.dataTransfer.getData('text/plain');
     if (sourceKey !== column.key) {
       event.preventDefault();
-      // onColumnsReorder(sourceKey, column.key);
+      onColumnReorder?.(sourceKey, column.key);
     }
-    toggleIsOver(false);
   }
 
   function handleDragEnter() {
-    toggleIsOver(true);
+    setIsOver(true);
   }
 
   function handleDragLeave() {
-    toggleIsOver(false);
+    setIsOver(false);
   }
 
   return (

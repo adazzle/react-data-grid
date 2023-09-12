@@ -11,7 +11,7 @@ import { rowSelectedClassname } from './style/row';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
-  'sortColumns' | 'onSortColumnsChange'
+  'sortColumns' | 'onSortColumnsChange' | 'onColumnReorder'
 >;
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {

@@ -170,6 +170,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
+  /** Called when a column is reordered */
+  onColumnReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
 
   /**
    * Toggles and modes
