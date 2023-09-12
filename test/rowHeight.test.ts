@@ -28,7 +28,7 @@ test('rowHeight is number', () => {
   expect(getRows()).toHaveLength(30);
 });
 
-test('rowHeight is function', async () => {
+test('rowHeight is function', () => {
   setupGrid((row) => [40, 60, 80][row % 3]);
 
   const rows = getRows();

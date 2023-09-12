@@ -6,6 +6,7 @@ import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
 import type {
   CellKeyboardEvent,
   CellKeyDownArgs,
+  Column,
   GroupRow,
   Maybe,
   Omit,
@@ -21,7 +22,11 @@ import GroupedRow from './GroupRow';
 import { defaultRenderRow } from './Row';
 
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
-  extends Omit<DataGridProps<R, SR, K>, 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'> {
+  extends Omit<
+    DataGridProps<R, SR, K>,
+    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'
+  > {
+  columns: readonly Column<R, SR>[];
   rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
   groupBy: readonly string[];
   rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
@@ -358,7 +363,6 @@ function TreeDataGrid<R, SR, K extends Key>(
       draggedOverCellIdx,
       setDraggedOverRowIdx,
       selectedCellEditor,
-      selectedCellDragHandle,
       ...rowProps
     }: RenderRowProps<R, SR>
   ) {
@@ -370,6 +374,7 @@ function TreeDataGrid<R, SR, K extends Key>(
           {...rowProps}
           aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1}
           row={row}
+          groupBy={groupBy}
           toggleGroup={toggleGroupLatest}
         />
       );
@@ -396,8 +401,7 @@ function TreeDataGrid<R, SR, K extends Key>(
       copiedCellIdx,
       draggedOverCellIdx,
       setDraggedOverRowIdx,
-      selectedCellEditor,
-      selectedCellDragHandle
+      selectedCellEditor
     });
   }
 

@@ -4,8 +4,8 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "[javascript]": {
-    "editor.defaultFormatter": "rome.rome"
+  "[javascript][json][jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib"

@@ -1,4 +1,4 @@
-import linaria from '@linaria/rollup';
+import linaria from '@linaria/vite';
 import react from '@vitejs/plugin-react';
 import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
@@ -7,10 +7,8 @@ const isCI = process.env.CI === 'true';
 const isTest = process.env.NODE_ENV === 'test';
 
 export default defineConfig({
-  root: 'website',
   base: isCI ? '/react-data-grid/' : '/',
   build: {
-    outDir: '../dist',
     emptyOutDir: true,
     sourcemap: true
   },

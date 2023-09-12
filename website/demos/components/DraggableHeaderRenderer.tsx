@@ -1,4 +1,4 @@
-import { useDrag, useDrop } from 'react-dnd';
+import { useState } from 'react';
 
 import { renderHeaderCell, type RenderHeaderCellProps } from '../../../src';
 
@@ -11,31 +11,52 @@ export function DraggableHeaderRenderer<R>({
   column,
   ...props
 }: DraggableHeaderRendererProps<R>) {
-  const [{ isDragging }, drag] = useDrag({
-    type: 'COLUMN_DRAG',
-    item: { key: column.key },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging()
-    })
-  });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isOver, setIsOver] = useState(false);
 
-  const [{ isOver }, drop] = useDrop({
-    accept: 'COLUMN_DRAG',
-    drop({ key }: { key: string }) {
-      onColumnsReorder(key, column.key);
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
-    })
-  });
+  function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
+    event.dataTransfer.setData('text/plain', column.key);
+    event.dataTransfer.setDragImage(event.currentTarget.closest('.rdg-cell')!, 0, 0);
+    setIsDragging(true);
+  }
+
+  function handleDragEnd() {
+    setIsDragging(false);
+  }
+
+  function handleDragEnter() {
+    setIsOver(true);
+  }
+
+  function handleDragLeave() {
+    setIsOver(false);
+  }
+
+  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+    // prevent default to allow drop
+    event.preventDefault();
+  }
+
+  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
+    setIsOver(false);
+    const sourceKey = event.dataTransfer.getData('text/plain');
+    if (sourceKey !== column.key) {
+      event.preventDefault();
+      onColumnsReorder(sourceKey, column.key);
+    }
+  }
 
   return (
     <div
-      ref={(ref) => {
-        drag(ref);
-        drop(ref);
-      }}
+      draggable
+      /* events fired on the draggable target */
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      /* events fired on the drop targets */
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       style={{
         opacity: isDragging ? 0.5 : 1,
         backgroundColor: isOver ? '#ececec' : undefined,

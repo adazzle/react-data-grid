@@ -26,6 +26,7 @@ const groupRowClassname = `rdg-group-row ${groupRow}`;
 
 interface GroupRowRendererProps<R, SR> extends BaseRenderRowProps<R, SR> {
   row: GroupRow<R>;
+  groupBy: readonly string[];
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
@@ -39,6 +40,7 @@ function GroupedRow<R, SR>({
   selectCell,
   gridRowStart,
   height,
+  groupBy,
   toggleGroup,
   ...props
 }: GroupRowRendererProps<R, SR>) {
@@ -80,6 +82,7 @@ function GroupedRow<R, SR>({
             row={row}
             groupColumnIndex={idx}
             toggleGroup={toggleGroup}
+            isGroupByColumn={groupBy.includes(column.key)}
           />
         ))}
       </div>

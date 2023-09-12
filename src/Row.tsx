@@ -21,7 +21,6 @@ function Row<R, SR>(
     row,
     viewportColumns,
     selectedCellEditor,
-    selectedCellDragHandle,
     onCellClick,
     onCellDoubleClick,
     onCellContextMenu,
@@ -78,7 +77,6 @@ function Row<R, SR>(
           isCopied={copiedCellIdx === idx}
           isDraggedOver={draggedOverCellIdx === idx}
           isCellSelected={isCellSelected}
-          dragHandle={isCellSelected ? selectedCellDragHandle : undefined}
           onClick={onCellClick}
           onDoubleClick={onCellDoubleClick}
           onContextMenu={onCellContextMenu}

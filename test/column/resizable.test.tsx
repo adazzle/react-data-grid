@@ -1,8 +1,8 @@
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { expect, test } from 'vitest';
 
 import type { Column } from '../../src';
+import { resizeHandleClassname } from '../../src/HeaderCell';
 import { getGrid, getHeaderCells, setup } from '../utils';
 
 interface Row {
@@ -11,21 +11,24 @@ interface Row {
 }
 
 interface ResizeArgs {
-  readonly cell: HTMLElement;
+  readonly column: HTMLElement;
   readonly resizeBy: number;
   readonly startOffset?: number;
 }
 
-async function resize({ cell, resizeBy, startOffset = 0 }: ResizeArgs) {
+async function resize({ column, resizeBy, startOffset = 0 }: ResizeArgs) {
   // wait for layout to settle
   await waitFor(() => {
-    expect(cell.getBoundingClientRect().right % 100).not.toBe(0);
+    expect(column.getBoundingClientRect().right % 100).not.toBe(0);
   });
 
-  const clientXStart = cell.getBoundingClientRect().right + startOffset;
+  const resizeHandle = column.querySelector(`.${resizeHandleClassname}`);
+  if (resizeHandle === null) return;
+
+  const clientXStart = column.getBoundingClientRect().right + startOffset;
 
   await userEvent.pointer([
-    { keys: '[TouchA>]', target: cell, coords: { clientX: clientXStart } },
+    { keys: '[TouchA>]', target: column, coords: { clientX: clientXStart } },
     { pointerName: 'TouchA', coords: { clientX: clientXStart + resizeBy } },
     { keys: '[/TouchA]' }
   ]);
@@ -51,25 +54,17 @@ test('should not resize column if resizable is not specified', async () => {
   setup({ columns, rows: [] });
   const [col1] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ cell: col1, resizeBy: 50 });
+  await resize({ column: col1, resizeBy: 50 });
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ cell: col1, resizeBy: -50 });
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-});
-
-test('should not resize column if cursor offset is not within the allowed range', async () => {
-  setup({ columns, rows: [] });
-  const [, col2] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ cell: col2, resizeBy: -50, startOffset: -12 });
+  await resize({ column: col1, resizeBy: -50 });
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
 });
 
-test('should resize column if cursor offset is within the allowed range', async () => {
+test('should resize column when dragging the handle', async () => {
   setup({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ cell: col2, resizeBy: -50 });
+  await resize({ column: col2, resizeBy: -50 });
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 150px' });
 });
 
@@ -77,7 +72,7 @@ test('should use the maxWidth if specified', async () => {
   setup({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ cell: col2, resizeBy: 1000 });
+  await resize({ column: col2, resizeBy: 1000 });
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
 
@@ -85,6 +80,6 @@ test('should use the minWidth if specified', async () => {
   setup({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ cell: col2, resizeBy: -150 });
+  await resize({ column: col2, resizeBy: -150 });
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
 });
