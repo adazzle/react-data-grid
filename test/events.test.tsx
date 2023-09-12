@@ -120,7 +120,6 @@ describe('Events', () => {
   });
 
   it('should call onSelectedCellChange when cell selection is changed', async () => {
-    let idx: number;
     let rowIdx: number;
     let row: Row;
     let column: CalculatedColumn<Row> | undefined;
@@ -128,7 +127,6 @@ describe('Events', () => {
     render(
       <EventTest
         onSelectedCellChange={(args) => {
-          idx = args.idx;
           rowIdx = args.rowIdx;
           row = args.row;
           column = args.column;
@@ -138,7 +136,7 @@ describe('Events', () => {
 
     const expectOnCellSelectedFired = () => {
       expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
-      expect(idx).toBe(1);
+      expect(column?.idx).toBe(1);
       expect(rowIdx).toBe(0);
       expect(row).toStrictEqual({
         col1: 1,
