@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import DataGrid from '../../src';
-import type { Column, RenderHeaderCellProps, SortColumn } from '../../src';
-import { DraggableHeaderRenderer } from './components';
+import type { Column, SortColumn } from '../../src';
 import type { Props } from './types';
 
 interface Row {
