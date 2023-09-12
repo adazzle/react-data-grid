@@ -42,7 +42,7 @@ function Cell<R, SR>(
     selectCell,
     ...props
   }: CellRendererProps<R, SR>,
-  refComponent: React.Ref<HTMLDivElement>
+  ref: React.Ref<HTMLDivElement>
 ) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
@@ -100,7 +100,7 @@ function Cell<R, SR>(
       aria-colspan={colSpan}
       aria-selected={isCellSelected}
       aria-readonly={!isEditable || undefined}
-      ref={refComponent}
+      ref={ref}
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}

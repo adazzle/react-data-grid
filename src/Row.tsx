@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import { RowSelectionProvider, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RenderRowProps } from './types';
-import { defaultRenderCell } from './Cell';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
 import { rowClassname, rowSelectedClassname } from './style/row';
 
@@ -34,8 +33,7 @@ function Row<R, SR>(
   }: RenderRowProps<R, SR>,
   ref: React.Ref<HTMLDivElement>
 ) {
-  const defaultComponents = useDefaultRenderers<R, SR>();
-  const cellRenderer = defaultComponents?.renderCell ?? defaultRenderCell;
+  const renderCell = useDefaultRenderers<R, SR>()!.renderCell!;
 
   const handleRowChange = useLatestFunc((column: CalculatedColumn<R, SR>, newRow: R) => {
     onRowChange(column, rowIdx, newRow);
@@ -72,7 +70,7 @@ function Row<R, SR>(
       cells.push(selectedCellEditor);
     } else {
       cells.push(
-        cellRenderer(column.key, {
+        renderCell(column.key, {
           column,
           colSpan,
           row,
