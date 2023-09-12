@@ -221,12 +221,17 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function handleDragEnter() {
-    setIsOver(true);
+  function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
+    console.log(event.target);
+    if (isEventPertinent(event)) {
+      setIsOver(true);
+    }
   }
 
-  function handleDragLeave() {
-    setIsOver(false);
+  function handleDragLeave(event: React.DragEvent<HTMLDivElement>) {
+    if (isEventPertinent(event)) {
+      setIsOver(false);
+    }
   }
 
   return (
@@ -274,4 +279,13 @@ export default function HeaderCell<R, SR>({
       )}
     </div>
   );
+}
+
+// only accept pertinent drag events:
+// - ignore drag events going from the container to an element inside the container
+// - ignore drag events going from an element inside the container to the container
+function isEventPertinent(event: React.DragEvent) {
+  const relatedTarget = event.relatedTarget as HTMLElement | null;
+
+  return !event.currentTarget.contains(relatedTarget);
 }
