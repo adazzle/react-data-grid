@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
-import type { CalculatedColumn, Column, DataGridProps } from '../src';
+import type { Column, DataGridProps } from '../src';
 import { getCellsAtRowIndex, render } from './utils';
 
 interface Row {
@@ -120,29 +120,23 @@ describe('Events', () => {
   });
 
   it('should call onSelectedCellChange when cell selection is changed', async () => {
-    let rowIdx: number;
-    let row: Row;
-    let column: CalculatedColumn<Row> | undefined;
+    const onSelectedCellChange = vi.fn();
 
-    render(
-      <EventTest
-        onSelectedCellChange={(args) => {
-          rowIdx = args.rowIdx;
-          row = args.row;
-          column = args.column;
-        }}
-      />
-    );
+    render(<EventTest onSelectedCellChange={onSelectedCellChange} />);
 
     const expectOnCellSelectedFired = () => {
       expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
-      expect(column?.idx).toBe(1);
-      expect(rowIdx).toBe(0);
-      expect(row).toStrictEqual({
-        col1: 1,
-        col2: 'a1'
+      expect(onSelectedCellChange).toHaveBeenLastCalledWith({
+        rowIdx: 0,
+        row: {
+          col1: 1,
+          col2: 'a1'
+        },
+        column: expect.objectContaining({
+          idx: 1,
+          key: 'col2'
+        })
       });
-      expect(column?.key).toBe('col2');
     };
 
     // Selected by click
@@ -168,12 +162,12 @@ describe('Events', () => {
   });
 
   it('should call onSelectedCellChange only once when cell is double clicked', async () => {
-    let timesToBeCalled = 0;
+    const onSelectedCellChange = vi.fn();
 
-    render(<EventTest onSelectedCellChange={() => timesToBeCalled++} />);
+    render(<EventTest onSelectedCellChange={onSelectedCellChange} />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
 
-    expect(timesToBeCalled).toBe(1);
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(1);
   });
 });
 
