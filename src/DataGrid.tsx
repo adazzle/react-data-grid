@@ -706,12 +706,11 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     if (onSelectedCellChange && !samePosition) {
-      const column = columns[position.idx];
       onSelectedCellChange({
         idx: position.idx,
         rowIdx: position.rowIdx,
         row,
-        column
+        column: columns[position.idx]
       });
     }
   }
