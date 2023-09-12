@@ -28,66 +28,81 @@ function createRows(): Row[] {
   return rows;
 }
 
-function createColumns(): Column<Row>[] {
-  return [
-    {
-      key: 'id',
-      name: 'ID',
-      width: 80
-    },
-    {
-      key: 'task',
-      name: 'Title',
-      resizable: true,
-      sortable: true,
-      draggable: true
-    },
-    {
-      key: 'priority',
-      name: 'Priority',
-      resizable: true,
-      sortable: true,
-      draggable: true
-    },
-    {
-      key: 'issueType',
-      name: 'Issue Type',
-      resizable: true,
-      sortable: true,
-      draggable: true
-    },
-    {
-      key: 'complete',
-      name: '% Complete',
-      resizable: true,
-      sortable: true,
-      draggable: true
-    }
-  ];
-}
+const columns: Column<Row>[] = [
+  {
+    key: 'id',
+    name: 'ID',
+    width: 80
+  },
+  {
+    key: 'task',
+    name: 'Title',
+    resizable: true,
+    sortable: true,
+    draggable: true
+  },
+  {
+    key: 'priority',
+    name: 'Priority',
+    resizable: true,
+    sortable: true,
+    draggable: true
+  },
+  {
+    key: 'issueType',
+    name: 'Issue Type',
+    resizable: true,
+    sortable: true,
+    draggable: true
+  },
+  {
+    key: 'complete',
+    name: '% Complete',
+    resizable: true,
+    sortable: true,
+    draggable: true
+  }
+];
 
 export default function ColumnsReordering({ direction }: Props) {
   const [rows] = useState(createRows);
-  const [columns, setColumns] = useState(createColumns);
+  const [columnsOrder, setColumnsOrder] = useState(() => {
+    const map = new Map<string, number>();
+    for (const [index, column] of columns.entries()) {
+      map.set(column.key, index);
+    }
+    return map;
+  });
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
   }, []);
 
   const onColumnsReorder = useCallback((sourceKey: string, targetKey: string) => {
-    setColumns((columns) => {
-      const sourceColumnIndex = columns.findIndex((c) => c.key === sourceKey);
-      const targetColumnIndex = columns.findIndex((c) => c.key === targetKey);
-      const reorderedColumns = [...columns];
+    setColumnsOrder((columnsOrder) => {
+      const sourceColumnIndex = columnsOrder.get(sourceKey)!;
+      const targetColumnIndex = columnsOrder.get(targetKey)!;
+      if (sourceColumnIndex === targetColumnIndex) return columnsOrder;
+      const newColumnsOrder = new Map(columnsOrder);
+      const startIndex = Math.min(sourceColumnIndex, targetColumnIndex);
+      const endIndex = Math.max(sourceColumnIndex, targetColumnIndex);
+      const offset = targetColumnIndex < sourceColumnIndex ? 1 : -1;
+      for (const [key, value] of newColumnsOrder) {
+        if (value === targetColumnIndex && key !== sourceKey) {
+          newColumnsOrder.set(sourceKey, value);
+          newColumnsOrder.set(key, value + offset);
+        } else if (value > startIndex && value < endIndex) {
+          newColumnsOrder.set(key, value + offset);
+        }
+      }
 
-      reorderedColumns.splice(
-        targetColumnIndex,
-        0,
-        reorderedColumns.splice(sourceColumnIndex, 1)[0]
-      );
-      return reorderedColumns;
+      return newColumnsOrder;
     });
   }, []);
+
+  const reorderedColumns = useMemo(() => {
+    return columns.toSorted((c1, c2) => columnsOrder.get(c1.key)! - columnsOrder.get(c2.key)!);
+  }, [columnsOrder]);
 
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
@@ -111,7 +126,7 @@ export default function ColumnsReordering({ direction }: Props) {
 
   return (
     <DataGrid
-      columns={columns}
+      columns={reorderedColumns}
       rows={sortedRows}
       sortColumns={sortColumns}
       onSortColumnsChange={onSortColumnsChange}
