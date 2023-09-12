@@ -39,9 +39,11 @@ export const resizeHandleClassname = css`
   }
 `;
 
-const cellDraggingClassname = css`
+const cellDragging = css`
   opacity: 0.5;
 `;
+
+const cellDraggingClassname = `rdg-cell-dragging ${cellDragging}`;
 
 const cellOverClassname = css`
   background-color: var(--rdg-header-draggable-background-color);
