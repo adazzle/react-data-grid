@@ -119,7 +119,7 @@ describe('Events', () => {
     expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('should call onSelectedCellChange when cell is clicked', async () => {
+  it('should call onSelectedCellChange when cell selection is changed', async () => {
     let idx: number;
     let rowIdx: number;
     let row: Row;
