@@ -198,6 +198,7 @@ export default function HeaderCell<R, SR>({
 
   function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData('text/plain', column.key);
+    event.dataTransfer.dropEffect = 'move';
     setIsDragging(true);
   }
 
@@ -208,6 +209,7 @@ export default function HeaderCell<R, SR>({
   function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
     // prevent default to allow drop
     event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
   }
 
   function handleDrop(event: React.DragEvent<HTMLDivElement>) {
