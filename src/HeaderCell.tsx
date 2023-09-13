@@ -235,7 +235,7 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  let draggableProps: React.HTMLAttributes<HTMLDivElement>;
+  let draggableProps: React.HTMLAttributes<HTMLDivElement> | undefined;
   if (draggable) {
     draggableProps = {
       draggable: true,
