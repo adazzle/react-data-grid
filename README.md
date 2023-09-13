@@ -204,7 +204,6 @@ Triggered when the selected cell is changed.
 
 Arguments:
 
-- `args.idx`: `number` - column index
 - `args.rowIdx`: `number` - row index
 - `args.row`: `R` - row object of the currently selected cell
 - `args.column`: `CalculatedColumn<TRow, TSummaryRow>` - column object of the currently selected cell
