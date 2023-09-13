@@ -68,8 +68,11 @@ test('should not allow dragFill if onFill is undefined', async () => {
 
 test('should allow dragFill if onFill is specified', async () => {
   setup();
-  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  const cell = getCellsAtRowIndex(0)[0];
+  await userEvent.click(cell);
+  expect(cell).toHaveFocus();
   await userEvent.dblClick(getDragHandle()!);
+  expect(cell).toHaveFocus();
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
