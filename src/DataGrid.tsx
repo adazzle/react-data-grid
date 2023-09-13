@@ -35,6 +35,7 @@ import type {
   CellKeyDownArgs,
   CellMouseEvent,
   CellNavigationMode,
+  CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
   CopyEvent,
@@ -166,6 +167,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Function called whenever a cell is right clicked */
   onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
+  /** Function called whenever cell selection is changed */
+  onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -221,6 +224,7 @@ function DataGrid<R, SR, K extends Key>(
     onCellDoubleClick,
     onCellContextMenu,
     onCellKeyDown,
+    onSelectedCellChange,
     onScroll,
     onColumnResize,
     onFill,
@@ -688,15 +692,25 @@ function DataGrid<R, SR, K extends Key>(
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
+    const row = rows[position.rowIdx];
+    const samePosition = isSamePosition(selectedPosition, position);
+
     if (enableEditor && isCellEditable(position)) {
-      const row = rows[position.rowIdx];
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
-    } else if (isSamePosition(selectedPosition, position)) {
+    } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
       shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
+    }
+
+    if (onSelectedCellChange && !samePosition) {
+      onSelectedCellChange({
+        rowIdx: position.rowIdx,
+        row,
+        column: columns[position.idx]
+      });
     }
   }
 

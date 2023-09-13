@@ -190,6 +190,12 @@ export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
   | SelectCellKeyDownArgs<TRow, TSummaryRow>
   | EditCellKeyDownArgs<TRow, TSummaryRow>;
 
+export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
+  rowIdx: number;
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+}
+
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
     Pick<
