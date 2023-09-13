@@ -117,3 +117,13 @@ test('should allow drag up using mouse', async () => {
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a4');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a4');
 });
+
+test('should focus the cell when drag handle is clicked', async () => {
+  setup();
+  const cell = getCellsAtRowIndex(0)[0];
+  await userEvent.click(cell);
+  await userEvent.click(document.body);
+  expect(document.body).toHaveFocus();
+  await userEvent.click(getDragHandle()!);
+  expect(cell).toHaveFocus();
+});
