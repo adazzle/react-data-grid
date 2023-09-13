@@ -66,7 +66,7 @@ const columns: Column<Row>[] = [
 
 export default function ColumnsReordering({ direction }: Props) {
   const [rows] = useState(createRows);
-  const [columnsOrder, setColumnsOrder] = useState(() => {
+  const [columnsOrder, setColumnsOrder] = useState((): ReadonlyMap<string, number> => {
     const map = new Map<string, number>();
     for (const [index, column] of columns.entries()) {
       map.set(column.key, index);
