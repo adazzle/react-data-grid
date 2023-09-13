@@ -80,7 +80,8 @@ test('should allow dragFill if onFill is specified', async () => {
 
 test('should update single row using mouse', async () => {
   setup();
-  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  const cell = getCellsAtRowIndex(0)[0];
+  await userEvent.click(cell);
   await userEvent.pointer([
     { keys: '[MouseLeft>]', target: getDragHandle()! },
     { target: getRows()[1] },
@@ -88,6 +89,7 @@ test('should update single row using mouse', async () => {
   ]);
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
+  expect(cell).toHaveFocus();
 });
 
 test('should update multiple rows using mouse', async () => {
