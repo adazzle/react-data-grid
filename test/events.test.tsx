@@ -124,51 +124,54 @@ describe('Events', () => {
 
     render(<EventTest onSelectedCellChange={onSelectedCellChange} />);
 
-    const expectOnCellSelectedFired = () => {
-      expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
-      expect(onSelectedCellChange).toHaveBeenLastCalledWith({
-        rowIdx: 0,
-        row: {
-          col1: 1,
-          col2: 'a1'
-        },
-        column: expect.objectContaining({
-          idx: 1,
-          key: 'col2'
-        })
-      });
-    };
+    expect(onSelectedCellChange).not.toHaveBeenCalled();
 
     // Selected by click
     await userEvent.click(getCellsAtRowIndex(0)[1]);
-    expectOnCellSelectedFired();
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[1]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(1);
 
     // Selected by double click
-    await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-    expectOnCellSelectedFired();
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[0]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(2);
 
     // Selected by right-click
-    await userEvent.pointer({ target: getCellsAtRowIndex(0)[1], keys: '[MouseRight]' });
-    expectOnCellSelectedFired();
+    await userEvent.pointer({ target: getCellsAtRowIndex(1)[0], keys: '[MouseRight]' });
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[0]),
+      row: rows[1],
+      rowIdx: 1
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(3);
 
     // Selected by ←↑→↓ keys
-    await userEvent.click(getCellsAtRowIndex(1)[1]);
     await userEvent.keyboard('{ArrowUp}');
-    expectOnCellSelectedFired();
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[0]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(4);
 
     // Selected by tab key
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('{Tab}');
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[1]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(5);
   });
-
-  it('should call onSelectedCellChange only once when cell is double clicked', async () => {
-    const onSelectedCellChange = vi.fn();
-
-    render(<EventTest onSelectedCellChange={onSelectedCellChange} />);
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-
-    expect(onSelectedCellChange).toHaveBeenCalledTimes(1);
-  });
+});
 });
 
 type EventProps = Pick<
