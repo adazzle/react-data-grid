@@ -172,7 +172,6 @@ describe('Events', () => {
     expect(onSelectedCellChange).toHaveBeenCalledTimes(5);
   });
 });
-});
 
 type EventProps = Pick<
   DataGridProps<Row>,
