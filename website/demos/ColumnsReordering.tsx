@@ -66,12 +66,8 @@ const columns: Column<Row>[] = [
 
 export default function ColumnsReordering({ direction }: Props) {
   const [rows] = useState(createRows);
-  const [columnsOrder, setColumnsOrder] = useState((): ReadonlyMap<string, number> => {
-    const map = new Map<string, number>();
-    for (const [index, column] of columns.entries()) {
-      map.set(column.key, index);
-    }
-    return map;
+  const [columnsOrder, setColumnsOrder] = useState((): readonly string[] => {
+    return columns.map((column) => column.key);
   });
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
@@ -80,28 +76,18 @@ export default function ColumnsReordering({ direction }: Props) {
 
   const onColumnsReorder = useCallback((sourceKey: string, targetKey: string) => {
     setColumnsOrder((columnsOrder) => {
-      const sourceColumnIndex = columnsOrder.get(sourceKey)!;
-      const targetColumnIndex = columnsOrder.get(targetKey)!;
-      if (sourceColumnIndex === targetColumnIndex) return columnsOrder;
-      const newColumnsOrder = new Map(columnsOrder);
-      const startIndex = Math.min(sourceColumnIndex, targetColumnIndex);
-      const endIndex = Math.max(sourceColumnIndex, targetColumnIndex);
-      const offset = targetColumnIndex < sourceColumnIndex ? 1 : -1;
-      for (const [key, value] of newColumnsOrder) {
-        if (value === targetColumnIndex && key !== sourceKey) {
-          newColumnsOrder.set(sourceKey, value);
-          newColumnsOrder.set(key, value + offset);
-        } else if (value > startIndex && value < endIndex) {
-          newColumnsOrder.set(key, value + offset);
-        }
-      }
+      const sourceColumnIndex = columnsOrder.indexOf(sourceKey)!;
+      const targetColumnIndex = columnsOrder.indexOf(targetKey)!;
+      const newColumnsOrder = [...columnsOrder];
+
+      newColumnsOrder.splice(targetColumnIndex, 0, newColumnsOrder.splice(sourceColumnIndex, 1)[0]);
 
       return newColumnsOrder;
     });
   }, []);
 
   const reorderedColumns = useMemo(() => {
-    return columns.toSorted((c1, c2) => columnsOrder.get(c1.key)! - columnsOrder.get(c2.key)!);
+    return columnsOrder.map((key) => columns.find((column) => column.key === key)!);
   }, [columnsOrder]);
 
   const sortedRows = useMemo((): readonly Row[] => {
