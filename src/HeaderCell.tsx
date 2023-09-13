@@ -198,23 +198,23 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function handleDragStart(event: React.DragEvent<HTMLDivElement>) {
+  function onDragStart(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData('text/plain', column.key);
     event.dataTransfer.dropEffect = 'move';
     setIsDragging(true);
   }
 
-  function handleDragEnd() {
+  function onDragEnd() {
     setIsDragging(false);
   }
 
-  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+  function onDragOver(event: React.DragEvent<HTMLDivElement>) {
     // prevent default to allow drop
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }
 
-  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
+  function onDrop(event: React.DragEvent<HTMLDivElement>) {
     setIsOver(false);
     const sourceKey = event.dataTransfer.getData('text/plain');
     if (sourceKey !== column.key) {
@@ -223,16 +223,31 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function handleDragEnter(event: React.DragEvent<HTMLDivElement>) {
+  function onDragEnter(event: React.DragEvent<HTMLDivElement>) {
     if (isEventPertinent(event)) {
       setIsOver(true);
     }
   }
 
-  function handleDragLeave(event: React.DragEvent<HTMLDivElement>) {
+  function onDragLeave(event: React.DragEvent<HTMLDivElement>) {
     if (isEventPertinent(event)) {
       setIsOver(false);
     }
+  }
+
+  let draggableProps: React.HTMLAttributes<HTMLDivElement>;
+  if (draggable) {
+    draggableProps = {
+      draggable: true,
+      /* events fired on the draggable target */
+      onDragStart,
+      onDragEnd,
+      /* events fired on the drop targets */
+      onDragOver,
+      onDragEnter,
+      onDragLeave,
+      onDrop
+    };
   }
 
   return (
@@ -246,7 +261,6 @@ export default function HeaderCell<R, SR>({
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
-      draggable={draggable ? true : undefined}
       style={{
         ...getHeaderCellStyle(column, rowIdx, rowSpan),
         ...getCellStyle(column, colSpan)
@@ -254,14 +268,7 @@ export default function HeaderCell<R, SR>({
       onFocus={handleFocus}
       onClick={onClick}
       onKeyDown={sortable ? onKeyDown : undefined}
-      /* events fired on the draggable target */
-      onDragStart={draggable ? handleDragStart : undefined}
-      onDragEnd={draggable ? handleDragEnd : undefined}
-      /* events fired on the drop targets */
-      onDragOver={draggable ? handleDragOver : undefined}
-      onDragEnter={draggable ? handleDragEnter : undefined}
-      onDragLeave={draggable ? handleDragLeave : undefined}
-      onDrop={draggable ? handleDrop : undefined}
+      {...draggableProps}
     >
       {renderHeaderCell({
         column,
