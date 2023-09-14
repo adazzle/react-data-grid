@@ -74,21 +74,6 @@ export default function ColumnsReordering({ direction }: Props) {
     setSortColumns(sortColumns.slice(-1));
   }, []);
 
-  const onColumnsReorder = useCallback((sourceKey: string, targetKey: string) => {
-    setColumnsOrder((columnsOrder) => {
-      const sourceColumnOrderIndex = columnsOrder.findIndex(
-        (index) => columns[index].key === sourceKey
-      )!;
-      const targetColumnOrderIndex = columnsOrder.findIndex(
-        (index) => columns[index].key === targetKey
-      )!;
-      const sourceColumnOrder = columnsOrder[sourceColumnOrderIndex];
-      const newColumnsOrder = columnsOrder.toSpliced(sourceColumnOrderIndex, 1);
-      newColumnsOrder.splice(targetColumnOrderIndex, 0, sourceColumnOrder);
-      return newColumnsOrder;
-    });
-  }, []);
-
   const reorderedColumns = useMemo(() => {
     return columnsOrder.map((index) => columns[index]);
   }, [columnsOrder]);
@@ -112,6 +97,21 @@ export default function ColumnsReordering({ direction }: Props) {
     }
     return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
   }, [rows, sortColumns]);
+
+  function onColumnsReorder(sourceKey: string, targetKey: string) {
+    setColumnsOrder((columnsOrder) => {
+      const sourceColumnOrderIndex = columnsOrder.findIndex(
+        (index) => columns[index].key === sourceKey
+      )!;
+      const targetColumnOrderIndex = columnsOrder.findIndex(
+        (index) => columns[index].key === targetKey
+      )!;
+      const sourceColumnOrder = columnsOrder[sourceColumnOrderIndex];
+      const newColumnsOrder = columnsOrder.toSpliced(sourceColumnOrderIndex, 1);
+      newColumnsOrder.splice(targetColumnOrderIndex, 0, sourceColumnOrder);
+      return newColumnsOrder;
+    });
+  }
 
   return (
     <DataGrid
