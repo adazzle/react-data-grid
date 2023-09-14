@@ -43,6 +43,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly resizable?: Maybe<boolean>;
   /** Enable sorting of a column */
   readonly sortable?: Maybe<boolean>;
+  /** Enable dragging of a column */
+  readonly draggable?: Maybe<boolean>;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   readonly sortDescendingFirst?: Maybe<boolean>;
   readonly editorOptions?: Maybe<{
@@ -67,6 +69,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly maxWidth: number | undefined;
   readonly resizable: boolean;
   readonly sortable: boolean;
+  readonly draggable: boolean;
   readonly frozen: boolean;
   readonly isLastFrozenColumn: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;

@@ -52,6 +52,7 @@ export function useCalculatedColumns<R, SR>({
   const defaultCellRenderer = defaultColumnOptions?.renderCell ?? renderValue;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
+  const defaultDraggable = defaultColumnOptions?.draggable ?? false;
 
   const { columns, colSpanColumns, lastFrozenColumnIndex, headerRowsCount } = useMemo((): {
     readonly columns: readonly CalculatedColumn<R, SR>[];
@@ -99,6 +100,7 @@ export function useCalculatedColumns<R, SR>({
           maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
           sortable: rawColumn.sortable ?? defaultSortable,
           resizable: rawColumn.resizable ?? defaultResizable,
+          draggable: rawColumn.draggable ?? defaultDraggable,
           renderCell: rawColumn.renderCell ?? defaultCellRenderer
         };
 
@@ -159,7 +161,8 @@ export function useCalculatedColumns<R, SR>({
     defaultMaxWidth,
     defaultCellRenderer,
     defaultResizable,
-    defaultSortable
+    defaultSortable,
+    defaultDraggable
   ]);
 
   const { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
