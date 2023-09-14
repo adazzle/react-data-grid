@@ -66,9 +66,9 @@ const columns: Column<Row>[] = [
 
 export default function ColumnsReordering({ direction }: Props) {
   const [rows] = useState(createRows);
-  const [columnsOrder, setColumnsOrder] = useState((): readonly string[] => {
-    return columns.map((column) => column.key);
-  });
+  const [columnsOrder, setColumnsOrder] = useState((): readonly number[] =>
+    columns.map((_, index) => index)
+  );
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
@@ -76,16 +76,21 @@ export default function ColumnsReordering({ direction }: Props) {
 
   const onColumnsReorder = useCallback((sourceKey: string, targetKey: string) => {
     setColumnsOrder((columnsOrder) => {
-      const sourceColumnIndex = columnsOrder.indexOf(sourceKey)!;
-      const targetColumnIndex = columnsOrder.indexOf(targetKey)!;
-      const newColumnsOrder = columnsOrder.toSpliced(sourceColumnIndex, 1);
-      newColumnsOrder.splice(targetColumnIndex, 0, sourceKey);
+      const sourceColumnOrderIndex = columnsOrder.findIndex(
+        (index) => columns[index].key === sourceKey
+      )!;
+      const targetColumnOrderIndex = columnsOrder.findIndex(
+        (index) => columns[index].key === targetKey
+      )!;
+      const sourceColumnOrder = columnsOrder[sourceColumnOrderIndex];
+      const newColumnsOrder = columnsOrder.toSpliced(sourceColumnOrderIndex, 1);
+      newColumnsOrder.splice(targetColumnOrderIndex, 0, sourceColumnOrder);
       return newColumnsOrder;
     });
   }, []);
 
   const reorderedColumns = useMemo(() => {
-    return columnsOrder.map((key) => columns.find((column) => column.key === key)!);
+    return columnsOrder.map((index) => columns[index]);
   }, [columnsOrder]);
 
   const sortedRows = useMemo((): readonly Row[] => {
