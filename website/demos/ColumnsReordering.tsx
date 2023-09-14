@@ -78,7 +78,9 @@ export default function ColumnsReordering({ direction }: Props) {
     setColumnsOrder((columnsOrder) => {
       const sourceColumnIndex = columnsOrder.indexOf(sourceKey)!;
       const targetColumnIndex = columnsOrder.indexOf(targetKey)!;
-      const newColumnsOrder = [...columnsOrder];
+      const newColumnsOrder = columnsOrder.toSpliced(sourceColumnIndex, 1);
+      newColumnsOrder.splice(targetColumnIndex, 0, sourceKey);
+      return newColumnsOrder;
 
       newColumnsOrder.splice(targetColumnIndex, 0, newColumnsOrder.splice(sourceColumnIndex, 1)[0]);
 
