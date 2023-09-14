@@ -45,9 +45,11 @@ const cellDragging = css`
 
 const cellDraggingClassname = `rdg-cell-dragging ${cellDragging}`;
 
-const cellOverClassname = css`
+const cellOver = css`
   background-color: var(--rdg-header-draggable-background-color);
 `;
+
+const cellOverClassname = `rdg-cell-drag-over ${cellOver}`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
