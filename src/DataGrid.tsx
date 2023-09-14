@@ -440,13 +440,7 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
-    const cell = getCellToScroll(gridRef.current!);
-    if (cell === null) return;
-
-    scrollIntoView(cell);
-    // Focus cell content when available instead of the cell itself
-    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-    elementToFocus.focus({ preventScroll: true });
+    focusCellOrCellContent();
   });
 
   useImperativeHandle(ref, () => ({
@@ -813,6 +807,16 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
+  function focusCellOrCellContent() {
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
+  }
+
   function renderDragHandle() {
     if (
       onFill == null ||
@@ -831,6 +835,7 @@ function DataGrid<R, SR, K extends Key>(
         isCellEditable={isCellEditable}
         latestDraggedOverRowIdx={latestDraggedOverRowIdx}
         onRowsChange={onRowsChange}
+        onClick={focusCellOrCellContent}
         onFill={onFill}
         setDragging={setDragging}
         setDraggedOverRowIdx={setDraggedOverRowIdx}
