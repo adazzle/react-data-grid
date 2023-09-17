@@ -208,7 +208,7 @@ test('renderCell defined using provider', () => {
   expect(cell2).toHaveTextContent('col 2 value');
 });
 
-test('renderCell defined using both providers ans renderers', () => {
+test('renderCell defined using both providers and renderers', () => {
   setupProvider({
     columns,
     rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }],
