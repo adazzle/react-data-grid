@@ -38,6 +38,7 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   selectedPosition: SelectCellState;
   latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
   isCellEditable: (position: Position) => boolean;
+  onClick: () => void;
   onFill: (event: FillEvent<R>) => R;
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: (overRowIdx: number | undefined) => void;
@@ -52,6 +53,7 @@ export default function DragHandle<R, SR>({
   isCellEditable,
   onRowsChange,
   onFill,
+  onClick,
   setDragging,
   setDraggedOverRowIdx
 }: Props<R, SR>) {
@@ -59,6 +61,8 @@ export default function DragHandle<R, SR>({
   const column = columns[idx];
 
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    // keep the focus on the cell
+    event.preventDefault();
     if (event.buttons !== 1) return;
     setDragging(true);
     window.addEventListener('mouseover', onMouseOver);
@@ -128,6 +132,7 @@ export default function DragHandle<R, SR>({
             : undefined
       }}
       className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
+      onClick={onClick}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
     />

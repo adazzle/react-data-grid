@@ -40,5 +40,6 @@ export type {
   CellMouseEvent,
   CellClickArgs,
   CellKeyDownArgs,
-  CellKeyboardEvent
+  CellKeyboardEvent,
+  CellSelectArgs
 } from './types';

@@ -118,11 +118,64 @@ describe('Events', () => {
     await userEvent.pointer({ target: getCellsAtRowIndex(0)[1], keys: '[MouseRight]' });
     expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
+
+  it('should call onSelectedCellChange when cell selection is changed', async () => {
+    const onSelectedCellChange = vi.fn();
+
+    render(<EventTest onSelectedCellChange={onSelectedCellChange} />);
+
+    expect(onSelectedCellChange).not.toHaveBeenCalled();
+
+    // Selected by click
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[1]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(1);
+
+    // Selected by double click
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[0]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(2);
+
+    // Selected by right-click
+    await userEvent.pointer({ target: getCellsAtRowIndex(1)[0], keys: '[MouseRight]' });
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[0]),
+      row: rows[1],
+      rowIdx: 1
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(3);
+
+    // Selected by ←↑→↓ keys
+    await userEvent.keyboard('{ArrowUp}');
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[0]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(4);
+
+    // Selected by tab key
+    await userEvent.keyboard('{Tab}');
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[1]),
+      row: rows[0],
+      rowIdx: 0
+    });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(5);
+  });
 });
 
 type EventProps = Pick<
   DataGridProps<Row>,
-  'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+  'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu' | 'onSelectedCellChange'
 >;
 
 function EventTest(props: EventProps) {
