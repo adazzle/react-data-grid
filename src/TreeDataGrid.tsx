@@ -14,7 +14,8 @@ import type {
   RowHeightArgs,
   RowsChangeData
 } from './types';
-import { renderToggleGroup, SELECT_COLUMN_KEY } from '.';
+import { renderToggleGroup } from './cellRenderers';
+import { SELECT_COLUMN_KEY } from './Columns';
 import DataGrid from './DataGrid';
 import type { DataGridHandle, DataGridProps } from './DataGrid';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
