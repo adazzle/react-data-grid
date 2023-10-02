@@ -38,9 +38,14 @@ test('draggable columns', () => {
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
   let data: unknown;
+  let type: unknown;
   const event = {
     dataTransfer: {
-      setData(_: unknown, _data: unknown) {
+      get types() {
+        return [type];
+      },
+      setData(_type: unknown, _data: unknown) {
+        type = _type;
         data = _data;
       },
       getData() {
