@@ -839,6 +839,10 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     const column = columns[selectedPosition.idx];
+    if (column.renderEditCell == null || column.editable === false) {
+      return;
+    }
+
     const columnWidth = getColumnWidth(column);
 
     return (
