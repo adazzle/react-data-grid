@@ -34,7 +34,8 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   gridRowStart: number;
-  columns: readonly CalculatedColumn<R, SR>[];
+  column: CalculatedColumn<R, SR>;
+  columnWidth: number | string;
   selectedPosition: SelectCellState;
   latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
   isCellEditable: (position: Position) => boolean;
@@ -47,7 +48,8 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
 export default function DragHandle<R, SR>({
   gridRowStart,
   rows,
-  columns,
+  column,
+  columnWidth,
   selectedPosition,
   latestDraggedOverRowIdx,
   isCellEditable,
@@ -58,7 +60,6 @@ export default function DragHandle<R, SR>({
   setDraggedOverRowIdx
 }: Props<R, SR>) {
   const { idx, rowIdx } = selectedPosition;
-  const column = columns[idx];
 
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     // keep the focus on the cell
@@ -99,7 +100,6 @@ export default function DragHandle<R, SR>({
   }
 
   function updateRows(startRowIdx: number, endRowIdx: number) {
-    const column = columns[idx];
     const sourceRow = rows[rowIdx];
     const updatedRows = [...rows];
     const indexes: number[] = [];
@@ -127,8 +127,8 @@ export default function DragHandle<R, SR>({
         ...style,
         gridRowStart,
         insetInlineStart:
-          style.insetInlineStart && typeof column.width === 'number'
-            ? `calc(${style.insetInlineStart} + ${column.width}px - var(--rdg-drag-handle-size))`
+          style.insetInlineStart && typeof columnWidth === 'number'
+            ? `calc(${style.insetInlineStart} + ${columnWidth}px - var(--rdg-drag-handle-size))`
             : undefined
       }}
       className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}

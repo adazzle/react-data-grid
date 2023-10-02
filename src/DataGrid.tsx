@@ -283,6 +283,15 @@ function DataGrid<R, SR, K extends Key>(
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
 
+  const getColumnWidth = useCallback(
+    (column: CalculatedColumn<R, SR>) => {
+      return (
+        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width
+      );
+    },
+    [measuredColumnWidths, resizedColumnWidths]
+  );
+
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const {
     columns,
@@ -297,8 +306,7 @@ function DataGrid<R, SR, K extends Key>(
   } = useCalculatedColumns({
     rawColumns,
     defaultColumnOptions,
-    measuredColumnWidths,
-    resizedColumnWidths,
+    getColumnWidth,
     scrollLeft,
     viewportWidth: gridWidth,
     enableVirtualization
@@ -830,11 +838,15 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
+    const column = columns[selectedPosition.idx];
+    const columnWidth = getColumnWidth(column);
+
     return (
       <DragHandle
         gridRowStart={headerAndTopSummaryRowsCount + selectedPosition.rowIdx + 1}
         rows={rows}
-        columns={columns}
+        column={column}
+        columnWidth={columnWidth}
         selectedPosition={selectedPosition}
         isCellEditable={isCellEditable}
         latestDraggedOverRowIdx={latestDraggedOverRowIdx}

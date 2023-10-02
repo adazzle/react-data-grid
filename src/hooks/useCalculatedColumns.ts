@@ -32,16 +32,14 @@ interface CalculatedColumnsArgs<R, SR> {
   defaultColumnOptions: DataGridProps<R, SR>['defaultColumnOptions'];
   viewportWidth: number;
   scrollLeft: number;
-  measuredColumnWidths: ReadonlyMap<string, number>;
-  resizedColumnWidths: ReadonlyMap<string, number>;
+  getColumnWidth: (column: CalculatedColumn<R, SR>) => string | number;
   enableVirtualization: boolean;
 }
 
 export function useCalculatedColumns<R, SR>({
   rawColumns,
   defaultColumnOptions,
-  measuredColumnWidths,
-  resizedColumnWidths,
+  getColumnWidth,
   viewportWidth,
   scrollLeft,
   enableVirtualization
@@ -177,8 +175,7 @@ export function useCalculatedColumns<R, SR>({
     const templateColumns: string[] = [];
 
     for (const column of columns) {
-      let width =
-        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width;
+      let width = getColumnWidth(column);
 
       if (typeof width === 'number') {
         width = clampColumnWidth(width, column);
@@ -205,7 +202,7 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [measuredColumnWidths, resizedColumnWidths, columns, lastFrozenColumnIndex]);
+  }, [getColumnWidth, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
