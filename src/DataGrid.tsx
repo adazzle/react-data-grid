@@ -838,7 +838,8 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
-    const column = columns[selectedPosition.idx];
+    const { idx, rowIdx } = selectedPosition;
+    const column = columns[idx];
     if (column.renderEditCell == null || column.editable === false) {
       return;
     }
@@ -847,10 +848,13 @@ function DataGrid<R, SR, K extends Key>(
 
     return (
       <DragHandle
-        gridRowStart={headerAndTopSummaryRowsCount + selectedPosition.rowIdx + 1}
+        gridRowStart={headerAndTopSummaryRowsCount + rowIdx + 1}
         rows={rows}
         column={column}
         columnWidth={columnWidth}
+        rowHeight={getRowHeight(rowIdx)}
+        isLastColumn={column.idx === maxColIdx}
+        isLastRow={rowIdx === maxRowIdx}
         selectedPosition={selectedPosition}
         isCellEditable={isCellEditable}
         latestDraggedOverRowIdx={latestDraggedOverRowIdx}

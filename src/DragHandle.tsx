@@ -13,7 +13,6 @@ const cellDragHandle = css`
     inline-size: var(--rdg-drag-handle-size);
     block-size: var(--rdg-drag-handle-size);
     background-color: var(--rdg-selection-color);
-    place-self: end;
 
     &:hover {
       --rdg-drag-handle-size: 16px;
@@ -36,6 +35,9 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   gridRowStart: number;
   column: CalculatedColumn<R, SR>;
   columnWidth: number | string;
+  rowHeight: number;
+  isLastColumn: boolean;
+  isLastRow: boolean;
   selectedPosition: SelectCellState;
   latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
   isCellEditable: (position: Position) => boolean;
@@ -50,6 +52,9 @@ export default function DragHandle<R, SR>({
   rows,
   column,
   columnWidth,
+  rowHeight,
+  isLastColumn,
+  isLastRow,
   selectedPosition,
   latestDraggedOverRowIdx,
   isCellEditable,
@@ -126,6 +131,8 @@ export default function DragHandle<R, SR>({
       style={{
         ...style,
         gridRowStart,
+        marginInlineStart: getMarginStart(isLastColumn, columnWidth),
+        marginBlockStart: getMarginStart(isLastRow, rowHeight),
         insetInlineStart:
           style.insetInlineStart && typeof columnWidth === 'number'
             ? `calc(${style.insetInlineStart} + ${columnWidth}px - var(--rdg-drag-handle-size))`
@@ -137,4 +144,10 @@ export default function DragHandle<R, SR>({
       onDoubleClick={handleDoubleClick}
     />
   );
+}
+
+function getMarginStart(isLast: boolean, size: number | string) {
+  return isLast
+    ? `calc(${size}px - var(--rdg-drag-handle-size))`
+    : `calc(${size}px - var(--rdg-drag-handle-size) * 0.5 - 1px)`;
 }
