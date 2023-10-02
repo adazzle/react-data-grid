@@ -53,8 +53,6 @@ const cellOver = css`
 
 const cellOverClassname = `rdg-cell-drag-over ${cellOver}`;
 
-const dragDropKey = 'column-key';
-
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
   | 'sortColumns'
@@ -71,6 +69,7 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   colSpan: number | undefined;
   rowIdx: number;
   isCellSelected: boolean;
+  dragDropKey: string;
 }
 
 export default function HeaderCell<R, SR>({
@@ -84,7 +83,8 @@ export default function HeaderCell<R, SR>({
   onSortColumnsChange,
   selectCell,
   shouldFocusGrid,
-  direction
+  direction,
+  dragDropKey
 }: HeaderCellProps<R, SR>) {
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
