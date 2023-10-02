@@ -39,6 +39,8 @@ export const resizeHandleClassname = css`
   }
 `;
 
+const cellDraggableClassname = 'rdg-cell-draggable';
+
 const cellDragging = css`
   opacity: 0.5;
 `;
@@ -67,6 +69,7 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   colSpan: number | undefined;
   rowIdx: number;
   isCellSelected: boolean;
+  dragDropKey: string;
 }
 
 export default function HeaderCell<R, SR>({
@@ -80,7 +83,8 @@ export default function HeaderCell<R, SR>({
   onSortColumnsChange,
   selectCell,
   shouldFocusGrid,
-  direction
+  direction,
+  dragDropKey
 }: HeaderCellProps<R, SR>) {
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
@@ -99,6 +103,7 @@ export default function HeaderCell<R, SR>({
   const className = getCellClassname(column, column.headerCellClass, {
     [cellSortableClassname]: sortable,
     [cellResizableClassname]: resizable,
+    [cellDraggableClassname]: draggable,
     [cellDraggingClassname]: isDragging,
     [cellOverClassname]: isOver
   });
@@ -201,7 +206,7 @@ export default function HeaderCell<R, SR>({
   }
 
   function onDragStart(event: React.DragEvent<HTMLDivElement>) {
-    event.dataTransfer.setData('text/plain', column.key);
+    event.dataTransfer.setData(dragDropKey, column.key);
     event.dataTransfer.dropEffect = 'move';
     setIsDragging(true);
   }
@@ -218,10 +223,12 @@ export default function HeaderCell<R, SR>({
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     setIsOver(false);
-    const sourceKey = event.dataTransfer.getData('text/plain');
-    if (sourceKey !== column.key) {
-      event.preventDefault();
-      onColumnsReorder?.(sourceKey, column.key);
+    if (event.dataTransfer.types.includes(dragDropKey)) {
+      const sourceKey = event.dataTransfer.getData(dragDropKey);
+      if (sourceKey !== column.key) {
+        event.preventDefault();
+        onColumnsReorder?.(sourceKey, column.key);
+      }
     }
   }
 
