@@ -135,7 +135,7 @@ export default function DragHandle<R, SR>({
         marginBlockStart: getMarginStart(isLastRow, rowHeight),
         insetInlineStart:
           style.insetInlineStart && typeof columnWidth === 'number'
-            ? `calc(${style.insetInlineStart} + ${columnWidth}px - var(--rdg-drag-handle-size))`
+            ? `calc(${style.insetInlineStart} + ${getMarginStart(isLastColumn, columnWidth)})`
             : undefined
       }}
       className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
