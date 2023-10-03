@@ -127,14 +127,15 @@ export default function DragHandle<R, SR>({
     const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
     const style = getCellStyle(column, colSpan);
     const { insetInlineStart } = style;
+    const marginInlineStart = getMarginStart(isLastColumn, columnWidth);
 
     return {
       ...style,
       gridRowStart,
-      marginInlineStart: insetInlineStart ? undefined : getMarginStart(isLastColumn, columnWidth),
+      marginInlineStart: insetInlineStart ? undefined : marginInlineStart,
       marginBlockStart: getMarginStart(isLastRow, rowHeight),
       insetInlineStart: insetInlineStart
-        ? `calc(${insetInlineStart} + ${getMarginStart(isLastColumn, columnWidth)})`
+        ? `calc(${insetInlineStart} + ${marginInlineStart})`
         : undefined
     };
   }
