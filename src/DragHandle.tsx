@@ -123,21 +123,24 @@ export default function DragHandle<R, SR>({
     }
   }
 
-  const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
-  const style = getCellStyle(column, colSpan);
+  function getStyle(): React.CSSProperties {
+    const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
+    const style = getCellStyle(column, colSpan);
+
+    return {
+      ...style,
+      gridRowStart,
+      marginInlineStart: getMarginStart(isLastColumn, columnWidth),
+      marginBlockStart: getMarginStart(isLastRow, rowHeight),
+      insetInlineStart: style.insetInlineStart
+        ? `calc(${style.insetInlineStart} + ${getMarginStart(isLastColumn, columnWidth)})`
+        : undefined
+    };
+  }
 
   return (
     <div
-      style={{
-        ...style,
-        gridRowStart,
-        marginInlineStart: getMarginStart(isLastColumn, columnWidth),
-        marginBlockStart: getMarginStart(isLastRow, rowHeight),
-        insetInlineStart:
-          style.insetInlineStart && typeof columnWidth === 'number'
-            ? `calc(${style.insetInlineStart} + ${getMarginStart(isLastColumn, columnWidth)})`
-            : undefined
-      }}
+      style={getStyle()}
       className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
       onClick={onClick}
       onMouseDown={handleMouseDown}
