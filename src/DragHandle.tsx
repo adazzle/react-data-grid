@@ -148,9 +148,3 @@ export default function DragHandle<R, SR>({
     />
   );
 }
-
-function getMarginStart(isLast: boolean, size: number | string) {
-  return isLast
-    ? `calc(${size}px - var(--rdg-drag-handle-size))`
-    : `calc(${size}px - var(--rdg-drag-handle-size) * 0.5 - 1px)`;
-}
