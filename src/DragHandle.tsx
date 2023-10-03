@@ -13,6 +13,7 @@ const cellDragHandle = css`
     inline-size: var(--rdg-drag-handle-size);
     block-size: var(--rdg-drag-handle-size);
     background-color: var(--rdg-selection-color);
+    place-self: end;
 
     &:hover {
       --rdg-drag-handle-size: 16px;
@@ -35,7 +36,6 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   gridRowStart: number;
   column: CalculatedColumn<R, SR>;
   columnWidth: number | string;
-  rowHeight: number;
   isLastColumn: boolean;
   isLastRow: boolean;
   selectedPosition: SelectCellState;
@@ -52,7 +52,6 @@ export default function DragHandle<R, SR>({
   rows,
   column,
   columnWidth,
-  rowHeight,
   isLastColumn,
   isLastRow,
   selectedPosition,
@@ -125,17 +124,16 @@ export default function DragHandle<R, SR>({
 
   function getStyle(): React.CSSProperties {
     const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
-    const style = getCellStyle(column, colSpan);
-    const { insetInlineStart } = style;
-    const marginInlineStart = getMarginStart(isLastColumn, columnWidth);
+    const { insetInlineStart, ...style } = getCellStyle(column, colSpan);
+    const marginEnd = 'calc(var(--rdg-drag-handle-size) * -0.5 + 1px)';
 
     return {
       ...style,
       gridRowStart,
-      marginInlineStart: insetInlineStart ? undefined : marginInlineStart,
-      marginBlockStart: getMarginStart(isLastRow, rowHeight),
+      marginInlineEnd: isLastColumn ? undefined : marginEnd,
+      marginBlockEnd: isLastRow ? undefined : marginEnd,
       insetInlineStart: insetInlineStart
-        ? `calc(${insetInlineStart} + ${marginInlineStart})`
+        ? `calc(${insetInlineStart} + ${columnWidth}px + var(--rdg-drag-handle-size) * -0.5 - 1px)`
         : undefined
     };
   }
