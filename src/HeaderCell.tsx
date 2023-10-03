@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -38,6 +39,20 @@ export const resizeHandleClassname = css`
   }
 `;
 
+const cellDraggableClassname = 'rdg-cell-draggable';
+
+const cellDragging = css`
+  opacity: 0.5;
+`;
+
+const cellDraggingClassname = `rdg-cell-dragging ${cellDragging}`;
+
+const cellOver = css`
+  background-color: var(--rdg-header-draggable-background-color);
+`;
+
+const cellOverClassname = `rdg-cell-drag-over ${cellOver}`;
+
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
   | 'sortColumns'
@@ -46,6 +61,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onColumnResize'
   | 'shouldFocusGrid'
   | 'direction'
+  | 'onColumnsReorder'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -53,6 +69,7 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   colSpan: number | undefined;
   rowIdx: number;
   isCellSelected: boolean;
+  dragDropKey: string;
 }
 
 export default function HeaderCell<R, SR>({
@@ -61,12 +78,16 @@ export default function HeaderCell<R, SR>({
   rowIdx,
   isCellSelected,
   onColumnResize,
+  onColumnsReorder,
   sortColumns,
   onSortColumnsChange,
   selectCell,
   shouldFocusGrid,
-  direction
+  direction,
+  dragDropKey
 }: HeaderCellProps<R, SR>) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
@@ -77,10 +98,14 @@ export default function HeaderCell<R, SR>({
   const priority = sortColumn !== undefined && sortColumns!.length > 1 ? sortIndex! + 1 : undefined;
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
+  const { sortable, resizable, draggable } = column;
 
   const className = getCellClassname(column, column.headerCellClass, {
-    [cellSortableClassname]: column.sortable,
-    [cellResizableClassname]: column.resizable
+    [cellSortableClassname]: sortable,
+    [cellResizableClassname]: resizable,
+    [cellDraggableClassname]: draggable,
+    [cellDraggingClassname]: isDragging,
+    [cellOverClassname]: isOver
   });
 
   const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
@@ -161,7 +186,7 @@ export default function HeaderCell<R, SR>({
   function onClick(event: React.MouseEvent<HTMLSpanElement>) {
     selectCell({ idx: column.idx, rowIdx });
 
-    if (column.sortable) {
+    if (sortable) {
       onSort(event.ctrlKey || event.metaKey);
     }
   }
@@ -186,6 +211,60 @@ export default function HeaderCell<R, SR>({
     }
   }
 
+  function onDragStart(event: React.DragEvent<HTMLDivElement>) {
+    event.dataTransfer.setData(dragDropKey, column.key);
+    event.dataTransfer.dropEffect = 'move';
+    setIsDragging(true);
+  }
+
+  function onDragEnd() {
+    setIsDragging(false);
+  }
+
+  function onDragOver(event: React.DragEvent<HTMLDivElement>) {
+    // prevent default to allow drop
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }
+
+  function onDrop(event: React.DragEvent<HTMLDivElement>) {
+    setIsOver(false);
+    if (event.dataTransfer.types.includes(dragDropKey)) {
+      const sourceKey = event.dataTransfer.getData(dragDropKey);
+      if (sourceKey !== column.key) {
+        event.preventDefault();
+        onColumnsReorder?.(sourceKey, column.key);
+      }
+    }
+  }
+
+  function onDragEnter(event: React.DragEvent<HTMLDivElement>) {
+    if (isEventPertinent(event)) {
+      setIsOver(true);
+    }
+  }
+
+  function onDragLeave(event: React.DragEvent<HTMLDivElement>) {
+    if (isEventPertinent(event)) {
+      setIsOver(false);
+    }
+  }
+
+  let draggableProps: React.HTMLAttributes<HTMLDivElement> | undefined;
+  if (draggable) {
+    draggableProps = {
+      draggable: true,
+      /* events fired on the draggable target */
+      onDragStart,
+      onDragEnd,
+      /* events fired on the drop targets */
+      onDragOver,
+      onDragEnter,
+      onDragLeave,
+      onDrop
+    };
+  }
+
   return (
     <div
       role="columnheader"
@@ -203,7 +282,8 @@ export default function HeaderCell<R, SR>({
       }}
       onFocus={handleFocus}
       onClick={onClick}
-      onKeyDown={column.sortable ? onKeyDown : undefined}
+      onKeyDown={sortable ? onKeyDown : undefined}
+      {...draggableProps}
     >
       {renderHeaderCell({
         column,
@@ -212,7 +292,7 @@ export default function HeaderCell<R, SR>({
         tabIndex: childTabIndex
       })}
 
-      {column.resizable && (
+      {resizable && (
         <div
           className={resizeHandleClassname}
           onClick={stopPropagation}
@@ -222,4 +302,13 @@ export default function HeaderCell<R, SR>({
       )}
     </div>
   );
+}
+
+// only accept pertinent drag events:
+// - ignore drag events going from the container to an element inside the container
+// - ignore drag events going from an element inside the container to the container
+function isEventPertinent(event: React.DragEvent) {
+  const relatedTarget = event.relatedTarget as HTMLElement | null;
+
+  return !event.currentTarget.contains(relatedTarget);
 }

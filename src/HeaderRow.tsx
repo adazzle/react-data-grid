@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useId } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -11,7 +11,7 @@ import { rowSelectedClassname } from './style/row';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
   DataGridProps<R, SR, K>,
-  'sortColumns' | 'onSortColumnsChange'
+  'sortColumns' | 'onSortColumnsChange' | 'onColumnsReorder'
 >;
 
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
@@ -50,6 +50,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   rowIdx,
   columns,
   onColumnResize,
+  onColumnsReorder,
   sortColumns,
   onSortColumnsChange,
   lastFrozenColumnIndex,
@@ -58,6 +59,8 @@ function HeaderRow<R, SR, K extends React.Key>({
   shouldFocusGrid,
   direction
 }: HeaderRowProps<R, SR, K>) {
+  const dragDropKey = useId();
+
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
@@ -74,11 +77,13 @@ function HeaderRow<R, SR, K extends React.Key>({
         rowIdx={rowIdx}
         isCellSelected={selectedCellIdx === column.idx}
         onColumnResize={onColumnResize}
+        onColumnsReorder={onColumnsReorder}
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
         selectCell={selectCell}
         shouldFocusGrid={shouldFocusGrid && index === 0}
         direction={direction}
+        dragDropKey={dragDropKey}
       />
     );
   }
