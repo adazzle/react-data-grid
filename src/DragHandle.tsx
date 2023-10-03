@@ -126,14 +126,15 @@ export default function DragHandle<R, SR>({
   function getStyle(): React.CSSProperties {
     const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
     const style = getCellStyle(column, colSpan);
+    const { insetInlineStart } = style;
 
     return {
       ...style,
       gridRowStart,
-      marginInlineStart: getMarginStart(isLastColumn, columnWidth),
+      marginInlineStart: insetInlineStart ? undefined : getMarginStart(isLastColumn, columnWidth),
       marginBlockStart: getMarginStart(isLastRow, rowHeight),
-      insetInlineStart: style.insetInlineStart
-        ? `calc(${style.insetInlineStart} + ${getMarginStart(isLastColumn, columnWidth)})`
+      insetInlineStart: insetInlineStart
+        ? `calc(${insetInlineStart} + ${getMarginStart(isLastColumn, columnWidth)})`
         : undefined
     };
   }
