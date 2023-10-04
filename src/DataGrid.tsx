@@ -852,7 +852,7 @@ function DataGrid<R, SR, K extends Key>(
         rows={rows}
         column={column}
         columnWidth={columnWidth}
-        isLastColumn={idx === maxColIdx}
+        maxColIdx={maxColIdx}
         isLastRow={rowIdx === maxRowIdx}
         selectedPosition={selectedPosition}
         isCellEditable={isCellEditable}

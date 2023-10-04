@@ -36,7 +36,7 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   gridRowStart: number;
   column: CalculatedColumn<R, SR>;
   columnWidth: number | string;
-  isLastColumn: boolean;
+  maxColIdx: number;
   isLastRow: boolean;
   selectedPosition: SelectCellState;
   latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
@@ -52,7 +52,7 @@ export default function DragHandle<R, SR>({
   rows,
   column,
   columnWidth,
-  isLastColumn,
+  maxColIdx,
   isLastRow,
   selectedPosition,
   latestDraggedOverRowIdx,
@@ -126,6 +126,7 @@ export default function DragHandle<R, SR>({
     const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
     const { insetInlineStart, ...style } = getCellStyle(column, colSpan);
     const marginEnd = 'calc(var(--rdg-drag-handle-size) * -0.5 + 1px)';
+    const isLastColumn = column.idx + colSpan - 1 === maxColIdx;
 
     return {
       ...style,
