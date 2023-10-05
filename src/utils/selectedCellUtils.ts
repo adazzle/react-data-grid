@@ -23,6 +23,7 @@ export function isSelectedCellEditable<R, SR>({
   return isCellEditableUtil(column, row);
 }
 
+// https://github.com/vercel/next.js/issues/56480
 export function isCellEditableUtil<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return (
     column.renderEditCell != null &&
