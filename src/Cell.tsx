@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
-import { createCellEvent, getCellClassname, getCellStyle, isCellEditable } from './utils';
+import { createCellEvent, getCellClassname, getCellStyle, isCellEditableUtil } from './utils';
 import type { CellRendererProps } from './types';
 
 const cellCopied = css`
@@ -51,7 +51,7 @@ function Cell<R, SR>({
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass
   );
-  const isEditable = isCellEditable(column, row);
+  const isEditable = isCellEditableUtil(column, row);
 
   function selectCellWrapper(openEditor?: boolean) {
     selectCell({ rowIdx, idx: column.idx }, openEditor);
