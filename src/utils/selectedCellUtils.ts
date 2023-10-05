@@ -20,10 +20,10 @@ export function isSelectedCellEditable<R, SR>({
 }: IsSelectedCellEditableOpts<R, SR>): boolean {
   const column = columns[selectedPosition.idx];
   const row = rows[selectedPosition.rowIdx];
-  return isCellEditable(column, row);
+  return isCellEditableUtil(column, row);
 }
 
-export function isCellEditable<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
+export function isCellEditableUtil<R, SR>(column: CalculatedColumn<R, SR>, row: R): boolean {
   return (
     column.renderEditCell != null &&
     (typeof column.editable === 'function' ? column.editable(row) : column.editable) !== false
