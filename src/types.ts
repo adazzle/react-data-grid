@@ -178,6 +178,7 @@ interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   rowIdx: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+  resizeColumn: (column: CalculatedColumn<TRow, TSummaryRow>, width: number) => void;
 }
 
 export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
