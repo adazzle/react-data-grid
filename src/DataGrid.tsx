@@ -568,6 +568,23 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
+    if (isCtrlKeyHeldDown(event) && event.shiftKey) {
+      const leftKey = isRtl ? 39 : 37;
+      const rightKey = isRtl ? 37 : 39;
+      if (keyCode === leftKey || keyCode === rightKey) {
+        const { idx } = selectedPosition;
+        const column = columns[idx];
+        if (column.resizable) {
+          const width = getColumnWidth(column);
+          const step = 10;
+          const isIncrease = keyCode === rightKey;
+          const newWidth = isIncrease ? Number(width) + step : Number(width) - step;
+          handleColumnResizeLatest(column, newWidth);
+        }
+        return;
+      }
+    }
+
     switch (event.key) {
       case 'Escape':
         setCopiedCell(null);
