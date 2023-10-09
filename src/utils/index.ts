@@ -8,7 +8,7 @@ export * from './renderMeasuringCells';
 export * from './selectedCellUtils';
 export * from './styleUtils';
 
-export const { min, max, round, floor, sign, abs } = Math;
+export const { min, max, floor, sign, abs } = Math;
 
 export function assertIsValidKeyGetter<R, K extends React.Key>(
   keyGetter: unknown
