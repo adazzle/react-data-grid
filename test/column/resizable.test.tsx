@@ -1,4 +1,5 @@
 import { fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
 import { resizeHandleClassname } from '../../src/HeaderCell';
@@ -103,4 +104,24 @@ test('should use the minWidth if specified', () => {
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   resize({ column: col2, clientXStart: 295, clientXEnd: 100, rect: { right: 300, left: 100 } });
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+});
+
+test('should resize column via keyboard', async () => {
+  function resizeCell(left: boolean) {
+    // eslint-disable-next-line testing-library/prefer-user-event
+    fireEvent.keyDown(document.activeElement!, {
+      keyCode: left ? '37' : '39',
+      ctrlKey: true,
+      shiftKey: true
+    });
+  }
+
+  setup({ columns, rows: [] });
+  const [, col2] = getHeaderCells();
+  await userEvent.click(col2);
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  resizeCell(false);
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 210px' });
+  resizeCell(true);
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
 });
