@@ -537,8 +537,7 @@ function DataGrid<R, SR, K extends Key>(
           row,
           column,
           rowIdx,
-          selectCell,
-          resizeColumn: handleColumnResize
+          selectCell
         },
         cellEvent
       );
