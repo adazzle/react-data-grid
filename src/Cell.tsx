@@ -107,6 +107,7 @@ function Cell<R, SR>({
       {column.renderCell({
         column,
         row,
+        rowIdx,
         isCellEditable: isEditable,
         tabIndex: childTabIndex,
         onRowChange: handleRowChange

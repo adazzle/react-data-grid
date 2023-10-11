@@ -105,6 +105,7 @@ export interface Position {
 export interface RenderCellProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  rowIdx: number;
   isCellEditable: boolean;
   tabIndex: number;
   onRowChange: (row: TRow) => void;
