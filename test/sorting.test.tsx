@@ -35,9 +35,9 @@ function setup() {
 }
 
 function testSortColumns(expectedValue: readonly SortColumn[]) {
-  expect(JSON.parse(screen.getByTestId('sortColumnsValue').textContent!)).toStrictEqual(
-    expectedValue
-  );
+  expect(
+    JSON.parse(screen.getByTestId('sortColumnsValue', { suggest: false }).textContent!)
+  ).toStrictEqual(expectedValue);
 }
 
 test('should not sort if sortable is false', async () => {
