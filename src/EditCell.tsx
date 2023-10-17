@@ -157,6 +157,7 @@ export default function EditCell<R, SR>({
             column.renderCell({
               column,
               row,
+              rowIdx,
               isCellEditable: true,
               tabIndex: -1,
               onRowChange: onEditorRowChange
