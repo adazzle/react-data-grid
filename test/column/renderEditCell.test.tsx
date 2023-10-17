@@ -16,25 +16,25 @@ describe('Editor', () => {
   it('should open editor on double click', async () => {
     render(<EditorTest />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
+    expect(screen.getByRole('spinbutton', { name: 'col1-editor' })).toHaveValue(1);
     await userEvent.keyboard('2');
     await userEvent.tab();
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^21$/);
   });
 
   it('should open and commit changes on enter', async () => {
     render(<EditorTest />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
     await userEvent.keyboard('{enter}');
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
+    expect(screen.getByRole('spinbutton', { name: 'col1-editor' })).toHaveValue(1);
     await userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^31$/);
     expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
   });
 
   it('should open editor when user types', async () => {
@@ -47,9 +47,9 @@ describe('Editor', () => {
   it('should close editor and discard changes on escape', async () => {
     render(<EditorTest />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(1);
+    expect(screen.getByRole('spinbutton', { name: 'col1-editor' })).toHaveValue(1);
     await userEvent.keyboard('2222{escape}');
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1$/);
     expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
   });
@@ -57,7 +57,7 @@ describe('Editor', () => {
   it('should commit changes and close editor when clicked outside', async () => {
     render(<EditorTest />);
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    const editor = screen.getByLabelText('col1-editor');
+    const editor = screen.getByRole('spinbutton', { name: 'col1-editor' });
     expect(editor).toHaveValue(1);
     await userEvent.keyboard('2222');
     await userEvent.click(screen.getByText('outside'));
@@ -103,9 +103,9 @@ describe('Editor', () => {
 
     await scrollGrid({ scrollTop: 2000 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
+    expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
     await userEvent.keyboard('123');
-    expect(screen.getByLabelText('col1-editor')).toHaveValue(1230);
+    expect(screen.getByRole('spinbutton', { name: 'col1-editor' })).toHaveValue(1230);
     const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     await userEvent.keyboard('{enter}');
     expect(spy).toHaveBeenCalled();
@@ -117,13 +117,13 @@ describe('Editor', () => {
       const cell = getCellsAtRowIndex(0)[1];
       expect(cell).not.toHaveAttribute('aria-readonly');
       await userEvent.dblClick(cell);
-      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
+      expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
     });
 
     it('should be editable if an editor is specified and editable is set to true', async () => {
       render(<EditorTest editable />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
+      expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
     });
 
     it('should not be editable if editable is false', async () => {
@@ -131,16 +131,16 @@ describe('Editor', () => {
       const cell = getCellsAtRowIndex(0)[1];
       expect(cell).toHaveAttribute('aria-readonly', 'true');
       await userEvent.dblClick(cell);
-      expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
+      expect(screen.queryByRole('textbox', { name: 'col2-editor' })).not.toBeInTheDocument();
     });
 
     it('should not be editable if editable function returns false', async () => {
       render(<EditorTest editable={(row) => row.col1 === 2} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
+      expect(screen.queryByRole('textbox', { name: 'col2-editor' })).not.toBeInTheDocument();
 
       await userEvent.dblClick(getCellsAtRowIndex(1)[1]);
-      expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
+      expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
     });
   });
 
@@ -148,7 +148,7 @@ describe('Editor', () => {
     it('should detect outside click if editor is rendered in a portal', async () => {
       render(<EditorTest createEditorPortal editorOptions={{ displayCellContent: true }} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      const editor1 = screen.getByLabelText('col2-editor');
+      const editor1 = screen.getByRole('textbox', { name: 'col2-editor' });
       expect(editor1).toHaveValue('a1');
       await userEvent.keyboard('23');
       // The cell value should update as the editor value is changed
@@ -164,7 +164,7 @@ describe('Editor', () => {
       expect(getCellsAtRowIndex(0)[1]).not.toHaveFocus();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      const editor2 = screen.getByLabelText('col2-editor');
+      const editor2 = screen.getByRole('textbox', { name: 'col2-editor' });
       await userEvent.click(editor2);
       await userEvent.keyboard('{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveFocus();
@@ -179,7 +179,7 @@ describe('Editor', () => {
         />
       );
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      const editor = screen.getByLabelText('col2-editor');
+      const editor = screen.getByRole('textbox', { name: 'col2-editor' });
       expect(editor).toBeInTheDocument();
       await userEvent.click(screen.getByText('outside'));
       await act(async () => {
@@ -205,7 +205,7 @@ describe('Editor', () => {
       await userEvent.keyboard('yz{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
       await userEvent.keyboard('x');
-      expect(screen.queryByLabelText('col2-editor')).not.toBeInTheDocument();
+      expect(screen.queryByRole('textbox', { name: 'col2-editor' })).not.toBeInTheDocument();
     });
 
     it('should prevent navigation if onCellKeyDown prevents the default event', async () => {
@@ -283,9 +283,9 @@ describe('Editor', () => {
         </>
       );
 
-      const outerInput = screen.getByLabelText('outer-input');
+      const outerInput = screen.getByRole('textbox', { name: 'outer-input' });
       await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-      const col1Input = screen.getByLabelText('col1-input');
+      const col1Input = screen.getByRole('textbox', { name: 'col1-input' });
       expect(col1Input).toHaveFocus();
       await userEvent.click(outerInput);
       expect(outerInput).toHaveFocus();
@@ -295,7 +295,7 @@ describe('Editor', () => {
       expect(outerInput).toHaveFocus();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      const col2Input = screen.getByLabelText('col2-input');
+      const col2Input = screen.getByRole('textbox', { name: 'col2-input' });
       expect(col2Input).toHaveFocus();
       await userEvent.click(outerInput);
       expect(outerInput).toHaveFocus();
