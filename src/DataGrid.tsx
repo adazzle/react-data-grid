@@ -449,8 +449,6 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
-  console.log('called?');
-
   useLayoutEffect(() => {
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
