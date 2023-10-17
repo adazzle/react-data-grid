@@ -38,6 +38,7 @@ export default defineConfig({
   test: {
     root: '.',
     environment: 'jsdom',
+    experimentalVmThreads: true,
     globals: true,
     coverage: {
       provider: 'v8',
