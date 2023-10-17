@@ -449,6 +449,8 @@ function DataGrid<R, SR, K extends Key>(
     }
   });
 
+  console.log('called?');
+
   useLayoutEffect(() => {
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
@@ -526,9 +528,10 @@ function DataGrid<R, SR, K extends Key>(
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const { idx, rowIdx, mode } = selectedPosition;
     const column = columns[idx];
+
     if (mode === 'EDIT') return;
 
-    if (onCellKeyDown && isRowIdxWithinViewportBounds(rowIdx)) {
+    if (onCellKeyDown) {
       const row = rows[rowIdx];
       const cellEvent = createCellEvent(event);
       onCellKeyDown(
@@ -537,7 +540,9 @@ function DataGrid<R, SR, K extends Key>(
           row,
           column,
           rowIdx,
-          selectCell
+          selectCell,
+          resizeColumn: handleColumnResize,
+          getColumnWidth
         },
         cellEvent
       );
@@ -565,19 +570,6 @@ function DataGrid<R, SR, K extends Key>(
       }
       if (keyCode === vKey) {
         handlePaste();
-        return;
-      }
-    }
-
-    if (column.resizable && isCtrlKeyHeldDown(event) && event.shiftKey) {
-      const leftKey = isRtl ? 39 : 37;
-      const rightKey = isRtl ? 37 : 39;
-      if (keyCode === leftKey || keyCode === rightKey) {
-        const width = getColumnWidth(column);
-        const step = 10;
-        const isIncrease = keyCode === rightKey;
-        const newWidth = isIncrease ? Number(width) + step : Number(width) - step;
-        handleColumnResizeLatest(column, newWidth);
         return;
       }
     }

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
 import { resizeHandleClassname } from '../../src/HeaderCell';
+import { isCtrlKeyHeldDown } from '../../src/utils';
 import { getGrid, getHeaderCells, setup } from '../utils';
 
 const pointerId = 1;
@@ -107,21 +108,33 @@ test('should use the minWidth if specified', () => {
 });
 
 test('should resize column via keyboard', async () => {
-  function resizeCell(left: boolean) {
-    // eslint-disable-next-line testing-library/prefer-user-event
-    fireEvent.keyDown(document.activeElement!, {
-      keyCode: left ? '37' : '39',
-      ctrlKey: true,
-      shiftKey: true
-    });
-  }
-
-  setup({ columns, rows: [] });
+  setup({
+    columns,
+    rows: [],
+    onCellKeyDown(args, event) {
+      if (args.mode === 'SELECT') {
+        const { key } = event;
+        const { column, getColumnWidth, resizeColumn } = args;
+        if (column.resizable && isCtrlKeyHeldDown(event) && event.shiftKey) {
+          event.preventGridDefault();
+          const leftKey = 'ArrowLeft';
+          const rightKey = 'ArrowRight';
+          if (key === leftKey || key === rightKey) {
+            const width = getColumnWidth(column);
+            const step = 10;
+            const isIncrease = key === rightKey;
+            const newWidth = isIncrease ? Number(width) + step : Number(width) - step;
+            resizeColumn(column, newWidth);
+          }
+        }
+      }
+    }
+  });
   const [, col2] = getHeaderCells();
   await userEvent.click(col2);
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  resizeCell(false);
+  await userEvent.keyboard('{Control>}{Shift>}{ArrowRight}{/Control}{/Shift}');
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 210px' });
-  resizeCell(true);
+  await userEvent.keyboard('{Control>}{Shift>}{ArrowLeft}{/Control}{/Shift}');
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
 });
