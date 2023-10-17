@@ -1,4 +1,7 @@
 import { act } from 'react-dom/test-utils';
+import { configure } from '@testing-library/react';
+
+configure({ throwSuggestions: true });
 
 // Allow node-environment tests to properly fail when accessing DOM APIs,
 // as @testing-library/jest-dom may polyfill some DOM APIs like `window.CSS`
