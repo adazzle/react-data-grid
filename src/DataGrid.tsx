@@ -675,6 +675,10 @@ function DataGrid<R, SR, K extends Key>(
     return idx >= minColIdx && idx <= maxColIdx;
   }
 
+  function isColIdxWithinEditBounds(idx: number) {
+    return idx >= 0 && idx <= maxColIdx;
+  }
+
   function isRowIdxWithinViewportBounds(rowIdx: number) {
     return rowIdx >= 0 && rowIdx < rows.length;
   }
@@ -683,14 +687,17 @@ function DataGrid<R, SR, K extends Key>(
     return rowIdx >= minRowIdx && rowIdx <= maxRowIdx && isColIdxWithinSelectionBounds(idx);
   }
 
+  function isCellWithinEditBounds({ idx, rowIdx }: Position): boolean {
+    return isRowIdxWithinViewportBounds(rowIdx) && isColIdxWithinEditBounds(idx);
+  }
+
   function isCellWithinViewportBounds({ idx, rowIdx }: Position): boolean {
     return isRowIdxWithinViewportBounds(rowIdx) && isColIdxWithinSelectionBounds(idx);
   }
 
   function isCellEditable(position: Position): boolean {
     return (
-      isCellWithinViewportBounds(position) &&
-      position.idx !== -1 &&
+      isCellWithinEditBounds(position) &&
       isSelectedCellEditable({ columns, rows, selectedPosition: position })
     );
   }
