@@ -35,6 +35,7 @@ import type {
   CellKeyDownArgs,
   CellMouseEvent,
   CellNavigationMode,
+  CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
   CopyEvent,
@@ -82,7 +83,7 @@ interface EditCellState<R> extends Position {
 
 type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
-  'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable'
+  'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable' | 'draggable'
 >;
 
 export interface DataGridHandle {
@@ -166,10 +167,14 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Function called whenever a cell is right clicked */
   onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
+  /** Function called whenever cell selection is changed */
+  onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
+  /** Called when a column is reordered */
+  onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
 
   /**
    * Toggles and modes
@@ -221,8 +226,10 @@ function DataGrid<R, SR, K extends Key>(
     onCellDoubleClick,
     onCellContextMenu,
     onCellKeyDown,
+    onSelectedCellChange,
     onScroll,
     onColumnResize,
+    onColumnsReorder,
     onFill,
     onCopy,
     onPaste,
@@ -276,6 +283,15 @@ function DataGrid<R, SR, K extends Key>(
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
 
+  const getColumnWidth = useCallback(
+    (column: CalculatedColumn<R, SR>) => {
+      return (
+        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width
+      );
+    },
+    [measuredColumnWidths, resizedColumnWidths]
+  );
+
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const {
     columns,
@@ -290,8 +306,7 @@ function DataGrid<R, SR, K extends Key>(
   } = useCalculatedColumns({
     rawColumns,
     defaultColumnOptions,
-    measuredColumnWidths,
-    resizedColumnWidths,
+    getColumnWidth,
     scrollLeft,
     viewportWidth: gridWidth,
     enableVirtualization
@@ -402,6 +417,7 @@ function DataGrid<R, SR, K extends Key>(
    * The identity of the wrapper function is stable so it won't break memoization
    */
   const handleColumnResizeLatest = useLatestFunc(handleColumnResize);
+  const onColumnsReorderLastest = useLatestFunc(onColumnsReorder);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
   const onCellClickLatest = useLatestFunc(onCellClick);
   const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
@@ -436,13 +452,7 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (!shouldFocusCellRef.current) return;
     shouldFocusCellRef.current = false;
-    const cell = getCellToScroll(gridRef.current!);
-    if (cell === null) return;
-
-    scrollIntoView(cell);
-    // Focus cell content when available instead of the cell itself
-    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-    elementToFocus.focus({ preventScroll: true });
+    focusCellOrCellContent();
   });
 
   useImperativeHandle(ref, () => ({
@@ -673,13 +683,17 @@ function DataGrid<R, SR, K extends Key>(
     return rowIdx >= minRowIdx && rowIdx <= maxRowIdx && isColIdxWithinSelectionBounds(idx);
   }
 
+  function isCellWithinEditBounds({ idx, rowIdx }: Position): boolean {
+    return isRowIdxWithinViewportBounds(rowIdx) && idx >= 0 && idx <= maxColIdx;
+  }
+
   function isCellWithinViewportBounds({ idx, rowIdx }: Position): boolean {
     return isRowIdxWithinViewportBounds(rowIdx) && isColIdxWithinSelectionBounds(idx);
   }
 
   function isCellEditable(position: Position): boolean {
     return (
-      isCellWithinViewportBounds(position) &&
+      isCellWithinEditBounds(position) &&
       isSelectedCellEditable({ columns, rows, selectedPosition: position })
     );
   }
@@ -692,15 +706,25 @@ function DataGrid<R, SR, K extends Key>(
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
+    const row = rows[position.rowIdx];
+    const samePosition = isSamePosition(selectedPosition, position);
+
     if (enableEditor && isCellEditable(position)) {
-      const row = rows[position.rowIdx];
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
-    } else if (isSamePosition(selectedPosition, position)) {
+    } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
       shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
+    }
+
+    if (onSelectedCellChange && !samePosition) {
+      onSelectedCellChange({
+        rowIdx: position.rowIdx,
+        row,
+        column: columns[position.idx]
+      });
     }
   }
 
@@ -803,6 +827,16 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
+  function focusCellOrCellContent() {
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
+  }
+
   function renderDragHandle() {
     if (
       onFill == null ||
@@ -812,15 +846,27 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
+    const { idx, rowIdx } = selectedPosition;
+    const column = columns[idx];
+    if (column.renderEditCell == null || column.editable === false) {
+      return;
+    }
+
+    const columnWidth = getColumnWidth(column);
+
     return (
       <DragHandle
         gridRowStart={getGridRowStart(selectedPosition.rowIdx)}
         rows={rows}
-        columns={columns}
+        column={column}
+        columnWidth={columnWidth}
+        maxColIdx={maxColIdx}
+        isLastRow={rowIdx === maxRowIdx}
         selectedPosition={selectedPosition}
         isCellEditable={isCellEditable}
         latestDraggedOverRowIdx={latestDraggedOverRowIdx}
         onRowsChange={onRowsChange}
+        onClick={focusCellOrCellContent}
         onFill={onFill}
         setDragging={setDragging}
         setDraggedOverRowIdx={setDraggedOverRowIdx}
@@ -1053,6 +1099,7 @@ function DataGrid<R, SR, K extends Key>(
               rowIdx={headerRowsCount}
               columns={getRowViewportColumns(mainHeaderRowIdx)}
               onColumnResize={handleColumnResizeLatest}
+              onColumnsReorder={onColumnsReorderLastest}
               sortColumns={sortColumns}
               onSortColumnsChange={onSortColumnsChangeLatest}
               lastFrozenColumnIndex={lastFrozenColumnIndex}

@@ -237,7 +237,7 @@ test('should set aria-attributes', async () => {
 test('should select rows in a group', async () => {
   setup(['year', 'country']);
 
-  const headerCheckbox = screen.getByLabelText('Select All');
+  const headerCheckbox = screen.getByRole('checkbox', { name: 'Select All' });
   expect(headerCheckbox).not.toBeChecked();
 
   // expand group
@@ -249,7 +249,9 @@ test('should select rows in a group', async () => {
   expect(screen.queryAllByRole('row', { selected: true })).toHaveLength(0);
 
   // select parent row
-  await userEvent.click(within(groupCell1.parentElement!).getByLabelText('Select Group'));
+  await userEvent.click(
+    within(groupCell1.parentElement!).getByRole('checkbox', { name: 'Select Group' })
+  );
   let selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);
   expect(selectedRows[0]).toHaveAttribute('aria-rowindex', '6');
@@ -258,13 +260,15 @@ test('should select rows in a group', async () => {
   expect(selectedRows[3]).toHaveAttribute('aria-rowindex', '10');
 
   // unselecting child should unselect the parent row
-  await userEvent.click(within(selectedRows[3]).getByLabelText('Select'));
+  await userEvent.click(within(selectedRows[3]).getByRole('checkbox', { name: 'Select' }));
   selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(1);
   expect(selectedRows[0]).toHaveAttribute('aria-rowindex', '7');
 
   // select child group
-  const checkbox = within(groupCell2.parentElement!).getByLabelText('Select Group');
+  const checkbox = within(groupCell2.parentElement!).getByRole('checkbox', {
+    name: 'Select Group'
+  });
   await userEvent.click(checkbox);
   selectedRows = screen.getAllByRole('row', { selected: true });
   expect(selectedRows).toHaveLength(4);

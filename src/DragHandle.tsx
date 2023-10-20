@@ -34,10 +34,14 @@ const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   gridRowStart: number;
-  columns: readonly CalculatedColumn<R, SR>[];
+  column: CalculatedColumn<R, SR>;
+  columnWidth: number | string;
+  maxColIdx: number;
+  isLastRow: boolean;
   selectedPosition: SelectCellState;
   latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
   isCellEditable: (position: Position) => boolean;
+  onClick: () => void;
   onFill: (event: FillEvent<R>) => R;
   setDragging: (isDragging: boolean) => void;
   setDraggedOverRowIdx: (overRowIdx: number | undefined) => void;
@@ -46,19 +50,24 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
 export default function DragHandle<R, SR>({
   gridRowStart,
   rows,
-  columns,
+  column,
+  columnWidth,
+  maxColIdx,
+  isLastRow,
   selectedPosition,
   latestDraggedOverRowIdx,
   isCellEditable,
   onRowsChange,
   onFill,
+  onClick,
   setDragging,
   setDraggedOverRowIdx
 }: Props<R, SR>) {
   const { idx, rowIdx } = selectedPosition;
-  const column = columns[idx];
 
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    // keep the focus on the cell
+    event.preventDefault();
     if (event.buttons !== 1) return;
     setDragging(true);
     window.addEventListener('mouseover', onMouseOver);
@@ -95,7 +104,6 @@ export default function DragHandle<R, SR>({
   }
 
   function updateRows(startRowIdx: number, endRowIdx: number) {
-    const column = columns[idx];
     const sourceRow = rows[rowIdx];
     const updatedRows = [...rows];
     const indexes: number[] = [];
@@ -114,20 +122,28 @@ export default function DragHandle<R, SR>({
     }
   }
 
-  const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
-  const style = getCellStyle(column, colSpan);
+  function getStyle(): React.CSSProperties {
+    const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
+    const { insetInlineStart, ...style } = getCellStyle(column, colSpan);
+    const marginEnd = 'calc(var(--rdg-drag-handle-size) * -0.5 + 1px)';
+    const isLastColumn = column.idx + colSpan - 1 === maxColIdx;
+
+    return {
+      ...style,
+      gridRowStart,
+      marginInlineEnd: isLastColumn ? undefined : marginEnd,
+      marginBlockEnd: isLastRow ? undefined : marginEnd,
+      insetInlineStart: insetInlineStart
+        ? `calc(${insetInlineStart} + ${columnWidth}px + var(--rdg-drag-handle-size) * -0.5 - 1px)`
+        : undefined
+    };
+  }
 
   return (
     <div
-      style={{
-        ...style,
-        gridRowStart,
-        insetInlineStart:
-          style.insetInlineStart && typeof column.width === 'number'
-            ? `calc(${style.insetInlineStart} + ${column.width}px - var(--rdg-drag-handle-size))`
-            : undefined
-      }}
+      style={getStyle()}
       className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
+      onClick={onClick}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
     />
