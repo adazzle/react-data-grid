@@ -115,14 +115,15 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
+    // Fix column resizing on a draggable column in FF
+    event.preventDefault();
+
     const { currentTarget, pointerId } = event;
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
 
     function onPointerMove(event: PointerEvent) {
-      // prevents text selection in Chrome, which fixes scrolling the grid while dragging, and fixes re-size on an autosized column
-      event.preventDefault();
       const { right, left } = headerCell.getBoundingClientRect();
       const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
