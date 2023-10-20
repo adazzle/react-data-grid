@@ -690,6 +690,7 @@ function DataGrid<R, SR, K extends Key>(
   function isCellEditable(position: Position): boolean {
     return (
       isCellWithinViewportBounds(position) &&
+      position.idx !== -1 &&
       isSelectedCellEditable({ columns, rows, selectedPosition: position })
     );
   }
