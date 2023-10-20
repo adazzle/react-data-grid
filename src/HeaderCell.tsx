@@ -116,6 +116,9 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
+    // prevents scrolling in FF
+    event.preventDefault();
+
     if (draggable) {
       setIsResizing(true);
     }
@@ -126,7 +129,7 @@ export default function HeaderCell<R, SR>({
 
     function onPointerMove(event: PointerEvent) {
       // prevents text selection in Chrome, which fixes scrolling the grid while dragging, and fixes re-size on an autosized column
-      event.preventDefault();
+      // event.preventDefault();
       const { right, left } = headerCell.getBoundingClientRect();
       const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
