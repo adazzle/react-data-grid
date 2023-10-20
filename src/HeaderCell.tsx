@@ -86,7 +86,6 @@ export default function HeaderCell<R, SR>({
   direction,
   dragDropKey
 }: HeaderCellProps<R, SR>) {
-  const [isResizing, setIsResizing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
@@ -119,9 +118,6 @@ export default function HeaderCell<R, SR>({
     // prevents scrolling in FF
     event.preventDefault();
 
-    if (draggable) {
-      setIsResizing(true);
-    }
     const { currentTarget, pointerId } = event;
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
@@ -136,9 +132,6 @@ export default function HeaderCell<R, SR>({
     }
 
     function onLostPointerCapture() {
-      if (draggable) {
-        setIsResizing(false);
-      }
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
@@ -253,7 +246,7 @@ export default function HeaderCell<R, SR>({
   }
 
   let draggableProps: React.HTMLAttributes<HTMLDivElement> | undefined;
-  if (draggable && !isResizing) {
+  if (draggable) {
     draggableProps = {
       draggable: true,
       /* events fired on the draggable target */
