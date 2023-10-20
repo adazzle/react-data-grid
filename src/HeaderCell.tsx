@@ -115,7 +115,7 @@ export default function HeaderCell<R, SR>({
       return;
     }
 
-    // prevents scrolling in FF
+    // Fix column resizing on a draggable column in FF
     event.preventDefault();
 
     const { currentTarget, pointerId } = event;
