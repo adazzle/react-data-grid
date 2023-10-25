@@ -52,6 +52,7 @@
       },
       "complexity": {
         "noBannedTypes": "warn",
+        "noExcessiveCognitiveComplexity": "off",
         "noExtraBooleanCast": "warn",
         "noForEach": "off",
         "noMultipleSpacesInRegularExpressionLiterals": "warn",
@@ -65,6 +66,7 @@
         "noUselessSwitchCase": "warn",
         "noUselessThisAlias": "warn",
         "noUselessTypeConstraint": "warn",
+        "noVoid": "warn",
         "noWith": "warn",
         "useFlatMap": "warn",
         "useLiteralKeys": "warn",
@@ -99,11 +101,14 @@
         "noUnusedVariables": "warn",
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
+        "useExhaustiveDependencies": "off",
+        "useHookAtTopLevel": "off",
         "useIsNan": "warn",
         "useValidForDirection": "warn",
         "useYield": "warn"
       },
       "performance": {
+        "noAccumulatingSpread": "warn",
         "noDelete": "warn"
       },
       "security": {
@@ -125,6 +130,7 @@
         "noUnusedTemplateLiteral": "warn",
         "noVar": "warn",
         "useBlockStatements": "off",
+        "useCollapsedElseIf": "warn",
         "useConst": "warn",
         "useDefaultParameterLast": "warn",
         "useEnumInitializers": "warn",
@@ -149,7 +155,8 @@
         "noCommentText": "warn",
         "noCompareNegZero": "warn",
         "noConfusingLabels": "warn",
-        "noConsoleLog": "off",
+        "noConfusingVoidType": "warn",
+        "noConsoleLog": "warn",
         "noConstEnum": "warn",
         "noControlCharactersInRegex": "warn",
         "noDebugger": "warn",
@@ -162,7 +169,10 @@
         "noEmptyInterface": "warn",
         "noExplicitAny": "off",
         "noExtraNonNullAssertion": "warn",
+        "noFallthroughSwitchClause": "warn",
         "noFunctionAssign": "warn",
+        "noGlobalIsFinite": "warn",
+        "noGlobalIsNan": "warn",
         "noImportAssign": "warn",
         "noLabelVar": "warn",
         "noPrototypeBuiltins": "warn",
@@ -175,7 +185,8 @@
         "noUnsafeNegation": "warn",
         "useDefaultSwitchClauseLast": "warn",
         "useGetterReturn": "warn",
-        "useNamespaceKeyword": "off",
+        "useIsArray": "warn",
+        "useNamespaceKeyword": "warn",
         "useValidTypeof": "warn"
       }
     }
