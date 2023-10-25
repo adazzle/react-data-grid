@@ -236,4 +236,4 @@ test('enableVirtualization is disabled', () => {
 
   const cells = getCells();
   expect(cells).toHaveLength(40 * 100);
-}, 10000); // slow in CI?
+});

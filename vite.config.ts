@@ -48,6 +48,7 @@ export default defineConfig({
       reporter: ['text', 'json']
     },
     useAtomics: true,
+    testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
     restoreMocks: true,
     sequence: {
