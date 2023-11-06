@@ -105,7 +105,7 @@
     "rollup": "^4.0.2",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.2.2",
-    "vite": "^5.0.0-beta.13",
+    "vite": "^5.0.0-beta.16",
     "vitest": "^1.0.0-beta.3"
   },
   "peerDependencies": {
