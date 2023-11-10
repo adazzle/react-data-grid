@@ -78,7 +78,7 @@
     "@types/react-dom": "^18.2.4",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
-    "@vitejs/plugin-react": "^4.0.2",
+    "@vitejs/plugin-react": "^4.1.1",
     "@vitest/coverage-v8": "^1.0.0-beta.3",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "eslint": "^8.43.0",
@@ -105,8 +105,8 @@
     "rollup": "^4.0.2",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.2.2",
-    "vite": "^5.0.0-beta.16",
-    "vitest": "^1.0.0-beta.3"
+    "vite": "^5.0.0-beta.17",
+    "vitest": "^1.0.0-beta.4"
   },
   "peerDependencies": {
     "react": "^18.0",
