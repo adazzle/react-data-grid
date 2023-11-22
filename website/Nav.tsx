@@ -120,6 +120,9 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <NavLink to="/resizable-grid" end className={getActiveClassname}>
         Resizable Grid
       </NavLink>
+      <NavLink to="/add-remove-columns" end className={getActiveClassname}>
+        Add or Remove Columns
+      </NavLink>
       <NavLink to="/rows-reordering" end className={getActiveClassname}>
         Rows Reordering
       </NavLink>
