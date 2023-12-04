@@ -44,7 +44,6 @@ export default defineConfig({
       provider: 'v8',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
-      all: true,
       reporter: ['text', 'json']
     },
     poolOptions: {
