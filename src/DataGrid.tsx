@@ -89,6 +89,7 @@ type DefaultColumnOptions<R, SR> = Pick<
 
 export interface DataGridHandle {
   element: HTMLDivElement | null;
+  selectedCell: Position;
   scrollToCell: (position: PartialPosition) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
@@ -460,6 +461,7 @@ function DataGrid<R, SR, K extends Key>(
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
+    selectedCell: selectedPosition,
     scrollToCell({ idx, rowIdx }) {
       const scrollToIdx =
         idx !== undefined && idx > lastFrozenColumnIndex && idx < columns.length ? idx : undefined;
