@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"]
+    "ignore": ["./coverage/**/*", "./dist/**/*", "./lib/**/*", "./node_modules/**/*"]
   },
   "formatter": {
     "ignore": ["*.ts", "*.tsx"],
@@ -29,6 +29,7 @@
         "noBlankTarget": "warn",
         "noDistractingElements": "warn",
         "noHeaderScope": "warn",
+        "noInteractiveElementToNoninteractiveRole": "warn",
         "noNoninteractiveElementToInteractiveRole": "warn",
         "noNoninteractiveTabindex": "off",
         "noPositiveTabindex": "warn",
@@ -37,6 +38,7 @@
         "noSvgWithoutTitle": "off",
         "useAltText": "warn",
         "useAnchorContent": "warn",
+        "useAriaActivedescendantWithTabindex": "warn",
         "useAriaPropsForRole": "warn",
         "useButtonType": "warn",
         "useHeadingContent": "warn",
@@ -52,10 +54,12 @@
       },
       "complexity": {
         "noBannedTypes": "warn",
+        "noExcessiveCognitiveComplexity": "off",
         "noExtraBooleanCast": "warn",
         "noForEach": "off",
         "noMultipleSpacesInRegularExpressionLiterals": "warn",
         "noStaticOnlyClass": "warn",
+        "noThisInStatic": "warn",
         "noUselessCatch": "warn",
         "noUselessConstructor": "warn",
         "noUselessEmptyExport": "warn",
@@ -65,7 +69,9 @@
         "noUselessSwitchCase": "warn",
         "noUselessThisAlias": "warn",
         "noUselessTypeConstraint": "warn",
+        "noVoid": "warn",
         "noWith": "warn",
+        "useArrowFunction": "warn",
         "useFlatMap": "warn",
         "useLiteralKeys": "warn",
         "useOptionalChain": "warn",
@@ -77,10 +83,12 @@
         "noConstAssign": "warn",
         "noConstantCondition": "warn",
         "noConstructorReturn": "warn",
+        "noEmptyCharacterClassInRegex": "warn",
         "noEmptyPattern": "warn",
         "noGlobalObjectCalls": "warn",
         "noInnerDeclarations": "warn",
         "noInvalidConstructorSuper": "warn",
+        "noInvalidNewBuiltin": "warn",
         "noNewSymbol": "warn",
         "noNonoctalDecimalEscape": "warn",
         "noPrecisionLoss": "warn",
@@ -99,11 +107,14 @@
         "noUnusedVariables": "warn",
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
+        "useExhaustiveDependencies": "off",
+        "useHookAtTopLevel": "off",
         "useIsNan": "warn",
         "useValidForDirection": "warn",
         "useYield": "warn"
       },
       "performance": {
+        "noAccumulatingSpread": "warn",
         "noDelete": "warn"
       },
       "security": {
@@ -123,8 +134,11 @@
         "noRestrictedGlobals": "warn",
         "noShoutyConstants": "warn",
         "noUnusedTemplateLiteral": "warn",
+        "noUselessElse": "off",
         "noVar": "warn",
+        "useAsConstAssertion": "warn",
         "useBlockStatements": "off",
+        "useCollapsedElseIf": "warn",
         "useConst": "warn",
         "useDefaultParameterLast": "warn",
         "useEnumInitializers": "warn",
@@ -135,12 +149,14 @@
         "useNumericLiterals": "warn",
         "useSelfClosingElements": "warn",
         "useShorthandArrayType": "warn",
+        "useShorthandAssign": "warn",
         "useSingleCaseStatement": "off",
         "useSingleVarDeclarator": "warn",
         "useTemplate": "warn",
         "useWhile": "warn"
       },
       "suspicious": {
+        "noApproximativeNumericConstant": "warn",
         "noArrayIndexKey": "off",
         "noAssignInExpressions": "off",
         "noAsyncPromiseExecutor": "warn",
@@ -149,7 +165,8 @@
         "noCommentText": "warn",
         "noCompareNegZero": "warn",
         "noConfusingLabels": "warn",
-        "noConsoleLog": "off",
+        "noConfusingVoidType": "warn",
+        "noConsoleLog": "warn",
         "noConstEnum": "warn",
         "noControlCharactersInRegex": "warn",
         "noDebugger": "warn",
@@ -162,9 +179,14 @@
         "noEmptyInterface": "warn",
         "noExplicitAny": "off",
         "noExtraNonNullAssertion": "warn",
+        "noFallthroughSwitchClause": "warn",
         "noFunctionAssign": "warn",
+        "noGlobalIsFinite": "warn",
+        "noGlobalIsNan": "warn",
         "noImportAssign": "warn",
         "noLabelVar": "warn",
+        "noMisleadingInstantiator": "warn",
+        "noMisrefactoredShorthandAssign": "warn",
         "noPrototypeBuiltins": "warn",
         "noRedeclare": "warn",
         "noRedundantUseStrict": "warn",
@@ -175,7 +197,8 @@
         "noUnsafeNegation": "warn",
         "useDefaultSwitchClauseLast": "warn",
         "useGetterReturn": "warn",
-        "useNamespaceKeyword": "off",
+        "useIsArray": "warn",
+        "useNamespaceKeyword": "warn",
         "useValidTypeof": "warn"
       }
     }

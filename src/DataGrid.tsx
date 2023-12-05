@@ -285,6 +285,15 @@ function DataGrid<R, SR, K extends Key>(
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
 
+  const getColumnWidth = useCallback(
+    (column: CalculatedColumn<R, SR>) => {
+      return (
+        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width
+      );
+    },
+    [measuredColumnWidths, resizedColumnWidths]
+  );
+
   const [gridRef, gridWidth, gridHeight] = useGridDimensions();
   const {
     columns,
@@ -299,8 +308,7 @@ function DataGrid<R, SR, K extends Key>(
   } = useCalculatedColumns({
     rawColumns,
     defaultColumnOptions,
-    measuredColumnWidths,
-    resizedColumnWidths,
+    getColumnWidth,
     scrollLeft,
     viewportWidth: gridWidth,
     enableVirtualization
@@ -678,13 +686,17 @@ function DataGrid<R, SR, K extends Key>(
     return rowIdx >= minRowIdx && rowIdx <= maxRowIdx && isColIdxWithinSelectionBounds(idx);
   }
 
+  function isCellWithinEditBounds({ idx, rowIdx }: Position): boolean {
+    return isRowIdxWithinViewportBounds(rowIdx) && idx >= 0 && idx <= maxColIdx;
+  }
+
   function isCellWithinViewportBounds({ idx, rowIdx }: Position): boolean {
     return isRowIdxWithinViewportBounds(rowIdx) && isColIdxWithinSelectionBounds(idx);
   }
 
   function isCellEditable(position: Position): boolean {
     return (
-      isCellWithinViewportBounds(position) &&
+      isCellWithinEditBounds(position) &&
       isSelectedCellEditable({ columns, rows, selectedPosition: position })
     );
   }
@@ -833,11 +845,22 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
+    const { idx, rowIdx } = selectedPosition;
+    const column = columns[idx];
+    if (column.renderEditCell == null || column.editable === false) {
+      return;
+    }
+
+    const columnWidth = getColumnWidth(column);
+
     return (
       <DragHandle
-        gridRowStart={headerAndTopSummaryRowsCount + selectedPosition.rowIdx + 1}
+        gridRowStart={headerAndTopSummaryRowsCount + rowIdx + 1}
         rows={rows}
-        columns={columns}
+        column={column}
+        columnWidth={columnWidth}
+        maxColIdx={maxColIdx}
+        isLastRow={rowIdx === maxRowIdx}
         selectedPosition={selectedPosition}
         isCellEditable={isCellEditable}
         latestDraggedOverRowIdx={latestDraggedOverRowIdx}

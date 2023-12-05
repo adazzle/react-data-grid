@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useId } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -59,6 +59,8 @@ function HeaderRow<R, SR, K extends React.Key>({
   shouldFocusGrid,
   direction
 }: HeaderRowProps<R, SR, K>) {
+  const dragDropKey = useId();
+
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
     const column = columns[index];
@@ -81,6 +83,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         selectCell={selectCell}
         shouldFocusGrid={shouldFocusGrid && index === 0}
         direction={direction}
+        dragDropKey={dragDropKey}
       />
     );
   }

@@ -84,7 +84,7 @@ describe('Events', () => {
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.click(getCellsAtRowIndex(0)[1]);
-    expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
   });
 
   it('should not open editor editor on double click if onCellDoubleClick prevents default', async () => {
@@ -100,7 +100,7 @@ describe('Events', () => {
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
     await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-    expect(screen.getByLabelText('col2-editor')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
   });
 
   it('should call onCellContextMenu when cell is right clicked', async () => {
