@@ -99,6 +99,7 @@ function getColumns(
       key: 'client',
       name: 'Client',
       width: 'max-content',
+      draggable: true,
       renderEditCell: textEditor
     },
     {
