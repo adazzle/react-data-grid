@@ -2,6 +2,28 @@ import type { Key, ReactElement, ReactNode } from 'react';
 
 import type { DataGridProps } from './DataGrid';
 
+enum DIRECTIONS {
+  LTR = 'ltr',
+  RTL = 'rtl'
+}
+
+enum SORT_DIRECTION {
+  ASC = 'ASC',
+  DESC = 'DESC'
+}
+
+enum CELL_NAVIGATION_MODE {
+  NONE = ' NONE',
+  CHANGE_ROW = 'CHANGE_ROW'
+}
+
+enum TYPES_ENUMS {
+  HEADER = 'HEADER',
+  ROW = 'ROW',
+  SUMMARY = 'SUMMARY',
+  GROUP = 'GROUP'
+}
+
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export type Maybe<T> = T | undefined | null;
@@ -233,8 +255,8 @@ export interface RowsChangeData<R, SR = unknown> {
 }
 
 export type SelectRowEvent<TRow> =
-  | { type: 'HEADER'; checked: boolean }
-  | { type: 'ROW'; row: TRow; checked: boolean; isShiftClick: boolean };
+  | { type: TYPES_ENUMS.HEADER; checked: boolean }
+  | { type: TYPES_ENUMS.ROW; row: TRow; checked: boolean; isShiftClick: boolean };
 
 export interface FillEvent<TRow> {
   columnKey: string;
@@ -271,17 +293,17 @@ export interface SortColumn {
   readonly direction: SortDirection;
 }
 
-export type CellNavigationMode = 'NONE' | 'CHANGE_ROW';
-export type SortDirection = 'ASC' | 'DESC';
+export type CellNavigationMode = CELL_NAVIGATION_MODE.NONE | CELL_NAVIGATION_MODE.CHANGE_ROW;
+export type SortDirection = SORT_DIRECTION.ASC | SORT_DIRECTION.DESC;
 
 export type ColSpanArgs<TRow, TSummaryRow> =
-  | { type: 'HEADER' }
-  | { type: 'ROW'; row: TRow }
-  | { type: 'SUMMARY'; row: TSummaryRow };
+  | { type: TYPES_ENUMS.HEADER }
+  | { type: TYPES_ENUMS.ROW; row: TRow }
+  | { type: TYPES_ENUMS.SUMMARY; row: TSummaryRow };
 
 export type RowHeightArgs<TRow> =
-  | { type: 'ROW'; row: TRow }
-  | { type: 'GROUP'; row: GroupRow<TRow> };
+  | { type: TYPES_ENUMS.ROW; row: TRow }
+  | { type: TYPES_ENUMS.GROUP; row: GroupRow<TRow> };
 
 export interface RenderSortIconProps {
   sortDirection: SortDirection | undefined;
@@ -308,4 +330,4 @@ export interface Renderers<TRow, TSummaryRow> {
   noRowsFallback?: Maybe<ReactNode>;
 }
 
-export type Direction = 'ltr' | 'rtl';
+export type Direction = DIRECTIONS.LTR | DIRECTIONS.RTL;
