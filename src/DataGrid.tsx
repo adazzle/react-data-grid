@@ -187,6 +187,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   renderers?: Maybe<Renderers<R, SR>>;
   rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
+  headerRowClass?: Maybe<string>;
   /** @default 'ltr' */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
@@ -240,6 +241,7 @@ function DataGrid<R, SR, K extends Key>(
     className,
     style,
     rowClass,
+    headerRowClass,
     direction: rawDirection,
     // ARIA
     role: rawRole,
@@ -1092,6 +1094,7 @@ function DataGrid<R, SR, K extends Key>(
               />
             ))}
             <HeaderRow
+              headerRowClass={headerRowClass}
               rowIdx={headerRowsCount}
               columns={getRowViewportColumns(mainHeaderRowIdx)}
               onColumnResize={handleColumnResizeLatest}

@@ -249,6 +249,8 @@ function MyGrid() {
 
 ###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
 
+###### `headerRowClass?: Maybe<string>>`
+
 ##### `direction?: Maybe<'ltr' | 'rtl'>`
 
 This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
