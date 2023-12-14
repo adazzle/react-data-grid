@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react';
-import linaria from '@wyw-in-js/vite';
+import wyw from '@wyw-in-js/vite';
 import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
 
@@ -25,7 +25,7 @@ export default defineConfig({
         plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
       }
     }),
-    !isTest && linaria({ preprocessor: 'none' })
+    !isTest && wyw({ preprocessor: 'none' })
   ],
   css: {
     postcss: {
