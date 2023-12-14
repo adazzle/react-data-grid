@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 
 import type { Direction } from '../src/types';
 

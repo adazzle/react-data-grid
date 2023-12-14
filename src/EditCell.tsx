@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 
 import { useLatestFunc } from './hooks';
 import { createCellEvent, getCellClassname, getCellStyle, onEditorNavigation } from './utils';

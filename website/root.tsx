@@ -3,7 +3,7 @@ import './root.css';
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Navigate, Route, HashRouter as Router, Routes } from 'react-router-dom';
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 
 import type { Direction } from '../src/types';
 import AllFeatures from './demos/AllFeatures';

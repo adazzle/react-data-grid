@@ -1,5 +1,5 @@
 import { useDrag, useDrop } from 'react-dnd';
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 import clsx from 'clsx';
 
 import { Row, type RenderRowProps } from '../../../src';

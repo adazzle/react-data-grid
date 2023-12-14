@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, RenderCheckboxProps, RenderSortStatusProps, SortColumn } from '../../src';

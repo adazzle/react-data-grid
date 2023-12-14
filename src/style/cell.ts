@@ -1,4 +1,4 @@
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 
 export const cell = css`
   @layer rdg.Cell {

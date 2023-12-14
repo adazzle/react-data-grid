@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 
 import { useRovingTabIndex } from './hooks';
 import { createCellEvent, getCellClassname, getCellStyle, isCellEditableUtil } from './utils';

@@ -1,4 +1,4 @@
-import { css } from '@linaria/core';
+import { css } from '@wyw-in-js/core';
 
 import type { RenderGroupCellProps } from '../types';
 
