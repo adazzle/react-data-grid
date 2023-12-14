@@ -1,4 +1,4 @@
-import { css } from '@wyw-in-js/core';
+import { css } from '@linaria/core';
 
 import type { RenderHeaderCellProps } from './types';
 import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';

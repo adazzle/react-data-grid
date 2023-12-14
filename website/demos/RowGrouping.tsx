@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { css } from '@wyw-in-js/core';
 import { groupBy as rowGrouper } from 'lodash-es';
+import { css } from '@linaria/core';
 
 import { SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';

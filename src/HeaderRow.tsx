@@ -1,5 +1,5 @@
 import { memo, useId } from 'react';
-import { css } from '@wyw-in-js/core';
+import { css } from '@linaria/core';
 import clsx from 'clsx';
 
 import { getColSpan } from './utils';

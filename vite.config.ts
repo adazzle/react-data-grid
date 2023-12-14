@@ -1,5 +1,5 @@
+import linaria from '@linaria/vite';
 import react from '@vitejs/plugin-react';
-import linaria from '@wyw-in-js/vite';
 import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
 
