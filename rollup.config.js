@@ -1,5 +1,5 @@
 import { isAbsolute } from 'node:path';
-import linaria from '@linaria/rollup';
+import linaria from '@wyw-in-js/rollup';
 import postcss from 'rollup-plugin-postcss';
 import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
