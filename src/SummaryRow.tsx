@@ -26,8 +26,6 @@ interface SummaryRowProps<R, SR> extends SharedRenderRowProps<R, SR> {
 
 const summaryRow = css`
   @layer rdg.SummaryRow {
-    line-height: var(--rdg-summary-row-height);
-
     > .${cell} {
       position: sticky;
     }

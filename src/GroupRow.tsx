@@ -39,7 +39,6 @@ function GroupedRow<R, SR>({
   isRowSelected,
   selectCell,
   gridRowStart,
-  height,
   groupBy,
   toggleGroup,
   ...props
@@ -67,7 +66,7 @@ function GroupedRow<R, SR>({
           className
         )}
         onClick={handleSelectGroup}
-        style={getRowStyle(gridRowStart, height)}
+        style={getRowStyle(gridRowStart)}
         {...props}
       >
         {viewportColumns.map((column) => (

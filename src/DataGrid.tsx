@@ -991,7 +991,6 @@ function DataGrid<R, SR, K extends Key>(
           onCellContextMenu: onCellContextMenuLatest,
           rowClass,
           gridRowStart,
-          height: getRowHeight(rowIdx),
           copiedCellIdx:
             copiedCell !== null && copiedCell.row === row
               ? columns.findIndex((c) => c.key === copiedCell.columnKey)
@@ -1064,8 +1063,6 @@ function DataGrid<R, SR, K extends Key>(
               : undefined,
           gridTemplateColumns,
           gridTemplateRows: templateRows,
-          '--rdg-header-row-height': `${headerRowHeight}px`,
-          '--rdg-summary-row-height': `${summaryRowHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...layoutCssVars
         } as unknown as React.CSSProperties

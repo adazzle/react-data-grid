@@ -4,14 +4,7 @@ import clsx from 'clsx';
 import type { CalculatedColumn, CalculatedColumnOrColumnGroup } from '../types';
 import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style/cell';
 
-export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
-  if (height !== undefined) {
-    return {
-      '--rdg-grid-row-start': rowIdx,
-      '--rdg-row-height': `${height}px`
-    } as unknown as CSSProperties;
-  }
-
+export function getRowStyle(rowIdx: number): CSSProperties {
   return { '--rdg-grid-row-start': rowIdx } as unknown as CSSProperties;
 }
 
