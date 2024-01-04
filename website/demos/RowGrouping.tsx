@@ -203,7 +203,10 @@ export default function RowGrouping({ direction }: Props) {
       </label>
 
       <TreeDataGrid
-        columns={columns.map((c) => ({ ...c, frozen: areGroupColumnsFrozen }))}
+        columns={columns.map((c) => ({
+          ...c,
+          ...(selectedOptions.includes(c.key) ? { frozen: areGroupColumnsFrozen } : {})
+        }))}
         rows={rows}
         rowKeyGetter={rowKeyGetter}
         selectedRows={selectedRows}
