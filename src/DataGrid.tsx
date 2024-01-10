@@ -180,7 +180,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Toggles and modes
    */
   /** @default true */
-  enableVirtualization?: Maybe<boolean>;
+  enableVirtualization?: Maybe<boolean | 'columns' | 'rows'>;
 
   /**
    * Miscellaneous
@@ -309,7 +309,7 @@ function DataGrid<R, SR, K extends Key>(
     getColumnWidth,
     scrollLeft,
     viewportWidth: gridWidth,
-    enableVirtualization
+    enableVirtualization: enableVirtualization === true || enableVirtualization === 'columns'
   });
 
   const topSummaryRowsCount = topSummaryRows?.length ?? 0;
@@ -379,7 +379,7 @@ function DataGrid<R, SR, K extends Key>(
     rowHeight,
     clientHeight,
     scrollTop,
-    enableVirtualization
+    enableVirtualization: enableVirtualization === true || enableVirtualization === 'rows'
   });
 
   const viewportColumns = useViewportColumns({
