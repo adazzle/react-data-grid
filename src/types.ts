@@ -145,7 +145,13 @@ export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
-      'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+      | 'style'
+      | 'children'
+      | 'onClick'
+      | 'onDoubleClick'
+      | 'onContextMenu'
+      | 'onMouseDown'
+      | 'onMouseEnter'
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
@@ -155,6 +161,8 @@ export interface CellRendererProps<TRow, TSummaryRow>
   onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
   onDoubleClick: RenderRowProps<TRow, TSummaryRow>['onCellDoubleClick'];
   onContextMenu: RenderRowProps<TRow, TSummaryRow>['onCellContextMenu'];
+  onMouseDown: RenderRowProps<TRow, TSummaryRow>['onCellMouseDown'];
+  onMouseEnter: RenderRowProps<TRow, TSummaryRow>['onCellMouseEnter'];
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
@@ -171,6 +179,15 @@ export interface CellClickArgs<TRow, TSummaryRow = unknown> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   selectCell: (enableEditor?: boolean) => void;
+}
+
+export interface CellMouseBaseArgs<TRow, TSummaryRow = unknown> {
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
+}
+
+export interface ColumnMouseBaseArgs<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
 }
 
 interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
@@ -204,7 +221,11 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
-      'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+      | 'onCellClick'
+      | 'onCellDoubleClick'
+      | 'onCellContextMenu'
+      | 'onCellMouseDown'
+      | 'onCellMouseEnter'
     > {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;

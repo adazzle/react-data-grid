@@ -33,10 +33,12 @@ import type {
   CellClickArgs,
   CellKeyboardEvent,
   CellKeyDownArgs,
+  CellMouseBaseArgs,
   CellMouseEvent,
   CellNavigationMode,
   CellSelectArgs,
   Column,
+  ColumnMouseBaseArgs,
   ColumnOrColumnGroup,
   CopyEvent,
   Direction,
@@ -162,15 +164,28 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   /** Function called whenever a cell is clicked */
   onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
+
   /** Function called whenever a cell is double clicked */
   onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   /** Function called whenever a cell is right clicked */
   onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
+  /** Function called whenever a cell is mouse down */
+  onCellMouseDown?: Maybe<(args: CellMouseBaseArgs<R, SR>, event: CellMouseEvent) => void>;
+  /** Function called whenever a mouse entered in cell */
+  onCellMouseEnter?: Maybe<(args: CellMouseBaseArgs<R, SR>, event: CellMouseEvent) => void>;
   onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
+  /** Function called whenever a column cell is mouse down */
+  onColumnMouseDown?: Maybe<
+    (args: ColumnMouseBaseArgs<R, SR>, event: React.MouseEvent<HTMLSpanElement>) => void
+  >;
+  /** Function called whenever a mouse entered in column cell */
+  onColumnMouseEnter?: Maybe<
+    (args: ColumnMouseBaseArgs<R, SR>, event: React.MouseEvent<HTMLSpanElement>) => void
+  >;
   /** Called when a column is resized */
   onColumnResize?: Maybe<(idx: number, width: number) => void>;
   /** Called when a column is reordered */
@@ -224,10 +239,14 @@ function DataGrid<R, SR, K extends Key>(
     // Event props
     onCellClick,
     onCellDoubleClick,
+    onCellMouseDown,
+    onCellMouseEnter,
     onCellContextMenu,
     onCellKeyDown,
     onSelectedCellChange,
     onScroll,
+    onColumnMouseDown,
+    onColumnMouseEnter,
     onColumnResize,
     onColumnsReorder,
     onFill,
@@ -422,6 +441,8 @@ function DataGrid<R, SR, K extends Key>(
   const onCellClickLatest = useLatestFunc(onCellClick);
   const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
+  const onCellMouseDownLatest = useLatestFunc(onCellMouseDown);
+  const onCellMouseEnterLatest = useLatestFunc(onCellMouseEnter);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectCellLatest = useLatestFunc(selectCell);
@@ -989,6 +1010,8 @@ function DataGrid<R, SR, K extends Key>(
           onCellClick: onCellClickLatest,
           onCellDoubleClick: onCellDoubleClickLatest,
           onCellContextMenu: onCellContextMenuLatest,
+          onCellMouseDown: onCellMouseDownLatest,
+          onCellMouseEnter: onCellMouseEnterLatest,
           rowClass,
           gridRowStart,
           height: getRowHeight(rowIdx),
@@ -1098,6 +1121,8 @@ function DataGrid<R, SR, K extends Key>(
               onColumnsReorder={onColumnsReorderLastest}
               sortColumns={sortColumns}
               onSortColumnsChange={onSortColumnsChangeLatest}
+              onColumnMouseDown={onColumnMouseDown}
+              onColumnMouseEnter={onColumnMouseEnter}
               lastFrozenColumnIndex={lastFrozenColumnIndex}
               selectedCellIdx={
                 selectedPosition.rowIdx === mainHeaderRowIdx ? selectedPosition.idx : undefined

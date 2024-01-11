@@ -36,6 +36,8 @@ function Cell<R, SR>({
   onClick,
   onDoubleClick,
   onContextMenu,
+  onMouseDown,
+  onMouseEnter,
   onRowChange,
   selectCell,
   ...props
@@ -84,6 +86,20 @@ function Cell<R, SR>({
     selectCellWrapper(true);
   }
 
+  function handleMouseEnter(event: React.MouseEvent<HTMLDivElement>) {
+    if (onMouseEnter) {
+      const cellEvent = createCellEvent(event);
+      onMouseEnter({ row, column }, cellEvent);
+    }
+  }
+
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    if (onMouseDown) {
+      const cellEvent = createCellEvent(event);
+      onMouseDown({ row, column }, cellEvent);
+    }
+  }
+
   function handleRowChange(newRow: R) {
     onRowChange(column, newRow);
   }
@@ -101,6 +117,8 @@ function Cell<R, SR>({
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
+      onMouseDown={handleMouseDown}
+      onMouseEnter={handleMouseEnter}
       onFocus={onFocus}
       {...props}
     >
