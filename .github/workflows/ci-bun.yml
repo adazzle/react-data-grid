@@ -28,7 +28,7 @@ jobs:
           bun run build
           bun run build:types
       - name: Test
-        run: bun t
+        run: bun run test
         timeout-minutes: 4
       - uses: codecov/codecov-action@v3
 
