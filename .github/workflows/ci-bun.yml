@@ -1,4 +1,4 @@
-name: CI
+name: CI-bun
 on:
   push:
     branches:
@@ -10,30 +10,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: '21.x'
-          check-latest: true
-      - uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package.json') }}
-      - name: npm install
-        run: npm i
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install
       - name: Biome
-        run: npm run biome:ci
+        run: bun run biome:ci
       - name: ESLint
-        run: npm run eslint
+        run: bun run eslint
       - name: Prettier
-        run: npm run prettier:check
+        run: bun run prettier:check
       - name: Typecheck
-        run: npm run typecheck
+        run: bun run typecheck
       - name: Bundle
         run: |
-          npm run build
-          npm run build:types
+          bun run build
+          bun run build:types
       - name: Test
-        run: npm t
+        run: bun t
         timeout-minutes: 4
       - uses: codecov/codecov-action@v3
 
@@ -41,22 +36,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: '21.x'
-          check-latest: true
-      - uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package.json') }}
-      - uses: actions/cache@v3
-        with:
-          path: node_modules/.cache
-          key: build-${{ hashFiles('package.json') }}
+          bun-version: latest
       - name: Build
         run: |
-          npm i
-          npm run build:website
+          bun install
+          bun run build:website
       - name: Set up git user
         if: github.event_name == 'push'
         run: |
