@@ -45,7 +45,7 @@ export default defineConfig({
         useAtomics: true
       }
     },
-    testTimeout: isCI ? 40000 : 20000,
+    testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
     restoreMocks: true,
     sequence: {
