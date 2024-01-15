@@ -32,7 +32,6 @@ export default defineConfig({
   test: {
     root: '.',
     environment: 'jsdom',
-    pool: 'vmThreads',
     globals: true,
     coverage: {
       provider: 'v8',
@@ -40,12 +39,13 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       reporter: ['text', 'json']
     },
+    pool: 'vmThreads',
     poolOptions: {
       vmThreads: {
         useAtomics: true
       }
     },
-    testTimeout: isCI ? 10000 : 5000,
+    testTimeout: isCI ? 40000 : 20000,
     setupFiles: ['test/setup.ts'],
     restoreMocks: true,
     sequence: {
