@@ -32,7 +32,6 @@ export default defineConfig({
   test: {
     root: '.',
     environment: 'jsdom',
-    pool: 'vmThreads',
     globals: true,
     coverage: {
       provider: 'v8',
@@ -40,6 +39,7 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       reporter: ['text', 'json']
     },
+    pool: 'vmThreads',
     poolOptions: {
       vmThreads: {
         useAtomics: true
