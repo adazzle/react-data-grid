@@ -34,9 +34,9 @@ test('summaryCellClass is a string', () => {
   ];
   setup({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
   const cells = getCells();
-  cells.forEach((cell) => {
+  for (const cell of cells) {
     expect(cell).toHaveClass(`${cellClassname} my-cell`, { exact: true });
-  });
+  }
 });
 
 test('summaryCellClass returns a string', () => {
@@ -65,7 +65,7 @@ test('summaryCellClass returns undefined', () => {
   ];
   setup({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
   const cells = getCells();
-  cells.forEach((cell) => {
+  for (const cell of cells) {
     expect(cell).toHaveClass(cellClassname, { exact: true });
-  });
+  }
 });
