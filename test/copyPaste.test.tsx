@@ -201,7 +201,7 @@ test('should not allow paste on header or summary cells', async () => {
   expect(onPasteSpy).not.toHaveBeenCalled();
 });
 
-test('should not allow editing when pressing ctrl+<input key>', async () => {
+test('should not start editing when pressing ctrl+<input key>', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(1)[0]);
   await userEvent.keyboard('{Control>}b');
