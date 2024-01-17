@@ -548,6 +548,12 @@ function DataGrid<R, SR, K extends Key>(
     if (!isCellEvent && !isRowEvent) return;
 
     const { keyCode } = event;
+    const cKey = 67;
+    const vKey = 86;
+
+    if (isCtrlKeyHeldDown(event) && keyCode === cKey && window.getSelection()?.toString() !== '') {
+      return;
+    }
 
     if (
       selectedCellIsWithinViewportBounds &&
@@ -556,8 +562,6 @@ function DataGrid<R, SR, K extends Key>(
     ) {
       // event.key may differ by keyboard input language, so we use event.keyCode instead
       // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
-      const cKey = 67;
-      const vKey = 86;
       if (keyCode === cKey) {
         handleCopy();
         return;
