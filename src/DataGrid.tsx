@@ -551,10 +551,6 @@ function DataGrid<R, SR, K extends Key>(
     const cKey = 67;
     const vKey = 86;
 
-    if (isCtrlKeyHeldDown(event) && keyCode === cKey && window.getSelection()?.toString() !== '') {
-      return;
-    }
-
     if (
       selectedCellIsWithinViewportBounds &&
       (onPaste != null || onCopy != null) &&
@@ -572,7 +568,11 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
-    if (isCtrlKeyHeldDown(event) && isDefaultCellInput(event) && keyCode !== vKey) {
+    if (
+      isCtrlKeyHeldDown(event) &&
+      ((keyCode === cKey && window.getSelection()?.toString() !== '') ||
+        (isDefaultCellInput(event) && keyCode !== vKey))
+    ) {
       return;
     }
 
