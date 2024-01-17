@@ -572,6 +572,10 @@ function DataGrid<R, SR, K extends Key>(
       }
     }
 
+    if (isCtrlKeyHeldDown(event) && isDefaultCellInput(event) && keyCode !== vKey) {
+      return;
+    }
+
     switch (event.key) {
       case 'Escape':
         setCopiedCell(null);
