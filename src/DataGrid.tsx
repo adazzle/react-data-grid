@@ -548,6 +548,8 @@ function DataGrid<R, SR, K extends Key>(
     if (!isCellEvent && !isRowEvent) return;
 
     const { keyCode } = event;
+    // event.key may differ by keyboard input language, so we use event.keyCode instead
+    // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
     const cKey = 67;
     const vKey = 86;
 
@@ -560,8 +562,6 @@ function DataGrid<R, SR, K extends Key>(
       (onPaste != null || onCopy != null) &&
       isCtrlKeyHeldDown(event)
     ) {
-      // event.key may differ by keyboard input language, so we use event.keyCode instead
-      // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
       if (keyCode === cKey) {
         handleCopy();
         return;
