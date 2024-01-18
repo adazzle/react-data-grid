@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { getColSpan, getRowStyle } from './utils';
 import type { RenderRowProps } from './types';
 import { cell, cellFrozen } from './style/cell';
-import { rowClassname, rowSelectedClassname } from './style/row';
+import { bottomSummaryRowClassname, rowClassname, rowSelectedClassname } from './style/row';
 import SummaryCell from './SummaryCell';
 
 type SharedRenderRowProps<R, SR> = Pick<
@@ -21,7 +21,6 @@ interface SummaryRowProps<R, SR> extends SharedRenderRowProps<R, SR> {
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   isTop: boolean;
-  showBorder: boolean;
 }
 
 const summaryRow = css`
@@ -46,22 +45,6 @@ const topSummaryRow = css`
   }
 `;
 
-export const topSummaryRowBorderClassname = css`
-  @layer rdg.SummaryRow {
-    > .${cell} {
-      border-block-end: 2px solid var(--rdg-summary-border-color);
-    }
-  }
-`;
-
-export const bottomSummaryRowBorderClassname = css`
-  @layer rdg.SummaryRow {
-    > .${cell} {
-      border-block-start: 2px solid var(--rdg-summary-border-color);
-    }
-  }
-`;
-
 const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
 
 const topSummaryRowClassname = `rdg-top-summary-row ${topSummaryRow}`;
@@ -76,7 +59,6 @@ function SummaryRow<R, SR>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   isTop,
-  showBorder,
   selectCell,
   'aria-rowindex': ariaRowIndex
 }: SummaryRowProps<R, SR>) {
@@ -114,9 +96,7 @@ function SummaryRow<R, SR>({
         {
           [rowSelectedClassname]: selectedCellIdx === -1,
           [topSummaryRowClassname]: isTop,
-          [topSummaryRowBorderClassname]: isTop && showBorder,
-          [bottomSummaryRowBorderClassname]: !isTop && showBorder,
-          'rdg-bottom-summary-row': !isTop
+          [bottomSummaryRowClassname]: !isTop
         }
       )}
       style={
