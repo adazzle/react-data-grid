@@ -36,7 +36,7 @@ export const cellFrozen = css`
     /* Should have a higher value than 0 to show up above unfrozen cells */
     z-index: 1;
 
-    &:has(+ .${cell}) {
+    &:has(+ :not(&)) {
       box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
     }
   }
