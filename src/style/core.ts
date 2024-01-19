@@ -1,6 +1,6 @@
 import { css } from '@linaria/core';
 
-import { cell } from './cell';
+import { cell, cellFrozen } from './cell';
 import { bottomSummaryRowClassname, row, topSummaryRowClassname } from './row';
 
 const lightTheme = `
@@ -88,6 +88,11 @@ const root = css`
       &:not(.rdg-light) {
         ${darkTheme}
       }
+    }
+
+    /* Add box-shadow on the last frozen cell */
+    :nth-last-child(1 of .${cellFrozen}) {
+      box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
     }
 
     > :nth-last-child(1 of .${topSummaryRowClassname}) {
