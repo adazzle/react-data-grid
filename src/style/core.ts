@@ -90,7 +90,7 @@ const root = css`
       }
     }
 
-    :nth-last-child(1 of .${topSummaryRowClassname}) {
+    > :nth-last-child(1 of .${topSummaryRowClassname}) {
       > .${cell} {
         border-block-end: 2px solid var(--rdg-summary-border-color);
       }
