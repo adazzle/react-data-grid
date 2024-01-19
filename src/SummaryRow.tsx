@@ -5,7 +5,12 @@ import clsx from 'clsx';
 import { getColSpan, getRowStyle } from './utils';
 import type { RenderRowProps } from './types';
 import { cell, cellFrozen } from './style/cell';
-import { bottomSummaryRowClassname, rowClassname, rowSelectedClassname } from './style/row';
+import {
+  bottomSummaryRowClassname,
+  rowClassname,
+  rowSelectedClassname,
+  topSummaryRowClassname
+} from './style/row';
 import SummaryCell from './SummaryCell';
 
 type SharedRenderRowProps<R, SR> = Pick<
@@ -46,8 +51,6 @@ const topSummaryRow = css`
 `;
 
 const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
-
-const topSummaryRowClassname = `rdg-top-summary-row ${topSummaryRow}`;
 
 function SummaryRow<R, SR>({
   rowIdx,
@@ -95,7 +98,7 @@ function SummaryRow<R, SR>({
         summaryRowClassname,
         {
           [rowSelectedClassname]: selectedCellIdx === -1,
-          [topSummaryRowClassname]: isTop,
+          [`${topSummaryRowClassname} ${topSummaryRow}`]: isTop,
           [bottomSummaryRowClassname]: !isTop
         }
       )}
