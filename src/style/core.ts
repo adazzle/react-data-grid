@@ -96,7 +96,7 @@ const root = css`
       }
     }
 
-    :nth-child(1 of .${bottomSummaryRowClassname}) {
+    > :nth-child(1 of .${bottomSummaryRowClassname}) {
       > .${cell} {
         border-block-start: 2px solid var(--rdg-summary-border-color);
       }
