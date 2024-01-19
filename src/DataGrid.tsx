@@ -553,13 +553,11 @@ function DataGrid<R, SR, K extends Key>(
     const cKey = 67;
     const vKey = 86;
 
-    const selection = window.getSelection();
     // pressing ctrl+c on highlighted text should copy text instead of starting editing
     if (
       isCtrlKeyHeldDown(event) &&
       keyCode === cKey &&
-      selection !== null &&
-      selection.toString() !== ''
+      window.getSelection()?.isCollapsed === false
     ) {
       return;
     }
