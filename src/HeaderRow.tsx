@@ -41,6 +41,11 @@ const headerRow = css`
     & > .${cellFrozen} {
       z-index: 3;
     }
+
+    /* Add box-shadow on the last frozen cell */
+    > :nth-last-child(1 of .${cellFrozen}) {
+      box-shadow: var(--rdg-cell-frozen-box-shadow);
+    }
   }
 `;
 

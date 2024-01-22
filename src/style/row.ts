@@ -1,5 +1,7 @@
 import { css } from '@linaria/core';
 
+import { cellFrozen } from './cell';
+
 export const row = css`
   @layer rdg.Row {
     display: contents;
@@ -16,6 +18,11 @@ export const row = css`
       &:hover {
         background-color: var(--rdg-row-selected-hover-background-color);
       }
+    }
+
+    /* Add box-shadow on the last frozen cell */
+    > :nth-last-child(1 of .${cellFrozen}) {
+      box-shadow: var(--rdg-cell-frozen-box-shadow);
     }
   }
 `;
