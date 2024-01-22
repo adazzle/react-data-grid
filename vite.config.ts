@@ -1,6 +1,5 @@
-import linaria from '@linaria/vite';
 import react from '@vitejs/plugin-react';
-import postcssNested from 'postcss-nested';
+import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
 
 const isCI = process.env.CI === 'true';
@@ -25,20 +24,14 @@ export default defineConfig({
         plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
       }
     }),
-    !isTest && linaria({ preprocessor: 'none' })
+    !isTest && wyw({ preprocessor: 'none' })
   ],
-  css: {
-    postcss: {
-      plugins: [postcssNested]
-    }
-  },
   server: {
     open: true
   },
   test: {
     root: '.',
     environment: 'jsdom',
-    pool: 'vmThreads',
     globals: true,
     coverage: {
       provider: 'v8',
@@ -46,6 +39,7 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       reporter: ['text', 'json']
     },
+    pool: 'vmThreads',
     poolOptions: {
       vmThreads: {
         useAtomics: true

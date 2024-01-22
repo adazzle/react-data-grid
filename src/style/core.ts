@@ -37,72 +37,55 @@ const darkTheme = `
 `;
 
 const root = css`
-  @layer rdg {
-    @layer Defaults,
-      FocusSink,
-      CheckboxInput,
-      CheckboxIcon,
-      CheckboxLabel,
-      Cell,
-      HeaderCell,
-      SummaryCell,
-      EditCell,
-      Row,
-      HeaderRow,
-      SummaryRow,
-      GroupedRow,
-      Root;
+  @layer rdg.Defaults {
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+    }
+  }
 
-    @layer Defaults {
-      *,
-      *::before,
-      *::after {
-        box-sizing: inherit;
-      }
+  @layer rdg.Root {
+    ${lightTheme}
+    --rdg-selection-color: #66afe9;
+    --rdg-font-size: 14px;
+
+    display: grid;
+
+    color-scheme: var(--rdg-color-scheme, light dark);
+
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
+    /* We set a stacking context so internal elements don't render on top of external elements. */
+    /* size containment is not used as it could break "width: min-content" for example, and the grid would infinitely resize on Chromium browsers */
+    contain: content;
+    content-visibility: auto;
+    block-size: 350px;
+    border: 1px solid var(--rdg-border-color);
+    box-sizing: border-box;
+    overflow: auto;
+    background-color: var(--rdg-background-color);
+    color: var(--rdg-color);
+    font-size: var(--rdg-font-size);
+
+    /* needed on Firefox to fix scrollbars */
+    &::before {
+      content: '';
+      grid-column: 1/-1;
+      grid-row: 1/-1;
     }
 
-    @layer Root {
-      ${lightTheme}
-      --rdg-selection-color: #66afe9;
-      --rdg-font-size: 14px;
+    &.rdg-dark {
+      --rdg-color-scheme: dark;
+      ${darkTheme}
+    }
 
-      display: grid;
+    &.rdg-light {
+      --rdg-color-scheme: light;
+    }
 
-      color-scheme: var(--rdg-color-scheme, light dark);
-
-      /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
-      /* We set a stacking context so internal elements don't render on top of external elements. */
-      /* size containment is not used as it could break "width: min-content" for example, and the grid would infinitely resize on Chromium browsers */
-      contain: content;
-      content-visibility: auto;
-      block-size: 350px;
-      border: 1px solid var(--rdg-border-color);
-      box-sizing: border-box;
-      overflow: auto;
-      background-color: var(--rdg-background-color);
-      color: var(--rdg-color);
-      font-size: var(--rdg-font-size);
-
-      /* needed on Firefox to fix scrollbars */
-      &::before {
-        content: '';
-        grid-column: 1/-1;
-        grid-row: 1/-1;
-      }
-
-      &.rdg-dark {
-        --rdg-color-scheme: dark;
+    @media (prefers-color-scheme: dark) {
+      &:not(.rdg-light) {
         ${darkTheme}
-      }
-
-      &.rdg-light {
-        --rdg-color-scheme: light;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        &:not(.rdg-light) {
-          ${darkTheme}
-        }
       }
     }
   }
