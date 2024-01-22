@@ -548,26 +548,19 @@ function DataGrid<R, SR, K extends Key>(
     if (!isCellEvent && !isRowEvent) return;
 
     const { keyCode } = event;
-    // event.key may differ by keyboard input language, so we use event.keyCode instead
-    // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
-    const cKey = 67;
-    const vKey = 86;
-
-    // pressing ctrl+c on highlighted text should copy text instead of starting editing
-    if (
-      isCtrlKeyHeldDown(event) &&
-      keyCode === cKey &&
-      window.getSelection()?.isCollapsed === false
-    ) {
-      return;
-    }
 
     if (
       selectedCellIsWithinViewportBounds &&
       (onPaste != null || onCopy != null) &&
       isCtrlKeyHeldDown(event)
     ) {
+      // event.key may differ by keyboard input language, so we use event.keyCode instead
+      // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
+      const cKey = 67;
+      const vKey = 86;
       if (keyCode === cKey) {
+        // copy highlighted text only
+        if (window.getSelection()?.isCollapsed === false) return;
         handleCopy();
         return;
       }
