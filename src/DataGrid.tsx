@@ -559,6 +559,8 @@ function DataGrid<R, SR, K extends Key>(
       const cKey = 67;
       const vKey = 86;
       if (keyCode === cKey) {
+        // copy highlighted text only
+        if (window.getSelection()?.isCollapsed === false) return;
         handleCopy();
         return;
       }
