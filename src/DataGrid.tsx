@@ -552,7 +552,6 @@ function DataGrid<R, SR, K extends Key>(
     // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
     const cKey = 67;
     const vKey = 86;
-    const spaceKey = 32;
 
     // pressing ctrl+c on highlighted text should copy text instead of starting editing
     if (
@@ -576,16 +575,6 @@ function DataGrid<R, SR, K extends Key>(
         handlePaste();
         return;
       }
-    }
-
-    // prevent editing when pressing ctrl+input key
-    if (
-      isCtrlKeyHeldDown(event) &&
-      isDefaultCellInput(event) &&
-      keyCode !== vKey &&
-      keyCode !== spaceKey
-    ) {
-      return;
     }
 
     switch (event.key) {
