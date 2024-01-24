@@ -200,3 +200,10 @@ test('should not allow paste on header or summary cells', async () => {
   expect(getSelectedCell()).toHaveTextContent('s1');
   expect(onPasteSpy).not.toHaveBeenCalled();
 });
+
+test('should not start editing when pressing ctrl+<input key>', async () => {
+  setup();
+  await userEvent.click(getCellsAtRowIndex(1)[0]);
+  await userEvent.keyboard('{Control>}b');
+  expect(getSelectedCell()).not.toHaveClass('rdg-editor-container');
+});

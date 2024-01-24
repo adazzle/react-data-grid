@@ -7,7 +7,7 @@ import { getRowStyle } from './utils';
 import type { BaseRenderRowProps, GroupRow } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import { cell, cellFrozenLast } from './style/cell';
+import { cell, cellFrozen } from './style/cell';
 import { rowClassname, rowSelectedClassname } from './style/row';
 
 const groupRow = css`
@@ -16,7 +16,8 @@ const groupRow = css`
       background-color: var(--rdg-header-background-color);
     }
 
-    > .${cell}:not(:last-child):not(.${cellFrozenLast}) {
+    > .${cell}:not(:last-child, .${cellFrozen}),
+    > :nth-last-child(n + 2 of .${cellFrozen}) {
       border-inline-end: none;
     }
   }

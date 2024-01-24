@@ -1,7 +1,6 @@
 import { isAbsolute } from 'node:path';
 import wyw from '@wyw-in-js/rollup';
 import postcss from 'rollup-plugin-postcss';
-import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import pkg from './package.json' assert { type: 'json' };
@@ -35,7 +34,6 @@ export default {
       }
     }),
     postcss({
-      plugins: [postcssNested],
       extract: 'styles.css'
     }),
     babel({

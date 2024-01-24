@@ -1,6 +1,5 @@
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
-import postcssNested from 'postcss-nested';
 import { defineConfig } from 'vite';
 
 const isCI = process.env.CI === 'true';
@@ -27,18 +26,12 @@ export default defineConfig({
     }),
     !isTest && wyw({ preprocessor: 'none' })
   ],
-  css: {
-    postcss: {
-      plugins: [postcssNested]
-    }
-  },
   server: {
     open: true
   },
   test: {
     root: '.',
     environment: 'jsdom',
-    pool: 'vmThreads',
     globals: true,
     coverage: {
       provider: 'v8',
@@ -46,6 +39,7 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       reporter: ['text', 'json']
     },
+    pool: 'vmThreads',
     poolOptions: {
       vmThreads: {
         useAtomics: true
