@@ -1,7 +1,5 @@
 import { css } from '@linaria/core';
 
-import { cellFrozen } from './cell';
-
 export const row = css`
   @layer rdg.Row {
     display: contents;
