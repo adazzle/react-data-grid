@@ -13,7 +13,6 @@ const lightTheme = `
   --rdg-row-hover-background-color: hsl(0deg 0% 96%);
   --rdg-row-selected-background-color: hsl(207deg 76% 92%);
   --rdg-row-selected-hover-background-color: hsl(207deg 76% 88%);
-  --rdg-cell-frozen-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
 
   --rdg-checkbox-color: hsl(207deg 100% 29%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
@@ -31,7 +30,6 @@ const darkTheme = `
   --rdg-row-hover-background-color: hsl(0deg 0% 9%);
   --rdg-row-selected-background-color: hsl(207deg 76% 42%);
   --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);
-  --rdg-cell-frozen-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
 
   --rdg-checkbox-color: hsl(207deg 100% 79%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
@@ -52,6 +50,7 @@ const root = css`
     ${lightTheme}
     --rdg-selection-color: #66afe9;
     --rdg-font-size: 14px;
+    --rdg-cell-frozen-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
 
     display: grid;
 
