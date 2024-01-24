@@ -1132,7 +1132,6 @@ function DataGrid<R, SR, K extends Key>(
                     lastFrozenColumnIndex={lastFrozenColumnIndex}
                     selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                     isTop
-                    showBorder={rowIdx === topSummaryRowsCount - 1}
                     selectCell={selectCellLatest}
                   />
                 );
@@ -1164,7 +1163,6 @@ function DataGrid<R, SR, K extends Key>(
                     lastFrozenColumnIndex={lastFrozenColumnIndex}
                     selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                     isTop={false}
-                    showBorder={rowIdx === 0}
                     selectCell={selectCellLatest}
                   />
                 );
