@@ -19,11 +19,6 @@ export const row = css`
         background-color: var(--rdg-row-selected-hover-background-color);
       }
     }
-
-    /* Add box-shadow on the last frozen cell */
-    > :nth-last-child(1 of .${cellFrozen}) {
-      box-shadow: var(--rdg-cell-frozen-box-shadow);
-    }
   }
 `;
 
