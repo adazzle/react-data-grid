@@ -305,7 +305,6 @@ export default function CommonFeatures({ direction }: Props) {
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: countries won't change
   const countries = useMemo((): readonly string[] => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
