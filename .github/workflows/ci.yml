@@ -39,7 +39,10 @@ jobs:
       - name: Test
         run: npm t
         timeout-minutes: 4
-      - uses: codecov/codecov-action@v4
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   website:
     runs-on: ubuntu-latest
