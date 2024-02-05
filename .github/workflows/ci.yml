@@ -39,7 +39,7 @@ jobs:
       - name: Test
         run: npm t
         timeout-minutes: 4
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
 
   website:
     runs-on: ubuntu-latest
