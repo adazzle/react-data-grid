@@ -22,7 +22,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
   isCellSelected,
   selectCell
 }: GroupedColumnHeaderCellProps<R, SR>) {
-  const { tabIndex, onFocus } = useRovingTabIndex(isCellSelected);
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const { colSpan } = column;
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const index = column.idx + 1;
@@ -48,7 +48,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
       onFocus={onFocus}
       onClick={onClick}
     >
-      {column.name}
+      {column.renderGroupHeaderCell ? column.renderGroupHeaderCell({ column, tabIndex: childTabIndex }) : column.name}
     </div>
   );
 }
