@@ -292,7 +292,7 @@ function DataGrid<R, SR, K extends Key>(
     [measuredColumnWidths, resizedColumnWidths]
   );
 
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, horizontalScrollbarWidth] = useGridDimensions();
   const {
     columns,
     colSpanColumns,
@@ -413,7 +413,8 @@ function DataGrid<R, SR, K extends Key>(
   const maxColIdx = columns.length - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
-  const rowsHeight = headerRowHeight + totalRowHeight + summaryRowsHeight;
+  const rowsHeight =
+    headerRowHeight + totalRowHeight + summaryRowsHeight + horizontalScrollbarWidth;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
