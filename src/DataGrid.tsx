@@ -413,7 +413,7 @@ function DataGrid<R, SR, K extends Key>(
   const maxColIdx = columns.length - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
-  const totalHeight = headerRowHeight + totalRowHeight + summaryRowsHeight;
+  const rowsHeight = headerRowHeight + totalRowHeight + summaryRowsHeight;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -1070,7 +1070,7 @@ function DataGrid<R, SR, K extends Key>(
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
-          '--rdg-total-height': `${totalHeight}px`,
+          '--rdg-rows-height': `${rowsHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...layoutCssVars
         } as unknown as React.CSSProperties
