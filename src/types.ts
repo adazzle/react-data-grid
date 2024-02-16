@@ -71,7 +71,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly sortable: boolean;
   readonly draggable: boolean;
   readonly frozen: boolean;
-  readonly isLastFrozenColumn: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
 
@@ -105,6 +104,7 @@ export interface Position {
 export interface RenderCellProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  rowIdx: number;
   isCellEditable: boolean;
   tabIndex: number;
   onRowChange: (row: TRow) => void;

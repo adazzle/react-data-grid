@@ -1,6 +1,5 @@
-import linaria from '@linaria/vite';
 import react from '@vitejs/plugin-react';
-import postcssNested from 'postcss-nested';
+import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
 
 const isCI = process.env.CI === 'true';
@@ -19,23 +18,18 @@ export default defineConfig({
     }
   },
   plugins: [
-    !isTest &&
-      react({
-        babel: {
-          babelrc: false,
-          configFile: false,
-          plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
-        }
-      }),
-    linaria({ preprocessor: 'none' })
+    react({
+      babel: {
+        babelrc: false,
+        configFile: false,
+        plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
+      }
+    }),
+    wyw({ preprocessor: 'none' })
   ],
-  css: {
-    postcss: {
-      plugins: [postcssNested]
-    }
-  },
   server: {
-    open: true
+    // TODO: open bug
+    open: !isTest
   },
   test: {
     root: '.',
@@ -44,10 +38,15 @@ export default defineConfig({
       provider: 'istanbul',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
-      all: true,
       reporter: ['text', 'json']
     },
-    useAtomics: true,
+    pool: 'vmThreads',
+    poolOptions: {
+      vmThreads: {
+        useAtomics: true
+      }
+    },
+    testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
     browser: {
       enabled: true,
