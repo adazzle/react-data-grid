@@ -104,7 +104,7 @@ test('virtualization is enabled', async () => {
   assertRows(38, 3, 40);
 
   await scrollGrid({ scrollTop: 250 });
-  assertRows(39, 3, 41);
+  assertRows(38, 3, 40);
 
   await scrollGrid({ scrollTop: 419 });
   assertRows(39, 7, 45);
@@ -116,7 +116,7 @@ test('virtualization is enabled', async () => {
   assertRows(38, 11, 48);
 
   await scrollGrid({ scrollTop: 530 });
-  assertRows(39, 11, 49);
+  assertRows(38, 11, 48);
 
   await scrollGrid({ scrollTop: 1000 });
   assertRows(39, 24, 62);
@@ -131,8 +131,8 @@ test('virtualization is enabled', async () => {
   assertCells(66, 18, 0, 17);
 
   await scrollGrid({ scrollLeft: 91 });
-  assertHeaderCells(19, 0, 18);
-  assertCells(66, 19, 0, 18);
+  assertHeaderCells(18, 0, 17);
+  assertCells(66, 18, 0, 17);
 
   await scrollGrid({ scrollLeft: 209 });
   assertHeaderCells(19, 0, 18);

@@ -13,7 +13,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      lodash: 'lodash-es'
+      lodash: isTest ? 'lodash' : 'lodash-es',
+      'lodash-es': isTest ? 'lodash' : 'lodash-es'
     }
   },
   plugins: [
@@ -24,17 +25,17 @@ export default defineConfig({
         plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
       }
     }),
-    !isTest && wyw({ preprocessor: 'none' })
+    wyw({ preprocessor: 'none' })
   ],
   server: {
-    open: true
+    // TODO: open bug
+    open: !isTest
   },
   test: {
     root: '.',
-    environment: 'jsdom',
     globals: true,
     coverage: {
-      provider: 'v8',
+      provider: 'istanbul',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       reporter: ['text', 'json']
@@ -47,6 +48,11 @@ export default defineConfig({
     },
     testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
+    browser: {
+      enabled: true,
+      name: 'chromium',
+      provider: 'playwright'
+    },
     restoreMocks: true,
     sequence: {
       shuffle: true

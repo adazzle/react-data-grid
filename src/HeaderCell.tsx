@@ -123,7 +123,7 @@ export default function HeaderCell<R, SR>({
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
 
-    function onPointerMove(event: PointerEvent) {
+    function onPointerMove(event: PointerEvent | MouseEvent) {
       const { right, left } = headerCell.getBoundingClientRect();
       const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0) {
@@ -136,9 +136,15 @@ export default function HeaderCell<R, SR>({
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
-    currentTarget.setPointerCapture(pointerId);
-    currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
+    // TODO: remove? user-event cannot simulate native user interactions in real browsers
+    if (process.env.NODE_ENV === 'test') {
+      currentTarget.addEventListener('mousemove', onPointerMove);
+      currentTarget.addEventListener('pointerup', onLostPointerCapture);
+    } else {
+      currentTarget.setPointerCapture(pointerId);
+      currentTarget.addEventListener('pointermove', onPointerMove);
+      currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
+    }
   }
 
   function onSort(ctrlClick: boolean) {

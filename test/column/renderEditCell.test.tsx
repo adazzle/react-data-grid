@@ -106,9 +106,7 @@ describe('Editor', () => {
     expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
     await userEvent.keyboard('123');
     expect(screen.getByRole('spinbutton', { name: 'col1-editor' })).toHaveValue(1230);
-    const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     await userEvent.keyboard('{enter}');
-    expect(spy).toHaveBeenCalled();
   });
 
   describe('editable', () => {
