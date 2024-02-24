@@ -110,7 +110,7 @@
         "noUnusedVariables": "warn",
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
-        "useExhaustiveDependencies": "warn",
+        "useExhaustiveDependencies": "off",
         "useHookAtTopLevel": "warn",
         "useIsNan": "warn",
         "useValidForDirection": "warn",
