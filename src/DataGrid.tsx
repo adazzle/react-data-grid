@@ -31,18 +31,19 @@ import {
 import type {
   CalculatedColumn,
   CellClickArgs,
+  CellClipboardEvent,
+  CellCopyArgs,
   CellKeyboardEvent,
   CellKeyDownArgs,
   CellMouseEvent,
   CellNavigationMode,
+  CellPasteArgs,
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
-  CopyEvent,
   Direction,
   FillEvent,
   Maybe,
-  PasteEvent,
   Position,
   Renderers,
   RowsChangeData,
@@ -154,8 +155,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
   defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>;
   onFill?: Maybe<(event: FillEvent<R>) => R>;
-  onCopy?: Maybe<(event: CopyEvent<R>) => void>;
-  onPaste?: Maybe<(event: PasteEvent<R>) => R>;
 
   /**
    * Event props
@@ -167,6 +166,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Function called whenever a cell is right clicked */
   onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
   onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
+  /** Function called whenever a copy event occurs on a cell */
+  onCopy?: Maybe<(args: CellCopyArgs<R>, event: CellClipboardEvent) => void>;
+  /** Function called whenever a paste event occurs on a cell */
+  onPaste?: Maybe<(args: CellPasteArgs<R>, event: CellClipboardEvent) => R>;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
   /** Called when the grid is scrolled */
@@ -547,29 +550,6 @@ function DataGrid<R, SR, K extends Key>(
     const isRowEvent = isTreeGrid && event.target === focusSinkRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
-    const { keyCode } = event;
-
-    if (
-      selectedCellIsWithinViewportBounds &&
-      (onPaste != null || onCopy != null) &&
-      isCtrlKeyHeldDown(event)
-    ) {
-      // event.key may differ by keyboard input language, so we use event.keyCode instead
-      // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
-      const cKey = 67;
-      const vKey = 86;
-      if (keyCode === cKey) {
-        // copy highlighted text only
-        if (window.getSelection()?.isCollapsed === false) return;
-        handleCopy();
-        return;
-      }
-      if (keyCode === vKey) {
-        handlePaste();
-        return;
-      }
-    }
-
     switch (event.key) {
       case 'Escape':
         setCopiedCell(null);
@@ -617,16 +597,26 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(columns[selectedPosition.idx], selectedPosition.rowIdx, selectedPosition.row);
   }
 
-  function handleCopy() {
+  function handleCopy(event: React.ClipboardEvent<HTMLDivElement>) {
+    if ((!onPaste && !onCopy) || !selectedCellIsWithinViewportBounds) return;
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];
     const sourceColumnKey = columns[idx].key;
+    const cellEvent = createCellEvent(event);
+    onCopy?.({ sourceRow, sourceColumnKey }, cellEvent);
+    if (cellEvent.isGridDefaultPrevented()) return;
+
     setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
-    onCopy?.({ sourceRow, sourceColumnKey });
   }
 
-  function handlePaste() {
-    if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
+  function handlePaste(event: React.ClipboardEvent<HTMLDivElement>) {
+    if (
+      !onPaste ||
+      !onRowsChange ||
+      copiedCell === null ||
+      !isCellEditable(selectedPosition) ||
+      !selectedCellIsWithinViewportBounds
+    ) {
       return;
     }
 
@@ -634,12 +624,17 @@ function DataGrid<R, SR, K extends Key>(
     const targetColumn = columns[idx];
     const targetRow = rows[rowIdx];
 
-    const updatedTargetRow = onPaste({
-      sourceRow: copiedCell.row,
-      sourceColumnKey: copiedCell.columnKey,
-      targetRow,
-      targetColumnKey: targetColumn.key
-    });
+    const cellEvent = createCellEvent(event);
+    const updatedTargetRow = onPaste(
+      {
+        sourceRow: copiedCell.row,
+        sourceColumnKey: copiedCell.columnKey,
+        targetRow,
+        targetColumnKey: targetColumn.key
+      },
+      cellEvent
+    );
+    if (cellEvent.isGridDefaultPrevented()) return;
 
     updateRow(targetColumn, rowIdx, updatedTargetRow);
   }
@@ -1076,6 +1071,8 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
+      onCopy={handleCopy}
+      onPaste={handlePaste}
       data-testid={testId}
     >
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>

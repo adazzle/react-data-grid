@@ -68,19 +68,12 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
 }
 
 export function copySelectedCell() {
-  // eslint-disable-next-line testing-library/prefer-user-event
-  fireEvent.keyDown(document.activeElement!, {
-    keyCode: '67',
-    ctrlKey: true
-  });
+  fireEvent.copy(document.activeElement!);
 }
 
 export function pasteSelectedCell() {
   // eslint-disable-next-line testing-library/prefer-user-event
-  fireEvent.keyDown(document.activeElement!, {
-    keyCode: '86',
-    ctrlKey: true
-  });
+  fireEvent.paste(document.activeElement!);
 }
 
 export async function scrollGrid({

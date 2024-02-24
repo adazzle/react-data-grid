@@ -4,6 +4,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
+import { type CellClipboardEvent } from '../../src/types';
 import { renderAvatar, renderDropdown } from './renderers';
 import type { Props } from './types';
 
@@ -189,10 +190,12 @@ export default function AllFeatures({ direction }: Props) {
     return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
-  function handleCopy({ sourceRow, sourceColumnKey }: CopyEvent<Row>): void {
-    if (window.isSecureContext) {
-      navigator.clipboard.writeText(sourceRow[sourceColumnKey as keyof Row]);
-    }
+  function handleCopy(
+    { sourceRow, sourceColumnKey }: CopyEvent<Row>,
+    event: CellClipboardEvent
+  ): void {
+    event.preventDefault();
+    event.clipboardData.setData('text/plain', sourceRow[sourceColumnKey as keyof Row]);
   }
 
   return (
