@@ -329,11 +329,11 @@ function TreeDataGrid<R, SR, K extends Key>(
     if (!onRowsChange) return;
     const updatedRawRows = [...rawRows];
     const rawIndexes: number[] = [];
-    indexes.forEach((index) => {
+    for (const index of indexes) {
       const rawIndex = rawRows.indexOf(rows[index] as R);
       updatedRawRows[rawIndex] = updatedRows[index];
       rawIndexes.push(rawIndex);
-    });
+    }
     onRowsChange(updatedRawRows, {
       indexes: rawIndexes,
       column
