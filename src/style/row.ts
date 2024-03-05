@@ -43,3 +43,7 @@ export const rowSelectedWithFrozenCell = css`
     }
   }
 `;
+
+export const topSummaryRowClassname = 'rdg-top-summary-row';
+
+export const bottomSummaryRowClassname = 'rdg-bottom-summary-row';

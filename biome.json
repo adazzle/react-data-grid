@@ -24,6 +24,7 @@
       "recommended": false,
       "a11y": {
         "noAccessKey": "warn",
+        "noAriaHiddenOnFocusable": "warn",
         "noAriaUnsupportedElements": "warn",
         "noAutofocus": "off",
         "noBlankTarget": "warn",
@@ -49,6 +50,7 @@
         "useMediaCaption": "off",
         "useValidAnchor": "off",
         "useValidAriaProps": "warn",
+        "useValidAriaRole": "warn",
         "useValidAriaValues": "warn",
         "useValidLang": "warn"
       },
@@ -56,7 +58,7 @@
         "noBannedTypes": "warn",
         "noExcessiveCognitiveComplexity": "off",
         "noExtraBooleanCast": "warn",
-        "noForEach": "off",
+        "noForEach": "warn",
         "noMultipleSpacesInRegularExpressionLiterals": "warn",
         "noStaticOnlyClass": "warn",
         "noThisInStatic": "warn",
@@ -75,6 +77,7 @@
         "useFlatMap": "warn",
         "useLiteralKeys": "warn",
         "useOptionalChain": "warn",
+        "useRegexLiterals": "warn",
         "useSimpleNumberKeys": "warn",
         "useSimplifiedLogicExpression": "off"
       },
@@ -108,7 +111,7 @@
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
         "useExhaustiveDependencies": "off",
-        "useHookAtTopLevel": "off",
+        "useHookAtTopLevel": "warn",
         "useIsNan": "warn",
         "useValidForDirection": "warn",
         "useYield": "warn"
@@ -124,6 +127,7 @@
       "style": {
         "noArguments": "warn",
         "noCommaOperator": "warn",
+        "noDefaultExport": "off",
         "noImplicitBoolean": "off",
         "noInferrableTypes": "warn",
         "noNamespace": "warn",
@@ -134,7 +138,7 @@
         "noRestrictedGlobals": "warn",
         "noShoutyConstants": "warn",
         "noUnusedTemplateLiteral": "warn",
-        "noUselessElse": "off",
+        "noUselessElse": "warn",
         "noVar": "warn",
         "useAsConstAssertion": "warn",
         "useBlockStatements": "off",
@@ -183,6 +187,7 @@
         "noFunctionAssign": "warn",
         "noGlobalIsFinite": "warn",
         "noGlobalIsNan": "warn",
+        "noImplicitAnyLet": "off",
         "noImportAssign": "warn",
         "noLabelVar": "warn",
         "noMisleadingInstantiator": "warn",
@@ -205,5 +210,17 @@
   },
   "organizeImports": {
     "enabled": false
-  }
+  },
+  "overrides": [
+    {
+      "include": ["**/*.js"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsoleLog": "off"
+          }
+        }
+      }
+    }
+  ]
 }

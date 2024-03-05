@@ -564,6 +564,8 @@ function DataGrid<R, SR, K extends Key>(
       const cKey = 67;
       const vKey = 86;
       if (keyCode === cKey) {
+        // copy highlighted text only
+        if (window.getSelection()?.isCollapsed === false) return;
         handleCopy();
         return;
       }
@@ -1135,7 +1137,6 @@ function DataGrid<R, SR, K extends Key>(
                     lastFrozenColumnIndex={lastFrozenColumnIndex}
                     selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                     isTop
-                    showBorder={rowIdx === topSummaryRowsCount - 1}
                     selectCell={selectCellLatest}
                   />
                 );
@@ -1167,7 +1168,6 @@ function DataGrid<R, SR, K extends Key>(
                     lastFrozenColumnIndex={lastFrozenColumnIndex}
                     selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                     isTop={false}
-                    showBorder={rowIdx === 0}
                     selectCell={selectCellLatest}
                   />
                 );

@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import type { CalculatedColumn, CalculatedColumnOrColumnGroup } from '../types';
-import { cellClassname, cellFrozenClassname, cellFrozenLastClassname } from '../style/cell';
+import { cellClassname, cellFrozenClassname } from '../style/cell';
 
 export function getRowStyle(rowIdx: number, height?: number): CSSProperties {
   if (height !== undefined) {
@@ -59,8 +59,7 @@ export function getCellClassname<R, SR>(
   return clsx(
     cellClassname,
     {
-      [cellFrozenClassname]: column.frozen,
-      [cellFrozenLastClassname]: column.isLastFrozenColumn
+      [cellFrozenClassname]: column.frozen
     },
     ...extraClasses
   );
