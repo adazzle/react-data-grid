@@ -64,7 +64,7 @@ function assertIndexes(
   indexOffset: number
 ) {
   const actualIndexes = cells.map(
-    (cell) => parseInt(cell.getAttribute(attribute)!, 10) - indexOffset
+    (cell) => Number.parseInt(cell.getAttribute(attribute)!, 10) - indexOffset
   );
   expect(actualIndexes).toStrictEqual(expectedIndexes);
 }
