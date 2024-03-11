@@ -3,10 +3,7 @@
   "version": "7.0.0-beta.42",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
-  "keywords": [
-    "react",
-    "data grid"
-  ],
+  "keywords": ["react", "data grid"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adazzle/react-data-grid.git"
@@ -26,12 +23,8 @@
   "main": "./lib/bundle.cjs",
   "module": "./lib/bundle.js",
   "types": "./lib/index.d.ts",
-  "files": [
-    "lib"
-  ],
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "files": ["lib"],
+  "sideEffects": ["**/*.css"],
   "scripts": {
     "start": "vite serve --clearScreen false",
     "preview": "vite preview",
