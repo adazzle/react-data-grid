@@ -18,9 +18,9 @@ export function useGridDimensions() {
 
     const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
     const { width, height } = gridRef.current!.getBoundingClientRect();
-    const horizontalScrollbarWidth = offsetWidth - clientWidth;
-    const initialWidth = width - horizontalScrollbarWidth;
-    const initialHeight = height - offsetHeight + clientHeight;
+    const horizontalScrollbarWidth = offsetHeight - clientHeight;
+    const initialWidth = width - offsetWidth + clientWidth;
+    const initialHeight = height - horizontalScrollbarWidth;
 
     setInlineSize(initialWidth);
     setBlockSize(initialHeight);
