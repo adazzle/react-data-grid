@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { type ColumnOrColumnGroup } from '../../src';
+import type { ColumnOrColumnGroup } from '../../src';
 import { getSelectedCell, setup, validateCellPosition } from '../utils';
 
 const columns: readonly ColumnOrColumnGroup<unknown>[] = [

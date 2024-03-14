@@ -292,7 +292,7 @@ function DataGrid<R, SR, K extends Key>(
     [measuredColumnWidths, resizedColumnWidths]
   );
 
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, horizontalScrollbarHeight] = useGridDimensions();
   const {
     columns,
     colSpanColumns,
@@ -339,7 +339,8 @@ function DataGrid<R, SR, K extends Key>(
    */
   const isTreeGrid = role === 'treegrid';
   const headerRowsHeight = headerRowsCount * headerRowHeight;
-  const clientHeight = gridHeight - headerRowsHeight - summaryRowsCount * summaryRowHeight;
+  const summaryRowsHeight = summaryRowsCount * summaryRowHeight;
+  const clientHeight = gridHeight - headerRowsHeight - summaryRowsHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
@@ -412,6 +413,8 @@ function DataGrid<R, SR, K extends Key>(
   const maxColIdx = columns.length - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
+  const scrollHeight =
+    headerRowHeight + totalRowHeight + summaryRowsHeight + horizontalScrollbarHeight;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -1072,6 +1075,7 @@ function DataGrid<R, SR, K extends Key>(
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
+          '--rdg-scroll-height': `${scrollHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...layoutCssVars
         } as unknown as React.CSSProperties
