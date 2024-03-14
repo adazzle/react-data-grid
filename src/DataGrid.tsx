@@ -292,7 +292,7 @@ function DataGrid<R, SR, K extends Key>(
     [measuredColumnWidths, resizedColumnWidths]
   );
 
-  const [gridRef, gridWidth, gridHeight, horizontalScrollbarWidth] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, horizontalScrollbarHeight] = useGridDimensions();
   const {
     columns,
     colSpanColumns,
@@ -414,7 +414,7 @@ function DataGrid<R, SR, K extends Key>(
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
   const innerHeight =
-    headerRowHeight + totalRowHeight + summaryRowsHeight + horizontalScrollbarWidth;
+    headerRowHeight + totalRowHeight + summaryRowsHeight + horizontalScrollbarHeight;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -1071,7 +1071,7 @@ function DataGrid<R, SR, K extends Key>(
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
-          '--rdg-inner-height': `${innerHeight}px`,
+          '--rdg-scroll-height': `${innerHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...layoutCssVars
         } as unknown as React.CSSProperties
