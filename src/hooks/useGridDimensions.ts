@@ -7,7 +7,7 @@ export function useGridDimensions() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
-  const [verticalScrollbarWidth, setverticalScrollbarWidth] = useState(0);
+  const [horizontalScrollbarWidth, setHorizontalScrollbarWidth] = useState(0);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -18,13 +18,13 @@ export function useGridDimensions() {
 
     const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
     const { width, height } = gridRef.current!.getBoundingClientRect();
-    const verticalScrollbarWidth = offsetWidth - clientWidth;
-    const initialWidth = width - verticalScrollbarWidth;
+    const horizontalScrollbarWidth = offsetWidth - clientWidth;
+    const initialWidth = width - horizontalScrollbarWidth;
     const initialHeight = height - offsetHeight + clientHeight;
 
     setInlineSize(initialWidth);
     setBlockSize(initialHeight);
-    setverticalScrollbarWidth(verticalScrollbarWidth);
+    setHorizontalScrollbarWidth(horizontalScrollbarWidth);
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
@@ -41,5 +41,5 @@ export function useGridDimensions() {
     };
   }, []);
 
-  return [gridRef, inlineSize, blockSize, verticalScrollbarWidth] as const;
+  return [gridRef, inlineSize, blockSize, horizontalScrollbarWidth] as const;
 }
