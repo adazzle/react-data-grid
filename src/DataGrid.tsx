@@ -49,6 +49,7 @@ import type {
   SelectRowEvent,
   SortColumn
 } from './types';
+import { defaultRenderCell } from './Cell';
 import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import {
   DataGridDefaultRenderersProvider,
@@ -259,6 +260,7 @@ function DataGrid<R, SR, K extends Key>(
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const renderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
+  const renderCell = renderers?.renderCell ?? defaultRenderers?.renderCell ?? defaultRenderCell;
   const renderSortStatus =
     renderers?.renderSortStatus ?? defaultRenderers?.renderSortStatus ?? defaultRenderSortStatus;
   const renderCheckbox =
@@ -350,9 +352,10 @@ function DataGrid<R, SR, K extends Key>(
   const defaultGridComponents = useMemo(
     () => ({
       renderCheckbox,
-      renderSortStatus
+      renderSortStatus,
+      renderCell
     }),
-    [renderCheckbox, renderSortStatus]
+    [renderCheckbox, renderSortStatus, renderCell]
   );
 
   const allRowsSelected = useMemo((): boolean => {
