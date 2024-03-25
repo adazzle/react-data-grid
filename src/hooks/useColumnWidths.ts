@@ -18,18 +18,24 @@ export function useColumnWidths<R, SR>(
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
   const prevGridWidthRef = useRef(gridWidth);
+  const prevNbOfColumns = useRef(columns.length);
+
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
+
+  const nbOfColumnsChanged = columns.length !== prevNbOfColumns.current;
   // Allow columns to flex again when...
   const ignorePreviouslyMeasuredColumns: boolean =
-    // there is enough space for columns to flex and the grid was resized
-    columnsCanFlex && gridWidth !== prevGridWidthRef.current;
+    // there is enough space for columns to flex and the grid was resized or
+    // the nb of columns changed
+    columnsCanFlex && (gridWidth !== prevGridWidthRef.current || nbOfColumnsChanged);
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
 
   for (const { key, idx, width } of viewportColumns) {
+    const previousMeasureIsRelevant = measuredColumnWidths.has(key) && !nbOfColumnsChanged;
     if (
       typeof width === 'string' &&
-      (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key)) &&
+      (ignorePreviouslyMeasuredColumns || !previousMeasureIsRelevant) &&
       !resizedColumnWidths.has(key)
     ) {
       newTemplateColumns[idx] = width;
