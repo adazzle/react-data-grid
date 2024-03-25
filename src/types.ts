@@ -166,6 +166,8 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
+export type CellClipboardEvent = CellEvent<React.ClipboardEvent<HTMLDivElement>>;
+
 export interface CellClickArgs<TRow, TSummaryRow = unknown> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -192,6 +194,18 @@ export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
 export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
   | SelectCellKeyDownArgs<TRow, TSummaryRow>
   | EditCellKeyDownArgs<TRow, TSummaryRow>;
+
+export interface CellCopyArgs<TRow> {
+  sourceColumnKey: string;
+  sourceRow: TRow;
+}
+
+export interface CellPasteArgs<TRow> {
+  sourceColumnKey: string;
+  sourceRow: TRow;
+  targetColumnKey: string;
+  targetRow: TRow;
+}
 
 export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
   rowIdx: number;
@@ -238,18 +252,6 @@ export type SelectRowEvent<TRow> =
 export interface FillEvent<TRow> {
   columnKey: string;
   sourceRow: TRow;
-  targetRow: TRow;
-}
-
-export interface CopyEvent<TRow> {
-  sourceColumnKey: string;
-  sourceRow: TRow;
-}
-
-export interface PasteEvent<TRow> {
-  sourceColumnKey: string;
-  sourceRow: TRow;
-  targetColumnKey: string;
   targetRow: TRow;
 }
 

@@ -100,7 +100,7 @@ test('should allow copy if only onCopy is specified', async () => {
   await userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
   expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  expect(onCopySpy).toHaveBeenCalledWith({
+  expect(onCopySpy.mock.calls[0][0]).toStrictEqual({
     sourceRow: initialRows[0],
     sourceColumnKey: 'col'
   });
@@ -127,7 +127,7 @@ test('should allow copy/paste if both onPaste & onCopy is specified', async () =
   await userEvent.click(getCellsAtRowIndex(0)[0]);
   copySelectedCell();
   expect(getSelectedCell()).toHaveClass(copyCellClassName);
-  expect(onCopySpy).toHaveBeenCalledWith({
+  expect(onCopySpy.mock.calls[0][0]).toStrictEqual({
     sourceRow: initialRows[0],
     sourceColumnKey: 'col'
   });

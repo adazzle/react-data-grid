@@ -186,10 +186,6 @@ A number defining the height of summary rows.
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
-###### `onCopy?: Maybe<(event: CopyEvent<R>) => void>`
-
-###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
-
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
 ###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
@@ -197,6 +193,10 @@ A number defining the height of summary rows.
 ###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
 ###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
+
+###### `onCopy?: Maybe<(args: CellCopyArgs<R>, event: CellClipboardEvent) => void>`
+
+###### `onPaste?: Maybe<(args: CellPasteArgs<R>, event: CellClipboardEvent) => R>`
 
 ###### `onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
 
