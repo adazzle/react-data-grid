@@ -4,6 +4,7 @@ import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
+import { isCtrlKeyHeldDown } from '../../src/utils';
 import { renderAvatar, renderDropdown } from './renderers';
 import type { Props } from './types';
 
@@ -216,6 +217,24 @@ export default function AllFeatures({ direction }: Props) {
         if (args.column.key === 'title') {
           event.preventGridDefault();
           args.selectCell(true);
+        }
+      }}
+      onCellKeyDown={(args, event) => {
+        if (args.mode === 'SELECT') {
+          const { key } = event;
+          const { column, getColumnWidth, resizeColumn } = args;
+          if (column.resizable && isCtrlKeyHeldDown(event) && event.shiftKey) {
+            event.preventGridDefault();
+            const leftKey = 'ArrowLeft';
+            const rightKey = 'ArrowRight';
+            if (key === leftKey || key === rightKey) {
+              const width = getColumnWidth(column);
+              const step = 10;
+              const isIncrease = key === rightKey;
+              const newWidth = isIncrease ? Number(width) + step : Number(width) - step;
+              resizeColumn(column, newWidth);
+            }
+          }
         }
       }}
     />

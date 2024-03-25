@@ -528,18 +528,22 @@ function DataGrid<R, SR, K extends Key>(
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const { idx, rowIdx, mode } = selectedPosition;
+    const column = columns[idx];
+
     if (mode === 'EDIT') return;
 
-    if (onCellKeyDown && isRowIdxWithinViewportBounds(rowIdx)) {
+    if (onCellKeyDown) {
       const row = rows[rowIdx];
       const cellEvent = createCellEvent(event);
       onCellKeyDown(
         {
           mode: 'SELECT',
           row,
-          column: columns[idx],
+          column,
           rowIdx,
-          selectCell
+          selectCell,
+          resizeColumn: handleColumnResize,
+          getColumnWidth
         },
         cellEvent
       );
