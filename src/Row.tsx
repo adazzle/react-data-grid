@@ -24,6 +24,8 @@ function Row<R, SR>(
     onCellClick,
     onCellDoubleClick,
     onCellContextMenu,
+    onCellMouseDown,
+    onCellMouseEnter,
     rowClass,
     setDraggedOverRowIdx,
     onMouseEnter,
@@ -80,6 +82,8 @@ function Row<R, SR>(
           onClick={onCellClick}
           onDoubleClick={onCellDoubleClick}
           onContextMenu={onCellContextMenu}
+          onMouseDown={onCellMouseDown}
+          onMouseEnter={onCellMouseEnter}
           onRowChange={handleRowChange}
           selectCell={selectCell}
         />

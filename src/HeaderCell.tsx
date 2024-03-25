@@ -62,6 +62,8 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'shouldFocusGrid'
   | 'direction'
   | 'onColumnsReorder'
+  | 'onColumnMouseDown'
+  | 'onColumnMouseEnter'
 >;
 
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
@@ -79,6 +81,8 @@ export default function HeaderCell<R, SR>({
   isCellSelected,
   onColumnResize,
   onColumnsReorder,
+  onColumnMouseDown,
+  onColumnMouseEnter,
   sortColumns,
   onSortColumnsChange,
   selectCell,
@@ -186,6 +190,18 @@ export default function HeaderCell<R, SR>({
     }
   }
 
+  function onMouseDown(event: React.MouseEvent<HTMLSpanElement>) {
+    if (onColumnMouseDown) {
+      onColumnMouseDown({ column }, event);
+    }
+  }
+
+  function onMouseEnter(event: React.MouseEvent<HTMLSpanElement>) {
+    if (onColumnMouseEnter) {
+      onColumnMouseEnter({ column }, event);
+    }
+  }
+
   function onDoubleClick() {
     onColumnResize(column, 'max-content');
   }
@@ -268,6 +284,8 @@ export default function HeaderCell<R, SR>({
       aria-rowspan={rowSpan}
       aria-selected={isCellSelected}
       aria-sort={ariaSort}
+      onMouseDown={onMouseDown}
+      onMouseEnter={onMouseEnter}
       // set the tabIndex to 0 when there is no selected cell so grid can receive focus
       tabIndex={shouldFocusGrid ? 0 : tabIndex}
       className={className}
