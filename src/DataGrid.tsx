@@ -703,6 +703,10 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function getGridRowStart(rowIdx: number) {
+    return headerAndTopSummaryRowsCount + 1 + rowIdx;
+  }
+
   function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
@@ -857,7 +861,7 @@ function DataGrid<R, SR, K extends Key>(
 
     return (
       <DragHandle
-        gridRowStart={headerAndTopSummaryRowsCount + rowIdx + 1}
+        gridRowStart={getGridRowStart(selectedPosition.rowIdx)}
         rows={rows}
         column={column}
         columnWidth={columnWidth}
@@ -974,7 +978,7 @@ function DataGrid<R, SR, K extends Key>(
       }
 
       const row = rows[rowIdx];
-      const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
+      const gridRowStart = getGridRowStart(rowIdx);
       let key: K | number = rowIdx;
       let isRowSelected = false;
       if (typeof rowKeyGetter === 'function') {
@@ -985,7 +989,7 @@ function DataGrid<R, SR, K extends Key>(
       rowElements.push(
         renderRow(key, {
           // aria-rowindex is 1 based
-          'aria-rowindex': headerAndTopSummaryRowsCount + rowIdx + 1,
+          'aria-rowindex': gridRowStart,
           'aria-selected': isSelectable ? isRowSelected : undefined,
           rowIdx,
           row,
@@ -1142,8 +1146,8 @@ function DataGrid<R, SR, K extends Key>(
               })}
               {getViewportRows()}
               {bottomSummaryRows?.map((row, rowIdx) => {
-                const gridRowStart = headerAndTopSummaryRowsCount + rows.length + rowIdx + 1;
                 const summaryRowIdx = rows.length + rowIdx;
+                const gridRowStart = getGridRowStart(summaryRowIdx);
                 const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
                 const top =
                   clientHeight > totalRowHeight
@@ -1194,7 +1198,7 @@ function DataGrid<R, SR, K extends Key>(
             [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
           })}
           style={{
-            gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
+            gridRowStart: getGridRowStart(selectedPosition.rowIdx)
           }}
         />
       )}
