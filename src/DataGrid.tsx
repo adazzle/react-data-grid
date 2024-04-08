@@ -1191,7 +1191,10 @@ function DataGrid<R, SR, K extends Key>(
               selectedPosition.rowIdx
             ),
             [rowSelected]: isGroupRowFocused,
-            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
+            [rowSelectedWithFrozenCell]:
+              isGroupRowFocused &&
+              lastFrozenColumnIndex !== -1 &&
+              selectedPosition.rowIdx !== maxRowIdx
           })}
           style={{
             gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
