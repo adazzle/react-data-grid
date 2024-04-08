@@ -10,7 +10,8 @@
   },
   "json": {
     "parser": {
-      "allowComments": true
+      "allowComments": true,
+      "allowTrailingCommas": true
     }
   },
   "javascript": {
