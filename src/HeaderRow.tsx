@@ -103,4 +103,4 @@ function HeaderRow<R, SR, K extends React.Key>({
 
 export default memo(HeaderRow) as <R, SR, K extends React.Key>(
   props: HeaderRowProps<R, SR, K>
-) => JSX.Element;
+) => React.JSX.Element;

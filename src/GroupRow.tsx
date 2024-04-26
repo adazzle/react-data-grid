@@ -91,4 +91,6 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(props: GroupRowRendererProps<R, SR>) => JSX.Element;
+export default memo(GroupedRow) as <R, SR>(
+  props: GroupRowRendererProps<R, SR>
+) => React.JSX.Element;

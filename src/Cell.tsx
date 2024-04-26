@@ -116,4 +116,4 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => JSX.Element;
+export default memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => React.JSX.Element;

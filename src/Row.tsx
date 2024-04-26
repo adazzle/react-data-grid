@@ -105,7 +105,7 @@ function Row<R, SR>(
 
 const RowComponent = memo(forwardRef(Row)) as <R, SR>(
   props: RenderRowProps<R, SR> & RefAttributes<HTMLDivElement>
-) => JSX.Element;
+) => React.JSX.Element;
 
 export default RowComponent;
 
