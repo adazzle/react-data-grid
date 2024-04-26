@@ -1,5 +1,4 @@
-import { act } from 'react';
-import { configure } from '@testing-library/react';
+import { act, configure } from '@testing-library/react';
 
 configure({
   reactStrictMode: true,
