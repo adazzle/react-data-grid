@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { groupBy as rowGrouper } from 'lodash-es';
 
@@ -15,8 +15,7 @@ import {
   getRows,
   getSelectedCell,
   getTreeGrid,
-  pasteSelectedCell,
-  render
+  pasteSelectedCell
 } from './utils';
 
 const rowSelectedClassname = 'rdg-row-selected';

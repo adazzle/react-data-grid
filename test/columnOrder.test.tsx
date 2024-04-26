@@ -1,6 +1,8 @@
+import { render } from '@testing-library/react';
+
 import DataGrid, { SelectColumn, TreeDataGrid } from '../src';
 import type { Column } from '../src';
-import { getHeaderCells, render } from './utils';
+import { getHeaderCells } from './utils';
 
 const frozen1: Column<unknown> = {
   key: 'f1',
