@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
@@ -6,7 +6,6 @@ import DataGrid, { SelectColumn } from '../src';
 import {
   getCellsAtRowIndex,
   getSelectedCell,
-  render,
   scrollGrid,
   setup,
   validateCellPosition
@@ -294,11 +293,7 @@ test('reset selected cell when column is removed', async () => {
   await userEvent.keyboard('{arrowdown}{arrowright}');
   validateCellPosition(1, 1);
 
-  rerender(
-    <StrictMode>
-      <Test columns={[columns[0]]} />
-    </StrictMode>
-  );
+  rerender(<Test columns={[columns[0]]} />);
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
@@ -320,11 +315,7 @@ test('reset selected cell when row is removed', async () => {
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
   validateCellPosition(1, 2);
 
-  rerender(
-    <StrictMode>
-      <Test rows={[rows[0]]} />
-    </StrictMode>
-  );
+  rerender(<Test rows={[rows[0]]} />);
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });

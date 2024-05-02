@@ -1,15 +1,10 @@
 import { useState } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
-import {
-  copySelectedCell,
-  getCellsAtRowIndex,
-  getSelectedCell,
-  pasteSelectedCell,
-  render
-} from './utils';
+import { copySelectedCell, getCellsAtRowIndex, getSelectedCell, pasteSelectedCell } from './utils';
 
 interface Row {
   col: string;
