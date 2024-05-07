@@ -4,6 +4,7 @@ import clsx from 'clsx';
 
 import { getColSpan } from './utils';
 import type { CalculatedColumn, Direction, Position } from './types';
+import { Maybe } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
 import { cell, cellFrozen } from './style/cell';
@@ -23,10 +24,11 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
   direction: Direction;
+  headerRowClass: Maybe<string>;
 }
 
 const headerRow = css`
-  @layer rdg.HeaderRow {
+  @layer rdg . HeaderRow {
     display: contents;
     line-height: var(--rdg-header-row-height);
     background-color: var(--rdg-header-background-color);
@@ -47,6 +49,7 @@ const headerRow = css`
 export const headerRowClassname = `rdg-header-row ${headerRow}`;
 
 function HeaderRow<R, SR, K extends React.Key>({
+  headerRowClass,
   rowIdx,
   columns,
   onColumnResize,
@@ -92,9 +95,13 @@ function HeaderRow<R, SR, K extends React.Key>({
     <div
       role="row"
       aria-rowindex={rowIdx} // aria-rowindex is 1 based
-      className={clsx(headerRowClassname, {
-        [rowSelectedClassname]: selectedCellIdx === -1
-      })}
+      className={clsx(
+        headerRowClassname,
+        {
+          [rowSelectedClassname]: selectedCellIdx === -1
+        },
+        headerRowClass
+      )}
     >
       {cells}
     </div>
