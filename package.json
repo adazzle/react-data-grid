@@ -82,7 +82,7 @@
     "@wyw-in-js/rollup": "^0.5.0",
     "@wyw-in-js/vite": "^0.5.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
-    "eslint": "^8.43.0",
+    "eslint": "^9.2.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-jest": "^28.2.0",
     "eslint-plugin-jest-dom": "^5.0.1",
