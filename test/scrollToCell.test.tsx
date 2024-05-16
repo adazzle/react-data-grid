@@ -11,7 +11,7 @@ type Row = undefined;
 const rows: readonly Row[] = Array(50);
 const summaryRows: readonly Row[] = [undefined, undefined];
 
-const columns: Column<Row>[] = [];
+const columns: Column<Row, Row>[] = [];
 
 for (let i = 0; i < 50; i++) {
   const key = String(i);

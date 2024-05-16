@@ -6,7 +6,7 @@ import DataGrid from '../src';
 import type { Column, SortColumn } from '../src/types';
 import { getHeaderCells } from './utils';
 
-const columns: readonly Column<unknown>[] = [
+const columns: readonly Column<never>[] = [
   { key: 'colA', name: 'colA' },
   { key: 'colB', name: 'colB', sortDescendingFirst: true },
   { key: 'colC', name: 'colC' },

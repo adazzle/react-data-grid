@@ -21,11 +21,6 @@ class PointerEvent extends Event {
 // @ts-expect-error
 globalThis.PointerEvent = PointerEvent;
 
-interface Row {
-  col1: number;
-  col2: string;
-}
-
 interface ResizeEvent<K extends keyof DOMRect> {
   column: HTMLElement;
   clientXStart: number;
@@ -57,7 +52,7 @@ function resize<K extends keyof DOMRect>({
   fireEvent.lostPointerCapture(resizeHandle, new PointerEvent('lostpointercapture', {}));
 }
 
-const columns: readonly Column<Row>[] = [
+const columns: readonly Column<never>[] = [
   {
     key: 'col1',
     name: 'col1',
