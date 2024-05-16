@@ -27,15 +27,17 @@ const standard2: Column<unknown> = {
 };
 
 test('column order', () => {
+  const rows: readonly unknown[] = [];
+
   function run(columns: readonly Column<unknown>[]) {
     let unmount;
     if (groupBy === undefined) {
-      ({ unmount } = render(<DataGrid columns={columns} rows={[]} />));
+      ({ unmount } = render(<DataGrid columns={columns} rows={rows} />));
     } else {
       ({ unmount } = render(
         <TreeDataGrid
           columns={columns}
-          rows={[]}
+          rows={rows}
           groupBy={groupBy}
           rowGrouper={() => ({})}
           expandedGroupIds={new Set()}

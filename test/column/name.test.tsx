@@ -1,17 +1,12 @@
 import type { Column } from '../../src';
 import { getHeaderCells, setup } from '../utils';
 
-interface Row {
-  id: number;
-  name: string;
-}
-
 test('name is either a string or an element', () => {
   function Header() {
     return 'Fancy';
   }
 
-  const columns: readonly Column<Row>[] = [
+  const columns: readonly Column<never>[] = [
     {
       key: 'id',
       name: 'ID'
