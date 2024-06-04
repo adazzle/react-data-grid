@@ -36,6 +36,7 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   ) => Record<string, readonly NoInfer<R>[]>;
   expandedGroupIds: ReadonlySet<unknown>;
   onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
+  generateGroupId: ((groupKey: string, parentId?: string) => string) | undefined;
 }
 
 type GroupByDictionary<TRow> = Record<
@@ -62,6 +63,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     rowGrouper,
     expandedGroupIds,
     onExpandedGroupIdsChange,
+    generateGroupId,
     ...props
   }: TreeDataGridProps<R, SR, K>,
   ref: React.Ref<DataGridHandle>
@@ -144,6 +146,15 @@ function TreeDataGrid<R, SR, K extends Key>(
     if (!groupedRows) return [rawRows, isGroupRow];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
+
+    const groupIdGenerator = (groupKey: string, parentId?: string) => {
+      if (generateGroupId !== undefined && typeof generateGroupId === 'function') {
+        return generateGroupId(groupKey, parentId);
+      }
+
+      return `${parentId}__${groupKey}`;
+    };
+
     const expandGroup = (
       rows: GroupByDictionary<R> | readonly R[],
       parentId: string | undefined,
@@ -154,8 +165,7 @@ function TreeDataGrid<R, SR, K extends Key>(
         return;
       }
       Object.keys(rows).forEach((groupKey, posInSet, keys) => {
-        // TODO: should users have control over the generated key?
-        const id = parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
+        const id = groupIdGenerator(groupKey, parentId);
         const isExpanded = expandedGroupIds.has(id);
         const { childRows, childGroups, startRowIndex } = rows[groupKey];
 
@@ -185,7 +195,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
       return allGroupRows.has(row);
     }
-  }, [expandedGroupIds, groupedRows, rawRows]);
+  }, [expandedGroupIds, groupedRows, rawRows, generateGroupId]);
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
