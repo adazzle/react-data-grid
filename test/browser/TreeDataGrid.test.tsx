@@ -217,6 +217,8 @@ test('should toggle group when group cell is clicked and is passing `generateGro
   expect(getRows()).toHaveLength(6);
   await userEvent.click(screen.getByRole('gridcell', { name: 'Canada' }));
   expect(getRows()).toHaveLength(8);
+  await userEvent.click(screen.getByRole('gridcell', { name: '2020' }));
+  expect(getRows()).toHaveLength(9);
 });
 
 test('should toggle group using keyboard', async () => {
