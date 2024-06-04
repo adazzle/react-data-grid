@@ -126,7 +126,7 @@ function TestGrid({ groupBy, generateGroupId }: TestGridProps) {
       onExpandedGroupIdsChange={setExpandedGroupIds}
       onRowsChange={setRows}
       onPaste={onPaste}
-      generateGroupId={generateGroupId}
+      {...(generateGroupId && { generateGroupId })}
     />
   );
 }

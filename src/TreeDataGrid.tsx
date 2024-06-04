@@ -36,7 +36,7 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   ) => Record<string, readonly NoInfer<R>[]>;
   expandedGroupIds: ReadonlySet<unknown>;
   onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
-  generateGroupId: ((groupKey: string, parentId?: string) => string) | undefined;
+  generateGroupId?: (groupKey: string, parentId?: string) => string;
 }
 
 type GroupByDictionary<TRow> = Record<
