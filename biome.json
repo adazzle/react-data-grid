@@ -17,7 +17,16 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingComma": "none"
+      "trailingCommas": "none"
+    }
+  },
+  "css": {
+    "linter": {
+      "enabled": false
+    },
+    "formatter": {
+      "enabled": false,
+      "indentStyle": "space"
     }
   },
   "linter": {
@@ -90,15 +99,18 @@
         "noChildrenProp": "off",
         "noConstAssign": "warn",
         "noConstantCondition": "warn",
+        "noConstantMathMinMaxClamp": "warn",
         "noConstructorReturn": "warn",
         "noEmptyCharacterClassInRegex": "warn",
         "noEmptyPattern": "warn",
+        "noFlatMapIdentity": "warn",
         "noGlobalObjectCalls": "warn",
         "noInnerDeclarations": "warn",
         "noInvalidConstructorSuper": "warn",
         "noInvalidNewBuiltin": "warn",
         "noInvalidUseBeforeDeclaration": "warn",
         "noNewSymbol": "warn",
+        "noNodejsModules": "off",
         "noNonoctalDecimalEscape": "warn",
         "noPrecisionLoss": "warn",
         "noRenderReturnValue": "warn",
@@ -118,6 +130,7 @@
         "noUnusedVariables": "warn",
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
+        "useArrayLiterals": "warn",
         "useExhaustiveDependencies": "off",
         "useHookAtTopLevel": "warn",
         "useIsNan": "warn",
