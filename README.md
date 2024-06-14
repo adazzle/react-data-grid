@@ -52,6 +52,11 @@
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
+## Docs
+Visit [this website](https://adazzle.github.io/react-data-grid/canary) for the most recent examples of what you can do with `react-data-grid`.
+
+You can also see the API Docs on our [legacy website](https://adazzle.github.io/react-data-grid/). Note that a lot of the APIs have changed!
+
 ## Install
 
 ```sh
