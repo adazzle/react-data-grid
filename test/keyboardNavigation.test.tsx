@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../src';
@@ -6,7 +6,6 @@ import DataGrid, { SelectColumn } from '../src';
 import {
   getCellsAtRowIndex,
   getSelectedCell,
-  render,
   scrollGrid,
   setup,
   validateCellPosition
@@ -18,7 +17,7 @@ const rows: readonly Row[] = Array(100);
 const topSummaryRows: readonly Row[] = [undefined];
 const bottomSummaryRows: readonly Row[] = [undefined, undefined];
 
-const columns: readonly Column<Row>[] = [
+const columns = [
   SelectColumn,
   { key: 'col2', name: 'col2' },
   { key: 'col3', name: 'col3' },
@@ -26,7 +25,7 @@ const columns: readonly Column<Row>[] = [
   { key: 'col5', name: 'col5' },
   { key: 'col6', name: 'col6' },
   { key: 'col7', name: 'col7' }
-];
+] as const satisfies Column<Row, Row>[];
 
 test('keyboard navigation', async () => {
   setup({ columns, rows, topSummaryRows, bottomSummaryRows });
@@ -187,7 +186,7 @@ test('navigation with focusable cell renderer', async () => {
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
-  const columns: readonly Column<Row>[] = [
+  const columns: readonly Column<Row, Row>[] = [
     {
       key: 'col2',
       name: 'col2',
@@ -246,7 +245,7 @@ test('navigation when header and summary rows have focusable elements', async ()
 });
 
 test('navigation when selected cell not in the viewport', async () => {
-  const columns: Column<Row>[] = [SelectColumn];
+  const columns: Column<Row, Row>[] = [SelectColumn];
   for (let i = 0; i < 99; i++) {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
@@ -294,11 +293,7 @@ test('reset selected cell when column is removed', async () => {
   await userEvent.keyboard('{arrowdown}{arrowright}');
   validateCellPosition(1, 1);
 
-  rerender(
-    <StrictMode>
-      <Test columns={[columns[0]]} />
-    </StrictMode>
-  );
+  rerender(<Test columns={[columns[0]]} />);
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });
@@ -320,11 +315,7 @@ test('reset selected cell when row is removed', async () => {
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
   validateCellPosition(1, 2);
 
-  rerender(
-    <StrictMode>
-      <Test rows={[rows[0]]} />
-    </StrictMode>
-  );
+  rerender(<Test rows={[rows[0]]} />);
 
   expect(getSelectedCell()).not.toBeInTheDocument();
 });

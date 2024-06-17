@@ -1,18 +1,17 @@
 import { useRef } from 'react';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { Column, DataGridHandle } from '../src';
 import DataGrid from '../src';
 import type { PartialPosition } from '../src/ScrollToCell';
-import { render } from './utils';
 
 type Row = undefined;
 
 const rows: readonly Row[] = Array(50);
 const summaryRows: readonly Row[] = [undefined, undefined];
 
-const columns: Column<Row>[] = [];
+const columns: Column<Row, Row>[] = [];
 
 for (let i = 0; i < 50; i++) {
   const key = String(i);

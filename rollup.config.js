@@ -1,10 +1,9 @@
 import { isAbsolute } from 'node:path';
-import linaria from '@linaria/rollup';
+import wyw from '@wyw-in-js/rollup';
 import postcss from 'rollup-plugin-postcss';
-import postcssNested from 'postcss-nested';
 import { babel } from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 const extensions = ['.ts', '.tsx'];
 
@@ -26,7 +25,7 @@ export default {
   ],
   external: (id) => !id.startsWith('.') && !id.startsWith('@linaria:') && !isAbsolute(id),
   plugins: [
-    linaria({
+    wyw({
       preprocessor: 'none',
       classNameSlug(hash) {
         // We add the package version as suffix to avoid style conflicts
@@ -35,7 +34,6 @@ export default {
       }
     }),
     postcss({
-      plugins: [postcssNested],
       extract: 'styles.css'
     }),
     babel({

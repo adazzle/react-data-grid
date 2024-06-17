@@ -2,13 +2,8 @@ import type { Column, ColumnGroup } from '../../src';
 import { cellClassname } from '../../src/style/cell';
 import { getHeaderCells, setup } from '../utils';
 
-interface Row {
-  id: number;
-  name: string;
-}
-
 test('headerCellClass is either nullish or a string', () => {
-  const columns: readonly Column<Row>[] = [
+  const columns: readonly Column<never>[] = [
     {
       key: 'id',
       name: 'ID'
@@ -27,7 +22,7 @@ test('headerCellClass is either nullish or a string', () => {
 });
 
 test('columnGroup.headerCellClass is either nullish or a string', () => {
-  const columns: readonly ColumnGroup<Row>[] = [
+  const columns: readonly ColumnGroup<never>[] = [
     {
       name: 'Group 1',
       children: [{ key: '1', name: '1' }]

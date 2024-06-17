@@ -1,20 +1,20 @@
 import { useState } from 'react';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { getCells, getCellsAtRowIndex, render, setup } from '../utils';
+import { getCells, getCellsAtRowIndex, setup } from '../utils';
 
 interface Row {
   id: number;
 }
 
 describe('renderValue', () => {
-  const columns: readonly Column<Row | null>[] = [
+  const columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' }
-  ];
+  ] as const satisfies Column<Row | null>[];
 
   const rows: readonly Row[] = [{ id: 101 }];
 
@@ -102,7 +102,6 @@ describe('Custom cell renderer', () => {
         ...column,
         frozen: false,
         idx: 0,
-        isLastFrozenColumn: false,
         level: 0,
         maxWidth: undefined,
         minWidth: 50,

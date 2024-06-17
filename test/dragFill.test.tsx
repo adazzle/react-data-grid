@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, FillEvent } from '../src';
-import { getCellsAtRowIndex, getRows, render } from './utils';
+import { getCellsAtRowIndex, getRows } from './utils';
 
 interface Row {
   col: string;
