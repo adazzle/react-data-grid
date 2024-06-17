@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { DataGridDefaultRenderersProvider, renderSortIcon, SelectColumn } from '../src';
@@ -10,13 +10,15 @@ import type {
   RenderSortStatusProps,
   SortColumn
 } from '../src';
-import { getCells, getHeaderCells, getRows, render, setup } from './utils';
+import { getCells, getHeaderCells, getRows, setup } from './utils';
 
 interface Row {
   id: number;
   col1?: string;
   col2?: string;
 }
+
+const noRows: readonly Row[] = [];
 
 const columns: readonly Column<Row>[] = [
   SelectColumn,
@@ -104,21 +106,21 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
 }
 
 test('fallback defined using renderers prop with no rows', () => {
-  setup({ columns, rows: [], renderers: { noRowsFallback: <NoRowsFallback /> } });
+  setup({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
 test('fallback defined using provider with no rows', () => {
-  setupProvider({ columns, rows: [] });
+  setupProvider({ columns, rows: noRows });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Global no rows fallback')).toBeInTheDocument();
 });
 
 test('fallback defined using both provider and renderers with no rows', () => {
-  setupProvider({ columns, rows: [], renderers: { noRowsFallback: <NoRowsFallback /> } });
+  setupProvider({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
@@ -147,21 +149,21 @@ test('fallback defined using both provider and renderers with a row', () => {
 });
 
 test('checkbox defined using renderers prop', () => {
-  setup({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
+  setup({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
 });
 
 test('checkbox defined using provider', () => {
-  setupProvider({ columns, rows: [] });
+  setupProvider({ columns, rows: noRows });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Global checkbox')).toBeInTheDocument();
 });
 
 test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: [], renderers: { renderCheckbox: localRenderCheckbox } });
+  setupProvider({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -169,7 +171,7 @@ test('checkbox defined using both provider and renderers', () => {
 });
 
 test('sortPriority defined using both providers', async () => {
-  setupProvider({ columns, rows: [] });
+  setupProvider({ columns, rows: noRows });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
@@ -185,7 +187,7 @@ test('sortPriority defined using both providers', async () => {
 });
 
 test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: [], renderers: { renderSortStatus } });
+  setupProvider({ columns, rows: noRows, renderers: { renderSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();

@@ -1,15 +1,10 @@
 import { useState } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, PasteEvent } from '../src';
-import {
-  copySelectedCell,
-  getCellsAtRowIndex,
-  getSelectedCell,
-  pasteSelectedCell,
-  render
-} from './utils';
+import { copySelectedCell, getCellsAtRowIndex, getSelectedCell, pasteSelectedCell } from './utils';
 
 interface Row {
   col: string;
@@ -199,4 +194,11 @@ test('should not allow paste on header or summary cells', async () => {
   pasteSelectedCell();
   expect(getSelectedCell()).toHaveTextContent('s1');
   expect(onPasteSpy).not.toHaveBeenCalled();
+});
+
+test('should not start editing when pressing ctrl+<input key>', async () => {
+  setup();
+  await userEvent.click(getCellsAtRowIndex(1)[0]);
+  await userEvent.keyboard('{Control>}b');
+  expect(getSelectedCell()).not.toHaveClass('rdg-editor-container');
 });

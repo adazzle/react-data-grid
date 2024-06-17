@@ -1,9 +1,9 @@
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../src';
 import type { Column, DataGridProps } from '../src';
-import { getCellsAtRowIndex, render } from './utils';
+import { getCellsAtRowIndex } from './utils';
 
 interface Row {
   col1: number;

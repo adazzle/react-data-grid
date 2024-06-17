@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useRovingTabIndex } from './hooks';
 import { getHeaderCellRowSpan, getHeaderCellStyle } from './utils';
 import type { CalculatedColumnParent } from './types';
-import { type GroupedColumnHeaderRowProps } from './GroupedColumnHeaderRow';
+import type { GroupedColumnHeaderRowProps } from './GroupedColumnHeaderRow';
 import { cellClassname } from './style/cell';
 
 type SharedGroupedColumnHeaderRowProps<R, SR> = Pick<

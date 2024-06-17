@@ -1,6 +1,7 @@
 import { css } from '@linaria/core';
 
-import { row } from './row';
+import { cell } from './cell';
+import { bottomSummaryRowClassname, row, topSummaryRowClassname } from './row';
 
 const lightTheme = `
   --rdg-color: #000;
@@ -49,6 +50,7 @@ const root = css`
     ${lightTheme}
     --rdg-selection-color: #66afe9;
     --rdg-font-size: 14px;
+    --rdg-cell-frozen-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
 
     display: grid;
 
@@ -86,6 +88,18 @@ const root = css`
     @media (prefers-color-scheme: dark) {
       &:not(.rdg-light) {
         ${darkTheme}
+      }
+    }
+
+    > :nth-last-child(1 of .${topSummaryRowClassname}) {
+      > .${cell} {
+        border-block-end: 2px solid var(--rdg-summary-border-color);
+      }
+    }
+
+    > :nth-child(1 of .${bottomSummaryRowClassname}) {
+      > .${cell} {
+        border-block-start: 2px solid var(--rdg-summary-border-color);
       }
     }
   }

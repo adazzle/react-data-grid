@@ -3,7 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import type { Column } from '../../src';
 import { getHeaderCells, setup } from '../utils';
 
-const columns: readonly Column<undefined>[] = [
+const columns: readonly Column<never>[] = [
   {
     key: 'col1',
     name: 'col1'

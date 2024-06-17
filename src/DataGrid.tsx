@@ -109,7 +109,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Grid and data Props
    */
   /** An array of objects representing each column on the grid */
-  columns: readonly ColumnOrColumnGroup<R, SR>[];
+  columns: readonly ColumnOrColumnGroup<NoInfer<R>, NoInfer<SR>>[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
   /**
@@ -121,8 +121,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   bottomSummaryRows?: Maybe<readonly SR[]>;
   /** The getter should return a unique key for each row */
-  rowKeyGetter?: Maybe<(row: R) => K>;
-  onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>;
+  rowKeyGetter?: Maybe<(row: NoInfer<R>) => K>;
+  onRowsChange?: Maybe<(rows: NoInfer<R>[], data: RowsChangeData<NoInfer<R>, NoInfer<SR>>) => void>;
 
   /**
    * Dimensions props
@@ -131,7 +131,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * The height of each row in pixels
    * @default 35
    */
-  rowHeight?: Maybe<number | ((row: R) => number)>;
+  rowHeight?: Maybe<number | ((row: NoInfer<R>) => number)>;
   /**
    * The height of the header row in pixels
    * @default 35
@@ -149,27 +149,35 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Set of selected row keys */
   selectedRows?: Maybe<ReadonlySet<K>>;
   /** Function called whenever row selection is changed */
-  onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>;
+  onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
   /** Used for multi column sorting */
   sortColumns?: Maybe<readonly SortColumn[]>;
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
-  defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>;
-  onFill?: Maybe<(event: FillEvent<R>) => R>;
-  onCopy?: Maybe<(event: CopyEvent<R>) => void>;
-  onPaste?: Maybe<(event: PasteEvent<R>) => R>;
+  defaultColumnOptions?: Maybe<DefaultColumnOptions<NoInfer<R>, NoInfer<SR>>>;
+  onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
+  onCopy?: Maybe<(event: CopyEvent<NoInfer<R>>) => void>;
+  onPaste?: Maybe<(event: PasteEvent<NoInfer<R>>) => NoInfer<R>>;
 
   /**
    * Event props
    */
   /** Function called whenever a cell is clicked */
-  onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
+  onCellClick?: Maybe<
+    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
+  >;
   /** Function called whenever a cell is double clicked */
-  onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
+  onCellDoubleClick?: Maybe<
+    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
+  >;
   /** Function called whenever a cell is right clicked */
-  onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>;
-  onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
+  onCellContextMenu?: Maybe<
+    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
+  >;
+  onCellKeyDown?: Maybe<
+    (args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void
+  >;
   /** Function called whenever cell selection is changed */
-  onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;
+  onSelectedCellChange?: Maybe<(args: CellSelectArgs<NoInfer<R>, NoInfer<SR>>) => void>;
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
@@ -186,8 +194,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
-  renderers?: Maybe<Renderers<R, SR>>;
-  rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
+  renderers?: Maybe<Renderers<NoInfer<R>, NoInfer<SR>>>;
+  rowClass?: Maybe<(row: NoInfer<R>, rowIdx: number) => Maybe<string>>;
   /** @default 'ltr' */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
@@ -294,7 +302,7 @@ function DataGrid<R, SR, K extends Key>(
     [measuredColumnWidths, resizedColumnWidths]
   );
 
-  const [gridRef, gridWidth, gridHeight] = useGridDimensions();
+  const [gridRef, gridWidth, gridHeight, horizontalScrollbarHeight] = useGridDimensions();
   const {
     columns,
     colSpanColumns,
@@ -341,7 +349,8 @@ function DataGrid<R, SR, K extends Key>(
    */
   const isTreeGrid = role === 'treegrid';
   const headerRowsHeight = headerRowsCount * headerRowHeight;
-  const clientHeight = gridHeight - headerRowsHeight - summaryRowsCount * summaryRowHeight;
+  const summaryRowsHeight = summaryRowsCount * summaryRowHeight;
+  const clientHeight = gridHeight - headerRowsHeight - summaryRowsHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
   const isRtl = direction === 'rtl';
   const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
@@ -415,6 +424,8 @@ function DataGrid<R, SR, K extends Key>(
   const maxColIdx = columns.length - 1;
   const selectedCellIsWithinSelectionBounds = isCellWithinSelectionBounds(selectedPosition);
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
+  const scrollHeight =
+    headerRowHeight + totalRowHeight + summaryRowsHeight + horizontalScrollbarHeight;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -562,6 +573,8 @@ function DataGrid<R, SR, K extends Key>(
       const cKey = 67;
       const vKey = 86;
       if (keyCode === cKey) {
+        // copy highlighted text only
+        if (window.getSelection()?.isCollapsed === false) return;
         handleCopy();
         return;
       }
@@ -1069,6 +1082,7 @@ function DataGrid<R, SR, K extends Key>(
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-summary-row-height': `${summaryRowHeight}px`,
+          '--rdg-scroll-height': `${scrollHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...layoutCssVars
         } as unknown as React.CSSProperties
@@ -1133,7 +1147,6 @@ function DataGrid<R, SR, K extends Key>(
                     lastFrozenColumnIndex={lastFrozenColumnIndex}
                     selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                     isTop
-                    showBorder={rowIdx === topSummaryRowsCount - 1}
                     selectCell={selectCellLatest}
                   />
                 );
@@ -1165,7 +1178,6 @@ function DataGrid<R, SR, K extends Key>(
                     lastFrozenColumnIndex={lastFrozenColumnIndex}
                     selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
                     isTop={false}
-                    showBorder={rowIdx === 0}
                     selectCell={selectCellLatest}
                   />
                 );
