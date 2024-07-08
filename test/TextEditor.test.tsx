@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { textEditor } from '../src';
 import type { Column } from '../src';
-import { getCells, render } from './utils';
+import { getCells } from './utils';
 
 interface Row {
   readonly name: string;

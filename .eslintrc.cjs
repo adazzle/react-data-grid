@@ -682,11 +682,6 @@ const rules = {
       message: 'Import @testing-library/react instead.'
     },
     {
-      name: '@testing-library/react',
-      importNames: ['render'],
-      message: 'Use the render helper from test/utils instead.'
-    },
-    {
       name: 'lodash',
       message: 'Import lodash-es instead.'
     }

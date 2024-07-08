@@ -1,13 +1,8 @@
 import type { Column } from '../../src';
 import { getHeaderCells, setup } from '../utils';
 
-interface Row {
-  id: number;
-  name: string;
-}
-
 test('renderHeaderCell is either undefined or a component', () => {
-  const columns: readonly Column<Row>[] = [
+  const columns: readonly Column<never>[] = [
     {
       key: 'id',
       name: 'ID'

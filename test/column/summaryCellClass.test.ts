@@ -12,7 +12,7 @@ const topSummaryRows: readonly SummaryRow[] = [{ id: 0 }, { id: 1 }];
 const bottomSummaryRows: readonly SummaryRow[] = [{ id: 2 }, { id: 3 }];
 
 test('summaryCellClass is undefined', () => {
-  const columns: readonly Column<unknown, SummaryRow>[] = [
+  const columns: readonly Column<never, SummaryRow>[] = [
     {
       key: 'id',
       name: 'ID'
@@ -25,7 +25,7 @@ test('summaryCellClass is undefined', () => {
 });
 
 test('summaryCellClass is a string', () => {
-  const columns: readonly Column<unknown, SummaryRow>[] = [
+  const columns: readonly Column<never, SummaryRow>[] = [
     {
       key: 'id',
       name: 'ID',
@@ -40,7 +40,7 @@ test('summaryCellClass is a string', () => {
 });
 
 test('summaryCellClass returns a string', () => {
-  const columns: readonly Column<unknown, SummaryRow>[] = [
+  const columns: readonly Column<never, SummaryRow>[] = [
     {
       key: 'id',
       name: 'ID',
@@ -56,7 +56,7 @@ test('summaryCellClass returns a string', () => {
 });
 
 test('summaryCellClass returns undefined', () => {
-  const columns: readonly Column<unknown, SummaryRow>[] = [
+  const columns: readonly Column<never, SummaryRow>[] = [
     {
       key: 'id',
       name: 'ID',
