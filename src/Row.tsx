@@ -12,7 +12,6 @@ function Row<R, SR>(
     className,
     rowIdx,
     gridRowStart,
-    height,
     selectedCellIdx,
     isRowSelected,
     copiedCellIdx,
@@ -94,7 +93,7 @@ function Row<R, SR>(
         ref={ref}
         className={className}
         onMouseEnter={handleDragEnter}
-        style={getRowStyle(gridRowStart, height)}
+        style={getRowStyle(gridRowStart)}
         {...props}
       >
         {cells}
