@@ -31,7 +31,7 @@ type SummaryRow = undefined;
 const topSummaryRows: readonly SummaryRow[] = [undefined];
 const bottomSummaryRows: readonly SummaryRow[] = [undefined];
 
-const columns: readonly Column<Row>[] = [
+const columns: readonly Column<Row, SummaryRow>[] = [
   SelectColumn,
   {
     key: 'sport',

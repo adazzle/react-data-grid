@@ -129,6 +129,7 @@ export interface RenderGroupCellProps<TRow, TSummaryRow = unknown> {
 export interface RenderEditCellProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  rowIdx: number;
   onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
 }
@@ -210,7 +211,6 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   selectedCellIdx: number | undefined;
   isRowSelected: boolean;
   gridRowStart: number;
-  height: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 

@@ -7,7 +7,7 @@ interface SummaryRow {
   col2: string;
 }
 
-const columns: readonly Column<unknown, SummaryRow>[] = [
+const columns: readonly Column<never, SummaryRow>[] = [
   {
     key: 'col1',
     name: 'Col1',

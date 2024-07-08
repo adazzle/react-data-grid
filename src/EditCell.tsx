@@ -150,6 +150,7 @@ export default function EditCell<R, SR>({
           {column.renderEditCell({
             column,
             row,
+            rowIdx,
             onRowChange: onEditorRowChange,
             onClose
           })}

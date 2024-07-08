@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import type { ColumnOrColumnGroup } from '../../src';
 import { getSelectedCell, setup, validateCellPosition } from '../utils';
 
-const columns: readonly ColumnOrColumnGroup<unknown>[] = [
+const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
   { key: 'col1', name: 'col 1' },
   {
     name: 'group 1',

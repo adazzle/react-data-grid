@@ -11,10 +11,10 @@ interface Row {
 }
 
 describe('renderValue', () => {
-  const columns: readonly Column<Row | null>[] = [
+  const columns = [
     { key: 'id', name: 'ID' },
     { key: 'name', name: 'Name' }
-  ];
+  ] as const satisfies Column<Row | null>[];
 
   const rows: readonly Row[] = [{ id: 101 }];
 
