@@ -210,7 +210,6 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   selectedCellIdx: number | undefined;
   isRowSelected: boolean;
   gridRowStart: number;
-  height: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
