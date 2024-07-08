@@ -3,7 +3,6 @@ import { css } from '@linaria/core';
 export const row = css`
   @layer rdg.Row {
     display: contents;
-    line-height: var(--rdg-row-height);
     background-color: var(--rdg-background-color);
 
     &:hover {

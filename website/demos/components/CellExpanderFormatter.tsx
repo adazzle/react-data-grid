@@ -1,17 +1,10 @@
 import { css } from '@linaria/core';
 
 const cellExpandClassname = css`
-  /* needed on chrome */
-  float: right;
-  float: inline-end;
-  display: table;
   block-size: 100%;
-
-  > span {
-    display: table-cell;
-    vertical-align: middle;
-    cursor: pointer;
-  }
+  align-content: center;
+  text-align: center;
+  cursor: pointer;
 `;
 
 interface CellExpanderFormatterProps {
@@ -33,10 +26,8 @@ export function CellExpanderFormatter({
   }
 
   return (
-    <div className={cellExpandClassname}>
-      <span onClick={onCellExpand} onKeyDown={handleKeyDown}>
-        <span tabIndex={tabIndex}>{expanded ? '\u25BC' : '\u25B6'}</span>
-      </span>
+    <div className={cellExpandClassname} onClick={onCellExpand} onKeyDown={handleKeyDown}>
+      <span tabIndex={tabIndex}>{expanded ? '\u25BC' : '\u25B6'}</span>
     </div>
   );
 }

@@ -10,13 +10,23 @@
   },
   "json": {
     "parser": {
-      "allowComments": true
+      "allowComments": true,
+      "allowTrailingCommas": true
     }
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingComma": "none"
+      "trailingCommas": "none"
+    }
+  },
+  "css": {
+    "linter": {
+      "enabled": false
+    },
+    "formatter": {
+      "enabled": false,
+      "indentStyle": "space"
     }
   },
   "linter": {
@@ -58,6 +68,7 @@
         "noBannedTypes": "warn",
         "noEmptyTypeParameters": "warn",
         "noExcessiveCognitiveComplexity": "off",
+        "noExcessiveNestedTestSuites": "off",
         "noExtraBooleanCast": "warn",
         "noForEach": "warn",
         "noMultipleSpacesInRegularExpressionLiterals": "warn",
@@ -71,6 +82,7 @@
         "noUselessLoneBlockStatements": "warn",
         "noUselessRename": "warn",
         "noUselessSwitchCase": "warn",
+        "noUselessTernary": "warn",
         "noUselessThisAlias": "warn",
         "noUselessTypeConstraint": "warn",
         "noVoid": "warn",
@@ -87,15 +99,18 @@
         "noChildrenProp": "off",
         "noConstAssign": "warn",
         "noConstantCondition": "warn",
+        "noConstantMathMinMaxClamp": "warn",
         "noConstructorReturn": "warn",
         "noEmptyCharacterClassInRegex": "warn",
         "noEmptyPattern": "warn",
+        "noFlatMapIdentity": "warn",
         "noGlobalObjectCalls": "warn",
         "noInnerDeclarations": "warn",
         "noInvalidConstructorSuper": "warn",
         "noInvalidNewBuiltin": "warn",
         "noInvalidUseBeforeDeclaration": "warn",
         "noNewSymbol": "warn",
+        "noNodejsModules": "off",
         "noNonoctalDecimalEscape": "warn",
         "noPrecisionLoss": "warn",
         "noRenderReturnValue": "warn",
@@ -115,15 +130,19 @@
         "noUnusedVariables": "warn",
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
+        "useArrayLiterals": "warn",
         "useExhaustiveDependencies": "off",
         "useHookAtTopLevel": "warn",
         "useIsNan": "warn",
+        "useJsxKeyInIterable": "off",
         "useValidForDirection": "warn",
         "useYield": "warn"
       },
       "performance": {
         "noAccumulatingSpread": "warn",
-        "noDelete": "warn"
+        "noBarrelFile": "off",
+        "noDelete": "warn",
+        "noReExportAll": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn",
@@ -137,6 +156,7 @@
         "noImplicitBoolean": "off",
         "noInferrableTypes": "warn",
         "noNamespace": "warn",
+        "noNamespaceImport": "warn",
         "noNegationElse": "warn",
         "noNonNullAssertion": "off",
         "noParameterAssign": "off",
@@ -151,7 +171,7 @@
         "useCollapsedElseIf": "warn",
         "useConsistentArrayType": "warn",
         "useConst": "warn",
-        "useDefaultParameterLast": "warn",
+        "useDefaultParameterLast": "off",
         "useEnumInitializers": "warn",
         "useExponentiationOperator": "warn",
         "useExportType": "warn",
@@ -161,6 +181,7 @@
         "useImportType": "warn",
         "useLiteralEnumMembers": "warn",
         "useNamingConvention": "off",
+        "useNodeAssertStrict": "warn",
         "useNodejsImportProtocol": "warn",
         "useNumberNamespace": "warn",
         "useNumericLiterals": "warn",
@@ -194,11 +215,14 @@
         "noDuplicateJsxProps": "warn",
         "noDuplicateObjectKeys": "warn",
         "noDuplicateParameters": "warn",
+        "noDuplicateTestHooks": "warn",
         "noEmptyBlockStatements": "off",
         "noEmptyInterface": "warn",
         "noExplicitAny": "off",
+        "noExportsInTest": "warn",
         "noExtraNonNullAssertion": "warn",
         "noFallthroughSwitchClause": "warn",
+        "noFocusedTests": "warn",
         "noFunctionAssign": "warn",
         "noGlobalAssign": "warn",
         "noGlobalIsFinite": "warn",
@@ -214,7 +238,9 @@
         "noRedundantUseStrict": "warn",
         "noSelfCompare": "warn",
         "noShadowRestrictedNames": "warn",
+        "noSkippedTests": "warn",
         "noSparseArray": "warn",
+        "noSuspiciousSemicolonInJsx": "warn",
         "noThenProperty": "warn",
         "noUnsafeDeclarationMerging": "warn",
         "noUnsafeNegation": "warn",

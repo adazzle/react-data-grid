@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '21.x'
+          node-version: '22.x'
           check-latest: true
       - uses: actions/cache@v4
         with:
@@ -25,19 +25,19 @@ jobs:
       - name: npm install
         run: npm i
       - name: Biome
-        run: npm run biome:ci
+        run: node --run biome:ci
       - name: ESLint
-        run: npm run eslint
+        run: node --run eslint
       - name: Prettier
-        run: npm run prettier:check
+        run: node --run prettier:check
       - name: Typecheck
-        run: npm run typecheck
+        run: node --run typecheck
       - name: Bundle
         run: |
-          npm run build
-          npm run build:types
+          node --run build
+          node --run build:types
       - name: Test
-        run: npm t
+        run: npm --run test
         timeout-minutes: 4
       - name: Upload coverage
         uses: codecov/codecov-action@v4
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '21.x'
+          node-version: '22.x'
           check-latest: true
       - uses: actions/cache@v4
         with:
@@ -63,7 +63,7 @@ jobs:
       - name: Build
         run: |
           npm i
-          npm run build:website
+          node --run build:website
       - name: Set up git user
         if: github.event_name == 'push'
         run: |

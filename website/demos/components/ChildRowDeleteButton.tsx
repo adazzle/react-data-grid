@@ -1,6 +1,7 @@
 import { css } from '@linaria/core';
 
 const childRowActionCrossClassname = css`
+  block-size: 100%;
   &::before,
   &::after {
     content: '';
@@ -16,7 +17,7 @@ const childRowActionCrossClassname = css`
 
   &::after {
     inset-block-start: 50%;
-    inset-inline-start: 20px;
+    inset-inline-start: 21px;
     block-size: 1px;
     inline-size: 15px;
   }
