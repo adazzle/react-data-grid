@@ -3,11 +3,19 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { DataGridDefaultRenderersProvider, renderSortIcon, SelectColumn } from '../src';
-import type { Column, DataGridProps, RenderSortStatusProps, SortColumn } from '../src';
-import { getHeaderCells, getRows, setup } from './utils';
+import type {
+  CellRendererProps,
+  Column,
+  DataGridProps,
+  RenderSortStatusProps,
+  SortColumn
+} from '../src';
+import { getCells, getHeaderCells, getRows, setup } from './utils';
 
 interface Row {
   id: number;
+  col1?: string;
+  col2?: string;
 }
 
 const noRows: readonly Row[] = [];
@@ -25,6 +33,22 @@ const columns: readonly Column<Row>[] = [
     sortable: true
   }
 ];
+
+function globalCellRenderer(key: React.Key, props: CellRendererProps<Row, unknown>) {
+  return (
+    <div key={key} role="gridcell">
+      {props.row[props.column.key as keyof Row]}
+    </div>
+  );
+}
+
+function localCellRenderer(key: React.Key) {
+  return (
+    <div key={key} role="gridcell">
+      local
+    </div>
+  );
+}
 
 function NoRowsFallback() {
   return <div>Local no rows fallback</div>;
@@ -72,7 +96,8 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
       value={{
         noRowsFallback: <GlobalNoRowsFallback />,
         renderCheckbox: globalRenderCheckbox,
-        renderSortStatus: globalSortStatus
+        renderSortStatus: globalSortStatus,
+        renderCell: globalCellRenderer
       }}
     >
       <TestGrid {...props} />
@@ -175,4 +200,25 @@ test('sortPriority defined using both providers and renderers', async () => {
   expect(p[1]).toHaveTextContent('1');
 
   expect(screen.queryByTestId('global-sort-priority')).not.toBeInTheDocument();
+});
+
+test('renderCell defined using provider', () => {
+  setupProvider({ columns, rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }] });
+
+  const [, cell1, cell2] = getCells();
+  expect(cell1).toHaveTextContent('col 1 value');
+  expect(cell2).toHaveTextContent('col 2 value');
+});
+
+test('renderCell defined using both providers and renderers', () => {
+  setupProvider({
+    columns,
+    rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }],
+    renderers: { renderCell: localCellRenderer }
+  });
+
+  const [selectCell, cell1, cell2] = getCells();
+  expect(selectCell).toHaveTextContent('local');
+  expect(cell1).toHaveTextContent('local');
+  expect(cell2).toHaveTextContent('local');
 });
