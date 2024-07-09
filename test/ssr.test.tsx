@@ -23,6 +23,7 @@ function App() {
   return <DataGrid columns={columns} rows={rows} />;
 }
 
+// biome-ignore lint/suspicious/noSkippedTests: <explanation>
 test.skip('basic server-side rendering (SSR) support', () => {
   // make sure we're not running in the JSDOM environment
   expect(globalThis.window).toBeUndefined();

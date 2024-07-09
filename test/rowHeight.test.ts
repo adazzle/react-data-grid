@@ -1,3 +1,5 @@
+import { screen } from '@testing-library/react';
+
 import type { Column, DataGridProps } from '../src';
 import { getRows, setup } from './utils';
 
@@ -22,7 +24,10 @@ test('rowHeight is number', () => {
   setupGrid(40);
 
   const grid = screen.getByRole('grid');
-  expect(grid).toHaveStyle({ 'grid-template-rows': 'repeat(1, 40px) repeat(50, 40px)' });
+  expect(grid).toHaveStyle({
+    'grid-template-rows':
+      '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
+  });
   expect(getRows()).toHaveLength(31);
 });
 
