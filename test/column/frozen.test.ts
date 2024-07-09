@@ -2,15 +2,8 @@ import type { Column } from '../../src';
 import { cellClassname, cellFrozenClassname } from '../../src/style/cell';
 import { getHeaderCells, setup } from '../utils';
 
-interface Row {
-  col1: number;
-  col2: string;
-  col3: string;
-  col4: string;
-}
-
 test('frozen column have a specific class, and are stable-sorted before non-frozen columns', () => {
-  const columns: readonly Column<Row>[] = [
+  const columns: readonly Column<never>[] = [
     {
       key: 'col1',
       name: 'col1',

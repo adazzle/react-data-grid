@@ -1,6 +1,8 @@
+import { render } from '@testing-library/react';
+
 import DataGrid, { SelectColumn, TreeDataGrid } from '../src';
 import type { Column } from '../src';
-import { getHeaderCells, render } from './utils';
+import { getHeaderCells } from './utils';
 
 const frozen1: Column<unknown> = {
   key: 'f1',
@@ -25,15 +27,17 @@ const standard2: Column<unknown> = {
 };
 
 test('column order', () => {
+  const rows: readonly unknown[] = [];
+
   function run(columns: readonly Column<unknown>[]) {
     let unmount;
     if (groupBy === undefined) {
-      ({ unmount } = render(<DataGrid columns={columns} rows={[]} />));
+      ({ unmount } = render(<DataGrid columns={columns} rows={rows} />));
     } else {
       ({ unmount } = render(
         <TreeDataGrid
           columns={columns}
-          rows={[]}
+          rows={rows}
           groupBy={groupBy}
           rowGrouper={() => ({})}
           expandedGroupIds={new Set()}

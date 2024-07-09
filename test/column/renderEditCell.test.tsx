@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndex, getSelectedCell, render, scrollGrid } from '../utils';
+import { getCellsAtRowIndex, getSelectedCell, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -244,7 +244,7 @@ describe('Editor', () => {
     });
 
     it('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
-      const columns: readonly Column<unknown>[] = [
+      const columns: readonly Column<NonNullable<unknown>>[] = [
         {
           key: 'col1',
           name: 'Column1',

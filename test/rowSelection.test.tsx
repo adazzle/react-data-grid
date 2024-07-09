@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import DataGrid, { SelectColumn } from '../src';
 import type { Column } from '../src';
-import { getCellsAtRowIndex, getRows, render } from './utils';
+import { getCellsAtRowIndex, getRows } from './utils';
 
 interface Row {
   id: number;

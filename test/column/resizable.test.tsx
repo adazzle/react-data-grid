@@ -51,7 +51,7 @@ const columns: readonly Column<Row>[] = [
 ];
 
 test('should not resize column if resizable is not specified', async () => {
-  setup({ columns, rows: [] });
+  setup<Row, unknown>({ columns, rows: [] });
   const [col1] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col1, resizeBy: 50 });
@@ -61,7 +61,7 @@ test('should not resize column if resizable is not specified', async () => {
 });
 
 test('should resize column when dragging the handle', async () => {
-  setup({ columns, rows: [] });
+  setup<Row, unknown>({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: -50 });
@@ -69,7 +69,7 @@ test('should resize column when dragging the handle', async () => {
 });
 
 test('should use the maxWidth if specified', async () => {
-  setup({ columns, rows: [] });
+  setup<Row, unknown>({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: 1000 });
