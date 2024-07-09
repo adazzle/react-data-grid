@@ -39,7 +39,6 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
       reporter: ['text', 'json']
     },
-    pool: 'forks',
     testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
     restoreMocks: true,
