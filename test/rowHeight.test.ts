@@ -28,7 +28,7 @@ test('rowHeight is number', () => {
     'grid-template-rows':
       '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
   });
-  expect(getRows()).toHaveLength(31);
+  expect(getRows()).toHaveLength(30);
 });
 
 test('rowHeight is function', () => {

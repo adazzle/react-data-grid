@@ -77,7 +77,7 @@ test('should use the maxWidth if specified', async () => {
 });
 
 test('should use the minWidth if specified', async () => {
-  setup({ columns, rows: [] });
+  setup<Row, unknown>({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: -150 });
