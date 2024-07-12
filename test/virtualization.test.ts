@@ -35,7 +35,7 @@ function setupGrid(
     });
   }
 
-  return setup({
+  setup({
     columns,
     rows,
     topSummaryRows,
