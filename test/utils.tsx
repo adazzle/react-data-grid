@@ -5,7 +5,7 @@ import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
 export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
-  return render(
+  render(
     <DataGrid
       {...props}
       className={css`
