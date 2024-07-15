@@ -49,7 +49,7 @@ jobs:
       - name: Build website
         run: node --run build:website
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install chromium
       - name: Test
         run: npm --run test
         timeout-minutes: 4
