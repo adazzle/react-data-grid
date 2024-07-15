@@ -24,6 +24,8 @@ jobs:
       - name: merge react 19 branch
         if: matrix.react == 19
         run: |
+          git config --global user.email 'action@github.com'
+          git config --global user.name 'GitHub Action'
           git fetch origin react19
           git merge origin/react19 -X theirs --allow-unrelated-histories
       - name: npm install
