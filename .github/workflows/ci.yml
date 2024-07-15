@@ -28,6 +28,8 @@ jobs:
           git config --global user.name 'GitHub Action'
           git fetch origin react19
           git merge origin/react19 -X theirs --allow-unrelated-histories
+          git fetch origin main
+          git diff origin/main
       - name: npm install
         run: npm i
       - name: Biome
