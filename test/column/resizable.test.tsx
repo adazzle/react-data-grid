@@ -72,9 +72,7 @@ test('should resize column when dragging the handle', async () => {
   const grid = getGrid();
   expect(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: -50 });
-  // TODO: why does toHaveStyle not work here?
-  // eslint-disable-next-line jest-dom/prefer-to-have-style
-  expect(grid.style.gridTemplateColumns).toBe('100px 150px');
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 150px' });
 });
 
 test('should use the maxWidth if specified', async () => {
