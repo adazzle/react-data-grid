@@ -98,7 +98,7 @@
     "lodash-es": "^4.17.21",
     "playwright": "^1.45.1",
     "postcss": "^8.4.25",
-    "prettier": "3.3.2",
+    "prettier": "3.3.3",
     "react": "^18.3.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
