@@ -1225,4 +1225,4 @@ function isSamePosition(p1: Position, p2: Position) {
 
 export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => JSX.Element;
+) => React.JSX.Element;

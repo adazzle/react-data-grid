@@ -12,16 +12,26 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        react: [18, 19]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           check-latest: true
-      - uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package.json') }}
+      - name: Set up git user
+        run: |
+          git config --global user.email 'action@github.com'
+          git config --global user.name 'GitHub Action'
+      - name: merge react 19 branch
+        if: matrix.react == 19
+        run: |
+          git fetch origin react19
+          git merge origin/react19 -X theirs --allow-unrelated-histories
+          git fetch origin main
+          git diff origin/main
       - name: npm install
         run: npm i
       - name: Biome
@@ -36,41 +46,18 @@ jobs:
         run: |
           node --run build
           node --run build:types
+      - name: Build website
+        run: node --run build:website
       - name: Test
         run: npm --run test
         timeout-minutes: 4
       - name: Upload coverage
+        if: matrix.react == 18
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-
-  website:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-          check-latest: true
-      - uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package.json') }}
-      - uses: actions/cache@v4
-        with:
-          path: node_modules/.cache
-          key: build-${{ hashFiles('package.json') }}
-      - name: Build
-        run: |
-          npm i
-          node --run build:website
-      - name: Set up git user
-        if: github.event_name == 'push'
-        run: |
-          git config --global user.email 'action@github.com'
-          git config --global user.name 'GitHub Action'
       - name: Deploy gh-pages
-        if: github.ref == 'refs/heads/main'
+        if: matrix.react == 18 && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git fetch origin gh-pages
           git worktree add gh-pages gh-pages

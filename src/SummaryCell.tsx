@@ -58,4 +58,4 @@ function SummaryCell<R, SR>({
   );
 }
 
-export default memo(SummaryCell) as <R, SR>(props: SummaryCellProps<R, SR>) => JSX.Element;
+export default memo(SummaryCell) as <R, SR>(props: SummaryCellProps<R, SR>) => React.JSX.Element;
