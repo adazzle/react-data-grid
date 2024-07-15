@@ -50,17 +50,17 @@ test('draggable columns', async () => {
   expect(onColumnsReorder).toHaveBeenCalledWith('col2', 'col4');
   onColumnsReorder.mockReset();
 
-  // should not call `onColumnsReorder` if drag and drop elements are the same
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.dragAndDrop(cell2, cell2);
   });
+  // should not call `onColumnsReorder` if drag and drop elements are the same
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
-  // should not drag a column if it is not specified as draggable
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.dragAndDrop(cell1, cell2);
   });
+  // should not drag a column if it is not specified as draggable
   expect(onColumnsReorder).not.toHaveBeenCalled();
 });
