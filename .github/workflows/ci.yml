@@ -12,16 +12,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        react: [18, 19]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           check-latest: true
-      - uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package.json') }}
+      - name: merge react 19 branch
+        if: matrix.react == 19
+        run: |
+          git fetch origin react19
+          git merge origin/react19 -X theirs
       - name: npm install
         run: npm i
       - name: Biome
@@ -40,6 +44,7 @@ jobs:
         run: npm --run test
         timeout-minutes: 4
       - name: Upload coverage
+        if: matrix.react == 18
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -52,14 +57,6 @@ jobs:
         with:
           node-version: '22.x'
           check-latest: true
-      - uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package.json') }}
-      - uses: actions/cache@v4
-        with:
-          path: node_modules/.cache
-          key: build-${{ hashFiles('package.json') }}
       - name: Build
         run: |
           npm i
