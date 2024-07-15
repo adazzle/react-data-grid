@@ -25,7 +25,7 @@ jobs:
         if: matrix.react == 19
         run: |
           git fetch origin react19
-          git merge origin/react19 -X theirs
+          git merge origin/react19 -X theirs --allow-unrelated-histories
       - name: npm install
         run: npm i
       - name: Biome
