@@ -1,5 +1,4 @@
 import { act } from 'react';
-import { waitFor } from '@testing-library/react';
 import { commands, userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../src';
@@ -17,10 +16,6 @@ interface ResizeArgs {
 }
 
 async function resize({ column, resizeBy }: ResizeArgs) {
-  // wait for layout to settle
-  await waitFor(() => {
-    expect(column.getBoundingClientRect().right % 100).not.toBe(0);
-  });
   const resizeHandle = column.querySelector(`.${resizeHandleClassname}`);
   if (resizeHandle === null) return;
 
