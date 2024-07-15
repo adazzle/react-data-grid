@@ -9,7 +9,7 @@ export function useColumnWidths<R, SR>(
   columns: readonly CalculatedColumn<R, SR>[],
   viewportColumns: readonly CalculatedColumn<R, SR>[],
   templateColumns: readonly string[],
-  gridRef: React.RefObject<HTMLDivElement>,
+  gridRef: React.RefObject<HTMLDivElement | null>,
   gridWidth: number,
   resizedColumnWidths: ReadonlyMap<string, number>,
   measuredColumnWidths: ReadonlyMap<string, number>,
@@ -105,8 +105,8 @@ export function useColumnWidths<R, SR>(
   } as const;
 }
 
-function measureColumnWidth(gridRef: React.RefObject<HTMLDivElement>, key: string) {
+function measureColumnWidth(gridRef: React.RefObject<HTMLDivElement | null>, key: string) {
   const selector = `[data-measuring-cell-key="${CSS.escape(key)}"]`;
-  const measuringCell = gridRef.current!.querySelector(selector);
+  const measuringCell = gridRef.current?.querySelector(selector);
   return measuringCell?.getBoundingClientRect().width;
 }
