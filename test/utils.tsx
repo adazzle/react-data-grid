@@ -11,9 +11,7 @@ export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridPro
       className={css`
         width: 1920px;
         height: 1080px;
-        &::-webkit-scrollbar {
-          display: none;
-        }
+        scrollbar-width: none;
       `}
     />
   );
