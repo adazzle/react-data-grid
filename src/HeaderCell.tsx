@@ -136,7 +136,6 @@ export default function HeaderCell<R, SR>({
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
-    // TODO: remove? user-event cannot simulate native user interactions in real browsers
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
     currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
