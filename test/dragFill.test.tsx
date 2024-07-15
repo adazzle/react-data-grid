@@ -21,7 +21,20 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-const initialRows: readonly Row[] = [{ col: 'a1' }, { col: 'a2' }, { col: 'a3' }, { col: 'a4' }];
+const initialRows: readonly Row[] = [
+  {
+    col: 'a1'
+  },
+  {
+    col: 'a2'
+  },
+  {
+    col: 'a3'
+  },
+  {
+    col: 'a4'
+  }
+];
 
 function setup(allowDragFill = true) {
   render(<DragFillTest allowDragFill={allowDragFill} />);
