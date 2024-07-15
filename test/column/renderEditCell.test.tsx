@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndex, getSelectedCell, scrollGrid } from '../utils';
+import { getCellsAtRowIndex, getRows, getSelectedCell, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -100,13 +100,15 @@ describe('Editor', () => {
     render(<EditorTest gridRows={rows} />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
-
     await scrollGrid({ scrollTop: 2000 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
+    expect(getRows()[1]).toHaveTextContent('5353');
     await userEvent.keyboard('123');
-    expect(screen.getByRole('spinbutton', { name: 'col1-editor' })).toHaveValue(1230);
-    await userEvent.keyboard('{enter}');
+    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+    expect(getRows()[1]).toHaveTextContent('11');
+    const editor = screen.getByRole('spinbutton', { name: 'col1-editor' });
+    expect(editor).toHaveValue(1230);
   });
 
   describe('editable', () => {
