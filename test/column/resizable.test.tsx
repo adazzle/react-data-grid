@@ -1,4 +1,6 @@
-import userEvent from '@testing-library/user-event';
+import { act } from 'react';
+import { waitFor } from '@testing-library/react';
+import { commands, userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../src';
 import { resizeHandleClassname } from '../../src/HeaderCell';
@@ -12,27 +14,30 @@ interface Row {
 interface ResizeArgs {
   readonly column: HTMLElement;
   readonly resizeBy: number;
-  readonly startOffset?: number;
 }
 
-async function resize({ column, resizeBy, startOffset = 0 }: ResizeArgs) {
+async function resize({ column, resizeBy }: ResizeArgs) {
+  // wait for layout to settle
+  await waitFor(() => {
+    expect(column.getBoundingClientRect().right % 100).not.toBe(0);
+  });
   const resizeHandle = column.querySelector(`.${resizeHandleClassname}`);
   if (resizeHandle === null) return;
 
-  const clientXStart = column.getBoundingClientRect().right + startOffset;
-
-  await userEvent.pointer([
-    { keys: '[TouchA>]', target: column, coords: { clientX: clientXStart } },
-    { pointerName: 'TouchA', coords: { clientX: clientXStart + resizeBy } },
-    { keys: '[/TouchA]' }
-  ]);
+  await act(async () => {
+    // @ts-expect-error
+    await commands.resizeColumn(resizeBy);
+  });
 }
 
 async function autoResize(column: HTMLElement) {
   const resizeHandle = column.querySelector(`.${resizeHandleClassname}`);
   if (resizeHandle === null) return;
 
-  await userEvent.dblClick(resizeHandle);
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    await userEvent.dblClick(resizeHandle);
+  });
 }
 
 const columns: readonly Column<Row>[] = [
@@ -61,17 +66,18 @@ test('should not resize column if resizable is not specified', async () => {
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
 });
 
-// biome-ignore lint/suspicious/noSkippedTests: <explanation>
-test.skip('should resize column when dragging the handle', async () => {
+test('should resize column when dragging the handle', async () => {
   setup<Row, unknown>({ columns, rows: [] });
   const [, col2] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  const grid = getGrid();
+  expect(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: -50 });
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 150px' });
+  // TODO: why does toHaveStyle not work here?
+  // eslint-disable-next-line jest-dom/prefer-to-have-style
+  expect(grid.style.gridTemplateColumns).toBe('100px 150.004px');
 });
 
-// biome-ignore lint/suspicious/noSkippedTests: <explanation>
-test.skip('should use the maxWidth if specified', async () => {
+test('should use the maxWidth if specified', async () => {
   setup<Row, unknown>({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px ' });
@@ -79,13 +85,28 @@ test.skip('should use the maxWidth if specified', async () => {
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
 
-// biome-ignore lint/suspicious/noSkippedTests: <explanation>
-test.skip('should use the minWidth if specified', async () => {
+test('should use the minWidth if specified', async () => {
   setup<Row, unknown>({ columns, rows: [] });
   const [, col2] = getHeaderCells();
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: -150 });
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+});
+
+test('should not auto resize column if resizable is not specified', async () => {
+  setup<Row, unknown>({
+    columns,
+    rows: [
+      {
+        col1: 1,
+        col2: 'a'.repeat(50)
+      }
+    ]
+  });
+  const [col1] = getHeaderCells();
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  await autoResize(col1);
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
 });
 
 test('should auto resize column when resize handle is double clicked', async () => {

@@ -1,9 +1,24 @@
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
+import type { BrowserCommand } from 'vitest/node';
 
 const isCI = process.env.CI === 'true';
 const isTest = process.env.NODE_ENV === 'test';
+
+// TODO: remove when `userEvent.pointer` is supported
+const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeBy) => {
+  const page = context.page;
+  const frame = await context.frame();
+  const resizeHandle = frame.locator('[role="columnheader"][aria-colindex="2"]  div');
+  const { x, y } = (await resizeHandle.boundingBox())!;
+  await resizeHandle.hover({
+    position: { x: 5, y: 5 }
+  });
+  await page.mouse.down();
+  await page.mouse.move(x + resizeBy + 5 + 0, y);
+  await page.mouse.up();
+};
 
 export default defineConfig({
   base: isCI ? '/react-data-grid/' : '/',
@@ -45,7 +60,8 @@ export default defineConfig({
     browser: {
       enabled: true,
       name: 'chromium',
-      provider: 'playwright'
+      provider: 'playwright',
+      commands: { resizeColumn }
     },
     restoreMocks: true,
     sequence: {

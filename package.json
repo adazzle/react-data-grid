@@ -93,7 +93,6 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-sonarjs": "^1.0.3",
     "eslint-plugin-testing-library": "^6.2.0",
-    "jsdom": "^24.1.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
     "lodash-es": "^4.17.21",
