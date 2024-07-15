@@ -377,7 +377,7 @@ function ExportButton({
   children
 }: {
   onExport: () => Promise<unknown>;
-  children: React.ReactChild;
+  children: React.ReactNode;
 }) {
   const [exporting, setExporting] = useState(false);
   return (

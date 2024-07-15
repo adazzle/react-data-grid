@@ -439,4 +439,4 @@ function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
 
 export default forwardRef(TreeDataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: TreeDataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => JSX.Element;
+) => React.JSX.Element;

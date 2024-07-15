@@ -60,4 +60,4 @@ function GroupedColumnHeaderRow<R, SR>({
 
 export default memo(GroupedColumnHeaderRow) as <R, SR>(
   props: GroupedColumnHeaderRowProps<R, SR>
-) => JSX.Element;
+) => React.JSX.Element;
