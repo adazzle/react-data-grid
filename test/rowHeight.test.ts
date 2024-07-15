@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import type { Column, DataGridProps } from '../src';
 import { getRows, setup } from './utils';
@@ -20,7 +21,7 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
   setup({ columns, rows, rowHeight });
 }
 
-test('rowHeight is number', () => {
+test('rowHeight is number', async () => {
   setupGrid(40);
 
   const grid = screen.getByRole('grid');
@@ -29,9 +30,14 @@ test('rowHeight is number', () => {
       '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
   });
   expect(getRows()).toHaveLength(30);
+
+  await userEvent.tab();
+  expect(grid.scrollTop).toBe(0);
+  await userEvent.keyboard('{Control>}{end}');
+  expect(grid.scrollTop + grid.clientHeight).toBe(grid.scrollHeight);
 });
 
-test('rowHeight is function', () => {
+test('rowHeight is function', async () => {
   setupGrid((row) => [40, 60, 80][row % 3]);
 
   const grid = screen.getByRole('grid');
@@ -40,4 +46,9 @@ test('rowHeight is function', () => {
       '35px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'
   });
   expect(getRows()).toHaveLength(22);
+
+  await userEvent.tab();
+  expect(grid.scrollTop).toBe(0);
+  await userEvent.keyboard('{Control>}{end}');
+  expect(grid.scrollTop + grid.clientHeight).toBe(grid.scrollHeight);
 });
