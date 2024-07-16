@@ -25,11 +25,6 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true
   },
-  resolve: {
-    alias: {
-      lodash: 'lodash-es'
-    }
-  },
   plugins: [
     react({
       babel: {

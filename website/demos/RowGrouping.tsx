@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { groupBy as rowGrouper } from 'lodash-es';
 import { css } from '@linaria/core';
 
 import { SelectColumn, TreeDataGrid } from '../../src';
@@ -200,4 +199,10 @@ export default function RowGrouping({ direction }: Props) {
       />
     </div>
   );
+}
+
+function rowGrouper(rows: readonly Row[], columnKey: string) {
+  // @ts-expect-error
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
 }
