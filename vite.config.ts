@@ -16,7 +16,7 @@ const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeB
     position: { x: 5, y: 5 }
   });
   await page.mouse.down();
-  await page.mouse.move(x + resizeBy + 5 + 0, y);
+  await page.mouse.move(x + resizeBy + 5, y);
   await page.mouse.up();
 };
 
