@@ -35,7 +35,7 @@ function setupGrid(
     });
   }
 
-  return setup({
+  setup({
     columns,
     rows,
     topSummaryRows,
@@ -99,12 +99,11 @@ test('virtualization is enabled', async () => {
   assertHeaderCells(18, 0, 17);
   assertRows(34, 0, 33);
   assertCells(0, 18, 0, 17);
+  await scrollGrid({ scrollTop: 244 });
+  assertRows(39, 2, 40);
 
-  await scrollGrid({ scrollTop: 249 });
+  await scrollGrid({ scrollTop: 245 });
   assertRows(38, 3, 40);
-
-  await scrollGrid({ scrollTop: 250 });
-  assertRows(39, 3, 41);
 
   await scrollGrid({ scrollTop: 419 });
   assertRows(39, 7, 45);
@@ -112,11 +111,11 @@ test('virtualization is enabled', async () => {
   await scrollGrid({ scrollTop: 420 });
   assertRows(38, 8, 45);
 
-  await scrollGrid({ scrollTop: 529 });
-  assertRows(38, 11, 48);
+  await scrollGrid({ scrollTop: 524 });
+  assertRows(39, 10, 48);
 
-  await scrollGrid({ scrollTop: 530 });
-  assertRows(39, 11, 49);
+  await scrollGrid({ scrollTop: 525 });
+  assertRows(38, 11, 48);
 
   await scrollGrid({ scrollTop: 1000 });
   assertRows(39, 24, 62);
@@ -126,11 +125,11 @@ test('virtualization is enabled', async () => {
   await scrollGrid({ scrollTop: rowHeight + rowHeight * 100 - 1080 });
   assertRows(34, 66, 99);
 
-  await scrollGrid({ scrollLeft: 90 });
+  await scrollGrid({ scrollLeft: 92 });
   assertHeaderCells(18, 0, 17);
   assertCells(66, 18, 0, 17);
 
-  await scrollGrid({ scrollLeft: 91 });
+  await scrollGrid({ scrollLeft: 93 });
   assertHeaderCells(19, 0, 18);
   assertCells(66, 19, 0, 18);
 

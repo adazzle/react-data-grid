@@ -1,4 +1,5 @@
-import { fireEvent } from '@testing-library/react';
+import { act } from 'react';
+import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../src';
 import { getHeaderCells, setup } from '../utils';
@@ -25,7 +26,7 @@ const columns: readonly Column<never>[] = [
   }
 ];
 
-test('draggable columns', () => {
+test('draggable columns', async () => {
   const onColumnsReorder = vi.fn();
   setup({ columns, rows: [], onColumnsReorder });
   const [cell1, cell2, cell3, cell4] = getHeaderCells();
@@ -37,36 +38,25 @@ test('draggable columns', () => {
 
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
-  let data: unknown;
-  let type: unknown;
-  const event = {
-    dataTransfer: {
-      get types() {
-        return [type];
-      },
-      setData(_type: unknown, _data: unknown) {
-        type = _type;
-        data = _data;
-      },
-      getData() {
-        return data;
-      }
-    }
-  } as const;
-
-  fireEvent.dragStart(cell2, event);
-  fireEvent.drop(cell4, event);
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    await userEvent.dragAndDrop(cell2, cell4);
+  });
 
   expect(onColumnsReorder).toHaveBeenCalledWith('col2', 'col4');
   onColumnsReorder.mockReset();
 
   // should not call `onColumnsReorder` if drag and drop elements are the same
-  fireEvent.dragStart(cell2, event);
-  fireEvent.drop(cell2, event);
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    await userEvent.dragAndDrop(cell2, cell2);
+  });
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
   // should not drag a column if it is not specified as draggable
-  fireEvent.dragStart(cell1, event);
-  fireEvent.drop(cell2, event);
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    await userEvent.dragAndDrop(cell1, cell2);
+  });
   expect(onColumnsReorder).not.toHaveBeenCalled();
 });

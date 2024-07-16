@@ -25,16 +25,16 @@ test('rowHeight is number', async () => {
   setupGrid(40);
 
   const grid = screen.getByRole('grid');
-  expect(grid).toHaveStyle({ 'grid-template-rows': 'repeat(1, 40px) repeat(50, 40px)' });
-  expect(getRows()).toHaveLength(31);
+  expect(grid).toHaveStyle({
+    'grid-template-rows':
+      '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
+  });
+  expect(getRows()).toHaveLength(30);
 
   await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
-
-  // Go to the last cell
-  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
   await userEvent.keyboard('{Control>}{end}');
-  expect(spy).toHaveBeenCalled();
+  expect(grid.scrollTop + grid.clientHeight).toBe(grid.scrollHeight);
 });
 
 test('rowHeight is function', async () => {
@@ -43,15 +43,12 @@ test('rowHeight is function', async () => {
   const grid = screen.getByRole('grid');
   expect(grid).toHaveStyle({
     'grid-template-rows':
-      'repeat(1, 35px) 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'
+      '35px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'
   });
   expect(getRows()).toHaveLength(22);
 
   await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
-
-  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
-  // Go to the last cell
   await userEvent.keyboard('{Control>}{end}');
-  expect(spy).toHaveBeenCalled();
+  expect(grid.scrollTop + grid.clientHeight).toBe(grid.scrollHeight);
 });

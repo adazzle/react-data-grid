@@ -1,10 +1,19 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { css } from '@linaria/core';
 
 import DataGrid from '../src/';
 import type { DataGridProps } from '../src/';
 
-export function setup<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
-  return render(<DataGrid {...props} />);
+export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
+  render(
+    <DataGrid
+      {...props}
+      className={css`
+        height: 1080px;
+        scrollbar-width: none;
+      `}
+    />
+  );
 }
 
 export function getGrid() {
