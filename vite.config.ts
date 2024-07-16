@@ -4,7 +4,6 @@ import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
 
 const isCI = process.env.CI === 'true';
-const isTest = process.env.NODE_ENV === 'test';
 
 // TODO: remove when `userEvent.pointer` is supported
 const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeBy) => {
