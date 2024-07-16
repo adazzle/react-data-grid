@@ -178,6 +178,8 @@ A number defining the height of summary rows.
 
 ###### `groupBy?: Maybe<readonly string[]>`
 
+###### `rowGrouper?: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>`
+
 ###### `expandedGroupIds?: Maybe<ReadonlySet<unknown>>`
 
 ###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
