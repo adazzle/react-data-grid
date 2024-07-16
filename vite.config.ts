@@ -26,12 +26,6 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true
   },
-  resolve: {
-    alias: {
-      lodash: isTest ? 'lodash' : 'lodash-es',
-      'lodash-es': isTest ? 'lodash' : 'lodash-es'
-    }
-  },
   plugins: [
     react({
       babel: {

@@ -30,10 +30,6 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   columns: readonly Column<NoInfer<R>, NoInfer<SR>>[];
   rowHeight?: Maybe<number | ((args: RowHeightArgs<NoInfer<R>>) => number)>;
   groupBy: readonly string[];
-  rowGrouper: (
-    rows: readonly NoInfer<R>[],
-    columnKey: string
-  ) => Record<string, readonly NoInfer<R>[]>;
   expandedGroupIds: ReadonlySet<unknown>;
   onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
 }
@@ -59,7 +55,6 @@ function TreeDataGrid<R, SR, K extends Key>(
     onSelectedRowsChange: rawOnSelectedRowsChange,
     renderers,
     groupBy: rawGroupBy,
-    rowGrouper,
     expandedGroupIds,
     onExpandedGroupIdsChange,
     ...props
@@ -120,7 +115,12 @@ function TreeDataGrid<R, SR, K extends Key>(
     ): [Readonly<GroupByDictionary<R>>, number] => {
       let groupRowsCount = 0;
       const groups: GroupByDictionary<R> = {};
-      for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
+      for (const [key, childRows] of Object.entries(
+        // @ts-expect-error TODO: add `groupRowKeyGetter`
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        Object.groupBy(rows, (row) => row[groupByKey])
+      )) {
+        if (!childRows) continue;
         // Recursively group each parent group
         const [childGroups, childRowsCount] =
           remainingGroupByKeys.length === 0
@@ -134,7 +134,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     };
 
     return groupRows(rawRows, groupBy, 0);
-  }, [groupBy, rowGrouper, rawRows]);
+  }, [groupBy, rawRows]);
 
   const [rows, isGroupRow] = useMemo((): [
     ReadonlyArray<R | GroupRow<R>>,

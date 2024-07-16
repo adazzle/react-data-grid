@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { groupBy as rowGrouper } from 'lodash-es';
 import { css } from '@linaria/core';
 
 import { SelectColumn, TreeDataGrid } from '../../src';
@@ -192,7 +191,6 @@ export default function RowGrouping({ direction }: Props) {
         selectedRows={selectedRows}
         onSelectedRowsChange={setSelectedRows}
         groupBy={selectedOptions}
-        rowGrouper={rowGrouper}
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
         defaultColumnOptions={{ resizable: true }}

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { groupBy as rowGrouper } from 'lodash-es';
 
 import type { Column } from '../src';
 import { SelectColumn, textEditor, TreeDataGrid } from '../src';
@@ -115,7 +114,6 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
       bottomSummaryRows={bottomSummaryRows}
       rowKeyGetter={rowKeyGetter}
       groupBy={groupBy}
-      rowGrouper={rowGrouper}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       expandedGroupIds={expandedGroupIds}
