@@ -28,8 +28,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      lodash: isTest ? 'lodash' : 'lodash-es',
-      'lodash-es': isTest ? 'lodash' : 'lodash-es'
+      lodash: 'lodash-es'
     }
   },
   plugins: [
