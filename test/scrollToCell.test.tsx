@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import type { Column, DataGridHandle } from '../src';
 import DataGrid from '../src';
 import type { PartialPosition } from '../src/ScrollToCell';
+import { getGrid } from './utils';
 
 type Row = undefined;
 
@@ -47,38 +48,50 @@ function Grid() {
   );
 }
 
-async function testScroll(p: PartialPosition, didScroll: boolean) {
-  const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+async function testScroll(p: PartialPosition) {
   position = p;
   await userEvent.click(screen.getByRole('button'));
-  if (didScroll) {
-    expect(spy).toHaveBeenCalled();
-  } else {
-    expect(spy).not.toHaveBeenCalled();
-  }
-  spy.mockRestore();
 }
 
 test('scrollToCell', async () => {
   render(<Grid />);
+  const grid = getGrid();
+  validateScrollPosition(0, 0);
+
   // should scroll to a cell when a valid position is specified
-  await testScroll({ idx: 30, rowIdx: 30 }, true);
+  await testScroll({ idx: 40, rowIdx: 30 });
+  validateScrollPosition(1589, 149);
 
   // should scroll to a column when a valid idx is specified
-  await testScroll({ idx: 30 }, true);
+  await testScroll({ idx: 6 });
+  validateScrollPosition(1589, 50);
+  await testScroll({ idx: 40 });
+  validateScrollPosition(1589, 149);
 
   // should scroll to a row when a valid rowIdx is specified
-  await testScroll({ rowIdx: 30 }, true);
+  await testScroll({ rowIdx: 1 });
+  validateScrollPosition(0, 149);
+  await testScroll({ rowIdx: 30 });
+  validateScrollPosition(1589, 149);
 
   // should not scroll if scroll to column is frozen
-  await testScroll({ idx: 2 }, false);
+  await testScroll({ idx: 2 });
+  validateScrollPosition(1589, 149);
 
   // should not scroll if rowIdx is header row
-  await testScroll({ idx: -1 }, false);
+  await testScroll({ idx: -1 });
+  validateScrollPosition(1589, 149);
 
   // should not scroll if rowIdx is summary row
-  await testScroll({ idx: 50 }, false);
+  await testScroll({ idx: 50 });
+  validateScrollPosition(1589, 149);
 
   // should not scroll if position is out of bound
-  await testScroll({ idx: 60, rowIdx: 60 }, false);
+  await testScroll({ idx: 60, rowIdx: 60 });
+  validateScrollPosition(1589, 149);
+
+  function validateScrollPosition(scrollTop: number, scrollLeft: number) {
+    expect(grid.scrollTop).toBe(scrollTop);
+    expect(grid.scrollLeft).toBe(scrollLeft);
+  }
 });
