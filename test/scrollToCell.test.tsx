@@ -60,35 +60,35 @@ test('scrollToCell', async () => {
 
   // should scroll to a cell when a valid position is specified
   await testScroll({ idx: 40, rowIdx: 30 });
-  validateScrollPosition(1589, 149);
+  validateScrollPosition(1572, 132);
 
   // should scroll to a column when a valid idx is specified
   await testScroll({ idx: 6 });
-  validateScrollPosition(1589, 50);
+  validateScrollPosition(1572, 50);
   await testScroll({ idx: 40 });
-  validateScrollPosition(1589, 149);
+  validateScrollPosition(1572, 132);
 
   // should scroll to a row when a valid rowIdx is specified
   await testScroll({ rowIdx: 1 });
-  validateScrollPosition(0, 149);
+  validateScrollPosition(0, 132);
   await testScroll({ rowIdx: 30 });
-  validateScrollPosition(1589, 149);
+  validateScrollPosition(1572, 132);
 
   // should not scroll if scroll to column is frozen
   await testScroll({ idx: 2 });
-  validateScrollPosition(1589, 149);
+  validateScrollPosition(1572, 132);
 
   // should not scroll if rowIdx is header row
   await testScroll({ idx: -1 });
-  validateScrollPosition(1589, 149);
+  validateScrollPosition(1572, 132);
 
   // should not scroll if rowIdx is summary row
   await testScroll({ idx: 50 });
-  validateScrollPosition(1589, 149);
+  validateScrollPosition(1572, 132);
 
   // should not scroll if position is out of bound
   await testScroll({ idx: 60, rowIdx: 60 });
-  validateScrollPosition(1589, 149);
+  validateScrollPosition(1572, 132);
 
   function validateScrollPosition(scrollTop: number, scrollLeft: number) {
     expect(grid.scrollTop).toBe(scrollTop);

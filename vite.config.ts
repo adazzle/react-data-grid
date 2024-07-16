@@ -51,7 +51,7 @@ export default defineConfig({
     setupFiles: ['test/setup.ts'],
     browser: {
       enabled: true,
-      headless: isCI,
+      headless: true,
       name: 'chromium',
       provider: 'playwright',
       commands: { resizeColumn },
