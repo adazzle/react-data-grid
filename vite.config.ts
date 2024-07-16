@@ -43,8 +43,7 @@ export default defineConfig({
     wyw({ preprocessor: 'none' })
   ],
   server: {
-    // TODO: open bug
-    open: !isTest
+    open: true
   },
   test: {
     root: '.',
