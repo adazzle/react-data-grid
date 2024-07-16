@@ -16,7 +16,7 @@ const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeB
     position: { x: 5, y: 5 }
   });
   await page.mouse.down();
-  await page.mouse.move(x + resizeBy + 5 + 0, y);
+  await page.mouse.move(x + resizeBy + 5, y);
   await page.mouse.up();
 };
 
@@ -43,8 +43,7 @@ export default defineConfig({
     wyw({ preprocessor: 'none' })
   ],
   server: {
-    // TODO: open bug
-    open: !isTest
+    open: true
   },
   test: {
     root: '.',
@@ -59,9 +58,11 @@ export default defineConfig({
     setupFiles: ['test/setup.ts'],
     browser: {
       enabled: true,
+      headless: true,
       name: 'chromium',
       provider: 'playwright',
-      commands: { resizeColumn }
+      commands: { resizeColumn },
+      viewport: { width: 1920, height: 1080 }
     },
     restoreMocks: true,
     sequence: {

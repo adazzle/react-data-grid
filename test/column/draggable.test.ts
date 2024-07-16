@@ -7,25 +7,21 @@ import { getHeaderCells, setup } from '../utils';
 const columns: readonly Column<never>[] = [
   {
     key: 'col1',
-    name: 'col1',
-    width: 100
+    name: 'col1'
   },
   {
     key: 'col2',
     name: 'col2',
-    width: 100,
     draggable: true
   },
   {
     key: 'col3',
     name: 'col3',
-    width: 100,
     draggable: true
   },
   {
     key: 'col4',
     name: 'col4',
-    width: 100,
     draggable: true
   }
 ];
