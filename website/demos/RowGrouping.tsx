@@ -191,6 +191,7 @@ export default function RowGrouping({ direction }: Props) {
         selectedRows={selectedRows}
         onSelectedRowsChange={setSelectedRows}
         groupBy={selectedOptions}
+        rowGrouper={rowGrouper}
         expandedGroupIds={expandedGroupIds}
         onExpandedGroupIdsChange={setExpandedGroupIds}
         defaultColumnOptions={{ resizable: true }}
@@ -198,4 +199,10 @@ export default function RowGrouping({ direction }: Props) {
       />
     </div>
   );
+}
+
+function rowGrouper(rows: readonly Row[], columnKey: string) {
+  // @ts-expect-error
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
 }

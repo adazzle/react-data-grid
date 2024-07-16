@@ -114,6 +114,7 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
       bottomSummaryRows={bottomSummaryRows}
       rowKeyGetter={rowKeyGetter}
       groupBy={groupBy}
+      rowGrouper={rowGrouper}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
       expandedGroupIds={expandedGroupIds}
@@ -122,6 +123,12 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
       onPaste={onPaste}
     />
   );
+}
+
+function rowGrouper(rows: readonly Row[], columnKey: string) {
+  // @ts-expect-error
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
 }
 
 function setup(groupBy: string[]) {
