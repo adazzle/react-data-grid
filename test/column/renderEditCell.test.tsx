@@ -103,6 +103,7 @@ describe('Editor', () => {
     await scrollGrid({ scrollTop: 2000 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     expect(screen.queryByRole('spinbutton', { name: 'col1-editor' })).not.toBeInTheDocument();
+    expect(getGrid().scrollTop).toBe(2000);
     await userEvent.keyboard('123');
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
     expect(screen.getByRole('spinbutton', { name: 'col1-editor' })).toHaveValue(1230);
