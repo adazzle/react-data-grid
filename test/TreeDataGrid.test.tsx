@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { groupBy as rowGrouper } from 'lodash-es';
 
 import type { Column } from '../src';
 import { SelectColumn, textEditor, TreeDataGrid } from '../src';
@@ -124,6 +123,12 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
       onPaste={onPaste}
     />
   );
+}
+
+function rowGrouper(rows: readonly Row[], columnKey: string) {
+  // @ts-expect-error
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
 }
 
 function setup(groupBy: string[]) {
