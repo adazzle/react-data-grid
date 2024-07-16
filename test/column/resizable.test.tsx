@@ -133,3 +133,19 @@ test('should use the maxWidth if specified on auto resize', async () => {
   await autoResize(col2);
   expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
+
+test('should use the minWidth if specified on auto resize', async () => {
+  setup<Row, unknown>({
+    columns,
+    rows: [
+      {
+        col1: 1,
+        col2: 'a'
+      }
+    ]
+  });
+  const [, col2] = getHeaderCells();
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  await autoResize(col2);
+  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+});
