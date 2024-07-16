@@ -1,5 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
-import { userEvent } from '@vitest/browser/context';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { css } from '@linaria/core';
 
 import DataGrid from '../src/';
