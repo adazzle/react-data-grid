@@ -1,13 +1,13 @@
+import { fixupPluginRules } from '@eslint/compat';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import jest from 'eslint-plugin-jest';
+import jestDom from 'eslint-plugin-jest-dom';
 import node from 'eslint-plugin-node';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import jest from 'eslint-plugin-jest';
-import jestDom from 'eslint-plugin-jest-dom';
 import sonarjs from 'eslint-plugin-sonarjs';
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import testingLibrary from 'eslint-plugin-testing-library';
-import { fixupPluginRules } from '@eslint/compat';
-import tsParser from '@typescript-eslint/parser';
 import globals from 'globals';
 
 export default [
