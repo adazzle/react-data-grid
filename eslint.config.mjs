@@ -13,15 +13,9 @@ import globals from 'globals';
 export default [
   {
     files: [
-      'src/**/*.tsx',
-      'src/**/*.ts',
-      'src/**/*.js',
-      'test/**/*.tsx',
-      'test/**/*.ts',
-      'test/**/*.js',
-      'website/**/*.tsx',
-      'website/**/*.ts',
-      'website/**/*.js',
+      'src/**/*.{js,ts,tsx}',
+      'test/**/*.{js,ts,tsx}',
+      'website/**/*.{js,ts,tsx}',
       'vite.config.ts'
     ],
     ignores: ['eslint.config.mjs', 'coverage', 'dist', 'lib']
