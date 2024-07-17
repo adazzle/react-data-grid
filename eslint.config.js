@@ -20,12 +20,12 @@ export default [
     plugins: {
       node: fixupPluginRules(node),
       react,
-      'react-hooks': reactHooks,
+      'react-hooks': fixupPluginRules(reactHooks),
       jest,
       'jest-dom': jestDom,
       sonarjs,
       '@typescript-eslint': typescriptEslint,
-      'testing-library': testingLibrary
+      'testing-library': fixupPluginRules(testingLibrary)
     },
 
     linterOptions: {
