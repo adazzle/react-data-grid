@@ -921,8 +921,6 @@ export default [
       'testing-library/prefer-screen-queries': 1,
       'testing-library/prefer-user-event': 1,
       'testing-library/render-result-naming-convention': 0,
-      'no-spaced-func': 'off',
-      'indent-legacy': 'off',
       ...eslintConfigPrettier.rules
     }
   },
