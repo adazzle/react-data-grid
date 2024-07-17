@@ -865,7 +865,6 @@ export default [
       '@typescript-eslint/no-unused-vars': [
         1,
         {
-          caughtErrors: 'all',
           ignoreRestSiblings: true
         }
       ],
