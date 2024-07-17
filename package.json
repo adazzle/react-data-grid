@@ -43,7 +43,7 @@
     "format": "biome format --write",
     "check": "biome check --error-on-warnings",
     "biome:ci": "biome ci --error-on-warnings",
-    "eslint": "eslint --ext js,ts,tsx --max-warnings 0 --cache --color src test website vite.config.ts",
+    "eslint": "eslint --max-warnings 0 --cache --color",
     "eslint:fix": "node --run eslint -- --fix",
     "prettier:check": "prettier --check .",
     "prettier:format": "prettier --write .",

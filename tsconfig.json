@@ -4,5 +4,12 @@
     "noEmit": true,
     "types": ["vitest/globals", "@vitest/browser/providers/playwright"]
   },
-  "include": ["rollup.config.js", "vite.config.ts", "src/**/*", "test/**/*", "website/**/*"]
+  "include": [
+    "eslint.config.mjs",
+    "rollup.config.js",
+    "vite.config.ts",
+    "src/**/*",
+    "test/**/*",
+    "website/**/*"
+  ]
 }
