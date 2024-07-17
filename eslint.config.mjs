@@ -1,6 +1,7 @@
 import { fixupPluginRules } from '@eslint/compat';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import eslintConfigPrettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
 import jestDom from 'eslint-plugin-jest-dom';
 import node from 'eslint-plugin-node';
@@ -1070,5 +1071,6 @@ export default [
       'node/prefer-promises/dns': 1,
       'node/prefer-promises/fs': 1
     }
-  }
+  },
+  eslintConfigPrettier
 ];
