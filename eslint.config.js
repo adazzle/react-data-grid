@@ -1,4 +1,3 @@
-import { fixupPluginRules } from '@eslint/compat';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import eslintConfigPrettier from 'eslint-config-prettier';
@@ -13,19 +12,14 @@ import globals from 'globals';
 
 export default [
   {
-    files: [
-      'src/**/*.{js,ts,tsx}',
-      'test/**/*.{js,ts,tsx}',
-      'website/**/*.{js,ts,tsx}',
-      'vite.config.ts'
-    ],
+    files: ['{src,test,website}/**/*.{js,ts,tsx}', 'vite.config.ts'],
     ignores: ['eslint.config.mjs', 'coverage', 'dist', 'lib']
   },
   {
     plugins: {
-      node: fixupPluginRules(node),
+      node,
       react,
-      'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks': reactHooks,
       jest,
       'jest-dom': jestDom,
       sonarjs,
