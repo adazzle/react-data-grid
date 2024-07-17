@@ -82,7 +82,12 @@ export default [
       'no-empty-character-class': 1,
       'no-empty-pattern': 1,
       'no-ex-assign': 1,
-      'no-fallthrough': 1,
+      'no-fallthrough': [
+        1,
+        {
+          reportUnusedFallthroughComment: true
+        }
+      ],
       'no-func-assign': 1,
       'no-import-assign': 1,
       'no-inner-declarations': 0,
@@ -131,6 +136,7 @@ export default [
       'no-unused-private-class-members': 0,
       'no-unused-vars': 0,
       'no-use-before-define': 0,
+      'no-useless-assignment': 1,
       'no-useless-backreference': 1,
       'require-atomic-updates': 1,
 
