@@ -315,12 +315,7 @@ export default [
       'no-useless-call': 1,
       'no-useless-catch': 1,
 
-      'no-useless-computed-key': [
-        1,
-        {
-          enforceForClassMembers: true
-        }
-      ],
+      'no-useless-computed-key': 1,
 
       'no-useless-concat': 1,
       'no-useless-constructor': 0,
