@@ -91,7 +91,6 @@ export default [
       'no-loss-of-precision': 0,
       'no-misleading-character-class': 1,
       'no-new-native-nonconstructor': 1,
-      'no-new-symbol': 0,
       'no-obj-calls': 1,
       'no-promise-executor-return': 1,
       'no-prototype-builtins': 1,
