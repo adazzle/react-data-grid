@@ -30,7 +30,7 @@ export default [
       'jest-dom': jestDom,
       sonarjs,
       '@typescript-eslint': typescriptEslint,
-      'testing-library': fixupPluginRules(testingLibrary)
+      'testing-library': testingLibrary
     },
 
     linterOptions: {
