@@ -934,7 +934,7 @@ export default [
     }
   },
   {
-    files: ['**/*.js', '**/*.cjs'],
+    files: ['**/*.js'],
 
     rules: {
       'no-undef': 1,
