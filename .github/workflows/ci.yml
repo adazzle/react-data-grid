@@ -25,7 +25,7 @@ jobs:
       - name: set up react 19
         if: matrix.react == 19
         run: |
-          node .\.github\workflows\patch-react19.js
+          node ./.github/workflows/patch-react19.js
           cat package.json
       - name: npm install
         run: npm i
