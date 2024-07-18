@@ -150,9 +150,9 @@ test('sortPriority defined using both providers', async () => {
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
-  await user.click(headerCell2.firstElementChild!);
+  await user.click(headerCell2);
   await user.keyboard('{Control>}');
-  await user.click(headerCell3.firstElementChild!);
+  await user.click(headerCell3);
 
   const p = screen.getAllByTestId('global-sort-priority');
   expect(p[0]).toHaveTextContent('1');
@@ -166,9 +166,9 @@ test('sortPriority defined using both providers and renderers', async () => {
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
-  await user.click(headerCell3.firstElementChild!);
+  await user.click(headerCell3);
   await user.keyboard('{Control>}');
-  await user.click(headerCell2.firstElementChild!);
+  await user.click(headerCell2);
 
   const p = screen.getAllByTestId('local-sort-priority');
   expect(p[0]).toHaveTextContent('2');
