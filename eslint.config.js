@@ -1,5 +1,6 @@
 import { fixupPluginRules } from '@eslint/compat';
-import tseslint from 'typescript-eslint';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
 import jestDom from 'eslint-plugin-jest-dom';
@@ -23,7 +24,7 @@ export default [
       jest,
       'jest-dom': jestDom,
       sonarjs,
-      '@typescript-eslint': tseslint.plugin,
+      '@typescript-eslint': typescriptEslint,
       'testing-library': fixupPluginRules(testingLibrary)
     },
 
@@ -32,7 +33,7 @@ export default [
     },
 
     languageOptions: {
-      parser: tseslint.parser,
+      parser: tsParser,
       ecmaVersion: 'latest',
       sourceType: 'module',
 
