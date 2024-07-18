@@ -13,10 +13,12 @@ import globals from 'globals';
 
 export default [
   {
-    files: ['{src,test,website}/**/*.{js,ts,tsx}', 'vite.config.ts'],
-    ignores: ['eslint.config.mjs', 'coverage', 'dist', 'lib']
+    ignores: ['.github', 'eslint.config.js', 'rollup.config.js', 'coverage', 'dist', 'lib']
   },
   {
+    name: 'common',
+    files: ['{src,test,website}/**/*.{js,ts,tsx}', 'vite.config.ts'],
+
     plugins: {
       node: fixupPluginRules(node),
       react,
@@ -907,6 +909,8 @@ export default [
     }
   },
   {
+    name: 'test',
+
     files: ['test/**/*'],
 
     rules: {
@@ -930,6 +934,8 @@ export default [
     }
   },
   {
+    name: 'node',
+
     files: ['**/*.js'],
 
     languageOptions: {
