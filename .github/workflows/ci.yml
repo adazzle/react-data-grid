@@ -14,24 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        react: [18]
+        react: [18, 19]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
-          check-latest: true
-      - name: Set up git user
-        run: |
-          git config --global user.email 'action@github.com'
-          git config --global user.name 'GitHub Action'
-      - name: merge react 19 branch
+          node-version: '22.4.1'
+      - name: set up react 19
         if: matrix.react == 19
         run: |
-          git fetch origin react19
-          git merge origin/react19 -X theirs --allow-unrelated-histories
-          git fetch origin main
-          git diff origin/main
+          node ./.github/workflows/patch-react19.js
+          cat package.json
       - name: npm install
         run: npm i
       - name: Biome
@@ -51,7 +45,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install chromium
       - name: Test
-        run: npm --run test
+        run: node --run test
         timeout-minutes: 4
       - name: Upload coverage
         if: matrix.react == 18
@@ -61,6 +55,8 @@ jobs:
       - name: Deploy gh-pages
         if: matrix.react == 18 && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
+          git config --global user.email 'action@github.com'
+          git config --global user.name 'GitHub Action'
           git fetch origin gh-pages
           git worktree add gh-pages gh-pages
           cd gh-pages
