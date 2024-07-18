@@ -1,6 +1,5 @@
 import { fixupPluginRules } from '@eslint/compat';
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
+import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
 import jestDom from 'eslint-plugin-jest-dom';
@@ -24,7 +23,7 @@ export default [
       jest,
       'jest-dom': jestDom,
       sonarjs,
-      '@typescript-eslint': typescriptEslint,
+      '@typescript-eslint': tseslint.plugin,
       'testing-library': fixupPluginRules(testingLibrary)
     },
 
@@ -33,7 +32,7 @@ export default [
     },
 
     languageOptions: {
-      parser: tsParser,
+      parser: tseslint.parser,
       ecmaVersion: 'latest',
       sourceType: 'module',
 
@@ -690,7 +689,6 @@ export default [
       '@typescript-eslint/explicit-function-return-type': 0,
       '@typescript-eslint/explicit-member-accessibility': 0,
       '@typescript-eslint/explicit-module-boundary-types': 0,
-      '@typescript-eslint/member-delimiter-style': 'off',
       '@typescript-eslint/member-ordering': 0,
       '@typescript-eslint/method-signature-style': 1,
       '@typescript-eslint/naming-convention': 0,
@@ -795,28 +793,15 @@ export default [
         }
       ],
 
-      '@typescript-eslint/type-annotation-spacing': 'off',
       '@typescript-eslint/typedef': 0,
       '@typescript-eslint/unbound-method': 0,
       '@typescript-eslint/unified-signatures': 0,
-      '@typescript-eslint/block-spacing': 'off',
-      '@typescript-eslint/brace-style': 'off',
-      '@typescript-eslint/comma-dangle': 'off',
-      '@typescript-eslint/comma-spacing': 'off',
       '@typescript-eslint/default-param-last': 0,
       '@typescript-eslint/dot-notation': 1,
-      '@typescript-eslint/func-call-spacing': 'off',
-      '@typescript-eslint/indent': 'off',
       '@typescript-eslint/init-declarations': 0,
-      '@typescript-eslint/key-spacing': 'off',
-      '@typescript-eslint/keyword-spacing': 'off',
-      '@typescript-eslint/lines-around-comment': 0,
-      '@typescript-eslint/lines-between-class-members': 0,
       '@typescript-eslint/no-array-constructor': 1,
       '@typescript-eslint/no-dupe-class-members': 0,
       '@typescript-eslint/no-empty-function': 0,
-      '@typescript-eslint/no-extra-parens': 'off',
-      '@typescript-eslint/no-extra-semi': 'off',
       '@typescript-eslint/no-implied-eval': 1,
       '@typescript-eslint/no-invalid-this': 0,
       '@typescript-eslint/no-loop-func': 0,
@@ -873,6 +858,7 @@ export default [
       '@typescript-eslint/no-useless-constructor': 1,
       '@typescript-eslint/object-curly-spacing': 'off',
 
+      // deprecated
       '@typescript-eslint/padding-line-between-statements': [
         1,
         {
@@ -887,13 +873,8 @@ export default [
         }
       ],
 
-      '@typescript-eslint/quotes': 0,
       '@typescript-eslint/require-await': 1,
       '@typescript-eslint/return-await': 1,
-      '@typescript-eslint/semi': 'off',
-      '@typescript-eslint/space-before-blocks': 'off',
-      '@typescript-eslint/space-before-function-paren': 'off',
-      '@typescript-eslint/space-infix-ops': 'off',
       'testing-library/await-async-events': 0,
       'testing-library/await-async-queries': 0,
       'testing-library/await-async-utils': 0,
