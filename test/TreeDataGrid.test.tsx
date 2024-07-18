@@ -379,11 +379,11 @@ test('copy/paste when grouping is enabled', async () => {
   setup(['year']);
   await userEvent.click(screen.getByRole('gridcell', { name: '2021' }));
   await userEvent.click(screen.getByRole('gridcell', { name: 'USA' }));
-  copySelectedCell();
+  await copySelectedCell();
   expect(getSelectedCell()).toHaveClass('rdg-cell-copied');
   await userEvent.keyboard('{arrowdown}');
   expect(getSelectedCell()).toHaveTextContent('Canada');
-  pasteSelectedCell();
+  await pasteSelectedCell();
   expect(getSelectedCell()).toHaveTextContent('USA');
 });
 

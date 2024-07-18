@@ -1,4 +1,5 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
+import { userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
 import DataGrid from '../src/';
@@ -70,19 +71,17 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
-export function copySelectedCell() {
-  // eslint-disable-next-line testing-library/prefer-user-event
-  fireEvent.keyDown(document.activeElement!, {
-    keyCode: '67',
-    ctrlKey: true
+export async function copySelectedCell() {
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    await userEvent.keyboard('{Control>}c');
   });
 }
 
-export function pasteSelectedCell() {
-  // eslint-disable-next-line testing-library/prefer-user-event
-  fireEvent.keyDown(document.activeElement!, {
-    keyCode: '86',
-    ctrlKey: true
+export async function pasteSelectedCell() {
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    await userEvent.keyboard('{Control>}v');
   });
 }
 
