@@ -16,7 +16,7 @@ const columns: readonly Column<Row, Row>[] = [
     name: 'Col',
     editable: (row) => row.col !== 'a3',
     renderEditCell() {
-      return null;
+      return <input autoFocus />;
     },
     renderSummaryCell({ row }) {
       return row.col;
@@ -84,8 +84,9 @@ test('should not allow copy/paste if onPaste & onCopy is undefined', async () =>
   await copySelectedCell();
   expect(getSelectedCell()).not.toHaveClass(copyCellClassName);
   expect(onCopySpy).not.toHaveBeenCalled();
-  await userEvent.keyboard('{enter}{arrowdown}');
+  await userEvent.keyboard('{arrowdown}');
   await pasteSelectedCell();
+  await userEvent.keyboard('{escape}');
   expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
   expect(onPasteSpy).not.toHaveBeenCalled();
 });
