@@ -1076,6 +1076,7 @@ function DataGrid<R, SR, K extends Key>(
               : undefined,
           gridTemplateColumns,
           gridTemplateRows: templateRows,
+          '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-scroll-height': `${scrollHeight}px`,
           '--rdg-sign': isRtl ? -1 : 1,
           ...layoutCssVars
