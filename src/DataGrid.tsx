@@ -93,7 +93,7 @@ export interface DataGridHandle {
 }
 
 type SharedDivProps = Pick<
-  React.HTMLAttributes<HTMLDivElement>,
+  React.ComponentProps<'div'>,
   | 'role'
   | 'aria-label'
   | 'aria-labelledby'

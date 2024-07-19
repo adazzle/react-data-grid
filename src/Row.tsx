@@ -1,4 +1,4 @@
-import { memo, type RefAttributes } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
 import { RowSelectionProvider, useLatestFunc } from './hooks';
@@ -98,9 +98,7 @@ function Row<R, SR>({
   );
 }
 
-const RowComponent = memo(Row) as <R, SR>(
-  props: RenderRowProps<R, SR> & RefAttributes<HTMLDivElement>
-) => React.JSX.Element;
+const RowComponent = memo(Row) as <R, SR>(props: RenderRowProps<R, SR>) => React.JSX.Element;
 
 export default RowComponent;
 
