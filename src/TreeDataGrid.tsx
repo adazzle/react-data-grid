@@ -18,7 +18,7 @@ import { renderToggleGroup } from './cellRenderers';
 import { SELECT_COLUMN_KEY } from './Columns';
 import DataGrid from './DataGrid';
 import type { DataGridProps } from './DataGrid';
-import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
+import { useDefaultRenderers } from './DataGridDefaultRenderersContext';
 import GroupedRow from './GroupRow';
 import { defaultRenderRow } from './Row';
 

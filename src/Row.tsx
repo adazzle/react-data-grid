@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import clsx from 'clsx';
 
-import { RowSelectionProvider, useLatestFunc } from './hooks';
+import { RowSelectionContext, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RenderRowProps } from './types';
 import Cell from './Cell';
@@ -84,7 +84,7 @@ function Row<R, SR>({
   }
 
   return (
-    <RowSelectionProvider value={isRowSelected}>
+    <RowSelectionContext value={isRowSelected}>
       <div
         role="row"
         className={className}
@@ -94,7 +94,7 @@ function Row<R, SR>({
       >
         {cells}
       </div>
-    </RowSelectionProvider>
+    </RowSelectionContext>
   );
 }
 

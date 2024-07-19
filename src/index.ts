@@ -2,7 +2,7 @@ import './style/layers.css';
 
 export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
-export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
+export { DataGridDefaultRenderersContext } from './DataGridDefaultRenderersContext';
 export { default as Row } from './Row';
 export * from './Columns';
 export * from './cellRenderers';

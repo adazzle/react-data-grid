@@ -11,8 +11,8 @@ import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
-  RowSelectionChangeProvider,
-  RowSelectionProvider,
+  RowSelectionChangeContext,
+  RowSelectionContext,
   useCalculatedColumns,
   useColumnWidths,
   useGridDimensions,
@@ -57,9 +57,9 @@ import type {
 } from './types';
 import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import {
-  DataGridDefaultRenderersProvider,
+  DataGridDefaultRenderersContext,
   useDefaultRenderers
-} from './DataGridDefaultRenderersProvider';
+} from './DataGridDefaultRenderersContext';
 import DragHandle from './DragHandle';
 import EditCell from './EditCell';
 import GroupedColumnHeaderRow from './GroupedColumnHeaderRow';
@@ -1093,9 +1093,9 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
-      <DataGridDefaultRenderersProvider value={defaultGridComponents}>
-        <RowSelectionChangeProvider value={selectRowLatest}>
-          <RowSelectionProvider value={allRowsSelected}>
+      <DataGridDefaultRenderersContext value={defaultGridComponents}>
+        <RowSelectionChangeContext value={selectRowLatest}>
+          <RowSelectionContext value={allRowsSelected}>
             {Array.from({ length: groupedColumnHeaderRowsCount }, (_, index) => (
               <GroupedColumnHeaderRow
                 key={index}
@@ -1123,7 +1123,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
               shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
               direction={direction}
             />
-          </RowSelectionProvider>
+          </RowSelectionContext>
           {rows.length === 0 && noRowsFallback ? (
             noRowsFallback
           ) : (
@@ -1184,8 +1184,8 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
               })}
             </>
           )}
-        </RowSelectionChangeProvider>
-      </DataGridDefaultRenderersProvider>
+        </RowSelectionChangeContext>
+      </DataGridDefaultRenderersContext>
 
       {renderDragHandle()}
 
