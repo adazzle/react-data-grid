@@ -57,7 +57,7 @@ export default function ContextMenuDemo({ direction }: Props) {
     top: number;
     left: number;
   } | null>(null);
-  const menuRef = useRef<HTMLMenuElement | null>(null);
+  const menuRef = useRef<HTMLMenuElement>(null);
   const isContextMenuOpen = contextMenuProps !== null;
 
   useLayoutEffect(() => {
