@@ -1,4 +1,11 @@
-import { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import type { Key, KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
@@ -10,7 +17,6 @@ import {
   useColumnWidths,
   useGridDimensions,
   useLatestFunc,
-  useLayoutEffect,
   useViewportColumns,
   useViewportRows
 } from './hooks';
