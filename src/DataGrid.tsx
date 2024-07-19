@@ -1,5 +1,5 @@
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import type { Key, KeyboardEvent, RefAttributes } from 'react';
+import { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import type { Key, KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
@@ -104,6 +104,7 @@ type SharedDivProps = Pick<
 >;
 
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
+  ref?: Maybe<React.Ref<DataGridHandle>>;
   /**
    * Grid and data Props
    */
@@ -207,11 +208,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
  *
  * <DataGrid columns={columns} rows={rows} />
  */
-function DataGrid<R, SR, K extends Key>(
-  props: DataGridProps<R, SR, K>,
-  ref: React.Ref<DataGridHandle>
-) {
+export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, SR, K>) {
   const {
+    ref,
     // Grid and data Props
     columns: rawColumns,
     rows,
@@ -1223,7 +1222,3 @@ function getCellToScroll(gridEl: HTMLDivElement) {
 function isSamePosition(p1: Position, p2: Position) {
   return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
 }
-
-export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
-  props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => React.JSX.Element;

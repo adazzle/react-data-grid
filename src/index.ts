@@ -1,7 +1,7 @@
 import './style/layers.css';
 
 export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
-export { default as TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
+export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
 export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
 export { default as Row } from './Row';
 export * from './Columns';
