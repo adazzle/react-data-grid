@@ -1,5 +1,3 @@
-'use strict';
-
 const ignoreRules = require('eslint-config-prettier').rules;
 
 const rules = {
@@ -554,7 +552,6 @@ const rules = {
   '@typescript-eslint/explicit-function-return-type': 0,
   '@typescript-eslint/explicit-member-accessibility': 0,
   '@typescript-eslint/explicit-module-boundary-types': 0,
-  '@typescript-eslint/member-delimiter-style': 0,
   '@typescript-eslint/member-ordering': 0,
   '@typescript-eslint/method-signature-style': 1,
   '@typescript-eslint/naming-convention': 0,
@@ -629,31 +626,18 @@ const rules = {
   '@typescript-eslint/strict-boolean-expressions': 0,
   '@typescript-eslint/switch-exhaustiveness-check': 1,
   '@typescript-eslint/triple-slash-reference': [1, { path: 'never', types: 'never', lib: 'never' }],
-  '@typescript-eslint/type-annotation-spacing': 0,
   '@typescript-eslint/typedef': 0,
   '@typescript-eslint/unbound-method': 0,
   '@typescript-eslint/unified-signatures': 0,
 
   // @typescript-eslint/eslint-plugin Extension Rules
   // https://typescript-eslint.io/rules/#extension-rules
-  '@typescript-eslint/block-spacing': 0,
-  '@typescript-eslint/brace-style': 0,
-  '@typescript-eslint/comma-dangle': 0,
-  '@typescript-eslint/comma-spacing': 0,
   '@typescript-eslint/default-param-last': 0,
   '@typescript-eslint/dot-notation': 1,
-  '@typescript-eslint/func-call-spacing': 0,
-  '@typescript-eslint/indent': 0,
   '@typescript-eslint/init-declarations': 0,
-  '@typescript-eslint/key-spacing': 0,
-  '@typescript-eslint/keyword-spacing': 0,
-  '@typescript-eslint/lines-around-comment': 0,
-  '@typescript-eslint/lines-between-class-members': 0,
   '@typescript-eslint/no-array-constructor': 1,
   '@typescript-eslint/no-dupe-class-members': 0,
   '@typescript-eslint/no-empty-function': 0,
-  '@typescript-eslint/no-extra-parens': 0,
-  '@typescript-eslint/no-extra-semi': 0,
   '@typescript-eslint/no-implied-eval': 1,
   '@typescript-eslint/no-invalid-this': 0,
   '@typescript-eslint/no-loop-func': 0,
@@ -696,6 +680,7 @@ const rules = {
   '@typescript-eslint/no-use-before-define': 0,
   '@typescript-eslint/no-useless-constructor': 1,
   '@typescript-eslint/object-curly-spacing': 0,
+  // TODO: deprecated
   '@typescript-eslint/padding-line-between-statements': [
     1,
     {
@@ -709,13 +694,8 @@ const rules = {
       next: '*'
     }
   ],
-  '@typescript-eslint/quotes': 0,
   '@typescript-eslint/require-await': 1,
   '@typescript-eslint/return-await': 1,
-  '@typescript-eslint/semi': 0,
-  '@typescript-eslint/space-before-blocks': 0,
-  '@typescript-eslint/space-before-function-paren': 0,
-  '@typescript-eslint/space-infix-ops': 0,
 
   // eslint-plugin-testing-library Rules
   // https://github.com/testing-library/eslint-plugin-testing-library#supported-rules
