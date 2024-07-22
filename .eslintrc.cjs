@@ -287,6 +287,7 @@ const rules = {
   // https://github.com/jsx-eslint/eslint-plugin-react#list-of-supported-rules
   'react/boolean-prop-naming': 0,
   'react/button-has-type': 0,
+  'react/checked-requires-onchange-or-readonly': 1,
   'react/default-props-match-prop-types': 0,
   'react/destructuring-assignment': 0,
   'react/display-name': 0,
@@ -342,10 +343,9 @@ const rules = {
   'react/jsx-one-expression-per-line': 0,
   'react/jsx-pascal-case': 1,
   'react/jsx-props-no-multi-spaces': 1,
+  'react/jsx-props-no-spread-multi': 1,
   'react/jsx-props-no-spreading': 0,
-  'react/jsx-sort-default-props': 0,
   'react/jsx-sort-props': 0,
-  'react/jsx-space-before-closing': 0,
   'react/jsx-tag-spacing': [
     1,
     {
