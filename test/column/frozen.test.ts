@@ -30,8 +30,8 @@ test('frozen column have a specific class, and are stable-sorted before non-froz
 
   expect(cell1).toHaveClass(`${cellClassname} ${cellFrozenClassname}`, { exact: true });
   expect(cell2).toHaveClass(`${cellClassname} ${cellFrozenClassname}`, { exact: true });
-  expect(cell3).toHaveClass(`${cellClassname}`, { exact: true });
-  expect(cell4).toHaveClass(`${cellClassname}`, { exact: true });
+  expect(cell3).toHaveClass(cellClassname, { exact: true });
+  expect(cell4).toHaveClass(cellClassname, { exact: true });
 
   expect(cell1).toHaveTextContent('col1');
   expect(cell2).toHaveTextContent('col3');
