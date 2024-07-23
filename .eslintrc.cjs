@@ -1,3 +1,5 @@
+'use strict';
+
 const ignoreRules = require('eslint-config-prettier').rules;
 
 const rules = {
@@ -540,7 +542,7 @@ const rules = {
   '@typescript-eslint/array-type': 0,
   '@typescript-eslint/await-thenable': 1,
   '@typescript-eslint/ban-ts-comment': [1, { 'ts-expect-error': false }],
-  '@typescript-eslint/ban-tslint-comment': 1,
+  '@typescript-eslint/ban-tslint-comment': 0,
   '@typescript-eslint/ban-types': 1,
   '@typescript-eslint/class-literal-property-style': 0,
   '@typescript-eslint/consistent-generic-constructors': 1,

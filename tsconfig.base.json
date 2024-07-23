@@ -11,6 +11,7 @@
     "pretty": true,
     "strict": true,
     "target": "esnext",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": true
   }
 }
