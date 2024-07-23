@@ -188,8 +188,8 @@ export default [
       'no-negated-condition': 0,
       'no-nested-ternary': 0,
       'no-new': 1,
+      'no-object-constructor': 1,
       'no-new-func': 1,
-      'no-new-object': 1,
       'no-new-wrappers': 1,
       'no-nonoctal-decimal-escape': 1,
       'no-octal': 1,
@@ -217,7 +217,6 @@ export default [
       'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
       'no-shadow-restricted-names': 1,
       'no-ternary': 0,
-      'no-throw-literal': 0, // replaced by @typescript-eslint/no-throw-literal
       'no-undef-init': 1,
       'no-undefined': 0,
       'no-underscore-dangle': 0,
@@ -666,7 +665,6 @@ export default [
         }
       ],
       '@typescript-eslint/no-shadow': 0,
-      '@typescript-eslint/no-throw-literal': 1,
       '@typescript-eslint/no-unused-expressions': [
         1,
         { allowTaggedTemplates: true, enforceForJSX: true }
@@ -675,6 +673,7 @@ export default [
       '@typescript-eslint/no-use-before-define': 0,
       '@typescript-eslint/no-useless-constructor': 1,
       '@typescript-eslint/object-curly-spacing': 0,
+      '@typescript-eslint/only-throw-error': 1,
       // TODO: deprecated
       '@typescript-eslint/padding-line-between-statements': [
         1,
