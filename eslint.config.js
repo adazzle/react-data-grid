@@ -54,14 +54,10 @@ export default [
     },
 
     rules: {
-      'array-callback-return': [
-        1,
-        {
-          checkForEach: true
-        }
-      ],
-
-      'constructor-super': 0,
+      // Possible Problems
+      // https://eslint.org/docs/latest/rules/#possible-problems
+      'array-callback-return': [1, { checkForEach: true }],
+      'constructor-super': 0, // covered by TS
       'for-direction': 1,
       'getter-return': 1,
       'no-async-promise-executor': 1,
@@ -76,7 +72,7 @@ export default [
       'no-control-regex': 1,
       'no-debugger': 1,
       'no-dupe-args': 1,
-      'no-dupe-class-members': 0,
+      'no-dupe-class-members': 0, // replaced by @typescript-eslint/no-dupe-class-members
       'no-dupe-else-if': 1,
       'no-dupe-keys': 1,
       'no-duplicate-case': 1,
@@ -84,78 +80,43 @@ export default [
       'no-empty-character-class': 1,
       'no-empty-pattern': 1,
       'no-ex-assign': 1,
-      'no-fallthrough': [
-        1,
-        {
-          reportUnusedFallthroughComment: true
-        }
-      ],
+      'no-fallthrough': 1,
       'no-func-assign': 1,
       'no-import-assign': 1,
       'no-inner-declarations': 0,
       'no-invalid-regexp': 1,
       'no-irregular-whitespace': 1,
-      'no-loss-of-precision': 0,
+      'no-loss-of-precision': 0, // replaced by @typescript-eslint/no-loss-of-precision
       'no-misleading-character-class': 1,
       'no-new-native-nonconstructor': 1,
+      'no-new-symbol': 0,
       'no-obj-calls': 1,
       'no-promise-executor-return': 1,
       'no-prototype-builtins': 1,
-
-      'no-self-assign': [
-        1,
-        {
-          props: true
-        }
-      ],
-
+      'no-self-assign': [1, { props: true }],
       'no-self-compare': 1,
       'no-setter-return': 1,
       'no-sparse-arrays': 1,
       'no-template-curly-in-string': 1,
       'no-this-before-super': 0,
       'no-undef': 0,
-      'no-unexpected-multiline': 0,
+      'no-unexpected-multiline': 1,
       'no-unmodified-loop-condition': 1,
       'no-unreachable': 1,
       'no-unreachable-loop': 1,
       'no-unsafe-finally': 1,
-
-      'no-unsafe-negation': [
-        1,
-        {
-          enforceForOrderingRelations: true
-        }
-      ],
-
-      'no-unsafe-optional-chaining': [
-        1,
-        {
-          disallowArithmeticOperators: true
-        }
-      ],
-
+      'no-unsafe-negation': [1, { enforceForOrderingRelations: true }],
+      'no-unsafe-optional-chaining': [1, { disallowArithmeticOperators: true }],
       'no-unused-private-class-members': 0,
-      'no-unused-vars': 0,
-      'no-use-before-define': 0,
-      'no-useless-assignment': 1,
+      'no-unused-vars': 0, // replaced by @typescript-eslint/no-unused-vars
+      'no-use-before-define': 0, // replaced by @typescript-eslint/no-use-before-define
       'no-useless-backreference': 1,
       'require-atomic-updates': 1,
+      'use-isnan': [1, { enforceForIndexOf: true }],
+      'valid-typeof': [1, { requireStringLiterals: true }],
 
-      'use-isnan': [
-        1,
-        {
-          enforceForIndexOf: true
-        }
-      ],
-
-      'valid-typeof': [
-        1,
-        {
-          requireStringLiterals: true
-        }
-      ],
-
+      // Suggestions
+      // https://eslint.org/docs/latest/rules/#suggestions
       'accessor-pairs': 1,
       'arrow-body-style': 0,
       'block-scoped-var': 1,
@@ -165,20 +126,12 @@ export default [
       complexity: 0,
       'consistent-return': 0,
       'consistent-this': 0,
-      curly: 0,
+      curly: [1, 'multi-line'],
       'default-case': 1,
       'default-case-last': 1,
-      'default-param-last': 0,
-      'dot-notation': 0,
-
-      eqeqeq: [
-        1,
-        'always',
-        {
-          null: 'ignore'
-        }
-      ],
-
+      'default-param-last': 0, // replaced by @typescript-eslint/default-param-last
+      'dot-notation': 0, // replaced by @typescript-eslint/dot-notation
+      eqeqeq: [1, 'always', { null: 'ignore' }],
       'func-name-matching': 0,
       'func-names': 0,
       'func-style': 0,
@@ -187,16 +140,8 @@ export default [
       'id-denylist': 0,
       'id-length': 0,
       'id-match': 0,
-      'init-declarations': 0,
-
-      'logical-assignment-operators': [
-        1,
-        'always',
-        {
-          enforceForIfStatements: true
-        }
-      ],
-
+      'init-declarations': 0, // replaced by @typescript-eslint/init-declarations
+      'logical-assignment-operators': [1, 'always', { enforceForIfStatements: true }],
       'max-classes-per-file': 0,
       'max-depth': 0,
       'max-lines': 0,
@@ -207,7 +152,7 @@ export default [
       'multiline-comment-style': 0,
       'new-cap': 0,
       'no-alert': 0,
-      'no-array-constructor': 0,
+      'no-array-constructor': 0, // replaced by @typescript-eslint/no-array-constructor
       'no-bitwise': 0,
       'no-caller': 1,
       'no-case-declarations': 1,
@@ -216,51 +161,31 @@ export default [
       'no-continue': 0,
       'no-delete-var': 1,
       'no-div-regex': 0,
-
-      'no-else-return': [
-        1,
-        {
-          allowElseIf: false
-        }
-      ],
-
-      'no-empty': [
-        1,
-        {
-          allowEmptyCatch: true
-        }
-      ],
-
-      'no-empty-function': 0,
+      'no-else-return': [1, { allowElseIf: false }],
+      'no-empty': [1, { allowEmptyCatch: true }],
+      'no-empty-function': 0, // replaced by @typescript-eslint/no-empty-function
       'no-empty-static-block': 1,
       'no-eq-null': 0,
       'no-eval': 1,
       'no-extend-native': 1,
       'no-extra-bind': 1,
-
-      'no-extra-boolean-cast': [
-        1,
-        {
-          enforceForLogicalOperands: true
-        }
-      ],
-
+      'no-extra-boolean-cast': [1, { enforceForLogicalOperands: true }],
       'no-extra-label': 1,
-      'no-extra-semi': 'off',
-      'no-floating-decimal': 'off',
+      'no-extra-semi': 0, // replaced by @typescript-eslint/no-extra-semi
+      'no-floating-decimal': 1,
       'no-global-assign': 1,
       'no-implicit-coercion': 0,
       'no-implicit-globals': 0,
-      'no-implied-eval': 0,
+      'no-implied-eval': 0, // replaced by @typescript-eslint/no-implied-eval
       'no-inline-comments': 0,
-      'no-invalid-this': 0,
+      'no-invalid-this': 0, // replaced by @typescript-eslint/no-invalid-this
       'no-iterator': 1,
       'no-label-var': 1,
       'no-labels': 1,
       'no-lone-blocks': 1,
       'no-lonely-if': 1,
-      'no-loop-func': 0,
-      'no-magic-numbers': 0,
+      'no-loop-func': 0, // replaced by @typescript-eslint/no-loop-func
+      'no-magic-numbers': 0, // replaced by @typescript-eslint/no-magic-numbers
       'no-mixed-operators': 0,
       'no-multi-assign': 0,
       'no-multi-str': 1,
@@ -276,10 +201,9 @@ export default [
       'no-param-reassign': 0,
       'no-plusplus': 0,
       'no-proto': 1,
-      'no-redeclare': 0,
+      'no-redeclare': 0, // replaced by @typescript-eslint/no-redeclare
       'no-regex-spaces': 1,
       'no-restricted-exports': 0,
-
       'no-restricted-globals': [
         1,
         {
@@ -287,45 +211,28 @@ export default [
           message: 'Use Omit from types instead.'
         }
       ],
-
-      'no-restricted-imports': 0,
+      'no-restricted-imports': 0, // replaced by @typescript-eslint/no-restricted-imports
       'no-restricted-properties': 0,
       'no-restricted-syntax': 0,
       'no-return-assign': 0,
-      'no-return-await': 0,
+      'no-return-await': 0, // replaced by @typescript-eslint/return-await
       'no-script-url': 1,
-
-      'no-sequences': [
-        1,
-        {
-          allowInParentheses: false
-        }
-      ],
-
-      'no-shadow': 0,
+      'no-sequences': [1, { allowInParentheses: false }],
+      'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
       'no-shadow-restricted-names': 1,
       'no-ternary': 0,
-      'no-throw-literal': 0,
+      'no-throw-literal': 0, // replaced by @typescript-eslint/no-throw-literal
       'no-undef-init': 1,
       'no-undefined': 0,
       'no-underscore-dangle': 0,
-
-      'no-unneeded-ternary': [
-        1,
-        {
-          defaultAssignment: false
-        }
-      ],
-
-      'no-unused-expressions': 0,
+      'no-unneeded-ternary': [1, { defaultAssignment: false }],
+      'no-unused-expressions': 0, // replaced by @typescript-eslint/no-unused-expressions
       'no-unused-labels': 1,
       'no-useless-call': 1,
       'no-useless-catch': 1,
-
-      'no-useless-computed-key': 1,
-
+      'no-useless-computed-key': [1, { enforceForClassMembers: true }],
       'no-useless-concat': 1,
-      'no-useless-constructor': 0,
+      'no-useless-constructor': 0, // replaced by @typescript-eslint/no-useless-constructor
       'no-useless-escape': 1,
       'no-useless-rename': 1,
       'no-useless-return': 1,
@@ -333,66 +240,26 @@ export default [
       'no-void': 1,
       'no-warning-comments': 0,
       'no-with': 1,
-
-      'object-shorthand': [
-        1,
-        'always',
-        {
-          avoidExplicitReturnArrows: true
-        }
-      ],
-
+      'object-shorthand': [1, 'always', { avoidExplicitReturnArrows: true }],
       'one-var': [1, 'never'],
-      'one-var-declaration-per-line': 'off',
+      'one-var-declaration-per-line': 0,
       'operator-assignment': 1,
-
-      'prefer-arrow-callback': [
-        1,
-        {
-          allowNamedFunctions: true
-        }
-      ],
-
-      'prefer-const': [
-        1,
-        {
-          destructuring: 'all'
-        }
-      ],
-
-      'prefer-destructuring': [
-        1,
-        {
-          array: false
-        }
-      ],
-
+      'prefer-arrow-callback': [1, { allowNamedFunctions: true }],
+      'prefer-const': [1, { destructuring: 'all' }],
+      'prefer-destructuring': [1, { array: false }],
       'prefer-exponentiation-operator': 1,
       'prefer-named-capture-group': 0,
       'prefer-numeric-literals': 1,
       'prefer-object-has-own': 1,
       'prefer-object-spread': 1,
-
-      'prefer-promise-reject-errors': [
-        1,
-        {
-          allowEmptyReject: true
-        }
-      ],
-
-      'prefer-regex-literals': [
-        1,
-        {
-          disallowRedundantWrapping: true
-        }
-      ],
-
+      'prefer-promise-reject-errors': 0, // replaced by @typescript-eslint/prefer-promise-reject-errors
+      'prefer-regex-literals': [1, { disallowRedundantWrapping: true }],
       'prefer-rest-params': 1,
       'prefer-spread': 1,
       'prefer-template': 1,
-      'quote-props': 'off',
+      'quote-props': [1, 'as-needed'],
       radix: 1,
-      'require-await': 0,
+      'require-await': 0, // replaced by @typescript-eslint/require-await
       'require-unicode-regexp': 0,
       'require-yield': 1,
       'sort-imports': 0,
@@ -403,9 +270,77 @@ export default [
       'symbol-description': 1,
       'vars-on-top': 0,
       yoda: 0,
+
+      // Layout & Formatting
+      // https://eslint.org/docs/latest/rules/#layout--formatting
+      'array-bracket-newline': 0,
+      'array-bracket-spacing': 0,
+      'array-element-newline': 0,
+      'arrow-parens': 0,
+      'arrow-spacing': 0,
+      'block-spacing': 0,
+      'brace-style': 0,
+      'comma-dangle': 0,
+      'comma-spacing': 0,
+      'comma-style': 0,
+      'computed-property-spacing': 0,
+      'dot-location': 0,
+      'eol-last': 0,
+      'func-call-spacing': 0,
+      'function-call-argument-newline': 0,
+      'function-paren-newline': 0,
+      'generator-star-spacing': 0,
+      'implicit-arrow-linebreak': 0,
+      indent: 0,
+      'jsx-quotes': 0,
+      'key-spacing': 0,
+      'keyword-spacing': 0,
+      'line-comment-position': 0,
+      'linebreak-style': 0,
+      'lines-around-comment': 0,
+      'lines-between-class-members': 0,
+      'max-len': 0,
+      'max-statements-per-line': 0,
+      'multiline-ternary': 0,
+      'new-parens': 0,
+      'newline-per-chained-call': 0,
+      'no-extra-parens': 0,
+      'no-mixed-spaces-and-tabs': 0,
+      'no-multi-spaces': 0,
+      'no-multiple-empty-lines': 0,
+      'no-tabs': 0,
+      'no-trailing-spaces': 0,
+      'no-whitespace-before-property': 0,
+      'nonblock-statement-body-position': 0,
+      'object-curly-newline': 0,
+      'object-curly-spacing': 0,
+      'object-property-newline': 0,
+      'operator-linebreak': 0,
+      'padded-blocks': 0,
+      'padding-line-between-statements': 0,
+      quotes: 0,
+      'rest-spread-spacing': 0,
+      semi: 0,
+      'semi-spacing': 0,
+      'semi-style': 0,
+      'space-before-blocks': 0,
+      'space-before-function-paren': 0,
+      'space-in-parens': 0,
+      'space-infix-ops': 0,
+      'space-unary-ops': 0,
+      'switch-colon-spacing': 0,
+      'template-curly-spacing': 0,
+      'template-tag-spacing': 0,
       'unicode-bom': 1,
+      'wrap-iife': 0,
+      'wrap-regex': 0,
+      'yield-star-spacing': 0,
+
+      // React rules
+      // https://github.com/jsx-eslint/eslint-plugin-react#list-of-supported-rules
       'react/boolean-prop-naming': 0,
       'react/button-has-type': 0,
+      'react/checked-requires-onchange-or-readonly': 1,
       'react/default-props-match-prop-types': 0,
       'react/destructuring-assignment': 0,
       'react/display-name': 0,
@@ -414,7 +349,6 @@ export default [
       'react/forbid-elements': 0,
       'react/forbid-foreign-prop-types': 0,
       'react/forbid-prop-types': 0,
-
       'react/function-component-definition': [
         1,
         {
@@ -422,31 +356,22 @@ export default [
           unnamedComponents: 'function-expression'
         }
       ],
-
       'react/hook-use-state': 0,
       'react/iframe-missing-sandbox': 1,
       'react/jsx-boolean-value': 1,
-      'react/jsx-child-element-spacing': 'off',
-      'react/jsx-closing-bracket-location': 'off',
-      'react/jsx-closing-tag-location': 'off',
+      'react/jsx-child-element-spacing': 0,
+      'react/jsx-closing-bracket-location': 1,
+      'react/jsx-closing-tag-location': 1,
       'react/jsx-curly-brace-presence': 1,
-      'react/jsx-curly-newline': 'off',
-      'react/jsx-curly-spacing': 'off',
-      'react/jsx-equals-spacing': 'off',
-
-      'react/jsx-filename-extension': [
-        1,
-        {
-          extensions: ['.tsx']
-        }
-      ],
-
-      'react/jsx-first-prop-new-line': 'off',
+      'react/jsx-curly-newline': 1,
+      'react/jsx-curly-spacing': 1,
+      'react/jsx-equals-spacing': 1,
+      'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
+      'react/jsx-first-prop-new-line': 1,
       'react/jsx-fragments': 1,
       'react/jsx-handler-names': 0,
-      'react/jsx-indent': 'off',
-      'react/jsx-indent-props': 'off',
-
+      'react/jsx-indent': [1, 2],
+      'react/jsx-indent-props': [1, 2],
       'react/jsx-key': [
         1,
         {
@@ -455,10 +380,9 @@ export default [
           warnOnDuplicates: true
         }
       ],
-
       'react/jsx-max-depth': 0,
-      'react/jsx-max-props-per-line': 'off',
-      'react/jsx-newline': 'off',
+      'react/jsx-max-props-per-line': [1, { when: 'multiline' }],
+      'react/jsx-newline': 0,
       'react/jsx-no-bind': 0,
       'react/jsx-no-comment-textnodes': 1,
       'react/jsx-no-constructed-context-values': 1,
@@ -469,17 +393,35 @@ export default [
       'react/jsx-no-target-blank': 1,
       'react/jsx-no-undef': 0,
       'react/jsx-no-useless-fragment': 1,
-      'react/jsx-one-expression-per-line': 'off',
+      'react/jsx-one-expression-per-line': 0,
       'react/jsx-pascal-case': 1,
-      'react/jsx-props-no-multi-spaces': 'off',
+      'react/jsx-props-no-multi-spaces': 1,
+      'react/jsx-props-no-spread-multi': 1,
       'react/jsx-props-no-spreading': 0,
-      'react/jsx-sort-default-props': 0,
       'react/jsx-sort-props': 0,
-      'react/jsx-space-before-closing': 'off',
-      'react/jsx-tag-spacing': 'off',
+      'react/jsx-tag-spacing': [
+        1,
+        {
+          closingSlash: 'never',
+          beforeSelfClosing: 'always',
+          afterOpening: 'never',
+          beforeClosing: 'never'
+        }
+      ],
       'react/jsx-uses-react': 0,
       'react/jsx-uses-vars': 1,
-      'react/jsx-wrap-multilines': 'off',
+      'react/jsx-wrap-multilines': [
+        1,
+        {
+          declaration: 'parens-new-line',
+          assignment: 'parens-new-line',
+          return: 'parens-new-line',
+          arrow: 'parens-new-line',
+          condition: 'parens-new-line',
+          logical: 'parens-new-line',
+          prop: 'parens-new-line'
+        }
+      ],
       'react/no-access-state-in-setstate': 1,
       'react/no-adjacent-inline-elements': 0,
       'react/no-array-index-key': 0,
@@ -500,27 +442,13 @@ export default [
       'react/no-redundant-should-component-update': 1,
       'react/no-render-return-value': 0,
       'react/no-set-state': 0,
-
-      'react/no-string-refs': [
-        1,
-        {
-          noTemplateLiterals: true
-        }
-      ],
-
+      'react/no-string-refs': [1, { noTemplateLiterals: true }],
       'react/no-this-in-sfc': 0,
       'react/no-typos': 1,
       'react/no-unescaped-entities': 0,
       'react/no-unknown-property': 0,
       'react/no-unsafe': 1,
-
-      'react/no-unstable-nested-components': [
-        1,
-        {
-          allowAsProps: true
-        }
-      ],
-
+      'react/no-unstable-nested-components': [1, { allowAsProps: true }],
       'react/no-unused-class-component-methods': 0,
       'react/no-unused-prop-types': 0,
       'react/no-unused-state': 0,
@@ -542,8 +470,13 @@ export default [
       'react/static-property-placement': 1,
       'react/style-prop-object': 0,
       'react/void-dom-elements-no-children': 1,
+
+      // React Hooks
+      // https://www.npmjs.com/package/eslint-plugin-react-hooks
       'react-hooks/rules-of-hooks': 1,
       'react-hooks/exhaustive-deps': 1,
+
+      // https://github.com/jest-community/eslint-plugin-jest#rules
       'jest/consistent-test-it': 1,
       'jest/expect-expect': 0,
       'jest/max-expects': 0,
@@ -552,6 +485,7 @@ export default [
       'jest/no-commented-out-tests': 1,
       'jest/no-conditional-expect': 1,
       'jest/no-conditional-in-test': 0,
+      'jest/no-confusing-set-timeout': 0,
       'jest/no-deprecated-functions': 0,
       'jest/no-disabled-tests': 0,
       'jest/no-done-callback': 0,
@@ -565,7 +499,6 @@ export default [
       'jest/no-large-snapshots': 0,
       'jest/no-mocks-import': 1,
       'jest/no-restricted-jest-methods': 0,
-
       'jest/no-restricted-matchers': [
         1,
         {
@@ -575,7 +508,6 @@ export default [
           'not.toBeFalsy': null
         }
       ],
-
       'jest/no-standalone-expect': 1,
       'jest/no-test-prefixes': 0,
       'jest/no-test-return-statement': 0,
@@ -585,9 +517,11 @@ export default [
       'jest/prefer-each': 1,
       'jest/prefer-equality-matcher': 1,
       'jest/prefer-expect-assertions': 0,
-      'jest/prefer-expect-resolves': 0,
+      'jest/prefer-expect-resolves': 1,
       'jest/prefer-hooks-in-order': 1,
       'jest/prefer-hooks-on-top': 1,
+      'jest/prefer-importing-jest-globals': 0,
+      'jest/prefer-jest-mocked': 0,
       'jest/prefer-lowercase-title': 0,
       'jest/prefer-mock-promise-shorthand': 1,
       'jest/prefer-snapshot-hint': 0,
@@ -601,16 +535,11 @@ export default [
       'jest/require-to-throw-message': 0,
       'jest/require-top-level-describe': 0,
       'jest/valid-describe-callback': 1,
-
-      'jest/valid-expect': [
-        1,
-        {
-          alwaysAwait: true
-        }
-      ],
-
+      'jest/valid-expect': [1, { alwaysAwait: true }],
       'jest/valid-expect-in-promise': 1,
       'jest/valid-title': 1,
+
+      // https://github.com/testing-library/eslint-plugin-jest-dom#supported-rules
       'jest-dom/prefer-checked': 1,
       'jest-dom/prefer-empty': 1,
       'jest-dom/prefer-enabled-disabled': 1,
@@ -622,6 +551,9 @@ export default [
       'jest-dom/prefer-to-have-style': 1,
       'jest-dom/prefer-to-have-text-content': 1,
       'jest-dom/prefer-to-have-value': 1,
+
+      // SonarJS rules
+      // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
       'sonarjs/no-all-duplicated-branches': 1,
       'sonarjs/no-element-overwrite': 1,
       'sonarjs/no-empty-collection': 1,
@@ -654,69 +586,41 @@ export default [
       'sonarjs/prefer-object-literal': 1,
       'sonarjs/prefer-single-boolean-return': 1,
       'sonarjs/prefer-while': 1,
+
+      // @typescript-eslint/eslint-plugin rules
+      // https://typescript-eslint.io/rules/#supported-rules
       '@typescript-eslint/adjacent-overload-signatures': 1,
       '@typescript-eslint/array-type': 0,
       '@typescript-eslint/await-thenable': 1,
-
-      '@typescript-eslint/ban-ts-comment': [
-        1,
-        {
-          'ts-expect-error': false
-        }
-      ],
-
+      '@typescript-eslint/ban-ts-comment': [1, { 'ts-expect-error': false }],
       '@typescript-eslint/ban-tslint-comment': 0,
       '@typescript-eslint/ban-types': 1,
       '@typescript-eslint/class-literal-property-style': 0,
       '@typescript-eslint/consistent-generic-constructors': 1,
       '@typescript-eslint/consistent-indexed-object-style': 1,
-
       '@typescript-eslint/consistent-type-assertions': [
         1,
-        {
-          assertionStyle: 'as',
-          objectLiteralTypeAssertions: 'never'
-        }
+        { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }
       ],
-
       '@typescript-eslint/consistent-type-definitions': 1,
       '@typescript-eslint/consistent-type-exports': 0,
-
-      '@typescript-eslint/consistent-type-imports': [
-        1,
-        {
-          fixStyle: 'inline-type-imports'
-        }
-      ],
-
+      '@typescript-eslint/consistent-type-imports': [1, { fixStyle: 'inline-type-imports' }],
       '@typescript-eslint/explicit-function-return-type': 0,
       '@typescript-eslint/explicit-member-accessibility': 0,
       '@typescript-eslint/explicit-module-boundary-types': 0,
       '@typescript-eslint/member-ordering': 0,
       '@typescript-eslint/method-signature-style': 1,
       '@typescript-eslint/naming-convention': 0,
+      '@typescript-eslint/no-array-delete': 1,
       '@typescript-eslint/no-base-to-string': 0,
       '@typescript-eslint/no-confusing-non-null-assertion': 0,
-
-      '@typescript-eslint/no-confusing-void-expression': [
-        1,
-        {
-          ignoreArrowShorthand: true
-        }
-      ],
-
+      '@typescript-eslint/no-confusing-void-expression': [1, { ignoreArrowShorthand: true }],
       '@typescript-eslint/no-duplicate-enum-values': 1,
       '@typescript-eslint/no-duplicate-type-constituents': 1,
       '@typescript-eslint/no-dynamic-delete': 0,
       '@typescript-eslint/no-empty-interface': 1,
-
-      '@typescript-eslint/no-explicit-any': [
-        1,
-        {
-          fixToUnknown: true
-        }
-      ],
-
+      '@typescript-eslint/no-empty-object-type': 1,
+      '@typescript-eslint/no-explicit-any': [1, { fixToUnknown: true }],
       '@typescript-eslint/no-extra-non-null-assertion': 1,
       '@typescript-eslint/no-extraneous-class': 1,
       '@typescript-eslint/no-floating-promises': 0,
@@ -738,7 +642,9 @@ export default [
       '@typescript-eslint/no-type-alias': 0,
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
       '@typescript-eslint/no-unnecessary-condition': 1,
+      '@typescript-eslint/no-unnecessary-parameter-property-assignment': 1,
       '@typescript-eslint/no-unnecessary-qualifier': 0,
+      '@typescript-eslint/no-unnecessary-template-expression': 1,
       '@typescript-eslint/no-unnecessary-type-arguments': 1,
       '@typescript-eslint/no-unnecessary-type-assertion': 1,
       '@typescript-eslint/no-unnecessary-type-constraint': 1,
@@ -755,30 +661,24 @@ export default [
       '@typescript-eslint/parameter-properties': 1,
       '@typescript-eslint/prefer-as-const': 1,
       '@typescript-eslint/prefer-enum-initializers': 0,
+      '@typescript-eslint/prefer-find': 1,
       '@typescript-eslint/prefer-for-of': 1,
       '@typescript-eslint/prefer-function-type': 1,
       '@typescript-eslint/prefer-includes': 1,
       '@typescript-eslint/prefer-literal-enum-member': 1,
       '@typescript-eslint/prefer-namespace-keyword': 0,
-
       '@typescript-eslint/prefer-nullish-coalescing': [
         1,
-        {
-          ignorePrimitives: {
-            boolean: true,
-            string: true
-          }
-        }
+        { ignorePrimitives: { boolean: true, string: true } }
       ],
-
       '@typescript-eslint/prefer-optional-chain': 1,
+      '@typescript-eslint/prefer-promise-reject-errors': [1, { allowEmptyReject: true }],
       '@typescript-eslint/prefer-readonly': 1,
       '@typescript-eslint/prefer-readonly-parameter-types': 0,
       '@typescript-eslint/prefer-reduce-type-parameter': 1,
       '@typescript-eslint/prefer-regexp-exec': 1,
       '@typescript-eslint/prefer-return-this-type': 0,
       '@typescript-eslint/prefer-string-starts-ends-with': 1,
-      '@typescript-eslint/prefer-ts-expect-error': 1,
       '@typescript-eslint/promise-function-async': 0,
       '@typescript-eslint/require-array-sort-compare': 1,
       '@typescript-eslint/restrict-plus-operands': 0,
@@ -786,19 +686,16 @@ export default [
       '@typescript-eslint/sort-type-constituents': 0,
       '@typescript-eslint/strict-boolean-expressions': 0,
       '@typescript-eslint/switch-exhaustiveness-check': 1,
-
       '@typescript-eslint/triple-slash-reference': [
         1,
-        {
-          path: 'never',
-          types: 'never',
-          lib: 'never'
-        }
+        { path: 'never', types: 'never', lib: 'never' }
       ],
-
       '@typescript-eslint/typedef': 0,
       '@typescript-eslint/unbound-method': 0,
       '@typescript-eslint/unified-signatures': 0,
+
+      // @typescript-eslint/eslint-plugin Extension Rules
+      // https://typescript-eslint.io/rules/#extension-rules
       '@typescript-eslint/default-param-last': 0,
       '@typescript-eslint/dot-notation': 1,
       '@typescript-eslint/init-declarations': 0,
@@ -811,7 +708,6 @@ export default [
       '@typescript-eslint/no-loss-of-precision': 1,
       '@typescript-eslint/no-magic-numbers': 0,
       '@typescript-eslint/no-redeclare': 1,
-
       '@typescript-eslint/no-restricted-imports': [
         1,
         {
@@ -838,30 +734,17 @@ export default [
           message: 'Import lodash-es instead.'
         }
       ],
-
       '@typescript-eslint/no-shadow': 0,
       '@typescript-eslint/no-throw-literal': 1,
-
       '@typescript-eslint/no-unused-expressions': [
         1,
-        {
-          allowTaggedTemplates: true,
-          enforceForJSX: true
-        }
+        { allowTaggedTemplates: true, enforceForJSX: true }
       ],
-
-      '@typescript-eslint/no-unused-vars': [
-        1,
-        {
-          ignoreRestSiblings: true
-        }
-      ],
-
+      '@typescript-eslint/no-unused-vars': [1, { caughtErrors: 'all', ignoreRestSiblings: true }],
       '@typescript-eslint/no-use-before-define': 0,
       '@typescript-eslint/no-useless-constructor': 1,
-      '@typescript-eslint/object-curly-spacing': 'off',
-
-      // deprecated
+      '@typescript-eslint/object-curly-spacing': 0,
+      // TODO: deprecated
       '@typescript-eslint/padding-line-between-statements': [
         1,
         {
@@ -875,9 +758,12 @@ export default [
           next: '*'
         }
       ],
-
       '@typescript-eslint/require-await': 1,
       '@typescript-eslint/return-await': 1,
+      '@typescript-eslint/use-unknown-in-catch-callback-variable': 1,
+
+      // eslint-plugin-testing-library Rules
+      // https://github.com/testing-library/eslint-plugin-testing-library#supported-rules
       'testing-library/await-async-events': 0,
       'testing-library/await-async-queries': 0,
       'testing-library/await-async-utils': 0,
@@ -922,15 +808,7 @@ export default [
 
     rules: {
       'no-undef': 1,
-
-      'no-use-before-define': [
-        1,
-        {
-          functions: false,
-          classes: false,
-          variables: false
-        }
-      ]
+      'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
     }
   },
   {
@@ -950,8 +828,12 @@ export default [
     },
 
     rules: {
+      // Possible Errors
       'no-console': 0,
+      // Best Practices
       'default-param-last': 1,
+      // https://github.com/mysticatea/eslint-plugin-node#-rules
+      // Possible Errors
       'node/handle-callback-err': 0,
       'node/no-callback-literal': 0,
       'node/no-exports-assign': 0,
@@ -970,7 +852,11 @@ export default [
       'node/no-unsupported-features/node-builtins': 0,
       'node/process-exit-as-throw': 0,
       'node/shebang': 1,
+
+      // Best Practices
       'node/no-deprecated-api': 0,
+
+      // Stylistic Issues
       'node/callback-return': 0,
       'node/exports-style': 0,
       'node/file-extension-in-import': 0,
