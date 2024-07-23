@@ -668,7 +668,7 @@ export default [
         1,
         { allowTaggedTemplates: true, enforceForJSX: true }
       ],
-      '@typescript-eslint/no-unused-vars': [1, { caughtErrors: 'all', ignoreRestSiblings: true }],
+      '@typescript-eslint/no-unused-vars': [1, { ignoreRestSiblings: true }],
       '@typescript-eslint/no-use-before-define': 0,
       '@typescript-eslint/no-useless-constructor': 1,
       '@typescript-eslint/object-curly-spacing': 0,
