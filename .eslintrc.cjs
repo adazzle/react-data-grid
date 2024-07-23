@@ -201,7 +201,7 @@ const rules = {
   'prefer-numeric-literals': 1,
   'prefer-object-has-own': 1,
   'prefer-object-spread': 1,
-  'prefer-promise-reject-errors': 'off', // replaced by @typescript-eslint/prefer-promise-reject-errors
+  'prefer-promise-reject-errors': 0, // replaced by @typescript-eslint/prefer-promise-reject-errors
   'prefer-regex-literals': [1, { disallowRedundantWrapping: true }],
   'prefer-rest-params': 1,
   'prefer-spread': 1,
