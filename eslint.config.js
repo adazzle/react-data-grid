@@ -225,7 +225,7 @@ export default [
       'no-unused-labels': 1,
       'no-useless-call': 1,
       'no-useless-catch': 1,
-      'no-useless-computed-key': [1, { enforceForClassMembers: true }],
+      'no-useless-computed-key': 1,
       'no-useless-concat': 1,
       'no-useless-constructor': 0, // replaced by @typescript-eslint/no-useless-constructor
       'no-useless-escape': 1,
