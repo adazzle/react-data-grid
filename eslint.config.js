@@ -80,7 +80,7 @@ export default [
       'no-empty-character-class': 1,
       'no-empty-pattern': 1,
       'no-ex-assign': 1,
-      'no-fallthrough': 1,
+      'no-fallthrough': [1, { reportUnusedFallthroughComment: true }],
       'no-func-assign': 1,
       'no-import-assign': 1,
       'no-inner-declarations': 0,
