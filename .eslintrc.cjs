@@ -434,7 +434,7 @@ const rules = {
   'jest/no-commented-out-tests': 1,
   'jest/no-conditional-expect': 1,
   'jest/no-conditional-in-test': 0,
-  'jest/no-confusing-set-timeout': 1,
+  'jest/no-confusing-set-timeout': 0,
   'jest/no-deprecated-functions': 0,
   'jest/no-disabled-tests': 0,
   'jest/no-done-callback': 0,
