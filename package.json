@@ -91,7 +91,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-sonarjs": "^1.0.3",
+    "eslint-plugin-sonarjs": "^1.0.4",
     "eslint-plugin-testing-library": "^6.2.0",
     "globals": "^15.8.0",
     "jspdf": "^2.5.1",
