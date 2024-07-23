@@ -88,7 +88,7 @@ type DefaultColumnOptions<R, SR> = Pick<
 
 export interface DataGridHandle {
   element: HTMLDivElement | null;
-  scrollToCell: (position: PartialPosition) => void;
+  scrollToCell: (position: PartialPosition, scrollIntoViewOptions?: boolean | ScrollIntoViewOptions) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
@@ -341,6 +341,7 @@ function DataGrid<R, SR, K extends Key>(
   const lastSelectedRowIdx = useRef(-1);
   const focusSinkRef = useRef<HTMLDivElement>(null);
   const shouldFocusCellRef = useRef(false);
+  const scrollIntoViewOptions = useRef<boolean | ScrollIntoViewOptions>();
 
   /**
    * computed values
@@ -468,13 +469,14 @@ function DataGrid<R, SR, K extends Key>(
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
-    scrollToCell({ idx, rowIdx }) {
+    scrollToCell({ idx, rowIdx }, options) {
       const scrollToIdx =
         idx !== undefined && idx > lastFrozenColumnIndex && idx < columns.length ? idx : undefined;
       const scrollToRowIdx =
         rowIdx !== undefined && isRowIdxWithinViewportBounds(rowIdx) ? rowIdx : undefined;
 
       if (scrollToIdx !== undefined || scrollToRowIdx !== undefined) {
+        scrollIntoViewOptions.current = options;
         setScrollToPosition({ idx: scrollToIdx, rowIdx: scrollToRowIdx });
       }
     },
@@ -711,7 +713,11 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
-  function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
+  function selectCell(
+    position: Position,
+    enableEditor?: Maybe<boolean>,
+    scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
+  ): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
@@ -722,7 +728,7 @@ function DataGrid<R, SR, K extends Key>(
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
-      scrollIntoView(getCellToScroll(gridRef.current!));
+      scrollIntoView(getCellToScroll(gridRef.current!), scrollIntoViewOptions);
     } else {
       shouldFocusCellRef.current = true;
       setSelectedPosition({ ...position, mode: 'SELECT' });
@@ -1210,6 +1216,7 @@ function DataGrid<R, SR, K extends Key>(
           scrollToPosition={scrollToPosition}
           setScrollToCellPosition={setScrollToPosition}
           gridElement={gridRef.current!}
+          scrollIntoViewOptions={scrollIntoViewOptions.current}
         />
       )}
     </div>
