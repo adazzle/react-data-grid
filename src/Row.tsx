@@ -1,37 +1,34 @@
-import { forwardRef, memo, type RefAttributes } from 'react';
+import { memo } from 'react';
 import clsx from 'clsx';
 
-import { RowSelectionProvider, useLatestFunc } from './hooks';
+import { RowSelectionContext, useLatestFunc } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RenderRowProps } from './types';
 import Cell from './Cell';
 import { rowClassname, rowSelectedClassname } from './style/row';
 
-function Row<R, SR>(
-  {
-    className,
-    rowIdx,
-    gridRowStart,
-    selectedCellIdx,
-    isRowSelected,
-    copiedCellIdx,
-    draggedOverCellIdx,
-    lastFrozenColumnIndex,
-    row,
-    viewportColumns,
-    selectedCellEditor,
-    onCellClick,
-    onCellDoubleClick,
-    onCellContextMenu,
-    rowClass,
-    setDraggedOverRowIdx,
-    onMouseEnter,
-    onRowChange,
-    selectCell,
-    ...props
-  }: RenderRowProps<R, SR>,
-  ref: React.Ref<HTMLDivElement>
-) {
+function Row<R, SR>({
+  className,
+  rowIdx,
+  gridRowStart,
+  selectedCellIdx,
+  isRowSelected,
+  copiedCellIdx,
+  draggedOverCellIdx,
+  lastFrozenColumnIndex,
+  row,
+  viewportColumns,
+  selectedCellEditor,
+  onCellClick,
+  onCellDoubleClick,
+  onCellContextMenu,
+  rowClass,
+  setDraggedOverRowIdx,
+  onMouseEnter,
+  onRowChange,
+  selectCell,
+  ...props
+}: RenderRowProps<R, SR>) {
   const handleRowChange = useLatestFunc((column: CalculatedColumn<R, SR>, newRow: R) => {
     onRowChange(column, rowIdx, newRow);
   });
@@ -87,10 +84,9 @@ function Row<R, SR>(
   }
 
   return (
-    <RowSelectionProvider value={isRowSelected}>
+    <RowSelectionContext value={isRowSelected}>
       <div
         role="row"
-        ref={ref}
         className={className}
         onMouseEnter={handleDragEnter}
         style={getRowStyle(gridRowStart)}
@@ -98,13 +94,11 @@ function Row<R, SR>(
       >
         {cells}
       </div>
-    </RowSelectionProvider>
+    </RowSelectionContext>
   );
 }
 
-const RowComponent = memo(forwardRef(Row)) as <R, SR>(
-  props: RenderRowProps<R, SR> & RefAttributes<HTMLDivElement>
-) => React.JSX.Element;
+const RowComponent = memo(Row) as <R, SR>(props: RenderRowProps<R, SR>) => React.JSX.Element;
 
 export default RowComponent;
 

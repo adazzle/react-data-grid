@@ -281,7 +281,7 @@ export default function HeaderFilters({ direction }: Props) {
           Clear Filters
         </button>
       </div>
-      <FilterContext.Provider value={filters}>
+      <FilterContext value={filters}>
         <DataGrid
           className={filters.enabled ? filterContainerClassname : undefined}
           columns={columns}
@@ -289,7 +289,7 @@ export default function HeaderFilters({ direction }: Props) {
           headerRowHeight={filters.enabled ? 70 : undefined}
           direction={direction}
         />
-      </FilterContext.Provider>
+      </FilterContext>
       <datalist id="developers">
         {developerOptions.map(({ label, value }) => (
           <option key={value} value={value}>

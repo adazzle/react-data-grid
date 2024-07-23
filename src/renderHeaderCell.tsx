@@ -1,7 +1,7 @@
 import { css } from '@linaria/core';
 
 import type { RenderHeaderCellProps } from './types';
-import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
+import { useDefaultRenderers } from './DataGridDefaultRenderersContext';
 
 const headerSortCellClassname = css`
   @layer rdg.SortableHeaderCell {

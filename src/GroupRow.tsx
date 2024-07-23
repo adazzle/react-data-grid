@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { RowSelectionProvider } from './hooks';
+import { RowSelectionContext } from './hooks';
 import { getRowStyle } from './utils';
 import type { BaseRenderRowProps, GroupRow } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
@@ -52,7 +52,7 @@ function GroupedRow<R, SR>({
   }
 
   return (
-    <RowSelectionProvider value={isRowSelected}>
+    <RowSelectionContext value={isRowSelected}>
       <div
         role="row"
         aria-level={row.level + 1} // aria-level is 1-based
@@ -86,7 +86,7 @@ function GroupedRow<R, SR>({
           />
         ))}
       </div>
-    </RowSelectionProvider>
+    </RowSelectionContext>
   );
 }
 

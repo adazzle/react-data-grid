@@ -227,16 +227,16 @@ interface Renderers<TRow, TSummaryRow> {
 }
 ```
 
-For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add context providers or tweak props
+For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add contexts or tweak props
 
 ```tsx
 import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 
 function myRowRenderer(key: React.Key, props: RenderRowProps<Row>) {
   return (
-    <MyContext.Provider key={key} value={123}>
+    <MyContext key={key} value={123}>
       <Row {...props} />
-    </MyContext.Provider>
+    </MyContext>
   );
 }
 
