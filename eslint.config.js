@@ -4,7 +4,6 @@ import tsParser from '@typescript-eslint/parser';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
 import jestDom from 'eslint-plugin-jest-dom';
-import node from 'eslint-plugin-node';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import sonarjs from 'eslint-plugin-sonarjs';
@@ -20,7 +19,6 @@ export default [
     files: ['{src,test,website}/**/*.{js,ts,tsx}', 'vite.config.ts'],
 
     plugins: {
-      node: fixupPluginRules(node),
       react,
       'react-hooks': fixupPluginRules(reactHooks),
       jest,
@@ -744,55 +742,12 @@ export default [
     },
 
     rules: {
+      // Best Practices
+      'default-param-last': 1,
       // Possible Errors
       'no-console': 0,
       'no-undef': 1,
-      'no-use-before-define': [1, { functions: false, classes: false, variables: false }],
-      // Best Practices
-      'default-param-last': 1,
-      // https://github.com/mysticatea/eslint-plugin-node#-rules
-      // Possible Errors
-      'node/handle-callback-err': 0,
-      'node/no-callback-literal': 0,
-      'node/no-exports-assign': 0,
-      'node/no-extraneous-import': 0,
-      'node/no-extraneous-require': 0,
-      'node/no-missing-import': 0,
-      'node/no-missing-require': 0,
-      'node/no-new-require': 1,
-      'node/no-path-concat': 1,
-      'node/no-process-exit': 0,
-      'node/no-unpublished-bin': 0,
-      'node/no-unpublished-import': 0,
-      'node/no-unpublished-require': 0,
-      'node/no-unsupported-features/es-builtins': 0,
-      'node/no-unsupported-features/es-syntax': 0,
-      'node/no-unsupported-features/node-builtins': 0,
-      'node/process-exit-as-throw': 0,
-      'node/shebang': 1,
-
-      // Best Practices
-      'node/no-deprecated-api': 0,
-
-      // Stylistic Issues
-      'node/callback-return': 0,
-      'node/exports-style': 0,
-      'node/file-extension-in-import': 0,
-      'node/global-require': 1,
-      'node/no-mixed-requires': 0,
-      'node/no-process-env': 0,
-      'node/no-restricted-import': 0,
-      'node/no-restricted-require': 0,
-      'node/no-sync': 0,
-      'node/prefer-global/buffer': 1,
-      'node/prefer-global/console': 1,
-      'node/prefer-global/process': 1,
-      'node/prefer-global/text-decoder': 1,
-      'node/prefer-global/text-encoder': 1,
-      'node/prefer-global/url-search-params': 1,
-      'node/prefer-global/url': 1,
-      'node/prefer-promises/dns': 1,
-      'node/prefer-promises/fs': 1
+      'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
     }
   }
 ];
