@@ -264,6 +264,7 @@ export default [
 
       // Layout & Formatting
       // https://eslint.org/docs/latest/rules/#layout--formatting
+      'unicode-bom': 1,
 
       // React rules
       // https://github.com/jsx-eslint/eslint-plugin-react#list-of-supported-rules
