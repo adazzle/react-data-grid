@@ -665,7 +665,6 @@ export default [
       '@typescript-eslint/no-unused-vars': [1, { ignoreRestSiblings: true }],
       '@typescript-eslint/no-use-before-define': 0,
       '@typescript-eslint/no-useless-constructor': 1,
-      '@typescript-eslint/object-curly-spacing': 0,
       '@typescript-eslint/only-throw-error': 1,
       // TODO: deprecated
       '@typescript-eslint/padding-line-between-statements': [
