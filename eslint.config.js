@@ -36,7 +36,6 @@ export default [
       parserOptions: {
         jsxPragma: null,
         project: './tsconfig.json',
-        lib: ['ESNext'],
         warnOnUnsupportedTypeScriptVersion: false
       }
     },
