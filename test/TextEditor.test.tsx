@@ -36,7 +36,6 @@ test('TextEditor', async () => {
   // pressing escape closes the editor without committing
   await userEvent.keyboard('Test{escape}');
   expect(input).not.toBeInTheDocument();
-  input = null;
   expect(getCells()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
 
   // blurring the input closes and commits the editor
