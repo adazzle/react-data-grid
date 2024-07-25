@@ -11,11 +11,11 @@ import testingLibrary from 'eslint-plugin-testing-library';
 
 export default [
   {
-    ignores: ['.github', 'rollup.config.js', 'coverage', 'dist', 'lib']
+    ignores: ['coverage', 'dist', 'lib']
   },
   {
     name: 'common',
-    files: ['{src,test,website}/**/*.{js,ts,tsx}', 'vite.config.ts'],
+    files: ['**/*.{js,ts,tsx}'],
 
     plugins: {
       react,
@@ -31,7 +31,7 @@ export default [
       parser: tsParser,
 
       parserOptions: {
-        allowAutomaticSingleRunInference: true,
+        allowAutomaticSingleRunInference: false,
         ecmaVersion: 'latest',
         jsxPragma: null,
         project: './tsconfig.json',
