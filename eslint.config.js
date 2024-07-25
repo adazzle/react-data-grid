@@ -32,8 +32,6 @@ export default [
 
     languageOptions: {
       parser: tsParser,
-      ecmaVersion: 'latest',
-      sourceType: 'module',
 
       parserOptions: {
         jsxPragma: null,
