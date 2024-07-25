@@ -716,6 +716,7 @@ export default [
       ...eslintConfigPrettier.rules
     }
   },
+
   {
     name: 'test',
 
@@ -725,14 +726,7 @@ export default [
       '@typescript-eslint/no-floating-promises': 1
     }
   },
-  {
-    files: ['**/*.js'],
 
-    rules: {
-      'no-undef': 1,
-      'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
-    }
-  },
   {
     name: 'node',
 
@@ -752,6 +746,8 @@ export default [
     rules: {
       // Possible Errors
       'no-console': 0,
+      'no-undef': 1,
+      'no-use-before-define': [1, { functions: false, classes: false, variables: false }],
       // Best Practices
       'default-param-last': 1,
       // https://github.com/mysticatea/eslint-plugin-node#-rules
