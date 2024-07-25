@@ -31,6 +31,8 @@ export default [
       parser: tsParser,
 
       parserOptions: {
+        allowAutomaticSingleRunInference: true,
+        ecmaVersion: 'latest',
         jsxPragma: null,
         project: './tsconfig.json',
         warnOnUnsupportedTypeScriptVersion: false
