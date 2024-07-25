@@ -11,7 +11,7 @@ import testingLibrary from 'eslint-plugin-testing-library';
 
 export default [
   {
-    ignores: ['.github', 'eslint.config.js', 'rollup.config.js', 'coverage', 'dist', 'lib']
+    ignores: ['.github', 'rollup.config.js', 'coverage', 'dist', 'lib']
   },
   {
     name: 'common',
