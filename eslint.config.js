@@ -8,7 +8,6 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
-import globals from 'globals';
 
 export default [
   {
@@ -729,17 +728,6 @@ export default [
     name: 'node',
 
     files: ['**/*.js'],
-
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        __dirname: 'off',
-        __filename: 'off',
-        exports: 'off',
-        module: 'off',
-        require: 'off'
-      }
-    },
 
     rules: {
       // Best Practices
