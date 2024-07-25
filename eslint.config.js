@@ -30,10 +30,6 @@ export default [
       'testing-library': fixupPluginRules(testingLibrary)
     },
 
-    linterOptions: {
-      reportUnusedDisableDirectives: true
-    },
-
     languageOptions: {
       parser: tsParser,
       ecmaVersion: 'latest',
