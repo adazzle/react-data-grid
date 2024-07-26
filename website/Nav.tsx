@@ -8,12 +8,7 @@ const navClassname = css`
   flex-direction: column;
   white-space: nowrap;
 
-  @media (prefers-color-scheme: light) {
-    border-inline-start: 4px solid hsl(210deg 50% 80%);
-  }
-  @media (prefers-color-scheme: dark) {
-    border-inline-start: 4px solid hsl(210deg 50% 40%);
-  }
+  border-inline-start: 4px solid light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
 
   h1,
   h2 {
@@ -30,33 +25,17 @@ const navClassname = css`
     transition: 0.1s background-color;
 
     &:hover {
-      @media (prefers-color-scheme: light) {
-        background-color: hsl(210deg 50% 90%);
-      }
-      @media (prefers-color-scheme: dark) {
-        background-color: hsl(210deg 50% 30%);
-      }
+      background-color: light-dark(hsl(210deg 50% 90%), hsl(210deg 50% 30%));
     }
   }
 `;
 
 const activeNavClassname = css`
   font-weight: 500;
-
-  @media (prefers-color-scheme: light) {
-    background-color: hsl(210deg 50% 80%);
-  }
-  @media (prefers-color-scheme: dark) {
-    background-color: hsl(210deg 50% 40%);
-  }
+  background-color: light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
 
   a&:hover {
-    @media (prefers-color-scheme: light) {
-      background-color: hsl(210deg 50% 70%);
-    }
-    @media (prefers-color-scheme: dark) {
-      background-color: hsl(210deg 50% 50%);
-    }
+    background-color: light-dark(hsl(210deg 50% 70%), hsl(210deg 50% 50%));
   }
 `;
 
