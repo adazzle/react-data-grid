@@ -90,6 +90,7 @@ function Row<R, SR>(
     <RowSelectionProvider value={isRowSelected}>
       <div
         role="row"
+        title={cells}
         ref={ref}
         className={className}
         onMouseEnter={handleDragEnter}
