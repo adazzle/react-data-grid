@@ -160,6 +160,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Event props
    */
+  /** Disables all keyboard events like using space or enter to sort the columns */
+  disableKeyboardEvents?: Maybe<number;
   /** Function called whenever a cell is clicked */
   onCellClick?: Maybe<
     (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
@@ -248,6 +250,7 @@ function DataGrid<R, SR, K extends Key>(
     className,
     style,
     rowClass,
+    disableKeyboardEvents,
     direction: rawDirection,
     // ARIA
     role: rawRole,
@@ -1114,6 +1117,7 @@ function DataGrid<R, SR, K extends Key>(
               selectedCellIdx={
                 selectedPosition.rowIdx === mainHeaderRowIdx ? selectedPosition.idx : undefined
               }
+              disableKeyboardEvents={disableKeyboardEvents}
               selectCell={selectHeaderCellLatest}
               shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
               direction={direction}
