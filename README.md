@@ -200,6 +200,12 @@ A number defining the height of summary rows.
 
 ###### `onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
 
+###### `disableKeyboardEvents?: Maybe<boolean>`
+
+**Default:** `false`
+
+Disables keyboard interaction for the header cells
+
 Triggered when the selected cell is changed.
 
 Arguments:
