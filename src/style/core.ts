@@ -50,7 +50,11 @@ const root = css`
     ${lightTheme}
     --rdg-selection-color: #66afe9;
     --rdg-font-size: 14px;
-    --rdg-cell-frozen-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
+    --rdg-cell-frozen-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
+
+    &:dir(rtl) {
+      --rdg-cell-frozen-box-shadow: -2px 0 5px -2px rgba(136, 136, 136, 0.3);
+    }
 
     display: grid;
 
