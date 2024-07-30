@@ -23,6 +23,10 @@ const optionsClassname = css`
   text-transform: capitalize;
 `;
 
+const hrClassname = css`
+  margin: 0;
+`;
+
 interface Row {
   id: number;
   country: string;
@@ -168,6 +172,8 @@ export default function RowGrouping({ direction }: Props) {
     setExpandedGroupIds(new Set());
   }
 
+  const [areGroupColumnsFrozen, setAreGroupColumnsFrozen] = useState<boolean>(true);
+
   return (
     <div className={groupingClassname}>
       <b>Group by columns:</b>
@@ -184,8 +190,22 @@ export default function RowGrouping({ direction }: Props) {
         ))}
       </div>
 
+      <hr className={hrClassname} />
+
+      <label>
+        <input
+          type="checkbox"
+          checked={areGroupColumnsFrozen}
+          onChange={() => setAreGroupColumnsFrozen(!areGroupColumnsFrozen)}
+        />{' '}
+        Frozen group columns
+      </label>
+
       <TreeDataGrid
-        columns={columns}
+        columns={columns.map((c) => ({
+          ...c,
+          ...(selectedOptions.includes(c.key) ? { frozen: areGroupColumnsFrozen } : {})
+        }))}
         rows={rows}
         rowKeyGetter={rowKeyGetter}
         selectedRows={selectedRows}
