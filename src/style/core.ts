@@ -52,7 +52,7 @@ const root = css`
     --rdg-font-size: 14px;
     --rdg-cell-frozen-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
 
-    :dir(rtl) {
+    &:dir(rtl) {
       --rdg-cell-frozen-box-shadow: -2px 0 5px -2px rgba(136, 136, 136, 0.3);
     }
 
