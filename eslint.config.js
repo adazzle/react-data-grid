@@ -1,7 +1,6 @@
 import { fixupPluginRules } from '@eslint/compat';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
-import eslintConfigPrettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
@@ -710,8 +709,7 @@ export default [
       'testing-library/prefer-query-matchers': 0,
       'testing-library/prefer-screen-queries': 1,
       'testing-library/prefer-user-event': 1,
-      'testing-library/render-result-naming-convention': 0,
-      ...eslintConfigPrettier.rules
+      'testing-library/render-result-naming-convention': 0
     }
   },
 
