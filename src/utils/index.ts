@@ -38,3 +38,10 @@ export function getHeaderCellRowSpan<R, SR>(
 ) {
   return column.parent === undefined ? rowIdx : column.level - column.parent.level;
 }
+
+export function isValueInBetween(value: number, num1: number, num2: number) {
+  if (num1 >= num2) {
+    return value <= num1 && value >= num2;
+  }
+  return value >= num1 && value <= num2;
+}

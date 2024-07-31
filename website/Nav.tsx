@@ -74,6 +74,7 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <Link to="/TreeView">Tree View</Link>
       <Link to="/VariableRowHeight">Variable Row Height</Link>
       <Link to="/Animation">Animation</Link>
+      <Link to="/RangeSelection">Range Selection</Link>
 
       <h2>Links</h2>
       <a

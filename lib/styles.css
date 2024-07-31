@@ -1,0 +1,449 @@
+@layer rdg {
+  @layer Defaults,
+    FocusSink,
+    CheckboxInput,
+    CheckboxIcon,
+    CheckboxLabel,
+    Cell,
+    HeaderCell,
+    SummaryCell,
+    EditCell,
+    Row,
+    HeaderRow,
+    SummaryRow,
+    GroupedRow,
+    Root;
+}
+
+.mlln6zg7-0-0-beta-47 {
+  @layer rdg.MeasuringCell {
+    contain: strict;
+    grid-row: 1;
+    visibility: hidden;
+  }
+}
+
+
+.cj343x07-0-0-beta-47 {
+  @layer rdg.Cell {
+    /* max-content does not work with size containment
+     * dynamically switching between different containment styles incurs a heavy relayout penalty
+     * Chromium bug: at odd zoom levels or subpixel positioning,
+     * layout/paint/style containment can make cell borders disappear
+     *   https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
+     */
+    position: relative; /* needed for absolute positioning to work */
+    padding-block: 0;
+    padding-inline: 8px;
+    border-inline-end: 1px solid var(--rdg-border-color);
+    border-block-end: 1px solid var(--rdg-border-color);
+    grid-row-start: var(--rdg-grid-row-start);
+    align-content: center;
+    background-color: inherit;
+
+    white-space: nowrap;
+    overflow: clip;
+    text-overflow: ellipsis;
+    outline: none;
+
+    &[aria-selected='true'] {
+      outline: 2px solid var(--rdg-selection-color);
+      outline-offset: -2px;
+    }
+  }
+}
+
+.csofj7r7-0-0-beta-47 {
+  @layer rdg.Cell {
+    position: sticky;
+    /* Should have a higher value than 0 to show up above unfrozen cells */
+    z-index: 1;
+
+    /* Add box-shadow on the last frozen cell */
+    &:nth-last-child(1 of &) {
+      box-shadow: var(--rdg-cell-frozen-box-shadow);
+    }
+  }
+}
+
+
+.c1bn88vv7-0-0-beta-47 {
+  @layer rdg.CheckboxInput {
+    display: block;
+    margin: auto;
+    inline-size: 20px;
+    block-size: 20px;
+
+    &:focus-visible {
+      outline: 2px solid var(--rdg-checkbox-focus-color);
+      outline-offset: -3px;
+    }
+
+    &:enabled {
+      cursor: pointer;
+    }
+  }
+}
+
+
+.g1s9ylgp7-0-0-beta-47 {
+  @layer rdg.GroupCellContent {
+    outline: none;
+  }
+}
+
+.cz54e4y7-0-0-beta-47 {
+  @layer rdg.GroupCellCaret {
+    margin-inline-start: 4px;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    fill: transparent;
+    vertical-align: middle;
+
+    > path {
+      transition: d 0.1s;
+    }
+  }
+}
+
+
+.c6ra8a37-0-0-beta-47 {
+  @layer rdg.Cell {
+    background-color: #ccccff;
+  }
+}
+
+.cq910m07-0-0-beta-47 {
+  @layer rdg.Cell {
+    background-color: #ccccff;
+
+    &.c6ra8a37-0-0-beta-47 {
+      background-color: #9999ff;
+    }
+  }
+}
+
+
+.c1w9bbhr7-0-0-beta-47 {
+  @layer rdg.DragHandle {
+    --rdg-drag-handle-size: 8px;
+    z-index: 0;
+    cursor: move;
+    inline-size: var(--rdg-drag-handle-size);
+    block-size: var(--rdg-drag-handle-size);
+    background-color: var(--rdg-selection-color);
+    place-self: end;
+
+    &:hover {
+      --rdg-drag-handle-size: 16px;
+      border: 2px solid var(--rdg-selection-color);
+      background-color: var(--rdg-background-color);
+    }
+  }
+}
+
+.c1creorc7-0-0-beta-47 {
+  @layer rdg.DragHandle {
+    z-index: 1;
+    position: sticky;
+  }
+}
+
+
+.cis5rrm7-0-0-beta-47 {
+  @layer rdg.EditCell {
+    padding: 0;
+  }
+}
+
+
+.h44jtk67-0-0-beta-47 {
+  @layer rdg.SortableHeaderCell {
+    display: flex;
+  }
+}
+
+.hcgkhxz7-0-0-beta-47 {
+  @layer rdg.SortableHeaderCellName {
+    flex-grow: 1;
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
+}
+
+
+.c6l2wv17-0-0-beta-47 {
+  @layer rdg.HeaderCell {
+    cursor: pointer;
+  }
+}
+
+.c1kqdw7y7-0-0-beta-47 {
+  @layer rdg.HeaderCell {
+    touch-action: none;
+  }
+}
+
+.r1y6ywlx7-0-0-beta-47 {
+  @layer rdg.HeaderCell {
+    cursor: col-resize;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inline-size: 10px;
+  }
+}
+
+.c1bezg5o7-0-0-beta-47 {
+  opacity: 0.5;
+}
+
+.c1vc96037-0-0-beta-47 {
+  background-color: var(--rdg-header-draggable-background-color);
+}
+
+
+.r1upfr807-0-0-beta-47 {
+  @layer rdg.Row {
+    display: contents;
+    background-color: var(--rdg-background-color);
+
+    &:hover {
+      background-color: var(--rdg-row-hover-background-color);
+    }
+
+    &[aria-selected='true'] {
+      background-color: var(--rdg-row-selected-background-color);
+
+      &:hover {
+        background-color: var(--rdg-row-selected-hover-background-color);
+      }
+    }
+  }
+}
+
+.r190mhd37-0-0-beta-47 {
+  @layer rdg.FocusSink {
+    outline: 2px solid var(--rdg-selection-color);
+    outline-offset: -2px;
+  }
+}
+
+.r139qu9m7-0-0-beta-47 {
+  @layer rdg.FocusSink {
+    &::before {
+      content: '';
+      display: inline-block;
+      block-size: 100%;
+      position: sticky;
+      inset-inline-start: 0;
+      border-inline-start: 2px solid var(--rdg-selection-color);
+    }
+  }
+}
+
+
+.h10tskcx7-0-0-beta-47 {
+  @layer rdg.HeaderRow {
+    display: contents;
+    background-color: var(--rdg-header-background-color);
+    font-weight: bold;
+
+    & > .cj343x07-0-0-beta-47 {
+      /* Should have a higher value than 1 to show up above regular cells and the focus sink */
+      z-index: 2;
+      position: sticky;
+    }
+
+    & > .csofj7r7-0-0-beta-47 {
+      z-index: 3;
+    }
+  }
+}
+
+
+.a3ejtar7-0-0-beta-47 {
+  @layer rdg.SortIcon {
+    fill: currentColor;
+
+    > path {
+      transition: d 0.1s;
+    }
+  }
+}
+
+
+.rnvodz57-0-0-beta-47 {
+  @layer rdg.Defaults {
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+    }
+  }
+
+  @layer rdg.Root {
+    --rdg-color: #000;   --rdg-border-color: #ddd;   --rdg-summary-border-color: #aaa;   --rdg-background-color: hsl(0deg 0% 100%);   --rdg-header-background-color: hsl(0deg 0% 97.5%);   --rdg-header-draggable-background-color: hsl(0deg 0% 90.5%);   --rdg-row-hover-background-color: hsl(0deg 0% 96%);   --rdg-row-selected-background-color: hsl(207deg 76% 92%);   --rdg-row-selected-hover-background-color: hsl(207deg 76% 88%);   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
+    --rdg-selection-color: #66afe9;
+    --rdg-font-size: 14px;
+    --rdg-cell-frozen-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
+
+    &:dir(rtl) {
+      --rdg-cell-frozen-box-shadow: -2px 0 5px -2px rgba(136, 136, 136, 0.3);
+    }
+
+    display: grid;
+
+    color-scheme: var(--rdg-color-scheme, light dark);
+    accent-color: light-dark(hsl(207deg 100% 29%), hsl(207deg 100% 79%));
+
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
+    /* We set a stacking context so internal elements don't render on top of external elements. */
+    /* size containment is not used as it could break "width: min-content" for example, and the grid would infinitely resize on Chromium browsers */
+    contain: content;
+    content-visibility: auto;
+    block-size: 350px;
+    border: 1px solid var(--rdg-border-color);
+    box-sizing: border-box;
+    overflow: auto;
+    background-color: var(--rdg-background-color);
+    color: var(--rdg-color);
+    font-size: var(--rdg-font-size);
+
+    /* needed on Firefox to fix scrollbars */
+    &::before {
+      content: '';
+      grid-column: 1/-1;
+      grid-row: 1/-1;
+    }
+
+    &.rdg-dark {
+      --rdg-color-scheme: dark;
+      --rdg-color: #ddd;   --rdg-border-color: #444;   --rdg-summary-border-color: #555;   --rdg-background-color: hsl(0deg 0% 13%);   --rdg-header-background-color: hsl(0deg 0% 10.5%);   --rdg-header-draggable-background-color: hsl(0deg 0% 17.5%);   --rdg-row-hover-background-color: hsl(0deg 0% 9%);   --rdg-row-selected-background-color: hsl(207deg 76% 42%);   --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
+    }
+
+    &.rdg-light {
+      --rdg-color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      &:not(.rdg-light) {
+        --rdg-color: #ddd;   --rdg-border-color: #444;   --rdg-summary-border-color: #555;   --rdg-background-color: hsl(0deg 0% 13%);   --rdg-header-background-color: hsl(0deg 0% 10.5%);   --rdg-header-draggable-background-color: hsl(0deg 0% 17.5%);   --rdg-row-hover-background-color: hsl(0deg 0% 9%);   --rdg-row-selected-background-color: hsl(207deg 76% 42%);   --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
+      }
+    }
+
+    > :nth-last-child(1 of .rdg-top-summary-row) {
+      > .cj343x07-0-0-beta-47 {
+        border-block-end: 2px solid var(--rdg-summary-border-color);
+      }
+    }
+
+    > :nth-child(1 of .rdg-bottom-summary-row) {
+      > .cj343x07-0-0-beta-47 {
+        border-block-start: 2px solid var(--rdg-summary-border-color);
+      }
+    }
+  }
+}
+
+.vlqv91k7-0-0-beta-47 {
+  @layer rdg.Root {
+    user-select: none;
+
+    & .r1upfr807-0-0-beta-47 {
+      cursor: move;
+    }
+  }
+}
+
+.f1lsfrzw7-0-0-beta-47 {
+  @layer rdg.FocusSink {
+    grid-column: 1/-1;
+    pointer-events: none;
+    /* Should have a higher value than 1 to show up above regular frozen cells */
+    z-index: 1;
+  }
+}
+
+.f1cte0lg7-0-0-beta-47 {
+  @layer rdg.FocusSink {
+    /* Should have a higher value than 3 to show up above header and summary rows */
+    z-index: 3;
+  }
+}
+
+
+.s8wc6fl7-0-0-beta-47 {
+  @layer rdg.SummaryCell {
+    inset-block-start: var(--rdg-summary-row-top);
+    inset-block-end: var(--rdg-summary-row-bottom);
+  }
+}
+
+
+.skuhp557-0-0-beta-47 {
+  @layer rdg.SummaryRow {
+    > .cj343x07-0-0-beta-47 {
+      position: sticky;
+    }
+  }
+}
+
+.tf8l5ub7-0-0-beta-47 {
+  @layer rdg.SummaryRow {
+    > .cj343x07-0-0-beta-47 {
+      z-index: 2;
+    }
+
+    > .csofj7r7-0-0-beta-47 {
+      z-index: 3;
+    }
+  }
+}
+
+
+.g1yxluv37-0-0-beta-47 {
+  @layer rdg.GroupedRow {
+    &:not([aria-selected='true']) {
+      background-color: var(--rdg-header-background-color);
+    }
+
+    > .cj343x07-0-0-beta-47:not(:last-child, .csofj7r7-0-0-beta-47),
+    > :nth-last-child(n + 2 of .csofj7r7-0-0-beta-47) {
+      border-inline-end: none;
+    }
+  }
+}
+
+
+.t7vyx3i7-0-0-beta-47 {
+  @layer rdg.TextEditor {
+    appearance: none;
+
+    box-sizing: border-box;
+    inline-size: 100%;
+    block-size: 100%;
+    padding-block: 0;
+    padding-inline: 6px;
+    border: 2px solid #ccc;
+    vertical-align: top;
+    color: var(--rdg-color);
+    background-color: var(--rdg-background-color);
+
+    font-family: inherit;
+    font-size: var(--rdg-font-size);
+
+    &:focus {
+      border-color: var(--rdg-selection-color);
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #999;
+      opacity: 1;
+    }
+  }
+}
+
+

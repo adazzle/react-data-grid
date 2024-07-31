@@ -24,6 +24,7 @@ const ScrollToCellLazyImport = createFileRoute('/ScrollToCell')()
 const RowsReorderingLazyImport = createFileRoute('/RowsReordering')()
 const RowGroupingLazyImport = createFileRoute('/RowGrouping')()
 const ResizableGridLazyImport = createFileRoute('/ResizableGrid')()
+const RangeSelectionLazyImport = createFileRoute('/RangeSelection')()
 const NoRowsLazyImport = createFileRoute('/NoRows')()
 const MillionCellsLazyImport = createFileRoute('/MillionCells')()
 const MasterDetailLazyImport = createFileRoute('/MasterDetail')()
@@ -81,6 +82,14 @@ const ResizableGridLazyRoute = ResizableGridLazyImport.update({
   path: '/ResizableGrid',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/ResizableGrid.lazy').then((d) => d.Route))
+
+const RangeSelectionLazyRoute = RangeSelectionLazyImport.update({
+  id: '/RangeSelection',
+  path: '/RangeSelection',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/RangeSelection.lazy').then((d) => d.Route),
+)
 
 const NoRowsLazyRoute = NoRowsLazyImport.update({
   id: '/NoRows',
@@ -295,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NoRowsLazyImport
       parentRoute: typeof rootRoute
     }
+    '/RangeSelection': {
+      id: '/RangeSelection'
+      path: '/RangeSelection'
+      fullPath: '/RangeSelection'
+      preLoaderRoute: typeof RangeSelectionLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/ResizableGrid': {
       id: '/ResizableGrid'
       path: '/ResizableGrid'
@@ -358,6 +374,7 @@ export interface FileRoutesByFullPath {
   '/MasterDetail': typeof MasterDetailLazyRoute
   '/MillionCells': typeof MillionCellsLazyRoute
   '/NoRows': typeof NoRowsLazyRoute
+  '/RangeSelection': typeof RangeSelectionLazyRoute
   '/ResizableGrid': typeof ResizableGridLazyRoute
   '/RowGrouping': typeof RowGroupingLazyRoute
   '/RowsReordering': typeof RowsReorderingLazyRoute
@@ -382,6 +399,7 @@ export interface FileRoutesByTo {
   '/MasterDetail': typeof MasterDetailLazyRoute
   '/MillionCells': typeof MillionCellsLazyRoute
   '/NoRows': typeof NoRowsLazyRoute
+  '/RangeSelection': typeof RangeSelectionLazyRoute
   '/ResizableGrid': typeof ResizableGridLazyRoute
   '/RowGrouping': typeof RowGroupingLazyRoute
   '/RowsReordering': typeof RowsReorderingLazyRoute
@@ -407,6 +425,7 @@ export interface FileRoutesById {
   '/MasterDetail': typeof MasterDetailLazyRoute
   '/MillionCells': typeof MillionCellsLazyRoute
   '/NoRows': typeof NoRowsLazyRoute
+  '/RangeSelection': typeof RangeSelectionLazyRoute
   '/ResizableGrid': typeof ResizableGridLazyRoute
   '/RowGrouping': typeof RowGroupingLazyRoute
   '/RowsReordering': typeof RowsReorderingLazyRoute
@@ -433,6 +452,7 @@ export interface FileRouteTypes {
     | '/MasterDetail'
     | '/MillionCells'
     | '/NoRows'
+    | '/RangeSelection'
     | '/ResizableGrid'
     | '/RowGrouping'
     | '/RowsReordering'
@@ -456,6 +476,7 @@ export interface FileRouteTypes {
     | '/MasterDetail'
     | '/MillionCells'
     | '/NoRows'
+    | '/RangeSelection'
     | '/ResizableGrid'
     | '/RowGrouping'
     | '/RowsReordering'
@@ -479,6 +500,7 @@ export interface FileRouteTypes {
     | '/MasterDetail'
     | '/MillionCells'
     | '/NoRows'
+    | '/RangeSelection'
     | '/ResizableGrid'
     | '/RowGrouping'
     | '/RowsReordering'
@@ -504,6 +526,7 @@ export interface RootRouteChildren {
   MasterDetailLazyRoute: typeof MasterDetailLazyRoute
   MillionCellsLazyRoute: typeof MillionCellsLazyRoute
   NoRowsLazyRoute: typeof NoRowsLazyRoute
+  RangeSelectionLazyRoute: typeof RangeSelectionLazyRoute
   ResizableGridLazyRoute: typeof ResizableGridLazyRoute
   RowGroupingLazyRoute: typeof RowGroupingLazyRoute
   RowsReorderingLazyRoute: typeof RowsReorderingLazyRoute
@@ -528,6 +551,7 @@ const rootRouteChildren: RootRouteChildren = {
   MasterDetailLazyRoute: MasterDetailLazyRoute,
   MillionCellsLazyRoute: MillionCellsLazyRoute,
   NoRowsLazyRoute: NoRowsLazyRoute,
+  RangeSelectionLazyRoute: RangeSelectionLazyRoute,
   ResizableGridLazyRoute: ResizableGridLazyRoute,
   RowGroupingLazyRoute: RowGroupingLazyRoute,
   RowsReorderingLazyRoute: RowsReorderingLazyRoute,
@@ -561,6 +585,7 @@ export const routeTree = rootRoute
         "/MasterDetail",
         "/MillionCells",
         "/NoRows",
+        "/RangeSelection",
         "/ResizableGrid",
         "/RowGrouping",
         "/RowsReordering",
@@ -613,6 +638,9 @@ export const routeTree = rootRoute
     },
     "/NoRows": {
       "filePath": "NoRows.lazy.tsx"
+    },
+    "/RangeSelection": {
+      "filePath": "RangeSelection.lazy.tsx"
     },
     "/ResizableGrid": {
       "filePath": "ResizableGrid.lazy.tsx"
