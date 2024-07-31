@@ -27,6 +27,7 @@ import ScrollToCell from './demos/ScrollToCell';
 import TreeView from './demos/TreeView';
 import VariableRowHeight from './demos/VariableRowHeight';
 import Nav from './Nav';
+import AddOrRemoveColumns from './demos/AddOrRemoveColumns';
 
 const mainClassname = css`
   display: flex;
@@ -63,6 +64,7 @@ function Root() {
           <Route path="million-cells" element={<MillionCells direction={direction} />} />
           <Route path="no-rows" element={<NoRows direction={direction} />} />
           <Route path="resizable-grid" element={<ResizableGrid direction={direction} />} />
+          <Route path="add-remove-columns" element={<AddOrRemoveColumns direction={direction} />} />
           <Route path="rows-reordering" element={<RowsReordering direction={direction} />} />
           <Route path="scroll-to-cell" element={<ScrollToCell direction={direction} />} />
           <Route path="tree-view" element={<TreeView direction={direction} />} />
