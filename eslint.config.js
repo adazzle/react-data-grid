@@ -19,11 +19,8 @@ export default [
     plugins: {
       react,
       'react-hooks': fixupPluginRules(reactHooks),
-      jest,
-      'jest-dom': jestDom,
       sonarjs,
-      '@typescript-eslint': typescriptEslint,
-      'testing-library': fixupPluginRules(testingLibrary)
+      '@typescript-eslint': typescriptEslint
     },
 
     languageOptions: {
@@ -377,82 +374,6 @@ export default [
       'react-hooks/rules-of-hooks': 1,
       'react-hooks/exhaustive-deps': 1,
 
-      // https://github.com/jest-community/eslint-plugin-jest#rules
-      'jest/consistent-test-it': 1,
-      'jest/expect-expect': 0,
-      'jest/max-expects': 0,
-      'jest/max-nested-describe': 0,
-      'jest/no-alias-methods': 1,
-      'jest/no-commented-out-tests': 1,
-      'jest/no-conditional-expect': 1,
-      'jest/no-conditional-in-test': 0,
-      'jest/no-confusing-set-timeout': 0,
-      'jest/no-deprecated-functions': 0,
-      'jest/no-disabled-tests': 0,
-      'jest/no-done-callback': 0,
-      'jest/no-duplicate-hooks': 1,
-      'jest/no-export': 1,
-      'jest/no-focused-tests': 1,
-      'jest/no-hooks': 1,
-      'jest/no-identical-title': 1,
-      'jest/no-interpolation-in-snapshots': 0,
-      'jest/no-jasmine-globals': 1,
-      'jest/no-large-snapshots': 0,
-      'jest/no-mocks-import': 1,
-      'jest/no-restricted-jest-methods': 0,
-      'jest/no-restricted-matchers': [
-        1,
-        {
-          toBeTruthy: 'Use toBe(true) instead.',
-          'not.toBeTruthy': null,
-          toBeFalsy: 'Use toBe(false) instead.',
-          'not.toBeFalsy': null
-        }
-      ],
-      'jest/no-standalone-expect': 1,
-      'jest/no-test-prefixes': 0,
-      'jest/no-test-return-statement': 0,
-      'jest/no-untyped-mock-factory': 0,
-      'jest/prefer-called-with': 0,
-      'jest/prefer-comparison-matcher': 1,
-      'jest/prefer-each': 1,
-      'jest/prefer-equality-matcher': 1,
-      'jest/prefer-expect-assertions': 0,
-      'jest/prefer-expect-resolves': 1,
-      'jest/prefer-hooks-in-order': 1,
-      'jest/prefer-hooks-on-top': 1,
-      'jest/prefer-importing-jest-globals': 0,
-      'jest/prefer-jest-mocked': 0,
-      'jest/prefer-lowercase-title': 0,
-      'jest/prefer-mock-promise-shorthand': 1,
-      'jest/prefer-snapshot-hint': 0,
-      'jest/prefer-spy-on': 1,
-      'jest/prefer-strict-equal': 1,
-      'jest/prefer-to-be': 1,
-      'jest/prefer-to-contain': 1,
-      'jest/prefer-to-have-length': 1,
-      'jest/prefer-todo': 1,
-      'jest/require-hook': 0,
-      'jest/require-to-throw-message': 0,
-      'jest/require-top-level-describe': 0,
-      'jest/valid-describe-callback': 1,
-      'jest/valid-expect': [1, { alwaysAwait: true }],
-      'jest/valid-expect-in-promise': 1,
-      'jest/valid-title': 1,
-
-      // https://github.com/testing-library/eslint-plugin-jest-dom#supported-rules
-      'jest-dom/prefer-checked': 1,
-      'jest-dom/prefer-empty': 1,
-      'jest-dom/prefer-enabled-disabled': 1,
-      'jest-dom/prefer-focus': 1,
-      'jest-dom/prefer-in-document': 1,
-      'jest-dom/prefer-required': 1,
-      'jest-dom/prefer-to-have-attribute': 1,
-      'jest-dom/prefer-to-have-class': 1,
-      'jest-dom/prefer-to-have-style': 1,
-      'jest-dom/prefer-to-have-text-content': 1,
-      'jest-dom/prefer-to-have-value': 1,
-
       // SonarJS rules
       // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
       'sonarjs/no-all-duplicated-branches': 1,
@@ -660,7 +581,99 @@ export default [
       ],
       '@typescript-eslint/require-await': 1,
       '@typescript-eslint/return-await': 1,
-      '@typescript-eslint/use-unknown-in-catch-callback-variable': 1,
+      '@typescript-eslint/use-unknown-in-catch-callback-variable': 1
+    }
+  },
+
+  {
+    name: 'test',
+
+    files: ['test/**/*'],
+
+    plugins: {
+      jest,
+      'jest-dom': jestDom,
+      'testing-library': fixupPluginRules(testingLibrary)
+    },
+
+    rules: {
+      '@typescript-eslint/no-floating-promises': 1,
+
+      // https://github.com/jest-community/eslint-plugin-jest#rules
+      'jest/consistent-test-it': 1,
+      'jest/expect-expect': 0,
+      'jest/max-expects': 0,
+      'jest/max-nested-describe': 0,
+      'jest/no-alias-methods': 1,
+      'jest/no-commented-out-tests': 1,
+      'jest/no-conditional-expect': 1,
+      'jest/no-conditional-in-test': 0,
+      'jest/no-confusing-set-timeout': 0,
+      'jest/no-deprecated-functions': 0,
+      'jest/no-disabled-tests': 0,
+      'jest/no-done-callback': 0,
+      'jest/no-duplicate-hooks': 1,
+      'jest/no-export': 1,
+      'jest/no-focused-tests': 1,
+      'jest/no-hooks': 1,
+      'jest/no-identical-title': 1,
+      'jest/no-interpolation-in-snapshots': 0,
+      'jest/no-jasmine-globals': 1,
+      'jest/no-large-snapshots': 0,
+      'jest/no-mocks-import': 1,
+      'jest/no-restricted-jest-methods': 0,
+      'jest/no-restricted-matchers': [
+        1,
+        {
+          toBeTruthy: 'Use toBe(true) instead.',
+          'not.toBeTruthy': null,
+          toBeFalsy: 'Use toBe(false) instead.',
+          'not.toBeFalsy': null
+        }
+      ],
+      'jest/no-standalone-expect': 1,
+      'jest/no-test-prefixes': 0,
+      'jest/no-test-return-statement': 0,
+      'jest/no-untyped-mock-factory': 0,
+      'jest/prefer-called-with': 0,
+      'jest/prefer-comparison-matcher': 1,
+      'jest/prefer-each': 1,
+      'jest/prefer-equality-matcher': 1,
+      'jest/prefer-expect-assertions': 0,
+      'jest/prefer-expect-resolves': 1,
+      'jest/prefer-hooks-in-order': 1,
+      'jest/prefer-hooks-on-top': 1,
+      'jest/prefer-importing-jest-globals': 0,
+      'jest/prefer-jest-mocked': 0,
+      'jest/prefer-lowercase-title': 0,
+      'jest/prefer-mock-promise-shorthand': 1,
+      'jest/prefer-snapshot-hint': 0,
+      'jest/prefer-spy-on': 1,
+      'jest/prefer-strict-equal': 1,
+      'jest/prefer-to-be': 1,
+      'jest/prefer-to-contain': 1,
+      'jest/prefer-to-have-length': 1,
+      'jest/prefer-todo': 1,
+      'jest/require-hook': 0,
+      'jest/require-to-throw-message': 0,
+      'jest/require-top-level-describe': 0,
+      'jest/valid-describe-callback': 1,
+      'jest/valid-expect': [1, { alwaysAwait: true }],
+      'jest/valid-expect-in-promise': 1,
+      'jest/valid-title': 1,
+
+      // https://github.com/testing-library/eslint-plugin-jest-dom#supported-rules
+      'jest-dom/prefer-checked': 1,
+      'jest-dom/prefer-empty': 1,
+      'jest-dom/prefer-enabled-disabled': 1,
+      'jest-dom/prefer-focus': 1,
+      'jest-dom/prefer-in-document': 1,
+      'jest-dom/prefer-required': 1,
+      'jest-dom/prefer-to-have-attribute': 1,
+      'jest-dom/prefer-to-have-class': 1,
+      'jest-dom/prefer-to-have-style': 1,
+      'jest-dom/prefer-to-have-text-content': 1,
+      'jest-dom/prefer-to-have-value': 1,
 
       // eslint-plugin-testing-library Rules
       // https://github.com/testing-library/eslint-plugin-testing-library#supported-rules
@@ -691,16 +704,6 @@ export default [
       'testing-library/prefer-screen-queries': 1,
       'testing-library/prefer-user-event': 1,
       'testing-library/render-result-naming-convention': 0
-    }
-  },
-
-  {
-    name: 'test',
-
-    files: ['test/**/*'],
-
-    rules: {
-      '@typescript-eslint/no-floating-promises': 1
     }
   },
 
