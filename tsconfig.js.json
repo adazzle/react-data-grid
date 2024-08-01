@@ -6,5 +6,6 @@
     "moduleResolution": "NodeNext",
     "skipLibCheck": true
   },
-  "include": ["**/*.js", ".github/**/*.js"]
+  "include": ["**/*.js", ".github/**/*.js"],
+  "exclude": ["./coverage/**/*", "./dist/**/*", "./lib/**/*"]
 }

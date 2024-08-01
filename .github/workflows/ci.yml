@@ -31,12 +31,12 @@ jobs:
         run: npm i
       - name: Biome
         run: node --run biome:ci
+      - name: Typecheck
+        run: node --run typecheck
       - name: ESLint
         run: node --run eslint
       - name: Prettier
         run: node --run prettier:check
-      - name: Typecheck
-        run: node --run typecheck
       - name: Bundle
         run: |
           node --run build
