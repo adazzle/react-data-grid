@@ -11,7 +11,7 @@ import testingLibrary from 'eslint-plugin-testing-library';
 
 export default [
   {
-    ignores: ['coverage', 'dist', 'lib']
+    ignores: ['.cache', 'coverage', 'dist', 'lib']
   },
   {
     name: 'common',
@@ -33,7 +33,13 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         jsxPragma: null,
-        project: './tsconfig.json',
+        project: [
+          './tsconfig.js.json',
+          './tsconfig.src.json',
+          './tsconfig.test.json',
+          './tsconfig.vite.json',
+          './tsconfig.website.json'
+        ],
         warnOnUnsupportedTypeScriptVersion: false
       }
     },
