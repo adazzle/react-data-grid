@@ -21,19 +21,24 @@ const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeB
 
 export default defineConfig({
   base: isCI ? '/react-data-grid/' : '/',
+  cacheDir: '.cache/vite',
   build: {
     emptyOutDir: true,
     sourcemap: true
   },
   plugins: [
     react({
+      exclude: ['./.cache/**/*'],
       babel: {
         babelrc: false,
         configFile: false,
         plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
       }
     }),
-    wyw({ preprocessor: 'none' })
+    wyw({
+      exclude: ['./.cache/**/*'],
+      preprocessor: 'none'
+    })
   ],
   server: {
     open: true

@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
-  "mainEntryPointFilePath": "<projectFolder>/tmp/index.d.ts",
+  "mainEntryPointFilePath": "<projectFolder>/.cache/lib/index.d.ts",
   "apiReport": {
     "enabled": false
   },

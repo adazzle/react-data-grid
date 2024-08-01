@@ -1,9 +1,8 @@
+/.cache
 /coverage
 /dist
 /lib
 /node_modules
-/tmp
-/.eslintcache
 /package-lock.json
 __screenshots__
 

@@ -1,16 +1,10 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "types": ["vitest/globals", "@vitest/browser/providers/playwright"]
-  },
-  "include": [
-    "eslint.config.js",
-    "rollup.config.js",
-    "vite.config.ts",
-    ".github/**/*",
-    "src/**/*",
-    "test/**/*",
-    "website/**/*"
+  "include": [],
+  "references": [
+    { "path": "tsconfig.js.json" },
+    { "path": "tsconfig.src.json" },
+    { "path": "tsconfig.test.json" },
+    { "path": "tsconfig.vite.json" },
+    { "path": "tsconfig.website.json" }
   ]
 }
