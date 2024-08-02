@@ -31,7 +31,7 @@ const checkboxClassname = `rdg-checkbox-input ${checkbox}`;
 const checkboxLabelDisabled = css`
   @layer rdg.CheckboxLabel {
     cursor: default;
-    accent-color: var(--rdg-checkbox-disabled-background-color);
+    accent-color: var(--rdg-checkbox-disabled-color);
   }
 `;
 
