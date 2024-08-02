@@ -514,21 +514,26 @@ function DataGrid<R, SR, K extends Key>(
     const { row, checked, isShiftClick } = args;
     const newSelectedRows = new Set(selectedRows);
     const rowKey = rowKeyGetter(row);
+    const previousRowIdx = lastSelectedRowIdx.current;
+    const rowIdx = rows.indexOf(row);
+    lastSelectedRowIdx.current = rowIdx;
+
     if (checked) {
       newSelectedRows.add(rowKey);
-      const previousRowIdx = lastSelectedRowIdx.current;
-      const rowIdx = rows.indexOf(row);
-      lastSelectedRowIdx.current = rowIdx;
-      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-        const step = sign(rowIdx - previousRowIdx);
-        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-          const row = rows[i];
-          newSelectedRows.add(rowKeyGetter(row));
-        }
-      }
     } else {
       newSelectedRows.delete(rowKey);
-      lastSelectedRowIdx.current = -1;
+    }
+
+    if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+      const step = sign(rowIdx - previousRowIdx);
+      for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+        const row = rows[i];
+        if (checked) {
+          newSelectedRows.add(rowKeyGetter(row));
+        } else {
+          newSelectedRows.delete(rowKeyGetter(row));
+        }
+      }
     }
 
     onSelectedRowsChange(newSelectedRows);
