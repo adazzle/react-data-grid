@@ -19,7 +19,12 @@ const checkboxLabelClassname = `rdg-checkbox-label ${checkboxLabel}`;
 
 const checkboxInput = css`
   @layer rdg.CheckboxInput {
-    all: unset;
+    position: absolute;
+    inline-size: 20px;
+    block-size: 20px;
+    z-index: 1;
+    cursor: inherit;
+    opacity: 0;
   }
 `;
 
