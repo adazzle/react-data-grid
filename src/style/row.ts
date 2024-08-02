@@ -35,7 +35,7 @@ export const rowSelectedWithFrozenCell = css`
     &::before {
       content: '';
       display: inline-block;
-      height: 100%;
+      block-size: 100%;
       position: sticky;
       inset-inline-start: 0;
       border-inline-start: 2px solid var(--rdg-selection-color);
