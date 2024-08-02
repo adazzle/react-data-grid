@@ -3,12 +3,18 @@ import clsx from 'clsx';
 
 import type { RenderCheckboxProps } from '../types';
 
+const checkboxContainer = css`
+  @layer rdg.checkboxContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+  }
+`;
+
 const checkbox = css`
   @layer rdg.CheckboxInput {
-    position: absolute;
-    inset-block-start: 4px;
-    inset-inline-start: 3px;
-
     inline-size: 20px;
     block-size: 20px;
     cursor: pointer;
@@ -37,13 +43,15 @@ export function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
   }
 
   return (
-    <input
-      type="checkbox"
-      {...props}
-      className={clsx(checkboxClassname, {
-        [checkboxDisabledClassname]: props.disabled
-      })}
-      onChange={handleChange}
-    />
+    <div className={checkboxContainer}>
+      <input
+        type="checkbox"
+        {...props}
+        className={clsx(checkboxClassname, {
+          [checkboxDisabledClassname]: props.disabled
+        })}
+        onChange={handleChange}
+      />
+    </div>
   );
 }
