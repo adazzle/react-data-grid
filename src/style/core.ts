@@ -16,8 +16,7 @@ const lightTheme = `
 
   --rdg-checkbox-color: hsl(207deg 100% 29%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
-  --rdg-checkbox-disabled-border-color: #ccc;
-  --rdg-checkbox-disabled-background-color: #ddd;
+  --rdg-checkbox-disabled-color: #ccc;
 `;
 
 const darkTheme = `
@@ -33,8 +32,7 @@ const darkTheme = `
 
   --rdg-checkbox-color: hsl(207deg 100% 79%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
-  --rdg-checkbox-disabled-border-color: #000;
-  --rdg-checkbox-disabled-background-color: #333;
+  --rdg-checkbox-disabled-color: #000;
 `;
 
 const root = css`
