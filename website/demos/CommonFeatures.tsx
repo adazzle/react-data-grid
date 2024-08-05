@@ -140,7 +140,15 @@ function getColumns(
         const value = props.row.progress;
         return (
           <>
-            <progress max={100} value={value} style={{ inlineSize: 50 }} /> {Math.round(value)}%
+            <progress
+              max={100}
+              value={value}
+              className={css`
+                inline-size: 50px;
+                accent-color: var(--rdg-accent-color);
+              `}
+            />{' '}
+            {Math.round(value)}%
           </>
         );
       },
