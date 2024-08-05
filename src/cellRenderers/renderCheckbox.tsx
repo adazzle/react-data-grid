@@ -16,7 +16,6 @@ const checkbox = css`
   @layer rdg.CheckboxInput {
     inline-size: 20px;
     block-size: 20px;
-    accent-color: var(--rdg-accent-color);
 
     &:focus-visible {
       outline: 2px solid var(--rdg-checkbox-focus-color);

@@ -145,7 +145,6 @@ function getColumns(
               value={value}
               className={css`
                 inline-size: 50px;
-                accent-color: var(--rdg-accent-color);
               `}
             />{' '}
             {Math.round(value)}%
