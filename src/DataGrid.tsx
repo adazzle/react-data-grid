@@ -527,7 +527,8 @@ function DataGrid<R, SR, K extends Key>(
     if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
       const step = sign(rowIdx - previousRowIdx);
       for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-        const row = rows[i];
+        const row = rows.at(i);
+        if (row === undefined) continue;
         if (checked) {
           newSelectedRows.add(rowKeyGetter(row));
         } else {
