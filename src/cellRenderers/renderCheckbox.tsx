@@ -1,69 +1,34 @@
 import { css } from '@linaria/core';
-import clsx from 'clsx';
 
 import type { RenderCheckboxProps } from '../types';
 
-const checkboxLabel = css`
-  @layer rdg.CheckboxLabel {
-    cursor: pointer;
+const checkboxContainer = css`
+  @layer rdg.checkboxContainer {
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
     inset: 0;
-    margin-inline-end: 1px; /* align checkbox in row group cell */
   }
 `;
-
-const checkboxLabelClassname = `rdg-checkbox-label ${checkboxLabel}`;
-
-const checkboxInput = css`
-  @layer rdg.CheckboxInput {
-    position: absolute;
-    inline-size: 20px;
-    block-size: 20px;
-    z-index: 1;
-    cursor: inherit;
-    opacity: 0;
-  }
-`;
-
-const checkboxInputClassname = `rdg-checkbox-input ${checkboxInput}`;
 
 const checkbox = css`
-  @layer rdg.CheckboxIcon {
-    content: '';
+  @layer rdg.CheckboxInput {
     inline-size: 20px;
     block-size: 20px;
-    border: 2px solid var(--rdg-border-color);
-    background-color: var(--rdg-background-color);
 
-    .${checkboxInput}:checked + & {
-      background-color: var(--rdg-checkbox-color);
-      outline: 4px solid var(--rdg-background-color);
-      outline-offset: -6px;
+    &:focus-visible {
+      outline: 2px solid var(--rdg-checkbox-focus-color);
+      outline-offset: -3px;
     }
 
-    .${checkboxInput}:focus + & {
-      border-color: var(--rdg-checkbox-focus-color);
+    &:enabled {
+      cursor: pointer;
     }
   }
 `;
 
-const checkboxClassname = `rdg-checkbox ${checkbox}`;
-
-const checkboxLabelDisabled = css`
-  @layer rdg.CheckboxLabel {
-    cursor: default;
-
-    .${checkbox} {
-      border-color: var(--rdg-checkbox-disabled-border-color);
-      background-color: var(--rdg-checkbox-disabled-background-color);
-    }
-  }
-`;
-
-const checkboxLabelDisabledClassname = `rdg-checkbox-label-disabled ${checkboxLabelDisabled}`;
+const checkboxClassname = `rdg-checkbox-input ${checkbox}`;
 
 export function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -71,18 +36,8 @@ export function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
   }
 
   return (
-    <label
-      className={clsx(checkboxLabelClassname, {
-        [checkboxLabelDisabledClassname]: props.disabled
-      })}
-    >
-      <input
-        type="checkbox"
-        {...props}
-        className={checkboxInputClassname}
-        onChange={handleChange}
-      />
-      <div className={checkboxClassname} />
-    </label>
+    <div className={checkboxContainer}>
+      <input type="checkbox" {...props} className={checkboxClassname} onChange={handleChange} />
+    </div>
   );
 }
