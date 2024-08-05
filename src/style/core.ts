@@ -16,7 +16,6 @@ const lightTheme = `
 
   --rdg-checkbox-color: hsl(207deg 100% 29%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
-  --rdg-checkbox-disabled-color: #ccc;
 `;
 
 const darkTheme = `
@@ -32,7 +31,6 @@ const darkTheme = `
 
   --rdg-checkbox-color: hsl(207deg 100% 79%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
-  --rdg-checkbox-disabled-color: #000;
 `;
 
 const root = css`
