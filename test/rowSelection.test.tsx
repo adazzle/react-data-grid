@@ -174,13 +174,18 @@ test('extra keys are preserved when updating the selectedRows Set', async () => 
   expect(set).toStrictEqual(initialSet);
 });
 
-test('select rows using shift click', async () => {
+test('select/deselect rows using shift click', async () => {
   setup();
   await toggleSelection(0);
   await toggleSelection(2, true);
   testSelection(0, true);
   testSelection(1, true);
   testSelection(2, true);
+  await toggleSelection(0);
+  await toggleSelection(2, true);
+  testSelection(0, false);
+  testSelection(1, false);
+  testSelection(2, false);
 });
 
 test('select rows using shift space', async () => {
