@@ -524,11 +524,15 @@ function DataGrid<R, SR, K extends Key>(
       newSelectedRows.delete(rowKey);
     }
 
-    if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
+    if (
+      isShiftClick &&
+      previousRowIdx !== -1 &&
+      previousRowIdx !== rowIdx &&
+      previousRowIdx < rows.length
+    ) {
       const step = sign(rowIdx - previousRowIdx);
       for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-        const row = rows.at(i);
-        if (row === undefined) continue;
+        const row = rows[i];
         if (checked) {
           newSelectedRows.add(rowKeyGetter(row));
         } else {
