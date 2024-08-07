@@ -202,6 +202,7 @@ export default [
       'no-restricted-imports': 0, // replaced by @typescript-eslint/no-restricted-imports
       'no-restricted-properties': 0,
       'no-restricted-syntax': 0,
+      'no-restricted-types': 0,
       'no-return-assign': 0,
       'no-return-await': 0, // replaced by @typescript-eslint/return-await
       'no-script-url': 1,
@@ -481,11 +482,13 @@ export default [
       '@typescript-eslint/no-unsafe-call': 0,
       '@typescript-eslint/no-unsafe-declaration-merging': 1,
       '@typescript-eslint/no-unsafe-enum-comparison': 1,
+      '@typescript-eslint/no-unsafe-function-type': 1,
       '@typescript-eslint/no-unsafe-member-access': 0,
       '@typescript-eslint/no-unsafe-return': 1,
       '@typescript-eslint/no-unsafe-unary-minus': 1,
       '@typescript-eslint/no-useless-empty-export': 1,
       '@typescript-eslint/no-var-requires': 0,
+      '@typescript-eslint/no-wrapper-object-types': 1,
       '@typescript-eslint/non-nullable-type-assertion-style': 1,
       '@typescript-eslint/parameter-properties': 1,
       '@typescript-eslint/prefer-as-const': 1,
