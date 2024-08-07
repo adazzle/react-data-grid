@@ -422,7 +422,6 @@ export default [
       '@typescript-eslint/await-thenable': 1,
       '@typescript-eslint/ban-ts-comment': [1, { 'ts-expect-error': false }],
       '@typescript-eslint/ban-tslint-comment': 0,
-      '@typescript-eslint/ban-types': 1,
       '@typescript-eslint/class-literal-property-style': 0,
       '@typescript-eslint/consistent-generic-constructors': 1,
       '@typescript-eslint/consistent-indexed-object-style': 1,
@@ -446,7 +445,6 @@ export default [
       '@typescript-eslint/no-duplicate-enum-values': 1,
       '@typescript-eslint/no-duplicate-type-constituents': 1,
       '@typescript-eslint/no-dynamic-delete': 0,
-      '@typescript-eslint/no-empty-interface': 1,
       '@typescript-eslint/no-empty-object-type': 1,
       '@typescript-eslint/no-explicit-any': [1, { fixToUnknown: true }],
       '@typescript-eslint/no-extra-non-null-assertion': 1,
@@ -571,20 +569,6 @@ export default [
       '@typescript-eslint/no-use-before-define': 0,
       '@typescript-eslint/no-useless-constructor': 1,
       '@typescript-eslint/only-throw-error': 1,
-      // TODO: deprecated
-      '@typescript-eslint/padding-line-between-statements': [
-        1,
-        {
-          blankLine: 'always',
-          prev: '*',
-          next: ['function', 'interface']
-        },
-        {
-          blankLine: 'always',
-          prev: ['function', 'interface'],
-          next: '*'
-        }
-      ],
       '@typescript-eslint/require-await': 1,
       '@typescript-eslint/return-await': 1,
       '@typescript-eslint/use-unknown-in-catch-callback-variable': 1
