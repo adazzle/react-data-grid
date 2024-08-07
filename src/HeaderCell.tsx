@@ -70,6 +70,7 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   rowIdx: number;
   isCellSelected: boolean;
   dragDropKey: string;
+  disableKeyboardEvents: boolean;
 }
 
 export default function HeaderCell<R, SR>({
@@ -84,7 +85,8 @@ export default function HeaderCell<R, SR>({
   selectCell,
   shouldFocusGrid,
   direction,
-  dragDropKey
+  dragDropKey,
+  disableKeyboardEvents
 }: HeaderCellProps<R, SR>) {
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
@@ -199,6 +201,8 @@ export default function HeaderCell<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
+    if(disableKeyboardEvents) return;
+    
     if (event.key === ' ' || event.key === 'Enter') {
       // prevent scrolling
       event.preventDefault();

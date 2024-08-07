@@ -23,6 +23,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
   direction: Direction;
+  disableKeyboardEvents: boolean;
 }
 
 const headerRow = css`
@@ -56,7 +57,8 @@ function HeaderRow<R, SR, K extends React.Key>({
   selectedCellIdx,
   selectCell,
   shouldFocusGrid,
-  direction
+  direction,
+  disableKeyboardEvents
 }: HeaderRowProps<R, SR, K>) {
   const dragDropKey = useId();
 
@@ -83,6 +85,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         shouldFocusGrid={shouldFocusGrid && index === 0}
         direction={direction}
         dragDropKey={dragDropKey}
+        disableKeyboardEvents={disableKeyboardEvents}
       />
     );
   }
