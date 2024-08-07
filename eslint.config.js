@@ -108,7 +108,7 @@ export default [
       'block-scoped-var': 1,
       camelcase: 0,
       'capitalized-comments': 0,
-      'class-methods-use-this': 0,
+      'class-methods-use-this': 0, // replace by @typescript-eslint/class-methods-use-this
       complexity: 0,
       'consistent-return': 0,
       'consistent-this': 0,
@@ -196,7 +196,6 @@ export default [
       'no-restricted-imports': 0, // replaced by @typescript-eslint/no-restricted-imports
       'no-restricted-properties': 0,
       'no-restricted-syntax': 0,
-      'no-restricted-types': 0,
       'no-return-assign': 0,
       'no-return-await': 0, // replaced by @typescript-eslint/return-await
       'no-script-url': 1,
@@ -204,6 +203,7 @@ export default [
       'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
       'no-shadow-restricted-names': 1,
       'no-ternary': 0,
+      'no-throw-literal': 0, // replaced by @typescript-eslint/only-throw-error
       'no-undef-init': 1,
       'no-undefined': 0,
       'no-underscore-dangle': 0,
@@ -461,6 +461,7 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 0,
       '@typescript-eslint/no-redundant-type-constituents': 1,
       '@typescript-eslint/no-require-imports': 1,
+      '@typescript-eslint/no-restricted-types': 0,
       '@typescript-eslint/no-this-alias': 0,
       '@typescript-eslint/no-type-alias': 0,
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
