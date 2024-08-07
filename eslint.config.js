@@ -29,13 +29,7 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         jsxPragma: null,
-        project: [
-          './tsconfig.js.json',
-          './tsconfig.src.json',
-          './tsconfig.test.json',
-          './tsconfig.vite.json',
-          './tsconfig.website.json'
-        ],
+        projectService: true,
         warnOnUnsupportedTypeScriptVersion: false
       }
     },
