@@ -29,13 +29,7 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         jsxPragma: null,
-        project: [
-          './tsconfig.js.json',
-          './tsconfig.src.json',
-          './tsconfig.test.json',
-          './tsconfig.vite.json',
-          './tsconfig.website.json'
-        ],
+        projectService: true,
         warnOnUnsupportedTypeScriptVersion: false
       }
     },
@@ -79,7 +73,7 @@ export default [
       'no-inner-declarations': 0,
       'no-invalid-regexp': 1,
       'no-irregular-whitespace': 1,
-      'no-loss-of-precision': 0, // replaced by @typescript-eslint/no-loss-of-precision
+      'no-loss-of-precision': 1,
       'no-misleading-character-class': 1,
       'no-new-native-nonconstructor': 1,
       'no-obj-calls': 1,
@@ -114,7 +108,7 @@ export default [
       'block-scoped-var': 1,
       camelcase: 0,
       'capitalized-comments': 0,
-      'class-methods-use-this': 0,
+      'class-methods-use-this': 0, // replace by @typescript-eslint/class-methods-use-this
       complexity: 0,
       'consistent-return': 0,
       'consistent-this': 0,
@@ -209,6 +203,7 @@ export default [
       'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
       'no-shadow-restricted-names': 1,
       'no-ternary': 0,
+      'no-throw-literal': 0, // replaced by @typescript-eslint/only-throw-error
       'no-undef-init': 1,
       'no-undefined': 0,
       'no-underscore-dangle': 0,
@@ -232,7 +227,7 @@ export default [
       'operator-assignment': 1,
       'prefer-arrow-callback': [1, { allowNamedFunctions: true }],
       'prefer-const': [1, { destructuring: 'all' }],
-      'prefer-destructuring': [1, { array: false }],
+      'prefer-destructuring': 0, // replaced by @typescript-eslint/prefer-destructuring
       'prefer-exponentiation-operator': 1,
       'prefer-named-capture-group': 0,
       'prefer-numeric-literals': 1,
@@ -422,10 +417,11 @@ export default [
       '@typescript-eslint/await-thenable': 1,
       '@typescript-eslint/ban-ts-comment': [1, { 'ts-expect-error': false }],
       '@typescript-eslint/ban-tslint-comment': 0,
-      '@typescript-eslint/ban-types': 1,
       '@typescript-eslint/class-literal-property-style': 0,
+      '@typescript-eslint/class-methods-use-this': 1,
       '@typescript-eslint/consistent-generic-constructors': 1,
       '@typescript-eslint/consistent-indexed-object-style': 1,
+      '@typescript-eslint/consistent-return': 0,
       '@typescript-eslint/consistent-type-assertions': [
         1,
         { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }
@@ -446,7 +442,6 @@ export default [
       '@typescript-eslint/no-duplicate-enum-values': 1,
       '@typescript-eslint/no-duplicate-type-constituents': 1,
       '@typescript-eslint/no-dynamic-delete': 0,
-      '@typescript-eslint/no-empty-interface': 1,
       '@typescript-eslint/no-empty-object-type': 1,
       '@typescript-eslint/no-explicit-any': [1, { fixToUnknown: true }],
       '@typescript-eslint/no-extra-non-null-assertion': 1,
@@ -466,6 +461,7 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 0,
       '@typescript-eslint/no-redundant-type-constituents': 1,
       '@typescript-eslint/no-require-imports': 1,
+      '@typescript-eslint/no-restricted-types': 0,
       '@typescript-eslint/no-this-alias': 0,
       '@typescript-eslint/no-type-alias': 0,
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
@@ -481,13 +477,17 @@ export default [
       '@typescript-eslint/no-unsafe-call': 0,
       '@typescript-eslint/no-unsafe-declaration-merging': 1,
       '@typescript-eslint/no-unsafe-enum-comparison': 1,
+      '@typescript-eslint/no-unsafe-function-type': 1,
       '@typescript-eslint/no-unsafe-member-access': 0,
       '@typescript-eslint/no-unsafe-return': 1,
+      '@typescript-eslint/no-unsafe-unary-minus': 1,
       '@typescript-eslint/no-useless-empty-export': 1,
       '@typescript-eslint/no-var-requires': 0,
+      '@typescript-eslint/no-wrapper-object-types': 1,
       '@typescript-eslint/non-nullable-type-assertion-style': 1,
       '@typescript-eslint/parameter-properties': 1,
       '@typescript-eslint/prefer-as-const': 1,
+      '@typescript-eslint/prefer-destructuring': [1, { array: false }],
       '@typescript-eslint/prefer-enum-initializers': 0,
       '@typescript-eslint/prefer-find': 1,
       '@typescript-eslint/prefer-for-of': 1,
@@ -527,13 +527,13 @@ export default [
       '@typescript-eslint/default-param-last': 0,
       '@typescript-eslint/dot-notation': 1,
       '@typescript-eslint/init-declarations': 0,
+      '@typescript-eslint/max-params': 0,
       '@typescript-eslint/no-array-constructor': 1,
       '@typescript-eslint/no-dupe-class-members': 0,
       '@typescript-eslint/no-empty-function': 0,
       '@typescript-eslint/no-implied-eval': 1,
       '@typescript-eslint/no-invalid-this': 0,
       '@typescript-eslint/no-loop-func': 0,
-      '@typescript-eslint/no-loss-of-precision': 1,
       '@typescript-eslint/no-magic-numbers': 0,
       '@typescript-eslint/no-redeclare': 1,
       '@typescript-eslint/no-restricted-imports': [
@@ -571,20 +571,6 @@ export default [
       '@typescript-eslint/no-use-before-define': 0,
       '@typescript-eslint/no-useless-constructor': 1,
       '@typescript-eslint/only-throw-error': 1,
-      // TODO: deprecated
-      '@typescript-eslint/padding-line-between-statements': [
-        1,
-        {
-          blankLine: 'always',
-          prev: '*',
-          next: ['function', 'interface']
-        },
-        {
-          blankLine: 'always',
-          prev: ['function', 'interface'],
-          next: '*'
-        }
-      ],
       '@typescript-eslint/require-await': 1,
       '@typescript-eslint/return-await': 1,
       '@typescript-eslint/use-unknown-in-catch-callback-variable': 1
