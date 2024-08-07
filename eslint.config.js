@@ -79,7 +79,7 @@ export default [
       'no-inner-declarations': 0,
       'no-invalid-regexp': 1,
       'no-irregular-whitespace': 1,
-      'no-loss-of-precision': 0, // replaced by @typescript-eslint/no-loss-of-precision
+      'no-loss-of-precision': 1,
       'no-misleading-character-class': 1,
       'no-new-native-nonconstructor': 1,
       'no-obj-calls': 1,
@@ -536,7 +536,6 @@ export default [
       '@typescript-eslint/no-implied-eval': 1,
       '@typescript-eslint/no-invalid-this': 0,
       '@typescript-eslint/no-loop-func': 0,
-      '@typescript-eslint/no-loss-of-precision': 1,
       '@typescript-eslint/no-magic-numbers': 0,
       '@typescript-eslint/no-redeclare': 1,
       '@typescript-eslint/no-restricted-imports': [
