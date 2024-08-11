@@ -185,10 +185,6 @@ export default function HeaderCell<R, SR>({
     if (sortable) {
       // prevent sorting when interacting with input elements
       const shouldAvoidSorting = isInteractingWithInput(event);
-      // const shouldAvoidSorting = event.target instanceof HTMLInputElement ||
-      //   event.target instanceof HTMLTextAreaElement ||
-      //   event.target instanceof HTMLSelectElement;
-      console.log("shouldAvoidSorting ", shouldAvoidSorting);
       if (!shouldAvoidSorting) {
         onSort(event.ctrlKey || event.metaKey);
       }
