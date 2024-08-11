@@ -18,3 +18,9 @@ export function createCellEvent<E extends React.SyntheticEvent<HTMLDivElement>>(
 
   return cellEvent;
 }
+
+export function isInteractingWithInput(event: React.KeyboardEvent<HTMLSpanElement> | React.MouseEvent<HTMLSpanElement>) {
+  return event.target instanceof HTMLInputElement ||
+    event.target instanceof HTMLTextAreaElement ||
+    event.target instanceof HTMLSelectElement;
+}
