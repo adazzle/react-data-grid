@@ -209,6 +209,7 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
   selectedCellIdx: number | undefined;
+  isRowSelectable: boolean | undefined;
   isRowSelected: boolean;
   gridRowStart: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;

@@ -149,6 +149,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   selectedRows?: Maybe<ReadonlySet<K>>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
+  isRowSelectable?: Maybe<(row: NoInfer<R>) => boolean>;
   /** Used for multi column sorting */
   sortColumns?: Maybe<readonly SortColumn[]>;
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
@@ -226,6 +227,7 @@ function DataGrid<R, SR, K extends Key>(
     // Feature props
     selectedRows,
     onSelectedRowsChange,
+    isRowSelectable,
     sortColumns,
     onSortColumnsChange,
     defaultColumnOptions,
@@ -500,6 +502,7 @@ function DataGrid<R, SR, K extends Key>(
     if (args.type === 'HEADER') {
       const newSelectedRows = new Set(selectedRows);
       for (const row of rows) {
+        if (isRowSelectable?.(row) === false) continue;
         const rowKey = rowKeyGetter(row);
         if (args.checked) {
           newSelectedRows.add(rowKey);
@@ -512,6 +515,7 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     const { row, checked, isShiftClick } = args;
+    if (isRowSelectable?.(row) === false) return;
     const newSelectedRows = new Set(selectedRows);
     const rowKey = rowKeyGetter(row);
     const previousRowIdx = lastSelectedRowIdx.current;
@@ -1025,6 +1029,7 @@ function DataGrid<R, SR, K extends Key>(
           lastFrozenColumnIndex,
           onRowChange: handleFormatterRowChangeLatest,
           selectCell: selectCellLatest,
+          isRowSelectable: isRowSelectable?.(row),
           selectedCellEditor: getCellEditor(rowIdx)
         })
       );

@@ -1,4 +1,4 @@
-import { useRowSelection } from './hooks/useRowSelection';
+import { useRowSelectable, useRowSelection } from './hooks/useRowSelection';
 import type { Column, RenderCellProps, RenderGroupCellProps, RenderHeaderCellProps } from './types';
 import { SelectCellFormatter } from './cellRenderers';
 
@@ -21,11 +21,13 @@ function HeaderRenderer(props: RenderHeaderCellProps<unknown>) {
 
 function SelectFormatter(props: RenderCellProps<unknown>) {
   const [isRowSelected, onRowSelectionChange] = useRowSelection();
+  const isRowSelectable = useRowSelectable();
 
   return (
     <SelectCellFormatter
       aria-label="Select"
       tabIndex={props.tabIndex}
+      disabled={!isRowSelectable}
       value={isRowSelected}
       onChange={(checked, isShiftClick) => {
         onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick });

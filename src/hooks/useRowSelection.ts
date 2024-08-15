@@ -2,6 +2,14 @@ import { createContext, useContext } from 'react';
 
 import type { SelectRowEvent } from '../types';
 
+const RowSelectableContext = createContext<boolean | undefined>(undefined);
+
+export const RowSelectableProvider = RowSelectableContext.Provider;
+
+export function useRowSelectable() {
+  return useContext(RowSelectableContext);
+}
+
 const RowSelectionContext = createContext<boolean | undefined>(undefined);
 
 export const RowSelectionProvider = RowSelectionContext.Provider;
