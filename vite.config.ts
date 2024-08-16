@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
+import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
 
@@ -19,38 +20,39 @@ const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeB
   await page.mouse.up();
 };
 
-export default defineConfig({
-  base: isCI ? '/react-data-grid/' : '/',
+export default defineConfig(({ command }) => ({
+  base: '/react-data-grid/',
   cacheDir: '.cache/vite',
+  clearScreen: false,
   build: {
-    emptyOutDir: true,
-    sourcemap: true
+    target: browserslist().map((version) => version.replace(' ', '')),
+    modulePreload: { polyfill: false },
+    sourcemap: true,
+    reportCompressedSize: false
+  },
+  json: {
+    stringify: true
   },
   plugins: [
     react({
-      exclude: ['./.cache/**/*'],
-      babel: {
-        babelrc: false,
-        configFile: false,
-        plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
-      }
+      exclude: ['./.cache/**/*']
     }),
     wyw({
       exclude: ['./.cache/**/*'],
-      preprocessor: 'none'
+      preprocessor: 'none',
+      displayName: command === 'serve'
     })
   ],
   server: {
     open: true
   },
   test: {
-    root: '.',
     globals: true,
     coverage: {
       provider: 'istanbul',
       enabled: isCI,
-      include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
-      reporter: ['text', 'json']
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['json']
     },
     testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
@@ -66,4 +68,4 @@ export default defineConfig({
       shuffle: true
     }
   }
-});
+}));
