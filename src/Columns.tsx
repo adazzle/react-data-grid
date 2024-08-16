@@ -2,7 +2,7 @@ import { useHeaderRowSelection, useRowSelection } from './hooks/useRowSelection'
 import type { Column, RenderCellProps, RenderGroupCellProps, RenderHeaderCellProps } from './types';
 import { SelectCellFormatter } from './cellRenderers';
 
-export const SELECT_COLUMN_KEY = 'select-row';
+export const SELECT_COLUMN_KEY = 'rdg-select-column';
 
 function HeaderRenderer(props: RenderHeaderCellProps<unknown>) {
   const { isIndeterminate, isRowSelected, onRowSelectionChange } = useHeaderRowSelection();
