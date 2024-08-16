@@ -1,43 +1,43 @@
-import { useRowSelectable, useRowSelection } from './hooks/useRowSelection';
+import { useHeaderRowSelection, useRowSelection } from './hooks/useRowSelection';
 import type { Column, RenderCellProps, RenderGroupCellProps, RenderHeaderCellProps } from './types';
 import { SelectCellFormatter } from './cellRenderers';
 
 export const SELECT_COLUMN_KEY = 'select-row';
 
 function HeaderRenderer(props: RenderHeaderCellProps<unknown>) {
-  const [isRowSelected, onRowSelectionChange] = useRowSelection();
+  const { isIndeterminate, isRowSelected, onRowSelectionChange } = useHeaderRowSelection();
 
   return (
     <SelectCellFormatter
       aria-label="Select All"
       tabIndex={props.tabIndex}
+      indeterminate={isIndeterminate}
       value={isRowSelected}
       onChange={(checked) => {
-        onRowSelectionChange({ type: 'HEADER', checked });
+        onRowSelectionChange({ checked });
       }}
     />
   );
 }
 
 function SelectFormatter(props: RenderCellProps<unknown>) {
-  const [isRowSelected, onRowSelectionChange] = useRowSelection();
-  const isRowSelectable = useRowSelectable();
+  const { isRowSelectable, isRowSelected, onRowSelectionChange } = useRowSelection();
 
   return (
     <SelectCellFormatter
       aria-label="Select"
       tabIndex={props.tabIndex}
-      disabled={!isRowSelectable}
+      disabled={isRowSelectable === false}
       value={isRowSelected}
       onChange={(checked, isShiftClick) => {
-        onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick });
+        onRowSelectionChange({ row: props.row, checked, isShiftClick });
       }}
     />
   );
 }
 
 function SelectGroupFormatter(props: RenderGroupCellProps<unknown>) {
-  const [isRowSelected, onRowSelectionChange] = useRowSelection();
+  const { isRowSelected, onRowSelectionChange } = useRowSelection();
 
   return (
     <SelectCellFormatter
@@ -45,7 +45,7 @@ function SelectGroupFormatter(props: RenderGroupCellProps<unknown>) {
       tabIndex={props.tabIndex}
       value={isRowSelected}
       onChange={(checked) => {
-        onRowSelectionChange({ type: 'ROW', row: props.row, checked, isShiftClick: false });
+        onRowSelectionChange({ row: props.row, checked, isShiftClick: false });
       }}
     />
   );

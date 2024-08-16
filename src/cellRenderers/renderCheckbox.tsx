@@ -30,14 +30,28 @@ const checkbox = css`
 
 const checkboxClassname = `rdg-checkbox-input ${checkbox}`;
 
-export function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
+function Checkbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
+    onChange(indeterminate ? false : e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
   return (
     <div className={checkboxContainer}>
-      <input type="checkbox" {...props} className={checkboxClassname} onChange={handleChange} />
+      <input
+        ref={(el) => {
+          if (el) {
+            el.indeterminate = indeterminate === true;
+          }
+        }}
+        type="checkbox"
+        className={checkboxClassname}
+        onChange={handleChange}
+        {...props}
+      />
     </div>
   );
+}
+
+export function renderCheckbox(props: RenderCheckboxProps) {
+  return <Checkbox {...props} />;
 }

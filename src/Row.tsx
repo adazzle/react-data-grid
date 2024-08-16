@@ -1,7 +1,7 @@
-import { forwardRef, memo, type RefAttributes } from 'react';
+import { forwardRef, memo, useMemo, type RefAttributes } from 'react';
 import clsx from 'clsx';
 
-import { RowSelectableProvider, RowSelectionProvider, useLatestFunc } from './hooks';
+import { RowSelectionProvider, useLatestFunc, type RowSelectionContextValue } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RenderRowProps } from './types';
 import Cell from './Cell';
@@ -87,21 +87,24 @@ function Row<R, SR>(
     }
   }
 
+  const selectionValue = useMemo(
+    (): RowSelectionContextValue => ({ isRowSelected, isRowSelectable }),
+    [isRowSelectable, isRowSelected]
+  );
+
   return (
-    <RowSelectableProvider value={isRowSelectable}>
-      <RowSelectionProvider value={isRowSelected}>
-        <div
-          role="row"
-          ref={ref}
-          className={className}
-          onMouseEnter={handleDragEnter}
-          style={getRowStyle(gridRowStart)}
-          {...props}
-        >
-          {cells}
-        </div>
-      </RowSelectionProvider>
-    </RowSelectableProvider>
+    <RowSelectionProvider value={selectionValue}>
+      <div
+        role="row"
+        ref={ref}
+        className={className}
+        onMouseEnter={handleDragEnter}
+        style={getRowStyle(gridRowStart)}
+        {...props}
+      >
+        {cells}
+      </div>
+    </RowSelectionProvider>
   );
 }
 
