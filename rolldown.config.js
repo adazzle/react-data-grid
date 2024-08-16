@@ -1,11 +1,7 @@
 import { isAbsolute } from 'node:path';
 import wyw from '@wyw-in-js/rollup';
 import postcss from 'rollup-plugin-postcss';
-import { babel } from '@rollup/plugin-babel';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import pkg from './package.json' with { type: 'json' };
-
-const extensions = ['.ts', '.tsx'];
 
 export default {
   input: './src/index.ts',
@@ -35,15 +31,6 @@ export default {
     }),
     postcss({
       extract: 'styles.css'
-    }),
-    babel({
-      babelHelpers: 'runtime',
-      extensions,
-      // remove all comments except terser annotations
-      // https://github.com/terser/terser#annotations
-      // https://babeljs.io/docs/en/options#shouldprintcomment
-      shouldPrintComment: (comment) => /^[@#]__.+__$/.test(comment)
-    }),
-    nodeResolve({ extensions })
+    })
   ]
 };
