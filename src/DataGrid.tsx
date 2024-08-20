@@ -150,9 +150,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   /** Set of selected row keys */
   selectedRows?: Maybe<ReadonlySet<K>>;
+  /** Determines if a row can be selected */
+  isRowSelectable?: Maybe<(row: NoInfer<R>) => boolean>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
-  isRowSelectable?: Maybe<(row: NoInfer<R>) => boolean>;
   /** Used for multi column sorting */
   sortColumns?: Maybe<readonly SortColumn[]>;
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
@@ -229,8 +230,8 @@ function DataGrid<R, SR, K extends Key>(
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
     selectedRows,
-    onSelectedRowsChange,
     isRowSelectable,
+    onSelectedRowsChange,
     sortColumns,
     onSortColumnsChange,
     defaultColumnOptions,
