@@ -1022,7 +1022,7 @@ function DataGrid<R, SR, K extends Key>(
           rowIdx,
           row,
           viewportColumns: rowColumns,
-          isRowSelectable: isRowSelectable?.(row),
+          isRowSelectable: isRowSelectable?.(row) ?? true,
           isRowSelected,
           onCellClick: onCellClickLatest,
           onCellDoubleClick: onCellDoubleClickLatest,

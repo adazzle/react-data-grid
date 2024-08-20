@@ -4,7 +4,7 @@ import type { SelectHeaderRowEvent, SelectRowEvent } from '../types';
 
 export interface RowSelectionContextValue {
   isRowSelected: boolean;
-  isRowSelectable: boolean | undefined;
+  isRowSelectable: boolean;
 }
 
 const RowSelectionContext = createContext<RowSelectionContextValue | undefined>(undefined);
