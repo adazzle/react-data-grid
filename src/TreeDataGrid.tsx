@@ -25,7 +25,7 @@ import { defaultRenderRow } from './Row';
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<
     DataGridProps<R, SR, K>,
-    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'
+    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill' | 'isRowSelectable'
   > {
   columns: readonly Column<NoInfer<R>, NoInfer<SR>>[];
   rowHeight?: Maybe<number | ((args: RowHeightArgs<NoInfer<R>>) => number)>;
