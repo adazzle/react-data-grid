@@ -549,6 +549,7 @@ function DataGrid<R, SR, K extends Key>(
       const step = sign(rowIdx - previousRowIdx);
       for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
         const row = rows[i];
+        if (isRowSelectable?.(row) === false) continue;
         if (checked) {
           newSelectedRows.add(rowKeyGetter(row));
         } else {
