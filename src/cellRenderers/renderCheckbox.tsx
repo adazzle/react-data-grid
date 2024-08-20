@@ -30,7 +30,7 @@ const checkbox = css`
 
 const checkboxClassname = `rdg-checkbox-input ${checkbox}`;
 
-function Checkbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
+export function renderCheckbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(indeterminate || e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
@@ -50,8 +50,4 @@ function Checkbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
       />
     </div>
   );
-}
-
-export function renderCheckbox(props: RenderCheckboxProps) {
-  return <Checkbox {...props} />;
 }
