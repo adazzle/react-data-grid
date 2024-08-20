@@ -376,7 +376,9 @@ function DataGrid<R, SR, K extends Key>(
     const { length } = rows;
 
     if (length !== 0 && selectedRows != null && rowKeyGetter != null && selectedRows.size > 0) {
-      const selectedRowsCount = rows.filter((row) => selectedRows.has(rowKeyGetter(row))).length;
+      const selectedRowsCount = rows.reduce((count, row) => {
+        return selectedRows.has(rowKeyGetter(row)) ? count + 1 : count;
+      }, 0);
       isRowSelected = selectedRowsCount === length;
       isIndeterminate = !isRowSelected && selectedRowsCount > 0;
     }
