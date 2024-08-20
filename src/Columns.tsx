@@ -14,7 +14,7 @@ function HeaderRenderer(props: RenderHeaderCellProps<unknown>) {
       indeterminate={isIndeterminate}
       value={isRowSelected}
       onChange={(checked) => {
-        onRowSelectionChange({ checked });
+        onRowSelectionChange({ checked: isIndeterminate ? false : checked });
       }}
     />
   );
