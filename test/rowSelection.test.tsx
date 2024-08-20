@@ -59,7 +59,7 @@ test('toggle selection when checkbox is clicked', async () => {
   await toggleSelection(0);
   testSelection(0, true);
   await toggleSelection(1);
-  testSelection(0, true);
+  testSelection(1, true);
 
   await toggleSelection(0);
   testSelection(0, false);
@@ -77,6 +77,39 @@ test('toggle selection using keyboard', async () => {
   testSelection(1, true);
   await userEvent.keyboard('{arrowup} ');
   testSelection(0, false);
+});
+
+test('should partially select header checkbox', async () => {
+  setup();
+  const headerCheckbox = screen.getByRole('checkbox', { name: 'Select All' });
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).not.toBePartiallyChecked();
+
+  await toggleSelection(0);
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).toBePartiallyChecked();
+
+  await toggleSelection(1);
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).toBePartiallyChecked();
+
+  await toggleSelection(2);
+  expect(headerCheckbox).toBeChecked();
+  expect(headerCheckbox).not.toBePartiallyChecked();
+
+  await toggleSelection(0);
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).toBePartiallyChecked();
+
+  await userEvent.click(headerCheckbox);
+  testSelection(0, false);
+  testSelection(1, false);
+  testSelection(2, false);
+
+  await userEvent.click(headerCheckbox);
+  testSelection(0, true);
+  testSelection(1, true);
+  testSelection(2, true);
 });
 
 test('select/deselect all rows when header checkbox is clicked', async () => {
