@@ -61,7 +61,8 @@ export default defineConfig(({ command }) => ({
       name: 'chromium',
       provider: 'playwright',
       commands: { resizeColumn },
-      viewport: { width: 1920, height: 1080 }
+      viewport: { width: 1920, height: 1080 },
+      headless: true
     },
     restoreMocks: true,
     sequence: {

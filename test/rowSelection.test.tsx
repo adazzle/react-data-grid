@@ -162,6 +162,9 @@ test('extra keys are preserved when updating the selectedRows Set', async () => 
   expect(set).toStrictEqual(new Set([...initialSet, 2]));
 
   await userEvent.click(headerCheckbox);
+  expect(set).toStrictEqual(initialSet);
+
+  await userEvent.click(headerCheckbox);
   expect(set).toStrictEqual(new Set([...initialSet, 1, 2, 3]));
 
   await userEvent.click(headerCheckbox);
