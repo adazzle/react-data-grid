@@ -27,7 +27,7 @@ function SelectFormatter(props: RenderCellProps<unknown>) {
     <SelectCellFormatter
       aria-label="Select"
       tabIndex={props.tabIndex}
-      disabled={isRowSelectable === false}
+      disabled={isRowSelectable}
       value={isRowSelected}
       onChange={(checked, isShiftClick) => {
         onRowSelectionChange({ row: props.row, checked, isShiftClick });
