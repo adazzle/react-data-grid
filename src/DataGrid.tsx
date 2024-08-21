@@ -150,7 +150,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   /** Set of selected row keys */
   selectedRows?: Maybe<ReadonlySet<K>>;
-  /** Determines if a row can be selected */
+  /** Determines if a row selection is disabled */
   isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
