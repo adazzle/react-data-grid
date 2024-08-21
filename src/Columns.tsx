@@ -21,13 +21,13 @@ function HeaderRenderer(props: RenderHeaderCellProps<unknown>) {
 }
 
 function SelectFormatter(props: RenderCellProps<unknown>) {
-  const { isRowSelectable, isRowSelected, onRowSelectionChange } = useRowSelection();
+  const { isRowSelectionDisabled, isRowSelected, onRowSelectionChange } = useRowSelection();
 
   return (
     <SelectCellFormatter
       aria-label="Select"
       tabIndex={props.tabIndex}
-      disabled={!isRowSelectable}
+      disabled={isRowSelectionDisabled}
       value={isRowSelected}
       onChange={(checked, isShiftClick) => {
         onRowSelectionChange({ row: props.row, checked, isShiftClick });

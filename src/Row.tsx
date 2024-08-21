@@ -13,7 +13,7 @@ function Row<R, SR>(
     rowIdx,
     gridRowStart,
     selectedCellIdx,
-    isRowSelectable,
+    isRowSelectionDisabled,
     isRowSelected,
     copiedCellIdx,
     draggedOverCellIdx,
@@ -88,8 +88,8 @@ function Row<R, SR>(
   }
 
   const selectionValue = useMemo(
-    (): RowSelectionContextValue => ({ isRowSelected, isRowSelectable }),
-    [isRowSelectable, isRowSelected]
+    (): RowSelectionContextValue => ({ isRowSelected, isRowSelectionDisabled }),
+    [isRowSelectionDisabled, isRowSelected]
   );
 
   return (

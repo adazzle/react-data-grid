@@ -4,7 +4,7 @@ import type { SelectHeaderRowEvent, SelectRowEvent } from '../types';
 
 export interface RowSelectionContextValue {
   isRowSelected: boolean;
-  isRowSelectable: boolean;
+  isRowSelectionDisabled: boolean;
 }
 
 const RowSelectionContext = createContext<RowSelectionContextValue | undefined>(undefined);
@@ -27,7 +27,7 @@ export function useRowSelection() {
   }
 
   return {
-    isRowSelectable: rowSelectionContext.isRowSelectable,
+    isRowSelectionDisabled: rowSelectionContext.isRowSelectionDisabled,
     isRowSelected: rowSelectionContext.isRowSelected,
     onRowSelectionChange: rowSelectionChangeContext
   };

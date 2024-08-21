@@ -151,7 +151,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Set of selected row keys */
   selectedRows?: Maybe<ReadonlySet<K>>;
   /** Determines if a row can be selected */
-  isRowSelectable?: Maybe<(row: NoInfer<R>) => boolean>;
+  isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
   /** Used for multi column sorting */
@@ -230,7 +230,7 @@ function DataGrid<R, SR, K extends Key>(
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
     selectedRows,
-    isRowSelectable,
+    isRowSelectionDisabled,
     onSelectedRowsChange,
     sortColumns,
     onSortColumnsChange,
@@ -511,7 +511,7 @@ function DataGrid<R, SR, K extends Key>(
 
     const newSelectedRows = new Set(selectedRows);
     for (const row of rows) {
-      if (isRowSelectable?.(row) === false) continue;
+      if (isRowSelectionDisabled?.(row) === true) continue;
       const rowKey = rowKeyGetter(row);
       if (args.checked) {
         newSelectedRows.add(rowKey);
@@ -527,7 +527,7 @@ function DataGrid<R, SR, K extends Key>(
 
     assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const { row, checked, isShiftClick } = args;
-    if (isRowSelectable?.(row) === false) return;
+    if (isRowSelectionDisabled?.(row) === true) return;
     const newSelectedRows = new Set(selectedRows);
     const rowKey = rowKeyGetter(row);
     const previousRowIdx = lastSelectedRowIdx.current;
@@ -549,7 +549,7 @@ function DataGrid<R, SR, K extends Key>(
       const step = sign(rowIdx - previousRowIdx);
       for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
         const row = rows[i];
-        if (isRowSelectable?.(row) === false) continue;
+        if (isRowSelectionDisabled?.(row) === true) continue;
         if (checked) {
           newSelectedRows.add(rowKeyGetter(row));
         } else {
@@ -1025,7 +1025,7 @@ function DataGrid<R, SR, K extends Key>(
           rowIdx,
           row,
           viewportColumns: rowColumns,
-          isRowSelectable: isRowSelectable?.(row) ?? true,
+          isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
           isRowSelected,
           onCellClick: onCellClickLatest,
           onCellDoubleClick: onCellDoubleClickLatest,

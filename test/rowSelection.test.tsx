@@ -26,10 +26,10 @@ function rowKeyGetter(row: Row) {
 
 function RowSelectionTest({
   initialRows,
-  isRowSelectable
+  isRowSelectionDisabled
 }: {
   initialRows: readonly Row[];
-  isRowSelectable?: (row: Row) => boolean;
+  isRowSelectionDisabled?: (row: Row) => boolean;
 }) {
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
 
@@ -39,7 +39,7 @@ function RowSelectionTest({
       columns={columns}
       rows={initialRows}
       selectedRows={selectedRows}
-      isRowSelectable={isRowSelectable}
+      isRowSelectionDisabled={isRowSelectionDisabled}
       onSelectedRowsChange={setSelectedRows}
     />
   );
@@ -119,8 +119,10 @@ test('should partially select header checkbox', async () => {
   testSelection(2, true);
 });
 
-test('should not select row when isRowSelectable returns false', async () => {
-  render(<RowSelectionTest initialRows={defaultRows} isRowSelectable={(row) => row.id !== 2} />);
+test('should not select row when isRowSelectionDisabled returns true', async () => {
+  render(
+    <RowSelectionTest initialRows={defaultRows} isRowSelectionDisabled={(row) => row.id === 2} />
+  );
   await toggleSelection(0);
   testSelection(0, true);
   await toggleSelection(1);

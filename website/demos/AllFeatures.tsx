@@ -206,7 +206,7 @@ export default function AllFeatures({ direction }: Props) {
       onPaste={handlePaste}
       rowHeight={30}
       selectedRows={selectedRows}
-      isRowSelectable={(row) => row.id !== 'id_2'}
+      isRowSelectionDisabled={(row) => row.id === 'id_2'}
       onSelectedRowsChange={setSelectedRows}
       className="fill-grid"
       rowClass={(row, index) =>

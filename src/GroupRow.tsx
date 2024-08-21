@@ -52,7 +52,7 @@ function GroupedRow<R, SR>({
   }
 
   const selectionValue = useMemo(
-    (): RowSelectionContextValue => ({ isRowSelectable: true, isRowSelected }),
+    (): RowSelectionContextValue => ({ isRowSelectionDisabled: false, isRowSelected }),
     [isRowSelected]
   );
 
