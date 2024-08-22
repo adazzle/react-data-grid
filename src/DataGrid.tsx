@@ -741,7 +741,7 @@ function DataGrid<R, SR, K extends Key>(
     if (onSelectedCellChange && !samePosition) {
       onSelectedCellChange({
         rowIdx: position.rowIdx,
-        row,
+        ...(row && { row }),
         column: columns[position.idx]
       });
     }
