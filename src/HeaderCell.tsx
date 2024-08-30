@@ -224,8 +224,8 @@ export default function HeaderCell<R, SR>({
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     setIsOver(false);
-    if (event.dataTransfer.types.includes(dragDropKey)) {
-      const sourceKey = event.dataTransfer.getData(dragDropKey);
+    if (event.dataTransfer.types.includes(dragDropKey.toLowerCase())) {
+      const sourceKey = event.dataTransfer.getData(dragDropKey.toLowerCase());
       if (sourceKey !== column.key) {
         event.preventDefault();
         onColumnsReorder?.(sourceKey, column.key);
