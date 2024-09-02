@@ -88,7 +88,7 @@
     "eslint-plugin-jest-dom": "^5.0.1",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-sonarjs": "^1.0.4",
+    "eslint-plugin-sonarjs": "^2.0.2",
     "eslint-plugin-testing-library": "^6.3.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
