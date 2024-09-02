@@ -224,8 +224,12 @@ export default function HeaderCell<R, SR>({
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     setIsOver(false);
-    if (event.dataTransfer.types.includes(dragDropKey)) {
-      const sourceKey = event.dataTransfer.getData(dragDropKey);
+    // The dragDropKey is derived from the useId() hook, which can sometimes generate keys with uppercase letters.
+    // When setting data using event.dataTransfer.setData(), the key is automatically converted to lowercase in some browsers.
+    // To ensure consistent comparison, we normalize the dragDropKey to lowercase before checking its presence in the event's dataTransfer types.
+    // https://html.spec.whatwg.org/multipage/dnd.html#the-datatransfer-interface
+    if (event.dataTransfer.types.includes(dragDropKey.toLowerCase())) {
+      const sourceKey = event.dataTransfer.getData(dragDropKey.toLowerCase());
       if (sourceKey !== column.key) {
         event.preventDefault();
         onColumnsReorder?.(sourceKey, column.key);
