@@ -34,8 +34,8 @@ export function useRowSelection() {
 }
 
 export interface HeaderRowSelectionContextValue {
-  isRowSelected: boolean;
-  isIndeterminate: boolean;
+  readonly isRowSelected: boolean;
+  readonly isIndeterminate: boolean;
 }
 
 const HeaderRowSelectionContext = createContext<HeaderRowSelectionContextValue | undefined>(
