@@ -371,19 +371,25 @@ function DataGrid<R, SR, K extends Key>(
 
   const headerSelectionValue = useMemo((): HeaderRowSelectionContextValue => {
     // no rows to select = explicitely unchecked
-    let isRowSelected = false;
-    let isIndeterminate = false;
-    const { length } = rows;
+    let hasSelectedRow = false;
+    let hasUnselectedRow = false;
 
-    if (length !== 0 && selectedRows != null && rowKeyGetter != null && selectedRows.size > 0) {
-      const selectedRowsCount = rows.reduce((count, row) => {
-        return selectedRows.has(rowKeyGetter(row)) ? count + 1 : count;
-      }, 0);
-      isRowSelected = selectedRowsCount === length;
-      isIndeterminate = !isRowSelected && selectedRowsCount > 0;
+    if (rowKeyGetter != null && selectedRows != null && selectedRows.size > 0) {
+      for (const row of rows) {
+        if (selectedRows.has(rowKeyGetter(row))) {
+          hasSelectedRow = true;
+        } else {
+          hasUnselectedRow = true;
+        }
+
+        if (hasSelectedRow && hasUnselectedRow) break;
+      }
     }
 
-    return { isRowSelected, isIndeterminate };
+    return {
+      isRowSelected: hasSelectedRow && !hasUnselectedRow,
+      isIndeterminate: hasSelectedRow && hasUnselectedRow
+    };
   }, [rows, selectedRows, rowKeyGetter]);
 
   const {
