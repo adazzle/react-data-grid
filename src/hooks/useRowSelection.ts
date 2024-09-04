@@ -3,8 +3,8 @@ import { createContext, useContext } from 'react';
 import type { SelectHeaderRowEvent, SelectRowEvent } from '../types';
 
 export interface RowSelectionContextValue {
-  isRowSelected: boolean;
-  isRowSelectionDisabled: boolean;
+  readonly isRowSelected: boolean;
+  readonly isRowSelectionDisabled: boolean;
 }
 
 const RowSelectionContext = createContext<RowSelectionContextValue | undefined>(undefined);
