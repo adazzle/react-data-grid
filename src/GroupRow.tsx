@@ -42,6 +42,7 @@ function GroupedRow<R, SR>({
   gridRowStart,
   groupBy,
   toggleGroup,
+  isRowSelectionDisabled,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
