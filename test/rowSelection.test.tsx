@@ -24,7 +24,13 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-function RowSelectionTest({ initialRows }: { initialRows: readonly Row[] }) {
+function RowSelectionTest({
+  initialRows,
+  isRowSelectionDisabled
+}: {
+  initialRows: readonly Row[];
+  isRowSelectionDisabled?: (row: Row) => boolean;
+}) {
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
 
   return (
@@ -33,6 +39,7 @@ function RowSelectionTest({ initialRows }: { initialRows: readonly Row[] }) {
       columns={columns}
       rows={initialRows}
       selectedRows={selectedRows}
+      isRowSelectionDisabled={isRowSelectionDisabled}
       onSelectedRowsChange={setSelectedRows}
     />
   );
@@ -59,7 +66,7 @@ test('toggle selection when checkbox is clicked', async () => {
   await toggleSelection(0);
   testSelection(0, true);
   await toggleSelection(1);
-  testSelection(0, true);
+  testSelection(1, true);
 
   await toggleSelection(0);
   testSelection(0, false);
@@ -77,6 +84,58 @@ test('toggle selection using keyboard', async () => {
   testSelection(1, true);
   await userEvent.keyboard('{arrowup} ');
   testSelection(0, false);
+});
+
+test('should partially select header checkbox', async () => {
+  setup();
+  const headerCheckbox = screen.getByRole('checkbox', { name: 'Select All' });
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).not.toBePartiallyChecked();
+
+  await toggleSelection(0);
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).toBePartiallyChecked();
+
+  await toggleSelection(1);
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).toBePartiallyChecked();
+
+  await toggleSelection(2);
+  expect(headerCheckbox).toBeChecked();
+  expect(headerCheckbox).not.toBePartiallyChecked();
+
+  await toggleSelection(0);
+  expect(headerCheckbox).not.toBeChecked();
+  expect(headerCheckbox).toBePartiallyChecked();
+
+  await userEvent.click(headerCheckbox);
+  testSelection(0, false);
+  testSelection(1, false);
+  testSelection(2, false);
+
+  await userEvent.click(headerCheckbox);
+  testSelection(0, true);
+  testSelection(1, true);
+  testSelection(2, true);
+});
+
+test('should not select row when isRowSelectionDisabled returns true', async () => {
+  render(
+    <RowSelectionTest initialRows={defaultRows} isRowSelectionDisabled={(row) => row.id === 2} />
+  );
+  await toggleSelection(0);
+  testSelection(0, true);
+  await toggleSelection(1);
+  testSelection(1, false);
+  await toggleSelection(2);
+  testSelection(2, true);
+
+  await userEvent.click(screen.getByRole('checkbox', { name: 'Select All' }));
+  await toggleSelection(0);
+  await toggleSelection(2, true);
+  testSelection(0, true);
+  testSelection(1, false);
+  testSelection(2, true);
 });
 
 test('select/deselect all rows when header checkbox is clicked', async () => {
@@ -160,6 +219,9 @@ test('extra keys are preserved when updating the selectedRows Set', async () => 
 
   await toggleSelection(1);
   expect(set).toStrictEqual(new Set([...initialSet, 2]));
+
+  await userEvent.click(headerCheckbox);
+  expect(set).toStrictEqual(initialSet);
 
   await userEvent.click(headerCheckbox);
   expect(set).toStrictEqual(new Set([...initialSet, 1, 2, 3]));

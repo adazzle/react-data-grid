@@ -286,6 +286,9 @@ test('should select rows in a group', async () => {
   await userEvent.click(screen.getByRole('gridcell', { name: '2022' }));
 
   await userEvent.click(headerCheckbox);
+  expect(screen.queryByRole('row', { selected: true })).not.toBeInTheDocument();
+
+  await userEvent.click(headerCheckbox);
   expect(screen.getAllByRole('row', { selected: true })).toHaveLength(8);
 
   await userEvent.click(headerCheckbox);

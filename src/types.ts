@@ -209,6 +209,7 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
   selectedCellIdx: number | undefined;
+  isRowSelectionDisabled: boolean;
   isRowSelected: boolean;
   gridRowStart: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
@@ -231,9 +232,15 @@ export interface RowsChangeData<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
 }
 
-export type SelectRowEvent<TRow> =
-  | { type: 'HEADER'; checked: boolean }
-  | { type: 'ROW'; row: TRow; checked: boolean; isShiftClick: boolean };
+export interface SelectRowEvent<TRow> {
+  row: TRow;
+  checked: boolean;
+  isShiftClick: boolean;
+}
+
+export interface SelectHeaderRowEvent {
+  checked: boolean;
+}
 
 export interface FillEvent<TRow> {
   columnKey: string;
@@ -297,6 +304,7 @@ export interface RenderCheckboxProps
     React.InputHTMLAttributes<HTMLInputElement>,
     'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
   > {
+  indeterminate?: boolean | undefined;
   onChange: (checked: boolean, shift: boolean) => void;
 }
 
