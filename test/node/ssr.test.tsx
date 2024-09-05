@@ -23,7 +23,7 @@ function App() {
 }
 
 test('basic server-side rendering (SSR) support', () => {
-  // make sure we're not running in the JSDOM environment
+  // make sure we're not running in a browser environment
   expect(globalThis.window).toBeUndefined();
 
   const html = renderToString(<App />);
