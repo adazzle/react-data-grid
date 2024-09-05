@@ -367,7 +367,6 @@ function TreeDataGrid<R, SR, K extends Key>(
       draggedOverCellIdx,
       setDraggedOverRowIdx,
       selectedCellEditor,
-      isRowSelectionDisabled,
       ...rowProps
     }: RenderRowProps<R, SR>
   ) {
