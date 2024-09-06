@@ -5,7 +5,7 @@ import type { BrowserCommand } from 'vitest/node';
 const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeBy) => {
   const page = context.page;
   const frame = await context.frame();
-  const resizeHandle = frame.locator('[role="columnheader"][aria-colindex="2"]  div');
+  const resizeHandle = frame.locator('[role="columnheader"][aria-colindex="2"] div');
   const { x, y } = (await resizeHandle.boundingBox())!;
   await resizeHandle.hover({
     position: { x: 5, y: 5 }

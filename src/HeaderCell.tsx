@@ -122,22 +122,37 @@ export default function HeaderCell<R, SR>({
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
+    let hasDoubleClicked = false;
 
     function onPointerMove(event: PointerEvent) {
-      const { right, left } = headerCell.getBoundingClientRect();
-      const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
-      if (width > 0) {
-        onColumnResize(column, clampColumnWidth(width, column));
+      const { width, right, left } = headerCell.getBoundingClientRect();
+      let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
+      newWidth = clampColumnWidth(newWidth, column);
+      if (width > 0 && newWidth !== width) {
+        onColumnResize(column, newWidth);
       }
     }
 
-    function onLostPointerCapture() {
+    function onDoubleClick() {
+      hasDoubleClicked = true;
+      onColumnResize(column, 'max-content');
+    }
+
+    function onLostPointerCapture(event: PointerEvent) {
+      // Handle final pointer position that may have been skipped by coalesced pointer move events.
+      // Skip move pointer handling if the user double-clicked.
+      if (!hasDoubleClicked) {
+        onPointerMove(event);
+      }
+
       currentTarget.removeEventListener('pointermove', onPointerMove);
+      currentTarget.removeEventListener('dblclick', onDoubleClick);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
+    currentTarget.addEventListener('dblclick', onDoubleClick);
     currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
   }
 
@@ -184,10 +199,6 @@ export default function HeaderCell<R, SR>({
     if (sortable) {
       onSort(event.ctrlKey || event.metaKey);
     }
-  }
-
-  function onDoubleClick() {
-    onColumnResize(column, 'max-content');
   }
 
   function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
@@ -295,7 +306,6 @@ export default function HeaderCell<R, SR>({
         <div
           className={resizeHandleClassname}
           onClick={stopPropagation}
-          onDoubleClick={onDoubleClick}
           onPointerDown={onPointerDown}
         />
       )}
