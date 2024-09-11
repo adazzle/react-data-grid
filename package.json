@@ -1,6 +1,6 @@
 {
   "name": "react-data-grid",
-  "version": "7.0.0-beta.46",
+  "version": "7.0.0-beta.47",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
   "keywords": [
@@ -63,7 +63,7 @@
     "@babel/runtime": "^7.21.5",
     "@biomejs/biome": "1.8.3",
     "@eslint/compat": "^1.1.1",
-    "@faker-js/faker": "^8.0.0",
+    "@faker-js/faker": "^9.0.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
     "@linaria/core": "^6.0.0",
     "@microsoft/api-extractor": "^7.23.0",
@@ -86,7 +86,7 @@
     "eslint-plugin-jest-dom": "^5.0.1",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-sonarjs": "^1.0.4",
+    "eslint-plugin-sonarjs": "^2.0.2",
     "eslint-plugin-testing-library": "^6.3.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
@@ -100,7 +100,7 @@
     "react-router-dom": "^6.11.1",
     "rolldown": "^0.12.2",
     "rollup-plugin-postcss": "^4.0.2",
-    "typescript": "~5.5.2",
+    "typescript": "~5.6.2",
     "vite": "^5.3.3",
     "vitest": "^2.0.3"
   },

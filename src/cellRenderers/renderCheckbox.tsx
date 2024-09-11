@@ -2,18 +2,10 @@ import { css } from '@linaria/core';
 
 import type { RenderCheckboxProps } from '../types';
 
-const checkboxContainer = css`
-  @layer rdg.checkboxContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    inset: 0;
-  }
-`;
-
 const checkbox = css`
   @layer rdg.CheckboxInput {
+    display: block;
+    margin: auto;
     inline-size: 20px;
     block-size: 20px;
 
@@ -30,14 +22,22 @@ const checkbox = css`
 
 const checkboxClassname = `rdg-checkbox-input ${checkbox}`;
 
-export function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
+export function renderCheckbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
   return (
-    <div className={checkboxContainer}>
-      <input type="checkbox" {...props} className={checkboxClassname} onChange={handleChange} />
-    </div>
+    <input
+      ref={(el) => {
+        if (el) {
+          el.indeterminate = indeterminate === true;
+        }
+      }}
+      type="checkbox"
+      className={checkboxClassname}
+      onChange={handleChange}
+      {...props}
+    />
   );
 }

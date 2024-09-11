@@ -3,8 +3,8 @@
   "compilerOptions": {
     "composite": false,
     "declaration": true,
-    "incremental": false,
     "lib": ["ESNext", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
+    "noCheck": true,
     "outDir": "./.cache/lib"
   },
   "files": ["src/index.ts"]

@@ -3,17 +3,17 @@ import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
 
 type SharedInputProps = Pick<
   RenderCheckboxProps,
-  'disabled' | 'tabIndex' | 'aria-label' | 'aria-labelledby'
+  'disabled' | 'tabIndex' | 'aria-label' | 'aria-labelledby' | 'indeterminate' | 'onChange'
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {
   value: boolean;
-  onChange: (value: boolean, isShiftClick: boolean) => void;
 }
 
 export function SelectCellFormatter({
   value,
   tabIndex,
+  indeterminate,
   disabled,
   onChange,
   'aria-label': ariaLabel,
@@ -25,6 +25,7 @@ export function SelectCellFormatter({
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     tabIndex,
+    indeterminate,
     disabled,
     checked: value,
     onChange
