@@ -1,4 +1,4 @@
-// import './style/layers.css';
+import './style/layers.css';
 
 export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { default as TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';

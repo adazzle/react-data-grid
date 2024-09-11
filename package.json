@@ -98,7 +98,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.11.1",
-    "rolldown": "^0.12.2",
+    "rolldown": "^0.13.2",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.6.2",
     "vite": "^5.3.3",
