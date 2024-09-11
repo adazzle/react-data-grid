@@ -11,14 +11,16 @@ import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
+  HeaderRowSelectionChangeContext,
+  HeaderRowSelectionContext,
   RowSelectionChangeContext,
-  RowSelectionContext,
   useCalculatedColumns,
   useColumnWidths,
   useGridDimensions,
   useLatestFunc,
   useViewportColumns,
-  useViewportRows
+  useViewportRows,
+  type HeaderRowSelectionContextValue
 } from './hooks';
 import {
   abs,
@@ -52,6 +54,7 @@ import type {
   Position,
   Renderers,
   RowsChangeData,
+  SelectHeaderRowEvent,
   SelectRowEvent,
   SortColumn
 } from './types';
@@ -154,6 +157,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    */
   /** Set of selected row keys */
   selectedRows?: Maybe<ReadonlySet<K>>;
+  /** Determines if row selection is disabled, per row */
+  isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
   /** Used for multi column sorting */
@@ -230,6 +235,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     summaryRowHeight: rawSummaryRowHeight,
     // Feature props
     selectedRows,
+    isRowSelectionDisabled,
     onSelectedRowsChange,
     sortColumns,
     onSortColumnsChange,
@@ -368,16 +374,27 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     [renderCheckbox, renderSortStatus]
   );
 
-  const allRowsSelected = useMemo((): boolean => {
+  const headerSelectionValue = useMemo((): HeaderRowSelectionContextValue => {
     // no rows to select = explicitely unchecked
-    const { length } = rows;
-    return (
-      length !== 0 &&
-      selectedRows != null &&
-      rowKeyGetter != null &&
-      selectedRows.size >= length &&
-      rows.every((row) => selectedRows.has(rowKeyGetter(row)))
-    );
+    let hasSelectedRow = false;
+    let hasUnselectedRow = false;
+
+    if (rowKeyGetter != null && selectedRows != null && selectedRows.size > 0) {
+      for (const row of rows) {
+        if (selectedRows.has(rowKeyGetter(row))) {
+          hasSelectedRow = true;
+        } else {
+          hasUnselectedRow = true;
+        }
+
+        if (hasSelectedRow && hasUnselectedRow) break;
+      }
+    }
+
+    return {
+      isRowSelected: hasSelectedRow && !hasUnselectedRow,
+      isIndeterminate: hasSelectedRow && hasUnselectedRow
+    };
   }, [rows, selectedRows, rowKeyGetter]);
 
   const {
@@ -438,6 +455,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   const onCellClickLatest = useLatestFunc(onCellClick);
   const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
+  const selectHeaderRowLatest = useLatestFunc(selectHeaderRow);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
   const selectCellLatest = useLatestFunc(selectCell);
@@ -497,43 +515,58 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   /**
    * event handlers
    */
-  function selectRow(args: SelectRowEvent<R>) {
+  function selectHeaderRow(args: SelectHeaderRowEvent) {
     if (!onSelectedRowsChange) return;
 
     assertIsValidKeyGetter<R, K>(rowKeyGetter);
 
-    if (args.type === 'HEADER') {
-      const newSelectedRows = new Set(selectedRows);
-      for (const row of rows) {
-        const rowKey = rowKeyGetter(row);
-        if (args.checked) {
-          newSelectedRows.add(rowKey);
-        } else {
-          newSelectedRows.delete(rowKey);
-        }
+    const newSelectedRows = new Set(selectedRows);
+    for (const row of rows) {
+      if (isRowSelectionDisabled?.(row) === true) continue;
+      const rowKey = rowKeyGetter(row);
+      if (args.checked) {
+        newSelectedRows.add(rowKey);
+      } else {
+        newSelectedRows.delete(rowKey);
       }
-      onSelectedRowsChange(newSelectedRows);
-      return;
     }
+    onSelectedRowsChange(newSelectedRows);
+  }
 
+  function selectRow(args: SelectRowEvent<R>) {
+    if (!onSelectedRowsChange) return;
+
+    assertIsValidKeyGetter<R, K>(rowKeyGetter);
     const { row, checked, isShiftClick } = args;
+    if (isRowSelectionDisabled?.(row) === true) return;
     const newSelectedRows = new Set(selectedRows);
     const rowKey = rowKeyGetter(row);
+    const previousRowIdx = lastSelectedRowIdx.current;
+    const rowIdx = rows.indexOf(row);
+    lastSelectedRowIdx.current = rowIdx;
+
     if (checked) {
       newSelectedRows.add(rowKey);
-      const previousRowIdx = lastSelectedRowIdx.current;
-      const rowIdx = rows.indexOf(row);
-      lastSelectedRowIdx.current = rowIdx;
-      if (isShiftClick && previousRowIdx !== -1 && previousRowIdx !== rowIdx) {
-        const step = sign(rowIdx - previousRowIdx);
-        for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
-          const row = rows[i];
-          newSelectedRows.add(rowKeyGetter(row));
-        }
-      }
     } else {
       newSelectedRows.delete(rowKey);
-      lastSelectedRowIdx.current = -1;
+    }
+
+    if (
+      isShiftClick &&
+      previousRowIdx !== -1 &&
+      previousRowIdx !== rowIdx &&
+      previousRowIdx < rows.length
+    ) {
+      const step = sign(rowIdx - previousRowIdx);
+      for (let i = previousRowIdx + step; i !== rowIdx; i += step) {
+        const row = rows[i];
+        if (isRowSelectionDisabled?.(row) === true) continue;
+        if (checked) {
+          newSelectedRows.add(rowKeyGetter(row));
+        } else {
+          newSelectedRows.delete(rowKeyGetter(row));
+        }
+      }
     }
 
     onSelectedRowsChange(newSelectedRows);
@@ -669,7 +702,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     if (isSelectable && shiftKey && key === ' ') {
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
       const rowKey = rowKeyGetter(row);
-      selectRow({ type: 'ROW', row, checked: !selectedRows.has(rowKey), isShiftClick: false });
+      selectRow({ row, checked: !selectedRows.has(rowKey), isShiftClick: false });
       // do not scroll
       event.preventDefault();
       return;
@@ -1003,6 +1036,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
           rowIdx,
           row,
           viewportColumns: rowColumns,
+          isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
           isRowSelected,
           onCellClick: onCellClickLatest,
           onCellDoubleClick: onCellDoubleClickLatest,
@@ -1083,7 +1117,6 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
           gridTemplateRows: templateRows,
           '--rdg-header-row-height': `${headerRowHeight}px`,
           '--rdg-scroll-height': `${scrollHeight}px`,
-          '--rdg-sign': isRtl ? -1 : 1,
           ...layoutCssVars
         } as unknown as React.CSSProperties
       }
@@ -1094,8 +1127,8 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
       data-testid={testId}
     >
       <DataGridDefaultRenderersContext value={defaultGridComponents}>
-        <RowSelectionChangeContext value={selectRowLatest}>
-          <RowSelectionContext value={allRowsSelected}>
+        <HeaderRowSelectionChangeContext value={selectHeaderRowLatest}>
+          <HeaderRowSelectionContext value={headerSelectionValue}>
             {Array.from({ length: groupedColumnHeaderRowsCount }, (_, index) => (
               <GroupedColumnHeaderRow
                 key={index}
@@ -1123,68 +1156,70 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
               shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
               direction={direction}
             />
-          </RowSelectionContext>
-          {rows.length === 0 && noRowsFallback ? (
-            noRowsFallback
-          ) : (
-            <>
-              {topSummaryRows?.map((row, rowIdx) => {
-                const gridRowStart = headerRowsCount + 1 + rowIdx;
-                const summaryRowIdx = mainHeaderRowIdx + 1 + rowIdx;
-                const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
-                const top = headerRowsHeight + summaryRowHeight * rowIdx;
+          </HeaderRowSelectionContext>
+        </HeaderRowSelectionChangeContext>
+        {rows.length === 0 && noRowsFallback ? (
+          noRowsFallback
+        ) : (
+          <>
+            {topSummaryRows?.map((row, rowIdx) => {
+              const gridRowStart = headerRowsCount + 1 + rowIdx;
+              const summaryRowIdx = mainHeaderRowIdx + 1 + rowIdx;
+              const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
+              const top = headerRowsHeight + summaryRowHeight * rowIdx;
 
-                return (
-                  <SummaryRow
-                    key={rowIdx}
-                    aria-rowindex={gridRowStart}
-                    rowIdx={summaryRowIdx}
-                    gridRowStart={gridRowStart}
-                    row={row}
-                    top={top}
-                    bottom={undefined}
-                    viewportColumns={getRowViewportColumns(summaryRowIdx)}
-                    lastFrozenColumnIndex={lastFrozenColumnIndex}
-                    selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                    isTop
-                    selectCell={selectCellLatest}
-                  />
-                );
-              })}
+              return (
+                <SummaryRow
+                  key={rowIdx}
+                  aria-rowindex={gridRowStart}
+                  rowIdx={summaryRowIdx}
+                  gridRowStart={gridRowStart}
+                  row={row}
+                  top={top}
+                  bottom={undefined}
+                  viewportColumns={getRowViewportColumns(summaryRowIdx)}
+                  lastFrozenColumnIndex={lastFrozenColumnIndex}
+                  selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                  isTop
+                  selectCell={selectCellLatest}
+                />
+              );
+            })}
+            <RowSelectionChangeContext value={selectRowLatest}>
               {getViewportRows()}
-              {bottomSummaryRows?.map((row, rowIdx) => {
-                const gridRowStart = headerAndTopSummaryRowsCount + rows.length + rowIdx + 1;
-                const summaryRowIdx = rows.length + rowIdx;
-                const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
-                const top =
-                  clientHeight > totalRowHeight
-                    ? gridHeight - summaryRowHeight * (bottomSummaryRows.length - rowIdx)
-                    : undefined;
-                const bottom =
-                  top === undefined
-                    ? summaryRowHeight * (bottomSummaryRows.length - 1 - rowIdx)
-                    : undefined;
+            </RowSelectionChangeContext>
+            {bottomSummaryRows?.map((row, rowIdx) => {
+              const gridRowStart = headerAndTopSummaryRowsCount + rows.length + rowIdx + 1;
+              const summaryRowIdx = rows.length + rowIdx;
+              const isSummaryRowSelected = selectedPosition.rowIdx === summaryRowIdx;
+              const top =
+                clientHeight > totalRowHeight
+                  ? gridHeight - summaryRowHeight * (bottomSummaryRows.length - rowIdx)
+                  : undefined;
+              const bottom =
+                top === undefined
+                  ? summaryRowHeight * (bottomSummaryRows.length - 1 - rowIdx)
+                  : undefined;
 
-                return (
-                  <SummaryRow
-                    aria-rowindex={ariaRowCount - bottomSummaryRowsCount + rowIdx + 1}
-                    key={rowIdx}
-                    rowIdx={summaryRowIdx}
-                    gridRowStart={gridRowStart}
-                    row={row}
-                    top={top}
-                    bottom={bottom}
-                    viewportColumns={getRowViewportColumns(summaryRowIdx)}
-                    lastFrozenColumnIndex={lastFrozenColumnIndex}
-                    selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
-                    isTop={false}
-                    selectCell={selectCellLatest}
-                  />
-                );
-              })}
-            </>
-          )}
-        </RowSelectionChangeContext>
+              return (
+                <SummaryRow
+                  aria-rowindex={ariaRowCount - bottomSummaryRowsCount + rowIdx + 1}
+                  key={rowIdx}
+                  rowIdx={summaryRowIdx}
+                  gridRowStart={gridRowStart}
+                  row={row}
+                  top={top}
+                  bottom={bottom}
+                  viewportColumns={getRowViewportColumns(summaryRowIdx)}
+                  lastFrozenColumnIndex={lastFrozenColumnIndex}
+                  selectedCellIdx={isSummaryRowSelected ? selectedPosition.idx : undefined}
+                  isTop={false}
+                  selectCell={selectCellLatest}
+                />
+              );
+            })}
+          </>
+        )}
       </DataGridDefaultRenderersContext>
 
       {renderDragHandle()}

@@ -122,22 +122,37 @@ export default function HeaderCell<R, SR>({
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
+    let hasDoubleClicked = false;
 
     function onPointerMove(event: PointerEvent) {
-      const { right, left } = headerCell.getBoundingClientRect();
-      const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
-      if (width > 0) {
-        onColumnResize(column, clampColumnWidth(width, column));
+      const { width, right, left } = headerCell.getBoundingClientRect();
+      let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
+      newWidth = clampColumnWidth(newWidth, column);
+      if (width > 0 && newWidth !== width) {
+        onColumnResize(column, newWidth);
       }
     }
 
-    function onLostPointerCapture() {
+    function onDoubleClick() {
+      hasDoubleClicked = true;
+      onColumnResize(column, 'max-content');
+    }
+
+    function onLostPointerCapture(event: PointerEvent) {
+      // Handle final pointer position that may have been skipped by coalesced pointer move events.
+      // Skip move pointer handling if the user double-clicked.
+      if (!hasDoubleClicked) {
+        onPointerMove(event);
+      }
+
       currentTarget.removeEventListener('pointermove', onPointerMove);
+      currentTarget.removeEventListener('dblclick', onDoubleClick);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
+    currentTarget.addEventListener('dblclick', onDoubleClick);
     currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
   }
 
@@ -186,10 +201,6 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function onDoubleClick() {
-    onColumnResize(column, 'max-content');
-  }
-
   function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
     onFocus?.(event);
     if (shouldFocusGrid) {
@@ -224,8 +235,12 @@ export default function HeaderCell<R, SR>({
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     setIsOver(false);
-    if (event.dataTransfer.types.includes(dragDropKey)) {
-      const sourceKey = event.dataTransfer.getData(dragDropKey);
+    // The dragDropKey is derived from the useId() hook, which can sometimes generate keys with uppercase letters.
+    // When setting data using event.dataTransfer.setData(), the key is automatically converted to lowercase in some browsers.
+    // To ensure consistent comparison, we normalize the dragDropKey to lowercase before checking its presence in the event's dataTransfer types.
+    // https://html.spec.whatwg.org/multipage/dnd.html#the-datatransfer-interface
+    if (event.dataTransfer.types.includes(dragDropKey.toLowerCase())) {
+      const sourceKey = event.dataTransfer.getData(dragDropKey.toLowerCase());
       if (sourceKey !== column.key) {
         event.preventDefault();
         onColumnsReorder?.(sourceKey, column.key);
@@ -291,7 +306,6 @@ export default function HeaderCell<R, SR>({
         <div
           className={resizeHandleClassname}
           onClick={stopPropagation}
-          onDoubleClick={onDoubleClick}
           onPointerDown={onPointerDown}
         />
       )}

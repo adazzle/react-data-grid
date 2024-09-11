@@ -1,7 +1,7 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
-import { RowSelectionContext, useLatestFunc } from './hooks';
+import { RowSelectionContext, useLatestFunc, type RowSelectionContextValue } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RenderRowProps } from './types';
 import Cell from './Cell';
@@ -12,6 +12,7 @@ function Row<R, SR>({
   rowIdx,
   gridRowStart,
   selectedCellIdx,
+  isRowSelectionDisabled,
   isRowSelected,
   copiedCellIdx,
   draggedOverCellIdx,
@@ -83,8 +84,13 @@ function Row<R, SR>({
     }
   }
 
+  const selectionValue = useMemo(
+    (): RowSelectionContextValue => ({ isRowSelected, isRowSelectionDisabled }),
+    [isRowSelectionDisabled, isRowSelected]
+  );
+
   return (
-    <RowSelectionContext value={isRowSelected}>
+    <RowSelectionContext value={selectionValue}>
       <div
         role="row"
         className={className}

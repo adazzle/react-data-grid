@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
+    "skipLibCheck": true
+  },
+  "include": ["website/**/*"],
+  "references": [{ "path": "tsconfig.src.json" }]
+}

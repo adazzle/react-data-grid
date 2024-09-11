@@ -168,6 +168,8 @@ A number defining the height of summary rows.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
+###### `isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>`
+
 ###### `onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>`
 
 ###### `sortColumns?: Maybe<readonly SortColumn[]>`

@@ -1,15 +1,20 @@
 import { createContext, useContext } from 'react';
 
-import type { SelectRowEvent } from '../types';
+import type { SelectHeaderRowEvent, SelectRowEvent } from '../types';
 
-export const RowSelectionContext = createContext<boolean | undefined>(undefined);
+export interface RowSelectionContextValue {
+  readonly isRowSelected: boolean;
+  readonly isRowSelectionDisabled: boolean;
+}
+
+export const RowSelectionContext = createContext<RowSelectionContextValue | undefined>(undefined);
 
 export const RowSelectionChangeContext = createContext<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ((selectRowEvent: SelectRowEvent<any>) => void) | undefined
 >(undefined);
 
-export function useRowSelection<R>(): [boolean, (selectRowEvent: SelectRowEvent<R>) => void] {
+export function useRowSelection() {
   const rowSelectionContext = useContext(RowSelectionContext);
   const rowSelectionChangeContext = useContext(RowSelectionChangeContext);
 
@@ -17,5 +22,37 @@ export function useRowSelection<R>(): [boolean, (selectRowEvent: SelectRowEvent<
     throw new Error('useRowSelection must be used within DataGrid cells');
   }
 
-  return [rowSelectionContext, rowSelectionChangeContext];
+  return {
+    isRowSelectionDisabled: rowSelectionContext.isRowSelectionDisabled,
+    isRowSelected: rowSelectionContext.isRowSelected,
+    onRowSelectionChange: rowSelectionChangeContext
+  };
+}
+
+export interface HeaderRowSelectionContextValue {
+  readonly isRowSelected: boolean;
+  readonly isIndeterminate: boolean;
+}
+
+const HeaderRowSelectionContext = createContext<HeaderRowSelectionContextValue | undefined>(
+  undefined
+);
+
+const HeaderRowSelectionChangeContext = createContext<
+  ((selectRowEvent: SelectHeaderRowEvent) => void) | undefined
+>(undefined);
+
+export function useHeaderRowSelection() {
+  const headerRowSelectionContext = useContext(HeaderRowSelectionContext);
+  const headerRowSelectionChangeContext = useContext(HeaderRowSelectionChangeContext);
+
+  if (headerRowSelectionContext === undefined || headerRowSelectionChangeContext === undefined) {
+    throw new Error('useHeaderRowSelection must be used within DataGrid cells');
+  }
+
+  return {
+    isIndeterminate: headerRowSelectionContext.isIndeterminate,
+    isRowSelected: headerRowSelectionContext.isRowSelected,
+    onRowSelectionChange: headerRowSelectionChangeContext
+  };
 }
