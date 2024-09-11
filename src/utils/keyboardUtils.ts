@@ -53,6 +53,8 @@ export function isCtrlKeyHeldDown(e: React.KeyboardEvent): boolean {
 }
 
 export function isDefaultCellInput(event: React.KeyboardEvent<HTMLDivElement>): boolean {
+  const vKey = 86;
+  if (isCtrlKeyHeldDown(event) && event.keyCode !== vKey) return false;
   return !nonInputKeys.has(event.key);
 }
 

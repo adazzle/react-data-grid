@@ -139,7 +139,14 @@ export default function TreeView({ direction }: Props) {
           const hasChildren = row.children !== undefined;
           const style = hasChildren ? undefined : { marginInlineStart: 30 };
           return (
-            <>
+            <div
+              className={css`
+                display: flex;
+                gap: 10px;
+                block-size: 100%;
+                align-items: center;
+              `}
+            >
               {hasChildren && (
                 <CellExpanderFormatter
                   tabIndex={tabIndex}
@@ -147,17 +154,15 @@ export default function TreeView({ direction }: Props) {
                   onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
                 />
               )}
-              <div className="rdg-cell-value">
-                {!hasChildren && (
-                  <ChildRowDeleteButton
-                    tabIndex={tabIndex}
-                    isDeleteSubRowEnabled={allowDelete}
-                    onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
-                  />
-                )}
-                <div style={style}>{row.format}</div>
-              </div>
-            </>
+              {!hasChildren && (
+                <ChildRowDeleteButton
+                  tabIndex={tabIndex}
+                  isDeleteSubRowEnabled={allowDelete}
+                  onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
+                />
+              )}
+              <div style={style}>{row.format}</div>
+            </div>
           );
         }
       },

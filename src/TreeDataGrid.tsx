@@ -25,12 +25,15 @@ import { defaultRenderRow } from './Row';
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<
     DataGridProps<R, SR, K>,
-    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'
+    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill' | 'isRowSelectionDisabled'
   > {
-  columns: readonly Column<R, SR>[];
-  rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
+  columns: readonly Column<NoInfer<R>, NoInfer<SR>>[];
+  rowHeight?: Maybe<number | ((args: RowHeightArgs<NoInfer<R>>) => number)>;
   groupBy: readonly string[];
-  rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
+  rowGrouper: (
+    rows: readonly NoInfer<R>[],
+    columnKey: string
+  ) => Record<string, readonly NoInfer<R>[]>;
   expandedGroupIds: ReadonlySet<unknown>;
   onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
 }
@@ -436,4 +439,4 @@ function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
 
 export default forwardRef(TreeDataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: TreeDataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => JSX.Element;
+) => React.JSX.Element;

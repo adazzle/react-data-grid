@@ -3,7 +3,6 @@ import { css } from '@linaria/core';
 export const row = css`
   @layer rdg.Row {
     display: contents;
-    line-height: var(--rdg-row-height);
     background-color: var(--rdg-background-color);
 
     &:hover {
@@ -36,10 +35,14 @@ export const rowSelectedWithFrozenCell = css`
     &::before {
       content: '';
       display: inline-block;
-      height: 100%;
+      block-size: 100%;
       position: sticky;
       inset-inline-start: 0;
       border-inline-start: 2px solid var(--rdg-selection-color);
     }
   }
 `;
+
+export const topSummaryRowClassname = 'rdg-top-summary-row';
+
+export const bottomSummaryRowClassname = 'rdg-bottom-summary-row';

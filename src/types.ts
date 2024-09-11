@@ -71,7 +71,6 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly sortable: boolean;
   readonly draggable: boolean;
   readonly frozen: boolean;
-  readonly isLastFrozenColumn: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
 
@@ -130,6 +129,7 @@ export interface RenderGroupCellProps<TRow, TSummaryRow = unknown> {
 export interface RenderEditCellProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
+  rowIdx: number;
   onRowChange: (row: TRow, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
 }
@@ -209,9 +209,9 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
   selectedCellIdx: number | undefined;
+  isRowSelectionDisabled: boolean;
   isRowSelected: boolean;
   gridRowStart: number;
-  height: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
@@ -232,9 +232,15 @@ export interface RowsChangeData<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
 }
 
-export type SelectRowEvent<TRow> =
-  | { type: 'HEADER'; checked: boolean }
-  | { type: 'ROW'; row: TRow; checked: boolean; isShiftClick: boolean };
+export interface SelectRowEvent<TRow> {
+  row: TRow;
+  checked: boolean;
+  isShiftClick: boolean;
+}
+
+export interface SelectHeaderRowEvent {
+  checked: boolean;
+}
 
 export interface FillEvent<TRow> {
   columnKey: string;
@@ -298,6 +304,7 @@ export interface RenderCheckboxProps
     React.InputHTMLAttributes<HTMLInputElement>,
     'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
   > {
+  indeterminate?: boolean | undefined;
   onChange: (checked: boolean, shift: boolean) => void;
 }
 
