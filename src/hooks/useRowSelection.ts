@@ -34,11 +34,11 @@ export interface HeaderRowSelectionContextValue {
   readonly isIndeterminate: boolean;
 }
 
-const HeaderRowSelectionContext = createContext<HeaderRowSelectionContextValue | undefined>(
+export const HeaderRowSelectionContext = createContext<HeaderRowSelectionContextValue | undefined>(
   undefined
 );
 
-const HeaderRowSelectionChangeContext = createContext<
+export const HeaderRowSelectionChangeContext = createContext<
   ((selectRowEvent: SelectHeaderRowEvent) => void) | undefined
 >(undefined);
 
