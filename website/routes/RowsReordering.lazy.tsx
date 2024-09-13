@@ -1,11 +1,16 @@
 import { useCallback, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { createLazyFileRoute } from '@tanstack/react-router';
 
 import DataGrid, { textEditor } from '../../src';
 import type { Column, RenderRowProps } from '../../src';
-import { DraggableRowRenderer } from './components';
-import type { Props } from './types';
+import { DraggableRowRenderer } from '../components';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/RowsReordering')({
+  component: RowsReordering
+});
 
 interface Row {
   id: number;
@@ -56,7 +61,8 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function RowsReordering({ direction }: Props) {
+function RowsReordering() {
+  const direction = useDirection();
   const [rows, setRows] = useState(createRows);
 
   const renderRow = useCallback((key: React.Key, props: RenderRowProps<Row>) => {

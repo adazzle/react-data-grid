@@ -1,9 +1,14 @@
 import { useState } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import type { Props } from './types';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/NoRows')({
+  component: NoRows
+});
 
 const gridClassname = css`
   block-size: 300px;
@@ -39,7 +44,8 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-export default function NoRows({ direction }: Props) {
+function NoRows() {
+  const direction = useDirection();
   const [selectedRows, onSelectedRowsChange] = useState((): ReadonlySet<number> => new Set());
 
   return (

@@ -1,12 +1,17 @@
 import { useMemo, useRef, useState } from 'react';
 import { faker } from '@faker-js/faker';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column, DataGridHandle, RowsChangeData } from '../../src';
 import type { Direction } from '../../src/types';
-import { CellExpanderFormatter } from './components';
-import type { Props } from './types';
+import { CellExpanderFormatter } from '../components';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/MasterDetail')({
+  component: MasterDetail
+});
 
 type DepartmentRow =
   | {
@@ -65,7 +70,9 @@ const productColumns: readonly Column<ProductRow>[] = [
   { key: 'price', name: 'Price' }
 ];
 
-export default function MasterDetail({ direction }: Props) {
+function MasterDetail() {
+  const direction = useDirection();
+
   const columns = useMemo((): readonly Column<DepartmentRow>[] => {
     return [
       {

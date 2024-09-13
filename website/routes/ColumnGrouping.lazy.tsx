@@ -1,6 +1,12 @@
+import { createLazyFileRoute } from '@tanstack/react-router';
+
 import DataGrid, { type ColumnOrColumnGroup } from '../../src';
-import { renderCoordinates } from './renderers';
-import type { Props } from './types';
+import { renderCoordinates } from '../renderers';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/ColumnGrouping')({
+  component: ColumnGrouping
+});
 
 const columns: readonly ColumnOrColumnGroup<number, number>[] = [
   { key: '1', name: 'Column 1' },
@@ -88,7 +94,9 @@ const columns: readonly ColumnOrColumnGroup<number, number>[] = [
 
 const rows: readonly number[] = Array.from({ length: 100 }, (_, i) => i);
 
-export default function ColumnGrouping({ direction }: Props) {
+function ColumnGrouping() {
+  const direction = useDirection();
+
   return (
     <DataGrid
       columns={columns}

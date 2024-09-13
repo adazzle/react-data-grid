@@ -1,23 +1,31 @@
 import { useMemo } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { renderCoordinates } from './renderers';
-import type { Props } from './types';
+import { renderCoordinates } from '../renderers';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/MillionCells')({
+  component: MillionCells
+});
 
 type Row = number;
-const rows: readonly Row[] = [...Array(500).keys()];
+const rows: readonly Row[] = [...Array(1000).keys()];
 
-export default function VariableRowHeight({ direction }: Props) {
+function MillionCells() {
+  const direction = useDirection();
+
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 1000; i++) {
       const key = String(i);
       columns.push({
         key,
         name: key,
         frozen: i < 5,
+        width: 80,
         resizable: true,
         renderCell: renderCoordinates
       });
@@ -30,14 +38,9 @@ export default function VariableRowHeight({ direction }: Props) {
     <DataGrid
       columns={columns}
       rows={rows}
-      rowHeight={rowHeight}
+      rowHeight={22}
       className="fill-grid"
       direction={direction}
     />
   );
-}
-
-function rowHeight() {
-  // should be based on the content of the row
-  return 25 + Math.round(Math.random() * 75);
 }

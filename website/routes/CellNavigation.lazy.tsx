@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 
 import DataGrid from '../../src';
 import type { CellKeyboardEvent, CellKeyDownArgs, Column } from '../../src';
-import type { Props } from './types';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/CellNavigation')({
+  component: CellNavigation
+});
 
 interface Row {
   id: number;
@@ -72,7 +77,8 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function CellNavigation({ direction }: Props) {
+function CellNavigation() {
+  const direction = useDirection();
   const [rows] = useState(createRows);
   const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
 
