@@ -80,9 +80,9 @@
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "@vitest/browser": "^2.0.3",
-    "@vitest/coverage-istanbul": "^2.0.3",
-    "@vitest/eslint-plugin": "^1.0.1",
+    "@vitest/browser": "^2.1.0",
+    "@vitest/coverage-v8": "^2.1.1",
+    "@vitest/eslint-plugin": "^1.1.4",
     "@wyw-in-js/rollup": "^0.5.0",
     "@wyw-in-js/vite": "^0.5.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
@@ -104,8 +104,8 @@
     "rollup": "^4.0.2",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.6.2",
-    "vite": "^5.3.3",
-    "vitest": "^2.0.3"
+    "vite": "^5.4.5",
+    "vitest": "^2.1.0"
   },
   "peerDependencies": {
     "react": "^18.0 || ^19.0",
