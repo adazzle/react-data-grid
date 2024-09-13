@@ -58,7 +58,6 @@ jobs:
           git worktree add gh-pages gh-pages
           cd gh-pages
           git rm -r .
-          git checkout gh-pages -- old
           mv ../dist/* .
           touch .nojekyll
           git add .
