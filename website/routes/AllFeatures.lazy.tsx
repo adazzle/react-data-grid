@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { faker } from '@faker-js/faker';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
@@ -23,7 +22,7 @@ const highlightClassname = css`
   }
 `;
 
-interface Row {
+export interface Row {
   id: string;
   avatar: string;
   email: string;
@@ -167,34 +166,10 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-function createRows(): Row[] {
-  const rows: Row[] = [];
-
-  for (let i = 0; i < 2000; i++) {
-    rows.push({
-      id: `id_${i}`,
-      avatar: faker.image.avatar(),
-      email: faker.internet.email(),
-      title: faker.person.prefix(),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      street: faker.location.street(),
-      zipCode: faker.location.zipCode(),
-      date: faker.date.past().toLocaleDateString(),
-      bs: faker.company.buzzPhrase(),
-      catchPhrase: faker.company.catchPhrase(),
-      companyName: faker.company.name(),
-      words: faker.lorem.words(),
-      sentence: faker.lorem.sentence()
-    });
-  }
-
-  return rows;
-}
-
 function AllFeatures() {
   const direction = useDirection();
-  const [rows, setRows] = useState(createRows);
+  const initialRows = Route.useLoaderData();
+  const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<string> => new Set());
 
   function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {

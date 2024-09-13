@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AllFeaturesImport } from './routes/AllFeatures'
 import { Route as IndexImport } from './routes/index'
 
 // Create Virtual Routes
@@ -38,7 +39,6 @@ const ColumnSpanningLazyImport = createFileRoute('/ColumnSpanning')()
 const ColumnGroupingLazyImport = createFileRoute('/ColumnGrouping')()
 const CellNavigationLazyImport = createFileRoute('/CellNavigation')()
 const AnimationLazyImport = createFileRoute('/Animation')()
-const AllFeaturesLazyImport = createFileRoute('/AllFeatures')()
 
 // Create/Update Routes
 
@@ -155,7 +155,7 @@ const AnimationLazyRoute = AnimationLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/Animation.lazy').then((d) => d.Route))
 
-const AllFeaturesLazyRoute = AllFeaturesLazyImport.update({
+const AllFeaturesRoute = AllFeaturesImport.update({
   path: '/AllFeatures',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/AllFeatures.lazy').then((d) => d.Route))
@@ -180,7 +180,7 @@ declare module '@tanstack/react-router' {
       id: '/AllFeatures'
       path: '/AllFeatures'
       fullPath: '/AllFeatures'
-      preLoaderRoute: typeof AllFeaturesLazyImport
+      preLoaderRoute: typeof AllFeaturesImport
       parentRoute: typeof rootRoute
     }
     '/Animation': {
@@ -323,7 +323,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/AllFeatures': typeof AllFeaturesLazyRoute
+  '/AllFeatures': typeof AllFeaturesRoute
   '/Animation': typeof AnimationLazyRoute
   '/CellNavigation': typeof CellNavigationLazyRoute
   '/ColumnGrouping': typeof ColumnGroupingLazyRoute
@@ -347,7 +347,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/AllFeatures': typeof AllFeaturesLazyRoute
+  '/AllFeatures': typeof AllFeaturesRoute
   '/Animation': typeof AnimationLazyRoute
   '/CellNavigation': typeof CellNavigationLazyRoute
   '/ColumnGrouping': typeof ColumnGroupingLazyRoute
@@ -372,7 +372,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/AllFeatures': typeof AllFeaturesLazyRoute
+  '/AllFeatures': typeof AllFeaturesRoute
   '/Animation': typeof AnimationLazyRoute
   '/CellNavigation': typeof CellNavigationLazyRoute
   '/ColumnGrouping': typeof ColumnGroupingLazyRoute
@@ -469,7 +469,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AllFeaturesLazyRoute: typeof AllFeaturesLazyRoute
+  AllFeaturesRoute: typeof AllFeaturesRoute
   AnimationLazyRoute: typeof AnimationLazyRoute
   CellNavigationLazyRoute: typeof CellNavigationLazyRoute
   ColumnGroupingLazyRoute: typeof ColumnGroupingLazyRoute
@@ -493,7 +493,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AllFeaturesLazyRoute: AllFeaturesLazyRoute,
+  AllFeaturesRoute: AllFeaturesRoute,
   AnimationLazyRoute: AnimationLazyRoute,
   CellNavigationLazyRoute: CellNavigationLazyRoute,
   ColumnGroupingLazyRoute: ColumnGroupingLazyRoute,
@@ -554,7 +554,7 @@ export const routeTree = rootRoute
       "filePath": "index.tsx"
     },
     "/AllFeatures": {
-      "filePath": "AllFeatures.lazy.tsx"
+      "filePath": "AllFeatures.tsx"
     },
     "/Animation": {
       "filePath": "Animation.lazy.tsx"
