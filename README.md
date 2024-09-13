@@ -23,25 +23,25 @@
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
 - Strictly typed with TypeScript
-- [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/#/common-features)>)
+- [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/#/CommonFeatures)>)
 - Light and dark mode support out of the box. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
-- [Frozen columns](https://adazzle.github.io/react-data-grid/#/common-features)
-- [Column resizing](https://adazzle.github.io/react-data-grid/#/common-features)
-- [Multi-column sorting](https://adazzle.github.io/react-data-grid/#/common-features)
+- [Frozen columns](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Column resizing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Multi-column sorting](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
   - Click on a sortable column header to toggle between its ascending/descending sort order
   - Ctrl+Click / Meta+Click to sort an additional column
-- [Column spanning](https://adazzle.github.io/react-data-grid/#/column-spanning)
-- [Column grouping](https://adazzle.github.io/react-data-grid/#/column-grouping)
-- [Row selection](https://adazzle.github.io/react-data-grid/#/common-features)
-- [Row grouping](https://adazzle.github.io/react-data-grid/#/row-grouping)
-- [Summary rows](https://adazzle.github.io/react-data-grid/#/common-features)
-- [Dynamic row heights](https://adazzle.github.io/react-data-grid/#/variable-row-height)
-- [No rows fallback](https://adazzle.github.io/react-data-grid/#/no-rows)
-- [Cell formatting](https://adazzle.github.io/react-data-grid/#/common-features)
-- [Cell editing](https://adazzle.github.io/react-data-grid/#/common-features)
-- [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/all-features)
-- [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/all-features)
-- [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/customizable-renderers)
+- [Column spanning](https://adazzle.github.io/react-data-grid/#/ColumnSpanning)
+- [Column grouping](https://adazzle.github.io/react-data-grid/#/ColumnGrouping)
+- [Row selection](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Row grouping](https://adazzle.github.io/react-data-grid/#/RowGrouping)
+- [Summary rows](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Dynamic row heights](https://adazzle.github.io/react-data-grid/#/VariableRowHeight)
+- [No rows fallback](https://adazzle.github.io/react-data-grid/#/NoRows)
+- [Cell formatting](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Cell editing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/AllFeatures)
+- [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/AllFeatures)
+- [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/CustomizableRenderers)
 - Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns, and the [`:dir` pseudo class](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir) is not supported
 
 ## Links
