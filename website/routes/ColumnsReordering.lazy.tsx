@@ -1,8 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 
 import DataGrid from '../../src';
 import type { Column, SortColumn } from '../../src';
-import type { Props } from './types';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/ColumnsReordering')({
+  component: ColumnsReordering
+});
 
 interface Row {
   readonly id: number;
@@ -64,7 +69,8 @@ const columns: Column<Row>[] = [
   }
 ];
 
-export default function ColumnsReordering({ direction }: Props) {
+function ColumnsReordering() {
+  const direction = useDirection();
   const [rows] = useState(createRows);
   const [columnsOrder, setColumnsOrder] = useState((): readonly number[] =>
     columns.map((_, index) => index)

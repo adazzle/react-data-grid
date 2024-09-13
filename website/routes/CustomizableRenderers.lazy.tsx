@@ -1,9 +1,14 @@
 import { useMemo, useState } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, RenderCheckboxProps, RenderSortStatusProps, SortColumn } from '../../src';
-import type { Props } from './types';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/CustomizableRenderers')({
+  component: CustomizableRenderers
+});
 
 const selectCellClassname = css`
   display: flex;
@@ -78,7 +83,8 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-export default function CustomizableRenderers({ direction }: Props) {
+function CustomizableRenderers() {
+  const direction = useDirection();
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
@@ -115,12 +121,23 @@ export default function CustomizableRenderers({ direction }: Props) {
   );
 }
 
-function renderCheckbox({ onChange, ...props }: RenderCheckboxProps) {
+function renderCheckbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
-  return <input type="checkbox" {...props} onChange={handleChange} />;
+  return (
+    <input
+      ref={(el) => {
+        if (el) {
+          el.indeterminate = indeterminate === true;
+        }
+      }}
+      type="checkbox"
+      {...props}
+      onChange={handleChange}
+    />
+  );
 }
 
 function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {

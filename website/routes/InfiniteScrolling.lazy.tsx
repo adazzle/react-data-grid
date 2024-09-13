@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import type { Props } from './types';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/InfiniteScrolling')({
+  component: InfiniteScrolling
+});
 
 const loadMoreRowsClassname = css`
   inline-size: 180px;
@@ -89,7 +94,8 @@ function loadMoreRows(newRowsCount: number, length: number): Promise<Row[]> {
   });
 }
 
-export default function InfiniteScrolling({ direction }: Props) {
+function InfiniteScrolling() {
+  const direction = useDirection();
   const [rows, setRows] = useState(() => createRows(50));
   const [isLoading, setIsLoading] = useState(false);
 

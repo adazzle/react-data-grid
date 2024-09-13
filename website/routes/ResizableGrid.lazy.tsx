@@ -1,7 +1,13 @@
+import { createLazyFileRoute } from '@tanstack/react-router';
+
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { renderCoordinates } from './renderers';
-import type { Props } from './types';
+import { renderCoordinates } from '../renderers';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/ResizableGrid')({
+  component: ResizableGrid
+});
 
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
@@ -17,7 +23,9 @@ for (let i = 0; i < 50; i++) {
   });
 }
 
-export default function ResizableGrid({ direction }: Props) {
+function ResizableGrid() {
+  const direction = useDirection();
+
   return (
     <DataGrid
       columns={columns}

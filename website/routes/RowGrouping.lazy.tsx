@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
-import type { Props } from './types';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/RowGrouping')({
+  component: RowGrouping
+});
 
 const groupingClassname = css`
   display: flex;
@@ -140,7 +145,8 @@ function createRows(): readonly Row[] {
 
 const options = ['country', 'year', 'sport', 'athlete'] as const;
 
-export default function RowGrouping({ direction }: Props) {
+function RowGrouping() {
+  const direction = useDirection();
   const [rows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
   const [selectedOptions, setSelectedOptions] = useState<readonly string[]>([

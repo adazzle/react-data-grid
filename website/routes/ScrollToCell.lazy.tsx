@@ -1,10 +1,15 @@
 import { useRef, useState } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column, DataGridHandle } from '../../src';
-import { renderCoordinates } from './renderers';
-import type { Props } from './types';
+import { renderCoordinates } from '../renderers';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/ScrollToCell')({
+  component: ScrollToCell
+});
 
 type Row = number;
 const rows: readonly Row[] = Array.from({ length: 200 }, (_, i) => i);
@@ -27,7 +32,8 @@ const flexClassname = css`
   margin-block-end: 5px;
 `;
 
-export default function ScrollToCell({ direction }: Props) {
+function ScrollToCell() {
+  const direction = useDirection();
   const [idx, setIdx] = useState<number | undefined>(10);
   const [rowIdx, setRowIdx] = useState<number | undefined>(10);
   const gridRef = useRef<DataGridHandle>(null);

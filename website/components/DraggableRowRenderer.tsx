@@ -2,7 +2,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { Row, type RenderRowProps } from '../../../src';
+import { Row, type RenderRowProps } from '../../src';
 
 const rowDraggingClassname = css`
   opacity: 0.5;

@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
-import { renderAvatar, renderDropdown } from './renderers';
-import type { Props } from './types';
+import { textEditorClassname } from '../../src/editors/textEditor';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/AllFeatures')({
+  component: AllFeatures
+});
 
 const highlightClassname = css`
   .rdg-cell {
@@ -18,7 +23,7 @@ const highlightClassname = css`
   }
 `;
 
-export interface Row {
+interface Row {
   id: string;
   avatar: string;
   email: string;
@@ -39,6 +44,15 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
+const avatarClassname = css`
+  margin: auto;
+  background-size: 100%;
+  block-size: 28px;
+  inline-size: 28px;
+`;
+
+const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'] as const;
+
 const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
@@ -53,14 +67,31 @@ const columns: readonly Column<Row>[] = [
     name: 'Avatar',
     width: 40,
     resizable: true,
-    renderCell: renderAvatar
+    renderCell({ row }) {
+      return <div className={avatarClassname} style={{ backgroundImage: `url(${row.avatar})` }} />;
+    }
   },
   {
     key: 'title',
     name: 'Title',
     width: 200,
     resizable: true,
-    renderEditCell: renderDropdown
+    renderEditCell({ row, onRowChange }) {
+      return (
+        <select
+          className={textEditorClassname}
+          value={row.title}
+          onChange={(event) => onRowChange({ ...row, title: event.target.value }, true)}
+          autoFocus
+        >
+          {titles.map((title) => (
+            <option key={title} value={title}>
+              {title}
+            </option>
+          ))}
+        </select>
+      );
+    }
   },
   {
     key: 'firstName',
@@ -161,7 +192,8 @@ function createRows(): Row[] {
   return rows;
 }
 
-export default function AllFeatures({ direction }: Props) {
+function AllFeatures() {
+  const direction = useDirection();
   const [rows, setRows] = useState(createRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<string> => new Set());
 
