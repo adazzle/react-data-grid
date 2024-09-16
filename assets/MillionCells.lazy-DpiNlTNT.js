@@ -1,0 +1,2 @@
+import{c as n,u as i,r as l,j as a}from"./index-Dpt-CRAy.js";import{D as c}from"./DataGrid-27hVbem3.js";import{r as m}from"./renderCoordinates-BnaeBmsm.js";const y=n("/MillionCells")({component:p}),u=[...Array(1e3).keys()];function p(){const t=i(),s=l.useMemo(()=>{const r=[];for(let e=0;e<1e3;e++){const o=String(e);r.push({key:o,name:o,frozen:e<5,width:80,resizable:!0,renderCell:m})}return r},[]);return a.jsx(c,{columns:s,rows:u,rowHeight:22,className:"fill-grid",direction:t})}export{y as Route};
+//# sourceMappingURL=MillionCells.lazy-DpiNlTNT.js.map

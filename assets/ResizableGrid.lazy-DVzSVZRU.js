@@ -1,2 +1,0 @@
-import{c as s,u as t,j as i}from"./index-P3rv_nSE.js";import{D as n}from"./DataGrid-Ds4rVw-T.js";import{r as a}from"./renderCoordinates-BnaeBmsm.js";const p=s("/ResizableGrid")({component:l}),c=[...Array(100).keys()],o=[];for(let e=0;e<50;e++){const r=String(e);o.push({key:r,name:r,renderCell:a})}function l(){const e=t();return i.jsx(n,{columns:o,rows:c,className:"fill-grid",style:{resize:"both"},direction:e})}export{p as Route};
-//# sourceMappingURL=ResizableGrid.lazy-DVzSVZRU.js.map
