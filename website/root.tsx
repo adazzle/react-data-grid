@@ -17,6 +17,7 @@ const router = createRouter({
   caseSensitive: true,
   defaultErrorComponent: ErrorComponent,
   defaultNotFoundComponent: NotFound,
+  defaultPendingMinMs: 0,
   defaultPreload: 'intent'
 });
 
