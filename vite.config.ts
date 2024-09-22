@@ -1,69 +1,60 @@
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
+import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
-import type { BrowserCommand } from 'vitest/node';
 
 const isCI = process.env.CI === 'true';
+const isTest = process.env.NODE_ENV === 'test';
 
-// TODO: remove when `userEvent.pointer` is supported
-const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeBy) => {
-  const page = context.page;
-  const frame = await context.frame();
-  const resizeHandle = frame.locator('[role="columnheader"][aria-colindex="2"]  div');
-  const { x, y } = (await resizeHandle.boundingBox())!;
-  await resizeHandle.hover({
-    position: { x: 5, y: 5 }
-  });
-  await page.mouse.down();
-  await page.mouse.move(x + resizeBy + 5, y);
-  await page.mouse.up();
-};
-
-export default defineConfig({
-  base: isCI ? '/react-data-grid/' : '/',
+export default defineConfig(({ command }) => ({
+  base: '/react-data-grid/',
   cacheDir: '.cache/vite',
+  clearScreen: false,
   build: {
-    emptyOutDir: true,
-    sourcemap: true
+    target: browserslist().map((version) => version.replace(' ', '')),
+    modulePreload: { polyfill: false },
+    sourcemap: true,
+    reportCompressedSize: false
+  },
+  json: {
+    stringify: true
   },
   plugins: [
+    !isTest &&
+      TanStackRouterVite({
+        generatedRouteTree: 'website/routeTree.gen.ts',
+        routesDirectory: 'website/routes'
+      }),
     react({
-      exclude: ['./.cache/**/*'],
-      babel: {
-        babelrc: false,
-        configFile: false,
-        plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
-      }
+      exclude: ['./.cache/**/*']
     }),
     wyw({
       exclude: ['./.cache/**/*'],
-      preprocessor: 'none'
+      preprocessor: 'none',
+      displayName: command === 'serve'
     })
   ],
   server: {
     open: true
   },
+  optimizeDeps: {
+    include: ['@vitest/coverage-v8/browser']
+  },
   test: {
-    root: '.',
     globals: true,
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
       enabled: isCI,
-      include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
-      reporter: ['text', 'json']
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['json']
     },
     testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
-    browser: {
-      enabled: true,
-      name: 'chromium',
-      provider: 'playwright',
-      commands: { resizeColumn },
-      viewport: { width: 1920, height: 1080 }
-    },
+    reporters: ['basic'],
     restoreMocks: true,
     sequence: {
       shuffle: true
     }
   }
-});
+}));
