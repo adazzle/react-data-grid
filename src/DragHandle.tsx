@@ -39,7 +39,7 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   maxColIdx: number;
   isLastRow: boolean;
   selectedPosition: SelectCellState;
-  latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
+  latestDraggedOverRowIdx: React.RefObject<number | undefined>;
   isCellEditable: (position: Position) => boolean;
   onClick: () => void;
   onFill: (event: FillEvent<R>) => R;
