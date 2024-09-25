@@ -1,10 +1,15 @@
 import { useMemo } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { renderCoordinates } from './renderers';
-import type { Props } from './types';
+import { renderCoordinates } from '../renderers';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/ColumnSpanning')({
+  component: ColumnSpanning
+});
 
 type Row = number;
 const rows: readonly Row[] = [...Array(100).keys()];
@@ -15,7 +20,9 @@ const colSpanClassname = css`
   text-align: center;
 `;
 
-export default function ColumnSpanning({ direction }: Props) {
+function ColumnSpanning() {
+  const direction = useDirection();
+
   const columns = useMemo((): readonly Column<Row>[] => {
     const columns: Column<Row>[] = [];
 

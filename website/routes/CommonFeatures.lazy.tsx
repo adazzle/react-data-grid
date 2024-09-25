@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid, {
@@ -12,8 +13,12 @@ import DataGrid, {
 } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
-import type { Props } from './types';
-import { exportToCsv, exportToPdf } from './exportUtils';
+import { useDirection } from '../directionContext';
+import { exportToCsv, exportToPdf } from '../exportUtils';
+
+export const Route = createLazyFileRoute('/CommonFeatures')({
+  component: CommonFeatures
+});
 
 const toolbarClassname = css`
   display: flex;
@@ -300,7 +305,8 @@ function getComparator(sortColumn: string): Comparator {
   }
 }
 
-export default function CommonFeatures({ direction }: Props) {
+function CommonFeatures() {
+  const direction = useDirection();
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());

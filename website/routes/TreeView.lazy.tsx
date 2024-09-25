@@ -1,10 +1,15 @@
 import { useMemo, useReducer, useState } from 'react';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import { CellExpanderFormatter, ChildRowDeleteButton } from './components';
-import type { Props } from './types';
+import { CellExpanderFormatter, ChildRowDeleteButton } from '../components';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/TreeView')({
+  component: TreeView
+});
 
 const gridClassname = css`
   block-size: 600px;
@@ -117,7 +122,8 @@ function reducer(rows: Row[], { type, id }: Action): Row[] {
 
 const defaultRows = createRows();
 
-export default function TreeView({ direction }: Props) {
+function TreeView() {
+  const direction = useDirection();
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
 

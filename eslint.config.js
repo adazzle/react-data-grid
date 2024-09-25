@@ -267,6 +267,7 @@ export default [
       'react/forbid-elements': 0,
       'react/forbid-foreign-prop-types': 0,
       'react/forbid-prop-types': 0,
+      'react/forward-ref-uses-ref': 1,
       'react/function-component-definition': [
         1,
         {
@@ -439,6 +440,7 @@ export default [
       '@typescript-eslint/no-base-to-string': 0,
       '@typescript-eslint/no-confusing-non-null-assertion': 0,
       '@typescript-eslint/no-confusing-void-expression': [1, { ignoreArrowShorthand: true }],
+      '@typescript-eslint/no-deprecated': 1,
       '@typescript-eslint/no-duplicate-enum-values': 1,
       '@typescript-eslint/no-duplicate-type-constituents': 1,
       '@typescript-eslint/no-dynamic-delete': 0,

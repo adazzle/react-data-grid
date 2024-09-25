@@ -1,11 +1,16 @@
 import { useLayoutEffect, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
 import type { Column } from '../../src';
-import type { Props } from './types';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/ContextMenu')({
+  component: ContextMenuDemo
+});
 
 const contextMenuClassname = css`
   position: absolute;
@@ -49,7 +54,8 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-export default function ContextMenuDemo({ direction }: Props) {
+function ContextMenuDemo() {
+  const direction = useDirection();
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
   const [contextMenuProps, setContextMenuProps] = useState<{

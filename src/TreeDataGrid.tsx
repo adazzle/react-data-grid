@@ -320,6 +320,7 @@ export function TreeDataGrid<R, SR, K extends Key>({
     }
 
     // Prevent copy/paste on group rows
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
       event.preventGridDefault();
     }

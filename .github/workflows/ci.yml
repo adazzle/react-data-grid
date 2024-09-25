@@ -3,11 +3,7 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '**.md'
   pull_request:
-    paths-ignore:
-      - '**.md'
 
 jobs:
   test:
@@ -52,8 +48,8 @@ jobs:
           git worktree add gh-pages gh-pages
           cd gh-pages
           git rm -r .
-          git checkout gh-pages -- old
           mv ../dist/* .
+          touch .nojekyll
           git add .
           git commit -m "gh-pages deployment" || echo "Nothing to commit"
           git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git

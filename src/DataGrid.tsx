@@ -596,6 +596,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     const isRowEvent = isTreeGrid && event.target === focusSinkRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     const { keyCode } = event;
 
     if (

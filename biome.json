@@ -6,7 +6,8 @@
       "./coverage/**/*",
       "./dist/**/*",
       "./lib/**/*",
-      "./node_modules/**/*"
+      "./node_modules/**/*",
+      "./website/routeTree.gen.ts"
     ]
   },
   "formatter": {

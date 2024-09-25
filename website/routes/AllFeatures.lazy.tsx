@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { faker } from '@faker-js/faker';
+import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
 import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
-import { renderAvatar, renderDropdown } from './renderers';
-import type { Props } from './types';
+import { textEditorClassname } from '../../src/editors/textEditor';
+import { useDirection } from '../directionContext';
+
+export const Route = createLazyFileRoute('/AllFeatures')({
+  component: AllFeatures
+});
 
 const highlightClassname = css`
   .rdg-cell {
@@ -39,6 +43,15 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
+const avatarClassname = css`
+  margin: auto;
+  background-size: 100%;
+  block-size: 28px;
+  inline-size: 28px;
+`;
+
+const titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'] as const;
+
 const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
@@ -53,14 +66,31 @@ const columns: readonly Column<Row>[] = [
     name: 'Avatar',
     width: 40,
     resizable: true,
-    renderCell: renderAvatar
+    renderCell({ row }) {
+      return <div className={avatarClassname} style={{ backgroundImage: `url(${row.avatar})` }} />;
+    }
   },
   {
     key: 'title',
     name: 'Title',
     width: 200,
     resizable: true,
-    renderEditCell: renderDropdown
+    renderEditCell({ row, onRowChange }) {
+      return (
+        <select
+          className={textEditorClassname}
+          value={row.title}
+          onChange={(event) => onRowChange({ ...row, title: event.target.value }, true)}
+          autoFocus
+        >
+          {titles.map((title) => (
+            <option key={title} value={title}>
+              {title}
+            </option>
+          ))}
+        </select>
+      );
+    }
   },
   {
     key: 'firstName',
@@ -136,33 +166,10 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-function createRows(): Row[] {
-  const rows: Row[] = [];
-
-  for (let i = 0; i < 2000; i++) {
-    rows.push({
-      id: `id_${i}`,
-      avatar: faker.image.avatar(),
-      email: faker.internet.email(),
-      title: faker.person.prefix(),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      street: faker.location.street(),
-      zipCode: faker.location.zipCode(),
-      date: faker.date.past().toLocaleDateString(),
-      bs: faker.company.buzzPhrase(),
-      catchPhrase: faker.company.catchPhrase(),
-      companyName: faker.company.name(),
-      words: faker.lorem.words(),
-      sentence: faker.lorem.sentence()
-    });
-  }
-
-  return rows;
-}
-
-export default function AllFeatures({ direction }: Props) {
-  const [rows, setRows] = useState(createRows);
+function AllFeatures() {
+  const direction = useDirection();
+  const initialRows = Route.useLoaderData();
+  const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<string> => new Set());
 
   function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
