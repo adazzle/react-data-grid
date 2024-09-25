@@ -32,6 +32,11 @@ const cellDragHandleFrozenClassname = css`
 
 const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;
 
+// TODO: replace with RefObject once we drop support for React 18
+interface LatestDraggedOverRowIdxRef {
+  readonly current: number | undefined;
+}
+
 interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange'> {
   gridRowStart: number;
   column: CalculatedColumn<R, SR>;
@@ -39,7 +44,7 @@ interface Props<R, SR> extends Pick<DataGridProps<R, SR>, 'rows' | 'onRowsChange
   maxColIdx: number;
   isLastRow: boolean;
   selectedPosition: SelectCellState;
-  latestDraggedOverRowIdx: React.MutableRefObject<number | undefined>;
+  latestDraggedOverRowIdx: LatestDraggedOverRowIdxRef;
   isCellEditable: (position: Position) => boolean;
   onClick: () => void;
   onFill: (event: FillEvent<R>) => R;

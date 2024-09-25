@@ -591,6 +591,7 @@ function DataGrid<R, SR, K extends Key>(
     const isRowEvent = isTreeGrid && event.target === focusSinkRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     const { keyCode } = event;
 
     if (
