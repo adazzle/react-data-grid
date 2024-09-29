@@ -431,7 +431,7 @@ function DataGrid<R, SR, K extends Key>(
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToColumn(idx: number) {
-      scrollToCell({ idx });
+      scrollToCell({ idx, rowIdx: lastSelectedRowIdx.current || 0 });
     },
     scrollToRow(rowIdx: number) {
       const { current } = gridRef;
