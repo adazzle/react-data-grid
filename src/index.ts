@@ -9,7 +9,7 @@ export * from './cellRenderers';
 export { default as textEditor } from './editors/textEditor';
 export { default as renderHeaderCell } from './renderHeaderCell';
 export { renderSortIcon, renderSortPriority } from './sortStatus';
-export { useRowSelection } from './hooks';
+export { useRowSelection, useHeaderRowSelection } from './hooks';
 export type {
   Column,
   Position,
@@ -26,6 +26,7 @@ export type {
   CellRendererProps,
   RenderRowProps,
   RowsChangeData,
+  SelectHeaderRowEvent,
   SelectRowEvent,
   FillEvent,
   CopyEvent,
