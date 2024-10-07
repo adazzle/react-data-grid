@@ -94,7 +94,7 @@ function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return <DataGrid {...props} sortColumns={sortColumns} onSortColumnsChange={setSortColumns} />;
 }
 
-function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<Row>) {
+function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
     <DataGridDefaultRenderersProvider
       value={{
