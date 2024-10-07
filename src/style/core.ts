@@ -14,10 +14,7 @@ const lightTheme = `
   --rdg-row-selected-background-color: hsl(207deg 76% 92%);
   --rdg-row-selected-hover-background-color: hsl(207deg 76% 88%);
 
-  --rdg-checkbox-color: hsl(207deg 100% 29%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
-  --rdg-checkbox-disabled-border-color: #ccc;
-  --rdg-checkbox-disabled-background-color: #ddd;
 `;
 
 const darkTheme = `
@@ -31,10 +28,7 @@ const darkTheme = `
   --rdg-row-selected-background-color: hsl(207deg 76% 42%);
   --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);
 
-  --rdg-checkbox-color: hsl(207deg 100% 79%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
-  --rdg-checkbox-disabled-border-color: #000;
-  --rdg-checkbox-disabled-background-color: #333;
 `;
 
 const root = css`
@@ -50,11 +44,16 @@ const root = css`
     ${lightTheme}
     --rdg-selection-color: #66afe9;
     --rdg-font-size: 14px;
-    --rdg-cell-frozen-box-shadow: calc(2px * var(--rdg-sign)) 0 5px -2px rgba(136, 136, 136, 0.3);
+    --rdg-cell-frozen-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
+
+    &:dir(rtl) {
+      --rdg-cell-frozen-box-shadow: -2px 0 5px -2px rgba(136, 136, 136, 0.3);
+    }
 
     display: grid;
 
     color-scheme: var(--rdg-color-scheme, light dark);
+    accent-color: light-dark(hsl(207deg 100% 29%), hsl(207deg 100% 79%));
 
     /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
     /* We set a stacking context so internal elements don't render on top of external elements. */

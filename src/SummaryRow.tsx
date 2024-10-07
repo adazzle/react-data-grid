@@ -30,8 +30,6 @@ interface SummaryRowProps<R, SR> extends SharedRenderRowProps<R, SR> {
 
 const summaryRow = css`
   @layer rdg.SummaryRow {
-    line-height: var(--rdg-summary-row-height);
-
     > .${cell} {
       position: sticky;
     }
@@ -115,4 +113,4 @@ function SummaryRow<R, SR>({
   );
 }
 
-export default memo(SummaryRow) as <R, SR>(props: SummaryRowProps<R, SR>) => JSX.Element;
+export default memo(SummaryRow) as <R, SR>(props: SummaryRowProps<R, SR>) => React.JSX.Element;

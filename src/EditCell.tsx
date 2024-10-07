@@ -56,7 +56,7 @@ export default function EditCell<R, SR>({
   onKeyDown,
   navigate
 }: EditCellProps<R, SR>) {
-  const frameRequestRef = useRef<number | undefined>();
+  const frameRequestRef = useRef<number | undefined>(undefined);
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
 
   // We need to prevent the `useEffect` from cleaning up between re-renders,
@@ -150,6 +150,7 @@ export default function EditCell<R, SR>({
           {column.renderEditCell({
             column,
             row,
+            rowIdx,
             onRowChange: onEditorRowChange,
             onClose
           })}

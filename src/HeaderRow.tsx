@@ -28,7 +28,6 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
 const headerRow = css`
   @layer rdg.HeaderRow {
     display: contents;
-    line-height: var(--rdg-header-row-height);
     background-color: var(--rdg-header-background-color);
     font-weight: bold;
 
@@ -103,4 +102,4 @@ function HeaderRow<R, SR, K extends React.Key>({
 
 export default memo(HeaderRow) as <R, SR, K extends React.Key>(
   props: HeaderRowProps<R, SR, K>
-) => JSX.Element;
+) => React.JSX.Element;

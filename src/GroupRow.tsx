@@ -1,8 +1,8 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { RowSelectionProvider } from './hooks';
+import { RowSelectionProvider, type RowSelectionContextValue } from './hooks';
 import { getRowStyle } from './utils';
 import type { BaseRenderRowProps, GroupRow } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
@@ -40,9 +40,9 @@ function GroupedRow<R, SR>({
   isRowSelected,
   selectCell,
   gridRowStart,
-  height,
   groupBy,
   toggleGroup,
+  isRowSelectionDisabled,
   ...props
 }: GroupRowRendererProps<R, SR>) {
   // Select is always the first column
@@ -52,8 +52,13 @@ function GroupedRow<R, SR>({
     selectCell({ rowIdx, idx: -1 });
   }
 
+  const selectionValue = useMemo(
+    (): RowSelectionContextValue => ({ isRowSelectionDisabled: false, isRowSelected }),
+    [isRowSelected]
+  );
+
   return (
-    <RowSelectionProvider value={isRowSelected}>
+    <RowSelectionProvider value={selectionValue}>
       <div
         role="row"
         aria-level={row.level + 1} // aria-level is 1-based
@@ -68,7 +73,7 @@ function GroupedRow<R, SR>({
           className
         )}
         onClick={handleSelectGroup}
-        style={getRowStyle(gridRowStart, height)}
+        style={getRowStyle(gridRowStart)}
         {...props}
       >
         {viewportColumns.map((column) => (
@@ -91,4 +96,6 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(props: GroupRowRendererProps<R, SR>) => JSX.Element;
+export default memo(GroupedRow) as <R, SR>(
+  props: GroupRowRendererProps<R, SR>
+) => React.JSX.Element;

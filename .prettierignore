@@ -1,3 +1,3 @@
 *.js
-*.cjs
 *.json
+/website/routeTree.gen.ts

@@ -1,50 +1,60 @@
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
+import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 
 const isCI = process.env.CI === 'true';
 const isTest = process.env.NODE_ENV === 'test';
 
-export default defineConfig({
-  base: isCI ? '/react-data-grid/' : '/',
+export default defineConfig(({ command }) => ({
+  base: '/react-data-grid/',
+  cacheDir: '.cache/vite',
+  clearScreen: false,
   build: {
-    emptyOutDir: true,
-    sourcemap: true
+    target: browserslist().map((version) => version.replace(' ', '')),
+    modulePreload: { polyfill: false },
+    sourcemap: true,
+    reportCompressedSize: false
   },
-  resolve: {
-    alias: {
-      lodash: 'lodash-es'
-    }
+  json: {
+    stringify: true
   },
   plugins: [
+    !isTest &&
+      TanStackRouterVite({
+        generatedRouteTree: 'website/routeTree.gen.ts',
+        routesDirectory: 'website/routes'
+      }),
     react({
-      babel: {
-        babelrc: false,
-        configFile: false,
-        plugins: [['optimize-clsx', { functionNames: ['getCellClassname'] }]]
-      }
+      exclude: ['./.cache/**/*']
     }),
-    !isTest && wyw({ preprocessor: 'none' })
+    wyw({
+      exclude: ['./.cache/**/*'],
+      preprocessor: 'none',
+      displayName: command === 'serve'
+    })
   ],
   server: {
     open: true
   },
+  optimizeDeps: {
+    include: ['@vitest/coverage-v8/browser']
+  },
   test: {
-    root: '.',
-    environment: 'jsdom',
     globals: true,
     coverage: {
       provider: 'v8',
       enabled: isCI,
-      include: ['src/**/*.{ts,tsx}', '!src/types.ts'],
-      reporter: ['text', 'json']
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['json']
     },
-    pool: 'forks',
     testTimeout: isCI ? 10000 : 5000,
     setupFiles: ['test/setup.ts'],
+    reporters: ['basic'],
     restoreMocks: true,
     sequence: {
       shuffle: true
     }
   }
-});
+}));

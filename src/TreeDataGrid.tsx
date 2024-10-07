@@ -25,7 +25,7 @@ import { defaultRenderRow } from './Row';
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   extends Omit<
     DataGridProps<R, SR, K>,
-    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill'
+    'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill' | 'isRowSelectionDisabled'
   > {
   columns: readonly Column<NoInfer<R>, NoInfer<SR>>[];
   rowHeight?: Maybe<number | ((args: RowHeightArgs<NoInfer<R>>) => number)>;
@@ -323,6 +323,7 @@ function TreeDataGrid<R, SR, K extends Key>(
     }
 
     // Prevent copy/paste on group rows
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
       event.preventGridDefault();
     }
@@ -439,4 +440,4 @@ function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
 
 export default forwardRef(TreeDataGrid) as <R, SR = unknown, K extends Key = Key>(
   props: TreeDataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => JSX.Element;
+) => React.JSX.Element;
