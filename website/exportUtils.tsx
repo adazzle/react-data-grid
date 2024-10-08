@@ -8,11 +8,11 @@ export function exportToCsv(gridEl: HTMLDivElement, fileName: string) {
 }
 
 export async function exportToPdf(gridEl: HTMLDivElement, fileName: string) {
+  const { head, body, foot } = getGridContent(gridEl);
   const [{ jsPDF }, autoTable] = await Promise.all([
     import('jspdf'),
     (await import('jspdf-autotable')).default
   ]);
-  const { head, body, foot } = getGridContent(gridEl);
   const doc = new jsPDF({
     orientation: 'l',
     unit: 'px'

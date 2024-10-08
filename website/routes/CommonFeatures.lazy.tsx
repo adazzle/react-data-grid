@@ -1,5 +1,5 @@
-import { useDeferredValue, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useMemo, useRef, useState } from 'react';
+import { createPortal, flushSync } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
@@ -13,7 +13,6 @@ import DataGrid, {
   type SortColumn
 } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
-import { useLayoutEffect } from '../../src/hooks/useLayoutEffect';
 import type { Direction } from '../../src/types';
 import { useDirection } from '../directionContext';
 import { exportToCsv, exportToPdf } from '../exportUtils';
@@ -312,7 +311,7 @@ function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
-  const [exportTo, setExportTo] = useState<'PDF' | 'CSV' | undefined>(undefined);
+  const [isExporting, setIsExporting] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
 
   const countries = useMemo((): readonly string[] => {
@@ -346,65 +345,62 @@ function CommonFeatures() {
     });
   }, [rows, sortColumns]);
 
-  const deferredExportTo = useDeferredValue(exportTo);
+  function handleExportToCsv() {
+    flushSync(() => {
+      setIsExporting(true);
+    });
 
-  useLayoutEffect(() => {
-    const gridEl = gridRef.current!.element!;
-    if (deferredExportTo === 'CSV') {
-      exportToCsv(gridEl, 'CommonFeatures.csv');
-      setExportTo(undefined);
-    } else if (deferredExportTo === 'PDF') {
-      exportToPdf(gridEl, 'CommonFeatures.pdf');
-      setExportTo(undefined);
-    }
-  }, [deferredExportTo]);
+    exportToCsv(gridRef.current!.element!, 'CommonFeatures.csv');
+    setIsExporting(false);
+  }
+
+  function handleExportToPdf() {
+    flushSync(() => {
+      setIsExporting(true);
+    });
+
+    exportToPdf(gridRef.current!.element!, 'CommonFeatures.pdf');
+    setIsExporting(false);
+  }
+
+  const gridElement = (
+    <DataGrid
+      ref={gridRef}
+      rowKeyGetter={rowKeyGetter}
+      columns={columns}
+      rows={sortedRows}
+      defaultColumnOptions={{
+        sortable: true,
+        resizable: true
+      }}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      onRowsChange={setRows}
+      sortColumns={sortColumns}
+      onSortColumnsChange={setSortColumns}
+      topSummaryRows={summaryRows}
+      bottomSummaryRows={summaryRows}
+      className="fill-grid"
+      direction={direction}
+      enableVirtualization={!isExporting}
+    />
+  );
 
   return (
     <>
       <div className={toolbarClassname}>
-        <ExportButton isExporting={exportTo === 'CSV'} onExport={() => setExportTo('CSV')}>
-          Export to CSV
-        </ExportButton>
-        <ExportButton isExporting={exportTo === 'PDF'} onExport={() => setExportTo('PDF')}>
-          Export to PDF
-        </ExportButton>
+        <ExportButton onExport={handleExportToCsv}>Export to CSV</ExportButton>
+        <ExportButton onExport={handleExportToPdf}>Export to PDF</ExportButton>
       </div>
-      <DataGrid
-        ref={gridRef}
-        rowKeyGetter={rowKeyGetter}
-        columns={columns}
-        rows={sortedRows}
-        defaultColumnOptions={{
-          sortable: true,
-          resizable: true
-        }}
-        selectedRows={selectedRows}
-        onSelectedRowsChange={setSelectedRows}
-        onRowsChange={setRows}
-        sortColumns={sortColumns}
-        onSortColumnsChange={setSortColumns}
-        topSummaryRows={summaryRows}
-        bottomSummaryRows={summaryRows}
-        className="fill-grid"
-        direction={direction}
-        enableVirtualization={deferredExportTo === undefined}
-      />
+      {gridElement}
     </>
   );
 }
 
-function ExportButton({
-  isExporting,
-  onExport,
-  children
-}: {
-  isExporting: boolean;
-  onExport: () => void;
-  children: React.ReactNode;
-}) {
+function ExportButton({ onExport, children }: { onExport: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" disabled={isExporting} onClick={onExport}>
-      {isExporting ? 'Exporting' : children}
+    <button type="button" onClick={onExport}>
+      {children}
     </button>
   );
 }
