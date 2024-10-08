@@ -1,13 +1,5 @@
-import { cloneElement } from 'react';
-import type { ReactElement } from 'react';
-
-import type { DataGridProps } from '../src';
-
-export async function exportToCsv<R, SR>(
-  gridElement: ReactElement<DataGridProps<R, SR>>,
-  fileName: string
-) {
-  const { head, body, foot } = await getGridContent(gridElement);
+export function exportToCsv(gridEl: HTMLDivElement, fileName: string) {
+  const { head, body, foot } = getGridContent(gridEl);
   const content = [...head, ...body, ...foot]
     .map((cells) => cells.map(serialiseCellValue).join(','))
     .join('\n');
@@ -15,15 +7,12 @@ export async function exportToCsv<R, SR>(
   downloadFile(fileName, new Blob([content], { type: 'text/csv;charset=utf-8;' }));
 }
 
-export async function exportToPdf<R, SR>(
-  gridElement: ReactElement<DataGridProps<R, SR>>,
-  fileName: string
-) {
-  const [{ jsPDF }, autoTable, { head, body, foot }] = await Promise.all([
+export async function exportToPdf(gridEl: HTMLDivElement, fileName: string) {
+  const [{ jsPDF }, autoTable] = await Promise.all([
     import('jspdf'),
-    (await import('jspdf-autotable')).default,
-    await getGridContent(gridElement)
+    (await import('jspdf-autotable')).default
   ]);
+  const { head, body, foot } = getGridContent(gridEl);
   const doc = new jsPDF({
     orientation: 'l',
     unit: 'px'
@@ -40,15 +29,7 @@ export async function exportToPdf<R, SR>(
   doc.save(fileName);
 }
 
-async function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, SR>>) {
-  const { renderToStaticMarkup } = await import('react-dom/server');
-  const grid = document.createElement('div');
-  grid.innerHTML = renderToStaticMarkup(
-    cloneElement(gridElement, {
-      enableVirtualization: false
-    })
-  );
-
+function getGridContent(gridEl: HTMLDivElement) {
   return {
     head: getRows('.rdg-header-row'),
     body: getRows('.rdg-row:not(.rdg-summary-row)'),
@@ -56,7 +37,7 @@ async function getGridContent<R, SR>(gridElement: ReactElement<DataGridProps<R, 
   };
 
   function getRows(selector: string) {
-    return Array.from(grid.querySelectorAll<HTMLDivElement>(selector)).map((gridRow) => {
+    return Array.from(gridEl.querySelectorAll<HTMLDivElement>(selector)).map((gridRow) => {
       return Array.from(gridRow.querySelectorAll<HTMLDivElement>('.rdg-cell')).map(
         (gridCell) => gridCell.innerText
       );

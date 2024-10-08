@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useDeferredValue, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { createLazyFileRoute } from '@tanstack/react-router';
@@ -9,9 +9,11 @@ import DataGrid, {
   SelectColumn,
   textEditor,
   type Column,
+  type DataGridHandle,
   type SortColumn
 } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
+import { useLayoutEffect } from '../../src/hooks/useLayoutEffect';
 import type { Direction } from '../../src/types';
 import { useDirection } from '../directionContext';
 import { exportToCsv, exportToPdf } from '../exportUtils';
@@ -310,6 +312,8 @@ function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
+  const [exportTo, setExportTo] = useState<'PDF' | 'CSV' | undefined>(undefined);
+  const gridRef = useRef<DataGridHandle>(null);
 
   const countries = useMemo((): readonly string[] => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
@@ -342,61 +346,65 @@ function CommonFeatures() {
     });
   }, [rows, sortColumns]);
 
-  const gridElement = (
-    <DataGrid
-      rowKeyGetter={rowKeyGetter}
-      columns={columns}
-      rows={sortedRows}
-      defaultColumnOptions={{
-        sortable: true,
-        resizable: true
-      }}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      onRowsChange={setRows}
-      sortColumns={sortColumns}
-      onSortColumnsChange={setSortColumns}
-      topSummaryRows={summaryRows}
-      bottomSummaryRows={summaryRows}
-      className="fill-grid"
-      direction={direction}
-    />
-  );
+  const deferredExportTo = useDeferredValue(exportTo);
+
+  useLayoutEffect(() => {
+    const gridEl = gridRef.current!.element!;
+    if (deferredExportTo === 'CSV') {
+      exportToCsv(gridEl, 'CommonFeatures.csv');
+      setExportTo(undefined);
+    } else if (deferredExportTo === 'PDF') {
+      exportToPdf(gridEl, 'CommonFeatures.pdf');
+      setExportTo(undefined);
+    }
+  }, [deferredExportTo]);
 
   return (
     <>
       <div className={toolbarClassname}>
-        <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
+        <ExportButton isExporting={exportTo === 'CSV'} onExport={() => setExportTo('CSV')}>
           Export to CSV
         </ExportButton>
-        <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
+        <ExportButton isExporting={exportTo === 'PDF'} onExport={() => setExportTo('PDF')}>
           Export to PDF
         </ExportButton>
       </div>
-      {gridElement}
+      <DataGrid
+        ref={gridRef}
+        rowKeyGetter={rowKeyGetter}
+        columns={columns}
+        rows={sortedRows}
+        defaultColumnOptions={{
+          sortable: true,
+          resizable: true
+        }}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        onRowsChange={setRows}
+        sortColumns={sortColumns}
+        onSortColumnsChange={setSortColumns}
+        topSummaryRows={summaryRows}
+        bottomSummaryRows={summaryRows}
+        className="fill-grid"
+        direction={direction}
+        enableVirtualization={deferredExportTo === undefined}
+      />
     </>
   );
 }
 
 function ExportButton({
+  isExporting,
   onExport,
   children
 }: {
-  onExport: () => Promise<unknown>;
+  isExporting: boolean;
+  onExport: () => void;
   children: React.ReactNode;
 }) {
-  const [exporting, setExporting] = useState(false);
   return (
-    <button
-      type="button"
-      disabled={exporting}
-      onClick={async () => {
-        setExporting(true);
-        await onExport();
-        setExporting(false);
-      }}
-    >
-      {exporting ? 'Exporting' : children}
+    <button type="button" disabled={isExporting} onClick={onExport}>
+      {isExporting ? 'Exporting' : children}
     </button>
   );
 }
