@@ -7,6 +7,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
+import pluginRouter from '@tanstack/eslint-plugin-router';
 
 export default [
   {
@@ -713,6 +714,16 @@ export default [
       'no-console': 0,
       'no-undef': 1,
       'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
+    }
+  },
+
+  {
+    files: ['website/**/*.{ts,tsx}'],
+    plugins: {
+      '@tanstack/router': pluginRouter
+    },
+    rules: {
+      '@tanstack/router/create-route-property-order': 1
     }
   }
 ];
