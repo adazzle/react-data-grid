@@ -363,29 +363,6 @@ function CommonFeatures() {
     setIsExporting(false);
   }
 
-  const gridElement = (
-    <DataGrid
-      ref={gridRef}
-      rowKeyGetter={rowKeyGetter}
-      columns={columns}
-      rows={sortedRows}
-      defaultColumnOptions={{
-        sortable: true,
-        resizable: true
-      }}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      onRowsChange={setRows}
-      sortColumns={sortColumns}
-      onSortColumnsChange={setSortColumns}
-      topSummaryRows={summaryRows}
-      bottomSummaryRows={summaryRows}
-      className="fill-grid"
-      direction={direction}
-      enableVirtualization={!isExporting}
-    />
-  );
-
   return (
     <>
       <div className={toolbarClassname}>
@@ -396,7 +373,26 @@ function CommonFeatures() {
           Export to PDF
         </button>
       </div>
-      {gridElement}
+      <DataGrid
+        ref={gridRef}
+        rowKeyGetter={rowKeyGetter}
+        columns={columns}
+        rows={sortedRows}
+        defaultColumnOptions={{
+          sortable: true,
+          resizable: true
+        }}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        onRowsChange={setRows}
+        sortColumns={sortColumns}
+        onSortColumnsChange={setSortColumns}
+        topSummaryRows={summaryRows}
+        bottomSummaryRows={summaryRows}
+        className="fill-grid"
+        direction={direction}
+        enableVirtualization={!isExporting}
+      />
     </>
   );
 }
