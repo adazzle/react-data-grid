@@ -389,18 +389,14 @@ function CommonFeatures() {
   return (
     <>
       <div className={toolbarClassname}>
-        <ExportButton onExport={handleExportToCsv}>Export to CSV</ExportButton>
-        <ExportButton onExport={handleExportToPdf}>Export to PDF</ExportButton>
+        <button type="button" onClick={handleExportToCsv}>
+          Export to CSV
+        </button>
+        <button type="button" onClick={handleExportToPdf}>
+          Export to PDF
+        </button>
       </div>
       {gridElement}
     </>
-  );
-}
-
-function ExportButton({ onExport, children }: { onExport: () => void; children: React.ReactNode }) {
-  return (
-    <button type="button" onClick={onExport}>
-      {children}
-    </button>
   );
 }
