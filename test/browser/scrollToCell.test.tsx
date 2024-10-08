@@ -9,7 +9,7 @@ import { getGrid } from './utils';
 
 type Row = undefined;
 
-const rows: readonly Row[] = Array(50);
+const rows: readonly Row[] = new Array(50);
 const summaryRows: readonly Row[] = [undefined, undefined];
 
 const columns: Column<Row, Row>[] = [];

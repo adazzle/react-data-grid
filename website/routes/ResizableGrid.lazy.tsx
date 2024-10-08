@@ -10,7 +10,7 @@ export const Route = createLazyFileRoute('/ResizableGrid')({
 });
 
 type Row = number;
-const rows: readonly Row[] = [...Array(100).keys()];
+const rows: readonly Row[] = Array.from({ length: 100 }, (_, i) => i);
 
 const columns: Column<Row>[] = [];
 
