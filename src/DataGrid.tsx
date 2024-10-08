@@ -52,7 +52,6 @@ import type {
   SelectRowEvent,
   SortColumn
 } from './types';
-import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import {
   DataGridDefaultRenderersProvider,
   useDefaultRenderers
@@ -64,6 +63,8 @@ import HeaderRow from './HeaderRow';
 import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
+import SummaryRow from './SummaryRow';
+import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import { default as defaultRenderSortStatus } from './sortStatus';
 import {
   focusSinkClassname,
@@ -72,7 +73,6 @@ import {
   viewportDraggingClassname
 } from './style/core';
 import { rowSelected, rowSelectedWithFrozenCell } from './style/row';
-import SummaryRow from './SummaryRow';
 
 export interface SelectCellState extends Position {
   readonly mode: 'SELECT';
@@ -91,6 +91,7 @@ type DefaultColumnOptions<R, SR> = Pick<
 
 export interface DataGridHandle {
   element: HTMLDivElement | null;
+  selectedCell: Position;
   scrollToCell: (position: PartialPosition) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
@@ -486,6 +487,7 @@ function DataGrid<R, SR, K extends Key>(
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
+    selectedCell: selectedPosition,
     scrollToCell({ idx, rowIdx }) {
       const scrollToIdx =
         idx !== undefined && idx > lastFrozenColumnIndex && idx < columns.length ? idx : undefined;
