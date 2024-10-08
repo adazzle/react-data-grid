@@ -21,9 +21,9 @@ function setupGrid(
   summaryRowCount = 0
 ) {
   const columns: Column<unknown>[] = [];
-  const rows = Array(rowCount);
-  const topSummaryRows = Array(summaryRowCount).fill(null);
-  const bottomSummaryRows = Array(summaryRowCount).fill(null);
+  const rows = new Array(rowCount);
+  const topSummaryRows = new Array(summaryRowCount).fill(null);
+  const bottomSummaryRows = new Array(summaryRowCount).fill(null);
 
   for (let i = 0; i < columnCount; i++) {
     const key = String(i);

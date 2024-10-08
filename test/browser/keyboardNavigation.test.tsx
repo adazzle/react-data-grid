@@ -13,7 +13,7 @@ import {
 
 type Row = undefined;
 
-const rows: readonly Row[] = Array(100);
+const rows: readonly Row[] = new Array(100);
 const topSummaryRows: readonly Row[] = [undefined];
 const bottomSummaryRows: readonly Row[] = [undefined, undefined];
 
@@ -129,7 +129,7 @@ test('arrow and tab navigation', async () => {
 });
 
 test('grid enter/exit', async () => {
-  setup({ columns, rows: Array(5), bottomSummaryRows });
+  setup({ columns, rows: new Array(5), bottomSummaryRows });
 
   // no initial selection
   expect(getSelectedCell()).not.toBeInTheDocument();
@@ -168,7 +168,7 @@ test('grid enter/exit', async () => {
 });
 
 test('navigation with focusable cell renderer', async () => {
-  setup({ columns, rows: Array(1), bottomSummaryRows });
+  setup({ columns, rows: new Array(1), bottomSummaryRows });
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
@@ -209,7 +209,7 @@ test('navigation when header and summary rows have focusable elements', async ()
     }
   ];
 
-  setup({ columns, rows: Array(2), bottomSummaryRows });
+  setup({ columns, rows: new Array(2), bottomSummaryRows });
   await userEvent.tab();
 
   // should set focus on the header filter
