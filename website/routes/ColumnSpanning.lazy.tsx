@@ -12,7 +12,7 @@ export const Route = createLazyFileRoute('/ColumnSpanning')({
 });
 
 type Row = number;
-const rows: readonly Row[] = [...Array(100).keys()];
+const rows: readonly Row[] = Array.from({ length: 100 }, (_, i) => i);
 
 const colSpanClassname = css`
   background-color: #ffb300;

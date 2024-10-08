@@ -8,7 +8,7 @@ type Row = number;
 
 function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
   const columns: Column<Row>[] = [];
-  const rows: readonly Row[] = [...Array(50).keys()];
+  const rows: readonly Row[] = Array.from({ length: 50 }, (_, i) => i);
 
   for (let i = 0; i < 5; i++) {
     const key = String(i);
