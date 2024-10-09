@@ -354,13 +354,16 @@ function CommonFeatures() {
     setIsExporting(false);
   }
 
-  function handleExportToPdf() {
+  async function handleExportToPdf() {
     flushSync(() => {
       setIsExporting(true);
     });
 
-    exportToPdf(gridRef.current!.element!, 'CommonFeatures.pdf');
-    setIsExporting(false);
+    await exportToPdf(gridRef.current!.element!, 'CommonFeatures.pdf');
+
+    flushSync(() => {
+      setIsExporting(false);
+    });
   }
 
   return (
