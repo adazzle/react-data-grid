@@ -7,6 +7,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
+import pluginRouter from '@tanstack/eslint-plugin-router';
 
 export default [
   {
@@ -467,7 +468,7 @@ export default [
       '@typescript-eslint/no-this-alias': 0,
       '@typescript-eslint/no-type-alias': 0,
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
-      '@typescript-eslint/no-unnecessary-condition': 1,
+      '@typescript-eslint/no-unnecessary-condition': [1, { checkTypePredicates: true }],
       '@typescript-eslint/no-unnecessary-parameter-property-assignment': 1,
       '@typescript-eslint/no-unnecessary-qualifier': 0,
       '@typescript-eslint/no-unnecessary-template-expression': 1,
@@ -647,6 +648,7 @@ export default [
       'vitest/prefer-to-contain': 1,
       'vitest/prefer-to-have-length': 1,
       'vitest/prefer-todo': 1,
+      'vitest/prefer-vi-mocked': 1,
       'vitest/require-hook': 0,
       'vitest/require-local-test-context-for-concurrent-snapshots': 0,
       'vitest/require-to-throw-message': 0,
@@ -712,6 +714,16 @@ export default [
       'no-console': 0,
       'no-undef': 1,
       'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
+    }
+  },
+
+  {
+    files: ['website/**/*.{ts,tsx}'],
+    plugins: {
+      '@tanstack/router': pluginRouter
+    },
+    rules: {
+      '@tanstack/router/create-route-property-order': 1
     }
   }
 ];
