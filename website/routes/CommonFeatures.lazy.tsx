@@ -351,7 +351,10 @@ function CommonFeatures() {
     });
 
     exportToCsv(gridRef.current!.element!, 'CommonFeatures.csv');
-    setIsExporting(false);
+
+    flushSync(() => {
+      setIsExporting(false);
+    });
   }
 
   async function handleExportToPdf() {
