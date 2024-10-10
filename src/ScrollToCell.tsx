@@ -1,6 +1,5 @@
-import { useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
-import { useLayoutEffect } from './hooks';
 import { scrollIntoView } from './utils';
 
 export interface PartialPosition {
