@@ -144,7 +144,7 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
-      React.HTMLAttributes<HTMLDivElement>,
+      React.ComponentProps<'div'>,
       'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -201,7 +201,7 @@ export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
 }
 
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
+  extends Omit<React.ComponentProps<'div'>, 'style' | 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
       'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
@@ -301,7 +301,7 @@ export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPr
 
 export interface RenderCheckboxProps
   extends Pick<
-    React.InputHTMLAttributes<HTMLInputElement>,
+    React.ComponentProps<'input'>,
     'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
   > {
   indeterminate?: boolean | undefined;

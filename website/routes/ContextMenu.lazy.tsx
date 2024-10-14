@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { useLayoutEffect, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
@@ -64,7 +63,7 @@ function ContextMenuDemo() {
     top: number;
     left: number;
   } | null>(null);
-  const menuRef = useRef<HTMLMenuElement | null>(null);
+  const menuRef = useRef<HTMLMenuElement>(null);
   const isContextMenuOpen = contextMenuProps !== null;
 
   useLayoutEffect(() => {

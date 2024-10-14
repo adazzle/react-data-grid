@@ -1,17 +1,23 @@
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import type { Key, KeyboardEvent, RefAttributes } from 'react';
+import {
+  useCallback,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
+import type { Key, KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
-  HeaderRowSelectionChangeProvider,
-  HeaderRowSelectionProvider,
-  RowSelectionChangeProvider,
+  HeaderRowSelectionChangeContext,
+  HeaderRowSelectionContext,
+  RowSelectionChangeContext,
   useCalculatedColumns,
   useColumnWidths,
   useGridDimensions,
   useLatestFunc,
-  useLayoutEffect,
   useViewportColumns,
   useViewportRows,
   type HeaderRowSelectionContextValue
@@ -54,9 +60,9 @@ import type {
 } from './types';
 import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import {
-  DataGridDefaultRenderersProvider,
+  DataGridDefaultRenderersContext,
   useDefaultRenderers
-} from './DataGridDefaultRenderersProvider';
+} from './DataGridDefaultRenderersContext';
 import DragHandle from './DragHandle';
 import EditCell from './EditCell';
 import GroupedColumnHeaderRow from './GroupedColumnHeaderRow';
@@ -96,7 +102,7 @@ export interface DataGridHandle {
 }
 
 type SharedDivProps = Pick<
-  React.HTMLAttributes<HTMLDivElement>,
+  React.ComponentProps<'div'>,
   | 'role'
   | 'aria-label'
   | 'aria-labelledby'
@@ -107,6 +113,7 @@ type SharedDivProps = Pick<
 >;
 
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
+  ref?: Maybe<React.Ref<DataGridHandle>>;
   /**
    * Grid and data Props
    */
@@ -212,11 +219,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
  *
  * <DataGrid columns={columns} rows={rows} />
  */
-function DataGrid<R, SR, K extends Key>(
-  props: DataGridProps<R, SR, K>,
-  ref: React.Ref<DataGridHandle>
-) {
+export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, SR, K>) {
   const {
+    ref,
     // Grid and data Props
     columns: rawColumns,
     rows,
@@ -1122,9 +1127,9 @@ function DataGrid<R, SR, K extends Key>(
       onKeyDown={handleKeyDown}
       data-testid={testId}
     >
-      <DataGridDefaultRenderersProvider value={defaultGridComponents}>
-        <HeaderRowSelectionChangeProvider value={selectHeaderRowLatest}>
-          <HeaderRowSelectionProvider value={headerSelectionValue}>
+      <DataGridDefaultRenderersContext value={defaultGridComponents}>
+        <HeaderRowSelectionChangeContext value={selectHeaderRowLatest}>
+          <HeaderRowSelectionContext value={headerSelectionValue}>
             {Array.from({ length: groupedColumnHeaderRowsCount }, (_, index) => (
               <GroupedColumnHeaderRow
                 key={index}
@@ -1152,8 +1157,8 @@ function DataGrid<R, SR, K extends Key>(
               shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
               direction={direction}
             />
-          </HeaderRowSelectionProvider>
-        </HeaderRowSelectionChangeProvider>
+          </HeaderRowSelectionContext>
+        </HeaderRowSelectionChangeContext>
         {rows.length === 0 && noRowsFallback ? (
           noRowsFallback
         ) : (
@@ -1181,9 +1186,9 @@ function DataGrid<R, SR, K extends Key>(
                 />
               );
             })}
-            <RowSelectionChangeProvider value={selectRowLatest}>
+            <RowSelectionChangeContext value={selectRowLatest}>
               {getViewportRows()}
-            </RowSelectionChangeProvider>
+            </RowSelectionChangeContext>
             {bottomSummaryRows?.map((row, rowIdx) => {
               const gridRowStart = headerAndTopSummaryRowsCount + rows.length + rowIdx + 1;
               const summaryRowIdx = rows.length + rowIdx;
@@ -1216,7 +1221,7 @@ function DataGrid<R, SR, K extends Key>(
             })}
           </>
         )}
-      </DataGridDefaultRenderersProvider>
+      </DataGridDefaultRenderersContext>
 
       {renderDragHandle()}
 
@@ -1259,7 +1264,3 @@ function getCellToScroll(gridEl: HTMLDivElement) {
 function isSamePosition(p1: Position, p2: Position) {
   return p1.idx === p2.idx && p1.rowIdx === p2.rowIdx;
 }
-
-export default forwardRef(DataGrid) as <R, SR = unknown, K extends Key = Key>(
-  props: DataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => React.JSX.Element;
