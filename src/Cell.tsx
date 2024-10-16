@@ -124,7 +124,7 @@ function Cell<R, SR>(
 
 const CellComponent = memo(forwardRef(Cell)) as <R, SR>(
   props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
-) => JSX.Element;
+) => React.JSX.Element;
 
 export default CellComponent;
 

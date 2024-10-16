@@ -18,8 +18,8 @@ import { getCells, getHeaderCells, getRows, setup } from './utils';
 
 interface Row {
   id: number;
-  col1?: string;
-  col2?: string;
+  col1: string;
+  col2: string;
 }
 
 const noRows: readonly Row[] = [];
@@ -131,21 +131,29 @@ test('fallback defined using both provider and renderers with no rows', () => {
 });
 
 test('fallback defined using renderers prop with a row', () => {
-  setup({ columns, rows: [{ id: 1 }], renderers: { noRowsFallback: <NoRowsFallback /> } });
+  setup({
+    columns,
+    rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }],
+    renderers: { noRowsFallback: <NoRowsFallback /> }
+  });
 
   expect(getRows()).toHaveLength(1);
   expect(screen.queryByText('Local no rows fallback')).not.toBeInTheDocument();
 });
 
 test('fallback defined using provider with a row', () => {
-  setupProvider({ columns, rows: [{ id: 1 }] });
+  setupProvider({ columns, rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }] });
 
   expect(getRows()).toHaveLength(1);
   expect(screen.queryByText('Global no rows fallback')).not.toBeInTheDocument();
 });
 
 test('fallback defined using both provider and renderers with a row', () => {
-  setupProvider({ columns, rows: [{ id: 1 }], renderers: { noRowsFallback: <NoRowsFallback /> } });
+  setupProvider({
+    columns,
+    rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }],
+    renderers: { noRowsFallback: <NoRowsFallback /> }
+  });
 
   expect(getRows()).toHaveLength(1);
   expect(screen.queryByText('Global no rows fallback')).not.toBeInTheDocument();
