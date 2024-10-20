@@ -11,7 +11,7 @@ export const Route = createLazyFileRoute('/MillionCells')({
 });
 
 type Row = number;
-const rows: readonly Row[] = [...Array(1000).keys()];
+const rows: readonly Row[] = Array.from({ length: 1000 }, (_, i) => i);
 
 function MillionCells() {
   const direction = useDirection();

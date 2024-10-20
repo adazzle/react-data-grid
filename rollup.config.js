@@ -6,6 +6,7 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import pkg from './package.json' with { type: 'json' };
 
 const extensions = ['.ts', '.tsx'];
+const annotationRegexp = /^[@#]__.+__$/;
 
 export default {
   input: './src/index.ts',
@@ -42,7 +43,7 @@ export default {
       // remove all comments except terser annotations
       // https://github.com/terser/terser#annotations
       // https://babeljs.io/docs/en/options#shouldprintcomment
-      shouldPrintComment: (comment) => /^[@#]__.+__$/.test(comment)
+      shouldPrintComment: (comment) => annotationRegexp.test(comment)
     }),
     nodeResolve({ extensions })
   ]

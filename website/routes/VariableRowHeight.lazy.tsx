@@ -11,7 +11,7 @@ export const Route = createLazyFileRoute('/VariableRowHeight')({
 });
 
 type Row = number;
-const rows: readonly Row[] = [...Array(500).keys()];
+const rows: readonly Row[] = Array.from({ length: 500 }, (_, i) => i);
 
 function VariableRowHeight() {
   const direction = useDirection();
