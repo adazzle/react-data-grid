@@ -4,6 +4,7 @@ export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
 export { default as TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
 export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
 export { default as Row } from './Row';
+export { default as Cell } from './Cell';
 export * from './Columns';
 export * from './cellRenderers';
 export { default as textEditor } from './editors/textEditor';
