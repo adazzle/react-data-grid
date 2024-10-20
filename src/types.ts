@@ -145,7 +145,7 @@ export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
-      'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+      'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
