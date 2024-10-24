@@ -379,6 +379,7 @@ export default [
 
       // React Hooks Extra
       // https://eslint-react.xyz/
+      'react-hooks-extra/no-redundant-custom-hook': 1,
       'react-hooks-extra/no-unnecessary-use-callback': 1,
       'react-hooks-extra/no-unnecessary-use-memo': 1,
       'react-hooks-extra/no-direct-set-state-in-use-effect': 1,
