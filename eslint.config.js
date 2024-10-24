@@ -5,10 +5,9 @@ import vitest from '@vitest/eslint-plugin';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactHooksExtra from 'eslint-plugin-react-hooks-extra';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
-import pluginRouter from '@tanstack/eslint-plugin-router';
-
 export default [
   {
     ignores: ['.cache', 'coverage', 'dist', 'lib']
@@ -20,6 +19,7 @@ export default [
     plugins: {
       react,
       'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks-extra': reactHooksExtra,
       sonarjs,
       '@typescript-eslint': typescriptEslint
     },
@@ -377,6 +377,10 @@ export default [
       'react-hooks/rules-of-hooks': 1,
       'react-hooks/exhaustive-deps': 1,
 
+      // React Hooks Extra
+      // https://eslint-react.xyz/
+      'react-hooks-extra/prefer-use-state-lazy-initialization': 1,
+
       // SonarJS rules
       // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
       'sonarjs/no-all-duplicated-branches': 1,
@@ -589,7 +593,7 @@ export default [
     plugins: {
       vitest,
       'jest-dom': jestDom,
-      'testing-library': fixupPluginRules(testingLibrary)
+      'testing-library': testingLibrary
     },
 
     rules: {
@@ -715,16 +719,6 @@ export default [
       'no-console': 0,
       'no-undef': 1,
       'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
-    }
-  },
-
-  {
-    files: ['website/**/*.{ts,tsx}'],
-    plugins: {
-      '@tanstack/router': pluginRouter
-    },
-    rules: {
-      '@tanstack/router/create-route-property-order': 1
     }
   }
 ];
