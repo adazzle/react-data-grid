@@ -917,17 +917,21 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function cancelEditing() {
+    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+  }
+
+  function closeEditor(shouldFocusCell: boolean) {
+    shouldFocusCellRef.current = shouldFocusCell;
+    cancelEditing();
+  }
+
   function getCellEditor(rowIdx: number) {
     if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'SELECT') return;
 
     const { idx, row } = selectedPosition;
     const column = columns[idx];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
-
-    const closeEditor = (shouldFocusCell: boolean) => {
-      shouldFocusCellRef.current = shouldFocusCell;
-      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
-    };
 
     const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
       if (commitChanges) {
@@ -946,7 +950,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      closeEditor(false);
+      cancelEditing();
     }
 
     return (
@@ -1061,7 +1065,6 @@ function DataGrid<R, SR, K extends Key>(
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
-    setDraggedOverRowIdx(undefined);
   }
 
   let templateRows = `repeat(${headerRowsCount}, ${headerRowHeight}px)`;
@@ -1245,7 +1248,7 @@ function DataGrid<R, SR, K extends Key>(
         <ScrollToCell
           scrollToPosition={scrollToPosition}
           setScrollToCellPosition={setScrollToPosition}
-          gridElement={gridRef.current!}
+          gridRef={gridRef}
         />
       )}
     </div>

@@ -4,6 +4,7 @@ import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksExtra from 'eslint-plugin-react-hooks-extra';
 import sonarjs from 'eslint-plugin-sonarjs';
@@ -18,6 +19,7 @@ export default [
 
     plugins: {
       react,
+      'react-compiler': reactCompiler,
       'react-hooks': fixupPluginRules(reactHooks),
       'react-hooks-extra': reactHooksExtra,
       sonarjs,
@@ -371,6 +373,10 @@ export default [
       'react/static-property-placement': 1,
       'react/style-prop-object': 0,
       'react/void-dom-elements-no-children': 1,
+
+      // React Compiler
+      // https://react.dev/learn/react-compiler#installing-eslint-plugin-react-compiler
+      'react-compiler/react-compiler': 1,
 
       // React Hooks
       // https://www.npmjs.com/package/eslint-plugin-react-hooks
