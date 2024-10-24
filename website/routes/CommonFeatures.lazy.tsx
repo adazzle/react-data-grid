@@ -251,11 +251,11 @@ let countries: string[] = [];
 function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
-  const allCountries = [];
+  const countrySet = new Set<string>();
 
   for (let i = 0; i < 1000; i++) {
     const country = faker.location.country();
-    allCountries.push(country);
+    countrySet.add(country);
 
     rows.push({
       id: i,
@@ -276,7 +276,7 @@ function createRows(): readonly Row[] {
     });
   }
 
-  countries = [...new Set(allCountries)].sort(new Intl.Collator().compare);
+  countries = [...countrySet].sort(new Intl.Collator().compare);
 
   return rows;
 }
