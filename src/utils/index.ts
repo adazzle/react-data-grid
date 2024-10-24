@@ -1,4 +1,4 @@
-import type { CalculatedColumn, CalculatedColumnOrColumnGroup } from '../types';
+import type { CalculatedColumn, CalculatedColumnOrColumnGroup, Maybe } from '../types';
 
 export * from './colSpanUtils';
 export * from './domUtils';
@@ -11,7 +11,7 @@ export * from './styleUtils';
 export const { min, max, floor, sign, abs } = Math;
 
 export function assertIsValidKeyGetter<R, K extends React.Key>(
-  keyGetter: unknown
+  keyGetter: Maybe<(row: NoInfer<R>) => K>
 ): asserts keyGetter is (row: R) => K {
   if (typeof keyGetter !== 'function') {
     throw new Error('Please specify the rowKeyGetter prop to use selection');

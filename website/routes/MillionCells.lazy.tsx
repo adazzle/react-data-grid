@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
 import DataGrid from '../../src';
@@ -13,26 +12,22 @@ export const Route = createLazyFileRoute('/MillionCells')({
 type Row = number;
 const rows: readonly Row[] = Array.from({ length: 1000 }, (_, i) => i);
 
+const columns: Column<Row>[] = [];
+
+for (let i = 0; i < 1000; i++) {
+  const key = String(i);
+  columns.push({
+    key,
+    name: key,
+    frozen: i < 5,
+    width: 80,
+    resizable: true,
+    renderCell: renderCoordinates
+  });
+}
+
 function MillionCells() {
   const direction = useDirection();
-
-  const columns = useMemo((): readonly Column<Row>[] => {
-    const columns: Column<Row>[] = [];
-
-    for (let i = 0; i < 1000; i++) {
-      const key = String(i);
-      columns.push({
-        key,
-        name: key,
-        frozen: i < 5,
-        width: 80,
-        resizable: true,
-        renderCell: renderCoordinates
-      });
-    }
-
-    return columns;
-  }, []);
 
   return (
     <DataGrid

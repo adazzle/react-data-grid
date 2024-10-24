@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
 import DataGrid from '../../src';
@@ -13,25 +12,21 @@ export const Route = createLazyFileRoute('/VariableRowHeight')({
 type Row = number;
 const rows: readonly Row[] = Array.from({ length: 500 }, (_, i) => i);
 
+const columns: Column<Row>[] = [];
+
+for (let i = 0; i < 30; i++) {
+  const key = String(i);
+  columns.push({
+    key,
+    name: key,
+    frozen: i < 5,
+    resizable: true,
+    renderCell: renderCoordinates
+  });
+}
+
 function VariableRowHeight() {
   const direction = useDirection();
-
-  const columns = useMemo((): readonly Column<Row>[] => {
-    const columns: Column<Row>[] = [];
-
-    for (let i = 0; i < 30; i++) {
-      const key = String(i);
-      columns.push({
-        key,
-        name: key,
-        frozen: i < 5,
-        resizable: true,
-        renderCell: renderCoordinates
-      });
-    }
-
-    return columns;
-  }, []);
 
   return (
     <DataGrid
