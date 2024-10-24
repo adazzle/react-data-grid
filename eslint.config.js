@@ -475,6 +475,7 @@ export default [
       '@typescript-eslint/no-unnecessary-type-arguments': 1,
       '@typescript-eslint/no-unnecessary-type-assertion': 1,
       '@typescript-eslint/no-unnecessary-type-constraint': 1,
+      '@typescript-eslint/no-unnecessary-type-parameters': 1,
       '@typescript-eslint/no-unsafe-argument': 0,
       '@typescript-eslint/no-unsafe-assignment': 0,
       '@typescript-eslint/no-unsafe-call': 0,
