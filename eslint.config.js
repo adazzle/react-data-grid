@@ -9,6 +9,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksExtra from 'eslint-plugin-react-hooks-extra';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
+
 export default [
   {
     ignores: ['.cache', 'coverage', 'dist', 'lib']
