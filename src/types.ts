@@ -145,7 +145,7 @@ export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
       React.HTMLAttributes<HTMLDivElement>,
-      'style' | 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+      'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
@@ -312,6 +312,7 @@ export interface Renderers<TRow, TSummaryRow> {
   renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
   renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
   renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
+  renderCell?: Maybe<(key: Key, props: CellRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 

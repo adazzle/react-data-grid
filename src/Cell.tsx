@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { forwardRef, memo, type RefAttributes } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -25,31 +25,37 @@ const cellDraggedOver = css`
 
 const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;
 
-function Cell<R, SR>({
-  column,
-  colSpan,
-  isCellSelected,
-  isCopied,
-  isDraggedOver,
-  row,
-  rowIdx,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
-  onRowChange,
-  selectCell,
-  ...props
-}: CellRendererProps<R, SR>) {
+function Cell<R, SR>(
+  {
+    column,
+    colSpan,
+    isCellSelected,
+    isCopied,
+    isDraggedOver,
+    row,
+    rowIdx,
+    className,
+    onClick,
+    onDoubleClick,
+    onContextMenu,
+    onRowChange,
+    selectCell,
+    style,
+    ...props
+  }: CellRendererProps<R, SR>,
+  ref: React.Ref<HTMLDivElement>
+) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   const { cellClass } = column;
-  const className = getCellClassname(
+  className = getCellClassname(
     column,
     {
       [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass
+    typeof cellClass === 'function' ? cellClass(row) : cellClass,
+    className
   );
   const isEditable = isCellEditableUtil(column, row);
 
@@ -95,9 +101,13 @@ function Cell<R, SR>({
       aria-colspan={colSpan}
       aria-selected={isCellSelected}
       aria-readonly={!isEditable || undefined}
+      ref={ref}
       tabIndex={tabIndex}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={{
+        ...getCellStyle(column, colSpan),
+        ...style
+      }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
@@ -116,4 +126,12 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => React.JSX.Element;
+const CellComponent = memo(forwardRef(Cell)) as <R, SR>(
+  props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
+) => React.JSX.Element;
+
+export default CellComponent;
+
+export function defaultRenderCell<R, SR>(key: React.Key, props: CellRendererProps<R, SR>) {
+  return <CellComponent key={key} {...props} />;
+}
