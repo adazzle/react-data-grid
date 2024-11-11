@@ -346,7 +346,7 @@ function DataGrid<R, SR, K extends Key>(
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const lastSelectedRowIdx = useRef(-1);
   const focusSinkRef = useRef<HTMLDivElement>(null);
-  const shouldFocusCellRef = useRef(false);
+  const [shouldFocusCell, setShouldFocusCell] = useState(false);
 
   /**
    * computed values
@@ -459,6 +459,24 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   /**
+   * callbacks
+   */
+  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
+    setOverRowIdx(rowIdx);
+    latestDraggedOverRowIdx.current = rowIdx;
+  }, []);
+
+  const focusCellOrCellContent = useCallback(() => {
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
+  }, [gridRef]);
+
+  /**
    * effects
    */
   useLayoutEffect(() => {
@@ -479,10 +497,11 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   useLayoutEffect(() => {
-    if (!shouldFocusCellRef.current) return;
-    shouldFocusCellRef.current = false;
-    focusCellOrCellContent();
-  });
+    if (shouldFocusCell) {
+      setShouldFocusCell(false);
+      focusCellOrCellContent();
+    }
+  }, [shouldFocusCell, focusCellOrCellContent]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -498,14 +517,6 @@ function DataGrid<R, SR, K extends Key>(
     },
     selectCell
   }));
-
-  /**
-   * callbacks
-   */
-  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
-    setOverRowIdx(rowIdx);
-    latestDraggedOverRowIdx.current = rowIdx;
-  }, []);
 
   /**
    * event handlers
@@ -758,7 +769,7 @@ function DataGrid<R, SR, K extends Key>(
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
-      shouldFocusCellRef.current = true;
+      setShouldFocusCell(true);
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
 
@@ -870,16 +881,6 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function focusCellOrCellContent() {
-    const cell = getCellToScroll(gridRef.current!);
-    if (cell === null) return;
-
-    scrollIntoView(cell);
-    // Focus cell content when available instead of the cell itself
-    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-    elementToFocus.focus({ preventScroll: true });
-  }
-
   function renderDragHandle() {
     if (
       onFill == null ||
@@ -917,21 +918,17 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
-  function cancelEditing() {
-    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
-  }
-
-  function closeEditor(shouldFocusCell: boolean) {
-    shouldFocusCellRef.current = shouldFocusCell;
-    cancelEditing();
-  }
-
   function getCellEditor(rowIdx: number) {
     if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'SELECT') return;
 
     const { idx, row } = selectedPosition;
     const column = columns[idx];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+
+    const closeEditor = (shouldFocusCell: boolean) => {
+      setShouldFocusCell(shouldFocusCell);
+      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+    };
 
     const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
       if (commitChanges) {
@@ -950,7 +947,7 @@ function DataGrid<R, SR, K extends Key>(
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      cancelEditing();
+      closeEditor(false);
     }
 
     return (
@@ -1065,6 +1062,8 @@ function DataGrid<R, SR, K extends Key>(
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
+    // eslint-disable-next-line react-compiler/react-compiler
+    setDraggedOverRowIdx(undefined);
   }
 
   let templateRows = `repeat(${headerRowsCount}, ${headerRowHeight}px)`;
