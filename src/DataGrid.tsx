@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import type { Key, KeyboardEvent, RefAttributes } from 'react';
+import type { Key, KeyboardEvent, RefAttributes, SetStateAction } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
@@ -340,7 +340,6 @@ function DataGrid<R, SR, K extends Key>(
   const [selectedPosition, setSelectedPosition] = useState(
     (): SelectCellState | EditCellState<R> => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
-  const [prevSelectedPosition, setPrevSelectedPosition] = useState(selectedPosition);
 
   /**
    * refs
@@ -480,23 +479,6 @@ function DataGrid<R, SR, K extends Key>(
    * effects
    */
   useLayoutEffect(() => {
-    if (
-      !selectedCellIsWithinSelectionBounds ||
-      isSamePosition(selectedPosition, prevSelectedPosition)
-    ) {
-      setPrevSelectedPosition(selectedPosition);
-      return;
-    }
-
-    setPrevSelectedPosition(selectedPosition);
-
-    if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
-      focusSinkRef.current.focus({ preventScroll: true });
-      scrollIntoView(focusSinkRef.current);
-    }
-  }, [selectedCellIsWithinSelectionBounds, selectedPosition, prevSelectedPosition]);
-
-  useLayoutEffect(() => {
     if (shouldFocusCell) {
       setShouldFocusCell(false);
       focusCellOrCellContent();
@@ -521,6 +503,25 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * event handlers
    */
+  function onSelectedCellPositionChange(
+    position: SetStateAction<SelectCellState | EditCellState<R>>
+  ) {
+    if (
+      focusSinkRef.current !== null &&
+      typeof position !== 'function' &&
+      position.idx === -1 &&
+      !isSamePosition(position, selectedPosition)
+    ) {
+      flushSync(() => {
+        setSelectedPosition(position);
+      });
+      focusSinkRef.current.focus({ preventScroll: true });
+      scrollIntoView(focusSinkRef.current);
+    } else {
+      setSelectedPosition(position);
+    }
+  }
+
   function selectHeaderRow(args: SelectHeaderRowEvent) {
     if (!onSelectedRowsChange) return;
 
@@ -715,7 +716,7 @@ function DataGrid<R, SR, K extends Key>(
     }
 
     if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
-      setSelectedPosition(({ idx, rowIdx }) => ({
+      onSelectedCellPositionChange(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
         mode: 'EDIT',
@@ -763,13 +764,13 @@ function DataGrid<R, SR, K extends Key>(
     const samePosition = isSamePosition(selectedPosition, position);
 
     if (enableEditor && isCellEditable(position)) {
-      setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
+      onSelectedCellPositionChange({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
       setShouldFocusCell(true);
-      setSelectedPosition({ ...position, mode: 'SELECT' });
+      onSelectedCellPositionChange({ ...position, mode: 'SELECT' });
     }
 
     if (onSelectedCellChange && !samePosition) {
@@ -926,7 +927,7 @@ function DataGrid<R, SR, K extends Key>(
 
     const closeEditor = (shouldFocusCell: boolean) => {
       setShouldFocusCell(shouldFocusCell);
-      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+      onSelectedCellPositionChange(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
     const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
@@ -940,7 +941,7 @@ function DataGrid<R, SR, K extends Key>(
           closeEditor(shouldFocusCell);
         });
       } else {
-        setSelectedPosition((position) => ({ ...position, row }));
+        onSelectedCellPositionChange((position) => ({ ...position, row }));
       }
     };
 
