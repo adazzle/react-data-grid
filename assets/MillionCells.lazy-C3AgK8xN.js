@@ -1,2 +1,0 @@
-import{c as t,u as i,j as n}from"./index-BwLTxbG4.js";import{D as s}from"./DataGrid-pVLGoX0I.js";import{r as l}from"./renderCoordinates-BnaeBmsm.js";const d=t("/MillionCells")({component:c}),a=Array.from({length:1e3},(e,r)=>r),o=[];for(let e=0;e<1e3;e++){const r=String(e);o.push({key:r,name:r,frozen:e<5,width:80,resizable:!0,renderCell:l})}function c(){const e=i();return n.jsx(s,{columns:o,rows:a,rowHeight:22,className:"fill-grid",direction:e})}export{d as Route};
-//# sourceMappingURL=MillionCells.lazy-C3AgK8xN.js.map
