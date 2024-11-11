@@ -94,14 +94,6 @@ function Cell<R, SR>(
     onRowChange(column, newRow);
   }
 
-  const cellStyle = getCellStyle(column, colSpan);
-  if (style) {
-    let key: keyof React.CSSProperties;
-    for (key in style) {
-      (cellStyle as any)[key] = style[key];
-    }
-  }
-
   return (
     <div
       role="gridcell"
@@ -112,7 +104,10 @@ function Cell<R, SR>(
       ref={ref}
       tabIndex={tabIndex}
       className={className}
-      style={cellStyle}
+      style={{
+        ...getCellStyle(column, colSpan),
+        ...style
+      }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
