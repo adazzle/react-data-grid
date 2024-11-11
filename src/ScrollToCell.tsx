@@ -10,11 +10,11 @@ export interface PartialPosition {
 
 export default function ScrollToCell({
   scrollToPosition: { idx, rowIdx },
-  gridElement,
+  gridRef,
   setScrollToCellPosition
 }: {
   scrollToPosition: PartialPosition;
-  gridElement: HTMLDivElement;
+  gridRef: React.RefObject<HTMLDivElement | null>;
   setScrollToCellPosition: (cell: null) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,7 +31,7 @@ export default function ScrollToCell({
     }
 
     const observer = new IntersectionObserver(removeScrollToCell, {
-      root: gridElement,
+      root: gridRef.current!,
       threshold: 1.0
     });
 
@@ -40,7 +40,7 @@ export default function ScrollToCell({
     return () => {
       observer.disconnect();
     };
-  }, [gridElement, setScrollToCellPosition]);
+  }, [gridRef, setScrollToCellPosition]);
 
   return (
     <div
