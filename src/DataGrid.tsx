@@ -296,6 +296,8 @@ function DataGrid<R, SR, K extends Key>(
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
+  const [shouldFocusCell, setShouldFocusCell] = useState(false);
+  const [previousRowIdx, setPreviousRowIdx] = useState(-1);
 
   const getColumnWidth = useCallback(
     (column: CalculatedColumn<R, SR>) => {
@@ -338,15 +340,13 @@ function DataGrid<R, SR, K extends Key>(
   const [selectedPosition, setSelectedPosition] = useState(
     (): SelectCellState | EditCellState<R> => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
+  const [prevSelectedPosition, setPrevSelectedPosition] = useState(selectedPosition);
 
   /**
    * refs
    */
-  const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
-  const lastSelectedRowIdx = useRef(-1);
   const focusSinkRef = useRef<HTMLDivElement>(null);
-  const [shouldFocusCell, setShouldFocusCell] = useState(false);
 
   /**
    * computed values
@@ -482,19 +482,19 @@ function DataGrid<R, SR, K extends Key>(
   useLayoutEffect(() => {
     if (
       !selectedCellIsWithinSelectionBounds ||
-      isSamePosition(selectedPosition, prevSelectedPosition.current)
+      isSamePosition(selectedPosition, prevSelectedPosition)
     ) {
-      prevSelectedPosition.current = selectedPosition;
+      setPrevSelectedPosition(selectedPosition);
       return;
     }
 
-    prevSelectedPosition.current = selectedPosition;
+    setPrevSelectedPosition(selectedPosition);
 
-    if (selectedPosition.idx === -1) {
-      focusSinkRef.current!.focus({ preventScroll: true });
+    if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
+      focusSinkRef.current.focus({ preventScroll: true });
       scrollIntoView(focusSinkRef.current);
     }
-  });
+  }, [selectedCellIsWithinSelectionBounds, selectedPosition, prevSelectedPosition]);
 
   useLayoutEffect(() => {
     if (shouldFocusCell) {
@@ -547,9 +547,8 @@ function DataGrid<R, SR, K extends Key>(
     if (isRowSelectionDisabled?.(row) === true) return;
     const newSelectedRows = new Set(selectedRows);
     const rowKey = rowKeyGetter(row);
-    const previousRowIdx = lastSelectedRowIdx.current;
     const rowIdx = rows.indexOf(row);
-    lastSelectedRowIdx.current = rowIdx;
+    setPreviousRowIdx(rowIdx);
 
     if (checked) {
       newSelectedRows.add(rowKey);
