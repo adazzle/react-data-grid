@@ -1183,6 +1183,7 @@ function DataGrid<R, SR, K extends Key>(
               );
             })}
             <RowSelectionChangeProvider value={selectRowLatest}>
+              {/* eslint-disable-next-line react-compiler/react-compiler */}
               {getViewportRows()}
             </RowSelectionChangeProvider>
             {bottomSummaryRows?.map((row, rowIdx) => {
