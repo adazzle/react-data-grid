@@ -296,6 +296,8 @@ function DataGrid<R, SR, K extends Key>(
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
+  const [shouldFocusCell, setShouldFocusCell] = useState(false);
+  const [previousRowIdx, setPreviousRowIdx] = useState(-1);
 
   const getColumnWidth = useCallback(
     (column: CalculatedColumn<R, SR>) => {
@@ -338,15 +340,13 @@ function DataGrid<R, SR, K extends Key>(
   const [selectedPosition, setSelectedPosition] = useState(
     (): SelectCellState | EditCellState<R> => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
+  const [prevSelectedPosition, setPrevSelectedPosition] = useState(selectedPosition);
 
   /**
    * refs
    */
-  const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
-  const lastSelectedRowIdx = useRef(-1);
   const focusSinkRef = useRef<HTMLDivElement>(null);
-  const shouldFocusCellRef = useRef(false);
 
   /**
    * computed values
@@ -459,30 +459,49 @@ function DataGrid<R, SR, K extends Key>(
   });
 
   /**
+   * callbacks
+   */
+  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
+    setOverRowIdx(rowIdx);
+    latestDraggedOverRowIdx.current = rowIdx;
+  }, []);
+
+  const focusCellOrCellContent = useCallback(() => {
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
+  }, [gridRef]);
+
+  /**
    * effects
    */
   useLayoutEffect(() => {
     if (
       !selectedCellIsWithinSelectionBounds ||
-      isSamePosition(selectedPosition, prevSelectedPosition.current)
+      isSamePosition(selectedPosition, prevSelectedPosition)
     ) {
-      prevSelectedPosition.current = selectedPosition;
+      setPrevSelectedPosition(selectedPosition);
       return;
     }
 
-    prevSelectedPosition.current = selectedPosition;
+    setPrevSelectedPosition(selectedPosition);
 
-    if (selectedPosition.idx === -1) {
-      focusSinkRef.current!.focus({ preventScroll: true });
+    if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
+      focusSinkRef.current.focus({ preventScroll: true });
       scrollIntoView(focusSinkRef.current);
     }
-  });
+  }, [selectedCellIsWithinSelectionBounds, selectedPosition, prevSelectedPosition]);
 
   useLayoutEffect(() => {
-    if (!shouldFocusCellRef.current) return;
-    shouldFocusCellRef.current = false;
-    focusCellOrCellContent();
-  });
+    if (shouldFocusCell) {
+      setShouldFocusCell(false);
+      focusCellOrCellContent();
+    }
+  }, [shouldFocusCell, focusCellOrCellContent]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -498,14 +517,6 @@ function DataGrid<R, SR, K extends Key>(
     },
     selectCell
   }));
-
-  /**
-   * callbacks
-   */
-  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
-    setOverRowIdx(rowIdx);
-    latestDraggedOverRowIdx.current = rowIdx;
-  }, []);
 
   /**
    * event handlers
@@ -536,9 +547,8 @@ function DataGrid<R, SR, K extends Key>(
     if (isRowSelectionDisabled?.(row) === true) return;
     const newSelectedRows = new Set(selectedRows);
     const rowKey = rowKeyGetter(row);
-    const previousRowIdx = lastSelectedRowIdx.current;
     const rowIdx = rows.indexOf(row);
-    lastSelectedRowIdx.current = rowIdx;
+    setPreviousRowIdx(rowIdx);
 
     if (checked) {
       newSelectedRows.add(rowKey);
@@ -758,7 +768,7 @@ function DataGrid<R, SR, K extends Key>(
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
-      shouldFocusCellRef.current = true;
+      setShouldFocusCell(true);
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
 
@@ -870,16 +880,6 @@ function DataGrid<R, SR, K extends Key>(
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function focusCellOrCellContent() {
-    const cell = getCellToScroll(gridRef.current!);
-    if (cell === null) return;
-
-    scrollIntoView(cell);
-    // Focus cell content when available instead of the cell itself
-    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-    elementToFocus.focus({ preventScroll: true });
-  }
-
   function renderDragHandle() {
     if (
       onFill == null ||
@@ -925,7 +925,7 @@ function DataGrid<R, SR, K extends Key>(
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
     const closeEditor = (shouldFocusCell: boolean) => {
-      shouldFocusCellRef.current = shouldFocusCell;
+      setShouldFocusCell(shouldFocusCell);
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
@@ -1061,6 +1061,7 @@ function DataGrid<R, SR, K extends Key>(
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
+    // eslint-disable-next-line react-compiler/react-compiler
     setDraggedOverRowIdx(undefined);
   }
 
@@ -1182,6 +1183,7 @@ function DataGrid<R, SR, K extends Key>(
               );
             })}
             <RowSelectionChangeProvider value={selectRowLatest}>
+              {/* eslint-disable-next-line react-compiler/react-compiler */}
               {getViewportRows()}
             </RowSelectionChangeProvider>
             {bottomSummaryRows?.map((row, rowIdx) => {
@@ -1245,7 +1247,7 @@ function DataGrid<R, SR, K extends Key>(
         <ScrollToCell
           scrollToPosition={scrollToPosition}
           setScrollToCellPosition={setScrollToPosition}
-          gridElement={gridRef.current!}
+          gridRef={gridRef}
         />
       )}
     </div>

@@ -246,17 +246,23 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
+let countries: string[] = [];
+
 function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
+  const countrySet = new Set<string>();
 
   for (let i = 0; i < 1000; i++) {
+    const country = faker.location.country();
+    countrySet.add(country);
+
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
       client: faker.company.name(),
       area: faker.person.jobArea(),
-      country: faker.location.country(),
+      country,
       contact: faker.internet.exampleEmail(),
       assignee: faker.person.fullName(),
       progress: Math.random() * 100,
@@ -269,6 +275,8 @@ function createRows(): readonly Row[] {
       available: Math.random() > 0.5
     });
   }
+
+  countries = [...countrySet].sort(new Intl.Collator().compare);
 
   return rows;
 }
@@ -313,12 +321,7 @@ function CommonFeatures() {
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
   const [isExporting, setIsExporting] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
-
-  const countries = useMemo((): readonly string[] => {
-    return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const columns = useMemo(() => getColumns(countries, direction), [countries, direction]);
+  const columns = useMemo(() => getColumns(countries, direction), [direction]);
 
   const summaryRows = useMemo((): readonly SummaryRow[] => {
     return [
