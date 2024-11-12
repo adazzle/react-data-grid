@@ -29,8 +29,8 @@ jobs:
         run: node --run biome:ci
       - name: Typecheck
         run: node --run typecheck
-      - name: ESLint
-        # run: node --run eslint
+      # - name: ESLint
+      # run: node --run eslint
       - name: Prettier
         run: node --run prettier:check
       - name: Bundle
