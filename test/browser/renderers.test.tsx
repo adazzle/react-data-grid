@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import DataGrid, {
   Cell,
   DataGridDefaultRenderersProvider,
+  Row as DefaultRow,
   renderSortIcon,
   SelectColumn
 } from '../../src';
@@ -12,6 +13,7 @@ import type {
   CellRendererProps,
   Column,
   DataGridProps,
+  RenderRowProps,
   RenderSortStatusProps,
   SortColumn
 } from '../../src';
@@ -39,12 +41,20 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-function globalCellRenderer(key: React.Key, props: CellRendererProps<Row, unknown>) {
+function globalRenderCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
   return <Cell key={key} {...props} className="global" style={{ fontStyle: 'italic' }} />;
 }
 
-function localCellRenderer(key: React.Key, props: CellRendererProps<Row, unknown>) {
+function localRenderCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
   return <Cell key={key} {...props} className="local" style={{ fontStyle: 'normal' }} />;
+}
+
+function globalRenderRow(key: React.Key, props: RenderRowProps<Row>) {
+  return <DefaultRow key={key} {...props} className="global" />;
+}
+
+function localRenderRow(key: React.Key, props: RenderRowProps<Row>) {
+  return <DefaultRow key={key} {...props} className="local" />;
 }
 
 function NoRowsFallback() {
@@ -94,7 +104,8 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
         noRowsFallback: <GlobalNoRowsFallback />,
         renderCheckbox: globalRenderCheckbox,
         renderSortStatus: globalSortStatus,
-        renderCell: globalCellRenderer
+        renderCell: globalRenderCell,
+        renderRow: globalRenderRow
       }}
     >
       <TestGrid {...props} />
@@ -226,7 +237,7 @@ test('renderCell defined using both providers and renderers', () => {
   setupProvider({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
-    renderers: { renderCell: localCellRenderer }
+    renderers: { renderCell: localRenderCell }
   });
 
   const [, cell1, cell2] = getCells();
@@ -239,4 +250,24 @@ test('renderCell defined using both providers and renderers', () => {
   expect(cell2).toHaveClass('local');
   expect(cell2).not.toHaveClass('global');
   expect(cell2).toHaveStyle({ fontStyle: 'normal' });
+});
+
+test('renderRow defined using provider', () => {
+  setupProvider({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
+
+  const [row] = getRows();
+  expect(row).toHaveClass('global');
+  expect(row).not.toHaveClass('local');
+});
+
+test('renderRow defined using both providers and renderers', () => {
+  setupProvider({
+    columns,
+    rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
+    renderers: { renderRow: localRenderRow }
+  });
+
+  const [row] = getRows();
+  expect(row).toHaveClass('local');
+  expect(row).not.toHaveClass('global');
 });
