@@ -913,6 +913,11 @@ function DataGrid<R, SR, K extends Key>(
     );
   }
 
+  function closeEditor(shouldFocusCell: boolean) {
+    setShouldFocusCell(shouldFocusCell);
+    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+  }
+
   function getCellEditor(rowIdx: number) {
     if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'SELECT') return;
 
@@ -920,9 +925,10 @@ function DataGrid<R, SR, K extends Key>(
     const column = columns[idx];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
-    const closeEditor = (shouldFocusCell: boolean) => {
-      setShouldFocusCell(shouldFocusCell);
-      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+    const onEditorClose = (shouldFocusCell: boolean) => {
+      flushSync(() => {
+        closeEditor(shouldFocusCell);
+      });
     };
 
     const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
@@ -953,7 +959,7 @@ function DataGrid<R, SR, K extends Key>(
         row={row}
         rowIdx={rowIdx}
         onRowChange={onRowChange}
-        closeEditor={closeEditor}
+        closeEditor={onEditorClose}
         onKeyDown={onCellKeyDown}
         navigate={navigate}
       />
