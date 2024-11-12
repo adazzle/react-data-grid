@@ -342,7 +342,6 @@ function DataGrid<R, SR, K extends Key>(
   const [selectedPosition, setSelectedPosition] = useState(
     (): SelectCellState | EditCellState<R> => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
-  const [prevSelectedPosition, setPrevSelectedPosition] = useState(selectedPosition);
 
   /**
    * refs
@@ -484,20 +483,14 @@ function DataGrid<R, SR, K extends Key>(
    */
   useLayoutEffect(() => {
     if (
-      !selectedCellIsWithinSelectionBounds ||
-      isSamePosition(selectedPosition, prevSelectedPosition)
+      focusSinkRef.current !== null &&
+      selectedCellIsWithinSelectionBounds &&
+      selectedPosition.idx === -1
     ) {
-      setPrevSelectedPosition(selectedPosition);
-      return;
-    }
-
-    setPrevSelectedPosition(selectedPosition);
-
-    if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
       focusSinkRef.current.focus({ preventScroll: true });
       scrollIntoView(focusSinkRef.current);
     }
-  }, [selectedCellIsWithinSelectionBounds, selectedPosition, prevSelectedPosition]);
+  }, [selectedCellIsWithinSelectionBounds, selectedPosition]);
 
   useLayoutEffect(() => {
     if (shouldFocusCell) {

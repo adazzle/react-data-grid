@@ -574,10 +574,6 @@ export default [
         {
           name: '@testing-library/dom',
           message: 'Import @testing-library/react instead.'
-        },
-        {
-          name: 'lodash',
-          message: 'Import lodash-es instead.'
         }
       ],
       '@typescript-eslint/no-shadow': 0,
