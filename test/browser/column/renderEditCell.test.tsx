@@ -73,7 +73,6 @@ describe('Editor', () => {
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
     const onSave = vi.fn();
     page.render(<EditorTest onSave={onSave} />);
-    // const user = userEvent.setup();
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
@@ -81,7 +80,7 @@ describe('Editor', () => {
 
     // await userEvent.click() triggers both mousedown and click, but without delay,
     // which isn't realistic, and isn't enough to trigger outside click detection
-    await userEvent.click(saveButton, { delay: 10 });
+    await userEvent.click(saveButton, { delay: 1 });
 
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith([
