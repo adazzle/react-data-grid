@@ -50,7 +50,6 @@ export default defineConfig(({ command }) => ({
       reporter: ['json']
     },
     testTimeout: isCI ? 10000 : 5000,
-    setupFiles: ['test/setup.ts'],
     reporters: ['basic'],
     restoreMocks: true,
     sequence: {

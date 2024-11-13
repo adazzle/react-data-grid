@@ -28,7 +28,8 @@ export default defineWorkspace([
         commands: { resizeColumn },
         viewport: { width: 1920, height: 1080 },
         headless: true
-      }
+      },
+      setupFiles: ['test/setupBrowser.ts']
     }
   },
   {
@@ -36,7 +37,8 @@ export default defineWorkspace([
     test: {
       name: 'node',
       include: ['test/node/**/*.test.*'],
-      environment: 'node'
+      environment: 'node',
+      setupFiles: ['test/setupNode.ts']
     }
   }
 ]);
