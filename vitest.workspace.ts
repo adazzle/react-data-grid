@@ -30,11 +30,7 @@ export default defineWorkspace([
         headless: true,
         screenshotFailures: process.env.CI !== 'true'
       },
-      setupFiles: ['test/setupBrowser.ts'],
-      expect: {
-        poll: { timeout: 60000 }
-      },
-      testTimeout: 60000
+      setupFiles: ['test/setupBrowser.ts']
     }
   },
   {
