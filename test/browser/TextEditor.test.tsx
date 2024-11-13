@@ -50,7 +50,7 @@ test('TextEditor', async () => {
   // blurring the input closes and commits the editor
   await userEvent.dblClick(getCells()[0]);
   input = screen.getByRole('textbox').element() as HTMLInputElement;
-  await userEvent.keyboard('Jim Milton');
+  await userEvent.fill(input, 'Jim Milton');
   await userEvent.tab();
   await expect.element(input).not.toBeInTheDocument();
   expect(getCells()[0]).toHaveTextContent(/^Jim Milton$/);
