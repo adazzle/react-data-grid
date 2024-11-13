@@ -29,6 +29,8 @@ export function renderCheckbox({
   ...props
 }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    // https://github.com/facebook/react/issues/31358
+    // onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
     onChange(!checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
