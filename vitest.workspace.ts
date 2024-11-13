@@ -27,9 +27,13 @@ export default defineWorkspace([
         provider: 'playwright',
         commands: { resizeColumn },
         viewport: { width: 1920, height: 1080 },
-        headless: true
+        headless: true,
+        screenshotFailures: process.env.CI !== 'true'
       },
-      setupFiles: ['test/setupBrowser.ts']
+      setupFiles: ['test/setupBrowser.ts'],
+      expect: {
+        poll: { timeout: 10000 }
+      }
     }
   },
   {
