@@ -58,6 +58,7 @@ import type {
   SelectRowEvent,
   SortColumn
 } from './types';
+import { defaultRenderCell } from './Cell';
 import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
 import {
   DataGridDefaultRenderersContext,
@@ -278,6 +279,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   const headerRowHeight = rawHeaderRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const summaryRowHeight = rawSummaryRowHeight ?? (typeof rowHeight === 'number' ? rowHeight : 35);
   const renderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
+  const renderCell = renderers?.renderCell ?? defaultRenderers?.renderCell ?? defaultRenderCell;
   const renderSortStatus =
     renderers?.renderSortStatus ?? defaultRenderers?.renderSortStatus ?? defaultRenderSortStatus;
   const renderCheckbox =
@@ -301,6 +303,8 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
+  const [shouldFocusCell, setShouldFocusCell] = useState(false);
+  const [previousRowIdx, setPreviousRowIdx] = useState(-1);
 
   const getColumnWidth = useCallback(
     (column: CalculatedColumn<R, SR>) => {
@@ -347,11 +351,8 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   /**
    * refs
    */
-  const prevSelectedPosition = useRef(selectedPosition);
   const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
-  const lastSelectedRowIdx = useRef(-1);
   const focusSinkRef = useRef<HTMLDivElement>(null);
-  const shouldFocusCellRef = useRef(false);
 
   /**
    * computed values
@@ -369,9 +370,10 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   const defaultGridComponents = useMemo(
     () => ({
       renderCheckbox,
-      renderSortStatus
+      renderSortStatus,
+      renderCell
     }),
-    [renderCheckbox, renderSortStatus]
+    [renderCheckbox, renderSortStatus, renderCell]
   );
 
   const headerSelectionValue = useMemo((): HeaderRowSelectionContextValue => {
@@ -464,30 +466,43 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   });
 
   /**
+   * callbacks
+   */
+  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
+    setOverRowIdx(rowIdx);
+    latestDraggedOverRowIdx.current = rowIdx;
+  }, []);
+
+  const focusCellOrCellContent = useCallback(() => {
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
+  }, [gridRef]);
+
+  /**
    * effects
    */
   useLayoutEffect(() => {
     if (
-      !selectedCellIsWithinSelectionBounds ||
-      isSamePosition(selectedPosition, prevSelectedPosition.current)
+      focusSinkRef.current !== null &&
+      selectedCellIsWithinSelectionBounds &&
+      selectedPosition.idx === -1
     ) {
-      prevSelectedPosition.current = selectedPosition;
-      return;
-    }
-
-    prevSelectedPosition.current = selectedPosition;
-
-    if (selectedPosition.idx === -1) {
-      focusSinkRef.current!.focus({ preventScroll: true });
+      focusSinkRef.current.focus({ preventScroll: true });
       scrollIntoView(focusSinkRef.current);
     }
-  });
+  }, [selectedCellIsWithinSelectionBounds, selectedPosition]);
 
   useLayoutEffect(() => {
-    if (!shouldFocusCellRef.current) return;
-    shouldFocusCellRef.current = false;
-    focusCellOrCellContent();
-  });
+    if (shouldFocusCell) {
+      setShouldFocusCell(false);
+      focusCellOrCellContent();
+    }
+  }, [shouldFocusCell, focusCellOrCellContent]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -503,14 +518,6 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     },
     selectCell
   }));
-
-  /**
-   * callbacks
-   */
-  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
-    setOverRowIdx(rowIdx);
-    latestDraggedOverRowIdx.current = rowIdx;
-  }, []);
 
   /**
    * event handlers
@@ -541,9 +548,8 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     if (isRowSelectionDisabled?.(row) === true) return;
     const newSelectedRows = new Set(selectedRows);
     const rowKey = rowKeyGetter(row);
-    const previousRowIdx = lastSelectedRowIdx.current;
     const rowIdx = rows.indexOf(row);
-    lastSelectedRowIdx.current = rowIdx;
+    setPreviousRowIdx(rowIdx);
 
     if (checked) {
       newSelectedRows.add(rowKey);
@@ -763,7 +769,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
-      shouldFocusCellRef.current = true;
+      setShouldFocusCell(true);
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
 
@@ -875,16 +881,6 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function focusCellOrCellContent() {
-    const cell = getCellToScroll(gridRef.current!);
-    if (cell === null) return;
-
-    scrollIntoView(cell);
-    // Focus cell content when available instead of the cell itself
-    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-    elementToFocus.focus({ preventScroll: true });
-  }
-
   function renderDragHandle() {
     if (
       onFill == null ||
@@ -930,7 +926,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
     const closeEditor = (shouldFocusCell: boolean) => {
-      shouldFocusCellRef.current = shouldFocusCell;
+      setShouldFocusCell(shouldFocusCell);
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
@@ -1066,6 +1062,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
+    // eslint-disable-next-line react-compiler/react-compiler
     setDraggedOverRowIdx(undefined);
   }
 
@@ -1187,6 +1184,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
               );
             })}
             <RowSelectionChangeContext value={selectRowLatest}>
+              {/* eslint-disable-next-line react-compiler/react-compiler */}
               {getViewportRows()}
             </RowSelectionChangeContext>
             {bottomSummaryRows?.map((row, rowIdx) => {
@@ -1250,7 +1248,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
         <ScrollToCell
           scrollToPosition={scrollToPosition}
           setScrollToCellPosition={setScrollToPosition}
-          gridElement={gridRef.current!}
+          gridRef={gridRef}
         />
       )}
     </div>

@@ -4,7 +4,9 @@ import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactHooksExtra from 'eslint-plugin-react-hooks-extra';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 
@@ -18,7 +20,9 @@ export default [
 
     plugins: {
       react,
+      'react-compiler': reactCompiler,
       'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks-extra': reactHooksExtra,
       sonarjs,
       '@typescript-eslint': typescriptEslint
     },
@@ -371,10 +375,21 @@ export default [
       'react/style-prop-object': 0,
       'react/void-dom-elements-no-children': 1,
 
+      // React Compiler
+      // https://react.dev/learn/react-compiler#installing-eslint-plugin-react-compiler
+      'react-compiler/react-compiler': 1,
+
       // React Hooks
       // https://www.npmjs.com/package/eslint-plugin-react-hooks
       'react-hooks/rules-of-hooks': 1,
       'react-hooks/exhaustive-deps': 1,
+
+      // React Hooks Extra
+      // https://eslint-react.xyz/
+      'react-hooks-extra/no-redundant-custom-hook': 1,
+      'react-hooks-extra/no-unnecessary-use-callback': 1,
+      'react-hooks-extra/no-unnecessary-use-memo': 1,
+      'react-hooks-extra/prefer-use-state-lazy-initialization': 1,
 
       // SonarJS rules
       // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
@@ -467,13 +482,14 @@ export default [
       '@typescript-eslint/no-this-alias': 0,
       '@typescript-eslint/no-type-alias': 0,
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
-      '@typescript-eslint/no-unnecessary-condition': 1,
+      '@typescript-eslint/no-unnecessary-condition': [1, { checkTypePredicates: true }],
       '@typescript-eslint/no-unnecessary-parameter-property-assignment': 1,
       '@typescript-eslint/no-unnecessary-qualifier': 0,
       '@typescript-eslint/no-unnecessary-template-expression': 1,
       '@typescript-eslint/no-unnecessary-type-arguments': 1,
       '@typescript-eslint/no-unnecessary-type-assertion': 1,
       '@typescript-eslint/no-unnecessary-type-constraint': 1,
+      '@typescript-eslint/no-unnecessary-type-parameters': 1,
       '@typescript-eslint/no-unsafe-argument': 0,
       '@typescript-eslint/no-unsafe-assignment': 0,
       '@typescript-eslint/no-unsafe-call': 0,
@@ -553,10 +569,6 @@ export default [
         {
           name: '@testing-library/dom',
           message: 'Import @testing-library/react instead.'
-        },
-        {
-          name: 'lodash',
-          message: 'Import lodash-es instead.'
         }
       ],
       '@typescript-eslint/no-shadow': 0,
@@ -582,7 +594,7 @@ export default [
     plugins: {
       vitest,
       'jest-dom': jestDom,
-      'testing-library': fixupPluginRules(testingLibrary)
+      'testing-library': testingLibrary
     },
 
     rules: {
@@ -642,6 +654,7 @@ export default [
       'vitest/prefer-to-contain': 1,
       'vitest/prefer-to-have-length': 1,
       'vitest/prefer-todo': 1,
+      'vitest/prefer-vi-mocked': 1,
       'vitest/require-hook': 0,
       'vitest/require-local-test-context-for-concurrent-snapshots': 0,
       'vitest/require-to-throw-message': 0,

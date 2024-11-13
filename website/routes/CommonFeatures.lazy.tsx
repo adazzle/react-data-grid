@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useMemo, useRef, useState } from 'react';
+import { createPortal, flushSync } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
@@ -9,6 +9,7 @@ import DataGrid, {
   SelectColumn,
   textEditor,
   type Column,
+  type DataGridHandle,
   type SortColumn
 } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
@@ -245,17 +246,23 @@ function rowKeyGetter(row: Row) {
   return row.id;
 }
 
+let countries: string[] = [];
+
 function createRows(): readonly Row[] {
   const now = Date.now();
   const rows: Row[] = [];
+  const countrySet = new Set<string>();
 
   for (let i = 0; i < 1000; i++) {
+    const country = faker.location.country();
+    countrySet.add(country);
+
     rows.push({
       id: i,
       title: `Task #${i + 1}`,
       client: faker.company.name(),
       area: faker.person.jobArea(),
-      country: faker.location.country(),
+      country,
       contact: faker.internet.exampleEmail(),
       assignee: faker.person.fullName(),
       progress: Math.random() * 100,
@@ -268,6 +275,8 @@ function createRows(): readonly Row[] {
       available: Math.random() > 0.5
     });
   }
+
+  countries = [...countrySet].sort(new Intl.Collator().compare);
 
   return rows;
 }
@@ -310,12 +319,9 @@ function CommonFeatures() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
-
-  const countries = useMemo((): readonly string[] => {
-    return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const columns = useMemo(() => getColumns(countries, direction), [countries, direction]);
+  const [isExporting, setIsExporting] = useState(false);
+  const gridRef = useRef<DataGridHandle>(null);
+  const columns = useMemo(() => getColumns(countries, direction), [direction]);
 
   const summaryRows = useMemo((): readonly SummaryRow[] => {
     return [
@@ -342,61 +348,60 @@ function CommonFeatures() {
     });
   }, [rows, sortColumns]);
 
-  const gridElement = (
-    <DataGrid
-      rowKeyGetter={rowKeyGetter}
-      columns={columns}
-      rows={sortedRows}
-      defaultColumnOptions={{
-        sortable: true,
-        resizable: true
-      }}
-      selectedRows={selectedRows}
-      onSelectedRowsChange={setSelectedRows}
-      onRowsChange={setRows}
-      sortColumns={sortColumns}
-      onSortColumnsChange={setSortColumns}
-      topSummaryRows={summaryRows}
-      bottomSummaryRows={summaryRows}
-      className="fill-grid"
-      direction={direction}
-    />
-  );
+  function handleExportToCsv() {
+    flushSync(() => {
+      setIsExporting(true);
+    });
+
+    exportToCsv(gridRef.current!.element!, 'CommonFeatures.csv');
+
+    flushSync(() => {
+      setIsExporting(false);
+    });
+  }
+
+  async function handleExportToPdf() {
+    flushSync(() => {
+      setIsExporting(true);
+    });
+
+    await exportToPdf(gridRef.current!.element!, 'CommonFeatures.pdf');
+
+    flushSync(() => {
+      setIsExporting(false);
+    });
+  }
 
   return (
     <>
       <div className={toolbarClassname}>
-        <ExportButton onExport={() => exportToCsv(gridElement, 'CommonFeatures.csv')}>
+        <button type="button" onClick={handleExportToCsv}>
           Export to CSV
-        </ExportButton>
-        <ExportButton onExport={() => exportToPdf(gridElement, 'CommonFeatures.pdf')}>
+        </button>
+        <button type="button" onClick={handleExportToPdf}>
           Export to PDF
-        </ExportButton>
+        </button>
       </div>
-      {gridElement}
+      <DataGrid
+        ref={gridRef}
+        rowKeyGetter={rowKeyGetter}
+        columns={columns}
+        rows={sortedRows}
+        defaultColumnOptions={{
+          sortable: true,
+          resizable: true
+        }}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        onRowsChange={setRows}
+        sortColumns={sortColumns}
+        onSortColumnsChange={setSortColumns}
+        topSummaryRows={summaryRows}
+        bottomSummaryRows={summaryRows}
+        className="fill-grid"
+        direction={direction}
+        enableVirtualization={!isExporting}
+      />
     </>
-  );
-}
-
-function ExportButton({
-  onExport,
-  children
-}: {
-  onExport: () => Promise<unknown>;
-  children: React.ReactNode;
-}) {
-  const [exporting, setExporting] = useState(false);
-  return (
-    <button
-      type="button"
-      disabled={exporting}
-      onClick={async () => {
-        setExporting(true);
-        await onExport();
-        setExporting(false);
-      }}
-    >
-      {exporting ? 'Exporting' : children}
-    </button>
   );
 }

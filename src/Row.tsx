@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { RowSelectionContext, useLatestFunc, type RowSelectionContextValue } from './hooks';
 import { getColSpan, getRowStyle } from './utils';
 import type { CalculatedColumn, RenderRowProps } from './types';
-import Cell from './Cell';
+import { useDefaultRenderers } from './DataGridDefaultRenderersContext';
 import { rowClassname, rowSelectedClassname } from './style/row';
 
 function Row<R, SR>({
@@ -30,6 +30,8 @@ function Row<R, SR>({
   selectCell,
   ...props
 }: RenderRowProps<R, SR>) {
+  const renderCell = useDefaultRenderers<R, SR>()!.renderCell!;
+
   const handleRowChange = useLatestFunc((column: CalculatedColumn<R, SR>, newRow: R) => {
     onRowChange(column, rowIdx, newRow);
   });
@@ -65,21 +67,20 @@ function Row<R, SR>({
       cells.push(selectedCellEditor);
     } else {
       cells.push(
-        <Cell
-          key={column.key}
-          column={column}
-          colSpan={colSpan}
-          row={row}
-          rowIdx={rowIdx}
-          isCopied={copiedCellIdx === idx}
-          isDraggedOver={draggedOverCellIdx === idx}
-          isCellSelected={isCellSelected}
-          onClick={onCellClick}
-          onDoubleClick={onCellDoubleClick}
-          onContextMenu={onCellContextMenu}
-          onRowChange={handleRowChange}
-          selectCell={selectCell}
-        />
+        renderCell(column.key, {
+          column,
+          colSpan,
+          row,
+          rowIdx,
+          isCopied: copiedCellIdx === idx,
+          isDraggedOver: draggedOverCellIdx === idx,
+          isCellSelected,
+          onClick: onCellClick,
+          onDoubleClick: onCellDoubleClick,
+          onContextMenu: onCellContextMenu,
+          onRowChange: handleRowChange,
+          selectCell
+        })
       );
     }
   }
