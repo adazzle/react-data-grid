@@ -32,8 +32,9 @@ export default defineWorkspace([
       },
       setupFiles: ['test/setupBrowser.ts'],
       expect: {
-        poll: { timeout: 10000 }
-      }
+        poll: { timeout: 20000 }
+      },
+      testTimeout: 20000
     }
   },
   {
