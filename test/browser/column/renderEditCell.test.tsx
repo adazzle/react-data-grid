@@ -80,7 +80,7 @@ describe('Editor', () => {
 
     // await userEvent.click() triggers both mousedown and click, but without delay,
     // which isn't realistic, and isn't enough to trigger outside click detection
-    await userEvent.click(saveButton, { delay: 1 });
+    await userEvent.click(saveButton, { delay: 10 });
 
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith([
