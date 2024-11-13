@@ -106,7 +106,7 @@ describe('Editor', () => {
     expect(getGrid().scrollTop).toBe(2000);
     await userEvent.keyboard('123');
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
-    await expect.element(editor).toHaveValue(1230);
+    await expect.element(editor).toHaveValue(123);
     expect(getGrid().scrollTop).toBe(0);
   });
 
@@ -137,7 +137,7 @@ describe('Editor', () => {
     it('should not be editable if editable function returns false', async () => {
       page.render(<EditorTest editable={(row) => row.col1 === 2} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
-      const editor = page.getByRole('spinbutton', { name: 'col2-editor' });
+      const editor = page.getByRole('textbox', { name: 'col2-editor' });
       expect(editor.query()).not.toBeInTheDocument();
 
       await userEvent.dblClick(getCellsAtRowIndex(1)[1]);
