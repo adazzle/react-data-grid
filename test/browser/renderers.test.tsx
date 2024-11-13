@@ -2,11 +2,7 @@ import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid, {
-  DataGridDefaultRenderersProvider,
-  renderSortIcon,
-  SelectColumn
-} from '../../src';
+import DataGrid, { DataGridDefaultRenderersContext, renderSortIcon, SelectColumn } from '../../src';
 import type {
   CellRendererProps,
   Column,
@@ -94,9 +90,9 @@ function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return <DataGrid {...props} sortColumns={sortColumns} onSortColumnsChange={setSortColumns} />;
 }
 
-function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
+function setupContext<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return render(
-    <DataGridDefaultRenderersProvider
+    <DataGridDefaultRenderersContext
       value={{
         noRowsFallback: <GlobalNoRowsFallback />,
         renderCheckbox: globalRenderCheckbox,
@@ -105,7 +101,7 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
       }}
     >
       <TestGrid {...props} />
-    </DataGridDefaultRenderersProvider>
+    </DataGridDefaultRenderersContext>
   );
 }
 
@@ -116,15 +112,15 @@ test('fallback defined using renderers prop with no rows', () => {
   expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using provider with no rows', () => {
-  setupProvider({ columns, rows: noRows });
+test('fallback defined using context with no rows', () => {
+  setupContext({ columns, rows: noRows });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Global no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using both provider and renderers with no rows', () => {
-  setupProvider({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using both context and renderers with no rows', () => {
+  setupContext({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
@@ -141,15 +137,15 @@ test('fallback defined using renderers prop with a row', () => {
   expect(screen.queryByText('Local no rows fallback')).not.toBeInTheDocument();
 });
 
-test('fallback defined using provider with a row', () => {
-  setupProvider({ columns, rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }] });
+test('fallback defined using context with a row', () => {
+  setupContext({ columns, rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }] });
 
   expect(getRows()).toHaveLength(1);
   expect(screen.queryByText('Global no rows fallback')).not.toBeInTheDocument();
 });
 
-test('fallback defined using both provider and renderers with a row', () => {
-  setupProvider({
+test('fallback defined using both context and renderers with a row', () => {
+  setupContext({
     columns,
     rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }],
     renderers: { noRowsFallback: <NoRowsFallback /> }
@@ -167,23 +163,23 @@ test('checkbox defined using renderers prop', () => {
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
 });
 
-test('checkbox defined using provider', () => {
-  setupProvider({ columns, rows: noRows });
+test('checkbox defined using context', () => {
+  setupContext({ columns, rows: noRows });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Global checkbox')).toBeInTheDocument();
 });
 
-test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
+test('checkbox defined using both context and renderers', () => {
+  setupContext({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
   expect(screen.queryByText('Global checkbox')).not.toBeInTheDocument();
 });
 
-test('sortPriority defined using both providers', async () => {
-  setupProvider({ columns, rows: noRows });
+test('sortPriority defined using both contexts', async () => {
+  setupContext({ columns, rows: noRows });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
@@ -198,8 +194,8 @@ test('sortPriority defined using both providers', async () => {
   expect(screen.queryByTestId('local-sort-priority')).not.toBeInTheDocument();
 });
 
-test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderSortStatus } });
+test('sortPriority defined using both contexts and renderers', async () => {
+  setupContext({ columns, rows: noRows, renderers: { renderSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
@@ -215,7 +211,7 @@ test('sortPriority defined using both providers and renderers', async () => {
 });
 
 test('renderCell defined using provider', () => {
-  setupProvider({ columns, rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }] });
+  setupContext({ columns, rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }] });
 
   const [, cell1, cell2] = getCells();
   expect(cell1).toHaveTextContent('col 1 value');
@@ -223,7 +219,7 @@ test('renderCell defined using provider', () => {
 });
 
 test('renderCell defined using both providers and renderers', () => {
-  setupProvider({
+  setupContext({
     columns,
     rows: [{ id: 1, col1: 'col 1 value', col2: 'col 2 value' }],
     renderers: { renderCell: localCellRenderer }
