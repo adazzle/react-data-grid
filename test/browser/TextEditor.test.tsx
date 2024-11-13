@@ -44,7 +44,7 @@ test('TextEditor', async () => {
   // pressing escape closes the editor without committing
   await userEvent.keyboard('Test{escape}');
   expect(input).not.toBeInTheDocument();
-  expect.element(getCellsNew()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
+  await expect.element(getCellsNew()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
 
   // blurring the input closes and commits the editor
   await userEvent.dblClick(getCellsNew()[0]);
@@ -52,5 +52,5 @@ test('TextEditor', async () => {
   await userEvent.fill(input, 'Jim Milton');
   await userEvent.tab();
   expect(input).not.toBeInTheDocument();
-  expect.element(getCellsNew()[0]).toHaveTextContent(/^Jim Milton$/);
+  await expect.element(getCellsNew()[0]).toHaveTextContent(/^Jim Milton$/);
 });
