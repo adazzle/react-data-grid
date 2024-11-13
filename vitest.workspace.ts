@@ -27,7 +27,8 @@ export default defineWorkspace([
         provider: 'playwright',
         commands: { resizeColumn },
         viewport: { width: 1920, height: 1080 },
-        headless: true
+        headless: true,
+        screenshotFailures: process.env.CI !== 'true'
       }
     }
   },
