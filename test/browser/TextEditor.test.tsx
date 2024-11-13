@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { userEvent } from '@vitest/browser/context';
-import { render } from 'vitest-browser-react';
+import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid, { textEditor } from '../../src';
 import type { Column } from '../../src';
-import { getCells } from './utils';
+import { getCellsNew } from './utils';
 
 interface Row {
   readonly name: string;
@@ -29,10 +28,10 @@ function Test() {
 }
 
 test('TextEditor', async () => {
-  const screen = render(<Test />);
+  page.render(<Test />);
 
-  await userEvent.dblClick(getCells()[0]);
-  let input = screen.getByRole('textbox').element() as HTMLInputElement;
+  await userEvent.dblClick(getCellsNew()[0]);
+  let input = page.getByRole('textbox').element() as HTMLInputElement;
   expect(input).toHaveClass('rdg-text-editor');
   // input value is row[column.key]
   expect(input).toHaveValue(initialRows[0].name);
@@ -45,13 +44,13 @@ test('TextEditor', async () => {
   // pressing escape closes the editor without committing
   await userEvent.keyboard('Test{escape}');
   expect(input).not.toBeInTheDocument();
-  expect(getCells()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
+  expect.element(getCellsNew()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
 
   // blurring the input closes and commits the editor
-  await userEvent.dblClick(getCells()[0]);
-  input = screen.getByRole('textbox').element() as HTMLInputElement;
+  await userEvent.dblClick(getCellsNew()[0]);
+  input = page.getByRole('textbox').element() as HTMLInputElement;
   await userEvent.fill(input, 'Jim Milton');
   await userEvent.tab();
-  await expect.element(input).not.toBeInTheDocument();
-  expect(getCells()[0]).toHaveTextContent(/^Jim Milton$/);
+  expect(input).not.toBeInTheDocument();
+  expect.element(getCellsNew()[0]).toHaveTextContent(/^Jim Milton$/);
 });
