@@ -169,7 +169,7 @@ A number defining the height of summary rows.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
-An set defining keys of selected rows. `rowKeyGetter` is required for row selection to work.
+A set defining keys of selected rows. `rowKeyGetter` is required for row selection to work.
 
 ###### `isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>`
 
@@ -183,22 +183,15 @@ A function called when row selection is changed.
 import { useState } from 'react';
 import DataGrid, { SelectColumn } from 'react-data-grid';
 
-const rows = [];
+const rows: readonly Rows[] = [...];
 
 const columns: readonly Column<Row>[] = [
-  SelectColumn,
-  {
-    key: 'name',
-    name: 'Name'
-  }
+  SelectColumn
+  // other columns
 ];
 
 function MyGrid() {
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
-
-  function isRowSelectionDisabled(row) {
-    return !row.isActive;
-  }
 
   return (
     <DataGrid
@@ -211,11 +204,60 @@ function MyGrid() {
     />
   );
 }
+
+function rowKeyGetter(row: Row) {
+  return row.id;
+}
+
+function isRowSelectionDisabled(row: Row) {
+  return !row.isActive;
+}
 ```
 
 ###### `sortColumns?: Maybe<readonly SortColumn[]>`
 
+An array of sorted columns.
+
 ###### `onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>`
+
+A function called when sorting is changed
+
+```tsx
+import { useState } from 'react';
+import DataGrid, { SelectColumn } from 'react-data-grid';
+
+const rows: readonly Rows[] = [...];
+
+const columns: readonly Column<Row>[] = [
+  {
+    key: 'name',
+    name: 'Name',
+    sortable: true
+  },
+  // other columns
+];
+
+function MyGrid() {
+  const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+
+  return (
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      sortColumns={sortColumns}
+      onSortColumnsChange={setSortColumns}
+    />
+  );
+}
+```
+
+Grid can be sorted on multiple columns using `ctrl (command) + click`. To disable multiple sorting, change the `onSortColumnsChange` function to
+
+```tsx
+onSortColumnsChange(sortColumns: SortColumn[]) {
+  setSortColumns(sortColumns.slice(-1));
+}
+```
 
 ###### `defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>`
 
@@ -291,7 +333,21 @@ function MyGrid() {
 
 :warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `renderRow`.
 
-###### `rowClass?: Maybe<(row: R) => Maybe<string>>`
+###### `rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>`
+
+A function to add a class on the row
+
+```tsx
+import DataGrid from 'react-data-grid';
+
+function MyGrid() {
+  return <DataGrid columns={columns} rows={rows} rowClass={rowClass} />;
+}
+
+function rowClass(row: Row, rowIdx: number) {
+  return rowIdx % 2 === 0 ? 'even' : 'odd';
+}
+```
 
 ##### `direction?: Maybe<'ltr' | 'rtl'>`
 
@@ -304,13 +360,23 @@ This property sets the text direction of the grid, it defaults to `'ltr'` (left-
 
 ###### `className?: string | undefined`
 
+custom classname
+
 ###### `style?: CSSProperties | undefined`
+
+custom styles
 
 ###### `'aria-label'?: string | undefined`
 
+The label of the Data Grid. We recommend providing a label using `aria-label` or `aria-labelledby`
+
 ###### `'aria-labelledby'?: string | undefined`
 
+The id of the element containing a label for the Data Grid. We recommend providing a label using `aria-label` or `aria-labelledby`
+
 ###### `'aria-describedby'?: string | undefined`
+
+If the grid has a caption or description, `aria-describedby` can be set on the grid element with a value referring to the element containing the description.
 
 ###### `'data-testid'?: Maybe<string>`
 
