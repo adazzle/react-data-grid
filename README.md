@@ -103,9 +103,11 @@ An array of rows, the rows data can be of any type.
 
 ###### `topSummaryRows?: Maybe<readonly SR[]>`
 
+An optional array of summary rows to show above the rows, usually used to display total values for example.
+
 ###### `bottomSummaryRows?: Maybe<readonly SR[]>`
 
-An optional array of summary rows, usually used to display total values for example.
+An optional array of summary rows to show below the rows, usually used to display total values for example.
 
 ###### `rowKeyGetter?: Maybe<(row: R) => K>`
 
@@ -167,9 +169,49 @@ A number defining the height of summary rows.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
+An set defining keys of selected rows. `rowKeyGetter` is required for row selection to work.
+
 ###### `isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>`
 
+A function used to disable row selection on certain rows.
+
 ###### `onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>`
+
+A function called when row selection is changed.
+
+```tsx
+import { useState } from 'react';
+import DataGrid, { SelectColumn } from 'react-data-grid';
+
+const rows = [];
+
+const columns: readonly Column<Row>[] = [
+  SelectColumn,
+  {
+    key: 'name',
+    name: 'Name'
+  }
+];
+
+function MyGrid() {
+  const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
+
+  function isRowSelectionDisabled(row) {
+    return !row.isActive;
+  }
+
+  return (
+    <DataGrid
+      rowKeyGetter={rowKeyGetter}
+      columns={columns}
+      rows={rows}
+      selectedRows={selectedRows}
+      isRowSelectionDisabled={isRowSelectionDisabled}
+      onSelectedRowsChange={setSelectedRows}
+    />
+  );
+}
+```
 
 ###### `sortColumns?: Maybe<readonly SortColumn[]>`
 
