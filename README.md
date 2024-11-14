@@ -277,9 +277,56 @@ onSortColumnsChange(sortColumns: SortColumn[]) {
 
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
+A function called when cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent to override the default bahavior
+
+```tsx
+function onCellClick(args, event) {
+  if (args.column.key === 'id') {
+    event.preventGridDefault();
+  }
+}
+
+<DataGrid rows={rows} columns={columns} onCellClick={onCellClick} />;
+```
+
+This event can be used to open cell editor on single click
+
+```tsx
+function onCellClick(args, event) {
+  if (args.column.key === 'id') {
+    event.preventGridDefault();
+    args.selectCell(true);
+  }
+}
+```
+
 ###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
+A function called when cell is double clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to override the default bahavior
+
+```tsx
+function onCellDoubleClick(args, event) {
+  if (args.column.key === 'id') {
+    event.preventGridDefault();
+  }
+}
+
+<DataGrid rows={rows} columns={columns} onCellDoubleClick={onCellDoubleClick} />;
+```
+
 ###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+
+A function called when cell is right clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent to override the default bahavior
+
+```tsx
+function onCellContextMenu(args, event) {
+  if (args.column.key === 'id') {
+    event.preventGridDefault();
+  }
+}
+
+<DataGrid rows={rows} columns={columns} onCellContextMenu={onCellContextMenu} />;
+```
 
 ###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
 
