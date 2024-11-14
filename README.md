@@ -277,7 +277,7 @@ onSortColumnsChange(sortColumns: SortColumn[]) {
 
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-A function called when cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent to override the default bahavior
+A function called when cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default bahavior
 
 ```tsx
 function onCellClick(args, event) {
@@ -302,7 +302,7 @@ function onCellClick(args, event) {
 
 ###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-A function called when cell is double clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to override the default bahavior
+A function called when cell is double clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default bahavior
 
 ```tsx
 function onCellDoubleClick(args, event) {
@@ -316,7 +316,7 @@ function onCellDoubleClick(args, event) {
 
 ###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-A function called when cell is right clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent to override the default bahavior
+A function called when cell is right clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default bahavior
 
 ```tsx
 function onCellContextMenu(args, event) {
@@ -342,9 +342,15 @@ Arguments:
 
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
+A function called when the grid is scrolled.
+
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
 
 ###### `enableVirtualization?: Maybe<boolean>`
+
+> Default: `true`
+
+This prop can be used to disable virtualization.
 
 ###### `renderers?: Maybe<Renderers<R, SR>>`
 
