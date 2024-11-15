@@ -30,7 +30,7 @@ export default defineWorkspace([
         headless: true,
         screenshotFailures: process.env.CI !== 'true'
       },
-      setupFiles: ['test/setupBrowser.ts']
+      setupFiles: ['test/setup.ts', 'test/setupBrowser.ts']
     }
   },
   {
@@ -39,7 +39,7 @@ export default defineWorkspace([
       name: 'node',
       include: ['test/node/**/*.test.*'],
       environment: 'node',
-      setupFiles: ['test/setupNode.ts']
+      setupFiles: ['test/setup.ts']
     }
   }
 ]);
