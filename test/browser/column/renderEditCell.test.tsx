@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { waitFor } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../../src';
@@ -17,12 +16,12 @@ describe('Editor', () => {
     page.render(<EditorTest />);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(editor.query()).not.toBeInTheDocument();
+    await expect.element(editor).not.toBeInTheDocument();
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('2');
     await userEvent.tab();
-    expect(editor.query()).not.toBeInTheDocument();
+    await expect.element(editor).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12$/);
   });
 
@@ -30,13 +29,13 @@ describe('Editor', () => {
     page.render(<EditorTest />);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(editor.query()).not.toBeInTheDocument();
+    await expect.element(editor).not.toBeInTheDocument();
     await userEvent.keyboard('{enter}');
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('3{enter}');
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
     expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
-    expect(editor.query()).not.toBeInTheDocument();
+    await expect.element(editor).not.toBeInTheDocument();
   });
 
   it('should open editor when user types', async () => {
@@ -52,7 +51,7 @@ describe('Editor', () => {
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('2222{escape}');
-    expect(editor.query()).not.toBeInTheDocument();
+    await expect.element(editor).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1$/);
     expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
   });
@@ -64,9 +63,7 @@ describe('Editor', () => {
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('2222');
     await userEvent.click(page.getByText('outside'));
-    await waitFor(() => {
-      expect(editor.query()).not.toBeInTheDocument();
-    });
+    await expect.element(editor).not.toBeInTheDocument();
     expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12222$/);
   });
 
@@ -101,7 +98,7 @@ describe('Editor', () => {
     await scrollGrid({ scrollTop: 2000 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
-    expect(editor.query()).not.toBeInTheDocument();
+    await expect.element(editor).not.toBeInTheDocument();
     expect(getGrid().scrollTop).toBe(2000);
     await userEvent.keyboard('123');
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
@@ -129,15 +126,17 @@ describe('Editor', () => {
       const cell = getCellsAtRowIndex(0)[1];
       expect(cell).toHaveAttribute('aria-readonly', 'true');
       await userEvent.dblClick(cell);
-      // eslint-disable-next-line testing-library/prefer-presence-queries
-      expect(page.getByRole('textbox', { name: 'col2-editor' }).query()).not.toBeInTheDocument();
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'col2-editor' }))
+        .not.toBeInTheDocument();
     });
 
     it('should not be editable if editable function returns false', async () => {
       page.render(<EditorTest editable={(row) => row.col1 === 2} />);
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       const editor = page.getByRole('textbox', { name: 'col2-editor' });
-      expect(editor.query()).not.toBeInTheDocument();
+      await expect.element(editor).not.toBeInTheDocument();
 
       await userEvent.dblClick(getCellsAtRowIndex(1)[1]);
       await expect.element(editor).toBeInTheDocument();
@@ -158,9 +157,7 @@ describe('Editor', () => {
       await expect.element(editor1).toBeInTheDocument();
       // true outside clicks are still detected
       await userEvent.click(page.getByText('outside'));
-      await waitFor(() => {
-        expect(editor1.query()).not.toBeInTheDocument();
-      });
+      await expect.element(editor1).not.toBeInTheDocument();
       expect(getCellsAtRowIndex(0)[1]).not.toHaveFocus();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
@@ -184,7 +181,7 @@ describe('Editor', () => {
       await expect.element(editor).toBeInTheDocument();
       await userEvent.click(editor);
       await userEvent.keyboard('{enter}');
-      expect(editor.query()).not.toBeInTheDocument();
+      await expect.element(editor).not.toBeInTheDocument();
     });
 
     it('should not open editor if onCellKeyDown prevents the default event', async () => {
@@ -201,8 +198,9 @@ describe('Editor', () => {
       await userEvent.keyboard('yz{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
       await userEvent.keyboard('x');
-      // eslint-disable-next-line testing-library/prefer-presence-queries
-      expect(page.getByRole('textbox', { name: 'col2-editor' }).query()).not.toBeInTheDocument();
+      await expect
+        .element(page.getByRole('textbox', { name: 'col2-editor' }))
+        .not.toBeInTheDocument();
     });
 
     it('should prevent navigation if onCellKeyDown prevents the default event', async () => {
@@ -286,9 +284,7 @@ describe('Editor', () => {
       await expect.element(col1Input).toHaveFocus();
       await userEvent.click(outerInput);
       await expect.element(outerInput).toHaveFocus();
-      await waitFor(() => {
-        expect(col1Input.query()).not.toBeInTheDocument();
-      });
+      await expect.element(col1Input).not.toBeInTheDocument();
       await expect.element(outerInput).toHaveFocus();
 
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
@@ -296,7 +292,7 @@ describe('Editor', () => {
       await expect.element(col2Input).toHaveFocus();
       await userEvent.click(outerInput);
       await expect.element(outerInput).toHaveFocus();
-      expect(col2Input.query()).not.toBeInTheDocument();
+      await expect.element(col2Input).not.toBeInTheDocument();
     });
   });
 });
