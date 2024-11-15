@@ -707,7 +707,7 @@ export default [
       'testing-library/prefer-presence-queries': 1,
       'testing-library/prefer-query-by-disappearance': 1,
       'testing-library/prefer-query-matchers': 0,
-      'testing-library/prefer-screen-queries': 1,
+      'testing-library/prefer-screen-queries': 0,
       'testing-library/prefer-user-event': 1,
       'testing-library/render-result-naming-convention': 0
     }

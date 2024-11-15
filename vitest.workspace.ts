@@ -29,7 +29,8 @@ export default defineWorkspace([
         viewport: { width: 1920, height: 1080 },
         headless: true,
         screenshotFailures: process.env.CI !== 'true'
-      }
+      },
+      setupFiles: ['test/setup.ts', 'test/setupBrowser.ts']
     }
   },
   {
@@ -37,7 +38,8 @@ export default defineWorkspace([
     test: {
       name: 'node',
       include: ['test/node/**/*.test.*'],
-      environment: 'node'
+      environment: 'node',
+      setupFiles: ['test/setup.ts']
     }
   }
 ]);

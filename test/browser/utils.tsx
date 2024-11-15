@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
-import { userEvent } from '@vitest/browser/context';
+import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
@@ -41,6 +41,10 @@ export function getCellsAtRowIndex(rowIdx: number) {
 
 export function getCells() {
   return screen.getAllByRole('gridcell');
+}
+
+export function getCellsNew() {
+  return page.getByRole('gridcell').all();
 }
 
 export function queryCells() {
