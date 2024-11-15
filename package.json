@@ -87,7 +87,7 @@
     "@wyw-in-js/vite": "^0.5.0",
     "babel-plugin-optimize-clsx": "^2.6.2",
     "browserslist": "^4.24.0",
-    "eslint": "^9.14.0",
+    "eslint": "9.14.0",
     "eslint-plugin-jest-dom": "^5.0.1",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-compiler": "^19.0.0-beta-a7bf2bd-20241110",
@@ -108,7 +108,8 @@
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.6.2",
     "vite": "^5.4.5",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.1",
+    "vitest-browser-react": "^0.0.3"
   },
   "peerDependencies": {
     "react": "^18.0 || ^19.0",
