@@ -531,6 +531,23 @@ The name of the column. By default it will be displayed in the header cell
 
 A unique key to distinguish each column
 
+##### `width` **Default** `auto`
+
+Width can be any valid css grid column value. If not specified, it will be determined automatically based on grid width and specified widths of other columns.
+
+```tsx
+width: 80; // pixels
+width: '25%';
+width: 'max-length';
+width: 'minmax(100px, max-content)';
+```
+
+`max-content` can be used to expand the column to show all the content. Note that the grid is only able to calculate column width for visible rows.
+
+##### `minWidth` **Default** `50` pixels
+
+##### `maxWidth`
+
 #### `DataGridHandle`
 
 #### `RenderEditCellProps`
