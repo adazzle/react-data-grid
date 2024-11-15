@@ -1,0 +1,2 @@
+import{c as t,u as n,j as i}from"./index-gBQNqS-J.js";import{D as a}from"./DataGrid-BQcfWU62.js";import{r as s}from"./renderCoordinates-BnaeBmsm.js";const h=t("/VariableRowHeight")({component:m}),c=Array.from({length:500},(r,e)=>e),o=[];for(let r=0;r<30;r++){const e=String(r);o.push({key:e,name:e,frozen:r<5,resizable:!0,renderCell:s})}function m(){const r=n();return i.jsx(a,{columns:o,rows:c,rowHeight:u,className:"fill-grid",direction:r})}function u(){return 25+Math.round(Math.random()*75)}export{h as Route};
+//# sourceMappingURL=VariableRowHeight.lazy-NRwWn8rb.js.map
