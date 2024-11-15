@@ -41,19 +41,19 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-function globalRenderCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
+function renderGlobalCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
   return <Cell key={key} {...props} className="global" style={{ fontStyle: 'italic' }} />;
 }
 
-function localRenderCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
+function renderLocalCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
   return <Cell key={key} {...props} className="local" style={{ fontStyle: 'normal' }} />;
 }
 
-function globalRenderRow(key: React.Key, props: RenderRowProps<Row>) {
+function renderGlobalRow(key: React.Key, props: RenderRowProps<Row>) {
   return <DefaultRow key={key} {...props} className="global" />;
 }
 
-function localRenderRow(key: React.Key, props: RenderRowProps<Row>) {
+function renderLocalRow(key: React.Key, props: RenderRowProps<Row>) {
   return <DefaultRow key={key} {...props} className="local" />;
 }
 
@@ -61,19 +61,19 @@ function NoRowsFallback() {
   return <div>Local no rows fallback</div>;
 }
 
-function GlobalNoRowsFallback() {
+function NoRowsGlobalFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function localRenderCheckbox() {
+function renderLocalCheckbox() {
   return <div>Local checkbox</div>;
 }
 
-function globalRenderCheckbox() {
+function renderGlobalCheckbox() {
   return <div>Global checkbox</div>;
 }
 
-function globalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
+function renderGlobalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
       {renderSortIcon({ sortDirection })}
@@ -82,7 +82,7 @@ function globalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   );
 }
 
-function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
+function renderLocalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
       {renderSortIcon({ sortDirection })}
@@ -101,11 +101,11 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
   return render(
     <DataGridDefaultRenderersProvider
       value={{
-        noRowsFallback: <GlobalNoRowsFallback />,
-        renderCheckbox: globalRenderCheckbox,
-        renderSortStatus: globalSortStatus,
-        renderCell: globalRenderCell,
-        renderRow: globalRenderRow
+        noRowsFallback: <NoRowsGlobalFallback />,
+        renderCheckbox: renderGlobalCheckbox,
+        renderSortStatus: renderGlobalSortStatus,
+        renderCell: renderGlobalCell,
+        renderRow: renderGlobalRow
       }}
     >
       <TestGrid {...props} />
@@ -165,7 +165,7 @@ test('fallback defined using both provider and renderers with a row', () => {
 });
 
 test('checkbox defined using renderers prop', () => {
-  setup({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
+  setup({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -179,7 +179,7 @@ test('checkbox defined using provider', () => {
 });
 
 test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
+  setupProvider({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
   expect(getRows()).toHaveLength(0);
   expect(screen.getByText('Local checkbox')).toBeInTheDocument();
@@ -203,7 +203,7 @@ test('sortPriority defined using both providers', async () => {
 });
 
 test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderSortStatus } });
+  setupProvider({ columns, rows: noRows, renderers: { renderSortStatus: renderLocalSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   const user = userEvent.setup();
@@ -237,7 +237,7 @@ test('renderCell defined using both providers and renderers', () => {
   setupProvider({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
-    renderers: { renderCell: localRenderCell }
+    renderers: { renderCell: renderLocalCell }
   });
 
   const [, cell1, cell2] = getCells();
@@ -264,7 +264,7 @@ test('renderRow defined using both providers and renderers', () => {
   setupProvider({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
-    renderers: { renderRow: localRenderRow }
+    renderers: { renderRow: renderLocalRow }
   });
 
   const [row] = getRows();
