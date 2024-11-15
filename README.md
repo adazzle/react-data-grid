@@ -531,7 +531,9 @@ The name of the column. By default it will be displayed in the header cell
 
 A unique key to distinguish each column
 
-##### `width` **Default** `auto`
+##### `width`
+
+**Default** `auto`
 
 Width can be any valid css grid column value. If not specified, it will be determined automatically based on grid width and specified widths of other columns.
 
@@ -544,9 +546,33 @@ width: 'minmax(100px, max-content)';
 
 `max-content` can be used to expand the column to show all the content. Note that the grid is only able to calculate column width for visible rows.
 
-##### `minWidth` **Default** `50` pixels
+##### `minWidth`
+
+**Default**: `50` pixels
+
+Sets the maximum width of a column.
 
 ##### `maxWidth`
+
+Sets the maximum width of a column.
+
+##### `cellClass`
+
+##### `headerCellClass`
+
+##### `summaryCellClass`
+
+##### `renderCell`
+
+Render function used to render the content of cells
+
+##### `renderHeaderCell`
+
+Render function used to render the content of header cells
+
+##### `renderSummaryCell`
+
+Render function used to render the content of summary cells
 
 #### `DataGridHandle`
 
