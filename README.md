@@ -343,6 +343,30 @@ function onCellContextMenu(args, event) {
 
 A function called when keydown event is triggered on a cell. This event can be used to customize cell navigation and editing behavior.
 
+**Examples**
+
+- Prevent editing on `Enter`
+
+```tsx
+function onCellKeyDown(args, event) {
+  if (args.mode === 'SELECT' && event.key === 'Enter') {
+    event.preventGridDefault();
+  }
+}
+```
+
+- Prevent navigation on `Tab`
+
+```tsx
+function onCellKeyDown(args, event) {
+  if (args.mode === 'SELECT' && event.key === 'Tab') {
+    event.preventGridDefault();
+  }
+}
+```
+
+Check [more examples](website/routes/CellNavigation.lazy.tsx)
+
 ###### `onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
 
 Triggered when the selected cell is changed.
@@ -462,7 +486,7 @@ function MyGridTest() {
 
 #### `<TreeDataGrid />`
 
-`TreeDataGrid` is component built on top of `DataGrid` to add row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/).
+`TreeDataGrid` is component built on top of `DataGrid` to add row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/). At
 
 ###### `groupBy?: Maybe<readonly string[]>`
 
@@ -471,6 +495,8 @@ function MyGridTest() {
 ###### `expandedGroupIds?: Maybe<ReadonlySet<unknown>>`
 
 ###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
+
+At the moment `TreeDataGrid` does not support `onFill` and `isRowDisabled` props
 
 #### `<TextEditor />`
 
