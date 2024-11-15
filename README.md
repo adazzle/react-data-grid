@@ -103,11 +103,11 @@ An array of rows, the rows data can be of any type.
 
 ###### `topSummaryRows?: Maybe<readonly SR[]>`
 
-An optional array of summary rows to show above the rows, usually used to display total values for example.
+An optional array of summary rows, usually used to display total values for example. `topSummaryRows` are pinned at the top of the rows view and the vertical scroll bar will not scroll these rows.
 
 ###### `bottomSummaryRows?: Maybe<readonly SR[]>`
 
-An optional array of summary rows to show below the rows, usually used to display total values for example.
+An optional array of summary rows, usually used to display total values for example. `bottomSummaryRows` are pinned at the bottom of the rows view and the vertical scroll bar will not scroll these rows.
 
 ###### `rowKeyGetter?: Maybe<(row: R) => K>`
 
@@ -169,7 +169,7 @@ A number defining the height of summary rows.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
-A set defining keys of selected rows. `rowKeyGetter` is required for row selection to work.
+A set of selected row keys. `rowKeyGetter` is required for row selection to work.
 
 ###### `isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>`
 
@@ -186,7 +186,7 @@ import DataGrid, { SelectColumn } from 'react-data-grid';
 const rows: readonly Rows[] = [...];
 
 const columns: readonly Column<Row>[] = [
-  SelectColumn
+  SelectColumn,
   // other columns
 ];
 
@@ -277,7 +277,7 @@ onSortColumnsChange(sortColumns: SortColumn[]) {
 
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-A function called when cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default bahavior
+Triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
 function onCellClick(args, event) {
@@ -302,7 +302,7 @@ function onCellClick(args, event) {
 
 ###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-A function called when cell is double clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default bahavior
+Triggered when a cell is double clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
 function onCellDoubleClick(args, event) {
@@ -316,7 +316,7 @@ function onCellDoubleClick(args, event) {
 
 ###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-A function called when cell is right clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default bahavior
+Triggered when a cell is right clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
 function onCellContextMenu(args, event) {
@@ -329,6 +329,8 @@ function onCellContextMenu(args, event) {
 ```
 
 ###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
+
+A function called when keydown event is triggered on a cell. This event can be used to customize cell navigation and editing behavior.
 
 ###### `onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
 
@@ -346,9 +348,11 @@ A function called when the grid is scrolled.
 
 ###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
 
+A function called when column is resized.
+
 ###### `enableVirtualization?: Maybe<boolean>`
 
-> Default: `true`
+**Default:** `true`
 
 This prop can be used to disable virtualization.
 
@@ -402,7 +406,7 @@ function rowClass(row: Row, rowIdx: number) {
 }
 ```
 
-##### `direction?: Maybe<'ltr' | 'rtl'>`
+###### `direction?: Maybe<'ltr' | 'rtl'>`
 
 This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
 
@@ -421,17 +425,29 @@ custom styles
 
 ###### `'aria-label'?: string | undefined`
 
-The label of the Data Grid. We recommend providing a label using `aria-label` or `aria-labelledby`
+The label of the grid. We recommend providing a label using `aria-label` or `aria-labelledby`
 
 ###### `'aria-labelledby'?: string | undefined`
 
-The id of the element containing a label for the Data Grid. We recommend providing a label using `aria-label` or `aria-labelledby`
+The id of the element containing a label for the grid. We recommend providing a label using `aria-label` or `aria-labelledby`
 
 ###### `'aria-describedby'?: string | undefined`
 
 If the grid has a caption or description, `aria-describedby` can be set on the grid element with a value referring to the element containing the description.
 
 ###### `'data-testid'?: Maybe<string>`
+
+This prop can be used to add a testid for testing. We recommend using `role` and `name` to find the grid element
+
+```tsx
+function MyGrid() {
+  return <DataGrid aria-label="my-grid" columns={columns} rows={rows} />;
+}
+
+function MyGridTest() {
+  const grid = screen.getByRole('grid', { name: 'my-grid' });
+}
+```
 
 #### `<TextEditor />`
 
@@ -501,11 +517,19 @@ See [`RenderGroupCellProps`](#rendergroupcellprops)
 
 #### `SelectColumn: Column<any, any>`
 
-#### `SELECT_COLUMN_KEY = 'select-row'`
+#### `SELECT_COLUMN_KEY = 'rdg-select-column'`
 
 ### Types
 
 #### `Column`
+
+##### `name` **required**
+
+The name of the column. By default it will be displayed in the header cell
+
+##### `key` **required**
+
+A unique key to distinguish each column
 
 #### `DataGridHandle`
 
