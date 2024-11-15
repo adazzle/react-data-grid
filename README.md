@@ -251,7 +251,7 @@ function MyGrid() {
 }
 ```
 
-Grid can be sorted on multiple columns using `ctrl (command) + click`. To disable multiple sorting, change the `onSortColumnsChange` function to
+Grid can be sorted on multiple columns using `ctrl (command) + click`. To disable multiple column sorting, change the `onSortColumnsChange` function to
 
 ```tsx
 onSortColumnsChange(sortColumns: SortColumn[]) {
@@ -291,7 +291,7 @@ function MyGrid() {
 Triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
-function onCellClick(args, event) {
+function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
@@ -303,13 +303,26 @@ function onCellClick(args, event) {
 This event can be used to open cell editor on single click
 
 ```tsx
-function onCellClick(args, event) {
+function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
     args.selectCell(true);
   }
 }
 ```
+
+Arguments:
+
+`args: CellClickArgs<R, SR>`
+
+- `args.row`: `R` - row object of the currently selected cell
+- `args.column`: `CalculatedColumn<TRow, TSummaryRow>` - column object of the currently selected cell
+- `args.selectCell`: `(enableEditor?: boolean) => void` - function to manually select the cell and optionally pass `true` to start editing
+
+`event` extends `React.MouseEvent<HTMLDivElement>`
+
+- `event.preventGridDefault:`: `() => void`
+- `event.isGridDefaultPrevented`: `boolean`
 
 ###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
