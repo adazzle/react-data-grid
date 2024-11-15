@@ -329,7 +329,7 @@ Arguments:
 Triggered when a cell is double clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
-function onCellDoubleClick(args, event) {
+function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
@@ -343,7 +343,7 @@ function onCellDoubleClick(args, event) {
 Triggered when a cell is right clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
-function onCellContextMenu(args, event) {
+function onCellContextMenu(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
@@ -361,7 +361,7 @@ A function called when keydown event is triggered on a cell. This event can be u
 - Prevent editing on `Enter`
 
 ```tsx
-function onCellKeyDown(args, event) {
+function onCellKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
   if (args.mode === 'SELECT' && event.key === 'Enter') {
     event.preventGridDefault();
   }
@@ -371,7 +371,7 @@ function onCellKeyDown(args, event) {
 - Prevent navigation on `Tab`
 
 ```tsx
-function onCellKeyDown(args, event) {
+function onCellKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
   if (args.mode === 'SELECT' && event.key === 'Tab') {
     event.preventGridDefault();
   }
@@ -499,7 +499,7 @@ function MyGridTest() {
 
 #### `<TreeDataGrid />`
 
-`TreeDataGrid` is component built on top of `DataGrid` to add row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/). At
+`TreeDataGrid` is component built on top of `DataGrid` to add row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/). At the moment `TreeDataGrid` does not support `onFill` and `isRowDisabled` props
 
 ###### `groupBy?: Maybe<readonly string[]>`
 
@@ -508,8 +508,6 @@ function MyGridTest() {
 ###### `expandedGroupIds?: Maybe<ReadonlySet<unknown>>`
 
 ###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
-
-At the moment `TreeDataGrid` does not support `onFill` and `isRowDisabled` props
 
 #### `<TextEditor />`
 
