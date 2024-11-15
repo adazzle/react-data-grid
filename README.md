@@ -261,13 +261,24 @@ onSortColumnsChange(sortColumns: SortColumn[]) {
 
 ###### `defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>`
 
-###### `groupBy?: Maybe<readonly string[]>`
+Column options that are applied to all the columns
 
-###### `rowGrouper?: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>`
-
-###### `expandedGroupIds?: Maybe<ReadonlySet<unknown>>`
-
-###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
+```tsx
+function MyGrid() {
+  return (
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      defaultColumnOptions={{
+        minWidth: 100,
+        resizable: true,
+        sortable: true,
+        draggable: true
+      }}
+    />
+  );
+}
+```
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
@@ -362,10 +373,10 @@ This prop can be used to override the internal renderers. The prop accepts an ob
 
 ```tsx
 interface Renderers<TRow, TSummaryRow> {
+  renderCell?: Maybe<(key: Key, props: CellRendererProps<TRow, TSummaryRow>) => ReactNode>;
   renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
   renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
   renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
-  renderCell?: Maybe<(key: Key, props: CellRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 ```
@@ -449,6 +460,18 @@ function MyGridTest() {
 }
 ```
 
+#### `<TreeDataGrid />`
+
+`TreeDataGrid` is component built on top of `DataGrid` to add row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/).
+
+###### `groupBy?: Maybe<readonly string[]>`
+
+###### `rowGrouper?: Maybe<(rows: readonly R[], columnKey: string) => Record<string, readonly R[]>>`
+
+###### `expandedGroupIds?: Maybe<ReadonlySet<unknown>>`
+
+###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
+
 #### `<TextEditor />`
 
 ##### Props
@@ -523,15 +546,15 @@ See [`RenderGroupCellProps`](#rendergroupcellprops)
 
 #### `Column`
 
-##### `name` **required**
+##### `name: string | ReactElement`
 
 The name of the column. By default it will be displayed in the header cell
 
-##### `key` **required**
+##### `key: string`
 
 A unique key to distinguish each column
 
-##### `width`
+##### `width?: Maybe<number | string>`
 
 **Default** `auto`
 
@@ -546,23 +569,25 @@ width: 'minmax(100px, max-content)';
 
 `max-content` can be used to expand the column to show all the content. Note that the grid is only able to calculate column width for visible rows.
 
-##### `minWidth`
+##### `minWidth?: Maybe<number>`
 
 **Default**: `50` pixels
 
 Sets the maximum width of a column.
 
-##### `maxWidth`
+##### `maxWidth?: Maybe<number>`
 
 Sets the maximum width of a column.
 
-##### `cellClass`
+##### `cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>`
 
-##### `headerCellClass`
+A function to add a class on the row
 
-##### `summaryCellClass`
+##### `headerCellClass?: Maybe<string>`
 
-##### `renderCell`
+##### `summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>`
+
+##### `renderCell?: Maybe<(props: RenderCellProps<TRow, TSummaryRow>) => ReactNode>`
 
 Render function used to render the content of cells
 
