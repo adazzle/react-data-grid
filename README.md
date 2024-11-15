@@ -499,7 +499,7 @@ function MyGridTest() {
 
 #### `<TreeDataGrid />`
 
-`TreeDataGrid` is component built on top of `DataGrid` to add row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/). At the moment `TreeDataGrid` does not support `onFill` and `isRowDisabled` props
+`TreeDataGrid` is component built on top of `DataGrid` to add row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/). At the moment `TreeDataGrid` does not support `onFill` and `isRowSelectionDisabled` props
 
 ###### `groupBy?: Maybe<readonly string[]>`
 
