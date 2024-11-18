@@ -1,8 +1,7 @@
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { page, userEvent } from '@vitest/browser/context';
 
 import type { Column, DataGridProps } from '../../src';
-import { getRows, setup } from './utils';
+import { getRowsNew, setupNew } from './utils';
 
 type Row = number;
 
@@ -18,18 +17,18 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
       width: 80
     });
   }
-  setup({ columns, rows, rowHeight });
+  setupNew({ columns, rows, rowHeight });
 }
 
 test('rowHeight is number', async () => {
   setupGrid(40);
 
-  const grid = screen.getByRole('grid');
+  const grid = page.getByRole('grid').element();
   expect(grid).toHaveStyle({
     'grid-template-rows':
       '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
   });
-  expect(getRows()).toHaveLength(30);
+  expect(getRowsNew()).toHaveLength(30);
 
   await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
@@ -40,12 +39,12 @@ test('rowHeight is number', async () => {
 test('rowHeight is function', async () => {
   setupGrid((row) => [40, 60, 80][row % 3]);
 
-  const grid = screen.getByRole('grid');
+  const grid = page.getByRole('grid').element();
   expect(grid).toHaveStyle({
     'grid-template-rows':
       '35px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'
   });
-  expect(getRows()).toHaveLength(22);
+  expect(getRowsNew()).toHaveLength(22);
 
   await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
