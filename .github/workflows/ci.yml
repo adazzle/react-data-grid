@@ -46,7 +46,7 @@ jobs:
         timeout-minutes: 4
       - name: Upload coverage
         if: matrix.react == 18
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Deploy gh-pages
