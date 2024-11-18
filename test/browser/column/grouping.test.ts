@@ -1,5 +1,4 @@
-import userEvent from '@testing-library/user-event';
-import { page } from '@vitest/browser/context';
+import { page, userEvent } from '@vitest/browser/context';
 
 import type { ColumnOrColumnGroup } from '../../../src';
 import { getSelectedCellNew, setupNew, validateCellPositionNew } from '../utils';
