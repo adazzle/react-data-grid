@@ -59,6 +59,10 @@ export function getCellsAtRowIndex(rowIdx: number) {
   );
 }
 
+export function getCellsAtRowIndexNew(rowIdx: number) {
+  return page.getByRole('row').all()[rowIdx + 1].getByRole('gridcell').all();
+}
+
 export function getCells() {
   return screen.getAllByRole('gridcell');
 }
