@@ -1,7 +1,7 @@
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
-import { getCellsAtRowIndex, getHeaderCells, setup, validateCellPosition } from '../utils';
+import { getCellsAtRowIndex, getHeaderCellsNew, setupNew, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {
@@ -34,13 +34,13 @@ describe('colSpan', () => {
         }
       });
     }
-    setup({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
+    setupNew({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
   }
 
   it('should merges cells', () => {
     setupColSpanGrid();
     // header
-    expect(getHeaderCells()).toHaveLength(13);
+    expect(getHeaderCellsNew()).toHaveLength(13);
 
     // top summary rows
     const topSummarryRow1 = getCellsAtRowIndex(0);
@@ -95,7 +95,7 @@ describe('colSpan', () => {
   it('should navigate between merged cells', async () => {
     setupColSpanGrid();
     // header row
-    await userEvent.click(getHeaderCells()[7]);
+    await userEvent.click(getHeaderCellsNew()[7]);
     validateCellPosition(7, 0);
     await userEvent.keyboard('{arrowright}');
     validateCellPosition(8, 0);

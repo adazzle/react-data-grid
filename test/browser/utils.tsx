@@ -17,6 +17,18 @@ export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridPro
   );
 }
 
+export function setupNew<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
+  page.render(
+    <DataGrid
+      {...props}
+      className={css`
+        block-size: 1080px;
+        scrollbar-width: none;
+      `}
+    />
+  );
+}
+
 export function getGrid() {
   return screen.getByRole('grid');
 }
@@ -53,6 +65,10 @@ export function queryCells() {
 
 export function getHeaderCells() {
   return screen.getAllByRole('columnheader');
+}
+
+export function getHeaderCellsNew() {
+  return page.getByRole('columnheader').all();
 }
 
 export function queryHeaderCells() {

@@ -1,5 +1,5 @@
 import type { Column } from '../../../src';
-import { setup } from '../utils';
+import { setupNew } from '../utils';
 
 test('key is escaped in query selectors', () => {
   const columns: readonly Column<never>[] = [
@@ -10,6 +10,6 @@ test('key is escaped in query selectors', () => {
   ];
 
   expect(() => {
-    setup({ columns, rows: [] });
+    setupNew({ columns, rows: [] });
   }).not.toThrow();
 });
