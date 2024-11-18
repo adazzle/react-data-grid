@@ -1,8 +1,7 @@
-import { act } from 'react';
 import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
-import { getHeaderCells, setup } from '../utils';
+import { getHeaderCellsNew, setupNew } from '../utils';
 
 const columns: readonly Column<never>[] = [
   {
@@ -28,35 +27,25 @@ const columns: readonly Column<never>[] = [
 
 test('draggable columns', async () => {
   const onColumnsReorder = vi.fn();
-  setup({ columns, rows: [], onColumnsReorder });
-  const [cell1, cell2, cell3, cell4] = getHeaderCells();
+  setupNew({ columns, rows: [], onColumnsReorder });
+  const [cell1, cell2, cell3, cell4] = getHeaderCellsNew();
 
-  expect(cell1).not.toHaveAttribute('draggable');
-  expect(cell2).toHaveAttribute('draggable');
-  expect(cell3).toHaveAttribute('draggable');
-  expect(cell4).toHaveAttribute('draggable');
+  await expect.element(cell1).not.toHaveAttribute('draggable');
+  await expect.element(cell2).toHaveAttribute('draggable');
+  await expect.element(cell3).toHaveAttribute('draggable');
+  await expect.element(cell4).toHaveAttribute('draggable');
 
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    await userEvent.dragAndDrop(cell2, cell4);
-  });
-
+  await userEvent.dragAndDrop(cell2, cell4);
   expect(onColumnsReorder).toHaveBeenCalledWith('col2', 'col4');
   onColumnsReorder.mockReset();
 
   // should not call `onColumnsReorder` if drag and drop elements are the same
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    await userEvent.dragAndDrop(cell2, cell2);
-  });
+  await userEvent.dragAndDrop(cell2, cell2);
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
   // should not drag a column if it is not specified as draggable
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    await userEvent.dragAndDrop(cell1, cell2);
-  });
+  await userEvent.dragAndDrop(cell1, cell2);
   expect(onColumnsReorder).not.toHaveBeenCalled();
 });

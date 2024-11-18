@@ -1,8 +1,8 @@
 import type { Column, ColumnGroup } from '../../../src';
 import { cellClassname } from '../../../src/style/cell';
-import { getHeaderCells, setup } from '../utils';
+import { getHeaderCellsNew, setupNew } from '../utils';
 
-test('headerCellClass is either nullish or a string', () => {
+test('headerCellClass is either nullish or a string', async () => {
   const columns: readonly Column<never>[] = [
     {
       key: 'id',
@@ -15,13 +15,13 @@ test('headerCellClass is either nullish or a string', () => {
     }
   ];
 
-  setup({ columns, rows: [] });
-  const [cell1, cell2] = getHeaderCells();
-  expect(cell1).toHaveClass(cellClassname, { exact: true });
-  expect(cell2).toHaveClass(`${cellClassname} my-header`, { exact: true });
+  setupNew({ columns, rows: [] });
+  const [cell1, cell2] = getHeaderCellsNew();
+  await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
+  await expect.element(cell2).toHaveClass(`${cellClassname} my-header`, { exact: true });
 });
 
-test('columnGroup.headerCellClass is either nullish or a string', () => {
+test('columnGroup.headerCellClass is either nullish or a string', async () => {
   const columns: readonly ColumnGroup<never>[] = [
     {
       name: 'Group 1',
@@ -34,8 +34,8 @@ test('columnGroup.headerCellClass is either nullish or a string', () => {
     }
   ];
 
-  setup({ columns, rows: [] });
-  const [cell1, cell2] = getHeaderCells();
-  expect(cell1).toHaveClass(cellClassname, { exact: true });
-  expect(cell2).toHaveClass(`${cellClassname} my-header`, { exact: true });
+  setupNew({ columns, rows: [] });
+  const [cell1, cell2] = getHeaderCellsNew();
+  await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
+  await expect.element(cell2).toHaveClass(`${cellClassname} my-header`, { exact: true });
 });
