@@ -33,6 +33,10 @@ export function getGrid() {
   return screen.getByRole('grid');
 }
 
+export function getGridNew() {
+  return page.getByRole('grid');
+}
+
 export function getTreeGrid() {
   return screen.getByRole('treegrid');
 }
@@ -113,11 +117,19 @@ export async function copySelectedCell() {
   });
 }
 
+export function copySelectedCellNew() {
+  return userEvent.keyboard('{Control>}c');
+}
+
 export async function pasteSelectedCell() {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.keyboard('{Control>}v');
   });
+}
+
+export function pasteSelectedCellNew() {
+  return userEvent.keyboard('{Control>}v');
 }
 
 export async function scrollGrid({
