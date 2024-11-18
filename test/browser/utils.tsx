@@ -91,6 +91,21 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
+export function getSelectedCellNew() {
+  const selectedGridCell = page.getByRole('gridcell', { selected: true });
+  if (selectedGridCell.all().length > 0) {
+    return selectedGridCell;
+  }
+
+  return page.getByRole('columnheader', { selected: true });
+}
+
+export function validateCellPositionNew(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCellNew().element();
+  expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
+  expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
+}
+
 export async function copySelectedCell() {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
