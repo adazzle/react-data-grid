@@ -45,6 +45,10 @@ export function getRows() {
   return screen.getAllByRole('row').slice(1);
 }
 
+export function getRowsNew() {
+  return page.getByRole('row').all().slice(1);
+}
+
 export function queryRows() {
   return screen.queryAllByRole('row').slice(1);
 }
