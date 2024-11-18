@@ -17,6 +17,18 @@ export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridPro
   );
 }
 
+export function setupNew<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
+  page.render(
+    <DataGrid
+      {...props}
+      className={css`
+        block-size: 1080px;
+        scrollbar-width: none;
+      `}
+    />
+  );
+}
+
 export function getGrid() {
   return screen.getByRole('grid');
 }
@@ -55,6 +67,10 @@ export function getHeaderCells() {
   return screen.getAllByRole('columnheader');
 }
 
+export function getHeaderCellsNew() {
+  return page.getByRole('columnheader').all();
+}
+
 export function queryHeaderCells() {
   return screen.queryAllByRole('columnheader');
 }
@@ -71,6 +87,21 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   if (cell === null) {
     throw new Error('Selected cell not found');
   }
+  expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
+  expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
+}
+
+export function getSelectedCellNew() {
+  const selectedGridCell = page.getByRole('gridcell', { selected: true });
+  if (selectedGridCell.all().length > 0) {
+    return selectedGridCell;
+  }
+
+  return page.getByRole('columnheader', { selected: true });
+}
+
+export function validateCellPositionNew(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCellNew().element();
   expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }

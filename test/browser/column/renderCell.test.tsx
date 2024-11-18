@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../../src';
 import type { Column } from '../../../src';
-import { getCells, getCellsAtRowIndex, setup } from '../utils';
+import { getCellsAtRowIndex, getCellsNew, setupNew } from '../utils';
 
 interface Row {
   id: number;
@@ -18,18 +17,18 @@ describe('renderValue', () => {
 
   const rows: readonly Row[] = [{ id: 101 }];
 
-  it('should be used by default', () => {
-    setup({ columns, rows });
-    const [cell1, cell2] = getCells();
-    expect(cell1).toHaveTextContent('101');
-    expect(cell2).toBeEmptyDOMElement();
+  it('should be used by default', async () => {
+    setupNew({ columns, rows });
+    const [cell1, cell2] = getCellsNew();
+    await expect.element(cell1).toHaveTextContent('101');
+    await expect.element(cell2).toBeEmptyDOMElement();
   });
 
-  it('should handle non-object values', () => {
-    setup({ columns, rows: [null] });
-    const [cell1, cell2] = getCells();
-    expect(cell1).toBeEmptyDOMElement();
-    expect(cell2).toBeEmptyDOMElement();
+  it('should handle non-object values', async () => {
+    setupNew({ columns, rows: [null] });
+    const [cell1, cell2] = getCellsNew();
+    await expect.element(cell1).toBeEmptyDOMElement();
+    await expect.element(cell2).toBeEmptyDOMElement();
   });
 });
 
@@ -49,11 +48,11 @@ describe('Custom cell renderer', () => {
 
   const rows: readonly Row[] = [{ id: 101 }];
 
-  it('should replace the default cell renderer', () => {
-    setup({ columns, rows });
-    const [cell1, cell2] = getCells();
-    expect(cell1).toHaveTextContent('#101');
-    expect(cell2).toHaveTextContent('No name');
+  it('should replace the default cell renderer', async () => {
+    setupNew({ columns, rows });
+    const [cell1, cell2] = getCellsNew();
+    await expect.element(cell1).toHaveTextContent('#101');
+    await expect.element(cell2).toHaveTextContent('No name');
   });
 
   it('can update rows', async () => {
@@ -90,12 +89,12 @@ describe('Custom cell renderer', () => {
       );
     }
 
-    render(<Test />);
+    page.render(<Test />);
 
-    const [cell] = getCells();
-    expect(cell).toHaveTextContent('value: 1');
-    await userEvent.click(screen.getByRole('button'));
-    expect(cell).toHaveTextContent('value: 2');
+    const [cell] = getCellsNew();
+    await expect.element(cell).toHaveTextContent('value: 1');
+    await userEvent.click(page.getByRole('button'));
+    await expect.element(cell).toHaveTextContent('value: 2');
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith([{ id: 2 }], {
       column: {
@@ -141,14 +140,14 @@ test('Cell should not steal focus when the focus is outside the grid and cell is
     );
   }
 
-  render(<FormatterTest />);
+  page.render(<FormatterTest />);
 
   await userEvent.click(getCellsAtRowIndex(0)[0]);
   expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
 
-  const button = screen.getByRole('button', { name: 'Test' });
-  expect(button).not.toHaveFocus();
+  const button = page.getByRole('button', { name: 'Test' });
+  await expect.element(button).not.toHaveFocus();
   await userEvent.click(button);
   expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
-  expect(button).toHaveFocus();
+  await expect.element(button).toHaveFocus();
 });
