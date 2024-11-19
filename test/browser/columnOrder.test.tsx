@@ -1,8 +1,8 @@
-import { render } from '@testing-library/react';
+import { page } from '@vitest/browser/context';
 
 import DataGrid, { SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
-import { getHeaderCells } from './utils';
+import { getHeaderCellsNew } from './utils';
 
 const frozen1: Column<unknown> = {
   key: 'f1',
@@ -32,9 +32,9 @@ test('column order', () => {
   function run(columns: readonly Column<unknown>[]) {
     let unmount;
     if (groupBy === undefined) {
-      ({ unmount } = render(<DataGrid columns={columns} rows={rows} />));
+      ({ unmount } = page.render(<DataGrid columns={columns} rows={rows} />));
     } else {
-      ({ unmount } = render(
+      ({ unmount } = page.render(
         <TreeDataGrid
           columns={columns}
           rows={rows}
@@ -46,7 +46,7 @@ test('column order', () => {
       ));
     }
 
-    expect(getHeaderCells().map((c) => c.textContent)).toStrictEqual(expected);
+    expect(getHeaderCellsNew().map((c) => c.element().textContent)).toStrictEqual(expected);
     unmount();
   }
 

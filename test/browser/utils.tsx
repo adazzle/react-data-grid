@@ -33,12 +33,20 @@ export function getGrid() {
   return screen.getByRole('grid');
 }
 
+export function getGridNew() {
+  return page.getByRole('grid');
+}
+
 export function getTreeGrid() {
   return screen.getByRole('treegrid');
 }
 
 export function getRows() {
   return screen.getAllByRole('row').slice(1);
+}
+
+export function getRowsNew() {
+  return page.getByRole('row').all().slice(1);
 }
 
 export function queryRows() {
@@ -49,6 +57,10 @@ export function getCellsAtRowIndex(rowIdx: number) {
   return Array.from(
     document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`)
   );
+}
+
+export function getCellsAtRowIndexNew(rowIdx: number) {
+  return page.getByRole('row').all()[rowIdx + 1].getByRole('gridcell').all();
 }
 
 export function getCells() {
@@ -113,11 +125,19 @@ export async function copySelectedCell() {
   });
 }
 
+export function copySelectedCellNew() {
+  return userEvent.keyboard('{Control>}c{/Control}');
+}
+
 export async function pasteSelectedCell() {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.keyboard('{Control>}v');
   });
+}
+
+export function pasteSelectedCellNew() {
+  return userEvent.keyboard('{Control>}v{/Control}');
 }
 
 export async function scrollGrid({
