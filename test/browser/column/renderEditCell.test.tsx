@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { waitFor } from '@testing-library/dom';
+import { waitFor } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../../src';
