@@ -3,7 +3,7 @@ import { commands, userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
 import { resizeHandleClassname } from '../../../src/HeaderCell';
-import { getGrid, getHeaderCells, setup } from '../utils';
+import { getGridOld, getHeaderCellsOld, setup } from '../utils';
 
 interface Row {
   readonly col1: number;
@@ -65,33 +65,33 @@ const columns: readonly Column<Row>[] = [
 
 test('cannot not resize or auto resize column when resizable is not specified', () => {
   setup<Row, unknown>({ columns, rows: [] });
-  const [col1] = getHeaderCells();
+  const [col1] = getHeaderCellsOld();
   expect(queryResizeHandle(col1)).not.toBeInTheDocument();
 });
 
 test('should resize column when dragging the handle', async () => {
   setup<Row, unknown>({ columns, rows: [] });
-  const [, col2] = getHeaderCells();
-  const grid = getGrid();
+  const [, col2] = getHeaderCellsOld();
+  const grid = getGridOld();
   expect(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: -50 });
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 150px' });
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 150px' });
 });
 
 test('should use the maxWidth if specified', async () => {
   setup<Row, unknown>({ columns, rows: [] });
-  const [, col2] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px ' });
+  const [, col2] = getHeaderCellsOld();
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 200px ' });
   await resize({ column: col2, resizeBy: 1000 });
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
 
 test('should use the minWidth if specified', async () => {
   setup<Row, unknown>({ columns, rows: [] });
-  const [, col2] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  const [, col2] = getHeaderCellsOld();
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2, resizeBy: -150 });
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
 });
 
 test('should auto resize column when resize handle is double clicked', async () => {
@@ -104,10 +104,10 @@ test('should auto resize column when resize handle is double clicked', async () 
       }
     ]
   });
-  const [, col2] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  const [, col2] = getHeaderCellsOld();
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await autoResize(col2);
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 327.703px' });
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 327.703px' });
 });
 
 test('should use the maxWidth if specified on auto resize', async () => {
@@ -120,10 +120,10 @@ test('should use the maxWidth if specified on auto resize', async () => {
       }
     ]
   });
-  const [, col2] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  const [, col2] = getHeaderCellsOld();
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await autoResize(col2);
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
 
 test('should use the minWidth if specified on auto resize', async () => {
@@ -136,8 +136,8 @@ test('should use the minWidth if specified on auto resize', async () => {
       }
     ]
   });
-  const [, col2] = getHeaderCells();
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  const [, col2] = getHeaderCellsOld();
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await autoResize(col2);
-  expect(getGrid()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+  expect(getGridOld()).toHaveStyle({ gridTemplateColumns: '100px 100px' });
 });

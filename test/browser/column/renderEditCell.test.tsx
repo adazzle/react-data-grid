@@ -4,7 +4,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../../src';
 import type { Column, DataGridProps } from '../../../src';
-import { getCellsAtRowIndex, getGrid, getSelectedCell, scrollGrid } from '../utils';
+import { getCellsAtRowIndexOld, getGridOld, getSelectedCellOld, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -15,62 +15,62 @@ describe('Editor', () => {
   it('should open editor on double click', async () => {
     page.render(<EditorTest />);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
     await expect.element(editor).not.toBeInTheDocument();
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('2');
     await userEvent.tab();
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12$/);
+    expect(getCellsAtRowIndexOld(0)[0]).toHaveTextContent(/^12$/);
   });
 
   it('should open and commit changes on enter', async () => {
     page.render(<EditorTest />);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
     await expect.element(editor).not.toBeInTheDocument();
     await userEvent.keyboard('{enter}');
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('3{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^13$/);
-    expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
+    expect(getCellsAtRowIndexOld(0)[0]).toHaveTextContent(/^13$/);
+    expect(getCellsAtRowIndexOld(0)[0]).toHaveFocus();
     await expect.element(editor).not.toBeInTheDocument();
   });
 
   it('should open editor when user types', async () => {
     page.render(<EditorTest />);
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
     await userEvent.keyboard('123{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1123$/);
+    expect(getCellsAtRowIndexOld(0)[0]).toHaveTextContent(/^1123$/);
   });
 
   it('should close editor and discard changes on escape', async () => {
     page.render(<EditorTest />);
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('2222{escape}');
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1$/);
-    expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
+    expect(getCellsAtRowIndexOld(0)[0]).toHaveTextContent(/^1$/);
+    expect(getCellsAtRowIndexOld(0)[0]).toHaveFocus();
   });
 
   it('should commit changes and close editor when clicked outside', async () => {
     page.render(<EditorTest />);
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).toHaveValue(1);
     await userEvent.keyboard('2222');
     await userEvent.click(page.getByText('outside'));
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12222$/);
+    expect(getCellsAtRowIndexOld(0)[0]).toHaveTextContent(/^12222$/);
   });
 
   it('should commit quickly enough on outside clicks so click event handlers access the latest rows state', async () => {
     const onSave = vi.fn();
     page.render(<EditorTest onSave={onSave} />);
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
     await userEvent.keyboard('234');
     expect(onSave).not.toHaveBeenCalled();
     const saveButton = page.getByRole('button', { name: 'save' });
@@ -93,23 +93,23 @@ describe('Editor', () => {
     }
 
     page.render(<EditorTest gridRows={rows} />);
-    await userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
+    expect(getCellsAtRowIndexOld(0)).toHaveLength(2);
     await scrollGrid({ scrollTop: 2000 });
-    expect(getCellsAtRowIndex(0)).toHaveLength(1);
+    expect(getCellsAtRowIndexOld(0)).toHaveLength(1);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getGrid().scrollTop).toBe(2000);
+    expect(getGridOld().scrollTop).toBe(2000);
     await userEvent.keyboard('123');
-    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+    expect(getCellsAtRowIndexOld(0)).toHaveLength(2);
     await expect.element(editor).toHaveValue(123);
-    expect(getGrid().scrollTop).toBe(0);
+    expect(getGridOld().scrollTop).toBe(0);
   });
 
   describe('editable', () => {
     it('should be editable if an editor is specified and editable is undefined/null', async () => {
       page.render(<EditorTest />);
-      const cell = getCellsAtRowIndex(0)[1];
+      const cell = getCellsAtRowIndexOld(0)[1];
       expect(cell).not.toHaveAttribute('aria-readonly');
       await userEvent.dblClick(cell);
       await expect.element(page.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
@@ -117,13 +117,13 @@ describe('Editor', () => {
 
     it('should be editable if an editor is specified and editable is set to true', async () => {
       page.render(<EditorTest editable />);
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       await expect.element(page.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
     });
 
     it('should not be editable if editable is false', async () => {
       page.render(<EditorTest editable={false} />);
-      const cell = getCellsAtRowIndex(0)[1];
+      const cell = getCellsAtRowIndexOld(0)[1];
       expect(cell).toHaveAttribute('aria-readonly', 'true');
       await userEvent.dblClick(cell);
 
@@ -134,11 +134,11 @@ describe('Editor', () => {
 
     it('should not be editable if editable function returns false', async () => {
       page.render(<EditorTest editable={(row) => row.col1 === 2} />);
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       const editor = page.getByRole('textbox', { name: 'col2-editor' });
       await expect.element(editor).not.toBeInTheDocument();
 
-      await userEvent.dblClick(getCellsAtRowIndex(1)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(1)[1]);
       await expect.element(editor).toBeInTheDocument();
     });
   });
@@ -146,24 +146,24 @@ describe('Editor', () => {
   describe('editorOptions', () => {
     it('should detect outside click if editor is rendered in a portal', async () => {
       page.render(<EditorTest createEditorPortal editorOptions={{ displayCellContent: true }} />);
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       const editor1 = page.getByRole('textbox', { name: 'col2-editor' });
       await expect.element(editor1).toHaveValue('a1');
       await userEvent.keyboard('23');
       // The cell value should update as the editor value is changed
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a123$/);
+      expect(getCellsAtRowIndexOld(0)[1]).toHaveTextContent(/^a123$/);
       // clicking in a portal does not count as an outside click
       await userEvent.click(editor1);
       await expect.element(editor1).toBeInTheDocument();
       // true outside clicks are still detected
       await userEvent.click(page.getByText('outside'));
       await expect.element(editor1).not.toBeInTheDocument();
-      expect(getCellsAtRowIndex(0)[1]).not.toHaveFocus();
+      expect(getCellsAtRowIndexOld(0)[1]).not.toHaveFocus();
 
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       await userEvent.click(page.getByRole('textbox', { name: 'col2-editor' }));
       await userEvent.keyboard('{enter}');
-      expect(getCellsAtRowIndex(0)[1]).toHaveFocus();
+      expect(getCellsAtRowIndexOld(0)[1]).toHaveFocus();
     });
 
     it('should not commit on outside click if commitOnOutsideClick is false', async () => {
@@ -174,7 +174,7 @@ describe('Editor', () => {
           }}
         />
       );
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       const editor = page.getByRole('textbox', { name: 'col2-editor' });
       await expect.element(editor).toBeInTheDocument();
       await userEvent.click(page.getByText('outside'));
@@ -194,9 +194,9 @@ describe('Editor', () => {
           }}
         />
       );
-      await userEvent.click(getCellsAtRowIndex(0)[1]);
+      await userEvent.click(getCellsAtRowIndexOld(0)[1]);
       await userEvent.keyboard('yz{enter}');
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
+      expect(getCellsAtRowIndexOld(0)[1]).toHaveTextContent(/^a1yz$/);
       await userEvent.keyboard('x');
       await expect
         .element(page.getByRole('textbox', { name: 'col2-editor' }))
@@ -214,9 +214,9 @@ describe('Editor', () => {
           }}
         />
       );
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       await userEvent.keyboard('a{arrowleft}b{arrowright}c{arrowdown}'); // should commit changes on arrowdown
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
+      expect(getCellsAtRowIndexOld(0)[1]).toHaveTextContent(/^a1bac$/);
     });
   });
 
@@ -229,15 +229,15 @@ describe('Editor', () => {
 
       page.render(<EditorTest gridRows={rows} />);
 
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       await userEvent.keyboard('abc');
 
       await scrollGrid({ scrollTop: 1500 });
-      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
-      await userEvent.click(getCellsAtRowIndex(40)[1]);
-      expect(getSelectedCell()).toHaveTextContent(/^40$/);
+      expect(getCellsAtRowIndexOld(40)[1]).toHaveTextContent(/^40$/);
+      await userEvent.click(getCellsAtRowIndexOld(40)[1]);
+      expect(getSelectedCellOld()).toHaveTextContent(/^40$/);
       await scrollGrid({ scrollTop: 0 });
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
+      expect(getCellsAtRowIndexOld(0)[1]).toHaveTextContent(/^0abc$/);
     });
 
     it('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
@@ -279,7 +279,7 @@ describe('Editor', () => {
       );
 
       const outerInput = page.getByRole('textbox', { name: 'outer-input' });
-      await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
       const col1Input = page.getByRole('textbox', { name: 'col1-input' });
       await expect.element(col1Input).toHaveFocus();
       await userEvent.click(outerInput);
@@ -287,7 +287,7 @@ describe('Editor', () => {
       await expect.element(col1Input).not.toBeInTheDocument();
       await expect.element(outerInput).toHaveFocus();
 
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
       const col2Input = page.getByRole('textbox', { name: 'col2-input' });
       await expect.element(col2Input).toHaveFocus();
       await userEvent.click(outerInput);

@@ -1,7 +1,7 @@
 import { page, userEvent } from '@vitest/browser/context';
 
 import type { Column, DataGridProps } from '../../src';
-import { getRowsNew, setupNew } from './utils';
+import { getRows, setupNew } from './utils';
 
 type Row = number;
 
@@ -28,7 +28,7 @@ test('rowHeight is number', async () => {
     'grid-template-rows':
       '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
   });
-  expect(getRowsNew()).toHaveLength(30);
+  expect(getRows()).toHaveLength(30);
 
   await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
@@ -44,7 +44,7 @@ test('rowHeight is function', async () => {
     'grid-template-rows':
       '35px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'
   });
-  expect(getRowsNew()).toHaveLength(22);
+  expect(getRows()).toHaveLength(22);
 
   await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
