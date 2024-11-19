@@ -1,7 +1,7 @@
 import { page, userEvent } from '@vitest/browser/context';
 
 import type { ColumnOrColumnGroup } from '../../../src';
-import { getSelectedCell, setupNew, validateCellPosition } from '../utils';
+import { getSelectedCellNew, setupNew, validateCellPositionNew } from '../utils';
 
 const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
   { key: 'col1', name: 'col 1' },
@@ -251,89 +251,89 @@ test('keyboard navigation', async () => {
   setupNew({ columns, rows: [{}] });
 
   // no initial selection
-  await expect.element(getSelectedCell()).not.toBeInTheDocument();
+  await expect.element(getSelectedCellNew()).not.toBeInTheDocument();
 
   await userEvent.tab();
-  validateCellPosition(0, 3);
+  validateCellPositionNew(0, 3);
 
   // arrow navigation
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(0, 3);
+  validateCellPositionNew(0, 3);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(1, 3);
+  validateCellPositionNew(1, 3);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(1, 2);
+  validateCellPositionNew(1, 2);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(1, 2);
+  validateCellPositionNew(1, 2);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(0, 3);
+  validateCellPositionNew(0, 3);
   await userEvent.keyboard('{arrowright}{arrowright}');
-  validateCellPosition(2, 3);
+  validateCellPositionNew(2, 3);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(1, 2);
+  validateCellPositionNew(1, 2);
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(1, 3);
+  validateCellPositionNew(1, 3);
   await userEvent.keyboard('{arrowright}{arrowright}');
-  validateCellPosition(3, 3);
+  validateCellPositionNew(3, 3);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(4, 3);
+  validateCellPositionNew(4, 3);
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(4, 4);
+  validateCellPositionNew(4, 4);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(4, 3);
+  validateCellPositionNew(4, 3);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(4, 2);
+  validateCellPositionNew(4, 2);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(4, 1);
+  validateCellPositionNew(4, 1);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(4, 0);
+  validateCellPositionNew(4, 0);
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(4, 1);
+  validateCellPositionNew(4, 1);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(5, 3);
+  validateCellPositionNew(5, 3);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(4, 3);
+  validateCellPositionNew(4, 3);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(4, 2);
+  validateCellPositionNew(4, 2);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(5, 3);
+  validateCellPositionNew(5, 3);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(6, 3);
+  validateCellPositionNew(6, 3);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(7, 3);
+  validateCellPositionNew(7, 3);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(7, 2);
+  validateCellPositionNew(7, 2);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(4, 0);
+  validateCellPositionNew(4, 0);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(8, 0);
+  validateCellPositionNew(8, 0);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(4, 0);
+  validateCellPositionNew(4, 0);
 
   // home/end navigation
   await userEvent.keyboard('{home}');
-  validateCellPosition(0, 3);
+  validateCellPositionNew(0, 3);
   await userEvent.keyboard('{end}');
-  validateCellPosition(11, 3);
+  validateCellPositionNew(11, 3);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(10, 3);
+  validateCellPositionNew(10, 3);
 
   // tab navigation
   await userEvent.tab();
-  validateCellPosition(11, 3);
+  validateCellPositionNew(11, 3);
   await userEvent.tab({ shift: true });
   await userEvent.tab({ shift: true });
   await userEvent.tab({ shift: true });
-  validateCellPosition(8, 3);
+  validateCellPositionNew(8, 3);
   await userEvent.keyboard('{arrowup}');
   await userEvent.tab({ shift: true });
-  validateCellPosition(4, 0);
+  validateCellPositionNew(4, 0);
   await userEvent.tab();
-  validateCellPosition(8, 0);
+  validateCellPositionNew(8, 0);
 
   await userEvent.keyboard('{home}{end}');
   await userEvent.tab();
-  validateCellPosition(0, 4);
+  validateCellPositionNew(0, 4);
   await userEvent.tab({ shift: true });
-  validateCellPosition(11, 3);
+  validateCellPositionNew(11, 3);
 });

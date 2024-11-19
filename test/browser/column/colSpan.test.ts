@@ -1,7 +1,7 @@
 import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
-import { getCellsAtRowIndexOld, getHeaderCells, setupNew, validateCellPositionOld } from '../utils';
+import { getCellsAtRowIndex, getHeaderCellsNew, setupNew, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {
@@ -40,10 +40,10 @@ describe('colSpan', () => {
   it('should merges cells', () => {
     setupColSpanGrid();
     // header
-    expect(getHeaderCells()).toHaveLength(13);
+    expect(getHeaderCellsNew()).toHaveLength(13);
 
     // top summary rows
-    const topSummarryRow1 = getCellsAtRowIndexOld(0);
+    const topSummarryRow1 = getCellsAtRowIndex(0);
     expect(topSummarryRow1).toHaveLength(14);
     // 7th-8th cells are merged
     expect(topSummarryRow1[7]).toHaveAttribute('aria-colindex', '8');
@@ -52,10 +52,10 @@ describe('colSpan', () => {
       'grid-column-start': '8',
       'grid-column-end': '10'
     });
-    expect(getCellsAtRowIndexOld(1)).toHaveLength(15);
+    expect(getCellsAtRowIndex(1)).toHaveLength(15);
 
     // rows
-    const row1 = getCellsAtRowIndexOld(3);
+    const row1 = getCellsAtRowIndex(3);
     expect(row1).toHaveLength(14);
     // 7th-8th cells are merged
     expect(row1[6]).toHaveAttribute('aria-colindex', '7');
@@ -68,7 +68,7 @@ describe('colSpan', () => {
     expect(row1[7]).not.toHaveAttribute('aria-colspan');
 
     // 3rd-5th, 7th-8th cells are merged
-    const row2 = getCellsAtRowIndexOld(4);
+    const row2 = getCellsAtRowIndex(4);
     expect(row2).toHaveLength(12);
     expect(row2[2]).toHaveAttribute('aria-colindex', '3');
     expect(row2[2]).toHaveStyle({
@@ -84,95 +84,95 @@ describe('colSpan', () => {
     });
     expect(row2[5]).toHaveAttribute('aria-colindex', '9');
 
-    expect(getCellsAtRowIndexOld(6)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
-    expect(getCellsAtRowIndexOld(7)).toHaveLength(10);
+    expect(getCellsAtRowIndex(6)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
+    expect(getCellsAtRowIndex(7)).toHaveLength(10);
 
     // bottom summary row
-    expect(getCellsAtRowIndexOld(12)).toHaveLength(14);
-    expect(getCellsAtRowIndexOld(13)).toHaveLength(15);
+    expect(getCellsAtRowIndex(12)).toHaveLength(14);
+    expect(getCellsAtRowIndex(13)).toHaveLength(15);
   });
 
   it('should navigate between merged cells', async () => {
     setupColSpanGrid();
     // header row
-    await userEvent.click(getHeaderCells()[7]);
-    validateCellPositionOld(7, 0);
+    await userEvent.click(getHeaderCellsNew()[7]);
+    validateCellPosition(7, 0);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(8, 0);
+    validateCellPosition(8, 0);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(11, 0);
+    validateCellPosition(11, 0);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(12, 0);
+    validateCellPosition(12, 0);
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
-    validateCellPositionOld(7, 0);
+    validateCellPosition(7, 0);
 
     // top summary rows
-    await userEvent.click(getCellsAtRowIndexOld(0)[6]);
-    validateCellPositionOld(6, 1);
+    await userEvent.click(getCellsAtRowIndex(0)[6]);
+    validateCellPosition(6, 1);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(7, 1);
+    validateCellPosition(7, 1);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(9, 1);
+    validateCellPosition(9, 1);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(10, 1);
+    validateCellPosition(10, 1);
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
-    validateCellPositionOld(6, 1);
+    validateCellPosition(6, 1);
 
     // viewport rows
-    await userEvent.click(getCellsAtRowIndexOld(3)[1]);
-    validateCellPositionOld(1, 4);
+    await userEvent.click(getCellsAtRowIndex(3)[1]);
+    validateCellPosition(1, 4);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(2, 4);
+    validateCellPosition(2, 4);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(3, 4);
+    validateCellPosition(3, 4);
     await userEvent.keyboard('{arrowdown}');
-    validateCellPositionOld(2, 5);
+    validateCellPosition(2, 5);
     await userEvent.keyboard('{arrowleft}');
-    validateCellPositionOld(1, 5);
+    validateCellPosition(1, 5);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(2, 5);
+    validateCellPosition(2, 5);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(5, 5);
+    validateCellPosition(5, 5);
     await userEvent.keyboard('{arrowleft}');
-    validateCellPositionOld(2, 5);
+    validateCellPosition(2, 5);
     await userEvent.keyboard('{arrowdown}');
-    validateCellPositionOld(2, 6);
+    validateCellPosition(2, 6);
     await userEvent.keyboard('{arrowdown}{arrowdown}');
-    validateCellPositionOld(0, 8);
+    validateCellPosition(0, 8);
     await userEvent.keyboard('{arrowLeft}');
-    validateCellPositionOld(0, 8);
+    validateCellPosition(0, 8);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(5, 8);
+    validateCellPosition(5, 8);
     await userEvent.tab({ shift: true });
     await userEvent.tab({ shift: true });
-    validateCellPositionOld(14, 7);
+    validateCellPosition(14, 7);
     await userEvent.tab();
-    validateCellPositionOld(0, 8);
-    await userEvent.click(getCellsAtRowIndexOld(10)[11]);
-    validateCellPositionOld(11, 11);
+    validateCellPosition(0, 8);
+    await userEvent.click(getCellsAtRowIndex(10)[11]);
+    validateCellPosition(11, 11);
     await userEvent.tab();
-    validateCellPositionOld(12, 11);
+    validateCellPosition(12, 11);
     await userEvent.tab();
-    validateCellPositionOld(0, 12);
+    validateCellPosition(0, 12);
     await userEvent.tab({ shift: true });
-    validateCellPositionOld(12, 11);
+    validateCellPosition(12, 11);
 
     // bottom summary rows
-    await userEvent.click(getCellsAtRowIndexOld(12)[6]);
-    validateCellPositionOld(6, 13);
+    await userEvent.click(getCellsAtRowIndex(12)[6]);
+    validateCellPosition(6, 13);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(7, 13);
+    validateCellPosition(7, 13);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(9, 13);
+    validateCellPosition(9, 13);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(10, 13);
+    validateCellPosition(10, 13);
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
-    validateCellPositionOld(6, 13);
+    validateCellPosition(6, 13);
   });
 
   it('should scroll to the merged cell when selected', async () => {
     setupColSpanGrid(30);
-    await userEvent.click(getCellsAtRowIndexOld(10)[23]); // last visible cell (1920/80)
+    await userEvent.click(getCellsAtRowIndex(10)[23]); // last visible cell (1920/80)
     const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     const testScrollIntoView = () => {
       expect(spy).toHaveBeenCalled();
@@ -182,13 +182,13 @@ describe('colSpan', () => {
     testScrollIntoView();
     await navigate(1);
     testScrollIntoView(); // should bring the merged cell into view
-    validateCellPositionOld(27, 11);
+    validateCellPosition(27, 11);
     await navigate(7);
     testScrollIntoView();
-    validateCellPositionOld(6, 12); // should navigate to the next row
+    validateCellPosition(6, 12); // should navigate to the next row
     await navigate(7, true);
     testScrollIntoView();
-    validateCellPositionOld(27, 11); // should navigate to the previous row
+    validateCellPosition(27, 11); // should navigate to the previous row
     await navigate(27);
     testScrollIntoView();
     await navigate(1);

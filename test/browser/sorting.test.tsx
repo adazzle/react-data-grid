@@ -3,7 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../src';
 import type { Column, SortColumn } from '../../src/types';
-import { getHeaderCells } from './utils';
+import { getHeaderCellsNew } from './utils';
 
 const columns: readonly Column<never>[] = [
   { key: 'colA', name: 'colA' },
@@ -41,7 +41,7 @@ function testSortColumns(expectedValue: readonly SortColumn[]) {
 
 test('should not sort if sortable is false', async () => {
   setup();
-  const headerCell = getHeaderCells()[3].element();
+  const headerCell = getHeaderCellsNew()[3].element();
   await userEvent.click(headerCell);
   expect(headerCell).not.toHaveAttribute('aria-sort');
   await testSortColumns([]);
@@ -49,7 +49,7 @@ test('should not sort if sortable is false', async () => {
 
 test('single column sort', async () => {
   setup();
-  const headerCell = getHeaderCells()[0].element();
+  const headerCell = getHeaderCellsNew()[0].element();
   await userEvent.click(headerCell);
   expect(headerCell).toHaveAttribute('aria-sort', 'ascending');
   // priority is not shown for single sort
@@ -65,7 +65,7 @@ test('single column sort', async () => {
 
 test('multi column sort', async () => {
   setup();
-  const [headerCell1, headerCell2, headerCell3] = getHeaderCells();
+  const [headerCell1, headerCell2, headerCell3] = getHeaderCellsNew();
   await userEvent.click(headerCell1);
   await userEvent.keyboard('{Control>}');
   await userEvent.click(headerCell2);
@@ -107,7 +107,7 @@ test('multi column sort', async () => {
 
 test('multi column sort with metakey', async () => {
   setup();
-  const [headerCell1, headerCell2] = getHeaderCells();
+  const [headerCell1, headerCell2] = getHeaderCellsNew();
   await userEvent.click(headerCell1);
   await userEvent.keyboard('{Meta>}');
   await userEvent.click(headerCell2);
@@ -119,7 +119,7 @@ test('multi column sort with metakey', async () => {
 
 test('multi column sort with keyboard', async () => {
   setup();
-  const [headerCell1] = getHeaderCells();
+  const [headerCell1] = getHeaderCellsNew();
   await userEvent.click(headerCell1);
   await userEvent.keyboard(' {arrowright}{Control>}{enter}');
   await testSortColumns([

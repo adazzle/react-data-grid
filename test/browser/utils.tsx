@@ -29,73 +29,73 @@ export function setupNew<R, SR, K extends React.Key = React.Key>(props: DataGrid
   );
 }
 
-export function getGridOld() {
+export function getGrid() {
   return screen.getByRole('grid');
 }
 
-export function getGrid() {
+export function getGridNew() {
   return page.getByRole('grid');
 }
 
-export function getTreeGridOld() {
+export function getTreeGrid() {
   return screen.getByRole('treegrid');
 }
 
-export function getRowsOld() {
+export function getRows() {
   return screen.getAllByRole('row').slice(1);
 }
 
-export function getRows() {
+export function getRowsNew() {
   return page.getByRole('row').all().slice(1);
 }
 
-export function queryRowsOld() {
+export function queryRows() {
   return screen.queryAllByRole('row').slice(1);
 }
 
-export function getCellsAtRowIndexOld(rowIdx: number) {
+export function getCellsAtRowIndex(rowIdx: number) {
   return Array.from(
     document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`)
   );
 }
 
-export function getCellsAtRowIndex(rowIdx: number) {
+export function getCellsAtRowIndexNew(rowIdx: number) {
   return page.getByRole('row').all()[rowIdx + 1].getByRole('gridcell').all();
 }
 
-export function getCellsOld() {
+export function getCells() {
   return screen.getAllByRole('gridcell');
 }
 
-export function getCells() {
+export function getCellsNew() {
   return page.getByRole('gridcell').all();
 }
 
-export function queryCellsOld() {
+export function queryCells() {
   return screen.queryAllByRole('gridcell');
 }
 
-export function getHeaderCellsOld() {
+export function getHeaderCells() {
   return screen.getAllByRole('columnheader');
 }
 
-export function getHeaderCells() {
+export function getHeaderCellsNew() {
   return page.getByRole('columnheader').all();
 }
 
-export function queryHeaderCellsOld() {
+export function queryHeaderCells() {
   return screen.queryAllByRole('columnheader');
 }
 
-export function getSelectedCellOld() {
+export function getSelectedCell() {
   return (
     screen.queryByRole('gridcell', { selected: true }) ??
     screen.queryByRole('columnheader', { selected: true })
   );
 }
 
-export function validateCellPositionOld(columnIdx: number, rowIdx: number) {
-  const cell = getSelectedCellOld();
+export function validateCellPosition(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCell();
   if (cell === null) {
     throw new Error('Selected cell not found');
   }
@@ -103,7 +103,7 @@ export function validateCellPositionOld(columnIdx: number, rowIdx: number) {
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
-export function getSelectedCell() {
+export function getSelectedCellNew() {
   const selectedGridCell = page.getByRole('gridcell', { selected: true });
   if (selectedGridCell.all().length > 0) {
     return selectedGridCell;
@@ -112,31 +112,31 @@ export function getSelectedCell() {
   return page.getByRole('columnheader', { selected: true });
 }
 
-export function validateCellPosition(columnIdx: number, rowIdx: number) {
-  const cell = getSelectedCell().element();
+export function validateCellPositionNew(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCellNew().element();
   expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
-export async function copySelectedCellOld() {
+export async function copySelectedCell() {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.keyboard('{Control>}c');
   });
 }
 
-export function copySelectedCell() {
+export function copySelectedCellNew() {
   return userEvent.keyboard('{Control>}c');
 }
 
-export async function pasteSelectedCellOld() {
+export async function pasteSelectedCell() {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.keyboard('{Control>}v');
   });
 }
 
-export function pasteSelectedCell() {
+export function pasteSelectedCellNew() {
   return userEvent.keyboard('{Control>}v');
 }
 
@@ -147,7 +147,7 @@ export async function scrollGrid({
   scrollLeft?: number;
   scrollTop?: number;
 }) {
-  const grid = getGridOld();
+  const grid = getGrid();
 
   await act(async () => {
     if (scrollLeft !== undefined) {

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndexOld } from './utils';
+import { getCellsAtRowIndex } from './utils';
 
 interface Row {
   col1: number;
@@ -64,10 +64,10 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
-    expect(getCellsAtRowIndexOld(0)[0]).toHaveAttribute('aria-selected', 'false');
-    await userEvent.click(getCellsAtRowIndexOld(0)[1]);
-    expect(getCellsAtRowIndexOld(0)[1]).toHaveAttribute('aria-selected', 'true');
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
+    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should be able to open editor editor on single click using onCellClick', async () => {
@@ -81,9 +81,9 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-    await userEvent.click(getCellsAtRowIndexOld(0)[1]);
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
     expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
   });
 
@@ -97,9 +97,9 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-    await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
+    await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
     expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
   });
 
@@ -113,10 +113,10 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.pointer({ target: getCellsAtRowIndexOld(0)[0], keys: '[MouseRight]' });
-    expect(getCellsAtRowIndexOld(0)[0]).toHaveAttribute('aria-selected', 'false');
-    await userEvent.pointer({ target: getCellsAtRowIndexOld(0)[1], keys: '[MouseRight]' });
-    expect(getCellsAtRowIndexOld(0)[1]).toHaveAttribute('aria-selected', 'true');
+    await userEvent.pointer({ target: getCellsAtRowIndex(0)[0], keys: '[MouseRight]' });
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
+    await userEvent.pointer({ target: getCellsAtRowIndex(0)[1], keys: '[MouseRight]' });
+    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should call onSelectedCellChange when cell selection is changed', async () => {
@@ -127,7 +127,7 @@ describe('Events', () => {
     expect(onSelectedCellChange).not.toHaveBeenCalled();
 
     // Selected by click
-    await userEvent.click(getCellsAtRowIndexOld(0)[1]);
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
     expect(onSelectedCellChange).toHaveBeenCalledWith({
       column: expect.objectContaining(columns[1]),
       row: rows[0],
@@ -136,7 +136,7 @@ describe('Events', () => {
     expect(onSelectedCellChange).toHaveBeenCalledTimes(1);
 
     // Selected by double click
-    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(onSelectedCellChange).toHaveBeenCalledWith({
       column: expect.objectContaining(columns[0]),
       row: rows[0],
@@ -145,7 +145,7 @@ describe('Events', () => {
     expect(onSelectedCellChange).toHaveBeenCalledTimes(2);
 
     // Selected by right-click
-    await userEvent.pointer({ target: getCellsAtRowIndexOld(1)[0], keys: '[MouseRight]' });
+    await userEvent.pointer({ target: getCellsAtRowIndex(1)[0], keys: '[MouseRight]' });
     expect(onSelectedCellChange).toHaveBeenCalledWith({
       column: expect.objectContaining(columns[0]),
       row: rows[1],
