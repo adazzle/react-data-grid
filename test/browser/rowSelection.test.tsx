@@ -3,7 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid, { SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import { getCellsAtRowIndexNew, getRowsNew } from './utils';
+import { getCellsAtRowIndex, getRows } from './utils';
 
 interface Row {
   id: number;
@@ -50,12 +50,12 @@ function setupNew(initialRows = defaultRows) {
 
 function testSelection(rowIdx: number, isSelected: boolean) {
   return expect
-    .element(getRowsNew()[rowIdx])
+    .element(getRows()[rowIdx])
     .toHaveAttribute('aria-selected', isSelected ? 'true' : 'false');
 }
 
 async function toggleSelection(rowIdx: number, shift = false) {
-  const element = getCellsAtRowIndexNew(rowIdx)[0].getByRole('checkbox', { name: 'Select' });
+  const element = getCellsAtRowIndex(rowIdx)[0].getByRole('checkbox', { name: 'Select' });
   if (shift) await userEvent.keyboard('{Shift>}');
   await userEvent.click(element, { force: true });
   if (shift) await userEvent.keyboard('{/Shift}');
@@ -77,7 +77,7 @@ test('toggle selection when checkbox is clicked', async () => {
 test('toggle selection using keyboard', async () => {
   setupNew();
   await testSelection(0, false);
-  await userEvent.click(getCellsAtRowIndexNew(0)[0]);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
   await testSelection(0, true);
   await userEvent.keyboard(' ');
   await testSelection(0, false);
@@ -255,7 +255,7 @@ test('select/deselect rows using shift click', async () => {
 
 test('select rows using shift space', async () => {
   setupNew();
-  await userEvent.click(getCellsAtRowIndexNew(0)[1]);
+  await userEvent.click(getCellsAtRowIndex(0)[1]);
   await userEvent.keyboard('{Shift>} {/Shift}');
   await testSelection(0, true);
   await userEvent.keyboard(' ');

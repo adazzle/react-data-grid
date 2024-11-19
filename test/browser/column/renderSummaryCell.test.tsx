@@ -1,5 +1,5 @@
 import type { Column } from '../../../src';
-import { getCellsNew, setupNew } from '../utils';
+import { getCells, setupNew } from '../utils';
 
 interface SummaryRow {
   id: number;
@@ -35,7 +35,7 @@ test('renderSummaryCell', async () => {
     ]
   });
 
-  const cells = getCellsNew();
+  const cells = getCells();
   expect(cells).toHaveLength(8);
   await expect.element(cells[0]).toHaveTextContent('Summary: 1');
   await expect.element(cells[2]).toHaveTextContent('Summary: 2');
