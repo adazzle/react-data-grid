@@ -1,6 +1,6 @@
 import type { Column } from '../../src';
 import { rowClassname } from '../../src/style/row';
-import { getRows, setupNew } from './utils';
+import { getRows, setup } from './utils';
 
 interface Row {
   id: number;
@@ -10,7 +10,7 @@ const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
 const rows: readonly Row[] = [{ id: 0 }, { id: 1 }, { id: 2 }];
 
 test('rowClass is undefined', async () => {
-  setupNew({
+  setup({
     columns,
     rows,
     rowClass: undefined
@@ -22,7 +22,7 @@ test('rowClass is undefined', async () => {
 });
 
 test('rowClass returns a string', async () => {
-  setupNew({
+  setup({
     columns,
     rows,
     rowClass: (row) => `my-row-${row.id}`
@@ -34,7 +34,7 @@ test('rowClass returns a string', async () => {
 });
 
 test('rowClass returns undefined', async () => {
-  setupNew({
+  setup({
     columns,
     rows,
     rowClass: () => undefined

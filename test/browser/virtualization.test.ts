@@ -8,7 +8,7 @@ import {
   queryHeaderCellsOld,
   queryRowsOld,
   scrollGrid,
-  setup
+  setupOld
 } from './utils';
 
 const rowHeight = 35;
@@ -35,7 +35,7 @@ function setupGrid(
     });
   }
 
-  setup({
+  setupOld({
     columns,
     rows,
     topSummaryRows,

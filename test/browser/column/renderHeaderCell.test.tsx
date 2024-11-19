@@ -1,5 +1,5 @@
 import type { Column } from '../../../src';
-import { getHeaderCells, setupNew } from '../utils';
+import { getHeaderCells, setup } from '../utils';
 
 test('renderHeaderCell is either undefined or a component', async () => {
   const columns: readonly Column<never>[] = [
@@ -14,7 +14,7 @@ test('renderHeaderCell is either undefined or a component', async () => {
     }
   ];
 
-  setupNew({ columns, rows: [] });
+  setup({ columns, rows: [] });
   const [cell1, cell2] = getHeaderCells();
   await expect.element(cell1).toHaveTextContent('ID');
   await expect.element(cell2).toHaveTextContent('Fancy! Name');

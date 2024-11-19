@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 import DataGrid from '../../src';
 import type { DataGridProps } from '../../src';
 
-export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
+export function setupOld<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
   render(
     <DataGrid
       {...props}
@@ -17,7 +17,7 @@ export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridPro
   );
 }
 
-export function setupNew<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
+export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
   page.render(
     <DataGrid
       {...props}

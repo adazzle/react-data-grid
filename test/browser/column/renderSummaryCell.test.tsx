@@ -1,5 +1,5 @@
 import type { Column } from '../../../src';
-import { getCells, setupNew } from '../utils';
+import { getCells, setup } from '../utils';
 
 interface SummaryRow {
   id: number;
@@ -22,7 +22,7 @@ const columns: readonly Column<never, SummaryRow>[] = [
 ];
 
 test('renderSummaryCell', async () => {
-  setupNew({
+  setup({
     columns,
     rows: [],
     topSummaryRows: [

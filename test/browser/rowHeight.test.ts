@@ -1,7 +1,7 @@
 import { page, userEvent } from '@vitest/browser/context';
 
 import type { Column, DataGridProps } from '../../src';
-import { getRows, setupNew } from './utils';
+import { getRows, setup } from './utils';
 
 type Row = number;
 
@@ -17,7 +17,7 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
       width: 80
     });
   }
-  setupNew({ columns, rows, rowHeight });
+  setup({ columns, rows, rowHeight });
 }
 
 test('rowHeight is number', async () => {

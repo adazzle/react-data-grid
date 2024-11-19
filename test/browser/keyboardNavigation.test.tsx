@@ -7,7 +7,7 @@ import {
   getCellsAtRowIndexOld,
   getSelectedCellOld,
   scrollGrid,
-  setup,
+  setupOld,
   validateCellPositionOld
 } from './utils';
 
@@ -28,7 +28,7 @@ const columns = [
 ] as const satisfies Column<Row, Row>[];
 
 test('keyboard navigation', async () => {
-  setup({ columns, rows, topSummaryRows, bottomSummaryRows });
+  setupOld({ columns, rows, topSummaryRows, bottomSummaryRows });
 
   // no initial selection
   expect(getSelectedCellOld()).not.toBeInTheDocument();
@@ -104,7 +104,7 @@ test('keyboard navigation', async () => {
 });
 
 test('arrow and tab navigation', async () => {
-  setup({ columns, rows, bottomSummaryRows });
+  setupOld({ columns, rows, bottomSummaryRows });
 
   // pressing arrowleft on the leftmost cell does nothing
   await userEvent.tab();
@@ -129,7 +129,7 @@ test('arrow and tab navigation', async () => {
 });
 
 test('grid enter/exit', async () => {
-  setup({ columns, rows: new Array(5), bottomSummaryRows });
+  setupOld({ columns, rows: new Array(5), bottomSummaryRows });
 
   // no initial selection
   expect(getSelectedCellOld()).not.toBeInTheDocument();
@@ -168,7 +168,7 @@ test('grid enter/exit', async () => {
 });
 
 test('navigation with focusable cell renderer', async () => {
-  setup({ columns, rows: new Array(1), bottomSummaryRows });
+  setupOld({ columns, rows: new Array(1), bottomSummaryRows });
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPositionOld(0, 1);
@@ -209,7 +209,7 @@ test('navigation when header and summary rows have focusable elements', async ()
     }
   ];
 
-  setup({ columns, rows: new Array(2), bottomSummaryRows });
+  setupOld({ columns, rows: new Array(2), bottomSummaryRows });
   await userEvent.tab();
 
   // should set focus on the header filter
@@ -249,7 +249,7 @@ test('navigation when selected cell not in the viewport', async () => {
   for (let i = 0; i < 99; i++) {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
-  setup({ columns, rows, bottomSummaryRows });
+  setupOld({ columns, rows, bottomSummaryRows });
   await userEvent.tab();
   validateCellPositionOld(0, 0);
 
@@ -321,7 +321,7 @@ test('reset selected cell when row is removed', async () => {
 });
 
 test('should not change the left and right arrow behavior for right to left languages', async () => {
-  setup({ rows, columns, direction: 'rtl' });
+  setupOld({ rows, columns, direction: 'rtl' });
   await userEvent.tab();
   validateCellPositionOld(0, 0);
   await userEvent.tab();

@@ -1,4 +1,3 @@
-import { act } from 'react';
 import { commands, userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
@@ -32,19 +31,14 @@ interface ResizeArgs {
 async function resize({ column, resizeBy }: ResizeArgs) {
   expect(getResizeHandle(column)).toBeInTheDocument();
 
-  await act(async () => {
-    // @ts-expect-error
-    await commands.resizeColumn(resizeBy);
-  });
+  // @ts-expect-error
+  await commands.resizeColumn(resizeBy);
 }
 
 async function autoResize(column: Element) {
   const resizeHandle = getResizeHandle(column);
 
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    await userEvent.dblClick(resizeHandle);
-  });
+  await userEvent.dblClick(resizeHandle);
 }
 
 const columns: readonly Column<Row>[] = [

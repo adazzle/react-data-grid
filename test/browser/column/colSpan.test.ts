@@ -1,7 +1,7 @@
 import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
-import { getCellsAtRowIndexOld, getHeaderCells, setupNew, validateCellPositionOld } from '../utils';
+import { getCellsAtRowIndexOld, getHeaderCells, setup, validateCellPositionOld } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {
@@ -34,7 +34,7 @@ describe('colSpan', () => {
         }
       });
     }
-    setupNew({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
+    setup({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
   }
 
   it('should merges cells', () => {

@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 
 import type { Column } from '../../src';
-import { getGrid, getSelectedCell, setupNew } from './utils';
+import { getGrid, getSelectedCell, setup } from './utils';
 
 interface Row {
   id: number;
@@ -22,7 +22,7 @@ const columns: readonly Column<Row>[] = [
 const rows: readonly Row[] = [];
 
 test('should use left to right direction by default', async () => {
-  setupNew({ rows, columns });
+  setup({ rows, columns });
   await expect.element(getGrid()).toHaveAttribute('dir', 'ltr');
   await userEvent.tab();
   await expect.element(getSelectedCell()).toHaveTextContent('ID');
@@ -31,7 +31,7 @@ test('should use left to right direction by default', async () => {
 });
 
 test('should use left to right direction if direction prop is set to ltr', async () => {
-  setupNew({ rows, columns, direction: 'ltr' });
+  setup({ rows, columns, direction: 'ltr' });
   await expect.element(getGrid()).toHaveAttribute('dir', 'ltr');
   await userEvent.tab();
   await expect.element(getSelectedCell()).toHaveTextContent('ID');
@@ -40,7 +40,7 @@ test('should use left to right direction if direction prop is set to ltr', async
 });
 
 test('should use right to left direction if direction prop is set to rtl', async () => {
-  setupNew({ rows, columns, direction: 'rtl' });
+  setup({ rows, columns, direction: 'rtl' });
   await expect.element(getGrid()).toHaveAttribute('dir', 'rtl');
   await userEvent.tab();
   await expect.element(getSelectedCell()).toHaveTextContent('ID');

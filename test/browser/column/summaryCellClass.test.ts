@@ -1,7 +1,7 @@
 import type { Column } from '../../../src';
 import { cellClassname as cellClass } from '../../../src/style/cell';
 import { summaryCellClassname } from '../../../src/SummaryCell';
-import { getCells, setupNew } from '../utils';
+import { getCells, setup } from '../utils';
 
 interface SummaryRow {
   id: number;
@@ -18,7 +18,7 @@ test('summaryCellClass is undefined', async () => {
       name: 'ID'
     }
   ];
-  setupNew({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
+  setup({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
   const [cell1, cell2] = getCells();
   await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
   await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
@@ -32,7 +32,7 @@ test('summaryCellClass is a string', async () => {
       summaryCellClass: 'my-cell'
     }
   ];
-  setupNew({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
+  setup({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
   const cells = getCells();
   for (const cell of cells) {
     await expect.element(cell).toHaveClass(`${cellClassname} my-cell`, { exact: true });
@@ -47,7 +47,7 @@ test('summaryCellClass returns a string', async () => {
       summaryCellClass: (row) => `my-cell-${row.id}`
     }
   ];
-  setupNew({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
+  setup({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
   const [cell1, cell2, cell3, cell4] = getCells();
   await expect.element(cell1).toHaveClass(`${cellClassname} my-cell-0`, { exact: true });
   await expect.element(cell2).toHaveClass(`${cellClassname} my-cell-1`, { exact: true });
@@ -63,7 +63,7 @@ test('summaryCellClass returns undefined', async () => {
       summaryCellClass: () => undefined
     }
   ];
-  setupNew({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
+  setup({ columns, topSummaryRows, bottomSummaryRows, rows: [] });
   const cells = getCells();
   for (const cell of cells) {
     await expect.element(cell).toHaveClass(cellClassname, { exact: true });

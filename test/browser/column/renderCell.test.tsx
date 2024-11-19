@@ -3,7 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../../src';
 import type { Column } from '../../../src';
-import { getCells, getCellsAtRowIndexOld, setupNew } from '../utils';
+import { getCells, getCellsAtRowIndexOld, setup } from '../utils';
 
 interface Row {
   id: number;
@@ -18,14 +18,14 @@ describe('renderValue', () => {
   const rows: readonly Row[] = [{ id: 101 }];
 
   it('should be used by default', async () => {
-    setupNew({ columns, rows });
+    setup({ columns, rows });
     const [cell1, cell2] = getCells();
     await expect.element(cell1).toHaveTextContent('101');
     await expect.element(cell2).toBeEmptyDOMElement();
   });
 
   it('should handle non-object values', async () => {
-    setupNew({ columns, rows: [null] });
+    setup({ columns, rows: [null] });
     const [cell1, cell2] = getCells();
     await expect.element(cell1).toBeEmptyDOMElement();
     await expect.element(cell2).toBeEmptyDOMElement();
@@ -49,7 +49,7 @@ describe('Custom cell renderer', () => {
   const rows: readonly Row[] = [{ id: 101 }];
 
   it('should replace the default cell renderer', async () => {
-    setupNew({ columns, rows });
+    setup({ columns, rows });
     const [cell1, cell2] = getCells();
     await expect.element(cell1).toHaveTextContent('#101');
     await expect.element(cell2).toHaveTextContent('No name');

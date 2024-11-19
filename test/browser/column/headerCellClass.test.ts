@@ -1,6 +1,6 @@
 import type { Column, ColumnGroup } from '../../../src';
 import { cellClassname } from '../../../src/style/cell';
-import { getHeaderCells, setupNew } from '../utils';
+import { getHeaderCells, setup } from '../utils';
 
 test('headerCellClass is either nullish or a string', async () => {
   const columns: readonly Column<never>[] = [
@@ -15,7 +15,7 @@ test('headerCellClass is either nullish or a string', async () => {
     }
   ];
 
-  setupNew({ columns, rows: [] });
+  setup({ columns, rows: [] });
   const [cell1, cell2] = getHeaderCells();
   await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
   await expect.element(cell2).toHaveClass(`${cellClassname} my-header`, { exact: true });
@@ -34,7 +34,7 @@ test('columnGroup.headerCellClass is either nullish or a string', async () => {
     }
   ];
 
-  setupNew({ columns, rows: [] });
+  setup({ columns, rows: [] });
   const [cell1, cell2] = getHeaderCells();
   await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
   await expect.element(cell2).toHaveClass(`${cellClassname} my-header`, { exact: true });

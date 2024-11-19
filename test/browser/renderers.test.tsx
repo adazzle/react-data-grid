@@ -16,7 +16,7 @@ import type {
   RenderSortStatusProps,
   SortColumn
 } from '../../src';
-import { getCells, getHeaderCells, getRowsOld, setupNew } from './utils';
+import { getCells, getHeaderCells, getRowsOld, setup } from './utils';
 
 interface Row {
   id: number;
@@ -113,7 +113,7 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
 }
 
 test('fallback defined using renderers prop with no rows', async () => {
-  setupNew({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
+  setup({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRowsOld()).toHaveLength(0);
   await expect.element(page.getByText('Local no rows fallback')).toBeInTheDocument();
@@ -134,7 +134,7 @@ test('fallback defined using both provider and renderers with no rows', async ()
 });
 
 test('fallback defined using renderers prop with a row', async () => {
-  setupNew({
+  setup({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
     renderers: { noRowsFallback: <NoRowsFallback /> }
@@ -164,7 +164,7 @@ test('fallback defined using both provider and renderers with a row', async () =
 });
 
 test('checkbox defined using renderers prop', async () => {
-  setupNew({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
+  setup({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
   expect(getRowsOld()).toHaveLength(0);
   await expect.element(page.getByText('Local checkbox')).toBeInTheDocument();
