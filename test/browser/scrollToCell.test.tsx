@@ -4,7 +4,7 @@ import { page, userEvent } from '@vitest/browser/context';
 import type { Column, DataGridHandle } from '../../src';
 import DataGrid from '../../src';
 import type { PartialPosition } from '../../src/ScrollToCell';
-import { getGridOld } from './utils';
+import { getGrid } from './utils';
 
 type Row = undefined;
 
@@ -54,7 +54,7 @@ async function testScroll(p: PartialPosition) {
 
 test('scrollToCell', async () => {
   page.render(<Grid />);
-  const grid = getGridOld();
+  const grid = getGrid().element();
   validateScrollPosition(0, 0);
 
   // should scroll to a cell when a valid position is specified
