@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { waitFor } from '@testing-library/dom';
 import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../../src';
@@ -101,7 +102,9 @@ describe('Editor', () => {
     await expect.element(editor).not.toBeInTheDocument();
     expect(getGrid().scrollTop).toBe(2000);
     await userEvent.keyboard('123');
-    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+    await waitFor(() => {
+      expect(getCellsAtRowIndex(0)).toHaveLength(2);
+    });
     await expect.element(editor).toHaveValue(123);
     expect(getGrid().scrollTop).toBe(0);
   });
