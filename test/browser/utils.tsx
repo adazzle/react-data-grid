@@ -137,7 +137,7 @@ export async function pasteSelectedCell() {
 }
 
 export function pasteSelectedCellNew() {
-  return userEvent.keyboard('{Control>}v');
+  return userEvent.keyboard('{Control>}v{/Control}');
 }
 
 export async function scrollGrid({
