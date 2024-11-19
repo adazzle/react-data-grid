@@ -126,7 +126,7 @@ export async function copySelectedCell() {
 }
 
 export function copySelectedCellNew() {
-  return userEvent.keyboard('{Control>}c');
+  return userEvent.keyboard('{Control>}c{/Control}');
 }
 
 export async function pasteSelectedCell() {
