@@ -23,8 +23,7 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
   await frame.locator('.rdg-cell-drag-handle').hover();
   await page.mouse.down();
   const toCell = frame.getByRole('gridcell', { name: to });
-  const { x, y } = (await toCell.boundingBox())!;
-  await page.mouse.move(x, y);
+  await toCell.hover();
   await page.mouse.up();
 };
 
