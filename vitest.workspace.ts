@@ -15,6 +15,19 @@ const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeB
   await page.mouse.up();
 };
 
+// TODO: remove when `userEvent.pointer` is supported
+const dragFill: BrowserCommand<[from: string, to: string]> = async (context, from, to) => {
+  const page = context.page;
+  const frame = await context.frame();
+  await frame.getByRole('gridcell', { name: from }).click();
+  await frame.locator('.rdg-cell-drag-handle').hover();
+  await page.mouse.down();
+  const toCell = frame.getByRole('gridcell', { name: to });
+  const { x, y } = (await toCell.boundingBox())!;
+  await page.mouse.move(x, y);
+  await page.mouse.up();
+};
+
 export default defineWorkspace([
   {
     extends: './vite.config.ts',
@@ -25,7 +38,7 @@ export default defineWorkspace([
         enabled: true,
         name: 'chromium',
         provider: 'playwright',
-        commands: { resizeColumn },
+        commands: { resizeColumn, dragFill },
         viewport: { width: 1920, height: 1080 },
         headless: true,
         screenshotFailures: process.env.CI !== 'true'
