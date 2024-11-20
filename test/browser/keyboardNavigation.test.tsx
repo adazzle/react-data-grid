@@ -4,11 +4,11 @@ import userEvent from '@testing-library/user-event';
 import type { Column } from '../../src';
 import DataGrid, { SelectColumn } from '../../src';
 import {
-  getCellsAtRowIndex,
-  getSelectedCell,
+  getCellsAtRowIndexOld,
+  getSelectedCellOld,
   scrollGrid,
-  setup,
-  validateCellPosition
+  setupOld,
+  validateCellPositionOld
 } from './utils';
 
 type Row = undefined;
@@ -28,138 +28,138 @@ const columns = [
 ] as const satisfies Column<Row, Row>[];
 
 test('keyboard navigation', async () => {
-  setup({ columns, rows, topSummaryRows, bottomSummaryRows });
+  setupOld({ columns, rows, topSummaryRows, bottomSummaryRows });
 
   // no initial selection
-  expect(getSelectedCell()).not.toBeInTheDocument();
+  expect(getSelectedCellOld()).not.toBeInTheDocument();
 
   // tab into the grid
   await userEvent.tab();
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
 
   // tab to the next cell
   await userEvent.tab();
-  validateCellPosition(1, 0);
+  validateCellPositionOld(1, 0);
 
   // tab back to the previous cell
   await userEvent.tab({ shift: true });
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
 
   // arrow navigation
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(0, 1);
+  validateCellPositionOld(0, 1);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(1, 1);
+  validateCellPositionOld(1, 1);
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(1, 2);
+  validateCellPositionOld(1, 2);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(0, 2);
+  validateCellPositionOld(0, 2);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(0, 1);
+  validateCellPositionOld(0, 1);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
 
   // page {up,down}
   await userEvent.keyboard('{PageDown}');
-  validateCellPosition(0, 26);
+  validateCellPositionOld(0, 26);
   await userEvent.keyboard('{PageDown}');
-  validateCellPosition(0, 52);
+  validateCellPositionOld(0, 52);
   await userEvent.keyboard('{PageUp}');
-  validateCellPosition(0, 26);
+  validateCellPositionOld(0, 26);
 
   // home/end navigation
   await userEvent.keyboard('{end}');
-  validateCellPosition(6, 26);
+  validateCellPositionOld(6, 26);
   await userEvent.keyboard('{home}');
-  validateCellPosition(0, 26);
+  validateCellPositionOld(0, 26);
   await userEvent.keyboard('{Control>}{end}');
-  validateCellPosition(6, 103);
+  validateCellPositionOld(6, 103);
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(6, 103);
+  validateCellPositionOld(6, 103);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(6, 103);
+  validateCellPositionOld(6, 103);
   await userEvent.keyboard('{end}');
-  validateCellPosition(6, 103);
+  validateCellPositionOld(6, 103);
   await userEvent.keyboard('{Control>}{end}');
-  validateCellPosition(6, 103);
+  validateCellPositionOld(6, 103);
   await userEvent.keyboard('{PageDown}');
-  validateCellPosition(6, 103);
+  validateCellPositionOld(6, 103);
   await userEvent.keyboard('{Control>}{home}');
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
   await userEvent.keyboard('{home}');
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
   await userEvent.keyboard('{Control>}{home}');
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
   await userEvent.keyboard('{PageUp}');
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
 
   // tab at the end of a row selects the first cell on the next row
   await userEvent.keyboard('{end}');
   await userEvent.tab();
-  validateCellPosition(0, 1);
+  validateCellPositionOld(0, 1);
 
   // shift tab should select the last cell of the previous row
   await userEvent.tab({ shift: true });
-  validateCellPosition(6, 0);
+  validateCellPositionOld(6, 0);
 });
 
 test('arrow and tab navigation', async () => {
-  setup({ columns, rows, bottomSummaryRows });
+  setupOld({ columns, rows, bottomSummaryRows });
 
   // pressing arrowleft on the leftmost cell does nothing
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(0, 1);
+  validateCellPositionOld(0, 1);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(0, 1);
+  validateCellPositionOld(0, 1);
 
   // pressing arrowright on the rightmost cell does nothing
   await userEvent.keyboard('{end}');
-  validateCellPosition(6, 1);
+  validateCellPositionOld(6, 1);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(6, 1);
+  validateCellPositionOld(6, 1);
 
   // pressing tab on the rightmost cell navigates to the leftmost cell on the next row
   await userEvent.tab();
-  validateCellPosition(0, 2);
+  validateCellPositionOld(0, 2);
 
   // pressing shift+tab on the leftmost cell navigates to the rightmost cell on the previous row
   await userEvent.tab({ shift: true });
-  validateCellPosition(6, 1);
+  validateCellPositionOld(6, 1);
 });
 
 test('grid enter/exit', async () => {
-  setup({ columns, rows: new Array(5), bottomSummaryRows });
+  setupOld({ columns, rows: new Array(5), bottomSummaryRows });
 
   // no initial selection
-  expect(getSelectedCell()).not.toBeInTheDocument();
+  expect(getSelectedCellOld()).not.toBeInTheDocument();
 
   // tab into the grid
   await userEvent.tab();
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
 
   // shift+tab tabs out of the grid if we are at the first cell
   await userEvent.tab({ shift: true });
   expect(document.body).toHaveFocus();
 
   await userEvent.tab();
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
 
   await userEvent.keyboard('{arrowdown}{arrowdown}');
-  validateCellPosition(0, 2);
+  validateCellPositionOld(0, 2);
 
   // tab should select the last selected cell
   // click outside the grid
   await userEvent.click(document.body);
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(0, 3);
+  validateCellPositionOld(0, 3);
 
   // shift+tab should select the last selected cell
   await userEvent.click(document.body);
   await userEvent.tab({ shift: true });
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(0, 2);
+  validateCellPositionOld(0, 2);
 
   // tab tabs out of the grid if we are at the last cell
   await userEvent.keyboard('{Control>}{end}');
@@ -168,21 +168,21 @@ test('grid enter/exit', async () => {
 });
 
 test('navigation with focusable cell renderer', async () => {
-  setup({ columns, rows: new Array(1), bottomSummaryRows });
+  setupOld({ columns, rows: new Array(1), bottomSummaryRows });
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(0, 1);
+  validateCellPositionOld(0, 1);
 
   // cell should not set tabIndex to 0 if it contains a focusable cell renderer
-  expect(getSelectedCell()).toHaveAttribute('tabIndex', '-1');
-  const checkbox = getSelectedCell()!.querySelector('input');
+  expect(getSelectedCellOld()).toHaveAttribute('tabIndex', '-1');
+  const checkbox = getSelectedCellOld()!.querySelector('input');
   expect(checkbox).toHaveFocus();
   expect(checkbox).toHaveAttribute('tabIndex', '0');
 
   await userEvent.tab();
-  validateCellPosition(1, 1);
+  validateCellPositionOld(1, 1);
   // cell should set tabIndex to 0 if it does not have focusable cell renderer
-  expect(getSelectedCell()).toHaveAttribute('tabIndex', '0');
+  expect(getSelectedCellOld()).toHaveAttribute('tabIndex', '0');
 });
 
 test('navigation when header and summary rows have focusable elements', async () => {
@@ -209,7 +209,7 @@ test('navigation when header and summary rows have focusable elements', async ()
     }
   ];
 
-  setup({ columns, rows: new Array(2), bottomSummaryRows });
+  setupOld({ columns, rows: new Array(2), bottomSummaryRows });
   await userEvent.tab();
 
   // should set focus on the header filter
@@ -219,7 +219,7 @@ test('navigation when header and summary rows have focusable elements', async ()
   expect(document.getElementById('header-filter2')).toHaveFocus();
 
   await userEvent.tab();
-  validateCellPosition(0, 1);
+  validateCellPositionOld(0, 1);
 
   await userEvent.tab({ shift: true });
   expect(document.getElementById('header-filter2')).toHaveFocus();
@@ -230,7 +230,7 @@ test('navigation when header and summary rows have focusable elements', async ()
   await userEvent.tab();
   await userEvent.tab();
   await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
-  validateCellPosition(1, 2);
+  validateCellPositionOld(1, 2);
 
   await userEvent.tab();
   expect(document.getElementById('summary-1')).toHaveFocus();
@@ -240,8 +240,8 @@ test('navigation when header and summary rows have focusable elements', async ()
 
   await userEvent.tab({ shift: true });
   await userEvent.tab({ shift: true });
-  validateCellPosition(1, 2);
-  expect(getSelectedCell()).toHaveFocus();
+  validateCellPositionOld(1, 2);
+  expect(getSelectedCellOld()).toHaveFocus();
 });
 
 test('navigation when selected cell not in the viewport', async () => {
@@ -249,31 +249,31 @@ test('navigation when selected cell not in the viewport', async () => {
   for (let i = 0; i < 99; i++) {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
-  setup({ columns, rows, bottomSummaryRows });
+  setupOld({ columns, rows, bottomSummaryRows });
   await userEvent.tab();
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
 
   await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
-  validateCellPosition(99, 100);
-  expect(getCellsAtRowIndex(100)).not.toHaveLength(1);
+  validateCellPositionOld(99, 100);
+  expect(getCellsAtRowIndexOld(100)).not.toHaveLength(1);
 
   await scrollGrid({ scrollTop: 0 });
-  expect(getCellsAtRowIndex(99)).toHaveLength(1);
+  expect(getCellsAtRowIndexOld(99)).toHaveLength(1);
   await userEvent.keyboard('{arrowup}');
-  validateCellPosition(99, 99);
-  expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
+  validateCellPositionOld(99, 99);
+  expect(getCellsAtRowIndexOld(99)).not.toHaveLength(1);
 
   await scrollGrid({ scrollLeft: 0 });
   await userEvent.keyboard('{arrowdown}');
-  validateCellPosition(99, 100);
+  validateCellPositionOld(99, 100);
 
   await userEvent.keyboard(
     '{home}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
   );
-  validateCellPosition(7, 100);
+  validateCellPositionOld(7, 100);
   await scrollGrid({ scrollLeft: 2000 });
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(6, 100);
+  validateCellPositionOld(6, 100);
 });
 
 test('reset selected cell when column is removed', async () => {
@@ -291,11 +291,11 @@ test('reset selected cell when column is removed', async () => {
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowright}');
-  validateCellPosition(1, 1);
+  validateCellPositionOld(1, 1);
 
   rerender(<Test columns={[columns[0]]} />);
 
-  expect(getSelectedCell()).not.toBeInTheDocument();
+  expect(getSelectedCellOld()).not.toBeInTheDocument();
 });
 
 test('reset selected cell when row is removed', async () => {
@@ -313,25 +313,25 @@ test('reset selected cell when row is removed', async () => {
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
-  validateCellPosition(1, 2);
+  validateCellPositionOld(1, 2);
 
   rerender(<Test rows={[rows[0]]} />);
 
-  expect(getSelectedCell()).not.toBeInTheDocument();
+  expect(getSelectedCellOld()).not.toBeInTheDocument();
 });
 
 test('should not change the left and right arrow behavior for right to left languages', async () => {
-  setup({ rows, columns, direction: 'rtl' });
+  setupOld({ rows, columns, direction: 'rtl' });
   await userEvent.tab();
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
   await userEvent.tab();
-  validateCellPosition(1, 0);
+  validateCellPositionOld(1, 0);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
   await userEvent.keyboard('{arrowright}');
-  validateCellPosition(0, 0);
+  validateCellPositionOld(0, 0);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(1, 0);
+  validateCellPositionOld(1, 0);
   await userEvent.keyboard('{arrowleft}');
-  validateCellPosition(2, 0);
+  validateCellPositionOld(2, 0);
 });

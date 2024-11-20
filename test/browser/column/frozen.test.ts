@@ -1,6 +1,6 @@
 import type { Column } from '../../../src';
 import { cellClassname, cellFrozenClassname } from '../../../src/style/cell';
-import { getHeaderCellsNew, setupNew } from '../utils';
+import { getHeaderCells, setup } from '../utils';
 
 test('frozen column have a specific class, and are stable-sorted before non-frozen columns', async () => {
   const columns: readonly Column<never>[] = [
@@ -25,8 +25,8 @@ test('frozen column have a specific class, and are stable-sorted before non-froz
     }
   ];
 
-  setupNew({ columns, rows: [] });
-  const [cell1, cell2, cell3, cell4] = getHeaderCellsNew();
+  setup({ columns, rows: [] });
+  const [cell1, cell2, cell3, cell4] = getHeaderCells();
 
   await expect
     .element(cell1)
