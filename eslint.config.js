@@ -498,6 +498,7 @@ export default [
       '@typescript-eslint/no-unsafe-function-type': 1,
       '@typescript-eslint/no-unsafe-member-access': 0,
       '@typescript-eslint/no-unsafe-return': 1,
+      '@typescript-eslint/no-unsafe-type-assertion': 0,
       '@typescript-eslint/no-unsafe-unary-minus': 1,
       '@typescript-eslint/no-useless-empty-export': 1,
       '@typescript-eslint/no-var-requires': 0,
@@ -665,6 +666,7 @@ export default [
       'vitest/require-to-throw-message': 0,
       'vitest/require-top-level-describe': 0,
       'vitest/valid-describe-callback': 1,
+      'vitest/valid-expect-in-promise': 1,
       'vitest/valid-expect': [1, { alwaysAwait: true }],
       'vitest/valid-title': 1,
 
@@ -707,7 +709,7 @@ export default [
       'testing-library/prefer-presence-queries': 1,
       'testing-library/prefer-query-by-disappearance': 1,
       'testing-library/prefer-query-matchers': 0,
-      'testing-library/prefer-screen-queries': 1,
+      'testing-library/prefer-screen-queries': 0,
       'testing-library/prefer-user-event': 1,
       'testing-library/render-result-naming-convention': 0
     }

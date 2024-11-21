@@ -1,5 +1,4 @@
-import { screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { page, userEvent } from '@vitest/browser/context';
 
 import type { ColumnOrColumnGroup } from '../../../src';
 import { getSelectedCell, setup, validateCellPosition } from '../utils';
@@ -88,37 +87,41 @@ const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
   }
 ];
 
-test('grouping', () => {
+test('grouping', async () => {
   setup({ columns, rows: [{}] });
 
-  const grid = screen.getByRole('grid');
-  expect(grid).toHaveAttribute('aria-colcount', '12');
-  expect(grid).toHaveAttribute('aria-rowcount', '5');
+  const grid = page.getByRole('grid');
+  await expect.element(grid).toHaveAttribute('aria-colcount', '12');
+  await expect.element(grid).toHaveAttribute('aria-rowcount', '5');
 
-  const rows = screen.getAllByRole('row');
+  const rows = page.getByRole('row').all();
   expect(rows).toHaveLength(5);
 
-  expect(rows[0]).toHaveAttribute('aria-rowindex', '1');
-  expect(rows[1]).toHaveAttribute('aria-rowindex', '2');
-  expect(rows[2]).toHaveAttribute('aria-rowindex', '3');
-  expect(rows[3]).toHaveAttribute('aria-rowindex', '4');
-  expect(rows[4]).toHaveAttribute('aria-rowindex', '5');
+  await expect.element(rows[0]).toHaveAttribute('aria-rowindex', '1');
+  await expect.element(rows[1]).toHaveAttribute('aria-rowindex', '2');
+  await expect.element(rows[2]).toHaveAttribute('aria-rowindex', '3');
+  await expect.element(rows[3]).toHaveAttribute('aria-rowindex', '4');
+  await expect.element(rows[4]).toHaveAttribute('aria-rowindex', '5');
 
-  expect(within(rows[0]).getAllByRole('columnheader')).toHaveLength(2);
-  expect(within(rows[1]).getAllByRole('columnheader')).toHaveLength(2);
-  expect(within(rows[2]).getAllByRole('columnheader')).toHaveLength(4);
-  expect(within(rows[3]).getAllByRole('columnheader')).toHaveLength(12);
-  expect(within(rows[4]).queryByRole('columnheader')).not.toBeInTheDocument();
+  expect(rows[0].getByRole('columnheader').all()).toHaveLength(2);
+  expect(rows[1].getByRole('columnheader').all()).toHaveLength(2);
+  expect(rows[2].getByRole('columnheader').all()).toHaveLength(4);
+  expect(rows[3].getByRole('columnheader').all()).toHaveLength(12);
+  expect(rows[4].getByRole('columnheader').all()).toHaveLength(0);
 
-  const headerCells = screen.getAllByRole('columnheader');
+  const headerCells = page.getByRole('columnheader').all();
   expect(headerCells).toHaveLength(20);
 
-  const headerCellDetails = headerCells.map((cell) => ({
-    text: cell.textContent,
-    colIndex: cell.getAttribute('aria-colindex'),
-    colSpan: cell.getAttribute('aria-colspan'),
-    rowSpan: cell.getAttribute('aria-rowspan')
-  }));
+  const headerCellDetails = headerCells.map((cellLocator) => {
+    const cell = cellLocator.element();
+
+    return {
+      text: cell.textContent,
+      colIndex: cell.getAttribute('aria-colindex'),
+      colSpan: cell.getAttribute('aria-colspan'),
+      rowSpan: cell.getAttribute('aria-rowspan')
+    };
+  });
 
   expect(headerCellDetails).toStrictEqual([
     {
@@ -248,7 +251,7 @@ test('keyboard navigation', async () => {
   setup({ columns, rows: [{}] });
 
   // no initial selection
-  expect(getSelectedCell()).not.toBeInTheDocument();
+  await expect.element(getSelectedCell()).not.toBeInTheDocument();
 
   await userEvent.tab();
   validateCellPosition(0, 3);
