@@ -1,9 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../src';
 import type { Column, DataGridProps } from '../../src';
-import { getCellsAtRowIndexOld } from './utils';
+import { getCellsAtRowIndex } from './utils';
 
 interface Row {
   col1: number;
@@ -55,7 +54,7 @@ const rows: readonly Row[] = [
 
 describe('Events', () => {
   it('should not select cell if onCellClick prevents grid default', async () => {
-    render(
+    page.render(
       <EventTest
         onCellClick={(args, event) => {
           if (args.column.key === 'col1') {
@@ -64,14 +63,14 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
-    expect(getCellsAtRowIndexOld(0)[0]).toHaveAttribute('aria-selected', 'false');
-    await userEvent.click(getCellsAtRowIndexOld(0)[1]);
-    expect(getCellsAtRowIndexOld(0)[1]).toHaveAttribute('aria-selected', 'true');
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    await expect.element(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
+    await expect.element(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should be able to open editor editor on single click using onCellClick', async () => {
-    render(
+    page.render(
       <EventTest
         onCellClick={(args, event) => {
           if (args.column.key === 'col2') {
@@ -81,14 +80,14 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.click(getCellsAtRowIndexOld(0)[0]);
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-    await userEvent.click(getCellsAtRowIndexOld(0)[1]);
-    expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
+    await userEvent.click(getCellsAtRowIndex(0)[0]);
+    await expect.element(page.getByLabelText('col1-editor')).not.toBeInTheDocument();
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
+    await expect.element(page.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
   });
 
   it('should not open editor editor on double click if onCellDoubleClick prevents default', async () => {
-    render(
+    page.render(
       <EventTest
         onCellDoubleClick={(args, event) => {
           if (args.column.key === 'col1') {
@@ -97,14 +96,14 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
-    expect(screen.queryByLabelText('col1-editor')).not.toBeInTheDocument();
-    await userEvent.dblClick(getCellsAtRowIndexOld(0)[1]);
-    expect(screen.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
+    await expect.element(page.getByLabelText('col1-editor')).not.toBeInTheDocument();
+    await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+    await expect.element(page.getByRole('textbox', { name: 'col2-editor' })).toBeInTheDocument();
   });
 
   it('should call onCellContextMenu when cell is right clicked', async () => {
-    render(
+    page.render(
       <EventTest
         onCellContextMenu={(args, event) => {
           if (args.column.key === 'col1') {
@@ -113,21 +112,21 @@ describe('Events', () => {
         }}
       />
     );
-    await userEvent.pointer({ target: getCellsAtRowIndexOld(0)[0], keys: '[MouseRight]' });
-    expect(getCellsAtRowIndexOld(0)[0]).toHaveAttribute('aria-selected', 'false');
-    await userEvent.pointer({ target: getCellsAtRowIndexOld(0)[1], keys: '[MouseRight]' });
-    expect(getCellsAtRowIndexOld(0)[1]).toHaveAttribute('aria-selected', 'true');
+    await userEvent.click(getCellsAtRowIndex(0)[0], { button: 'right' });
+    await expect.element(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
+    await userEvent.click(getCellsAtRowIndex(0)[1], { button: 'right' });
+    await expect.element(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should call onSelectedCellChange when cell selection is changed', async () => {
     const onSelectedCellChange = vi.fn();
 
-    render(<EventTest onSelectedCellChange={onSelectedCellChange} />);
+    page.render(<EventTest onSelectedCellChange={onSelectedCellChange} />);
 
     expect(onSelectedCellChange).not.toHaveBeenCalled();
 
     // Selected by click
-    await userEvent.click(getCellsAtRowIndexOld(0)[1]);
+    await userEvent.click(getCellsAtRowIndex(0)[1]);
     expect(onSelectedCellChange).toHaveBeenCalledWith({
       column: expect.objectContaining(columns[1]),
       row: rows[0],
@@ -136,7 +135,7 @@ describe('Events', () => {
     expect(onSelectedCellChange).toHaveBeenCalledTimes(1);
 
     // Selected by double click
-    await userEvent.dblClick(getCellsAtRowIndexOld(0)[0]);
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     expect(onSelectedCellChange).toHaveBeenCalledWith({
       column: expect.objectContaining(columns[0]),
       row: rows[0],
@@ -145,7 +144,7 @@ describe('Events', () => {
     expect(onSelectedCellChange).toHaveBeenCalledTimes(2);
 
     // Selected by right-click
-    await userEvent.pointer({ target: getCellsAtRowIndexOld(1)[0], keys: '[MouseRight]' });
+    await userEvent.click(getCellsAtRowIndex(1)[0], { button: 'right' });
     expect(onSelectedCellChange).toHaveBeenCalledWith({
       column: expect.objectContaining(columns[0]),
       row: rows[1],
