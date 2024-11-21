@@ -2,7 +2,7 @@ import { page } from '@vitest/browser/context';
 
 import DataGrid, { SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
-import { getHeaderCellsNew } from './utils';
+import { getHeaderCells } from './utils';
 
 const frozen1: Column<unknown> = {
   key: 'f1',
@@ -46,7 +46,7 @@ test('column order', () => {
       ));
     }
 
-    expect(getHeaderCellsNew().map((c) => c.element().textContent)).toStrictEqual(expected);
+    expect(getHeaderCells().map((c) => c.element().textContent)).toStrictEqual(expected);
     unmount();
   }
 

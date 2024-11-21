@@ -1,7 +1,7 @@
 import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
-import { getHeaderCellsNew, setupNew } from '../utils';
+import { getHeaderCells, setup } from '../utils';
 
 const columns: readonly Column<never>[] = [
   {
@@ -27,8 +27,8 @@ const columns: readonly Column<never>[] = [
 
 test('draggable columns', async () => {
   const onColumnsReorder = vi.fn();
-  setupNew({ columns, rows: [], onColumnsReorder });
-  const [cell1, cell2, cell3, cell4] = getHeaderCellsNew();
+  setup({ columns, rows: [], onColumnsReorder });
+  const [cell1, cell2, cell3, cell4] = getHeaderCells();
 
   await expect.element(cell1).not.toHaveAttribute('draggable');
   await expect.element(cell2).toHaveAttribute('draggable');

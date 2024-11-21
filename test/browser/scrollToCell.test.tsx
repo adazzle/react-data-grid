@@ -54,7 +54,7 @@ async function testScroll(p: PartialPosition) {
 
 test('scrollToCell', async () => {
   page.render(<Grid />);
-  const grid = getGrid();
+  const grid = getGrid().element();
   validateScrollPosition(0, 0);
 
   // should scroll to a cell when a valid position is specified

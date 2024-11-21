@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 import DataGrid from '../../src';
 import type { DataGridProps } from '../../src';
 
-export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
+export function setupOld<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
   render(
     <DataGrid
       {...props}
@@ -17,7 +17,7 @@ export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridPro
   );
 }
 
-export function setupNew<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
+export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
   page.render(
     <DataGrid
       {...props}
@@ -29,73 +29,73 @@ export function setupNew<R, SR, K extends React.Key = React.Key>(props: DataGrid
   );
 }
 
-export function getGrid() {
+export function getGridOld() {
   return screen.getByRole('grid');
 }
 
-export function getGridNew() {
+export function getGrid() {
   return page.getByRole('grid');
 }
 
-export function getTreeGrid() {
+export function getTreeGridOld() {
   return screen.getByRole('treegrid');
 }
 
-export function getRows() {
+export function getRowsOld() {
   return screen.getAllByRole('row').slice(1);
 }
 
-export function getRowsNew() {
+export function getRows() {
   return page.getByRole('row').all().slice(1);
 }
 
-export function queryRows() {
+export function queryRowsOld() {
   return screen.queryAllByRole('row').slice(1);
 }
 
-export function getCellsAtRowIndex(rowIdx: number) {
+export function getCellsAtRowIndexOld(rowIdx: number) {
   return Array.from(
     document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`)
   );
 }
 
-export function getCellsAtRowIndexNew(rowIdx: number) {
+export function getCellsAtRowIndex(rowIdx: number) {
   return page.getByRole('row').all()[rowIdx + 1].getByRole('gridcell').all();
 }
 
-export function getCells() {
+export function getCellsOld() {
   return screen.getAllByRole('gridcell');
 }
 
-export function getCellsNew() {
+export function getCells() {
   return page.getByRole('gridcell').all();
 }
 
-export function queryCells() {
+export function queryCellsOld() {
   return screen.queryAllByRole('gridcell');
 }
 
-export function getHeaderCells() {
+export function getHeaderCellsOld() {
   return screen.getAllByRole('columnheader');
 }
 
-export function getHeaderCellsNew() {
+export function getHeaderCells() {
   return page.getByRole('columnheader').all();
 }
 
-export function queryHeaderCells() {
+export function queryHeaderCellsOld() {
   return screen.queryAllByRole('columnheader');
 }
 
-export function getSelectedCell() {
+export function getSelectedCellOld() {
   return (
     screen.queryByRole('gridcell', { selected: true }) ??
     screen.queryByRole('columnheader', { selected: true })
   );
 }
 
-export function validateCellPosition(columnIdx: number, rowIdx: number) {
-  const cell = getSelectedCell();
+export function validateCellPositionOld(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCellOld();
   if (cell === null) {
     throw new Error('Selected cell not found');
   }
@@ -103,7 +103,7 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
-export function getSelectedCellNew() {
+export function getSelectedCell() {
   const selectedGridCell = page.getByRole('gridcell', { selected: true });
   if (selectedGridCell.all().length > 0) {
     return selectedGridCell;
@@ -112,31 +112,31 @@ export function getSelectedCellNew() {
   return page.getByRole('columnheader', { selected: true });
 }
 
-export function validateCellPositionNew(columnIdx: number, rowIdx: number) {
-  const cell = getSelectedCellNew().element();
+export function validateCellPosition(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCell().element();
   expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
-export async function copySelectedCell() {
+export async function copySelectedCellOld() {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.keyboard('{Control>}c');
   });
 }
 
-export function copySelectedCellNew() {
+export function copySelectedCell() {
   return userEvent.keyboard('{Control>}c{/Control}');
 }
 
-export async function pasteSelectedCell() {
+export async function pasteSelectedCellOld() {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     await userEvent.keyboard('{Control>}v');
   });
 }
 
-export function pasteSelectedCellNew() {
+export function pasteSelectedCell() {
   return userEvent.keyboard('{Control>}v{/Control}');
 }
 
@@ -147,7 +147,7 @@ export async function scrollGrid({
   scrollLeft?: number;
   scrollTop?: number;
 }) {
-  const grid = getGrid();
+  const grid = getGridOld();
 
   await act(async () => {
     if (scrollLeft !== undefined) {
