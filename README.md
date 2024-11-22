@@ -315,6 +315,7 @@ Arguments:
 
 `args: CellClickArgs<R, SR>`
 
+- `args.rowIdx`: `number` - row index of the currently selected cell
 - `args.row`: `R` - row object of the currently selected cell
 - `args.column`: `CalculatedColumn<TRow, TSummaryRow>` - column object of the currently selected cell
 - `args.selectCell`: `(enableEditor?: boolean) => void` - function to manually select the cell and optionally pass `true` to start editing
@@ -394,7 +395,7 @@ Arguments:
 
 A function called when the grid is scrolled.
 
-###### `onColumnResize?: Maybe<(idx: number, width: number) => void>`
+###### `onColumnResize?: Maybe<(column: CalculatedColumn<R, SR>, width: number) => void>`
 
 A function called when column is resized.
 
