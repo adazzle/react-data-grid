@@ -9,7 +9,7 @@ test('should set label and description', () => {
     'aria-description': 'description',
     'aria-describedby': 'describedby',
     'data-testid': 'testid',
-    'data-custom': 'custom'
+    'data-cy': 'cy'
   });
 
   const grid = getGrid().element();
@@ -18,5 +18,5 @@ test('should set label and description', () => {
   expect(grid).toHaveAttribute('aria-description', 'description');
   expect(grid).toHaveAttribute('aria-describedby', 'describedby');
   expect(grid).toHaveAttribute('data-testid', 'testid');
-  expect(grid).toHaveAttribute('data-custom', 'custom');
+  expect(grid).toHaveAttribute('data-cy', 'cy');
 });
