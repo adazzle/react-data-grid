@@ -6,7 +6,7 @@ test('should set label and description', () => {
     columns: [],
     'aria-label': 'label',
     'aria-labelledby': 'labelledby',
-    'aria-description': 'description
+    'aria-description': 'description',
     'aria-describedby': 'describedby',
     'data-testid': 'testid',
     'data-custom': 'custom'
