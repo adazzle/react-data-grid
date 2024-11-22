@@ -101,6 +101,7 @@ type SharedDivProps = Pick<
   | 'role'
   | 'aria-label'
   | 'aria-labelledby'
+  | 'aria-description'
   | 'aria-describedby'
   | 'aria-rowcount'
   | 'className'
@@ -260,6 +261,7 @@ function DataGrid<R, SR, K extends Key>(
     role: rawRole,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
+    'aria-description': ariaDescription,
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
     'data-testid': testId
@@ -1076,10 +1078,12 @@ function DataGrid<R, SR, K extends Key>(
     selectedPosition.idx === -1 && selectedPosition.rowIdx !== minRowIdx - 1;
 
   return (
+    // biome-ignore lint/a11y/useValidAriaProps: aria-description is a valid prop
     <div
       role={role}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
+      aria-description={ariaDescription}
       aria-describedby={ariaDescribedBy}
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
