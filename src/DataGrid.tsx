@@ -101,6 +101,7 @@ type SharedDivProps = Pick<
   | 'role'
   | 'aria-label'
   | 'aria-labelledby'
+  | 'aria-description'
   | 'aria-describedby'
   | 'aria-rowcount'
   | 'className'
@@ -260,6 +261,7 @@ function DataGrid<R, SR, K extends Key>(
     role: rawRole,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
+    'aria-description': ariaDescription,
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
     'data-testid': testId
@@ -747,10 +749,10 @@ function DataGrid<R, SR, K extends Key>(
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
-    const row = rows[position.rowIdx];
     const samePosition = isSamePosition(selectedPosition, position);
 
     if (enableEditor && isCellEditable(position)) {
+      const row = rows[position.rowIdx];
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
@@ -765,7 +767,7 @@ function DataGrid<R, SR, K extends Key>(
     if (onSelectedCellChange && !samePosition) {
       onSelectedCellChange({
         rowIdx: position.rowIdx,
-        row,
+        row: isRowIdxWithinViewportBounds(position.rowIdx) ? rows[position.rowIdx] : undefined,
         column: columns[position.idx]
       });
     }
@@ -1081,10 +1083,12 @@ function DataGrid<R, SR, K extends Key>(
     selectedPosition.idx === -1 && selectedPosition.rowIdx !== minRowIdx - 1;
 
   return (
+    // biome-ignore lint/a11y/useValidAriaProps: aria-description is a valid prop
     <div
       role={role}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
+      aria-description={ariaDescription}
       aria-describedby={ariaDescribedBy}
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}

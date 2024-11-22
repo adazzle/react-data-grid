@@ -196,7 +196,7 @@ export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
 
 export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
   rowIdx: number;
-  row: TRow;
+  row: TRow | undefined;
   column: CalculatedColumn<TRow, TSummaryRow>;
 }
 

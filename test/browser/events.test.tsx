@@ -170,6 +170,14 @@ describe('Events', () => {
       rowIdx: 0
     });
     expect(onSelectedCellChange).toHaveBeenCalledTimes(5);
+
+    // go to the header row
+    await userEvent.keyboard('{ArrowUp}');
+    expect(onSelectedCellChange).toHaveBeenCalledWith({
+      column: expect.objectContaining(columns[1]),
+      row: undefined,
+      rowIdx: -1
+    });
   });
 });
 
