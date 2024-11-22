@@ -168,6 +168,7 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
 export interface CellClickArgs<TRow, TSummaryRow = unknown> {
+  rowIdx: number;
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   selectCell: (enableEditor?: boolean) => void;
