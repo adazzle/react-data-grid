@@ -204,7 +204,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   rowClass?: Maybe<(row: NoInfer<R>, rowIdx: number) => Maybe<string>>;
   /** @default 'ltr' */
   direction?: Maybe<Direction>;
-  [data: `data-${string}`]: unknown;
+  'data-testid'?: Maybe<string>;
+  'data-cy'?: Maybe<string>;
 }
 
 /**
@@ -264,7 +265,8 @@ function DataGrid<R, SR, K extends Key>(
     'aria-description': ariaDescription,
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
-    ...dataProps
+    'data-testid': testId,
+    'data-cy': dataCy
   } = props;
 
   /**
@@ -1080,7 +1082,6 @@ function DataGrid<R, SR, K extends Key>(
   return (
     // biome-ignore lint/a11y/useValidAriaProps: aria-description is a valid prop
     <div
-      {...dataProps}
       role={role}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
@@ -1122,6 +1123,8 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
+      data-testid={testId}
+      data-cy={dataCy}
     >
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <HeaderRowSelectionChangeProvider value={selectHeaderRowLatest}>
