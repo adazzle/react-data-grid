@@ -64,12 +64,16 @@ test('cannot not resize or auto resize column when resizable is not specified', 
 });
 
 test('should resize column when dragging the handle', async () => {
-  setup<Row, unknown>({ columns, rows: [] });
+  const onColumnResize = vi.fn();
+  setup<Row, unknown>({ columns, rows: [], onColumnResize });
   const [, col2] = getHeaderCells();
   const grid = getGrid();
+  expect(onColumnResize).not.toHaveBeenCalled();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2.element(), resizeBy: -50 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 150px' });
+  expect(onColumnResize).toHaveBeenCalledTimes(1);
+  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 150);
 });
 
 test('should use the maxWidth if specified', async () => {
