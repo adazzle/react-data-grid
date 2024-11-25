@@ -94,7 +94,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-hooks-extra": "^1.16.1",
     "eslint-plugin-sonarjs": "^2.0.4",
-    "eslint-plugin-testing-library": "^6.4.0",
+    "eslint-plugin-testing-library": "^7.0.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
     "playwright": "^1.45.1",
