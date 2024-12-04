@@ -9,6 +9,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksExtra from 'eslint-plugin-react-hooks-extra';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
+import markdown from '@eslint/markdown';
 
 export default [
   {
@@ -727,6 +728,24 @@ export default [
       'no-console': 0,
       'no-undef': 1,
       'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
+    }
+  },
+
+  {
+    name: 'markdown',
+    files: ['**/*.md'],
+    plugins: {
+      markdown
+    },
+    language: 'markdown/commonmark',
+    rules: {
+      'markdown/fenced-code-language': 1,
+      'markdown/heading-increment': 1,
+      'markdown/no-duplicate-headings': 0,
+      'markdown/no-empty-links': 1,
+      'markdown/no-html': 0,
+      'markdown/no-invalid-label-refs': 1,
+      'markdown/no-missing-label-refs': 1
     }
   }
 ];
