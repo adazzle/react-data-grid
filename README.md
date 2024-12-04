@@ -480,6 +480,8 @@ The label of the grid. We recommend providing a label using `aria-label` or `ari
 
 The id of the element containing a label for the grid. We recommend providing a label using `aria-label` or `aria-labelledby`
 
+###### `'aria-description'?: string | undefined`
+
 ###### `'aria-describedby'?: string | undefined`
 
 If the grid has a caption or description, `aria-describedby` can be set on the grid element with a value referring to the element containing the description.
