@@ -603,7 +603,7 @@ Width can be any valid css grid column value. If not specified, it will be deter
 ```tsx
 width: 80; // pixels
 width: '25%';
-width: 'max-length';
+width: 'max-content';
 width: 'minmax(100px, max-content)';
 ```
 
