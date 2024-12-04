@@ -85,7 +85,7 @@ interface EditCellState<R> extends Position {
   readonly originalRow: R;
 }
 
-type DefaultColumnOptions<R, SR> = Pick<
+export type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable' | 'draggable'
 >;

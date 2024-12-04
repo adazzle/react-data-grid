@@ -64,6 +64,7 @@
     "@babel/traverse": "7.25.9",
     "@biomejs/biome": "1.9.4",
     "@eslint/compat": "^1.2.3",
+    "@eslint/markdown": "^6.2.1",
     "@faker-js/faker": "^9.0.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
     "@linaria/core": "^6.0.0",
