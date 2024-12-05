@@ -3,13 +3,13 @@ import fs from 'node:fs/promises';
 const pkgText = await fs.readFile('./package.json', 'utf8');
 const pkg = JSON.parse(pkgText);
 
-pkg.devDependencies['@types/react'] = 'npm:types-react@rc';
-pkg.devDependencies['@types/react-dom'] = 'npm:types-react-dom@rc';
-pkg.devDependencies.react = 'rc';
-pkg.devDependencies['react-dom'] = 'rc';
+pkg.devDependencies['@types/react'] = '^19.0.0';
+pkg.devDependencies['@types/react-dom'] = '^19.0.0';
+pkg.devDependencies.react = '^19.0.0';
+pkg.devDependencies['react-dom'] = '^19.0.0';
 pkg.overrides = {
-  '@types/react': 'npm:types-react@rc',
-  '@types/react-dom': 'npm:types-react-dom@rc'
+  '@types/react': '^19.0.0',
+  '@types/react-dom': '^19.0.0'
 };
 
 fs.writeFile('./package.json', JSON.stringify(pkg, null, 2));

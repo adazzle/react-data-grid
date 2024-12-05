@@ -61,7 +61,6 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "@babel/runtime": "^7.26.0",
-    "@babel/traverse": "7.25.9",
     "@biomejs/biome": "1.9.4",
     "@eslint/compat": "^1.2.3",
     "@faker-js/faker": "^9.0.0",
