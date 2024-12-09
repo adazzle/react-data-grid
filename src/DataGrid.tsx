@@ -1,4 +1,12 @@
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  type ClipboardEvent
+} from 'react';
 import type { Key, KeyboardEvent, RefAttributes } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
@@ -161,8 +169,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
   defaultColumnOptions?: Maybe<DefaultColumnOptions<NoInfer<R>, NoInfer<SR>>>;
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
-  onCopy?: Maybe<(event: CopyEvent<NoInfer<R>>) => void>;
-  onPaste?: Maybe<(event: PasteEvent<NoInfer<R>>) => NoInfer<R>>;
+  onCopy?: Maybe<(args: CopyEvent<NoInfer<R>>, event: ClipboardEvent<HTMLDivElement>) => void>;
+  onPaste?: Maybe<
+    (args: PasteEvent<NoInfer<R>>, event: ClipboardEvent<HTMLDivElement>) => NoInfer<R>
+  >;
 
   /**
    * Event props
@@ -599,30 +609,6 @@ function DataGrid<R, SR, K extends Key>(
     const isRowEvent = isTreeGrid && event.target === focusSinkRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const { keyCode } = event;
-
-    if (
-      selectedCellIsWithinViewportBounds &&
-      (onPaste != null || onCopy != null) &&
-      isCtrlKeyHeldDown(event)
-    ) {
-      // event.key may differ by keyboard input language, so we use event.keyCode instead
-      // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
-      const cKey = 67;
-      const vKey = 86;
-      if (keyCode === cKey) {
-        // copy highlighted text only
-        if (window.getSelection()?.isCollapsed === false) return;
-        handleCopy();
-        return;
-      }
-      if (keyCode === vKey) {
-        handlePaste();
-        return;
-      }
-    }
-
     switch (event.key) {
       case 'Escape':
         setCopiedCell(null);
@@ -670,15 +656,18 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(columns[selectedPosition.idx], selectedPosition.rowIdx, selectedPosition.row);
   }
 
-  function handleCopy() {
+  function handleCopy(event: React.ClipboardEvent<HTMLDivElement>) {
+    if (!selectedCellIsWithinViewportBounds) return;
+    // copy highlighted text only
+    if (window.getSelection()?.isCollapsed === false) return;
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];
     const sourceColumnKey = columns[idx].key;
     setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
-    onCopy?.({ sourceRow, sourceColumnKey });
+    onCopy?.({ sourceRow, sourceColumnKey }, event);
   }
 
-  function handlePaste() {
+  function handlePaste(event: ClipboardEvent<HTMLDivElement>) {
     if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
       return;
     }
@@ -687,12 +676,15 @@ function DataGrid<R, SR, K extends Key>(
     const targetColumn = columns[idx];
     const targetRow = rows[rowIdx];
 
-    const updatedTargetRow = onPaste({
-      sourceRow: copiedCell.row,
-      sourceColumnKey: copiedCell.columnKey,
-      targetRow,
-      targetColumnKey: targetColumn.key
-    });
+    const updatedTargetRow = onPaste(
+      {
+        sourceRow: copiedCell.row,
+        sourceColumnKey: copiedCell.columnKey,
+        targetRow,
+        targetColumnKey: targetColumn.key
+      },
+      event
+    );
 
     updateRow(targetColumn, rowIdx, updatedTargetRow);
   }
@@ -712,7 +704,7 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
-    if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
+    if (isCellEditable(selectedPosition) && isDefaultCellInput(event, onPaste != null)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
@@ -1121,6 +1113,8 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
+      onCopy={handleCopy}
+      onPaste={handlePaste}
       data-testid={testId}
     >
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
