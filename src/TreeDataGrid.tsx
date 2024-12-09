@@ -2,7 +2,7 @@ import { forwardRef, useCallback, useMemo } from 'react';
 import type { Key, RefAttributes } from 'react';
 
 import { useLatestFunc } from './hooks';
-import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
+import { assertIsValidKeyGetter, cKey, isCtrlKeyHeldDown, vKey } from './utils';
 import type {
   CellKeyboardEvent,
   CellKeyDownArgs,
@@ -324,7 +324,7 @@ function TreeDataGrid<R, SR, K extends Key>(
 
     // Prevent copy/paste on group rows
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
+    if (isCtrlKeyHeldDown(event) && (event.keyCode === cKey || event.keyCode === vKey)) {
       event.preventGridDefault();
     }
   }
