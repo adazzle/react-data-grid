@@ -169,24 +169,24 @@ export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
 
 export interface CellClickArgs<TRow, TSummaryRow = unknown> {
-  rowIdx: number;
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
+  rowIdx: number;
   selectCell: (enableEditor?: boolean) => void;
 }
 
 interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'SELECT';
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   rowIdx: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'EDIT';
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   rowIdx: number;
   navigate: () => void;
   onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
@@ -250,8 +250,8 @@ export interface FillEvent<TRow> {
 }
 
 export interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
 }
 
 export interface GroupRow<TRow> {
