@@ -70,8 +70,8 @@ function CopyPasteTest({
       rows={rows}
       bottomSummaryRows={bottomSummaryRows}
       onRowsChange={setRows}
-      onPaste={onPasteCallback ? onPaste : undefined}
-      onCopy={onCopyCallback ? onCopySpy : undefined}
+      onCellPaste={onPasteCallback ? onPaste : undefined}
+      onCellCopy={onCopyCallback ? onCopySpy : undefined}
     />
   );
 }

@@ -29,7 +29,7 @@ export type {
   SelectHeaderRowEvent,
   SelectRowEvent,
   FillEvent,
-  CopyPasteEvent,
+  CellCopyPasteEvent,
   SortDirection,
   SortColumn,
   ColSpanArgs,

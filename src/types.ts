@@ -249,7 +249,7 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
-export interface CopyPasteEvent<TRow, TSummaryRow = unknown> {
+export interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
 }

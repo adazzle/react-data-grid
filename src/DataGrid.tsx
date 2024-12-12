@@ -34,6 +34,7 @@ import type {
   CalculatedColumn,
   CellClickArgs,
   CellClipboardEvent,
+  CellCopyPasteEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
   CellMouseEvent,
@@ -41,7 +42,6 @@ import type {
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
-  CopyPasteEvent,
   Direction,
   FillEvent,
   Maybe,
@@ -161,12 +161,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
   defaultColumnOptions?: Maybe<DefaultColumnOptions<NoInfer<R>, NoInfer<SR>>>;
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
-  onCopy?: Maybe<
-    (args: CopyPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
-  >;
-  onPaste?: Maybe<
-    (args: CopyPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
-  >;
 
   /**
    * Event props
@@ -185,6 +179,12 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   >;
   onCellKeyDown?: Maybe<
     (args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void
+  >;
+  onCellCopy?: Maybe<
+    (args: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
+  >;
+  onCellPaste?: Maybe<
+    (args: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
   >;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<NoInfer<R>, NoInfer<SR>>) => void>;
@@ -251,8 +251,8 @@ function DataGrid<R, SR, K extends Key>(
     onColumnResize,
     onColumnsReorder,
     onFill,
-    onCopy,
-    onPaste,
+    onCellCopy,
+    onCellPaste,
     // Toggles and modes
     enableVirtualization: rawEnableVirtualization,
     // Miscellaneous
@@ -647,20 +647,20 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(columns[selectedPosition.idx], selectedPosition.rowIdx, selectedPosition.row);
   }
 
-  function handleCopy(event: CellClipboardEvent) {
+  function handleCellCopy(event: CellClipboardEvent) {
     if (!selectedCellIsWithinViewportBounds) return;
     const { idx, rowIdx } = selectedPosition;
-    onCopy?.({ row: rows[rowIdx], column: columns[idx] }, event);
+    onCellCopy?.({ row: rows[rowIdx], column: columns[idx] }, event);
   }
 
-  function handlePaste(event: CellClipboardEvent) {
-    if (!onPaste || !onRowsChange || !isCellEditable(selectedPosition)) {
+  function handleCellPaste(event: CellClipboardEvent) {
+    if (!onCellPaste || !onRowsChange || !isCellEditable(selectedPosition)) {
       return;
     }
 
     const { idx, rowIdx } = selectedPosition;
     const column = columns[idx];
-    const updatedRow = onPaste({ row: rows[rowIdx], column }, event);
+    const updatedRow = onCellPaste({ row: rows[rowIdx], column }, event);
     updateRow(column, rowIdx, updatedRow);
   }
 
@@ -679,7 +679,7 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
-    if (isCellEditable(selectedPosition) && isDefaultCellInput(event, onPaste != null)) {
+    if (isCellEditable(selectedPosition) && isDefaultCellInput(event, onCellPaste != null)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
@@ -1083,8 +1083,8 @@ function DataGrid<R, SR, K extends Key>(
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
-      onCopy={handleCopy}
-      onPaste={handlePaste}
+      onCopy={handleCellCopy}
+      onPaste={handleCellPaste}
       data-testid={testId}
     >
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>

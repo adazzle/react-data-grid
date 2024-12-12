@@ -4,7 +4,7 @@ import { css } from '@linaria/core';
 import clsx from 'clsx';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { CalculatedColumn, Column, CopyPasteEvent, FillEvent } from '../../src';
+import type { CalculatedColumn, CellCopyPasteEvent, Column, FillEvent } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import { useDirection } from '../directionContext';
 
@@ -182,7 +182,7 @@ function AllFeatures() {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
   }
 
-  function handlePaste({ row, column }: CopyPasteEvent<Row>): Row {
+  function handleCellPaste({ row, column }: CellCopyPasteEvent<Row>): Row {
     if (!copiedCell) {
       return row;
     }
@@ -205,8 +205,8 @@ function AllFeatures() {
     return { ...row, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
-  function handleCopy(
-    { row, column }: CopyPasteEvent<Row>,
+  function handleCellCopy(
+    { row, column }: CellCopyPasteEvent<Row>,
     event: React.ClipboardEvent<HTMLDivElement>
   ): void {
     // copy highlighted text only
@@ -241,8 +241,8 @@ function AllFeatures() {
         rowKeyGetter={rowKeyGetter}
         onRowsChange={setRows}
         onFill={handleFill}
-        onCopy={handleCopy}
-        onPaste={handlePaste}
+        onCellCopy={handleCellCopy}
+        onCellPaste={handleCellPaste}
         rowHeight={30}
         selectedRows={selectedRows}
         isRowSelectionDisabled={(row) => row.id === 'id_2'}
