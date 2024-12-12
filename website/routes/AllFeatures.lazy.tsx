@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
 import DataGrid, { SelectColumn, textEditor } from '../../src';
-import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
+import type { CalculatedColumn, Column, CopyPasteEvent, FillEvent } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import { useDirection } from '../directionContext';
 
@@ -21,6 +22,8 @@ const highlightClassname = css`
     background-color: #800080;
   }
 `;
+
+const copiedRowClassname = css``;
 
 export interface Row {
   id: string;
@@ -171,18 +174,22 @@ function AllFeatures() {
   const initialRows = Route.useLoaderData();
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<string> => new Set());
+  const [copiedCell, setCopiedCell] = useState<{ row: Row; column: CalculatedColumn<R> } | null>(
+    null
+  );
 
   function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
   }
 
-  function handlePaste({
-    sourceColumnKey,
-    sourceRow,
-    targetColumnKey,
-    targetRow
-  }: PasteEvent<Row>): Row {
-    if (sourceColumnKey === undefined || sourceRow === undefined) return targetRow;
+  function handlePaste({ row, column }: CopyPasteEvent<Row>): Row {
+    if (!copiedCell) {
+      return row;
+    }
+
+    const sourceColumnKey = copiedCell.column.key;
+    const sourceRow = copiedCell.row;
+    const targetColumnKey = column.key;
 
     const incompatibleColumns = ['email', 'zipCode', 'date'];
     if (
@@ -192,42 +199,74 @@ function AllFeatures() {
         incompatibleColumns.includes(sourceColumnKey)) &&
         sourceColumnKey !== targetColumnKey)
     ) {
-      return targetRow;
+      return row;
     }
 
-    return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
+    return { ...row, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
   }
 
-  function handleCopy({ sourceRow, sourceColumnKey }: CopyEvent<Row>): void {
-    if (window.isSecureContext) {
-      navigator.clipboard.writeText(sourceRow[sourceColumnKey as keyof Row]);
+  function handleCopy(
+    { row, column }: CopyPasteEvent<Row>,
+    event: React.ClipboardEvent<HTMLDivElement>
+  ): void {
+    // copy highlighted text only
+    if (window.getSelection()?.isCollapsed === false) {
+      setCopiedCell(null);
+      return;
     }
+
+    setCopiedCell({ row, column });
+    event.clipboardData.setData('text/plain', row[column.key as keyof Row]);
+    event.preventDefault();
   }
 
   return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      rowKeyGetter={rowKeyGetter}
-      onRowsChange={setRows}
-      onFill={handleFill}
-      onCopy={handleCopy}
-      onPaste={handlePaste}
-      rowHeight={30}
-      selectedRows={selectedRows}
-      isRowSelectionDisabled={(row) => row.id === 'id_2'}
-      onSelectedRowsChange={setSelectedRows}
-      className="fill-grid"
-      rowClass={(row, index) =>
-        row.id.includes('7') || index === 0 ? highlightClassname : undefined
-      }
-      direction={direction}
-      onCellClick={(args, event) => {
-        if (args.column.key === 'title') {
-          event.preventGridDefault();
-          args.selectCell(true);
-        }
-      }}
-    />
+    <>
+      {copiedCell && (
+        <style>
+          {`
+            .${copiedRowClassname} > [aria-colindex="${copiedCell.column.idx + 1}"] {
+              background-color: #ccccff;
+
+              &.rdg-cell-dragged-over {
+                background-color: #9999ff;
+              }
+            }
+         `}
+        </style>
+      )}
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        rowKeyGetter={rowKeyGetter}
+        onRowsChange={setRows}
+        onFill={handleFill}
+        onCopy={handleCopy}
+        onPaste={handlePaste}
+        rowHeight={30}
+        selectedRows={selectedRows}
+        isRowSelectionDisabled={(row) => row.id === 'id_2'}
+        onSelectedRowsChange={setSelectedRows}
+        className="fill-grid"
+        rowClass={(row, index) => {
+          return clsx({
+            [highlightClassname]: row.id.includes('7') || index === 0,
+            [copiedRowClassname]: copiedCell?.row === row
+          });
+        }}
+        direction={direction}
+        onCellClick={(args, event) => {
+          if (args.column.key === 'title') {
+            event.preventGridDefault();
+            args.selectCell(true);
+          }
+        }}
+        onCellKeyDown={(_, event) => {
+          if (event.key === 'Escape') {
+            setCopiedCell(null);
+          }
+        }}
+      />
+    </>
   );
 }

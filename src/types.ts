@@ -149,7 +149,6 @@ export interface CellRendererProps<TRow, TSummaryRow>
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
-  isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
   onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
@@ -222,7 +221,6 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown>
   extends BaseRenderRowProps<TRow, TSummaryRow> {
   row: TRow;
   lastFrozenColumnIndex: number;
-  copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
   selectedCellEditor: ReactElement<RenderEditCellProps<TRow>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
@@ -251,16 +249,9 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
-export interface CopyEvent<TRow> {
-  sourceColumnKey: string;
-  sourceRow: TRow;
-}
-
-export interface PasteEvent<TRow> {
-  sourceColumnKey: string | undefined;
-  sourceRow: TRow | undefined;
-  targetColumnKey: string;
-  targetRow: TRow;
+export interface CopyPasteEvent<TRow, TSummaryRow = unknown> {
+  row: TRow;
+  column: CalculatedColumn<TRow, TSummaryRow>;
 }
 
 export interface GroupRow<TRow> {
