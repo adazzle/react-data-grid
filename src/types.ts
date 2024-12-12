@@ -167,6 +167,8 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
+export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
+
 export interface CellClickArgs<TRow, TSummaryRow = unknown> {
   rowIdx: number;
   row: TRow;
@@ -254,7 +256,9 @@ export interface CopyEvent<TRow> {
   sourceRow: TRow;
 }
 
-export interface PasteEvent<TRow> extends CopyEvent<TRow> {
+export interface PasteEvent<TRow> {
+  sourceColumnKey: string | undefined;
+  sourceRow: TRow | undefined;
   targetColumnKey: string;
   targetRow: TRow;
 }

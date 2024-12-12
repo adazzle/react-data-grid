@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
@@ -126,6 +126,7 @@ export async function copySelectedCellOld() {
 }
 
 export function copySelectedCell() {
+  fireEvent.copy(document.activeElement!);
   return userEvent.keyboard('{Control>}c{/Control}');
 }
 
@@ -137,6 +138,7 @@ export async function pasteSelectedCellOld() {
 }
 
 export function pasteSelectedCell() {
+  fireEvent.paste(document.activeElement!);
   return userEvent.keyboard('{Control>}v{/Control}');
 }
 

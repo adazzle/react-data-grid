@@ -1,12 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-  type ClipboardEvent
-} from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import type { Key, KeyboardEvent, RefAttributes } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
@@ -41,6 +33,7 @@ import {
 import type {
   CalculatedColumn,
   CellClickArgs,
+  CellClipboardEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
   CellMouseEvent,
@@ -169,10 +162,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
   defaultColumnOptions?: Maybe<DefaultColumnOptions<NoInfer<R>, NoInfer<SR>>>;
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
-  onCopy?: Maybe<(args: CopyEvent<NoInfer<R>>, event: ClipboardEvent<HTMLDivElement>) => void>;
-  onPaste?: Maybe<
-    (args: PasteEvent<NoInfer<R>>, event: ClipboardEvent<HTMLDivElement>) => NoInfer<R>
-  >;
+  onCopy?: Maybe<(args: CopyEvent<NoInfer<R>>, event: CellClipboardEvent) => void>;
+  onPaste?: Maybe<(args: PasteEvent<NoInfer<R>>, event: CellClipboardEvent) => NoInfer<R>>;
 
   /**
    * Event props
@@ -656,19 +647,26 @@ function DataGrid<R, SR, K extends Key>(
     updateRow(columns[selectedPosition.idx], selectedPosition.rowIdx, selectedPosition.row);
   }
 
-  function handleCopy(event: React.ClipboardEvent<HTMLDivElement>) {
+  function handleCopy(event: CellClipboardEvent) {
     if (!selectedCellIsWithinViewportBounds) return;
-    // copy highlighted text only
-    if (window.getSelection()?.isCollapsed === false) return;
     const { idx, rowIdx } = selectedPosition;
     const sourceRow = rows[rowIdx];
     const sourceColumnKey = columns[idx].key;
-    setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
     onCopy?.({ sourceRow, sourceColumnKey }, event);
+
+    // copy highlighted text only
+    if (window.getSelection()?.isCollapsed === false) {
+      setCopiedCell(null);
+      return;
+    }
+
+    if (onPaste) {
+      setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
+    }
   }
 
-  function handlePaste(event: ClipboardEvent<HTMLDivElement>) {
-    if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
+  function handlePaste(event: CellClipboardEvent) {
+    if (!onPaste || !onRowsChange || !isCellEditable(selectedPosition)) {
       return;
     }
 
@@ -678,8 +676,8 @@ function DataGrid<R, SR, K extends Key>(
 
     const updatedTargetRow = onPaste(
       {
-        sourceRow: copiedCell.row,
-        sourceColumnKey: copiedCell.columnKey,
+        sourceRow: copiedCell?.row,
+        sourceColumnKey: copiedCell?.columnKey,
         targetRow,
         targetColumnKey: targetColumn.key
       },
@@ -704,7 +702,7 @@ function DataGrid<R, SR, K extends Key>(
       return;
     }
 
-    if (isCellEditable(selectedPosition) && isDefaultCellInput(event, onPaste != null)) {
+    if (isCellEditable(selectedPosition) && isDefaultCellInput(event, copiedCell !== null)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,

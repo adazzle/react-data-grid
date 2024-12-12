@@ -182,6 +182,8 @@ function AllFeatures() {
     targetColumnKey,
     targetRow
   }: PasteEvent<Row>): Row {
+    if (sourceColumnKey === undefined || sourceRow === undefined) return targetRow;
+
     const incompatibleColumns = ['email', 'zipCode', 'date'];
     if (
       sourceColumnKey === 'avatar' ||
