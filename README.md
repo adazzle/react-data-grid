@@ -576,7 +576,9 @@ See [`RenderGroupCellProps`](#rendergroupcellprops)
 
 ### Hooks
 
-#### `useRowSelection<R>(): [boolean, (selectRowEvent: SelectRowEvent<R>) => void]`
+#### `useHeaderRowSelection<R>(): { isIndeterminate, isRowSelected, onRowSelectionChange }`
+
+#### `useRowSelection<R>(): { isRowSelectionDisabled, isRowSelected, onRowSelectionChange }`
 
 ### Other
 
