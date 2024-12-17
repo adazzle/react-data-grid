@@ -23,7 +23,7 @@ export function useRowSelection() {
   const rowSelectionChangeContext = useContext(RowSelectionChangeContext);
 
   if (rowSelectionContext === undefined || rowSelectionChangeContext === undefined) {
-    throw new Error('useRowSelection must be used within DataGrid cells');
+    throw new Error('useRowSelection must be used within renderCell');
   }
 
   return {
@@ -55,7 +55,7 @@ export function useHeaderRowSelection() {
   const headerRowSelectionChangeContext = useContext(HeaderRowSelectionChangeContext);
 
   if (headerRowSelectionContext === undefined || headerRowSelectionChangeContext === undefined) {
-    throw new Error('useHeaderRowSelection must be used within DataGrid cells');
+    throw new Error('useHeaderRowSelection must be used within renderHeaderCell');
   }
 
   return {
