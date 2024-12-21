@@ -76,8 +76,8 @@
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/node": "^22.0.0",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
     "@typescript-eslint/eslint-plugin": "^8.18.1",
     "@typescript-eslint/parser": "^8.18.1",
     "@vitejs/plugin-react": "^4.3.4",
@@ -101,10 +101,10 @@
     "playwright": "^1.49.1",
     "postcss": "^8.4.25",
     "prettier": "3.4.2",
-    "react": "rc",
+    "react": "^19.0.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-dom": "rc",
+    "react-dom": "^19.0.0",
     "rollup": "^4.28.1",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.7.2",
@@ -113,11 +113,7 @@
     "vitest-browser-react": "^0.0.4"
   },
   "peerDependencies": {
-    "react": "rc",
-    "react-dom": "rc"
-  },
-  "overrides": {
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
+    "react": "^18.0 || ^19.0",
+    "react-dom": "^18.0 || ^19.0"
   }
 }
