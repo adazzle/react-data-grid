@@ -1,5 +1,4 @@
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { page, userEvent } from '@vitest/browser/context';
 
 import type { Column, DataGridProps } from '../../src';
 import { getRows, setup } from './utils';
@@ -24,7 +23,7 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
 test('rowHeight is number', async () => {
   setupGrid(40);
 
-  const grid = screen.getByRole('grid');
+  const grid = page.getByRole('grid').element();
   expect(grid).toHaveStyle({
     'grid-template-rows':
       '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
@@ -40,7 +39,7 @@ test('rowHeight is number', async () => {
 test('rowHeight is function', async () => {
   setupGrid((row) => [40, 60, 80][row % 3]);
 
-  const grid = screen.getByRole('grid');
+  const grid = page.getByRole('grid').element();
   expect(grid).toHaveStyle({
     'grid-template-rows':
       '35px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'

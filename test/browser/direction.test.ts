@@ -23,27 +23,27 @@ const rows: readonly Row[] = [];
 
 test('should use left to right direction by default', async () => {
   setup({ rows, columns });
-  expect(getGrid()).toHaveAttribute('dir', 'ltr');
+  await expect.element(getGrid()).toHaveAttribute('dir', 'ltr');
   await userEvent.tab();
-  expect(getSelectedCell()).toHaveTextContent('ID');
+  await expect.element(getSelectedCell()).toHaveTextContent('ID');
   await userEvent.keyboard('{ArrowRight}');
-  expect(getSelectedCell()).toHaveTextContent('Name');
+  await expect.element(getSelectedCell()).toHaveTextContent('Name');
 });
 
 test('should use left to right direction if direction prop is set to ltr', async () => {
   setup({ rows, columns, direction: 'ltr' });
-  expect(getGrid()).toHaveAttribute('dir', 'ltr');
+  await expect.element(getGrid()).toHaveAttribute('dir', 'ltr');
   await userEvent.tab();
-  expect(getSelectedCell()).toHaveTextContent('ID');
+  await expect.element(getSelectedCell()).toHaveTextContent('ID');
   await userEvent.keyboard('{ArrowRight}');
-  expect(getSelectedCell()).toHaveTextContent('Name');
+  await expect.element(getSelectedCell()).toHaveTextContent('Name');
 });
 
 test('should use right to left direction if direction prop is set to rtl', async () => {
   setup({ rows, columns, direction: 'rtl' });
-  expect(getGrid()).toHaveAttribute('dir', 'rtl');
+  await expect.element(getGrid()).toHaveAttribute('dir', 'rtl');
   await userEvent.tab();
-  expect(getSelectedCell()).toHaveTextContent('ID');
+  await expect.element(getSelectedCell()).toHaveTextContent('ID');
   await userEvent.keyboard('{ArrowLeft}');
-  expect(getSelectedCell()).toHaveTextContent('Name');
+  await expect.element(getSelectedCell()).toHaveTextContent('Name');
 });

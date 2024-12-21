@@ -1,6 +1,11 @@
 import './style/layers.css';
 
-export { default, type DataGridProps, type DataGridHandle } from './DataGrid';
+export {
+  default,
+  type DataGridProps,
+  type DataGridHandle,
+  type DefaultColumnOptions
+} from './DataGrid';
 export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
 export { DataGridDefaultRenderersContext } from './DataGridDefaultRenderersContext';
 export { default as Row } from './Row';

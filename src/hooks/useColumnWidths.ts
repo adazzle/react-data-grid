@@ -95,7 +95,7 @@ export function useColumnWidths<R, SR>(
       updateMeasuredWidths(columnsToMeasure);
     });
 
-    onColumnResize?.(column.idx, measuredWidth);
+    onColumnResize?.(column, measuredWidth);
   }
 
   return {

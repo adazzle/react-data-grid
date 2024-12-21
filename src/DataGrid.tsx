@@ -91,7 +91,7 @@ interface EditCellState<R> extends Position {
   readonly originalRow: R;
 }
 
-type DefaultColumnOptions<R, SR> = Pick<
+export type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
   'renderCell' | 'width' | 'minWidth' | 'maxWidth' | 'resizable' | 'sortable' | 'draggable'
 >;
@@ -107,6 +107,7 @@ type SharedDivProps = Pick<
   | 'role'
   | 'aria-label'
   | 'aria-labelledby'
+  | 'aria-description'
   | 'aria-describedby'
   | 'aria-rowcount'
   | 'className'
@@ -193,7 +194,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** Called when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   /** Called when a column is resized */
-  onColumnResize?: Maybe<(idx: number, width: number) => void>;
+  onColumnResize?: Maybe<(column: CalculatedColumn<R, SR>, width: number) => void>;
   /** Called when a column is reordered */
   onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
 
@@ -265,6 +266,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     role: rawRole,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
+    'aria-description': ariaDescription,
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
     'data-testid': testId
@@ -760,10 +762,10 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
-    const row = rows[position.rowIdx];
     const samePosition = isSamePosition(selectedPosition, position);
 
     if (enableEditor && isCellEditable(position)) {
+      const row = rows[position.rowIdx];
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
@@ -776,7 +778,7 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     if (onSelectedCellChange && !samePosition) {
       onSelectedCellChange({
         rowIdx: position.rowIdx,
-        row,
+        row: isRowIdxWithinViewportBounds(position.rowIdx) ? rows[position.rowIdx] : undefined,
         column: columns[position.idx]
       });
     }
@@ -1081,10 +1083,12 @@ export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, S
     selectedPosition.idx === -1 && selectedPosition.rowIdx !== minRowIdx - 1;
 
   return (
+    // biome-ignore lint/a11y/useValidAriaProps: aria-description is a valid prop
     <div
       role={role}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
+      aria-description={ariaDescription}
       aria-describedby={ariaDescribedBy}
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
