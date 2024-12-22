@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { commands, page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../src';
 import type { Column, FillEvent } from '../../src';
-import { getCellsAtRowIndex, getRows } from './utils';
+import { getCellsAtRowIndex } from './utils';
 
 interface Row {
   col: string;
@@ -24,7 +23,7 @@ const columns: readonly Column<Row>[] = [
 const initialRows: readonly Row[] = [{ col: 'a1' }, { col: 'a2' }, { col: 'a3' }, { col: 'a4' }];
 
 function setup(allowDragFill = true) {
-  render(<DragFillTest allowDragFill={allowDragFill} />);
+  page.render(<DragFillTest allowDragFill={allowDragFill} />);
 }
 
 function DragFillTest({ allowDragFill = true }: { allowDragFill?: boolean }) {
@@ -56,62 +55,47 @@ test('should not allow dragFill if onFill is undefined', async () => {
 
 test('should allow dragFill if onFill is specified', async () => {
   setup();
-  const cell = getCellsAtRowIndex(0)[0];
-  await userEvent.click(cell);
-  expect(cell).toHaveFocus();
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
+  await expect.element(getCellsAtRowIndex(0)[0]).toHaveFocus();
   await userEvent.dblClick(getDragHandle()!);
-  expect(cell).toHaveFocus();
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
-  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
-  expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
+  await expect.element(getCellsAtRowIndex(0)[0]).toHaveFocus();
+  await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
+  await expect.element(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
+  await expect.element(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
 });
 
 test('should update single row using mouse', async () => {
   setup();
-  const cell = getCellsAtRowIndex(0)[0];
-  await userEvent.click(cell);
-  await userEvent.pointer([
-    { keys: '[MouseLeft>]', target: getDragHandle()! },
-    { target: getRows()[1] },
-    { keys: '[/MouseLeft]' }
-  ]);
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
-  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
-  expect(cell).toHaveFocus();
+  // @ts-expect-error
+  await commands.dragFill('a1', 'a2');
+  await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
+  await expect.element(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
+  await expect.element(getCellsAtRowIndex(0)[0]).toHaveFocus();
 });
 
 test('should update multiple rows using mouse', async () => {
   setup();
-  await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await userEvent.pointer([
-    { keys: '[MouseLeft>]', target: getDragHandle()! },
-    { target: getRows()[3] },
-    { keys: '[/MouseLeft]' }
-  ]);
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
-  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
-  expect(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
+  // @ts-expect-error
+  await commands.dragFill('a1', 'a4');
+  await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
+  await expect.element(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
+  await expect.element(getCellsAtRowIndex(3)[0]).toHaveTextContent('a4'); // readonly cell
 });
 
 test('should allow drag up using mouse', async () => {
   setup();
-  await userEvent.click(getCellsAtRowIndex(3)[0]);
-  await userEvent.pointer([
-    { keys: '[MouseLeft>]', target: getDragHandle()! },
-    { target: getRows()[0] },
-    { keys: '[/MouseLeft]' }
-  ]);
-  expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('a4');
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a4');
-  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a4');
+  // @ts-expect-error
+  await commands.dragFill('a4', 'a1');
+  await expect.element(getCellsAtRowIndex(0)[0]).toHaveTextContent('a4');
+  await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a4');
+  await expect.element(getCellsAtRowIndex(2)[0]).toHaveTextContent('a4');
 });
 
 test('should focus the cell when drag handle is clicked', async () => {
   setup();
-  const cell = getCellsAtRowIndex(0)[0];
-  await userEvent.click(cell);
+  await userEvent.click(getCellsAtRowIndex(0)[0]);
   await userEvent.click(document.body);
   expect(document.body).toHaveFocus();
   await userEvent.click(getDragHandle()!);
-  expect(cell).toHaveFocus();
+  await expect.element(getCellsAtRowIndex(0)[0]).toHaveFocus();
 });

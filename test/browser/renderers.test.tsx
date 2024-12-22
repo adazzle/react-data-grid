@@ -1,17 +1,27 @@
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid, {
+  Cell,
   DataGridDefaultRenderersProvider,
+  Row as DefaultRow,
   renderSortIcon,
   SelectColumn
 } from '../../src';
-import type { Column, DataGridProps, RenderSortStatusProps, SortColumn } from '../../src';
-import { getHeaderCells, getRows, setup } from './utils';
+import type {
+  CellRendererProps,
+  Column,
+  DataGridProps,
+  RenderRowProps,
+  RenderSortStatusProps,
+  SortColumn
+} from '../../src';
+import { getCells, getHeaderCells, getRowsOld, setup } from './utils';
 
 interface Row {
   id: number;
+  col1: string;
+  col2: string;
 }
 
 const noRows: readonly Row[] = [];
@@ -30,23 +40,39 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
+function renderGlobalCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
+  return <Cell key={key} {...props} className="global" style={{ fontStyle: 'italic' }} />;
+}
+
+function renderLocalCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
+  return <Cell key={key} {...props} className="local" style={{ fontStyle: 'normal' }} />;
+}
+
+function renderGlobalRow(key: React.Key, props: RenderRowProps<Row>) {
+  return <DefaultRow key={key} {...props} className="global" />;
+}
+
+function renderLocalRow(key: React.Key, props: RenderRowProps<Row>) {
+  return <DefaultRow key={key} {...props} className="local" />;
+}
+
 function NoRowsFallback() {
   return <div>Local no rows fallback</div>;
 }
 
-function GlobalNoRowsFallback() {
+function NoRowsGlobalFallback() {
   return <div>Global no rows fallback</div>;
 }
 
-function localRenderCheckbox() {
+function renderLocalCheckbox() {
   return <div>Local checkbox</div>;
 }
 
-function globalRenderCheckbox() {
+function renderGlobalCheckbox() {
   return <div>Global checkbox</div>;
 }
 
-function globalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
+function renderGlobalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
       {renderSortIcon({ sortDirection })}
@@ -55,7 +81,7 @@ function globalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   );
 }
 
-function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
+function renderLocalSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
       {renderSortIcon({ sortDirection })}
@@ -71,12 +97,14 @@ function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
 }
 
 function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
-  return render(
+  return page.render(
     <DataGridDefaultRenderersProvider
       value={{
-        noRowsFallback: <GlobalNoRowsFallback />,
-        renderCheckbox: globalRenderCheckbox,
-        renderSortStatus: globalSortStatus
+        noRowsFallback: <NoRowsGlobalFallback />,
+        renderCheckbox: renderGlobalCheckbox,
+        renderSortStatus: renderGlobalSortStatus,
+        renderCell: renderGlobalCell,
+        renderRow: renderGlobalRow
       }}
     >
       <TestGrid {...props} />
@@ -84,99 +112,159 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
   );
 }
 
-test('fallback defined using renderers prop with no rows', () => {
+test('fallback defined using renderers prop with no rows', async () => {
   setup({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
-  expect(getRows()).toHaveLength(0);
-  expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(0);
+  await expect.element(page.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using provider with no rows', () => {
+test('fallback defined using provider with no rows', async () => {
   setupProvider({ columns, rows: noRows });
 
-  expect(getRows()).toHaveLength(0);
-  expect(screen.getByText('Global no rows fallback')).toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(0);
+  await expect.element(page.getByText('Global no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using both provider and renderers with no rows', () => {
+test('fallback defined using both provider and renderers with no rows', async () => {
   setupProvider({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
-  expect(getRows()).toHaveLength(0);
-  expect(screen.getByText('Local no rows fallback')).toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(0);
+  await expect.element(page.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using renderers prop with a row', () => {
-  setup({ columns, rows: [{ id: 1 }], renderers: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using renderers prop with a row', async () => {
+  setup({
+    columns,
+    rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
+    renderers: { noRowsFallback: <NoRowsFallback /> }
+  });
 
-  expect(getRows()).toHaveLength(1);
-  expect(screen.queryByText('Local no rows fallback')).not.toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(1);
+  await expect.element(page.getByText('Local no rows fallback')).not.toBeInTheDocument();
 });
 
-test('fallback defined using provider with a row', () => {
-  setupProvider({ columns, rows: [{ id: 1 }] });
+test('fallback defined using provider with a row', async () => {
+  setupProvider({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
-  expect(getRows()).toHaveLength(1);
-  expect(screen.queryByText('Global no rows fallback')).not.toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(1);
+  await expect.element(page.getByText('Global no rows fallback')).not.toBeInTheDocument();
 });
 
-test('fallback defined using both provider and renderers with a row', () => {
-  setupProvider({ columns, rows: [{ id: 1 }], renderers: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using both provider and renderers with a row', async () => {
+  setupProvider({
+    columns,
+    rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
+    renderers: { noRowsFallback: <NoRowsFallback /> }
+  });
 
-  expect(getRows()).toHaveLength(1);
-  expect(screen.queryByText('Global no rows fallback')).not.toBeInTheDocument();
-  expect(screen.queryByText('Local no rows fallback')).not.toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(1);
+  await expect.element(page.getByText('Global no rows fallback')).not.toBeInTheDocument();
+  await expect.element(page.getByText('Local no rows fallback')).not.toBeInTheDocument();
 });
 
-test('checkbox defined using renderers prop', () => {
-  setup({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
+test('checkbox defined using renderers prop', async () => {
+  setup({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
-  expect(getRows()).toHaveLength(0);
-  expect(screen.getByText('Local checkbox')).toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(0);
+  await expect.element(page.getByText('Local checkbox')).toBeInTheDocument();
 });
 
-test('checkbox defined using provider', () => {
+test('checkbox defined using provider', async () => {
   setupProvider({ columns, rows: noRows });
 
-  expect(getRows()).toHaveLength(0);
-  expect(screen.getByText('Global checkbox')).toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(0);
+  await expect.element(page.getByText('Global checkbox')).toBeInTheDocument();
 });
 
-test('checkbox defined using both provider and renderers', () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderCheckbox: localRenderCheckbox } });
+test('checkbox defined using both provider and renderers', async () => {
+  setupProvider({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
-  expect(getRows()).toHaveLength(0);
-  expect(screen.getByText('Local checkbox')).toBeInTheDocument();
-  expect(screen.queryByText('Global checkbox')).not.toBeInTheDocument();
+  expect(getRowsOld()).toHaveLength(0);
+  await expect.element(page.getByText('Local checkbox')).toBeInTheDocument();
+  await expect.element(page.getByText('Global checkbox')).not.toBeInTheDocument();
 });
 
 test('sortPriority defined using both providers', async () => {
   setupProvider({ columns, rows: noRows });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
-  const user = userEvent.setup();
-  await user.click(headerCell2);
-  await user.keyboard('{Control>}');
-  await user.click(headerCell3);
+  await userEvent.click(headerCell2);
+  await userEvent.keyboard('{Control>}');
+  await userEvent.click(headerCell3);
 
-  const p = screen.getAllByTestId('global-sort-priority');
-  expect(p[0]).toHaveTextContent('1');
-  expect(p[1]).toHaveTextContent('2');
+  const p = page.getByTestId('global-sort-priority').all();
+  await expect.element(p[0]).toHaveTextContent('1');
+  await expect.element(p[1]).toHaveTextContent('2');
 
-  expect(screen.queryByTestId('local-sort-priority')).not.toBeInTheDocument();
+  await expect.element(page.getByTestId('local-sort-priority')).not.toBeInTheDocument();
 });
 
 test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderSortStatus } });
+  setupProvider({ columns, rows: noRows, renderers: { renderSortStatus: renderLocalSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
-  const user = userEvent.setup();
-  await user.click(headerCell3);
-  await user.keyboard('{Control>}');
-  await user.click(headerCell2);
+  await userEvent.click(headerCell3);
+  await userEvent.keyboard('{Control>}');
+  await userEvent.click(headerCell2);
 
-  const p = screen.getAllByTestId('local-sort-priority');
-  expect(p[0]).toHaveTextContent('2');
-  expect(p[1]).toHaveTextContent('1');
+  const p = page.getByTestId('local-sort-priority').all();
+  await expect.element(p[0]).toHaveTextContent('2');
+  await expect.element(p[1]).toHaveTextContent('1');
 
-  expect(screen.queryByTestId('global-sort-priority')).not.toBeInTheDocument();
+  await expect.element(page.getByTestId('global-sort-priority')).not.toBeInTheDocument();
+});
+
+test('renderCell defined using provider', async () => {
+  setupProvider({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
+
+  const [, cell1, cell2] = getCells();
+  await expect.element(cell1).toHaveTextContent('value 1');
+  await expect.element(cell1).toHaveClass('global');
+  await expect.element(cell1).not.toHaveClass('local');
+  await expect.element(cell1).toHaveStyle({ fontStyle: 'italic' });
+
+  await expect.element(cell2).toHaveTextContent('value 2');
+  await expect.element(cell2).toHaveClass('global');
+  await expect.element(cell2).not.toHaveClass('local');
+  await expect.element(cell2).toHaveStyle({ fontStyle: 'italic' });
+});
+
+test('renderCell defined using both providers and renderers', async () => {
+  setupProvider({
+    columns,
+    rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
+    renderers: { renderCell: renderLocalCell }
+  });
+
+  const [, cell1, cell2] = getCells();
+  await expect.element(cell1).toHaveTextContent('value 1');
+  await expect.element(cell1).toHaveClass('local');
+  await expect.element(cell1).not.toHaveClass('global');
+  await expect.element(cell1).toHaveStyle({ fontStyle: 'normal' });
+
+  await expect.element(cell2).toHaveTextContent('value 2');
+  await expect.element(cell2).toHaveClass('local');
+  await expect.element(cell2).not.toHaveClass('global');
+  await expect.element(cell2).toHaveStyle({ fontStyle: 'normal' });
+});
+
+test('renderRow defined using provider', () => {
+  setupProvider({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
+
+  const [row] = getRowsOld();
+  expect(row).toHaveClass('global');
+  expect(row).not.toHaveClass('local');
+});
+
+test('renderRow defined using both providers and renderers', () => {
+  setupProvider({
+    columns,
+    rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
+    renderers: { renderRow: renderLocalRow }
+  });
+
+  const [row] = getRowsOld();
+  expect(row).toHaveClass('local');
+  expect(row).not.toHaveClass('global');
 });

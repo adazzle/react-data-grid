@@ -1,8 +1,10 @@
 import { isAbsolute } from 'node:path';
-import { defineConfig } from 'rolldown';
 import wyw from '@wyw-in-js/rollup';
 import postcss from 'rollup-plugin-postcss';
 import pkg from './package.json' with { type: 'json' };
+import { defineConfig } from 'rolldown';
+
+const annotationRegexp = /^[@#]__.+__$/;
 
 export default defineConfig({
   input: './src/index.ts',

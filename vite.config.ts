@@ -1,9 +1,11 @@
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
 import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 
 const isCI = process.env.CI === 'true';
+const isTest = process.env.NODE_ENV === 'test';
 
 export default defineConfig(({ command }) => ({
   base: '/react-data-grid/',
@@ -19,6 +21,11 @@ export default defineConfig(({ command }) => ({
     stringify: true
   },
   plugins: [
+    !isTest &&
+      TanStackRouterVite({
+        generatedRouteTree: 'website/routeTree.gen.ts',
+        routesDirectory: 'website/routes'
+      }),
     react({
       exclude: ['./.cache/**/*']
     }),
@@ -31,16 +38,18 @@ export default defineConfig(({ command }) => ({
   server: {
     open: true
   },
+  optimizeDeps: {
+    include: ['@vitest/coverage-v8/browser']
+  },
   test: {
     globals: true,
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['json']
     },
     testTimeout: isCI ? 10000 : 5000,
-    setupFiles: ['test/setup.ts'],
     reporters: ['basic'],
     restoreMocks: true,
     sequence: {

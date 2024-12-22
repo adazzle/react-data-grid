@@ -4,9 +4,12 @@ import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactHooksExtra from 'eslint-plugin-react-hooks-extra';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
+import markdown from '@eslint/markdown';
 
 export default [
   {
@@ -18,7 +21,9 @@ export default [
 
     plugins: {
       react,
+      'react-compiler': reactCompiler,
       'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks-extra': reactHooksExtra,
       sonarjs,
       '@typescript-eslint': typescriptEslint
     },
@@ -267,6 +272,7 @@ export default [
       'react/forbid-elements': 0,
       'react/forbid-foreign-prop-types': 0,
       'react/forbid-prop-types': 0,
+      'react/forward-ref-uses-ref': 1,
       'react/function-component-definition': [
         1,
         {
@@ -370,10 +376,21 @@ export default [
       'react/style-prop-object': 0,
       'react/void-dom-elements-no-children': 1,
 
+      // React Compiler
+      // https://react.dev/learn/react-compiler#installing-eslint-plugin-react-compiler
+      'react-compiler/react-compiler': 1,
+
       // React Hooks
       // https://www.npmjs.com/package/eslint-plugin-react-hooks
       'react-hooks/rules-of-hooks': 1,
       'react-hooks/exhaustive-deps': 1,
+
+      // React Hooks Extra
+      // https://eslint-react.xyz/
+      'react-hooks-extra/no-redundant-custom-hook': 1,
+      'react-hooks-extra/no-unnecessary-use-callback': 1,
+      'react-hooks-extra/no-unnecessary-use-memo': 1,
+      'react-hooks-extra/prefer-use-state-lazy-initialization': 1,
 
       // SonarJS rules
       // https://github.com/SonarSource/eslint-plugin-sonarjs#rules
@@ -439,6 +456,7 @@ export default [
       '@typescript-eslint/no-base-to-string': 0,
       '@typescript-eslint/no-confusing-non-null-assertion': 0,
       '@typescript-eslint/no-confusing-void-expression': [1, { ignoreArrowShorthand: true }],
+      '@typescript-eslint/no-deprecated': 1,
       '@typescript-eslint/no-duplicate-enum-values': 1,
       '@typescript-eslint/no-duplicate-type-constituents': 1,
       '@typescript-eslint/no-dynamic-delete': 0,
@@ -465,13 +483,14 @@ export default [
       '@typescript-eslint/no-this-alias': 0,
       '@typescript-eslint/no-type-alias': 0,
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 1,
-      '@typescript-eslint/no-unnecessary-condition': 1,
+      '@typescript-eslint/no-unnecessary-condition': [1, { checkTypePredicates: true }],
       '@typescript-eslint/no-unnecessary-parameter-property-assignment': 1,
       '@typescript-eslint/no-unnecessary-qualifier': 0,
       '@typescript-eslint/no-unnecessary-template-expression': 1,
       '@typescript-eslint/no-unnecessary-type-arguments': 1,
       '@typescript-eslint/no-unnecessary-type-assertion': 1,
       '@typescript-eslint/no-unnecessary-type-constraint': 1,
+      '@typescript-eslint/no-unnecessary-type-parameters': 1,
       '@typescript-eslint/no-unsafe-argument': 0,
       '@typescript-eslint/no-unsafe-assignment': 0,
       '@typescript-eslint/no-unsafe-call': 0,
@@ -480,6 +499,7 @@ export default [
       '@typescript-eslint/no-unsafe-function-type': 1,
       '@typescript-eslint/no-unsafe-member-access': 0,
       '@typescript-eslint/no-unsafe-return': 1,
+      '@typescript-eslint/no-unsafe-type-assertion': 0,
       '@typescript-eslint/no-unsafe-unary-minus': 1,
       '@typescript-eslint/no-useless-empty-export': 1,
       '@typescript-eslint/no-var-requires': 0,
@@ -556,10 +576,6 @@ export default [
         {
           name: '@testing-library/dom',
           message: 'Import @testing-library/react instead.'
-        },
-        {
-          name: 'lodash',
-          message: 'Import lodash-es instead.'
         }
       ],
       '@typescript-eslint/no-shadow': 0,
@@ -585,7 +601,7 @@ export default [
     plugins: {
       vitest,
       'jest-dom': jestDom,
-      'testing-library': fixupPluginRules(testingLibrary)
+      'testing-library': testingLibrary
     },
 
     rules: {
@@ -645,11 +661,13 @@ export default [
       'vitest/prefer-to-contain': 1,
       'vitest/prefer-to-have-length': 1,
       'vitest/prefer-todo': 1,
+      'vitest/prefer-vi-mocked': 1,
       'vitest/require-hook': 0,
       'vitest/require-local-test-context-for-concurrent-snapshots': 0,
       'vitest/require-to-throw-message': 0,
       'vitest/require-top-level-describe': 0,
       'vitest/valid-describe-callback': 1,
+      'vitest/valid-expect-in-promise': 1,
       'vitest/valid-expect': [1, { alwaysAwait: true }],
       'vitest/valid-title': 1,
 
@@ -692,7 +710,7 @@ export default [
       'testing-library/prefer-presence-queries': 1,
       'testing-library/prefer-query-by-disappearance': 1,
       'testing-library/prefer-query-matchers': 0,
-      'testing-library/prefer-screen-queries': 1,
+      'testing-library/prefer-screen-queries': 0,
       'testing-library/prefer-user-event': 1,
       'testing-library/render-result-naming-convention': 0
     }
@@ -710,6 +728,24 @@ export default [
       'no-console': 0,
       'no-undef': 1,
       'no-use-before-define': [1, { functions: false, classes: false, variables: false }]
+    }
+  },
+
+  {
+    name: 'markdown',
+    files: ['**/*.md'],
+    plugins: {
+      markdown
+    },
+    language: 'markdown/commonmark',
+    rules: {
+      'markdown/fenced-code-language': 1,
+      'markdown/heading-increment': 1,
+      'markdown/no-duplicate-headings': 0,
+      'markdown/no-empty-links': 1,
+      'markdown/no-html': 0,
+      'markdown/no-invalid-label-refs': 1,
+      'markdown/no-missing-label-refs': 1
     }
   }
 ];

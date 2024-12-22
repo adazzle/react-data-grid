@@ -1,6 +1,5 @@
 import { useRef } from 'react';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { page, userEvent } from '@vitest/browser/context';
 
 import type { Column, DataGridHandle } from '../../src';
 import DataGrid from '../../src';
@@ -9,7 +8,7 @@ import { getGrid } from './utils';
 
 type Row = undefined;
 
-const rows: readonly Row[] = Array(50);
+const rows: readonly Row[] = new Array(50);
 const summaryRows: readonly Row[] = [undefined, undefined];
 
 const columns: Column<Row, Row>[] = [];
@@ -50,12 +49,12 @@ function Grid() {
 
 async function testScroll(p: PartialPosition) {
   position = p;
-  await userEvent.click(screen.getByRole('button'));
+  await userEvent.click(page.getByRole('button'));
 }
 
 test('scrollToCell', async () => {
-  render(<Grid />);
-  const grid = getGrid();
+  page.render(<Grid />);
+  const grid = getGrid().element();
   validateScrollPosition(0, 0);
 
   // should scroll to a cell when a valid position is specified
