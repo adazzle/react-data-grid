@@ -16,8 +16,7 @@ const outputs = [
     entryFileNames: 'bundle.js',
     cssEntryFileNames: 'styles.css',
     format: 'es',
-    sourcemap: true,
-    comments: 'preserve-legal'
+    sourcemap: true
   },
   {
     dir: 'lib',
