@@ -104,7 +104,6 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.3.1",
     "rolldown": "^0.15.1",
-    "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.7.2",
     "vite": "^6.0.3",
     "vitest": "^2.1.8",
