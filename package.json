@@ -55,12 +55,7 @@
     "clsx": "^2.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/plugin-transform-runtime": "^7.25.9",
-    "@babel/preset-env": "^7.26.0",
-    "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
-    "@babel/runtime": "^7.26.0",
     "@biomejs/biome": "1.9.4",
     "@eslint/compat": "^1.2.4",
     "@eslint/markdown": "^6.2.1",
@@ -84,7 +79,6 @@
     "@vitest/eslint-plugin": "^1.1.17",
     "@wyw-in-js/rollup": "^0.5.0",
     "@wyw-in-js/vite": "^0.5.0",
-    "babel-plugin-optimize-clsx": "^2.6.2",
     "browserslist": "^4.24.3",
     "eslint": "^9.17.0",
     "eslint-plugin-jest-dom": "^5.5.0",
