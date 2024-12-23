@@ -4,10 +4,8 @@ import wyw from '@wyw-in-js/rollup';
 import pkg from './package.json' with { type: 'json' };
 import { defineConfig } from 'rolldown';
 
-// TODO: can't preserve minifier annotations, open issue
-// const annotationRegexp = /^[@#]__.+__$/;
-
 /**
+ * TODO: https://github.com/rolldown/rolldown/issues/3200
  * @type {readonly import('rolldown').OutputOptions[]}
  */
 const outputs = [
