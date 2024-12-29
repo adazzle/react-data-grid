@@ -4,6 +4,7 @@
     "composite": true,
     "emitDeclarationOnly": true,
     "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["ESNext"],

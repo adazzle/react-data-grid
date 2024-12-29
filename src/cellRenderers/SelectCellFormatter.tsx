@@ -1,5 +1,5 @@
 import type { RenderCheckboxProps } from '../types';
-import { useDefaultRenderers } from '../DataGridDefaultRenderersProvider';
+import { useDefaultRenderers } from '../DataGridDefaultRenderersContext';
 
 type SharedInputProps = Pick<
   RenderCheckboxProps,

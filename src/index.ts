@@ -6,8 +6,8 @@ export {
   type DataGridHandle,
   type DefaultColumnOptions
 } from './DataGrid';
-export { default as TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
-export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
+export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
+export { DataGridDefaultRenderersContext } from './DataGridDefaultRenderersContext';
 export { default as Row } from './Row';
 export { default as Cell } from './Cell';
 export * from './Columns';
