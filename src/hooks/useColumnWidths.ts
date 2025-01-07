@@ -1,8 +1,7 @@
-import { useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 
 import type { CalculatedColumn, StateSetter } from '../types';
-import { useLayoutEffect } from './useLayoutEffect';
 import type { DataGridProps } from '../DataGrid';
 
 export function useColumnWidths<R, SR>(
