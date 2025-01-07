@@ -237,6 +237,72 @@ function TreeDataGrid<R, SR, K extends Key>(
     [getParentRowAndIndex, isGroupRow, rawRowKeyGetter, rows]
   );
 
+  const renderRow = useCallback(
+    (
+      key: Key,
+      {
+        row,
+        rowClass,
+        onCellClick,
+        onCellDoubleClick,
+        onCellContextMenu,
+        onRowChange,
+        lastFrozenColumnIndex,
+        copiedCellIdx,
+        draggedOverCellIdx,
+        setDraggedOverRowIdx,
+        selectedCellEditor,
+        ...rowProps
+      }: RenderRowProps<R, SR>
+    ) => {
+      if (isGroupRow(row)) {
+        const { startRowIndex } = row;
+        return (
+          <GroupedRow
+            key={key}
+            {...rowProps}
+            aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1}
+            row={row}
+            groupBy={groupBy}
+            toggleGroup={toggleGroupLatest}
+          />
+        );
+      }
+
+      let ariaRowIndex = rowProps['aria-rowindex'];
+      const parentRowAndIndex = getParentRowAndIndex(row);
+      if (parentRowAndIndex !== undefined) {
+        const { startRowIndex, childRows } = parentRowAndIndex[0];
+        const groupIndex = childRows.indexOf(row);
+        ariaRowIndex = startRowIndex + headerAndTopSummaryRowsCount + groupIndex + 2;
+      }
+
+      return rawRenderRow(key, {
+        ...rowProps,
+        'aria-rowindex': ariaRowIndex,
+        row,
+        rowClass,
+        onCellClick,
+        onCellDoubleClick,
+        onCellContextMenu,
+        onRowChange,
+        lastFrozenColumnIndex,
+        copiedCellIdx,
+        draggedOverCellIdx,
+        setDraggedOverRowIdx,
+        selectedCellEditor
+      });
+    },
+    [
+      getParentRowAndIndex,
+      groupBy,
+      headerAndTopSummaryRowsCount,
+      isGroupRow,
+      rawRenderRow,
+      toggleGroupLatest
+    ]
+  );
+
   const selectedRows = useMemo((): Maybe<ReadonlySet<Key>> => {
     if (rawSelectedRows == null) return null;
 
@@ -352,62 +418,6 @@ function TreeDataGrid<R, SR, K extends Key>(
       newExpandedGroupIds.add(groupId);
     }
     onExpandedGroupIdsChange(newExpandedGroupIds);
-  }
-
-  function renderRow(
-    key: Key,
-    {
-      row,
-      rowClass,
-      onCellClick,
-      onCellDoubleClick,
-      onCellContextMenu,
-      onRowChange,
-      lastFrozenColumnIndex,
-      copiedCellIdx,
-      draggedOverCellIdx,
-      setDraggedOverRowIdx,
-      selectedCellEditor,
-      ...rowProps
-    }: RenderRowProps<R, SR>
-  ) {
-    if (isGroupRow(row)) {
-      const { startRowIndex } = row;
-      return (
-        <GroupedRow
-          key={key}
-          {...rowProps}
-          aria-rowindex={headerAndTopSummaryRowsCount + startRowIndex + 1}
-          row={row}
-          groupBy={groupBy}
-          toggleGroup={toggleGroupLatest}
-        />
-      );
-    }
-
-    let ariaRowIndex = rowProps['aria-rowindex'];
-    const parentRowAndIndex = getParentRowAndIndex(row);
-    if (parentRowAndIndex !== undefined) {
-      const { startRowIndex, childRows } = parentRowAndIndex[0];
-      const groupIndex = childRows.indexOf(row);
-      ariaRowIndex = startRowIndex + headerAndTopSummaryRowsCount + groupIndex + 2;
-    }
-
-    return rawRenderRow(key, {
-      ...rowProps,
-      'aria-rowindex': ariaRowIndex,
-      row,
-      rowClass,
-      onCellClick,
-      onCellDoubleClick,
-      onCellContextMenu,
-      onRowChange,
-      lastFrozenColumnIndex,
-      copiedCellIdx,
-      draggedOverCellIdx,
-      setDraggedOverRowIdx,
-      selectedCellEditor
-    });
   }
 
   return (
