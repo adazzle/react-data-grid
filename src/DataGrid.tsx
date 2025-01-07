@@ -205,6 +205,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /** @default 'ltr' */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
+  'data-cy'?: Maybe<string>;
 }
 
 /**
@@ -264,7 +265,8 @@ function DataGrid<R, SR, K extends Key>(
     'aria-description': ariaDescription,
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
-    'data-testid': testId
+    'data-testid': testId,
+    'data-cy': dataCy
   } = props;
 
   /**
@@ -1122,6 +1124,7 @@ function DataGrid<R, SR, K extends Key>(
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
       data-testid={testId}
+      data-cy={dataCy}
     >
       <DataGridDefaultRenderersProvider value={defaultGridComponents}>
         <HeaderRowSelectionChangeProvider value={selectHeaderRowLatest}>
