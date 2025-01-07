@@ -5,7 +5,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid from '../../../src';
 import type { Column, DataGridProps } from '../../../src';
-import { getCellsAtRowIndexOld, getGridOld, getSelectedCellOld, scrollGrid } from '../utils';
+import { getCellsAtRowIndexOld, getGrid, getSelectedCell, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -100,13 +100,13 @@ describe('Editor', () => {
     expect(getCellsAtRowIndexOld(0)).toHaveLength(1);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getGridOld().scrollTop).toBe(2000);
+    expect(getGrid().element().scrollTop).toBe(2000);
     await userEvent.keyboard('123');
     await waitFor(() => {
       expect(getCellsAtRowIndexOld(0)).toHaveLength(2);
     });
     await expect.element(editor).toHaveValue(123);
-    expect(getGridOld().scrollTop).toBe(0);
+    expect(getGrid().element().scrollTop).toBe(0);
   });
 
   describe('editable', () => {
@@ -238,7 +238,7 @@ describe('Editor', () => {
       await scrollGrid({ scrollTop: 1500 });
       expect(getCellsAtRowIndexOld(40)[1]).toHaveTextContent(/^40$/);
       await userEvent.click(getCellsAtRowIndexOld(40)[1]);
-      expect(getSelectedCellOld()).toHaveTextContent(/^40$/);
+      await expect.element(getSelectedCell()).toHaveTextContent(/^40$/);
       await scrollGrid({ scrollTop: 0 });
       expect(getCellsAtRowIndexOld(0)[1]).toHaveTextContent(/^0abc$/);
     });
