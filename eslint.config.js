@@ -387,9 +387,9 @@ export default [
 
       // React Hooks Extra
       // https://eslint-react.xyz/
-      'react-hooks-extra/no-redundant-custom-hook': 1,
       'react-hooks-extra/no-unnecessary-use-callback': 1,
       'react-hooks-extra/no-unnecessary-use-memo': 1,
+      'react-hooks-extra/no-useless-custom-hooks': 1,
       'react-hooks-extra/prefer-use-state-lazy-initialization': 1,
 
       // SonarJS rules
