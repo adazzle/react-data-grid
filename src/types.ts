@@ -13,19 +13,25 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly name: string | ReactElement;
   /** A unique key to distinguish each column */
   readonly key: string;
-  /** Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns */
+  /**
+   * Column width. If not specified, it will be determined automatically based on grid width and specified widths of other columns
+   * @default 'auto'
+   */
   readonly width?: Maybe<number | string>;
-  /** Minimum column width in px. */
+  /**
+   * Minimum column width in px
+   * @default '50px'
+   */
   readonly minWidth?: Maybe<number>;
   /** Maximum column width in px. */
   readonly maxWidth?: Maybe<number>;
   readonly cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>;
   readonly headerCellClass?: Maybe<string>;
   readonly summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>;
-  /** Render function used to render the content of the column's header cell */
-  readonly renderHeaderCell?: Maybe<(props: RenderHeaderCellProps<TRow, TSummaryRow>) => ReactNode>;
   /** Render function used to render the content of cells */
   readonly renderCell?: Maybe<(props: RenderCellProps<TRow, TSummaryRow>) => ReactNode>;
+  /** Render function used to render the content of the column's header cell */
+  readonly renderHeaderCell?: Maybe<(props: RenderHeaderCellProps<TRow, TSummaryRow>) => ReactNode>;
   /** Render function used to render the content of summary cells */
   readonly renderSummaryCell?: Maybe<
     (props: RenderSummaryCellProps<TSummaryRow, TRow>) => ReactNode
@@ -168,6 +174,7 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
 export interface CellClickArgs<TRow, TSummaryRow = unknown> {
+  rowIdx: number;
   row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
   selectCell: (enableEditor?: boolean) => void;
@@ -309,10 +316,10 @@ export interface RenderCheckboxProps
 }
 
 export interface Renderers<TRow, TSummaryRow> {
+  renderCell?: Maybe<(key: Key, props: CellRendererProps<TRow, TSummaryRow>) => ReactNode>;
   renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
   renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
   renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
-  renderCell?: Maybe<(key: Key, props: CellRendererProps<TRow, TSummaryRow>) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
 }
 
