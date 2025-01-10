@@ -155,7 +155,6 @@ export interface CellRendererProps<TRow, TSummaryRow>
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
-  isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
   onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
@@ -173,25 +172,27 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
+export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
+
 export interface CellClickArgs<TRow, TSummaryRow = unknown> {
-  rowIdx: number;
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
+  rowIdx: number;
   selectCell: (enableEditor?: boolean) => void;
 }
 
 interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'SELECT';
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   rowIdx: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'EDIT';
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   rowIdx: number;
   navigate: () => void;
   onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
@@ -226,7 +227,6 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown>
   extends BaseRenderRowProps<TRow, TSummaryRow> {
   row: TRow;
   lastFrozenColumnIndex: number;
-  copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
   selectedCellEditor: ReactElement<RenderEditCellProps<TRow>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
@@ -255,16 +255,9 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
-export interface CopyEvent<TRow> {
-  sourceColumnKey: string;
-  sourceRow: TRow;
-}
-
-export interface PasteEvent<TRow> {
-  sourceColumnKey: string;
-  sourceRow: TRow;
-  targetColumnKey: string;
-  targetRow: TRow;
+export interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
 }
 
 export interface GroupRow<TRow> {
