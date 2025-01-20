@@ -38,8 +38,8 @@ test('draggable columns', async () => {
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
   await userEvent.dragAndDrop(cell2, cell4);
-  expect(onColumnsReorder).toHaveBeenCalledWith('col2', 'col4');
-  onColumnsReorder.mockReset();
+  expect(onColumnsReorder).toHaveBeenCalledExactlyOnceWith('col2', 'col4');
+  onColumnsReorder.mockClear();
 
   // should not call `onColumnsReorder` if drag and drop elements are the same
   await userEvent.dragAndDrop(cell2, cell2);
