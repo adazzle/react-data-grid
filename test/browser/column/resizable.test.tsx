@@ -72,8 +72,7 @@ test('should resize column when dragging the handle', async () => {
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await resize({ column: col2.element(), resizeBy: -50 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 150px' });
-  expect(onColumnResize).toHaveBeenCalledTimes(1);
-  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 150);
+  expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(columns[1]), 150);
 });
 
 test('should use the maxWidth if specified', async () => {
