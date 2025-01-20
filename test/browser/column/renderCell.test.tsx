@@ -95,8 +95,7 @@ describe('Custom cell renderer', () => {
     await expect.element(cell).toHaveTextContent('value: 1');
     await userEvent.click(page.getByRole('button'));
     await expect.element(cell).toHaveTextContent('value: 2');
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith([{ id: 2 }], {
+    expect(onChange).toHaveBeenCalledExactlyOnceWith([{ id: 2 }], {
       column: {
         ...column,
         frozen: false,

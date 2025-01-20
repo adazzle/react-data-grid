@@ -80,8 +80,7 @@ describe('Editor', () => {
     // too quickly for outside clicks to be detected
     await userEvent.click(saveButton, { delay: 10 });
 
-    expect(onSave).toHaveBeenCalledTimes(1);
-    expect(onSave).toHaveBeenCalledWith([
+    expect(onSave).toHaveBeenCalledExactlyOnceWith([
       { col1: 1234, col2: 'a1' },
       { col1: 2, col2: 'a2' }
     ]);
