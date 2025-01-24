@@ -99,7 +99,7 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
     (): ReadonlySet<unknown> => new Set<unknown>([])
   );
 
-  function onPaste(event: PasteEvent<Row>) {
+  function onCellPaste(event: PasteEvent<Row>) {
     return {
       ...event.targetRow,
       [event.targetColumnKey]: event.sourceRow[event.sourceColumnKey as keyof Row]
@@ -120,7 +120,7 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
       expandedGroupIds={expandedGroupIds}
       onExpandedGroupIdsChange={setExpandedGroupIds}
       onRowsChange={setRows}
-      onPaste={onPaste}
+      onCellPaste={onCellPaste}
     />
   );
 }
