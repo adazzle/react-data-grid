@@ -13,11 +13,7 @@ import markdown from '@eslint/markdown';
 
 export default [
   {
-    ignores: ['.cache', 'coverage', 'dist', 'lib'],
-
-    linterOptions: {
-      reportUnusedInlineConfigs: 'warn'
-    }
+    ignores: ['.cache', 'coverage', 'dist', 'lib']
   },
   {
     name: 'common',
