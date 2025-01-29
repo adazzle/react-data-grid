@@ -13,7 +13,11 @@ import markdown from '@eslint/markdown';
 
 export default [
   {
-    ignores: ['.cache', 'coverage', 'dist', 'lib']
+    ignores: ['.cache', 'coverage', 'dist', 'lib'],
+
+    linterOptions: {
+      reportUnusedInlineConfigs: 'warn'
+    }
   },
   {
     name: 'common',
@@ -472,6 +476,7 @@ export default [
       '@typescript-eslint/no-meaningless-void-operator': 0,
       '@typescript-eslint/no-misused-new': 1,
       '@typescript-eslint/no-misused-promises': 0,
+      '@typescript-eslint/no-misused-spread': 1,
       '@typescript-eslint/no-mixed-enums': 1,
       '@typescript-eslint/no-namespace': 1,
       '@typescript-eslint/no-non-null-asserted-nullish-coalescing': 1,
