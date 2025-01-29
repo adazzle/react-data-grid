@@ -23,6 +23,7 @@ export default defineConfig({
     }
   ],
   platform: 'browser',
+  // @ts-expect-error TODO
   external: (id) => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
     // @ts-expect-error
