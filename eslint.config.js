@@ -638,15 +638,7 @@ export default [
       'vitest/no-interpolation-in-snapshots': 0,
       'vitest/no-large-snapshots': 0,
       'vitest/no-mocks-import': 1,
-      'vitest/no-restricted-matchers': [
-        1,
-        {
-          toBeTruthy: 'Use toBe(true) instead.',
-          'not.toBeTruthy': null,
-          toBeFalsy: 'Use toBe(false) instead.',
-          'not.toBeFalsy': null
-        }
-      ],
+      'vitest/no-restricted-matchers': 0,
       'vitest/no-restricted-vi-methods': 0,
       'vitest/no-standalone-expect': 1,
       'vitest/no-test-prefixes': 0,
