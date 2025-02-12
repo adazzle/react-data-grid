@@ -13,8 +13,17 @@ import markdown from '@eslint/markdown';
 
 export default [
   {
+    // https://eslint.org/docs/latest/use/configure/ignore#ignoring-files
     ignores: ['.cache', 'coverage', 'dist', 'lib']
+    // /!\ No other properties should be added to this configuration object.
   },
+
+  {
+    linterOptions: {
+      reportUnusedInlineConfigs: 'warn'
+    }
+  },
+
   {
     name: 'common',
     files: ['**/*.{js,ts,tsx}'],
