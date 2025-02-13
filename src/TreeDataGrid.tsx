@@ -47,7 +47,7 @@ type GroupByDictionary<TRow> = Record<
   }
 >;
 
-export function TreeDataGrid<R, SR, K extends Key>({
+export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   columns: rawColumns,
   rows: rawRows,
   rowHeight: rawRowHeight,
