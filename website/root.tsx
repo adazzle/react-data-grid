@@ -19,6 +19,7 @@ const router = createRouter({
   defaultNotFoundComponent: NotFound,
   defaultPendingMinMs: 0,
   defaultPreload: 'intent',
+  defaultStructuralSharing: true,
   scrollRestoration: true
 });
 

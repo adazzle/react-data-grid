@@ -17,13 +17,11 @@
     "./lib/styles.css": "./lib/styles.css",
     ".": {
       "types": "./lib/index.d.ts",
-      "module": "./lib/bundle.js",
-      "require": "./lib/bundle.cjs",
       "default": "./lib/bundle.js"
     }
   },
   "browser": "./lib/bundle.js",
-  "main": "./lib/bundle.cjs",
+  "main": "./lib/bundle.js",
   "module": "./lib/bundle.js",
   "types": "./lib/index.d.ts",
   "files": [

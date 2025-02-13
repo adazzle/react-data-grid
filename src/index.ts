@@ -1,7 +1,8 @@
 import './style/layers.css';
 
 export {
-  default,
+  DataGrid,
+  DataGrid as default,
   type DataGridProps,
   type DataGridHandle,
   type DefaultColumnOptions
