@@ -13,8 +13,17 @@ import markdown from '@eslint/markdown';
 
 export default [
   {
+    // https://eslint.org/docs/latest/use/configure/ignore#ignoring-files
     ignores: ['.cache', 'coverage', 'dist', 'lib']
+    // /!\ No other properties should be added to this configuration object.
   },
+
+  {
+    linterOptions: {
+      reportUnusedInlineConfigs: 'warn'
+    }
+  },
+
   {
     name: 'common',
     files: ['**/*.{js,ts,tsx}'],
@@ -624,15 +633,7 @@ export default [
       'vitest/no-interpolation-in-snapshots': 0,
       'vitest/no-large-snapshots': 0,
       'vitest/no-mocks-import': 1,
-      'vitest/no-restricted-matchers': [
-        1,
-        {
-          toBeTruthy: 'Use toBe(true) instead.',
-          'not.toBeTruthy': null,
-          toBeFalsy: 'Use toBe(false) instead.',
-          'not.toBeFalsy': null
-        }
-      ],
+      'vitest/no-restricted-matchers': 0,
       'vitest/no-restricted-vi-methods': 0,
       'vitest/no-standalone-expect': 1,
       'vitest/no-test-prefixes': 0,
@@ -649,6 +650,7 @@ export default [
       'vitest/prefer-mock-promise-shorthand': 1,
       'vitest/prefer-snapshot-hint': 0,
       'vitest/prefer-spy-on': 1,
+      'vitest/prefer-strict-boolean-matchers': 1,
       'vitest/prefer-strict-equal': 1,
       'vitest/prefer-to-be': 1,
       'vitest/prefer-to-be-falsy': 0,
@@ -660,6 +662,7 @@ export default [
       'vitest/prefer-vi-mocked': 1,
       'vitest/require-hook': 0,
       'vitest/require-local-test-context-for-concurrent-snapshots': 0,
+      'vitest/require-mock-type-parameters': 0,
       'vitest/require-to-throw-message': 0,
       'vitest/require-top-level-describe': 0,
       'vitest/valid-describe-callback': 1,
