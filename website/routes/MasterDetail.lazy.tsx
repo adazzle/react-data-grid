@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import DataGrid from '../../src';
+import { DataGrid } from '../../src';
 import type { Column, RowsChangeData } from '../../src';
 import type { Direction } from '../../src/types';
 import { CellExpanderFormatter } from '../components';

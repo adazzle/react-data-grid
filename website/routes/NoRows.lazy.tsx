@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn } from '../../src';
+import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
 import { useDirection } from '../directionContext';
 

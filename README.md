@@ -57,7 +57,7 @@
 npm install react-data-grid
 ```
 
-`react-data-grid` is published as ECMAScript modules for evergreen browsers / bundlers, and CommonJS for server-side rendering / Jest.
+`react-data-grid` is published as ECMAScript modules for evergreen browsers, bundlers, and server-side rendering.
 
 ## Quick start
 

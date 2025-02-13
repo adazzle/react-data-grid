@@ -4,7 +4,8 @@ import { faker } from '@faker-js/faker';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import DataGrid, {
+import {
+  DataGrid,
   SelectCellFormatter,
   SelectColumn,
   textEditor,

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DataGrid from '../../src';
+import { DataGrid } from '../../src';
 import type { Column, DataGridProps } from '../../src';
 import { getCellsAtRowIndexOld } from './utils';
 

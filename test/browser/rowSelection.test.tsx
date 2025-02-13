@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { page, userEvent } from '@vitest/browser/context';
 
-import DataGrid, { SelectColumn } from '../../src';
+import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
 import { getCellsAtRowIndex, getRows } from './utils';
 
