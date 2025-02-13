@@ -222,7 +222,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
  *
  * <DataGrid columns={columns} rows={rows} />
  */
-export default function DataGrid<R, SR, K extends Key>(props: DataGridProps<R, SR, K>) {
+export default function DataGrid<R, SR = unknown, K extends Key = Key>(
+  props: DataGridProps<R, SR, K>
+) {
   const {
     ref,
     // Grid and data Props
