@@ -565,11 +565,6 @@ export default [
           message: 'Use named imports instead.'
         },
         {
-          name: 'react',
-          importNames: ['useLayoutEffect'],
-          message: 'Use the override from src/hooks instead.'
-        },
-        {
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
