@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { page, userEvent } from '@vitest/browser/context';
 
-import DataGrid, {
+import {
   Cell,
+  DataGrid,
   DataGridDefaultRenderersContext,
   Row as DefaultRow,
   renderSortIcon,

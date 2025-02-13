@@ -1,6 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import DataGrid, { type ColumnOrColumnGroup } from '../../src';
+import { DataGrid } from '../../src';
+import type { ColumnOrColumnGroup } from '../../src';
 import { renderCoordinates } from '../renderers';
 import { useDirection } from '../directionContext';
 

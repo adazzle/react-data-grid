@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import DataGrid from '../../src';
+import { DataGrid } from '../../src';
 import type { Column, SortColumn } from '../../src';
 import { useDirection } from '../directionContext';
 

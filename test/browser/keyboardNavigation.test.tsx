@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import DataGrid, { SelectColumn } from '../../src';
 import {
   getCellsAtRowIndexOld,
   getSelectedCellOld,

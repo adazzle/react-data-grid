@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { waitFor } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 
-import DataGrid from '../../../src';
+import { DataGrid } from '../../../src';
 import type { Column, DataGridProps } from '../../../src';
 import { getCellsAtRowIndexOld, getGridOld, getSelectedCellOld, scrollGrid } from '../utils';
 

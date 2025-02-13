@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn, textEditor } from '../../src';
+import { DataGrid, SelectColumn, textEditor } from '../../src';
 import type { Column, CopyEvent, FillEvent, PasteEvent } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import { useDirection } from '../directionContext';

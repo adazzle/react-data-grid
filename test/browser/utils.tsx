@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
-import DataGrid from '../../src';
+import { DataGrid } from '../../src';
 import type { DataGridProps } from '../../src';
 
 export function setupOld<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
