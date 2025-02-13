@@ -408,7 +408,7 @@ export function TreeDataGrid<R, SR, K extends Key>({
   }
 
   return (
-    <DataGrid<R, SR, Key>
+    <DataGrid<R, SR>
       {...props}
       role="treegrid"
       aria-rowcount={

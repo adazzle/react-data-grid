@@ -18,7 +18,8 @@ const router = createRouter({
   defaultErrorComponent: ErrorComponent,
   defaultNotFoundComponent: NotFound,
   defaultPendingMinMs: 0,
-  defaultPreload: 'intent'
+  defaultPreload: 'intent',
+  scrollRestoration: true
 });
 
 // Register the router instance for type safety

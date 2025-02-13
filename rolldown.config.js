@@ -23,7 +23,7 @@ export default defineConfig({
     }
   ],
   platform: 'browser',
-  external: (id) => !id.startsWith('.') && !isAbsolute(id),
+  external: (/** @type {string} */ id) => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
     // @ts-expect-error
     wyw({
