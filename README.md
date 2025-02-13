@@ -18,7 +18,7 @@
 
 ## Features
 
-- [React 18.0+](package.json) support
+- [React 19.0+](package.json) support
 - [Evergreen browsers and server-side rendering](browserslist) support
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
@@ -42,7 +42,7 @@
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/AllFeatures)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/AllFeatures)
 - [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/CustomizableRenderers)
-- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns.
+- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://issues.chromium.org/issues/40653832) with frozen columns.
 
 ## Links
 
@@ -419,16 +419,16 @@ interface Renderers<TRow, TSummaryRow> {
 }
 ```
 
-For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add context providers or tweak props
+For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add contexts or tweak props
 
 ```tsx
 import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
 
 function myRowRenderer(key: React.Key, props: RenderRowProps<Row>) {
   return (
-    <MyContext.Provider key={key} value={123}>
+    <MyContext key={key} value={123}>
       <Row {...props} />
-    </MyContext.Provider>
+    </MyContext>
   );
 }
 

@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import DataGrid from '../../src';
-import type { Column, DataGridHandle, RowsChangeData } from '../../src';
+import type { Column, RowsChangeData } from '../../src';
 import type { Direction } from '../../src/types';
 import { CellExpanderFormatter } from '../components';
 import { useDirection } from '../directionContext';
@@ -150,12 +150,10 @@ function MasterDetail() {
 }
 
 function ProductGrid({ parentId, direction }: { parentId: number; direction: Direction }) {
-  const gridRef = useRef<DataGridHandle>(null);
   const products = getProducts(parentId);
 
   return (
     <DataGrid
-      ref={gridRef}
       rows={products}
       columns={productColumns}
       rowKeyGetter={rowKeyGetter}

@@ -3,7 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import DataGrid, {
   Cell,
-  DataGridDefaultRenderersProvider,
+  DataGridDefaultRenderersContext,
   Row as DefaultRow,
   renderSortIcon,
   SelectColumn
@@ -96,9 +96,9 @@ function TestGrid<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return <DataGrid {...props} sortColumns={sortColumns} onSortColumnsChange={setSortColumns} />;
 }
 
-function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
+function setupContext<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>) {
   return page.render(
-    <DataGridDefaultRenderersProvider
+    <DataGridDefaultRenderersContext
       value={{
         noRowsFallback: <NoRowsGlobalFallback />,
         renderCheckbox: renderGlobalCheckbox,
@@ -108,7 +108,7 @@ function setupProvider<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K
       }}
     >
       <TestGrid {...props} />
-    </DataGridDefaultRenderersProvider>
+    </DataGridDefaultRenderersContext>
   );
 }
 
@@ -119,15 +119,15 @@ test('fallback defined using renderers prop with no rows', async () => {
   await expect.element(page.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using provider with no rows', async () => {
-  setupProvider({ columns, rows: noRows });
+test('fallback defined using context with no rows', async () => {
+  setupContext({ columns, rows: noRows });
 
   expect(getRowsOld()).toHaveLength(0);
   await expect.element(page.getByText('Global no rows fallback')).toBeInTheDocument();
 });
 
-test('fallback defined using both provider and renderers with no rows', async () => {
-  setupProvider({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
+test('fallback defined using both context and renderers with no rows', async () => {
+  setupContext({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
   expect(getRowsOld()).toHaveLength(0);
   await expect.element(page.getByText('Local no rows fallback')).toBeInTheDocument();
@@ -144,15 +144,15 @@ test('fallback defined using renderers prop with a row', async () => {
   await expect.element(page.getByText('Local no rows fallback')).not.toBeInTheDocument();
 });
 
-test('fallback defined using provider with a row', async () => {
-  setupProvider({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
+test('fallback defined using context with a row', async () => {
+  setupContext({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
   expect(getRowsOld()).toHaveLength(1);
   await expect.element(page.getByText('Global no rows fallback')).not.toBeInTheDocument();
 });
 
-test('fallback defined using both provider and renderers with a row', async () => {
-  setupProvider({
+test('fallback defined using both context and renderers with a row', async () => {
+  setupContext({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
     renderers: { noRowsFallback: <NoRowsFallback /> }
@@ -170,23 +170,23 @@ test('checkbox defined using renderers prop', async () => {
   await expect.element(page.getByText('Local checkbox')).toBeInTheDocument();
 });
 
-test('checkbox defined using provider', async () => {
-  setupProvider({ columns, rows: noRows });
+test('checkbox defined using context', async () => {
+  setupContext({ columns, rows: noRows });
 
   expect(getRowsOld()).toHaveLength(0);
   await expect.element(page.getByText('Global checkbox')).toBeInTheDocument();
 });
 
-test('checkbox defined using both provider and renderers', async () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
+test('checkbox defined using both context and renderers', async () => {
+  setupContext({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
   expect(getRowsOld()).toHaveLength(0);
   await expect.element(page.getByText('Local checkbox')).toBeInTheDocument();
   await expect.element(page.getByText('Global checkbox')).not.toBeInTheDocument();
 });
 
-test('sortPriority defined using both providers', async () => {
-  setupProvider({ columns, rows: noRows });
+test('sortPriority defined using both contexts', async () => {
+  setupContext({ columns, rows: noRows });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   await userEvent.click(headerCell2);
@@ -200,8 +200,8 @@ test('sortPriority defined using both providers', async () => {
   await expect.element(page.getByTestId('local-sort-priority')).not.toBeInTheDocument();
 });
 
-test('sortPriority defined using both providers and renderers', async () => {
-  setupProvider({ columns, rows: noRows, renderers: { renderSortStatus: renderLocalSortStatus } });
+test('sortPriority defined using both contexts and renderers', async () => {
+  setupContext({ columns, rows: noRows, renderers: { renderSortStatus: renderLocalSortStatus } });
 
   const [, headerCell2, headerCell3] = getHeaderCells();
   await userEvent.click(headerCell3);
@@ -215,8 +215,8 @@ test('sortPriority defined using both providers and renderers', async () => {
   await expect.element(page.getByTestId('global-sort-priority')).not.toBeInTheDocument();
 });
 
-test('renderCell defined using provider', async () => {
-  setupProvider({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
+test('renderCell defined using context', async () => {
+  setupContext({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
   const [, cell1, cell2] = getCells();
   await expect.element(cell1).toHaveTextContent('value 1');
@@ -230,8 +230,8 @@ test('renderCell defined using provider', async () => {
   await expect.element(cell2).toHaveStyle({ fontStyle: 'italic' });
 });
 
-test('renderCell defined using both providers and renderers', async () => {
-  setupProvider({
+test('renderCell defined using both contexts and renderers', async () => {
+  setupContext({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
     renderers: { renderCell: renderLocalCell }
@@ -249,16 +249,16 @@ test('renderCell defined using both providers and renderers', async () => {
   await expect.element(cell2).toHaveStyle({ fontStyle: 'normal' });
 });
 
-test('renderRow defined using provider', () => {
-  setupProvider({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
+test('renderRow defined using context', () => {
+  setupContext({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
   const [row] = getRowsOld();
   expect(row).toHaveClass('global');
   expect(row).not.toHaveClass('local');
 });
 
-test('renderRow defined using both providers and renderers', () => {
-  setupProvider({
+test('renderRow defined using both contexts and renderers', () => {
+  setupContext({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
     renderers: { renderRow: renderLocalRow }

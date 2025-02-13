@@ -8,21 +8,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        react: [18, 19]
-      fail-fast: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 23
           check-latest: true
-      - name: set up react 19
-        if: matrix.react == 19
-        run: |
-          node ./.github/workflows/patch-react19.js
-          cat package.json
       - name: npm install
         run: npm i
       - name: Biome
@@ -45,12 +36,11 @@ jobs:
         run: node --run test
         timeout-minutes: 4
       - name: Upload coverage
-        if: matrix.react == 18
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Deploy gh-pages
-        if: matrix.react == 18 && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git config --global user.email 'action@github.com'
           git config --global user.name 'GitHub Action'
