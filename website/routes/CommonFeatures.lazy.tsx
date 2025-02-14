@@ -215,16 +215,18 @@ function getColumns(
     },
     {
       key: 'account',
-      name: 'Account'
+      name: 'Account',
+      rightFrozen: true,
     },
     {
       key: 'version',
       name: 'Version',
-      renderEditCell: textEditor
+      renderEditCell: textEditor,
     },
     {
       key: 'available',
       name: 'Available',
+      rightFrozen: true,
       renderCell({ row, onRowChange, tabIndex }) {
         return (
           <SelectCellFormatter
