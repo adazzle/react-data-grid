@@ -48,7 +48,8 @@ export default defineConfig(({ command }) => ({
     !isTest &&
       TanStackRouterVite({
         generatedRouteTree: 'website/routeTree.gen.ts',
-        routesDirectory: 'website/routes'
+        routesDirectory: 'website/routes',
+        autoCodeSplitting: true
       }),
     react({
       exclude: ['./.cache/**/*']

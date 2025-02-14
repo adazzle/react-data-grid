@@ -1,11 +1,11 @@
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { DataGrid } from '../../src';
 import type { ColumnOrColumnGroup } from '../../src';
 import { renderCoordinates } from '../renderers';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/ColumnGrouping')({
+export const Route = createFileRoute('/ColumnGrouping')({
   component: ColumnGrouping
 });
 

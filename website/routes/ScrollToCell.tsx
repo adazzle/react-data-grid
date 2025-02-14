@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -7,7 +7,7 @@ import type { Column, DataGridHandle } from '../../src';
 import { renderCoordinates } from '../renderers';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/ScrollToCell')({
+export const Route = createFileRoute('/ScrollToCell')({
   component: ScrollToCell
 });
 

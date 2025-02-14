@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
 import type { Column } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/Animation')({
+export const Route = createFileRoute('/Animation')({
   component: Animation
 });
 

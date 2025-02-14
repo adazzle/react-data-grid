@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -9,7 +9,7 @@ import type { Direction } from '../../src/types';
 import { CellExpanderFormatter } from '../components';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/MasterDetail')({
+export const Route = createFileRoute('/MasterDetail')({
   component: MasterDetail
 });
 

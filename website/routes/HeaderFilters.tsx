@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -8,7 +8,7 @@ import type { Column, RenderHeaderCellProps } from '../../src';
 import type { Omit } from '../../src/types';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/HeaderFilters')({
+export const Route = createFileRoute('/HeaderFilters')({
   component: HeaderFilters
 });
 
