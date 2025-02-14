@@ -54,7 +54,7 @@ const highlightClassname = css`
   }
 `;
 
-interface Row {
+export interface Row {
   id: string;
   avatar: string;
   email: string;
