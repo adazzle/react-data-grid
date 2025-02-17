@@ -114,7 +114,7 @@ An optional array of summary rows, usually used to display total values for exam
 A function returning a unique key/identifier per row. `rowKeyGetter` is required for row selection to work.
 
 ```tsx
-import DataGrid from 'react-data-grid';
+import { DataGrid } from 'react-data-grid';
 
 interface Row {
   id: number;
@@ -140,7 +140,7 @@ The second parameter is an object with an `indexes` array highlighting which row
 
 ```tsx
 import { useState } from 'react';
-import DataGrid from 'react-data-grid';
+import { DataGrid } from 'react-data-grid';
 
 function MyGrid() {
   const [rows, setRows] = useState(initialRows);
@@ -181,7 +181,7 @@ A function called when row selection is changed.
 
 ```tsx
 import { useState } from 'react';
-import DataGrid, { SelectColumn } from 'react-data-grid';
+import { DataGrid, SelectColumn } from 'react-data-grid';
 
 const rows: readonly Rows[] = [...];
 
@@ -224,7 +224,7 @@ A function called when sorting is changed
 
 ```tsx
 import { useState } from 'react';
-import DataGrid, { SelectColumn } from 'react-data-grid';
+import { DataGrid, SelectColumn } from 'react-data-grid';
 
 const rows: readonly Rows[] = [...];
 
@@ -422,7 +422,7 @@ interface Renderers<TRow, TSummaryRow> {
 For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add contexts or tweak props
 
 ```tsx
-import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
+import { DataGrid, RenderRowProps, Row } from 'react-data-grid';
 
 function myRowRenderer(key: React.Key, props: RenderRowProps<Row>) {
   return (
@@ -444,7 +444,7 @@ function MyGrid() {
 A function to add a class on the row
 
 ```tsx
-import DataGrid from 'react-data-grid';
+import { DataGrid } from 'react-data-grid';
 
 function MyGrid() {
   return <DataGrid columns={columns} rows={rows} rowClass={rowClass} />;
