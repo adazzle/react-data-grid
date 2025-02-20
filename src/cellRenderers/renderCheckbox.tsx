@@ -22,9 +22,16 @@ const checkbox = css`
 
 const checkboxClassname = `rdg-checkbox-input ${checkbox}`;
 
-export function renderCheckbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
+export function renderCheckbox({
+  onChange,
+  indeterminate,
+  checked,
+  ...props
+}: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
+    // https://github.com/facebook/react/issues/31358
+    // onChange(e.target.checked, (e.nativeEvent as MouseEvent).shiftKey);
+    onChange(!checked, (e.nativeEvent as MouseEvent).shiftKey);
   }
 
   return (
@@ -36,6 +43,7 @@ export function renderCheckbox({ onChange, indeterminate, ...props }: RenderChec
       }}
       type="checkbox"
       className={checkboxClassname}
+      checked={checked}
       onChange={handleChange}
       {...props}
     />
