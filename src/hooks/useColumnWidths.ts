@@ -54,20 +54,24 @@ export function useColumnWidths<R, SR>(
     startTransition(() => {
       prevGridWidthRef.current = gridWidth;
 
-      for (const [resizingKey] of templateColumnsToMeasure) {
-        const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
-        setResizedColumnWidths((resizedColumnWidths) => {
-          const newResizedColumnWidths = new Map(resizedColumnWidths);
-          newResizedColumnWidths.set(resizingKey, measuredWidth);
-          return newResizedColumnWidths;
-        });
+      if (templateColumnsToMeasure.size > 0) {
+        for (const [resizingKey] of templateColumnsToMeasure) {
+          const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
+          setResizedColumnWidths((resizedColumnWidths) => {
+            const newResizedColumnWidths = new Map(resizedColumnWidths);
+            newResizedColumnWidths.set(resizingKey, measuredWidth);
+            return newResizedColumnWidths;
+          });
 
-        const column = columns.find((c) => c.key === resizingKey)!;
-        onColumnResize?.(column, measuredWidth);
+          const column = columns.find((c) => c.key === resizingKey)!;
+          onColumnResize?.(column, measuredWidth);
+        }
+        setTemplateColumnsToMeasure(new Map());
       }
 
-      updateMeasuredWidths([...columnsToMeasure]);
-      setTemplateColumnsToMeasure(new Map());
+      if (columnsToMeasure.size > 0) {
+        updateMeasuredWidths([...columnsToMeasure]);
+      }
     });
   });
 
