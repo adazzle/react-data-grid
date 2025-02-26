@@ -56,7 +56,6 @@ export function useColumnWidths<R, SR>(
 
       for (const [resizingKey] of templateColumnsToMeasure) {
         const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
-        setTemplateColumnsToMeasure(new Map());
         setResizedColumnWidths((resizedColumnWidths) => {
           const newResizedColumnWidths = new Map(resizedColumnWidths);
           newResizedColumnWidths.set(resizingKey, measuredWidth);
@@ -68,6 +67,7 @@ export function useColumnWidths<R, SR>(
       }
 
       updateMeasuredWidths([...columnsToMeasure]);
+      setTemplateColumnsToMeasure(new Map());
     });
   });
 
