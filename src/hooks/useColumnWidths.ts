@@ -41,10 +41,10 @@ export function useColumnWidths<R, SR>(
       const temp = templateColumnsToMeasure.get(key);
       if (temp) {
         newTemplateColumns[idx] = temp;
-        columnsToMeasure.add(key);
       } else if (columnsCanFlex && typeof width === 'string' && !resizedColumnWidths.has(key)) {
         newTemplateColumns[idx] = width;
       }
+      columnsToMeasure.add(key);
     }
   }
 
