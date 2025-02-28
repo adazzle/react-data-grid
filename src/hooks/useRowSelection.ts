@@ -7,23 +7,19 @@ export interface RowSelectionContextValue {
   readonly isRowSelectionDisabled: boolean;
 }
 
-const RowSelectionContext = createContext<RowSelectionContextValue | undefined>(undefined);
+export const RowSelectionContext = createContext<RowSelectionContextValue | undefined>(undefined);
 
-export const RowSelectionProvider = RowSelectionContext.Provider;
-
-const RowSelectionChangeContext = createContext<
+export const RowSelectionChangeContext = createContext<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ((selectRowEvent: SelectRowEvent<any>) => void) | undefined
 >(undefined);
-
-export const RowSelectionChangeProvider = RowSelectionChangeContext.Provider;
 
 export function useRowSelection() {
   const rowSelectionContext = useContext(RowSelectionContext);
   const rowSelectionChangeContext = useContext(RowSelectionChangeContext);
 
   if (rowSelectionContext === undefined || rowSelectionChangeContext === undefined) {
-    throw new Error('useRowSelection must be used within DataGrid cells');
+    throw new Error('useRowSelection must be used within renderCell');
   }
 
   return {
@@ -38,24 +34,20 @@ export interface HeaderRowSelectionContextValue {
   readonly isIndeterminate: boolean;
 }
 
-const HeaderRowSelectionContext = createContext<HeaderRowSelectionContextValue | undefined>(
+export const HeaderRowSelectionContext = createContext<HeaderRowSelectionContextValue | undefined>(
   undefined
 );
 
-export const HeaderRowSelectionProvider = HeaderRowSelectionContext.Provider;
-
-const HeaderRowSelectionChangeContext = createContext<
+export const HeaderRowSelectionChangeContext = createContext<
   ((selectRowEvent: SelectHeaderRowEvent) => void) | undefined
 >(undefined);
-
-export const HeaderRowSelectionChangeProvider = HeaderRowSelectionChangeContext.Provider;
 
 export function useHeaderRowSelection() {
   const headerRowSelectionContext = useContext(HeaderRowSelectionContext);
   const headerRowSelectionChangeContext = useContext(HeaderRowSelectionChangeContext);
 
   if (headerRowSelectionContext === undefined || headerRowSelectionChangeContext === undefined) {
-    throw new Error('useHeaderRowSelection must be used within DataGrid cells');
+    throw new Error('useHeaderRowSelection must be used within renderHeaderCell');
   }
 
   return {

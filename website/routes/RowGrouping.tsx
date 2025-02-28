@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/RowGrouping')({
+export const Route = createFileRoute('/RowGrouping')({
   component: RowGrouping
 });
 

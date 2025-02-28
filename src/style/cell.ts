@@ -6,7 +6,7 @@ export const cell = css`
      * dynamically switching between different containment styles incurs a heavy relayout penalty
      * Chromium bug: at odd zoom levels or subpixel positioning,
      * layout/paint/style containment can make cell borders disappear
-     *   https://bugs.chromium.org/p/chromium/issues/detail?id=1326946
+     *   https://issues.chromium.org/issues/40840864
      */
     position: relative; /* needed for absolute positioning to work */
     padding-block: 0;

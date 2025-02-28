@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import DataGrid, { SelectColumn, textEditor } from '../../src';
+import { DataGrid, SelectColumn, textEditor } from '../../src';
 import type { Column, RenderCheckboxProps, RenderSortStatusProps, SortColumn } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/CustomizableRenderers')({
+export const Route = createFileRoute('/CustomizableRenderers')({
   component: CustomizableRenderers
 });
 
