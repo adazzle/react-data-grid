@@ -110,6 +110,7 @@ export function useColumnWidths<R, SR>(
   }
 
   return {
+    columnsToMeasure,
     gridTemplateColumns,
     handleColumnResize
   } as const;
