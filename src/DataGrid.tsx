@@ -434,6 +434,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
   const { gridTemplateColumns, handleColumnResize } = useColumnWidths(
     columns,
+    rows,
     viewportColumns,
     templateColumns,
     gridRef,
