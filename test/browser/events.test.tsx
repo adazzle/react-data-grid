@@ -1,6 +1,6 @@
 import { page, userEvent } from '@vitest/browser/context';
 
-import DataGrid from '../../src';
+import { DataGrid } from '../../src';
 import type { Column, DataGridProps } from '../../src';
 import { getCellsAtRowIndex } from './utils';
 
@@ -127,7 +127,7 @@ describe('Events', () => {
 
     // Selected by click
     await userEvent.click(getCellsAtRowIndex(0)[1]);
-    expect(onSelectedCellChange).toHaveBeenCalledWith({
+    expect(onSelectedCellChange).toHaveBeenLastCalledWith({
       column: expect.objectContaining(columns[1]),
       row: rows[0],
       rowIdx: 0
@@ -136,7 +136,7 @@ describe('Events', () => {
 
     // Selected by double click
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    expect(onSelectedCellChange).toHaveBeenCalledWith({
+    expect(onSelectedCellChange).toHaveBeenLastCalledWith({
       column: expect.objectContaining(columns[0]),
       row: rows[0],
       rowIdx: 0
@@ -145,7 +145,7 @@ describe('Events', () => {
 
     // Selected by right-click
     await userEvent.click(getCellsAtRowIndex(1)[0], { button: 'right' });
-    expect(onSelectedCellChange).toHaveBeenCalledWith({
+    expect(onSelectedCellChange).toHaveBeenLastCalledWith({
       column: expect.objectContaining(columns[0]),
       row: rows[1],
       rowIdx: 1
@@ -154,7 +154,7 @@ describe('Events', () => {
 
     // Selected by ←↑→↓ keys
     await userEvent.keyboard('{ArrowUp}');
-    expect(onSelectedCellChange).toHaveBeenCalledWith({
+    expect(onSelectedCellChange).toHaveBeenLastCalledWith({
       column: expect.objectContaining(columns[0]),
       row: rows[0],
       rowIdx: 0
@@ -163,7 +163,7 @@ describe('Events', () => {
 
     // Selected by tab key
     await userEvent.keyboard('{Tab}');
-    expect(onSelectedCellChange).toHaveBeenCalledWith({
+    expect(onSelectedCellChange).toHaveBeenLastCalledWith({
       column: expect.objectContaining(columns[1]),
       row: rows[0],
       rowIdx: 0
@@ -172,11 +172,12 @@ describe('Events', () => {
 
     // go to the header row
     await userEvent.keyboard('{ArrowUp}');
-    expect(onSelectedCellChange).toHaveBeenCalledWith({
+    expect(onSelectedCellChange).toHaveBeenLastCalledWith({
       column: expect.objectContaining(columns[1]),
       row: undefined,
       rowIdx: -1
     });
+    expect(onSelectedCellChange).toHaveBeenCalledTimes(6);
   });
 });
 

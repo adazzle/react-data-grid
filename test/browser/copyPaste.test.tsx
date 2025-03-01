@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { page, userEvent } from '@vitest/browser/context';
 
-import DataGrid from '../../src';
+import { DataGrid } from '../../src';
 import type { Column, PasteEvent } from '../../src';
 import {
   copySelectedCell,
@@ -100,7 +100,7 @@ test('should allow copy if only onCopy is specified', async () => {
   await userEvent.click(getCellsAtRowIndexOld(0)[0]);
   await copySelectedCell();
   await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  expect(onCopySpy).toHaveBeenCalledWith({
+  expect(onCopySpy).toHaveBeenCalledExactlyOnceWith({
     sourceRow: initialRows[0],
     sourceColumnKey: 'col'
   });
@@ -119,7 +119,7 @@ test('should allow copy/paste if only onPaste is specified', async () => {
   await userEvent.keyboard('{arrowdown}');
   await pasteSelectedCell();
   expect(getCellsAtRowIndexOld(1)[0]).toHaveTextContent('a1');
-  expect(onPasteSpy).toHaveBeenCalledTimes(1);
+  expect(onPasteSpy).toHaveBeenCalledOnce();
 });
 
 test('should allow copy/paste if both onPaste & onCopy is specified', async () => {
@@ -127,14 +127,14 @@ test('should allow copy/paste if both onPaste & onCopy is specified', async () =
   await userEvent.click(getCellsAtRowIndexOld(0)[0]);
   await copySelectedCell();
   await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  expect(onCopySpy).toHaveBeenCalledWith({
+  expect(onCopySpy).toHaveBeenCalledExactlyOnceWith({
     sourceRow: initialRows[0],
     sourceColumnKey: 'col'
   });
   await userEvent.keyboard('{arrowdown}');
   await pasteSelectedCell();
   expect(getCellsAtRowIndexOld(1)[0]).toHaveTextContent('a1');
-  expect(onPasteSpy).toHaveBeenCalledTimes(1);
+  expect(onPasteSpy).toHaveBeenCalledOnce();
 });
 
 test('should not allow paste on readonly cells', async () => {

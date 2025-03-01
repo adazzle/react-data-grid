@@ -176,7 +176,7 @@ describe('colSpan', () => {
     const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     const testScrollIntoView = () => {
       expect(spy).toHaveBeenCalled();
-      spy.mockReset();
+      spy.mockClear();
     };
     await navigate(3);
     testScrollIntoView();

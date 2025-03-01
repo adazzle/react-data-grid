@@ -18,7 +18,7 @@
 
 ## Features
 
-- [React 18.0+](package.json) support
+- [React 19.0+](package.json) support
 - [Evergreen browsers and server-side rendering](browserslist) support
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
@@ -42,7 +42,7 @@
 - [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/AllFeatures)
 - [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/AllFeatures)
 - [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/CustomizableRenderers)
-- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1140374) with frozen columns.
+- Right-to-left (RTL) support. We recommend using Firefox as Chrome has a [bug](https://issues.chromium.org/issues/40653832) with frozen columns.
 
 ## Links
 
@@ -57,14 +57,14 @@
 npm install react-data-grid
 ```
 
-`react-data-grid` is published as ECMAScript modules for evergreen browsers / bundlers, and CommonJS for server-side rendering / Jest.
+`react-data-grid` is published as ECMAScript modules for evergreen browsers, bundlers, and server-side rendering.
 
 ## Quick start
 
 ```jsx
 import 'react-data-grid/lib/styles.css';
 
-import DataGrid from 'react-data-grid';
+import { DataGrid } from 'react-data-grid';
 
 const columns = [
   { key: 'id', name: 'ID' },
@@ -114,7 +114,7 @@ An optional array of summary rows, usually used to display total values for exam
 A function returning a unique key/identifier per row. `rowKeyGetter` is required for row selection to work.
 
 ```tsx
-import DataGrid from 'react-data-grid';
+import { DataGrid } from 'react-data-grid';
 
 interface Row {
   id: number;
@@ -140,7 +140,7 @@ The second parameter is an object with an `indexes` array highlighting which row
 
 ```tsx
 import { useState } from 'react';
-import DataGrid from 'react-data-grid';
+import { DataGrid } from 'react-data-grid';
 
 function MyGrid() {
   const [rows, setRows] = useState(initialRows);
@@ -181,7 +181,7 @@ A function called when row selection is changed.
 
 ```tsx
 import { useState } from 'react';
-import DataGrid, { SelectColumn } from 'react-data-grid';
+import { DataGrid, SelectColumn } from 'react-data-grid';
 
 const rows: readonly Rows[] = [...];
 
@@ -224,7 +224,7 @@ A function called when sorting is changed
 
 ```tsx
 import { useState } from 'react';
-import DataGrid, { SelectColumn } from 'react-data-grid';
+import { DataGrid, SelectColumn } from 'react-data-grid';
 
 const rows: readonly Rows[] = [...];
 
@@ -419,16 +419,16 @@ interface Renderers<TRow, TSummaryRow> {
 }
 ```
 
-For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add context providers or tweak props
+For example, the default `<Row />` component can be wrapped via the `renderRow` prop to add contexts or tweak props
 
 ```tsx
-import DataGrid, { RenderRowProps, Row } from 'react-data-grid';
+import { DataGrid, RenderRowProps, Row } from 'react-data-grid';
 
 function myRowRenderer(key: React.Key, props: RenderRowProps<Row>) {
   return (
-    <MyContext.Provider key={key} value={123}>
+    <MyContext key={key} value={123}>
       <Row {...props} />
-    </MyContext.Provider>
+    </MyContext>
   );
 }
 
@@ -444,7 +444,7 @@ function MyGrid() {
 A function to add a class on the row
 
 ```tsx
-import DataGrid from 'react-data-grid';
+import { DataGrid } from 'react-data-grid';
 
 function MyGrid() {
   return <DataGrid columns={columns} rows={rows} rowClass={rowClass} />;
