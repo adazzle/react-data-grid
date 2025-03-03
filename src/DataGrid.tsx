@@ -1243,7 +1243,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
               selectedPosition.rowIdx
             ),
             [rowSelected]: isGroupRowFocused,
-            [rowSelectedWithFrozenCell]: isGroupRowFocused && lastFrozenColumnIndex !== -1
+            [rowSelectedWithFrozenCell]:
+              isGroupRowFocused &&
+              lastFrozenColumnIndex !== -1 &&
+              selectedPosition.rowIdx !== maxRowIdx
           })}
           style={{
             gridRowStart: selectedPosition.rowIdx + headerAndTopSummaryRowsCount + 1
