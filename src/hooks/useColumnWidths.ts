@@ -3,6 +3,8 @@ import { startTransition, useLayoutEffect, useRef, useState } from 'react';
 import type { CalculatedColumn, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
 
+export type ColumnResizeWidth = number | 'max-content';
+
 export function useColumnWidths<R, SR>(
   columns: readonly CalculatedColumn<R, SR>[],
   viewportColumns: readonly CalculatedColumn<R, SR>[],
@@ -15,9 +17,9 @@ export function useColumnWidths<R, SR>(
   setMeasuredColumnWidths: StateSetter<ReadonlyMap<string, number>>,
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
-  const [templateColumnsToMeasure, setTemplateColumnsToMeasure] = useState<Map<string, string>>(
-    () => new Map()
-  );
+  const [resizedColumnsToMeasure, setResizedColumnsToMeasure] = useState<
+    Map<string, ColumnResizeWidth>
+  >(() => new Map());
   const prevGridWidthRef = useRef(gridWidth);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
   // Allow columns to flex again when...
@@ -37,14 +39,20 @@ export function useColumnWidths<R, SR>(
       columnsToMeasure.add(key);
     }
 
-    if (templateColumnsToMeasure.size > 0) {
-      const temp = templateColumnsToMeasure.get(key);
-      if (temp) {
-        newTemplateColumns[idx] = temp;
+    if (resizedColumnsToMeasure.size > 0) {
+      const tempWidth = resizedColumnsToMeasure.get(key);
+      if (tempWidth !== undefined) {
+        if (typeof tempWidth === 'number') {
+          newTemplateColumns[idx] = `${tempWidth}px`;
+          columnsToMeasure.delete(key);
+        } else {
+          newTemplateColumns[idx] = tempWidth;
+          columnsToMeasure.add(key);
+        }
       } else if (columnsCanFlex && typeof width === 'string' && !resizedColumnWidths.has(key)) {
         newTemplateColumns[idx] = width;
+        columnsToMeasure.add(key);
       }
-      columnsToMeasure.add(key);
     }
   }
 
@@ -54,8 +62,8 @@ export function useColumnWidths<R, SR>(
     startTransition(() => {
       prevGridWidthRef.current = gridWidth;
 
-      if (templateColumnsToMeasure.size > 0) {
-        for (const [resizingKey] of templateColumnsToMeasure) {
+      if (resizedColumnsToMeasure.size > 0) {
+        for (const [resizingKey] of resizedColumnsToMeasure) {
           const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
           setResizedColumnWidths((resizedColumnWidths) => {
             const newResizedColumnWidths = new Map(resizedColumnWidths);
@@ -66,7 +74,7 @@ export function useColumnWidths<R, SR>(
           const column = columns.find((c) => c.key === resizingKey)!;
           onColumnResize?.(column, measuredWidth);
         }
-        setTemplateColumnsToMeasure(new Map());
+        setResizedColumnsToMeasure(new Map());
       }
 
       if (columnsToMeasure.size > 0) {
@@ -96,16 +104,13 @@ export function useColumnWidths<R, SR>(
     });
   }
 
-  function handleColumnResize(column: CalculatedColumn<R, SR>, nextWidth: number | 'max-content') {
+  function handleColumnResize(column: CalculatedColumn<R, SR>, nextWidth: ColumnResizeWidth) {
     const { key: resizingKey } = column;
 
-    setTemplateColumnsToMeasure((templateColumnsToMeasure) => {
-      const newTemplateColumnsToMeasure = new Map(templateColumnsToMeasure);
-      newTemplateColumnsToMeasure.set(
-        resizingKey,
-        typeof nextWidth === 'number' ? `${nextWidth}px` : nextWidth
-      );
-      return newTemplateColumnsToMeasure;
+    setResizedColumnsToMeasure((resizedColumnsToMeasure) => {
+      const newResizedColumnsToMeasure = new Map(resizedColumnsToMeasure);
+      newResizedColumnsToMeasure.set(resizingKey, nextWidth);
+      return newResizedColumnsToMeasure;
     });
   }
 

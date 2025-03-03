@@ -2,6 +2,7 @@ import { memo, useId } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
+import type { ColumnResizeWidth } from './hooks';
 import { getColSpan } from './utils';
 import type { CalculatedColumn, Direction, Position } from './types';
 import type { DataGridProps } from './DataGrid';
@@ -17,7 +18,7 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   rowIdx: number;
   columns: readonly CalculatedColumn<R, SR>[];
-  onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
+  onColumnResize: (column: CalculatedColumn<R, SR>, width: ColumnResizeWidth) => void;
   selectCell: (position: Position) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
