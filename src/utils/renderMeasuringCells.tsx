@@ -20,7 +20,7 @@ export function renderMeasuringCells<R, SR>(
       className={measuringCellClassname}
       style={{ gridColumnStart: idx + 1, minWidth, maxWidth }}
       data-measuring-cell-key={key}
-      data-measuring-cell={columnsToMeasure.has(key)}
+      data-measuring-cell={columnsToMeasure.has(key) || undefined}
     />
   ));
 }
