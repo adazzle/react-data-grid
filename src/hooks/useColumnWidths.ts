@@ -1,4 +1,4 @@
-import { startTransition, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 import type { CalculatedColumn, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
@@ -59,28 +59,26 @@ export function useColumnWidths<R, SR>(
   const gridTemplateColumns = newTemplateColumns.join(' ');
 
   useLayoutEffect(() => {
-    startTransition(() => {
-      prevGridWidthRef.current = gridWidth;
+    prevGridWidthRef.current = gridWidth;
 
-      if (resizedColumnsToMeasure.size > 0) {
-        for (const [resizingKey] of resizedColumnsToMeasure) {
-          const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
-          setResizedColumnWidths((resizedColumnWidths) => {
-            const newResizedColumnWidths = new Map(resizedColumnWidths);
-            newResizedColumnWidths.set(resizingKey, measuredWidth);
-            return newResizedColumnWidths;
-          });
+    if (resizedColumnsToMeasure.size > 0) {
+      for (const [resizingKey] of resizedColumnsToMeasure) {
+        const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
+        setResizedColumnWidths((resizedColumnWidths) => {
+          const newResizedColumnWidths = new Map(resizedColumnWidths);
+          newResizedColumnWidths.set(resizingKey, measuredWidth);
+          return newResizedColumnWidths;
+        });
 
-          const column = columns.find((c) => c.key === resizingKey)!;
-          onColumnResize?.(column, measuredWidth);
-        }
-        setResizedColumnsToMeasure(new Map());
+        const column = columns.find((c) => c.key === resizingKey)!;
+        onColumnResize?.(column, measuredWidth);
       }
+      setResizedColumnsToMeasure(new Map());
+    }
 
-      if (columnsToMeasure.size > 0) {
-        updateMeasuredWidths([...columnsToMeasure]);
-      }
-    });
+    if (columnsToMeasure.size > 0) {
+      updateMeasuredWidths([...columnsToMeasure]);
+    }
   });
 
   function updateMeasuredWidths(columnsToMeasure: readonly string[]) {
