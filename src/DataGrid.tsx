@@ -432,7 +432,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     bottomSummaryRows
   });
 
-  const { gridTemplateColumns, handleColumnResize } = useColumnWidths(
+  const { gridTemplateColumns, columnsToMeasure, handleColumnResize } = useColumnWidths(
     columns,
     viewportColumns,
     templateColumns,
@@ -1231,7 +1231,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       {renderDragHandle()}
 
       {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
-      {renderMeasuringCells(viewportColumns)}
+      {renderMeasuringCells(viewportColumns, columnsToMeasure)}
 
       {/* extra div is needed for row navigation in a treegrid */}
       {isTreeGrid && (
