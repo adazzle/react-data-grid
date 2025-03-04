@@ -6,6 +6,7 @@ import type { DataGridProps } from '../DataGrid';
 
 export function useColumnWidths<R, SR>(
   columns: readonly CalculatedColumn<R, SR>[],
+  rows: readonly R[],
   viewportColumns: readonly CalculatedColumn<R, SR>[],
   templateColumns: readonly string[],
   gridRef: React.RefObject<HTMLDivElement | null>,
@@ -16,6 +17,7 @@ export function useColumnWidths<R, SR>(
   setMeasuredColumnWidths: StateSetter<ReadonlyMap<string, number>>,
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
+  const prevRowsRef = useRef(rows);
   const prevGridWidthRef = useRef(gridWidth);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
   // Allow columns to flex again when...
@@ -24,11 +26,14 @@ export function useColumnWidths<R, SR>(
     columnsCanFlex && gridWidth !== prevGridWidthRef.current;
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
+  const resetMeasuredColumns =
+    prevRowsRef.current.length !== rows.length &&
+    (prevRowsRef.current.length === 0 || rows.length === 0);
 
   for (const { key, idx, width } of viewportColumns) {
     if (
       typeof width === 'string' &&
-      (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key)) &&
+      (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key) || resetMeasuredColumns) &&
       !resizedColumnWidths.has(key)
     ) {
       newTemplateColumns[idx] = width;
