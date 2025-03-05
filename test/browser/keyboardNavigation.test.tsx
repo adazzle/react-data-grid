@@ -257,13 +257,13 @@ test('navigation when selected cell not in the viewport', async () => {
   validateCellPosition(99, 100);
   expect(getCellsAtRowIndexOld(100)).not.toHaveLength(1);
 
-  await scrollGrid({ scrollTop: 0 });
+  scrollGrid({ scrollTop: 0 });
   expect(getCellsAtRowIndexOld(99)).toHaveLength(1);
   await userEvent.keyboard('{arrowup}');
   validateCellPosition(99, 99);
   expect(getCellsAtRowIndexOld(99)).not.toHaveLength(1);
 
-  await scrollGrid({ scrollLeft: 0 });
+  scrollGrid({ scrollLeft: 0 });
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(99, 100);
 
@@ -271,7 +271,7 @@ test('navigation when selected cell not in the viewport', async () => {
     '{home}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
   );
   validateCellPosition(7, 100);
-  await scrollGrid({ scrollLeft: 2000 });
+  scrollGrid({ scrollLeft: 2000 });
   await userEvent.keyboard('{arrowleft}');
   validateCellPosition(6, 100);
 });
