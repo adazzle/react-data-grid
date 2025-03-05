@@ -17,7 +17,7 @@ import type {
   RenderSortStatusProps,
   SortColumn
 } from '../../src';
-import { getCells, getHeaderCells, getRowsOld, setup } from './utils';
+import { getCells, getHeaderCells, getRows, setup } from './utils';
 
 interface Row {
   id: number;
@@ -116,21 +116,21 @@ function setupContext<R, SR, K extends React.Key>(props: DataGridProps<R, SR, K>
 test('fallback defined using renderers prop with no rows', async () => {
   setup({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
-  expect(getRowsOld()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
   await expect.element(page.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
 test('fallback defined using context with no rows', async () => {
   setupContext({ columns, rows: noRows });
 
-  expect(getRowsOld()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
   await expect.element(page.getByText('Global no rows fallback')).toBeInTheDocument();
 });
 
 test('fallback defined using both context and renderers with no rows', async () => {
   setupContext({ columns, rows: noRows, renderers: { noRowsFallback: <NoRowsFallback /> } });
 
-  expect(getRowsOld()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
   await expect.element(page.getByText('Local no rows fallback')).toBeInTheDocument();
 });
 
@@ -141,14 +141,14 @@ test('fallback defined using renderers prop with a row', async () => {
     renderers: { noRowsFallback: <NoRowsFallback /> }
   });
 
-  expect(getRowsOld()).toHaveLength(1);
+  expect(getRows()).toHaveLength(1);
   await expect.element(page.getByText('Local no rows fallback')).not.toBeInTheDocument();
 });
 
 test('fallback defined using context with a row', async () => {
   setupContext({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
-  expect(getRowsOld()).toHaveLength(1);
+  expect(getRows()).toHaveLength(1);
   await expect.element(page.getByText('Global no rows fallback')).not.toBeInTheDocument();
 });
 
@@ -159,7 +159,7 @@ test('fallback defined using both context and renderers with a row', async () =>
     renderers: { noRowsFallback: <NoRowsFallback /> }
   });
 
-  expect(getRowsOld()).toHaveLength(1);
+  expect(getRows()).toHaveLength(1);
   await expect.element(page.getByText('Global no rows fallback')).not.toBeInTheDocument();
   await expect.element(page.getByText('Local no rows fallback')).not.toBeInTheDocument();
 });
@@ -167,21 +167,21 @@ test('fallback defined using both context and renderers with a row', async () =>
 test('checkbox defined using renderers prop', async () => {
   setup({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
-  expect(getRowsOld()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
   await expect.element(page.getByText('Local checkbox')).toBeInTheDocument();
 });
 
 test('checkbox defined using context', async () => {
   setupContext({ columns, rows: noRows });
 
-  expect(getRowsOld()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
   await expect.element(page.getByText('Global checkbox')).toBeInTheDocument();
 });
 
 test('checkbox defined using both context and renderers', async () => {
   setupContext({ columns, rows: noRows, renderers: { renderCheckbox: renderLocalCheckbox } });
 
-  expect(getRowsOld()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
   await expect.element(page.getByText('Local checkbox')).toBeInTheDocument();
   await expect.element(page.getByText('Global checkbox')).not.toBeInTheDocument();
 });
@@ -253,7 +253,7 @@ test('renderCell defined using both contexts and renderers', async () => {
 test('renderRow defined using context', () => {
   setupContext({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
-  const [row] = getRowsOld();
+  const row = getRows()[0].element();
   expect(row).toHaveClass('global');
   expect(row).not.toHaveClass('local');
 });
@@ -265,7 +265,7 @@ test('renderRow defined using both contexts and renderers', () => {
     renderers: { renderRow: renderLocalRow }
   });
 
-  const [row] = getRowsOld();
+  const row = getRows()[0].element();
   expect(row).toHaveClass('local');
   expect(row).not.toHaveClass('global');
 });

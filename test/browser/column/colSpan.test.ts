@@ -1,7 +1,7 @@
 import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
-import { getCellsAtRowIndexOld, getHeaderCells, setup, validateCellPositionOld } from '../utils';
+import { getCellsAtRowIndexOld, getHeaderCells, setup, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {
@@ -96,78 +96,78 @@ describe('colSpan', () => {
     setupColSpanGrid();
     // header row
     await userEvent.click(getHeaderCells()[7]);
-    validateCellPositionOld(7, 0);
+    validateCellPosition(7, 0);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(8, 0);
+    validateCellPosition(8, 0);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(11, 0);
+    validateCellPosition(11, 0);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(12, 0);
+    validateCellPosition(12, 0);
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
-    validateCellPositionOld(7, 0);
+    validateCellPosition(7, 0);
 
     // top summary rows
     await userEvent.click(getCellsAtRowIndexOld(0)[6]);
-    validateCellPositionOld(6, 1);
+    validateCellPosition(6, 1);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(7, 1);
+    validateCellPosition(7, 1);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(9, 1);
+    validateCellPosition(9, 1);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(10, 1);
+    validateCellPosition(10, 1);
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
-    validateCellPositionOld(6, 1);
+    validateCellPosition(6, 1);
 
     // viewport rows
     await userEvent.click(getCellsAtRowIndexOld(3)[1]);
-    validateCellPositionOld(1, 4);
+    validateCellPosition(1, 4);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(2, 4);
+    validateCellPosition(2, 4);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(3, 4);
+    validateCellPosition(3, 4);
     await userEvent.keyboard('{arrowdown}');
-    validateCellPositionOld(2, 5);
+    validateCellPosition(2, 5);
     await userEvent.keyboard('{arrowleft}');
-    validateCellPositionOld(1, 5);
+    validateCellPosition(1, 5);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(2, 5);
+    validateCellPosition(2, 5);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(5, 5);
+    validateCellPosition(5, 5);
     await userEvent.keyboard('{arrowleft}');
-    validateCellPositionOld(2, 5);
+    validateCellPosition(2, 5);
     await userEvent.keyboard('{arrowdown}');
-    validateCellPositionOld(2, 6);
+    validateCellPosition(2, 6);
     await userEvent.keyboard('{arrowdown}{arrowdown}');
-    validateCellPositionOld(0, 8);
+    validateCellPosition(0, 8);
     await userEvent.keyboard('{arrowLeft}');
-    validateCellPositionOld(0, 8);
+    validateCellPosition(0, 8);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(5, 8);
+    validateCellPosition(5, 8);
     await userEvent.tab({ shift: true });
     await userEvent.tab({ shift: true });
-    validateCellPositionOld(14, 7);
+    validateCellPosition(14, 7);
     await userEvent.tab();
-    validateCellPositionOld(0, 8);
+    validateCellPosition(0, 8);
     await userEvent.click(getCellsAtRowIndexOld(10)[11]);
-    validateCellPositionOld(11, 11);
+    validateCellPosition(11, 11);
     await userEvent.tab();
-    validateCellPositionOld(12, 11);
+    validateCellPosition(12, 11);
     await userEvent.tab();
-    validateCellPositionOld(0, 12);
+    validateCellPosition(0, 12);
     await userEvent.tab({ shift: true });
-    validateCellPositionOld(12, 11);
+    validateCellPosition(12, 11);
 
     // bottom summary rows
     await userEvent.click(getCellsAtRowIndexOld(12)[6]);
-    validateCellPositionOld(6, 13);
+    validateCellPosition(6, 13);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(7, 13);
+    validateCellPosition(7, 13);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(9, 13);
+    validateCellPosition(9, 13);
     await userEvent.keyboard('{arrowright}');
-    validateCellPositionOld(10, 13);
+    validateCellPosition(10, 13);
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
-    validateCellPositionOld(6, 13);
+    validateCellPosition(6, 13);
   });
 
   it('should scroll to the merged cell when selected', async () => {
@@ -182,13 +182,13 @@ describe('colSpan', () => {
     testScrollIntoView();
     await navigate(1);
     testScrollIntoView(); // should bring the merged cell into view
-    validateCellPositionOld(27, 11);
+    validateCellPosition(27, 11);
     await navigate(7);
     testScrollIntoView();
-    validateCellPositionOld(6, 12); // should navigate to the next row
+    validateCellPosition(6, 12); // should navigate to the next row
     await navigate(7, true);
     testScrollIntoView();
-    validateCellPositionOld(27, 11); // should navigate to the previous row
+    validateCellPosition(27, 11); // should navigate to the previous row
     await navigate(27);
     testScrollIntoView();
     await navigate(1);

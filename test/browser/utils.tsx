@@ -1,21 +1,9 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
 import type { DataGridProps } from '../../src';
-
-export function setupOld<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
-  render(
-    <DataGrid
-      {...props}
-      className={css`
-        block-size: 1080px;
-        scrollbar-width: none;
-      `}
-    />
-  );
-}
 
 export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
   page.render(
@@ -29,16 +17,12 @@ export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridPro
   );
 }
 
-export function getGridOld() {
-  return screen.getByRole('grid');
-}
-
 export function getGrid() {
   return page.getByRole('grid');
 }
 
-export function getTreeGridOld() {
-  return screen.getByRole('treegrid');
+export function getTreeGrid() {
+  return page.getByRole('treegrid');
 }
 
 export function getRowsOld() {
@@ -140,24 +124,17 @@ export function pasteSelectedCell() {
   return userEvent.keyboard('{Control>}v{/Control}');
 }
 
-export async function scrollGrid({
-  scrollLeft,
-  scrollTop
-}: {
-  scrollLeft?: number;
-  scrollTop?: number;
-}) {
-  const grid = getGridOld();
+export function scrollGrid({ scrollLeft, scrollTop }: { scrollLeft?: number; scrollTop?: number }) {
+  const grid = getGrid().element();
 
-  await act(async () => {
-    if (scrollLeft !== undefined) {
-      grid.scrollLeft = scrollLeft;
-    }
-    if (scrollTop !== undefined) {
-      grid.scrollTop = scrollTop;
-    }
+  if (scrollLeft !== undefined) {
+    grid.scrollLeft = scrollLeft;
+  }
+  if (scrollTop !== undefined) {
+    grid.scrollTop = scrollTop;
+  }
 
-    // let the browser fire the 'scroll' event
-    await new Promise(requestAnimationFrame);
-  });
+  if (scrollLeft !== undefined || scrollTop !== undefined) {
+    grid.dispatchEvent(new Event('scroll'));
+  }
 }
