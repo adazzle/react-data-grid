@@ -5,6 +5,7 @@ import type { CalculatedColumn, CalculatedColumnParent, ColumnOrColumnGroup, Omi
 import { renderValue } from '../cellRenderers';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import type { DataGridProps } from '../DataGrid';
+import defaultRenderHeaderCell from '../renderHeaderCell';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer V> ? Mutable<V>[] : T[P];
@@ -48,6 +49,7 @@ export function useCalculatedColumns<R, SR>({
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
   const defaultCellRenderer = defaultColumnOptions?.renderCell ?? renderValue;
+  const defaultHeaderCellRenderer = defaultColumnOptions?.renderHeaderCell ?? defaultRenderHeaderCell;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
   const defaultDraggable = defaultColumnOptions?.draggable ?? false;
@@ -98,7 +100,8 @@ export function useCalculatedColumns<R, SR>({
           sortable: rawColumn.sortable ?? defaultSortable,
           resizable: rawColumn.resizable ?? defaultResizable,
           draggable: rawColumn.draggable ?? defaultDraggable,
-          renderCell: rawColumn.renderCell ?? defaultCellRenderer
+          renderCell: rawColumn.renderCell ?? defaultCellRenderer,
+          renderHeaderCell: rawColumn.renderHeaderCell ?? defaultHeaderCellRenderer
         };
 
         columns.push(column);
