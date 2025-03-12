@@ -156,6 +156,7 @@ export function useCalculatedColumns<R, SR>({
     defaultMinWidth,
     defaultMaxWidth,
     defaultCellRenderer,
+    defaultHeaderCellRenderer,
     defaultResizable,
     defaultSortable,
     defaultDraggable
