@@ -3,6 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../../src';
 import type { Column } from '../../../src';
+import defaultRenderHeaderCell from '../../../src/renderHeaderCell';
 import { getCells, getCellsAtRowIndexOld, setup } from '../utils';
 
 interface Row {
@@ -107,7 +108,8 @@ describe('Custom cell renderer', () => {
         resizable: false,
         sortable: false,
         draggable: false,
-        width: 'auto'
+        width: 'auto',
+        renderHeaderCell: defaultRenderHeaderCell
       },
       indexes: [0]
     });
