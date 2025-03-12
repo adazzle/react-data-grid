@@ -78,6 +78,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly draggable: boolean;
   readonly frozen: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
+  readonly renderHeaderCell: (props: RenderHeaderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
 
 export interface ColumnGroup<R, SR = unknown> {
