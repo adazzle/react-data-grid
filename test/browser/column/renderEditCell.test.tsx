@@ -94,7 +94,7 @@ describe('Editor', () => {
     page.render(<EditorTest gridRows={rows} />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
-    scrollGrid({ scrollTop: 2000 });
+    await scrollGrid({ scrollTop: 2000 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).not.toBeInTheDocument();
@@ -231,11 +231,11 @@ describe('Editor', () => {
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       await userEvent.keyboard('abc');
 
-      scrollGrid({ scrollTop: 1500 });
+      await scrollGrid({ scrollTop: 1500 });
       expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
       await userEvent.click(getCellsAtRowIndex(40)[1]);
       await expect.element(getSelectedCell()).toHaveTextContent(/^40$/);
-      scrollGrid({ scrollTop: 0 });
+      await scrollGrid({ scrollTop: 0 });
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
     });
 

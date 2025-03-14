@@ -577,10 +577,6 @@ export default [
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
-        },
-        {
-          name: '@testing-library/dom',
-          message: 'Import @testing-library/react instead.'
         }
       ],
       '@typescript-eslint/no-shadow': 0,

@@ -66,7 +66,13 @@ export function pasteSelectedCell() {
   return userEvent.keyboard('{Control>}v{/Control}');
 }
 
-export function scrollGrid({ scrollLeft, scrollTop }: { scrollLeft?: number; scrollTop?: number }) {
+export async function scrollGrid({
+  scrollLeft,
+  scrollTop
+}: {
+  scrollLeft?: number;
+  scrollTop?: number;
+}) {
   const grid = getGrid().element();
 
   if (scrollLeft !== undefined) {
@@ -77,6 +83,7 @@ export function scrollGrid({ scrollLeft, scrollTop }: { scrollLeft?: number; scr
   }
 
   if (scrollLeft !== undefined || scrollTop !== undefined) {
-    grid.dispatchEvent(new Event('scroll'));
+    // let the browser fire the 'scroll' event
+    await new Promise(requestAnimationFrame);
   }
 }

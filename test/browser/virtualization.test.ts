@@ -83,80 +83,80 @@ function assertCellIndexes(rowIdx: number, indexes: number[]) {
   assertIndexes(getCellsAtRowIndex(rowIdx), indexes, 'aria-colindex', 1);
 }
 
-test('virtualization is enabled', () => {
+test('virtualization is enabled', async () => {
   setupGrid(true, 30, 100);
 
   assertHeaderCells(18, 0, 17);
   assertRows(34, 0, 33);
   assertCells(0, 18, 0, 17);
-  scrollGrid({ scrollTop: 244 });
+  await scrollGrid({ scrollTop: 244 });
   assertRows(39, 2, 40);
 
-  scrollGrid({ scrollTop: 245 });
+  await scrollGrid({ scrollTop: 245 });
   assertRows(38, 3, 40);
 
-  scrollGrid({ scrollTop: 419 });
+  await scrollGrid({ scrollTop: 419 });
   assertRows(39, 7, 45);
 
-  scrollGrid({ scrollTop: 420 });
+  await scrollGrid({ scrollTop: 420 });
   assertRows(38, 8, 45);
 
-  scrollGrid({ scrollTop: 524 });
+  await scrollGrid({ scrollTop: 524 });
   assertRows(39, 10, 48);
 
-  scrollGrid({ scrollTop: 525 });
+  await scrollGrid({ scrollTop: 525 });
   assertRows(38, 11, 48);
 
-  scrollGrid({ scrollTop: 1000 });
+  await scrollGrid({ scrollTop: 1000 });
   assertRows(39, 24, 62);
 
   // scroll height = header height + row height * row count
   // max top = scroll height - grid height
-  scrollGrid({ scrollTop: rowHeight + rowHeight * 100 - 1080 });
+  await scrollGrid({ scrollTop: rowHeight + rowHeight * 100 - 1080 });
   assertRows(34, 66, 99);
 
-  scrollGrid({ scrollLeft: 92 });
+  await scrollGrid({ scrollLeft: 92 });
   assertHeaderCells(18, 0, 17);
   assertCells(66, 18, 0, 17);
 
-  scrollGrid({ scrollLeft: 93 });
+  await scrollGrid({ scrollLeft: 93 });
   assertHeaderCells(19, 0, 18);
   assertCells(66, 19, 0, 18);
 
-  scrollGrid({ scrollLeft: 209 });
+  await scrollGrid({ scrollLeft: 209 });
   assertHeaderCells(19, 0, 18);
   assertCells(66, 19, 0, 18);
 
-  scrollGrid({ scrollLeft: 210 });
+  await scrollGrid({ scrollLeft: 210 });
   assertHeaderCells(18, 1, 18);
   assertCells(66, 18, 1, 18);
 
   // max left = row width - grid width
-  scrollGrid({ scrollLeft: 3600 - 1920 });
+  await scrollGrid({ scrollLeft: 3600 - 1920 });
   assertHeaderCells(17, 13, 29);
   assertCells(66, 17, 13, 29);
 });
 
-test('virtualization is enabled with 4 frozen columns', () => {
+test('virtualization is enabled with 4 frozen columns', async () => {
   setupGrid(true, 30, 30, 4);
 
   let indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 
-  scrollGrid({ scrollLeft: 1000 });
+  await scrollGrid({ scrollLeft: 1000 });
   indexes = [0, 1, 2, 3, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 
   // max left = row width - grid width
-  scrollGrid({ scrollLeft: 3600 - 1920 });
+  await scrollGrid({ scrollLeft: 3600 - 1920 });
   indexes = [0, 1, 2, 3, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 });
 
-test('virtualization is enabled with all columns frozen', () => {
+test('virtualization is enabled with all columns frozen', async () => {
   setupGrid(true, 30, 30, 30);
 
   const indexes = [
@@ -166,17 +166,17 @@ test('virtualization is enabled with all columns frozen', () => {
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 
-  scrollGrid({ scrollLeft: 1000 });
+  await scrollGrid({ scrollLeft: 1000 });
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 
   // max left = row width - grid width
-  scrollGrid({ scrollLeft: 3600 - 1920 });
+  await scrollGrid({ scrollLeft: 3600 - 1920 });
   assertHeaderCellIndexes(indexes);
   assertCellIndexes(0, indexes);
 });
 
-test('virtualization is enabled with 2 summary rows', () => {
+test('virtualization is enabled with 2 summary rows', async () => {
   setupGrid(true, 1, 100, 0, 2);
 
   assertRowIndexes([
@@ -184,7 +184,7 @@ test('virtualization is enabled with 2 summary rows', () => {
     26, 27, 28, 29, 30, 31, 102, 103
   ]);
 
-  scrollGrid({ scrollTop: 1000 });
+  await scrollGrid({ scrollTop: 1000 });
   assertRowIndexes([
     0, 1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
     48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 102, 103
