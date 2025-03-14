@@ -146,7 +146,7 @@ test('Cell should not steal focus when the focus is outside the grid and cell is
   await userEvent.click(getCellsAtRowIndex(0)[0]);
   expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
 
-  const button = page.getByRole('button', { name: 'Test' });
+  const button = page.getByRole('button', { name: 'Test' }).element();
   expect(button).not.toHaveFocus();
   await userEvent.click(button);
   expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
