@@ -63,6 +63,7 @@
     "@microsoft/api-extractor": "^7.50.0",
     "@tanstack/react-router": "^1.114.16",
     "@tanstack/router-plugin": "^1.114.16",
+    "@testing-library/dom": "^10.4.0",
     "@types/node": "^22.13.1",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
