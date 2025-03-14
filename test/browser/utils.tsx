@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
@@ -25,71 +25,30 @@ export function getTreeGrid() {
   return page.getByRole('treegrid');
 }
 
-export function getRowsOld() {
-  return screen.getAllByRole('row').slice(1);
-}
-
 export function getRows() {
-  return page.getByRole('row').all().slice(1);
+  return page.getByRole('row').elements().slice(1);
 }
 
 export function queryRowsOld() {
   return screen.queryAllByRole('row').slice(1);
 }
 
-export function getCellsAtRowIndexOld(rowIdx: number) {
-  return Array.from(
-    document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`)
-  );
-}
-
 export function getCellsAtRowIndex(rowIdx: number) {
-  return page.getByRole('row').all()[rowIdx + 1].getByRole('gridcell').all();
-}
-
-export function getCellsOld() {
-  return screen.getAllByRole('gridcell');
+  return page.getByRole('row').all()[rowIdx + 1].getByRole('gridcell').elements();
 }
 
 export function getCells() {
-  return page.getByRole('gridcell').all();
-}
-
-export function queryCellsOld() {
-  return screen.queryAllByRole('gridcell');
-}
-
-export function getHeaderCellsOld() {
-  return screen.getAllByRole('columnheader');
+  return page.getByRole('gridcell').elements();
 }
 
 export function getHeaderCells() {
-  return page.getByRole('columnheader').all();
-}
-
-export function queryHeaderCellsOld() {
-  return screen.queryAllByRole('columnheader');
-}
-
-export function getSelectedCellOld() {
-  return (
-    screen.queryByRole('gridcell', { selected: true }) ??
-    screen.queryByRole('columnheader', { selected: true })
-  );
-}
-
-export function validateCellPositionOld(columnIdx: number, rowIdx: number) {
-  const cell = getSelectedCellOld();
-  if (cell === null) {
-    throw new Error('Selected cell not found');
-  }
-  expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
-  expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
+  return page.getByRole('columnheader').elements();
 }
 
 export function getSelectedCell() {
   const selectedGridCell = page.getByRole('gridcell', { selected: true });
-  if (selectedGridCell.all().length > 0) {
+  // TODO use `or` when available
+  if (selectedGridCell.elements().length > 0) {
     return selectedGridCell;
   }
 
@@ -102,22 +61,8 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
-export async function copySelectedCellOld() {
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    await userEvent.keyboard('{Control>}c');
-  });
-}
-
 export function copySelectedCell() {
   return userEvent.keyboard('{Control>}c{/Control}');
-}
-
-export async function pasteSelectedCellOld() {
-  // eslint-disable-next-line testing-library/no-unnecessary-act
-  await act(async () => {
-    await userEvent.keyboard('{Control>}v');
-  });
 }
 
 export function pasteSelectedCell() {

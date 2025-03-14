@@ -64,9 +64,9 @@ describe('Events', () => {
       />
     );
     await userEvent.click(getCellsAtRowIndex(0)[0]);
-    await expect.element(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
     await userEvent.click(getCellsAtRowIndex(0)[1]);
-    await expect.element(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
+    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should be able to open editor editor on single click using onCellClick', async () => {
@@ -113,9 +113,9 @@ describe('Events', () => {
       />
     );
     await userEvent.click(getCellsAtRowIndex(0)[0], { button: 'right' });
-    await expect.element(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
+    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
     await userEvent.click(getCellsAtRowIndex(0)[1], { button: 'right' });
-    await expect.element(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
+    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
   });
 
   it('should call onSelectedCellChange when cell selection is changed', async () => {

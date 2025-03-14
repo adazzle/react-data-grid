@@ -1,7 +1,7 @@
 import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
-import { getCellsAtRowIndexOld, getHeaderCells, setup, validateCellPosition } from '../utils';
+import { getCellsAtRowIndex, getHeaderCells, setup, validateCellPosition } from '../utils';
 
 describe('colSpan', () => {
   function setupColSpanGrid(colCount = 15) {
@@ -43,7 +43,7 @@ describe('colSpan', () => {
     expect(getHeaderCells()).toHaveLength(13);
 
     // top summary rows
-    const topSummarryRow1 = getCellsAtRowIndexOld(0);
+    const topSummarryRow1 = getCellsAtRowIndex(0);
     expect(topSummarryRow1).toHaveLength(14);
     // 7th-8th cells are merged
     expect(topSummarryRow1[7]).toHaveAttribute('aria-colindex', '8');
@@ -52,10 +52,10 @@ describe('colSpan', () => {
       'grid-column-start': '8',
       'grid-column-end': '10'
     });
-    expect(getCellsAtRowIndexOld(1)).toHaveLength(15);
+    expect(getCellsAtRowIndex(1)).toHaveLength(15);
 
     // rows
-    const row1 = getCellsAtRowIndexOld(3);
+    const row1 = getCellsAtRowIndex(3);
     expect(row1).toHaveLength(14);
     // 7th-8th cells are merged
     expect(row1[6]).toHaveAttribute('aria-colindex', '7');
@@ -68,7 +68,7 @@ describe('colSpan', () => {
     expect(row1[7]).not.toHaveAttribute('aria-colspan');
 
     // 3rd-5th, 7th-8th cells are merged
-    const row2 = getCellsAtRowIndexOld(4);
+    const row2 = getCellsAtRowIndex(4);
     expect(row2).toHaveLength(12);
     expect(row2[2]).toHaveAttribute('aria-colindex', '3');
     expect(row2[2]).toHaveStyle({
@@ -84,12 +84,12 @@ describe('colSpan', () => {
     });
     expect(row2[5]).toHaveAttribute('aria-colindex', '9');
 
-    expect(getCellsAtRowIndexOld(6)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
-    expect(getCellsAtRowIndexOld(7)).toHaveLength(10);
+    expect(getCellsAtRowIndex(6)).toHaveLength(14); // colSpan 6 won't work as there are 5 frozen columns
+    expect(getCellsAtRowIndex(7)).toHaveLength(10);
 
     // bottom summary row
-    expect(getCellsAtRowIndexOld(12)).toHaveLength(14);
-    expect(getCellsAtRowIndexOld(13)).toHaveLength(15);
+    expect(getCellsAtRowIndex(12)).toHaveLength(14);
+    expect(getCellsAtRowIndex(13)).toHaveLength(15);
   });
 
   it('should navigate between merged cells', async () => {
@@ -107,7 +107,7 @@ describe('colSpan', () => {
     validateCellPosition(7, 0);
 
     // top summary rows
-    await userEvent.click(getCellsAtRowIndexOld(0)[6]);
+    await userEvent.click(getCellsAtRowIndex(0)[6]);
     validateCellPosition(6, 1);
     await userEvent.keyboard('{arrowright}');
     validateCellPosition(7, 1);
@@ -119,7 +119,7 @@ describe('colSpan', () => {
     validateCellPosition(6, 1);
 
     // viewport rows
-    await userEvent.click(getCellsAtRowIndexOld(3)[1]);
+    await userEvent.click(getCellsAtRowIndex(3)[1]);
     validateCellPosition(1, 4);
     await userEvent.keyboard('{arrowright}');
     validateCellPosition(2, 4);
@@ -148,7 +148,7 @@ describe('colSpan', () => {
     validateCellPosition(14, 7);
     await userEvent.tab();
     validateCellPosition(0, 8);
-    await userEvent.click(getCellsAtRowIndexOld(10)[11]);
+    await userEvent.click(getCellsAtRowIndex(10)[11]);
     validateCellPosition(11, 11);
     await userEvent.tab();
     validateCellPosition(12, 11);
@@ -158,7 +158,7 @@ describe('colSpan', () => {
     validateCellPosition(12, 11);
 
     // bottom summary rows
-    await userEvent.click(getCellsAtRowIndexOld(12)[6]);
+    await userEvent.click(getCellsAtRowIndex(12)[6]);
     validateCellPosition(6, 13);
     await userEvent.keyboard('{arrowright}');
     validateCellPosition(7, 13);
@@ -172,7 +172,7 @@ describe('colSpan', () => {
 
   it('should scroll to the merged cell when selected', async () => {
     setupColSpanGrid(30);
-    await userEvent.click(getCellsAtRowIndexOld(10)[23]); // last visible cell (1920/80)
+    await userEvent.click(getCellsAtRowIndex(10)[23]); // last visible cell (1920/80)
     const spy = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     const testScrollIntoView = () => {
       expect(spy).toHaveBeenCalled();

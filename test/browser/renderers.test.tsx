@@ -194,9 +194,9 @@ test('sortPriority defined using both contexts', async () => {
   await userEvent.keyboard('{Control>}');
   await userEvent.click(headerCell3);
 
-  const p = page.getByTestId('global-sort-priority').all();
-  await expect.element(p[0]).toHaveTextContent('1');
-  await expect.element(p[1]).toHaveTextContent('2');
+  const p = page.getByTestId('global-sort-priority').elements();
+  expect(p[0]).toHaveTextContent('1');
+  expect(p[1]).toHaveTextContent('2');
 
   await expect.element(page.getByTestId('local-sort-priority')).not.toBeInTheDocument();
 });
@@ -216,22 +216,22 @@ test('sortPriority defined using both contexts and renderers', async () => {
   await expect.element(page.getByTestId('global-sort-priority')).not.toBeInTheDocument();
 });
 
-test('renderCell defined using context', async () => {
+test('renderCell defined using context', () => {
   setupContext({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
   const [, cell1, cell2] = getCells();
-  await expect.element(cell1).toHaveTextContent('value 1');
-  await expect.element(cell1).toHaveClass('global');
-  await expect.element(cell1).not.toHaveClass('local');
-  await expect.element(cell1).toHaveStyle({ fontStyle: 'italic' });
+  expect(cell1).toHaveTextContent('value 1');
+  expect(cell1).toHaveClass('global');
+  expect(cell1).not.toHaveClass('local');
+  expect(cell1).toHaveStyle({ fontStyle: 'italic' });
 
-  await expect.element(cell2).toHaveTextContent('value 2');
-  await expect.element(cell2).toHaveClass('global');
-  await expect.element(cell2).not.toHaveClass('local');
-  await expect.element(cell2).toHaveStyle({ fontStyle: 'italic' });
+  expect(cell2).toHaveTextContent('value 2');
+  expect(cell2).toHaveClass('global');
+  expect(cell2).not.toHaveClass('local');
+  expect(cell2).toHaveStyle({ fontStyle: 'italic' });
 });
 
-test('renderCell defined using both contexts and renderers', async () => {
+test('renderCell defined using both contexts and renderers', () => {
   setupContext({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
@@ -239,21 +239,21 @@ test('renderCell defined using both contexts and renderers', async () => {
   });
 
   const [, cell1, cell2] = getCells();
-  await expect.element(cell1).toHaveTextContent('value 1');
-  await expect.element(cell1).toHaveClass('local');
-  await expect.element(cell1).not.toHaveClass('global');
-  await expect.element(cell1).toHaveStyle({ fontStyle: 'normal' });
+  expect(cell1).toHaveTextContent('value 1');
+  expect(cell1).toHaveClass('local');
+  expect(cell1).not.toHaveClass('global');
+  expect(cell1).toHaveStyle({ fontStyle: 'normal' });
 
-  await expect.element(cell2).toHaveTextContent('value 2');
-  await expect.element(cell2).toHaveClass('local');
-  await expect.element(cell2).not.toHaveClass('global');
-  await expect.element(cell2).toHaveStyle({ fontStyle: 'normal' });
+  expect(cell2).toHaveTextContent('value 2');
+  expect(cell2).toHaveClass('local');
+  expect(cell2).not.toHaveClass('global');
+  expect(cell2).toHaveStyle({ fontStyle: 'normal' });
 });
 
 test('renderRow defined using context', () => {
   setupContext({ columns, rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }] });
 
-  const row = getRows()[0].element();
+  const row = getRows()[0];
   expect(row).toHaveClass('global');
   expect(row).not.toHaveClass('local');
 });
@@ -265,7 +265,7 @@ test('renderRow defined using both contexts and renderers', () => {
     renderers: { renderRow: renderLocalRow }
   });
 
-  const row = getRows()[0].element();
+  const row = getRows()[0];
   expect(row).toHaveClass('local');
   expect(row).not.toHaveClass('global');
 });

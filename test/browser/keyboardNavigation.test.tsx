@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
 import {
-  getCellsAtRowIndexOld,
+  getCellsAtRowIndex,
   getSelectedCell,
   scrollGrid,
   setup,
@@ -255,13 +255,13 @@ test('navigation when selected cell not in the viewport', async () => {
 
   await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
   validateCellPosition(99, 100);
-  expect(getCellsAtRowIndexOld(100)).not.toHaveLength(1);
+  expect(getCellsAtRowIndex(100)).not.toHaveLength(1);
 
   scrollGrid({ scrollTop: 0 });
-  expect(getCellsAtRowIndexOld(99)).toHaveLength(1);
+  expect(getCellsAtRowIndex(99)).toHaveLength(1);
   await userEvent.keyboard('{arrowup}');
   validateCellPosition(99, 99);
-  expect(getCellsAtRowIndexOld(99)).not.toHaveLength(1);
+  expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
 
   scrollGrid({ scrollLeft: 0 });
   await userEvent.keyboard('{arrowdown}');

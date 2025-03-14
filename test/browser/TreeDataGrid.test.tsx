@@ -9,7 +9,7 @@ import { rowSelected } from '../../src/style/row';
 import type { PasteEvent } from '../../src/types';
 import {
   copySelectedCell,
-  getCellsAtRowIndexOld,
+  getCellsAtRowIndex,
   getHeaderCells,
   getRows,
   getSelectedCell,
@@ -136,7 +136,7 @@ function setup(groupBy: string[]) {
 }
 
 function getHeaderCellsContent() {
-  return getHeaderCells().map((cell) => cell.element().textContent);
+  return getHeaderCells().map((cell) => cell.textContent);
 }
 
 test('should not group if groupBy is empty', async () => {
@@ -330,24 +330,24 @@ test('cell navigation in a treegrid', async () => {
   expect(focusSink).toHaveAttribute('tabIndex', '0');
 
   // select cell
-  await userEvent.click(getCellsAtRowIndexOld(5)[1]);
-  expect(getCellsAtRowIndexOld(5)[1]).toHaveAttribute('aria-selected', 'true');
+  await userEvent.click(getCellsAtRowIndex(5)[1]);
+  expect(getCellsAtRowIndex(5)[1]).toHaveAttribute('aria-selected', 'true');
   expect(focusSink).toHaveAttribute('tabIndex', '-1');
 
   // select the previous cell
   await userEvent.keyboard('{arrowleft}');
-  expect(getCellsAtRowIndexOld(5)[1]).toHaveAttribute('aria-selected', 'false');
-  expect(getCellsAtRowIndexOld(5)[0]).toHaveAttribute('aria-selected', 'true');
+  expect(getCellsAtRowIndex(5)[1]).toHaveAttribute('aria-selected', 'false');
+  expect(getCellsAtRowIndex(5)[0]).toHaveAttribute('aria-selected', 'true');
 
   // if the first cell is selected then arrowleft should select the row
   await userEvent.keyboard('{arrowleft}');
-  expect(getCellsAtRowIndexOld(5)[0]).toHaveAttribute('aria-selected', 'false');
+  expect(getCellsAtRowIndex(5)[0]).toHaveAttribute('aria-selected', 'false');
   await expect.element(getRows()[4]).toHaveClass(rowSelectedClassname);
   expect(focusSink).toHaveFocus();
 
   // if the row is selected then arrowright should select the first cell on the same row
   await userEvent.keyboard('{arrowright}');
-  expect(getCellsAtRowIndexOld(5)[0]).toHaveAttribute('aria-selected', 'true');
+  expect(getCellsAtRowIndex(5)[0]).toHaveAttribute('aria-selected', 'true');
 
   await userEvent.keyboard('{arrowleft}{arrowup}');
 
@@ -402,6 +402,6 @@ test('update row using cell renderer', async () => {
 
 test('custom renderGroupCell', () => {
   setup(['country']);
-  expect(getCellsAtRowIndexOld(1)[4]).toHaveTextContent('1');
-  expect(getCellsAtRowIndexOld(4)[4]).toHaveTextContent('3');
+  expect(getCellsAtRowIndex(1)[4]).toHaveTextContent('1');
+  expect(getCellsAtRowIndex(4)[4]).toHaveTextContent('3');
 });
