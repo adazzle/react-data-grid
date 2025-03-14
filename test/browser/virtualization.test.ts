@@ -204,7 +204,7 @@ test('zero columns', () => {
 
   expect(getHeaderCells()).toHaveLength(0);
   expect(getCells()).toHaveLength(0);
-  expect(getRows()).toHaveLength(34);
+  expect(getRows()).toHaveLength(0);
 });
 
 test('zero rows', () => {

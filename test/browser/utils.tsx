@@ -1,4 +1,3 @@
-import { screen } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
@@ -29,12 +28,10 @@ export function getRows() {
   return page.getByRole('row').elements().slice(1);
 }
 
-export function queryRowsOld() {
-  return screen.queryAllByRole('row').slice(1);
-}
-
 export function getCellsAtRowIndex(rowIdx: number) {
-  return page.getByRole('row').all()[rowIdx + 1].getByRole('gridcell').elements();
+  return Array.from(
+    document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`)
+  );
 }
 
 export function getCells() {
