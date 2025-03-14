@@ -146,6 +146,7 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
   tabIndex: number;
+  onColumnResize: (newWidth: number | "max-content") => void
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>

@@ -296,7 +296,8 @@ export default function HeaderCell<R, SR>({
         column,
         sortDirection,
         priority,
-        tabIndex: childTabIndex
+        tabIndex: childTabIndex,
+        onColumnResize: (newWidth: number | "max-content") => onColumnResize(column, newWidth),
       })}
 
       {resizable && (
