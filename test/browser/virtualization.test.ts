@@ -1,13 +1,5 @@
 import type { Column } from '../../src';
-import {
-  getCells,
-  getCellsAtRowIndex,
-  getHeaderCells,
-  getRows,
-  queryRowsOld,
-  scrollGrid,
-  setup
-} from './utils';
+import { getCells, getCellsAtRowIndex, getHeaderCells, getRows, scrollGrid, setup } from './utils';
 
 const rowHeight = 35;
 
@@ -212,7 +204,7 @@ test('zero rows', () => {
 
   expect(getHeaderCells()).toHaveLength(18);
   expect(getCells()).toHaveLength(0);
-  expect(queryRowsOld()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
 });
 
 test('virtualization is enable with not enough columns or rows to virtualize', () => {
