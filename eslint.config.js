@@ -577,10 +577,6 @@ export default [
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
-        },
-        {
-          name: '@testing-library/dom',
-          message: 'Import @testing-library/react instead.'
         }
       ],
       '@typescript-eslint/no-shadow': 0,
@@ -706,7 +702,7 @@ export default [
       'testing-library/prefer-explicit-assert': 1,
       'testing-library/prefer-find-by': 1,
       'testing-library/prefer-implicit-assert': 0,
-      'testing-library/prefer-presence-queries': 1,
+      'testing-library/prefer-presence-queries': 0,
       'testing-library/prefer-query-by-disappearance': 1,
       'testing-library/prefer-query-matchers': 0,
       'testing-library/prefer-screen-queries': 0,

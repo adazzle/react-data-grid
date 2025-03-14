@@ -1,4 +1,4 @@
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../src';
 import { getGrid, getSelectedCell, setup } from './utils';

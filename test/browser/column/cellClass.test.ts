@@ -8,7 +8,7 @@ interface Row {
 
 const rows: readonly Row[] = [{ id: 0 }, { id: 1 }];
 
-test('cellClass is undefined', async () => {
+test('cellClass is undefined', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
@@ -17,11 +17,11 @@ test('cellClass is undefined', async () => {
   ];
   setup({ columns, rows });
   const [cell1, cell2] = getCells();
-  await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
-  await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
+  expect(cell1).toHaveClass(cellClassname, { exact: true });
+  expect(cell2).toHaveClass(cellClassname, { exact: true });
 });
 
-test('cellClass is a string', async () => {
+test('cellClass is a string', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
@@ -31,11 +31,11 @@ test('cellClass is a string', async () => {
   ];
   setup({ columns, rows });
   const [cell1, cell2] = getCells();
-  await expect.element(cell1).toHaveClass(`${cellClassname} my-cell`, { exact: true });
-  await expect.element(cell2).toHaveClass(`${cellClassname} my-cell`, { exact: true });
+  expect(cell1).toHaveClass(`${cellClassname} my-cell`, { exact: true });
+  expect(cell2).toHaveClass(`${cellClassname} my-cell`, { exact: true });
 });
 
-test('cellClass returns a string', async () => {
+test('cellClass returns a string', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
@@ -45,11 +45,11 @@ test('cellClass returns a string', async () => {
   ];
   setup({ columns, rows });
   const [cell1, cell2] = getCells();
-  await expect.element(cell1).toHaveClass(`${cellClassname} my-cell-0`, { exact: true });
-  await expect.element(cell2).toHaveClass(`${cellClassname} my-cell-1`, { exact: true });
+  expect(cell1).toHaveClass(`${cellClassname} my-cell-0`, { exact: true });
+  expect(cell2).toHaveClass(`${cellClassname} my-cell-1`, { exact: true });
 });
 
-test('cellClass returns undefined', async () => {
+test('cellClass returns undefined', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
@@ -59,6 +59,6 @@ test('cellClass returns undefined', async () => {
   ];
   setup({ columns, rows });
   const [cell1, cell2] = getCells();
-  await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
-  await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
+  expect(cell1).toHaveClass(cellClassname, { exact: true });
+  expect(cell2).toHaveClass(cellClassname, { exact: true });
 });

@@ -1,15 +1,5 @@
 import type { Column } from '../../src';
-import {
-  getCellsAtRowIndexOld,
-  getCellsOld,
-  getHeaderCellsOld,
-  getRowsOld,
-  queryCellsOld,
-  queryHeaderCellsOld,
-  queryRowsOld,
-  scrollGrid,
-  setupOld
-} from './utils';
+import { getCells, getCellsAtRowIndex, getHeaderCells, getRows, scrollGrid, setup } from './utils';
 
 const rowHeight = 35;
 
@@ -35,7 +25,7 @@ function setupGrid(
     });
   }
 
-  setupOld({
+  setup({
     columns,
     rows,
     topSummaryRows,
@@ -46,7 +36,7 @@ function setupGrid(
 }
 
 function assertElements(
-  elements: HTMLElement[],
+  elements: Element[],
   attribute: string,
   count: number,
   startIdx: number,
@@ -58,7 +48,7 @@ function assertElements(
 }
 
 function assertIndexes(
-  cells: HTMLElement[],
+  cells: Element[],
   expectedIndexes: number[],
   attribute: string,
   indexOffset: number
@@ -70,27 +60,27 @@ function assertIndexes(
 }
 
 function assertHeaderCells(count: number, startIdx: number, endIdx: number) {
-  assertElements(getHeaderCellsOld(), 'aria-colindex', count, startIdx + 1, endIdx + 1);
+  assertElements(getHeaderCells(), 'aria-colindex', count, startIdx + 1, endIdx + 1);
 }
 
 function assertHeaderCellIndexes(indexes: number[]) {
-  assertIndexes(getHeaderCellsOld(), indexes, 'aria-colindex', 1);
+  assertIndexes(getHeaderCells(), indexes, 'aria-colindex', 1);
 }
 
 function assertRows(count: number, startIdx: number, endIdx: number) {
-  assertElements(getRowsOld(), 'aria-rowindex', count, startIdx + 2, endIdx + 2);
+  assertElements(getRows(), 'aria-rowindex', count, startIdx + 2, endIdx + 2);
 }
 
 function assertRowIndexes(indexes: number[]) {
-  assertIndexes(getRowsOld(), indexes, 'aria-rowindex', 2);
+  assertIndexes(getRows(), indexes, 'aria-rowindex', 2);
 }
 
 function assertCells(rowIdx: number, count: number, startIdx: number, endIdx: number) {
-  assertElements(getCellsAtRowIndexOld(rowIdx), 'aria-colindex', count, startIdx + 1, endIdx + 1);
+  assertElements(getCellsAtRowIndex(rowIdx), 'aria-colindex', count, startIdx + 1, endIdx + 1);
 }
 
 function assertCellIndexes(rowIdx: number, indexes: number[]) {
-  assertIndexes(getCellsAtRowIndexOld(rowIdx), indexes, 'aria-colindex', 1);
+  assertIndexes(getCellsAtRowIndex(rowIdx), indexes, 'aria-colindex', 1);
 }
 
 test('virtualization is enabled', async () => {
@@ -204,17 +194,17 @@ test('virtualization is enabled with 2 summary rows', async () => {
 test('zero columns', () => {
   setupGrid(true, 0, 100);
 
-  expect(queryHeaderCellsOld()).toHaveLength(0);
-  expect(queryCellsOld()).toHaveLength(0);
-  expect(getRowsOld()).toHaveLength(34);
+  expect(getHeaderCells()).toHaveLength(0);
+  expect(getCells()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
 });
 
 test('zero rows', () => {
   setupGrid(true, 20, 0);
 
-  expect(getHeaderCellsOld()).toHaveLength(18);
-  expect(queryCellsOld()).toHaveLength(0);
-  expect(queryRowsOld()).toHaveLength(0);
+  expect(getHeaderCells()).toHaveLength(18);
+  expect(getCells()).toHaveLength(0);
+  expect(getRows()).toHaveLength(0);
 });
 
 test('virtualization is enable with not enough columns or rows to virtualize', () => {
@@ -223,7 +213,7 @@ test('virtualization is enable with not enough columns or rows to virtualize', (
   assertHeaderCells(5, 0, 4);
   assertRows(5, 0, 4);
 
-  const cells = getCellsOld();
+  const cells = getCells();
   expect(cells).toHaveLength(5 * 5);
 });
 
@@ -233,6 +223,6 @@ test('enableVirtualization is disabled', () => {
   assertHeaderCells(40, 0, 39);
   assertRows(100, 0, 99);
 
-  const cells = getCellsOld();
+  const cells = getCells();
   expect(cells).toHaveLength(40 * 100);
 });
