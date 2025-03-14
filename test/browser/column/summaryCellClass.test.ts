@@ -55,7 +55,7 @@ test('summaryCellClass returns a string', () => {
   expect(cell4).toHaveClass(`${cellClassname} my-cell-3`, { exact: true });
 });
 
-test('summaryCellClass returns undefined', async () => {
+test('summaryCellClass returns undefined', () => {
   const columns: readonly Column<never, SummaryRow>[] = [
     {
       key: 'id',
