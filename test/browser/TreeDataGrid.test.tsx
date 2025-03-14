@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { within } from '@testing-library/react';
 import { page, userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../src';
@@ -254,7 +253,7 @@ test('should select rows in a group', async () => {
 
   // select parent row
   await userEvent.click(
-    within(groupCell1.parentElement!).getByRole('checkbox', { name: 'Select Group' })
+    page.elementLocator(groupCell1.parentElement!).getByRole('checkbox', { name: 'Select Group' })
   );
   let selectedRows = page.getByRole('row', { selected: true }).all();
   expect(selectedRows).toHaveLength(4);
@@ -270,7 +269,7 @@ test('should select rows in a group', async () => {
   await expect.element(selectedRows[0]).toHaveAttribute('aria-rowindex', '7');
 
   // select child group
-  const checkbox = within(groupCell2.parentElement!).getByRole('checkbox', {
+  const checkbox = page.elementLocator(groupCell2.parentElement!).getByRole('checkbox', {
     name: 'Select Group'
   });
   await userEvent.click(checkbox);

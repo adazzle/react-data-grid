@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { page } from '@vitest/browser/context';
 
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
@@ -287,7 +287,7 @@ test('reset selected cell when column is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(<Test columns={columns} />);
+  const { rerender } = page.render(<Test columns={columns} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowright}');
@@ -309,7 +309,7 @@ test('reset selected cell when row is removed', async () => {
     return <DataGrid columns={columns} rows={rows} />;
   }
 
-  const { rerender } = render(<Test rows={rows} />);
+  const { rerender } = page.render(<Test rows={rows} />);
 
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
