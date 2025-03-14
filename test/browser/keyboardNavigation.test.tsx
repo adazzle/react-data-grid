@@ -1,5 +1,4 @@
-import userEvent from '@testing-library/user-event';
-import { page } from '@vitest/browser/context';
+import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
