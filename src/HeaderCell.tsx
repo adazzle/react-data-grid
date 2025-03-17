@@ -8,6 +8,7 @@ import {
   getCellStyle,
   getHeaderCellRowSpan,
   getHeaderCellStyle,
+  isInteractingWithInput,
   stopPropagation
 } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
@@ -194,7 +195,11 @@ export default function HeaderCell<R, SR>({
     selectCell({ idx: column.idx, rowIdx });
 
     if (sortable) {
-      onSort(event.ctrlKey || event.metaKey);
+      // prevent sorting when interacting with input elements
+      const shouldAvoidSorting = isInteractingWithInput(event);
+      if (!shouldAvoidSorting) {
+        onSort(event.ctrlKey || event.metaKey);
+      }
     }
   }
 
@@ -210,7 +215,13 @@ export default function HeaderCell<R, SR>({
     if (event.key === ' ' || event.key === 'Enter') {
       // prevent scrolling
       event.preventDefault();
-      onSort(event.ctrlKey || event.metaKey);
+
+      // prevents sorting when interacting with input elements
+      const shouldAvoidSorting = isInteractingWithInput(event);
+
+      if (!shouldAvoidSorting) {
+        onSort(event.ctrlKey || event.metaKey);
+      }
     }
   }
 
