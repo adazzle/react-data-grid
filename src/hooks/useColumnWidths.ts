@@ -20,12 +20,12 @@ export function useColumnWidths<R, SR>(
   const [resizedColumnsToMeasure, setResizedColumnsToMeasure] = useState<
     Map<string, ColumnResizeWidth>
   >(() => new Map());
-  const prevGridWidthRef = useRef(gridWidth);
+  const [prevGridWidth, setPrevGridWidth] = useState(gridWidth);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
   // Allow columns to flex again when...
   const ignorePreviouslyMeasuredColumns: boolean =
     // there is enough space for columns to flex and the grid was resized
-    columnsCanFlex && gridWidth !== prevGridWidthRef.current;
+    columnsCanFlex && gridWidth !== prevGridWidth;
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure = new Set<string>();
 
@@ -59,12 +59,15 @@ export function useColumnWidths<R, SR>(
   const gridTemplateColumns = newTemplateColumns.join(' ');
 
   useLayoutEffect(() => {
-    prevGridWidthRef.current = gridWidth;
+    setPrevGridWidth(gridWidth);
 
     if (resizedColumnsToMeasure.size > 0) {
       for (const [resizingKey] of resizedColumnsToMeasure) {
         const measuredWidth = measureColumnWidth(gridRef, resizingKey)!;
         setResizedColumnWidths((resizedColumnWidths) => {
+          if (resizedColumnWidths.get(resizingKey) === measuredWidth) {
+            return resizedColumnWidths;
+          }
           const newResizedColumnWidths = new Map(resizedColumnWidths);
           newResizedColumnWidths.set(resizingKey, measuredWidth);
           return newResizedColumnWidths;
@@ -77,12 +80,12 @@ export function useColumnWidths<R, SR>(
     }
 
     if (columnsToMeasure.size > 0) {
-      updateMeasuredWidths([...columnsToMeasure]);
+      updateMeasuredWidths(columnsToMeasure);
     }
   });
 
-  function updateMeasuredWidths(columnsToMeasure: readonly string[]) {
-    if (columnsToMeasure.length === 0) return;
+  function updateMeasuredWidths(columnsToMeasure: Set<string>) {
+    if (columnsToMeasure.size === 0) return;
 
     setMeasuredColumnWidths((measuredColumnWidths) => {
       const newMeasuredColumnWidths = new Map(measuredColumnWidths);
