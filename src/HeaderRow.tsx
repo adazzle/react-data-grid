@@ -58,8 +58,6 @@ function HeaderRow<R, SR, K extends React.Key>({
   shouldFocusGrid,
   direction
 }: HeaderRowProps<R, SR, K>) {
-  // eslint-disable-next-line react-compiler/react-compiler
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const dragDropKey = useId();
 
   const cells = [];

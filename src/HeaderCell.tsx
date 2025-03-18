@@ -12,7 +12,6 @@ import {
 } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import defaultRenderHeaderCell from './renderHeaderCell';
 
 const cellSortableClassname = css`
   @layer rdg.HeaderCell {
@@ -107,8 +106,6 @@ export default function HeaderCell<R, SR>({
     [cellDraggingClassname]: isDragging,
     [cellOverClassname]: isOver
   });
-
-  const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -295,7 +292,7 @@ export default function HeaderCell<R, SR>({
       onKeyDown={sortable ? onKeyDown : undefined}
       {...draggableProps}
     >
-      {renderHeaderCell({
+      {column.renderHeaderCell({
         column,
         sortDirection,
         priority,
