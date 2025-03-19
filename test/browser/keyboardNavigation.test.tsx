@@ -71,7 +71,7 @@ test('keyboard navigation', async () => {
   validateCellPosition(6, 26);
   await userEvent.keyboard('{home}');
   validateCellPosition(0, 26);
-  await userEvent.keyboard('{Control>}{end}');
+  await userEvent.keyboard('{Control>}{end}{/Control}');
   validateCellPosition(6, 103);
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(6, 103);
@@ -79,15 +79,15 @@ test('keyboard navigation', async () => {
   validateCellPosition(6, 103);
   await userEvent.keyboard('{end}');
   validateCellPosition(6, 103);
-  await userEvent.keyboard('{Control>}{end}');
+  await userEvent.keyboard('{Control>}{end}{/Control}');
   validateCellPosition(6, 103);
   await userEvent.keyboard('{PageDown}');
   validateCellPosition(6, 103);
-  await userEvent.keyboard('{Control>}{home}');
+  await userEvent.keyboard('{Control>}{home}{/Control}');
   validateCellPosition(0, 0);
   await userEvent.keyboard('{home}');
   validateCellPosition(0, 0);
-  await userEvent.keyboard('{Control>}{home}');
+  await userEvent.keyboard('{Control>}{home}{/Control}');
   validateCellPosition(0, 0);
   await userEvent.keyboard('{PageUp}');
   validateCellPosition(0, 0);
@@ -161,7 +161,7 @@ test('grid enter/exit', async () => {
   validateCellPosition(0, 2);
 
   // tab tabs out of the grid if we are at the last cell
-  await userEvent.keyboard('{Control>}{end}');
+  await userEvent.keyboard('{Control>}{end}{/Control}');
   await userEvent.tab();
   expect(document.body).toHaveFocus();
 });
@@ -228,7 +228,7 @@ test('navigation when header and summary rows have focusable elements', async ()
 
   await userEvent.tab();
   await userEvent.tab();
-  await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
+  await userEvent.keyboard('{Control>}{end}{/Control}{arrowup}{arrowup}');
   validateCellPosition(1, 2);
 
   await userEvent.tab();
@@ -252,7 +252,7 @@ test('navigation when selected cell not in the viewport', async () => {
   await userEvent.tab();
   validateCellPosition(0, 0);
 
-  await userEvent.keyboard('{Control>}{end}{arrowup}{arrowup}');
+  await userEvent.keyboard('{Control>}{end}{/Control}{arrowup}{arrowup}');
   validateCellPosition(99, 100);
   expect(getCellsAtRowIndex(100)).not.toHaveLength(1);
 
