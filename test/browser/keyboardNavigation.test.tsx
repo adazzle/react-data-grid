@@ -128,18 +128,29 @@ test('arrow and tab navigation', async () => {
 });
 
 test('grid enter/exit', async () => {
-  setup({ columns, rows: new Array(5), bottomSummaryRows });
+  page.render(
+    <>
+      <button type="button">Before</button>
+      <DataGrid columns={columns} rows={new Array(5)} bottomSummaryRows={bottomSummaryRows} />
+      <br />
+      <button type="button">After</button>
+    </>
+  );
+
+  const beforeButton = page.getByRole('button', { name: 'Before' });
+  const afterButton = page.getByRole('button', { name: 'After' });
 
   // no initial selection
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
 
   // tab into the grid
+  await userEvent.click(beforeButton);
   await userEvent.tab();
   validateCellPosition(0, 0);
 
   // shift+tab tabs out of the grid if we are at the first cell
   await userEvent.tab({ shift: true });
-  expect(document.body).toHaveFocus();
+  await expect.element(beforeButton).toHaveFocus();
 
   await userEvent.tab();
   validateCellPosition(0, 0);
@@ -149,25 +160,21 @@ test('grid enter/exit', async () => {
 
   // tab should select the last selected cell
   // click outside the grid
-  await userEvent.click(document.body);
+  await userEvent.click(beforeButton);
   await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 3);
 
   // shift+tab should select the last selected cell
-  await userEvent.click(document.body);
-  // TODO: why do we need to tab three times?
+  await userEvent.click(afterButton);
   await userEvent.tab({ shift: true });
-  await userEvent.tab({ shift: true });
-  await userEvent.tab({ shift: true });
-  expect(document.body).not.toHaveFocus();
   await userEvent.keyboard('{arrowup}');
   validateCellPosition(0, 2);
 
   // tab tabs out of the grid if we are at the last cell
   await userEvent.keyboard('{Control>}{end}{/Control}');
   await userEvent.tab();
-  expect(document.body).toHaveFocus();
+  await expect.element(afterButton).toHaveFocus();
 });
 
 test('navigation with focusable cell renderer', async () => {
