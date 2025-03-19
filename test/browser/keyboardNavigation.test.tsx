@@ -168,8 +168,8 @@ test('grid enter/exit', async () => {
   // shift+tab should select the last selected cell
   await userEvent.click(afterButton);
   await userEvent.tab({ shift: true });
-  await userEvent.keyboard('{arrowup}');
-  validateCellPosition(0, 2);
+  validateCellPosition(0, 3);
+  await expect.element(getSelectedCell().getByRole('checkbox')).toHaveFocus();
 
   // tab tabs out of the grid if we are at the last cell
   await userEvent.keyboard('{Control>}{end}{/Control}');
