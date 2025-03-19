@@ -8,6 +8,7 @@ interface ViewportRowsArgs<R> {
   clientHeight: number;
   scrollTop: number;
   enableVirtualization: boolean;
+  minimumRowsToRender: number;
 }
 
 export function useViewportRows<R>({
@@ -15,7 +16,8 @@ export function useViewportRows<R>({
   rowHeight,
   clientHeight,
   scrollTop,
-  enableVirtualization
+  enableVirtualization,
+  minimumRowsToRender
 }: ViewportRowsArgs<R>) {
   const { totalRowHeight, gridTemplateRows, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
     if (typeof rowHeight === 'number') {
@@ -81,6 +83,18 @@ export function useViewportRows<R>({
     const rowVisibleEndIdx = findRowIdx(scrollTop + clientHeight);
     rowOverscanStartIdx = max(0, rowVisibleStartIdx - overscanThreshold);
     rowOverscanEndIdx = min(rows.length - 1, rowVisibleEndIdx + overscanThreshold);
+
+    const extraRows = max(0, minimumRowsToRender - (rowOverscanEndIdx - rowOverscanStartIdx + 1));
+
+    if (extraRows > 0) {
+      const extraOnSide = floor(extraRows / 2);
+      const startRowsShift = rowOverscanStartIdx - extraOnSide;
+      rowOverscanStartIdx = max(0, startRowsShift);
+      rowOverscanEndIdx = min(
+        rows.length - 1,
+        rowOverscanEndIdx + extraOnSide - min(0, startRowsShift)
+      );
+    }
   }
 
   return {
