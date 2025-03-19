@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -85,6 +85,7 @@ export default function HeaderCell<R, SR>({
   direction,
   dragDropKey
 }: HeaderCellProps<R, SR>) {
+  const hasDoubleClickedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
@@ -119,6 +120,7 @@ export default function HeaderCell<R, SR>({
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
+    hasDoubleClickedRef.current = false;
 
     function onPointerMove(event: PointerEvent) {
       const { width, right, left } = headerCell.getBoundingClientRect();
@@ -131,7 +133,9 @@ export default function HeaderCell<R, SR>({
 
     function onLostPointerCapture(event: PointerEvent) {
       // Handle final pointer position that may have been skipped by coalesced pointer move events.
-      onPointerMove(event);
+      if (!hasDoubleClickedRef.current) {
+        onPointerMove(event);
+      }
 
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
@@ -143,6 +147,7 @@ export default function HeaderCell<R, SR>({
   }
 
   function onDoubleClick() {
+    hasDoubleClickedRef.current = true;
     onColumnResize(column, 'max-content');
   }
 
