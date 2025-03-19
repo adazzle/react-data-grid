@@ -133,6 +133,7 @@ export default function HeaderCell<R, SR>({
 
     function onLostPointerCapture(event: PointerEvent) {
       // Handle final pointer position that may have been skipped by coalesced pointer move events.
+      // Skip move pointer handling if the user double-clicked.
       if (!hasDoubleClickedRef.current) {
         onPointerMove(event);
       }
