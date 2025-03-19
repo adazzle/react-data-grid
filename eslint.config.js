@@ -1,4 +1,3 @@
-import { fixupPluginRules } from '@eslint/compat';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
@@ -31,7 +30,7 @@ export default [
     plugins: {
       react,
       'react-compiler': reactCompiler,
-      'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks': reactHooks,
       'react-hooks-extra': reactHooksExtra,
       sonarjs,
       '@typescript-eslint': typescriptEslint
