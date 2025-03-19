@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 import type { CalculatedColumn, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
