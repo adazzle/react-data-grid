@@ -1,4 +1,4 @@
-import { commands, page } from '@vitest/browser/context';
+import { commands, userEvent } from '@vitest/browser/context';
 
 import type { Column } from '../../../src';
 import { resizeHandleClassname } from '../../../src/HeaderCell';
@@ -36,9 +36,9 @@ async function resize({ column, resizeBy }: ResizeArgs) {
 }
 
 async function autoResize(column: Element) {
-  const resizeHandle = page.elementLocator(getResizeHandle(column));
+  const resizeHandle = getResizeHandle(column);
 
-  await resizeHandle.dblClick();
+  await userEvent.dblClick(resizeHandle);
 }
 
 const columns: readonly Column<Row>[] = [
