@@ -10,9 +10,7 @@ export default defineConfig({
     dir: 'lib',
     entryFileNames: 'bundle.js',
     cssEntryFileNames: 'styles.css',
-    // TODO: re-enable
-    // https://github.com/rolldown/rolldown/issues/3242#issuecomment-2721489935
-    sourcemap: false
+    sourcemap: true
   },
   platform: 'browser',
   external: (id) => !id.startsWith('.') && !isAbsolute(id),
