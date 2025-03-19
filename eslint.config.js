@@ -1,6 +1,7 @@
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
 import reactCompiler from 'eslint-plugin-react-compiler';
@@ -10,12 +11,8 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 import markdown from '@eslint/markdown';
 
-export default [
-  {
-    // https://eslint.org/docs/latest/use/configure/ignore#ignoring-files
-    ignores: ['.cache', 'coverage', 'dist', 'lib']
-    // /!\ No other properties should be added to this configuration object.
-  },
+export default defineConfig([
+  globalIgnores(['.cache', 'coverage', 'dist', 'lib']),
 
   {
     linterOptions: {
@@ -746,4 +743,4 @@ export default [
       'markdown/no-missing-label-refs': 1
     }
   }
-];
+]);
