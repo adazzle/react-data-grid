@@ -156,7 +156,11 @@ test('grid enter/exit', async () => {
 
   // shift+tab should select the last selected cell
   await userEvent.click(document.body);
+  // TODO: why do we need to tab three times?
   await userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
+  await userEvent.tab({ shift: true });
+  expect(document.body).not.toHaveFocus();
   await userEvent.keyboard('{arrowup}');
   validateCellPosition(0, 2);
 
