@@ -15,7 +15,7 @@ export function useColumnWidths<R, SR>(
   setMeasuredColumnWidths: StateSetter<ReadonlyMap<string, number>>,
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
-  const [columnToAutoresize, setColumnToAutoResize] = useState<string | null>(null);
+  const [columnToAutoResize, setColumnToAutoResize] = useState<string | null>(null);
   const prevGridWidthRef = useRef(gridWidth);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
   // Allow columns to flex again when...
@@ -26,7 +26,7 @@ export function useColumnWidths<R, SR>(
   const columnsToMeasure: string[] = [];
 
   for (const { key, idx, width } of viewportColumns) {
-    if (key === columnToAutoresize) {
+    if (key === columnToAutoResize) {
       newTemplateColumns[idx] = 'max-content';
       columnsToMeasure.push(key);
     } else if (
@@ -47,34 +47,37 @@ export function useColumnWidths<R, SR>(
   });
 
   function updateMeasuredWidths(columnsToMeasure: readonly string[]) {
-    if (columnsToMeasure.length === 0) return;
+    if (columnsToMeasure.length > 0) {
+      setMeasuredColumnWidths((measuredColumnWidths) => {
+        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+        let hasChanges = false;
 
-    setMeasuredColumnWidths((measuredColumnWidths) => {
-      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-      let hasChanges = false;
-
-      for (const key of columnsToMeasure) {
-        const measuredWidth = measureColumnWidth(gridRef, key);
-        hasChanges ||= measuredWidth !== measuredColumnWidths.get(key);
-        if (measuredWidth === undefined) {
-          newMeasuredColumnWidths.delete(key);
-        } else {
-          newMeasuredColumnWidths.set(key, measuredWidth);
+        for (const key of columnsToMeasure) {
+          const measuredWidth = measureColumnWidth(gridRef, key);
+          hasChanges ||= measuredWidth !== measuredColumnWidths.get(key);
+          if (measuredWidth === undefined) {
+            newMeasuredColumnWidths.delete(key);
+          } else {
+            newMeasuredColumnWidths.set(key, measuredWidth);
+          }
         }
-      }
 
-      return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
-    });
+        return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
+      });
+    }
 
-    if (columnToAutoresize !== null) {
+    if (columnToAutoResize !== null) {
       setColumnToAutoResize(null);
       setResizedColumnWidths((resizedColumnWidths) => {
-        const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.set(
-          columnToAutoresize,
-          measureColumnWidth(gridRef, columnToAutoresize)!
-        );
-        return newResizedColumnWidths;
+        const oldWidth = resizedColumnWidths.get(columnToAutoResize);
+        const newWidth = measureColumnWidth(gridRef, columnToAutoResize);
+        if (newWidth !== undefined && oldWidth !== newWidth) {
+          const newResizedColumnWidths = new Map(resizedColumnWidths);
+          newResizedColumnWidths.set(columnToAutoResize, newWidth);
+          onColumnResize?.(viewportColumns.find((c) => c.key === columnToAutoResize)!, newWidth);
+          return newResizedColumnWidths;
+        }
+        return resizedColumnWidths;
       });
     }
   }
@@ -94,13 +97,15 @@ export function useColumnWidths<R, SR>(
       }
     }
 
-    setMeasuredColumnWidths((measuredColumnWidths) => {
-      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-      for (const columnKey of columnsToMeasure) {
-        newMeasuredColumnWidths.delete(columnKey);
-      }
-      return newMeasuredColumnWidths;
-    });
+    if (columnsToMeasure.length > 0) {
+      setMeasuredColumnWidths((measuredColumnWidths) => {
+        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+        for (const columnKey of columnsToMeasure) {
+          newMeasuredColumnWidths.delete(columnKey);
+        }
+        return newMeasuredColumnWidths;
+      });
+    }
 
     if (typeof nextWidth === 'number') {
       setResizedColumnWidths((resizedColumnWidths) => {
