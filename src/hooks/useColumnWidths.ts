@@ -89,8 +89,8 @@ export function useColumnWidths<R, SR>(
     // remeasure all columns that can flex and are not resized by the user
     for (const { key, width } of viewportColumns) {
       if (
-        resizingKey !== key &&
         columnsCanFlex &&
+        resizingKey !== key &&
         typeof width === 'string' &&
         !resizedColumnWidths.has(key)
       ) {
