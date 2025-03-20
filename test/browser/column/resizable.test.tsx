@@ -187,4 +187,6 @@ test('should remeasure flex columns when resizing a column', async () => {
   const [col1] = getHeaderCells();
   await autoResize(col1);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  await autoResize(col1);
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
 });
