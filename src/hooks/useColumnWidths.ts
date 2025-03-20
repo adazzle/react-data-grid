@@ -43,10 +43,10 @@ export function useColumnWidths<R, SR>(
 
   useLayoutEffect(() => {
     prevGridWidthRef.current = gridWidth;
-    updateMeasuredWidths(columnsToMeasure);
+    updateMeasuredWidths();
   });
 
-  function updateMeasuredWidths(columnsToMeasure: readonly string[]) {
+  function updateMeasuredWidths() {
     if (columnsToMeasure.length > 0) {
       setMeasuredColumnWidths((measuredColumnWidths) => {
         const newMeasuredColumnWidths = new Map(measuredColumnWidths);
