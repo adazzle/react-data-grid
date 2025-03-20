@@ -86,6 +86,7 @@ export function useColumnWidths<R, SR>(
     const { key: resizingKey } = column;
     const columnsToMeasure: string[] = [];
 
+    // remeasure all columns that can flex and are not resized by the user
     for (const { key, width } of viewportColumns) {
       if (
         resizingKey !== key &&

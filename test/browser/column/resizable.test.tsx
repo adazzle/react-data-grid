@@ -94,6 +94,7 @@ test('should use the minWidth if specified', async () => {
 });
 
 test('should auto resize column when resize handle is double clicked', async () => {
+  const onColumnResize = vi.fn();
   setup<Row, unknown>({
     columns,
     rows: [
@@ -101,13 +102,15 @@ test('should auto resize column when resize handle is double clicked', async () 
         col1: 1,
         col2: 'a'.repeat(50)
       }
-    ]
+    ],
+    onColumnResize
   });
   const [, col2] = getHeaderCells();
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await autoResize(col2);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 327.703px' });
+  expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(col2), 327.703);
 });
 
 test('should use the maxWidth if specified on auto resize', async () => {
