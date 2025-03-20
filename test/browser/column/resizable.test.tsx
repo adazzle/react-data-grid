@@ -149,6 +149,7 @@ test('should use the minWidth if specified on auto resize', async () => {
 });
 
 test('should remeasure flex columns when resizing a column', async () => {
+  const onColumnResize = vi.fn();
   setup<
     {
       readonly col1: string;
@@ -180,13 +181,18 @@ test('should remeasure flex columns when resizing a column', async () => {
         col2: 'a'.repeat(10),
         col3: 'a'.repeat(10)
       }
-    ]
+    ],
+    onColumnResize
   });
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '639.328px 639.328px 639.344px' });
   const [col1] = getHeaderCells();
   await autoResize(col1);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  expect(onColumnResize).toHaveBeenCalled();
+  onColumnResize.mockClear();
+  // if the width is the same, don't call onColumnResize
   await autoResize(col1);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  expect(onColumnResize).not.toHaveBeenCalled();
 });
