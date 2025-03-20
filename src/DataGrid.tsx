@@ -314,7 +314,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
-  const [shouldFocusCell, setShouldFocusCell] = useState(false);
   const [previousRowIdx, setPreviousRowIdx] = useState(-1);
 
   const getColumnWidth = useCallback(
@@ -484,16 +483,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     latestDraggedOverRowIdx.current = rowIdx;
   }, []);
 
-  const focusCellOrCellContent = useCallback(() => {
-    const cell = getCellToScroll(gridRef.current!);
-    if (cell === null) return;
-
-    scrollIntoView(cell);
-    // Focus cell content when available instead of the cell itself
-    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-    elementToFocus.focus({ preventScroll: true });
-  }, [gridRef]);
-
   /**
    * effects
    */
@@ -507,13 +496,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       scrollIntoView(focusSinkRef.current);
     }
   }, [selectedCellIsWithinSelectionBounds, selectedPosition]);
-
-  useLayoutEffect(() => {
-    if (shouldFocusCell) {
-      setShouldFocusCell(false);
-      focusCellOrCellContent();
-    }
-  }, [shouldFocusCell, focusCellOrCellContent]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -767,6 +749,16 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     );
   }
 
+  function focusCellOrCellContent() {
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    scrollIntoView(cell);
+    // Focus cell content when available instead of the cell itself
+    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+    elementToFocus.focus({ preventScroll: true });
+  }
+
   function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
@@ -780,8 +772,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
-      setShouldFocusCell(true);
-      setSelectedPosition({ ...position, mode: 'SELECT' });
+      flushSync(() => {
+        setSelectedPosition({ ...position, mode: 'SELECT' });
+      });
+      focusCellOrCellContent();
     }
 
     if (onSelectedCellChange && !samePosition) {
@@ -929,6 +923,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     );
   }
 
+  function cancelEditMode() {
+    setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+  }
+
   function getCellEditor(rowIdx: number) {
     if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'SELECT') return;
 
@@ -937,8 +935,12 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
 
     const closeEditor = (shouldFocusCell: boolean) => {
-      setShouldFocusCell(shouldFocusCell);
-      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+      if (shouldFocusCell) {
+        flushSync(cancelEditMode);
+        focusCellOrCellContent();
+      } else {
+        cancelEditMode();
+      }
     };
 
     const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
@@ -949,8 +951,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         // SELECT and this results in onRowChange getting called twice.
         flushSync(() => {
           updateRow(column, selectedPosition.rowIdx, row);
-          closeEditor(shouldFocusCell);
+          cancelEditMode();
         });
+        if (shouldFocusCell) {
+          focusCellOrCellContent();
+        }
       } else {
         setSelectedPosition((position) => ({ ...position, row }));
       }
@@ -958,7 +963,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      closeEditor(false);
+      cancelEditMode();
     }
 
     return (
