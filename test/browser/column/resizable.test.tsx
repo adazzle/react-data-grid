@@ -110,7 +110,8 @@ test('should auto resize column when resize handle is double clicked', async () 
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   await autoResize(col2);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 327.703px' });
-  expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(col2), 327.703);
+  // This is called twice in strict mode
+  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 327.703125);
 });
 
 test('should use the maxWidth if specified on auto resize', async () => {
