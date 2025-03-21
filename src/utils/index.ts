@@ -41,9 +41,8 @@ export function getColumnWidthForMeasurement<R, SR>(
     // ignore maxWidth if it less than minWidth
     maxWidth >= minWidth
   ) {
-    // fit-content = min(max-width, max(auto, ${maxWidth}px))
     return width === 'max-content'
-      ? `fit-content(${maxWidth}px)`
+      ? `fit-content(${maxWidth}px)` // fit-content = min(max-content, max(auto, ${maxWidth}px))
       : `minmax(${width}, ${maxWidth}px)`;
   }
 
