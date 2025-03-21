@@ -28,6 +28,8 @@ export function getColumnWidthForMeasurement<R, SR>(
     return `max(${minWidth}px, ${width}px)`;
   }
 
+  const useMinMax = !width.includes('minmax') && !width.includes('fit-content');
+
   if (
     maxWidth != null &&
     // ignore maxWidth if it less than minWidth
@@ -38,9 +40,13 @@ export function getColumnWidthForMeasurement<R, SR>(
       return width;
     }
 
-    if (!width.includes('minmax') && !width.includes('fit-content')) {
+    if (useMinMax) {
       return `minmax(${width}, ${maxWidth}px)`;
     }
+  }
+
+  if (useMinMax) {
+    return `minmax(${minWidth}px, ${width})`;
   }
 
   return width;
