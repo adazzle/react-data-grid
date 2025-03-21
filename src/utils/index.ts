@@ -17,16 +17,36 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
     throw new Error('Please specify the rowKeyGetter prop to use selection');
   }
 }
-
-export function clampColumnWidth<R, SR>(
-  width: number,
+export function getColumnWidthForMeasurement<R, SR>(
+  width: number | string,
   { minWidth, maxWidth }: CalculatedColumn<R, SR>
-): number {
-  width = max(width, minWidth);
+): string {
+  if (typeof width === 'number') {
+    if (maxWidth != null) {
+      return `clamp(${minWidth}px, ${width}px, ${maxWidth}px)`;
+    }
+    return `max(${minWidth}px, ${width}px)`;
+  }
 
-  // ignore maxWidth if it less than minWidth
-  if (typeof maxWidth === 'number' && maxWidth >= minWidth) {
-    return min(width, maxWidth);
+  const useMinMax = !width.includes('minmax') && !width.includes('fit-content');
+
+  if (
+    maxWidth != null &&
+    // ignore maxWidth if it less than minWidth
+    maxWidth >= minWidth
+  ) {
+    // TODO: how to clamp width in CSS grid?
+    if (width === 'max-content') {
+      return width;
+    }
+
+    if (useMinMax) {
+      return `minmax(${width}, ${maxWidth}px)`;
+    }
+  }
+
+  if (useMinMax) {
+    return `minmax(${minWidth}px, ${width})`;
   }
 
   return width;

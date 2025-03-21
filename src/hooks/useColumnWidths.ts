@@ -1,5 +1,6 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
+import { getColumnWidthForMeasurement } from '../utils';
 import type { CalculatedColumn, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
 
@@ -15,38 +16,41 @@ export function useColumnWidths<R, SR>(
   setMeasuredColumnWidths: StateSetter<ReadonlyMap<string, number>>,
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
-  const [columnToAutoResize, setColumnToAutoResize] = useState<string | null>(null);
-  const prevGridWidthRef = useRef(gridWidth);
+  const [columnToAutoResize, setColumnToAutoResize] = useState<{
+    readonly key: string;
+    readonly width: number | 'max-content';
+  } | null>(null);
+  const [prevGridWidth, setPreviousGridWidth] = useState(gridWidth);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
   // Allow columns to flex again when...
   const ignorePreviouslyMeasuredColumns: boolean =
     // there is enough space for columns to flex and the grid was resized
-    columnsCanFlex && gridWidth !== prevGridWidthRef.current;
+    columnsCanFlex && gridWidth !== prevGridWidth;
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
 
-  for (const { key, idx, width } of viewportColumns) {
-    if (key === columnToAutoResize) {
-      newTemplateColumns[idx] = 'max-content';
+  for (const column of viewportColumns) {
+    const { key, idx, width } = column;
+    if (key === columnToAutoResize?.key) {
+      newTemplateColumns[idx] = getColumnWidthForMeasurement(columnToAutoResize.width, column);
       columnsToMeasure.push(key);
     } else if (
-      typeof width === 'string' &&
       (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key)) &&
+      // If the column is resized by the user, we don't want to measure it again
       !resizedColumnWidths.has(key)
     ) {
-      newTemplateColumns[idx] = width;
+      newTemplateColumns[idx] = getColumnWidthForMeasurement(width, column);
       columnsToMeasure.push(key);
     }
   }
 
   const gridTemplateColumns = newTemplateColumns.join(' ');
 
-  useLayoutEffect(() => {
-    prevGridWidthRef.current = gridWidth;
-    updateMeasuredAndResizedWidths();
-  });
+  useLayoutEffect(updateMeasuredAndResizedWidths);
 
   function updateMeasuredAndResizedWidths() {
+    setPreviousGridWidth(gridWidth);
+
     if (columnsToMeasure.length > 0) {
       setMeasuredColumnWidths((measuredColumnWidths) => {
         const newMeasuredColumnWidths = new Map(measuredColumnWidths);
@@ -69,12 +73,13 @@ export function useColumnWidths<R, SR>(
     if (columnToAutoResize !== null) {
       setColumnToAutoResize(null);
       setResizedColumnWidths((resizedColumnWidths) => {
-        const oldWidth = resizedColumnWidths.get(columnToAutoResize);
-        const newWidth = measureColumnWidth(gridRef, columnToAutoResize);
+        const resizingKey = columnToAutoResize.key;
+        const oldWidth = resizedColumnWidths.get(resizingKey);
+        const newWidth = measureColumnWidth(gridRef, resizingKey);
         if (newWidth !== undefined && oldWidth !== newWidth) {
           const newResizedColumnWidths = new Map(resizedColumnWidths);
-          newResizedColumnWidths.set(columnToAutoResize, newWidth);
-          onColumnResize?.(viewportColumns.find((c) => c.key === columnToAutoResize)!, newWidth);
+          newResizedColumnWidths.set(resizingKey, newWidth);
+          onColumnResize?.(viewportColumns.find((c) => c.key === resizingKey)!, newWidth);
           return newResizedColumnWidths;
         }
         return resizedColumnWidths;
@@ -108,16 +113,10 @@ export function useColumnWidths<R, SR>(
       });
     }
 
-    if (typeof nextWidth === 'number') {
-      setResizedColumnWidths((resizedColumnWidths) => {
-        const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.set(resizingKey, nextWidth);
-        return newResizedColumnWidths;
-      });
-      onColumnResize?.(column, nextWidth);
-    } else {
-      setColumnToAutoResize(resizingKey);
-    }
+    setColumnToAutoResize({
+      key: resizingKey,
+      width: nextWidth
+    });
   }
 
   return {

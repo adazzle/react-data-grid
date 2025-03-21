@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
 
 export function useGridDimensions() {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -28,12 +27,9 @@ export function useGridDimensions() {
       const size = entries[0].contentBoxSize[0];
       const { clientHeight, offsetHeight } = gridRef.current!;
 
-      // we use flushSync here to avoid flashing scrollbars
-      flushSync(() => {
-        setInlineSize(size.inlineSize);
-        setBlockSize(size.blockSize);
-        setHorizontalScrollbarHeight(offsetHeight - clientHeight);
-      });
+      setInlineSize(size.inlineSize);
+      setBlockSize(size.blockSize);
+      setHorizontalScrollbarHeight(offsetHeight - clientHeight);
     });
     resizeObserver.observe(gridRef.current!);
 

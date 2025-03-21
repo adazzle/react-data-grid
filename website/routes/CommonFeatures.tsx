@@ -117,6 +117,7 @@ function getColumns(
     {
       key: 'country',
       name: 'Country',
+      maxWidth: 150,
       renderEditCell: (p) => (
         <select
           autoFocus
