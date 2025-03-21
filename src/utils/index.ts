@@ -17,25 +17,17 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
     throw new Error('Please specify the rowKeyGetter prop to use selection');
   }
 }
-
-export function clampColumnWidth<R, SR>(
-  width: number,
-  { minWidth, maxWidth }: CalculatedColumn<R, SR>
-): number {
-  width = max(width, minWidth);
-
-  // ignore maxWidth if it less than minWidth
-  if (typeof maxWidth === 'number' && maxWidth >= minWidth) {
-    return min(width, maxWidth);
-  }
-
-  return width;
-}
-
 export function getColumnWidthForMeasurement<R, SR>(
-  width: string,
+  width: number | string,
   { minWidth, maxWidth }: CalculatedColumn<R, SR>
 ): string {
+  if (typeof width === 'number') {
+    if (maxWidth != null) {
+      return `clamp(${minWidth}px, ${width}px, ${maxWidth}px)`;
+    }
+    return `max(${minWidth}px, ${width}px)`;
+  }
+
   if (
     maxWidth != null &&
     // ignore maxWidth if it less than minWidth

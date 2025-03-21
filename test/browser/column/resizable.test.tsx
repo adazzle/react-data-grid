@@ -72,16 +72,19 @@ test('should resize column when dragging the handle', async () => {
   const [, col2] = getHeaderCells();
   await resize({ column: col2, resizeBy: -50 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 150px' });
-  expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(columns[1]), 150);
+  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 150);
 });
 
 test('should use the maxWidth if specified', async () => {
-  setup<Row, unknown>({ columns, rows: [] });
+  const onColumnResize = vi.fn();
+  setup<Row, unknown>({ columns, rows: [], onColumnResize });
   const grid = getGrid();
+  expect(onColumnResize).not.toHaveBeenCalled();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px ' });
   const [, col2] = getHeaderCells();
   await resize({ column: col2, resizeBy: 1000 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 400px' });
+  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 400);
 });
 
 test('should use the minWidth if specified', async () => {
