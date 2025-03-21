@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 
+import { clampColumnWidth, getColumnWidthForMeasurement } from '../utils';
 import type { CalculatedColumn, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
 
@@ -25,16 +26,18 @@ export function useColumnWidths<R, SR>(
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
 
-  for (const { key, idx, width } of viewportColumns) {
+  for (const column of viewportColumns) {
+    const { key, idx, width } = column;
     if (key === columnToAutoResize) {
-      newTemplateColumns[idx] = 'max-content';
+      newTemplateColumns[idx] = getColumnWidthForMeasurement('max-content', column);
       columnsToMeasure.push(key);
     } else if (
       typeof width === 'string' &&
       (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key)) &&
+      // If the column is resized by the user, we don't want to measure it again
       !resizedColumnWidths.has(key)
     ) {
-      newTemplateColumns[idx] = width;
+      newTemplateColumns[idx] = getColumnWidthForMeasurement(width, column);
       columnsToMeasure.push(key);
     }
   }
@@ -109,12 +112,13 @@ export function useColumnWidths<R, SR>(
     }
 
     if (typeof nextWidth === 'number') {
+      const clampedNextWidth = clampColumnWidth(nextWidth, column);
       setResizedColumnWidths((resizedColumnWidths) => {
         const newResizedColumnWidths = new Map(resizedColumnWidths);
-        newResizedColumnWidths.set(resizingKey, nextWidth);
+        newResizedColumnWidths.set(resizingKey, clampedNextWidth);
         return newResizedColumnWidths;
       });
-      onColumnResize?.(column, nextWidth);
+      onColumnResize?.(column, clampedNextWidth);
     } else {
       setColumnToAutoResize(resizingKey);
     }

@@ -21,12 +21,30 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
 export function clampColumnWidth<R, SR>(
   width: number,
   { minWidth, maxWidth }: CalculatedColumn<R, SR>
-): number {
+) {
   width = max(width, minWidth);
 
   // ignore maxWidth if it less than minWidth
   if (typeof maxWidth === 'number' && maxWidth >= minWidth) {
     return min(width, maxWidth);
+  }
+
+  return width;
+}
+
+export function getColumnWidthForMeasurement<R, SR>(
+  width: string,
+  { minWidth, maxWidth }: CalculatedColumn<R, SR>
+) {
+  if (
+    maxWidth != null &&
+    // ignore maxWidth if it less than minWidth
+    maxWidth >= minWidth
+  ) {
+    // fit-content = min(max-width, max(auto, ${maxWidth}px))
+    return width === 'max-content'
+      ? `fit-content(${maxWidth}px)`
+      : `minmax(${width}, ${maxWidth}px)`;
   }
 
   return width;

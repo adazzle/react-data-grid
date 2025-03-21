@@ -3,7 +3,6 @@ import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
 import {
-  clampColumnWidth,
   getCellClassname,
   getCellStyle,
   getHeaderCellRowSpan,
@@ -124,8 +123,7 @@ export default function HeaderCell<R, SR>({
 
     function onPointerMove(event: PointerEvent) {
       const { width, right, left } = headerCell.getBoundingClientRect();
-      let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
-      newWidth = clampColumnWidth(newWidth, column);
+      const newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
       if (width > 0 && newWidth !== width) {
         onColumnResize(column, newWidth);
       }
