@@ -41,8 +41,9 @@ export function getColumnWidthForMeasurement<R, SR>(
     // ignore maxWidth if it less than minWidth
     maxWidth >= minWidth
   ) {
+    // TODO: how to handle minWidth? can we use `clamp` with grid columns?
     return width === 'max-content'
-      ? `fit-content(${maxWidth}px)` // fit-content = min(max-content, max(auto, ${maxWidth}px))
+      ? `fit-content(${maxWidth}px)` // fit-content = min(max-content, max(auto, maxWidth))
       : `minmax(${width}, ${maxWidth}px)`;
   }
 
