@@ -117,7 +117,6 @@ function getColumns(
     {
       key: 'country',
       name: 'Country',
-      width: 800,
       maxWidth: 150,
       renderEditCell: (p) => (
         <select
