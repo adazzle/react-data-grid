@@ -36,7 +36,6 @@ function createRows(): Row[] {
   for (let i = 1; i < 1000; i++) {
     rows.push({
       id: i,
-      col2: '111111111111111111111111111111111111ssssssssssssssssssssssssssssssssssssssss1',
       product: faker.commerce.productName(),
       price: faker.commerce.price()
     });
@@ -46,20 +45,11 @@ function createRows(): Row[] {
 }
 
 const columns: readonly Column<Row>[] = [
-  {
-    key: 'col1',
-    name: 'col1',
-    width: 100
-  },
-  {
-    key: 'col2',
-    name: 'col2',
-    minWidth: 100,
-    width: 200,
-    maxWidth: 400,
-    resizable: true
-  }
+  { key: 'id', name: 'ID' },
+  { key: 'product', name: 'Product' },
+  { key: 'price', name: 'Price' }
 ];
+
 function rowKeyGetter(row: Row) {
   return row.id;
 }
