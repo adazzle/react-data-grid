@@ -21,7 +21,7 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
 export function clampColumnWidth<R, SR>(
   width: number,
   { minWidth, maxWidth }: CalculatedColumn<R, SR>
-) {
+): number {
   width = max(width, minWidth);
 
   // ignore maxWidth if it less than minWidth
@@ -35,7 +35,7 @@ export function clampColumnWidth<R, SR>(
 export function getColumnWidthForMeasurement<R, SR>(
   width: string,
   { minWidth, maxWidth }: CalculatedColumn<R, SR>
-) {
+): string {
   if (
     maxWidth != null &&
     // ignore maxWidth if it less than minWidth
