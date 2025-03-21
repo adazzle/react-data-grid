@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 import { clampColumnWidth, getColumnWidthForMeasurement } from '../utils';
 import type { CalculatedColumn, StateSetter } from '../types';
@@ -17,12 +17,12 @@ export function useColumnWidths<R, SR>(
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
   const [columnToAutoResize, setColumnToAutoResize] = useState<string | null>(null);
-  const prevGridWidthRef = useRef(gridWidth);
+  const [prevGridWidth, setPreviousGridWidth] = useState(gridWidth);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
   // Allow columns to flex again when...
   const ignorePreviouslyMeasuredColumns: boolean =
     // there is enough space for columns to flex and the grid was resized
-    columnsCanFlex && gridWidth !== prevGridWidthRef.current;
+    columnsCanFlex && gridWidth !== prevGridWidth;
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
 
@@ -44,12 +44,11 @@ export function useColumnWidths<R, SR>(
 
   const gridTemplateColumns = newTemplateColumns.join(' ');
 
-  useLayoutEffect(() => {
-    prevGridWidthRef.current = gridWidth;
-    updateMeasuredAndResizedWidths();
-  });
+  useLayoutEffect(updateMeasuredAndResizedWidths);
 
   function updateMeasuredAndResizedWidths() {
+    setPreviousGridWidth(gridWidth);
+
     if (columnsToMeasure.length > 0) {
       setMeasuredColumnWidths((measuredColumnWidths) => {
         const newMeasuredColumnWidths = new Map(measuredColumnWidths);
