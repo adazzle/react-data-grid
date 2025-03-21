@@ -178,6 +178,7 @@ export function useCalculatedColumns<R, SR>({
       let width = getColumnWidth(column);
 
       if (typeof width === 'number') {
+        // if width is a number then we do not measure it so it needs to be clamped manually
         width = clampColumnWidth(width, column);
       } else {
         // This is a placeholder width so we can continue to use virtualization.
