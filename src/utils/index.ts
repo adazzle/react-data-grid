@@ -20,36 +20,37 @@ export function assertIsValidKeyGetter<R, K extends React.Key>(
 export function getColumnWidthForMeasurement<R, SR>(
   width: number | string,
   { minWidth, maxWidth }: CalculatedColumn<R, SR>
-): string {
-  if (typeof width === 'number') {
-    if (maxWidth != null) {
-      return `clamp(${minWidth}px, ${width}px, ${maxWidth}px)`;
-    }
-    return `max(${minWidth}px, ${width}px)`;
+) {
+  if (width === 'max-content' || width === 'min-content') {
+    // TODO: how to handle minWidth and maxWidth?
+    return width;
   }
 
-  const useMinMax = !width.includes('minmax') && !width.includes('fit-content');
+  const widthWithUnit = typeof width === 'number' ? `${width}px` : width;
+  const hasMaxWidth = maxWidth != null;
+  const clampedWidth = hasMaxWidth
+    ? `clamp(${minWidth}px, ${widthWithUnit}, ${maxWidth}px)`
+    : `max(${minWidth}px, ${widthWithUnit})`;
+
+  // clamp() and max() do not handle all the css grid column width values
+  if (isValidCSSGridColumnWidth(clampedWidth)) {
+    return clampedWidth;
+  }
 
   if (
-    maxWidth != null &&
+    hasMaxWidth &&
     // ignore maxWidth if it less than minWidth
     maxWidth >= minWidth
   ) {
-    // TODO: how to clamp width in CSS grid?
-    if (width === 'max-content') {
-      return width;
-    }
-
-    if (useMinMax) {
-      return `minmax(${width}, ${maxWidth}px)`;
+    // We are setting maxWidth on the measuring cell but the browser only applies
+    // it after all the widths are calculated. This results in left over space in some cases.
+    const minMaxWidth = `minmax(${widthWithUnit}, ${maxWidth}px)`;
+    if (isValidCSSGridColumnWidth(minMaxWidth)) {
+      return minMaxWidth;
     }
   }
 
-  if (useMinMax) {
-    return `minmax(${minWidth}px, ${width})`;
-  }
-
-  return width;
+  return isValidCSSGridColumnWidth(widthWithUnit) ? widthWithUnit : 'auto';
 }
 
 export function getHeaderCellRowSpan<R, SR>(
@@ -57,4 +58,8 @@ export function getHeaderCellRowSpan<R, SR>(
   rowIdx: number
 ) {
   return column.parent === undefined ? rowIdx : column.level - column.parent.level;
+}
+
+function isValidCSSGridColumnWidth(width: string) {
+  return CSS.supports('grid-template-columns', width);
 }
