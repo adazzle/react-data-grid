@@ -27,6 +27,13 @@ export function getColumnWidthForMeasurement<R, SR>(
   }
 
   const widthWithUnit = typeof width === 'number' ? `${width}px` : width;
+
+  // don't break in Node.js (SSR) and jsdom
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (CSS == null) {
+    return widthWithUnit;
+  }
+
   const hasMaxWidth = maxWidth != null;
   const clampedWidth = hasMaxWidth
     ? `clamp(${minWidth}px, ${widthWithUnit}, ${maxWidth}px)`
