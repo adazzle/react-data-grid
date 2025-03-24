@@ -1,4 +1,4 @@
-import { forwardRef, memo, type RefAttributes } from 'react';
+import { memo } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -13,25 +13,22 @@ const cellDraggedOver = css`
 
 const cellDraggedOverClassname = `rdg-cell-dragged-over ${cellDraggedOver}`;
 
-function Cell<R, SR>(
-  {
-    column,
-    colSpan,
-    isCellSelected,
-    isDraggedOver,
-    row,
-    rowIdx,
-    className,
-    onClick,
-    onDoubleClick,
-    onContextMenu,
-    onRowChange,
-    selectCell,
-    style,
-    ...props
-  }: CellRendererProps<R, SR>,
-  ref: React.Ref<HTMLDivElement>
-) {
+function Cell<R, SR>({
+  column,
+  colSpan,
+  isCellSelected,
+  isDraggedOver,
+  row,
+  rowIdx,
+  className,
+  onClick,
+  onDoubleClick,
+  onContextMenu,
+  onRowChange,
+  selectCell,
+  style,
+  ...props
+}: CellRendererProps<R, SR>) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   const { cellClass } = column;
@@ -87,7 +84,6 @@ function Cell<R, SR>(
       aria-colspan={colSpan}
       aria-selected={isCellSelected}
       aria-readonly={!isEditable || undefined}
-      ref={ref}
       tabIndex={tabIndex}
       className={className}
       style={{
@@ -112,9 +108,7 @@ function Cell<R, SR>(
   );
 }
 
-const CellComponent = memo(forwardRef(Cell)) as <R, SR>(
-  props: CellRendererProps<R, SR> & RefAttributes<HTMLDivElement>
-) => React.JSX.Element;
+const CellComponent = memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => React.JSX.Element;
 
 export default CellComponent;
 

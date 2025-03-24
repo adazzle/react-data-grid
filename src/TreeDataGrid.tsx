@@ -1,5 +1,5 @@
-import { forwardRef, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes } from 'react';
+import { useCallback, useMemo } from 'react';
+import type { Key } from 'react';
 
 import { useLatestFunc } from './hooks';
 import { assertIsValidKeyGetter } from './utils';
@@ -16,9 +16,9 @@ import type {
 } from './types';
 import { renderToggleGroup } from './cellRenderers';
 import { SELECT_COLUMN_KEY } from './Columns';
-import DataGrid from './DataGrid';
-import type { DataGridHandle, DataGridProps } from './DataGrid';
-import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
+import { DataGrid } from './DataGrid';
+import type { DataGridProps } from './DataGrid';
+import { useDefaultRenderers } from './DataGridDefaultRenderersContext';
 import GroupedRow from './GroupRow';
 import { defaultRenderRow } from './Row';
 
@@ -47,25 +47,22 @@ type GroupByDictionary<TRow> = Record<
   }
 >;
 
-function TreeDataGrid<R, SR, K extends Key>(
-  {
-    columns: rawColumns,
-    rows: rawRows,
-    rowHeight: rawRowHeight,
-    rowKeyGetter: rawRowKeyGetter,
-    onCellKeyDown: rawOnCellKeyDown,
-    onRowsChange,
-    selectedRows: rawSelectedRows,
-    onSelectedRowsChange: rawOnSelectedRowsChange,
-    renderers,
-    groupBy: rawGroupBy,
-    rowGrouper,
-    expandedGroupIds,
-    onExpandedGroupIdsChange,
-    ...props
-  }: TreeDataGridProps<R, SR, K>,
-  ref: React.Ref<DataGridHandle>
-) {
+export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
+  columns: rawColumns,
+  rows: rawRows,
+  rowHeight: rawRowHeight,
+  rowKeyGetter: rawRowKeyGetter,
+  onCellKeyDown: rawOnCellKeyDown,
+  onRowsChange,
+  selectedRows: rawSelectedRows,
+  onSelectedRowsChange: rawOnSelectedRowsChange,
+  renderers,
+  groupBy: rawGroupBy,
+  rowGrouper,
+  expandedGroupIds,
+  onExpandedGroupIdsChange,
+  ...props
+}: TreeDataGridProps<R, SR, K>) {
   const defaultRenderers = useDefaultRenderers<R, SR>();
   const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
@@ -403,13 +400,12 @@ function TreeDataGrid<R, SR, K extends Key>(
   }
 
   return (
-    <DataGrid<R, SR, Key>
+    <DataGrid<R, SR>
       {...props}
       role="treegrid"
       aria-rowcount={
         rowsCount + 1 + (props.topSummaryRows?.length ?? 0) + (props.bottomSummaryRows?.length ?? 0)
       }
-      ref={ref}
       columns={columns}
       rows={rows as R[]} // TODO: check types
       rowHeight={rowHeight}
@@ -429,7 +425,3 @@ function TreeDataGrid<R, SR, K extends Key>(
 function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
   return Array.isArray(arr);
 }
-
-export default forwardRef(TreeDataGrid) as <R, SR = unknown, K extends Key = Key>(
-  props: TreeDataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => React.JSX.Element;

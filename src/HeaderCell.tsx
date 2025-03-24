@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -12,7 +12,6 @@ import {
 } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import defaultRenderHeaderCell from './renderHeaderCell';
 
 const cellSortableClassname = css`
   @layer rdg.HeaderCell {
@@ -86,6 +85,7 @@ export default function HeaderCell<R, SR>({
   direction,
   dragDropKey
 }: HeaderCellProps<R, SR>) {
+  const hasDoubleClickedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
@@ -108,8 +108,6 @@ export default function HeaderCell<R, SR>({
     [cellOverClassname]: isOver
   });
 
-  const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
-
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
       return;
@@ -122,7 +120,7 @@ export default function HeaderCell<R, SR>({
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
-    let hasDoubleClicked = false;
+    hasDoubleClickedRef.current = false;
 
     function onPointerMove(event: PointerEvent) {
       const { width, right, left } = headerCell.getBoundingClientRect();
@@ -133,27 +131,25 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onDoubleClick() {
-      hasDoubleClicked = true;
-      onColumnResize(column, 'max-content');
-    }
-
     function onLostPointerCapture(event: PointerEvent) {
       // Handle final pointer position that may have been skipped by coalesced pointer move events.
       // Skip move pointer handling if the user double-clicked.
-      if (!hasDoubleClicked) {
+      if (!hasDoubleClickedRef.current) {
         onPointerMove(event);
       }
 
       currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('dblclick', onDoubleClick);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('dblclick', onDoubleClick);
     currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
+  }
+
+  function onDoubleClick() {
+    hasDoubleClickedRef.current = true;
+    onColumnResize(column, 'max-content');
   }
 
   function onSort(ctrlClick: boolean) {
@@ -260,7 +256,7 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  let draggableProps: React.HTMLAttributes<HTMLDivElement> | undefined;
+  let draggableProps: React.ComponentProps<'div'> | undefined;
   if (draggable) {
     draggableProps = {
       draggable: true,
@@ -295,7 +291,7 @@ export default function HeaderCell<R, SR>({
       onKeyDown={sortable ? onKeyDown : undefined}
       {...draggableProps}
     >
-      {renderHeaderCell({
+      {column.renderHeaderCell({
         column,
         sortDirection,
         priority,
@@ -307,6 +303,7 @@ export default function HeaderCell<R, SR>({
           className={resizeHandleClassname}
           onClick={stopPropagation}
           onPointerDown={onPointerDown}
+          onDoubleClick={onDoubleClick}
         />
       )}
     </div>

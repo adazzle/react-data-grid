@@ -1,15 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { useLayoutEffect, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import DataGrid from '../../src';
+import { DataGrid } from '../../src';
 import type { Column } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createLazyFileRoute('/ContextMenu')({
+export const Route = createFileRoute('/ContextMenu')({
   component: ContextMenuDemo
 });
 
@@ -64,7 +63,7 @@ function ContextMenuDemo() {
     top: number;
     left: number;
   } | null>(null);
-  const menuRef = useRef<HTMLMenuElement | null>(null);
+  const menuRef = useRef<HTMLMenuElement>(null);
   const isContextMenuOpen = contextMenuProps !== null;
 
   useLayoutEffect(() => {

@@ -1,7 +1,7 @@
-import { fixupPluginRules } from '@eslint/compat';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
 import reactCompiler from 'eslint-plugin-react-compiler';
@@ -11,10 +11,15 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 import markdown from '@eslint/markdown';
 
-export default [
+export default defineConfig([
+  globalIgnores(['.cache', 'coverage', 'dist', 'lib']),
+
   {
-    ignores: ['.cache', 'coverage', 'dist', 'lib']
+    linterOptions: {
+      reportUnusedInlineConfigs: 'warn'
+    }
   },
+
   {
     name: 'common',
     files: ['**/*.{js,ts,tsx}'],
@@ -22,7 +27,7 @@ export default [
     plugins: {
       react,
       'react-compiler': reactCompiler,
-      'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks': reactHooks,
       'react-hooks-extra': reactHooksExtra,
       sonarjs,
       '@typescript-eslint': typescriptEslint
@@ -387,9 +392,9 @@ export default [
 
       // React Hooks Extra
       // https://eslint-react.xyz/
-      'react-hooks-extra/no-redundant-custom-hook': 1,
       'react-hooks-extra/no-unnecessary-use-callback': 1,
       'react-hooks-extra/no-unnecessary-use-memo': 1,
+      'react-hooks-extra/no-useless-custom-hooks': 1,
       'react-hooks-extra/prefer-use-state-lazy-initialization': 1,
 
       // SonarJS rules
@@ -472,6 +477,7 @@ export default [
       '@typescript-eslint/no-meaningless-void-operator': 0,
       '@typescript-eslint/no-misused-new': 1,
       '@typescript-eslint/no-misused-promises': 0,
+      '@typescript-eslint/no-misused-spread': 1,
       '@typescript-eslint/no-mixed-enums': 1,
       '@typescript-eslint/no-namespace': 1,
       '@typescript-eslint/no-non-null-asserted-nullish-coalescing': 1,
@@ -564,18 +570,9 @@ export default [
           message: 'Use named imports instead.'
         },
         {
-          name: 'react',
-          importNames: ['useLayoutEffect'],
-          message: 'Use the override from src/hooks instead.'
-        },
-        {
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
-        },
-        {
-          name: '@testing-library/dom',
-          message: 'Import @testing-library/react instead.'
         }
       ],
       '@typescript-eslint/no-shadow': 0,
@@ -628,15 +625,7 @@ export default [
       'vitest/no-interpolation-in-snapshots': 0,
       'vitest/no-large-snapshots': 0,
       'vitest/no-mocks-import': 1,
-      'vitest/no-restricted-matchers': [
-        1,
-        {
-          toBeTruthy: 'Use toBe(true) instead.',
-          'not.toBeTruthy': null,
-          toBeFalsy: 'Use toBe(false) instead.',
-          'not.toBeFalsy': null
-        }
-      ],
+      'vitest/no-restricted-matchers': 0,
       'vitest/no-restricted-vi-methods': 0,
       'vitest/no-standalone-expect': 1,
       'vitest/no-test-prefixes': 0,
@@ -653,6 +642,7 @@ export default [
       'vitest/prefer-mock-promise-shorthand': 1,
       'vitest/prefer-snapshot-hint': 0,
       'vitest/prefer-spy-on': 1,
+      'vitest/prefer-strict-boolean-matchers': 1,
       'vitest/prefer-strict-equal': 1,
       'vitest/prefer-to-be': 1,
       'vitest/prefer-to-be-falsy': 0,
@@ -664,6 +654,7 @@ export default [
       'vitest/prefer-vi-mocked': 1,
       'vitest/require-hook': 0,
       'vitest/require-local-test-context-for-concurrent-snapshots': 0,
+      'vitest/require-mock-type-parameters': 0,
       'vitest/require-to-throw-message': 0,
       'vitest/require-top-level-describe': 0,
       'vitest/valid-describe-callback': 1,
@@ -707,7 +698,7 @@ export default [
       'testing-library/prefer-explicit-assert': 1,
       'testing-library/prefer-find-by': 1,
       'testing-library/prefer-implicit-assert': 0,
-      'testing-library/prefer-presence-queries': 1,
+      'testing-library/prefer-presence-queries': 0,
       'testing-library/prefer-query-by-disappearance': 1,
       'testing-library/prefer-query-matchers': 0,
       'testing-library/prefer-screen-queries': 0,
@@ -748,4 +739,4 @@ export default [
       'markdown/no-missing-label-refs': 1
     }
   }
-];
+]);

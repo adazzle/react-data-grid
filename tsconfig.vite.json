@@ -4,5 +4,5 @@
     "skipLibCheck": true,
     "types": ["@vitest/browser/providers/playwright"]
   },
-  "include": ["vite.config.ts", "vitest.workspace.ts"]
+  "include": ["vite.config.ts"]
 }
