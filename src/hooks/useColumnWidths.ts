@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from 'react';
 
 import { getColumnWidthForMeasurement } from '../utils';
-import type { CalculatedColumn, StateSetter } from '../types';
+import type { CalculatedColumn, ResizedWidth, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
 
 export function useColumnWidths<R, SR>(
@@ -18,7 +18,7 @@ export function useColumnWidths<R, SR>(
 ) {
   const [columnToAutoResize, setColumnToAutoResize] = useState<{
     readonly key: string;
-    readonly width: number | 'max-content';
+    readonly width: ResizedWidth;
   } | null>(null);
   const [prevGridWidth, setPreviousGridWidth] = useState(gridWidth);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
@@ -87,7 +87,7 @@ export function useColumnWidths<R, SR>(
     }
   }
 
-  function handleColumnResize(column: CalculatedColumn<R, SR>, nextWidth: number | 'max-content') {
+  function handleColumnResize(column: CalculatedColumn<R, SR>, nextWidth: ResizedWidth) {
     const { key: resizingKey } = column;
     const columnsToMeasure: string[] = [];
 

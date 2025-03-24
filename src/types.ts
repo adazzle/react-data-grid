@@ -322,3 +322,5 @@ export interface Renderers<TRow, TSummaryRow> {
 }
 
 export type Direction = 'ltr' | 'rtl';
+
+export type ResizedWidth = number | 'max-content';
