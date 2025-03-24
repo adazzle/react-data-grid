@@ -21,11 +21,6 @@ export function getColumnWidthForMeasurement<R, SR>(
   width: number | string,
   { minWidth, maxWidth }: CalculatedColumn<R, SR>
 ) {
-  if (width === 'max-content' || width === 'min-content') {
-    // TODO: how to handle minWidth and maxWidth?
-    return width;
-  }
-
   const widthWithUnit = typeof width === 'number' ? `${width}px` : width;
 
   // don't break in Node.js (SSR) and jsdom
@@ -46,7 +41,10 @@ export function getColumnWidthForMeasurement<R, SR>(
   if (
     hasMaxWidth &&
     // ignore maxWidth if it less than minWidth
-    maxWidth >= minWidth
+    maxWidth >= minWidth &&
+    // we do not want to use minmax with max-content as it
+    // can result in width being larger than max-content
+    widthWithUnit !== 'max-content'
   ) {
     // We are setting maxWidth on the measuring cell but the browser only applies
     // it after all the widths are calculated. This results in left over space in some cases.
