@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../src';
-import type { Column, PasteEvent } from '../../src';
+import type { CellCopyPasteEvent, Column } from '../../src';
 import { copySelectedCell, getCellsAtRowIndex, getSelectedCell, pasteSelectedCell } from './utils';
 
 interface Row {
@@ -54,9 +54,10 @@ function CopyPasteTest({
 }) {
   const [rows, setRows] = useState(initialRows);
 
-  function onPaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>) {
+  function onPaste({ column, row }: CellCopyPasteEvent<Row, Row>): Row {
     onPasteSpy();
-    return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
+    const columnKey = column.key;
+    return { ...row, [columnKey]: row[columnKey as keyof Row] };
   }
 
   return (

@@ -5,7 +5,7 @@ import type { Column } from '../../src';
 import { SelectColumn, textEditor, TreeDataGrid } from '../../src';
 import { focusSinkClassname } from '../../src/style/core';
 import { rowSelected } from '../../src/style/row';
-import type { PasteEvent } from '../../src/types';
+import type { CellCopyPasteEvent } from '../../src/types';
 import {
   copySelectedCell,
   getCellsAtRowIndex,
@@ -98,10 +98,10 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
     (): ReadonlySet<unknown> => new Set<unknown>([])
   );
 
-  function onCellPaste(event: PasteEvent<Row>) {
+  function onCellPaste(event: CellCopyPasteEvent<Row, SummaryRow>): Row {
     return {
-      ...event.targetRow,
-      [event.targetColumnKey]: event.sourceRow[event.sourceColumnKey as keyof Row]
+      ...event.row,
+      [event.column.key]: event.row[event.column.key as keyof Row]
     };
   }
 
