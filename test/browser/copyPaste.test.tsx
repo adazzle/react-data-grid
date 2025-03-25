@@ -42,8 +42,8 @@ const bottomSummaryRows: readonly Row[] = [
   }
 ];
 
-const onCellPasteSpy = vi.fn();
 const onCellCopySpy = vi.fn();
+const onCellPasteSpy = vi.fn();
 
 function CopyPasteTest() {
   const [rows, setRows] = useState(initialRows);
@@ -70,8 +70,8 @@ function CopyPasteTest() {
 }
 
 function setup() {
-  onCellPasteSpy.mockReset();
   onCellCopySpy.mockReset();
+  onCellPasteSpy.mockReset();
   page.render(<CopyPasteTest />);
 }
 

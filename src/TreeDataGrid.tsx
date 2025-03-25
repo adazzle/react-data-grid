@@ -4,6 +4,8 @@ import type { Key } from 'react';
 import { useLatestFunc } from './hooks';
 import { assertIsValidKeyGetter } from './utils';
 import type {
+  CellClipboardEvent,
+  CellCopyPasteEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
   Column,
@@ -53,6 +55,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   rowHeight: rawRowHeight,
   rowKeyGetter: rawRowKeyGetter,
   onCellKeyDown: rawOnCellKeyDown,
+  onCellCopy: rawOnCellCopy,
+  onCellPaste: rawOnCellPaste,
   onRowsChange,
   selectedRows: rawSelectedRows,
   onSelectedRowsChange: rawOnSelectedRowsChange,
@@ -320,6 +324,23 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     }
   }
 
+  // Prevent copy/paste on group rows
+  function handleCellCopy(
+    { row, column }: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>,
+    event: CellClipboardEvent
+  ) {
+    if (!isGroupRow(row)) {
+      rawOnCellCopy?.({ row, column }, event);
+    }
+  }
+
+  function handleCellPaste(
+    { row, column }: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>,
+    event: CellClipboardEvent
+  ) {
+    return isGroupRow(row) ? row : rawOnCellPaste!({ row, column }, event);
+  }
+
   function handleRowsChange(updatedRows: R[], { indexes, column }: RowsChangeData<R, SR>) {
     if (!onRowsChange) return;
     const updatedRawRows = [...rawRows];
@@ -414,6 +435,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       onCellKeyDown={handleKeyDown}
+      onCellCopy={handleCellCopy}
+      onCellPaste={rawOnCellPaste ? handleCellPaste : undefined}
       renderers={{
         ...renderers,
         renderRow
