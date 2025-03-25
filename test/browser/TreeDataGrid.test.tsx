@@ -6,15 +6,7 @@ import { SelectColumn, textEditor, TreeDataGrid } from '../../src';
 import { focusSinkClassname } from '../../src/style/core';
 import { rowSelected } from '../../src/style/row';
 import type { CellCopyPasteEvent } from '../../src/types';
-import {
-  copySelectedCell,
-  getCellsAtRowIndex,
-  getHeaderCells,
-  getRows,
-  getSelectedCell,
-  getTreeGrid,
-  pasteSelectedCell
-} from './utils';
+import { getCellsAtRowIndex, getHeaderCells, getRows, getSelectedCell, getTreeGrid } from './utils';
 
 const rowSelectedClassname = 'rdg-row-selected';
 
@@ -381,11 +373,11 @@ test('copy/paste when grouping is enabled', async () => {
   setup(['year']);
   await userEvent.click(page.getByRole('gridcell', { name: '2021' }));
   await userEvent.click(page.getByRole('gridcell', { name: 'USA' }));
-  await copySelectedCell();
+  await userEvent.copy();
   await expect.element(getSelectedCell()).toHaveClass('rdg-cell-copied');
   await userEvent.keyboard('{arrowdown}');
   await expect.element(getSelectedCell()).toHaveTextContent('Canada');
-  await pasteSelectedCell();
+  await userEvent.paste();
   await expect.element(getSelectedCell()).toHaveTextContent('USA');
 });
 

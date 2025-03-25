@@ -4,7 +4,7 @@ import { page, userEvent } from '@vitest/browser/context';
 import { DataGrid } from '../../src';
 import type { CellCopyPasteEvent, Column } from '../../src';
 import type { CellClipboardEvent } from '../../src/types';
-import { copySelectedCell, getCellsAtRowIndex, getSelectedCell, pasteSelectedCell } from './utils';
+import { getCellsAtRowIndex, getSelectedCell } from './utils';
 
 interface Row {
   col: string;
@@ -63,8 +63,8 @@ function CopyPasteTest() {
       rows={rows}
       bottomSummaryRows={bottomSummaryRows}
       onRowsChange={setRows}
-      onCellPaste={onCellPaste}
       onCellCopy={onCellCopySpy}
+      onCellPaste={onCellPaste}
     />
   );
 }
@@ -78,7 +78,7 @@ function setup() {
 test('should call onCellCopy on cell copy', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await copySelectedCell();
+  await userEvent.copy();
   expect(onCellCopySpy).toHaveBeenCalledExactlyOnceWith(
     {
       row: initialRows[0],
@@ -91,7 +91,7 @@ test('should call onCellCopy on cell copy', async () => {
 test('should call onCellPaste on cell paste', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await pasteSelectedCell();
+  await userEvent.paste();
   expect(onCellPasteSpy).toHaveBeenCalledExactlyOnceWith(
     {
       row: initialRows[0],
@@ -104,14 +104,14 @@ test('should call onCellPaste on cell paste', async () => {
 test('should not allow paste on readonly cells', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(2)[0]);
-  await pasteSelectedCell();
+  await userEvent.paste();
   expect(onCellPasteSpy).not.toHaveBeenCalled();
 });
 
 test('should allow copying a readonly cell', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(2)[0]);
-  await copySelectedCell();
+  await userEvent.copy();
   expect(onCellCopySpy).toHaveBeenCalledExactlyOnceWith(
     {
       row: initialRows[2],
@@ -124,15 +124,15 @@ test('should allow copying a readonly cell', async () => {
 test('should not allow copy/paste on header or summary cells', async () => {
   setup();
   await userEvent.tab();
-  await copySelectedCell();
+  await userEvent.copy();
   expect(onCellCopySpy).not.toHaveBeenCalled();
-  await pasteSelectedCell();
+  await userEvent.paste();
   expect(onCellPasteSpy).not.toHaveBeenCalled();
 
   await userEvent.keyboard('{Control>}{end}');
-  await copySelectedCell();
+  await userEvent.copy();
   expect(onCellCopySpy).not.toHaveBeenCalled();
-  await pasteSelectedCell();
+  await userEvent.paste();
   expect(onCellPasteSpy).not.toHaveBeenCalled();
 });
 

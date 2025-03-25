@@ -1,4 +1,4 @@
-import { page, userEvent } from '@vitest/browser/context';
+import { page } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -56,14 +56,6 @@ export function validateCellPosition(columnIdx: number, rowIdx: number) {
   const cell = getSelectedCell().element();
   expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
   expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
-}
-
-export function copySelectedCell() {
-  return userEvent.keyboard('{Control>}c{/Control}');
-}
-
-export function pasteSelectedCell() {
-  return userEvent.keyboard('{Control>}v{/Control}');
 }
 
 export async function scrollGrid({
