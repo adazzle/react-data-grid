@@ -18,17 +18,17 @@ const lightTheme = `
 `;
 
 const darkTheme = `
-  --rdg-color: #ddd;
-  --rdg-border-color: #444;
-  --rdg-summary-border-color: #555;
-  --rdg-background-color: hsl(0deg 0% 13%);
-  --rdg-header-background-color: hsl(0deg 0% 10.5%);
-  --rdg-header-draggable-background-color: hsl(0deg 0% 17.5%);
-  --rdg-row-hover-background-color: hsl(0deg 0% 9%);
-  --rdg-row-selected-background-color: hsl(207deg 76% 42%);
-  --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);
+  --rdg-color: #000;
+  --rdg-border-color: #ddd;
+  --rdg-summary-border-color: #aaa;
+  --rdg-background-color: hsl(0deg 0% 100%);
+  --rdg-header-background-color: hsl(0deg 0% 97.5%);
+  --rdg-header-draggable-background-color: hsl(0deg 0% 90.5%);
+  --rdg-row-hover-background-color: hsl(0deg 0% 96%);
+  --rdg-row-selected-background-color: hsl(207deg 76% 92%);
+  --rdg-row-selected-hover-background-color: hsl(207deg 76% 88%);
 
-  --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
+  --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
 `;
 
 const root = css`
