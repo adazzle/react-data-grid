@@ -3,7 +3,6 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../src';
 import type { CellCopyPasteEvent, Column } from '../../src';
-import type { CellClipboardEvent } from '../../src/types';
 import { getCellsAtRowIndex, getSelectedCell } from './utils';
 
 interface Row {
@@ -43,19 +42,13 @@ const bottomSummaryRows: readonly Row[] = [
 ];
 
 const onCellCopySpy = vi.fn();
-const onCellPasteSpy = vi.fn();
+const onCellPasteSpy = vi.fn(({ column, row }: CellCopyPasteEvent<Row, Row>) => {
+  const columnKey = column.key;
+  return { ...row, [columnKey]: row[columnKey as keyof Row] };
+});
 
 function CopyPasteTest() {
   const [rows, setRows] = useState(initialRows);
-
-  function onCellPaste(
-    { column, row }: CellCopyPasteEvent<Row, Row>,
-    event: CellClipboardEvent
-  ): Row {
-    onCellPasteSpy({ column, row }, event);
-    const columnKey = column.key;
-    return { ...row, [columnKey]: row[columnKey as keyof Row] };
-  }
 
   return (
     <DataGrid
@@ -64,14 +57,14 @@ function CopyPasteTest() {
       bottomSummaryRows={bottomSummaryRows}
       onRowsChange={setRows}
       onCellCopy={onCellCopySpy}
-      onCellPaste={onCellPaste}
+      onCellPaste={onCellPasteSpy}
     />
   );
 }
 
 function setup() {
-  onCellCopySpy.mockReset();
-  onCellPasteSpy.mockReset();
+  onCellCopySpy.mockClear();
+  onCellPasteSpy.mockClear();
   page.render(<CopyPasteTest />);
 }
 
