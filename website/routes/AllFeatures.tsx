@@ -206,9 +206,10 @@ function AllFeatures() {
   const initialRows = Route.useLoaderData();
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<string> => new Set());
-  const [copiedCell, setCopiedCell] = useState<{ row: Row; column: CalculatedColumn<Row> } | null>(
-    null
-  );
+  const [copiedCell, setCopiedCell] = useState<{
+    readonly row: Row;
+    readonly column: CalculatedColumn<Row>;
+  } | null>(null);
 
   function handleFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };

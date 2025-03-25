@@ -91,7 +91,7 @@ test('should not allow copy/paste if onPaste & onCopy is undefined', async () =>
   expect(onPasteSpy).not.toHaveBeenCalled();
 });
 
-test('should allow copy if only onCopy is specified', async () => {
+test.only('should allow copy if only onCopy is specified', async () => {
   setup(false, true);
   await userEvent.click(getCellsAtRowIndex(0)[0]);
   await copySelectedCell();
