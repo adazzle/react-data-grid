@@ -1,5 +1,5 @@
 {
-  "name": "react-data-grid",
+  "name": "react-data-grid-pudov",
   "version": "7.0.0-beta.47",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
@@ -49,7 +49,8 @@
     "prettier:format": "prettier --write .",
     "typecheck": "tsc --build",
     "prepublishOnly": "npm install && node --run build && node --run build:types",
-    "postpublish": "git push --follow-tags origin HEAD"
+    "postpublish": "git push --follow-tags origin HEAD",
+    "publish": "npm install && npm run build && npm publish --registry <URL вашего реестра>"
   },
   "dependencies": {
     "clsx": "^2.0.0"
