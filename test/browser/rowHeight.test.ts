@@ -25,7 +25,7 @@ test('rowHeight is number', async () => {
 
   const grid = page.getByRole('grid').element();
   expect(grid).toHaveStyle({
-    'grid-template-rows':
+    gridTemplateRows:
       '40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px 40px'
   });
   expect(getRows()).toHaveLength(30);
@@ -41,7 +41,7 @@ test('rowHeight is function', async () => {
 
   const grid = page.getByRole('grid').element();
   expect(grid).toHaveStyle({
-    'grid-template-rows':
+    gridTemplateRows:
       '35px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px 80px 40px 60px'
   });
   expect(getRows()).toHaveLength(22);
