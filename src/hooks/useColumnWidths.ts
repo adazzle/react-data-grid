@@ -1,6 +1,5 @@
 import { useLayoutEffect, useState } from 'react';
 
-import { getColumnWidthForMeasurement } from '../utils';
 import type { CalculatedColumn, ResizedWidth, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
 
@@ -129,4 +128,48 @@ function measureColumnWidth(gridRef: React.RefObject<HTMLDivElement | null>, key
   const selector = `[data-measuring-cell-key="${CSS.escape(key)}"]`;
   const measuringCell = gridRef.current?.querySelector(selector);
   return measuringCell?.getBoundingClientRect().width;
+}
+
+function getColumnWidthForMeasurement<R, SR>(
+  width: number | string,
+  { minWidth, maxWidth }: CalculatedColumn<R, SR>
+) {
+  const widthWithUnit = typeof width === 'number' ? `${width}px` : width;
+
+  // don't break in Node.js (SSR) and jsdom
+  if (typeof CSS === 'undefined') {
+    return widthWithUnit;
+  }
+
+  const hasMaxWidth = maxWidth != null;
+  const clampedWidth = hasMaxWidth
+    ? `clamp(${minWidth}px, ${widthWithUnit}, ${maxWidth}px)`
+    : `max(${minWidth}px, ${widthWithUnit})`;
+
+  // clamp() and max() do not handle all the css grid column width values
+  if (isValidCSSGridColumnWidth(clampedWidth)) {
+    return clampedWidth;
+  }
+
+  if (
+    hasMaxWidth &&
+    // ignore maxWidth if it less than minWidth
+    maxWidth >= minWidth &&
+    // we do not want to use minmax with max-content as it
+    // can result in width being larger than max-content
+    widthWithUnit !== 'max-content'
+  ) {
+    // We are setting maxWidth on the measuring cell but the browser only applies
+    // it after all the widths are calculated. This results in left over space in some cases.
+    const minMaxWidth = `minmax(${widthWithUnit}, ${maxWidth}px)`;
+    if (isValidCSSGridColumnWidth(minMaxWidth)) {
+      return minMaxWidth;
+    }
+  }
+
+  return isValidCSSGridColumnWidth(widthWithUnit) ? widthWithUnit : 'auto';
+}
+
+function isValidCSSGridColumnWidth(width: string) {
+  return CSS.supports('grid-template-columns', width);
 }
