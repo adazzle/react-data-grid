@@ -215,27 +215,36 @@ function AllFeatures() {
     return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
   }
 
-  function handleCellPaste({ row, column }: CellCopyPasteEvent<Row>): Row {
-    if (copiedCell === null) {
-      return row;
-    }
-
-    const sourceColumnKey = copiedCell.column.key;
-    const sourceRow = copiedCell.row;
+  function handleCellPaste(
+    { row, column }: CellCopyPasteEvent<Row>,
+    event: React.ClipboardEvent<HTMLDivElement>
+  ): Row {
     const targetColumnKey = column.key;
 
-    const incompatibleColumns = ['email', 'zipCode', 'date'];
-    if (
-      sourceColumnKey === 'avatar' ||
-      ['id', 'avatar'].includes(targetColumnKey) ||
-      ((incompatibleColumns.includes(targetColumnKey) ||
-        incompatibleColumns.includes(sourceColumnKey)) &&
-        sourceColumnKey !== targetColumnKey)
-    ) {
-      return row;
+    if (copiedCell !== null) {
+      const sourceColumnKey = copiedCell.column.key;
+      const sourceRow = copiedCell.row;
+
+      const incompatibleColumns = ['email', 'zipCode', 'date'];
+      if (
+        sourceColumnKey === 'avatar' ||
+        ['id', 'avatar'].includes(targetColumnKey) ||
+        ((incompatibleColumns.includes(targetColumnKey) ||
+          incompatibleColumns.includes(sourceColumnKey)) &&
+          sourceColumnKey !== targetColumnKey)
+      ) {
+        return row;
+      }
+
+      return { ...row, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
     }
 
-    return { ...row, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
+    const copiedText = event.clipboardData.getData('text/plain');
+    if (copiedText !== '') {
+      return { ...row, [targetColumnKey]: copiedText };
+    }
+
+    return row;
   }
 
   function handleCellCopy(
