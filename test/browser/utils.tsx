@@ -43,13 +43,10 @@ export function getHeaderCells() {
 }
 
 export function getSelectedCell() {
-  const selectedGridCell = page.getByRole('gridcell', { selected: true });
-  // TODO use `or` when available
-  if (selectedGridCell.elements().length > 0) {
-    return selectedGridCell;
-  }
-
-  return page.getByRole('columnheader', { selected: true });
+  return page
+    .getByRole('gridcell', { selected: true })
+    .or(page.getByRole('columnheader', { selected: true }))
+    .first();
 }
 
 export function validateCellPosition(columnIdx: number, rowIdx: number) {
