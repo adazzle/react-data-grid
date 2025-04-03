@@ -89,8 +89,9 @@ export function useColumnWidths<R, SR>(
   function handleColumnResize(column: CalculatedColumn<R, SR>, nextWidth: ResizedWidth) {
     const { key: resizingKey } = column;
 
-    setMeasuredColumnWidths((measuredColumnWidths) => {
-      if (columnsCanFlex) {
+    if (columnsCanFlex) {
+      // delete measured column widths for all other flex columns so they can be recalculated
+      setMeasuredColumnWidths((measuredColumnWidths) => {
         const newMeasuredColumnWidths = new Map(measuredColumnWidths);
         for (const { key, width } of viewportColumns) {
           if (resizingKey !== key && typeof width === 'string' && !resizedColumnWidths.has(key)) {
@@ -98,10 +99,8 @@ export function useColumnWidths<R, SR>(
           }
         }
         return newMeasuredColumnWidths;
-      }
-
-      return measuredColumnWidths;
-    });
+      });
+    }
 
     setColumnToAutoResize({
       key: resizingKey,
