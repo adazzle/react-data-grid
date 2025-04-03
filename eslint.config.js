@@ -1,7 +1,7 @@
-import { fixupPluginRules } from '@eslint/compat';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
 import reactCompiler from 'eslint-plugin-react-compiler';
@@ -11,12 +11,8 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 import markdown from '@eslint/markdown';
 
-export default [
-  {
-    // https://eslint.org/docs/latest/use/configure/ignore#ignoring-files
-    ignores: ['.cache', 'coverage', 'dist', 'lib']
-    // /!\ No other properties should be added to this configuration object.
-  },
+export default defineConfig([
+  globalIgnores(['.cache', 'coverage', 'dist', 'lib']),
 
   {
     linterOptions: {
@@ -31,7 +27,7 @@ export default [
     plugins: {
       react,
       'react-compiler': reactCompiler,
-      'react-hooks': fixupPluginRules(reactHooks),
+      'react-hooks': reactHooks,
       'react-hooks-extra': reactHooksExtra,
       sonarjs,
       '@typescript-eslint': typescriptEslint
@@ -577,10 +573,6 @@ export default [
           name: 'react-dom',
           importNames: ['default'],
           message: 'Use named imports instead.'
-        },
-        {
-          name: '@testing-library/dom',
-          message: 'Import @testing-library/react instead.'
         }
       ],
       '@typescript-eslint/no-shadow': 0,
@@ -706,7 +698,7 @@ export default [
       'testing-library/prefer-explicit-assert': 1,
       'testing-library/prefer-find-by': 1,
       'testing-library/prefer-implicit-assert': 0,
-      'testing-library/prefer-presence-queries': 1,
+      'testing-library/prefer-presence-queries': 0,
       'testing-library/prefer-query-by-disappearance': 1,
       'testing-library/prefer-query-matchers': 0,
       'testing-library/prefer-screen-queries': 0,
@@ -747,4 +739,4 @@ export default [
       'markdown/no-missing-label-refs': 1
     }
   }
-];
+]);

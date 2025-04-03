@@ -30,10 +30,10 @@ test('draggable columns', async () => {
   setup({ columns, rows: [], onColumnsReorder });
   const [cell1, cell2, cell3, cell4] = getHeaderCells();
 
-  await expect.element(cell1).not.toHaveAttribute('draggable');
-  await expect.element(cell2).toHaveAttribute('draggable');
-  await expect.element(cell3).toHaveAttribute('draggable');
-  await expect.element(cell4).toHaveAttribute('draggable');
+  expect(cell1).not.toHaveAttribute('draggable');
+  expect(cell2).toHaveAttribute('draggable');
+  expect(cell3).toHaveAttribute('draggable');
+  expect(cell4).toHaveAttribute('draggable');
 
   expect(onColumnsReorder).not.toHaveBeenCalled();
 

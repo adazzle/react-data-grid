@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -85,6 +85,7 @@ export default function HeaderCell<R, SR>({
   direction,
   dragDropKey
 }: HeaderCellProps<R, SR>) {
+  const hasDoubleClickedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
@@ -119,7 +120,7 @@ export default function HeaderCell<R, SR>({
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
-    let hasDoubleClicked = false;
+    hasDoubleClickedRef.current = false;
 
     function onPointerMove(event: PointerEvent) {
       const { width, right, left } = headerCell.getBoundingClientRect();
@@ -130,27 +131,25 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onDoubleClick() {
-      hasDoubleClicked = true;
-      onColumnResize(column, 'max-content');
-    }
-
     function onLostPointerCapture(event: PointerEvent) {
       // Handle final pointer position that may have been skipped by coalesced pointer move events.
       // Skip move pointer handling if the user double-clicked.
-      if (!hasDoubleClicked) {
+      if (!hasDoubleClickedRef.current) {
         onPointerMove(event);
       }
 
       currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('dblclick', onDoubleClick);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('dblclick', onDoubleClick);
     currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
+  }
+
+  function onDoubleClick() {
+    hasDoubleClickedRef.current = true;
+    onColumnResize(column, 'max-content');
   }
 
   function onSort(ctrlClick: boolean) {
@@ -304,6 +303,7 @@ export default function HeaderCell<R, SR>({
           className={resizeHandleClassname}
           onClick={stopPropagation}
           onPointerDown={onPointerDown}
+          onDoubleClick={onDoubleClick}
         />
       )}
     </div>

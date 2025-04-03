@@ -98,7 +98,7 @@ export default defineConfig(({ command }) => ({
             headless: true,
             screenshotFailures: process.env.CI !== 'true'
           },
-          setupFiles: ['test/setup.ts', 'test/setupBrowser.ts']
+          setupFiles: ['test/setupBrowser.ts']
         }
       },
       {
@@ -106,8 +106,7 @@ export default defineConfig(({ command }) => ({
         test: {
           name: 'node',
           include: ['test/node/**/*.test.*'],
-          environment: 'node',
-          setupFiles: ['test/setup.ts']
+          environment: 'node'
         }
       }
     ]

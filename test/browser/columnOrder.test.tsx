@@ -46,7 +46,7 @@ test('column order', () => {
       ));
     }
 
-    expect(getHeaderCells().map((c) => c.element().textContent)).toStrictEqual(expected);
+    expect(getHeaderCells().map((c) => c.textContent)).toStrictEqual(expected);
     unmount();
   }
 
