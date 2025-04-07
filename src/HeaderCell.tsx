@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -84,7 +84,6 @@ export default function HeaderCell<R, SR>({
   direction,
   dragDropKey
 }: HeaderCellProps<R, SR>) {
-  const hasDoubleClickedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
@@ -119,8 +118,6 @@ export default function HeaderCell<R, SR>({
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
-    hasDoubleClickedRef.current = false;
-
     function onPointerMove(event: PointerEvent) {
       const { width, right, left } = headerCell.getBoundingClientRect();
       const newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
@@ -129,24 +126,19 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onLostPointerCapture(event: PointerEvent) {
-      // Handle final pointer position that may have been skipped by coalesced pointer move events.
-      // Skip move pointer handling if the user double-clicked.
-      if (!hasDoubleClickedRef.current) {
-        onPointerMove(event);
-      }
-
+    function onLostPointerCapture() {
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
+    // we are not using pointerup because it does not fire in some cases
+    // pointer down -> alt+tab -> pointer up over another window -> pointerup event not fired
     currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
   }
 
   function onDoubleClick() {
-    hasDoubleClickedRef.current = true;
     onColumnResize(column, 'max-content');
   }
 
