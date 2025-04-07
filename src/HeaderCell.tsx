@@ -128,14 +128,16 @@ export default function HeaderCell<R, SR>({
       }
     }
 
-    function onPointerUp() {
+    function onLostPointerCapture() {
       currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('pointerup', onPointerUp);
+      currentTarget.removeEventListener('onLostPointerCapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
     currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('pointerup', onPointerUp);
+    // we are not using pointerup because it does not fire in some cases
+    // pointer down -> alt+tab -> pointer up over another window -> pointerup event not fired
+    currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
   }
 
   function onDoubleClick() {
