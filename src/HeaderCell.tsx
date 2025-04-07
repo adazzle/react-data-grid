@@ -130,7 +130,7 @@ export default function HeaderCell<R, SR>({
 
     function onLostPointerCapture() {
       currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('onLostPointerCapture', onLostPointerCapture);
+      currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
 
     currentTarget.setPointerCapture(pointerId);
