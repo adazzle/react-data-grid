@@ -212,6 +212,11 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   enableVirtualization?: Maybe<boolean>;
 
   /**
+   * The minimum number of rows to render when virtualization is enabled
+   */
+  minimumRowsToRender?: Maybe<number>;
+
+  /**
    * Miscellaneous
    */
   renderers?: Maybe<Renderers<NoInfer<R>, NoInfer<SR>>>;
@@ -264,6 +269,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     onPaste,
     // Toggles and modes
     enableVirtualization: rawEnableVirtualization,
+    minimumRowsToRender: rawMinimumRowsToRender,
     // Miscellaneous
     renderers,
     className,
@@ -297,6 +303,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     renderers?.renderCheckbox ?? defaultRenderers?.renderCheckbox ?? defaultRenderCheckbox;
   const noRowsFallback = renderers?.noRowsFallback ?? defaultRenderers?.noRowsFallback;
   const enableVirtualization = rawEnableVirtualization ?? true;
+  const minimumRowsToRender = rawMinimumRowsToRender ?? 30;
   const direction = rawDirection ?? 'ltr';
 
   /**
@@ -423,7 +430,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     rowHeight,
     clientHeight,
     scrollTop,
-    enableVirtualization
+    enableVirtualization,
+    minimumRowsToRender
   });
 
   const viewportColumns = useViewportColumns({
