@@ -47,24 +47,24 @@ export function useColumnWidths<R, SR>(
   });
 
   function updateMeasuredAndResizedWidths() {
-    if (columnsToMeasure.length > 0) {
-      setMeasuredColumnWidths((measuredColumnWidths) => {
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-        let hasChanges = false;
+    if (columnsToMeasure.length === 0) return;
 
-        for (const key of columnsToMeasure) {
-          const measuredWidth = measureColumnWidth(gridRef, key);
-          hasChanges ||= measuredWidth !== measuredColumnWidths.get(key);
-          if (measuredWidth === undefined) {
-            newMeasuredColumnWidths.delete(key);
-          } else {
-            newMeasuredColumnWidths.set(key, measuredWidth);
-          }
+    setMeasuredColumnWidths((measuredColumnWidths) => {
+      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+      let hasChanges = false;
+
+      for (const key of columnsToMeasure) {
+        const measuredWidth = measureColumnWidth(gridRef, key);
+        hasChanges ||= measuredWidth !== measuredColumnWidths.get(key);
+        if (measuredWidth === undefined) {
+          newMeasuredColumnWidths.delete(key);
+        } else {
+          newMeasuredColumnWidths.set(key, measuredWidth);
         }
+      }
 
-        return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
-      });
-    }
+      return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
+    });
 
     if (columnToAutoResize !== null) {
       setColumnToAutoResize(null);
