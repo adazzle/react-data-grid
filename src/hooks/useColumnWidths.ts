@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 import type { CalculatedColumn, ResizedWidth, StateSetter } from '../types';
 import type { DataGridProps } from '../DataGrid';
@@ -49,63 +50,72 @@ export function useColumnWidths<R, SR>(
 
   function updateMeasuredAndResizedWidths() {
     setPreviousGridWidth(gridWidth);
+    if (columnsToMeasure.length === 0) return;
 
-    if (columnsToMeasure.length > 0) {
-      setMeasuredColumnWidths((measuredColumnWidths) => {
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-        let hasChanges = false;
+    setMeasuredColumnWidths((measuredColumnWidths) => {
+      const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+      let hasChanges = false;
 
-        for (const key of columnsToMeasure) {
-          const measuredWidth = measureColumnWidth(gridRef, key);
-          hasChanges ||= measuredWidth !== measuredColumnWidths.get(key);
-          if (measuredWidth === undefined) {
-            newMeasuredColumnWidths.delete(key);
-          } else {
-            newMeasuredColumnWidths.set(key, measuredWidth);
-          }
+      for (const key of columnsToMeasure) {
+        const measuredWidth = measureColumnWidth(gridRef, key);
+        hasChanges ||= measuredWidth !== measuredColumnWidths.get(key);
+        if (measuredWidth === undefined) {
+          newMeasuredColumnWidths.delete(key);
+        } else {
+          newMeasuredColumnWidths.set(key, measuredWidth);
         }
+      }
 
-        return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
-      });
-    }
+      return hasChanges ? newMeasuredColumnWidths : measuredColumnWidths;
+    });
 
     if (columnToAutoResize !== null) {
-      setColumnToAutoResize(null);
+      const resizingKey = columnToAutoResize.key;
       setResizedColumnWidths((resizedColumnWidths) => {
-        const resizingKey = columnToAutoResize.key;
         const oldWidth = resizedColumnWidths.get(resizingKey);
         const newWidth = measureColumnWidth(gridRef, resizingKey);
         if (newWidth !== undefined && oldWidth !== newWidth) {
           const newResizedColumnWidths = new Map(resizedColumnWidths);
           newResizedColumnWidths.set(resizingKey, newWidth);
-          onColumnResize?.(viewportColumns.find((c) => c.key === resizingKey)!, newWidth);
           return newResizedColumnWidths;
         }
         return resizedColumnWidths;
       });
+      setColumnToAutoResize(null);
     }
   }
 
   function handleColumnResize(column: CalculatedColumn<R, SR>, nextWidth: ResizedWidth) {
     const { key: resizingKey } = column;
 
-    if (columnsCanFlex) {
-      // delete measured column widths for all other flex columns so they can be recalculated
-      setMeasuredColumnWidths((measuredColumnWidths) => {
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
-        for (const { key, width } of viewportColumns) {
-          if (resizingKey !== key && typeof width === 'string' && !resizedColumnWidths.has(key)) {
-            newMeasuredColumnWidths.delete(key);
+    flushSync(() => {
+      if (columnsCanFlex) {
+        // remeasure all the columns that can flex and are not resized by the user
+        setMeasuredColumnWidths((measuredColumnWidths) => {
+          const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+          for (const { key, width } of viewportColumns) {
+            if (resizingKey !== key && typeof width === 'string' && !resizedColumnWidths.has(key)) {
+              newMeasuredColumnWidths.delete(key);
+            }
           }
-        }
-        return newMeasuredColumnWidths;
-      });
-    }
+          return newMeasuredColumnWidths;
+        });
+      }
 
-    setColumnToAutoResize({
-      key: resizingKey,
-      width: nextWidth
+      setColumnToAutoResize({
+        key: resizingKey,
+        width: nextWidth
+      });
     });
+
+    if (onColumnResize) {
+      const previousWidth = resizedColumnWidths.get(resizingKey);
+      const newWidth =
+        typeof nextWidth === 'number' ? nextWidth : measureColumnWidth(gridRef, resizingKey);
+      if (newWidth !== undefined && newWidth !== previousWidth) {
+        onColumnResize(column, newWidth);
+      }
+    }
   }
 
   return {

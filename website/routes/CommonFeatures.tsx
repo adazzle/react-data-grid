@@ -96,6 +96,7 @@ function getColumns(
     {
       key: 'title',
       name: 'Task',
+      maxWidth: 500,
       frozen: true,
       renderEditCell: textEditor,
       renderSummaryCell({ row }) {
@@ -117,7 +118,7 @@ function getColumns(
     {
       key: 'country',
       name: 'Country',
-      maxWidth: 150,
+      maxWidth: 100,
       renderEditCell: (p) => (
         <select
           autoFocus
