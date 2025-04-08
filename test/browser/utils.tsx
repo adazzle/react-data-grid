@@ -4,13 +4,16 @@ import { css } from '@linaria/core';
 import { DataGrid } from '../../src';
 import type { DataGridProps } from '../../src';
 
-export const testGridClassname = css`
-  block-size: 1080px;
-  scrollbar-width: none;
-`;
-
 export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
-  page.render(<DataGrid {...props} className={testGridClassname} />);
+  page.render(
+    <DataGrid
+      {...props}
+      className={css`
+        block-size: 1080px;
+        scrollbar-width: none;
+      `}
+    />
+  );
 }
 
 export function getGrid() {
