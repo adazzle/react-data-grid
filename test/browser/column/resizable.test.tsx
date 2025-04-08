@@ -1,8 +1,9 @@
-import { commands, userEvent } from '@vitest/browser/context';
+import { useState } from 'react';
+import { commands, page, userEvent } from '@vitest/browser/context';
 
-import type { Column } from '../../../src';
+import { DataGrid, type Column } from '../../../src';
 import { resizeHandleClassname } from '../../../src/HeaderCell';
-import { getGrid, getHeaderCells, setup } from '../utils';
+import { getGrid, getHeaderCells, setup, testGridClassname } from '../utils';
 
 interface Row {
   readonly col1: number;
@@ -149,50 +150,66 @@ test('should use the minWidth if specified on auto resize', async () => {
 });
 
 test('should remeasure flex columns when resizing a column', async () => {
-  const onColumnResize = vi.fn();
-  setup<
+  interface Row {
+    readonly col1: string;
+    readonly col2: string;
+    readonly col3: string;
+  }
+
+  const columns: readonly Column<Row>[] = [
     {
-      readonly col1: string;
-      readonly col2: string;
-      readonly col3: string;
+      key: 'col1',
+      name: 'col1',
+      resizable: true
     },
-    unknown
-  >({
-    columns: [
-      {
-        key: 'col1',
-        name: 'col1',
-        resizable: true
-      },
-      {
-        key: 'col2',
-        name: 'col2',
-        resizable: true
-      },
-      {
-        key: 'col3',
-        name: 'col3',
-        resizable: true
-      }
-    ],
-    rows: [
-      {
-        col1: 'a'.repeat(10),
-        col2: 'a'.repeat(10),
-        col3: 'a'.repeat(10)
-      }
-    ],
-    onColumnResize
-  });
+    {
+      key: 'col2',
+      name: 'col2',
+      resizable: true
+    },
+    {
+      key: 'col3',
+      name: 'col3',
+      resizable: true
+    }
+  ];
+
+  const rows: readonly Row[] = [
+    {
+      col1: 'a'.repeat(10),
+      col2: 'a'.repeat(10),
+      col3: 'a'.repeat(10)
+    }
+  ];
+
+  let callCount = 0;
+
+  function TestComponent() {
+    const [, setColWidths] = useState((): ReadonlyMap<string, number> => new Map<string, number>());
+
+    return (
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        onColumnResize={(column, width) => {
+          callCount++;
+          setColWidths((prev) => new Map(prev).set(column.key, width));
+        }}
+        className={testGridClassname}
+      />
+    );
+  }
+
+  page.render(<TestComponent />);
+
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '639.328px 639.328px 639.344px' });
   const [col1] = getHeaderCells();
   await autoResize(col1);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
-  expect(onColumnResize).toHaveBeenCalled();
-  onColumnResize.mockClear();
+  expect(callCount).toBe(2);
   // onColumnResize is not called if width is not changed
   await autoResize(col1);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
-  expect(onColumnResize).not.toHaveBeenCalled();
+  expect(callCount).toBe(2);
 });
