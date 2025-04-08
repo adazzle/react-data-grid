@@ -110,11 +110,13 @@ export function useColumnWidths<R, SR>(
       });
     });
 
-    const previousWidth = resizedColumnWidths.get(resizingKey);
-    const newWidth =
-      typeof nextWidth === 'number' ? nextWidth : measureColumnWidth(gridRef, resizingKey);
-    if (newWidth !== undefined && newWidth !== previousWidth) {
-      onColumnResize?.(column, newWidth);
+    if (onColumnResize) {
+      const previousWidth = resizedColumnWidths.get(resizingKey);
+      const newWidth =
+        typeof nextWidth === 'number' ? nextWidth : measureColumnWidth(gridRef, resizingKey);
+      if (newWidth !== undefined && newWidth !== previousWidth) {
+        onColumnResize(column, newWidth);
+      }
     }
   }
 
