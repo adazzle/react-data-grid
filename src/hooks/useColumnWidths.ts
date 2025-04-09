@@ -110,8 +110,7 @@ export function useColumnWidths<R, SR>(
 
     if (onColumnResize) {
       const previousWidth = resizedColumnWidths.get(resizingKey);
-      const newWidth =
-        typeof nextWidth === 'number' ? nextWidth : measureColumnWidth(gridRef, resizingKey);
+      const newWidth = measureColumnWidth(gridRef, resizingKey);
       if (newWidth !== undefined && newWidth !== previousWidth) {
         onColumnResize(column, newWidth);
       }
