@@ -96,6 +96,7 @@ function getColumns(
     {
       key: 'title',
       name: 'Task',
+      maxWidth: 200,
       frozen: true,
       renderEditCell: textEditor,
       renderSummaryCell({ row }) {
