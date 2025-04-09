@@ -86,6 +86,7 @@ export default function HeaderCell<R, SR>({
   dragDropKey
 }: HeaderCellProps<R, SR>) {
   const [isDragging, setIsDragging] = useState(false);
+  const [resizingOffset, setResizingOffset] = useState<number>();
   const [isOver, setIsOver] = useState(false);
   const isRtl = direction === 'rtl';
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
@@ -116,28 +117,27 @@ export default function HeaderCell<R, SR>({
     event.preventDefault();
 
     const { currentTarget, pointerId } = event;
+    currentTarget.setPointerCapture(pointerId);
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
     const offset = isRtl ? event.clientX - left : right - event.clientX;
-    function onPointerMove(event: PointerEvent) {
-      const { width, right, left } = headerCell.getBoundingClientRect();
-      let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
-      newWidth = clampColumnWidth(newWidth, column);
-      if (width > 0 && newWidth !== width) {
-        onColumnResize(column, newWidth);
-      }
-    }
+    setResizingOffset(offset);
+  }
 
-    function onLostPointerCapture() {
-      currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
+  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (resizingOffset === undefined) return;
+    const { width, right, left } = event.currentTarget.parentElement!.getBoundingClientRect();
+    let newWidth = isRtl
+      ? right + resizingOffset - event.clientX
+      : event.clientX + resizingOffset - left;
+    newWidth = clampColumnWidth(newWidth, column);
+    if (width > 0 && newWidth !== width) {
+      onColumnResize(column, newWidth);
     }
+  }
 
-    currentTarget.setPointerCapture(pointerId);
-    currentTarget.addEventListener('pointermove', onPointerMove);
-    // we are not using pointerup because it does not fire in some cases
-    // pointer down -> alt+tab -> pointer up over another window -> pointerup event not fired
-    currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
+  function onLostPointerCapture() {
+    setResizingOffset(undefined);
   }
 
   function onDoubleClick() {
@@ -295,6 +295,10 @@ export default function HeaderCell<R, SR>({
           className={resizeHandleClassname}
           onClick={stopPropagation}
           onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          // we are not using pointerup because it does not fire in some cases
+          // pointer down -> alt+tab -> pointer up over another window -> pointerup event not fired
+          onLostPointerCapture={onLostPointerCapture}
           onDoubleClick={onDoubleClick}
         />
       )}
