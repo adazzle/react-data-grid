@@ -172,7 +172,8 @@ export default function HeaderCell<R, SR>({
       (key === 'ArrowLeft' || key === 'ArrowRight')
     ) {
       // prevent navigation
-      event.preventDefault();
+      // TODO: check if we can use `preventDefault` instead
+      event.stopPropagation();
       const { width } = event.currentTarget.getBoundingClientRect();
       const offset = key === 'ArrowLeft' ? -10 : 10;
       const newWidth = clampColumnWidth(width + offset, column);
