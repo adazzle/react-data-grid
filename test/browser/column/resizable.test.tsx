@@ -109,26 +109,31 @@ test('should resize column using keboard', async () => {
   await userEvent.keyboard('{Control>}{ArrowLeft}{/Control}');
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 200);
+  expect(onColumnResize).toHaveBeenCalledTimes(2);
 });
 
 test('should use the maxWidth if specified when resizing using keyboard', async () => {
-  setup<Row, unknown>({ columns, rows: [] });
+  const onColumnResize = vi.fn();
+  setup<Row, unknown>({ columns, rows: [], onColumnResize });
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px ' });
   const [, col2] = getHeaderCells();
   await userEvent.click(col2);
-  await userEvent.keyboard(`{Control>}${'{ArrowRight}'.repeat(30)}{/Control}`);
+  await userEvent.keyboard(`{Control>}${'{ArrowRight}'.repeat(22)}{/Control}`);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 400px' });
+  expect(onColumnResize).toHaveBeenCalledTimes(20);
 });
 
 test('should use the minWidth if specified resizing using keyboard', async () => {
-  setup<Row, unknown>({ columns, rows: [] });
+  const onColumnResize = vi.fn();
+  setup<Row, unknown>({ columns, rows: [], onColumnResize });
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   const [, col2] = getHeaderCells();
   await userEvent.click(col2);
-  await userEvent.keyboard(`{Control>}${'{ArrowLeft}'.repeat(15)}{/Control}`);
+  await userEvent.keyboard(`{Control>}${'{ArrowLeft}'.repeat(12)}{/Control}`);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+  expect(onColumnResize).toHaveBeenCalledTimes(10);
 });
 
 test('should auto resize column when resize handle is double clicked', async () => {
