@@ -265,7 +265,7 @@ type ResizeHandleProps<R, SR> = Pick<
 >;
 
 function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandleProps<R, SR>) {
-  const offsetRef = useRef<number>(undefined);
+  const resizingOffsetRef = useRef<number>(undefined);
   const isRtl = direction === 'rtl';
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -280,11 +280,11 @@ function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandle
     currentTarget.setPointerCapture(pointerId);
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
-    offsetRef.current = isRtl ? event.clientX - left : right - event.clientX;
+    resizingOffsetRef.current = isRtl ? event.clientX - left : right - event.clientX;
   }
 
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const offset = offsetRef.current;
+    const offset = resizingOffsetRef.current;
     if (offset === undefined) return;
     const { width, right, left } = event.currentTarget.parentElement!.getBoundingClientRect();
     let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
@@ -295,7 +295,7 @@ function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandle
   }
 
   function onLostPointerCapture() {
-    offsetRef.current = undefined;
+    resizingOffsetRef.current = undefined;
   }
 
   function onDoubleClick() {
