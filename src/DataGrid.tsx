@@ -891,7 +891,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     );
   }
 
-  function cancelEditMode() {
+  function cancelEditing() {
     setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
   }
 
@@ -904,10 +904,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
     const closeEditor = (shouldFocusCell: boolean) => {
       if (shouldFocusCell) {
-        flushSync(cancelEditMode);
+        flushSync(cancelEditing);
         focusCellOrCellContent();
       } else {
-        cancelEditMode();
+        cancelEditing();
       }
     };
 
@@ -919,7 +919,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         // SELECT and this results in onRowChange getting called twice.
         flushSync(() => {
           updateRow(column, selectedPosition.rowIdx, row);
-          cancelEditMode();
+          cancelEditing();
         });
         if (shouldFocusCell) {
           focusCellOrCellContent();
@@ -931,7 +931,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
     if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
-      cancelEditMode();
+      cancelEditing();
     }
 
     return (
