@@ -8,6 +8,7 @@ import {
   getCellStyle,
   getHeaderCellRowSpan,
   getHeaderCellStyle,
+  isCtrlKeyHeldDown,
   stopPropagation
 } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
@@ -160,10 +161,23 @@ export default function HeaderCell<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
-    if (event.key === ' ' || event.key === 'Enter') {
+    const { key } = event;
+    if (sortable && (key === ' ' || key === 'Enter')) {
       // prevent scrolling
       event.preventDefault();
       onSort(event.ctrlKey || event.metaKey);
+    } else if (
+      resizable &&
+      isCtrlKeyHeldDown(event) &&
+      (key === 'ArrowLeft' || key === 'ArrowRight')
+    ) {
+      event.preventDefault();
+      const { width } = event.currentTarget.getBoundingClientRect();
+      const offset = key === 'ArrowLeft' ? -10 : 10;
+      const newWidth = clampColumnWidth(width + offset, column);
+      if (newWidth !== width) {
+        onColumnResize(column, newWidth);
+      }
     }
   }
 
@@ -242,7 +256,7 @@ export default function HeaderCell<R, SR>({
       }}
       onFocus={handleFocus}
       onClick={onClick}
-      onKeyDown={sortable ? onKeyDown : undefined}
+      onKeyDown={sortable || resizable ? onKeyDown : undefined}
       {...draggableProps}
     >
       {column.renderHeaderCell({

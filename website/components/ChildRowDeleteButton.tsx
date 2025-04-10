@@ -51,6 +51,7 @@ export function ChildRowDeleteButton({
 }: ChildRowDeleteButtonProps) {
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === 'Enter') {
+      // prevent scrolling
       e.preventDefault();
       onDeleteSubRow();
     }

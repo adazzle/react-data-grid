@@ -590,6 +590,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.isDefaultPrevented()) return;
+
     const { idx, rowIdx, mode } = selectedPosition;
     if (mode === 'EDIT') return;
 
@@ -721,7 +723,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
       const rowKey = rowKeyGetter(row);
       selectRow({ row, checked: !selectedRows.has(rowKey), isShiftClick: false });
-      // do not scroll
+      // prevent scrolling
       event.preventDefault();
       return;
     }
