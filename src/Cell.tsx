@@ -5,21 +5,9 @@ import { useRovingTabIndex } from './hooks';
 import { createCellEvent, getCellClassname, getCellStyle, isCellEditableUtil } from './utils';
 import type { CellRendererProps } from './types';
 
-const cellCopied = css`
-  @layer rdg.Cell {
-    background-color: #ccccff;
-  }
-`;
-
-const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
-
 const cellDraggedOver = css`
   @layer rdg.Cell {
     background-color: #ccccff;
-
-    &.${cellCopied} {
-      background-color: #9999ff;
-    }
   }
 `;
 
@@ -29,7 +17,6 @@ function Cell<R, SR>({
   column,
   colSpan,
   isCellSelected,
-  isCopied,
   isDraggedOver,
   row,
   rowIdx,
@@ -48,7 +35,6 @@ function Cell<R, SR>({
   className = getCellClassname(
     column,
     {
-      [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
