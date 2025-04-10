@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -281,7 +281,7 @@ type ResizeHandleProps<R, SR> = Pick<
 >;
 
 function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandleProps<R, SR>) {
-  const [resizingOffset, setResizingOffset] = useState<number>();
+  const offsetRef = useRef<number>(undefined);
   const isRtl = direction === 'rtl';
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -296,16 +296,14 @@ function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandle
     currentTarget.setPointerCapture(pointerId);
     const headerCell = currentTarget.parentElement!;
     const { right, left } = headerCell.getBoundingClientRect();
-    const offset = isRtl ? event.clientX - left : right - event.clientX;
-    setResizingOffset(offset);
+    offsetRef.current = isRtl ? event.clientX - left : right - event.clientX;
   }
 
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (resizingOffset === undefined) return;
+    const offset = offsetRef.current;
+    if (offset === undefined) return;
     const { width, right, left } = event.currentTarget.parentElement!.getBoundingClientRect();
-    let newWidth = isRtl
-      ? right + resizingOffset - event.clientX
-      : event.clientX + resizingOffset - left;
+    let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
     newWidth = clampColumnWidth(newWidth, column);
     if (width > 0 && newWidth !== width) {
       onColumnResize(column, newWidth);
@@ -313,7 +311,7 @@ function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandle
   }
 
   function onLostPointerCapture() {
-    setResizingOffset(undefined);
+    offsetRef.current = undefined;
   }
 
   function onDoubleClick() {
