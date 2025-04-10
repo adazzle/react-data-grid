@@ -855,7 +855,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       cellNavigationMode = 'CHANGE_ROW';
     }
 
-    // Do not allow focus to leave and prevent scrolling
+    // prevent scrolling and do not allow focus to leave
     event.preventDefault();
 
     const ctrlKey = isCtrlKeyHeldDown(event);

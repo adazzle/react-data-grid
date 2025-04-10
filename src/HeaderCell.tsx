@@ -207,6 +207,7 @@ export default function HeaderCell<R, SR>({
     if (event.dataTransfer.types.includes(dragDropKey.toLowerCase())) {
       const sourceKey = event.dataTransfer.getData(dragDropKey.toLowerCase());
       if (sourceKey !== column.key) {
+        // prevent the browser from redirecting in some cases
         event.preventDefault();
         onColumnsReorder?.(sourceKey, column.key);
       }
