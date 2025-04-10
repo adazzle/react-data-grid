@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../src';
-import type { Column, PasteEvent } from '../../src';
-import { copySelectedCell, getCellsAtRowIndex, getSelectedCell, pasteSelectedCell } from './utils';
+import type { CellPasteEvent, Column } from '../../src';
+import { getCellsAtRowIndex, getSelectedCell } from './utils';
 
 interface Row {
   col: string;
@@ -41,23 +41,14 @@ const bottomSummaryRows: readonly Row[] = [
   }
 ];
 
-const copyCellClassName = 'rdg-cell-copied';
-const onPasteSpy = vi.fn();
-const onCopySpy = vi.fn();
+const onCellCopySpy = vi.fn();
+const onCellPasteSpy = vi.fn(({ column, row }: CellPasteEvent<Row, Row>) => {
+  const columnKey = column.key;
+  return { ...row, [columnKey]: row[columnKey as keyof Row] };
+});
 
-function CopyPasteTest({
-  onPasteCallback = true,
-  onCopyCallback = false
-}: {
-  onPasteCallback?: boolean;
-  onCopyCallback?: boolean;
-}) {
+function CopyPasteTest() {
   const [rows, setRows] = useState(initialRows);
-
-  function onPaste({ sourceColumnKey, sourceRow, targetColumnKey, targetRow }: PasteEvent<Row>) {
-    onPasteSpy();
-    return { ...targetRow, [targetColumnKey]: sourceRow[sourceColumnKey as keyof Row] };
-  }
 
   return (
     <DataGrid
@@ -65,135 +56,77 @@ function CopyPasteTest({
       rows={rows}
       bottomSummaryRows={bottomSummaryRows}
       onRowsChange={setRows}
-      onPaste={onPasteCallback ? onPaste : undefined}
-      onCopy={onCopyCallback ? onCopySpy : undefined}
+      onCellCopy={onCellCopySpy}
+      onCellPaste={onCellPasteSpy}
     />
   );
 }
 
-function setup(onPasteCallback = true, onCopyCallback = false) {
-  onPasteSpy.mockReset();
-  onCopySpy.mockReset();
-  page.render(<CopyPasteTest onPasteCallback={onPasteCallback} onCopyCallback={onCopyCallback} />);
+function setup() {
+  onCellCopySpy.mockClear();
+  onCellPasteSpy.mockClear();
+  page.render(<CopyPasteTest />);
 }
 
-test('should not allow copy/paste if onPaste & onCopy is undefined', async () => {
-  setup(false, false);
+test('should call onCellCopy on cell copy', async () => {
+  setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  expect(onCopySpy).not.toHaveBeenCalled();
-  await userEvent.keyboard('{arrowdown}');
-  await pasteSelectedCell();
-  await userEvent.keyboard('{escape}');
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
-  expect(onPasteSpy).not.toHaveBeenCalled();
+  await userEvent.copy();
+  expect(onCellCopySpy).toHaveBeenCalledExactlyOnceWith(
+    {
+      row: initialRows[0],
+      column: expect.objectContaining(columns[0])
+    },
+    expect.anything()
+  );
 });
 
-test('should allow copy if only onCopy is specified', async () => {
-  setup(false, true);
+test('should call onCellPaste on cell paste', async () => {
+  setup();
   await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  expect(onCopySpy).toHaveBeenCalledExactlyOnceWith({
-    sourceRow: initialRows[0],
-    sourceColumnKey: 'col'
-  });
-  await userEvent.keyboard('{arrowdown}');
-  await pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
-  expect(onPasteSpy).not.toHaveBeenCalled();
-});
-
-test('should allow copy/paste if only onPaste is specified', async () => {
-  setup(true, false);
-  await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  expect(onCopySpy).not.toHaveBeenCalled();
-  await userEvent.keyboard('{arrowdown}');
-  await pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
-  expect(onPasteSpy).toHaveBeenCalledOnce();
-});
-
-test('should allow copy/paste if both onPaste & onCopy is specified', async () => {
-  setup(true, true);
-  await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  expect(onCopySpy).toHaveBeenCalledExactlyOnceWith({
-    sourceRow: initialRows[0],
-    sourceColumnKey: 'col'
-  });
-  await userEvent.keyboard('{arrowdown}');
-  await pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
-  expect(onPasteSpy).toHaveBeenCalledOnce();
+  await userEvent.paste();
+  expect(onCellPasteSpy).toHaveBeenCalledExactlyOnceWith(
+    {
+      row: initialRows[0],
+      column: expect.objectContaining(columns[0])
+    },
+    expect.anything()
+  );
 });
 
 test('should not allow paste on readonly cells', async () => {
   setup();
-  await userEvent.click(getCellsAtRowIndex(1)[0]);
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  await userEvent.keyboard('{arrowdown}');
-  await pasteSelectedCell();
-  expect(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
+  await userEvent.click(getCellsAtRowIndex(2)[0]);
+  await userEvent.paste();
+  expect(onCellPasteSpy).not.toHaveBeenCalled();
 });
 
-test('should allow copying a readonly cell, and pasting the value into a writable cell', async () => {
+test('should allow copying a readonly cell', async () => {
   setup();
   await userEvent.click(getCellsAtRowIndex(2)[0]);
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  await userEvent.keyboard('{arrowup}');
-  await pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a3');
+  await userEvent.copy();
+  expect(onCellCopySpy).toHaveBeenCalledExactlyOnceWith(
+    {
+      row: initialRows[2],
+      column: expect.objectContaining(columns[0])
+    },
+    expect.anything()
+  );
 });
 
-test('should cancel copy/paste on escape', async () => {
-  setup();
-  await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).toHaveClass(copyCellClassName);
-  await userEvent.keyboard('{escape}');
-  await expect.element(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  await userEvent.keyboard('{arrowdown}');
-  await pasteSelectedCell();
-  expect(getCellsAtRowIndex(1)[0]).toHaveTextContent('a2');
-});
-
-test('should not allow copy on header or summary cells', async () => {
+test('should not allow copy/paste on header or summary cells', async () => {
   setup();
   await userEvent.tab();
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  await userEvent.keyboard('{arrowdown}');
-  await pasteSelectedCell();
-  await expect.element(getSelectedCell()).toHaveTextContent('a1');
-  expect(onPasteSpy).not.toHaveBeenCalled();
-  await userEvent.keyboard('{Control>}{end}');
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).not.toHaveClass(copyCellClassName);
-  await userEvent.keyboard('{arrowup}');
-  await pasteSelectedCell();
-  await expect.element(getSelectedCell()).toHaveTextContent('a3');
-  expect(onPasteSpy).not.toHaveBeenCalled();
-});
+  await userEvent.copy();
+  expect(onCellCopySpy).not.toHaveBeenCalled();
+  await userEvent.paste();
+  expect(onCellPasteSpy).not.toHaveBeenCalled();
 
-test('should not allow paste on header or summary cells', async () => {
-  setup();
-  await userEvent.click(getCellsAtRowIndex(0)[0]);
-  await copySelectedCell();
-  await userEvent.keyboard('{arrowup}');
-  await pasteSelectedCell();
-  await expect.element(getSelectedCell()).toHaveTextContent('Col');
-  expect(onPasteSpy).not.toHaveBeenCalled();
   await userEvent.keyboard('{Control>}{end}');
-  await pasteSelectedCell();
-  await expect.element(getSelectedCell()).toHaveTextContent('s1');
-  expect(onPasteSpy).not.toHaveBeenCalled();
+  await userEvent.copy();
+  expect(onCellCopySpy).not.toHaveBeenCalled();
+  await userEvent.paste();
+  expect(onCellPasteSpy).not.toHaveBeenCalled();
 });
 
 test('should not start editing when pressing ctrl+<input key>', async () => {

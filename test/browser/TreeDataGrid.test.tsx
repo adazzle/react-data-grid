@@ -5,16 +5,7 @@ import type { Column } from '../../src';
 import { SelectColumn, textEditor, TreeDataGrid } from '../../src';
 import { focusSinkClassname } from '../../src/style/core';
 import { rowSelected } from '../../src/style/row';
-import type { PasteEvent } from '../../src/types';
-import {
-  copySelectedCell,
-  getCellsAtRowIndex,
-  getHeaderCells,
-  getRows,
-  getSelectedCell,
-  getTreeGrid,
-  pasteSelectedCell
-} from './utils';
+import { getCellsAtRowIndex, getHeaderCells, getRows, getSelectedCell, getTreeGrid } from './utils';
 
 const rowSelectedClassname = 'rdg-row-selected';
 
@@ -87,6 +78,9 @@ const initialRows: readonly Row[] = [
   }
 ];
 
+const onCellCopySpy = vi.fn();
+const onCellPasteSpy = vi.fn(({ row }: { row: Row }) => row);
+
 function rowKeyGetter(row: Row) {
   return row.id;
 }
@@ -97,13 +91,6 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
   const [expandedGroupIds, setExpandedGroupIds] = useState(
     (): ReadonlySet<unknown> => new Set<unknown>([])
   );
-
-  function onPaste(event: PasteEvent<Row>) {
-    return {
-      ...event.targetRow,
-      [event.targetColumnKey]: event.sourceRow[event.sourceColumnKey as keyof Row]
-    };
-  }
 
   return (
     <TreeDataGrid
@@ -119,7 +106,8 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
       expandedGroupIds={expandedGroupIds}
       onExpandedGroupIdsChange={setExpandedGroupIds}
       onRowsChange={setRows}
-      onPaste={onPaste}
+      onCellCopy={onCellCopySpy}
+      onCellPaste={onCellPasteSpy}
     />
   );
 }
@@ -131,6 +119,8 @@ function rowGrouper(rows: readonly Row[], columnKey: string) {
 }
 
 function setup(groupBy: string[]) {
+  onCellCopySpy.mockClear();
+  onCellPasteSpy.mockClear();
   page.render(<TestGrid groupBy={groupBy} />);
 }
 
@@ -380,13 +370,36 @@ test('cell navigation in a treegrid', async () => {
 test('copy/paste when grouping is enabled', async () => {
   setup(['year']);
   await userEvent.click(page.getByRole('gridcell', { name: '2021' }));
+  await userEvent.copy();
+  expect(onCellCopySpy).not.toHaveBeenCalled();
+  await userEvent.paste();
+  expect(onCellPasteSpy).not.toHaveBeenCalled();
+
   await userEvent.click(page.getByRole('gridcell', { name: 'USA' }));
-  await copySelectedCell();
-  await expect.element(getSelectedCell()).toHaveClass('rdg-cell-copied');
-  await userEvent.keyboard('{arrowdown}');
-  await expect.element(getSelectedCell()).toHaveTextContent('Canada');
-  await pasteSelectedCell();
-  await expect.element(getSelectedCell()).toHaveTextContent('USA');
+  await userEvent.copy();
+  expect(onCellCopySpy).toHaveBeenCalledExactlyOnceWith(
+    {
+      column: expect.objectContaining(columns[2]),
+      row: {
+        country: 'USA',
+        id: 2,
+        year: 2021
+      }
+    },
+    expect.anything()
+  );
+  await userEvent.paste();
+  expect(onCellPasteSpy).toHaveBeenCalledExactlyOnceWith(
+    {
+      column: expect.objectContaining(columns[2]),
+      row: {
+        country: 'USA',
+        id: 2,
+        year: 2021
+      }
+    },
+    expect.anything()
+  );
 });
 
 test('update row using cell renderer', async () => {
