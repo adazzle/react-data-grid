@@ -85,10 +85,8 @@ export default function HeaderCell<R, SR>({
   direction,
   dragDropKey
 }: HeaderCellProps<R, SR>) {
-  const hasDoubleClickedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
-  const isRtl = direction === 'rtl';
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
@@ -107,50 +105,6 @@ export default function HeaderCell<R, SR>({
     [cellDraggingClassname]: isDragging,
     [cellOverClassname]: isOver
   });
-
-  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === 'mouse' && event.buttons !== 1) {
-      return;
-    }
-
-    // Fix column resizing on a draggable column in FF
-    event.preventDefault();
-
-    const { currentTarget, pointerId } = event;
-    const headerCell = currentTarget.parentElement!;
-    const { right, left } = headerCell.getBoundingClientRect();
-    const offset = isRtl ? event.clientX - left : right - event.clientX;
-    hasDoubleClickedRef.current = false;
-
-    function onPointerMove(event: PointerEvent) {
-      const { width, right, left } = headerCell.getBoundingClientRect();
-      let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
-      newWidth = clampColumnWidth(newWidth, column);
-      if (width > 0 && newWidth !== width) {
-        onColumnResize(column, newWidth);
-      }
-    }
-
-    function onLostPointerCapture(event: PointerEvent) {
-      // Handle final pointer position that may have been skipped by coalesced pointer move events.
-      // Skip move pointer handling if the user double-clicked.
-      if (!hasDoubleClickedRef.current) {
-        onPointerMove(event);
-      }
-
-      currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
-    }
-
-    currentTarget.setPointerCapture(pointerId);
-    currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
-  }
-
-  function onDoubleClick() {
-    hasDoubleClickedRef.current = true;
-    onColumnResize(column, 'max-content');
-  }
 
   function onSort(ctrlClick: boolean) {
     if (onSortColumnsChange == null) return;
@@ -299,14 +253,66 @@ export default function HeaderCell<R, SR>({
       })}
 
       {resizable && (
-        <div
-          className={resizeHandleClassname}
-          onClick={stopPropagation}
-          onPointerDown={onPointerDown}
-          onDoubleClick={onDoubleClick}
-        />
+        <ResizeHandle column={column} onColumnResize={onColumnResize} direction={direction} />
       )}
     </div>
+  );
+}
+
+type ResizeHandleProps<R, SR> = Pick<
+  HeaderCellProps<R, SR>,
+  'column' | 'onColumnResize' | 'direction'
+>;
+
+function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandleProps<R, SR>) {
+  const resizingOffsetRef = useRef<number>(undefined);
+  const isRtl = direction === 'rtl';
+
+  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse' && event.buttons !== 1) {
+      return;
+    }
+
+    // Fix column resizing on a draggable column in FF
+    event.preventDefault();
+
+    const { currentTarget, pointerId } = event;
+    currentTarget.setPointerCapture(pointerId);
+    const headerCell = currentTarget.parentElement!;
+    const { right, left } = headerCell.getBoundingClientRect();
+    resizingOffsetRef.current = isRtl ? event.clientX - left : right - event.clientX;
+  }
+
+  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const offset = resizingOffsetRef.current;
+    if (offset === undefined) return;
+    const { width, right, left } = event.currentTarget.parentElement!.getBoundingClientRect();
+    let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
+    newWidth = clampColumnWidth(newWidth, column);
+    if (width > 0 && newWidth !== width) {
+      onColumnResize(column, newWidth);
+    }
+  }
+
+  function onLostPointerCapture() {
+    resizingOffsetRef.current = undefined;
+  }
+
+  function onDoubleClick() {
+    onColumnResize(column, 'max-content');
+  }
+
+  return (
+    <div
+      className={resizeHandleClassname}
+      onClick={stopPropagation}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      // we are not using pointerup because it does not fire in some cases
+      // pointer down -> alt+tab -> pointer up over another window -> pointerup event not fired
+      onLostPointerCapture={onLostPointerCapture}
+      onDoubleClick={onDoubleClick}
+    />
   );
 }
 

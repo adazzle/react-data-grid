@@ -52,10 +52,16 @@ export function isCtrlKeyHeldDown(e: React.KeyboardEvent): boolean {
   return (e.ctrlKey || e.metaKey) && e.key !== 'Control';
 }
 
-export function isDefaultCellInput(event: React.KeyboardEvent<HTMLDivElement>): boolean {
-  const vKey = 86;
+// event.key may differ by keyboard input language, so we use event.keyCode instead
+// event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
+const vKey = 86;
+
+export function isDefaultCellInput(
+  event: React.KeyboardEvent<HTMLDivElement>,
+  isUserHandlingPaste: boolean
+): boolean {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  if (isCtrlKeyHeldDown(event) && event.keyCode !== vKey) return false;
+  if (isCtrlKeyHeldDown(event) && (event.keyCode !== vKey || isUserHandlingPaste)) return false;
   return !nonInputKeys.has(event.key);
 }
 

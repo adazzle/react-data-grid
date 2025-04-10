@@ -2,10 +2,13 @@ import { useCallback, useMemo } from 'react';
 import type { Key } from 'react';
 
 import { useLatestFunc } from './hooks';
-import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
+import { assertIsValidKeyGetter } from './utils';
 import type {
+  CellClipboardEvent,
+  CellCopyEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
+  CellPasteEvent,
   Column,
   GroupRow,
   Maybe,
@@ -53,6 +56,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   rowHeight: rawRowHeight,
   rowKeyGetter: rawRowKeyGetter,
   onCellKeyDown: rawOnCellKeyDown,
+  onCellCopy: rawOnCellCopy,
+  onCellPaste: rawOnCellPaste,
   onRowsChange,
   selectedRows: rawSelectedRows,
   onSelectedRowsChange: rawOnSelectedRowsChange,
@@ -318,12 +323,23 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
         selectCell({ idx, rowIdx: parentRowAndIndex[1] });
       }
     }
+  }
 
-    // Prevent copy/paste on group rows
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
-      event.preventGridDefault();
+  // Prevent copy/paste on group rows
+  function handleCellCopy(
+    { row, column }: CellCopyEvent<NoInfer<R>, NoInfer<SR>>,
+    event: CellClipboardEvent
+  ) {
+    if (!isGroupRow(row)) {
+      rawOnCellCopy?.({ row, column }, event);
     }
+  }
+
+  function handleCellPaste(
+    { row, column }: CellPasteEvent<NoInfer<R>, NoInfer<SR>>,
+    event: CellClipboardEvent
+  ) {
+    return isGroupRow(row) ? row : rawOnCellPaste!({ row, column }, event);
   }
 
   function handleRowsChange(updatedRows: R[], { indexes, column }: RowsChangeData<R, SR>) {
@@ -361,7 +377,6 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       onCellContextMenu,
       onRowChange,
       lastFrozenColumnIndex,
-      copiedCellIdx,
       draggedOverCellIdx,
       setDraggedOverRowIdx,
       selectedCellEditor,
@@ -400,7 +415,6 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       onCellContextMenu,
       onRowChange,
       lastFrozenColumnIndex,
-      copiedCellIdx,
       draggedOverCellIdx,
       setDraggedOverRowIdx,
       selectedCellEditor
@@ -422,6 +436,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       onCellKeyDown={handleKeyDown}
+      onCellCopy={handleCellCopy}
+      onCellPaste={rawOnCellPaste ? handleCellPaste : undefined}
       renderers={{
         ...renderers,
         renderRow

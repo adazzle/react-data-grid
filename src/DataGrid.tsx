@@ -39,18 +39,19 @@ import {
 import type {
   CalculatedColumn,
   CellClickArgs,
+  CellClipboardEvent,
+  CellCopyEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
   CellMouseEvent,
   CellNavigationMode,
+  CellPasteEvent,
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
-  CopyEvent,
   Direction,
   FillEvent,
   Maybe,
-  PasteEvent,
   Position,
   Renderers,
   RowsChangeData,
@@ -175,8 +176,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
   defaultColumnOptions?: Maybe<DefaultColumnOptions<NoInfer<R>, NoInfer<SR>>>;
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
-  onCopy?: Maybe<(event: CopyEvent<NoInfer<R>>) => void>;
-  onPaste?: Maybe<(event: PasteEvent<NoInfer<R>>) => NoInfer<R>>;
 
   /**
    * Event props
@@ -195,6 +194,12 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   >;
   onCellKeyDown?: Maybe<
     (args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void
+  >;
+  onCellCopy?: Maybe<
+    (args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
+  >;
+  onCellPaste?: Maybe<
+    (args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
   >;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<NoInfer<R>, NoInfer<SR>>) => void>;
@@ -260,8 +265,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     onColumnResize,
     onColumnsReorder,
     onFill,
-    onCopy,
-    onPaste,
+    onCellCopy,
+    onCellPaste,
     // Toggles and modes
     enableVirtualization: rawEnableVirtualization,
     // Miscellaneous
@@ -310,7 +315,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
     (): ReadonlyMap<string, number> => new Map()
   );
-  const [copiedCell, setCopiedCell] = useState<{ row: R; columnKey: string } | null>(null);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
@@ -590,39 +594,13 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       );
       if (cellEvent.isGridDefaultPrevented()) return;
     }
+
     if (!(event.target instanceof Element)) return;
     const isCellEvent = event.target.closest('.rdg-cell') !== null;
     const isRowEvent = isTreeGrid && event.target === focusSinkRef.current;
     if (!isCellEvent && !isRowEvent) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const { keyCode } = event;
-
-    if (
-      selectedCellIsWithinViewportBounds &&
-      (onPaste != null || onCopy != null) &&
-      isCtrlKeyHeldDown(event)
-    ) {
-      // event.key may differ by keyboard input language, so we use event.keyCode instead
-      // event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
-      const cKey = 67;
-      const vKey = 86;
-      if (keyCode === cKey) {
-        // copy highlighted text only
-        if (window.getSelection()?.isCollapsed === false) return;
-        handleCopy();
-        return;
-      }
-      if (keyCode === vKey) {
-        handlePaste();
-        return;
-      }
-    }
-
     switch (event.key) {
-      case 'Escape':
-        setCopiedCell(null);
-        return;
       case 'ArrowUp':
       case 'ArrowDown':
       case 'ArrowLeft':
@@ -666,31 +644,21 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     updateRow(columns[selectedPosition.idx], selectedPosition.rowIdx, selectedPosition.row);
   }
 
-  function handleCopy() {
+  function handleCellCopy(event: CellClipboardEvent) {
+    if (!selectedCellIsWithinViewportBounds) return;
     const { idx, rowIdx } = selectedPosition;
-    const sourceRow = rows[rowIdx];
-    const sourceColumnKey = columns[idx].key;
-    setCopiedCell({ row: sourceRow, columnKey: sourceColumnKey });
-    onCopy?.({ sourceRow, sourceColumnKey });
+    onCellCopy?.({ row: rows[rowIdx], column: columns[idx] }, event);
   }
 
-  function handlePaste() {
-    if (!onPaste || !onRowsChange || copiedCell === null || !isCellEditable(selectedPosition)) {
+  function handleCellPaste(event: CellClipboardEvent) {
+    if (!onCellPaste || !onRowsChange || !isCellEditable(selectedPosition)) {
       return;
     }
 
     const { idx, rowIdx } = selectedPosition;
-    const targetColumn = columns[idx];
-    const targetRow = rows[rowIdx];
-
-    const updatedTargetRow = onPaste({
-      sourceRow: copiedCell.row,
-      sourceColumnKey: copiedCell.columnKey,
-      targetRow,
-      targetColumnKey: targetColumn.key
-    });
-
-    updateRow(targetColumn, rowIdx, updatedTargetRow);
+    const column = columns[idx];
+    const updatedRow = onCellPaste({ row: rows[rowIdx], column }, event);
+    updateRow(column, rowIdx, updatedRow);
   }
 
   function handleCellInput(event: KeyboardEvent<HTMLDivElement>) {
@@ -708,7 +676,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       return;
     }
 
-    if (isCellEditable(selectedPosition) && isDefaultCellInput(event)) {
+    if (isCellEditable(selectedPosition) && isDefaultCellInput(event, onCellPaste != null)) {
       setSelectedPosition(({ idx, rowIdx }) => ({
         idx,
         rowIdx,
@@ -1056,11 +1024,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           onCellContextMenu: onCellContextMenuLatest,
           rowClass,
           gridRowStart,
-          copiedCellIdx:
-            copiedCell !== null && copiedCell.row === row
-              ? columns.findIndex((c) => c.key === copiedCell.columnKey)
-              : undefined,
-
           selectedCellIdx: selectedRowIdx === rowIdx ? selectedIdx : undefined,
           draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
           setDraggedOverRowIdx: isDragging ? setDraggedOverRowIdx : undefined,
@@ -1140,6 +1103,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
+      onCopy={handleCellCopy}
+      onPaste={handleCellPaste}
       data-testid={testId}
       data-cy={dataCy}
     >
