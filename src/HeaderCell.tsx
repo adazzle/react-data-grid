@@ -257,7 +257,7 @@ export default function HeaderCell<R, SR>({
       }}
       onFocus={handleFocus}
       onClick={onClick}
-      onKeyDown={sortable || resizable ? onKeyDown : undefined}
+      onKeyDown={onKeyDown}
       {...draggableProps}
     >
       {column.renderHeaderCell({
