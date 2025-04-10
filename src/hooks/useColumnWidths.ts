@@ -146,7 +146,7 @@ function getColumnWidthForMeasurement<R, SR>(
     : `max(${minWidth}px, ${widthWithUnit})`;
 
   // clamp() and max() do not handle all the css grid column width values
-  if (isValidCSSGridColumnWidth(clampedWidth)) {
+  if (isValidCSSGridColumn(clampedWidth)) {
     return clampedWidth;
   }
 
@@ -161,14 +161,14 @@ function getColumnWidthForMeasurement<R, SR>(
     // We are setting maxWidth on the measuring cell but the browser only applies
     // it after all the widths are calculated. This results in left over space in some cases.
     const minMaxWidth = `minmax(${widthWithUnit}, ${maxWidth}px)`;
-    if (isValidCSSGridColumnWidth(minMaxWidth)) {
+    if (isValidCSSGridColumn(minMaxWidth)) {
       return minMaxWidth;
     }
   }
 
-  return isValidCSSGridColumnWidth(widthWithUnit) ? widthWithUnit : 'auto';
+  return isValidCSSGridColumn(widthWithUnit) ? widthWithUnit : 'auto';
 }
 
-function isValidCSSGridColumnWidth(width: string) {
+function isValidCSSGridColumn(width: string) {
   return CSS.supports('grid-template-columns', width);
 }
