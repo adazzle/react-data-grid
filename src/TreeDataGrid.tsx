@@ -5,9 +5,10 @@ import { useLatestFunc } from './hooks';
 import { assertIsValidKeyGetter } from './utils';
 import type {
   CellClipboardEvent,
-  CellCopyPasteEvent,
+  CellCopyEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
+  CellPasteEvent,
   Column,
   GroupRow,
   Maybe,
@@ -326,7 +327,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
 
   // Prevent copy/paste on group rows
   function handleCellCopy(
-    { row, column }: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>,
+    { row, column }: CellCopyEvent<NoInfer<R>, NoInfer<SR>>,
     event: CellClipboardEvent
   ) {
     if (!isGroupRow(row)) {
@@ -335,7 +336,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   }
 
   function handleCellPaste(
-    { row, column }: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>,
+    { row, column }: CellPasteEvent<NoInfer<R>, NoInfer<SR>>,
     event: CellClipboardEvent
   ) {
     return isGroupRow(row) ? row : rawOnCellPaste!({ row, column }, event);

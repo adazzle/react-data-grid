@@ -34,7 +34,6 @@ export type {
   SelectHeaderRowEvent,
   SelectRowEvent,
   FillEvent,
-  CellCopyPasteEvent,
   SortDirection,
   SortColumn,
   ColSpanArgs,
@@ -48,5 +47,7 @@ export type {
   CellClickArgs,
   CellKeyDownArgs,
   CellKeyboardEvent,
+  CellCopyEvent,
+  CellPasteEvent,
   CellSelectArgs
 } from './types';

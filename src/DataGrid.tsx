@@ -40,11 +40,12 @@ import type {
   CalculatedColumn,
   CellClickArgs,
   CellClipboardEvent,
-  CellCopyPasteEvent,
+  CellCopyEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
   CellMouseEvent,
   CellNavigationMode,
+  CellPasteEvent,
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
@@ -195,10 +196,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
     (args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void
   >;
   onCellCopy?: Maybe<
-    (args: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
+    (args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
   >;
   onCellPaste?: Maybe<
-    (args: CellCopyPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
+    (args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
   >;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<NoInfer<R>, NoInfer<SR>>) => void>;

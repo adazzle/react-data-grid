@@ -253,10 +253,13 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
-export interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
+interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
 }
+
+export type CellCopyEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
+export type CellPasteEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
 
 export interface GroupRow<TRow> {
   readonly childRows: readonly TRow[];

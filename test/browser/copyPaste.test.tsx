@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../src';
-import type { CellCopyPasteEvent, Column } from '../../src';
+import type { CellPasteEvent, Column } from '../../src';
 import { getCellsAtRowIndex, getSelectedCell } from './utils';
 
 interface Row {
@@ -42,7 +42,7 @@ const bottomSummaryRows: readonly Row[] = [
 ];
 
 const onCellCopySpy = vi.fn();
-const onCellPasteSpy = vi.fn(({ column, row }: CellCopyPasteEvent<Row, Row>) => {
+const onCellPasteSpy = vi.fn(({ column, row }: CellPasteEvent<Row, Row>) => {
   const columnKey = column.key;
   return { ...row, [columnKey]: row[columnKey as keyof Row] };
 });
