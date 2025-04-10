@@ -282,10 +282,6 @@ function MyGrid() {
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
-###### `onCopy?: Maybe<(event: CopyEvent<R>) => void>`
-
-###### `onPaste?: Maybe<(event: PasteEvent<R>) => R>`
-
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
 Triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
@@ -380,6 +376,14 @@ function onCellKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
 ```
 
 Check [more examples](website/routes/CellNavigation.lazy.tsx)
+
+###### `onCellCopy?: Maybe<(args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
+
+A function called when copy event is triggered on a cell
+
+###### `onCellPaste?: Maybe<(args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
+
+A function called when paste event is triggered on a cell
 
 ###### `onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
 
