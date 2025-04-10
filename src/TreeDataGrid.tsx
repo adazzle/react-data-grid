@@ -305,7 +305,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
         // Expand the current group row if it is focused and is in collapsed state
         (event.key === rightKey && !row.isExpanded))
     ) {
-      //prevent scrolling
+      // prevent scrolling
       event.preventDefault();
       event.preventGridDefault();
       toggleGroup(row.id);
