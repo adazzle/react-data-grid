@@ -171,6 +171,7 @@ export default function HeaderCell<R, SR>({
       isCtrlKeyHeldDown(event) &&
       (key === 'ArrowLeft' || key === 'ArrowRight')
     ) {
+      // prevent navigation
       event.preventDefault();
       const { width } = event.currentTarget.getBoundingClientRect();
       const offset = key === 'ArrowLeft' ? -10 : 10;

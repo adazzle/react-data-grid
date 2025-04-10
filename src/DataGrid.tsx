@@ -590,6 +590,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    // preventDefault if the event is handled by a cell
     if (event.isDefaultPrevented()) return;
 
     const { idx, rowIdx, mode } = selectedPosition;
