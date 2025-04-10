@@ -84,7 +84,7 @@ test('should use the maxWidth if specified', async () => {
   const [, col2] = getHeaderCells();
   await resize({ column: col2, resizeBy: 1000 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 400px' });
-  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 400);
+  expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(columns[1]), 400);
 });
 
 test('should use the minWidth if specified', async () => {
