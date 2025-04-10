@@ -375,7 +375,7 @@ function onCellKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
 }
 ```
 
-Check [more examples](website/routes/CellNavigation.lazy.tsx)
+Check [more examples](website/routes/CellNavigation.tsx)
 
 ###### `onCellCopy?: Maybe<(args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
 
