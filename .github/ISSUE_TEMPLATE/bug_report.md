@@ -4,7 +4,6 @@ about: Create a bug report
 title: ''
 labels: Feature Request
 assignees: ''
-
 ---
 
 ## Describe the bug <!-- A clear and concise description of what the bug is. -->
@@ -17,6 +16,7 @@ assignees: ''
 ## Expected behavior <!-- A clear and concise description of what you expected to happen. -->
 
 ## Link to Minimal Reproducible Example
+
 <!-- Link to a playground, StackBlitz, or GitHub repo with a minimal reproduction of the problem. A minimal reproduction is required.  -->
 
 ## Environment
