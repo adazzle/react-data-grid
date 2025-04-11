@@ -459,6 +459,8 @@ function rowClass(row: Row, rowIdx: number) {
 }
 ```
 
+###### `headerRowClass?: Maybe<string>>`
+
 ###### `direction?: Maybe<'ltr' | 'rtl'>`
 
 This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
