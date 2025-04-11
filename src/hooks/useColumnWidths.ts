@@ -29,28 +29,26 @@ export function useColumnWidths<R, SR>(
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
 
-  for (const { key, idx, width } of viewportColumns) {
+  for (const column of viewportColumns) {
+    const { key, idx, width } = column;
     if (key === columnToAutoResize?.key) {
-      newTemplateColumns[idx] =
-        columnToAutoResize.width === 'max-content'
-          ? columnToAutoResize.width
-          : `${columnToAutoResize.width}px`;
+      newTemplateColumns[idx] = getColumnWidthForMeasurement(columnToAutoResize.width, column);
       columnsToMeasure.push(key);
     } else if (
-      typeof width === 'string' &&
       (ignorePreviouslyMeasuredColumns || !measuredColumnWidths.has(key)) &&
+      // If the column is resized by the user, we don't want to measure it again
       !resizedColumnWidths.has(key)
     ) {
-      newTemplateColumns[idx] = width;
+      newTemplateColumns[idx] = getColumnWidthForMeasurement(width, column);
       columnsToMeasure.push(key);
     }
   }
 
   const gridTemplateColumns = newTemplateColumns.join(' ');
 
-  useLayoutEffect(updateMeasuredWidths);
+  useLayoutEffect(updateMeasuredAndResizedWidths);
 
-  function updateMeasuredWidths() {
+  function updateMeasuredAndResizedWidths() {
     setPreviousGridWidth(gridWidth);
     if (columnsToMeasure.length === 0) return;
 
@@ -112,8 +110,7 @@ export function useColumnWidths<R, SR>(
 
     if (onColumnResize) {
       const previousWidth = resizedColumnWidths.get(resizingKey);
-      const newWidth =
-        typeof nextWidth === 'number' ? nextWidth : measureColumnWidth(gridRef, resizingKey);
+      const newWidth = measureColumnWidth(gridRef, resizingKey);
       if (newWidth !== undefined && newWidth !== previousWidth) {
         onColumnResize(column, newWidth);
       }
@@ -130,4 +127,48 @@ function measureColumnWidth(gridRef: React.RefObject<HTMLDivElement | null>, key
   const selector = `[data-measuring-cell-key="${CSS.escape(key)}"]`;
   const measuringCell = gridRef.current?.querySelector(selector);
   return measuringCell?.getBoundingClientRect().width;
+}
+
+function getColumnWidthForMeasurement<R, SR>(
+  width: number | string,
+  { minWidth, maxWidth }: CalculatedColumn<R, SR>
+) {
+  const widthWithUnit = typeof width === 'number' ? `${width}px` : width;
+
+  // don't break in Node.js (SSR) and jsdom
+  if (typeof CSS === 'undefined') {
+    return widthWithUnit;
+  }
+
+  const hasMaxWidth = maxWidth != null;
+  const clampedWidth = hasMaxWidth
+    ? `clamp(${minWidth}px, ${widthWithUnit}, ${maxWidth}px)`
+    : `max(${minWidth}px, ${widthWithUnit})`;
+
+  // clamp() and max() do not handle all the css grid column width values
+  if (isValidCSSGridColumn(clampedWidth)) {
+    return clampedWidth;
+  }
+
+  if (
+    hasMaxWidth &&
+    // ignore maxWidth if it less than minWidth
+    maxWidth >= minWidth &&
+    // we do not want to use minmax with max-content as it
+    // can result in width being larger than max-content
+    widthWithUnit !== 'max-content'
+  ) {
+    // We are setting maxWidth on the measuring cell but the browser only applies
+    // it after all the widths are calculated. This results in left over space in some cases.
+    const minMaxWidth = `minmax(${widthWithUnit}, ${maxWidth}px)`;
+    if (isValidCSSGridColumn(minMaxWidth)) {
+      return minMaxWidth;
+    }
+  }
+
+  return isValidCSSGridColumn(widthWithUnit) ? widthWithUnit : 'auto';
+}
+
+function isValidCSSGridColumn(width: string) {
+  return CSS.supports('grid-template-columns', width);
 }

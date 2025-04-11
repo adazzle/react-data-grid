@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { clampColumnWidth, max, min } from '../utils';
+import { max, min } from '../utils';
 import type { CalculatedColumn, CalculatedColumnParent, ColumnOrColumnGroup, Omit } from '../types';
 import { renderValue } from '../cellRenderers';
 import { SELECT_COLUMN_KEY } from '../Columns';
@@ -176,9 +176,7 @@ export function useCalculatedColumns<R, SR>({
     for (const column of columns) {
       let width = getColumnWidth(column);
 
-      if (typeof width === 'number') {
-        width = clampColumnWidth(width, column);
-      } else {
+      if (typeof width === 'string') {
         // This is a placeholder width so we can continue to use virtualization.
         // The actual value is set after the column is rendered
         width = column.minWidth;
