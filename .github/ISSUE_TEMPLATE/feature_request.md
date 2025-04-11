@@ -1,7 +1,10 @@
 ---
 name: Feature request
 about: Request a new feature or enhancement
+title: ''
 labels: Feature Request
+assignees: ''
+
 ---
 
 ## Use case <!-- Please describe what it is you would like to achieve. -->

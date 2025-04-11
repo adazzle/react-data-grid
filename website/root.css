@@ -8,15 +8,8 @@ body {
 :root {
   color-scheme: light dark;
 
-  @media (prefers-color-scheme: light) {
-    background-color: #fff;
-    color: #111;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: hsl(0deg 0% 10%);
-    color: #fff;
-  }
+  background-color: light-dark(#fff, hsl(0deg 0% 10%));
+  color: light-dark(#111, #fff);
 }
 
 #root {

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
+    "types": ["vitest/globals", "@vitest/browser/providers/playwright"]
+  },
+  "include": ["test/**/*"],
+  "references": [{ "path": "tsconfig.src.json" }]
+}

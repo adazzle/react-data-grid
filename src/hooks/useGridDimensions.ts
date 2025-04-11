@@ -1,12 +1,11 @@
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-
-import { useLayoutEffect } from './useLayoutEffect';
 
 export function useGridDimensions() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [inlineSize, setInlineSize] = useState(1);
   const [blockSize, setBlockSize] = useState(1);
+  const [horizontalScrollbarHeight, setHorizontalScrollbarHeight] = useState(0);
 
   useLayoutEffect(() => {
     const { ResizeObserver } = window;
@@ -17,18 +16,23 @@ export function useGridDimensions() {
 
     const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
     const { width, height } = gridRef.current!.getBoundingClientRect();
+    const initialHorizontalScrollbarHeight = offsetHeight - clientHeight;
     const initialWidth = width - offsetWidth + clientWidth;
-    const initialHeight = height - offsetHeight + clientHeight;
+    const initialHeight = height - initialHorizontalScrollbarHeight;
 
     setInlineSize(initialWidth);
     setBlockSize(initialHeight);
+    setHorizontalScrollbarHeight(initialHorizontalScrollbarHeight);
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
+      const { clientHeight, offsetHeight } = gridRef.current!;
+
       // we use flushSync here to avoid flashing scrollbars
       flushSync(() => {
         setInlineSize(size.inlineSize);
         setBlockSize(size.blockSize);
+        setHorizontalScrollbarHeight(offsetHeight - clientHeight);
       });
     });
     resizeObserver.observe(gridRef.current!);
@@ -38,5 +42,5 @@ export function useGridDimensions() {
     };
   }, []);
 
-  return [gridRef, inlineSize, blockSize] as const;
+  return [gridRef, inlineSize, blockSize, horizontalScrollbarHeight] as const;
 }

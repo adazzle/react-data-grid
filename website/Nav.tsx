@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
@@ -8,12 +8,7 @@ const navClassname = css`
   flex-direction: column;
   white-space: nowrap;
 
-  @media (prefers-color-scheme: light) {
-    border-inline-start: 4px solid hsl(210deg 50% 80%);
-  }
-  @media (prefers-color-scheme: dark) {
-    border-inline-start: 4px solid hsl(210deg 50% 40%);
-  }
+  border-inline-start: 4px solid light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
 
   h1,
   h2 {
@@ -30,32 +25,16 @@ const navClassname = css`
     transition: 0.1s background-color;
 
     &:hover {
-      @media (prefers-color-scheme: light) {
-        background-color: hsl(210deg 50% 90%);
-      }
-      @media (prefers-color-scheme: dark) {
-        background-color: hsl(210deg 50% 30%);
-      }
+      background-color: light-dark(hsl(210deg 50% 90%), hsl(210deg 50% 30%));
     }
-  }
-`;
 
-const activeNavClassname = css`
-  font-weight: 500;
+    &[aria-current='page'] {
+      font-weight: 500;
+      background-color: light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
 
-  @media (prefers-color-scheme: light) {
-    background-color: hsl(210deg 50% 80%);
-  }
-  @media (prefers-color-scheme: dark) {
-    background-color: hsl(210deg 50% 40%);
-  }
-
-  a&:hover {
-    @media (prefers-color-scheme: light) {
-      background-color: hsl(210deg 50% 70%);
-    }
-    @media (prefers-color-scheme: dark) {
-      background-color: hsl(210deg 50% 50%);
+      &:hover {
+        background-color: light-dark(hsl(210deg 50% 70%), hsl(210deg 50% 50%));
+      }
     }
   }
 `;
@@ -75,66 +54,26 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <h1>react-data-grid</h1>
 
       <h2>Demos</h2>
-      <NavLink to="/common-features" end className={getActiveClassname}>
-        Common Features
-      </NavLink>
-      <NavLink to="/all-features" end className={getActiveClassname}>
-        All Features
-      </NavLink>
-      <NavLink to="/cell-navigation" end className={getActiveClassname}>
-        Cell Navigation
-      </NavLink>
-      <NavLink to="/column-spanning" end className={getActiveClassname}>
-        Column Spanning
-      </NavLink>
-      <NavLink to="/column-grouping" end className={getActiveClassname}>
-        Column Grouping
-      </NavLink>
-      <NavLink to="/columns-reordering" end className={getActiveClassname}>
-        Columns Reordering
-      </NavLink>
-      <NavLink to="/context-menu" end className={getActiveClassname}>
-        Context Menu
-      </NavLink>
-      <NavLink to="/customizable-renderers" end className={getActiveClassname}>
-        Customizable Renderers
-      </NavLink>
-      <NavLink to="/row-grouping" end className={getActiveClassname}>
-        Row Grouping
-      </NavLink>
-      <NavLink to="/header-filters" end className={getActiveClassname}>
-        Header Filters
-      </NavLink>
-      <NavLink to="/infinite-scrolling" end className={getActiveClassname}>
-        Infinite Scrolling
-      </NavLink>
-      <NavLink to="/master-detail" end className={getActiveClassname}>
-        Master Detail
-      </NavLink>
-      <NavLink to="/million-cells" end className={getActiveClassname}>
-        A Million Cells
-      </NavLink>
-      <NavLink to="/no-rows" end className={getActiveClassname}>
-        No Rows
-      </NavLink>
-      <NavLink to="/resizable-grid" end className={getActiveClassname}>
-        Resizable Grid
-      </NavLink>
-      <NavLink to="/rows-reordering" end className={getActiveClassname}>
-        Rows Reordering
-      </NavLink>
-      <NavLink to="/scroll-to-cell" end className={getActiveClassname}>
-        Scroll To Cell
-      </NavLink>
-      <NavLink to="/tree-view" end className={getActiveClassname}>
-        Tree View
-      </NavLink>
-      <NavLink to="/variable-row-height" end className={getActiveClassname}>
-        Variable Row Height
-      </NavLink>
-      <NavLink to="/animation" end className={getActiveClassname}>
-        Animation
-      </NavLink>
+      <Link to="/CommonFeatures">Common Features</Link>
+      <Link to="/AllFeatures">All Features</Link>
+      <Link to="/CellNavigation">Cell Navigation</Link>
+      <Link to="/ColumnSpanning">Column Spanning</Link>
+      <Link to="/ColumnGrouping">Column Grouping</Link>
+      <Link to="/ColumnsReordering">Columns Reordering</Link>
+      <Link to="/ContextMenu">Context Menu</Link>
+      <Link to="/CustomizableRenderers">Customizable Renderers</Link>
+      <Link to="/RowGrouping">Row Grouping</Link>
+      <Link to="/HeaderFilters">Header Filters</Link>
+      <Link to="/InfiniteScrolling">Infinite Scrolling</Link>
+      <Link to="/MasterDetail">Master Detail</Link>
+      <Link to="/MillionCells">A Million Cells</Link>
+      <Link to="/NoRows">No Rows</Link>
+      <Link to="/ResizableGrid">Resizable Grid</Link>
+      <Link to="/RowsReordering">Rows Reordering</Link>
+      <Link to="/ScrollToCell">Scroll To Cell</Link>
+      <Link to="/TreeView">Tree View</Link>
+      <Link to="/VariableRowHeight">Variable Row Height</Link>
+      <Link to="/Animation">Animation</Link>
 
       <h2>Links</h2>
       <a
@@ -173,8 +112,4 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       </label>
     </nav>
   );
-}
-
-function getActiveClassname({ isActive }: { isActive: boolean }) {
-  return isActive ? activeNavClassname : '';
 }

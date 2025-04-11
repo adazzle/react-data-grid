@@ -5,6 +5,7 @@ import type { CalculatedColumn, CalculatedColumnParent, ColumnOrColumnGroup, Omi
 import { renderValue } from '../cellRenderers';
 import { SELECT_COLUMN_KEY } from '../Columns';
 import type { DataGridProps } from '../DataGrid';
+import renderHeaderCell from '../renderHeaderCell';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer V> ? Mutable<V>[] : T[P];
@@ -47,7 +48,8 @@ export function useCalculatedColumns<R, SR>({
   const defaultWidth = defaultColumnOptions?.width ?? DEFAULT_COLUMN_WIDTH;
   const defaultMinWidth = defaultColumnOptions?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
   const defaultMaxWidth = defaultColumnOptions?.maxWidth ?? undefined;
-  const defaultCellRenderer = defaultColumnOptions?.renderCell ?? renderValue;
+  const defaultRenderCell = defaultColumnOptions?.renderCell ?? renderValue;
+  const defaultRenderHeaderCell = defaultColumnOptions?.renderHeaderCell ?? renderHeaderCell;
   const defaultSortable = defaultColumnOptions?.sortable ?? false;
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
   const defaultDraggable = defaultColumnOptions?.draggable ?? false;
@@ -92,14 +94,14 @@ export function useCalculatedColumns<R, SR>({
           idx: 0,
           level: 0,
           frozen,
-          isLastFrozenColumn: false,
           width: rawColumn.width ?? defaultWidth,
           minWidth: rawColumn.minWidth ?? defaultMinWidth,
           maxWidth: rawColumn.maxWidth ?? defaultMaxWidth,
           sortable: rawColumn.sortable ?? defaultSortable,
           resizable: rawColumn.resizable ?? defaultResizable,
           draggable: rawColumn.draggable ?? defaultDraggable,
-          renderCell: rawColumn.renderCell ?? defaultCellRenderer
+          renderCell: rawColumn.renderCell ?? defaultRenderCell,
+          renderHeaderCell: rawColumn.renderHeaderCell ?? defaultRenderHeaderCell
         };
 
         columns.push(column);
@@ -142,10 +144,6 @@ export function useCalculatedColumns<R, SR>({
       }
     });
 
-    if (lastFrozenColumnIndex !== -1) {
-      columns[lastFrozenColumnIndex].isLastFrozenColumn = true;
-    }
-
     return {
       columns,
       colSpanColumns,
@@ -157,7 +155,8 @@ export function useCalculatedColumns<R, SR>({
     defaultWidth,
     defaultMinWidth,
     defaultMaxWidth,
-    defaultCellRenderer,
+    defaultRenderCell,
+    defaultRenderHeaderCell,
     defaultResizable,
     defaultSortable,
     defaultDraggable

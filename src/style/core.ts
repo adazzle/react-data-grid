@@ -1,6 +1,7 @@
 import { css } from '@linaria/core';
 
-import { row } from './row';
+import { cell } from './cell';
+import { bottomSummaryRowClassname, row, topSummaryRowClassname } from './row';
 
 const lightTheme = `
   --rdg-color: #000;
@@ -13,10 +14,7 @@ const lightTheme = `
   --rdg-row-selected-background-color: hsl(207deg 76% 92%);
   --rdg-row-selected-hover-background-color: hsl(207deg 76% 88%);
 
-  --rdg-checkbox-color: hsl(207deg 100% 29%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
-  --rdg-checkbox-disabled-border-color: #ccc;
-  --rdg-checkbox-disabled-background-color: #ddd;
 `;
 
 const darkTheme = `
@@ -30,79 +28,77 @@ const darkTheme = `
   --rdg-row-selected-background-color: hsl(207deg 76% 42%);
   --rdg-row-selected-hover-background-color: hsl(207deg 76% 38%);
 
-  --rdg-checkbox-color: hsl(207deg 100% 79%);
   --rdg-checkbox-focus-color: hsl(207deg 100% 89%);
-  --rdg-checkbox-disabled-border-color: #000;
-  --rdg-checkbox-disabled-background-color: #333;
 `;
 
 const root = css`
-  @layer rdg {
-    @layer Defaults,
-      FocusSink,
-      CheckboxInput,
-      CheckboxIcon,
-      CheckboxLabel,
-      Cell,
-      HeaderCell,
-      SummaryCell,
-      EditCell,
-      Row,
-      HeaderRow,
-      SummaryRow,
-      GroupedRow,
-      Root;
+  @layer rdg.Defaults {
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+    }
+  }
 
-    @layer Defaults {
-      *,
-      *::before,
-      *::after {
-        box-sizing: inherit;
+  @layer rdg.Root {
+    ${lightTheme}
+    --rdg-selection-color: #66afe9;
+    --rdg-font-size: 14px;
+    --rdg-cell-frozen-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
+
+    &:dir(rtl) {
+      --rdg-cell-frozen-box-shadow: -2px 0 5px -2px rgba(136, 136, 136, 0.3);
+    }
+
+    display: grid;
+
+    color-scheme: var(--rdg-color-scheme, light dark);
+    accent-color: light-dark(hsl(207deg 100% 29%), hsl(207deg 100% 79%));
+
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
+    /* We set a stacking context so internal elements don't render on top of external elements. */
+    /* size containment is not used as it could break "width: min-content" for example, and the grid would infinitely resize on Chromium browsers */
+    contain: content;
+    content-visibility: auto;
+    block-size: 350px;
+    border: 1px solid var(--rdg-border-color);
+    box-sizing: border-box;
+    overflow: auto;
+    background-color: var(--rdg-background-color);
+    color: var(--rdg-color);
+    font-size: var(--rdg-font-size);
+
+    /* needed on Firefox to fix scrollbars */
+    &::before {
+      content: '';
+      grid-column: 1/-1;
+      grid-row: 1/-1;
+    }
+
+    &.rdg-dark {
+      --rdg-color-scheme: dark;
+      ${darkTheme}
+    }
+
+    &.rdg-light {
+      --rdg-color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      &:not(.rdg-light) {
+        ${darkTheme}
       }
     }
 
-    @layer Root {
-      ${lightTheme}
-      --rdg-selection-color: #66afe9;
-      --rdg-font-size: 14px;
-
-      display: grid;
-
-      color-scheme: var(--rdg-color-scheme, light dark);
-
-      /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
-      /* We set a stacking context so internal elements don't render on top of external elements. */
-      /* size containment is not used as it could break "width: min-content" for example, and the grid would infinitely resize on Chromium browsers */
-      contain: content;
-      content-visibility: auto;
-      block-size: 350px;
-      border: 1px solid var(--rdg-border-color);
-      box-sizing: border-box;
-      overflow: auto;
-      background-color: var(--rdg-background-color);
-      color: var(--rdg-color);
-      font-size: var(--rdg-font-size);
-
-      /* needed on Firefox to fix scrollbars */
-      &::before {
-        content: '';
-        grid-column: 1/-1;
-        grid-row: 1/-1;
+    > :nth-last-child(1 of .${topSummaryRowClassname}) {
+      > .${cell} {
+        border-block-end: 2px solid var(--rdg-summary-border-color);
       }
+    }
 
-      &.rdg-dark {
-        --rdg-color-scheme: dark;
-        ${darkTheme}
-      }
-
-      &.rdg-light {
-        --rdg-color-scheme: light;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        &:not(.rdg-light) {
-          ${darkTheme}
-        }
+    > :nth-child(1 of .${bottomSummaryRowClassname}) {
+      > .${cell} {
+        border-block-start: 2px solid var(--rdg-summary-border-color);
       }
     }
   }

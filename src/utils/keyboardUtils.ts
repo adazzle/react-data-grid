@@ -1,3 +1,5 @@
+import type { Direction, Maybe } from '../types';
+
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
 const nonInputKeys = new Set([
   // Special keys
@@ -52,7 +54,16 @@ export function isCtrlKeyHeldDown(e: React.KeyboardEvent): boolean {
   return (e.ctrlKey || e.metaKey) && e.key !== 'Control';
 }
 
-export function isDefaultCellInput(event: React.KeyboardEvent<HTMLDivElement>): boolean {
+// event.key may differ by keyboard input language, so we use event.keyCode instead
+// event.nativeEvent.code cannot be used either as it would break copy/paste for the DVORAK layout
+const vKey = 86;
+
+export function isDefaultCellInput(
+  event: React.KeyboardEvent<HTMLDivElement>,
+  isUserHandlingPaste: boolean
+): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  if (isCtrlKeyHeldDown(event) && (event.keyCode !== vKey || isUserHandlingPaste)) return false;
   return !nonInputKeys.has(event.key);
 }
 
@@ -75,4 +86,13 @@ export function onEditorNavigation({ key, target }: React.KeyboardEvent<HTMLDivE
     );
   }
   return false;
+}
+
+export function getLeftRightKey(direction: Maybe<Direction>) {
+  const isRtl = direction === 'rtl';
+
+  return {
+    leftKey: isRtl ? 'ArrowRight' : 'ArrowLeft',
+    rightKey: isRtl ? 'ArrowLeft' : 'ArrowRight'
+  } as const;
 }

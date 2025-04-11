@@ -3,8 +3,7 @@ import { css } from '@linaria/core';
 import clsx from 'clsx';
 
 import { getColSpan } from './utils';
-import type { CalculatedColumn, Direction, Position } from './types';
-import { Maybe } from './types';
+import type { CalculatedColumn, Direction, Maybe, Position, ResizedWidth } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
 import { cell, cellFrozen } from './style/cell';
@@ -18,7 +17,7 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   rowIdx: number;
   columns: readonly CalculatedColumn<R, SR>[];
-  onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
+  onColumnResize: (column: CalculatedColumn<R, SR>, width: ResizedWidth) => void;
   selectCell: (position: Position) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
@@ -30,7 +29,6 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
 const headerRow = css`
   @layer rdg . HeaderRow {
     display: contents;
-    line-height: var(--rdg-header-row-height);
     background-color: var(--rdg-header-background-color);
     font-weight: bold;
 
@@ -110,4 +108,4 @@ function HeaderRow<R, SR, K extends React.Key>({
 
 export default memo(HeaderRow) as <R, SR, K extends React.Key>(
   props: HeaderRowProps<R, SR, K>
-) => JSX.Element;
+) => React.JSX.Element;

@@ -5,21 +5,9 @@ import { useRovingTabIndex } from './hooks';
 import { createCellEvent, getCellClassname, getCellStyle, isCellEditableUtil } from './utils';
 import type { CellRendererProps } from './types';
 
-const cellCopied = css`
-  @layer rdg.Cell {
-    background-color: #ccccff;
-  }
-`;
-
-const cellCopiedClassname = `rdg-cell-copied ${cellCopied}`;
-
 const cellDraggedOver = css`
   @layer rdg.Cell {
     background-color: #ccccff;
-
-    &.${cellCopied} {
-      background-color: #9999ff;
-    }
   }
 `;
 
@@ -29,27 +17,28 @@ function Cell<R, SR>({
   column,
   colSpan,
   isCellSelected,
-  isCopied,
   isDraggedOver,
   row,
   rowIdx,
+  className,
   onClick,
   onDoubleClick,
   onContextMenu,
   onRowChange,
   selectCell,
+  style,
   ...props
 }: CellRendererProps<R, SR>) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
   const { cellClass } = column;
-  const className = getCellClassname(
+  className = getCellClassname(
     column,
     {
-      [cellCopiedClassname]: isCopied,
       [cellDraggedOverClassname]: isDraggedOver
     },
-    typeof cellClass === 'function' ? cellClass(row) : cellClass
+    typeof cellClass === 'function' ? cellClass(row) : cellClass,
+    className
   );
   const isEditable = isCellEditableUtil(column, row);
 
@@ -60,7 +49,7 @@ function Cell<R, SR>({
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
     if (onClick) {
       const cellEvent = createCellEvent(event);
-      onClick({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      onClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
       if (cellEvent.isGridDefaultPrevented()) return;
     }
     selectCellWrapper();
@@ -69,7 +58,7 @@ function Cell<R, SR>({
   function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
     if (onContextMenu) {
       const cellEvent = createCellEvent(event);
-      onContextMenu({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      onContextMenu({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
       if (cellEvent.isGridDefaultPrevented()) return;
     }
     selectCellWrapper();
@@ -78,7 +67,7 @@ function Cell<R, SR>({
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     if (onDoubleClick) {
       const cellEvent = createCellEvent(event);
-      onDoubleClick({ row, column, selectCell: selectCellWrapper }, cellEvent);
+      onDoubleClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
       if (cellEvent.isGridDefaultPrevented()) return;
     }
     selectCellWrapper(true);
@@ -97,7 +86,10 @@ function Cell<R, SR>({
       aria-readonly={!isEditable || undefined}
       tabIndex={tabIndex}
       className={className}
-      style={getCellStyle(column, colSpan)}
+      style={{
+        ...getCellStyle(column, colSpan),
+        ...style
+      }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
@@ -116,4 +108,10 @@ function Cell<R, SR>({
   );
 }
 
-export default memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => JSX.Element;
+const CellComponent = memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => React.JSX.Element;
+
+export default CellComponent;
+
+export function defaultRenderCell<R, SR>(key: React.Key, props: CellRendererProps<R, SR>) {
+  return <CellComponent key={key} {...props} />;
+}

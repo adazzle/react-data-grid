@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -8,11 +8,12 @@ import {
   getCellStyle,
   getHeaderCellRowSpan,
   getHeaderCellStyle,
+  getLeftRightKey,
+  isCtrlKeyHeldDown,
   stopPropagation
 } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
 import type { HeaderRowProps } from './HeaderRow';
-import defaultRenderHeaderCell from './renderHeaderCell';
 
 const cellSortableClassname = css`
   @layer rdg.HeaderCell {
@@ -88,7 +89,6 @@ export default function HeaderCell<R, SR>({
 }: HeaderCellProps<R, SR>) {
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
-  const isRtl = direction === 'rtl';
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
@@ -107,39 +107,6 @@ export default function HeaderCell<R, SR>({
     [cellDraggingClassname]: isDragging,
     [cellOverClassname]: isOver
   });
-
-  const renderHeaderCell = column.renderHeaderCell ?? defaultRenderHeaderCell;
-
-  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === 'mouse' && event.buttons !== 1) {
-      return;
-    }
-
-    // Fix column resizing on a draggable column in FF
-    event.preventDefault();
-
-    const { currentTarget, pointerId } = event;
-    const headerCell = currentTarget.parentElement!;
-    const { right, left } = headerCell.getBoundingClientRect();
-    const offset = isRtl ? event.clientX - left : right - event.clientX;
-
-    function onPointerMove(event: PointerEvent) {
-      const { right, left } = headerCell.getBoundingClientRect();
-      const width = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
-      if (width > 0) {
-        onColumnResize(column, clampColumnWidth(width, column));
-      }
-    }
-
-    function onLostPointerCapture() {
-      currentTarget.removeEventListener('pointermove', onPointerMove);
-      currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
-    }
-
-    currentTarget.setPointerCapture(pointerId);
-    currentTarget.addEventListener('pointermove', onPointerMove);
-    currentTarget.addEventListener('lostpointercapture', onLostPointerCapture);
-  }
 
   function onSort(ctrlClick: boolean) {
     if (onSortColumnsChange == null) return;
@@ -186,10 +153,6 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function onDoubleClick() {
-    onColumnResize(column, 'max-content');
-  }
-
   function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
     onFocus?.(event);
     if (shouldFocusGrid) {
@@ -199,10 +162,26 @@ export default function HeaderCell<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
-    if (event.key === ' ' || event.key === 'Enter') {
+    const { key } = event;
+    if (sortable && (key === ' ' || key === 'Enter')) {
       // prevent scrolling
       event.preventDefault();
       onSort(event.ctrlKey || event.metaKey);
+    } else if (
+      resizable &&
+      isCtrlKeyHeldDown(event) &&
+      (key === 'ArrowLeft' || key === 'ArrowRight')
+    ) {
+      // prevent navigation
+      // TODO: check if we can use `preventDefault` instead
+      event.stopPropagation();
+      const { width } = event.currentTarget.getBoundingClientRect();
+      const { leftKey } = getLeftRightKey(direction);
+      const offset = key === leftKey ? -10 : 10;
+      const newWidth = clampColumnWidth(width + offset, column);
+      if (newWidth !== width) {
+        onColumnResize(column, newWidth);
+      }
     }
   }
 
@@ -224,9 +203,14 @@ export default function HeaderCell<R, SR>({
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     setIsOver(false);
-    if (event.dataTransfer.types.includes(dragDropKey)) {
-      const sourceKey = event.dataTransfer.getData(dragDropKey);
+    // The dragDropKey is derived from the useId() hook, which can sometimes generate keys with uppercase letters.
+    // When setting data using event.dataTransfer.setData(), the key is automatically converted to lowercase in some browsers.
+    // To ensure consistent comparison, we normalize the dragDropKey to lowercase before checking its presence in the event's dataTransfer types.
+    // https://html.spec.whatwg.org/multipage/dnd.html#the-datatransfer-interface
+    if (event.dataTransfer.types.includes(dragDropKey.toLowerCase())) {
+      const sourceKey = event.dataTransfer.getData(dragDropKey.toLowerCase());
       if (sourceKey !== column.key) {
+        // prevent the browser from redirecting in some cases
         event.preventDefault();
         onColumnsReorder?.(sourceKey, column.key);
       }
@@ -245,7 +229,7 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  let draggableProps: React.HTMLAttributes<HTMLDivElement> | undefined;
+  let draggableProps: React.ComponentProps<'div'> | undefined;
   if (draggable) {
     draggableProps = {
       draggable: true,
@@ -277,10 +261,10 @@ export default function HeaderCell<R, SR>({
       }}
       onFocus={handleFocus}
       onClick={onClick}
-      onKeyDown={sortable ? onKeyDown : undefined}
+      onKeyDown={onKeyDown}
       {...draggableProps}
     >
-      {renderHeaderCell({
+      {column.renderHeaderCell({
         column,
         sortDirection,
         priority,
@@ -288,14 +272,66 @@ export default function HeaderCell<R, SR>({
       })}
 
       {resizable && (
-        <div
-          className={resizeHandleClassname}
-          onClick={stopPropagation}
-          onDoubleClick={onDoubleClick}
-          onPointerDown={onPointerDown}
-        />
+        <ResizeHandle column={column} onColumnResize={onColumnResize} direction={direction} />
       )}
     </div>
+  );
+}
+
+type ResizeHandleProps<R, SR> = Pick<
+  HeaderCellProps<R, SR>,
+  'column' | 'onColumnResize' | 'direction'
+>;
+
+function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandleProps<R, SR>) {
+  const resizingOffsetRef = useRef<number>(undefined);
+  const isRtl = direction === 'rtl';
+
+  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse' && event.buttons !== 1) {
+      return;
+    }
+
+    // Fix column resizing on a draggable column in FF
+    event.preventDefault();
+
+    const { currentTarget, pointerId } = event;
+    currentTarget.setPointerCapture(pointerId);
+    const headerCell = currentTarget.parentElement!;
+    const { right, left } = headerCell.getBoundingClientRect();
+    resizingOffsetRef.current = isRtl ? event.clientX - left : right - event.clientX;
+  }
+
+  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const offset = resizingOffsetRef.current;
+    if (offset === undefined) return;
+    const { width, right, left } = event.currentTarget.parentElement!.getBoundingClientRect();
+    let newWidth = isRtl ? right + offset - event.clientX : event.clientX + offset - left;
+    newWidth = clampColumnWidth(newWidth, column);
+    if (width > 0 && newWidth !== width) {
+      onColumnResize(column, newWidth);
+    }
+  }
+
+  function onLostPointerCapture() {
+    resizingOffsetRef.current = undefined;
+  }
+
+  function onDoubleClick() {
+    onColumnResize(column, 'max-content');
+  }
+
+  return (
+    <div
+      className={resizeHandleClassname}
+      onClick={stopPropagation}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      // we are not using pointerup because it does not fire in some cases
+      // pointer down -> alt+tab -> pointer up over another window -> pointerup event not fired
+      onLostPointerCapture={onLostPointerCapture}
+      onDoubleClick={onDoubleClick}
+    />
   );
 }
 
