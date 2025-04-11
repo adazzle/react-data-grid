@@ -8,6 +8,7 @@ import {
   getCellStyle,
   getHeaderCellRowSpan,
   getHeaderCellStyle,
+  getLeftRightKey,
   isCtrlKeyHeldDown,
   stopPropagation
 } from './utils';
@@ -175,7 +176,8 @@ export default function HeaderCell<R, SR>({
       // TODO: check if we can use `preventDefault` instead
       event.stopPropagation();
       const { width } = event.currentTarget.getBoundingClientRect();
-      const offset = key === 'ArrowLeft' ? -10 : 10;
+      const { leftKey } = getLeftRightKey(direction);
+      const offset = key === leftKey ? -10 : 10;
       const newWidth = clampColumnWidth(width + offset, column);
       if (newWidth !== width) {
         onColumnResize(column, newWidth);

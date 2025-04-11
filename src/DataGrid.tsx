@@ -28,6 +28,7 @@ import {
   canExitGrid,
   createCellEvent,
   getColSpan,
+  getLeftRightKey,
   getNextSelectedCellPosition,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
@@ -377,9 +378,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const summaryRowsHeight = summaryRowsCount * summaryRowHeight;
   const clientHeight = gridHeight - headerRowsHeight - summaryRowsHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
-  const isRtl = direction === 'rtl';
-  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const { leftKey, rightKey } = getLeftRightKey(direction);
   const ariaRowCount = rawAriaRowCount ?? headerRowsCount + rows.length + summaryRowsCount;
 
   const defaultGridComponents = useMemo(
