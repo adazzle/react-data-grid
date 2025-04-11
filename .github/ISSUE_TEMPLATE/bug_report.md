@@ -4,7 +4,6 @@ about: Create a bug report
 title: ''
 labels: 'Status: Unconfirmed'
 assignees: ''
-
 ---
 
 ## Describe the bug <!-- A clear and concise description of what the bug is. -->
