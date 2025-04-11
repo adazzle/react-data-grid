@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import type { Key } from 'react';
 
 import { useLatestFunc } from './hooks';
-import { assertIsValidKeyGetter } from './utils';
+import { assertIsValidKeyGetter, getLeftRightKey } from './utils';
 import type {
   CellClipboardEvent,
   CellCopyEvent,
@@ -71,9 +71,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   const defaultRenderers = useDefaultRenderers<R, SR>();
   const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
-  const isRtl = props.direction === 'rtl';
-  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const { leftKey, rightKey } = getLeftRightKey(props.direction);
   const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   const { columns, groupBy } = useMemo(() => {
@@ -310,7 +308,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
         // Expand the current group row if it is focused and is in collapsed state
         (event.key === rightKey && !row.isExpanded))
     ) {
-      event.preventDefault(); // Prevents scrolling
+      // prevent scrolling
+      event.preventDefault();
       event.preventGridDefault();
       toggleGroup(row.id);
     }

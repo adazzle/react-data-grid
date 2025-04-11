@@ -8,6 +8,8 @@ import {
   getCellStyle,
   getHeaderCellRowSpan,
   getHeaderCellStyle,
+  getLeftRightKey,
+  isCtrlKeyHeldDown,
   stopPropagation
 } from './utils';
 import type { CalculatedColumn, SortColumn } from './types';
@@ -160,10 +162,26 @@ export default function HeaderCell<R, SR>({
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLSpanElement>) {
-    if (event.key === ' ' || event.key === 'Enter') {
+    const { key } = event;
+    if (sortable && (key === ' ' || key === 'Enter')) {
       // prevent scrolling
       event.preventDefault();
       onSort(event.ctrlKey || event.metaKey);
+    } else if (
+      resizable &&
+      isCtrlKeyHeldDown(event) &&
+      (key === 'ArrowLeft' || key === 'ArrowRight')
+    ) {
+      // prevent navigation
+      // TODO: check if we can use `preventDefault` instead
+      event.stopPropagation();
+      const { width } = event.currentTarget.getBoundingClientRect();
+      const { leftKey } = getLeftRightKey(direction);
+      const offset = key === leftKey ? -10 : 10;
+      const newWidth = clampColumnWidth(width + offset, column);
+      if (newWidth !== width) {
+        onColumnResize(column, newWidth);
+      }
     }
   }
 
@@ -192,6 +210,7 @@ export default function HeaderCell<R, SR>({
     if (event.dataTransfer.types.includes(dragDropKey.toLowerCase())) {
       const sourceKey = event.dataTransfer.getData(dragDropKey.toLowerCase());
       if (sourceKey !== column.key) {
+        // prevent the browser from redirecting in some cases
         event.preventDefault();
         onColumnsReorder?.(sourceKey, column.key);
       }
@@ -242,7 +261,7 @@ export default function HeaderCell<R, SR>({
       }}
       onFocus={handleFocus}
       onClick={onClick}
-      onKeyDown={sortable ? onKeyDown : undefined}
+      onKeyDown={onKeyDown}
       {...draggableProps}
     >
       {column.renderHeaderCell({

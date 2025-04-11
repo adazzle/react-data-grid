@@ -118,12 +118,10 @@ function ContextMenuDemo() {
           <menu
             ref={menuRef}
             className={contextMenuClassname}
-            style={
-              {
-                top: contextMenuProps.top,
-                left: contextMenuProps.left
-              } as unknown as React.CSSProperties
-            }
+            style={{
+              top: contextMenuProps.top,
+              left: contextMenuProps.left
+            }}
           >
             <li>
               <button

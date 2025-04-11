@@ -28,6 +28,7 @@ import {
   canExitGrid,
   createCellEvent,
   getColSpan,
+  getLeftRightKey,
   getNextSelectedCellPosition,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
@@ -377,9 +378,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const summaryRowsHeight = summaryRowsCount * summaryRowHeight;
   const clientHeight = gridHeight - headerRowsHeight - summaryRowsHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
-  const isRtl = direction === 'rtl';
-  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const { leftKey, rightKey } = getLeftRightKey(direction);
   const ariaRowCount = rawAriaRowCount ?? headerRowsCount + rows.length + summaryRowsCount;
 
   const defaultGridComponents = useMemo(
@@ -689,7 +688,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       assertIsValidKeyGetter<R, K>(rowKeyGetter);
       const rowKey = rowKeyGetter(row);
       selectRow({ row, checked: !selectedRows.has(rowKey), isShiftClick: false });
-      // do not scroll
+      // prevent scrolling
       event.preventDefault();
       return;
     }
@@ -820,7 +819,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       cellNavigationMode = 'CHANGE_ROW';
     }
 
-    // Do not allow focus to leave and prevent scrolling
+    // prevent scrolling and do not allow focus to leave
     event.preventDefault();
 
     const ctrlKey = isCtrlKeyHeldDown(event);
