@@ -1,7 +1,9 @@
 ---
 name: Bug report
 about: Create a bug report
-labels: Bug
+title: ''
+labels: 'Status: Unconfirmed'
+assignees: ''
 ---
 
 ## Describe the bug <!-- A clear and concise description of what the bug is. -->
@@ -11,9 +13,11 @@ labels: Bug
 1.
 2.
 
-Link to code example:
-
 ## Expected behavior <!-- A clear and concise description of what you expected to happen. -->
+
+## Link to Minimal Reproducible Example
+
+<!-- Link to a playground, StackBlitz, or GitHub repo with a minimal reproduction of the problem. A minimal reproduction is required.  -->
 
 ## Environment
 

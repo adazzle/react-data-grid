@@ -1,10 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { createPortal, flushSync } from 'react-dom';
 import { faker } from '@faker-js/faker';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import DataGrid, {
+import {
+  DataGrid,
   SelectCellFormatter,
   SelectColumn,
   textEditor,
@@ -17,7 +18,7 @@ import type { Direction } from '../../src/types';
 import { useDirection } from '../directionContext';
 import { exportToCsv, exportToPdf } from '../exportUtils';
 
-export const Route = createLazyFileRoute('/CommonFeatures')({
+export const Route = createFileRoute('/CommonFeatures')({
   component: CommonFeatures
 });
 

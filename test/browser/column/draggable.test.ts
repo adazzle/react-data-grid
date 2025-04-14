@@ -30,16 +30,16 @@ test('draggable columns', async () => {
   setup({ columns, rows: [], onColumnsReorder });
   const [cell1, cell2, cell3, cell4] = getHeaderCells();
 
-  await expect.element(cell1).not.toHaveAttribute('draggable');
-  await expect.element(cell2).toHaveAttribute('draggable');
-  await expect.element(cell3).toHaveAttribute('draggable');
-  await expect.element(cell4).toHaveAttribute('draggable');
+  expect(cell1).not.toHaveAttribute('draggable');
+  expect(cell2).toHaveAttribute('draggable');
+  expect(cell3).toHaveAttribute('draggable');
+  expect(cell4).toHaveAttribute('draggable');
 
   expect(onColumnsReorder).not.toHaveBeenCalled();
 
   await userEvent.dragAndDrop(cell2, cell4);
-  expect(onColumnsReorder).toHaveBeenCalledWith('col2', 'col4');
-  onColumnsReorder.mockReset();
+  expect(onColumnsReorder).toHaveBeenCalledExactlyOnceWith('col2', 'col4');
+  onColumnsReorder.mockClear();
 
   // should not call `onColumnsReorder` if drag and drop elements are the same
   await userEvent.dragAndDrop(cell2, cell2);

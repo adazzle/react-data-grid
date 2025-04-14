@@ -1,11 +1,14 @@
-import { forwardRef, useCallback, useMemo } from 'react';
-import type { Key, RefAttributes } from 'react';
+import { useCallback, useMemo } from 'react';
+import type { Key } from 'react';
 
 import { useLatestFunc } from './hooks';
-import { assertIsValidKeyGetter, isCtrlKeyHeldDown } from './utils';
+import { assertIsValidKeyGetter, getLeftRightKey } from './utils';
 import type {
+  CellClipboardEvent,
+  CellCopyEvent,
   CellKeyboardEvent,
   CellKeyDownArgs,
+  CellPasteEvent,
   Column,
   GroupRow,
   Maybe,
@@ -16,9 +19,9 @@ import type {
 } from './types';
 import { renderToggleGroup } from './cellRenderers';
 import { SELECT_COLUMN_KEY } from './Columns';
-import DataGrid from './DataGrid';
-import type { DataGridHandle, DataGridProps } from './DataGrid';
-import { useDefaultRenderers } from './DataGridDefaultRenderersProvider';
+import { DataGrid } from './DataGrid';
+import type { DataGridProps } from './DataGrid';
+import { useDefaultRenderers } from './DataGridDefaultRenderersContext';
 import GroupedRow from './GroupRow';
 import { defaultRenderRow } from './Row';
 
@@ -48,32 +51,29 @@ type GroupByDictionary<TRow> = Record<
   }
 >;
 
-function TreeDataGrid<R, SR, K extends Key>(
-  {
-    columns: rawColumns,
-    rows: rawRows,
-    rowHeight: rawRowHeight,
-    rowKeyGetter: rawRowKeyGetter,
-    onCellKeyDown: rawOnCellKeyDown,
-    onRowsChange,
-    selectedRows: rawSelectedRows,
-    onSelectedRowsChange: rawOnSelectedRowsChange,
-    renderers,
-    groupBy: rawGroupBy,
-    rowGrouper,
-    expandedGroupIds,
-    onExpandedGroupIdsChange,
-    generateGroupId,
-    ...props
-  }: TreeDataGridProps<R, SR, K>,
-  ref: React.Ref<DataGridHandle>
-) {
+export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
+  columns: rawColumns,
+  rows: rawRows,
+  rowHeight: rawRowHeight,
+  rowKeyGetter: rawRowKeyGetter,
+  onCellKeyDown: rawOnCellKeyDown,
+  onCellCopy: rawOnCellCopy,
+  onCellPaste: rawOnCellPaste,
+  onRowsChange,
+  selectedRows: rawSelectedRows,
+  onSelectedRowsChange: rawOnSelectedRowsChange,
+  renderers,
+  groupBy: rawGroupBy,
+  rowGrouper,
+  expandedGroupIds,
+  onExpandedGroupIdsChange,
+  generateGroupId,
+  ...props
+}: TreeDataGridProps<R, SR, K>) {
   const defaultRenderers = useDefaultRenderers<R, SR>();
   const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
-  const isRtl = props.direction === 'rtl';
-  const leftKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-  const rightKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+  const { leftKey, rightKey } = getLeftRightKey(props.direction);
   const toggleGroupLatest = useLatestFunc(toggleGroup);
 
   const { columns, groupBy } = useMemo(() => {
@@ -318,7 +318,8 @@ function TreeDataGrid<R, SR, K extends Key>(
         // Expand the current group row if it is focused and is in collapsed state
         (event.key === rightKey && !row.isExpanded))
     ) {
-      event.preventDefault(); // Prevents scrolling
+      // prevent scrolling
+      event.preventDefault();
       event.preventGridDefault();
       toggleGroup(row.id);
     }
@@ -331,12 +332,23 @@ function TreeDataGrid<R, SR, K extends Key>(
         selectCell({ idx, rowIdx: parentRowAndIndex[1] });
       }
     }
+  }
 
-    // Prevent copy/paste on group rows
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    if (isCtrlKeyHeldDown(event) && (event.keyCode === 67 || event.keyCode === 86)) {
-      event.preventGridDefault();
+  // Prevent copy/paste on group rows
+  function handleCellCopy(
+    { row, column }: CellCopyEvent<NoInfer<R>, NoInfer<SR>>,
+    event: CellClipboardEvent
+  ) {
+    if (!isGroupRow(row)) {
+      rawOnCellCopy?.({ row, column }, event);
     }
+  }
+
+  function handleCellPaste(
+    { row, column }: CellPasteEvent<NoInfer<R>, NoInfer<SR>>,
+    event: CellClipboardEvent
+  ) {
+    return isGroupRow(row) ? row : rawOnCellPaste!({ row, column }, event);
   }
 
   function handleRowsChange(updatedRows: R[], { indexes, column }: RowsChangeData<R, SR>) {
@@ -374,7 +386,6 @@ function TreeDataGrid<R, SR, K extends Key>(
       onCellContextMenu,
       onRowChange,
       lastFrozenColumnIndex,
-      copiedCellIdx,
       draggedOverCellIdx,
       setDraggedOverRowIdx,
       selectedCellEditor,
@@ -413,7 +424,6 @@ function TreeDataGrid<R, SR, K extends Key>(
       onCellContextMenu,
       onRowChange,
       lastFrozenColumnIndex,
-      copiedCellIdx,
       draggedOverCellIdx,
       setDraggedOverRowIdx,
       selectedCellEditor
@@ -421,13 +431,12 @@ function TreeDataGrid<R, SR, K extends Key>(
   }
 
   return (
-    <DataGrid<R, SR, Key>
+    <DataGrid<R, SR>
       {...props}
       role="treegrid"
       aria-rowcount={
         rowsCount + 1 + (props.topSummaryRows?.length ?? 0) + (props.bottomSummaryRows?.length ?? 0)
       }
-      ref={ref}
       columns={columns}
       rows={rows as R[]} // TODO: check types
       rowHeight={rowHeight}
@@ -436,6 +445,8 @@ function TreeDataGrid<R, SR, K extends Key>(
       selectedRows={selectedRows}
       onSelectedRowsChange={onSelectedRowsChange}
       onCellKeyDown={handleKeyDown}
+      onCellCopy={handleCellCopy}
+      onCellPaste={rawOnCellPaste ? handleCellPaste : undefined}
       renderers={{
         ...renderers,
         renderRow
@@ -447,7 +458,3 @@ function TreeDataGrid<R, SR, K extends Key>(
 function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
   return Array.isArray(arr);
 }
-
-export default forwardRef(TreeDataGrid) as <R, SR = unknown, K extends Key = Key>(
-  props: TreeDataGridProps<R, SR, K> & RefAttributes<DataGridHandle>
-) => React.JSX.Element;

@@ -20,6 +20,7 @@ export function CellExpanderFormatter({
 }: CellExpanderFormatterProps) {
   function handleKeyDown(e: React.KeyboardEvent<HTMLSpanElement>) {
     if (e.key === ' ' || e.key === 'Enter') {
+      // prevent scrolling
       e.preventDefault();
       onCellExpand();
     }

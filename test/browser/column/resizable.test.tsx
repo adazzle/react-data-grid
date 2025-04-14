@@ -57,44 +57,87 @@ const columns: readonly Column<Row>[] = [
   }
 ];
 
-test('cannot not resize or auto resize column when resizable is not specified', () => {
+test('cannot resize or auto resize column when resizable is not specified', () => {
   setup<Row, unknown>({ columns, rows: [] });
   const [col1] = getHeaderCells();
-  expect(queryResizeHandle(col1.element())).not.toBeInTheDocument();
+  expect(queryResizeHandle(col1)).not.toBeInTheDocument();
 });
 
 test('should resize column when dragging the handle', async () => {
   const onColumnResize = vi.fn();
   setup<Row, unknown>({ columns, rows: [], onColumnResize });
-  const [, col2] = getHeaderCells();
   const grid = getGrid();
   expect(onColumnResize).not.toHaveBeenCalled();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ column: col2.element(), resizeBy: -50 });
+  const [, col2] = getHeaderCells();
+  await resize({ column: col2, resizeBy: -50 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 150px' });
-  expect(onColumnResize).toHaveBeenCalledTimes(1);
-  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 150);
+  expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(columns[1]), 150);
 });
 
-test('should use the maxWidth if specified', async () => {
+test('should use the maxWidth if specified when dragging the handle', async () => {
   setup<Row, unknown>({ columns, rows: [] });
-  const [, col2] = getHeaderCells();
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px ' });
-  await resize({ column: col2.element(), resizeBy: 1000 });
+  const [, col2] = getHeaderCells();
+  await resize({ column: col2, resizeBy: 1000 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
 
-test('should use the minWidth if specified', async () => {
+test('should use the minWidth if specified when dragging the handle', async () => {
   setup<Row, unknown>({ columns, rows: [] });
-  const [, col2] = getHeaderCells();
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await resize({ column: col2.element(), resizeBy: -150 });
+  const [, col2] = getHeaderCells();
+  await resize({ column: col2, resizeBy: -150 });
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 100px' });
 });
 
+test('should resize column using keboard', async () => {
+  const onColumnResize = vi.fn();
+  setup<Row, unknown>({ columns, rows: [], onColumnResize });
+  const grid = getGrid();
+  expect(onColumnResize).not.toHaveBeenCalled();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  const [, col2] = getHeaderCells();
+  await userEvent.click(col2);
+
+  await userEvent.keyboard('{Control>}{ArrowRight}{/Control}');
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 210px' });
+  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 210);
+
+  await userEvent.keyboard('{Control>}{ArrowLeft}{/Control}');
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  expect(onColumnResize).toHaveBeenCalledWith(expect.objectContaining(columns[1]), 200);
+  expect(onColumnResize).toHaveBeenCalledTimes(2);
+});
+
+test('should use the maxWidth if specified when resizing using keyboard', async () => {
+  const onColumnResize = vi.fn();
+  setup<Row, unknown>({ columns, rows: [], onColumnResize });
+  const grid = getGrid();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px ' });
+  const [, col2] = getHeaderCells();
+  await userEvent.click(col2);
+  await userEvent.keyboard(`{Control>}${'{ArrowRight}'.repeat(22)}{/Control}`);
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 400px' });
+  expect(onColumnResize).toHaveBeenCalledTimes(20);
+});
+
+test('should use the minWidth if specified resizing using keyboard', async () => {
+  const onColumnResize = vi.fn();
+  setup<Row, unknown>({ columns, rows: [], onColumnResize });
+  const grid = getGrid();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
+  const [, col2] = getHeaderCells();
+  await userEvent.click(col2);
+  await userEvent.keyboard(`{Control>}${'{ArrowLeft}'.repeat(12)}{/Control}`);
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+  expect(onColumnResize).toHaveBeenCalledTimes(10);
+});
+
 test('should auto resize column when resize handle is double clicked', async () => {
+  const onColumnResize = vi.fn();
   setup<Row, unknown>({
     columns,
     rows: [
@@ -102,13 +145,18 @@ test('should auto resize column when resize handle is double clicked', async () 
         col1: 1,
         col2: 'a'.repeat(50)
       }
-    ]
+    ],
+    onColumnResize
   });
-  const [, col2] = getHeaderCells();
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await autoResize(col2.element());
+  const [, col2] = getHeaderCells();
+  await autoResize(col2);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 327.703px' });
+  expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(
+    expect.objectContaining(columns[1]),
+    327.703125
+  );
 });
 
 test('should use the maxWidth if specified on auto resize', async () => {
@@ -121,10 +169,10 @@ test('should use the maxWidth if specified on auto resize', async () => {
       }
     ]
   });
-  const [, col2] = getHeaderCells();
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await autoResize(col2.element());
+  const [, col2] = getHeaderCells();
+  await autoResize(col2);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 400px' });
 });
 
@@ -138,9 +186,57 @@ test('should use the minWidth if specified on auto resize', async () => {
       }
     ]
   });
-  const [, col2] = getHeaderCells();
   const grid = getGrid();
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
-  await autoResize(col2.element());
+  const [, col2] = getHeaderCells();
+  await autoResize(col2);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 100px' });
+});
+
+test('should remeasure flex columns when resizing a column', async () => {
+  const onColumnResize = vi.fn();
+  setup<
+    {
+      readonly col1: string;
+      readonly col2: string;
+      readonly col3: string;
+    },
+    unknown
+  >({
+    columns: [
+      {
+        key: 'col1',
+        name: 'col1',
+        resizable: true
+      },
+      {
+        key: 'col2',
+        name: 'col2',
+        resizable: true
+      },
+      {
+        key: 'col3',
+        name: 'col3',
+        resizable: true
+      }
+    ],
+    rows: [
+      {
+        col1: 'a'.repeat(10),
+        col2: 'a'.repeat(10),
+        col3: 'a'.repeat(10)
+      }
+    ],
+    onColumnResize
+  });
+  const grid = getGrid();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '639.328px 639.328px 639.344px' });
+  const [col1] = getHeaderCells();
+  await autoResize(col1);
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  expect(onColumnResize).toHaveBeenCalledOnce();
+  // onColumnResize is not called if width is not changed
+  await autoResize(col1);
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  expect(onColumnResize).toHaveBeenCalledOnce();
 });

@@ -1,13 +1,13 @@
 import './style/layers.css';
 
 export {
-  default,
+  DataGrid,
   type DataGridProps,
   type DataGridHandle,
   type DefaultColumnOptions
 } from './DataGrid';
-export { default as TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
-export { DataGridDefaultRenderersProvider } from './DataGridDefaultRenderersProvider';
+export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
+export { DataGridDefaultRenderersContext } from './DataGridDefaultRenderersContext';
 export { default as Row } from './Row';
 export { default as Cell } from './Cell';
 export * from './Columns';
@@ -34,8 +34,6 @@ export type {
   SelectHeaderRowEvent,
   SelectRowEvent,
   FillEvent,
-  CopyEvent,
-  PasteEvent,
   SortDirection,
   SortColumn,
   ColSpanArgs,
@@ -49,5 +47,7 @@ export type {
   CellClickArgs,
   CellKeyDownArgs,
   CellKeyboardEvent,
+  CellCopyEvent,
+  CellPasteEvent,
   CellSelectArgs
 } from './types';

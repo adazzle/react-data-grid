@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 import clsx from 'clsx';
 
 import { getColSpan } from './utils';
-import type { CalculatedColumn, Direction, Position } from './types';
+import type { CalculatedColumn, Direction, Maybe, Position, ResizedWidth } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
 import { cell, cellFrozen } from './style/cell';
@@ -17,12 +17,13 @@ type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
 export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGridProps<R, SR, K> {
   rowIdx: number;
   columns: readonly CalculatedColumn<R, SR>[];
-  onColumnResize: (column: CalculatedColumn<R, SR>, width: number | 'max-content') => void;
+  onColumnResize: (column: CalculatedColumn<R, SR>, width: ResizedWidth) => void;
   selectCell: (position: Position) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
   shouldFocusGrid: boolean;
   direction: Direction;
+  headerRowClass: Maybe<string>;
 }
 
 const headerRow = css`
@@ -46,6 +47,7 @@ const headerRow = css`
 export const headerRowClassname = `rdg-header-row ${headerRow}`;
 
 function HeaderRow<R, SR, K extends React.Key>({
+  headerRowClass,
   rowIdx,
   columns,
   onColumnResize,
@@ -58,8 +60,6 @@ function HeaderRow<R, SR, K extends React.Key>({
   shouldFocusGrid,
   direction
 }: HeaderRowProps<R, SR, K>) {
-  // eslint-disable-next-line react-compiler/react-compiler
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const dragDropKey = useId();
 
   const cells = [];
@@ -93,9 +93,13 @@ function HeaderRow<R, SR, K extends React.Key>({
     <div
       role="row"
       aria-rowindex={rowIdx} // aria-rowindex is 1 based
-      className={clsx(headerRowClassname, {
-        [rowSelectedClassname]: selectedCellIdx === -1
-      })}
+      className={clsx(
+        headerRowClassname,
+        {
+          [rowSelectedClassname]: selectedCellIdx === -1
+        },
+        headerRowClass
+      )}
     >
       {cells}
     </div>

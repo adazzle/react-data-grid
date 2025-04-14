@@ -78,6 +78,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly draggable: boolean;
   readonly frozen: boolean;
   readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
+  readonly renderHeaderCell: (props: RenderHeaderCellProps<TRow, TSummaryRow>) => ReactNode;
 }
 
 export interface ColumnGroup<R, SR = unknown> {
@@ -149,13 +150,9 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
 
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
-    Omit<
-      React.HTMLAttributes<HTMLDivElement>,
-      'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
-    > {
+    Omit<React.ComponentProps<'div'>, 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
-  isCopied: boolean;
   isDraggedOver: boolean;
   isCellSelected: boolean;
   onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
@@ -173,25 +170,27 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
+export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
+
 export interface CellClickArgs<TRow, TSummaryRow = unknown> {
-  rowIdx: number;
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
+  rowIdx: number;
   selectCell: (enableEditor?: boolean) => void;
 }
 
 interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'SELECT';
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   rowIdx: number;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'EDIT';
-  row: TRow;
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   rowIdx: number;
   navigate: () => void;
   onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
@@ -208,7 +207,7 @@ export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
 }
 
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'style' | 'children'>,
+  extends Omit<React.ComponentProps<'div'>, 'style' | 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
       'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
@@ -226,7 +225,6 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown>
   extends BaseRenderRowProps<TRow, TSummaryRow> {
   row: TRow;
   lastFrozenColumnIndex: number;
-  copiedCellIdx: number | undefined;
   draggedOverCellIdx: number | undefined;
   selectedCellEditor: ReactElement<RenderEditCellProps<TRow>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
@@ -255,17 +253,13 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
-export interface CopyEvent<TRow> {
-  sourceColumnKey: string;
-  sourceRow: TRow;
+interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
 }
 
-export interface PasteEvent<TRow> {
-  sourceColumnKey: string;
-  sourceRow: TRow;
-  targetColumnKey: string;
-  targetRow: TRow;
-}
+export type CellCopyEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
+export type CellPasteEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
 
 export interface GroupRow<TRow> {
   readonly childRows: readonly TRow[];
@@ -308,7 +302,7 @@ export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPr
 
 export interface RenderCheckboxProps
   extends Pick<
-    React.InputHTMLAttributes<HTMLInputElement>,
+    React.ComponentProps<'input'>,
     'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
   > {
   indeterminate?: boolean | undefined;
@@ -324,3 +318,5 @@ export interface Renderers<TRow, TSummaryRow> {
 }
 
 export type Direction = 'ltr' | 'rtl';
+
+export type ResizedWidth = number | 'max-content';

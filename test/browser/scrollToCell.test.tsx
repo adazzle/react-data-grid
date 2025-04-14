@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import { page, userEvent } from '@vitest/browser/context';
 
+import { DataGrid } from '../../src';
 import type { Column, DataGridHandle } from '../../src';
-import DataGrid from '../../src';
 import type { PartialPosition } from '../../src/ScrollToCell';
 import { getGrid } from './utils';
 

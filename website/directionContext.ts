@@ -2,9 +2,7 @@ import { createContext, useContext } from 'react';
 
 import type { Direction } from '../src/types';
 
-const DirectionContext = createContext<Direction>('ltr');
-
-export const DirectionContextProvider = DirectionContext.Provider;
+export const DirectionContext = createContext<Direction>('ltr');
 
 export function useDirection(): Direction {
   return useContext(DirectionContext);

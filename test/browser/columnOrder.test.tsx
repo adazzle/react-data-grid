@@ -1,6 +1,6 @@
 import { page } from '@vitest/browser/context';
 
-import DataGrid, { SelectColumn, TreeDataGrid } from '../../src';
+import { DataGrid, SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
 import { getHeaderCells } from './utils';
 
@@ -46,7 +46,7 @@ test('column order', () => {
       ));
     }
 
-    expect(getHeaderCells().map((c) => c.element().textContent)).toStrictEqual(expected);
+    expect(getHeaderCells().map((c) => c.textContent)).toStrictEqual(expected);
     unmount();
   }
 
