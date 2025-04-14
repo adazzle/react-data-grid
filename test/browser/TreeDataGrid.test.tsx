@@ -84,8 +84,13 @@ const onCellPasteSpy = vi.fn(({ row }: { row: Row }) => row);
 function rowKeyGetter(row: Row) {
   return row.id;
 }
-
-function TestGrid({ groupBy }: { groupBy: string[] }) {
+function TestGrid({
+  groupBy,
+  groupIdGetter
+}: {
+  groupBy: string[];
+  groupIdGetter: ((groupKey: string, parentId?: string) => string) | undefined;
+}) {
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
   const [expandedGroupIds, setExpandedGroupIds] = useState(
@@ -108,6 +113,7 @@ function TestGrid({ groupBy }: { groupBy: string[] }) {
       onRowsChange={setRows}
       onCellCopy={onCellCopySpy}
       onCellPaste={onCellPasteSpy}
+      groupIdGetter={groupIdGetter}
     />
   );
 }
@@ -118,10 +124,8 @@ function rowGrouper(rows: readonly Row[], columnKey: string) {
   return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
 }
 
-function setup(groupBy: string[]) {
-  onCellCopySpy.mockClear();
-  onCellPasteSpy.mockClear();
-  page.render(<TestGrid groupBy={groupBy} />);
+function setup(groupBy: string[], groupIdGetter?: (groupKey: string, parentId?: string) => string) {
+  page.render(<TestGrid groupBy={groupBy} groupIdGetter={groupIdGetter} />);
 }
 
 function getHeaderCellsContent() {
@@ -153,6 +157,25 @@ test('should group by multiple columns', async () => {
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '13');
   expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Year', 'Sport', 'Id']);
   expect(getRows()).toHaveLength(4);
+});
+
+test('should use groupIdGetter when provided', async () => {
+  const groupIdGetter = vi.fn((groupKey: string, parentId?: string) =>
+    parentId !== undefined ? `${groupKey}#${parentId}` : groupKey
+  );
+  setup(['country', 'year'], groupIdGetter);
+  expect(groupIdGetter).toHaveBeenCalled();
+  expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '13');
+  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Year', 'Sport', 'Id']);
+  expect(getRows()).toHaveLength(4);
+  groupIdGetter.mockClear();
+  await userEvent.click(page.getByRole('gridcell', { name: 'USA' }));
+  expect(getRows()).toHaveLength(6);
+  expect(groupIdGetter).toHaveBeenCalled();
+  await userEvent.click(page.getByRole('gridcell', { name: 'Canada' }));
+  expect(getRows()).toHaveLength(8);
+  await userEvent.click(page.getByRole('gridcell', { name: '2020' }));
+  expect(getRows()).toHaveLength(9);
 });
 
 test('should ignore duplicate groupBy columns', async () => {

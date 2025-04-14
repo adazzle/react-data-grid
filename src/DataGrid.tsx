@@ -1037,7 +1037,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   // Reset the positions if the current values are no longer valid. This can happen if a column or row is removed
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
-    // eslint-disable-next-line react-compiler/react-compiler
     setDraggedOverRowIdx(undefined);
   }
 
@@ -1165,7 +1164,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
               );
             })}
             <RowSelectionChangeContext value={selectRowLatest}>
-              {/* eslint-disable-next-line react-compiler/react-compiler */}
               {getViewportRows()}
             </RowSelectionChangeContext>
             {bottomSummaryRows?.map((row, rowIdx) => {

@@ -39,6 +39,7 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key>
   ) => Record<string, readonly NoInfer<R>[]>;
   expandedGroupIds: ReadonlySet<unknown>;
   onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
+  groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
 }
 
 type GroupByDictionary<TRow> = Record<
@@ -66,6 +67,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   rowGrouper,
   expandedGroupIds,
   onExpandedGroupIdsChange,
+  groupIdGetter: rawGroupIdGetter,
   ...props
 }: TreeDataGridProps<R, SR, K>) {
   const defaultRenderers = useDefaultRenderers<R, SR>();
@@ -73,6 +75,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
   const { leftKey, rightKey } = getLeftRightKey(props.direction);
   const toggleGroupLatest = useLatestFunc(toggleGroup);
+  const groupIdGetter = rawGroupIdGetter ?? defaultGroupIdGetter;
 
   const { columns, groupBy } = useMemo(() => {
     const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
@@ -144,6 +147,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     if (!groupedRows) return [rawRows, isGroupRow];
 
     const flattenedRows: Array<R | GroupRow<R>> = [];
+
     const expandGroup = (
       rows: GroupByDictionary<R> | readonly R[],
       parentId: string | undefined,
@@ -154,8 +158,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
         return;
       }
       Object.keys(rows).forEach((groupKey, posInSet, keys) => {
-        // TODO: should users have control over the generated key?
-        const id = parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
+        const id = groupIdGetter(groupKey, parentId);
         const isExpanded = expandedGroupIds.has(id);
         const { childRows, childGroups, startRowIndex } = rows[groupKey];
 
@@ -185,7 +188,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
       return allGroupRows.has(row);
     }
-  }, [expandedGroupIds, groupedRows, rawRows]);
+  }, [expandedGroupIds, groupedRows, rawRows, groupIdGetter]);
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
@@ -443,6 +446,10 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       }}
     />
   );
+}
+
+function defaultGroupIdGetter(groupKey: string, parentId: string | undefined) {
+  return parentId !== undefined ? `${parentId}__${groupKey}` : groupKey;
 }
 
 function isReadonlyArray(arr: unknown): arr is readonly unknown[] {

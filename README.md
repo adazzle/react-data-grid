@@ -520,6 +520,8 @@ function MyGridTest() {
 
 ###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
 
+###### `groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>`
+
 #### `<TextEditor />`
 
 ##### Props
