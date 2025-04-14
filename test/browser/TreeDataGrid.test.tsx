@@ -84,13 +84,13 @@ const onCellPasteSpy = vi.fn(({ row }: { row: Row }) => row);
 function rowKeyGetter(row: Row) {
   return row.id;
 }
-
-interface TestGridProps {
+function TestGrid({
+  groupBy,
+  groupIdGetter
+}: {
   groupBy: string[];
-  generateGroupId: ((groupKey: string, parentId?: string) => string) | undefined;
-}
-
-function TestGrid({ groupBy, generateGroupId }: TestGridProps) {
+  groupIdGetter: ((groupKey: string, parentId?: string) => string) | undefined;
+}) {
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
   const [expandedGroupIds, setExpandedGroupIds] = useState(
@@ -113,7 +113,7 @@ function TestGrid({ groupBy, generateGroupId }: TestGridProps) {
       onRowsChange={setRows}
       onCellCopy={onCellCopySpy}
       onCellPaste={onCellPasteSpy}
-      {...(generateGroupId && { generateGroupId })}
+      groupIdGetter={groupIdGetter}
     />
   );
 }
@@ -124,11 +124,8 @@ function rowGrouper(rows: readonly Row[], columnKey: string) {
   return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
 }
 
-function setup(
-  groupBy: string[],
-  generateGroupId?: (groupKey: string, parentId?: string) => string
-) {
-  page.render(<TestGrid groupBy={groupBy} generateGroupId={generateGroupId} />);
+function setup(groupBy: string[], groupIdGetter?: (groupKey: string, parentId?: string) => string) {
+  page.render(<TestGrid groupBy={groupBy} groupIdGetter={groupIdGetter} />);
 }
 
 function getHeaderCellsContent() {
@@ -162,13 +159,23 @@ test('should group by multiple columns', async () => {
   expect(getRows()).toHaveLength(4);
 });
 
-test('should group by multiple columns when passing generateGroupId', () => {
-  setup(['country', 'year'], (groupKey, parentId) =>
+test('should use groupIdGetter when provided', async () => {
+  const groupIdGetter = vi.fn((groupKey: string, parentId?: string) =>
     parentId !== undefined ? `${groupKey}#${parentId}` : groupKey
   );
+  setup(['country', 'year'], groupIdGetter);
+  expect(groupIdGetter).toHaveBeenCalled();
   expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '13');
   expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Year', 'Sport', 'Id']);
   expect(getRows()).toHaveLength(4);
+  groupIdGetter.mockClear();
+  await userEvent.click(page.getByRole('gridcell', { name: 'USA' }));
+  expect(getRows()).toHaveLength(6);
+  expect(groupIdGetter).toHaveBeenCalled();
+  await userEvent.click(page.getByRole('gridcell', { name: 'Canada' }));
+  expect(getRows()).toHaveLength(8);
+  await userEvent.click(page.getByRole('gridcell', { name: '2020' }));
+  expect(getRows()).toHaveLength(9);
 });
 
 test('should ignore duplicate groupBy columns', async () => {
@@ -192,20 +199,6 @@ test('should toggle group when group cell is clicked', async () => {
   expect(getRows()).toHaveLength(7);
   await userEvent.click(groupCell);
   expect(getRows()).toHaveLength(5);
-});
-
-test('should toggle group when group cell is clicked and is passing `generateGroupId` props', async () => {
-  setup(['country', 'year'], (groupKey, parentId) =>
-    parentId !== undefined ? `${groupKey}#${parentId}` : groupKey
-  );
-  expect(getTreeGrid()).toHaveAttribute('aria-rowcount', '13');
-  expect(getHeaderCellsContent()).toStrictEqual(['', 'Country', 'Year', 'Sport', 'Id']);
-  await userEvent.click(page.getByRole('gridcell', { name: 'USA' }));
-  expect(getRows()).toHaveLength(6);
-  await userEvent.click(page.getByRole('gridcell', { name: 'Canada' }));
-  expect(getRows()).toHaveLength(8);
-  await userEvent.click(page.getByRole('gridcell', { name: '2020' }));
-  expect(getRows()).toHaveLength(9);
 });
 
 test('should toggle group using keyboard', async () => {
