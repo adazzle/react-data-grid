@@ -518,9 +518,9 @@ function MyGridTest() {
 
 ###### `expandedGroupIds?: Maybe<ReadonlySet<unknown>>`
 
-###### `groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>`
+###### `onExpandedGroupIdsChange?: Maybe<(expandedGroupIds: Set<unknown>) => void>`
 
-###### ``
+###### `groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>`
 
 #### `<TextEditor />`
 
