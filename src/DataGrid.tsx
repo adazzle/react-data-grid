@@ -904,6 +904,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     const { idx, row } = selectedPosition;
     const column = columns[idx];
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
+    const discardOnRowChange = column.editorOptions?.discardOnRowChange !== false;
 
     const closeEditor = (shouldFocusCell: boolean) => {
       setShouldFocusCell(shouldFocusCell);
@@ -925,7 +926,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       }
     };
 
-    if (rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
+    if (discardOnRowChange && rows[selectedPosition.rowIdx] !== selectedPosition.originalRow) {
       // Discard changes if rows are updated from outside
       closeEditor(false);
     }
