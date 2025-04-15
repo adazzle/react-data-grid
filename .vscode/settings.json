@@ -8,5 +8,15 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/package-lock.json": true,
+    "**/routeTree.gen.ts": true
+  }
 }
