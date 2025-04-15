@@ -408,7 +408,12 @@ function EditorTest({
       <button type="button" onClick={() => onSave?.(rows)}>
         save
       </button>
-      <button type="button" onClick={() => setRows((rows) => rows.map((row) => ({ ...row })))}>
+      <button
+        type="button"
+        onClick={() => {
+          setRows((rows) => rows.map((row) => ({ ...row })));
+        }}
+      >
         update
       </button>
       <DataGrid
