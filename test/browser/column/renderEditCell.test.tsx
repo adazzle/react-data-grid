@@ -217,6 +217,38 @@ describe('Editor', () => {
       await userEvent.keyboard('a{arrowleft}b{arrowright}c{arrowdown}'); // should commit changes on arrowdown
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
     });
+
+    it('should discard when discardOnRowChange is true or undefined and row is changed from outside', async () => {
+      page.render(
+        <EditorTest
+          editorOptions={{
+            // needed to prevent editor from closing on update button click
+            commitOnOutsideClick: false
+          }}
+        />
+      );
+      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const editor = page.getByRole('textbox', { name: 'col2-editor' });
+      await expect.element(editor).toBeInTheDocument();
+      await userEvent.click(page.getByRole('button', { name: 'update' }));
+      await expect.element(editor).not.toBeInTheDocument();
+    });
+
+    it('should not discard when discardOnRowChange is false and row is changed from outside', async () => {
+      page.render(
+        <EditorTest
+          editorOptions={{
+            commitOnOutsideClick: false,
+            discardOnRowChange: false
+          }}
+        />
+      );
+      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      const editor = page.getByRole('textbox', { name: 'col2-editor' });
+      await expect.element(editor).toBeInTheDocument();
+      await userEvent.click(page.getByRole('button', { name: 'update' }));
+      await expect.element(editor).toBeInTheDocument();
+    });
   });
 
   describe('editor focus', () => {
@@ -375,6 +407,9 @@ function EditorTest({
       </div>
       <button type="button" onClick={() => onSave?.(rows)}>
         save
+      </button>
+      <button type="button" onClick={() => setRows((rows) => rows.map((row) => ({ ...row })))}>
+        update
       </button>
       <DataGrid
         columns={columns}
