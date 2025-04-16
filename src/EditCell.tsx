@@ -57,7 +57,7 @@ export default function EditCell<R, SR>({
   navigate
 }: EditCellProps<R, SR>) {
   const frameRequestRef = useRef<number>(undefined);
-  const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick !== false;
+  const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick ?? true;
 
   // We need to prevent the `useEffect` from cleaning up between re-renders,
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.

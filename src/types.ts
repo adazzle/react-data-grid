@@ -63,6 +63,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
     readonly displayCellContent?: Maybe<boolean>;
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
+    /** @default true */
+    readonly closeOnExternalRowChange?: Maybe<boolean>;
   }>;
 }
 
