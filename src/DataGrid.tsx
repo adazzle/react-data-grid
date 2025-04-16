@@ -132,33 +132,30 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   columns: readonly ColumnOrColumnGroup<NoInfer<R>, NoInfer<SR>>[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
-  /**
-   * Rows to be pinned at the top of the rows view for summary, the vertical scroll bar will not scroll these rows.
-   */
+  /** Rows pinned at the top of the grid for summary purposes */
   topSummaryRows?: Maybe<readonly SR[]>;
-  /**
-   * Rows to be pinned at the bottom of the rows view for summary, the vertical scroll bar will not scroll these rows.
-   */
+  /** Rows pinned at the bottom of the grid for summary purposes */
   bottomSummaryRows?: Maybe<readonly SR[]>;
-  /** The getter should return a unique key for each row */
+  /** Function to return a unique key/identifier for each row */
   rowKeyGetter?: Maybe<(row: NoInfer<R>) => K>;
+  /** Callback triggered when rows are updated */
   onRowsChange?: Maybe<(rows: NoInfer<R>[], data: RowsChangeData<NoInfer<R>, NoInfer<SR>>) => void>;
 
   /**
    * Dimensions props
    */
   /**
-   * The height of each row in pixels
+   * Height of each row in pixels
    * @default 35
    */
   rowHeight?: Maybe<number | ((row: NoInfer<R>) => number)>;
   /**
-   * The height of the header row in pixels
+   * Height of the header row in pixels
    * @default 35
    */
   headerRowHeight?: Maybe<number>;
   /**
-   * The height of each summary row in pixels
+   * Height of each summary row in pixels
    * @default 35
    */
   summaryRowHeight?: Maybe<number>;
@@ -166,49 +163,54 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Feature props
    */
-  /** Set of selected row keys */
+  /** A set of selected row keys */
   selectedRows?: Maybe<ReadonlySet<K>>;
-  /** Determines if row selection is disabled, per row */
+  /** Function to determine if row selection is disabled for a specific row */
   isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>;
   /** Function called whenever row selection is changed */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
-  /** Used for multi column sorting */
+  /** An array of sorted columns */
   sortColumns?: Maybe<readonly SortColumn[]>;
+  /** Callback triggered when sorting changes */
   onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
+  /** Default options applied to all columns */
   defaultColumnOptions?: Maybe<DefaultColumnOptions<NoInfer<R>, NoInfer<SR>>>;
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
 
   /**
    * Event props
    */
-  /** Function called whenever a cell is clicked */
+  /** Callback triggered when a cell is clicked */
   onCellClick?: Maybe<
     (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
   >;
-  /** Function called whenever a cell is double clicked */
+  /** Callback triggered when a cell is double-clicked */
   onCellDoubleClick?: Maybe<
     (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
   >;
-  /** Function called whenever a cell is right clicked */
+  /** Callback triggered when a cell is right-clicked */
   onCellContextMenu?: Maybe<
     (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
   >;
+  /** Callback triggered when a key is pressed in a cell */
   onCellKeyDown?: Maybe<
     (args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void
   >;
+  /** Callback triggered when a cell's content is copied */
   onCellCopy?: Maybe<
     (args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
   >;
+  /** Callback triggered when content is pasted into a cell */
   onCellPaste?: Maybe<
     (args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
   >;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<NoInfer<R>, NoInfer<SR>>) => void>;
-  /** Called when the grid is scrolled */
+  /** Callback triggered when the grid is scrolled */
   onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
-  /** Called when a column is resized */
+  /** Callback triggered when column is resized */
   onColumnResize?: Maybe<(column: CalculatedColumn<R, SR>, width: number) => void>;
-  /** Called when a column is reordered */
+  /** Callback triggered when columns are reordered */
   onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
 
   /**
@@ -220,10 +222,16 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Miscellaneous
    */
+  /** Custom renderers for cells, rows, and other components */
   renderers?: Maybe<Renderers<NoInfer<R>, NoInfer<SR>>>;
+  /** Function to apply custom class names to rows */
   rowClass?: Maybe<(row: NoInfer<R>, rowIdx: number) => Maybe<string>>;
+  /** Custom class name for the header row */
   headerRowClass?: Maybe<string>;
-  /** @default 'ltr' */
+  /**
+   * Text direction of the grid ('ltr' or 'rtl')
+   * @default 'ltr'
+   * */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
   'data-cy'?: Maybe<string>;

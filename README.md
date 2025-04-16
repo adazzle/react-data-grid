@@ -113,7 +113,7 @@ Rows pinned at the bottom of the grid for summary purposes.
 
 ###### `rowKeyGetter?: Maybe<(row: R) => K>`
 
-A function returning a unique key/identifier per row. `rowKeyGetter` is required for row selection to work.
+Function to return a unique key/identifier for each row. `rowKeyGetter` is required for row selection to work.
 
 ```tsx
 import { DataGrid } from 'react-data-grid';
@@ -136,7 +136,8 @@ function MyGrid() {
 
 ###### `onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>`
 
-A function receiving row updates.
+Callback triggered when rows are updated.
+
 The first parameter is a new rows array with both the updated rows and the other untouched rows.
 The second parameter is an object with an `indexes` array highlighting which rows have changed by their index, and the `column` where the change happened.
 
@@ -155,7 +156,7 @@ function MyGrid() {
 
 **Default:** `35` pixels
 
-Either a number defining the height of row in pixels, or a function returning dynamic row heights.
+Height of each row in pixels. A function can be used to set different row heights.
 
 ###### `headerRowHeight?: Maybe<number>`
 
@@ -175,11 +176,11 @@ A set of selected row keys. `rowKeyGetter` is required for row selection to work
 
 ###### `isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>`
 
-A function used to disable row selection on certain rows.
+Function to determine if row selection is disabled for a specific row.
 
 ###### `onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>`
 
-A function called when row selection is changed.
+Function called whenever row selection is changed.
 
 ```tsx
 import { useState } from 'react';
@@ -218,11 +219,11 @@ function isRowSelectionDisabled(row: Row) {
 
 ###### `sortColumns?: Maybe<readonly SortColumn[]>`
 
-An array of sorted columns.
+An array of sorted columns. Sorting can be done on multiple columns.
 
 ###### `onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>`
 
-A function called when sorting is changed.
+Callback triggered when sorting changes.
 
 ```tsx
 import { useState } from 'react';
@@ -286,7 +287,7 @@ function MyGrid() {
 
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
 function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
@@ -677,7 +678,7 @@ Enables cell editing. If set and no editor property specified, then a textinput 
 
 **Default**: `false`
 
-Determines whether column is frozen. Frozem columns are pinned on th left. At the moment
+Determines whether column is frozen. Frozen columns are pinned on the left. At the moment we do not support pinning columns on the right.
 
 ##### `resizable?: Maybe<boolean>`
 
