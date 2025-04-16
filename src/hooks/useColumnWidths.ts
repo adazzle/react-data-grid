@@ -21,10 +21,7 @@ export function useColumnWidths<R, SR>(
     readonly width: ResizedWidth;
   } | null>(null);
   const [prevGridWidth, setPreviousGridWidth] = useState(gridWidth);
-  const [temporaryMeasuredColumnWidths, setTemporaryMeasuredColumnWidths] = useState<ReadonlyMap<
-    string,
-    number
-  > | null>(null);
+  const [columnsToRemeasure, setColumnsToRemeasure] = useState<ReadonlySet<string> | null>(null);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
   // Allow columns to flex again when...
   const ignorePreviouslyMeasuredColumns: boolean =
@@ -43,8 +40,8 @@ export function useColumnWidths<R, SR>(
     } else if (
       typeof width === 'string' &&
       (ignorePreviouslyMeasuredColumns ||
-        (temporaryMeasuredColumnWidths !== null
-          ? !temporaryMeasuredColumnWidths.has(key)
+        (columnsToRemeasure !== null
+          ? columnsToRemeasure.has(key)
           : !measuredColumnWidths.has(key))) &&
       !resizedColumnWidths.has(key)
     ) {
@@ -100,14 +97,14 @@ export function useColumnWidths<R, SR>(
     flushSync(() => {
       if (columnsCanFlex) {
         // remeasure all the columns that can flex and are not resized by the user
-        const newMeasuredColumnWidths = new Map(measuredColumnWidths);
+        const columnsToRemeasure = new Set<string>();
         for (const { key, width } of viewportColumns) {
           if (resizingKey !== key && typeof width === 'string' && !resizedColumnWidths.has(key)) {
-            newMeasuredColumnWidths.delete(key);
+            columnsToRemeasure.add(key);
           }
         }
 
-        setTemporaryMeasuredColumnWidths(newMeasuredColumnWidths);
+        setColumnsToRemeasure(columnsToRemeasure);
       }
 
       setColumnToAutoResize({
@@ -116,7 +113,7 @@ export function useColumnWidths<R, SR>(
       });
     });
 
-    setTemporaryMeasuredColumnWidths(null);
+    setColumnsToRemeasure(null);
 
     if (onColumnResize) {
       const previousWidth = resizedColumnWidths.get(resizingKey);
