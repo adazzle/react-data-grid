@@ -65,7 +65,6 @@ export interface Column<TRow, TSummaryRow = unknown> {
      * @default false
      */
     readonly displayCellContent?: Maybe<boolean>;
-
     /**
      * Commit changes when clicking outside the cell
      * @default true
