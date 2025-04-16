@@ -218,7 +218,7 @@ describe('Editor', () => {
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
     });
 
-    it('should discard when discardOnRowChange is true or undefined and row is changed from outside', async () => {
+    it('should discard when closeOnExternalRowChange is true or undefined and row is changed from outside', async () => {
       page.render(
         <EditorTest
           editorOptions={{
@@ -234,12 +234,12 @@ describe('Editor', () => {
       await expect.element(editor).not.toBeInTheDocument();
     });
 
-    it('should not discard when discardOnRowChange is false and row is changed from outside', async () => {
+    it('should not discard when closeOnExternalRowChange is false and row is changed from outside', async () => {
       page.render(
         <EditorTest
           editorOptions={{
             commitOnOutsideClick: false,
-            discardOnRowChange: false
+            closeOnExternalRowChange: false
           }}
         />
       );

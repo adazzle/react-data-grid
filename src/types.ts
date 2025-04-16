@@ -64,7 +64,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
     /** @default true */
     readonly commitOnOutsideClick?: Maybe<boolean>;
     /** @default true */
-    readonly discardOnRowChange?: Maybe<boolean>;
+    readonly closeOnExternalRowChange?: Maybe<boolean>;
   }>;
 }
 
