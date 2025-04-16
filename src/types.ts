@@ -9,7 +9,7 @@ export type Maybe<T> = T | undefined | null;
 export type StateSetter<S> = React.Dispatch<React.SetStateAction<S>>;
 
 export interface Column<TRow, TSummaryRow = unknown> {
-  /** The name of the column. By default it will be displayed in the header cell */
+  /** The name of the column. Displayed in the header cell by default */
   readonly name: string | ReactElement;
   /** A unique key to distinguish each column */
   readonly key: string;
@@ -19,40 +19,44 @@ export interface Column<TRow, TSummaryRow = unknown> {
    */
   readonly width?: Maybe<number | string>;
   /**
-   * Minimum column width in px
+   * Minimum column width in pixels
    * @default '50px'
    */
   readonly minWidth?: Maybe<number>;
-  /** Maximum column width in px. */
+  /** Maximum column width in pixels */
   readonly maxWidth?: Maybe<number>;
+  /** Class name(s) for the cell */
   readonly cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>;
+  /** Class name(s) for the header cell */
   readonly headerCellClass?: Maybe<string>;
+  /** Class name(s) for the summary cell */
   readonly summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>;
-  /** Render function used to render the content of cells */
+  /** Render function to render the content of cells */
   readonly renderCell?: Maybe<(props: RenderCellProps<TRow, TSummaryRow>) => ReactNode>;
-  /** Render function used to render the content of the column's header cell */
+  /** Render function to render the content of the header cell */
   readonly renderHeaderCell?: Maybe<(props: RenderHeaderCellProps<TRow, TSummaryRow>) => ReactNode>;
-  /** Render function used to render the content of summary cells */
+  /** Render function to render the content of summary cells */
   readonly renderSummaryCell?: Maybe<
     (props: RenderSummaryCellProps<TSummaryRow, TRow>) => ReactNode
   >;
-  /** Render function used to render the content of group cells */
+  /** Render function to render the content of group cells */
   readonly renderGroupCell?: Maybe<(props: RenderGroupCellProps<TRow, TSummaryRow>) => ReactNode>;
-  /** Render function used to render the content of edit cells. When set, the column is automatically set to be editable */
+  /** Render function to render the content of edit cells. When set, the column is automatically set to be editable */
   readonly renderEditCell?: Maybe<(props: RenderEditCellProps<TRow, TSummaryRow>) => ReactNode>;
   /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
   readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
-  /** Determines whether column is frozen or not */
+  /** Determines whether column is frozen */
   readonly frozen?: Maybe<boolean>;
-  /** Enable resizing of a column */
+  /** Enable resizing of the column */
   readonly resizable?: Maybe<boolean>;
-  /** Enable sorting of a column */
+  /** Enable sorting of the column */
   readonly sortable?: Maybe<boolean>;
-  /** Enable dragging of a column */
+  /** Enable dragging of the column */
   readonly draggable?: Maybe<boolean>;
   /** Sets the column sort order to be descending instead of ascending the first time the column is sorted */
   readonly sortDescendingFirst?: Maybe<boolean>;
+  /** Options for cell editing */
   readonly editorOptions?: Maybe<{
     /**
      * Render the cell content in addition to the edit cell.
@@ -61,9 +65,16 @@ export interface Column<TRow, TSummaryRow = unknown> {
      * @default false
      */
     readonly displayCellContent?: Maybe<boolean>;
-    /** @default true */
+
+    /**
+     * Commit changes when clicking outside the cell
+     * @default true
+     */
     readonly commitOnOutsideClick?: Maybe<boolean>;
-    /** @default true */
+    /**
+     * Close the editor when the row changes externally
+     * @default true
+     */
     readonly closeOnExternalRowChange?: Maybe<boolean>;
   }>;
 }

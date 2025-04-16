@@ -600,7 +600,7 @@ See [`RenderGroupCellProps`](#rendergroupcellprops)
 
 ##### `name: string | ReactElement`
 
-The name of the column. By default it will be displayed in the header cell
+The name of the column. Displayed in the header cell by default.
 
 ##### `key: string`
 
@@ -625,31 +625,97 @@ width: 'minmax(100px, max-content)';
 
 **Default**: `50` pixels
 
-Sets the maximum width of a column.
+Minimum column width in pixels.
 
 ##### `maxWidth?: Maybe<number>`
 
-Sets the maximum width of a column.
+Maximum column width in pixels.
 
 ##### `cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>`
 
-A function to add a class on the row
+Class name(s) for the cell
 
 ##### `headerCellClass?: Maybe<string>`
 
+Class name(s) for the header cell.
+
 ##### `summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>`
+
+Class name(s) for the summary cell.
 
 ##### `renderCell?: Maybe<(props: RenderCellProps<TRow, TSummaryRow>) => ReactNode>`
 
-Render function used to render the content of cells
+Render function to render the content of cells.
 
-##### `renderHeaderCell`
+##### `renderHeaderCell?: Maybe<(props: RenderHeaderCellProps<TRow, TSummaryRow>) => ReactNode>`
 
-Render function used to render the content of header cells
+Render function to render the content of the header cell.
 
-##### `renderSummaryCell`
+##### `renderSummaryCell?: Maybe<(props: RenderSummaryCellProps<TSummaryRow, TRow>) => ReactNode>`
 
-Render function used to render the content of summary cells
+Render function to render the content of summary cells
+
+##### `renderEditCell?: Maybe<(props: RenderEditCellProps<TRow, TSummaryRow>) => ReactNode>`
+
+Render function to render the content of edit cells. When set, the column is automatically set to be editable
+
+##### `editable?: Maybe<boolean | ((row: TRow) => boolean)>`
+
+Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor.
+
+##### `colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>`
+
+##### `frozen?: Maybe<boolean>`
+
+**Default**: `false`
+
+Determines whether column is frozen. Frozem columns are pinned on th left. At the moment
+
+##### `resizable?: Maybe<boolean>`
+
+**Default**: `false`
+
+Enable resizing of the column
+
+##### `sortable?: Maybe<boolean>`
+
+**Default**: `false`
+
+Enable sorting of the column
+
+##### `draggable?: Maybe<boolean>`
+
+**Default**: `false`
+
+Enable dragging of the column
+
+##### `sortDescendingFirst?: Maybe<boolean>`
+
+**Default**: `false`
+
+Sets the column sort order to be descending instead of ascending the first time the column is sorted
+
+##### `editorOptions`
+
+Options for cell editing.
+
+###### `displayCellContent?: Maybe<boolean>`
+
+**Default**: `false`
+
+Render the cell content in addition to the edit cell. Enable this option when the editor is rendered outside the grid, like a modal for example.
+
+###### `commitOnOutsideClick?: Maybe<boolean>`
+
+**Default**: `true`
+
+Commit changes when clicking outside the cell.
+
+###### `closeOnExternalRowChange?: Maybe<boolean>`
+
+**Default**: `true`
+
+Close the editor when the row changes externally.
 
 #### `DataGridHandle`
 
