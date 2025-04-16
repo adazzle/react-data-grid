@@ -323,6 +323,9 @@ function CommonFeatures() {
   const [isExporting, setIsExporting] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
   const columns = useMemo(() => getColumns(countries, direction), [direction]);
+  const [columnWidths, setColumnWidths] = useState(
+    (): ReadonlyMap<string, number> => new Map<string, number>()
+  );
 
   const summaryRows = useMemo((): readonly SummaryRow[] => {
     return [
@@ -382,6 +385,9 @@ function CommonFeatures() {
         <button type="button" onClick={handleExportToPdf}>
           Export to PDF
         </button>
+        <button type="button" onClick={() => setColumnWidths(new Map())}>
+          Reset Width
+        </button>
       </div>
       <DataGrid
         ref={gridRef}
@@ -402,6 +408,8 @@ function CommonFeatures() {
         className="fill-grid"
         direction={direction}
         enableVirtualization={!isExporting}
+        columnWidths={columnWidths}
+        onColumnWidthsChange={setColumnWidths}
       />
     </>
   );

@@ -109,7 +109,6 @@ export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToCell: (position: PartialPosition) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
-  resetMeasuredColumnWidths: () => void;
 }
 
 type SharedDivProps = Pick<
@@ -236,6 +235,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
   'data-cy'?: Maybe<string>;
+
+  columnWidths?: Maybe<ReadonlyMap<string, number>>;
+  onColumnWidthsChange?: Maybe<(widths: ReadonlyMap<string, number>) => void>;
 }
 
 /**
@@ -295,7 +297,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
     'data-testid': testId,
-    'data-cy': dataCy
+    'data-cy': dataCy,
+
+    columnWidths,
+    onColumnWidthsChange
   } = props;
 
   /**
@@ -324,9 +329,17 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const [resizedColumnWidths, setResizedColumnWidths] = useState(
     (): ReadonlyMap<string, number> => new Map()
   );
-  const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
-    (): ReadonlyMap<string, number> => new Map()
+  const [measuredColumnWidthsInternal, setMeasuredColumnWidthsInternal] = useState(
+    (): ReadonlyMap<string, number> => columnWidths ?? new Map()
   );
+  const isColumnWidthsControlled = columnWidths != null && onColumnWidthsChange != null;
+  const measuredColumnWidths = isColumnWidthsControlled
+    ? columnWidths
+    : measuredColumnWidthsInternal;
+  const setMeasuredColumnWidths = isColumnWidthsControlled
+    ? onColumnWidthsChange
+    : setMeasuredColumnWidthsInternal;
+
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
@@ -541,10 +554,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         setScrollToPosition({ idx: scrollToIdx, rowIdx: scrollToRowIdx });
       }
     },
-    selectCell,
-    resetMeasuredColumnWidths() {
-      setMeasuredColumnWidths(new Map());
-    }
+    selectCell
   }));
 
   /**
