@@ -44,7 +44,7 @@ export function useColumnWidths<R, SR>(
       typeof width === 'string' &&
       (ignorePreviouslyMeasuredColumns ||
         (temporaryMeasuredColumnWidths !== null
-          ? temporaryMeasuredColumnWidths.has(key)
+          ? !temporaryMeasuredColumnWidths.has(key)
           : !measuredColumnWidths.has(key))) &&
       !resizedColumnWidths.has(key)
     ) {
