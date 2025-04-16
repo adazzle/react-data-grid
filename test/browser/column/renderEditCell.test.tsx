@@ -218,7 +218,7 @@ describe('Editor', () => {
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1bac$/);
     });
 
-    it('should discard when closeOnExternalRowChange is true or undefined and row is changed from outside', async () => {
+    it('should close the editor when closeOnExternalRowChange is true or undefined and row is changed from outside', async () => {
       page.render(
         <EditorTest
           editorOptions={{
