@@ -234,7 +234,7 @@ describe('Editor', () => {
       await expect.element(editor).not.toBeInTheDocument();
     });
 
-    it('should not discard when closeOnExternalRowChange is false and row is changed from outside', async () => {
+    it('should not close the editor when closeOnExternalRowChange is false and row is changed from outside', async () => {
       page.render(
         <EditorTest
           editorOptions={{
