@@ -27,7 +27,7 @@ The DataGrid component is designed to handle large datasets efficiently while of
 - Strictly typed with TypeScript
 - [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/#/CommonFeatures)>)
 - Light and dark mode support out of the box. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
-- [Frozen columns](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Frozen columns](https://adazzle.github.io/react-data-grid/#/CommonFeatures): Freeze columns to keep them visible during horizontal scrolling.
 - [Column resizing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
 - [Multi-column sorting](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
   - Click on a sortable column header to toggle between its ascending/descending sort order
@@ -53,15 +53,27 @@ The DataGrid component is designed to handle large datasets efficiently while of
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
-## Install
+## Installation
+
+to install `react-data-grid`, use npm or yarn:
 
 ```sh
 npm install react-data-grid
+# or
+yarn add react-data-grid
+```
+
+Additionally, import the default styles in your application:
+
+```jsx
+import 'react-data-grid/lib/styles.css';
 ```
 
 `react-data-grid` is published as ECMAScript modules for evergreen browsers, bundlers, and server-side rendering.
 
-## Quick start
+## Getting started
+
+Here is a basic example of how to use `react-data-grid` in your React application:
 
 ```jsx
 import 'react-data-grid/lib/styles.css';
@@ -83,7 +95,7 @@ function App() {
 }
 ```
 
-## API
+## API Reference
 
 ### Components
 
@@ -95,7 +107,7 @@ function App() {
 
 See [`Column`](#column).
 
-An array describing the grid's columns.
+An array of column definitions. Each column should have a key and name.
 
 :warning: Passing a new `columns` array will trigger a re-render for the whole grid, avoid changing it as much as possible for optimal performance.
 
@@ -136,7 +148,7 @@ function MyGrid() {
 
 ###### `onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>`
 
-Callback triggered when rows are updated.
+Callback triggered when rows are changed.
 
 The first parameter is a new rows array with both the updated rows and the other untouched rows.
 The second parameter is an object with an `indexes` array highlighting which rows have changed by their index, and the `column` where the change happened.
@@ -180,7 +192,7 @@ Function to determine if row selection is disabled for a specific row.
 
 ###### `onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>`
 
-Function called whenever row selection is changed.
+Callback triggered when the selection changes.
 
 ```tsx
 import { useState } from 'react';
@@ -219,7 +231,7 @@ function isRowSelectionDisabled(row: Row) {
 
 ###### `sortColumns?: Maybe<readonly SortColumn[]>`
 
-An array of sorted columns. Sorting can be done on multiple columns.
+An array of sorted columns.
 
 ###### `onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>`
 

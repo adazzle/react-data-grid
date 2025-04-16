@@ -128,7 +128,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Grid and data Props
    */
-  /** An array of objects representing each column on the grid */
+  /** An array of column definitions */
   columns: readonly ColumnOrColumnGroup<NoInfer<R>, NoInfer<SR>>[];
   /** A function called for each rendered row that should return a plain key/value pair object */
   rows: readonly R[];
@@ -138,7 +138,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   bottomSummaryRows?: Maybe<readonly SR[]>;
   /** Function to return a unique key/identifier for each row */
   rowKeyGetter?: Maybe<(row: NoInfer<R>) => K>;
-  /** Callback triggered when rows are updated */
+  /** Callback triggered when rows are changed */
   onRowsChange?: Maybe<(rows: NoInfer<R>[], data: RowsChangeData<NoInfer<R>, NoInfer<SR>>) => void>;
 
   /**
@@ -167,7 +167,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   selectedRows?: Maybe<ReadonlySet<K>>;
   /** Function to determine if row selection is disabled for a specific row */
   isRowSelectionDisabled?: Maybe<(row: NoInfer<R>) => boolean>;
-  /** Function called whenever row selection is changed */
+  /** Callback triggered when the selection changes */
   onSelectedRowsChange?: Maybe<(selectedRows: Set<NoInfer<K>>) => void>;
   /** An array of sorted columns */
   sortColumns?: Maybe<readonly SortColumn[]>;
