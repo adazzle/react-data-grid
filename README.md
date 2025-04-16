@@ -16,6 +16,8 @@
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions
 
+The DataGrid component is designed to handle large datasets efficiently while offering a rich set of features for customization and interactivity.
+
 ## Features
 
 - [React 19.0+](package.json) support
@@ -103,11 +105,11 @@ An array of rows, the rows data can be of any type.
 
 ###### `topSummaryRows?: Maybe<readonly SR[]>`
 
-An optional array of summary rows, usually used to display total values for example. `topSummaryRows` are pinned at the top of the rows view and the vertical scroll bar will not scroll these rows.
+Rows pinned at the top of the grid for summary purposes.
 
 ###### `bottomSummaryRows?: Maybe<readonly SR[]>`
 
-An optional array of summary rows, usually used to display total values for example. `bottomSummaryRows` are pinned at the bottom of the rows view and the vertical scroll bar will not scroll these rows.
+Rows pinned at the bottom of the grid for summary purposes.
 
 ###### `rowKeyGetter?: Maybe<(row: R) => K>`
 
@@ -159,13 +161,13 @@ Either a number defining the height of row in pixels, or a function returning dy
 
 **Default:** `35` pixels
 
-A number defining the height of the header row.
+Height of the header row in pixels.
 
 ###### `summaryRowHeight?: Maybe<number>`
 
 **Default:** `35` pixels
 
-A number defining the height of summary rows.
+Height of each summary row in pixels.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
@@ -220,7 +222,7 @@ An array of sorted columns.
 
 ###### `onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>`
 
-A function called when sorting is changed
+A function called when sorting is changed.
 
 ```tsx
 import { useState } from 'react';
@@ -261,7 +263,7 @@ onSortColumnsChange(sortColumns: SortColumn[]) {
 
 ###### `defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>`
 
-Column options that are applied to all the columns
+Default options applied to all columns.
 
 ```tsx
 function MyGrid() {
@@ -323,7 +325,7 @@ Arguments:
 
 ###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Triggered when a cell is double clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
 function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
@@ -337,7 +339,7 @@ function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
 
 ###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Triggered when a cell is right clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a cell is right-clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
 function onCellContextMenu(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
@@ -379,11 +381,11 @@ Check [more examples](website/routes/CellNavigation.tsx)
 
 ###### `onCellCopy?: Maybe<(args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
 
-A function called when copy event is triggered on a cell
+Callback triggered when a cell's content is copied.
 
 ###### `onCellPaste?: Maybe<(args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
 
-A function called when paste event is triggered on a cell
+Callback triggered when content is pasted into a cell.
 
 ###### `onSelectedCellChange?: Maybe<(args: CellSelectArgs<R, SR>) => void>;`
 
@@ -397,11 +399,15 @@ Arguments:
 
 ###### `onScroll?: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>`
 
-A function called when the grid is scrolled.
+Callback triggered when the grid is scrolled.
 
 ###### `onColumnResize?: Maybe<(column: CalculatedColumn<R, SR>, width: number) => void>`
 
-A function called when column is resized.
+Callback triggered when column is resized.
+
+###### `onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>`
+
+Callback triggered when columns are reordered.
 
 ###### `enableVirtualization?: Maybe<boolean>`
 
@@ -411,7 +417,7 @@ This prop can be used to disable virtualization.
 
 ###### `renderers?: Maybe<Renderers<R, SR>>`
 
-This prop can be used to override the internal renderers. The prop accepts an object of type
+Custom renderers for cells, rows, and other components.
 
 ```tsx
 interface Renderers<TRow, TSummaryRow> {
@@ -445,7 +451,7 @@ function MyGrid() {
 
 ###### `rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>`
 
-A function to add a class on the row
+Function to apply custom class names to rows.
 
 ```tsx
 import { DataGrid } from 'react-data-grid';
@@ -461,6 +467,8 @@ function rowClass(row: Row, rowIdx: number) {
 
 ###### `headerRowClass?: Maybe<string>>`
 
+Custom class name for the header row.
+
 ###### `direction?: Maybe<'ltr' | 'rtl'>`
 
 This property sets the text direction of the grid, it defaults to `'ltr'` (left-to-right). Setting `direction` to `'rtl'` has the following effects:
@@ -472,11 +480,11 @@ This property sets the text direction of the grid, it defaults to `'ltr'` (left-
 
 ###### `className?: string | undefined`
 
-custom classname
+Custom class name for the grid.
 
 ###### `style?: CSSProperties | undefined`
 
-custom styles
+Custom styles for the grid.
 
 ###### `'aria-label'?: string | undefined`
 
