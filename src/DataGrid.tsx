@@ -342,8 +342,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const columnWidths = isColumnWidthsControlled ? columnWidthsRaw : columnWidthsInternal;
   const onColumnWidthsChange = isColumnWidthsControlled
     ? (columnWidths: ColumnWidths) => {
-        // we need to keep the columnWidths state and prop in sync otherwise it leads to bugs like
-        // resize column, auto resize column, and resize column again will use the internal width.
+        // we keep the internal state in sync with the prop but this prevents an extra render
         setColumnWidthsInternal(columnWidths);
         onColumnWidthsChangeRaw(columnWidths);
       }
@@ -1073,6 +1072,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   if (selectedPosition.idx > maxColIdx || selectedPosition.rowIdx > maxRowIdx) {
     setSelectedPosition({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' });
     setDraggedOverRowIdx(undefined);
+  }
+
+  // Keep the state and prop in sync
+  if (isColumnWidthsControlled && columnWidthsInternal !== columnWidthsRaw) {
+    setColumnWidthsInternal(columnWidthsRaw);
   }
 
   let templateRows = `repeat(${headerRowsCount}, ${headerRowHeight}px)`;
