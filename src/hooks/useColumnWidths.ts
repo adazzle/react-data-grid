@@ -20,13 +20,15 @@ export function useColumnWidths<R, SR>(
     readonly key: string;
     readonly width: ResizedWidth;
   } | null>(null);
+  const [columnsToMeasureOnResize, setColumnsToMeasureOnResize] =
+    useState<ReadonlySet<string> | null>(null);
   const [prevGridWidth, setPreviousGridWidth] = useState(gridWidth);
-  const [columnsToRemeasure, setColumnsToRemeasure] = useState<ReadonlySet<string> | null>(null);
   const columnsCanFlex: boolean = columns.length === viewportColumns.length;
-  // Allow columns to flex again when...
-  const ignorePreviouslyMeasuredColumns: boolean =
+  const ignorePreviouslyMeasuredColumnsOnGridWidthChange =
+    // Allow columns to flex again when...
+    columnsCanFlex &&
     // there is enough space for columns to flex and the grid was resized
-    columnsCanFlex && gridWidth !== prevGridWidth;
+    gridWidth !== prevGridWidth;
   const newTemplateColumns = [...templateColumns];
   const columnsToMeasure: string[] = [];
 
@@ -39,11 +41,11 @@ export function useColumnWidths<R, SR>(
       columnsToMeasure.push(key);
     } else if (
       typeof width === 'string' &&
-      (ignorePreviouslyMeasuredColumns ||
-        (columnsToRemeasure !== null
-          ? columnsToRemeasure.has(key)
-          : !measuredColumnWidths.has(key))) &&
-      !resizedColumnWidths.has(key)
+      // If the column is resized by the user, we don't want to measure it again
+      !resizedColumnWidths.has(key) &&
+      (ignorePreviouslyMeasuredColumnsOnGridWidthChange ||
+        columnsToMeasureOnResize?.has(key) === true ||
+        !measuredColumnWidths.has(key))
     ) {
       newTemplateColumns[idx] = width;
       columnsToMeasure.push(key);
@@ -52,9 +54,9 @@ export function useColumnWidths<R, SR>(
 
   const gridTemplateColumns = newTemplateColumns.join(' ');
 
-  useLayoutEffect(updateMeasuredWidths);
+  useLayoutEffect(updateMeasuredAndResizedWidths);
 
-  function updateMeasuredWidths() {
+  function updateMeasuredAndResizedWidths() {
     setPreviousGridWidth(gridWidth);
     if (columnsToMeasure.length === 0) return;
 
@@ -101,7 +103,7 @@ export function useColumnWidths<R, SR>(
           }
         }
 
-        setColumnsToRemeasure(columnsToRemeasure);
+        setColumnsToMeasureOnResize(columnsToRemeasure);
       }
 
       setColumnToAutoResize({
@@ -110,7 +112,7 @@ export function useColumnWidths<R, SR>(
       });
     });
 
-    setColumnsToRemeasure(null);
+    setColumnsToMeasureOnResize(null);
 
     if (onColumnResize) {
       const previousWidth = resizedColumnWidths.get(resizingKey);
