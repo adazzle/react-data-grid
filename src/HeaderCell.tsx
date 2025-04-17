@@ -275,10 +275,10 @@ export default function HeaderCell<R, SR>({
 
       {resizable && (
         <ResizeHandle
+          direction={direction}
           column={column}
           onColumnResize={onColumnResize}
           onColumnResizeEnd={onColumnResizeEnd}
-          direction={direction}
         />
       )}
     </div>
@@ -287,14 +287,14 @@ export default function HeaderCell<R, SR>({
 
 type ResizeHandleProps<R, SR> = Pick<
   HeaderCellProps<R, SR>,
-  'column' | 'onColumnResize' | 'onColumnResizeEnd' | 'direction'
+  'direction' | 'column' | 'onColumnResize' | 'onColumnResizeEnd'
 >;
 
 function ResizeHandle<R, SR>({
+  direction,
   column,
   onColumnResize,
-  onColumnResizeEnd,
-  direction
+  onColumnResizeEnd
 }: ResizeHandleProps<R, SR>) {
   const resizingOffsetRef = useRef<number>(undefined);
   const isRtl = direction === 'rtl';

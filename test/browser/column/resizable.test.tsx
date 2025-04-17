@@ -241,7 +241,7 @@ test('should remeasure flex columns when resizing a column', async () => {
   expect(onColumnResize).toHaveBeenCalledOnce();
 });
 
-test('should use columnWidths and onColumnWidthChange props when provided', async () => {
+test('should use columnWidths and onColumnWidthsChange props when provided', async () => {
   const onColumnWidthsChange = vi.fn();
   setup<Row, unknown>({
     columns,
