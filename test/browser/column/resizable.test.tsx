@@ -255,7 +255,7 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
         ])
     );
 
-    function onColymnWidthsChange(newColumnWidths: ColumnWidths) {
+    function onColumnWidthsChange(newColumnWidths: ColumnWidths) {
       setColumnWidths(newColumnWidths);
       onColumnWidthsChangeSpy(newColumnWidths);
     }
