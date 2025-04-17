@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { commands, page, userEvent } from '@vitest/browser/context';
 
-import { DataGrid, type Column, type ColumnWidths } from '../../../src';
+import { DataGrid, type Column, type ColumnWidth, type ColumnWidths } from '../../../src';
 import { resizeHandleClassname } from '../../../src/HeaderCell';
 import { getGrid, getHeaderCells, setup } from '../utils';
 
@@ -249,7 +249,7 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
   function TestGrid() {
     const [columnWidths, setColumnWidths] = useState(
       (): ColumnWidths =>
-        new Map([
+        new Map<string, ColumnWidth>([
           ['col1', { width: 101, type: 'measured' }],
           ['col2', { width: 201, type: 'measured' }]
         ])
@@ -262,7 +262,7 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
 
     function changedColumnWidths() {
       setColumnWidths(
-        new Map([
+        new Map<string, ColumnWidth>([
           ['col1', { width: 101, type: 'measured' }],
           ['col2', { width: 150, type: 'measured' }]
         ])
