@@ -262,8 +262,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     rowHeight: rawRowHeight,
     headerRowHeight: rawHeaderRowHeight,
     summaryRowHeight: rawSummaryRowHeight,
-    columnWidths,
-    onColumnWidthsChange,
+    columnWidths: columnWidthsRaw,
+    onColumnWidthsChange: onColumnWidthsChangeRaw,
     // Feature props
     selectedRows,
     isRowSelectionDisabled,
@@ -326,29 +326,12 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [resizedColumnWidthsInternal, setResizedColumnWidthsInternal] = useState(
-    (): ReadonlyMap<string, number> => new Map()
-  );
-  const [measuredColumnWidthsInternal, setMeasuredColumnWidthsInternal] = useState(
-    (): ReadonlyMap<string, number> => new Map()
-  );
-  const isColumnWidthsControlled = columnWidths != null;
-  const measuredColumnWidths = isColumnWidthsControlled
-    ? columnWidths.measured
-    : measuredColumnWidthsInternal;
-  const setMeasuredColumnWidths = isColumnWidthsControlled
-    ? (measuredColumnWidths: ReadonlyMap<string, number>) => {
-        onColumnWidthsChange?.({ ...columnWidths, measured: measuredColumnWidths });
-      }
-    : setMeasuredColumnWidthsInternal;
-  const resizedColumnWidths = isColumnWidthsControlled
-    ? columnWidths.resized
-    : resizedColumnWidthsInternal;
-  const setResizedColumnWidths = isColumnWidthsControlled
-    ? (resizedColumnWidths: ReadonlyMap<string, number>) => {
-        onColumnWidthsChange?.({ ...columnWidths, resized: resizedColumnWidths });
-      }
-    : setResizedColumnWidthsInternal;
+  const [columnWidthsInternal, setColumnWidthsInternal] = useState((): ColumnWidths => new Map());
+  const isColumnWidthsControlled = columnWidthsRaw != null && onColumnWidthsChangeRaw != null;
+  const columnWidths = isColumnWidthsControlled ? columnWidthsRaw : columnWidthsInternal;
+  const onColumnWidthsChange = isColumnWidthsControlled
+    ? onColumnWidthsChangeRaw
+    : setColumnWidthsInternal;
 
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
@@ -358,11 +341,9 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
   const getColumnWidth = useCallback(
     (column: CalculatedColumn<R, SR>) => {
-      return (
-        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width
-      );
+      return columnWidths.get(column.key)?.width ?? column.width;
     },
-    [measuredColumnWidths, resizedColumnWidths]
+    [columnWidths]
   );
 
   const [gridRef, gridWidth, gridHeight, horizontalScrollbarHeight] = useGridDimensions();
@@ -482,10 +463,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     templateColumns,
     gridRef,
     gridWidth,
-    resizedColumnWidths,
-    measuredColumnWidths,
-    setResizedColumnWidths,
-    setMeasuredColumnWidths,
+    columnWidths,
+    onColumnWidthsChange,
     onColumnResize
   );
 
