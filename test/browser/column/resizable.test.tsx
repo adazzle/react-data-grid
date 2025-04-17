@@ -278,7 +278,7 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
           columns={columns}
           rows={[]}
           columnWidths={columnWidths}
-          onColumnWidthsChange={onColymnWidthsChange}
+          onColumnWidthsChange={onColumnWidthsChange}
           onColumnResize={onColumnResizeSpy}
         />
       </>
