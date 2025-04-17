@@ -60,6 +60,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
   | 'onSortColumnsChange'
   | 'selectCell'
   | 'onColumnResize'
+  | 'onColumnResizeEnd'
   | 'shouldFocusGrid'
   | 'direction'
   | 'onColumnsReorder'
@@ -79,6 +80,7 @@ export default function HeaderCell<R, SR>({
   rowIdx,
   isCellSelected,
   onColumnResize,
+  onColumnResizeEnd,
   onColumnsReorder,
   sortColumns,
   onSortColumnsChange,
@@ -272,7 +274,12 @@ export default function HeaderCell<R, SR>({
       })}
 
       {resizable && (
-        <ResizeHandle column={column} onColumnResize={onColumnResize} direction={direction} />
+        <ResizeHandle
+          column={column}
+          onColumnResize={onColumnResize}
+          onColumnResizeEnd={onColumnResizeEnd}
+          direction={direction}
+        />
       )}
     </div>
   );
@@ -280,10 +287,15 @@ export default function HeaderCell<R, SR>({
 
 type ResizeHandleProps<R, SR> = Pick<
   HeaderCellProps<R, SR>,
-  'column' | 'onColumnResize' | 'direction'
+  'column' | 'onColumnResize' | 'onColumnResizeEnd' | 'direction'
 >;
 
-function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandleProps<R, SR>) {
+function ResizeHandle<R, SR>({
+  column,
+  onColumnResize,
+  onColumnResizeEnd,
+  direction
+}: ResizeHandleProps<R, SR>) {
   const resizingOffsetRef = useRef<number>(undefined);
   const isRtl = direction === 'rtl';
 
@@ -314,6 +326,7 @@ function ResizeHandle<R, SR>({ column, onColumnResize, direction }: ResizeHandle
   }
 
   function onLostPointerCapture() {
+    onColumnResizeEnd();
     resizingOffsetRef.current = undefined;
   }
 

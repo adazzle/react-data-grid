@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { DataGrid } from '../../src';
-import type { Column, SortColumn } from '../../src';
+import type { Column, ColumnWidths, SortColumn } from '../../src';
 import { useDirection } from '../directionContext';
 
 export const Route = createFileRoute('/ColumnsReordering')({
@@ -69,16 +69,17 @@ const columns: Column<Row>[] = [
   }
 ];
 
+const initialColumnsOrder: readonly number[] = columns.map((_, index) => index);
+
 function ColumnsReordering() {
   const direction = useDirection();
   const [rows] = useState(createRows);
-  const [columnsOrder, setColumnsOrder] = useState((): readonly number[] =>
-    columns.map((_, index) => index)
-  );
+  const [columnsOrder, setColumnsOrder] = useState(initialColumnsOrder);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const onSortColumnsChange = useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
   }, []);
+  const [columnWidths, setColumnWidths] = useState((): ColumnWidths => new Map());
 
   const reorderedColumns = useMemo(() => {
     return columnsOrder.map((index) => columns[index]);
@@ -119,15 +120,34 @@ function ColumnsReordering() {
     });
   }
 
+  function resetOrderAndWidths() {
+    setColumnsOrder(initialColumnsOrder);
+    setColumnWidths(new Map());
+  }
+
   return (
-    <DataGrid
-      columns={reorderedColumns}
-      rows={sortedRows}
-      sortColumns={sortColumns}
-      onSortColumnsChange={onSortColumnsChange}
-      direction={direction}
-      defaultColumnOptions={{ width: '1fr' }}
-      onColumnsReorder={onColumnsReorder}
-    />
+    <>
+      <button
+        type="button"
+        onClick={resetOrderAndWidths}
+        style={{
+          width: 150,
+          marginBottom: 16
+        }}
+      >
+        Reset Columns
+      </button>
+      <DataGrid
+        columns={reorderedColumns}
+        rows={sortedRows}
+        sortColumns={sortColumns}
+        onSortColumnsChange={onSortColumnsChange}
+        direction={direction}
+        defaultColumnOptions={{ width: '1fr' }}
+        onColumnsReorder={onColumnsReorder}
+        columnWidths={columnWidths}
+        onColumnWidthsChange={setColumnWidths}
+      />
+    </>
   );
 }

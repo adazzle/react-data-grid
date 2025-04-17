@@ -12,7 +12,8 @@ export function useColumnWidths<R, SR>(
   gridWidth: number,
   columnWidths: ColumnWidths,
   onColumnWidthsChange: (columnWidths: ColumnWidths) => void,
-  onColumnResize: DataGridProps<R, SR>['onColumnResize']
+  onColumnResize: DataGridProps<R, SR>['onColumnResize'],
+  setColumnResizing: (isColumnResizing: boolean) => void
 ) {
   const [columnToAutoResize, setColumnToAutoResize] = useState<{
     readonly key: string;
@@ -115,6 +116,8 @@ export function useColumnWidths<R, SR>(
         key: resizingKey,
         width: nextWidth
       });
+
+      setColumnResizing(typeof nextWidth === 'number');
     });
 
     setColumnsToMeasureOnResize(null);
