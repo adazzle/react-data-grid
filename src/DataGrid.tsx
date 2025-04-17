@@ -50,6 +50,7 @@ import type {
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
+  ColumnWidths,
   Direction,
   FillEvent,
   Maybe,
@@ -159,6 +160,8 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * @default 35
    */
   summaryRowHeight?: Maybe<number>;
+  columnWidths?: Maybe<ColumnWidths>;
+  onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>;
 
   /**
    * Feature props
@@ -235,9 +238,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
   'data-cy'?: Maybe<string>;
-
-  columnWidths?: Maybe<ReadonlyMap<string, number>>;
-  onColumnWidthsChange?: Maybe<(widths: ReadonlyMap<string, number>) => void>;
 }
 
 /**
@@ -261,6 +261,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     rowHeight: rawRowHeight,
     headerRowHeight: rawHeaderRowHeight,
     summaryRowHeight: rawSummaryRowHeight,
+    columnWidths,
+    onColumnWidthsChange,
     // Feature props
     selectedRows,
     isRowSelectionDisabled,
@@ -297,10 +299,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
     'data-testid': testId,
-    'data-cy': dataCy,
-
-    columnWidths,
-    onColumnWidthsChange
+    'data-cy': dataCy
   } = props;
 
   /**
@@ -326,19 +325,29 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [resizedColumnWidths, setResizedColumnWidths] = useState(
-    (): ReadonlyMap<string, number> => new Map()
+  const [resizedColumnWidthsInternal, setResizedColumnWidthsInternal] = useState(
+    (): ReadonlyMap<string, number> => columnWidths?.resized ?? new Map()
   );
   const [measuredColumnWidthsInternal, setMeasuredColumnWidthsInternal] = useState(
-    (): ReadonlyMap<string, number> => columnWidths ?? new Map()
+    (): ReadonlyMap<string, number> => columnWidths?.measured ?? new Map()
   );
   const isColumnWidthsControlled = columnWidths != null && onColumnWidthsChange != null;
   const measuredColumnWidths = isColumnWidthsControlled
-    ? columnWidths
+    ? columnWidths.measured
     : measuredColumnWidthsInternal;
   const setMeasuredColumnWidths = isColumnWidthsControlled
-    ? onColumnWidthsChange
+    ? (measuredColumnWidths: ReadonlyMap<string, number>) => {
+        onColumnWidthsChange({ ...columnWidths, measured: measuredColumnWidths });
+      }
     : setMeasuredColumnWidthsInternal;
+  const resizedColumnWidths = isColumnWidthsControlled
+    ? columnWidths.resized
+    : resizedColumnWidthsInternal;
+  const setResizedColumnWidths = isColumnWidthsControlled
+    ? (resizedColumnWidths: ReadonlyMap<string, number>) => {
+        onColumnWidthsChange({ ...columnWidths, resized: resizedColumnWidths });
+      }
+    : setResizedColumnWidthsInternal;
 
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);

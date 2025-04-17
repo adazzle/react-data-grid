@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
-import type { CalculatedColumn, ResizedWidth, StateSetter } from '../types';
+import type { CalculatedColumn, ResizedWidth } from '../types';
 import type { DataGridProps } from '../DataGrid';
 
 export function useColumnWidths<R, SR>(
@@ -12,8 +12,8 @@ export function useColumnWidths<R, SR>(
   gridWidth: number,
   resizedColumnWidths: ReadonlyMap<string, number>,
   measuredColumnWidths: ReadonlyMap<string, number>,
-  setResizedColumnWidths: StateSetter<ReadonlyMap<string, number>>,
-  setMeasuredColumnWidths: (columnWidths: ReadonlyMap<string, number>) => void,
+  setResizedColumnWidths: (resizedColumnWidths: ReadonlyMap<string, number>) => void,
+  setMeasuredColumnWidths: (measuredColumnWidths: ReadonlyMap<string, number>) => void,
   onColumnResize: DataGridProps<R, SR>['onColumnResize']
 ) {
   const [columnToAutoResize, setColumnToAutoResize] = useState<{
@@ -77,16 +77,13 @@ export function useColumnWidths<R, SR>(
 
     if (columnToAutoResize !== null) {
       const resizingKey = columnToAutoResize.key;
-      setResizedColumnWidths((resizedColumnWidths) => {
-        const oldWidth = resizedColumnWidths.get(resizingKey);
-        const newWidth = measureColumnWidth(gridRef, resizingKey);
-        if (newWidth !== undefined && oldWidth !== newWidth) {
-          const newResizedColumnWidths = new Map(resizedColumnWidths);
-          newResizedColumnWidths.set(resizingKey, newWidth);
-          return newResizedColumnWidths;
-        }
-        return resizedColumnWidths;
-      });
+      const oldWidth = resizedColumnWidths.get(resizingKey);
+      const newWidth = measureColumnWidth(gridRef, resizingKey);
+      if (newWidth !== undefined && oldWidth !== newWidth) {
+        const newResizedColumnWidths = new Map(resizedColumnWidths);
+        newResizedColumnWidths.set(resizingKey, newWidth);
+        setResizedColumnWidths(newResizedColumnWidths);
+      }
       setColumnToAutoResize(null);
     }
   }
