@@ -182,6 +182,26 @@ Height of the header row in pixels.
 
 Height of each summary row in pixels.
 
+###### `columnWidths?: Maybe<ColumnWidths>`
+
+A map of column widths containing both measured and resized widths. If not provided then an internal state is used.
+
+```jsx
+
+const [columnWidths, setColumnWidths] = useState((): ColumnWidths => new Map());
+
+function addNewRow() {
+  setRows(...);
+  setColumnWidths(new Map());
+}
+
+return <DataGrid columnWidths={columnWidths} onColumnWidthsChange={setColumnWidths} ../>
+```
+
+###### `onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>`
+
+Callback triggered when column widths change. If not provided then an internal state is used.
+
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 
 A set of selected row keys. `rowKeyGetter` is required for row selection to work.

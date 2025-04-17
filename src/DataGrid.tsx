@@ -160,8 +160,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * @default 35
    */
   summaryRowHeight?: Maybe<number>;
-  /** */
+  /** A map of column widths */
   columnWidths?: Maybe<ColumnWidths>;
+  /** Callback triggered when column widths change */
   onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>;
 
   /**
