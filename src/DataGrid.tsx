@@ -160,6 +160,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * @default 35
    */
   summaryRowHeight?: Maybe<number>;
+  /** */
   columnWidths?: Maybe<ColumnWidths>;
   onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>;
 
@@ -326,18 +327,18 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [resizedColumnWidthsInternal, setResizedColumnWidthsInternal] = useState(
-    (): ReadonlyMap<string, number> => columnWidths?.resized ?? new Map()
+    (): ReadonlyMap<string, number> => new Map()
   );
   const [measuredColumnWidthsInternal, setMeasuredColumnWidthsInternal] = useState(
-    (): ReadonlyMap<string, number> => columnWidths?.measured ?? new Map()
+    (): ReadonlyMap<string, number> => new Map()
   );
-  const isColumnWidthsControlled = columnWidths != null && onColumnWidthsChange != null;
+  const isColumnWidthsControlled = columnWidths != null;
   const measuredColumnWidths = isColumnWidthsControlled
     ? columnWidths.measured
     : measuredColumnWidthsInternal;
   const setMeasuredColumnWidths = isColumnWidthsControlled
     ? (measuredColumnWidths: ReadonlyMap<string, number>) => {
-        onColumnWidthsChange({ ...columnWidths, measured: measuredColumnWidths });
+        onColumnWidthsChange?.({ ...columnWidths, measured: measuredColumnWidths });
       }
     : setMeasuredColumnWidthsInternal;
   const resizedColumnWidths = isColumnWidthsControlled
@@ -345,7 +346,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     : resizedColumnWidthsInternal;
   const setResizedColumnWidths = isColumnWidthsControlled
     ? (resizedColumnWidths: ReadonlyMap<string, number>) => {
-        onColumnWidthsChange({ ...columnWidths, resized: resizedColumnWidths });
+        onColumnWidthsChange?.({ ...columnWidths, resized: resizedColumnWidths });
       }
     : setResizedColumnWidthsInternal;
 
