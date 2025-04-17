@@ -1,6 +1,7 @@
-import { commands, userEvent } from '@vitest/browser/context';
+import { useState } from 'react';
+import { commands, page, userEvent } from '@vitest/browser/context';
 
-import type { Column } from '../../../src';
+import { DataGrid, type Column, type ColumnWidth, type ColumnWidths } from '../../../src';
 import { resizeHandleClassname } from '../../../src/HeaderCell';
 import { getGrid, getHeaderCells, setup } from '../utils';
 
@@ -25,7 +26,7 @@ function getResizeHandle(column: Element) {
 
 interface ResizeArgs {
   readonly column: Element;
-  readonly resizeBy: number;
+  readonly resizeBy: number | readonly number[];
 }
 
 async function resize({ column, resizeBy }: ResizeArgs) {
@@ -239,4 +240,93 @@ test('should remeasure flex columns when resizing a column', async () => {
   await autoResize(col1);
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
   expect(onColumnResize).toHaveBeenCalledOnce();
+});
+
+test('should use columnWidths and onColumnWidthsChange props when provided', async () => {
+  const onColumnWidthsChangeSpy = vi.fn();
+  const onColumnResizeSpy = vi.fn();
+
+  function TestGrid() {
+    const [columnWidths, setColumnWidths] = useState(
+      (): ColumnWidths =>
+        new Map<string, ColumnWidth>([
+          ['col1', { width: 101, type: 'measured' }],
+          ['col2', { width: 201, type: 'measured' }]
+        ])
+    );
+
+    function onColumnWidthsChange(newColumnWidths: ColumnWidths) {
+      setColumnWidths(newColumnWidths);
+      onColumnWidthsChangeSpy(newColumnWidths);
+    }
+
+    function changedColumnWidths() {
+      setColumnWidths(
+        new Map<string, ColumnWidth>([
+          ['col1', { width: 120, type: 'measured' }],
+          ['col2', { width: 120, type: 'measured' }]
+        ])
+      );
+    }
+
+    return (
+      <>
+        <button type="button" onClick={changedColumnWidths}>
+          Change widths
+        </button>
+        <DataGrid<Row>
+          columns={columns}
+          rows={[]}
+          columnWidths={columnWidths}
+          onColumnWidthsChange={onColumnWidthsChange}
+          onColumnResize={onColumnResizeSpy}
+        />
+      </>
+    );
+  }
+
+  page.render(<TestGrid />);
+
+  const grid = getGrid();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '101px 201px' });
+  const [, col2] = getHeaderCells();
+  await autoResize(col2);
+  expect(onColumnWidthsChangeSpy).toHaveBeenCalledExactlyOnceWith(
+    new Map([
+      ['col1', { width: 101, type: 'measured' }],
+      ['col2', { width: 100, type: 'resized' }]
+    ])
+  );
+  expect(onColumnResizeSpy).toHaveBeenCalledExactlyOnceWith(
+    expect.objectContaining(columns[1]),
+    100
+  );
+  onColumnWidthsChangeSpy.mockClear();
+  onColumnResizeSpy.mockClear();
+
+  await resize({ column: col2, resizeBy: [5, 5, 5] });
+  expect(onColumnWidthsChangeSpy).toHaveBeenCalledExactlyOnceWith(
+    new Map([
+      ['col1', { width: 101, type: 'measured' }],
+      ['col2', { width: 115, type: 'resized' }]
+    ])
+  );
+  expect(onColumnResizeSpy).toHaveBeenCalledTimes(3);
+  expect(onColumnResizeSpy).toHaveBeenNthCalledWith(1, expect.objectContaining(columns[1]), 105);
+  expect(onColumnResizeSpy).toHaveBeenNthCalledWith(2, expect.objectContaining(columns[1]), 110);
+  expect(onColumnResizeSpy).toHaveBeenNthCalledWith(3, expect.objectContaining(columns[1]), 115);
+  onColumnWidthsChangeSpy.mockClear();
+  onColumnResizeSpy.mockClear();
+
+  await userEvent.click(page.getByRole('button', { name: 'Change widths' }));
+  expect(onColumnWidthsChangeSpy).not.toHaveBeenCalled();
+  expect(onColumnResizeSpy).not.toHaveBeenCalled();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '120px 120px' });
+  await resize({ column: col2, resizeBy: [5, 5] });
+  expect(onColumnWidthsChangeSpy).toHaveBeenCalledExactlyOnceWith(
+    new Map([
+      ['col1', { width: 120, type: 'measured' }],
+      ['col2', { width: 130, type: 'resized' }]
+    ])
+  );
 });

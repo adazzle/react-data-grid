@@ -329,6 +329,13 @@ export interface Renderers<TRow, TSummaryRow> {
   noRowsFallback?: Maybe<ReactNode>;
 }
 
+export interface ColumnWidth {
+  readonly type: 'resized' | 'measured';
+  readonly width: number;
+}
+
+export type ColumnWidths = ReadonlyMap<string, ColumnWidth>;
+
 export type Direction = 'ltr' | 'rtl';
 
 export type ResizedWidth = number | 'max-content';
