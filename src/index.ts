@@ -20,6 +20,7 @@ export type {
   Column,
   ColumnGroup,
   ColumnOrColumnGroup,
+  ColumnWidths,
   CalculatedColumn,
   CalculatedColumnParent,
   CalculatedColumnOrColumnGroup,
