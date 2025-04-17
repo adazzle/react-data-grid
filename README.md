@@ -65,7 +65,7 @@ yarn add react-data-grid
 
 Additionally, import the default styles in your application:
 
-```jsx
+```tsx
 import 'react-data-grid/lib/styles.css';
 ```
 
@@ -75,7 +75,7 @@ import 'react-data-grid/lib/styles.css';
 
 Here is a basic example of how to use `react-data-grid` in your React application:
 
-```jsx
+```tsx
 import 'react-data-grid/lib/styles.css';
 
 import { DataGrid } from 'react-data-grid';
