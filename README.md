@@ -186,7 +186,7 @@ Height of each summary row in pixels.
 
 A map of column widths containing both measured and resized widths. If not provided then an internal state is used.
 
-```jsx
+```tsx
 const [columnWidths, setColumnWidths] = useState((): ColumnWidths => new Map());
 
 function addNewRow() {
