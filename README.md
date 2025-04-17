@@ -191,6 +191,7 @@ const [columnWidths, setColumnWidths] = useState((): ColumnWidths => new Map());
 
 function addNewRow() {
   setRows(...);
+  // reset column widths after adding a new row
   setColumnWidths(new Map());
 }
 
