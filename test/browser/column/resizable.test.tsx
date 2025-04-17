@@ -263,8 +263,8 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
     function changedColumnWidths() {
       setColumnWidths(
         new Map<string, ColumnWidth>([
-          ['col1', { width: 101, type: 'measured' }],
-          ['col2', { width: 150, type: 'measured' }]
+          ['col1', { width: 120, type: 'measured' }],
+          ['col2', { width: 120, type: 'measured' }]
         ])
       );
     }
@@ -321,12 +321,12 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
   await userEvent.click(page.getByRole('button', { name: 'Change widths' }));
   expect(onColumnWidthsChangeSpy).not.toHaveBeenCalled();
   expect(onColumnResizeSpy).not.toHaveBeenCalled();
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '101px 150px' });
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '120px 120px' });
   await resize({ column: col2, resizeBy: [5, 5] });
   expect(onColumnWidthsChangeSpy).toHaveBeenCalledExactlyOnceWith(
     new Map([
-      ['col1', { width: 101, type: 'measured' }],
-      ['col2', { width: 160, type: 'resized' }]
+      ['col1', { width: 120, type: 'measured' }],
+      ['col2', { width: 130, type: 'resized' }]
     ])
   );
 });
