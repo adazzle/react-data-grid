@@ -260,14 +260,28 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
       onColumnWidthsChangeSpy(newColumnWidths);
     }
 
+    function changedColumnWidths() {
+      setColumnWidths(
+        new Map([
+          ['col1', { width: 101, type: 'measured' }],
+          ['col2', { width: 150, type: 'measured' }]
+        ])
+      );
+    }
+
     return (
-      <DataGrid<Row>
-        columns={columns}
-        rows={[]}
-        columnWidths={columnWidths}
-        onColumnWidthsChange={onColymnWidthsChange}
-        onColumnResize={onColumnResizeSpy}
-      />
+      <>
+        <button type="button" onClick={changedColumnWidths}>
+          Change widths
+        </button>
+        <DataGrid<Row>
+          columns={columns}
+          rows={[]}
+          columnWidths={columnWidths}
+          onColumnWidthsChange={onColymnWidthsChange}
+          onColumnResize={onColumnResizeSpy}
+        />
+      </>
     );
   }
 
@@ -301,4 +315,18 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
   expect(onColumnResizeSpy).toHaveBeenNthCalledWith(1, expect.objectContaining(columns[1]), 105);
   expect(onColumnResizeSpy).toHaveBeenNthCalledWith(2, expect.objectContaining(columns[1]), 110);
   expect(onColumnResizeSpy).toHaveBeenNthCalledWith(3, expect.objectContaining(columns[1]), 115);
+  onColumnWidthsChangeSpy.mockClear();
+  onColumnResizeSpy.mockClear();
+
+  await userEvent.click(page.getByRole('button', { name: 'Change widths' }));
+  expect(onColumnWidthsChangeSpy).not.toHaveBeenCalled();
+  expect(onColumnResizeSpy).not.toHaveBeenCalled();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '101px 150px' });
+  await resize({ column: col2, resizeBy: [5, 5] });
+  expect(onColumnWidthsChangeSpy).toHaveBeenCalledExactlyOnceWith(
+    new Map([
+      ['col1', { width: 101, type: 'measured' }],
+      ['col2', { width: 160, type: 'resized' }]
+    ])
+  );
 });
