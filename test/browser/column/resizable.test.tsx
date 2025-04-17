@@ -240,3 +240,26 @@ test('should remeasure flex columns when resizing a column', async () => {
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
   expect(onColumnResize).toHaveBeenCalledOnce();
 });
+
+test('should use columnWidths and onColumnWidthChange props when provided', async () => {
+  const onColumnWidthsChange = vi.fn();
+  setup<Row, unknown>({
+    columns,
+    rows: [],
+    columnWidths: new Map([
+      ['col1', { width: 101, type: 'measured' }],
+      ['col2', { width: 201, type: 'measured' }]
+    ]),
+    onColumnWidthsChange
+  });
+  const grid = getGrid();
+  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '101px 201px' });
+  const [, col2] = getHeaderCells();
+  await autoResize(col2);
+  expect(onColumnWidthsChange).toHaveBeenCalledExactlyOnceWith(
+    new Map([
+      ['col1', { width: 101, type: 'measured' }],
+      ['col2', { width: 100, type: 'resized' }]
+    ])
+  );
+});
