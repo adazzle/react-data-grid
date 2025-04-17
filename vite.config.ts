@@ -9,7 +9,10 @@ const isCI = process.env.CI === 'true';
 const isTest = process.env.NODE_ENV === 'test';
 
 // TODO: remove when `userEvent.pointer` is supported
-const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeBy) => {
+const resizeColumn: BrowserCommand<[resizeBy: number | readonly number[]]> = async (
+  context,
+  resizeBy
+) => {
   const page = context.page;
   const frame = await context.frame();
   const resizeHandle = frame.locator('[role="columnheader"][aria-colindex="2"] div');
@@ -18,7 +21,12 @@ const resizeColumn: BrowserCommand<[resizeBy: number]> = async (context, resizeB
     position: { x: 5, y: 5 }
   });
   await page.mouse.down();
-  await page.mouse.move(x + resizeBy + 5, y);
+  resizeBy = Array.isArray(resizeBy) ? resizeBy : [resizeBy];
+  let newX = x + 5;
+  for (const value of resizeBy) {
+    newX += value;
+    await page.mouse.move(newX, y);
+  }
   await page.mouse.up();
 };
 

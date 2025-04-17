@@ -65,7 +65,7 @@ yarn add react-data-grid
 
 Additionally, import the default styles in your application:
 
-```jsx
+```tsx
 import 'react-data-grid/lib/styles.css';
 ```
 
@@ -75,7 +75,7 @@ import 'react-data-grid/lib/styles.css';
 
 Here is a basic example of how to use `react-data-grid` in your React application:
 
-```jsx
+```tsx
 import 'react-data-grid/lib/styles.css';
 
 import { DataGrid } from 'react-data-grid';
@@ -181,6 +181,26 @@ Height of the header row in pixels.
 **Default:** `35` pixels
 
 Height of each summary row in pixels.
+
+###### `columnWidths?: Maybe<ColumnWidths>`
+
+A map of column widths containing both measured and resized widths. If not provided then an internal state is used.
+
+```tsx
+const [columnWidths, setColumnWidths] = useState((): ColumnWidths => new Map());
+
+function addNewRow() {
+  setRows(...);
+  // reset column widths after adding a new row
+  setColumnWidths(new Map());
+}
+
+return <DataGrid columnWidths={columnWidths} onColumnWidthsChange={setColumnWidths} ../>
+```
+
+###### `onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>`
+
+Callback triggered when column widths change. If not provided then an internal state is used.
 
 ###### `selectedRows?: Maybe<ReadonlySet<K>>`
 

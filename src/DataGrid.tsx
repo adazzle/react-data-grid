@@ -50,6 +50,7 @@ import type {
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
+  ColumnWidths,
   Direction,
   FillEvent,
   Maybe,
@@ -159,6 +160,10 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * @default 35
    */
   summaryRowHeight?: Maybe<number>;
+  /** A map of column widths */
+  columnWidths?: Maybe<ColumnWidths>;
+  /** Callback triggered when column widths change */
+  onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>;
 
   /**
    * Feature props
@@ -258,6 +263,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     rowHeight: rawRowHeight,
     headerRowHeight: rawHeaderRowHeight,
     summaryRowHeight: rawSummaryRowHeight,
+    columnWidths: columnWidthsRaw,
+    onColumnWidthsChange: onColumnWidthsChangeRaw,
     // Feature props
     selectedRows,
     isRowSelectionDisabled,
@@ -320,25 +327,32 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    */
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [resizedColumnWidths, setResizedColumnWidths] = useState(
-    (): ReadonlyMap<string, number> => new Map()
+  const [columnWidthsInternal, setColumnWidthsInternal] = useState(
+    (): ColumnWidths => columnWidthsRaw ?? new Map()
   );
-  const [measuredColumnWidths, setMeasuredColumnWidths] = useState(
-    (): ReadonlyMap<string, number> => new Map()
-  );
+  const [isColumnResizing, setColumnResizing] = useState(false);
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
   const [shouldFocusCell, setShouldFocusCell] = useState(false);
   const [previousRowIdx, setPreviousRowIdx] = useState(-1);
 
+  const isColumnWidthsControlled =
+    columnWidthsRaw != null && onColumnWidthsChangeRaw != null && !isColumnResizing;
+  const columnWidths = isColumnWidthsControlled ? columnWidthsRaw : columnWidthsInternal;
+  const onColumnWidthsChange = isColumnWidthsControlled
+    ? (columnWidths: ColumnWidths) => {
+        // we keep the internal state in sync with the prop but this prevents an extra render
+        setColumnWidthsInternal(columnWidths);
+        onColumnWidthsChangeRaw(columnWidths);
+      }
+    : setColumnWidthsInternal;
+
   const getColumnWidth = useCallback(
     (column: CalculatedColumn<R, SR>) => {
-      return (
-        resizedColumnWidths.get(column.key) ?? measuredColumnWidths.get(column.key) ?? column.width
-      );
+      return columnWidths.get(column.key)?.width ?? column.width;
     },
-    [measuredColumnWidths, resizedColumnWidths]
+    [columnWidths]
   );
 
   const [gridRef, gridWidth, gridHeight, horizontalScrollbarHeight] = useGridDimensions();
@@ -458,11 +472,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     templateColumns,
     gridRef,
     gridWidth,
-    resizedColumnWidths,
-    measuredColumnWidths,
-    setResizedColumnWidths,
-    setMeasuredColumnWidths,
-    onColumnResize
+    columnWidths,
+    onColumnWidthsChange,
+    onColumnResize,
+    setColumnResizing
   );
 
   const minColIdx = isTreeGrid ? -1 : 0;
@@ -476,6 +489,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    * The identity of the wrapper function is stable so it won't break memoization
    */
   const handleColumnResizeLatest = useLatestFunc(handleColumnResize);
+  const handleColumnResizeEndLatest = useLatestFunc(handleColumnResizeEnd);
   const onColumnsReorderLastest = useLatestFunc(onColumnsReorder);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
   const onCellClickLatest = useLatestFunc(onCellClick);
@@ -711,6 +725,14 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         row,
         originalRow: row
       }));
+    }
+  }
+
+  function handleColumnResizeEnd() {
+    // This check is needed as double click on the resize handle triggers onPointerMove
+    if (isColumnResizing) {
+      onColumnWidthsChangeRaw?.(columnWidths);
+      setColumnResizing(false);
     }
   }
 
@@ -1052,6 +1074,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     setDraggedOverRowIdx(undefined);
   }
 
+  // Keep the state and prop in sync
+  if (isColumnWidthsControlled && columnWidthsInternal !== columnWidthsRaw) {
+    setColumnWidthsInternal(columnWidthsRaw);
+  }
+
   let templateRows = `repeat(${headerRowsCount}, ${headerRowHeight}px)`;
   if (topSummaryRowsCount > 0) {
     templateRows += ` repeat(${topSummaryRowsCount}, ${summaryRowHeight}px)`;
@@ -1135,6 +1162,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
               rowIdx={headerRowsCount}
               columns={getRowViewportColumns(mainHeaderRowIdx)}
               onColumnResize={handleColumnResizeLatest}
+              onColumnResizeEnd={handleColumnResizeEndLatest}
               onColumnsReorder={onColumnsReorderLastest}
               sortColumns={sortColumns}
               onSortColumnsChange={onSortColumnsChangeLatest}
