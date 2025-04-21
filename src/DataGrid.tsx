@@ -506,15 +506,22 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   /**
    * callbacks
    */
-  const focusCellOrCellContent = useCallback(() => {
-    const cell = getCellToScroll(gridRef.current!);
-    if (cell === null) return;
+  const focusCellOrCellContent = useCallback(
+    (shouldScroll = true) => {
+      const cell = getCellToScroll(gridRef.current!);
+      if (cell === null) return;
 
-    scrollIntoView(cell);
-    // Focus cell content when available instead of the cell itself
-    const elementToFocus = cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-    elementToFocus.focus({ preventScroll: true });
-  }, [gridRef]);
+      if (shouldScroll) {
+        scrollIntoView(cell);
+      }
+
+      // Focus cell content when available instead of the cell itself
+      const elementToFocus =
+        cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
+      elementToFocus.focus({ preventScroll: true });
+    },
+    [gridRef]
+  );
 
   /**
    * effects
@@ -991,6 +998,9 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         onPointerDown={handleDragHandlePointerDown}
         onPointerMove={isDragging ? handlePointerMove : undefined}
         onLostPointerCapture={isDragging ? handleLostPointerCapture : undefined}
+        onClick={() => {
+          focusCellOrCellContent(false);
+        }}
         onDoubleClick={handleDragHandleDoubleClick}
       />
     );
