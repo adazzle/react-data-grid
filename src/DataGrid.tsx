@@ -742,6 +742,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    // find dragged over row using the pointer position
     const gridEl = gridRef.current!;
     const headerAndTopSummaryRowsHeight = headerRowsHeight + topSummaryRowsCount * summaryRowHeight;
     const offset =
@@ -987,7 +988,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       <div
         style={dragHandleStyle}
         className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
-        onClick={focusCellOrCellContent}
         onPointerDown={handleDragHandlePointerDown}
         onPointerMove={isDragging ? handlePointerMove : undefined}
         onLostPointerCapture={isDragging ? handleLostPointerCapture : undefined}
