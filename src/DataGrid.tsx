@@ -999,6 +999,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         onPointerMove={isDragging ? handlePointerMove : undefined}
         onLostPointerCapture={isDragging ? handleLostPointerCapture : undefined}
         onClick={() => {
+          // keep the focus on the cell but do not scroll
           focusCellOrCellContent(false);
         }}
         onDoubleClick={handleDragHandleDoubleClick}
