@@ -748,7 +748,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+  function handleDragHandlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     // find dragged over row using the pointer position
     const gridEl = gridRef.current!;
     const headerAndTopSummaryRowsHeight = headerRowsHeight + topSummaryRowsCount * summaryRowHeight;
@@ -766,7 +766,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     scrollIntoView(el);
   }
 
-  function handleLostPointerCapture() {
+  function handleDragHandleLostPointerCapture() {
     setDragging(false);
     if (draggedOverRowIdx === undefined) return;
 
@@ -775,6 +775,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     const endRowIndex = rowIdx < draggedOverRowIdx ? draggedOverRowIdx + 1 : rowIdx;
     updateRows(startRowIndex, endRowIndex);
     setDraggedOverRowIdx(undefined);
+  }
+
+  function handleDragHandleClick() {
+    // keep the focus on the cell but do not scroll
+    focusCellOrCellContent(false);
   }
 
   function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -996,12 +1001,9 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         style={dragHandleStyle}
         className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
         onPointerDown={handleDragHandlePointerDown}
-        onPointerMove={isDragging ? handlePointerMove : undefined}
-        onLostPointerCapture={isDragging ? handleLostPointerCapture : undefined}
-        onClick={() => {
-          // keep the focus on the cell but do not scroll
-          focusCellOrCellContent(false);
-        }}
+        onPointerMove={isDragging ? handleDragHandlePointerMove : undefined}
+        onLostPointerCapture={isDragging ? handleDragHandleLostPointerCapture : undefined}
+        onClick={handleDragHandleClick}
         onDoubleClick={handleDragHandleDoubleClick}
       />
     );
