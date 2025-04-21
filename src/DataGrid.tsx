@@ -994,6 +994,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
         onClick={focusCellOrCellContent}
         onPointerDown={handleDragHandlePointerDown}
+        onPointerMove={isDragging ? handlePointerMove : undefined}
+        onLostPointerCapture={isDragging ? handleLostPointerCapture : undefined}
         onDoubleClick={handleDragHandleDoubleClick}
       />
     );
@@ -1209,8 +1211,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       onKeyDown={handleKeyDown}
       onCopy={handleCellCopy}
       onPaste={handleCellPaste}
-      onPointerMove={isDragging ? handlePointerMove : undefined}
-      onPointerUp={isDragging ? handleLostPointerCapture : undefined}
       data-testid={testId}
       data-cy={dataCy}
     >
