@@ -742,15 +742,22 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    // TODO
-    gridRef.current?.setPointerCapture(event.pointerId);
+    const gridEl = gridRef.current!;
+    // TODO: is this okay? This is needed to make double click work
+    gridEl.setPointerCapture(event.pointerId);
     const headerAndTopSummaryRowsHeight = headerRowsHeight + topSummaryRowsCount * summaryRowHeight;
     const offset =
       scrollTop -
       headerAndTopSummaryRowsHeight +
       event.clientY -
-      gridRef.current!.getBoundingClientRect().top;
-    setDraggedOverRowIdx(findRowIdx(offset));
+      gridEl.getBoundingClientRect().top;
+    const overRowIdx = findRowIdx(offset);
+    setDraggedOverRowIdx(overRowIdx);
+    const ariaRowIndex = headerAndTopSummaryRowsCount + overRowIdx + 1;
+    const el = gridEl.querySelector(
+      `:scope > [aria-rowindex="${ariaRowIndex}"] > [aria-colindex="${selectedPosition.idx + 1}"]`
+    );
+    scrollIntoView(el);
   }
 
   function handleLostPointerCapture() {
