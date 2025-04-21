@@ -399,7 +399,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    */
   const isTreeGrid = role === 'treegrid';
   const headerRowsHeight = headerRowsCount * headerRowHeight;
-
   const summaryRowsHeight = summaryRowsCount * summaryRowHeight;
   const clientHeight = gridHeight - headerRowsHeight - summaryRowsHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
