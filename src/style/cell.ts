@@ -45,3 +45,30 @@ export const cellFrozen = css`
 `;
 
 export const cellFrozenClassname = `rdg-cell-frozen ${cellFrozen}`;
+
+const cellDragHandle = css`
+  @layer rdg.DragHandle {
+    --rdg-drag-handle-size: 8px;
+    z-index: 0;
+    cursor: move;
+    inline-size: var(--rdg-drag-handle-size);
+    block-size: var(--rdg-drag-handle-size);
+    background-color: var(--rdg-selection-color);
+    place-self: end;
+
+    &:hover {
+      --rdg-drag-handle-size: 16px;
+      border: 2px solid var(--rdg-selection-color);
+      background-color: var(--rdg-background-color);
+    }
+  }
+`;
+
+export const cellDragHandleFrozenClassname = css`
+  @layer rdg.DragHandle {
+    z-index: 1;
+    position: sticky;
+  }
+`;
+
+export const cellDragHandleClassname = `rdg-cell-drag-handle ${cellDragHandle}`;

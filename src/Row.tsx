@@ -23,8 +23,6 @@ function Row<R, SR>({
   onCellDoubleClick,
   onCellContextMenu,
   rowClass,
-  setDraggedOverRowIdx,
-  onMouseEnter,
   onRowChange,
   selectCell,
   ...props
@@ -34,11 +32,6 @@ function Row<R, SR>({
   const handleRowChange = useLatestFunc((column: CalculatedColumn<R, SR>, newRow: R) => {
     onRowChange(column, rowIdx, newRow);
   });
-
-  function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
-    setDraggedOverRowIdx?.(rowIdx);
-    onMouseEnter?.(event);
-  }
 
   className = clsx(
     rowClassname,
@@ -90,13 +83,7 @@ function Row<R, SR>({
 
   return (
     <RowSelectionContext value={selectionValue}>
-      <div
-        role="row"
-        className={className}
-        onMouseEnter={handleDragEnter}
-        style={getRowStyle(gridRowStart)}
-        {...props}
-      >
+      <div role="row" className={className} style={getRowStyle(gridRowStart)} {...props}>
         {cells}
       </div>
     </RowSelectionContext>

@@ -27,6 +27,7 @@ import {
   assertIsValidKeyGetter,
   canExitGrid,
   createCellEvent,
+  getCellStyle,
   getColSpan,
   getLeftRightKey,
   getNextSelectedCellPosition,
@@ -67,7 +68,6 @@ import {
   DataGridDefaultRenderersContext,
   useDefaultRenderers
 } from './DataGridDefaultRenderersContext';
-import DragHandle from './DragHandle';
 import EditCell from './EditCell';
 import GroupedColumnHeaderRow from './GroupedColumnHeaderRow';
 import HeaderRow from './HeaderRow';
@@ -75,6 +75,7 @@ import { defaultRenderRow } from './Row';
 import type { PartialPosition } from './ScrollToCell';
 import ScrollToCell from './ScrollToCell';
 import { default as defaultRenderSortStatus } from './sortStatus';
+import { cellDragHandleClassname, cellDragHandleFrozenClassname } from './style/cell';
 import {
   focusSinkClassname,
   focusSinkHeaderAndSummaryClassname,
@@ -332,7 +333,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   );
   const [isColumnResizing, setColumnResizing] = useState(false);
   const [isDragging, setDragging] = useState(false);
-  const [draggedOverRowIdx, setOverRowIdx] = useState<number | undefined>(undefined);
+  const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
   const [shouldFocusCell, setShouldFocusCell] = useState(false);
   const [previousRowIdx, setPreviousRowIdx] = useState(-1);
@@ -391,7 +392,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   /**
    * refs
    */
-  const latestDraggedOverRowIdx = useRef(draggedOverRowIdx);
   const focusSinkRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -399,6 +399,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    */
   const isTreeGrid = role === 'treegrid';
   const headerRowsHeight = headerRowsCount * headerRowHeight;
+
   const summaryRowsHeight = summaryRowsCount * summaryRowHeight;
   const clientHeight = gridHeight - headerRowsHeight - summaryRowsHeight;
   const isSelectable = selectedRows != null && onSelectedRowsChange != null;
@@ -506,11 +507,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   /**
    * callbacks
    */
-  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
-    setOverRowIdx(rowIdx);
-    latestDraggedOverRowIdx.current = rowIdx;
-  }, []);
-
   const focusCellOrCellContent = useCallback(() => {
     const cell = getCellToScroll(gridRef.current!);
     if (cell === null) return;
@@ -736,6 +732,65 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     }
   }
 
+  function handleDragHandlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    // keep the focus on the cell
+    event.preventDefault();
+    if (event.pointerType === 'mouse' && event.buttons !== 1) {
+      return;
+    }
+    setDragging(true);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    // TODO
+    gridRef.current?.setPointerCapture(event.pointerId);
+    const headerAndTopSummaryRowsHeight = headerRowsHeight + topSummaryRowsCount * summaryRowHeight;
+    const offset =
+      scrollTop -
+      headerAndTopSummaryRowsHeight +
+      event.clientY -
+      gridRef.current!.getBoundingClientRect().top;
+    setDraggedOverRowIdx(findRowIdx(offset));
+  }
+
+  function handleLostPointerCapture() {
+    setDragging(false);
+    if (draggedOverRowIdx === undefined) return;
+
+    const { rowIdx } = selectedPosition;
+    const startRowIndex = rowIdx < draggedOverRowIdx ? rowIdx + 1 : draggedOverRowIdx;
+    const endRowIndex = rowIdx < draggedOverRowIdx ? draggedOverRowIdx + 1 : rowIdx;
+    updateRows(startRowIndex, endRowIndex);
+    setDraggedOverRowIdx(undefined);
+  }
+
+  function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+    event.stopPropagation();
+    updateRows(selectedPosition.rowIdx + 1, rows.length);
+  }
+
+  function updateRows(startRowIdx: number, endRowIdx: number) {
+    if (onRowsChange == null) return;
+    const { rowIdx, idx } = selectedPosition;
+    const column = columns[idx];
+    const sourceRow = rows[rowIdx];
+    const updatedRows = [...rows];
+    const indexes: number[] = [];
+    for (let i = startRowIdx; i < endRowIdx; i++) {
+      if (isCellEditable({ rowIdx: i, idx })) {
+        const updatedRow = onFill!({ columnKey: column.key, sourceRow, targetRow: rows[i] });
+        if (updatedRow !== rows[i]) {
+          updatedRows[i] = updatedRow;
+          indexes.push(i);
+        }
+      }
+    }
+
+    if (indexes.length > 0) {
+      onRowsChange(updatedRows, { indexes, column });
+    }
+  }
+
   /**
    * utils
    */
@@ -891,7 +946,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     return isDraggedOver ? selectedPosition.idx : undefined;
   }
 
-  function renderDragHandle() {
+  function getDragHandle() {
     if (
       onFill == null ||
       selectedPosition.mode === 'EDIT' ||
@@ -906,24 +961,33 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       return;
     }
 
+    const isLastRow = rowIdx === maxRowIdx;
     const columnWidth = getColumnWidth(column);
 
+    function getStyle(): React.CSSProperties {
+      const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
+      const { insetInlineStart, ...style } = getCellStyle(column, colSpan);
+      const marginEnd = 'calc(var(--rdg-drag-handle-size) * -0.5 + 1px)';
+      const isLastColumn = column.idx + colSpan - 1 === maxColIdx;
+
+      return {
+        ...style,
+        gridRowStart: headerAndTopSummaryRowsCount + rowIdx + 1,
+        marginInlineEnd: isLastColumn ? undefined : marginEnd,
+        marginBlockEnd: isLastRow ? undefined : marginEnd,
+        insetInlineStart: insetInlineStart
+          ? `calc(${insetInlineStart} + ${columnWidth}px + var(--rdg-drag-handle-size) * -0.5 - 1px)`
+          : undefined
+      };
+    }
+
     return (
-      <DragHandle
-        gridRowStart={headerAndTopSummaryRowsCount + rowIdx + 1}
-        rows={rows}
-        column={column}
-        columnWidth={columnWidth}
-        maxColIdx={maxColIdx}
-        isLastRow={rowIdx === maxRowIdx}
-        selectedPosition={selectedPosition}
-        isCellEditable={isCellEditable}
-        latestDraggedOverRowIdx={latestDraggedOverRowIdx}
-        onRowsChange={onRowsChange}
+      <div
+        style={getStyle()}
+        className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
         onClick={focusCellOrCellContent}
-        onFill={onFill}
-        setDragging={setDragging}
-        setDraggedOverRowIdx={setDraggedOverRowIdx}
+        onPointerDown={handleDragHandlePointerDown}
+        onDoubleClick={handleDragHandleDoubleClick}
       />
     );
   }
@@ -1056,7 +1120,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           gridRowStart,
           selectedCellIdx: selectedRowIdx === rowIdx ? selectedIdx : undefined,
           draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
-          setDraggedOverRowIdx: isDragging ? setDraggedOverRowIdx : undefined,
           lastFrozenColumnIndex,
           onRowChange: handleFormatterRowChangeLatest,
           selectCell: selectCellLatest,
@@ -1139,6 +1202,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       onKeyDown={handleKeyDown}
       onCopy={handleCellCopy}
       onPaste={handleCellPaste}
+      onPointerMove={isDragging ? handlePointerMove : undefined}
+      onPointerUp={isDragging ? handleLostPointerCapture : undefined}
       data-testid={testId}
       data-cy={dataCy}
     >
@@ -1240,7 +1305,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         )}
       </DataGridDefaultRenderersContext>
 
-      {renderDragHandle()}
+      {getDragHandle()}
 
       {/* render empty cells that span only 1 column so we can safely measure column widths, regardless of colSpan */}
       {renderMeasuringCells(viewportColumns)}
