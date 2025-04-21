@@ -970,27 +970,23 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
     const isLastRow = rowIdx === maxRowIdx;
     const columnWidth = getColumnWidth(column);
-
-    function getStyle(): React.CSSProperties {
-      const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
-      const { insetInlineStart, ...style } = getCellStyle(column, colSpan);
-      const marginEnd = 'calc(var(--rdg-drag-handle-size) * -0.5 + 1px)';
-      const isLastColumn = column.idx + colSpan - 1 === maxColIdx;
-
-      return {
-        ...style,
-        gridRowStart: headerAndTopSummaryRowsCount + rowIdx + 1,
-        marginInlineEnd: isLastColumn ? undefined : marginEnd,
-        marginBlockEnd: isLastRow ? undefined : marginEnd,
-        insetInlineStart: insetInlineStart
-          ? `calc(${insetInlineStart} + ${columnWidth}px + var(--rdg-drag-handle-size) * -0.5 - 1px)`
-          : undefined
-      };
-    }
+    const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
+    const { insetInlineStart, ...style } = getCellStyle(column, colSpan);
+    const marginEnd = 'calc(var(--rdg-drag-handle-size) * -0.5 + 1px)';
+    const isLastColumn = column.idx + colSpan - 1 === maxColIdx;
+    const dragHandleStyle: React.CSSProperties = {
+      ...style,
+      gridRowStart: headerAndTopSummaryRowsCount + rowIdx + 1,
+      marginInlineEnd: isLastColumn ? undefined : marginEnd,
+      marginBlockEnd: isLastRow ? undefined : marginEnd,
+      insetInlineStart: insetInlineStart
+        ? `calc(${insetInlineStart} + ${columnWidth}px + var(--rdg-drag-handle-size) * -0.5 - 1px)`
+        : undefined
+    };
 
     return (
       <div
-        style={getStyle()}
+        style={dragHandleStyle}
         className={clsx(cellDragHandleClassname, column.frozen && cellDragHandleFrozenClassname)}
         onClick={focusCellOrCellContent}
         onPointerDown={handleDragHandlePointerDown}
