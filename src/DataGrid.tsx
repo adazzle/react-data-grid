@@ -739,12 +739,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       return;
     }
     setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     const gridEl = gridRef.current!;
-    // TODO: is this okay? This is needed to make double click work
-    gridEl.setPointerCapture(event.pointerId);
     const headerAndTopSummaryRowsHeight = headerRowsHeight + topSummaryRowsCount * summaryRowHeight;
     const offset =
       scrollTop -
@@ -778,6 +777,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
   function updateRows(startRowIdx: number, endRowIdx: number) {
     if (onRowsChange == null) return;
+
     const { rowIdx, idx } = selectedPosition;
     const column = columns[idx];
     const sourceRow = rows[rowIdx];
