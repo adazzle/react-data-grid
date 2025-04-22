@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { clampColumnWidth, max, min } from '../utils';
 import type { CalculatedColumn, CalculatedColumnParent, ColumnOrColumnGroup, Omit } from '../types';
 import { renderValue } from '../cellRenderers';
@@ -37,7 +35,7 @@ interface CalculatedColumnsArgs<R, SR> {
   enableVirtualization: boolean;
 }
 
-export function useCalculatedColumns<R, SR>({
+export function getCalculatedColumns<R, SR>({
   rawColumns,
   defaultColumnOptions,
   getColumnWidth,
@@ -54,12 +52,18 @@ export function useCalculatedColumns<R, SR>({
   const defaultResizable = defaultColumnOptions?.resizable ?? false;
   const defaultDraggable = defaultColumnOptions?.draggable ?? false;
 
-  const { columns, colSpanColumns, lastFrozenColumnIndex, headerRowsCount } = useMemo((): {
+  const { columns, colSpanColumns, lastFrozenColumnIndex, headerRowsCount } =
+    getCalculatedColumns();
+  const { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics } =
+    getTemplateColumns();
+  const [colOverscanStartIdx, colOverscanEndIdx] = getColOverscan();
+
+  function getCalculatedColumns(): {
     readonly columns: readonly CalculatedColumn<R, SR>[];
     readonly colSpanColumns: readonly CalculatedColumn<R, SR>[];
     readonly lastFrozenColumnIndex: number;
     readonly headerRowsCount: number;
-  } => {
+  } {
     let lastFrozenColumnIndex = -1;
     let headerRowsCount = 1;
     const columns: MutableCalculatedColumn<R, SR>[] = [];
@@ -150,24 +154,14 @@ export function useCalculatedColumns<R, SR>({
       lastFrozenColumnIndex,
       headerRowsCount
     };
-  }, [
-    rawColumns,
-    defaultWidth,
-    defaultMinWidth,
-    defaultMaxWidth,
-    defaultRenderCell,
-    defaultRenderHeaderCell,
-    defaultResizable,
-    defaultSortable,
-    defaultDraggable
-  ]);
+  }
 
-  const { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics } = useMemo((): {
+  function getTemplateColumns(): {
     templateColumns: readonly string[];
     layoutCssVars: Readonly<Record<string, string>>;
     totalFrozenColumnWidth: number;
     columnMetrics: ReadonlyMap<CalculatedColumn<R, SR>, ColumnMetric>;
-  } => {
+  } {
     const columnMetrics = new Map<CalculatedColumn<R, SR>, ColumnMetric>();
     let left = 0;
     let totalFrozenColumnWidth = 0;
@@ -201,9 +195,9 @@ export function useCalculatedColumns<R, SR>({
     }
 
     return { templateColumns, layoutCssVars, totalFrozenColumnWidth, columnMetrics };
-  }, [getColumnWidth, columns, lastFrozenColumnIndex]);
+  }
 
-  const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
+  function getColOverscan(): [number, number] {
     if (!enableVirtualization) {
       return [0, columns.length - 1];
     }
@@ -247,15 +241,7 @@ export function useCalculatedColumns<R, SR>({
     const colOverscanEndIdx = min(lastColIdx, colVisibleEndIdx + 1);
 
     return [colOverscanStartIdx, colOverscanEndIdx];
-  }, [
-    columnMetrics,
-    columns,
-    lastFrozenColumnIndex,
-    scrollLeft,
-    totalFrozenColumnWidth,
-    viewportWidth,
-    enableVirtualization
-  ]);
+  }
 
   return {
     columns,

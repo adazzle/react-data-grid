@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import clsx from 'clsx';
 
 import { RowSelectionContext, useLatestFunc, type RowSelectionContextValue } from './hooks';
@@ -83,10 +82,7 @@ function Row<R, SR>({
     }
   }
 
-  const selectionValue = useMemo(
-    (): RowSelectionContextValue => ({ isRowSelected, isRowSelectionDisabled }),
-    [isRowSelectionDisabled, isRowSelected]
-  );
+  const selectionValue: RowSelectionContextValue = { isRowSelected, isRowSelectionDisabled };
 
   return (
     <RowSelectionContext value={selectionValue}>

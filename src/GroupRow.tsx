@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -52,10 +51,7 @@ export default function GroupedRow<R, SR>({
     selectCell({ rowIdx, idx: -1 });
   }
 
-  const selectionValue = useMemo(
-    (): RowSelectionContextValue => ({ isRowSelectionDisabled: false, isRowSelected }),
-    [isRowSelected]
-  );
+  const selectionValue: RowSelectionContextValue = { isRowSelectionDisabled: false, isRowSelected };
 
   return (
     <RowSelectionContext value={selectionValue}>

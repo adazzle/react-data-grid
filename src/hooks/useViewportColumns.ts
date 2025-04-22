@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { getColSpan } from '../utils';
 import type { CalculatedColumn, Maybe } from '../types';
 
@@ -16,7 +14,7 @@ interface ViewportColumnsArgs<R, SR> {
   rowOverscanEndIdx: number;
 }
 
-export function useViewportColumns<R, SR>({
+export function getViewportColumns<R, SR>({
   columns,
   colSpanColumns,
   rows,
@@ -29,14 +27,15 @@ export function useViewportColumns<R, SR>({
   rowOverscanEndIdx
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
-  const startIdx = useMemo(() => {
+  const startIdx = getStartIdx();
+
+  function getStartIdx() {
     if (colOverscanStartIdx === 0) return 0;
 
     let startIdx = colOverscanStartIdx;
 
     const updateStartIdx = (colIdx: number, colSpan: number | undefined) => {
       if (colSpan !== undefined && colIdx + colSpan > colOverscanStartIdx) {
-        // eslint-disable-next-line react-hooks/react-compiler
         startIdx = colIdx;
         return true;
       }
@@ -90,26 +89,15 @@ export function useViewportColumns<R, SR>({
     }
 
     return startIdx;
-  }, [
-    rowOverscanStartIdx,
-    rowOverscanEndIdx,
-    rows,
-    topSummaryRows,
-    bottomSummaryRows,
-    colOverscanStartIdx,
-    lastFrozenColumnIndex,
-    colSpanColumns
-  ]);
+  }
 
-  return useMemo((): readonly CalculatedColumn<R, SR>[] => {
-    const viewportColumns: CalculatedColumn<R, SR>[] = [];
-    for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
-      const column = columns[colIdx];
+  const viewportColumns: CalculatedColumn<R, SR>[] = [];
+  for (let colIdx = 0; colIdx <= colOverscanEndIdx; colIdx++) {
+    const column = columns[colIdx];
 
-      if (colIdx < startIdx && !column.frozen) continue;
-      viewportColumns.push(column);
-    }
+    if (colIdx < startIdx && !column.frozen) continue;
+    viewportColumns.push(column);
+  }
 
-    return viewportColumns;
-  }, [startIdx, colOverscanEndIdx, columns]);
+  return viewportColumns;
 }

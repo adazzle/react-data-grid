@@ -1,25 +1,18 @@
-import {
-  useCallback,
-  useImperativeHandle,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
 import type { Key, KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
 
 import {
+  getCalculatedColumns,
+  getViewportColumns,
+  getViewportRows,
   HeaderRowSelectionChangeContext,
   HeaderRowSelectionContext,
   RowSelectionChangeContext,
-  useCalculatedColumns,
   useColumnWidths,
   useGridDimensions,
   useLatestFunc,
-  useViewportColumns,
-  useViewportRows,
   type HeaderRowSelectionContextValue
 } from './hooks';
 import {
@@ -348,12 +341,9 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       }
     : setColumnWidthsInternal;
 
-  const getColumnWidth = useCallback(
-    (column: CalculatedColumn<R, SR>) => {
-      return columnWidths.get(column.key)?.width ?? column.width;
-    },
-    [columnWidths]
-  );
+  function getColumnWidth(column: CalculatedColumn<R, SR>) {
+    return columnWidths.get(column.key)?.width ?? column.width;
+  }
 
   const [gridRef, gridWidth, gridHeight, horizontalScrollbarHeight] = useGridDimensions();
   const {
@@ -366,7 +356,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     templateColumns,
     layoutCssVars,
     totalFrozenColumnWidth
-  } = useCalculatedColumns({
+  } = getCalculatedColumns({
     rawColumns,
     defaultColumnOptions,
     getColumnWidth,
@@ -405,16 +395,15 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const { leftKey, rightKey } = getLeftRightKey(direction);
   const ariaRowCount = rawAriaRowCount ?? headerRowsCount + rows.length + summaryRowsCount;
 
-  const defaultGridComponents = useMemo(
-    () => ({
-      renderCheckbox,
-      renderSortStatus,
-      renderCell
-    }),
-    [renderCheckbox, renderSortStatus, renderCell]
-  );
+  const defaultGridComponents = {
+    renderCheckbox,
+    renderSortStatus,
+    renderCell
+  };
 
-  const headerSelectionValue = useMemo((): HeaderRowSelectionContextValue => {
+  const headerSelectionValue = getHeaderSelectionValue();
+
+  function getHeaderSelectionValue(): HeaderRowSelectionContextValue {
     // no rows to select = explicitely unchecked
     let hasSelectedRow = false;
     let hasUnselectedRow = false;
@@ -435,7 +424,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       isRowSelected: hasSelectedRow && !hasUnselectedRow,
       isIndeterminate: hasSelectedRow && hasUnselectedRow
     };
-  }, [rows, selectedRows, rowKeyGetter]);
+  }
 
   const {
     rowOverscanStartIdx,
@@ -445,7 +434,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     getRowTop,
     getRowHeight,
     findRowIdx
-  } = useViewportRows({
+  } = getViewportRows({
     rows,
     rowHeight,
     clientHeight,
@@ -453,7 +442,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     enableVirtualization
   });
 
-  const viewportColumns = useViewportColumns({
+  const viewportColumns = getViewportColumns({
     columns,
     colSpanColumns,
     colOverscanStartIdx,
@@ -506,10 +495,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   /**
    * callbacks
    */
-  const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
+  function setDraggedOverRowIdx(rowIdx?: number) {
     setOverRowIdx(rowIdx);
     latestDraggedOverRowIdx.current = rowIdx;
-  }, []);
+  }
 
   const focusCellOrCellContent = useCallback(() => {
     const cell = getCellToScroll(gridRef.current!);
@@ -999,7 +988,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     return viewportColumns;
   }
 
-  function getViewportRows() {
+  function renderViewportRows() {
     const rowElements: React.ReactNode[] = [];
 
     const { idx: selectedIdx, rowIdx: selectedRowIdx } = selectedPosition;
@@ -1204,7 +1193,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
               );
             })}
             <RowSelectionChangeContext value={selectRowLatest}>
-              {getViewportRows()}
+              {renderViewportRows()}
             </RowSelectionChangeContext>
             {bottomSummaryRows?.map((row, rowIdx) => {
               const gridRowStart = headerAndTopSummaryRowsCount + rows.length + rowIdx + 1;

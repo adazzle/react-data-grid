@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { createFileRoute } from '@tanstack/react-router';
@@ -65,7 +65,7 @@ function RowsReordering() {
   const direction = useDirection();
   const [rows, setRows] = useState(createRows);
 
-  const renderRow = useCallback((key: React.Key, props: RenderRowProps<Row>) => {
+  function renderRow(key: React.Key, props: RenderRowProps<Row>) {
     function onRowReorder(fromIndex: number, toIndex: number) {
       setRows((rows) => {
         const newRows = [...rows];
@@ -75,7 +75,7 @@ function RowsReordering() {
     }
 
     return <DraggableRowRenderer key={key} {...props} onRowReorder={onRowReorder} />;
-  }, []);
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
