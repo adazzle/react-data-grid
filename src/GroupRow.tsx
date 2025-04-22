@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { useMemo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -31,7 +31,7 @@ interface GroupRowRendererProps<R, SR> extends BaseRenderRowProps<R, SR> {
   toggleGroup: (expandedGroupId: unknown) => void;
 }
 
-function GroupedRow<R, SR>({
+export default function GroupedRow<R, SR>({
   className,
   row,
   rowIdx,
@@ -95,7 +95,3 @@ function GroupedRow<R, SR>({
     </RowSelectionContext>
   );
 }
-
-export default memo(GroupedRow) as <R, SR>(
-  props: GroupRowRendererProps<R, SR>
-) => React.JSX.Element;

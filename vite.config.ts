@@ -1,5 +1,6 @@
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
+import wyw from '@wyw-in-js/vite';
 import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
