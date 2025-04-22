@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
@@ -72,44 +72,41 @@ const productColumns: readonly Column<ProductRow>[] = [
 
 function MasterDetail() {
   const direction = useDirection();
-
-  const columns = useMemo((): readonly Column<DepartmentRow>[] => {
-    return [
-      {
-        key: 'expanded',
-        name: '',
-        minWidth: 30,
-        width: 30,
-        colSpan(args) {
-          return args.type === 'ROW' && args.row.type === 'DETAIL' ? 3 : undefined;
-        },
-        cellClass(row) {
-          return row.type === 'DETAIL'
-            ? css`
-                padding: 24px;
-              `
-            : undefined;
-        },
-        renderCell({ row, tabIndex, onRowChange }) {
-          if (row.type === 'DETAIL') {
-            return <ProductGrid parentId={row.parentId} direction={direction} />;
-          }
-
-          return (
-            <CellExpanderFormatter
-              expanded={row.expanded}
-              tabIndex={tabIndex}
-              onCellExpand={() => {
-                onRowChange({ ...row, expanded: !row.expanded });
-              }}
-            />
-          );
-        }
+  const columns: readonly Column<DepartmentRow>[] = [
+    {
+      key: 'expanded',
+      name: '',
+      minWidth: 30,
+      width: 30,
+      colSpan(args) {
+        return args.type === 'ROW' && args.row.type === 'DETAIL' ? 3 : undefined;
       },
-      { key: 'id', name: 'ID', width: 35 },
-      { key: 'department', name: 'Department' }
-    ];
-  }, [direction]);
+      cellClass(row) {
+        return row.type === 'DETAIL'
+          ? css`
+              padding: 24px;
+            `
+          : undefined;
+      },
+      renderCell({ row, tabIndex, onRowChange }) {
+        if (row.type === 'DETAIL') {
+          return <ProductGrid parentId={row.parentId} direction={direction} />;
+        }
+
+        return (
+          <CellExpanderFormatter
+            expanded={row.expanded}
+            tabIndex={tabIndex}
+            onCellExpand={() => {
+              onRowChange({ ...row, expanded: !row.expanded });
+            }}
+          />
+        );
+      }
+    },
+    { key: 'id', name: 'ID', width: 35 },
+    { key: 'department', name: 'Department' }
+  ];
   const [rows, setRows] = useState(createDepartments);
 
   function onRowsChange(rows: DepartmentRow[], { indexes }: RowsChangeData<DepartmentRow>) {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { page, userEvent } from '@vitest/browser/context';
 
@@ -357,43 +357,41 @@ function EditorTest({
 }: EditorTestProps) {
   const [rows, setRows] = useState(gridRows);
 
-  const columns = useMemo((): readonly Column<Row>[] => {
-    return [
-      {
-        key: 'col1',
-        name: 'Col1',
-        renderEditCell(p) {
-          return (
-            <input
-              autoFocus
-              type="number"
-              aria-label="col1-editor"
-              value={p.row.col1}
-              onChange={(e) => p.onRowChange({ ...p.row, col1: e.target.valueAsNumber })}
-            />
-          );
-        }
-      },
-      {
-        key: 'col2',
-        name: 'Col2',
-        editable,
-        renderEditCell({ row, onRowChange }) {
-          const editor = (
-            <input
-              autoFocus
-              aria-label="col2-editor"
-              value={row.col2}
-              onChange={(e) => onRowChange({ ...row, col2: e.target.value })}
-            />
-          );
-
-          return createEditorPortal ? createPortal(editor, document.body) : editor;
-        },
-        editorOptions
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'col1',
+      name: 'Col1',
+      renderEditCell(p) {
+        return (
+          <input
+            autoFocus
+            type="number"
+            aria-label="col1-editor"
+            value={p.row.col1}
+            onChange={(e) => p.onRowChange({ ...p.row, col1: e.target.valueAsNumber })}
+          />
+        );
       }
-    ];
-  }, [editable, editorOptions, createEditorPortal]);
+    },
+    {
+      key: 'col2',
+      name: 'Col2',
+      editable,
+      renderEditCell({ row, onRowChange }) {
+        const editor = (
+          <input
+            autoFocus
+            aria-label="col2-editor"
+            value={row.col2}
+            onChange={(e) => onRowChange({ ...row, col2: e.target.value })}
+          />
+        );
+
+        return createEditorPortal ? createPortal(editor, document.body) : editor;
+      },
+      editorOptions
+    }
+  ];
 
   return (
     <>

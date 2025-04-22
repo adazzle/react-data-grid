@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { createPortal, flushSync } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { createFileRoute } from '@tanstack/react-router';
@@ -322,19 +322,17 @@ function CommonFeatures() {
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
   const [isExporting, setIsExporting] = useState(false);
   const gridRef = useRef<DataGridHandle>(null);
-  const columns = useMemo(() => getColumns(countries, direction), [direction]);
+  const columns = getColumns(countries, direction);
+  const sortedRows = getSortedRows();
+  const summaryRows: readonly SummaryRow[] = [
+    {
+      id: 'total_0',
+      totalCount: rows.length,
+      yesCount: rows.filter((r) => r.available).length
+    }
+  ];
 
-  const summaryRows = useMemo((): readonly SummaryRow[] => {
-    return [
-      {
-        id: 'total_0',
-        totalCount: rows.length,
-        yesCount: rows.filter((r) => r.available).length
-      }
-    ];
-  }, [rows]);
-
-  const sortedRows = useMemo((): readonly Row[] => {
+  function getSortedRows(): readonly Row[] {
     if (sortColumns.length === 0) return rows;
 
     return [...rows].sort((a, b) => {
@@ -347,7 +345,7 @@ function CommonFeatures() {
       }
       return 0;
     });
-  }, [rows, sortColumns]);
+  }
 
   function handleExportToCsv() {
     flushSync(() => {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { DataGrid } from '../../src';
@@ -79,8 +79,9 @@ function ColumnsReordering() {
   const [columnWidths, setColumnWidths] = useState((): ColumnWidths => new Map());
 
   const reorderedColumns = columnsOrder.map((index) => columns[index]);
+  const sortedRows = getSortedRows();
 
-  const sortedRows = useMemo((): readonly Row[] => {
+  function getSortedRows(): readonly Row[] {
     if (sortColumns.length === 0) return rows;
     const { columnKey, direction } = sortColumns[0];
 
@@ -98,7 +99,7 @@ function ColumnsReordering() {
       default:
     }
     return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
-  }, [rows, sortColumns]);
+  }
 
   function onSortColumnsChange(sortColumns: SortColumn[]) {
     setSortColumns(sortColumns.slice(-1));

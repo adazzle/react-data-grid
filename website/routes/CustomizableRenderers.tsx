@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
@@ -88,8 +88,9 @@ function CustomizableRenderers() {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
+  const sortedRows = getSortedRows();
 
-  const sortedRows = useMemo((): readonly Row[] => {
+  function getSortedRows(): readonly Row[] {
     if (sortColumns.length === 0) return rows;
 
     return [...rows].sort((a, b) => {
@@ -102,7 +103,7 @@ function CustomizableRenderers() {
       }
       return 0;
     });
-  }, [rows, sortColumns]);
+  }
 
   return (
     <DataGrid

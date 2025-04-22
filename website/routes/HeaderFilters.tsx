@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { faker } from '@faker-js/faker';
 import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
@@ -95,169 +95,161 @@ function HeaderFilters() {
     })
   );
 
-  const developerOptions = useMemo(
-    () =>
-      Array.from(new Set(rows.map((r) => r.developer))).map((d) => ({
-        label: d,
-        value: d
-      })),
-    [rows]
-  );
+  const developerOptions = Array.from(new Set(rows.map((r) => r.developer))).map((d) => ({
+    label: d,
+    value: d
+  }));
 
-  const columns = useMemo((): readonly Column<Row>[] => {
-    return [
-      {
-        key: 'id',
-        name: 'ID',
-        width: 50
-      },
-      {
-        key: 'task',
-        name: 'Title',
-        headerCellClass: filterColumnClassName,
-        renderHeaderCell: (p) => (
-          <FilterRenderer<Row> {...p}>
-            {({ filters, ...rest }) => (
-              <input
-                {...rest}
-                className={filterClassname}
-                value={filters.task}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    task: e.target.value
-                  })
-                }
-                onKeyDown={inputStopPropagation}
-              />
-            )}
-          </FilterRenderer>
-        )
-      },
-      {
-        key: 'priority',
-        name: 'Priority',
-        headerCellClass: filterColumnClassName,
-        renderHeaderCell: (p) => (
-          <FilterRenderer<Row> {...p}>
-            {({ filters, ...rest }) => (
-              <select
-                {...rest}
-                className={filterClassname}
-                value={filters.priority}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    priority: e.target.value
-                  })
-                }
-                onKeyDown={selectStopPropagation}
-              >
-                <option value="All">All</option>
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            )}
-          </FilterRenderer>
-        )
-      },
-      {
-        key: 'issueType',
-        name: 'Issue Type',
-        headerCellClass: filterColumnClassName,
-        renderHeaderCell: (p) => (
-          <FilterRenderer<Row> {...p}>
-            {({ filters, ...rest }) => (
-              <select
-                {...rest}
-                className={filterClassname}
-                value={filters.issueType}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    issueType: e.target.value
-                  })
-                }
-                onKeyDown={selectStopPropagation}
-              >
-                <option value="All">All</option>
-                <option value="Bug">Bug</option>
-                <option value="Improvement">Improvement</option>
-                <option value="Epic">Epic</option>
-                <option value="Story">Story</option>
-              </select>
-            )}
-          </FilterRenderer>
-        )
-      },
-      {
-        key: 'developer',
-        name: 'Developer',
-        headerCellClass: filterColumnClassName,
-        renderHeaderCell: (p) => (
-          <FilterRenderer<Row> {...p}>
-            {({ filters, ...rest }) => (
-              <input
-                {...rest}
-                className={filterClassname}
-                value={filters.developer}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    developer: e.target.value
-                  })
-                }
-                onKeyDown={inputStopPropagation}
-                list="developers"
-              />
-            )}
-          </FilterRenderer>
-        )
-      },
-      {
-        key: 'complete',
-        name: '% Complete',
-        headerCellClass: filterColumnClassName,
-        renderHeaderCell: (p) => (
-          <FilterRenderer<Row> {...p}>
-            {({ filters, ...rest }) => (
-              <input
-                {...rest}
-                type="number"
-                className={filterClassname}
-                value={filters.complete}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    complete: Number.isFinite(e.target.valueAsNumber)
-                      ? e.target.valueAsNumber
-                      : undefined
-                  })
-                }
-                onKeyDown={inputStopPropagation}
-              />
-            )}
-          </FilterRenderer>
-        )
-      }
-    ];
-  }, []);
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'ID',
+      width: 50
+    },
+    {
+      key: 'task',
+      name: 'Title',
+      headerCellClass: filterColumnClassName,
+      renderHeaderCell: (p) => (
+        <FilterRenderer<Row> {...p}>
+          {({ filters, ...rest }) => (
+            <input
+              {...rest}
+              className={filterClassname}
+              value={filters.task}
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  task: e.target.value
+                })
+              }
+              onKeyDown={inputStopPropagation}
+            />
+          )}
+        </FilterRenderer>
+      )
+    },
+    {
+      key: 'priority',
+      name: 'Priority',
+      headerCellClass: filterColumnClassName,
+      renderHeaderCell: (p) => (
+        <FilterRenderer<Row> {...p}>
+          {({ filters, ...rest }) => (
+            <select
+              {...rest}
+              className={filterClassname}
+              value={filters.priority}
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  priority: e.target.value
+                })
+              }
+              onKeyDown={selectStopPropagation}
+            >
+              <option value="All">All</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          )}
+        </FilterRenderer>
+      )
+    },
+    {
+      key: 'issueType',
+      name: 'Issue Type',
+      headerCellClass: filterColumnClassName,
+      renderHeaderCell: (p) => (
+        <FilterRenderer<Row> {...p}>
+          {({ filters, ...rest }) => (
+            <select
+              {...rest}
+              className={filterClassname}
+              value={filters.issueType}
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  issueType: e.target.value
+                })
+              }
+              onKeyDown={selectStopPropagation}
+            >
+              <option value="All">All</option>
+              <option value="Bug">Bug</option>
+              <option value="Improvement">Improvement</option>
+              <option value="Epic">Epic</option>
+              <option value="Story">Story</option>
+            </select>
+          )}
+        </FilterRenderer>
+      )
+    },
+    {
+      key: 'developer',
+      name: 'Developer',
+      headerCellClass: filterColumnClassName,
+      renderHeaderCell: (p) => (
+        <FilterRenderer<Row> {...p}>
+          {({ filters, ...rest }) => (
+            <input
+              {...rest}
+              className={filterClassname}
+              value={filters.developer}
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  developer: e.target.value
+                })
+              }
+              onKeyDown={inputStopPropagation}
+              list="developers"
+            />
+          )}
+        </FilterRenderer>
+      )
+    },
+    {
+      key: 'complete',
+      name: '% Complete',
+      headerCellClass: filterColumnClassName,
+      renderHeaderCell: (p) => (
+        <FilterRenderer<Row> {...p}>
+          {({ filters, ...rest }) => (
+            <input
+              {...rest}
+              type="number"
+              className={filterClassname}
+              value={filters.complete}
+              onChange={(e) =>
+                setFilters({
+                  ...filters,
+                  complete: Number.isFinite(e.target.valueAsNumber)
+                    ? e.target.valueAsNumber
+                    : undefined
+                })
+              }
+              onKeyDown={inputStopPropagation}
+            />
+          )}
+        </FilterRenderer>
+      )
+    }
+  ];
 
-  const filteredRows = useMemo(() => {
-    return rows.filter((r) => {
-      return (
-        (filters.task ? r.task.includes(filters.task) : true) &&
-        (filters.priority !== 'All' ? r.priority === filters.priority : true) &&
-        (filters.issueType !== 'All' ? r.issueType === filters.issueType : true) &&
-        (filters.developer
-          ? r.developer.toLowerCase().startsWith(filters.developer.toLowerCase())
-          : true) &&
-        (filters.complete !== undefined ? r.complete >= filters.complete : true)
-      );
-    });
-  }, [rows, filters]);
+  const filteredRows = rows.filter((r) => {
+    return (
+      (filters.task ? r.task.includes(filters.task) : true) &&
+      (filters.priority !== 'All' ? r.priority === filters.priority : true) &&
+      (filters.issueType !== 'All' ? r.issueType === filters.issueType : true) &&
+      (filters.developer
+        ? r.developer.toLowerCase().startsWith(filters.developer.toLowerCase())
+        : true) &&
+      (filters.complete !== undefined ? r.complete >= filters.complete : true)
+    );
+  });
 
   function clearFilters() {
     setFilters({
