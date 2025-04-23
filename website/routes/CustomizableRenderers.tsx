@@ -92,7 +92,7 @@ function CustomizableRenderers() {
   const sortedRows = useMemo((): readonly Row[] => {
     if (sortColumns.length === 0) return rows;
 
-    return [...rows].sort((a, b) => {
+    return rows.toSorted((a, b) => {
       for (const sort of sortColumns) {
         const comparator = getComparator(sort.columnKey);
         const compResult = comparator(a, b);

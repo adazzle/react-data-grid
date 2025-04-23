@@ -78,7 +78,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   const groupIdGetter = rawGroupIdGetter ?? defaultGroupIdGetter;
 
   const { columns, groupBy } = useMemo(() => {
-    const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
+    const columns = rawColumns.toSorted(({ key: aKey }, { key: bKey }) => {
       // Sort select column first:
       if (aKey === SELECT_COLUMN_KEY) return -1;
       if (bKey === SELECT_COLUMN_KEY) return 1;

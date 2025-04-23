@@ -166,9 +166,7 @@ function RowGrouping() {
       }
     } else if (index !== -1) {
       setSelectedOptions((options) => {
-        const newOptions = [...options];
-        newOptions.splice(index, 1);
-        return newOptions;
+        return options.toSpliced(index, 1);
       });
     }
     setExpandedGroupIds(new Set());

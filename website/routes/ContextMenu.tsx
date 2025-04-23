@@ -30,7 +30,7 @@ interface Row {
   price: string;
 }
 
-function createRows(): Row[] {
+function createRows(): readonly Row[] {
   const rows: Row[] = [];
 
   for (let i = 1; i < 1000; i++) {
@@ -90,7 +90,7 @@ function ContextMenuDemo() {
       price: faker.commerce.price()
     };
 
-    setRows([...rows.slice(0, insertRowIdx), newRow, ...rows.slice(insertRowIdx)]);
+    setRows(rows.toSpliced(insertRowIdx, 0, newRow));
     setNextId();
   }
 
@@ -127,8 +127,7 @@ function ContextMenuDemo() {
               <button
                 type="button"
                 onClick={() => {
-                  const { rowIdx } = contextMenuProps;
-                  setRows([...rows.slice(0, rowIdx), ...rows.slice(rowIdx + 1)]);
+                  setRows(rows.toSpliced(contextMenuProps.rowIdx, 1));
                   setContextMenuProps(null);
                 }}
               >
