@@ -277,7 +277,7 @@ function createRows(): readonly Row[] {
     });
   }
 
-  countries = [...countrySet].toSorted(new Intl.Collator().compare);
+  countries = [...countrySet].sort(new Intl.Collator().compare);
 
   return rows;
 }
