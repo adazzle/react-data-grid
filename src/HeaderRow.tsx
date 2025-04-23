@@ -1,4 +1,4 @@
-import { memo, useId } from 'react';
+import { useId } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -47,7 +47,7 @@ const headerRow = css`
 
 export const headerRowClassname = `rdg-header-row ${headerRow}`;
 
-function HeaderRow<R, SR, K extends React.Key>({
+export default function HeaderRow<R, SR, K extends React.Key>({
   headerRowClass,
   rowIdx,
   columns,
@@ -108,7 +108,3 @@ function HeaderRow<R, SR, K extends React.Key>({
     </div>
   );
 }
-
-export default memo(HeaderRow) as <R, SR, K extends React.Key>(
-  props: HeaderRowProps<R, SR, K>
-) => React.JSX.Element;

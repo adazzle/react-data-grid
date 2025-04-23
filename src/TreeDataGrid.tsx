@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import type { Key } from 'react';
 
 import { useLatestFunc } from './hooks';
@@ -77,43 +76,44 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   const toggleGroupLatest = useLatestFunc(toggleGroup);
   const groupIdGetter = rawGroupIdGetter ?? defaultGroupIdGetter;
 
-  const { columns, groupBy } = useMemo(() => {
-    const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
-      // Sort select column first:
-      if (aKey === SELECT_COLUMN_KEY) return -1;
-      if (bKey === SELECT_COLUMN_KEY) return 1;
+  const columns = [...rawColumns].sort(({ key: aKey }, { key: bKey }) => {
+    // Sort select column first:
+    if (aKey === SELECT_COLUMN_KEY) return -1;
+    if (bKey === SELECT_COLUMN_KEY) return 1;
 
-      // Sort grouped columns second, following the groupBy order:
-      if (rawGroupBy.includes(aKey)) {
-        if (rawGroupBy.includes(bKey)) {
-          return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
-        }
-        return -1;
+    // Sort grouped columns second, following the groupBy order:
+    if (rawGroupBy.includes(aKey)) {
+      if (rawGroupBy.includes(bKey)) {
+        return rawGroupBy.indexOf(aKey) - rawGroupBy.indexOf(bKey);
       }
-      if (rawGroupBy.includes(bKey)) return 1;
-
-      // Sort other columns last:
-      return 0;
-    });
-
-    const groupBy: string[] = [];
-    for (const [index, column] of columns.entries()) {
-      if (rawGroupBy.includes(column.key)) {
-        groupBy.push(column.key);
-        columns[index] = {
-          ...column,
-          frozen: true,
-          renderCell: () => null,
-          renderGroupCell: column.renderGroupCell ?? renderToggleGroup,
-          editable: false
-        };
-      }
+      return -1;
     }
+    if (rawGroupBy.includes(bKey)) return 1;
 
-    return { columns, groupBy };
-  }, [rawColumns, rawGroupBy]);
+    // Sort other columns last:
+    return 0;
+  });
 
-  const [groupedRows, rowsCount] = useMemo(() => {
+  const groupBy: string[] = [];
+  for (const [index, column] of columns.entries()) {
+    if (rawGroupBy.includes(column.key)) {
+      groupBy.push(column.key);
+      columns[index] = {
+        ...column,
+        frozen: true,
+        renderCell: () => null,
+        renderGroupCell: column.renderGroupCell ?? renderToggleGroup,
+        editable: false
+      };
+    }
+  }
+
+  const [groupedRows, rowsCount] = getGroupedRows();
+  const [rows, isGroupRow] = getFlattenedRows();
+  const rowHeight = getRowHeight();
+  const selectedRows = getSelectedRows();
+
+  function getGroupedRows(): [Readonly<GroupByDictionary<R>> | undefined, number] {
     if (groupBy.length === 0) return [undefined, rawRows.length];
 
     const groupRows = (
@@ -137,12 +137,12 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     };
 
     return groupRows(rawRows, groupBy, 0);
-  }, [groupBy, rowGrouper, rawRows]);
+  }
 
-  const [rows, isGroupRow] = useMemo((): [
+  function getFlattenedRows(): [
     ReadonlyArray<R | GroupRow<R>>,
     (row: R | GroupRow<R>) => row is GroupRow<R>
-  ] => {
+  ] {
     const allGroupRows = new Set<unknown>();
     if (!groupedRows) return [rawRows, isGroupRow];
 
@@ -188,9 +188,9 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
       return allGroupRows.has(row);
     }
-  }, [expandedGroupIds, groupedRows, rawRows, groupIdGetter]);
+  }
 
-  const rowHeight = useMemo(() => {
+  function getRowHeight() {
     if (typeof rawRowHeight === 'function') {
       return (row: R | GroupRow<R>): number => {
         if (isGroupRow(row)) {
@@ -201,46 +201,40 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     }
 
     return rawRowHeight;
-  }, [isGroupRow, rawRowHeight]);
+  }
 
-  const getParentRowAndIndex = useCallback(
-    (row: R | GroupRow<R>) => {
-      const rowIdx = rows.indexOf(row);
-      for (let i = rowIdx - 1; i >= 0; i--) {
-        const parentRow = rows[i];
-        if (isGroupRow(parentRow) && (!isGroupRow(row) || row.parentId === parentRow.id)) {
-          return [parentRow, i] as const;
-        }
+  function getParentRowAndIndex(row: R | GroupRow<R>) {
+    const rowIdx = rows.indexOf(row);
+    for (let i = rowIdx - 1; i >= 0; i--) {
+      const parentRow = rows[i];
+      if (isGroupRow(parentRow) && (!isGroupRow(row) || row.parentId === parentRow.id)) {
+        return [parentRow, i] as const;
       }
+    }
 
-      return undefined;
-    },
-    [isGroupRow, rows]
-  );
+    return undefined;
+  }
 
-  const rowKeyGetter = useCallback(
-    (row: R | GroupRow<R>) => {
-      if (isGroupRow(row)) {
-        return row.id;
-      }
+  function rowKeyGetter(row: R | GroupRow<R>) {
+    if (isGroupRow(row)) {
+      return row.id;
+    }
 
-      if (typeof rawRowKeyGetter === 'function') {
-        return rawRowKeyGetter(row);
-      }
+    if (typeof rawRowKeyGetter === 'function') {
+      return rawRowKeyGetter(row);
+    }
 
-      const parentRowAndIndex = getParentRowAndIndex(row);
-      if (parentRowAndIndex !== undefined) {
-        const { startRowIndex, childRows } = parentRowAndIndex[0];
-        const groupIndex = childRows.indexOf(row);
-        return startRowIndex + groupIndex + 1;
-      }
+    const parentRowAndIndex = getParentRowAndIndex(row);
+    if (parentRowAndIndex !== undefined) {
+      const { startRowIndex, childRows } = parentRowAndIndex[0];
+      const groupIndex = childRows.indexOf(row);
+      return startRowIndex + groupIndex + 1;
+    }
 
-      return rows.indexOf(row);
-    },
-    [getParentRowAndIndex, isGroupRow, rawRowKeyGetter, rows]
-  );
+    return rows.indexOf(row);
+  }
 
-  const selectedRows = useMemo((): Maybe<ReadonlySet<Key>> => {
+  function getSelectedRows(): Maybe<ReadonlySet<Key>> {
     if (rawSelectedRows == null) return null;
 
     assertIsValidKeyGetter<R, K>(rawRowKeyGetter);
@@ -259,7 +253,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     }
 
     return selectedRows;
-  }, [isGroupRow, rawRowKeyGetter, rawSelectedRows, rows]);
+  }
 
   function onSelectedRowsChange(newSelectedRows: Set<Key>) {
     if (!rawOnSelectedRowsChange) return;

@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { floor, max, min } from '../utils';
 
 interface ViewportRowsArgs<R> {
@@ -10,14 +8,17 @@ interface ViewportRowsArgs<R> {
   enableVirtualization: boolean;
 }
 
-export function useViewportRows<R>({
+export function getViewportRows<R>({
   rows,
   rowHeight,
   clientHeight,
   scrollTop,
   enableVirtualization
 }: ViewportRowsArgs<R>) {
-  const { totalRowHeight, gridTemplateRows, getRowTop, getRowHeight, findRowIdx } = useMemo(() => {
+  const { totalRowHeight, gridTemplateRows, getRowTop, getRowHeight, findRowIdx } =
+    getTemplateRows();
+
+  function getTemplateRows() {
     if (typeof rowHeight === 'number') {
       return {
         totalRowHeight: rowHeight * rows.length,
@@ -70,7 +71,7 @@ export function useViewportRows<R>({
         return 0;
       }
     };
-  }, [rowHeight, rows]);
+  }
 
   let rowOverscanStartIdx = 0;
   let rowOverscanEndIdx = rows.length - 1;

@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
 import { RowSelectionContext, useLatestFunc, type RowSelectionContextValue } from './hooks';
@@ -83,10 +82,7 @@ function Row<R, SR>({
     }
   }
 
-  const selectionValue = useMemo(
-    (): RowSelectionContextValue => ({ isRowSelected, isRowSelectionDisabled }),
-    [isRowSelectionDisabled, isRowSelected]
-  );
+  const selectionValue: RowSelectionContextValue = { isRowSelected, isRowSelectionDisabled };
 
   return (
     <RowSelectionContext value={selectionValue}>
@@ -103,10 +99,8 @@ function Row<R, SR>({
   );
 }
 
-const RowComponent = memo(Row) as <R, SR>(props: RenderRowProps<R, SR>) => React.JSX.Element;
-
-export default RowComponent;
+export default Row;
 
 export function defaultRenderRow<R, SR>(key: React.Key, props: RenderRowProps<R, SR>) {
-  return <RowComponent key={key} {...props} />;
+  return <Row key={key} {...props} />;
 }

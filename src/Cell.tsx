@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -108,10 +107,8 @@ function Cell<R, SR>({
   );
 }
 
-const CellComponent = memo(Cell) as <R, SR>(props: CellRendererProps<R, SR>) => React.JSX.Element;
-
-export default CellComponent;
+export default Cell;
 
 export function defaultRenderCell<R, SR>(key: React.Key, props: CellRendererProps<R, SR>) {
-  return <CellComponent key={key} {...props} />;
+  return <Cell key={key} {...props} />;
 }

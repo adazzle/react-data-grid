@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -50,7 +49,7 @@ const topSummaryRow = css`
 
 const summaryRowClassname = `rdg-summary-row ${summaryRow}`;
 
-function SummaryRow<R, SR>({
+export default function SummaryRow<R, SR>({
   rowIdx,
   gridRowStart,
   row,
@@ -112,5 +111,3 @@ function SummaryRow<R, SR>({
     </div>
   );
 }
-
-export default memo(SummaryRow) as <R, SR>(props: SummaryRowProps<R, SR>) => React.JSX.Element;

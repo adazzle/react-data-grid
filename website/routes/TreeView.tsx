@@ -1,4 +1,4 @@
-import { useMemo, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
@@ -127,61 +127,59 @@ function TreeView() {
   const [rows, dispatch] = useReducer(reducer, defaultRows);
   const [allowDelete, setAllowDelete] = useState(true);
 
-  const columns = useMemo((): readonly Column<Row>[] => {
-    return [
-      {
-        key: 'id',
-        name: 'id',
-        frozen: true
-      },
-      {
-        key: 'name',
-        name: 'Name'
-      },
-      {
-        key: 'format',
-        name: 'format',
-        renderCell({ row, tabIndex }) {
-          const hasChildren = row.children !== undefined;
-          const style = hasChildren ? undefined : { marginInlineStart: 30 };
-          return (
-            <div
-              className={css`
-                display: flex;
-                gap: 10px;
-                block-size: 100%;
-                align-items: center;
-              `}
-            >
-              {hasChildren && (
-                <CellExpanderFormatter
-                  tabIndex={tabIndex}
-                  expanded={row.isExpanded === true}
-                  onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
-                />
-              )}
-              {!hasChildren && (
-                <ChildRowDeleteButton
-                  tabIndex={tabIndex}
-                  isDeleteSubRowEnabled={allowDelete}
-                  onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
-                />
-              )}
-              <div style={style}>{row.format}</div>
-            </div>
-          );
-        }
-      },
-      {
-        key: 'position',
-        name: 'position'
-      },
-      {
-        key: 'price',
-        name: 'price'
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'id',
+      frozen: true
+    },
+    {
+      key: 'name',
+      name: 'Name'
+    },
+    {
+      key: 'format',
+      name: 'format',
+      renderCell({ row, tabIndex }) {
+        const hasChildren = row.children !== undefined;
+        const style = hasChildren ? undefined : { marginInlineStart: 30 };
+        return (
+          <div
+            className={css`
+              display: flex;
+              gap: 10px;
+              block-size: 100%;
+              align-items: center;
+            `}
+          >
+            {hasChildren && (
+              <CellExpanderFormatter
+                tabIndex={tabIndex}
+                expanded={row.isExpanded === true}
+                onCellExpand={() => dispatch({ id: row.id, type: 'toggleSubRow' })}
+              />
+            )}
+            {!hasChildren && (
+              <ChildRowDeleteButton
+                tabIndex={tabIndex}
+                isDeleteSubRowEnabled={allowDelete}
+                onDeleteSubRow={() => dispatch({ id: row.id, type: 'deleteSubRow' })}
+              />
+            )}
+            <div style={style}>{row.format}</div>
+          </div>
+        );
       }
-    ];
-  }, [allowDelete]);
+    },
+    {
+      key: 'position',
+      name: 'position'
+    },
+    {
+      key: 'price',
+      name: 'price'
+    }
+  ];
 
   return (
     <>
