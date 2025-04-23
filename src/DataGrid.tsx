@@ -674,8 +674,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   function updateRow(column: CalculatedColumn<R, SR>, rowIdx: number, row: R) {
     if (typeof onRowsChange !== 'function') return;
     if (row === rows[rowIdx]) return;
-    const updatedRows = [...rows];
-    updatedRows[rowIdx] = row;
+    const updatedRows = rows.with(rowIdx, row);
     onRowsChange(updatedRows, {
       indexes: [rowIdx],
       column
