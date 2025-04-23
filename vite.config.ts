@@ -42,6 +42,8 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
   await page.mouse.up();
 };
 
+const viewport = { width: 1920, height: 1080 } as const;
+
 export default defineConfig(({ command }) => ({
   base: '/react-data-grid/',
   cacheDir: '.cache/vite',
@@ -98,11 +100,12 @@ export default defineConfig(({ command }) => ({
             provider: 'playwright',
             instances: [
               {
-                browser: 'chromium'
+                browser: 'chromium',
+                context: { viewport }
               }
             ],
             commands: { resizeColumn, dragFill },
-            viewport: { width: 1920, height: 1080 },
+            viewport,
             headless: true,
             screenshotFailures: process.env.CI !== 'true'
           },
