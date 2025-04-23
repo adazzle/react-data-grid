@@ -68,8 +68,9 @@ function RowsReordering() {
   const renderRow = useCallback((key: React.Key, props: RenderRowProps<Row>) => {
     function onRowReorder(fromIndex: number, toIndex: number) {
       setRows((rows) => {
-        const newRows = [...rows];
-        newRows.splice(toIndex, 0, newRows.splice(fromIndex, 1)[0]);
+        const row = rows[fromIndex];
+        const newRows = rows.toSpliced(fromIndex, 1);
+        newRows.splice(toIndex, 0, row);
         return newRows;
       });
     }
