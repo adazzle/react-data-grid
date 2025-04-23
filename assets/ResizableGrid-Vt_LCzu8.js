@@ -1,0 +1,2 @@
+import{u as e,j as s}from"./index-41_V_n6C.js";import{D as n}from"./DataGrid-CzTenwdA.js";import{r as i}from"./renderCoordinates-BnaeBmsm.js";const a=Array.from({length:100},(o,r)=>r),t=[];for(let o=0;o<50;o++){const r=String(o);t.push({key:r,name:r,renderCell:i})}const p=function(){const r=e();return s.jsx(n,{columns:t,rows:a,className:"fill-grid",style:{resize:"both"},direction:r})};export{p as component};
+//# sourceMappingURL=ResizableGrid-Vt_LCzu8.js.map
