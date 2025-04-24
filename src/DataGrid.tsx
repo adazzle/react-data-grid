@@ -770,8 +770,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     if (draggedOverRowIdx === undefined) return;
 
     const { rowIdx } = selectedPosition;
-    const startRowIndex = rowIdx < draggedOverRowIdx ? rowIdx + 1 : draggedOverRowIdx;
-    const endRowIndex = rowIdx < draggedOverRowIdx ? draggedOverRowIdx + 1 : rowIdx;
+    const [startRowIndex, endRowIndex] =
+      rowIdx < draggedOverRowIdx
+        ? [rowIdx + 1, draggedOverRowIdx + 1]
+        : [draggedOverRowIdx, rowIdx];
     updateRows(startRowIndex, endRowIndex);
     setDraggedOverRowIdx(undefined);
   }
