@@ -666,6 +666,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       if (shouldFocusGrid) {
         // Select the first header cell if there is no selected cell
         selectHeaderCell({ idx: 0, rowIdx: headerRowsCount });
+      } else {
+        // TODO: check if this is needed
       }
     }
   }
