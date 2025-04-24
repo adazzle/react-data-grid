@@ -1,7 +1,7 @@
 import { page, userEvent } from '@vitest/browser/context';
 
 import type { Column, DataGridProps } from '../../src';
-import { focusIntoGrid, getRows, setup } from './utils';
+import { getRows, setup } from './utils';
 
 type Row = number;
 
@@ -30,7 +30,7 @@ test('rowHeight is number', async () => {
   });
   expect(getRows()).toHaveLength(30);
 
-  await focusIntoGrid();
+  await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
   await userEvent.keyboard('{Control>}{end}');
   expect(grid.scrollTop + grid.clientHeight).toBe(grid.scrollHeight);
@@ -46,7 +46,7 @@ test('rowHeight is function', async () => {
   });
   expect(getRows()).toHaveLength(22);
 
-  await focusIntoGrid();
+  await userEvent.tab();
   expect(grid.scrollTop).toBe(0);
   await userEvent.keyboard('{Control>}{end}');
   expect(grid.scrollTop + grid.clientHeight).toBe(grid.scrollHeight);

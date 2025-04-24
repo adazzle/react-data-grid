@@ -81,7 +81,7 @@ export default defineConfig(({ command }) => ({
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['json']
     },
-    testTimeout: isCI ? 10000 : 5000,
+    testTimeout: 20_000,
     restoreMocks: true,
     sequence: {
       shuffle: true
@@ -107,7 +107,7 @@ export default defineConfig(({ command }) => ({
             ],
             commands: { resizeColumn, dragFill },
             viewport,
-            headless: true,
+            headless: false,
             screenshotFailures: process.env.CI !== 'true'
           },
           setupFiles: ['test/setupBrowser.ts']

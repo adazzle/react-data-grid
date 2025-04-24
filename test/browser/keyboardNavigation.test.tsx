@@ -3,7 +3,6 @@ import { page, userEvent } from '@vitest/browser/context';
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
 import {
-  focusIntoGrid,
   getCellsAtRowIndex,
   getSelectedCell,
   scrollGrid,
@@ -34,7 +33,7 @@ test('keyboard navigation', async () => {
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
 
   // tab into the grid
-  await focusIntoGrid();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 
   // tab to the next cell
@@ -107,7 +106,7 @@ test('arrow and tab navigation', async () => {
   setup({ columns, rows, bottomSummaryRows });
 
   // pressing arrowleft on the leftmost cell does nothing
-  await focusIntoGrid();
+  await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
   await userEvent.keyboard('{arrowleft}');
@@ -146,7 +145,7 @@ test('grid enter/exit', async () => {
 
   // tab into the grid
   await userEvent.click(beforeButton);
-  await focusIntoGrid();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 
   // shift+tab tabs out of the grid if we are at the first cell
@@ -180,7 +179,7 @@ test('grid enter/exit', async () => {
 
 test('navigation with focusable cell renderer', async () => {
   setup({ columns, rows: new Array(1), bottomSummaryRows });
-  await focusIntoGrid();
+  await userEvent.tab();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
 
@@ -221,7 +220,7 @@ test('navigation when header and summary rows have focusable elements', async ()
   ];
 
   setup({ columns, rows: new Array(2), bottomSummaryRows });
-  await focusIntoGrid();
+  await userEvent.tab();
 
   // should set focus on the header filter
   expect(document.getElementById('header-filter1')).toHaveFocus();
@@ -261,7 +260,7 @@ test('navigation when selected cell not in the viewport', async () => {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
   setup({ columns, rows, bottomSummaryRows });
-  await focusIntoGrid();
+  await userEvent.tab();
   validateCellPosition(0, 0);
 
   await userEvent.keyboard('{Control>}{end}{/Control}{arrowup}{arrowup}');
@@ -300,7 +299,7 @@ test('reset selected cell when column is removed', async () => {
 
   const { rerender } = page.render(<Test columns={columns} />);
 
-  await focusIntoGrid();
+  await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowright}');
   validateCellPosition(1, 1);
 
@@ -322,7 +321,7 @@ test('reset selected cell when row is removed', async () => {
 
   const { rerender } = page.render(<Test rows={rows} />);
 
-  await focusIntoGrid();
+  await userEvent.tab();
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowright}');
   validateCellPosition(1, 2);
 
@@ -333,7 +332,7 @@ test('reset selected cell when row is removed', async () => {
 
 test('should not change the left and right arrow behavior for right to left languages', async () => {
   setup({ rows, columns, direction: 'rtl' });
-  await focusIntoGrid();
+  await userEvent.tab();
   validateCellPosition(0, 0);
   await userEvent.tab();
   validateCellPosition(1, 0);
