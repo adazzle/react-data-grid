@@ -107,7 +107,7 @@ export default defineConfig(({ command }) => ({
             ],
             commands: { resizeColumn, dragFill },
             viewport,
-            headless: false,
+            headless: true,
             screenshotFailures: process.env.CI !== 'true'
           },
           setupFiles: ['test/setupBrowser.ts']
