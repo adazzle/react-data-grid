@@ -99,8 +99,8 @@ describe('Editor', () => {
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).not.toBeInTheDocument();
     expect(getGrid().element().scrollTop).toBe(2000);
-    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
-    await userEvent.keyboard('123');
+    // `1{backspace}` is needed to fix tests in FF
+    await userEvent.keyboard('1{backspace}123');
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
     await expect.element(editor).toHaveValue(123);
     expect(getGrid().element().scrollTop).toBe(0);
