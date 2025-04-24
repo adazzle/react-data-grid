@@ -73,9 +73,6 @@ export default defineConfig(({ command }) => ({
   server: {
     open: true
   },
-  optimizeDeps: {
-    include: ['@vitest/coverage-v8/browser']
-  },
   test: {
     globals: true,
     coverage: {
