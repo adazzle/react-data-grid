@@ -1,4 +1,4 @@
-import { page } from '@vitest/browser/context';
+import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -74,5 +74,14 @@ export async function scrollGrid({
   if (scrollLeft !== undefined || scrollTop !== undefined) {
     // let the browser fire the 'scroll' event
     await new Promise(requestAnimationFrame);
+  }
+}
+
+export async function focusIntoGrid() {
+  await userEvent.tab();
+
+  // FF focuses the grid when tabbing into it (bug ?)
+  if ((document.activeElement as HTMLDivElement).classList.contains('rdg')) {
+    await userEvent.tab();
   }
 }
