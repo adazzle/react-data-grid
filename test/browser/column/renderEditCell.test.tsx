@@ -22,7 +22,7 @@ describe('Editor', () => {
     await userEvent.keyboard('2');
     await userEvent.tab();
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12$/);
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(12);
   });
 
   it('should open and commit changes on enter', async () => {
@@ -42,7 +42,7 @@ describe('Editor', () => {
     page.render(<EditorTest />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('123{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1123$/);
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('123');
   });
 
   it('should close editor and discard changes on escape', async () => {
@@ -99,6 +99,7 @@ describe('Editor', () => {
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).not.toBeInTheDocument();
     expect(getGrid().element().scrollTop).toBe(2000);
+    await userEvent.dblClick(getCellsAtRowIndex(0)[0]);
     await userEvent.keyboard('123');
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
     await expect.element(editor).toHaveValue(123);
@@ -193,9 +194,9 @@ describe('Editor', () => {
           }}
         />
       );
-      await userEvent.click(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       await userEvent.keyboard('yz{enter}');
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('yz');
       await userEvent.keyboard('x');
       await expect
         .element(page.getByRole('textbox', { name: 'col2-editor' }))

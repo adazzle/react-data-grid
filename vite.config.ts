@@ -79,7 +79,7 @@ export default defineConfig(({ command }) => ({
   test: {
     globals: true,
     coverage: {
-      provider: 'v8',
+      provider: 'istanbul',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['json']
