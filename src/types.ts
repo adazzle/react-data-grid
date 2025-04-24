@@ -241,7 +241,6 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown>
   selectedCellEditor: ReactElement<RenderEditCellProps<TRow>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
-  setDraggedOverRowIdx: ((overRowIdx: number) => void) | undefined;
 }
 
 export interface RowsChangeData<R, SR = unknown> {
