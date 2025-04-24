@@ -207,17 +207,6 @@ function getColumns(
       name: 'Budget',
       renderCell(props) {
         return currencyFormatter.format(props.row.budget);
-      },
-      renderEditCell({ row, onRowChange }) {
-        return (
-          <input
-            type="number"
-            autoFocus
-            aria-label="col2-editor"
-            value={row.budget}
-            onChange={(e) => onRowChange({ ...row, budget: e.target.valueAsNumber })}
-          />
-        );
       }
     },
     {
