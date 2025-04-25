@@ -660,8 +660,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     }
   }
 
-  function handleFocus() {
-    selectHeaderCell({ idx: 0, rowIdx: headerRowsCount });
+  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
+    // select the first header cell if the focus event is triggered by the grid
+    if (event.target === event.currentTarget) {
+      selectHeaderCell({ idx: 0, rowIdx: headerRowsCount });
+    }
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
