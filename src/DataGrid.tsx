@@ -1196,7 +1196,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       aria-colcount={columns.length}
       aria-rowcount={ariaRowCount}
       // Scrollable containers without tabIndex are keyboard focusable in Chrome only if there is no focusable element inside
-      // whereas they are are always focusable in Firefox. We need to set tabIndex to have a consistent behavior across browsers.
+      // whereas they are always focusable in Firefox. We need to set tabIndex to have a consistent behavior across browsers.
       tabIndex={shouldFocusGrid ? 0 : -1}
       className={clsx(
         rootClassname,
