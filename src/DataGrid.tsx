@@ -660,16 +660,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     }
   }
 
-  // FF focuses the grid when tabbing into it (bug ?)
-  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
-    if (event.target === event.currentTarget) {
-      if (shouldFocusGrid) {
-        // Select the first header cell if there is no selected cell
-        selectHeaderCell({ idx: 0, rowIdx: headerRowsCount });
-      } else {
-        // TODO: check if this is needed
-      }
-    }
+  function handleFocus() {
+    selectHeaderCell({ idx: 0, rowIdx: headerRowsCount });
   }
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
@@ -1200,6 +1192,9 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       aria-multiselectable={isSelectable ? true : undefined}
       aria-colcount={columns.length}
       aria-rowcount={ariaRowCount}
+      // Scrollable containers without tabIndex are keyboard focusable in Chrome only if there is no focusable element inside
+      // whereas they are are always focusable in Firefox. We need to set tabIndex to have a consistent behavior across browsers.
+      tabIndex={shouldFocusGrid ? 0 : -1}
       className={clsx(
         rootClassname,
         {
@@ -1231,7 +1226,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       }
       dir={direction}
       ref={gridRef}
-      onFocus={handleFocus}
+      onFocus={shouldFocusGrid ? handleFocus : undefined}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
       onCopy={handleCellCopy}
@@ -1268,7 +1263,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                 selectedPosition.rowIdx === mainHeaderRowIdx ? selectedPosition.idx : undefined
               }
               selectCell={selectHeaderCellLatest}
-              shouldFocusGrid={shouldFocusGrid}
               direction={direction}
             />
           </HeaderRowSelectionContext>
