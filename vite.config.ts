@@ -73,18 +73,15 @@ export default defineConfig(({ command }) => ({
   server: {
     open: true
   },
-  optimizeDeps: {
-    include: ['@vitest/coverage-v8/browser']
-  },
   test: {
     globals: true,
     coverage: {
-      provider: 'v8',
+      provider: 'istanbul',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['json']
     },
-    testTimeout: isCI ? 10000 : 5000,
+    testTimeout: 20_000,
     restoreMocks: true,
     sequence: {
       shuffle: true
@@ -101,6 +98,10 @@ export default defineConfig(({ command }) => ({
             instances: [
               {
                 browser: 'chromium',
+                context: { viewport }
+              },
+              {
+                browser: 'firefox',
                 context: { viewport }
               }
             ],

@@ -70,7 +70,9 @@ test('should update single row using mouse', async () => {
   await commands.dragFill('a1', 'a2');
   await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   await expect.element(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
-  await expect.element(getCellsAtRowIndex(0)[0]).toHaveFocus();
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1961462
+  const rowIdx = navigator.userAgent.includes('Firefox') ? 1 : 0;
+  await expect.element(getCellsAtRowIndex(rowIdx)[0]).toHaveFocus();
 });
 
 test('should update multiple rows using mouse', async () => {

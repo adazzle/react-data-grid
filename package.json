@@ -69,7 +69,7 @@
     "@typescript-eslint/parser": "^8.29.0",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/browser": "^3.1.2",
-    "@vitest/coverage-v8": "^3.1.2",
+    "@vitest/coverage-istanbul": "^3.1.2",
     "@vitest/eslint-plugin": "^1.1.43",
     "@wyw-in-js/rollup": "^0.6.0",
     "@wyw-in-js/vite": "^0.6.0",
