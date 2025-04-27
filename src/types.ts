@@ -162,11 +162,15 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
 
 export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
-    Omit<React.ComponentProps<'div'>, 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'> {
+    Omit<
+      React.ComponentProps<'div'>,
+      'children' | 'onPointerDown' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+    > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   isDraggedOver: boolean;
   isCellSelected: boolean;
+  onPointerDown: RenderRowProps<TRow, TSummaryRow>['onCellPointerDown'];
   onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
   onDoubleClick: RenderRowProps<TRow, TSummaryRow>['onCellDoubleClick'];
   onContextMenu: RenderRowProps<TRow, TSummaryRow>['onCellContextMenu'];
@@ -177,6 +181,8 @@ export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
   preventGridDefault: () => void;
   isGridDefaultPrevented: () => boolean;
 };
+
+export type CellPointerEvent = CellEvent<React.PointerEvent<HTMLDivElement>>;
 
 export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
@@ -222,7 +228,7 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   extends Omit<React.ComponentProps<'div'>, 'style' | 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
-      'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+      'onCellPointerDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
     > {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;

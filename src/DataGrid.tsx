@@ -48,6 +48,7 @@ import type {
   CellMouseEvent,
   CellNavigationMode,
   CellPasteEvent,
+  CellPointerEvent,
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
@@ -186,6 +187,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Event props
    */
+  onCellPointerDown?: Maybe<
+    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellPointerEvent) => void
+  >;
   /** Callback triggered when a cell is clicked */
   onCellClick?: Maybe<
     (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
@@ -274,6 +278,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     onSortColumnsChange,
     defaultColumnOptions,
     // Event props
+    onCellPointerDown,
     onCellClick,
     onCellDoubleClick,
     onCellContextMenu,
@@ -493,6 +498,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const handleColumnResizeEndLatest = useLatestFunc(handleColumnResizeEnd);
   const onColumnsReorderLastest = useLatestFunc(onColumnsReorder);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
+  const onCellPointerDownLatest = useLatestFunc(onCellPointerDown);
   const onCellClickLatest = useLatestFunc(onCellClick);
   const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
@@ -1141,6 +1147,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           viewportColumns: rowColumns,
           isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
           isRowSelected,
+          onCellPointerDown: onCellPointerDownLatest,
           onCellClick: onCellClickLatest,
           onCellDoubleClick: onCellDoubleClickLatest,
           onCellContextMenu: onCellContextMenuLatest,

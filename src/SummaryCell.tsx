@@ -37,7 +37,7 @@ function SummaryCell<R, SR>({
     typeof summaryCellClass === 'function' ? summaryCellClass(row) : summaryCellClass
   );
 
-  function onClick() {
+  function onPointerDown() {
     selectCell({ rowIdx, idx: column.idx });
   }
 
@@ -50,7 +50,7 @@ function SummaryCell<R, SR>({
       tabIndex={tabIndex}
       className={className}
       style={getCellStyle(column, colSpan)}
-      onClick={onClick}
+      onPointerDown={onPointerDown}
       onFocus={onFocus}
     >
       {column.renderSummaryCell?.({ column, row, tabIndex: childTabIndex })}

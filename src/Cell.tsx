@@ -21,6 +21,7 @@ function Cell<R, SR>({
   row,
   rowIdx,
   className,
+  onPointerDown,
   onClick,
   onDoubleClick,
   onContextMenu,
@@ -46,28 +47,35 @@ function Cell<R, SR>({
     selectCell({ rowIdx, idx: column.idx }, openEditor);
   }
 
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (onPointerDown) {
+      const cellEvent = createCellEvent(event);
+      onPointerDown({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
+      // do not select cell if the event is prevented
+      if (cellEvent.isGridDefaultPrevented()) return;
+    }
+    selectCellWrapper();
+  }
+
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
     if (onClick) {
       const cellEvent = createCellEvent(event);
       onClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-      if (cellEvent.isGridDefaultPrevented()) return;
     }
-    selectCellWrapper();
   }
 
   function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
     if (onContextMenu) {
       const cellEvent = createCellEvent(event);
       onContextMenu({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-      if (cellEvent.isGridDefaultPrevented()) return;
     }
-    selectCellWrapper();
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     if (onDoubleClick) {
       const cellEvent = createCellEvent(event);
       onDoubleClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
+      // do not do into edit mode if the event is prevented
       if (cellEvent.isGridDefaultPrevented()) return;
     }
     selectCellWrapper(true);
@@ -91,6 +99,7 @@ function Cell<R, SR>({
         ...style
       }}
       onClick={handleClick}
+      onPointerDown={handlePointerDown}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
       onFocus={onFocus}
