@@ -42,12 +42,13 @@ import type {
   CalculatedColumn,
   CellClickArgs,
   CellClipboardEvent,
-  CellCopyEvent,
+  CellCopyArgs,
   CellKeyboardEvent,
   CellKeyDownArgs,
   CellMouseEvent,
   CellNavigationMode,
-  CellPasteEvent,
+  CellPasteArgs,
+  CellPointerDownArgs,
   CellPointerEvent,
   CellSelectArgs,
   Column,
@@ -188,7 +189,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   onCellPointerDown?: Maybe<
-    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellPointerEvent) => void
+    (args: CellPointerDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellPointerEvent) => void
   >;
   /** Callback triggered when a cell is clicked */
   onCellClick?: Maybe<
@@ -208,11 +209,11 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   >;
   /** Callback triggered when a cell's content is copied */
   onCellCopy?: Maybe<
-    (args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
+    (args: CellCopyArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
   >;
   /** Callback triggered when content is pasted into a cell */
   onCellPaste?: Maybe<
-    (args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
+    (args: CellPasteArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
   >;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<NoInfer<R>, NoInfer<SR>>) => void>;

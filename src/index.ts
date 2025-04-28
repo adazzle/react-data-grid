@@ -1,5 +1,45 @@
 import './style/layers.css';
 
+import type {
+  CalculatedColumn,
+  CalculatedColumnOrColumnGroup,
+  CalculatedColumnParent,
+  CellClickArgs,
+  CellCopyArgs,
+  CellKeyboardEvent,
+  CellKeyDownArgs,
+  CellMouseEvent,
+  CellPasteArgs,
+  CellPointerDownArgs,
+  CellPointerEvent,
+  CellRendererProps,
+  CellSelectArgs,
+  ColSpanArgs,
+  Column,
+  ColumnGroup,
+  ColumnOrColumnGroup,
+  ColumnWidth,
+  ColumnWidths,
+  FillEvent,
+  RenderCellProps,
+  RenderCheckboxProps,
+  RenderEditCellProps,
+  Renderers,
+  RenderGroupCellProps,
+  RenderHeaderCellProps,
+  RenderRowProps,
+  RenderSortIconProps,
+  RenderSortPriorityProps,
+  RenderSortStatusProps,
+  RenderSummaryCellProps,
+  RowHeightArgs,
+  RowsChangeData,
+  SelectHeaderRowEvent,
+  SelectRowEvent,
+  SortColumn,
+  SortDirection
+} from './types';
+
 export {
   DataGrid,
   type DataGridProps,
@@ -45,11 +85,13 @@ export type {
   RenderSortPriorityProps,
   RenderSortStatusProps,
   Renderers,
+  CellPointerEvent,
+  CellPointerDownArgs,
   CellMouseEvent,
   CellClickArgs,
   CellKeyDownArgs,
   CellKeyboardEvent,
-  CellCopyEvent,
-  CellPasteEvent,
+  CellCopyArgs,
+  CellPasteArgs,
   CellSelectArgs
-} from './types';
+};

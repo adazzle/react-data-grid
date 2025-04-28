@@ -53,10 +53,10 @@ const rows: readonly Row[] = [
 ];
 
 describe('Events', () => {
-  it('should not select cell if onCellClick prevents grid default', async () => {
+  it('should not select cell if onCellPointerDown prevents grid default', async () => {
     page.render(
       <EventTest
-        onCellClick={(args, event) => {
+        onCellPointerDown={(args, event) => {
           if (args.column.key === 'col1') {
             event.preventGridDefault();
           }
@@ -103,19 +103,20 @@ describe('Events', () => {
   });
 
   it('should call onCellContextMenu when cell is right clicked', async () => {
-    page.render(
-      <EventTest
-        onCellContextMenu={(args, event) => {
-          if (args.column.key === 'col1') {
-            event.preventGridDefault();
-          }
-        }}
-      />
-    );
+    const onCellContextMenu = vi.fn();
+    page.render(<EventTest onCellContextMenu={onCellContextMenu} />);
+    expect(onCellContextMenu).not.toHaveBeenCalled();
     await userEvent.click(getCellsAtRowIndex(0)[0], { button: 'right' });
-    expect(getCellsAtRowIndex(0)[0]).toHaveAttribute('aria-selected', 'false');
-    await userEvent.click(getCellsAtRowIndex(0)[1], { button: 'right' });
-    expect(getCellsAtRowIndex(0)[1]).toHaveAttribute('aria-selected', 'true');
+    expect(onCellContextMenu).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        column: expect.objectContaining(columns[0]),
+        row: rows[0],
+        rowIdx: 0
+      }),
+      expect.objectContaining({
+        type: 'contextmenu'
+      })
+    );
   });
 
   it('should call onSelectedCellChange when cell selection is changed', async () => {
@@ -183,7 +184,11 @@ describe('Events', () => {
 
 type EventProps = Pick<
   DataGridProps<Row>,
-  'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu' | 'onSelectedCellChange'
+  | 'onCellPointerDown'
+  | 'onCellClick'
+  | 'onCellDoubleClick'
+  | 'onCellContextMenu'
+  | 'onSelectedCellChange'
 >;
 
 function EventTest(props: EventProps) {

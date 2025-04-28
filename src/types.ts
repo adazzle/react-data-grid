@@ -197,6 +197,8 @@ export interface CellClickArgs<TRow, TSummaryRow = unknown> {
   selectCell: (enableEditor?: boolean) => void;
 }
 
+export type CellPointerDownArgs<TRow, TSummaryRow = unknown> = CellClickArgs<TRow, TSummaryRow>;
+
 interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'SELECT';
   column: CalculatedColumn<TRow, TSummaryRow>;
@@ -270,13 +272,13 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
-interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
+interface CellCopyPasteArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
 }
 
-export type CellCopyEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
-export type CellPasteEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
+export type CellCopyArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
+export type CellPasteArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
 
 export interface GroupRow<TRow> {
   readonly childRows: readonly TRow[];
