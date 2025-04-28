@@ -27,6 +27,8 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly maxWidth?: Maybe<number>;
   /** Class name(s) for the cell */
   readonly cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>;
+  /** Styles for the cell */
+  readonly cellStyle?: Maybe<React.CSSProperties | ((row: TRow) => Maybe<React.CSSProperties>)>;
   /** Class name(s) for the header cell */
   readonly headerCellClass?: Maybe<string>;
   /** Class name(s) for the summary cell */
@@ -241,6 +243,7 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown>
   selectedCellEditor: ReactElement<RenderEditCellProps<TRow>> | undefined;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
   rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
+  rowStyle: Maybe<(row: TRow, rowIdx: number) => Maybe<React.CSSProperties>>;
 }
 
 export interface RowsChangeData<R, SR = unknown> {
