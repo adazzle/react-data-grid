@@ -5,7 +5,7 @@ import { css } from '@linaria/core';
 import clsx from 'clsx';
 
 import { DataGrid, SelectColumn, textEditor } from '../../src';
-import type { CalculatedColumn, CellCopyEvent, CellPasteEvent, Column, FillEvent } from '../../src';
+import type { CalculatedColumn, CellCopyArgs, CellPasteArgs, Column, FillEvent } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import { useDirection } from '../directionContext';
 
@@ -216,7 +216,7 @@ function AllFeatures() {
   }
 
   function handleCellPaste(
-    { row, column }: CellCopyEvent<Row>,
+    { row, column }: CellCopyArgs<Row>,
     event: React.ClipboardEvent<HTMLDivElement>
   ): Row {
     const targetColumnKey = column.key;
@@ -248,7 +248,7 @@ function AllFeatures() {
   }
 
   function handleCellCopy(
-    { row, column }: CellPasteEvent<Row>,
+    { row, column }: CellPasteArgs<Row>,
     event: React.ClipboardEvent<HTMLDivElement>
   ): void {
     // copy highlighted text only

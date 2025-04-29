@@ -75,7 +75,7 @@ function Cell<R, SR>({
     if (onDoubleClick) {
       const cellEvent = createCellEvent(event);
       onDoubleClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-      // do not do into edit mode if the event is prevented
+      // do not go into edit mode if the event is prevented
       if (cellEvent.isGridDefaultPrevented()) return;
     }
     selectCellWrapper(true);

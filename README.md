@@ -317,6 +317,8 @@ function MyGrid() {
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
+###### `onCellPointerDown: Maybe<(args: CellPointerDownArgs<R, SR>, event: CellPointerEvent) => void>`
+
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
 Callback triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
@@ -336,7 +338,6 @@ This event can be used to open cell editor on single click
 ```tsx
 function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
-    event.preventGridDefault();
     args.selectCell(true);
   }
 }
@@ -372,12 +373,13 @@ function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
 
 ###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Callback triggered when a cell is right-clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a cell is right-clicked.
 
 ```tsx
 function onCellContextMenu(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
-    event.preventGridDefault();
+    event.preventDefault();
+    // open custom context menu
   }
 }
 
@@ -412,11 +414,11 @@ function onCellKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
 
 Check [more examples](website/routes/CellNavigation.tsx)
 
-###### `onCellCopy?: Maybe<(args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
+###### `onCellCopy?: Maybe<(args: CellCopyArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
 
 Callback triggered when a cell's content is copied.
 
-###### `onCellPaste?: Maybe<(args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
+###### `onCellPaste?: Maybe<(args: CellPasteArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
 
 Callback triggered when content is pasted into a cell.
 

@@ -188,6 +188,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Event props
    */
+  /** Callback triggered when a pointer becomes active in a cell */
   onCellPointerDown?: Maybe<
     (args: CellPointerDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellPointerEvent) => void
   >;
