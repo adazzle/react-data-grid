@@ -30,6 +30,7 @@ export type {
   RenderGroupCellProps,
   RenderEditCellProps,
   RenderHeaderCellProps,
+  RenderHeaderGroupCellProps,
   CellRendererProps,
   RenderRowProps,
   RowsChangeData,

@@ -98,6 +98,8 @@ export interface ColumnGroup<R, SR = unknown> {
   readonly name: string | ReactElement;
   readonly headerCellClass?: Maybe<string>;
   readonly children: readonly ColumnOrColumnGroup<R, SR>[];
+  /** Render function used to render the content of the group column's header cell */
+  readonly renderGroupHeaderCell?: Maybe<(props: RenderHeaderGroupCellProps<R, SR>) => ReactNode>;
 }
 
 export interface CalculatedColumnParent<R, SR> {
@@ -107,6 +109,8 @@ export interface CalculatedColumnParent<R, SR> {
   readonly colSpan: number;
   readonly level: number;
   readonly headerCellClass?: Maybe<string>;
+  /** Render function used to render the content of the group column's header cell */
+  readonly renderGroupHeaderCell?: Maybe<(props: RenderHeaderGroupCellProps<R, SR>) => ReactNode>;
 }
 
 export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
@@ -157,6 +161,11 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
+  tabIndex: number;
+}
+
+export interface RenderHeaderGroupCellProps<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumnParent<TRow, TSummaryRow>;
   tabIndex: number;
 }
 
