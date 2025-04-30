@@ -491,7 +491,9 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const selectHeaderRowLatest = useLatestFunc(selectHeaderRow);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectCellLatest = useLatestFunc(selectCell);
+  const selectCellLatest = useLatestFunc((position: Position, enableEditor?: Maybe<boolean>) => {
+    selectCell(position, { enableEditor });
+  });
   const selectHeaderCellLatest = useLatestFunc(selectHeaderCell);
 
   useImperativeHandle(ref, () => ({
