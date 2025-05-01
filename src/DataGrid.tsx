@@ -103,7 +103,10 @@ export type DefaultColumnOptions<R, SR> = Pick<
 export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToCell: (position: PartialPosition) => void;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+  selectCell: (
+    position: Position,
+    options: { enableEditor?: Maybe<boolean>; shouldFocusCell?: Maybe<boolean> }
+  ) => void;
 }
 
 type SharedDivProps = Pick<
@@ -491,9 +494,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const selectHeaderRowLatest = useLatestFunc(selectHeaderRow);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
-  const selectCellLatest = useLatestFunc((position: Position, enableEditor?: Maybe<boolean>) => {
-    selectCell(position, { enableEditor });
-  });
+  const selectCellLatest = useLatestFunc(selectCell);
   const selectHeaderCellLatest = useLatestFunc(selectHeaderCell);
 
   useImperativeHandle(ref, () => ({
@@ -616,7 +617,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
     // select the first header cell if the focus event is triggered by the grid
     if (event.target === event.currentTarget) {
-      selectHeaderCell({ idx: minColIdx, rowIdx: headerRowsCount });
+      selectCell(
+        { idx: minColIdx, rowIdx: minRowIdx + headerRowsCount - 1 },
+        { shouldFocusCell: true }
+      );
     }
   }
 
