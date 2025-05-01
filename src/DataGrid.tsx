@@ -534,22 +534,16 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    * effects
    */
   useLayoutEffect(() => {
-    if (
-      focusSinkRef.current !== null &&
-      selectedCellIsWithinSelectionBounds &&
-      selectedPosition.idx === -1
-    ) {
-      focusSinkRef.current.focus({ preventScroll: true });
-      scrollIntoView(focusSinkRef.current);
-    }
-  }, [selectedCellIsWithinSelectionBounds, selectedPosition]);
-
-  useLayoutEffect(() => {
     if (shouldFocusCell) {
+      if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
+        focusSinkRef.current.focus({ preventScroll: true });
+        scrollIntoView(focusSinkRef.current);
+      } else {
+        focusCellOrCellContent();
+      }
       setShouldFocusCell(false);
-      focusCellOrCellContent();
     }
-  }, [shouldFocusCell, focusCellOrCellContent]);
+  }, [shouldFocusCell, focusCellOrCellContent, selectedPosition.idx]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
