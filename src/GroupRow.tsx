@@ -49,7 +49,7 @@ function GroupedRow<R, SR>({
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
 
   function handleSelectGroup() {
-    selectCell({ rowIdx, idx: -1 });
+    selectCell({ rowIdx, idx: -1 }, { shouldFocusCell: true });
   }
 
   const selectionValue = useMemo(
