@@ -188,14 +188,12 @@ export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
 export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
 
-export interface CellClickArgs<TRow, TSummaryRow = unknown> {
+export interface CellMouseArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   rowIdx: number;
   selectCell: (enableEditor?: boolean) => void;
 }
-
-export type CellMouseDownArgs<TRow, TSummaryRow = unknown> = CellClickArgs<TRow, TSummaryRow>;
 
 interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'SELECT';
@@ -223,6 +221,10 @@ export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
   row: TRow | undefined;
   column: CalculatedColumn<TRow, TSummaryRow>;
 }
+
+export type CellMouseEventHandler<R, SR> = Maybe<
+  (args: CellMouseArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
+>;
 
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   extends Omit<React.ComponentProps<'div'>, 'style' | 'children'>,

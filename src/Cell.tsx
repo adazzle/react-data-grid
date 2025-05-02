@@ -3,7 +3,7 @@ import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
 import { createCellEvent, getCellClassname, getCellStyle, isCellEditableUtil } from './utils';
-import type { CellRendererProps } from './types';
+import type { CellMouseEventHandler, CellRendererProps } from './types';
 
 const cellDraggedOver = css`
   @layer rdg.Cell {
@@ -47,36 +47,38 @@ function Cell<R, SR>({
     selectCell({ rowIdx, idx: column.idx }, openEditor);
   }
 
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
-    if (onMouseDown) {
+  function handleMouseEvent(
+    event: React.MouseEvent<HTMLDivElement>,
+    eventHandler?: CellMouseEventHandler<R, SR>
+  ) {
+    if (eventHandler) {
       const cellEvent = createCellEvent(event);
-      onMouseDown({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
+      eventHandler({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
+      return cellEvent.isGridDefaultPrevented();
+    }
+    return false;
+  }
+
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    if (handleMouseEvent(event, onMouseDown)) {
       // do not select cell if the event is prevented
-      if (cellEvent.isGridDefaultPrevented()) return;
+      return;
     }
     selectCellWrapper();
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (onClick) {
-      const cellEvent = createCellEvent(event);
-      onClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-    }
+    handleMouseEvent(event, onClick);
   }
 
   function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
-    if (onContextMenu) {
-      const cellEvent = createCellEvent(event);
-      onContextMenu({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-    }
+    handleMouseEvent(event, onContextMenu);
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (onDoubleClick) {
-      const cellEvent = createCellEvent(event);
-      onDoubleClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
+    if (handleMouseEvent(event, onDoubleClick)) {
       // do not go into edit mode if the event is prevented
-      if (cellEvent.isGridDefaultPrevented()) return;
+      return;
     }
     selectCellWrapper(true);
   }

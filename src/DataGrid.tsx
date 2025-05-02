@@ -40,13 +40,11 @@ import {
 } from './utils';
 import type {
   CalculatedColumn,
-  CellClickArgs,
   CellClipboardEvent,
   CellCopyArgs,
   CellKeyboardEvent,
   CellKeyDownArgs,
-  CellMouseDownArgs,
-  CellMouseEvent,
+  CellMouseEventHandler,
   CellNavigationMode,
   CellPasteArgs,
   CellSelectArgs,
@@ -188,21 +186,13 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
    * Event props
    */
   /** Callback triggered when a pointer becomes active in a cell */
-  onCellMouseDown?: Maybe<
-    (args: CellMouseDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
-  >;
+  onCellMouseDown?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a cell is clicked */
-  onCellClick?: Maybe<
-    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
-  >;
+  onCellClick?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a cell is double-clicked */
-  onCellDoubleClick?: Maybe<
-    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
-  >;
+  onCellDoubleClick?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a cell is right-clicked */
-  onCellContextMenu?: Maybe<
-    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
-  >;
+  onCellContextMenu?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a key is pressed in a cell */
   onCellKeyDown?: Maybe<
     (args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void

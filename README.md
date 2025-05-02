@@ -331,12 +331,12 @@ function onCellMouseDown(args: CellMouseDownArgs<R, SR>, event: CellMouseEvent) 
 <DataGrid rows={rows} columns={columns} onCellMouseDown={onCellMouseDown} />;
 ```
 
-###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+###### `onCellClick?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
 Callback triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
-function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
@@ -348,7 +348,7 @@ function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
 This event can be used to open cell editor on single click
 
 ```tsx
-function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     args.selectCell(true);
   }
@@ -357,7 +357,7 @@ function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
 
 Arguments:
 
-`args: CellClickArgs<R, SR>`
+`args: CellMouseArgs<R, SR>`
 
 - `args.rowIdx`: `number` - row index of the currently selected cell
 - `args.row`: `R` - row object of the currently selected cell
@@ -369,12 +369,12 @@ Arguments:
 - `event.preventGridDefault:`: `() => void`
 - `event.isGridDefaultPrevented`: `boolean`
 
-###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+###### `onCellDoubleClick?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
 Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior
 
 ```tsx
-function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
@@ -383,12 +383,12 @@ function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
 <DataGrid rows={rows} columns={columns} onCellDoubleClick={onCellDoubleClick} />;
 ```
 
-###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+###### `onCellContextMenu?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
 Callback triggered when a cell is right-clicked.
 
 ```tsx
-function onCellContextMenu(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellContextMenu(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventDefault();
     // open custom context menu
