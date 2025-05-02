@@ -374,7 +374,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     {
       row,
       rowClass,
-      onCellPointerDown,
+      onCellMouseDown,
       onCellClick,
       onCellDoubleClick,
       onCellContextMenu,
@@ -412,7 +412,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       'aria-rowindex': ariaRowIndex,
       row,
       rowClass,
-      onCellPointerDown,
+      onCellMouseDown,
       onCellClick,
       onCellDoubleClick,
       onCellContextMenu,

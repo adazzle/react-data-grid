@@ -53,10 +53,10 @@ const rows: readonly Row[] = [
 ];
 
 describe('Events', () => {
-  it('should not select cell if onCellPointerDown prevents grid default', async () => {
+  it('should not select cell if onCellMouseDown prevents grid default', async () => {
     page.render(
       <EventTest
-        onCellPointerDown={(args, event) => {
+        onCellMouseDown={(args, event) => {
           if (args.column.key === 'col1') {
             event.preventGridDefault();
           }
@@ -184,7 +184,7 @@ describe('Events', () => {
 
 type EventProps = Pick<
   DataGridProps<Row>,
-  | 'onCellPointerDown'
+  | 'onCellMouseDown'
   | 'onCellClick'
   | 'onCellDoubleClick'
   | 'onCellContextMenu'

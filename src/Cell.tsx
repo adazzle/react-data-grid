@@ -21,7 +21,7 @@ function Cell<R, SR>({
   row,
   rowIdx,
   className,
-  onPointerDown,
+  onMouseDown,
   onClick,
   onDoubleClick,
   onContextMenu,
@@ -47,10 +47,10 @@ function Cell<R, SR>({
     selectCell({ rowIdx, idx: column.idx }, openEditor);
   }
 
-  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (onPointerDown) {
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    if (onMouseDown) {
       const cellEvent = createCellEvent(event);
-      onPointerDown({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
+      onMouseDown({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
       // do not select cell if the event is prevented
       if (cellEvent.isGridDefaultPrevented()) return;
     }
@@ -99,7 +99,7 @@ function Cell<R, SR>({
         ...style
       }}
       onClick={handleClick}
-      onPointerDown={handlePointerDown}
+      onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
       onFocus={onFocus}

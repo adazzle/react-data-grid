@@ -145,7 +145,7 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function onPointerDown() {
+  function onMouseDown() {
     selectCell({ idx: column.idx, rowIdx });
   }
 
@@ -252,8 +252,8 @@ export default function HeaderCell<R, SR>({
         ...getHeaderCellStyle(column, rowIdx, rowSpan),
         ...getCellStyle(column, colSpan)
       }}
+      onMouseDown={onMouseDown}
       onFocus={onFocus}
-      onPointerDown={onPointerDown}
       onClick={onClick}
       onKeyDown={onKeyDown}
       {...draggableProps}

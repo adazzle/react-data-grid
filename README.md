@@ -317,18 +317,18 @@ function MyGrid() {
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
-###### `onCellPointerDown: Maybe<(args: CellPointerDownArgs<R, SR>, event: CellPointerEvent) => void>`
+###### `onCellMouseDown: Maybe<(args: CellMouseDownArgs<R, SR>, event: CellMouseEvent) => void>`
 
 Callback triggered when a pointer becomes active in a cell. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior.
 
 ```tsx
-function onCellPointerDown(args: CellPointerDownArgs<R, SR>, event: CellMouseEvent) {
+function onCellMouseDown(args: CellMouseDownArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
 }
 
-<DataGrid rows={rows} columns={columns} onCellPointerDown={onCellPointerDown} />;
+<DataGrid rows={rows} columns={columns} onCellMouseDown={onCellMouseDown} />;
 ```
 
 ###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`

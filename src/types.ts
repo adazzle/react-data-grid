@@ -164,13 +164,13 @@ export interface CellRendererProps<TRow, TSummaryRow>
   extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
     Omit<
       React.ComponentProps<'div'>,
-      'children' | 'onPointerDown' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+      'children' | 'onMouseDown' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
     > {
   column: CalculatedColumn<TRow, TSummaryRow>;
   colSpan: number | undefined;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  onPointerDown: RenderRowProps<TRow, TSummaryRow>['onCellPointerDown'];
+  onMouseDown: RenderRowProps<TRow, TSummaryRow>['onCellMouseDown'];
   onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
   onDoubleClick: RenderRowProps<TRow, TSummaryRow>['onCellDoubleClick'];
   onContextMenu: RenderRowProps<TRow, TSummaryRow>['onCellContextMenu'];
@@ -181,8 +181,6 @@ export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
   preventGridDefault: () => void;
   isGridDefaultPrevented: () => boolean;
 };
-
-export type CellPointerEvent = CellEvent<React.PointerEvent<HTMLDivElement>>;
 
 export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
@@ -197,7 +195,7 @@ export interface CellClickArgs<TRow, TSummaryRow = unknown> {
   selectCell: (enableEditor?: boolean) => void;
 }
 
-export type CellPointerDownArgs<TRow, TSummaryRow = unknown> = CellClickArgs<TRow, TSummaryRow>;
+export type CellMouseDownArgs<TRow, TSummaryRow = unknown> = CellClickArgs<TRow, TSummaryRow>;
 
 interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'SELECT';
@@ -230,7 +228,7 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   extends Omit<React.ComponentProps<'div'>, 'style' | 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
-      'onCellPointerDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
     > {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
