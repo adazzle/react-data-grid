@@ -72,7 +72,7 @@ function GroupedRow<R, SR>({
           selectedCellIdx === -1 && rowSelectedClassname,
           className
         )}
-        onPointerDown={handleSelectGroup}
+        onMouseDown={handleSelectGroup}
         style={getRowStyle(gridRowStart)}
         {...props}
       >
