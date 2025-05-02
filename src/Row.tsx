@@ -23,7 +23,6 @@ function Row<R, SR>({
   onCellDoubleClick,
   onCellContextMenu,
   rowClass,
-  rowStyle,
   onRowChange,
   selectCell,
   ...props
@@ -43,8 +42,6 @@ function Row<R, SR>({
     rowClass?.(row, rowIdx),
     className
   );
-
-  const _rowStyle = rowStyle?.(row, rowIdx);
 
   const cells = [];
 
@@ -86,12 +83,7 @@ function Row<R, SR>({
 
   return (
     <RowSelectionContext value={selectionValue}>
-      <div
-        role="row"
-        className={className}
-        style={{ ...getRowStyle(gridRowStart), ..._rowStyle }}
-        {...props}
-      >
+      <div role="row" className={className} style={getRowStyle(gridRowStart)} {...props}>
         {cells}
       </div>
     </RowSelectionContext>

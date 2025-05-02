@@ -141,8 +141,7 @@ const columns: readonly Column<Row>[] = [
     width: 200,
     resizable: true,
     frozen: true,
-    renderEditCell: textEditor,
-    cellStyle: (row) => (row.lastName.startsWith('S') ? { color: '#ff9800' } : null)
+    renderEditCell: textEditor
   },
   {
     key: 'email',
@@ -295,9 +294,6 @@ function AllFeatures() {
             [highlightClassname]: row.id.includes('7') || index === 0,
             [copiedRowClassname]: copiedCell?.row === row
           });
-        }}
-        rowStyle={(row) => {
-          return row.email.includes('_') ? { color: '#2196f3' } : null;
         }}
         direction={direction}
         onCellClick={(args, event) => {

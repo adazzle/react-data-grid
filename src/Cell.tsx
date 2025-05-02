@@ -31,7 +31,7 @@ function Cell<R, SR>({
 }: CellRendererProps<R, SR>) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
 
-  const { cellClass, cellStyle } = column;
+  const { cellClass } = column;
   className = getCellClassname(
     column,
     {
@@ -40,9 +40,6 @@ function Cell<R, SR>({
     typeof cellClass === 'function' ? cellClass(row) : cellClass,
     className
   );
-
-  const _cellStyle = typeof cellStyle === 'function' ? cellStyle(row) : cellStyle;
-
   const isEditable = isCellEditableUtil(column, row);
 
   function selectCellWrapper(openEditor?: boolean) {
@@ -91,8 +88,7 @@ function Cell<R, SR>({
       className={className}
       style={{
         ...getCellStyle(column, colSpan),
-        ...style,
-        ..._cellStyle
+        ...style
       }}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}

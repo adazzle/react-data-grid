@@ -232,8 +232,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   renderers?: Maybe<Renderers<NoInfer<R>, NoInfer<SR>>>;
   /** Function to apply custom class names to rows */
   rowClass?: Maybe<(row: NoInfer<R>, rowIdx: number) => Maybe<string>>;
-  /** Function to apply custom row style */
-  rowStyle?: Maybe<(row: NoInfer<R>, rowIdx: number) => Maybe<React.CSSProperties>>;
   /** Custom class name for the header row */
   headerRowClass?: Maybe<string>;
   /**
@@ -294,7 +292,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     className,
     style,
     rowClass,
-    rowStyle,
     headerRowClass,
     direction: rawDirection,
     // ARIA
@@ -1148,7 +1145,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           onCellDoubleClick: onCellDoubleClickLatest,
           onCellContextMenu: onCellContextMenuLatest,
           rowClass,
-          rowStyle,
           gridRowStart,
           selectedCellIdx: selectedRowIdx === rowIdx ? selectedIdx : undefined,
           draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
