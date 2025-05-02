@@ -107,7 +107,7 @@ describe('Events', () => {
     page.render(<EventTest onCellContextMenu={onCellContextMenu} />);
     expect(onCellContextMenu).not.toHaveBeenCalled();
     await userEvent.click(getCellsAtRowIndex(0)[0], { button: 'right' });
-    expect(onCellContextMenu).toHaveBeenLastCalledWith(
+    expect(onCellContextMenu).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({
         column: expect.objectContaining(columns[0]),
         row: rows[0],
