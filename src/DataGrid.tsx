@@ -489,10 +489,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const handleColumnResizeEndLatest = useLatestFunc(handleColumnResizeEnd);
   const onColumnsReorderLastest = useLatestFunc(onColumnsReorder);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
-  const onCellPointerDownLatest = useLatestFunc(onCellMouseDown);
-  const onCellClickLatest = useLatestFunc(onCellClick);
-  const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
-  const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
   const selectHeaderRowLatest = useLatestFunc(selectHeaderRow);
   const selectRowLatest = useLatestFunc(selectRow);
   const handleFormatterRowChangeLatest = useLatestFunc(updateRow);
@@ -1132,10 +1128,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           viewportColumns: rowColumns,
           isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
           isRowSelected,
-          onCellMouseDown: onCellPointerDownLatest,
-          onCellClick: onCellClickLatest,
-          onCellDoubleClick: onCellDoubleClickLatest,
-          onCellContextMenu: onCellContextMenuLatest,
+          onCellMouseDown,
+          onCellClick,
+          onCellDoubleClick,
+          onCellContextMenu,
           rowClass,
           gridRowStart,
           selectedCellIdx: selectedRowIdx === rowIdx ? selectedIdx : undefined,

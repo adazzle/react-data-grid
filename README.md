@@ -317,9 +317,9 @@ function MyGrid() {
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
-###### `onCellMouseDown: Maybe<(args: CellMouseDownArgs<R, SR>, event: CellMouseEvent) => void>`
+###### `onCellMouseDown: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Callback triggered when a pointer becomes active in a cell. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior.
+Callback triggered when a pointer becomes active in a cell. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior. This prop is passed to the `<Cell />` component so avoid recreating it on every render.
 
 ```tsx
 function onCellMouseDown(args: CellMouseDownArgs<R, SR>, event: CellMouseEvent) {
@@ -333,7 +333,7 @@ function onCellMouseDown(args: CellMouseDownArgs<R, SR>, event: CellMouseEvent) 
 
 ###### `onCellClick?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Callback triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a cell is clicked. This prop is passed to the `<Cell />` component so avoid recreating it on every render.
 
 ```tsx
 function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
@@ -371,7 +371,7 @@ Arguments:
 
 ###### `onCellDoubleClick?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior. This prop is passed to the `<Cell />` component so avoid recreating it on every render.
 
 ```tsx
 function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
@@ -385,7 +385,7 @@ function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
 
 ###### `onCellContextMenu?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Callback triggered when a cell is right-clicked.
+Callback triggered when a cell is right-clicked. This prop is passed to the `<Cell />` component so avoid recreating it on every render.
 
 ```tsx
 function onCellContextMenu(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
