@@ -4,16 +4,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
-import { DataGrid, defaultRenderCell, defaultRenderRow, SelectColumn, textEditor } from '../../src';
-import type {
-  CalculatedColumn,
-  CellCopyEvent,
-  CellPasteEvent,
-  CellRendererProps,
-  Column,
-  FillEvent,
-  RenderRowProps
-} from '../../src';
+import { DataGrid, SelectColumn, textEditor } from '../../src';
+import type { CalculatedColumn, CellCopyEvent, CellPasteEvent, Column, FillEvent } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import { useDirection } from '../directionContext';
 
@@ -50,19 +42,6 @@ function createRows(): Row[] {
   }
 
   return rows;
-}
-
-function renderRow(key: React.Key, props: RenderRowProps<NoInfer<Row>>) {
-  const style = props.row.email.includes('_') ? { color: '#2196f3' } : null;
-  return defaultRenderRow(key, { ...props, style: { ...props.style, ...style } });
-}
-
-function renderCell(key: React.Key, props: CellRendererProps<NoInfer<Row>, unknown>) {
-  const style =
-    props.column.key === 'lastName' && props.row.lastName.startsWith('S')
-      ? { color: '#ff9800' }
-      : null;
-  return defaultRenderCell(key, { ...props, style: { ...props.style, ...style } });
 }
 
 const highlightClassname = css`
@@ -310,10 +289,6 @@ function AllFeatures() {
         isRowSelectionDisabled={(row) => row.id === 'id_2'}
         onSelectedRowsChange={setSelectedRows}
         className="fill-grid"
-        renderers={{
-          renderRow,
-          renderCell
-        }}
         rowClass={(row, index) => {
           return clsx({
             [highlightClassname]: row.id.includes('7') || index === 0,

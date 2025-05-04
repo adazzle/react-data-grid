@@ -8,8 +8,8 @@ export {
 } from './DataGrid';
 export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
 export { DataGridDefaultRenderersContext } from './DataGridDefaultRenderersContext';
-export { default as Row, defaultRenderRow } from './Row';
-export { default as Cell, defaultRenderCell } from './Cell';
+export { default as Row } from './Row';
+export { default as Cell } from './Cell';
 export * from './Columns';
 export * from './cellRenderers';
 export { default as textEditor } from './editors/textEditor';
