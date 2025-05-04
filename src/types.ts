@@ -227,7 +227,7 @@ export type CellMouseEventHandler<R, SR> = Maybe<
 >;
 
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.ComponentProps<'div'>, 'style' | 'children'>,
+  extends Omit<React.ComponentProps<'div'>, 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
       'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'

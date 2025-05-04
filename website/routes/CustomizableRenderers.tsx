@@ -2,8 +2,15 @@ import { useMemo, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
-import { DataGrid, SelectColumn, textEditor } from '../../src';
-import type { Column, RenderCheckboxProps, RenderSortStatusProps, SortColumn } from '../../src';
+import { Row as BaseRow, Cell, DataGrid, SelectColumn, textEditor } from '../../src';
+import type {
+  CellRendererProps,
+  Column,
+  RenderCheckboxProps,
+  RenderRowProps,
+  RenderSortStatusProps,
+  SortColumn
+} from '../../src';
 import { useDirection } from '../directionContext';
 
 export const Route = createFileRoute('/CustomizableRenderers')({
@@ -115,7 +122,7 @@ function CustomizableRenderers() {
       onSortColumnsChange={setSortColumns}
       selectedRows={selectedRows}
       onSelectedRowsChange={setSelectedRows}
-      renderers={{ renderSortStatus, renderCheckbox }}
+      renderers={{ renderSortStatus, renderCheckbox, renderCell, renderRow }}
       direction={direction}
     />
   );
@@ -147,6 +154,23 @@ function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
       <span className={sortPriorityClassname}>{priority}</span>
     </>
   );
+}
+
+const cellStyle: React.CSSProperties = { color: 'red' };
+
+function renderCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
+  const style =
+    props.column.key === 'priority' && props.row.priority === 'Critical' ? cellStyle : undefined;
+
+  return <Cell key={key} {...props} style={style} />;
+}
+
+const rowStyle: React.CSSProperties = { color: 'green' };
+
+function renderRow(key: React.Key, props: RenderRowProps<Row>) {
+  const style = props.row.complete === 100 ? rowStyle : undefined;
+
+  return <BaseRow key={key} {...props} style={style} />;
 }
 
 function rowKeyGetter(row: Row) {
