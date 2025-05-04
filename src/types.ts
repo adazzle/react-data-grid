@@ -219,7 +219,7 @@ export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
 }
 
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.ComponentProps<'div'>, 'style' | 'children'>,
+  extends Omit<React.ComponentProps<'div'>, 'children'>,
     Pick<
       DataGridProps<TRow, TSummaryRow>,
       'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'

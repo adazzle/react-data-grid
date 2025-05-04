@@ -25,6 +25,7 @@ function Row<R, SR>({
   rowClass,
   onRowChange,
   selectCell,
+  style,
   ...props
 }: RenderRowProps<R, SR>) {
   const renderCell = useDefaultRenderers<R, SR>()!.renderCell!;
@@ -83,7 +84,15 @@ function Row<R, SR>({
 
   return (
     <RowSelectionContext value={selectionValue}>
-      <div role="row" className={className} style={getRowStyle(gridRowStart)} {...props}>
+      <div
+        role="row"
+        className={className}
+        style={{
+          ...getRowStyle(gridRowStart),
+          ...style
+        }}
+        {...props}
+      >
         {cells}
       </div>
     </RowSelectionContext>
