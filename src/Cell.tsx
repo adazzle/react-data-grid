@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type MouseEvent } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -63,7 +63,7 @@ function Cell<R, SR>({
     return false;
   }
 
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+  function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
     onMouseDown?.(event);
     if (handleMouseEvent(event, onCellMouseDown)) {
       // select cell if the event is not prevented
@@ -71,17 +71,17 @@ function Cell<R, SR>({
     }
   }
 
-  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleClick(event: MouseEvent<HTMLDivElement>) {
     onClick?.(event);
     handleMouseEvent(event, onCellClick);
   }
 
-  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
+  function handleContextMenu(event: MouseEvent<HTMLDivElement>) {
     onContextMenu?.(event);
     handleMouseEvent(event, onCellContextMenu);
   }
 
-  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
+  function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
     onDoubleClick?.(event);
     if (handleMouseEvent(event, onCellDoubleClick)) {
       // go into edit mode if the event is not prevented

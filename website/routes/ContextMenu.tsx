@@ -1,11 +1,11 @@
-import { useCallback, useLayoutEffect, useReducer, useRef, useState } from 'react';
+import { useLayoutEffect, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
-import type { CellMouseArgs, CellMouseEvent, Column } from '../../src';
+import type { Column } from '../../src';
 import { useDirection } from '../directionContext';
 
 export const Route = createFileRoute('/ContextMenu')({
@@ -59,7 +59,7 @@ function ContextMenuDemo() {
   const [rows, setRows] = useState(createRows);
   const [nextId, setNextId] = useReducer((id: number) => id + 1, rows[rows.length - 1].id + 1);
   const [contextMenuProps, setContextMenuProps] = useState<{
-    row: Row;
+    rowIdx: number;
     top: number;
     left: number;
   } | null>(null);
@@ -94,20 +94,6 @@ function ContextMenuDemo() {
     setNextId();
   }
 
-  const handleCellContextMenu = useCallback(
-    ({ row }: CellMouseArgs<Row>, event: CellMouseEvent) => {
-      event.preventGridDefault();
-      // Do not show the default context menu
-      event.preventDefault();
-      setContextMenuProps({
-        row,
-        top: event.clientY,
-        left: event.clientX
-      });
-    },
-    []
-  );
-
   return (
     <>
       <DataGrid
@@ -116,7 +102,16 @@ function ContextMenuDemo() {
         rows={rows}
         className="fill-grid"
         direction={direction}
-        onCellContextMenu={handleCellContextMenu}
+        onCellContextMenu={({ row }, event) => {
+          event.preventGridDefault();
+          // Do not show the default context menu
+          event.preventDefault();
+          setContextMenuProps({
+            rowIdx: rows.indexOf(row),
+            top: event.clientY,
+            left: event.clientX
+          });
+        }}
       />
       {isContextMenuOpen &&
         createPortal(
@@ -132,9 +127,7 @@ function ContextMenuDemo() {
               <button
                 type="button"
                 onClick={() => {
-                  setRows((rows) => {
-                    return rows.toSpliced(rows.indexOf(contextMenuProps.row), 1);
-                  });
+                  setRows(rows.toSpliced(contextMenuProps.rowIdx, 1));
                   setContextMenuProps(null);
                 }}
               >
@@ -145,7 +138,7 @@ function ContextMenuDemo() {
               <button
                 type="button"
                 onClick={() => {
-                  const rowIdx = rows.indexOf(contextMenuProps.row);
+                  const { rowIdx } = contextMenuProps;
                   insertRow(rowIdx);
                   setContextMenuProps(null);
                 }}
@@ -157,7 +150,7 @@ function ContextMenuDemo() {
               <button
                 type="button"
                 onClick={() => {
-                  const rowIdx = rows.indexOf(contextMenuProps.row);
+                  const { rowIdx } = contextMenuProps;
                   insertRow(rowIdx + 1);
                   setContextMenuProps(null);
                 }}
