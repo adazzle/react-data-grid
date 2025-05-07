@@ -68,10 +68,10 @@ function Row<R, SR>({
           rowIdx,
           isDraggedOver: draggedOverCellIdx === idx,
           isCellSelected,
-          onMouseDown: onCellMouseDown,
-          onClick: onCellClick,
-          onDoubleClick: onCellDoubleClick,
-          onContextMenu: onCellContextMenu,
+          onCellMouseDown,
+          onCellClick,
+          onCellDoubleClick,
+          onCellContextMenu,
           onRowChange: handleRowChange,
           selectCell
         })

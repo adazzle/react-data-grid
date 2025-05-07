@@ -160,20 +160,23 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
   tabIndex: number;
 }
 
-export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
-    Omit<
-      React.ComponentProps<'div'>,
-      'children' | 'onMouseDown' | 'onClick' | 'onDoubleClick' | 'onContextMenu'
+interface BaseCellRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.ComponentProps<'div'>, 'children'>,
+    Pick<
+      DataGridProps<TRow, TSummaryRow>,
+      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
     > {
+  rowIdx: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
+export interface CellRendererProps<TRow, TSummaryRow>
+  extends BaseCellRendererProps<TRow, TSummaryRow> {
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   colSpan: number | undefined;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  onMouseDown: RenderRowProps<TRow, TSummaryRow>['onCellMouseDown'];
-  onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
-  onDoubleClick: RenderRowProps<TRow, TSummaryRow>['onCellDoubleClick'];
-  onContextMenu: RenderRowProps<TRow, TSummaryRow>['onCellContextMenu'];
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
@@ -227,18 +230,13 @@ export type CellMouseEventHandler<R, SR> = Maybe<
 >;
 
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.ComponentProps<'div'>, 'children'>,
-    Pick<
-      DataGridProps<TRow, TSummaryRow>,
-      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
-    > {
+  extends BaseCellRendererProps<TRow, TSummaryRow> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
   selectedCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;
   isRowSelected: boolean;
   gridRowStart: number;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface RenderRowProps<TRow, TSummaryRow = unknown>

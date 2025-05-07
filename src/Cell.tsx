@@ -22,9 +22,13 @@ function Cell<R, SR>({
   rowIdx,
   className,
   onMouseDown,
+  onCellMouseDown,
   onClick,
+  onCellClick,
   onDoubleClick,
+  onCellDoubleClick,
   onContextMenu,
+  onCellContextMenu,
   onRowChange,
   selectCell,
   style,
@@ -60,27 +64,30 @@ function Cell<R, SR>({
   }
 
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
-    if (handleMouseEvent(event, onMouseDown)) {
-      // do not select cell if the event is prevented
-      return;
+    onMouseDown?.(event);
+    if (handleMouseEvent(event, onCellMouseDown)) {
+      // select cell if the event is not prevented
+      selectCellWrapper();
     }
-    selectCellWrapper();
   }
 
   function handleClick(event: React.MouseEvent<HTMLDivElement>) {
-    handleMouseEvent(event, onClick);
+    onClick?.(event);
+    handleMouseEvent(event, onCellClick);
   }
 
   function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
-    handleMouseEvent(event, onContextMenu);
+    onContextMenu?.(event);
+    handleMouseEvent(event, onCellContextMenu);
   }
 
   function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (handleMouseEvent(event, onDoubleClick)) {
-      // do not go into edit mode if the event is prevented
-      return;
+    onDoubleClick?.(event);
+    if (handleMouseEvent(event, onCellDoubleClick)) {
+      // go into edit mode if the event is not prevented
+
+      selectCellWrapper(true);
     }
-    selectCellWrapper(true);
   }
 
   function handleRowChange(newRow: R) {
