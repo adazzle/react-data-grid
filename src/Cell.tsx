@@ -77,17 +77,17 @@ function Cell<R, SR>({
     handleMouseEvent(event, onCellClick);
   }
 
-  function handleContextMenu(event: MouseEvent<HTMLDivElement>) {
-    onContextMenu?.(event);
-    handleMouseEvent(event, onCellContextMenu);
-  }
-
   function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
     onDoubleClick?.(event);
     if (!handleMouseEvent(event, onCellDoubleClick)) {
       // go into edit mode if the event is not prevented
       selectCellWrapper(true);
     }
+  }
+
+  function handleContextMenu(event: MouseEvent<HTMLDivElement>) {
+    onContextMenu?.(event);
+    handleMouseEvent(event, onCellContextMenu);
   }
 
   function handleRowChange(newRow: R) {
