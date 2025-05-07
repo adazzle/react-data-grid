@@ -55,17 +55,18 @@ function Cell<R, SR>({
     event: React.MouseEvent<HTMLDivElement>,
     eventHandler?: CellMouseEventHandler<R, SR>
   ) {
+    let eventHandled = false;
     if (eventHandler) {
       const cellEvent = createCellEvent(event);
       eventHandler({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-      return cellEvent.isGridDefaultPrevented();
+      eventHandled = cellEvent.isGridDefaultPrevented();
     }
-    return false;
+    return eventHandled;
   }
 
   function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
     onMouseDown?.(event);
-    if (handleMouseEvent(event, onCellMouseDown)) {
+    if (!handleMouseEvent(event, onCellMouseDown)) {
       // select cell if the event is not prevented
       selectCellWrapper();
     }
@@ -83,9 +84,8 @@ function Cell<R, SR>({
 
   function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
     onDoubleClick?.(event);
-    if (handleMouseEvent(event, onCellDoubleClick)) {
+    if (!handleMouseEvent(event, onCellDoubleClick)) {
       // go into edit mode if the event is not prevented
-
       selectCellWrapper(true);
     }
   }
