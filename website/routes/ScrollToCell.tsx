@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
+import clsx from 'clsx';
 
 import { DataGrid } from '../../src';
 import type { Column, DataGridHandle } from '../../src';
@@ -29,13 +30,23 @@ for (let i = 0; i < 200; i++) {
 const flexClassname = css`
   display: flex;
   gap: 5px;
+  align-items: center;
   margin-block-end: 5px;
+
+  > fieldset {
+    display: contents;
+  }
+`;
+
+const smoothClassname = css`
+  scroll-behavior: smooth;
 `;
 
 function ScrollToCell() {
   const direction = useDirection();
   const [idx, setIdx] = useState<number | undefined>(10);
   const [rowIdx, setRowIdx] = useState<number | undefined>(10);
+  const [scrollBehavior, setScrollBehavior] = useState<ScrollBehavior>('auto');
   const gridRef = useRef<DataGridHandle>(null);
 
   function scrollToColumn() {
@@ -77,6 +88,29 @@ function ScrollToCell() {
             }}
           />
         </label>
+        <fieldset>
+          <legend>Scroll behavior</legend>
+          <label>
+            Auto
+            <input
+              type="radio"
+              checked={scrollBehavior === 'auto'}
+              onChange={() => {
+                setScrollBehavior('auto');
+              }}
+            />
+          </label>
+          <label>
+            Smooth
+            <input
+              type="radio"
+              checked={scrollBehavior === 'smooth'}
+              onChange={() => {
+                setScrollBehavior('smooth');
+              }}
+            />
+          </label>
+        </fieldset>
       </div>
       <div className={flexClassname}>
         <button type="button" onClick={scrollToCell}>
@@ -93,7 +127,7 @@ function ScrollToCell() {
         ref={gridRef}
         columns={columns}
         rows={rows}
-        className="fill-grid"
+        className={clsx('fill-grid', { [smoothClassname]: scrollBehavior === 'smooth' })}
         direction={direction}
       />
     </>
