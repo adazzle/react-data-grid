@@ -20,7 +20,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly width?: Maybe<number | string>;
   /**
    * Minimum column width in pixels
-   * @default '50px'
+   * @default 50
    */
   readonly minWidth?: Maybe<number>;
   /** Maximum column width in pixels */
