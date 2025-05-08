@@ -94,6 +94,7 @@ function ScrollToCell() {
             Auto
             <input
               type="radio"
+              name="scroll-behavior"
               checked={scrollBehavior === 'auto'}
               onChange={() => {
                 setScrollBehavior('auto');
@@ -104,6 +105,7 @@ function ScrollToCell() {
             Smooth
             <input
               type="radio"
+              name="scroll-behavior"
               checked={scrollBehavior === 'smooth'}
               onChange={() => {
                 setScrollBehavior('smooth');
