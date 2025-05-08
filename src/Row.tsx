@@ -19,6 +19,7 @@ function Row<R, SR>({
   row,
   viewportColumns,
   selectedCellEditor,
+  onCellMouseDown,
   onCellClick,
   onCellDoubleClick,
   onCellContextMenu,
@@ -67,9 +68,10 @@ function Row<R, SR>({
           rowIdx,
           isDraggedOver: draggedOverCellIdx === idx,
           isCellSelected,
-          onClick: onCellClick,
-          onDoubleClick: onCellDoubleClick,
-          onContextMenu: onCellContextMenu,
+          onCellMouseDown,
+          onCellClick,
+          onCellDoubleClick,
+          onCellContextMenu,
           onRowChange: handleRowChange,
           selectCell
         })

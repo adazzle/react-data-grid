@@ -145,9 +145,11 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function onClick(event: React.MouseEvent<HTMLSpanElement>) {
+  function onMouseDown() {
     selectCell({ idx: column.idx, rowIdx });
+  }
 
+  function onClick(event: React.MouseEvent<HTMLSpanElement>) {
     if (sortable) {
       onSort(event.ctrlKey || event.metaKey);
     }
@@ -250,6 +252,7 @@ export default function HeaderCell<R, SR>({
         ...getHeaderCellStyle(column, rowIdx, rowSpan),
         ...getCellStyle(column, colSpan)
       }}
+      onMouseDown={onMouseDown}
       onFocus={onFocus}
       onClick={onClick}
       onKeyDown={onKeyDown}

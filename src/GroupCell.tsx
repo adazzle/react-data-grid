@@ -50,6 +50,10 @@ function GroupCell<R, SR>({
         ...getCellStyle(column),
         cursor: isLevelMatching ? 'pointer' : 'default'
       }}
+      onMouseDown={(event) => {
+        // prevents clicking on the cell from stealing focus from focusSink
+        event.preventDefault();
+      }}
       onClick={isLevelMatching ? toggleGroup : undefined}
       onFocus={onFocus}
     >

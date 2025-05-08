@@ -40,14 +40,13 @@ import {
 } from './utils';
 import type {
   CalculatedColumn,
-  CellClickArgs,
   CellClipboardEvent,
-  CellCopyEvent,
+  CellCopyArgs,
   CellKeyboardEvent,
   CellKeyDownArgs,
-  CellMouseEvent,
+  CellMouseEventHandler,
   CellNavigationMode,
-  CellPasteEvent,
+  CellPasteArgs,
   CellSelectArgs,
   Column,
   ColumnOrColumnGroup,
@@ -186,29 +185,25 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Event props
    */
+  /** Callback triggered when a pointer becomes active in a cell */
+  onCellMouseDown?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a cell is clicked */
-  onCellClick?: Maybe<
-    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
-  >;
+  onCellClick?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a cell is double-clicked */
-  onCellDoubleClick?: Maybe<
-    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
-  >;
+  onCellDoubleClick?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a cell is right-clicked */
-  onCellContextMenu?: Maybe<
-    (args: CellClickArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
-  >;
+  onCellContextMenu?: CellMouseEventHandler<R, SR>;
   /** Callback triggered when a key is pressed in a cell */
   onCellKeyDown?: Maybe<
     (args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void
   >;
   /** Callback triggered when a cell's content is copied */
   onCellCopy?: Maybe<
-    (args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
+    (args: CellCopyArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
   >;
   /** Callback triggered when content is pasted into a cell */
   onCellPaste?: Maybe<
-    (args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
+    (args: CellPasteArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
   >;
   /** Function called whenever cell selection is changed */
   onSelectedCellChange?: Maybe<(args: CellSelectArgs<NoInfer<R>, NoInfer<SR>>) => void>;
@@ -274,6 +269,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     onSortColumnsChange,
     defaultColumnOptions,
     // Event props
+    onCellMouseDown,
     onCellClick,
     onCellDoubleClick,
     onCellContextMenu,
@@ -493,6 +489,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const handleColumnResizeEndLatest = useLatestFunc(handleColumnResizeEnd);
   const onColumnsReorderLastest = useLatestFunc(onColumnsReorder);
   const onSortColumnsChangeLatest = useLatestFunc(onSortColumnsChange);
+  const onCellMouseDownLatest = useLatestFunc(onCellMouseDown);
   const onCellClickLatest = useLatestFunc(onCellClick);
   const onCellDoubleClickLatest = useLatestFunc(onCellDoubleClick);
   const onCellContextMenuLatest = useLatestFunc(onCellContextMenu);
@@ -526,22 +523,16 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
    * effects
    */
   useLayoutEffect(() => {
-    if (
-      focusSinkRef.current !== null &&
-      selectedCellIsWithinSelectionBounds &&
-      selectedPosition.idx === -1
-    ) {
-      focusSinkRef.current.focus({ preventScroll: true });
-      scrollIntoView(focusSinkRef.current);
-    }
-  }, [selectedCellIsWithinSelectionBounds, selectedPosition]);
-
-  useLayoutEffect(() => {
     if (shouldFocusCell) {
+      if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
+        focusSinkRef.current.focus({ preventScroll: true });
+        scrollIntoView(focusSinkRef.current);
+      } else {
+        focusCellOrCellContent();
+      }
       setShouldFocusCell(false);
-      focusCellOrCellContent();
     }
-  }, [shouldFocusCell, focusCellOrCellContent]);
+  }, [shouldFocusCell, focusCellOrCellContent, selectedPosition.idx]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -1141,6 +1132,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           viewportColumns: rowColumns,
           isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
           isRowSelected,
+          onCellMouseDown: onCellMouseDownLatest,
           onCellClick: onCellClickLatest,
           onCellDoubleClick: onCellDoubleClickLatest,
           onCellContextMenu: onCellContextMenuLatest,

@@ -160,16 +160,23 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
   tabIndex: number;
 }
 
+interface BaseCellRendererProps<TRow, TSummaryRow = unknown>
+  extends Omit<React.ComponentProps<'div'>, 'children'>,
+    Pick<
+      DataGridProps<TRow, TSummaryRow>,
+      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+    > {
+  rowIdx: number;
+  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+}
+
 export interface CellRendererProps<TRow, TSummaryRow>
-  extends Pick<RenderRowProps<TRow, TSummaryRow>, 'row' | 'rowIdx' | 'selectCell'>,
-    Omit<React.ComponentProps<'div'>, 'children' | 'onClick' | 'onDoubleClick' | 'onContextMenu'> {
+  extends BaseCellRendererProps<TRow, TSummaryRow> {
   column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
   colSpan: number | undefined;
   isDraggedOver: boolean;
   isCellSelected: boolean;
-  onClick: RenderRowProps<TRow, TSummaryRow>['onCellClick'];
-  onDoubleClick: RenderRowProps<TRow, TSummaryRow>['onCellDoubleClick'];
-  onContextMenu: RenderRowProps<TRow, TSummaryRow>['onCellContextMenu'];
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
 }
 
@@ -184,7 +191,7 @@ export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
 export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
 
-export interface CellClickArgs<TRow, TSummaryRow = unknown> {
+export interface CellMouseArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   rowIdx: number;
@@ -218,19 +225,18 @@ export interface CellSelectArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
 }
 
+export type CellMouseEventHandler<R, SR> = Maybe<
+  (args: CellMouseArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
+>;
+
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
-  extends Omit<React.ComponentProps<'div'>, 'children'>,
-    Pick<
-      DataGridProps<TRow, TSummaryRow>,
-      'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
-    > {
+  extends BaseCellRendererProps<TRow, TSummaryRow> {
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
   selectedCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;
   isRowSelected: boolean;
   gridRowStart: number;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
 }
 
 export interface RenderRowProps<TRow, TSummaryRow = unknown>
@@ -264,13 +270,13 @@ export interface FillEvent<TRow> {
   targetRow: TRow;
 }
 
-interface CellCopyPasteEvent<TRow, TSummaryRow = unknown> {
+interface CellCopyPasteArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
 }
 
-export type CellCopyEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
-export type CellPasteEvent<TRow, TSummaryRow = unknown> = CellCopyPasteEvent<TRow, TSummaryRow>;
+export type CellCopyArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
+export type CellPasteArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
 
 export interface GroupRow<TRow> {
   readonly childRows: readonly TRow[];
