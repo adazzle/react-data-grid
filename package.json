@@ -93,7 +93,7 @@
     "react-dom": "^19.1.0",
     "rolldown": "^1.0.0-beta.8",
     "typescript": "~5.8.2",
-    "vite": "^6.3.2",
+    "vite": "npm:rolldown-vite@latest",
     "vitest": "^3.1.2",
     "vitest-browser-react": "^0.1.1"
   },
