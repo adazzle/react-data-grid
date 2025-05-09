@@ -4,7 +4,6 @@ import vitest from '@vitest/eslint-plugin';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
-import reactCompiler from 'eslint-plugin-react-compiler';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksExtra from 'eslint-plugin-react-hooks-extra';
 import sonarjs from 'eslint-plugin-sonarjs';
@@ -26,7 +25,6 @@ export default defineConfig([
 
     plugins: {
       react,
-      'react-compiler': reactCompiler,
       'react-hooks': reactHooks,
       'react-hooks-extra': reactHooksExtra,
       sonarjs,
@@ -381,14 +379,11 @@ export default defineConfig([
       'react/style-prop-object': 0,
       'react/void-dom-elements-no-children': 1,
 
-      // React Compiler
-      // https://react.dev/learn/react-compiler#installing-eslint-plugin-react-compiler
-      'react-compiler/react-compiler': 1,
-
       // React Hooks
       // https://www.npmjs.com/package/eslint-plugin-react-hooks
-      'react-hooks/rules-of-hooks': 1,
       'react-hooks/exhaustive-deps': 1,
+      'react-hooks/react-compiler': 1,
+      'react-hooks/rules-of-hooks': 1,
 
       // React Hooks Extra
       // https://eslint-react.xyz/

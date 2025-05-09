@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import { useRovingTabIndex } from './hooks';
 import { getCellClassname, getCellStyle } from './utils';
 import type { CalculatedColumn, GroupRow } from './types';
@@ -17,7 +15,7 @@ interface GroupCellProps<R, SR> {
   isGroupByColumn: boolean;
 }
 
-function GroupCell<R, SR>({
+export default function GroupCell<R, SR>({
   id,
   groupKey,
   childRows,
@@ -70,5 +68,3 @@ function GroupCell<R, SR>({
     </div>
   );
 }
-
-export default memo(GroupCell) as <R, SR>(props: GroupCellProps<R, SR>) => React.JSX.Element;

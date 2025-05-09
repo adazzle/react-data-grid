@@ -2,6 +2,7 @@
 import { isAbsolute } from 'node:path';
 import wyw from '@wyw-in-js/rollup';
 import pkg from './package.json' with { type: 'json' };
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'rolldown';
 
 export default defineConfig({
@@ -15,6 +16,11 @@ export default defineConfig({
   platform: 'browser',
   external: (id) => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler', { target: '19' }]]
+      }
+    }),
     // @ts-expect-error
     wyw({
       preprocessor: 'none',

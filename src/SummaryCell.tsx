@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -21,7 +20,7 @@ interface SummaryCellProps<R, SR> extends SharedCellRendererProps<R, SR> {
   row: SR;
 }
 
-function SummaryCell<R, SR>({
+export default function SummaryCell<R, SR>({
   column,
   colSpan,
   row,
@@ -57,5 +56,3 @@ function SummaryCell<R, SR>({
     </div>
   );
 }
-
-export default memo(SummaryCell) as <R, SR>(props: SummaryCellProps<R, SR>) => React.JSX.Element;

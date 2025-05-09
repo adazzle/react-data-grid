@@ -62,7 +62,10 @@ export default defineConfig(({ command }) => ({
         autoCodeSplitting: true
       }),
     react({
-      exclude: ['./.cache/**/*']
+      exclude: ['./.cache/**/*'],
+      babel: {
+        plugins: [['babel-plugin-react-compiler', { target: '19' }]]
+      }
     }),
     wyw({
       exclude: ['./.cache/**/*'],
