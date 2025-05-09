@@ -64,7 +64,7 @@ export default defineConfig(({ command }) => ({
     react({
       exclude: ['./.cache/**/*'],
       babel: {
-        plugins: [['babel-plugin-react-compiler']]
+        plugins: [['babel-plugin-react-compiler', { target: '19' }]]
       }
     }),
     wyw({

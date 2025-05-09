@@ -78,7 +78,7 @@
     "eslint": "^9.26.0",
     "eslint-plugin-jest-dom": "^5.5.0",
     "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "eslint-plugin-react-hooks-extra": "^1.49.0",
     "eslint-plugin-sonarjs": "^3.0.2",
     "eslint-plugin-testing-library": "^7.1.1",

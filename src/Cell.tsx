@@ -129,5 +129,5 @@ function Cell<R, SR>({
 export default Cell;
 
 export function defaultRenderCell<R, SR>(key: React.Key, props: CellRendererProps<R, SR>) {
-  return <CellComponent key={key} {...props} />;
+  return <Cell key={key} {...props} />;
 }
