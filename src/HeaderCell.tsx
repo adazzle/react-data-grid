@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -43,16 +43,29 @@ export const resizeHandleClassname = css`
 const cellDraggableClassname = 'rdg-cell-draggable';
 
 const cellDragging = css`
-  opacity: 0.5;
+  @layer rdg.HeaderCell {
+    // opacity: 0.5;
+    // TODO
+  }
 `;
 
 const cellDraggingClassname = `rdg-cell-dragging ${cellDragging}`;
 
 const cellOver = css`
-  background-color: var(--rdg-header-draggable-background-color);
+  @layer rdg.HeaderCell {
+    background-color: var(--rdg-header-draggable-background-color);
+  }
 `;
 
 const cellOverClassname = `rdg-cell-drag-over ${cellOver}`;
+
+const dragImageClassname = css`
+  @layer rdg.HeaderCell {
+    border-radius: 4px;
+    width: fit-content;
+    padding:;
+  }
+`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
@@ -99,6 +112,7 @@ export default function HeaderCell<R, SR>({
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
   const { sortable, resizable, draggable } = column;
+  const dragImageId = useId();
 
   const className = getCellClassname(column, column.headerCellClass, {
     [cellSortableClassname]: sortable,
@@ -181,12 +195,19 @@ export default function HeaderCell<R, SR>({
 
   function onDragStart(event: React.DragEvent<HTMLDivElement>) {
     event.dataTransfer.setData(dragDropKey, column.key);
+    const dragImage = event.currentTarget.cloneNode(true) as HTMLDivElement;
+    dragImage.classList.add(dragImageClassname);
+    dragImage.id = dragImageId;
+    document.body.appendChild(dragImage);
+    event.currentTarget.parentElement!.insertBefore(dragImage, event.currentTarget);
+    event.dataTransfer.setDragImage(dragImage, 0, 0);
     event.dataTransfer.dropEffect = 'move';
     setIsDragging(true);
   }
 
   function onDragEnd() {
     setIsDragging(false);
+    document.getElementById(dragImageId)!.remove();
   }
 
   function onDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -223,14 +244,18 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  let draggableProps: React.ComponentProps<'div'> | undefined;
+  let dragTargetProps: React.ComponentProps<'div'> | undefined;
+  let dropTargetProps: React.ComponentProps<'div'> | undefined;
   if (draggable) {
-    draggableProps = {
+    dragTargetProps = {
       draggable: true,
-      /* events fired on the draggable target */
       onDragStart,
-      onDragEnd,
-      /* events fired on the drop targets */
+      onDragEnd
+    };
+  }
+
+  if (draggable && !isDragging) {
+    dropTargetProps = {
       onDragOver,
       onDragEnter,
       onDragLeave,
@@ -256,7 +281,8 @@ export default function HeaderCell<R, SR>({
       onFocus={onFocus}
       onClick={onClick}
       onKeyDown={onKeyDown}
-      {...draggableProps}
+      {...dragTargetProps}
+      {...dropTargetProps}
     >
       {column.renderHeaderCell({
         column,
