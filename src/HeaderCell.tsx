@@ -63,7 +63,6 @@ const dragImageClassname = css`
   @layer rdg.HeaderCell {
     border-radius: 4px;
     width: fit-content;
-    padding:;
   }
 `;
 
@@ -198,7 +197,6 @@ export default function HeaderCell<R, SR>({
     const dragImage = event.currentTarget.cloneNode(true) as HTMLDivElement;
     dragImage.classList.add(dragImageClassname);
     dragImage.id = dragImageId;
-    document.body.appendChild(dragImage);
     event.currentTarget.parentElement!.insertBefore(dragImage, event.currentTarget);
     event.dataTransfer.setDragImage(dragImage, 0, 0);
     event.dataTransfer.dropEffect = 'move';
