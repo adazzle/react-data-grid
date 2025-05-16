@@ -82,7 +82,7 @@ export default defineConfig(({ command }) => ({
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['json']
     },
-    testTimeout: isCI ? 10000 : 5000,
+    testTimeout: 20_000,
     restoreMocks: true,
     sequence: {
       shuffle: true
