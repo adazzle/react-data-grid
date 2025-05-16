@@ -75,7 +75,7 @@ export default defineConfig(({ command }) => ({
   },
   test: {
     globals: true,
-    maxWorkers: 8,
+    maxWorkers: 4,
     coverage: {
       provider: 'istanbul',
       enabled: isCI,
