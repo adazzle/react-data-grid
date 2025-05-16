@@ -106,18 +106,27 @@ function ColumnsReordering() {
   }, [rows, sortColumns]);
 
   function onColumnsReorder(sourceKey: string, targetKey: string) {
-    setColumnsOrder((columnsOrder) => {
-      const sourceColumnOrderIndex = columnsOrder.findIndex(
-        (index) => columns[index].key === sourceKey
-      );
-      const targetColumnOrderIndex = columnsOrder.findIndex(
-        (index) => columns[index].key === targetKey
-      );
-      const sourceColumnOrder = columnsOrder[sourceColumnOrderIndex];
-      const newColumnsOrder = columnsOrder.toSpliced(sourceColumnOrderIndex, 1);
-      newColumnsOrder.splice(targetColumnOrderIndex, 0, sourceColumnOrder);
-      return newColumnsOrder;
-    });
+    function reorderColumns() {
+      setColumnsOrder((columnsOrder) => {
+        const sourceColumnOrderIndex = columnsOrder.findIndex(
+          (index) => columns[index].key === sourceKey
+        );
+        const targetColumnOrderIndex = columnsOrder.findIndex(
+          (index) => columns[index].key === targetKey
+        );
+        const sourceColumnOrder = columnsOrder[sourceColumnOrderIndex];
+        const newColumnsOrder = columnsOrder.toSpliced(sourceColumnOrderIndex, 1);
+        newColumnsOrder.splice(targetColumnOrderIndex, 0, sourceColumnOrder);
+        return newColumnsOrder;
+      });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (document.startViewTransition) {
+      document.startViewTransition(reorderColumns);
+    } else {
+      reorderColumns();
+    }
   }
 
   function resetOrderAndWidths() {
