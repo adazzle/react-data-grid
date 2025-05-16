@@ -1,9 +1,9 @@
-import { memo } from 'react';
+import { memo, type MouseEvent } from 'react';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
 import { createCellEvent, getCellClassname, getCellStyle, isCellEditableUtil } from './utils';
-import type { CellRendererProps } from './types';
+import type { CellMouseEventHandler, CellRendererProps } from './types';
 
 const cellDraggedOver = css`
   @layer rdg.Cell {
@@ -21,9 +21,14 @@ function Cell<R, SR>({
   row,
   rowIdx,
   className,
+  onMouseDown,
+  onCellMouseDown,
   onClick,
+  onCellClick,
   onDoubleClick,
+  onCellDoubleClick,
   onContextMenu,
+  onCellContextMenu,
   onRowChange,
   selectCell,
   style,
@@ -46,31 +51,43 @@ function Cell<R, SR>({
     selectCell({ rowIdx, idx: column.idx }, openEditor);
   }
 
-  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (onClick) {
+  function handleMouseEvent(
+    event: React.MouseEvent<HTMLDivElement>,
+    eventHandler?: CellMouseEventHandler<R, SR>
+  ) {
+    let eventHandled = false;
+    if (eventHandler) {
       const cellEvent = createCellEvent(event);
-      onClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-      if (cellEvent.isGridDefaultPrevented()) return;
+      eventHandler({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
+      eventHandled = cellEvent.isGridDefaultPrevented();
     }
-    selectCellWrapper();
+    return eventHandled;
   }
 
-  function handleContextMenu(event: React.MouseEvent<HTMLDivElement>) {
-    if (onContextMenu) {
-      const cellEvent = createCellEvent(event);
-      onContextMenu({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-      if (cellEvent.isGridDefaultPrevented()) return;
+  function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
+    onMouseDown?.(event);
+    if (!handleMouseEvent(event, onCellMouseDown)) {
+      // select cell if the event is not prevented
+      selectCellWrapper();
     }
-    selectCellWrapper();
   }
 
-  function handleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (onDoubleClick) {
-      const cellEvent = createCellEvent(event);
-      onDoubleClick({ rowIdx, row, column, selectCell: selectCellWrapper }, cellEvent);
-      if (cellEvent.isGridDefaultPrevented()) return;
+  function handleClick(event: MouseEvent<HTMLDivElement>) {
+    onClick?.(event);
+    handleMouseEvent(event, onCellClick);
+  }
+
+  function handleDoubleClick(event: MouseEvent<HTMLDivElement>) {
+    onDoubleClick?.(event);
+    if (!handleMouseEvent(event, onCellDoubleClick)) {
+      // go into edit mode if the event is not prevented
+      selectCellWrapper(true);
     }
-    selectCellWrapper(true);
+  }
+
+  function handleContextMenu(event: MouseEvent<HTMLDivElement>) {
+    onContextMenu?.(event);
+    handleMouseEvent(event, onCellContextMenu);
   }
 
   function handleRowChange(newRow: R) {
@@ -91,6 +108,7 @@ function Cell<R, SR>({
         ...style
       }}
       onClick={handleClick}
+      onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
       onFocus={onFocus}

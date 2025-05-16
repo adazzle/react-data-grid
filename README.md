@@ -12,7 +12,7 @@
 [size-url]: https://bundlephobia.com/package/react-data-grid
 [type-badge]: https://img.shields.io/npm/types/react-data-grid
 [codecov-badge]: https://codecov.io/gh/adazzle/react-data-grid/branch/main/graph/badge.svg?token=cvrRSWiz0Q
-[codecov-url]: https://app.codecov.io/gh/adazzle/react-data-grid/branch/main
+[codecov-url]: https://app.codecov.io/gh/adazzle/react-data-grid
 [ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/adazzle/react-data-grid/actions
 
@@ -25,7 +25,7 @@ The DataGrid component is designed to handle large datasets efficiently while of
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
 - Strictly typed with TypeScript
-- [Keyboard accessibility](<(https://adazzle.github.io/react-data-grid/#/CommonFeatures)>)
+- [Keyboard accessibility](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
 - Light and dark mode support out of the box. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
 - [Frozen columns](https://adazzle.github.io/react-data-grid/#/CommonFeatures): Freeze columns to keep them visible during horizontal scrolling.
 - [Column resizing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
@@ -55,12 +55,22 @@ The DataGrid component is designed to handle large datasets efficiently while of
 
 ## Installation
 
-to install `react-data-grid`, use npm or yarn:
+Install `react-data-grid` using your favorite package manager:
 
 ```sh
-npm install react-data-grid
-# or
+npm i react-data-grid
+```
+
+```sh
+pnpm add react-data-grid
+```
+
+```sh
 yarn add react-data-grid
+```
+
+```sh
+bun add react-data-grid
 ```
 
 Additionally, import the default styles in your application:
@@ -78,14 +88,19 @@ Here is a basic example of how to use `react-data-grid` in your React applicatio
 ```tsx
 import 'react-data-grid/lib/styles.css';
 
-import { DataGrid } from 'react-data-grid';
+import { DataGrid, type Column } from 'react-data-grid';
 
-const columns = [
+interface Row {
+  id: number;
+  title: string;
+}
+
+const columns: Column<Row>[] = [
   { key: 'id', name: 'ID' },
   { key: 'title', name: 'Title' }
 ];
 
-const rows = [
+const rows: Row[] = [
   { id: 0, title: 'Example' },
   { id: 1, title: 'Demo' }
 ];
@@ -195,7 +210,7 @@ function addNewRow() {
   setColumnWidths(new Map());
 }
 
-return <DataGrid columnWidths={columnWidths} onColumnWidthsChange={setColumnWidths} ../>
+return <DataGrid columnWidths={columnWidths} onColumnWidthsChange={setColumnWidths} ... />
 ```
 
 ###### `onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>`
@@ -286,10 +301,10 @@ function MyGrid() {
 }
 ```
 
-Grid can be sorted on multiple columns using `ctrl (command) + click`. To disable multiple column sorting, change the `onSortColumnsChange` function to
+More than one column can be sorted via `ctrl (command) + click`. To disable multiple column sorting, change the `onSortColumnsChange` function to
 
 ```tsx
-onSortColumnsChange(sortColumns: SortColumn[]) {
+function onSortColumnsChange(sortColumns: SortColumn[]) {
   setSortColumns(sortColumns.slice(-1));
 }
 ```
@@ -317,12 +332,28 @@ function MyGrid() {
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
-###### `onCellClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+###### `onCellMouseDown: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
-Callback triggered when a cell is clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a pointer becomes active in a cell. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior.
 
 ```tsx
-function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellMouseDown(args: CellMouseDownArgs<R, SR>, event: CellMouseEvent) {
+  if (args.column.key === 'id') {
+    event.preventGridDefault();
+  }
+}
+
+<DataGrid rows={rows} columns={columns} onCellMouseDown={onCellMouseDown} />;
+```
+
+See [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent)
+
+###### `onCellClick?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
+
+Callback triggered when a cell is clicked.
+
+```tsx
+function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
@@ -334,34 +365,21 @@ function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
 This event can be used to open cell editor on single click
 
 ```tsx
-function onCellClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
-    event.preventGridDefault();
     args.selectCell(true);
   }
 }
 ```
 
-Arguments:
+See [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent)
 
-`args: CellClickArgs<R, SR>`
+###### `onCellDoubleClick?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
 
-- `args.rowIdx`: `number` - row index of the currently selected cell
-- `args.row`: `R` - row object of the currently selected cell
-- `args.column`: `CalculatedColumn<TRow, TSummaryRow>` - column object of the currently selected cell
-- `args.selectCell`: `(enableEditor?: boolean) => void` - function to manually select the cell and optionally pass `true` to start editing
-
-`event` extends `React.MouseEvent<HTMLDivElement>`
-
-- `event.preventGridDefault:`: `() => void`
-- `event.isGridDefaultPrevented`: `boolean`
-
-###### `onCellDoubleClick?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
-
-Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior
+Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior.
 
 ```tsx
-function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
     event.preventGridDefault();
   }
@@ -370,19 +388,24 @@ function onCellDoubleClick(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
 <DataGrid rows={rows} columns={columns} onCellDoubleClick={onCellDoubleClick} />;
 ```
 
-###### `onCellContextMenu?: Maybe<(args: CellClickArgs<R, SR>, event: CellMouseEvent) => void>`
+See [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent)
 
-Callback triggered when a cell is right-clicked. The default behavior is to select the cell. Call `preventGridDefault` to prevent the default behavior
+###### `onCellContextMenu?: Maybe<(args: CellMouseArgs<R, SR>, event: CellMouseEvent) => void>`
+
+Callback triggered when a cell is right-clicked.
 
 ```tsx
-function onCellContextMenu(args: CellClickArgs<R, SR>, event: CellMouseEvent) {
+function onCellContextMenu(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
   if (args.column.key === 'id') {
-    event.preventGridDefault();
+    event.preventDefault();
+    // open custom context menu
   }
 }
 
 <DataGrid rows={rows} columns={columns} onCellContextMenu={onCellContextMenu} />;
 ```
+
+See [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent)
 
 ###### `onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>`
 
@@ -412,11 +435,11 @@ function onCellKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
 
 Check [more examples](website/routes/CellNavigation.tsx)
 
-###### `onCellCopy?: Maybe<(args: CellCopyEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
+###### `onCellCopy?: Maybe<(args: CellCopyArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
 
 Callback triggered when a cell's content is copied.
 
-###### `onCellPaste?: Maybe<(args: CellPasteEvent<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
+###### `onCellPaste?: Maybe<(args: CellPasteArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>`
 
 Callback triggered when content is pasted into a cell.
 
@@ -480,7 +503,7 @@ function MyGrid() {
 }
 ```
 
-:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized component to `renderRow`.
+:warning: To prevent all rows from being unmounted on re-renders, make sure to pass a static or memoized render function to `renderRow`.
 
 ###### `rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>`
 
@@ -508,7 +531,7 @@ This property sets the text direction of the grid, it defaults to `'ltr'` (left-
 
 - Columns flow from right to left
 - Frozen columns are pinned on the right
-- Column resize handle is shown on the left edge of the column
+- Column resize cursor is shown on the left edge of the column
 - Scrollbar is moved to the left
 
 ###### `className?: string | undefined`
@@ -535,16 +558,17 @@ If the grid has a caption or description, `aria-describedby` can be set on the g
 
 ###### `'data-testid'?: Maybe<string>`
 
-This prop can be used to add a testid for testing. We recommend using `role` and `name` to find the grid element
+This prop can be used to add a testid for testing. We recommend querying the grid by by its `role` and `name`.
 
 ```tsx
 function MyGrid() {
   return <DataGrid aria-label="my-grid" columns={columns} rows={rows} />;
 }
 
-function MyGridTest() {
+test('grid', () => {
+  render(<MyGrid />);
   const grid = screen.getByRole('grid', { name: 'my-grid' });
-}
+});
 ```
 
 #### `<TreeDataGrid />`
@@ -654,10 +678,10 @@ A unique key to distinguish each column
 Width can be any valid css grid column value. If not specified, it will be determined automatically based on grid width and specified widths of other columns.
 
 ```tsx
-width: 80; // pixels
-width: '25%';
-width: 'max-content';
-width: 'minmax(100px, max-content)';
+width: 80, // pixels
+width: '25%',
+width: 'max-content',
+width: 'minmax(100px, max-content)',
 ```
 
 `max-content` can be used to expand the column to show all the content. Note that the grid is only able to calculate column width for visible rows.
@@ -702,7 +726,7 @@ Render function to render the content of edit cells. When set, the column is aut
 
 ##### `editable?: Maybe<boolean | ((row: TRow) => boolean)>`
 
-Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor.
+Enables cell editing. If set and no editor property specified, then a text input will be used as the cell editor.
 
 ##### `colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>`
 
@@ -757,6 +781,32 @@ Commit changes when clicking outside the cell.
 **Default**: `true`
 
 Close the editor when the row changes externally.
+
+#### `CellMouseArgs`
+
+##### `rowIdx: number`
+
+Row index of the currently selected cell
+
+##### `row: TRow`
+
+row object of the currently selected cell
+
+##### `column: CalculatedColumn<TRow, TSummaryRow>`
+
+column object of the currently selected cell
+
+##### `selectCell: (enableEditor?: boolean) => void`
+
+function to manually select the cell and optionally pass `true` to start editing
+
+#### `CellMouseEvent`
+
+Extends `React.MouseEvent<HTMLDivElement>`
+
+##### `event.preventGridDefault: () => void`
+
+##### `event.isGridDefaultPrevented: boolean`
 
 #### `DataGridHandle`
 

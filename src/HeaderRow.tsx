@@ -1,4 +1,4 @@
-import { memo, useId } from 'react';
+import { memo, useState } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -60,7 +60,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   selectCell,
   direction
 }: HeaderRowProps<R, SR, K>) {
-  const dragDropKey = useId();
+  const [draggedColumnKey, setDraggedColumnKey] = useState<string>();
 
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
@@ -84,7 +84,8 @@ function HeaderRow<R, SR, K extends React.Key>({
         sortColumns={sortColumns}
         selectCell={selectCell}
         direction={direction}
-        dragDropKey={dragDropKey}
+        draggedColumnKey={draggedColumnKey}
+        setDraggedColumnKey={setDraggedColumnKey}
       />
     );
   }

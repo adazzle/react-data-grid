@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -43,16 +44,29 @@ export const resizeHandleClassname = css`
 const cellDraggableClassname = 'rdg-cell-draggable';
 
 const cellDragging = css`
-  opacity: 0.5;
+  @layer rdg.HeaderCell {
+    background-color: var(--rdg-header-draggable-background-color);
+  }
 `;
 
 const cellDraggingClassname = `rdg-cell-dragging ${cellDragging}`;
 
 const cellOver = css`
-  background-color: var(--rdg-header-draggable-background-color);
+  @layer rdg.HeaderCell {
+    background-color: var(--rdg-header-draggable-background-color);
+  }
 `;
 
 const cellOverClassname = `rdg-cell-drag-over ${cellOver}`;
+
+const dragImageClassname = css`
+  @layer rdg.HeaderCell {
+    border-radius: 4px;
+    width: fit-content;
+    outline: 2px solid hsl(207, 100%, 50%);
+    outline-offset: -2px;
+  }
+`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
@@ -70,7 +84,8 @@ export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   colSpan: number | undefined;
   rowIdx: number;
   isCellSelected: boolean;
-  dragDropKey: string;
+  draggedColumnKey: string | undefined;
+  setDraggedColumnKey: (draggedColumnKey: string | undefined) => void;
 }
 
 export default function HeaderCell<R, SR>({
@@ -85,10 +100,12 @@ export default function HeaderCell<R, SR>({
   onSortColumnsChange,
   selectCell,
   direction,
-  dragDropKey
+  draggedColumnKey,
+  setDraggedColumnKey
 }: HeaderCellProps<R, SR>) {
-  const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
+  const dragImageRef = useRef<HTMLDivElement>(null);
+  const isDragging = draggedColumnKey === column.key;
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
@@ -145,9 +162,11 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  function onClick(event: React.MouseEvent<HTMLSpanElement>) {
+  function onMouseDown() {
     selectCell({ idx: column.idx, rowIdx });
+  }
 
+  function onClick(event: React.MouseEvent<HTMLSpanElement>) {
     if (sortable) {
       onSort(event.ctrlKey || event.metaKey);
     }
@@ -178,13 +197,16 @@ export default function HeaderCell<R, SR>({
   }
 
   function onDragStart(event: React.DragEvent<HTMLDivElement>) {
-    event.dataTransfer.setData(dragDropKey, column.key);
+    // need flushSync to make sure the drag image is rendered before the drag starts
+    flushSync(() => {
+      setDraggedColumnKey(column.key);
+    });
+    event.dataTransfer.setDragImage(dragImageRef.current!, 0, 0);
     event.dataTransfer.dropEffect = 'move';
-    setIsDragging(true);
   }
 
   function onDragEnd() {
-    setIsDragging(false);
+    setDraggedColumnKey(undefined);
   }
 
   function onDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -195,18 +217,9 @@ export default function HeaderCell<R, SR>({
 
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     setIsOver(false);
-    // The dragDropKey is derived from the useId() hook, which can sometimes generate keys with uppercase letters.
-    // When setting data using event.dataTransfer.setData(), the key is automatically converted to lowercase in some browsers.
-    // To ensure consistent comparison, we normalize the dragDropKey to lowercase before checking its presence in the event's dataTransfer types.
-    // https://html.spec.whatwg.org/multipage/dnd.html#the-datatransfer-interface
-    if (event.dataTransfer.types.includes(dragDropKey.toLowerCase())) {
-      const sourceKey = event.dataTransfer.getData(dragDropKey.toLowerCase());
-      if (sourceKey !== column.key) {
-        // prevent the browser from redirecting in some cases
-        event.preventDefault();
-        onColumnsReorder?.(sourceKey, column.key);
-      }
-    }
+    // prevent the browser from redirecting in some cases
+    event.preventDefault();
+    onColumnsReorder?.(draggedColumnKey!, column.key);
   }
 
   function onDragEnter(event: React.DragEvent<HTMLDivElement>) {
@@ -221,56 +234,77 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  let draggableProps: React.ComponentProps<'div'> | undefined;
+  let dragTargetProps: React.ComponentProps<'div'> | undefined;
+  let dropTargetProps: React.ComponentProps<'div'> | undefined;
   if (draggable) {
-    draggableProps = {
+    dragTargetProps = {
       draggable: true,
-      /* events fired on the draggable target */
       onDragStart,
-      onDragEnd,
-      /* events fired on the drop targets */
-      onDragOver,
-      onDragEnter,
-      onDragLeave,
-      onDrop
+      onDragEnd
     };
+
+    if (draggedColumnKey !== undefined && draggedColumnKey !== column.key) {
+      dropTargetProps = {
+        onDragOver,
+        onDragEnter,
+        onDragLeave,
+        onDrop
+      };
+    }
   }
 
-  return (
-    <div
-      role="columnheader"
-      aria-colindex={column.idx + 1}
-      aria-colspan={colSpan}
-      aria-rowspan={rowSpan}
-      aria-selected={isCellSelected}
-      aria-sort={ariaSort}
-      tabIndex={tabIndex}
-      className={className}
-      style={{
-        ...getHeaderCellStyle(column, rowIdx, rowSpan),
-        ...getCellStyle(column, colSpan)
-      }}
-      onFocus={onFocus}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-      {...draggableProps}
-    >
-      {column.renderHeaderCell({
-        column,
-        sortDirection,
-        priority,
-        tabIndex: childTabIndex
-      })}
+  const style: React.CSSProperties = {
+    ...getHeaderCellStyle(column, rowIdx, rowSpan),
+    ...getCellStyle(column, colSpan)
+  };
 
-      {resizable && (
-        <ResizeHandle
-          direction={direction}
-          column={column}
-          onColumnResize={onColumnResize}
-          onColumnResizeEnd={onColumnResizeEnd}
-        />
+  const content = column.renderHeaderCell({
+    column,
+    sortDirection,
+    priority,
+    tabIndex: childTabIndex
+  });
+
+  return (
+    <>
+      {isDragging && (
+        <div
+          ref={dragImageRef}
+          style={style}
+          className={getCellClassname(column, column.headerCellClass, dragImageClassname)}
+        >
+          {content}
+        </div>
       )}
-    </div>
+      <div
+        role="columnheader"
+        aria-colindex={column.idx + 1}
+        aria-colspan={colSpan}
+        aria-rowspan={rowSpan}
+        aria-selected={isCellSelected}
+        aria-sort={ariaSort}
+        tabIndex={tabIndex}
+        className={className}
+        style={style}
+        onMouseDown={onMouseDown}
+        onFocus={onFocus}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        {...dragTargetProps}
+        {...dropTargetProps}
+      >
+        {content}
+
+        {resizable && (
+          <ResizeHandle
+            direction={direction}
+            column={column}
+            onColumnResize={onColumnResize}
+            onColumnResizeEnd={onColumnResizeEnd}
+          />
+        )}
+      </div>
+    </>
   );
 }
 
