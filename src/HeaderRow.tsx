@@ -89,6 +89,7 @@ function HeaderRow<R, SR, K extends React.Key>({
       />
     );
   }
+
   return (
     <div
       role="row"
