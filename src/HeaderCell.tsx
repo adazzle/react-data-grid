@@ -1,4 +1,5 @@
-import { useId, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { css } from '@linaria/core';
 
 import { useRovingTabIndex } from './hooks';
@@ -63,6 +64,7 @@ const dragImageClassname = css`
     border-radius: 4px;
     width: fit-content;
     outline: 2px solid hsl(207, 100%, 50%);
+    outline-offset: -2px;
   }
 `;
 
@@ -102,6 +104,7 @@ export default function HeaderCell<R, SR>({
   setDraggedColumnKey
 }: HeaderCellProps<R, SR>) {
   const [isOver, setIsOver] = useState(false);
+  const dragImageRef = useRef<HTMLDivElement>(null);
   const isDragging = draggedColumnKey === column.key;
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
@@ -113,7 +116,6 @@ export default function HeaderCell<R, SR>({
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
   const { sortable, resizable, draggable } = column;
-  const dragImageId = useId();
 
   const className = getCellClassname(column, column.headerCellClass, {
     [cellSortableClassname]: sortable,
@@ -195,18 +197,16 @@ export default function HeaderCell<R, SR>({
   }
 
   function onDragStart(event: React.DragEvent<HTMLDivElement>) {
-    const dragImage = event.currentTarget.cloneNode(true) as HTMLDivElement;
-    dragImage.classList.add(dragImageClassname);
-    dragImage.id = dragImageId;
-    event.currentTarget.parentElement!.insertBefore(dragImage, event.currentTarget);
-    event.dataTransfer.setDragImage(dragImage, 0, 0);
+    // need flushSync to make sure the drag image is rendered before the drag starts
+    flushSync(() => {
+      setDraggedColumnKey(column.key);
+    });
+    event.dataTransfer.setDragImage(dragImageRef.current!, 0, 0);
     event.dataTransfer.dropEffect = 'move';
-    setDraggedColumnKey(column.key);
   }
 
   function onDragEnd() {
     setDraggedColumnKey(undefined);
-    document.getElementById(dragImageId)?.remove();
   }
 
   function onDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -253,43 +253,58 @@ export default function HeaderCell<R, SR>({
     }
   }
 
-  return (
-    <div
-      role="columnheader"
-      aria-colindex={column.idx + 1}
-      aria-colspan={colSpan}
-      aria-rowspan={rowSpan}
-      aria-selected={isCellSelected}
-      aria-sort={ariaSort}
-      tabIndex={tabIndex}
-      className={className}
-      style={{
-        ...getHeaderCellStyle(column, rowIdx, rowSpan),
-        ...getCellStyle(column, colSpan)
-      }}
-      onMouseDown={onMouseDown}
-      onFocus={onFocus}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-      {...dragTargetProps}
-      {...dropTargetProps}
-    >
-      {column.renderHeaderCell({
-        column,
-        sortDirection,
-        priority,
-        tabIndex: childTabIndex
-      })}
+  const style: React.CSSProperties = {
+    ...getHeaderCellStyle(column, rowIdx, rowSpan),
+    ...getCellStyle(column, colSpan)
+  };
 
-      {resizable && (
-        <ResizeHandle
-          direction={direction}
-          column={column}
-          onColumnResize={onColumnResize}
-          onColumnResizeEnd={onColumnResizeEnd}
-        />
+  const content = column.renderHeaderCell({
+    column,
+    sortDirection,
+    priority,
+    tabIndex: childTabIndex
+  });
+
+  return (
+    <>
+      {isDragging && (
+        <div
+          ref={dragImageRef}
+          style={style}
+          className={getCellClassname(column, column.headerCellClass, dragImageClassname)}
+        >
+          {content}
+        </div>
       )}
-    </div>
+      <div
+        role="columnheader"
+        aria-colindex={column.idx + 1}
+        aria-colspan={colSpan}
+        aria-rowspan={rowSpan}
+        aria-selected={isCellSelected}
+        aria-sort={ariaSort}
+        tabIndex={tabIndex}
+        className={className}
+        style={style}
+        onMouseDown={onMouseDown}
+        onFocus={onFocus}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        {...dragTargetProps}
+        {...dropTargetProps}
+      >
+        {content}
+
+        {resizable && (
+          <ResizeHandle
+            direction={direction}
+            column={column}
+            onColumnResize={onColumnResize}
+            onColumnResizeEnd={onColumnResizeEnd}
+          />
+        )}
+      </div>
+    </>
   );
 }
 
