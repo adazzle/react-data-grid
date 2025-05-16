@@ -206,7 +206,7 @@ export default function HeaderCell<R, SR>({
 
   function onDragEnd() {
     setDraggedColumnKey(undefined);
-    document.getElementById(dragImageId)!.remove();
+    document.getElementById(dragImageId)?.remove();
   }
 
   function onDragOver(event: React.DragEvent<HTMLDivElement>) {
