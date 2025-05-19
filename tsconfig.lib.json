@@ -4,8 +4,7 @@
     "composite": false,
     "declaration": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable", "DOM.AsyncIterable"],
-    "noCheck": true,
-    "outDir": "./.cache/lib"
+    "noCheck": true
   },
   "files": ["src/index.ts"]
 }

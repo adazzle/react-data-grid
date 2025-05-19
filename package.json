@@ -17,12 +17,12 @@
     "./lib/styles.css": "./lib/styles.css",
     ".": {
       "types": "./lib/index.d.ts",
-      "default": "./lib/bundle.js"
+      "default": "./lib/index.js"
     }
   },
-  "browser": "./lib/bundle.js",
-  "main": "./lib/bundle.js",
-  "module": "./lib/bundle.js",
+  "browser": "./lib/index.js",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
     "lib"
@@ -35,7 +35,6 @@
     "preview": "vite preview",
     "build:website": "vite build",
     "build": "rolldown -c",
-    "build:types": "tsc -p tsconfig.lib.json && api-extractor run --local --verbose",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "format": "biome format --write",
@@ -46,7 +45,7 @@
     "prettier:check": "prettier --check .",
     "prettier:format": "prettier --write .",
     "typecheck": "tsc --build",
-    "prepublishOnly": "npm install && node --run build && node --run build:types",
+    "prepublishOnly": "npm install && node --run build",
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
@@ -59,7 +58,6 @@
     "@faker-js/faker": "^9.6.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
     "@linaria/core": "^6.3.0",
-    "@microsoft/api-extractor": "^7.52.7",
     "@tanstack/react-router": "^1.114.16",
     "@tanstack/router-plugin": "^1.114.16",
     "@types/node": "^22.15.16",
@@ -91,7 +89,8 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.1.0",
-    "rolldown": "^1.0.0-beta.8",
+    "rolldown": "^1.0.0-beta.9",
+    "rolldown-plugin-dts": "^0.13.3",
     "typescript": "~5.8.2",
     "vite": "^6.3.5",
     "vitest": "^3.1.3",
