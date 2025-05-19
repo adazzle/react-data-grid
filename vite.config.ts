@@ -65,11 +65,7 @@ export default defineConfig(({ command }) => ({
       exclude: ['./.cache/**/*']
     }),
     wyw({
-      exclude: [
-        './.cache/**/*',
-        '**/*.d.ts',
-        '**/*.gen.ts'
-      ],
+      exclude: ['./.cache/**/*', '**/*.d.ts', '**/*.gen.ts'],
       preprocessor: 'none',
       displayName: command === 'serve'
     })

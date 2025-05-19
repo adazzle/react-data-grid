@@ -1,6 +1,7 @@
+import wyw from '@wyw-in-js/rollup';
 import { defineConfig } from 'rolldown';
 import { dts } from 'rolldown-plugin-dts';
-import wyw from '@wyw-in-js/rollup';
+
 import pkg from './package.json' with { type: 'json' };
 
 export default defineConfig({
@@ -13,7 +14,7 @@ export default defineConfig({
   platform: 'browser',
   plugins: [
     dts({
-      tsconfig: './tsconfig.lib.json',
+      tsconfig: './tsconfig.lib.json'
     }),
     wyw({
       exclude: ['**/*.d.ts'],
