@@ -1,4 +1,3 @@
-// @ts-check
 import { defineConfig } from 'rolldown';
 import { dts } from 'rolldown-plugin-dts';
 import wyw from '@wyw-in-js/rollup';
@@ -17,7 +16,6 @@ export default defineConfig({
       tsconfig: './tsconfig.lib.json',
       sourcemap: false
     }),
-    // @ts-expect-error
     wyw({
       exclude: ['**/*.d.ts'],
       preprocessor: 'none',
