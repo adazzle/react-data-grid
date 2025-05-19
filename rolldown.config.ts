@@ -14,7 +14,6 @@ export default defineConfig({
   plugins: [
     dts({
       tsconfig: './tsconfig.lib.json',
-      sourcemap: false
     }),
     wyw({
       exclude: ['**/*.d.ts'],
