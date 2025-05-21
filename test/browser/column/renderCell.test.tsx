@@ -134,7 +134,6 @@ test('Focus child if it sets tabIndex', async () => {
 
   page.render(<DataGrid columns={[column]} rows={[{ id: 1 }]} />);
 
-  const [cell] = getCells();
   const button = page.getByRole('button', { name: 'value: 1' });
   await userEvent.click(page.getByText('External Text'));
   expect(button).toHaveFocus();
