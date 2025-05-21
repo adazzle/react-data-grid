@@ -503,7 +503,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   /**
    * callbacks
    */
-  const focusCellOrCellContent = useCallback(
+  const focusCell = useCallback(
     (shouldScroll = true) => {
       const cell = getCellToScroll(gridRef.current!);
       if (cell === null) return;
@@ -512,10 +512,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         scrollIntoView(cell);
       }
 
-      // Focus cell content when available instead of the cell itself
-      const elementToFocus =
-        cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-      elementToFocus.focus({ preventScroll: true });
+      cell.focus({ preventScroll: true });
     },
     [gridRef]
   );
@@ -529,11 +526,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         focusSinkRef.current.focus({ preventScroll: true });
         scrollIntoView(focusSinkRef.current);
       } else {
-        focusCellOrCellContent();
+        focusCell();
       }
       setShouldFocusCell(false);
     }
-  }, [shouldFocusCell, focusCellOrCellContent, selectedPosition.idx]);
+  }, [shouldFocusCell, focusCell, selectedPosition.idx]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -778,7 +775,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
   function handleDragHandleClick() {
     // keep the focus on the cell but do not scroll
-    focusCellOrCellContent(false);
+    focusCell(false);
   }
 
   function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
