@@ -19,7 +19,7 @@ export default defineConfig({
     wyw({
       exclude: ['**/*.d.ts'],
       preprocessor: 'none',
-      classNameSlug(/** @type {string} */ hash) {
+      classNameSlug(hash) {
         // We add the package version as suffix to avoid style conflicts
         // between multiple versions of RDG on the same page.
         return `${hash}${pkg.version.replaceAll('.', '-')}`;
