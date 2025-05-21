@@ -139,6 +139,10 @@ test('Focus child if it sets tabIndex', async () => {
   expect(cell).toHaveTextContent('value: 1External Text');
   await userEvent.click(page.getByText('External Text'));
   expect(button).toHaveFocus();
+  await userEvent.tab();
+  expect(button).not.toHaveFocus();
+  await userEvent.click(button);
+  expect(button).toHaveFocus();
 });
 
 test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
