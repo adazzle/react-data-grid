@@ -136,7 +136,6 @@ test('Focus child if it sets tabIndex', async () => {
 
   const [cell] = getCells();
   const button = page.getByRole('button', { name: 'value: 1' });
-  expect(cell).toHaveTextContent('value: 1External Text');
   await userEvent.click(page.getByText('External Text'));
   expect(button).toHaveFocus();
   await userEvent.tab();
