@@ -1,3 +1,4 @@
+import { isAbsolute } from 'node:path';
 import wyw from '@wyw-in-js/rollup';
 import { defineConfig } from 'rolldown';
 import { dts } from 'rolldown-plugin-dts';
@@ -12,6 +13,7 @@ export default defineConfig({
     sourcemap: true
   },
   platform: 'browser',
+  external: (id) => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
     dts({
       tsconfig: './tsconfig.lib.json'
