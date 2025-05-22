@@ -110,7 +110,7 @@ export type DefaultColumnOptions<R, SR> = Pick<
 export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToCell: (position: PartialPosition) => void;
-  selectCell: (position: Position, options: SelectCellOptions) => void;
+  selectCell: (position: Position, options?: SelectCellOptions) => void;
 }
 
 type SharedDivProps = Pick<
