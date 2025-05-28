@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { css } from '@linaria/core';
 
 import { useLatestFunc } from './hooks';
@@ -12,6 +12,21 @@ import type {
   RenderEditCellProps
 } from './types';
 
+declare global {
+  const scheduler: Scheduler | undefined;
+}
+
+interface Scheduler {
+  readonly postTask?: (
+    callback: () => void,
+    options?: {
+      priority?: 'user-blocking' | 'user-visible' | 'background';
+      signal?: AbortSignal;
+      delay?: number;
+    }
+  ) => Promise<unknown>;
+}
+
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
  * i.e. on the window during the capture phase, and at their death, i.e. on the window during the bubble phase.
@@ -21,12 +36,14 @@ import type {
  *
  * The event can be `stopPropagation()`ed halfway through, so they may not always bubble back up to the window,
  * so an alternative check must be used. The check must happen after the event can reach the "inside" container,
- * and not before it run to completion. `requestAnimationFrame` is the best way we know how to achieve this.
+ * and not before it run to completion. `postTask`/`requestAnimationFrame` are the best way we know to achieve this.
  * Usually we want click event handlers from parent components to access the latest commited values,
  * so `mousedown` is used instead of `click`.
  *
  * We must also rely on React's event capturing/bubbling to handle elements rendered in a portal.
  */
+
+const canUsePostTask = typeof scheduler === 'object' && typeof scheduler.postTask === 'function';
 
 const cellEditing = css`
   @layer rdg.EditCell {
@@ -56,33 +73,68 @@ export default function EditCell<R, SR>({
   onKeyDown,
   navigate
 }: EditCellProps<R, SR>) {
+  const captureEventRef = useRef<MouseEvent | undefined>(undefined);
+  const abortControllerRef = useRef<AbortController>(undefined);
   const frameRequestRef = useRef<number>(undefined);
   const commitOnOutsideClick = column.editorOptions?.commitOnOutsideClick ?? true;
 
-  // We need to prevent the `useEffect` from cleaning up between re-renders,
+  // We need to prevent the `useLayoutEffect` from cleaning up between re-renders,
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
   // To that end we instead access the latest props via useLatestFunc.
   const commitOnOutsideMouseDown = useLatestFunc(() => {
     onClose(true, false);
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!commitOnOutsideClick) return;
 
-    function onWindowCaptureMouseDown() {
-      frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
+    function onWindowCaptureMouseDown(event: MouseEvent) {
+      captureEventRef.current = event;
+
+      if (canUsePostTask) {
+        const abortController = new AbortController();
+        const { signal } = abortController;
+        abortControllerRef.current = abortController;
+        // Use postTask to ensure that the event is not called in the middle of a React render
+        // and that it is called before the next paint.
+        scheduler
+          .postTask(commitOnOutsideMouseDown, {
+            priority: 'user-blocking',
+            signal
+          })
+          // ignore abort errors
+          .catch(() => {});
+      } else {
+        frameRequestRef.current = requestAnimationFrame(commitOnOutsideMouseDown);
+      }
+    }
+
+    function onWindowMouseDown(event: MouseEvent) {
+      if (captureEventRef.current === event) {
+        commitOnOutsideMouseDown();
+      }
     }
 
     addEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
+    addEventListener('mousedown', onWindowMouseDown);
 
     return () => {
       removeEventListener('mousedown', onWindowCaptureMouseDown, { capture: true });
-      cancelFrameRequest();
+      removeEventListener('mousedown', onWindowMouseDown);
+      cancelTask();
     };
   }, [commitOnOutsideClick, commitOnOutsideMouseDown]);
 
-  function cancelFrameRequest() {
-    cancelAnimationFrame(frameRequestRef.current!);
+  function cancelTask() {
+    captureEventRef.current = undefined;
+    if (abortControllerRef.current !== undefined) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = undefined;
+    }
+    if (frameRequestRef.current !== undefined) {
+      cancelAnimationFrame(frameRequestRef.current);
+      frameRequestRef.current = undefined;
+    }
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -143,7 +195,7 @@ export default function EditCell<R, SR>({
       className={className}
       style={getCellStyle(column, colSpan)}
       onKeyDown={handleKeyDown}
-      onMouseDownCapture={cancelFrameRequest}
+      onMouseDownCapture={cancelTask}
     >
       {column.renderEditCell != null && (
         <>

@@ -44,7 +44,7 @@ function RowSelectionTest({
   );
 }
 
-function setupNew(initialRows = defaultRows) {
+function setup(initialRows = defaultRows) {
   page.render(<RowSelectionTest initialRows={initialRows} />);
 }
 
@@ -60,7 +60,7 @@ async function toggleSelection(rowIdx: number, shift = false) {
 }
 
 test('toggle selection when checkbox is clicked', async () => {
-  setupNew();
+  setup();
   await toggleSelection(0);
   testSelection(0, true);
   await toggleSelection(1);
@@ -73,7 +73,7 @@ test('toggle selection when checkbox is clicked', async () => {
 });
 
 test('toggle selection using keyboard', async () => {
-  setupNew();
+  setup();
   testSelection(0, false);
   await userEvent.click(getCellsAtRowIndex(0)[0]);
   testSelection(0, true);
@@ -88,7 +88,7 @@ test('toggle selection using keyboard', async () => {
 });
 
 test('should partially select header checkbox', async () => {
-  setupNew();
+  setup();
   const headerCheckbox = page.getByRole('checkbox', { name: 'Select All' }).element();
   expect(headerCheckbox).not.toBeChecked();
   expect(headerCheckbox).not.toBePartiallyChecked();
@@ -140,7 +140,7 @@ test('should not select row when isRowSelectionDisabled returns true', async () 
 });
 
 test('select/deselect all rows when header checkbox is clicked', async () => {
-  setupNew();
+  setup();
   const headerCheckbox = page.getByRole('checkbox', { name: 'Select All' }).element();
   expect(headerCheckbox).not.toBeChecked();
   await userEvent.click(headerCheckbox);
@@ -161,7 +161,7 @@ test('select/deselect all rows when header checkbox is clicked', async () => {
 });
 
 test('header checkbox is not checked when there are no rows', async () => {
-  setupNew([]);
+  setup([]);
   await expect.element(page.getByRole('checkbox', { name: 'Select All' })).not.toBeChecked();
 });
 
@@ -238,7 +238,7 @@ test('extra keys are preserved when updating the selectedRows Set', async () => 
 });
 
 test('select/deselect rows using shift click', async () => {
-  setupNew();
+  setup();
   await toggleSelection(0);
   await toggleSelection(2, true);
   testSelection(0, true);
@@ -252,7 +252,7 @@ test('select/deselect rows using shift click', async () => {
 });
 
 test('select rows using shift space', async () => {
-  setupNew();
+  setup();
   await userEvent.click(getCellsAtRowIndex(0)[1]);
   await userEvent.keyboard('{Shift>} {/Shift}');
   testSelection(0, true);
