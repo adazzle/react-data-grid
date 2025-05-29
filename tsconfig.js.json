@@ -4,7 +4,6 @@
     "allowJs": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "resolveJsonModule": true,
     "skipLibCheck": true
   },
   "include": ["**/*.js", ".github/**/*.js", "package.json"],
