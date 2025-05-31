@@ -69,7 +69,7 @@ export default defineConfig([
       'no-control-regex': 1,
       'no-debugger': 1,
       'no-dupe-args': 1,
-      'no-dupe-class-members': 0, // replaced by @typescript-eslint/no-dupe-class-members
+      'no-dupe-class-members': 0,
       'no-dupe-else-if': 1,
       'no-dupe-keys': 1,
       'no-duplicate-case': 1,
@@ -118,14 +118,14 @@ export default defineConfig([
       'block-scoped-var': 1,
       camelcase: 0,
       'capitalized-comments': 0,
-      'class-methods-use-this': 0, // replace by @typescript-eslint/class-methods-use-this
+      'class-methods-use-this': 1,
       complexity: 0,
       'consistent-return': 0,
       'consistent-this': 0,
       curly: 0,
       'default-case': 1,
       'default-case-last': 1,
-      'default-param-last': 0, // replaced by @typescript-eslint/default-param-last
+      'default-param-last': 0,
       'dot-notation': 0, // replaced by @typescript-eslint/dot-notation
       eqeqeq: [1, 'always', { null: 'ignore' }],
       'func-name-matching': 0,
@@ -136,7 +136,7 @@ export default defineConfig([
       'id-denylist': 0,
       'id-length': 0,
       'id-match': 0,
-      'init-declarations': 0, // replaced by @typescript-eslint/init-declarations
+      'init-declarations': 0,
       'logical-assignment-operators': [1, 'always', { enforceForIfStatements: true }],
       'max-classes-per-file': 0,
       'max-depth': 0,
@@ -148,7 +148,7 @@ export default defineConfig([
       'multiline-comment-style': 0,
       'new-cap': 0,
       'no-alert': 0,
-      'no-array-constructor': 0, // replaced by @typescript-eslint/no-array-constructor
+      'no-array-constructor': 1,
       'no-bitwise': 0,
       'no-caller': 1,
       'no-case-declarations': 1,
@@ -158,7 +158,7 @@ export default defineConfig([
       'no-div-regex': 0,
       'no-else-return': [1, { allowElseIf: false }],
       'no-empty': [1, { allowEmptyCatch: true }],
-      'no-empty-function': 0, // replaced by @typescript-eslint/no-empty-function
+      'no-empty-function': 0,
       'no-empty-static-block': 1,
       'no-eq-null': 0,
       'no-eval': 1,
@@ -171,13 +171,13 @@ export default defineConfig([
       'no-implicit-globals': 0,
       'no-implied-eval': 0, // replaced by @typescript-eslint/no-implied-eval
       'no-inline-comments': 0,
-      'no-invalid-this': 0, // replaced by @typescript-eslint/no-invalid-this
+      'no-invalid-this': 0,
       'no-iterator': 1,
       'no-label-var': 1,
       'no-labels': 1,
       'no-lone-blocks': 1,
       'no-lonely-if': 1,
-      'no-loop-func': 0, // replaced by @typescript-eslint/no-loop-func
+      'no-loop-func': 0,
       'no-magic-numbers': 0, // replaced by @typescript-eslint/no-magic-numbers
       'no-multi-assign': 0,
       'no-multi-str': 1,
@@ -218,13 +218,13 @@ export default defineConfig([
       'no-undefined': 0,
       'no-underscore-dangle': 0,
       'no-unneeded-ternary': [1, { defaultAssignment: false }],
-      'no-unused-expressions': 0, // replaced by @typescript-eslint/no-unused-expressions
+      'no-unused-expressions': [1, { allowTaggedTemplates: true, enforceForJSX: true }],
       'no-unused-labels': 1,
       'no-useless-call': 1,
       'no-useless-catch': 1,
       'no-useless-computed-key': 1,
       'no-useless-concat': 1,
-      'no-useless-constructor': 0, // replaced by @typescript-eslint/no-useless-constructor
+      'no-useless-constructor': 1,
       'no-useless-escape': 1,
       'no-useless-rename': 1,
       'no-useless-return': 1,
@@ -394,7 +394,7 @@ export default defineConfig([
       // https://eslint-react.xyz/
       'react-hooks-extra/no-unnecessary-use-callback': 1,
       'react-hooks-extra/no-unnecessary-use-memo': 1,
-      'react-hooks-extra/no-useless-custom-hooks': 1,
+      'react-hooks-extra/no-unnecessary-use-prefix': 1,
       'react-hooks-extra/prefer-use-state-lazy-initialization': 1,
 
       // SonarJS rules
@@ -440,7 +440,7 @@ export default defineConfig([
       '@typescript-eslint/ban-ts-comment': [1, { 'ts-expect-error': false }],
       '@typescript-eslint/ban-tslint-comment': 0,
       '@typescript-eslint/class-literal-property-style': 0,
-      '@typescript-eslint/class-methods-use-this': 1,
+      '@typescript-eslint/class-methods-use-this': 0,
       '@typescript-eslint/consistent-generic-constructors': 1,
       '@typescript-eslint/consistent-indexed-object-style': 1,
       '@typescript-eslint/consistent-return': 0,
@@ -496,6 +496,7 @@ export default defineConfig([
       '@typescript-eslint/no-unnecessary-type-arguments': 1,
       '@typescript-eslint/no-unnecessary-type-assertion': 1,
       '@typescript-eslint/no-unnecessary-type-constraint': 1,
+      '@typescript-eslint/no-unnecessary-type-conversion': 1,
       '@typescript-eslint/no-unnecessary-type-parameters': 1,
       '@typescript-eslint/no-unsafe-argument': 0,
       '@typescript-eslint/no-unsafe-assignment': 0,
@@ -554,7 +555,7 @@ export default defineConfig([
       '@typescript-eslint/dot-notation': 1,
       '@typescript-eslint/init-declarations': 0,
       '@typescript-eslint/max-params': 0,
-      '@typescript-eslint/no-array-constructor': 1,
+      '@typescript-eslint/no-array-constructor': 0,
       '@typescript-eslint/no-dupe-class-members': 0,
       '@typescript-eslint/no-empty-function': 0,
       '@typescript-eslint/no-implied-eval': 1,
@@ -576,13 +577,10 @@ export default defineConfig([
         }
       ],
       '@typescript-eslint/no-shadow': 0,
-      '@typescript-eslint/no-unused-expressions': [
-        1,
-        { allowTaggedTemplates: true, enforceForJSX: true }
-      ],
+      '@typescript-eslint/no-unused-expressions': 0,
       '@typescript-eslint/no-unused-vars': [1, { ignoreRestSiblings: true }],
       '@typescript-eslint/no-use-before-define': 0,
-      '@typescript-eslint/no-useless-constructor': 1,
+      '@typescript-eslint/no-useless-constructor': 0,
       '@typescript-eslint/only-throw-error': 1,
       '@typescript-eslint/require-await': 1,
       '@typescript-eslint/return-await': 1,

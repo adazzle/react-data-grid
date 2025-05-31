@@ -49,7 +49,7 @@ function GroupedRow<R, SR>({
   const idx = viewportColumns[0].key === SELECT_COLUMN_KEY ? row.level + 1 : row.level;
 
   function handleSelectGroup() {
-    selectCell({ rowIdx, idx: -1 });
+    selectCell({ rowIdx, idx: -1 }, { shouldFocusCell: true });
   }
 
   const selectionValue = useMemo(
@@ -72,7 +72,7 @@ function GroupedRow<R, SR>({
           selectedCellIdx === -1 && rowSelectedClassname,
           className
         )}
-        onClick={handleSelectGroup}
+        onMouseDown={handleSelectGroup}
         style={getRowStyle(gridRowStart)}
         {...props}
       >

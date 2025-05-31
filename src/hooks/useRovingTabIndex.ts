@@ -10,7 +10,13 @@ export function useRovingTabIndex(isSelected: boolean) {
   }
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
-    if (event.target !== event.currentTarget) {
+    const elementToFocus = event.currentTarget.querySelector<Element & HTMLOrSVGElement>(
+      '[tabindex="0"]'
+    );
+
+    // Focus cell content when available instead of the cell itself
+    if (elementToFocus !== null) {
+      elementToFocus.focus({ preventScroll: true });
       setIsChildFocused(true);
     }
   }

@@ -27,7 +27,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
   const index = column.idx + 1;
 
-  function onClick() {
+  function onMouseDown() {
     selectCell({ idx: column.idx, rowIdx });
   }
 
@@ -46,7 +46,7 @@ export default function GroupedColumnHeaderCell<R, SR>({
         gridColumnEnd: index + colSpan
       }}
       onFocus={onFocus}
-      onClick={onClick}
+      onMouseDown={onMouseDown}
     >
       {column.name}
     </div>

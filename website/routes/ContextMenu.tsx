@@ -69,17 +69,17 @@ function ContextMenuDemo() {
   useLayoutEffect(() => {
     if (!isContextMenuOpen) return;
 
-    function onClick(event: MouseEvent) {
+    function onMouseDown(event: MouseEvent) {
       if (event.target instanceof Node && menuRef.current?.contains(event.target)) {
         return;
       }
       setContextMenuProps(null);
     }
 
-    addEventListener('click', onClick);
+    addEventListener('mousedown', onMouseDown);
 
     return () => {
-      removeEventListener('click', onClick);
+      removeEventListener('mousedown', onMouseDown);
     };
   }, [isContextMenuOpen]);
 

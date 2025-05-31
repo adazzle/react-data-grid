@@ -294,6 +294,9 @@ function HeaderFilters() {
           rows={filteredRows}
           headerRowHeight={filters.enabled ? 70 : undefined}
           direction={direction}
+          style={{
+            scrollbarGutter: 'stable'
+          }}
         />
       </FilterContext>
       <datalist id="developers">

@@ -116,6 +116,33 @@ describe('Custom cell renderer', () => {
   });
 });
 
+test('Focus child if it sets tabIndex', async () => {
+  const column: Column<Row> = {
+    key: 'test',
+    name: 'test',
+    renderCell(props) {
+      return (
+        <>
+          <button type="button" tabIndex={props.tabIndex}>
+            value: {props.row.id}
+          </button>
+          <span>External Text</span>
+        </>
+      );
+    }
+  };
+
+  page.render(<DataGrid columns={[column]} rows={[{ id: 1 }]} />);
+
+  const button = page.getByRole('button', { name: 'value: 1' });
+  await userEvent.click(page.getByText('External Text'));
+  expect(button).toHaveFocus();
+  await userEvent.tab();
+  expect(button).not.toHaveFocus();
+  await userEvent.click(button);
+  expect(button).toHaveFocus();
+});
+
 test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
   const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
 

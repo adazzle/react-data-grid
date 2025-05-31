@@ -21,7 +21,8 @@ export default function ScrollToCell({
   useLayoutEffect(() => {
     // scroll until the cell is completely visible
     // this is needed if the grid has auto-sized columns
-    scrollIntoView(ref.current);
+    // setting the behavior to auto so it can be overridden
+    scrollIntoView(ref.current, 'auto');
   });
 
   useLayoutEffect(() => {
