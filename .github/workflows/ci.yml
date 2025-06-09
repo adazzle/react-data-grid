@@ -25,9 +25,7 @@ jobs:
       - name: Prettier
         run: node --run prettier:check
       - name: Bundle
-        run: |
-          node --run build
-          node --run build:types
+        run: node --run build
       - name: Build website
         run: node --run build:website
       - name: Install Playwright Browsers

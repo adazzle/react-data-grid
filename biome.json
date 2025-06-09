@@ -310,7 +310,7 @@
       }
     },
     {
-      "include": ["**/*.js"],
+      "include": ["**/*.js", "rolldown.config.ts"],
       "linter": {
         "rules": {
           "correctness": {

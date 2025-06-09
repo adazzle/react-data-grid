@@ -48,6 +48,7 @@ export type {
   RenderSummaryCellProps,
   RowHeightArgs,
   RowsChangeData,
+  SelectCellOptions,
   SelectHeaderRowEvent,
   SelectRowEvent,
   SortColumn,

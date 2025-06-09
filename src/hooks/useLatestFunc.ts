@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 
 import type { Maybe } from '../types';
 
@@ -7,7 +7,7 @@ import type { Maybe } from '../types';
 export function useLatestFunc<T extends Maybe<(...args: any[]) => any>>(fn: T): T {
   const ref = useRef(fn);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     ref.current = fn;
   });
 

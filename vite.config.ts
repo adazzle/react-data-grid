@@ -65,7 +65,7 @@ export default defineConfig(({ command }) => ({
       exclude: ['./.cache/**/*']
     }),
     wyw({
-      exclude: ['./.cache/**/*'],
+      exclude: ['./.cache/**/*', '**/*.d.ts', '**/*.gen.ts'],
       preprocessor: 'none',
       displayName: command === 'serve'
     })
@@ -87,7 +87,7 @@ export default defineConfig(({ command }) => ({
     sequence: {
       shuffle: true
     },
-    workspace: [
+    projects: [
       {
         extends: true,
         test: {
