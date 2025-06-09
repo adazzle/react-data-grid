@@ -89,7 +89,7 @@ export default defineConfig(({ command }) => ({
     sequence: {
       shuffle: true
     },
-    workspace: [
+    projects: [
       {
         extends: true,
         test: {
