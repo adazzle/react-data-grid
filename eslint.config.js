@@ -95,6 +95,7 @@ export default defineConfig([
       'no-sparse-arrays': 1,
       'no-template-curly-in-string': 1,
       'no-this-before-super': 0,
+      'no-unassigned-vars': 1,
       'no-undef': 0,
       'no-unexpected-multiline': 0,
       'no-unmodified-loop-condition': 1,
@@ -105,7 +106,7 @@ export default defineConfig([
       'no-unsafe-optional-chaining': [1, { disallowArithmeticOperators: true }],
       'no-unused-private-class-members': 0,
       'no-unused-vars': 0, // replaced by @typescript-eslint/no-unused-vars
-      'no-use-before-define': 0, // replaced by @typescript-eslint/no-use-before-define
+      'no-use-before-define': 0,
       'no-useless-backreference': 1,
       'require-atomic-updates': 1,
       'use-isnan': [1, { enforceForIndexOf: true }],
@@ -178,7 +179,7 @@ export default defineConfig([
       'no-lone-blocks': 1,
       'no-lonely-if': 1,
       'no-loop-func': 0,
-      'no-magic-numbers': 0, // replaced by @typescript-eslint/no-magic-numbers
+      'no-magic-numbers': 0,
       'no-multi-assign': 0,
       'no-multi-str': 1,
       'no-negated-condition': 0,
@@ -210,7 +211,7 @@ export default defineConfig([
       'no-return-await': 0, // replaced by @typescript-eslint/return-await
       'no-script-url': 1,
       'no-sequences': [1, { allowInParentheses: false }],
-      'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
+      'no-shadow': 0,
       'no-shadow-restricted-names': 1,
       'no-ternary': 0,
       'no-throw-literal': 0, // replaced by @typescript-eslint/only-throw-error
