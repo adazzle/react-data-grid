@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useImperativeHandle,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import type { Key, KeyboardEvent } from 'react';
 import { flushSync } from 'react-dom';
 import clsx from 'clsx';
@@ -332,7 +325,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const [isDragging, setDragging] = useState(false);
   const [draggedOverRowIdx, setDraggedOverRowIdx] = useState<number | undefined>(undefined);
   const [scrollToPosition, setScrollToPosition] = useState<PartialPosition | null>(null);
-  const [shouldFocusCell, setShouldFocusCell] = useState(false);
   const [previousRowIdx, setPreviousRowIdx] = useState(-1);
 
   const isColumnWidthsControlled =
@@ -501,37 +493,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const selectHeaderCellLatest = useLatestFunc(selectHeaderCell);
 
   /**
-   * callbacks
-   */
-  const focusCell = useCallback(
-    (shouldScroll = true) => {
-      const cell = getCellToScroll(gridRef.current!);
-      if (cell === null) return;
-
-      if (shouldScroll) {
-        scrollIntoView(cell);
-      }
-
-      cell.focus({ preventScroll: true });
-    },
-    [gridRef]
-  );
-
-  /**
    * effects
    */
-  useLayoutEffect(() => {
-    if (shouldFocusCell) {
-      if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
-        focusSinkRef.current.focus({ preventScroll: true });
-        scrollIntoView(focusSinkRef.current);
-      } else {
-        focusCell();
-      }
-      setShouldFocusCell(false);
-    }
-  }, [shouldFocusCell, focusCell, selectedPosition.idx]);
-
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToCell({ idx, rowIdx }) {
@@ -809,6 +772,26 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   /**
    * utils
    */
+  function focusCell(shouldScroll = true) {
+    const cell = getCellToScroll(gridRef.current!);
+    if (cell === null) return;
+
+    if (shouldScroll) {
+      scrollIntoView(cell);
+    }
+
+    cell.focus({ preventScroll: true });
+  }
+
+  function focusCellOrRow() {
+    if (focusSinkRef.current !== null && selectedPosition.idx === -1) {
+      focusSinkRef.current.focus({ preventScroll: true });
+      scrollIntoView(focusSinkRef.current);
+    } else {
+      focusCell();
+    }
+  }
+
   function isColIdxWithinSelectionBounds(idx: number) {
     return idx >= minColIdx && idx <= maxColIdx;
   }
@@ -848,8 +831,12 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
+    } else if (options?.shouldFocusCell) {
+      flushSync(() => {
+        setSelectedPosition({ ...position, mode: 'SELECT' });
+      });
+      focusCellOrRow();
     } else {
-      setShouldFocusCell(options?.shouldFocusCell === true);
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
 
@@ -1017,9 +1004,17 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     const closeOnExternalRowChange = column.editorOptions?.closeOnExternalRowChange ?? true;
 
-    const closeEditor = (shouldFocusCell: boolean) => {
-      setShouldFocusCell(shouldFocusCell);
+    function cancelEditing() {
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
+    }
+
+    const closeEditor = (shouldFocusCell: boolean) => {
+      if (shouldFocusCell) {
+        flushSync(cancelEditing);
+        focusCell();
+      } else {
+        cancelEditing();
+      }
     };
 
     const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
@@ -1030,8 +1025,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         // SELECT and this results in onRowChange getting called twice.
         flushSync(() => {
           updateRow(column, selectedPosition.rowIdx, row);
-          closeEditor(shouldFocusCell);
+          cancelEditing();
         });
+        if (shouldFocusCell) {
+          focusCell();
+        }
       } else {
         setSelectedPosition((position) => ({ ...position, row }));
       }
