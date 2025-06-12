@@ -1,14 +1,13 @@
 import { useCallback, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { createFileRoute } from '@tanstack/react-router';
 
 import { DataGrid, textEditor } from '../../src';
 import type { Column, RenderRowProps } from '../../src';
 import { DraggableRowRenderer } from '../components';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/RowsReordering')({
+export const Route = createFileRoute({
   component: RowsReordering
 });
 

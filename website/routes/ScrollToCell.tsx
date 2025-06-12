@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -8,7 +7,7 @@ import type { Column, DataGridHandle } from '../../src';
 import { renderCoordinates } from '../renderers';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/ScrollToCell')({
+export const Route = createFileRoute({
   component: ScrollToCell
 });
 

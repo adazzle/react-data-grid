@@ -20,7 +20,8 @@ const router = createRouter({
   defaultPendingMinMs: 0,
   defaultPreload: 'intent',
   defaultStructuralSharing: true,
-  scrollRestoration: true
+  scrollRestoration: true,
+  defaultViewTransition: true
 });
 
 // Register the router instance for type safety

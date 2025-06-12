@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { Row as BaseRow, Cell, DataGrid, SelectColumn, textEditor } from '../../src';
@@ -13,7 +12,7 @@ import type {
 } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/CustomizableRenderers')({
+export const Route = createFileRoute({
   component: CustomizableRenderers
 });
 
