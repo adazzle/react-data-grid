@@ -22,6 +22,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   selectCell: (position: Position) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
+  shouldFocusGrid: boolean;
   direction: Direction;
   headerRowClass: Maybe<string>;
 }
@@ -58,6 +59,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   selectCell,
+  shouldFocusGrid,
   direction
 }: HeaderRowProps<R, SR, K>) {
   const [draggedColumnKey, setDraggedColumnKey] = useState<string>();
@@ -83,6 +85,7 @@ function HeaderRow<R, SR, K extends React.Key>({
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
         selectCell={selectCell}
+        shouldFocusGrid={shouldFocusGrid && index === 0}
         direction={direction}
         draggedColumnKey={draggedColumnKey}
         setDraggedColumnKey={setDraggedColumnKey}
