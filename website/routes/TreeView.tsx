@@ -1,5 +1,4 @@
 import { useMemo, useReducer, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -7,7 +6,7 @@ import type { Column } from '../../src';
 import { CellExpanderFormatter, ChildRowDeleteButton } from '../components';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/TreeView')({
+export const Route = createFileRoute({
   component: TreeView
 });
 
