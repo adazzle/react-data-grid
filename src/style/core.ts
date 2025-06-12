@@ -42,6 +42,7 @@ const root = css`
 
   @layer rdg.Root {
     ${lightTheme}
+    --rdg-gap: 1px;
     --rdg-selection-color: hsl(207, 75%, 66%);
     --rdg-font-size: 14px;
     --rdg-cell-frozen-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
@@ -51,6 +52,10 @@ const root = css`
     }
 
     display: grid;
+    gap: var(--rdg-gap);
+    rule-width: var(--rdg-gap);
+    rule-style: solid;
+    rule-color: var(--rdg-border-color);
 
     color-scheme: var(--rdg-color-scheme, light dark);
     accent-color: light-dark(hsl(207deg 100% 29%), hsl(207deg 100% 79%));
@@ -69,11 +74,11 @@ const root = css`
     font-size: var(--rdg-font-size);
 
     /* needed on Firefox to fix scrollbars */
-    &::before {
-      content: '';
-      grid-column: 1/-1;
-      grid-row: 1/-1;
-    }
+    // &::before {
+    //   content: '';
+    //   grid-column: 1/-1;
+    //   grid-row: 1/-1;
+    // }
 
     &.rdg-dark {
       --rdg-color-scheme: dark;
