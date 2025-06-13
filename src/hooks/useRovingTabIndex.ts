@@ -10,7 +10,7 @@ export function useRovingTabIndex(isSelected: boolean) {
   }
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
-    // Check if the focus event is originated from the cell and not from a focusable child
+    // Check if the focus event originated from the cell and not from a focusable child
     if (event.target === event.currentTarget) {
       const elementToFocus = event.currentTarget.querySelector<Element & HTMLOrSVGElement>(
         '[tabindex="0"]'
