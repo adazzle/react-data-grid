@@ -138,7 +138,7 @@ test('Focus child if it sets tabIndex', async () => {
   page.render(<DataGrid columns={[column]} rows={[{ id: 1 }]} />);
 
   const button1 = page.getByRole('button', { name: 'Button 1' });
-  const button2 = page.getByRole('button', { name: 'Button 1' });
+  const button2 = page.getByRole('button', { name: 'Button 2' });
   const cell = page.getByRole('gridcell', { name: 'Button 1 Text Button 2' });
   expect(button1).toHaveAttribute('tabindex', '-1');
   expect(cell).toHaveAttribute('tabindex', '-1');
