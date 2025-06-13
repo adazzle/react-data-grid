@@ -135,12 +135,20 @@ test('Focus child if it sets tabIndex', async () => {
   page.render(<DataGrid columns={[column]} rows={[{ id: 1 }]} />);
 
   const button = page.getByRole('button', { name: 'value: 1' });
+  const cell = page.getByRole('gridcell', { name: 'value: 1 External Text' });
+  expect(button).toHaveAttribute('tabindex', '-1');
+  expect(cell).toHaveAttribute('tabindex', '-1');
   await userEvent.click(page.getByText('External Text'));
   expect(button).toHaveFocus();
-  await userEvent.tab();
+  expect(button).toHaveAttribute('tabindex', '0');
+  await userEvent.tab({ shift: true });
   expect(button).not.toHaveFocus();
+  expect(button).toHaveAttribute('tabindex', '-1');
+  expect(cell).toHaveAttribute('tabindex', '-1');
   await userEvent.click(button);
   expect(button).toHaveFocus();
+  expect(button).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
 });
 
 test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
