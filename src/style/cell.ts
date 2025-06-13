@@ -11,8 +11,8 @@ export const cell = css`
     position: relative; /* needed for absolute positioning to work */
     padding-block: 0;
     padding-inline: 8px;
-    border-inline-end: 1px solid var(--rdg-border-color);
-    border-block-end: 1px solid var(--rdg-border-color);
+    border-inline-end: var(--rdg-border-width) solid var(--rdg-border-color);
+    border-block-end: var(--rdg-border-width) solid var(--rdg-border-color);
     grid-row-start: var(--rdg-grid-row-start);
     align-content: center;
     background-color: inherit;

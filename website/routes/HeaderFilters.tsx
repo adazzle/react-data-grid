@@ -38,7 +38,7 @@ const filterContainerClassname = css`
       padding-inline: 8px;
 
       &:first-child {
-        border-block-end: 1px solid var(--rdg-border-color);
+        border-block-end: var(--rdg-border-width) solid var(--rdg-border-color);
       }
     }
   }

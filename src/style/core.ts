@@ -45,6 +45,8 @@ const root = css`
     --rdg-selection-color: hsl(207, 75%, 66%);
     --rdg-font-size: 14px;
     --rdg-cell-frozen-box-shadow: 2px 0 5px -2px rgba(136, 136, 136, 0.3);
+    --rdg-border-width: 1px;
+    --rdg-summary-border-width: calc(var(--rdg-border-width) * 2);
 
     &:dir(rtl) {
       --rdg-cell-frozen-box-shadow: -2px 0 5px -2px rgba(136, 136, 136, 0.3);
@@ -92,13 +94,13 @@ const root = css`
 
     > :nth-last-child(1 of .${topSummaryRowClassname}) {
       > .${cell} {
-        border-block-end: 2px solid var(--rdg-summary-border-color);
+        border-block-end: var(--rdg-summary-border-width) solid var(--rdg-summary-border-color);
       }
     }
 
     > :nth-child(1 of .${bottomSummaryRowClassname}) {
       > .${cell} {
-        border-block-start: 2px solid var(--rdg-summary-border-color);
+        border-block-start: var(--rdg-summary-border-width) solid var(--rdg-summary-border-color);
       }
     }
   }
