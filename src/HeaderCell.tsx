@@ -109,7 +109,8 @@ export default function HeaderCell<R, SR>({
   const dragImageRef = useRef<HTMLDivElement>(null);
   const isDragging = draggedColumnKey === column.key;
   const rowSpan = getHeaderCellRowSpan(column, rowIdx);
-  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);
+  // set the tabIndex to 0 when there is no selected cell so grid can receive focus
+  const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(shouldFocusGrid || isCellSelected);
   const sortIndex = sortColumns?.findIndex((sort) => sort.columnKey === column.key);
   const sortColumn =
     sortIndex !== undefined && sortIndex > -1 ? sortColumns![sortIndex] : undefined;
@@ -293,8 +294,7 @@ export default function HeaderCell<R, SR>({
         aria-rowspan={rowSpan}
         aria-selected={isCellSelected}
         aria-sort={ariaSort}
-        // set the tabIndex to 0 when there is no selected cell so grid can receive focus
-        tabIndex={shouldFocusGrid ? 0 : tabIndex}
+        tabIndex={tabIndex}
         className={className}
         style={style}
         onMouseDown={onMouseDown}

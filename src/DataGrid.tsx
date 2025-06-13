@@ -854,8 +854,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     }
   }
 
-  function selectHeaderCell({ idx, rowIdx }: Position, options?: SelectCellOptions): void {
-    selectCell({ rowIdx: minRowIdx + rowIdx - 1, idx }, options);
+  function selectHeaderCell({ idx, rowIdx }: Position): void {
+    selectCell({ rowIdx: minRowIdx + rowIdx - 1, idx });
   }
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
