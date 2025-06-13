@@ -23,8 +23,8 @@ export const cell = css`
     outline: none;
 
     &[aria-selected='true'] {
-      outline: 2px solid var(--rdg-selection-color);
-      outline-offset: -2px;
+      outline: var(--rdg-selection-width) solid var(--rdg-selection-color);
+      outline-offset: calc(var(--rdg-selection-width) * -1);
     }
   }
 `;
