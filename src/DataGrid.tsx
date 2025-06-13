@@ -481,7 +481,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
   const scrollHeight =
     headerRowHeight + totalRowHeight + summaryRowsHeight + horizontalScrollbarHeight;
-  const shouldFocusGrid = !selectedCellIsWithinSelectionBounds;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -646,13 +645,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       default:
         handleCellInput(event);
         break;
-    }
-  }
-
-  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
-    // select the first header cell if the focus event is triggered by the grid
-    if (event.target === event.currentTarget) {
-      selectHeaderCell({ idx: minColIdx, rowIdx: headerRowsCount }, { shouldFocusCell: true });
     }
   }
 
@@ -862,8 +854,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     }
   }
 
-  function selectHeaderCell({ idx, rowIdx }: Position, options?: SelectCellOptions): void {
-    selectCell({ rowIdx: minRowIdx + rowIdx - 1, idx }, options);
+  function selectHeaderCell({ idx, rowIdx }: Position): void {
+    selectCell({ rowIdx: minRowIdx + rowIdx - 1, idx });
   }
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
@@ -1187,7 +1179,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       aria-rowcount={ariaRowCount}
       // Scrollable containers without tabIndex are keyboard focusable in Chrome only if there is no focusable element inside
       // whereas they are always focusable in Firefox. We need to set tabIndex to have a consistent behavior across browsers.
-      tabIndex={shouldFocusGrid ? 0 : -1}
+      tabIndex={-1}
       className={clsx(
         rootClassname,
         {
@@ -1219,7 +1211,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       }
       dir={direction}
       ref={gridRef}
-      onFocus={shouldFocusGrid ? handleFocus : undefined}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
       onCopy={handleCellCopy}
@@ -1256,6 +1247,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                 selectedPosition.rowIdx === mainHeaderRowIdx ? selectedPosition.idx : undefined
               }
               selectCell={selectHeaderCellLatest}
+              shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
               direction={direction}
             />
           </HeaderRowSelectionContext>
