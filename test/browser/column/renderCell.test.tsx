@@ -124,9 +124,12 @@ test('Focus child if it sets tabIndex', async () => {
       return (
         <>
           <button type="button" tabIndex={props.tabIndex}>
-            value: {props.row.id}
+            Button 1
           </button>
-          <span>External Text</span>
+          <span>Text</span>
+          <button type="button" tabIndex={-1}>
+            Button 2
+          </button>
         </>
       );
     }
@@ -134,20 +137,31 @@ test('Focus child if it sets tabIndex', async () => {
 
   page.render(<DataGrid columns={[column]} rows={[{ id: 1 }]} />);
 
-  const button = page.getByRole('button', { name: 'value: 1' });
-  const cell = page.getByRole('gridcell', { name: 'value: 1 External Text' });
-  expect(button).toHaveAttribute('tabindex', '-1');
+  const button1 = page.getByRole('button', { name: 'Button 1' });
+  const button2 = page.getByRole('button', { name: 'Button 1' });
+  const cell = page.getByRole('gridcell', { name: 'Button 1 Text Button 2' });
+  expect(button1).toHaveAttribute('tabindex', '-1');
   expect(cell).toHaveAttribute('tabindex', '-1');
-  await userEvent.click(page.getByText('External Text'));
-  expect(button).toHaveFocus();
-  expect(button).toHaveAttribute('tabindex', '0');
+  await userEvent.click(page.getByText('Text'));
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
   await userEvent.tab({ shift: true });
-  expect(button).not.toHaveFocus();
-  expect(button).toHaveAttribute('tabindex', '-1');
+  expect(button1).not.toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '-1');
   expect(cell).toHaveAttribute('tabindex', '-1');
-  await userEvent.click(button);
-  expect(button).toHaveFocus();
-  expect(button).toHaveAttribute('tabindex', '0');
+  await userEvent.click(button1);
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
+  await userEvent.tab({ shift: true });
+  await userEvent.click(button2);
+  expect(button2).toHaveFocus();
+  // It is user's responsibilty to set the tabIndex on button2
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
+  await userEvent.click(button1);
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
   expect(cell).toHaveAttribute('tabindex', '-1');
 });
 
