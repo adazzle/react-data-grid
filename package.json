@@ -94,7 +94,7 @@
     "typescript": "~5.8.2",
     "vite": "^6.3.5",
     "vitest": "^3.2.3",
-    "vitest-browser-react": "^0.2.0"
+    "vitest-browser-react": "^0.3.0"
   },
   "peerDependencies": {
     "react": "^19.0",
