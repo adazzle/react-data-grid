@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
 
 import { DataGrid } from '../../src';
 import type { CellKeyboardEvent, CellKeyDownArgs, Column } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/CellNavigation')({
+export const Route = createFileRoute({
   component: CellNavigation
 });
 

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -9,7 +8,7 @@ import type { CalculatedColumn, CellCopyArgs, CellPasteArgs, Column, FillEvent }
 import { textEditorClassname } from '../../src/editors/textEditor';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/AllFeatures')({
+export const Route = createFileRoute({
   component: AllFeatures,
   loader() {
     rows ??= createRows();
