@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { flushSync } from 'react-dom';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -34,11 +33,9 @@ export function DraggableCellRenderer<R, SR>({
   });
 
   function onDragStart(event: React.DragEvent<HTMLDivElement>) {
-    // need flushSync to make sure the drag image is rendered before the drag starts
-    flushSync(() => {
-      setIsDragging(true);
-    });
-
+    setIsDragging(true);
+    // TODO: use a custom drag image to show a preview of the row being dragged
+    event.dataTransfer.setDragImage(event.currentTarget.parentElement!.firstElementChild!, 0, 0);
     event.dataTransfer.setData('text/plain', String(rowIdx));
     event.dataTransfer.dropEffect = 'move';
   }
