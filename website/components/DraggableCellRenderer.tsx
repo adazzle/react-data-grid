@@ -10,10 +10,12 @@ const rowDraggingClassname = css`
 `;
 
 const rowOverClassname = css`
-  background-color: #ececec;
+  .rdg-row:has(&) {
+    background-color: #ececec;
+  }
 `;
 
-interface DraggableRowRenderProps<R, SR> extends CellRendererProps<R, SR> {
+interface DraggableCellRenderProps<R, SR> extends CellRendererProps<R, SR> {
   onRowReorder: (sourceIndex: number, targetIndex: number) => void;
 }
 
@@ -22,7 +24,7 @@ export function DraggableCellRenderer<R, SR>({
   className,
   onRowReorder,
   ...props
-}: DraggableRowRenderProps<R, SR>) {
+}: DraggableCellRenderProps<R, SR>) {
   const [isDragging, setIsDragging] = useState(false);
   const [isOver, setIsOver] = useState(false);
 
@@ -36,6 +38,7 @@ export function DraggableCellRenderer<R, SR>({
     flushSync(() => {
       setIsDragging(true);
     });
+
     event.dataTransfer.setData('text/plain', String(rowIdx));
     event.dataTransfer.dropEffect = 'move';
   }
