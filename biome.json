@@ -34,6 +34,9 @@
     }
   },
   "linter": {
+    "domains": {
+      "project": "recommended"
+    },
     "rules": {
       "recommended": false,
       "a11y": {
@@ -129,6 +132,7 @@
         "noNodejsModules": "warn",
         "noNonoctalDecimalEscape": "warn",
         "noPrecisionLoss": "warn",
+        "noPrivateImports": "warn",
         "noRenderReturnValue": "warn",
         "noSelfAssign": "warn",
         "noSetterReturn": "warn",
