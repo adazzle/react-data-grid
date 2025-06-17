@@ -69,22 +69,15 @@ export function DraggableCellRenderer<R, SR>({
     }
   }
 
-  const dragTargetProps: React.ComponentProps<'div'> = {
-    draggable: true,
-    onDragStart,
-    onDragEnd
-  };
-  const dropTargetProps: React.ComponentProps<'div'> = {
-    onDragOver,
-    onDragEnter,
-    onDragLeave,
-    onDrop
-  };
-
   return (
     <Cell
-      {...dragTargetProps}
-      {...dropTargetProps}
+      draggable
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onDragOver={onDragOver}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
       rowIdx={rowIdx}
       className={className}
       {...props}
