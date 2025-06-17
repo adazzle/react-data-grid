@@ -1167,7 +1167,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     selectedPosition.idx === -1 && selectedPosition.rowIdx !== minRowIdx - 1;
 
   return (
-    // biome-ignore lint/a11y/useValidAriaProps: aria-description is a valid prop
     <div
       role={role}
       aria-label={ariaLabel}
