@@ -75,16 +75,21 @@
         "useValidLang": "warn"
       },
       "complexity": {
+        "noAdjacentSpacesInRegex": "warn",
+        "noArguments": "warn",
         "noBannedTypes": "warn",
+        "noCommaOperator": "warn",
         "noEmptyTypeParameters": "warn",
         "noExcessiveCognitiveComplexity": "off",
         "noExcessiveNestedTestSuites": "off",
         "noExtraBooleanCast": "warn",
+        "noFlatMapIdentity": "warn",
         "noForEach": "warn",
         "noStaticOnlyClass": "warn",
         "noThisInStatic": "warn",
         "noUselessCatch": "warn",
         "noUselessConstructor": "warn",
+        "noUselessContinue": "warn",
         "noUselessEmptyExport": "warn",
         "noUselessFragments": "warn",
         "noUselessLabel": "warn",
@@ -101,16 +106,11 @@
         "useDateNow": "warn",
         "useFlatMap": "warn",
         "useLiteralKeys": "warn",
+        "useNumericLiterals": "warn",
         "useOptionalChain": "warn",
         "useRegexLiterals": "warn",
         "useSimpleNumberKeys": "warn",
         "useSimplifiedLogicExpression": "off",
-        "noAdjacentSpacesInRegex": "warn",
-        "noFlatMapIdentity": "warn",
-        "noUselessContinue": "warn",
-        "noArguments": "warn",
-        "noCommaOperator": "warn",
-        "useNumericLiterals": "warn",
         "useWhile": "warn"
       },
       "correctness": {
@@ -169,15 +169,15 @@
         "noAccumulatingSpread": "warn",
         "noBarrelFile": "off",
         "noDelete": "warn",
+        "noNamespaceImport": "warn",
         "noReExportAll": "off",
-        "useTopLevelRegex": "warn",
-        "noNamespaceImport": "warn"
+        "useTopLevelRegex": "warn"
       },
       "security": {
+        "noBlankTarget": "warn",
         "noDangerouslySetInnerHtml": "warn",
         "noDangerouslySetInnerHtmlWithChildren": "warn",
-        "noGlobalEval": "warn",
-        "noBlankTarget": "warn"
+        "noGlobalEval": "warn"
       },
       "style": {
         "noDefaultExport": "off",
@@ -194,6 +194,7 @@
         "noUnusedTemplateLiteral": "warn",
         "noUselessElse": "warn",
         "noYodaExpression": "warn",
+        "useArrayLiterals": "warn",
         "useAsConstAssertion": "warn",
         "useBlockStatements": "off",
         "useCollapsedElseIf": "warn",
@@ -221,8 +222,7 @@
         "useSingleVarDeclarator": "warn",
         "useTemplate": "warn",
         "useThrowNewError": "warn",
-        "useThrowOnlyError": "warn",
-        "useArrayLiterals": "warn"
+        "useThrowOnlyError": "warn"
       },
       "suspicious": {
         "noApproximativeNumericConstant": "warn",
@@ -283,15 +283,15 @@
         "noThenProperty": "warn",
         "noUnsafeDeclarationMerging": "warn",
         "noUnsafeNegation": "warn",
+        "noVar": "warn",
+        "noWith": "warn",
         "useAwait": "warn",
         "useDefaultSwitchClauseLast": "warn",
         "useErrorMessage": "warn",
         "useGetterReturn": "warn",
         "useIsArray": "warn",
         "useNamespaceKeyword": "warn",
-        "useNumberToFixedDigitsArgument": "warn",
-        "noWith": "warn",
-        "noVar": "warn"
+        "useNumberToFixedDigitsArgument": "warn"
       }
     }
   },
