@@ -35,7 +35,7 @@ export function DraggableCellRenderer<R, SR>({
   function onDragStart(event: React.DragEvent<HTMLDivElement>) {
     setIsDragging(true);
     // TODO: use a custom drag image to show a preview of the row being dragged
-    event.dataTransfer.setDragImage(event.currentTarget.parentElement!.firstElementChild!, 0, 0);
+    event.dataTransfer.setDragImage(event.currentTarget.parentElement!.firstElementChild!, 40, 17);
     event.dataTransfer.setData('text/plain', String(rowIdx));
     event.dataTransfer.dropEffect = 'move';
   }
