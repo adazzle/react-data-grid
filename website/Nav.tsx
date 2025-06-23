@@ -4,14 +4,20 @@ import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
 
+const containerClassname = css`
+  border-inline-start: 4px solid light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
+`;
+
+const h1Classname = css`
+  font-size: 24px;
+  margin: 8px;
+`;
+
 const navClassname = css`
   display: flex;
   flex-direction: column;
   white-space: nowrap;
 
-  border-inline-start: 4px solid light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
-
-  h1,
   h2 {
     margin: 8px;
   }
@@ -21,7 +27,7 @@ const navClassname = css`
     font-size: 14px;
     line-height: 22px;
     text-decoration: none;
-    padding-block: 0;
+    padding-block: 2px;
     padding-inline: 16px;
     transition: 0.1s background-color;
 
@@ -54,66 +60,73 @@ export default function Nav({ headerId, direction, onDirectionChange }: Props) {
   const navId = useId();
 
   return (
-    <nav aria-labelledby={navId} className={navClassname}>
-      <h1 id={headerId}>react-data-grid</h1>
+    <div className={containerClassname}>
+      <h1 id={headerId} className={h1Classname}>
+        react-data-grid
+      </h1>
+      <nav aria-labelledby={navId} className={navClassname}>
+        <h2 id={navId}>Demos</h2>
+        <Link to="/CommonFeatures">Common Features</Link>
+        <Link to="/AllFeatures">All Features</Link>
+        <Link to="/CellNavigation">Cell Navigation</Link>
+        <Link to="/ColumnSpanning">Column Spanning</Link>
+        <Link to="/ColumnGrouping">Column Grouping</Link>
+        <Link to="/ColumnsReordering">Columns Reordering</Link>
+        <Link to="/ContextMenu">Context Menu</Link>
+        <Link to="/CustomizableRenderers">Customizable Renderers</Link>
+        <Link to="/RowGrouping">Row Grouping</Link>
+        <Link to="/HeaderFilters">Header Filters</Link>
+        <Link to="/InfiniteScrolling">Infinite Scrolling</Link>
+        <Link to="/MasterDetail">Master Detail</Link>
+        <Link to="/MillionCells">A Million Cells</Link>
+        <Link to="/NoRows">No Rows</Link>
+        <Link to="/ResizableGrid">Resizable Grid</Link>
+        <Link to="/RowsReordering">Rows Reordering</Link>
+        <Link to="/ScrollToCell">Scroll To Cell</Link>
+        <Link to="/TreeView">Tree View</Link>
+        <Link to="/VariableRowHeight">Variable Row Height</Link>
+        <Link to="/Animation">Animation</Link>
 
-      <h2 id={navId}>Demos</h2>
-      <Link to="/CommonFeatures">Common Features</Link>
-      <Link to="/AllFeatures">All Features</Link>
-      <Link to="/CellNavigation">Cell Navigation</Link>
-      <Link to="/ColumnSpanning">Column Spanning</Link>
-      <Link to="/ColumnGrouping">Column Grouping</Link>
-      <Link to="/ColumnsReordering">Columns Reordering</Link>
-      <Link to="/ContextMenu">Context Menu</Link>
-      <Link to="/CustomizableRenderers">Customizable Renderers</Link>
-      <Link to="/RowGrouping">Row Grouping</Link>
-      <Link to="/HeaderFilters">Header Filters</Link>
-      <Link to="/InfiniteScrolling">Infinite Scrolling</Link>
-      <Link to="/MasterDetail">Master Detail</Link>
-      <Link to="/MillionCells">A Million Cells</Link>
-      <Link to="/NoRows">No Rows</Link>
-      <Link to="/ResizableGrid">Resizable Grid</Link>
-      <Link to="/RowsReordering">Rows Reordering</Link>
-      <Link to="/ScrollToCell">Scroll To Cell</Link>
-      <Link to="/TreeView">Tree View</Link>
-      <Link to="/VariableRowHeight">Variable Row Height</Link>
-      <Link to="/Animation">Animation</Link>
+        <h2>Links</h2>
+        <a
+          href="https://github.com/adazzle/react-data-grid/blob/main/README.md"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Documentation
+        </a>
+        <a
+          href="https://github.com/adazzle/react-data-grid/blob/main/CHANGELOG.md"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Changelog
+        </a>
+        <a
+          href="https://github.com/adazzle/react-data-grid/discussions"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Discussions
+        </a>
+        <a
+          href="https://github.com/adazzle/react-data-grid/issues"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Issues
+        </a>
 
-      <h2>Links</h2>
-      <a
-        href="https://github.com/adazzle/react-data-grid/blob/main/README.md"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Documentation
-      </a>
-      <a
-        href="https://github.com/adazzle/react-data-grid/blob/main/CHANGELOG.md"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Changelog
-      </a>
-      <a
-        href="https://github.com/adazzle/react-data-grid/discussions"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Discussions
-      </a>
-      <a href="https://github.com/adazzle/react-data-grid/issues" target="_blank" rel="noreferrer">
-        Issues
-      </a>
-
-      <h2>Direction</h2>
-      <label className={rtlCheckboxClassname}>
-        <input
-          type="checkbox"
-          checked={direction === 'rtl'}
-          onChange={() => onDirectionChange(direction === 'rtl' ? 'ltr' : 'rtl')}
-        />
-        Right to left
-      </label>
-    </nav>
+        <h2>Direction</h2>
+        <label className={rtlCheckboxClassname}>
+          <input
+            type="checkbox"
+            checked={direction === 'rtl'}
+            onChange={() => onDirectionChange(direction === 'rtl' ? 'ltr' : 'rtl')}
+          />
+          Right to left
+        </label>
+      </nav>
+    </div>
   );
 }
