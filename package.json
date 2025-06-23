@@ -84,7 +84,7 @@
     "jspdf-autotable": "^5.0.2",
     "playwright": "^1.53.0",
     "postcss": "^8.5.2",
-    "prettier": "3.5.3",
+    "prettier": "3.6.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "rolldown": "^1.0.0-beta.9",
