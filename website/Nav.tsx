@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Link } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
@@ -44,16 +45,19 @@ const rtlCheckboxClassname = css`
 `;
 
 interface Props {
+  headerId: string;
   direction: Direction;
   onDirectionChange: (direction: Direction) => void;
 }
 
-export default function Nav({ direction, onDirectionChange }: Props) {
-  return (
-    <nav className={navClassname}>
-      <h1>react-data-grid</h1>
+export default function Nav({ headerId, direction, onDirectionChange }: Props) {
+  const navId = useId();
 
-      <h2>Demos</h2>
+  return (
+    <nav aria-labelledby={navId} className={navClassname}>
+      <h1 id={headerId}>react-data-grid</h1>
+
+      <h2 id={navId}>Demos</h2>
       <Link to="/CommonFeatures">Common Features</Link>
       <Link to="/AllFeatures">All Features</Link>
       <Link to="/CellNavigation">Cell Navigation</Link>

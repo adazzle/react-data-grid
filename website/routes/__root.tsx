@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
@@ -20,12 +20,13 @@ const mainClassname = css`
 `;
 
 function Root() {
+  const headerId = useId();
   const [direction, setDirection] = useState<Direction>('ltr');
 
   return (
     <DirectionContext value={direction}>
-      <Nav direction={direction} onDirectionChange={setDirection} />
-      <main dir={direction} className={mainClassname}>
+      <Nav headerId={headerId} direction={direction} onDirectionChange={setDirection} />
+      <main aria-labelledby={headerId} dir={direction} className={mainClassname}>
         <Outlet />
       </main>
     </DirectionContext>
