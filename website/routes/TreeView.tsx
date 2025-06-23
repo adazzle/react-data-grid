@@ -191,7 +191,13 @@ function TreeView() {
           onChange={() => setAllowDelete(!allowDelete)}
         />
       </label>
-      <DataGrid columns={columns} rows={rows} className={gridClassname} direction={direction} />
+      <DataGrid
+        aria-label="TreeView Example"
+        columns={columns}
+        rows={rows}
+        className={gridClassname}
+        direction={direction}
+      />
     </>
   );
 }

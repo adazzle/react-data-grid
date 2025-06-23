@@ -86,6 +86,7 @@ function RowsReordering() {
 
   return (
     <DataGrid
+      aria-label="Rows Reordering Example"
       columns={columns}
       rows={rows}
       onRowsChange={setRows}

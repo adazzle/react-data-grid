@@ -146,6 +146,7 @@ function ColumnsReordering() {
         Reset Columns
       </button>
       <DataGrid
+        aria-label="Columns Reordering Example"
         columns={reorderedColumns}
         rows={sortedRows}
         sortColumns={sortColumns}

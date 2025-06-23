@@ -384,6 +384,7 @@ function CommonFeatures() {
       </div>
       <DataGrid
         ref={gridRef}
+        aria-label="Common Features Example"
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={sortedRows}

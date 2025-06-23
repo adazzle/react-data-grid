@@ -93,6 +93,7 @@ function Animation() {
         </button>
       </div>
       <DataGrid
+        aria-label="Animation Example"
         className={`${transitionClassname} fill-grid`}
         columns={columns}
         rows={rows}

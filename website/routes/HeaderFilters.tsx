@@ -288,6 +288,7 @@ function HeaderFilters() {
       </div>
       <FilterContext value={filters}>
         <DataGrid
+          aria-label="Header Filters Example"
           className={filters.enabled ? filterContainerClassname : undefined}
           columns={columns}
           rows={filteredRows}

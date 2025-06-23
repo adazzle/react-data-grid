@@ -193,6 +193,7 @@ function CellNavigation() {
         </label>
       </div>
       <DataGrid
+        aria-label="Cell Navigation Example"
         columns={columns}
         rows={rows}
         direction={direction}

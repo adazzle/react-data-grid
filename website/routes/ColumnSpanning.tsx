@@ -60,6 +60,7 @@ function ColumnSpanning() {
 
   return (
     <DataGrid
+      aria-label="Column Spanning Example"
       columns={columns}
       rows={rows}
       rowHeight={22}

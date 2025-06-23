@@ -26,6 +26,7 @@ function ResizableGrid() {
 
   return (
     <DataGrid
+      aria-label="Resizable Grid Example"
       columns={columns}
       rows={rows}
       className="fill-grid"
