@@ -4,23 +4,23 @@ import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
 
-const containerClassname = css`
+const headerClassname = css`
   border-inline-start: 4px solid light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
-`;
 
-const h1Classname = css`
-  font-size: 24px;
-  margin: 8px;
+  h1 {
+    font-size: 24px;
+  }
+
+  h1,
+  h2 {
+    margin: 8px;
+  }
 `;
 
 const navClassname = css`
   display: flex;
   flex-direction: column;
   white-space: nowrap;
-
-  h2 {
-    margin: 8px;
-  }
 
   a {
     color: inherit;
@@ -57,15 +57,14 @@ interface Props {
 }
 
 export default function Nav({ headerId, direction, onDirectionChange }: Props) {
-  const navId = useId();
+  const demosNavId = useId();
+  const linksNavId = useId();
 
   return (
-    <div className={containerClassname}>
-      <h1 id={headerId} className={h1Classname}>
-        react-data-grid
-      </h1>
-      <nav aria-labelledby={navId} className={navClassname}>
-        <h2 id={navId}>Demos</h2>
+    <header className={headerClassname}>
+      <h1 id={headerId}>react-data-grid</h1>
+      <nav aria-labelledby={demosNavId} className={navClassname}>
+        <h2 id={demosNavId}>Demos</h2>
         <Link to="/CommonFeatures">Common Features</Link>
         <Link to="/AllFeatures">All Features</Link>
         <Link to="/CellNavigation">Cell Navigation</Link>
@@ -86,8 +85,10 @@ export default function Nav({ headerId, direction, onDirectionChange }: Props) {
         <Link to="/TreeView">Tree View</Link>
         <Link to="/VariableRowHeight">Variable Row Height</Link>
         <Link to="/Animation">Animation</Link>
+      </nav>
 
-        <h2>Links</h2>
+      <nav aria-labelledby={linksNavId} className={navClassname}>
+        <h2 id={linksNavId}>Links</h2>
         <a
           href="https://github.com/adazzle/react-data-grid/blob/main/README.md"
           target="_blank"
@@ -116,17 +117,17 @@ export default function Nav({ headerId, direction, onDirectionChange }: Props) {
         >
           Issues
         </a>
-
-        <h2>Direction</h2>
-        <label className={rtlCheckboxClassname}>
-          <input
-            type="checkbox"
-            checked={direction === 'rtl'}
-            onChange={() => onDirectionChange(direction === 'rtl' ? 'ltr' : 'rtl')}
-          />
-          Right to left
-        </label>
       </nav>
-    </div>
+
+      <h2>Direction</h2>
+      <label className={rtlCheckboxClassname}>
+        <input
+          type="checkbox"
+          checked={direction === 'rtl'}
+          onChange={() => onDirectionChange(direction === 'rtl' ? 'ltr' : 'rtl')}
+        />
+        Right to left
+      </label>
+    </header>
   );
 }
