@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.27.1",
-    "@biomejs/biome": "2.0.0",
+    "@biomejs/biome": "2.0.4",
     "@eslint/markdown": "^6.3.0",
     "@faker-js/faker": "^9.6.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.2",
