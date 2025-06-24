@@ -51,18 +51,17 @@ const rtlCheckboxClassname = css`
 `;
 
 interface Props {
-  headerId: string;
   direction: Direction;
   onDirectionChange: (direction: Direction) => void;
 }
 
-export default function Nav({ headerId, direction, onDirectionChange }: Props) {
+export default function Nav({ direction, onDirectionChange }: Props) {
   const demosNavId = useId();
   const linksNavId = useId();
 
   return (
     <header className={headerClassname}>
-      <h1 id={headerId}>react-data-grid</h1>
+      <h1>react-data-grid</h1>
       <nav aria-labelledby={demosNavId} className={navClassname}>
         <h2 id={demosNavId}>Demos</h2>
         <Link to="/CommonFeatures">Common Features</Link>

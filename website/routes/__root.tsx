@@ -20,13 +20,12 @@ const mainClassname = css`
 `;
 
 function Root() {
-  const headerId = useId();
   const [direction, setDirection] = useState<Direction>('ltr');
 
   return (
     <DirectionContext value={direction}>
-      <Nav headerId={headerId} direction={direction} onDirectionChange={setDirection} />
-      <main aria-labelledby={headerId} dir={direction} className={mainClassname}>
+      <Nav direction={direction} onDirectionChange={setDirection} />
+      <main dir={direction} className={mainClassname}>
         <Outlet />
       </main>
     </DirectionContext>
