@@ -1,0 +1,2 @@
+import{u as t,j as n}from"./index-B4lruM-z.js";import{D as i}from"./DataGrid-OYRRS2qP.js";import{r as s}from"./renderCoordinates-BnaeBmsm.js";const l=Array.from({length:1e3},(r,e)=>e),o=[];for(let r=0;r<1e3;r++){const e=String(r);o.push({key:e,name:e,frozen:r<5,width:80,resizable:!0,renderCell:s})}const p=function(){const e=t();return n.jsx(i,{"aria-label":"Million Cells Example",columns:o,rows:l,rowHeight:22,className:"fill-grid",direction:e})};export{p as component};
+//# sourceMappingURL=MillionCells-BpQMJo2d.js.map

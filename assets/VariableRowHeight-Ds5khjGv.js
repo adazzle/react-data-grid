@@ -1,0 +1,2 @@
+import{u as t,j as n}from"./index-B4lruM-z.js";import{D as a}from"./DataGrid-OYRRS2qP.js";import{r as i}from"./renderCoordinates-BnaeBmsm.js";const s=Array.from({length:500},(r,o)=>o),e=[];for(let r=0;r<30;r++){const o=String(r);e.push({key:o,name:o,frozen:r<5,resizable:!0,renderCell:i})}function l(){return 25+Math.round(Math.random()*75)}const p=function(){const o=t();return n.jsx(a,{"aria-label":"Variable Row Height Example",columns:e,rows:s,rowHeight:l,className:"fill-grid",direction:o})};export{p as component};
+//# sourceMappingURL=VariableRowHeight-Ds5khjGv.js.map
