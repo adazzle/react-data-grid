@@ -129,6 +129,7 @@ function MasterDetail() {
 
   return (
     <DataGrid
+      aria-label="Master Detail Example"
       rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={rows}

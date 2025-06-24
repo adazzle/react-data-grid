@@ -188,6 +188,7 @@ function RowGrouping() {
       </div>
 
       <TreeDataGrid
+        aria-label="Row Grouping Example"
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}

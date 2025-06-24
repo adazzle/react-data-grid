@@ -96,6 +96,7 @@ function ContextMenuDemo() {
   return (
     <>
       <DataGrid
+        aria-label="Context Menu Example"
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={rows}

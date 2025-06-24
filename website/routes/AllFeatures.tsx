@@ -276,6 +276,7 @@ function AllFeatures() {
         </style>
       )}
       <DataGrid
+        aria-label="All Features Example"
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}

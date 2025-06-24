@@ -112,6 +112,7 @@ function InfiniteScrolling() {
   return (
     <>
       <DataGrid
+        aria-label="Infinite Scrolling Example"
         columns={columns}
         rows={rows}
         rowKeyGetter={rowKeyGetter}

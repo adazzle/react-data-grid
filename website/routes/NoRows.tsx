@@ -49,6 +49,7 @@ function NoRows() {
 
   return (
     <DataGrid
+      aria-label="No Rows Example"
       columns={columns}
       rows={rows}
       renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
