@@ -1,2 +1,0 @@
-import{u as t,j as s}from"./index-B4lruM-z.js";import{D as i}from"./DataGrid-OYRRS2qP.js";import{r as n}from"./renderCoordinates-BnaeBmsm.js";const a=Array.from({length:100},(e,r)=>r),o=[];for(let e=0;e<50;e++){const r=String(e);o.push({key:r,name:r,renderCell:n})}const p=function(){const r=t();return s.jsx(i,{"aria-label":"Resizable Grid Example",columns:o,rows:a,className:"fill-grid",style:{resize:"both"},direction:r})};export{p as component};
-//# sourceMappingURL=ResizableGrid-CdONcYF0.js.map
