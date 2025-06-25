@@ -1,7 +1,6 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
-import react from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react-oxc';
 import wyw from '@wyw-in-js/vite';
-import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
 
@@ -49,7 +48,6 @@ export default defineConfig(({ command, isPreview }) => ({
   cacheDir: '.cache/vite',
   clearScreen: false,
   build: {
-    target: browserslist().map((version) => version.replace(' ', '')),
     modulePreload: { polyfill: false },
     sourcemap: true,
     reportCompressedSize: false
@@ -74,9 +72,6 @@ export default defineConfig(({ command, isPreview }) => ({
   ],
   server: {
     open: true
-  },
-  optimizeDeps: {
-    include: ['@vitest/coverage-v8/browser']
   },
   test: {
     globals: true,
