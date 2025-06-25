@@ -65,13 +65,12 @@
     "@types/react-dom": "^19.1.3",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.33.1",
-    "@vitejs/plugin-react": "^4.5.2",
-    "@vitest/browser": "^3.2.3",
-    "@vitest/coverage-v8": "^3.2.3",
-    "@vitest/eslint-plugin": "^1.2.1",
+    "@vitejs/plugin-react-oxc": "^0.2.3",
+    "@vitest/browser": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/eslint-plugin": "^1.2.7",
     "@wyw-in-js/rollup": "^0.7.0",
     "@wyw-in-js/vite": "^0.7.0",
-    "browserslist": "^4.24.5",
     "eslint": "^9.28.0",
     "eslint-plugin-jest-dom": "^5.5.0",
     "eslint-plugin-react": "^7.37.4",
@@ -90,12 +89,15 @@
     "rolldown": "^1.0.0-beta.9",
     "rolldown-plugin-dts": "^0.13.3",
     "typescript": "~5.8.2",
-    "vite": "^6.3.5",
-    "vitest": "^3.2.3",
-    "vitest-browser-react": "^0.3.0"
+    "vite": "npm:rolldown-vite@^7.0.1",
+    "vitest": "^3.2.4",
+    "vitest-browser-react": "^1.0.0"
   },
   "peerDependencies": {
     "react": "^19.0",
     "react-dom": "^19.0"
+  },
+  "overrides": {
+    "vite": "$vite"
   }
 }
