@@ -1,0 +1,2 @@
+import{__toESM as e,require_jsx_runtime as t}from"./index-dRAkHNy2.js";var n=e(t());const r=`t7vyx3i`,i=`rdg-text-editor ${r}`;function a(e){e?.focus(),e?.select()}function o({row:e,column:t,onRowChange:r,onClose:o}){return(0,n.jsx)(`input`,{className:i,ref:a,value:e[t.key],onChange:n=>r({...e,[t.key]:n.target.value}),onBlur:()=>o(!0,!1)})}export{o as textEditor,i as textEditorClassname};
+//# sourceMappingURL=textEditor-llPtM66m.js.map
