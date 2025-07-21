@@ -91,6 +91,7 @@
         "noUselessConstructor": "warn",
         "noUselessContinue": "warn",
         "noUselessEmptyExport": "warn",
+        "noUselessEscapeInRegex": "warn",
         "noUselessFragments": "warn",
         "noUselessLabel": "warn",
         "noUselessLoneBlockStatements": "warn",
@@ -149,11 +150,21 @@
         "noUnreachableSuper": "warn",
         "noUnsafeFinally": "warn",
         "noUnsafeOptionalChaining": "warn",
-        "noUnusedFunctionParameters": "off",
+        "noUnusedFunctionParameters": {
+          "level": "warn",
+          "options": {
+            "ignoreRestSiblings": true
+          }
+        },
         "noUnusedImports": "warn",
         "noUnusedLabels": "warn",
         "noUnusedPrivateClassMembers": "warn",
-        "noUnusedVariables": "warn",
+        "noUnusedVariables": {
+          "level": "warn",
+          "options": {
+            "ignoreRestSiblings": true
+          }
+        },
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
         "useExhaustiveDependencies": "off",
@@ -189,6 +200,21 @@
         "noNonNullAssertion": "off",
         "noParameterAssign": "off",
         "noParameterProperties": "warn",
+        "noRestrictedImports": {
+          "level": "warn",
+          "options": {
+            "paths": {
+              "react": {
+                "importNames": ["default"],
+                "message": "Use named imports instead."
+              },
+              "react-dom": {
+                "importNames": ["default"],
+                "message": "Use named imports instead."
+              }
+            }
+          }
+        },
         "noRestrictedGlobals": "warn",
         "noShoutyConstants": "warn",
         "noUnusedTemplateLiteral": "warn",
@@ -270,6 +296,7 @@
         "noMisleadingInstantiator": "warn",
         "noMisplacedAssertion": "off",
         "noMisrefactoredShorthandAssign": "warn",
+        "noOctalEscape": "warn",
         "noPrototypeBuiltins": "warn",
         "noReactSpecificProps": "off",
         "noRedeclare": "warn",
