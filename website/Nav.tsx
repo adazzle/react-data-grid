@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
@@ -50,6 +50,8 @@ const rtlCheckboxClassname = css`
   padding-inline-start: 8px;
 `;
 
+export type Theme = 'light' | 'dark' | 'system';
+
 interface Props {
   direction: Direction;
   onDirectionChange: (direction: Direction) => void;
@@ -58,6 +60,7 @@ interface Props {
 export default function Nav({ direction, onDirectionChange }: Props) {
   const demosNavId = useId();
   const linksNavId = useId();
+  const [theme, setTheme] = useState<Theme>('system');
 
   return (
     <header className={headerClassname}>
@@ -117,6 +120,13 @@ export default function Nav({ direction, onDirectionChange }: Props) {
           Issues
         </a>
       </nav>
+
+      <h2>Theme</h2>
+      <select value={theme} onChange={(e) => setTheme(e.target.value as Theme)}>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="system">System</option>
+      </select>
 
       <h2>Direction</h2>
       <label className={rtlCheckboxClassname}>
