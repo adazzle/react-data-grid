@@ -1,2 +1,0 @@
-import{__toESM as e,require_jsx_runtime as t}from"./index-dRAkHNy2.js";var n=e(t());const r=`c1tgi1fh`;function i({tabIndex:e,expanded:t,onCellExpand:i}){function a(e){(e.key===` `||e.key===`Enter`)&&(e.preventDefault(),i())}return(0,n.jsx)(`div`,{className:r,onClick:i,onKeyDown:a,children:(0,n.jsx)(`span`,{tabIndex:e,children:t?`▼`:`▶`})})}export{i as CellExpanderFormatter};
-//# sourceMappingURL=CellExpanderFormatter-nmDoC0Cj.js.map
