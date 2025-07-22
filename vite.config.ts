@@ -50,7 +50,9 @@ export default defineConfig(({ command, isPreview }) => ({
   build: {
     modulePreload: { polyfill: false },
     sourcemap: true,
-    reportCompressedSize: false
+    reportCompressedSize: false,
+    // https://github.com/parcel-bundler/lightningcss/issues/873
+    cssMinify: 'esbuild'
   },
   plugins: [
     (!isTest || isPreview) &&
