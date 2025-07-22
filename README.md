@@ -26,7 +26,7 @@ The DataGrid component is designed to handle large datasets efficiently while of
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
 - Strictly typed with TypeScript
 - [Keyboard accessibility](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
-- Light and dark mode support out of the box. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
+- Light and dark mode support out of the box.
 - [Frozen columns](https://adazzle.github.io/react-data-grid/#/CommonFeatures): Freeze columns to keep them visible during horizontal scrolling.
 - [Column resizing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
 - [Multi-column sorting](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
@@ -119,6 +119,10 @@ function App() {
   return <DataGrid columns={columns} rows={rows} />;
 }
 ```
+
+## Theming
+
+Set `--rdg-color-scheme: light/dark` at the `:root` to control the color theme. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
 
 ## API Reference
 
