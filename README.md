@@ -54,7 +54,7 @@ The DataGrid component is designed to handle large datasets efficiently while of
 - [Contributing](CONTRIBUTING.md)
 
 > **Important** <br />
-> `Rolldown` by default uses `lightningcss` to minify css which has a [bug minifying light-dark syntax](https://github.com/parcel-bundler/lightningcss/issues/873). You can switch to `esbuild` as a workaround
+> `rolldown-vite` by default uses `lightningcss` to minify css which has a [bug minifying light-dark syntax](https://github.com/parcel-bundler/lightningcss/issues/873). You can switch to `esbuild` as a workaround
 
 ```ts
 build: {
