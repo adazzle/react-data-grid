@@ -32,6 +32,7 @@ function Cell<R, SR>({
   onRowChange,
   selectCell,
   style,
+  rangeSelectionMode,
   ...props
 }: CellRendererProps<R, SR>) {
   const { tabIndex, childTabIndex, onFocus } = useRovingTabIndex(isCellSelected);

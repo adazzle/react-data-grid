@@ -162,10 +162,10 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
 
 interface BaseCellRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.ComponentProps<'div'>, 'children'>,
-    Pick<
-      DataGridProps<TRow, TSummaryRow>,
-      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
-    > {
+  Pick<
+    DataGridProps<TRow, TSummaryRow>,
+    'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+  > {
   rowIdx: number;
   selectCell: (position: Position, options?: SelectCellOptions) => void;
 }
@@ -178,6 +178,7 @@ export interface CellRendererProps<TRow, TSummaryRow>
   isDraggedOver: boolean;
   isCellSelected: boolean;
   onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, newRow: TRow) => void;
+  rangeSelectionMode: boolean;
 }
 
 export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
@@ -234,6 +235,7 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
   selectedCellIdx: number | undefined;
+  rangeSelectionMode: boolean;
   isRowSelectionDisabled: boolean;
   isRowSelected: boolean;
   gridRowStart: number;
@@ -278,6 +280,22 @@ interface CellCopyPasteArgs<TRow, TSummaryRow = unknown> {
 export type CellCopyArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
 export type CellPasteArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
 
+export interface CellsRange {
+  startRowIdx: number;
+  startColumnIdx: number;
+  endRowIdx: number;
+  endColumnIdx: number;
+}
+export interface MultiCopyArgs<TRow> {
+  cellsRange: CellsRange;
+  sourceColumnKeys: string[];
+  sourceRows: TRow[];
+}
+export interface MultiPasteArgs {
+  copiedRange: CellsRange | null;
+  targetRange: CellsRange;
+}
+
 export interface GroupRow<TRow> {
   readonly childRows: readonly TRow[];
   readonly id: string;
@@ -315,7 +333,7 @@ export interface RenderSortPriorityProps {
   priority: number | undefined;
 }
 
-export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
+export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps { }
 
 export interface RenderCheckboxProps
   extends Pick<
