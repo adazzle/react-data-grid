@@ -13,7 +13,6 @@ const root = css`
   }
 
   @layer rdg.Root {
-    --_rdg-color-scheme: light dark;
     --rdg-selection-width: 2px;
     --rdg-selection-color: hsl(207, 75%, 66%);
     --rdg-font-size: 14px;
@@ -30,10 +29,7 @@ const root = css`
     --rdg-row-selected-background-color: light-dark(hsl(207deg 76% 92%), hsl(207deg 76% 42%));
     --rdg-row-selected-hover-background-color: light-dark(hsl(207deg 76% 88%), hsl(207deg 76% 38%));
     --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
-
-    @container style(--rdg-color-scheme) {
-      --_rdg-color-scheme: var(--rdg-color-scheme);
-    }
+    --_rdg-color-scheme: var(--rdg-color-scheme, light dark);
 
     &.rdg-dark {
       --_rdg-color-scheme: dark;

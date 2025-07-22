@@ -16,16 +16,7 @@ body {
 }
 
 body {
-  color-scheme: light dark;
-
-  @container style(--rdg-color-scheme: light) {
-    color-scheme: light;
-  }
-
-  @container style(--rdg-color-scheme: dark) {
-    color-scheme: dark;
-  }
-
+  color-scheme: var(--rdg-color-scheme, light dark);
   background-color: light-dark(#fff, hsl(0deg 0% 10%));
   color: light-dark(#111, #fff);
 }
