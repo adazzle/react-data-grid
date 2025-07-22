@@ -67,13 +67,14 @@ export default function Nav({ direction, onDirectionChange }: Props) {
       <h1>react-data-grid</h1>
 
       <label className={labelClassname}>
-        Mode{' '}
+        Theme{' '}
         <select value={theme} onChange={(e) => setTheme(e.target.value as Theme)}>
           <option value="light">Light</option>
           <option value="dark">Dark</option>
           <option value="system">System</option>
         </select>
       </label>
+
       <nav aria-labelledby={demosNavId} className={navClassname}>
         <h2 id={demosNavId}>Demos</h2>
         <Link to="/CommonFeatures">Common Features</Link>
