@@ -162,10 +162,10 @@ export interface RenderHeaderCellProps<TRow, TSummaryRow = unknown> {
 
 interface BaseCellRendererProps<TRow, TSummaryRow = unknown>
   extends Omit<React.ComponentProps<'div'>, 'children'>,
-  Pick<
-    DataGridProps<TRow, TSummaryRow>,
-    'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
-  > {
+    Pick<
+      DataGridProps<TRow, TSummaryRow>,
+      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+    > {
   rowIdx: number;
   selectCell: (position: Position, options?: SelectCellOptions) => void;
 }
@@ -235,6 +235,7 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown>
   viewportColumns: readonly CalculatedColumn<TRow, TSummaryRow>[];
   rowIdx: number;
   selectedCellIdx: number | undefined;
+  selectedCellsRange: { startIdx: number; endIdx: number };
   rangeSelectionMode: boolean;
   isRowSelectionDisabled: boolean;
   isRowSelected: boolean;
@@ -333,7 +334,7 @@ export interface RenderSortPriorityProps {
   priority: number | undefined;
 }
 
-export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps { }
+export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 
 export interface RenderCheckboxProps
   extends Pick<

@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react';
 import clsx from 'clsx';
 
 import { RowSelectionContext, useLatestFunc, type RowSelectionContextValue } from './hooks';
-import { getColSpan, getRowStyle } from './utils';
+import { getColSpan, getRowStyle, isValueInBetween } from './utils';
 import type { CalculatedColumn, RenderRowProps } from './types';
 import { useDefaultRenderers } from './DataGridDefaultRenderersContext';
 import { rowClassname, rowSelectedClassname } from './style/row';
@@ -12,6 +12,7 @@ function Row<R, SR>({
   rowIdx,
   gridRowStart,
   selectedCellIdx,
+  selectedCellsRange,
   isRowSelectionDisabled,
   isRowSelected,
   draggedOverCellIdx,
@@ -20,6 +21,8 @@ function Row<R, SR>({
   viewportColumns,
   selectedCellEditor,
   onCellMouseDown,
+  onCellMouseUp,
+  onCellMouseEnter,
   onCellClick,
   onCellDoubleClick,
   onCellContextMenu,
@@ -27,6 +30,7 @@ function Row<R, SR>({
   onRowChange,
   selectCell,
   style,
+  rangeSelectionMode,
   ...props
 }: RenderRowProps<R, SR>) {
   const renderCell = useDefaultRenderers<R, SR>()!.renderCell!;
@@ -55,7 +59,10 @@ function Row<R, SR>({
       index += colSpan - 1;
     }
 
-    const isCellSelected = selectedCellIdx === idx;
+    const isCellSelected =
+      selectedCellIdx === idx ||
+      (rangeSelectionMode &&
+        isValueInBetween(idx, selectedCellsRange?.startIdx, selectedCellsRange?.endIdx));
 
     if (isCellSelected && selectedCellEditor) {
       cells.push(selectedCellEditor);
@@ -73,7 +80,11 @@ function Row<R, SR>({
           onCellDoubleClick,
           onCellContextMenu,
           onRowChange: handleRowChange,
-          selectCell
+          onMouseDownCapture: onCellMouseDown,
+          onMouseUpCapture: onCellMouseUp,
+          onMouseEnter: onCellMouseEnter,
+          selectCell,
+          rangeSelectionMode
         })
       );
     }

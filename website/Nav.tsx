@@ -66,6 +66,7 @@ export default function Nav({ direction, onDirectionChange }: Props) {
         <h2 id={demosNavId}>Demos</h2>
         <Link to="/CommonFeatures">Common Features</Link>
         <Link to="/AllFeatures">All Features</Link>
+        <Link to="/RangeSelection">Range Selection</Link>
         <Link to="/CellNavigation">Cell Navigation</Link>
         <Link to="/ColumnSpanning">Column Spanning</Link>
         <Link to="/ColumnGrouping">Column Grouping</Link>

@@ -22,6 +22,9 @@ function Cell<R, SR>({
   rowIdx,
   className,
   onMouseDown,
+  onMouseDownCapture,
+  onMouseUpCapture,
+  onMouseEnter,
   onCellMouseDown,
   onClick,
   onCellClick,
@@ -67,7 +70,7 @@ function Cell<R, SR>({
 
   function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
     onMouseDown?.(event);
-    if (!handleMouseEvent(event, onCellMouseDown)) {
+    if (!handleMouseEvent(event, onCellMouseDown) || rangeSelectionMode) {
       // select cell if the event is not prevented
       selectCellWrapper();
     }
@@ -95,6 +98,17 @@ function Cell<R, SR>({
     onRowChange(column, newRow);
   }
 
+  function getOnMouseEvent(handler) {
+    function onMouseEvent(event: React.MouseEvent<HTMLDivElement>) {
+      if (handler) {
+        const cellEvent = createCellEvent(event);
+        handler({ row, column, selectCell: selectCellWrapper, rowIdx }, cellEvent);
+      }
+    }
+
+    return onMouseEvent;
+  }
+
   return (
     <div
       role="gridcell"
@@ -110,6 +124,9 @@ function Cell<R, SR>({
       }}
       onClick={handleClick}
       onMouseDown={handleMouseDown}
+      onMouseDownCapture={getOnMouseEvent(onMouseDownCapture)}
+      onMouseUpCapture={getOnMouseEvent(onMouseUpCapture)}
+      onMouseEnter={getOnMouseEvent(onMouseEnter)}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
       onFocus={onFocus}

@@ -17,6 +17,7 @@ import { Route as ScrollToCellRouteImport } from './routes/ScrollToCell'
 import { Route as RowsReorderingRouteImport } from './routes/RowsReordering'
 import { Route as RowGroupingRouteImport } from './routes/RowGrouping'
 import { Route as ResizableGridRouteImport } from './routes/ResizableGrid'
+import { Route as RangeSelectionRouteImport } from './routes/RangeSelection'
 import { Route as NoRowsRouteImport } from './routes/NoRows'
 import { Route as MillionCellsRouteImport } from './routes/MillionCells'
 import { Route as MasterDetailRouteImport } from './routes/MasterDetail'
@@ -61,6 +62,11 @@ const RowGroupingRoute = RowGroupingRouteImport.update({
 const ResizableGridRoute = ResizableGridRouteImport.update({
   id: '/ResizableGrid',
   path: '/ResizableGrid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RangeSelectionRoute = RangeSelectionRouteImport.update({
+  id: '/RangeSelection',
+  path: '/RangeSelection',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NoRowsRoute = NoRowsRouteImport.update({
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/MasterDetail': typeof MasterDetailRoute
   '/MillionCells': typeof MillionCellsRoute
   '/NoRows': typeof NoRowsRoute
+  '/RangeSelection': typeof RangeSelectionRoute
   '/ResizableGrid': typeof ResizableGridRoute
   '/RowGrouping': typeof RowGroupingRoute
   '/RowsReordering': typeof RowsReorderingRoute
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/MasterDetail': typeof MasterDetailRoute
   '/MillionCells': typeof MillionCellsRoute
   '/NoRows': typeof NoRowsRoute
+  '/RangeSelection': typeof RangeSelectionRoute
   '/ResizableGrid': typeof ResizableGridRoute
   '/RowGrouping': typeof RowGroupingRoute
   '/RowsReordering': typeof RowsReorderingRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/MasterDetail': typeof MasterDetailRoute
   '/MillionCells': typeof MillionCellsRoute
   '/NoRows': typeof NoRowsRoute
+  '/RangeSelection': typeof RangeSelectionRoute
   '/ResizableGrid': typeof ResizableGridRoute
   '/RowGrouping': typeof RowGroupingRoute
   '/RowsReordering': typeof RowsReorderingRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/MasterDetail'
     | '/MillionCells'
     | '/NoRows'
+    | '/RangeSelection'
     | '/ResizableGrid'
     | '/RowGrouping'
     | '/RowsReordering'
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/MasterDetail'
     | '/MillionCells'
     | '/NoRows'
+    | '/RangeSelection'
     | '/ResizableGrid'
     | '/RowGrouping'
     | '/RowsReordering'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/MasterDetail'
     | '/MillionCells'
     | '/NoRows'
+    | '/RangeSelection'
     | '/ResizableGrid'
     | '/RowGrouping'
     | '/RowsReordering'
@@ -297,6 +309,7 @@ export interface RootRouteChildren {
   MasterDetailRoute: typeof MasterDetailRoute
   MillionCellsRoute: typeof MillionCellsRoute
   NoRowsRoute: typeof NoRowsRoute
+  RangeSelectionRoute: typeof RangeSelectionRoute
   ResizableGridRoute: typeof ResizableGridRoute
   RowGroupingRoute: typeof RowGroupingRoute
   RowsReorderingRoute: typeof RowsReorderingRoute
@@ -410,6 +423,13 @@ declare module '@tanstack/react-router' {
       path: '/NoRows'
       fullPath: '/NoRows'
       preLoaderRoute: typeof NoRowsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/RangeSelection': {
+      id: '/RangeSelection'
+      path: '/RangeSelection'
+      fullPath: '/RangeSelection'
+      preLoaderRoute: typeof RangeSelectionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ResizableGrid': {
@@ -592,6 +612,15 @@ declare module './routes/NoRows' {
     FileRoutesByPath['/NoRows']['fullPath']
   >
 }
+declare module './routes/RangeSelection' {
+  const createFileRoute: CreateFileRoute<
+    '/RangeSelection',
+    FileRoutesByPath['/RangeSelection']['parentRoute'],
+    FileRoutesByPath['/RangeSelection']['id'],
+    FileRoutesByPath['/RangeSelection']['path'],
+    FileRoutesByPath['/RangeSelection']['fullPath']
+  >
+}
 declare module './routes/ResizableGrid' {
   const createFileRoute: CreateFileRoute<
     '/ResizableGrid',
@@ -663,6 +692,7 @@ const rootRouteChildren: RootRouteChildren = {
   MasterDetailRoute: MasterDetailRoute,
   MillionCellsRoute: MillionCellsRoute,
   NoRowsRoute: NoRowsRoute,
+  RangeSelectionRoute: RangeSelectionRoute,
   ResizableGridRoute: ResizableGridRoute,
   RowGroupingRoute: RowGroupingRoute,
   RowsReorderingRoute: RowsReorderingRoute,
