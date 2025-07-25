@@ -378,7 +378,7 @@ interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivP
   /** Default options applied to all columns */
   defaultColumnOptions?: Maybe<DefaultColumnOptions<NoInfer<R>, NoInfer<SR>>>;
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
-  onMultiPaste?: Maybe<(args: MultiPasteArgs) => NoInfer<R[]>>;
+  onMultiPaste?: Maybe<(args: MultiPasteArgs, event: CellClipboardEvent) => NoInfer<R[]>>;
   onMultiCopy?: Maybe<(args: MultiCopyArgs<NoInfer<R>>, event: CellClipboardEvent) => void>;
   onSelectedRangeChange?: Maybe<(selectedRange: CellsRange) => void>;
   /**
