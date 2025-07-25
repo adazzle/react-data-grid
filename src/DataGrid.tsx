@@ -360,10 +360,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const columnWidths = isColumnWidthsControlled ? columnWidthsRaw : columnWidthsInternal;
   const onColumnWidthsChange = isColumnWidthsControlled
     ? (columnWidths: ColumnWidths) => {
-      // we keep the internal state in sync with the prop but this prevents an extra render
-      setColumnWidthsInternal(columnWidths);
-      onColumnWidthsChangeRaw(columnWidths);
-    }
+        // we keep the internal state in sync with the prop but this prevents an extra render
+        setColumnWidthsInternal(columnWidths);
+        onColumnWidthsChangeRaw(columnWidths);
+      }
     : setColumnWidthsInternal;
 
   const getColumnWidth = useCallback(
@@ -753,10 +753,13 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         return;
       }
 
-      const updatedRows = onMultiPaste({
-        copiedRange,
-        targetRange: selectedRange
-      }, event);
+      const updatedRows = onMultiPaste(
+        {
+          copiedRange,
+          targetRange: selectedRange
+        },
+        event
+      );
 
       onRowsChange(updatedRows, {
         indexes: [],
@@ -1154,10 +1157,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       return selectedPosition.idx > colOverscanEndIdx
         ? [...viewportColumns, selectedColumn]
         : [
-          ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
-          selectedColumn,
-          ...viewportColumns.slice(lastFrozenColumnIndex + 1)
-        ];
+            ...viewportColumns.slice(0, lastFrozenColumnIndex + 1),
+            selectedColumn,
+            ...viewportColumns.slice(lastFrozenColumnIndex + 1)
+          ];
     }
     return viewportColumns;
   }
@@ -1221,11 +1224,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           selectedCellIdx: selectedRowIdx === rowIdx ? selectedIdx : undefined,
           selectedCellsRange:
             enableRangeSelection &&
-              isValueInBetween(rowIdx, selectedRange?.startRowIdx, selectedRange?.endRowIdx)
+            isValueInBetween(rowIdx, selectedRange?.startRowIdx, selectedRange?.endRowIdx)
               ? {
-                startIdx: selectedRange.startColumnIdx,
-                endIdx: selectedRange.endColumnIdx
-              }
+                  startIdx: selectedRange.startColumnIdx,
+                  endIdx: selectedRange.endColumnIdx
+                }
               : { startIdx: -1, endIdx: -1 },
           draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
           lastFrozenColumnIndex,
@@ -1302,9 +1305,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
               : undefined,
           scrollPaddingBlock:
             isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
-              scrollToPosition?.rowIdx !== undefined
-              ? `${headerRowsHeight + topSummaryRowsCount * summaryRowHeight}px ${bottomSummaryRowsCount * summaryRowHeight
-              }px`
+            scrollToPosition?.rowIdx !== undefined
+              ? `${headerRowsHeight + topSummaryRowsCount * summaryRowHeight}px ${
+                  bottomSummaryRowsCount * summaryRowHeight
+                }px`
               : undefined,
           gridTemplateColumns,
           gridTemplateRows: templateRows,

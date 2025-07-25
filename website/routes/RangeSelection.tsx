@@ -349,9 +349,9 @@ export default function RangeSelection({ direction }: Props) {
     const destinationRange = targetRange;
     if (
       getRangeSize(sourceRange.endRowIdx, sourceRange.startRowIdx) !==
-      getRangeSize(destinationRange.endRowIdx, destinationRange.startRowIdx) ||
+        getRangeSize(destinationRange.endRowIdx, destinationRange.startRowIdx) ||
       getRangeSize(sourceRange.startColumnIdx, sourceRange.endColumnIdx) !==
-      getRangeSize(destinationRange.startColumnIdx, destinationRange.endColumnIdx)
+        getRangeSize(destinationRange.startColumnIdx, destinationRange.endColumnIdx)
     ) {
       return [...rows];
     }
