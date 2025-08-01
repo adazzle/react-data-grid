@@ -1,5 +1,5 @@
 import {
-  createHashHistory,
+  // createHashHistory,
   createRouter as createTanStackRouter,
   ErrorComponent
 } from '@tanstack/react-router';
