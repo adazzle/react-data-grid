@@ -382,6 +382,11 @@ export default function RangeSelection({ direction }: Props) {
     return newRows;
   }
 
+  function handleMultiCopy(args: MultiCopyArgs<RowData>, event: CellClipboardEvent) {
+    event.preventDefault();
+    console.log('copying: ', args);
+  }
+
   const gridElement = (
     <DataGrid
       rowKeyGetter={rowKeyGetter}
@@ -400,6 +405,7 @@ export default function RangeSelection({ direction }: Props) {
       className="fill-grid"
       direction={direction}
       enableRangeSelection
+      onMultiCopy={handleMultiCopy}
       onMultiPaste={handleMultiPaste}
     />
   );

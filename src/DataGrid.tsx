@@ -1237,7 +1237,17 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           rangeSelectionMode: enableRangeSelection,
           selectedCellEditor: getCellEditor(rowIdx),
           onCellMouseDown: () => setIsMouseRangeSelectionMode(true),
-          onCellMouseUp: () => setIsMouseRangeSelectionMode(false),
+          onCellMouseUp: () => {
+            setIsMouseRangeSelectionMode(false);
+
+            // Once the ranges are decided, re-evaluate start and end;
+            setSelectedRange((boundValue) => ({
+              startColumnIdx: Math.min(boundValue.startColumnIdx, boundValue.endColumnIdx),
+              endColumnIdx: Math.max(boundValue.startColumnIdx, boundValue.endColumnIdx),
+              startRowIdx: Math.min(boundValue.startRowIdx, boundValue.endRowIdx),
+              endRowIdx: Math.max(boundValue.startRowIdx, boundValue.endRowIdx)
+            }));
+          },
           onCellMouseEnter: ({ rowIdx, column }) => {
             if (isMouseRangeSelectionMode && enableRangeSelection) {
               setSelectedRange({ ...selectedRange, endRowIdx: rowIdx, endColumnIdx: column.idx });
