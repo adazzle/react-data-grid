@@ -1,6 +1,6 @@
 import '../root.css';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
@@ -40,17 +40,25 @@ function Root() {
   const [direction, setDirection] = useState<Direction>('ltr');
 
   return (
+    <RootDocument>
+      <DirectionContext value={direction}>
+        <Nav direction={direction} onDirectionChange={setDirection} />
+        <main dir={direction} className={mainClassname}>
+          <Outlet />
+        </main>
+      </DirectionContext>
+    </RootDocument>
+  );
+}
+
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  return (
     <html>
       <head>
         <HeadContent />
       </head>
       <body>
-        <DirectionContext value={direction}>
-          <Nav direction={direction} onDirectionChange={setDirection} />
-          <main dir={direction} className={mainClassname}>
-            <Outlet />
-          </main>
-        </DirectionContext>
+        {children}
         <Scripts />
       </body>
     </html>
