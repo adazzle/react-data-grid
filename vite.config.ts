@@ -1,4 +1,4 @@
-import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import react from '@vitejs/plugin-react-oxc';
 import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
@@ -44,7 +44,6 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
 const viewport = { width: 1920, height: 1080 } as const;
 
 export default defineConfig(({ command, isPreview }) => ({
-  base: '/react-data-grid/',
   cacheDir: '.cache/vite',
   clearScreen: false,
   build: {
@@ -56,12 +55,18 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   plugins: [
     (!isTest || isPreview) &&
-      tanstackRouter({
-        target: 'react',
-        generatedRouteTree: 'website/routeTree.gen.ts',
-        routesDirectory: 'website/routes',
-        autoCodeSplitting: true,
-        verboseFileRoutes: false
+      tanstackStart({
+        customViteReactPlugin: true,
+        tsr: {
+          srcDirectory: 'website',
+          // @ts-expect-error types are not correct
+          autoCodeSplitting: true,
+          verboseFileRoutes: false
+        },
+        prerender: {
+          enabled: true,
+          crawlLinks: true
+        }
       }),
     react({
       exclude: ['./.cache/**/*']
