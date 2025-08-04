@@ -44,6 +44,7 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
 const viewport = { width: 1920, height: 1080 } as const;
 
 export default defineConfig(({ command, isPreview }) => ({
+  // base: '/react-data-grid/',
   cacheDir: '.cache/vite',
   clearScreen: false,
   build: {
