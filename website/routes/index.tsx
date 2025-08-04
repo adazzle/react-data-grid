@@ -2,6 +2,7 @@ import { redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute({
   beforeLoad() {
-    // throw redirect({ to: '/CommonFeatures' });
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
+    throw redirect({ to: '/CommonFeatures' });
   }
 });
