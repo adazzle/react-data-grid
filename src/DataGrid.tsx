@@ -1096,6 +1096,12 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
   function getCellEditor(rowIdx: number) {
     if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'SELECT') return;
+    // Do no open editor if more than one cell is selected
+    if (
+      selectedRange.endRowIdx - selectedRange.startRowIdx > 0 ||
+      selectedRange.endColumnIdx - selectedRange.startColumnIdx > 0
+    )
+      return;
 
     const { idx, row } = selectedPosition;
     const column = columns[idx];
