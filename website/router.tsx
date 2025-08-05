@@ -1,15 +1,11 @@
-import {
-  // createHashHistory,
-  createRouter as createTanStackRouter,
-  ErrorComponent
-} from '@tanstack/react-router';
+import { createRouter as createTanStackRouter, ErrorComponent } from '@tanstack/react-router';
 
 import { routeTree } from './routeTree.gen';
 
 export function createRouter() {
   return createTanStackRouter({
+    basepath: '/react-data-grid/',
     routeTree,
-    // history: createHashHistory(),
     caseSensitive: true,
     defaultErrorComponent: ErrorComponent,
     defaultNotFoundComponent: NotFound,
