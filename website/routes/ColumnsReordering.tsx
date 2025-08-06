@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { DataGrid } from '../../src';
 import type { Column, ColumnWidths, SortColumn } from '../../src';
+import { startViewTransition } from '../utils';
 import { useDirection } from '../directionContext';
 
 export const Route = createFileRoute({
@@ -120,12 +121,7 @@ function ColumnsReordering() {
       });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (document.startViewTransition) {
-      document.startViewTransition(reorderColumns);
-    } else {
-      reorderColumns();
-    }
+    startViewTransition(reorderColumns);
   }
 
   function resetOrderAndWidths() {

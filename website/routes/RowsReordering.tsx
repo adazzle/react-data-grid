@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { DataGrid, textEditor } from '../../src';
 import type { CellRendererProps, Column } from '../../src';
 import { DraggableCellRenderer } from '../components';
+import { startViewTransition } from '../utils';
 import { useDirection } from '../directionContext';
 
 export const Route = createFileRoute({
@@ -73,12 +74,7 @@ function RowsReordering() {
         });
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (document.startViewTransition) {
-        document.startViewTransition(reorderRows);
-      } else {
-        reorderRows();
-      }
+      startViewTransition(reorderRows);
     }
 
     return <DraggableCellRenderer key={key} {...props} onRowReorder={onRowReorder} />;
