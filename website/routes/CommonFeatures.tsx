@@ -14,8 +14,8 @@ import {
 } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
+import { exportToCsv, exportToPdf } from '../utils';
 import { useDirection } from '../directionContext';
-import { exportToCsv, exportToPdf } from '../exportUtils';
 
 export const Route = createFileRoute({
   component: CommonFeatures

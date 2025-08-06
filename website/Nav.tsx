@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import type { Direction } from '../src/types';
+import { startViewTransition } from './utils';
 
 const headerClassname = css`
   border-inline-start: 4px solid light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));
@@ -62,13 +63,19 @@ export default function Nav({ direction, onDirectionChange }: Props) {
   const linksNavId = useId();
   const [theme, setTheme] = useState<Theme>('system');
 
+  function onThemeChange(theme: Theme) {
+    startViewTransition(() => {
+      setTheme(theme);
+    });
+  }
+
   return (
     <header className={headerClassname}>
       <h1>react-data-grid</h1>
 
       <label className={labelClassname}>
         Theme{' '}
-        <select value={theme} onChange={(e) => setTheme(e.target.value as Theme)}>
+        <select value={theme} onChange={(e) => onThemeChange(e.target.value as Theme)}>
           <option value="light">Light</option>
           <option value="dark">Dark</option>
           <option value="system">System</option>
