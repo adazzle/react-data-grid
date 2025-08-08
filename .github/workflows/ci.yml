@@ -33,6 +33,9 @@ jobs:
       - name: Test
         run: node --run test
         timeout-minutes: 4
+      - name: Test Without React Compiler
+        run: node --run test
+        timeout-minutes: 4
       - name: Upload coverage
         uses: codecov/codecov-action@v5
         with:

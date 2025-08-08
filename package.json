@@ -36,6 +36,7 @@
     "build:website": "vite build",
     "build": "rolldown -c",
     "test": "vitest run",
+    "test-unoptimized": "vitest run --mode=unoptimized",
     "test:watch": "vitest watch",
     "format": "biome format --write",
     "check": "biome check --error-on-warnings",

@@ -1,7 +1,7 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
 
 const isCI = process.env.CI === 'true';
@@ -43,85 +43,89 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
 
 const viewport = { width: 1920, height: 1080 } as const;
 
-export default defineConfig(({ command, isPreview }) => ({
-  base: '/react-data-grid/',
-  cacheDir: '.cache/vite',
-  clearScreen: false,
-  build: {
-    modulePreload: { polyfill: false },
-    sourcemap: true,
-    reportCompressedSize: false,
-    // https://github.com/parcel-bundler/lightningcss/issues/873
-    cssMinify: 'esbuild'
-  },
-  plugins: [
-    (!isTest || isPreview) &&
-      tanstackRouter({
-        target: 'react',
-        generatedRouteTree: 'website/routeTree.gen.ts',
-        routesDirectory: 'website/routes',
-        autoCodeSplitting: true,
-        verboseFileRoutes: false
+export default defineConfig(({ command, isPreview, mode }) => {
+  const env = loadEnv(mode, process.cwd());
+
+  return {
+    base: '/react-data-grid/',
+    cacheDir: '.cache/vite',
+    clearScreen: false,
+    build: {
+      modulePreload: { polyfill: false },
+      sourcemap: true,
+      reportCompressedSize: false,
+      // https://github.com/parcel-bundler/lightningcss/issues/873
+      cssMinify: 'esbuild'
+    },
+    plugins: [
+      (!isTest || isPreview) &&
+        tanstackRouter({
+          target: 'react',
+          generatedRouteTree: 'website/routeTree.gen.ts',
+          routesDirectory: 'website/routes',
+          autoCodeSplitting: true,
+          verboseFileRoutes: false
+        }),
+      react({
+        exclude: ['./.cache/**/*'],
+        babel: {
+          plugins: env.VITE_UNOPTIMIZED ? [['babel-plugin-react-compiler']] : undefined
+        }
       }),
-    react({
-      exclude: ['./.cache/**/*'],
-      babel: {
-        plugins: [['babel-plugin-react-compiler']]
-      }
-    }),
-    wyw({
-      exclude: ['./.cache/**/*', '**/*.d.ts', '**/*.gen.ts'],
-      preprocessor: 'none',
-      displayName: command === 'serve'
-    })
-  ],
-  server: {
-    open: true
-  },
-  test: {
-    globals: true,
-    coverage: {
-      provider: 'v8',
-      enabled: isCI,
-      include: ['src/**/*.{ts,tsx}'],
-      reporter: ['json']
+      wyw({
+        exclude: ['./.cache/**/*', '**/*.d.ts', '**/*.gen.ts'],
+        preprocessor: 'none',
+        displayName: command === 'serve'
+      })
+    ],
+    server: {
+      open: true
     },
-    testTimeout: isCI ? 10000 : 5000,
-    restoreMocks: true,
-    sequence: {
-      shuffle: true
-    },
-    projects: [
-      {
-        extends: true,
-        test: {
-          name: 'browser',
-          include: ['test/browser/**/*.test.*'],
-          browser: {
-            enabled: true,
-            provider: 'playwright',
-            instances: [
-              {
-                browser: 'chromium',
-                context: { viewport }
-              }
-            ],
-            commands: { resizeColumn, dragFill },
-            viewport,
-            headless: true,
-            screenshotFailures: process.env.CI !== 'true'
-          },
-          setupFiles: ['test/setupBrowser.ts']
-        }
+    test: {
+      globals: true,
+      coverage: {
+        provider: 'v8',
+        enabled: isCI,
+        include: ['src/**/*.{ts,tsx}'],
+        reporter: ['json']
       },
-      {
-        extends: true,
-        test: {
-          name: 'node',
-          include: ['test/node/**/*.test.*'],
-          environment: 'node'
+      testTimeout: isCI ? 10000 : 5000,
+      restoreMocks: true,
+      sequence: {
+        shuffle: true
+      },
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: 'browser',
+            include: ['test/browser/**/*.test.*'],
+            browser: {
+              enabled: true,
+              provider: 'playwright',
+              instances: [
+                {
+                  browser: 'chromium',
+                  context: { viewport }
+                }
+              ],
+              commands: { resizeColumn, dragFill },
+              viewport,
+              headless: true,
+              screenshotFailures: process.env.CI !== 'true'
+            },
+            setupFiles: ['test/setupBrowser.ts']
+          }
+        },
+        {
+          extends: true,
+          test: {
+            name: 'node',
+            include: ['test/node/**/*.test.*'],
+            environment: 'node'
+          }
         }
-      }
-    ]
-  }
-}));
+      ]
+    }
+  };
+});
