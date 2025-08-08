@@ -167,7 +167,7 @@ interface BaseCellRendererProps<TRow, TSummaryRow = unknown>
       'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
     > {
   rowIdx: number;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+  selectCell: (position: Position, options?: SelectCellOptions) => void;
 }
 
 export interface CellRendererProps<TRow, TSummaryRow>
@@ -203,7 +203,7 @@ interface SelectCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
   rowIdx: number;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+  selectCell: (position: Position, options?: SelectCellOptions) => void;
 }
 
 export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
@@ -332,6 +332,11 @@ export interface Renderers<TRow, TSummaryRow> {
   renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
   renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
   noRowsFallback?: Maybe<ReactNode>;
+}
+
+export interface SelectCellOptions {
+  enableEditor?: Maybe<boolean>;
+  shouldFocusCell?: Maybe<boolean>;
 }
 
 export interface ColumnWidth {

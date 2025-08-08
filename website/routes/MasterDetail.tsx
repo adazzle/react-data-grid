@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -9,7 +8,7 @@ import type { Direction } from '../../src/types';
 import { CellExpanderFormatter } from '../components';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/MasterDetail')({
+export const Route = createFileRoute({
   component: MasterDetail
 });
 
@@ -130,6 +129,7 @@ function MasterDetail() {
 
   return (
     <DataGrid
+      aria-label="Master Detail Example"
       rowKeyGetter={rowKeyGetter}
       columns={columns}
       rows={rows}

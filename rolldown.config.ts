@@ -1,30 +1,27 @@
-// @ts-check
 import { isAbsolute } from 'node:path';
 import wyw from '@wyw-in-js/rollup';
-import pkg from './package.json' with { type: 'json' };
-import react from '@vitejs/plugin-react';
 import { defineConfig } from 'rolldown';
+import { dts } from 'rolldown-plugin-dts';
+
+import pkg from './package.json' with { type: 'json' };
 
 export default defineConfig({
   input: './src/index.ts',
   output: {
     dir: 'lib',
-    entryFileNames: 'bundle.js',
     cssEntryFileNames: 'styles.css',
     sourcemap: true
   },
   platform: 'browser',
   external: (id) => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', { target: '19' }]]
-      }
+    dts({
+      tsconfig: './tsconfig.lib.json'
     }),
-    // @ts-expect-error
     wyw({
+      exclude: ['**/*.d.ts'],
       preprocessor: 'none',
-      classNameSlug(/** @type {string} */ hash) {
+      classNameSlug(hash) {
         // We add the package version as suffix to avoid style conflicts
         // between multiple versions of RDG on the same page.
         return `${hash}${pkg.version.replaceAll('.', '-')}`;

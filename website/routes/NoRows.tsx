@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/NoRows')({
+export const Route = createFileRoute({
   component: NoRows
 });
 
@@ -50,6 +49,7 @@ function NoRows() {
 
   return (
     <DataGrid
+      aria-label="No Rows Example"
       columns={columns}
       rows={rows}
       renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}

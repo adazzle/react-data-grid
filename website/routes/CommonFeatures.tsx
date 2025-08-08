@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { createPortal, flushSync } from 'react-dom';
 import { faker } from '@faker-js/faker';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import {
@@ -15,10 +14,10 @@ import {
 } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
 import type { Direction } from '../../src/types';
+import { exportToCsv, exportToPdf } from '../utils';
 import { useDirection } from '../directionContext';
-import { exportToCsv, exportToPdf } from '../exportUtils';
 
-export const Route = createFileRoute('/CommonFeatures')({
+export const Route = createFileRoute({
   component: CommonFeatures
 });
 
@@ -385,6 +384,7 @@ function CommonFeatures() {
       </div>
       <DataGrid
         ref={gridRef}
+        aria-label="Common Features Example"
         rowKeyGetter={rowKeyGetter}
         columns={columns}
         rows={sortedRows}

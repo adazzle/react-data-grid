@@ -93,6 +93,7 @@ export default defineConfig([
       'no-sparse-arrays': 1,
       'no-template-curly-in-string': 1,
       'no-this-before-super': 0,
+      'no-unassigned-vars': 1,
       'no-undef': 0,
       'no-unexpected-multiline': 0,
       'no-unmodified-loop-condition': 1,
@@ -103,7 +104,7 @@ export default defineConfig([
       'no-unsafe-optional-chaining': [1, { disallowArithmeticOperators: true }],
       'no-unused-private-class-members': 0,
       'no-unused-vars': 0, // replaced by @typescript-eslint/no-unused-vars
-      'no-use-before-define': 0, // replaced by @typescript-eslint/no-use-before-define
+      'no-use-before-define': 0,
       'no-useless-backreference': 1,
       'require-atomic-updates': 1,
       'use-isnan': [1, { enforceForIndexOf: true }],
@@ -176,7 +177,7 @@ export default defineConfig([
       'no-lone-blocks': 1,
       'no-lonely-if': 1,
       'no-loop-func': 0,
-      'no-magic-numbers': 0, // replaced by @typescript-eslint/no-magic-numbers
+      'no-magic-numbers': 0,
       'no-multi-assign': 0,
       'no-multi-str': 1,
       'no-negated-condition': 0,
@@ -208,7 +209,7 @@ export default defineConfig([
       'no-return-await': 0, // replaced by @typescript-eslint/return-await
       'no-script-url': 1,
       'no-sequences': [1, { allowInParentheses: false }],
-      'no-shadow': 0, // replaced by @typescript-eslint/no-shadow
+      'no-shadow': 0,
       'no-shadow-restricted-names': 1,
       'no-ternary': 0,
       'no-throw-literal': 0, // replaced by @typescript-eslint/only-throw-error
@@ -615,6 +616,7 @@ export default defineConfig([
       'vitest/no-hooks': 1,
       'vitest/no-identical-title': 1,
       'vitest/no-import-node-test': 1,
+      'vitest/no-importing-vitest-globals': 1,
       'vitest/no-interpolation-in-snapshots': 0,
       'vitest/no-large-snapshots': 0,
       'vitest/no-mocks-import': 1,
@@ -623,6 +625,16 @@ export default defineConfig([
       'vitest/no-standalone-expect': 1,
       'vitest/no-test-prefixes': 0,
       'vitest/no-test-return-statement': 0,
+      'vitest/padding-around-after-all-blocks': 0,
+      'vitest/padding-around-after-each-blocks': 0,
+      'vitest/padding-around-all': 0,
+      'vitest/padding-around-before-all-blocks': 0,
+      'vitest/padding-around-before-each-blocks': 0,
+      'vitest/padding-around-describe-blocks': 0,
+      'vitest/padding-around-expect-groups': 0,
+      'vitest/padding-around-test-blocks': 0,
+      'vitest/prefer-called-once': 1,
+      'vitest/prefer-called-times': 0,
       'vitest/prefer-called-with': 0,
       'vitest/prefer-comparison-matcher': 1,
       'vitest/prefer-each': 1,
@@ -631,6 +643,7 @@ export default defineConfig([
       'vitest/prefer-expect-resolves': 1,
       'vitest/prefer-hooks-in-order': 1,
       'vitest/prefer-hooks-on-top': 1,
+      'vitest/prefer-importing-vitest-globals': 0,
       'vitest/prefer-lowercase-title': 0,
       'vitest/prefer-mock-promise-shorthand': 1,
       'vitest/prefer-snapshot-hint': 0,
@@ -654,6 +667,7 @@ export default defineConfig([
       'vitest/valid-expect-in-promise': 1,
       'vitest/valid-expect': [1, { alwaysAwait: true }],
       'vitest/valid-title': 1,
+      'vitest/warn-todo': 1,
 
       // https://github.com/testing-library/eslint-plugin-jest-dom#supported-rules
       'jest-dom/prefer-checked': 1,
@@ -684,6 +698,7 @@ export default defineConfig([
       'testing-library/no-node-access': 0,
       'testing-library/no-promise-in-fire-event': 0,
       'testing-library/no-render-in-lifecycle': 0,
+      'testing-library/no-test-id-queries': 0,
       'testing-library/no-unnecessary-act': 1,
       'testing-library/no-wait-for-multiple-assertions': 1,
       'testing-library/no-wait-for-side-effects': 1,

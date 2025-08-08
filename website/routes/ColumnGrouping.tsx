@@ -1,11 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router';
-
 import { DataGrid } from '../../src';
 import type { ColumnOrColumnGroup } from '../../src';
 import { renderCoordinates } from '../renderers';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/ColumnGrouping')({
+export const Route = createFileRoute({
   component: ColumnGrouping
 });
 
@@ -100,6 +98,7 @@ function ColumnGrouping() {
 
   return (
     <DataGrid
+      aria-label="Column Grouping Example"
       columns={columns}
       rows={rows}
       topSummaryRows={[0]}

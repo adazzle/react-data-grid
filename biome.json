@@ -1,17 +1,18 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": [
-      "./.cache/**/*",
-      "./coverage/**/*",
-      "./dist/**/*",
-      "./lib/**/*",
-      "./node_modules/**/*",
-      "./website/routeTree.gen.ts"
+    "includes": [
+      "**",
+      "!.cache/**/*",
+      "!coverage/**/*",
+      "!dist/**/*",
+      "!lib/**/*",
+      "!node_modules/**/*",
+      "!website/routeTree.gen.ts"
     ]
   },
   "formatter": {
-    "ignore": ["*.ts", "*.tsx", "./package.json"],
+    "includes": ["**", "!**/*.ts", "!**/*.tsx", "!package.json"],
     "indentStyle": "space",
     "lineWidth": 100
   },
@@ -33,6 +34,9 @@
     }
   },
   "linter": {
+    "domains": {
+      "project": "recommended"
+    },
     "rules": {
       "recommended": false,
       "a11y": {
@@ -40,7 +44,6 @@
         "noAriaHiddenOnFocusable": "warn",
         "noAriaUnsupportedElements": "warn",
         "noAutofocus": "off",
-        "noBlankTarget": "warn",
         "noDistractingElements": "warn",
         "noHeaderScope": "warn",
         "noInteractiveElementToNoninteractiveRole": "warn",
@@ -72,18 +75,23 @@
         "useValidLang": "warn"
       },
       "complexity": {
+        "noAdjacentSpacesInRegex": "warn",
+        "noArguments": "warn",
         "noBannedTypes": "warn",
+        "noCommaOperator": "warn",
         "noEmptyTypeParameters": "warn",
         "noExcessiveCognitiveComplexity": "off",
         "noExcessiveNestedTestSuites": "off",
         "noExtraBooleanCast": "warn",
+        "noFlatMapIdentity": "warn",
         "noForEach": "warn",
-        "noMultipleSpacesInRegularExpressionLiterals": "warn",
         "noStaticOnlyClass": "warn",
         "noThisInStatic": "warn",
         "noUselessCatch": "warn",
         "noUselessConstructor": "warn",
+        "noUselessContinue": "warn",
         "noUselessEmptyExport": "warn",
+        "noUselessEscapeInRegex": "warn",
         "noUselessFragments": "warn",
         "noUselessLabel": "warn",
         "noUselessLoneBlockStatements": "warn",
@@ -95,15 +103,16 @@
         "noUselessTypeConstraint": "warn",
         "noUselessUndefinedInitialization": "warn",
         "noVoid": "warn",
-        "noWith": "warn",
         "useArrowFunction": "warn",
         "useDateNow": "warn",
         "useFlatMap": "warn",
         "useLiteralKeys": "warn",
+        "useNumericLiterals": "warn",
         "useOptionalChain": "warn",
         "useRegexLiterals": "warn",
         "useSimpleNumberKeys": "warn",
-        "useSimplifiedLogicExpression": "off"
+        "useSimplifiedLogicExpression": "off",
+        "useWhile": "warn"
       },
       "correctness": {
         "noChildrenProp": "off",
@@ -113,20 +122,18 @@
         "noConstructorReturn": "warn",
         "noEmptyCharacterClassInRegex": "warn",
         "noEmptyPattern": "warn",
-        "noFlatMapIdentity": "warn",
         "noGlobalObjectCalls": "warn",
         "noInnerDeclarations": "warn",
         "noInvalidBuiltinInstantiation": "warn",
         "noInvalidConstructorSuper": "warn",
         "noInvalidDirectionInLinearGradient": "warn",
         "noInvalidGridAreas": "warn",
-        "noInvalidNewBuiltin": "warn",
         "noInvalidPositionAtImportRule": "warn",
         "noInvalidUseBeforeDeclaration": "warn",
-        "noNewSymbol": "warn",
         "noNodejsModules": "warn",
         "noNonoctalDecimalEscape": "warn",
         "noPrecisionLoss": "warn",
+        "noPrivateImports": "warn",
         "noRenderReturnValue": "warn",
         "noSelfAssign": "warn",
         "noSetterReturn": "warn",
@@ -139,58 +146,81 @@
         "noUnknownProperty": "warn",
         "noUnknownUnit": "warn",
         "noUnmatchableAnbSelector": "warn",
-        "noUnnecessaryContinue": "warn",
         "noUnreachable": "warn",
         "noUnreachableSuper": "warn",
         "noUnsafeFinally": "warn",
         "noUnsafeOptionalChaining": "warn",
-        "noUnusedFunctionParameters": "off",
+        "noUnusedFunctionParameters": {
+          "level": "warn",
+          "options": {
+            "ignoreRestSiblings": true
+          }
+        },
         "noUnusedImports": "warn",
         "noUnusedLabels": "warn",
         "noUnusedPrivateClassMembers": "warn",
-        "noUnusedVariables": "warn",
+        "noUnusedVariables": {
+          "level": "warn",
+          "options": {
+            "ignoreRestSiblings": true
+          }
+        },
         "noVoidElementsWithChildren": "warn",
         "noVoidTypeReturn": "warn",
-        "useArrayLiterals": "warn",
         "useExhaustiveDependencies": "off",
         "useHookAtTopLevel": "warn",
         "useImportExtensions": "off",
         "useIsNan": "warn",
         "useJsxKeyInIterable": "off",
         "useValidForDirection": "warn",
-        "useYield": "warn"
+        "useYield": "warn",
+        "useValidTypeof": "warn"
       },
       "performance": {
         "noAccumulatingSpread": "warn",
         "noBarrelFile": "off",
         "noDelete": "warn",
+        "noNamespaceImport": "warn",
         "noReExportAll": "off",
         "useTopLevelRegex": "warn"
       },
       "security": {
+        "noBlankTarget": "warn",
         "noDangerouslySetInnerHtml": "warn",
         "noDangerouslySetInnerHtmlWithChildren": "warn",
         "noGlobalEval": "warn"
       },
       "style": {
-        "noArguments": "warn",
-        "noCommaOperator": "warn",
         "noDefaultExport": "off",
         "noDoneCallback": "warn",
         "noImplicitBoolean": "off",
         "noInferrableTypes": "warn",
         "noNamespace": "warn",
-        "noNamespaceImport": "warn",
         "noNegationElse": "warn",
         "noNonNullAssertion": "off",
         "noParameterAssign": "off",
         "noParameterProperties": "warn",
+        "noRestrictedImports": {
+          "level": "warn",
+          "options": {
+            "paths": {
+              "react": {
+                "importNames": ["default"],
+                "message": "Use named imports instead."
+              },
+              "react-dom": {
+                "importNames": ["default"],
+                "message": "Use named imports instead."
+              }
+            }
+          }
+        },
         "noRestrictedGlobals": "warn",
         "noShoutyConstants": "warn",
         "noUnusedTemplateLiteral": "warn",
         "noUselessElse": "warn",
-        "noVar": "warn",
         "noYodaExpression": "warn",
+        "useArrayLiterals": "warn",
         "useAsConstAssertion": "warn",
         "useBlockStatements": "off",
         "useCollapsedElseIf": "warn",
@@ -212,17 +242,13 @@
         "useNodeAssertStrict": "warn",
         "useNodejsImportProtocol": "warn",
         "useNumberNamespace": "warn",
-        "useNumericLiterals": "warn",
         "useSelfClosingElements": "warn",
-        "useShorthandArrayType": "warn",
         "useShorthandAssign": "warn",
         "useShorthandFunctionType": "warn",
-        "useSingleCaseStatement": "off",
         "useSingleVarDeclarator": "warn",
         "useTemplate": "warn",
         "useThrowNewError": "warn",
-        "useThrowOnlyError": "warn",
-        "useWhile": "warn"
+        "useThrowOnlyError": "warn"
       },
       "suspicious": {
         "noApproximativeNumericConstant": "warn",
@@ -236,7 +262,6 @@
         "noConfusingLabels": "warn",
         "noConfusingVoidType": "warn",
         "noConsole": "warn",
-        "noConsoleLog": "warn",
         "noConstEnum": "warn",
         "noControlCharactersInRegex": "warn",
         "noDebugger": "warn",
@@ -271,6 +296,7 @@
         "noMisleadingInstantiator": "warn",
         "noMisplacedAssertion": "off",
         "noMisrefactoredShorthandAssign": "warn",
+        "noOctalEscape": "warn",
         "noPrototypeBuiltins": "warn",
         "noReactSpecificProps": "off",
         "noRedeclare": "warn",
@@ -284,23 +310,22 @@
         "noThenProperty": "warn",
         "noUnsafeDeclarationMerging": "warn",
         "noUnsafeNegation": "warn",
+        "noVar": "warn",
+        "noWith": "warn",
         "useAwait": "warn",
         "useDefaultSwitchClauseLast": "warn",
         "useErrorMessage": "warn",
         "useGetterReturn": "warn",
         "useIsArray": "warn",
         "useNamespaceKeyword": "warn",
-        "useNumberToFixedDigitsArgument": "warn",
-        "useValidTypeof": "warn"
+        "useNumberToFixedDigitsArgument": "warn"
       }
     }
   },
-  "organizeImports": {
-    "enabled": false
-  },
+  "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "overrides": [
     {
-      "include": ["**/*.test.*"],
+      "includes": ["**/*.test.*"],
       "linter": {
         "rules": {
           "performance": {
@@ -310,15 +335,14 @@
       }
     },
     {
-      "include": ["**/*.js"],
+      "includes": ["**/*.js", "**/rolldown.config.ts"],
       "linter": {
         "rules": {
           "correctness": {
             "noNodejsModules": "off"
           },
           "suspicious": {
-            "noConsole": "off",
-            "noConsoleLog": "off"
+            "noConsole": "off"
           }
         }
       }

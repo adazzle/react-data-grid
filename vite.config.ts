@@ -1,7 +1,6 @@
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
-import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
 
@@ -44,40 +43,40 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
 
 const viewport = { width: 1920, height: 1080 } as const;
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command, isPreview }) => ({
   base: '/react-data-grid/',
   cacheDir: '.cache/vite',
   clearScreen: false,
   build: {
-    target: browserslist().map((version) => version.replace(' ', '')),
     modulePreload: { polyfill: false },
     sourcemap: true,
-    reportCompressedSize: false
+    reportCompressedSize: false,
+    // https://github.com/parcel-bundler/lightningcss/issues/873
+    cssMinify: 'esbuild'
   },
   plugins: [
-    !isTest &&
-      TanStackRouterVite({
+    (!isTest || isPreview) &&
+      tanstackRouter({
+        target: 'react',
         generatedRouteTree: 'website/routeTree.gen.ts',
         routesDirectory: 'website/routes',
-        autoCodeSplitting: true
+        autoCodeSplitting: true,
+        verboseFileRoutes: false
       }),
     react({
       exclude: ['./.cache/**/*'],
       babel: {
-        plugins: [['babel-plugin-react-compiler', { target: '19' }]]
+        plugins: [['babel-plugin-react-compiler']]
       }
     }),
     wyw({
-      exclude: ['./.cache/**/*'],
+      exclude: ['./.cache/**/*', '**/*.d.ts', '**/*.gen.ts'],
       preprocessor: 'none',
       displayName: command === 'serve'
     })
   ],
   server: {
     open: true
-  },
-  optimizeDeps: {
-    include: ['@vitest/coverage-v8/browser']
   },
   test: {
     globals: true,
@@ -92,7 +91,7 @@ export default defineConfig(({ command }) => ({
     sequence: {
       shuffle: true
     },
-    workspace: [
+    projects: [
       {
         extends: true,
         test: {

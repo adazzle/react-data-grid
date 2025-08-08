@@ -1,4 +1,3 @@
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -6,7 +5,7 @@ import type { Column } from '../../src';
 import { renderCoordinates } from '../renderers';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/ColumnSpanning')({
+export const Route = createFileRoute({
   component: ColumnSpanning
 });
 
@@ -61,6 +60,7 @@ function ColumnSpanning() {
 
   return (
     <DataGrid
+      aria-label="Column Spanning Example"
       columns={columns}
       rows={rows}
       rowHeight={22}

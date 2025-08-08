@@ -133,7 +133,7 @@ describe('Events', () => {
       row: rows[0],
       rowIdx: 0
     });
-    expect(onSelectedCellChange).toHaveBeenCalledTimes(1);
+    expect(onSelectedCellChange).toHaveBeenCalledOnce();
 
     // Selected by double click
     await userEvent.dblClick(getCellsAtRowIndex(0)[0]);

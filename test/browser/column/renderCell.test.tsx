@@ -116,6 +116,55 @@ describe('Custom cell renderer', () => {
   });
 });
 
+test('Focus child if it sets tabIndex', async () => {
+  const column: Column<Row> = {
+    key: 'test',
+    name: 'test',
+    renderCell(props) {
+      return (
+        <>
+          <button type="button" tabIndex={props.tabIndex}>
+            Button 1
+          </button>
+          <span>Text</span>
+          <button type="button" tabIndex={-1}>
+            Button 2
+          </button>
+        </>
+      );
+    }
+  };
+
+  page.render(<DataGrid columns={[column]} rows={[{ id: 1 }]} />);
+
+  const button1 = page.getByRole('button', { name: 'Button 1' });
+  const button2 = page.getByRole('button', { name: 'Button 2' });
+  const cell = page.getByRole('gridcell', { name: 'Button 1 Text Button 2' });
+  expect(button1).toHaveAttribute('tabindex', '-1');
+  expect(cell).toHaveAttribute('tabindex', '-1');
+  await userEvent.click(page.getByText('Text'));
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
+  await userEvent.tab({ shift: true });
+  expect(button1).not.toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '-1');
+  expect(cell).toHaveAttribute('tabindex', '-1');
+  await userEvent.click(button1);
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
+  await userEvent.tab({ shift: true });
+  await userEvent.click(button2);
+  expect(button2).toHaveFocus();
+  // It is user's responsibilty to set the tabIndex on button2
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
+  await userEvent.click(button1);
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
+});
+
 test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
   const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
 

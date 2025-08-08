@@ -47,8 +47,8 @@ function Cell<R, SR>({
   );
   const isEditable = isCellEditableUtil(column, row);
 
-  function selectCellWrapper(openEditor?: boolean) {
-    selectCell({ rowIdx, idx: column.idx }, openEditor);
+  function selectCellWrapper(enableEditor?: boolean) {
+    selectCell({ rowIdx, idx: column.idx }, { enableEditor });
   }
 
   function handleMouseEvent(

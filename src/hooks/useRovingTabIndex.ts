@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-// https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_roving_tabindex
+// https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/#kbd_general_within
 export function useRovingTabIndex(isSelected: boolean) {
-  // https://www.w3.org/TR/wai-aria-practices-1.1/#gridNav_focus
+  // https://www.w3.org/WAI/ARIA/apg/patterns/grid/#keyboardinteraction-settingfocusandnavigatinginsidecells
   const [isChildFocused, setIsChildFocused] = useState(false);
 
   if (isChildFocused && !isSelected) {
@@ -10,7 +10,20 @@ export function useRovingTabIndex(isSelected: boolean) {
   }
 
   function onFocus(event: React.FocusEvent<HTMLDivElement>) {
-    if (event.target !== event.currentTarget) {
+    // Do not steal focus if event originates from a focusable child
+    if (event.target === event.currentTarget) {
+      const elementToFocus = event.currentTarget.querySelector<Element & HTMLOrSVGElement>(
+        '[tabindex="0"]'
+      );
+
+      // Focus cell content when available instead of the cell itself
+      if (elementToFocus !== null) {
+        elementToFocus.focus({ preventScroll: true });
+        setIsChildFocused(true);
+      } else {
+        setIsChildFocused(false);
+      }
+    } else {
       setIsChildFocused(true);
     }
   }

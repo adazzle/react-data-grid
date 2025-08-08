@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useState } from 'react';
 import { css } from '@linaria/core';
 import clsx from 'clsx';
 
@@ -22,6 +22,7 @@ export interface HeaderRowProps<R, SR, K extends React.Key> extends SharedDataGr
   selectCell: (position: Position) => void;
   lastFrozenColumnIndex: number;
   selectedCellIdx: number | undefined;
+  shouldFocusGrid: boolean;
   direction: Direction;
   headerRowClass: Maybe<string>;
 }
@@ -58,9 +59,10 @@ export default function HeaderRow<R, SR, K extends React.Key>({
   lastFrozenColumnIndex,
   selectedCellIdx,
   selectCell,
+  shouldFocusGrid,
   direction
 }: HeaderRowProps<R, SR, K>) {
-  const dragDropKey = useId();
+  const [draggedColumnKey, setDraggedColumnKey] = useState<string>();
 
   const cells = [];
   for (let index = 0; index < columns.length; index++) {
@@ -83,8 +85,10 @@ export default function HeaderRow<R, SR, K extends React.Key>({
         onSortColumnsChange={onSortColumnsChange}
         sortColumns={sortColumns}
         selectCell={selectCell}
+        shouldFocusGrid={shouldFocusGrid && index === 0}
         direction={direction}
-        dragDropKey={dragDropKey}
+        draggedColumnKey={draggedColumnKey}
+        setDraggedColumnKey={setDraggedColumnKey}
       />
     );
   }

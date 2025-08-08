@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 23
+          node-version: 24
           check-latest: true
       - name: npm install
         run: npm i
@@ -25,9 +25,7 @@ jobs:
       - name: Prettier
         run: node --run prettier:check
       - name: Bundle
-        run: |
-          node --run build
-          node --run build:types
+        run: node --run build
       - name: Build website
         run: node --run build:website
       - name: Install Playwright Browsers

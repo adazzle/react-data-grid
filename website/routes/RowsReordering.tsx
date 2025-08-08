@@ -1,14 +1,12 @@
 import { useCallback, useState } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { createFileRoute } from '@tanstack/react-router';
 
 import { DataGrid, textEditor } from '../../src';
-import type { Column, RenderRowProps } from '../../src';
-import { DraggableRowRenderer } from '../components';
+import type { CellRendererProps, Column } from '../../src';
+import { DraggableCellRenderer } from '../components';
+import { startViewTransition } from '../utils';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/RowsReordering')({
+export const Route = createFileRoute({
   component: RowsReordering
 });
 
@@ -65,28 +63,31 @@ function RowsReordering() {
   const direction = useDirection();
   const [rows, setRows] = useState(createRows);
 
-  const renderRow = useCallback((key: React.Key, props: RenderRowProps<Row>) => {
+  const renderCell = useCallback((key: React.Key, props: CellRendererProps<Row, unknown>) => {
     function onRowReorder(fromIndex: number, toIndex: number) {
-      setRows((rows) => {
-        const row = rows[fromIndex];
-        const newRows = rows.toSpliced(fromIndex, 1);
-        newRows.splice(toIndex, 0, row);
-        return newRows;
-      });
+      function reorderRows() {
+        setRows((rows) => {
+          const row = rows[fromIndex];
+          const newRows = rows.toSpliced(fromIndex, 1);
+          newRows.splice(toIndex, 0, row);
+          return newRows;
+        });
+      }
+
+      startViewTransition(reorderRows);
     }
 
-    return <DraggableRowRenderer key={key} {...props} onRowReorder={onRowReorder} />;
+    return <DraggableCellRenderer key={key} {...props} onRowReorder={onRowReorder} />;
   }, []);
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <DataGrid
-        columns={columns}
-        rows={rows}
-        onRowsChange={setRows}
-        renderers={{ renderRow }}
-        direction={direction}
-      />
-    </DndProvider>
+    <DataGrid
+      aria-label="Rows Reordering Example"
+      columns={columns}
+      rows={rows}
+      onRowsChange={setRows}
+      renderers={{ renderCell }}
+      direction={direction}
+    />
   );
 }

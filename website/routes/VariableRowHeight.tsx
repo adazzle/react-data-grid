@@ -1,11 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router';
-
 import { DataGrid } from '../../src';
 import type { Column } from '../../src';
 import { renderCoordinates } from '../renderers';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/VariableRowHeight')({
+export const Route = createFileRoute({
   component: VariableRowHeight
 });
 
@@ -30,6 +28,7 @@ function VariableRowHeight() {
 
   return (
     <DataGrid
+      aria-label="Variable Row Height Example"
       columns={columns}
       rows={rows}
       rowHeight={rowHeight}

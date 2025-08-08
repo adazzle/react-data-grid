@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
 
 import { DataGrid } from '../../src';
 import type { Column, ColumnWidths, SortColumn } from '../../src';
+import { startViewTransition } from '../utils';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/ColumnsReordering')({
+export const Route = createFileRoute({
   component: ColumnsReordering
 });
 
@@ -106,18 +106,22 @@ function ColumnsReordering() {
   }, [rows, sortColumns]);
 
   function onColumnsReorder(sourceKey: string, targetKey: string) {
-    setColumnsOrder((columnsOrder) => {
-      const sourceColumnOrderIndex = columnsOrder.findIndex(
-        (index) => columns[index].key === sourceKey
-      );
-      const targetColumnOrderIndex = columnsOrder.findIndex(
-        (index) => columns[index].key === targetKey
-      );
-      const sourceColumnOrder = columnsOrder[sourceColumnOrderIndex];
-      const newColumnsOrder = columnsOrder.toSpliced(sourceColumnOrderIndex, 1);
-      newColumnsOrder.splice(targetColumnOrderIndex, 0, sourceColumnOrder);
-      return newColumnsOrder;
-    });
+    function reorderColumns() {
+      setColumnsOrder((columnsOrder) => {
+        const sourceColumnOrderIndex = columnsOrder.findIndex(
+          (index) => columns[index].key === sourceKey
+        );
+        const targetColumnOrderIndex = columnsOrder.findIndex(
+          (index) => columns[index].key === targetKey
+        );
+        const sourceColumnOrder = columnsOrder[sourceColumnOrderIndex];
+        const newColumnsOrder = columnsOrder.toSpliced(sourceColumnOrderIndex, 1);
+        newColumnsOrder.splice(targetColumnOrderIndex, 0, sourceColumnOrder);
+        return newColumnsOrder;
+      });
+    }
+
+    startViewTransition(reorderColumns);
   }
 
   function resetOrderAndWidths() {
@@ -138,6 +142,7 @@ function ColumnsReordering() {
         Reset Columns
       </button>
       <DataGrid
+        aria-label="Columns Reordering Example"
         columns={reorderedColumns}
         rows={sortedRows}
         sortColumns={sortColumns}

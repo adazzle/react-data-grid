@@ -1,6 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import { faker } from '@faker-js/faker';
-import { createFileRoute } from '@tanstack/react-router';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -8,7 +7,7 @@ import type { Column, RenderHeaderCellProps } from '../../src';
 import type { Omit } from '../../src/types';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/HeaderFilters')({
+export const Route = createFileRoute({
   component: HeaderFilters
 });
 
@@ -39,7 +38,7 @@ const filterContainerClassname = css`
       padding-inline: 8px;
 
       &:first-child {
-        border-block-end: 1px solid var(--rdg-border-color);
+        border-block-end: var(--rdg-border-width) solid var(--rdg-border-color);
       }
     }
   }
@@ -289,6 +288,7 @@ function HeaderFilters() {
       </div>
       <FilterContext value={filters}>
         <DataGrid
+          aria-label="Header Filters Example"
           className={filters.enabled ? filterContainerClassname : undefined}
           columns={columns}
           rows={filteredRows}

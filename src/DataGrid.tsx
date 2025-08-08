@@ -57,6 +57,7 @@ import type {
   Position,
   Renderers,
   RowsChangeData,
+  SelectCellOptions,
   SelectHeaderRowEvent,
   SelectRowEvent,
   SortColumn
@@ -109,7 +110,7 @@ export type DefaultColumnOptions<R, SR> = Pick<
 export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToCell: (position: PartialPosition) => void;
-  selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+  selectCell: (position: Position, options?: SelectCellOptions) => void;
 }
 
 type SharedDivProps = Pick<
@@ -480,7 +481,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   const selectedCellIsWithinViewportBounds = isCellWithinViewportBounds(selectedPosition);
   const scrollHeight =
     headerRowHeight + totalRowHeight + summaryRowsHeight + horizontalScrollbarHeight;
-  const shouldFocusGrid = !selectedCellIsWithinSelectionBounds;
 
   /**
    * The identity of the wrapper function is stable so it won't break memoization
@@ -502,7 +502,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   /**
    * callbacks
    */
-  const focusCellOrCellContent = useCallback(
+  const focusCell = useCallback(
     (shouldScroll = true) => {
       const cell = getCellToScroll(gridRef.current!);
       if (cell === null) return;
@@ -511,10 +511,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         scrollIntoView(cell);
       }
 
-      // Focus cell content when available instead of the cell itself
-      const elementToFocus =
-        cell.querySelector<Element & HTMLOrSVGElement>('[tabindex="0"]') ?? cell;
-      elementToFocus.focus({ preventScroll: true });
+      cell.focus({ preventScroll: true });
     },
     [gridRef]
   );
@@ -528,11 +525,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         focusSinkRef.current.focus({ preventScroll: true });
         scrollIntoView(focusSinkRef.current);
       } else {
-        focusCellOrCellContent();
+        focusCell();
       }
       setShouldFocusCell(false);
     }
-  }, [shouldFocusCell, focusCellOrCellContent, selectedPosition.idx]);
+  }, [shouldFocusCell, focusCell, selectedPosition.idx]);
 
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
@@ -648,13 +645,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       default:
         handleCellInput(event);
         break;
-    }
-  }
-
-  function handleFocus(event: React.FocusEvent<HTMLDivElement>) {
-    // select the first header cell if the focus event is triggered by the grid
-    if (event.target === event.currentTarget) {
-      selectHeaderCell({ idx: minColIdx, rowIdx: headerRowsCount });
     }
   }
 
@@ -777,7 +767,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
   function handleDragHandleClick() {
     // keep the focus on the cell but do not scroll
-    focusCellOrCellContent(false);
+    focusCell(false);
   }
 
   function handleDragHandleDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -838,20 +828,20 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     );
   }
 
-  function selectCell(position: Position, enableEditor?: Maybe<boolean>): void {
+  function selectCell(position: Position, options?: SelectCellOptions): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
 
     const samePosition = isSamePosition(selectedPosition, position);
 
-    if (enableEditor && isCellEditable(position)) {
+    if (options?.enableEditor && isCellEditable(position)) {
       const row = rows[position.rowIdx];
       setSelectedPosition({ ...position, mode: 'EDIT', row, originalRow: row });
     } else if (samePosition) {
       // Avoid re-renders if the selected cell state is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
-      setShouldFocusCell(true);
+      setShouldFocusCell(options?.shouldFocusCell === true);
       setSelectedPosition({ ...position, mode: 'SELECT' });
     }
 
@@ -864,7 +854,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     }
   }
 
-  function selectHeaderCell({ idx, rowIdx }: Position) {
+  function selectHeaderCell({ idx, rowIdx }: Position): void {
     selectCell({ rowIdx: minRowIdx + rowIdx - 1, idx });
   }
 
@@ -952,7 +942,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       isCellWithinBounds: isCellWithinSelectionBounds
     });
 
-    selectCell(nextSelectedCellPosition);
+    selectCell(nextSelectedCellPosition, { shouldFocusCell: true });
   }
 
   function getDraggedOverCellIdx(currentRowIdx: number): number | undefined {
@@ -1177,7 +1167,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     selectedPosition.idx === -1 && selectedPosition.rowIdx !== minRowIdx - 1;
 
   return (
-    // biome-ignore lint/a11y/useValidAriaProps: aria-description is a valid prop
     <div
       role={role}
       aria-label={ariaLabel}
@@ -1189,7 +1178,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       aria-rowcount={ariaRowCount}
       // Scrollable containers without tabIndex are keyboard focusable in Chrome only if there is no focusable element inside
       // whereas they are always focusable in Firefox. We need to set tabIndex to have a consistent behavior across browsers.
-      tabIndex={shouldFocusGrid ? 0 : -1}
+      tabIndex={-1}
       className={clsx(
         rootClassname,
         {
@@ -1221,7 +1210,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       }
       dir={direction}
       ref={gridRef}
-      onFocus={shouldFocusGrid ? handleFocus : undefined}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
       onCopy={handleCellCopy}
@@ -1258,6 +1246,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                 selectedPosition.rowIdx === mainHeaderRowIdx ? selectedPosition.idx : undefined
               }
               selectCell={selectHeaderCellLatest}
+              shouldFocusGrid={!selectedCellIsWithinSelectionBounds}
               direction={direction}
             />
           </HeaderRowSelectionContext>

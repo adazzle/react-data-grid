@@ -1,11 +1,10 @@
-import { useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { useId, useState } from 'react';
 
 import { DataGrid } from '../../src';
 import type { CellKeyboardEvent, CellKeyDownArgs, Column } from '../../src';
 import { useDirection } from '../directionContext';
 
-export const Route = createFileRoute('/CellNavigation')({
+export const Route = createFileRoute({
   component: CellNavigation
 });
 
@@ -78,6 +77,7 @@ function createRows(): Row[] {
 }
 
 function CellNavigation() {
+  const groupId = useId();
   const direction = useDirection();
   const [rows] = useState(createRows);
   const [cellNavigationMode, setCellNavigationMode] = useState<CellNavigationMode>('CHANGE_ROW');
@@ -145,8 +145,8 @@ function CellNavigation() {
 
   return (
     <>
-      <div style={{ marginBlockEnd: 5 }}>
-        Cell Navigation Modes:
+      <div role="radiogroup" aria-labelledby={groupId} style={{ marginBlockEnd: 5 }}>
+        <span id={groupId}>Cell Navigation Modes:</span>
         <label>
           <input
             type="radio"
@@ -194,6 +194,7 @@ function CellNavigation() {
         </label>
       </div>
       <DataGrid
+        aria-label="Cell Navigation Example"
         columns={columns}
         rows={rows}
         direction={direction}
