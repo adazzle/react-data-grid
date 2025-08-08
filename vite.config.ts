@@ -69,7 +69,7 @@ export default defineConfig(({ command, isPreview, mode }) => {
       react({
         exclude: ['./.cache/**/*'],
         babel: {
-          plugins: env.VITE_UNOPTIMIZED ? [['babel-plugin-react-compiler']] : undefined
+          plugins: env.VITE_UNOPTIMIZED ? undefined : [['babel-plugin-react-compiler']]
         }
       }),
       wyw({
