@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import type { CalculatedColumn, CalculatedColumnParent, Position } from './types';
 import GroupedColumnHeaderCell from './GroupedColumnHeaderCell';
 import { headerRowClassname } from './HeaderRow';
@@ -12,7 +10,7 @@ export interface GroupedColumnHeaderRowProps<R, SR> {
   selectedCellIdx: number | undefined;
 }
 
-function GroupedColumnHeaderRow<R, SR>({
+export default function GroupedColumnHeaderRow<R, SR>({
   rowIdx,
   level,
   columns,
@@ -57,7 +55,3 @@ function GroupedColumnHeaderRow<R, SR>({
     </div>
   );
 }
-
-export default memo(GroupedColumnHeaderRow) as <R, SR>(
-  props: GroupedColumnHeaderRowProps<R, SR>
-) => React.JSX.Element;
