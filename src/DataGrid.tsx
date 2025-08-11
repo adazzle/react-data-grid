@@ -123,6 +123,7 @@ type SharedDivProps = Pick<
   | 'aria-rowcount'
   | 'className'
   | 'style'
+  | 'children'
 >;
 
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivProps {
@@ -299,7 +300,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     'aria-describedby': ariaDescribedBy,
     'aria-rowcount': rawAriaRowCount,
     'data-testid': testId,
-    'data-cy': dataCy
+    'data-cy': dataCy,
+    children
   } = props;
 
   /**
@@ -1345,6 +1347,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           gridRef={gridRef}
         />
       )}
+      {children}
     </div>
   );
 }
