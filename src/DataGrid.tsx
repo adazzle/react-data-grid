@@ -828,9 +828,13 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     );
   }
 
-  function selectCell(position: Position, options?: SelectCellOptions): void {
+  async function selectCell(position: Position, options?: SelectCellOptions): void {
     if (!isCellWithinSelectionBounds(position)) return;
     commitEditorChanges();
+
+    await new Promise((resolve) => {
+      requestAnimationFrame(resolve);
+    });
 
     const samePosition = isSamePosition(selectedPosition, position);
 
@@ -1009,7 +1013,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     const colSpan = getColSpan(column, lastFrozenColumnIndex, { type: 'ROW', row });
     const closeOnExternalRowChange = column.editorOptions?.closeOnExternalRowChange ?? true;
 
-    const closeEditor = (shouldFocusCell: boolean) => {
+    const closeEditor = async (shouldFocusCell: boolean) => {
+      await new Promise((resolve) => {
+        requestAnimationFrame(resolve);
+      });
+
       setShouldFocusCell(shouldFocusCell);
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
