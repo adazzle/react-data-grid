@@ -1,5 +1,5 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
-import react from '@vitejs/plugin-react-oxc';
+import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';

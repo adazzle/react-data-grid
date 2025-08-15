@@ -12,7 +12,7 @@ import testingLibrary from 'eslint-plugin-testing-library';
 import markdown from '@eslint/markdown';
 
 export default defineConfig([
-  globalIgnores(['.cache', 'coverage', 'dist', 'lib']),
+  globalIgnores(['.cache', '.nitro', '.output', '.tanstack', 'coverage', 'dist', 'lib']),
 
   {
     linterOptions: {
