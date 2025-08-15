@@ -4,6 +4,10 @@
     "includes": [
       "**",
       "!.cache/**/*",
+      "!.cache/**/*",
+      "!.nitro/**/*",
+      "!.output/**/*",
+      "!.tanstack/**/*",
       "!coverage/**/*",
       "!dist/**/*",
       "!lib/**/*",
