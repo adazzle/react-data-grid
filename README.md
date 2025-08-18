@@ -635,7 +635,7 @@ The `ref` prop is supported.
 
 ##### Props
 
-See [`FormatterProps`](#formatterprops)
+See [`RenderCellProps`](#rendercellprops)
 
 #### `<SelectCellFormatter />`
 
@@ -826,11 +826,11 @@ Extends `React.MouseEvent<HTMLDivElement>`
 
 #### `RenderEditCellProps`
 
+#### `RenderRowProps`
+
 #### `RenderCellProps`
 
 #### `RenderGroupCellProps`
-
-#### `RenderRowProps`
 
 ### Generics
 

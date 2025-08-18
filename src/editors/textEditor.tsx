@@ -33,7 +33,6 @@ const textEditorInternalClassname = css`
 
 export const textEditorClassname = `rdg-text-editor ${textEditorInternalClassname}`;
 
-// biome-ignore lint/suspicious/noFunctionAssign: ???
 function autoFocusAndSelect(input: HTMLInputElement | null) {
   input?.focus();
   input?.select();
