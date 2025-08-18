@@ -9,6 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import type { CreateFileRoute, FileRoutesByPath } from '@tanstack/react-router'
+import type {
+  CreateServerFileRoute,
+  ServerFileRoutesByPath,
+} from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VariableRowHeightRouteImport } from './routes/VariableRowHeight'
@@ -465,6 +469,14 @@ declare module './routes/index' {
     FileRoutesByPath['/']['path'],
     FileRoutesByPath['/']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/']['parentRoute'],
+    ServerFileRoutesByPath['/']['id'],
+    ServerFileRoutesByPath['/']['path'],
+    ServerFileRoutesByPath['/']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/AllFeatures' {
   const createFileRoute: CreateFileRoute<
@@ -473,6 +485,14 @@ declare module './routes/AllFeatures' {
     FileRoutesByPath['/AllFeatures']['id'],
     FileRoutesByPath['/AllFeatures']['path'],
     FileRoutesByPath['/AllFeatures']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/AllFeatures']['parentRoute'],
+    ServerFileRoutesByPath['/AllFeatures']['id'],
+    ServerFileRoutesByPath['/AllFeatures']['path'],
+    ServerFileRoutesByPath['/AllFeatures']['fullPath'],
+    unknown
   >
 }
 declare module './routes/Animation' {
@@ -483,6 +503,14 @@ declare module './routes/Animation' {
     FileRoutesByPath['/Animation']['path'],
     FileRoutesByPath['/Animation']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/Animation']['parentRoute'],
+    ServerFileRoutesByPath['/Animation']['id'],
+    ServerFileRoutesByPath['/Animation']['path'],
+    ServerFileRoutesByPath['/Animation']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/CellNavigation' {
   const createFileRoute: CreateFileRoute<
@@ -491,6 +519,14 @@ declare module './routes/CellNavigation' {
     FileRoutesByPath['/CellNavigation']['id'],
     FileRoutesByPath['/CellNavigation']['path'],
     FileRoutesByPath['/CellNavigation']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/CellNavigation']['parentRoute'],
+    ServerFileRoutesByPath['/CellNavigation']['id'],
+    ServerFileRoutesByPath['/CellNavigation']['path'],
+    ServerFileRoutesByPath['/CellNavigation']['fullPath'],
+    unknown
   >
 }
 declare module './routes/ColumnGrouping' {
@@ -501,6 +537,14 @@ declare module './routes/ColumnGrouping' {
     FileRoutesByPath['/ColumnGrouping']['path'],
     FileRoutesByPath['/ColumnGrouping']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/ColumnGrouping']['parentRoute'],
+    ServerFileRoutesByPath['/ColumnGrouping']['id'],
+    ServerFileRoutesByPath['/ColumnGrouping']['path'],
+    ServerFileRoutesByPath['/ColumnGrouping']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/ColumnSpanning' {
   const createFileRoute: CreateFileRoute<
@@ -509,6 +553,14 @@ declare module './routes/ColumnSpanning' {
     FileRoutesByPath['/ColumnSpanning']['id'],
     FileRoutesByPath['/ColumnSpanning']['path'],
     FileRoutesByPath['/ColumnSpanning']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/ColumnSpanning']['parentRoute'],
+    ServerFileRoutesByPath['/ColumnSpanning']['id'],
+    ServerFileRoutesByPath['/ColumnSpanning']['path'],
+    ServerFileRoutesByPath['/ColumnSpanning']['fullPath'],
+    unknown
   >
 }
 declare module './routes/ColumnsReordering' {
@@ -519,6 +571,14 @@ declare module './routes/ColumnsReordering' {
     FileRoutesByPath['/ColumnsReordering']['path'],
     FileRoutesByPath['/ColumnsReordering']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/ColumnsReordering']['parentRoute'],
+    ServerFileRoutesByPath['/ColumnsReordering']['id'],
+    ServerFileRoutesByPath['/ColumnsReordering']['path'],
+    ServerFileRoutesByPath['/ColumnsReordering']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/CommonFeatures' {
   const createFileRoute: CreateFileRoute<
@@ -527,6 +587,14 @@ declare module './routes/CommonFeatures' {
     FileRoutesByPath['/CommonFeatures']['id'],
     FileRoutesByPath['/CommonFeatures']['path'],
     FileRoutesByPath['/CommonFeatures']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/CommonFeatures']['parentRoute'],
+    ServerFileRoutesByPath['/CommonFeatures']['id'],
+    ServerFileRoutesByPath['/CommonFeatures']['path'],
+    ServerFileRoutesByPath['/CommonFeatures']['fullPath'],
+    unknown
   >
 }
 declare module './routes/ContextMenu' {
@@ -537,6 +605,14 @@ declare module './routes/ContextMenu' {
     FileRoutesByPath['/ContextMenu']['path'],
     FileRoutesByPath['/ContextMenu']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/ContextMenu']['parentRoute'],
+    ServerFileRoutesByPath['/ContextMenu']['id'],
+    ServerFileRoutesByPath['/ContextMenu']['path'],
+    ServerFileRoutesByPath['/ContextMenu']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/CustomizableRenderers' {
   const createFileRoute: CreateFileRoute<
@@ -545,6 +621,14 @@ declare module './routes/CustomizableRenderers' {
     FileRoutesByPath['/CustomizableRenderers']['id'],
     FileRoutesByPath['/CustomizableRenderers']['path'],
     FileRoutesByPath['/CustomizableRenderers']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/CustomizableRenderers']['parentRoute'],
+    ServerFileRoutesByPath['/CustomizableRenderers']['id'],
+    ServerFileRoutesByPath['/CustomizableRenderers']['path'],
+    ServerFileRoutesByPath['/CustomizableRenderers']['fullPath'],
+    unknown
   >
 }
 declare module './routes/HeaderFilters' {
@@ -555,6 +639,14 @@ declare module './routes/HeaderFilters' {
     FileRoutesByPath['/HeaderFilters']['path'],
     FileRoutesByPath['/HeaderFilters']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/HeaderFilters']['parentRoute'],
+    ServerFileRoutesByPath['/HeaderFilters']['id'],
+    ServerFileRoutesByPath['/HeaderFilters']['path'],
+    ServerFileRoutesByPath['/HeaderFilters']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/InfiniteScrolling' {
   const createFileRoute: CreateFileRoute<
@@ -563,6 +655,14 @@ declare module './routes/InfiniteScrolling' {
     FileRoutesByPath['/InfiniteScrolling']['id'],
     FileRoutesByPath['/InfiniteScrolling']['path'],
     FileRoutesByPath['/InfiniteScrolling']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/InfiniteScrolling']['parentRoute'],
+    ServerFileRoutesByPath['/InfiniteScrolling']['id'],
+    ServerFileRoutesByPath['/InfiniteScrolling']['path'],
+    ServerFileRoutesByPath['/InfiniteScrolling']['fullPath'],
+    unknown
   >
 }
 declare module './routes/MasterDetail' {
@@ -573,6 +673,14 @@ declare module './routes/MasterDetail' {
     FileRoutesByPath['/MasterDetail']['path'],
     FileRoutesByPath['/MasterDetail']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/MasterDetail']['parentRoute'],
+    ServerFileRoutesByPath['/MasterDetail']['id'],
+    ServerFileRoutesByPath['/MasterDetail']['path'],
+    ServerFileRoutesByPath['/MasterDetail']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/MillionCells' {
   const createFileRoute: CreateFileRoute<
@@ -581,6 +689,14 @@ declare module './routes/MillionCells' {
     FileRoutesByPath['/MillionCells']['id'],
     FileRoutesByPath['/MillionCells']['path'],
     FileRoutesByPath['/MillionCells']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/MillionCells']['parentRoute'],
+    ServerFileRoutesByPath['/MillionCells']['id'],
+    ServerFileRoutesByPath['/MillionCells']['path'],
+    ServerFileRoutesByPath['/MillionCells']['fullPath'],
+    unknown
   >
 }
 declare module './routes/NoRows' {
@@ -591,6 +707,14 @@ declare module './routes/NoRows' {
     FileRoutesByPath['/NoRows']['path'],
     FileRoutesByPath['/NoRows']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/NoRows']['parentRoute'],
+    ServerFileRoutesByPath['/NoRows']['id'],
+    ServerFileRoutesByPath['/NoRows']['path'],
+    ServerFileRoutesByPath['/NoRows']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/ResizableGrid' {
   const createFileRoute: CreateFileRoute<
@@ -599,6 +723,14 @@ declare module './routes/ResizableGrid' {
     FileRoutesByPath['/ResizableGrid']['id'],
     FileRoutesByPath['/ResizableGrid']['path'],
     FileRoutesByPath['/ResizableGrid']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/ResizableGrid']['parentRoute'],
+    ServerFileRoutesByPath['/ResizableGrid']['id'],
+    ServerFileRoutesByPath['/ResizableGrid']['path'],
+    ServerFileRoutesByPath['/ResizableGrid']['fullPath'],
+    unknown
   >
 }
 declare module './routes/RowGrouping' {
@@ -609,6 +741,14 @@ declare module './routes/RowGrouping' {
     FileRoutesByPath['/RowGrouping']['path'],
     FileRoutesByPath['/RowGrouping']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/RowGrouping']['parentRoute'],
+    ServerFileRoutesByPath['/RowGrouping']['id'],
+    ServerFileRoutesByPath['/RowGrouping']['path'],
+    ServerFileRoutesByPath['/RowGrouping']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/RowsReordering' {
   const createFileRoute: CreateFileRoute<
@@ -617,6 +757,14 @@ declare module './routes/RowsReordering' {
     FileRoutesByPath['/RowsReordering']['id'],
     FileRoutesByPath['/RowsReordering']['path'],
     FileRoutesByPath['/RowsReordering']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/RowsReordering']['parentRoute'],
+    ServerFileRoutesByPath['/RowsReordering']['id'],
+    ServerFileRoutesByPath['/RowsReordering']['path'],
+    ServerFileRoutesByPath['/RowsReordering']['fullPath'],
+    unknown
   >
 }
 declare module './routes/ScrollToCell' {
@@ -627,6 +775,14 @@ declare module './routes/ScrollToCell' {
     FileRoutesByPath['/ScrollToCell']['path'],
     FileRoutesByPath['/ScrollToCell']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/ScrollToCell']['parentRoute'],
+    ServerFileRoutesByPath['/ScrollToCell']['id'],
+    ServerFileRoutesByPath['/ScrollToCell']['path'],
+    ServerFileRoutesByPath['/ScrollToCell']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/TreeView' {
   const createFileRoute: CreateFileRoute<
@@ -636,6 +792,14 @@ declare module './routes/TreeView' {
     FileRoutesByPath['/TreeView']['path'],
     FileRoutesByPath['/TreeView']['fullPath']
   >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/TreeView']['parentRoute'],
+    ServerFileRoutesByPath['/TreeView']['id'],
+    ServerFileRoutesByPath['/TreeView']['path'],
+    ServerFileRoutesByPath['/TreeView']['fullPath'],
+    unknown
+  >
 }
 declare module './routes/VariableRowHeight' {
   const createFileRoute: CreateFileRoute<
@@ -644,6 +808,14 @@ declare module './routes/VariableRowHeight' {
     FileRoutesByPath['/VariableRowHeight']['id'],
     FileRoutesByPath['/VariableRowHeight']['path'],
     FileRoutesByPath['/VariableRowHeight']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/VariableRowHeight']['parentRoute'],
+    ServerFileRoutesByPath['/VariableRowHeight']['id'],
+    ServerFileRoutesByPath['/VariableRowHeight']['path'],
+    ServerFileRoutesByPath['/VariableRowHeight']['fullPath'],
+    unknown
   >
 }
 
