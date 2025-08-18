@@ -745,11 +745,21 @@ export default defineConfig([
     rules: {
       'markdown/fenced-code-language': 1,
       'markdown/heading-increment': 1,
+      'markdown/no-bare-urls': 1,
+      'markdown/no-duplicate-definitions': 1,
       'markdown/no-duplicate-headings': 0,
+      'markdown/no-empty-definitions': 1,
+      'markdown/no-empty-images': 1,
       'markdown/no-empty-links': 1,
       'markdown/no-html': 0,
       'markdown/no-invalid-label-refs': 1,
-      'markdown/no-missing-label-refs': 1
+      'markdown/no-missing-atx-heading-space': 1,
+      'markdown/no-missing-label-refs': 1,
+      'markdown/no-missing-link-fragments': 1,
+      'markdown/no-reversed-media-syntax': 1,
+      'markdown/no-unused-definitions': 1,
+      'markdown/require-alt-text': 1,
+      'markdown/table-column-count': 1
     }
   }
 ]);
