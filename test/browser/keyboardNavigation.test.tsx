@@ -7,6 +7,7 @@ import {
   getSelectedCell,
   scrollGrid,
   setup,
+  tabIntoGrid,
   validateCellPosition
 } from './utils';
 
@@ -27,13 +28,13 @@ const columns = [
 ] as const satisfies Column<Row, Row>[];
 
 test('keyboard navigation', async () => {
-  setup({ columns, rows, topSummaryRows, bottomSummaryRows });
+  setup({ columns, rows, topSummaryRows, bottomSummaryRows }, true);
 
   // no initial selection
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
 
   // tab into the grid
-  await userEvent.tab();
+  await tabIntoGrid();
   validateCellPosition(0, 0);
 
   // tab to the next cell
@@ -103,10 +104,10 @@ test('keyboard navigation', async () => {
 });
 
 test('arrow and tab navigation', async () => {
-  setup({ columns, rows, bottomSummaryRows });
+  setup({ columns, rows, bottomSummaryRows }, true);
 
   // pressing arrowleft on the leftmost cell does nothing
-  await userEvent.tab();
+  await tabIntoGrid();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
   await userEvent.keyboard('{arrowleft}');
@@ -128,14 +129,7 @@ test('arrow and tab navigation', async () => {
 });
 
 test('grid enter/exit', async () => {
-  page.render(
-    <>
-      <button type="button">Before</button>
-      <DataGrid columns={columns} rows={new Array(5)} bottomSummaryRows={bottomSummaryRows} />
-      <br />
-      <button type="button">After</button>
-    </>
-  );
+  setup({ columns, rows: new Array(5), bottomSummaryRows }, true);
 
   const beforeButton = page.getByRole('button', { name: 'Before' });
   const afterButton = page.getByRole('button', { name: 'After' });
@@ -144,8 +138,7 @@ test('grid enter/exit', async () => {
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
 
   // tab into the grid
-  await userEvent.click(beforeButton);
-  await userEvent.tab();
+  await tabIntoGrid();
   validateCellPosition(0, 0);
 
   // shift+tab tabs out of the grid if we are at the first cell
@@ -178,8 +171,8 @@ test('grid enter/exit', async () => {
 });
 
 test('navigation with focusable cell renderer', async () => {
-  setup({ columns, rows: new Array(1), bottomSummaryRows });
-  await userEvent.tab();
+  setup({ columns, rows: new Array(1), bottomSummaryRows }, true);
+  await tabIntoGrid();
   await userEvent.keyboard('{arrowdown}');
   validateCellPosition(0, 1);
 
@@ -219,8 +212,8 @@ test('navigation when header and summary rows have focusable elements', async ()
     }
   ];
 
-  setup({ columns, rows: new Array(2), bottomSummaryRows });
-  await userEvent.tab();
+  setup({ columns, rows: new Array(2), bottomSummaryRows }, true);
+  await tabIntoGrid();
 
   // should set focus on the header filter
   expect(document.getElementById('header-filter1')).toHaveFocus();
@@ -259,8 +252,8 @@ test('navigation when selected cell not in the viewport', async () => {
   for (let i = 0; i < 99; i++) {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
-  setup({ columns, rows, bottomSummaryRows });
-  await userEvent.tab();
+  setup({ columns, rows, bottomSummaryRows }, true);
+  await tabIntoGrid();
   validateCellPosition(0, 0);
 
   await userEvent.keyboard('{Control>}{end}{/Control}{arrowup}{arrowup}');
@@ -331,8 +324,8 @@ test('reset selected cell when row is removed', async () => {
 });
 
 test('should not change the left and right arrow behavior for right to left languages', async () => {
-  setup({ rows, columns, direction: 'rtl' });
-  await userEvent.tab();
+  setup({ rows, columns, direction: 'rtl' }, true);
+  await tabIntoGrid();
   validateCellPosition(0, 0);
   await userEvent.tab();
   validateCellPosition(1, 0);

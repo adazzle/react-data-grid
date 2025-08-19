@@ -1,7 +1,7 @@
 import { page, userEvent } from '@vitest/browser/context';
 
-import { DataGrid, type ColumnOrColumnGroup } from '../../../src';
-import { getSelectedCell, setup, validateCellPosition } from '../utils';
+import { type ColumnOrColumnGroup } from '../../../src';
+import { getSelectedCell, setup, tabIntoGrid, validateCellPosition } from '../utils';
 
 const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
   { key: 'col1', name: 'col 1' },
@@ -248,18 +248,12 @@ test('grouping', async () => {
 });
 
 test('keyboard navigation', async () => {
-  page.render(
-    <>
-      <button type="button">Before</button>
-      <DataGrid columns={columns} rows={[{}]} />
-    </>
-  );
+  setup({ columns, rows: [{}] }, true);
 
   // no initial selection
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
 
-  await userEvent.click(page.getByRole('button', { name: 'Before' }));
-  await userEvent.tab();
+  await tabIntoGrid();
   validateCellPosition(0, 3);
 
   // arrow navigation
