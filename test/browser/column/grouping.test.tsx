@@ -1,6 +1,6 @@
 import { page, userEvent } from '@vitest/browser/context';
 
-import type { ColumnOrColumnGroup } from '../../../src';
+import { DataGrid, type ColumnOrColumnGroup } from '../../../src';
 import { getSelectedCell, setup, validateCellPosition } from '../utils';
 
 const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
@@ -248,11 +248,17 @@ test('grouping', async () => {
 });
 
 test('keyboard navigation', async () => {
-  setup({ columns, rows: [{}] });
+  page.render(
+    <>
+      <button type="button">Before</button>
+      <DataGrid columns={columns} rows={[{}]} />
+    </>
+  );
 
   // no initial selection
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
 
+  await userEvent.click(page.getByRole('button', { name: 'Before' }));
   await userEvent.tab();
   validateCellPosition(0, 3);
 
