@@ -1,7 +1,6 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/vite';
-import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
 
@@ -49,10 +48,11 @@ export default defineConfig(({ command, isPreview }) => ({
   cacheDir: '.cache/vite',
   clearScreen: false,
   build: {
-    target: browserslist().map((version) => version.replace(' ', '')),
     modulePreload: { polyfill: false },
     sourcemap: true,
-    reportCompressedSize: false
+    reportCompressedSize: false,
+    // https://github.com/parcel-bundler/lightningcss/issues/873
+    cssMinify: 'esbuild'
   },
   plugins: [
     (!isTest || isPreview) &&

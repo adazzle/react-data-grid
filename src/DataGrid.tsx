@@ -233,7 +233,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   /**
    * Text direction of the grid ('ltr' or 'rtl')
    * @default 'ltr'
-   * */
+   */
   direction?: Maybe<Direction>;
   'data-testid'?: Maybe<string>;
   'data-cy'?: Maybe<string>;

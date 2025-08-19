@@ -21,12 +21,12 @@ The DataGrid component is designed to handle large datasets efficiently while of
 ## Features
 
 - [React 19.0+](package.json) support
-- [Evergreen browsers and server-side rendering](browserslist) support
+- Evergreen browsers and server-side rendering support
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
 - Strictly typed with TypeScript
 - [Keyboard accessibility](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
-- Light and dark mode support out of the box. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
+- Light and dark mode support out of the box.
 - [Frozen columns](https://adazzle.github.io/react-data-grid/#/CommonFeatures): Freeze columns to keep them visible during horizontal scrolling.
 - [Column resizing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
 - [Multi-column sorting](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
@@ -52,6 +52,16 @@ The DataGrid component is designed to handle large datasets efficiently while of
   - [Source code](website)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
+
+> **Important** <br />
+> `rolldown-vite` by default uses `lightningcss` to minify css which has a [bug minifying light-dark syntax](https://github.com/parcel-bundler/lightningcss/issues/873). You can switch to `esbuild` as a workaround
+
+```ts
+build: {
+  ....,
+  cssMinify: 'esbuild'
+}
+```
 
 ## Installation
 
@@ -109,6 +119,10 @@ function App() {
   return <DataGrid columns={columns} rows={rows} />;
 }
 ```
+
+## Theming
+
+Set `--rdg-color-scheme: light/dark` at the `:root` to control the color theme. The light or dark themes can be enforced using the `rdg-light` or `rdg-dark` classes.
 
 ## API Reference
 
@@ -621,7 +635,7 @@ The `ref` prop is supported.
 
 ##### Props
 
-See [`FormatterProps`](#formatterprops)
+See [`RenderCellProps`](#rendercellprops)
 
 #### `<SelectCellFormatter />`
 
@@ -812,11 +826,11 @@ Extends `React.MouseEvent<HTMLDivElement>`
 
 #### `RenderEditCellProps`
 
+#### `RenderRowProps`
+
 #### `RenderCellProps`
 
 #### `RenderGroupCellProps`
-
-#### `RenderRowProps`
 
 ### Generics
 

@@ -98,6 +98,7 @@ function ColumnGrouping() {
 
   return (
     <DataGrid
+      aria-label="Column Grouping Example"
       columns={columns}
       rows={rows}
       topSummaryRows={[0]}

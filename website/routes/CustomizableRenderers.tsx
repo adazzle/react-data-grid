@@ -112,6 +112,7 @@ function CustomizableRenderers() {
 
   return (
     <DataGrid
+      aria-label="Customizable Renderers Example"
       className="fill-grid"
       columns={columns}
       rows={sortedRows}

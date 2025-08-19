@@ -29,6 +29,7 @@ function MillionCells() {
 
   return (
     <DataGrid
+      aria-label="Million Cells Example"
       columns={columns}
       rows={rows}
       rowHeight={22}

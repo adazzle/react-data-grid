@@ -28,6 +28,7 @@ function VariableRowHeight() {
 
   return (
     <DataGrid
+      aria-label="Variable Row Height Example"
       columns={columns}
       rows={rows}
       rowHeight={rowHeight}
