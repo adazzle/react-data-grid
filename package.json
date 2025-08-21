@@ -49,7 +49,8 @@
     "postpublish": "git push --follow-tags origin HEAD"
   },
   "dependencies": {
-    "clsx": "^2.0.0"
+    "clsx": "^2.0.0",
+    "rollup": "^4.47.1"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.27.1",

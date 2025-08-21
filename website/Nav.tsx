@@ -11,10 +11,10 @@ const headerClassname = css`
   h1 {
     font-size: 24px;
   }
-
+  const demos = [
   h1,
-  h2 {
-    margin: 8px;
+    ['Home', 'Home'],
+    ['Common Features', 'CommonFeatures'],
   }
 `;
 
