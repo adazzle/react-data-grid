@@ -77,13 +77,14 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   test: {
     globals: true,
+    maxWorkers: 4,
     coverage: {
-      provider: 'v8',
+      provider: 'istanbul',
       enabled: isCI,
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['json']
     },
-    testTimeout: isCI ? 10000 : 5000,
+    testTimeout: 20_000,
     restoreMocks: true,
     sequence: {
       shuffle: true
@@ -100,6 +101,10 @@ export default defineConfig(({ command, isPreview }) => ({
             instances: [
               {
                 browser: 'chromium',
+                context: { viewport }
+              },
+              {
+                browser: 'firefox',
                 context: { viewport }
               }
             ],

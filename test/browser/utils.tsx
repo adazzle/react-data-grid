@@ -1,11 +1,14 @@
-import { page } from '@vitest/browser/context';
+import { page, userEvent } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
 import type { DataGridProps } from '../../src';
 
-export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridProps<R, SR, K>) {
-  page.render(
+export function setup<R, SR, K extends React.Key = React.Key>(
+  props: DataGridProps<R, SR, K>,
+  renderBeforeAfterButtons = false
+) {
+  const grid = (
     <DataGrid
       {...props}
       className={css`
@@ -14,6 +17,19 @@ export function setup<R, SR, K extends React.Key = React.Key>(props: DataGridPro
       `}
     />
   );
+
+  if (renderBeforeAfterButtons) {
+    page.render(
+      <>
+        <button type="button">Before</button>
+        {grid}
+        <br />
+        <button type="button">After</button>
+      </>
+    );
+  } else {
+    page.render(grid);
+  }
 }
 
 export function getGrid() {
@@ -75,4 +91,9 @@ export async function scrollGrid({
     // let the browser fire the 'scroll' event
     await new Promise(requestAnimationFrame);
   }
+}
+
+export async function tabIntoGrid() {
+  await userEvent.click(page.getByRole('button', { name: 'Before' }));
+  await userEvent.tab();
 }
