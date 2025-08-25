@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { commands, page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid, type Column, type ColumnWidth, type ColumnWidths } from '../../../src';
-import { resizeHandleClassname } from '../../../src/HeaderCell';
 import { getGrid, getHeaderCells, setup } from '../utils';
 
 interface Row {
@@ -11,11 +10,11 @@ interface Row {
 }
 
 function queryResizeHandle(column: Element) {
-  return column.querySelector(`.${resizeHandleClassname}`);
+  return column.querySelector('.rdg-resize-handle');
 }
 
 function getResizeHandle(column: Element) {
-  const resizeHandle = column.querySelector(`.${resizeHandleClassname}`);
+  const resizeHandle = queryResizeHandle(column);
 
   if (resizeHandle === null) {
     throw new Error('Resize handle not found');
