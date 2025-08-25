@@ -40,7 +40,7 @@
     "format": "biome format --write",
     "check": "biome check --error-on-warnings",
     "biome:ci": "biome ci --error-on-warnings",
-    "eslint": "eslint --concurrency=auto --max-warnings 0 --cache --cache-location .cache/eslint --cache-strategy content",
+    "eslint": "eslint --concurrency=2 --max-warnings 0 --cache --cache-location .cache/eslint --cache-strategy content",
     "eslint:fix": "node --run eslint -- --fix",
     "prettier:check": "prettier --check .",
     "prettier:format": "prettier --write .",
