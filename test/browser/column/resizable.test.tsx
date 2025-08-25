@@ -14,7 +14,7 @@ function queryResizeHandle(column: Element) {
 }
 
 function getResizeHandle(column: Element) {
-  const resizeHandle = column.querySelector('.rdg-resize-handle');
+  const resizeHandle = queryResizeHandle(column);
 
   if (resizeHandle === null) {
     throw new Error('Resize handle not found');
