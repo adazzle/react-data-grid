@@ -407,7 +407,6 @@ export default defineConfig([
       'sonarjs/no-identical-conditions': 1,
       'sonarjs/no-identical-expressions': 1,
       'sonarjs/no-ignored-return': 1,
-      'sonarjs/no-one-iteration-loop': 1,
       'sonarjs/no-use-of-empty-return-value': 1,
       'sonarjs/non-existent-operator': 1,
       'sonarjs/cognitive-complexity': 0,
