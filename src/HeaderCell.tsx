@@ -41,7 +41,7 @@ const resizeHandle = css`
   }
 `;
 
-export const resizeHandleClassname = `rdg-resize-handle ${resizeHandle}`;
+const resizeHandleClassname = `rdg-resize-handle ${resizeHandle}`;
 
 const cellDraggableClassname = 'rdg-cell-draggable';
 
