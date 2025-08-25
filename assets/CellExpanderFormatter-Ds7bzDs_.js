@@ -1,2 +1,0 @@
-import{j as e,o as t}from"./index-3VpCW0rt.js";var n=t(e());function r({tabIndex:e,expanded:t,onCellExpand:r}){function i(e){(e.key===` `||e.key===`Enter`)&&(e.preventDefault(),r())}return(0,n.jsx)(`div`,{className:`c1tgi1fh`,onClick:r,onKeyDown:i,children:(0,n.jsx)(`span`,{tabIndex:e,children:t?`▼`:`▶`})})}export{r as b};
-//# sourceMappingURL=CellExpanderFormatter-Ds7bzDs_.js.map
