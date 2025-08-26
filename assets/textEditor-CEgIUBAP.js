@@ -1,2 +1,0 @@
-import{j as e,o as t}from"./index-xES5FvWU.js";var n=t(e());const r=`rdg-text-editor t7vyx3i`;function i(e){e?.focus(),e?.select()}function a({row:e,column:t,onRowChange:a,onClose:o}){return(0,n.jsx)(`input`,{className:r,ref:i,value:e[t.key],onChange:n=>a({...e,[t.key]:n.target.value}),onBlur:()=>o(!0,!1)})}export{a as b,r as c};
-//# sourceMappingURL=textEditor-CEgIUBAP.js.map
