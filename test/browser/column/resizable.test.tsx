@@ -31,7 +31,6 @@ interface ResizeArgs {
 async function resize({ column, resizeBy }: ResizeArgs) {
   expect(getResizeHandle(column)).toBeInTheDocument();
 
-  // @ts-expect-error
   await commands.resizeColumn(resizeBy);
 }
 
