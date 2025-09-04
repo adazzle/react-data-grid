@@ -43,6 +43,7 @@ import type {
   CalculatedColumn,
   CellClipboardEvent,
   CellCopyArgs,
+  CellCutArgs,
   CellKeyboardEvent,
   CellKeyDownArgs,
   CellMouseEventHandler,
@@ -57,6 +58,7 @@ import type {
   FillEvent,
   Maybe,
   MultiCopyArgs,
+  MultiCutArgs,
   MultiPasteArgs,
   Position,
   Renderers,
@@ -195,6 +197,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
   onMultiPaste?: Maybe<(args: MultiPasteArgs, event: CellClipboardEvent) => NoInfer<R[]>>;
   onMultiCopy?: Maybe<(args: MultiCopyArgs<NoInfer<R>>, event: CellClipboardEvent) => void>;
+  onMultiCut?: Maybe<(args: MultiCutArgs<NoInfer<R>>, event: CellClipboardEvent) => void>;
   onSelectedRangeChange?: Maybe<(selectedRange: CellsRange) => void>;
 
   /**
@@ -216,6 +219,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onCellCopy?: Maybe<
     (args: CellCopyArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void
   >;
+  /** Callback triggered when a cell's content is cut */
+  onCellCut?: (args: CellCutArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void;
+
   /** Callback triggered when content is pasted into a cell */
   onCellPaste?: Maybe<
     (args: CellPasteArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>
@@ -297,9 +303,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     onColumnsReorder,
     onFill,
     onCellCopy,
+    onCellCut,
     onCellPaste,
     onMultiPaste,
     onMultiCopy,
+    onMultiCut,
     // Toggles and modes
     enableVirtualization: rawEnableVirtualization,
     enableRangeSelection: rawEnableRangeSelection,
@@ -745,6 +753,31 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     }
   }
 
+  function handleCellCut(event: CellClipboardEvent) {
+    if (!selectedCellIsWithinViewportBounds) return;
+    if (enableRangeSelection) {
+      if (!onMultiCut) {
+        return;
+      }
+      setCopiedRange(selectedRange);
+      const sourceRows = rows.slice(selectedRange.startRowIdx, selectedRange.endRowIdx + 1);
+      const sourceColumnKeys = columns
+        .slice(selectedRange.startColumnIdx, selectedRange.endColumnIdx + 1)
+        .map((c) => c.key);
+      onMultiCut?.(
+        {
+          cellsRange: selectedRange,
+          sourceRows,
+          sourceColumnKeys
+        },
+        event
+      );
+    } else {
+      const { idx, rowIdx } = selectedPosition;
+      onCellCut?.({ row: rows[rowIdx], column: columns[idx] }, event);
+    }
+  }
+
   function handleCellPaste(event: CellClipboardEvent) {
     if (!onRowsChange) return;
 
@@ -766,7 +799,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         column: {} as CalculatedColumn<NoInfer<R>, NoInfer<SR>>
       });
     } else {
-      if (!onCellPaste || !isCellEditable(selectedPosition)) {
+      if (!onCellPaste) {
         return;
       }
 
@@ -1337,6 +1370,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       ref={gridRef}
       onScroll={handleScroll}
       onKeyDown={handleKeyDown}
+      onCut={handleCellCut}
       onCopy={handleCellCopy}
       onPaste={handleCellPaste}
       data-testid={testId}

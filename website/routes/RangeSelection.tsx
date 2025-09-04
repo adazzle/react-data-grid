@@ -6,7 +6,17 @@ import { css } from '@linaria/core';
 import { DataGrid, SelectColumn, textEditor } from '../../src';
 import type { Column, SortColumn } from '../../src';
 import { textEditorClassname } from '../../src/editors/textEditor';
-import type { Direction, MultiPasteArgs } from '../../src/types';
+import type {
+  CalculatedColumn,
+  CellClipboardEvent,
+  CellCopyArgs,
+  CellCutArgs,
+  CellPasteArgs,
+  Direction,
+  MultiCopyArgs,
+  MultiCutArgs,
+  MultiPasteArgs
+} from '../../src/types';
 
 const toolbarClassname = css`
   text-align: end;
@@ -308,6 +318,10 @@ export default function RangeSelection({ direction }: Props) {
   const [rows, setRows] = useState(createRows);
   const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
   const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(() => new Set());
+  const [copiedCell, setCopiedCell] = useState<{
+    readonly columnKey: string;
+    readonly value: unknown;
+  } | null>(null);
 
   const countries = useMemo(() => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
@@ -342,49 +356,119 @@ export default function RangeSelection({ direction }: Props) {
   function getRangeSize(start: number, end: number) {
     return Math.abs(start - end);
   }
+  function parseClipboardText(text: string): string[][] {
+    return text
+      .trim()
+      .split(/\r?\n/)
+      .map((line) => line.split('\t'));
+  }
 
-  function handleMultiPaste({ copiedRange, targetRange }: MultiPasteArgs) {
-    if (!copiedRange) return [...rows];
-    const sourceRange = copiedRange;
-    const destinationRange = targetRange;
-    if (
-      getRangeSize(sourceRange.endRowIdx, sourceRange.startRowIdx) !==
-        getRangeSize(destinationRange.endRowIdx, destinationRange.startRowIdx) ||
-      getRangeSize(sourceRange.startColumnIdx, sourceRange.endColumnIdx) !==
-        getRangeSize(destinationRange.startColumnIdx, destinationRange.endColumnIdx)
-    ) {
-      return [...rows];
-    }
+  function handleMultiPaste({ targetRange }: MultiPasteArgs, event: CellClipboardEvent) {
+    const text = event.clipboardData.getData('text/plain');
+    if (!text) return [...rows];
+
+    const parsed = parseClipboardText(text);
+
+    const targetStartRow = Math.min(targetRange.startRowIdx, targetRange.endRowIdx);
+    const targetStartCol = Math.min(targetRange.startColumnIdx, targetRange.endColumnIdx);
 
     const newRows = [...rows];
-    const sourceStartRow = Math.min(sourceRange.startRowIdx, sourceRange.endRowIdx);
-    const sourceStartCol = Math.min(sourceRange.startColumnIdx, sourceRange.endColumnIdx);
-    const destinationStartRow = Math.min(destinationRange.startRowIdx, destinationRange.endRowIdx);
-    const destinationStartCol = Math.min(
-      destinationRange.startColumnIdx,
-      destinationRange.endColumnIdx
-    );
 
-    for (let i = 0; i <= getRangeSize(sourceRange.startRowIdx, sourceRange.endRowIdx); i++) {
-      for (
-        let j = 0;
-        j <= getRangeSize(sourceRange.startColumnIdx, sourceRange.endColumnIdx);
-        j++
-      ) {
-        const sourceColumnKey = columns[sourceStartCol + j].key;
-        const destinationColumnKey = columns[destinationStartCol + j].key;
-        // @ts-ignore
-        newRows[destinationStartRow + i][destinationColumnKey] =
-          newRows[sourceStartRow + i][sourceColumnKey];
+    for (let i = 0; i < parsed.length; i++) {
+      const targetRowIdx = targetStartRow + i;
+      if (targetRowIdx >= newRows.length) break;
+
+      for (let j = 0; j < parsed[i].length; j++) {
+        const targetColIdx = targetStartCol + j;
+        if (targetColIdx >= columns.length) break;
+
+        const targetKey = columns[targetColIdx].key;
+        newRows[targetRowIdx] = {
+          ...newRows[targetRowIdx],
+          [targetKey]: parsed[i][j]
+        };
       }
     }
 
     return newRows;
   }
 
-  function handleMultiCopy(args: MultiCopyArgs<RowData>, event: CellClipboardEvent) {
+  function handleMultiCopy(args: MultiCopyArgs<Row>, event: CellClipboardEvent) {
+    const { sourceRows, sourceColumnKeys } = args;
+
+    const clipboardText = sourceRows
+      .map((r) => sourceColumnKeys.map((key) => String(r[key as keyof Row] ?? '')).join('\t'))
+      .join('\n');
+
+    event.clipboardData.setData('text/plain', clipboardText);
     event.preventDefault();
-    console.log('copying: ', args);
+  }
+  function handleCellCopy({ row, column }: CellCopyArgs<Row>, event: CellClipboardEvent) {
+    if (window.getSelection()?.isCollapsed === false) {
+      setCopiedCell(null);
+      return;
+    }
+
+    const value = row[column.key as keyof Row];
+    setCopiedCell({ columnKey: column.key, value });
+    event.clipboardData.setData('text/plain', String(value));
+    event.preventDefault();
+  }
+
+  function handleCellCut({ row, column }: CellCutArgs<Row>, event: CellClipboardEvent) {
+    if (window.getSelection()?.isCollapsed === false) {
+      setCopiedCell(null);
+      return;
+    }
+
+    const value = row[column.key as keyof Row];
+
+    setCopiedCell({ columnKey: column.key, value });
+    event.clipboardData.setData('text/plain', String(value));
+    event.preventDefault();
+
+    // Clear the source cell
+    setRows((prevRows) => prevRows.map((r) => (r.id === row.id ? { ...r, [column.key]: '' } : r)));
+  }
+
+  function handleMultiCut(args: MultiCutArgs<Row>, event: CellClipboardEvent) {
+    const { sourceRows, sourceColumnKeys } = args;
+
+    // save clipboard as TSV (Excel-style)
+    const clipboardText = sourceRows
+      .map((r) => sourceColumnKeys.map((key) => String(r[key as keyof Row] ?? '')).join('\t'))
+      .join('\n');
+
+    event.clipboardData.setData('text/plain', clipboardText);
+    event.preventDefault();
+
+    // clear source cells
+    setRows((prev) =>
+      prev.map((r) =>
+        sourceRows.find((sr) => sr.id === r.id)
+          ? {
+              ...r,
+              ...sourceColumnKeys.reduce((acc, key) => ({ ...acc, [key]: '' }), {})
+            }
+          : r
+      )
+    );
+  }
+
+  function handleCellPaste({ row, column }: CellPasteArgs<Row>, event: CellClipboardEvent): Row {
+    const targetKey = column.key;
+    console.log('Pasting value: ', event.clipboardData.getData('text/plain'));
+
+    if (copiedCell !== null) {
+      return { ...row, [targetKey]: copiedCell.value };
+    }
+
+    const text = event.clipboardData.getData('text/plain');
+    if (text !== '') {
+      return { ...row, [targetKey]: text };
+    }
+
+    return row;
   }
 
   const gridElement = (
@@ -404,8 +488,11 @@ export default function RangeSelection({ direction }: Props) {
       summaryRows={summaryRows}
       className="fill-grid"
       direction={direction}
-      enableRangeSelection
+      enableRangeSelection={true}
+      onCellCut={handleCellCut}
+      onCellPaste={handleCellPaste}
       onMultiCopy={handleMultiCopy}
+      onMultiCut={handleMultiCut}
       onMultiPaste={handleMultiPaste}
     />
   );
