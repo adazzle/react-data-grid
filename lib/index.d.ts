@@ -231,7 +231,12 @@ interface CellCopyPasteArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
 }
+interface CellCutPasteArgs<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
+}
 type CellCopyArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
+type CellCutArgs<TRow, TSummaryRow = unknown> = CellCutPasteArgs<TRow, TSummaryRow>;
 type CellPasteArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
 interface CellsRange {
   startRowIdx: number;
@@ -240,6 +245,11 @@ interface CellsRange {
   endColumnIdx: number;
 }
 interface MultiCopyArgs<TRow> {
+  cellsRange: CellsRange;
+  sourceColumnKeys: string[];
+  sourceRows: TRow[];
+}
+interface MultiCutArgs<TRow> {
   cellsRange: CellsRange;
   sourceColumnKeys: string[];
   sourceRows: TRow[];
@@ -380,6 +390,7 @@ interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivP
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
   onMultiPaste?: Maybe<(args: MultiPasteArgs, event: CellClipboardEvent) => NoInfer<R[]>>;
   onMultiCopy?: Maybe<(args: MultiCopyArgs<NoInfer<R>>, event: CellClipboardEvent) => void>;
+  onMultiCut?: Maybe<(args: MultiCutArgs<NoInfer<R>>, event: CellClipboardEvent) => void>;
   onSelectedRangeChange?: Maybe<(selectedRange: CellsRange) => void>;
   /**
    * Event props
@@ -396,6 +407,8 @@ interface DataGridProps<R, SR = unknown, K extends Key = Key> extends SharedDivP
   onCellKeyDown?: Maybe<(args: CellKeyDownArgs<NoInfer<R>, NoInfer<SR>>, event: CellKeyboardEvent) => void>;
   /** Callback triggered when a cell's content is copied */
   onCellCopy?: Maybe<(args: CellCopyArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void>;
+  /** Callback triggered when a cell's content is cut */
+  onCellCut?: (args: CellCutArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => void;
   /** Callback triggered when content is pasted into a cell */
   onCellPaste?: Maybe<(args: CellPasteArgs<NoInfer<R>, NoInfer<SR>>, event: CellClipboardEvent) => NoInfer<R>>;
   /** Function called whenever cell selection is changed */
@@ -551,5 +564,5 @@ declare function useHeaderRowSelection(): {
   onRowSelectionChange: (selectRowEvent: SelectHeaderRowEvent) => void;
 };
 //#endregion
-export { type CalculatedColumn, type CalculatedColumnOrColumnGroup, type CalculatedColumnParent, CellComponent as Cell, type CellClipboardEvent, type CellCopyArgs, type CellKeyDownArgs, type CellKeyboardEvent, type CellMouseArgs, type CellMouseEvent, type CellPasteArgs, type CellRendererProps, type CellSelectArgs, type ColSpanArgs, type Column, type ColumnGroup, type ColumnOrColumnGroup, type ColumnWidth, type ColumnWidths, DataGrid, DataGridDefaultRenderersContext, type DataGridHandle, type DataGridProps, type DefaultColumnOptions, type FillEvent, type MultiCopyArgs, type MultiPasteArgs, type RenderCellProps, type RenderCheckboxProps, type RenderEditCellProps, type RenderGroupCellProps, type RenderHeaderCellProps, type RenderRowProps, type RenderSortIconProps, type RenderSortPriorityProps, type RenderSortStatusProps, type RenderSummaryCellProps, type Renderers, RowComponent as Row, type RowHeightArgs, type RowsChangeData, SELECT_COLUMN_KEY, SelectCellFormatter, type SelectCellOptions, SelectColumn, type SelectHeaderRowEvent, type SelectRowEvent, type SortColumn, type SortDirection, ToggleGroup, TreeDataGrid, type TreeDataGridProps, renderCheckbox, renderHeaderCell, renderSortIcon, renderSortPriority, renderToggleGroup, renderValue, textEditor, useHeaderRowSelection, useRowSelection };
+export { type CalculatedColumn, type CalculatedColumnOrColumnGroup, type CalculatedColumnParent, CellComponent as Cell, type CellClipboardEvent, type CellCopyArgs, type CellCutArgs, type CellKeyDownArgs, type CellKeyboardEvent, type CellMouseArgs, type CellMouseEvent, type CellPasteArgs, type CellRendererProps, type CellSelectArgs, type ColSpanArgs, type Column, type ColumnGroup, type ColumnOrColumnGroup, type ColumnWidth, type ColumnWidths, DataGrid, DataGridDefaultRenderersContext, type DataGridHandle, type DataGridProps, type DefaultColumnOptions, type FillEvent, type MultiCopyArgs, type MultiCutArgs, type MultiPasteArgs, type RenderCellProps, type RenderCheckboxProps, type RenderEditCellProps, type RenderGroupCellProps, type RenderHeaderCellProps, type RenderRowProps, type RenderSortIconProps, type RenderSortPriorityProps, type RenderSortStatusProps, type RenderSummaryCellProps, type Renderers, RowComponent as Row, type RowHeightArgs, type RowsChangeData, SELECT_COLUMN_KEY, SelectCellFormatter, type SelectCellOptions, SelectColumn, type SelectHeaderRowEvent, type SelectRowEvent, type SortColumn, type SortDirection, ToggleGroup, TreeDataGrid, type TreeDataGridProps, renderCheckbox, renderHeaderCell, renderSortIcon, renderSortPriority, renderToggleGroup, renderValue, textEditor, useHeaderRowSelection, useRowSelection };
 //# sourceMappingURL=index.d.ts.map
