@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { faker } from '@faker-js/faker';
 import { css } from '@linaria/core';
@@ -322,7 +322,9 @@ export default function RangeSelection({ direction }: Props) {
     readonly columnKey: string;
     readonly value: unknown;
   } | null>(null);
-
+  useEffect(() => {
+    console.log('Selected Rows:', selectedRows);
+  }, [selectedRows]);
   const countries = useMemo(() => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -433,6 +435,7 @@ export default function RangeSelection({ direction }: Props) {
 
   function handleMultiCut(args: MultiCutArgs<Row>, event: CellClipboardEvent) {
     const { sourceRows, sourceColumnKeys } = args;
+    console.log(sourceRows);
 
     // save clipboard as TSV (Excel-style)
     const clipboardText = sourceRows
