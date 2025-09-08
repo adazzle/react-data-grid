@@ -1,0 +1,2 @@
+import{l as e,m as t}from"./index-CL8joymu.js";var n=t(e()),r=`t7vyx3i`;const i=`rdg-text-editor ${r}`;function a(e){e?.focus(),e?.select()}function o({row:e,column:t,onRowChange:r,onClose:o}){return(0,n.jsx)(`input`,{className:i,ref:a,value:e[t.key],onChange:n=>r({...e,[t.key]:n.target.value}),onBlur:()=>o(!0,!1)})}export{i as n,o as t};
+//# sourceMappingURL=textEditor-Bn0a6E8v.js.map
