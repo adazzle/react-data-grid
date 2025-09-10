@@ -968,10 +968,9 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
     const { idx, rowIdx } = selectedPosition;
     const column = columns[idx];
-    if (column.renderEditCell == null || column.editable === false) {
+    if (!isCellEditable(selectedPosition)) {
       return;
     }
-
     const isLastRow = rowIdx === maxRowIdx;
     const columnWidth = getColumnWidth(column);
     const colSpan = column.colSpan?.({ type: 'ROW', row: rows[rowIdx] }) ?? 1;
