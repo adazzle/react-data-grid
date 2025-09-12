@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useEffect,
   useImperativeHandle,
   useLayoutEffect,
   useMemo,
@@ -415,9 +414,6 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     (): SelectCellState | EditCellState<R> => ({ idx: -1, rowIdx: minRowIdx - 1, mode: 'SELECT' })
   );
   const [selectedRange, setSelectedRange] = useState<CellsRange>(initialSelectedRange);
-  useEffect(() => {
-    console.log(selectedRows);
-  }, [selectedRows]);
   const [copiedRange, setCopiedRange] = useState<CellsRange | null>(null);
   const [isMouseRangeSelectionMode, setIsMouseRangeSelectionMode] = useState(false);
 
