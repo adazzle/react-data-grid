@@ -277,8 +277,13 @@ interface CellCopyPasteArgs<TRow, TSummaryRow = unknown> {
   column: CalculatedColumn<TRow, TSummaryRow>;
   row: TRow;
 }
+interface CellCutPasteArgs<TRow, TSummaryRow = unknown> {
+  column: CalculatedColumn<TRow, TSummaryRow>;
+  row: TRow;
+}
 
 export type CellCopyArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
+export type CellCutArgs<TRow, TSummaryRow = unknown> = CellCutPasteArgs<TRow, TSummaryRow>;
 export type CellPasteArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
 
 export interface CellsRange {
@@ -288,6 +293,11 @@ export interface CellsRange {
   endColumnIdx: number;
 }
 export interface MultiCopyArgs<TRow> {
+  cellsRange: CellsRange;
+  sourceColumnKeys: string[];
+  sourceRows: TRow[];
+}
+export interface MultiCutArgs<TRow> {
   cellsRange: CellsRange;
   sourceColumnKeys: string[];
   sourceRows: TRow[];
