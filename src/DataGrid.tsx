@@ -574,7 +574,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         setScrollToPosition({ idx: scrollToIdx, rowIdx: scrollToRowIdx });
       }
     },
-    selectCell
+    selectCell,
+    selectedRange
   }));
 
   /**

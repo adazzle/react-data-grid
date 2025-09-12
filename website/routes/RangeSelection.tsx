@@ -322,7 +322,6 @@ export default function RangeSelection({ direction }: Props) {
     readonly columnKey: string;
     readonly value: unknown;
   } | null>(null);
-
   const countries = useMemo(() => {
     return [...new Set(rows.map((r) => r.country))].sort(new Intl.Collator().compare);
     // eslint-disable-next-line react-hooks/exhaustive-deps
