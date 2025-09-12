@@ -66,7 +66,6 @@ test('should allow dragFill if onFill is specified', async () => {
 
 test('should update single row using mouse', async () => {
   setup();
-  // @ts-expect-error
   await commands.dragFill('a1', 'a2');
   await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   await expect.element(getCellsAtRowIndex(2)[0]).toHaveTextContent('a3');
@@ -75,7 +74,6 @@ test('should update single row using mouse', async () => {
 
 test('should update multiple rows using mouse', async () => {
   setup();
-  // @ts-expect-error
   await commands.dragFill('a1', 'a4');
   await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a1');
   await expect.element(getCellsAtRowIndex(2)[0]).toHaveTextContent('a1');
@@ -84,7 +82,6 @@ test('should update multiple rows using mouse', async () => {
 
 test('should allow drag up using mouse', async () => {
   setup();
-  // @ts-expect-error
   await commands.dragFill('a4', 'a1');
   await expect.element(getCellsAtRowIndex(0)[0]).toHaveTextContent('a4');
   await expect.element(getCellsAtRowIndex(1)[0]).toHaveTextContent('a4');

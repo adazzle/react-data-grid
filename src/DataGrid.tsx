@@ -1002,7 +1002,13 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   }
 
   function getCellEditor(rowIdx: number) {
-    if (selectedPosition.rowIdx !== rowIdx || selectedPosition.mode === 'SELECT') return;
+    if (
+      !isCellWithinViewportBounds(selectedPosition) ||
+      selectedPosition.rowIdx !== rowIdx ||
+      selectedPosition.mode === 'SELECT'
+    ) {
+      return;
+    }
 
     const { idx, row } = selectedPosition;
     const column = columns[idx];
@@ -1186,28 +1192,26 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         },
         className
       )}
-      style={
-        {
-          ...style,
-          // set scrollPadding to correctly position non-sticky cells after scrolling
-          scrollPaddingInlineStart:
-            selectedPosition.idx > lastFrozenColumnIndex || scrollToPosition?.idx !== undefined
-              ? `${totalFrozenColumnWidth}px`
-              : undefined,
-          scrollPaddingBlock:
-            isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
-            scrollToPosition?.rowIdx !== undefined
-              ? `${headerRowsHeight + topSummaryRowsCount * summaryRowHeight}px ${
-                  bottomSummaryRowsCount * summaryRowHeight
-                }px`
-              : undefined,
-          gridTemplateColumns,
-          gridTemplateRows: templateRows,
-          '--rdg-header-row-height': `${headerRowHeight}px`,
-          '--rdg-scroll-height': `${scrollHeight}px`,
-          ...layoutCssVars
-        } as unknown as React.CSSProperties
-      }
+      style={{
+        ...style,
+        // set scrollPadding to correctly position non-sticky cells after scrolling
+        scrollPaddingInlineStart:
+          selectedPosition.idx > lastFrozenColumnIndex || scrollToPosition?.idx !== undefined
+            ? `${totalFrozenColumnWidth}px`
+            : undefined,
+        scrollPaddingBlock:
+          isRowIdxWithinViewportBounds(selectedPosition.rowIdx) ||
+          scrollToPosition?.rowIdx !== undefined
+            ? `${headerRowsHeight + topSummaryRowsCount * summaryRowHeight}px ${
+                bottomSummaryRowsCount * summaryRowHeight
+              }px`
+            : undefined,
+        gridTemplateColumns,
+        gridTemplateRows: templateRows,
+        '--rdg-header-row-height': `${headerRowHeight}px`,
+        '--rdg-scroll-height': `${scrollHeight}px`,
+        ...layoutCssVars
+      }}
       dir={direction}
       ref={gridRef}
       onScroll={handleScroll}
