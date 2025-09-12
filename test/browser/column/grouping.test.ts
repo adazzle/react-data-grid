@@ -1,6 +1,6 @@
 import { page, userEvent } from '@vitest/browser/context';
 
-import { type ColumnOrColumnGroup } from '../../../src';
+import type { ColumnOrColumnGroup } from '../../../src';
 import { getSelectedCell, setup, tabIntoGrid, validateCellPosition } from '../utils';
 
 const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
