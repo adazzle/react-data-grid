@@ -37,10 +37,12 @@ describe('colSpan', () => {
     setup({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
   }
 
-  it('should merges cells', () => {
+  it('should merges cells', async () => {
     setupColSpanGrid();
     // header
-    expect(getHeaderCells()).toHaveLength(13);
+    await vi.waitFor(() => {
+      expect(getHeaderCells()).toHaveLength(13);
+    });
 
     // top summary rows
     const topSummarryRow1 = getCellsAtRowIndex(0);
