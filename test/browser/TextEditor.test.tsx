@@ -38,7 +38,7 @@ test('TextEditor', async () => {
   // input is focused
   await expect.element(input).toHaveFocus();
   // input value is fully selected
-  expect(input).toHaveSelection(initialRows[0].name);
+  await expect.element(input).toHaveSelection(initialRows[0].name);
 
   // pressing escape closes the editor without committing
   await userEvent.keyboard('Test{escape}');
