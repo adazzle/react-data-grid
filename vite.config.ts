@@ -84,7 +84,6 @@ export default defineConfig(({ command, isPreview }) => ({
       include: ['src/**/*.{ts,tsx}'],
       reporter: ['json']
     },
-    testTimeout: 20_000,
     restoreMocks: true,
     sequence: {
       shuffle: true
