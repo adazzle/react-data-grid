@@ -93,9 +93,9 @@ describe('Custom cell renderer', () => {
     page.render(<Test />);
 
     const [cell] = getCells();
-    await expect.element(cell).toHaveTextContent('value: 1');
+    expect(cell).toHaveTextContent('value: 1');
     await userEvent.click(page.getByRole('button'));
-    await expect.element(cell).toHaveTextContent('value: 2');
+    expect(cell).toHaveTextContent('value: 2');
     expect(onChange).toHaveBeenCalledExactlyOnceWith([{ id: 2 }], {
       column: {
         ...column,
@@ -140,29 +140,29 @@ test('Focus child if it sets tabIndex', async () => {
   const button1 = page.getByRole('button', { name: 'Button 1' });
   const button2 = page.getByRole('button', { name: 'Button 2' });
   const cell = page.getByRole('gridcell', { name: 'Button 1 Text Button 2' });
-  await expect.element(button1).toHaveAttribute('tabindex', '-1');
-  await expect.element(cell).toHaveAttribute('tabindex', '-1');
+  expect(button1).toHaveAttribute('tabindex', '-1');
+  expect(cell).toHaveAttribute('tabindex', '-1');
   await userEvent.click(page.getByText('Text'));
-  await expect.element(button1).toHaveFocus();
-  await expect.element(button1).toHaveAttribute('tabindex', '0');
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
   await userEvent.tab({ shift: true });
-  await expect.element(button1).not.toHaveFocus();
-  await expect.element(button1).toHaveAttribute('tabindex', '-1');
-  await expect.element(cell).toHaveAttribute('tabindex', '-1');
+  expect(button1).not.toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '-1');
+  expect(cell).toHaveAttribute('tabindex', '-1');
   await userEvent.click(button1);
-  await expect.element(button1).toHaveFocus();
-  await expect.element(button1).toHaveAttribute('tabindex', '0');
-  await expect.element(cell).toHaveAttribute('tabindex', '-1');
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
   await userEvent.tab({ shift: true });
   await userEvent.click(button2);
-  await expect.element(button2).toHaveFocus();
+  expect(button2).toHaveFocus();
   // It is user's responsibilty to set the tabIndex on button2
-  await expect.element(button1).toHaveAttribute('tabindex', '0');
-  await expect.element(cell).toHaveAttribute('tabindex', '-1');
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
   await userEvent.click(button1);
-  await expect.element(button1).toHaveFocus();
-  await expect.element(button1).toHaveAttribute('tabindex', '0');
-  await expect.element(cell).toHaveAttribute('tabindex', '-1');
+  expect(button1).toHaveFocus();
+  expect(button1).toHaveAttribute('tabindex', '0');
+  expect(cell).toHaveAttribute('tabindex', '-1');
 });
 
 test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
@@ -196,8 +196,8 @@ test('Cell should not steal focus when the focus is outside the grid and cell is
   expect(getCellsAtRowIndex(0)[0]).toHaveFocus();
 
   const button = page.getByRole('button', { name: 'Test' }).element();
-  await expect.element(button).not.toHaveFocus();
+  expect(button).not.toHaveFocus();
   await userEvent.click(button);
   expect(getCellsAtRowIndex(0)[0]).not.toHaveFocus();
-  await expect.element(button).toHaveFocus();
+  expect(button).toHaveFocus();
 });
