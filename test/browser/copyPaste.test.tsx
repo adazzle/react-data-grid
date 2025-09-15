@@ -3,7 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../src';
 import type { CellPasteArgs, Column } from '../../src';
-import { getCellsAtRowIndex, getSelectedCell } from './utils';
+import { getSelectedCell } from './utils';
 
 interface Row {
   col: string;
