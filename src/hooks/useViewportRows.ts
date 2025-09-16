@@ -28,18 +28,51 @@ export function useViewportRows<R>({
       };
     }
 
-    let totalRowHeight = 0;
-    let gridTemplateRows = ' ';
     // Calcule the height of all the rows upfront. This can cause performance issues
     // and we can consider using a similar approach as react-window
     // https://github.com/bvaughn/react-window/blob/b0a470cc264e9100afcaa1b78ed59d88f7914ad4/src/VariableSizeList.js#L68
-    const rowPositions = rows.map((row) => {
+    let totalRowHeight = 0;
+    const rowPositions: { top: number; height: number }[] = [];
+    let gridTemplateRows = '';
+    let currentHeight: number | null = null;
+    let repeatCount = 0;
+
+    rows.forEach((row, index) => {
       const currentRowHeight = rowHeight(row);
-      const position = { top: totalRowHeight, height: currentRowHeight };
-      gridTemplateRows += `${currentRowHeight}px `;
+
+      const position = {
+        top: totalRowHeight,
+        height: currentRowHeight
+      };
+      rowPositions.push(position);
       totalRowHeight += currentRowHeight;
-      return position;
+
+      if (currentHeight === null) {
+        currentHeight = currentRowHeight;
+        repeatCount = 1;
+      } else if (currentHeight === currentRowHeight) {
+        repeatCount++;
+      } else {
+        if (repeatCount > 1) {
+          gridTemplateRows += `repeat(${repeatCount}, ${currentHeight}px) `;
+        } else {
+          gridTemplateRows += `${currentHeight}px `;
+        }
+
+        currentHeight = currentRowHeight;
+        repeatCount = 1;
+      }
+
+      if (index === rows.length - 1) {
+        if (repeatCount > 1) {
+          gridTemplateRows += `repeat(${repeatCount}, ${currentHeight}px)`;
+        } else {
+          gridTemplateRows += `${currentHeight}px`;
+        }
+      }
     });
+
+    gridTemplateRows = gridTemplateRows.trim();
 
     const validateRowIdx = (rowIdx: number) => {
       return max(0, min(rows.length - 1, rowIdx));
