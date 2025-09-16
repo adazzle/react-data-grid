@@ -31,24 +31,25 @@ test('TextEditor', async () => {
   page.render(<Test />);
 
   await userEvent.dblClick(getCells()[0]);
-  const input = page.getByRole('textbox');
-  await expect.element(input).toHaveClass('rdg-text-editor');
+  let input = page.getByRole('textbox').element() as HTMLInputElement;
+  expect(input).toHaveClass('rdg-text-editor');
   // input value is row[column.key]
-  await expect.element(input).toHaveValue(initialRows[0].name);
+  expect(input).toHaveValue(initialRows[0].name);
   // input is focused
-  await expect.element(input).toHaveFocus();
+  expect(input).toHaveFocus();
   // input value is fully selected
-  await expect.element(input).toHaveSelection(initialRows[0].name);
+  expect(input).toHaveSelection(initialRows[0].name);
 
   // pressing escape closes the editor without committing
   await userEvent.keyboard('Test{escape}');
-  await expect.element(input).not.toBeInTheDocument();
+  expect(input).not.toBeInTheDocument();
   await expect.element(getCells()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
 
   // blurring the input closes and commits the editor
   await userEvent.dblClick(getCells()[0]);
+  input = page.getByRole('textbox').element() as HTMLInputElement;
   await userEvent.fill(input, 'Jim Milton');
   await userEvent.tab();
-  await expect.element(input).not.toBeInTheDocument();
+  expect(input).not.toBeInTheDocument();
   await expect.element(getCells()[0]).toHaveTextContent(/^Jim Milton$/);
 });
