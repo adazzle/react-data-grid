@@ -151,10 +151,13 @@ test('should auto resize column when resize handle is double clicked', async () 
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   const [, col2] = getHeaderCells();
   await autoResize(col2);
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 327.703px' });
+  expect((grid.element() as HTMLDivElement).style.gridTemplateColumns).toBeOneOf([
+    '100px 327.703px', // chrome
+    '100px 327.833px' // firefox
+  ]);
   expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(
     expect.objectContaining(columns[1]),
-    327.703125
+    expect.toSatisfy((width) => width >= 327.7 && width <= 327.9)
   );
 });
 
@@ -229,14 +232,22 @@ test('should remeasure flex columns when resizing a column', async () => {
     onColumnResize
   });
   const grid = getGrid();
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '639.328px 639.328px 639.344px' });
+
+  function testGridTemplateColumns(chrome: string, firefox: string) {
+    expect((grid.element() as HTMLDivElement).style.gridTemplateColumns).toBeOneOf([
+      chrome,
+      firefox
+    ]);
+  }
+
+  testGridTemplateColumns('639.328px 639.328px 639.344px', '639.333px 639.333px 639.333px');
   const [col1] = getHeaderCells();
   await autoResize(col1);
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  testGridTemplateColumns('79.1406px 919.422px 919.438px', '79.1667px 919.417px 919.417px');
   expect(onColumnResize).toHaveBeenCalledOnce();
   // onColumnResize is not called if width is not changed
   await autoResize(col1);
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  testGridTemplateColumns('79.1406px 919.422px 919.438px', '79.1667px 919.417px 919.417px');
   expect(onColumnResize).toHaveBeenCalledOnce();
 });
 

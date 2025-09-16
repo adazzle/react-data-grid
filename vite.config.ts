@@ -77,6 +77,7 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   test: {
     globals: true,
+    // TODO: use more workers when FF tests are stable
     maxWorkers: 1,
     coverage: {
       provider: 'istanbul',
