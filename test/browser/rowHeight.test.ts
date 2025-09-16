@@ -78,3 +78,29 @@ test('rowHeight with unique heights', () => {
     'repeat(1, 35px) 1px 2px 3px 4px 5px 6px 7px 8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 19px 20px 21px 22px 23px 24px 25px 26px 27px 28px 29px 30px 31px 32px 33px 34px 35px 36px 37px 38px 39px 40px 41px 42px 43px 44px 45px 46px 47px 48px 49px 50px'
   );
 });
+
+test('rowHeight with unique first and unique last heights', () => {
+  expectGridRows((row) => {
+    if (row === 0) {
+      return 10;
+    }
+
+    if (row === 49) {
+      return 20;
+    }
+
+    return 50;
+  }, 'repeat(1, 35px) 10px repeat(48, 50px) 20px');
+});
+
+test('rowHeight with unique last height', () => {
+  expectGridRows((row) => {
+    return row === 49 ? 50 : 20;
+  }, 'repeat(1, 35px) repeat(49, 20px) 50px');
+});
+
+test('rowHeight with unique first height', () => {
+  expectGridRows((row) => {
+    return row === 0 ? 45 : 50;
+  }, 'repeat(1, 35px) 45px repeat(49, 50px)');
+});
