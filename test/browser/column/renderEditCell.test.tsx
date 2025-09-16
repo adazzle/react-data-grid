@@ -194,7 +194,7 @@ describe('Editor', () => {
           }}
         />
       );
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.click(getCellsAtRowIndex(0)[1]);
       await userEvent.keyboard('yz{enter}');
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('yz');
       await userEvent.keyboard('x');
