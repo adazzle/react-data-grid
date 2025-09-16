@@ -106,6 +106,10 @@ export default defineConfig(({ command, isPreview }) => ({
               {
                 browser: 'firefox',
                 context: { viewport }
+              },
+              {
+                browser: 'webkit',
+                context: { viewport }
               }
             ],
             commands: { resizeColumn, dragFill },
