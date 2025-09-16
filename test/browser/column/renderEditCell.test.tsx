@@ -266,7 +266,7 @@ describe('Editor', () => {
       await userEvent.keyboard('abc');
 
       await scrollGrid({ scrollTop: 1500 });
-      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^20$/);
+      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
       await userEvent.click(getCellsAtRowIndex(40)[1]);
       await expect.element(getSelectedCell()).toHaveTextContent(/^40$/);
       await scrollGrid({ scrollTop: 0 });
