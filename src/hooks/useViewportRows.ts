@@ -51,6 +51,7 @@ export function useViewportRows<R>({
         currentHeight = currentRowHeight;
         repeatCount = 1;
       } else if (currentHeight === currentRowHeight) {
+        // If the current row height is the same as the previous one, increment the repeat count
         repeatCount++;
       } else {
         if (repeatCount > 1) {
@@ -71,8 +72,6 @@ export function useViewportRows<R>({
         }
       }
     });
-
-    gridTemplateRows = gridTemplateRows.trim();
 
     const validateRowIdx = (rowIdx: number) => {
       return max(0, min(rows.length - 1, rowIdx));
