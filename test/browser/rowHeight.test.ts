@@ -20,6 +20,15 @@ function setupGrid(rowHeight: DataGridProps<Row>['rowHeight']) {
   setup({ columns, rows, rowHeight });
 }
 
+function expectGridRows(rowHeightFn: (row: number) => number, expected: string) {
+  setupGrid(rowHeightFn);
+
+  const grid = page.getByRole('grid').element() as HTMLDivElement;
+  const gridTemplateRows = grid.style.gridTemplateRows;
+
+  expect(gridTemplateRows).toBe(expected);
+}
+
 test('rowHeight is number', async () => {
   setupGrid(40);
 
@@ -50,4 +59,48 @@ test('rowHeight is function', async () => {
   expect(grid.scrollTop).toBe(0);
   await userEvent.keyboard('{Control>}{end}');
   expect(grid.scrollTop + grid.clientHeight).toBe(grid.scrollHeight);
+});
+
+test('rowHeight with repeat pattern - multiple identical heights', () => {
+  expectGridRows(() => 40, 'repeat(1, 35px) repeat(50, 40px)');
+});
+
+test('rowHeight with mixed heights - one unique in middle', () => {
+  expectGridRows(
+    (row) => (row === 25 ? 40 : 50),
+    'repeat(1, 35px) repeat(25, 50px) 40px repeat(24, 50px)'
+  );
+});
+
+test('rowHeight with unique heights', () => {
+  expectGridRows(
+    (row) => row + 1,
+    'repeat(1, 35px) 1px 2px 3px 4px 5px 6px 7px 8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 19px 20px 21px 22px 23px 24px 25px 26px 27px 28px 29px 30px 31px 32px 33px 34px 35px 36px 37px 38px 39px 40px 41px 42px 43px 44px 45px 46px 47px 48px 49px 50px'
+  );
+});
+
+test('rowHeight with unique first and unique last heights', () => {
+  expectGridRows((row) => {
+    if (row === 0) {
+      return 10;
+    }
+
+    if (row === 49) {
+      return 20;
+    }
+
+    return 50;
+  }, 'repeat(1, 35px) 10px repeat(48, 50px) 20px');
+});
+
+test('rowHeight with unique last height', () => {
+  expectGridRows((row) => {
+    return row === 49 ? 50 : 20;
+  }, 'repeat(1, 35px) repeat(49, 20px) 50px');
+});
+
+test('rowHeight with unique first height', () => {
+  expectGridRows((row) => {
+    return row === 0 ? 45 : 50;
+  }, 'repeat(1, 35px) 45px repeat(49, 50px)');
 });
