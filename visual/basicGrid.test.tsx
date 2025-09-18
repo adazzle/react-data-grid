@@ -29,5 +29,5 @@ function rowKeyGetter(row: Row) {
 test('toggle selection when checkbox is clicked', async () => {
   page.render(<DataGrid rowKeyGetter={rowKeyGetter} columns={columns} rows={rows} />);
 
-  await expect(getGrid()).toMatchScreenshot();
+  await expect(getGrid()).toMatchScreenshot('basic-grid');
 });

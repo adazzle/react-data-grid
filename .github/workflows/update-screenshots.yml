@@ -15,12 +15,12 @@ env:
 jobs:
   update-screenshots:
     # don't run on main
-    if: ${{ github.event.label.name == 'Update Screenshots' && github.ref_name != 'main' }}
+    if: ${{ github.event.label.name == 'Update Screenshots' && github.head_ref  != 'main' }}
     runs-on: ubuntu-latest
 
     # one at a time per branch
     concurrency:
-      group: visual-regression-screenshots@${{ github.ref_name }}
+      group: visual-regression-screenshots@${{ github.head_ref  }}
       cancel-in-progress: true
 
     permissions:
@@ -86,7 +86,7 @@ jobs:
           if [[ "${{ steps.check_changes.outputs.changes }}" == "true" ]]; then
             echo "### 📸 Visual Regression Screenshots Updated" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Successfully updated **${{ steps.check_changes.outputs.changed_count }}** screenshot(s) on \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "Successfully updated **${{ steps.check_changes.outputs.changed_count }}** screenshot(s) on \`${{ github.head_ref  }}\`" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "#### Changed Files:" >> $GITHUB_STEP_SUMMARY
             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
