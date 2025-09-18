@@ -27,6 +27,7 @@ jobs:
       contents: write # needs to push changes
 
     steps:
+      - name: Checkout branch
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           ref: ${{ github.head_ref }}
@@ -39,65 +40,15 @@ jobs:
         with:
           labels: 'Update Screenshots'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Configure Git
-        run: |
-          git config --global user.name "${{ env.AUTHOR_NAME }}"
-          git config --global user.email "${{ env.AUTHOR_EMAIL }}"
       - name: npm install
         run: npm i
       - name: Install Playwright Browsers
         run: npx playwright install chromium
-      - name: Update Visual Regression Screenshots
-        run: node --run visual:update
-
-      # check what changed
-      - name: Check for changes
-        id: check_changes
+      - name: Push new screenshots
         run: |
-          CHANGED_FILES=$(git status --porcelain | awk '{print $2}')
-          if [ "${CHANGED_FILES:+x}" ]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected"
-
-            # save the list for the summary
-            echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-            echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            echo "changed_count=$(echo "$CHANGED_FILES" | wc -l)" >> $GITHUB_OUTPUT
-          else
-            echo "changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected"
-          fi
-
-      # commit if there are changes
-      - name: Commit changes
-        if: steps.check_changes.outputs.changes == 'true'
-        run: |
+          node --run visual:update
+          git config --global user.name "${{ env.AUTHOR_NAME }}"
+          git config --global user.email "${{ env.AUTHOR_EMAIL }}"
           git add visual/__screenshots__/.
-          git commit -m "${{ env.COMMIT_MESSAGE }}"
-
-      - name: Push changes
-        if: steps.check_changes.outputs.changes == 'true'
-        run: git push --set-upstream origin ${{ github.head_ref }}
-
-      # pretty summary for humans
-      - name: Summary
-        run: |
-          if [[ "${{ steps.check_changes.outputs.changes }}" == "true" ]]; then
-            echo "### 📸 Visual Regression Screenshots Updated" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Successfully updated **${{ steps.check_changes.outputs.changed_count }}** screenshot(s) on \`${{ github.head_ref  }}\`" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "#### Changed Files:" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            echo "${{ steps.check_changes.outputs.changed_files }}" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "✅ The updated screenshots have been committed and pushed. Your visual regression baseline is now up to date!" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "### ℹ️ No Screenshot Updates Required" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "The visual regression test command ran successfully but no screenshots needed updating." >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "All screenshots are already up to date! 🎉" >> $GITHUB_STEP_SUMMARY
-          fi
+          git diff-index --quiet HEAD || git commit -m "${{ env.COMMIT_MESSAGE }}"
+          git push --set-upstream origin ${{ github.head_ref }}
