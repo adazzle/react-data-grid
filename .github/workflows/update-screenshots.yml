@@ -33,7 +33,6 @@ jobs:
         with:
           node-version: 24
           check-latest: true
-        with:
           ref: ${{ github.ref_name }}
           # use PAT if triggering other workflows
           # token: ${{ secrets.GITHUB_TOKEN }}
