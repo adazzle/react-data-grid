@@ -1,6 +1,7 @@
 name: Update Visual Regression Screenshots
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [labeled]
 
