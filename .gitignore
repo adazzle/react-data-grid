@@ -9,3 +9,4 @@ test/**/__screenshots__
 npm-debug.log
 **.orig
 .idea
+.vitest-attachments
