@@ -28,6 +28,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 24
@@ -76,7 +79,7 @@ jobs:
 
       - name: Push changes
         if: steps.check_changes.outputs.changes == 'true'
-        run: git push --set-upstream origin ${{ github.ref_name }}
+        run: git push --set-upstream origin ${{ github.head_ref }}
 
       # pretty summary for humans
       - name: Summary
