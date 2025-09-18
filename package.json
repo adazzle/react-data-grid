@@ -38,6 +38,7 @@
     "test": "vitest run --project browser --project node",
     "test:watch": "vitest watch test",
     "visual": "vitest run --project visual",
+    "visual:update": "vitest run --project visual --update",
     "format": "biome format --write",
     "check": "biome check --error-on-warnings",
     "biome:ci": "biome ci --error-on-warnings",

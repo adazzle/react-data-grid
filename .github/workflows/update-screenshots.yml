@@ -44,7 +44,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install chromium
       - name: Update Visual Regression Screenshots
-        run: node --run visual --update
+        run: node --run visual:update
 
       # check what changed
       - name: Check for changes
