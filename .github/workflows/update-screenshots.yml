@@ -33,12 +33,13 @@ jobs:
         with:
           node-version: 24
           check-latest: true
-
+      - name: Remove label
+        run: |
+          gh pr edit ${{ github.event.pull_request.number }} --remove-label "Update Screenshots"
       - name: Configure Git
         run: |
           git config --global user.name "${{ env.AUTHOR_NAME }}"
           git config --global user.email "${{ env.AUTHOR_EMAIL }}"
-
       - name: npm install
         run: npm i
       - name: Install Playwright Browsers
