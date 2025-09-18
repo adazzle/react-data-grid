@@ -34,6 +34,8 @@ jobs:
           node-version: 24
           check-latest: true
       - name: Remove label
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr edit ${{ github.event.pull_request.number }} --remove-label "Update Screenshots"
       - name: Configure Git
