@@ -28,6 +28,8 @@ jobs:
         run: node --run build
       - name: Build website
         run: node --run build:website
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
       - name: Test
         run: node --run test
       - name: Visual Regression Testing
