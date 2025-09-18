@@ -109,6 +109,16 @@ export default defineConfig(({ command, isPreview }) => ({
             headless: true,
             screenshotFailures: process.env.CI !== 'true'
           },
+          toMatchScreenshot: {
+            comparatorName: 'pixelmatch',
+            comparatorOptions: {
+              // TODO: finalize these values
+              // 0-1, how different can colors be?
+              threshold: 0.2,
+              // 1% of pixels can differ
+              allowedMismatchedPixelRatio: 0.01
+            }
+          },
           setupFiles: ['test/setupBrowser.ts']
         }
       },
