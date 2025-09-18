@@ -27,7 +27,6 @@ jobs:
       contents: write # needs to push changes
 
     steps:
-      - name: Checkout branch
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           ref: ${{ github.head_ref }}
