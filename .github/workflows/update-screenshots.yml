@@ -47,9 +47,10 @@ jobs:
 
       - name: npm install
         run: npm ci
-
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
       - name: Update Visual Regression Screenshots
-        run: npm run visual --update
+        run: node --run visual --update
 
       # check what changed
       - name: Check for changes
