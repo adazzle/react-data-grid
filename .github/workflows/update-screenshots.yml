@@ -16,7 +16,7 @@ env:
 jobs:
   update-screenshots:
     # don't run on main
-    if: ${{ github.event.label.name == 'Update Screenshots' && github.ref_name != github.event.repository.default_branch }}
+    if: ${{ github.event.label.name == 'Update Screenshots' && github.ref_name != 'main' }}
     runs-on: ubuntu-latest
 
     # one at a time per branch
@@ -47,7 +47,7 @@ jobs:
           check-latest: true
 
       - name: npm install
-        run: npm ci
+        run: npm i
       - name: Install Playwright Browsers
         run: npx playwright install chromium
       - name: Update Visual Regression Screenshots
