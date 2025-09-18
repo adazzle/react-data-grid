@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "skipLibCheck": true,
-    "types": ["@vitest/browser/providers/playwright"]
+    "skipLibCheck": true
   },
   "include": ["package.json", "rolldown.config.ts", "vite.config.ts"]
 }

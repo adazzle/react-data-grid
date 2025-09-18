@@ -1,5 +1,6 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
+import { playwright } from '@vitest/browser/providers/playwright';
 import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
@@ -96,7 +97,7 @@ export default defineConfig(({ command, isPreview }) => ({
           include: ['test/browser/**/*.test.*'],
           browser: {
             enabled: true,
-            provider: 'playwright',
+            provider: playwright(),
             instances: [
               {
                 browser: 'chromium',
