@@ -1,7 +1,6 @@
 name: Update Visual Regression Screenshots
 
 on:
-  workflow_dispatch:
   pull_request:
     types: [labeled]
 
@@ -9,9 +8,9 @@ env:
   AUTHOR_NAME: 'github-actions[bot]'
   AUTHOR_EMAIL: '41898282+github-actions[bot]@users.noreply.github.com'
   COMMIT_MESSAGE: |
-    test: update visual regression screenshots
+    Update visual regression screenshots
 
-    Co-authored-by: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+    Co-authored-by: ${{ github.actor }}
 
 jobs:
   update-screenshots:
@@ -72,12 +71,12 @@ jobs:
       - name: Commit changes
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          git add -A
+          git add visual/__screenshots__/.
           git commit -m "${{ env.COMMIT_MESSAGE }}"
 
       - name: Push changes
         if: steps.check_changes.outputs.changes == 'true'
-        run: git push origin ${{ github.ref_name }}
+        run: git push --set-upstream origin ${{ github.ref_name }}
 
       # pretty summary for humans
       - name: Summary

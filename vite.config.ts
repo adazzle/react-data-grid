@@ -127,7 +127,8 @@ export default defineConfig(({ command, isPreview }) => ({
               }
             ],
             viewport,
-            headless: true
+            headless: true,
+            screenshotFailures: false
           },
           setupFiles: ['test/setupBrowser.ts']
         },
