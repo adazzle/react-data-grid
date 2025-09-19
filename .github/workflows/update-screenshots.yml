@@ -38,7 +38,7 @@ jobs:
         with:
           labels: 'Update Screenshots'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: npm install
+      - name: Install dependencies
         run: npm i
       - name: Install Playwright Browsers
         run: npx playwright install chromium
