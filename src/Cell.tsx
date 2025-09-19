@@ -7,7 +7,7 @@ import type { CellMouseEventHandler, CellRendererProps } from './types';
 
 const cellDraggedOver = css`
   @layer rdg.Cell {
-    background-color: #ccccff;
+    background-color: #ccccff !important;
   }
 `;
 
