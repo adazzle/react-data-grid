@@ -36,7 +36,7 @@
     "build:website": "vite build",
     "build": "rolldown -c",
     "test": "vitest run --project browser --project node",
-    "test:watch": "vitest watch test",
+    "test:watch": "vitest watch --project browser --project node",
     "visual": "vitest run --project visual",
     "visual:update": "vitest run --project visual --update",
     "format": "biome format --write",
