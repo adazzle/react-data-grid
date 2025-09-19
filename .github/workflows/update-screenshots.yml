@@ -1,4 +1,4 @@
-name: Update Visual Regression Screenshots
+name: Update Screenshots
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ env:
   AUTHOR_NAME: 'github-actions[bot]'
   AUTHOR_EMAIL: '41898282+github-actions[bot]@users.noreply.github.com'
   COMMIT_MESSAGE: |
-    Update visual regression screenshots
+    Update screenshots
 
     Co-authored-by: ${{ github.actor }}
 
@@ -43,9 +43,10 @@ jobs:
         run: npm i
       - name: Install Playwright Browsers
         run: npx playwright install chromium
+      - name: Update screenshots
+        run: node --run visual:update
       - name: Push new screenshots
         run: |
-          node --run visual:update
           git config --global user.name "${{ env.AUTHOR_NAME }}"
           git config --global user.email "${{ env.AUTHOR_EMAIL }}"
           git add visual/__screenshots__/.
