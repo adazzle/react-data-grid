@@ -18,6 +18,10 @@ jobs:
     if: ${{ github.event.label.name == 'Update Screenshots' && github.head_ref  != 'main' }}
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      pull-requests: write
+
     # one at a time per branch
     concurrency:
       group: visual-regression-screenshots@${{ github.head_ref  }}
@@ -32,8 +36,6 @@ jobs:
           node-version: 24
           check-latest: true
       - name: Remove label
-        permissions:
-          pull-requests: write
         uses: actions-ecosystem/action-remove-labels@2ce5d41b4b6aa8503e285553f75ed56e0a40bae0
         with:
           labels: 'Update Screenshots'
@@ -45,8 +47,6 @@ jobs:
       - name: Update screenshots
         run: node --run visual:update
       - name: Push new screenshots
-        permissions:
-          contents: write
         run: |
           git config --global user.name "${{ env.AUTHOR_NAME }}"
           git config --global user.email "${{ env.AUTHOR_EMAIL }}"
