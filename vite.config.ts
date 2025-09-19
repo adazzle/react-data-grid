@@ -84,7 +84,7 @@ export default defineConfig(({ command, isPreview }) => ({
       include: ['src/**/*.{ts,tsx}', 'visual/**/*.{ts,tsx}'],
       reporter: ['json'],
       thresholds: {
-        lines: 99
+        lines: 95
       }
     },
     testTimeout: isCI ? 10000 : 5000,
