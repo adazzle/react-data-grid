@@ -80,8 +80,10 @@ export default defineConfig(({ command, isPreview }) => ({
     globals: true,
     coverage: {
       provider: 'v8',
+      enabled: true,
       include: ['src/**/*.{ts,tsx}', 'visual/**/*.{ts,tsx}'],
-      reporter: ['json']
+      reporter: ['json'],
+      clean: false
     },
     testTimeout: isCI ? 10000 : 5000,
     restoreMocks: true,
@@ -108,11 +110,7 @@ export default defineConfig(({ command, isPreview }) => ({
             headless: true,
             screenshotFailures: process.env.CI !== 'true'
           },
-          setupFiles: ['test/setupBrowser.ts'],
-          coverage: {
-            enabled: false,
-            lines: 98
-          }
+          setupFiles: ['test/setupBrowser.ts']
         }
       },
       {
@@ -133,10 +131,7 @@ export default defineConfig(({ command, isPreview }) => ({
             headless: true,
             screenshotFailures: false
           },
-          setupFiles: ['test/setupBrowser.ts'],
-          coverage: {
-            enabled: false
-          }
+          setupFiles: ['test/setupBrowser.ts']
         },
         toMatchScreenshot: {
           comparatorName: 'pixelmatch',
