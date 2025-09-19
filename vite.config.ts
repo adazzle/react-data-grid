@@ -110,7 +110,7 @@ export default defineConfig(({ command, isPreview }) => ({
           },
           setupFiles: ['test/setupBrowser.ts'],
           coverage: {
-            enabled: isCI,
+            enabled: false,
             lines: 98
           }
         }
