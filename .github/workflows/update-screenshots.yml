@@ -14,8 +14,7 @@ env:
 
 jobs:
   update-screenshots:
-    # don't run on main
-    if: ${{ github.event.label.name == 'Update Screenshots' && github.head_ref  != 'main' }}
+    if: ${{ github.event.label.name == 'Update Screenshots' }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -24,7 +23,7 @@ jobs:
 
     # one at a time per branch
     concurrency:
-      group: visual-regression-screenshots@${{ github.head_ref  }}
+      group: update-screenshots@${{ github.head_ref  }}
       cancel-in-progress: true
 
     steps:
