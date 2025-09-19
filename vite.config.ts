@@ -77,8 +77,6 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   test: {
     globals: true,
-    // TODO: use more workers when FF tests are stable
-    maxWorkers: 1,
     coverage: {
       provider: 'istanbul',
       enabled: isCI,
@@ -96,6 +94,8 @@ export default defineConfig(({ command, isPreview }) => ({
           name: 'browser',
           include: ['test/browser/**/*.test.*'],
           browser: {
+            // TODO: remove when FF tests are stable
+            fileParallelism: false,
             enabled: true,
             provider: 'playwright',
             instances: [
