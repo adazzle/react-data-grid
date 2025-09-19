@@ -80,10 +80,9 @@ export default defineConfig(({ command, isPreview }) => ({
     globals: true,
     coverage: {
       provider: 'v8',
-      enabled: true,
-      include: ['src/**/*.{ts,tsx}', 'visual/**/*.{ts,tsx}'],
-      reporter: ['json'],
-      clean: false
+      enabled: isCI,
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['json']
     },
     testTimeout: isCI ? 10000 : 5000,
     restoreMocks: true,
