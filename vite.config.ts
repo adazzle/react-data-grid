@@ -80,7 +80,6 @@ export default defineConfig(({ command, isPreview }) => ({
     globals: true,
     coverage: {
       provider: 'v8',
-      enabled: isCI,
       include: ['src/**/*.{ts,tsx}', 'visual/**/*.{ts,tsx}'],
       reporter: ['json']
     },
@@ -110,7 +109,10 @@ export default defineConfig(({ command, isPreview }) => ({
             screenshotFailures: process.env.CI !== 'true'
           },
           setupFiles: ['test/setupBrowser.ts'],
-          coverage: {}
+          coverage: {
+            enabled: isCI,
+            lines: 98
+          }
         }
       },
       {
