@@ -6,7 +6,7 @@ For maintainers only.
 - Checkout the `main` branch.
 - Make sure your local branch is up to date, no unpushed or missing commits, stash any changes.
 - Update the changelog, if necessary, and commit.
-- Login to the `adazzle` npm account if you haven't already done so:
+- Login to the `Comcast` npm account if you haven't already done so:
   - `npm login`
   - You can use `npm whoami` to check who you are logged in as.
 - Bump the version and publish on npm:

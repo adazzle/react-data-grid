@@ -217,7 +217,7 @@
     - ⚠️ `height`
     - ⚠️ `cellContentRenderer`
     - ⚠️ `contextMenu`
-      - Check the [Context Menu](https://adazzle.github.io/react-data-grid/#/context-menu) example
+      - Check the [Context Menu](https://comcast.github.io/react-data-grid/#/context-menu) example
     - ⚠️ `enableCellSelect`
     - ⚠️ `enableCellAutoFocus`
     - ⚠️ `getValidFilterValues`
