@@ -154,7 +154,14 @@ test('should auto resize column when resize handle is double clicked', async () 
   await testGridTemplateColumns('100px 327.703px', '100px 327.833px', '100px 400px');
   expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(
     expect.objectContaining(columns[1]),
-    expect.toSatisfy((width) => (width >= 327.7 && width <= 327.9) || width === 400)
+    // Due to differences in text rendering between browsers the measured width can vary
+    expect.toSatisfy(
+      (width) =>
+        // Chrome and Firefox on windows
+        (width >= 327.7 && width <= 327.9) ||
+        // Firefox on CI
+        width === 400
+    )
   );
 });
 
