@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: npm i
       - name: Install Playwright Browsers
-        run: npx playwright install chromium
+        run: npx playwright install chromium firefox
       - name: Update screenshots
         run: node --run visual:update
       - name: Push new screenshots
