@@ -32,19 +32,17 @@ export function useViewportRows<R>({
     // and we can consider using a similar approach as react-window
     // https://github.com/bvaughn/react-window/blob/b0a470cc264e9100afcaa1b78ed59d88f7914ad4/src/VariableSizeList.js#L68
     let totalRowHeight = 0;
-    const rowPositions: { top: number; height: number }[] = [];
     let gridTemplateRows = '';
     let currentHeight: number | null = null;
     let repeatCount = 0;
 
-    rows.forEach((row, index) => {
+    const rowPositions = rows.map((row, index) => {
       const currentRowHeight = rowHeight(row);
 
       const position = {
         top: totalRowHeight,
         height: currentRowHeight
       };
-      rowPositions.push(position);
       totalRowHeight += currentRowHeight;
 
       if (currentHeight === null) {
@@ -71,6 +69,8 @@ export function useViewportRows<R>({
           gridTemplateRows += `${currentHeight}px`;
         }
       }
+
+      return position;
     });
 
     const validateRowIdx = (rowIdx: number) => {
