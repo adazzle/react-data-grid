@@ -198,7 +198,7 @@ describe('Editor', () => {
       await userEvent.click(getCellsAtRowIndex(0)[1]);
       // TODO: await userEvent.keyboard('yz{enter}'); fails in FF
       await userEvent.keyboard('{enter}yz{enter}');
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a1yz');
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
       await userEvent.keyboard('x');
       await expect
         .element(page.getByRole('textbox', { name: 'col2-editor' }))
