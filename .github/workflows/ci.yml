@@ -50,4 +50,4 @@ jobs:
           touch .nojekyll
           git add .
           git commit -m "gh-pages deployment" || echo "Nothing to commit"
-          git push -f https://adazzle:${{secrets.GITHUB_TOKEN}}@github.com/adazzle/react-data-grid.git
+          git push -f https://comcast:${{secrets.GITHUB_TOKEN}}@github.com/comcast/react-data-grid.git

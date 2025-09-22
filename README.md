@@ -11,10 +11,10 @@
 [size-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
 [size-url]: https://bundlephobia.com/package/react-data-grid
 [type-badge]: https://img.shields.io/npm/types/react-data-grid
-[codecov-badge]: https://codecov.io/gh/adazzle/react-data-grid/branch/main/graph/badge.svg?token=cvrRSWiz0Q
-[codecov-url]: https://app.codecov.io/gh/adazzle/react-data-grid
-[ci-badge]: https://github.com/adazzle/react-data-grid/workflows/CI/badge.svg
-[ci-url]: https://github.com/adazzle/react-data-grid/actions
+[codecov-badge]: https://codecov.io/gh/comcast/react-data-grid/branch/main/graph/badge.svg?token=cvrRSWiz0Q
+[codecov-url]: https://app.codecov.io/gh/comcast/react-data-grid
+[ci-badge]: https://github.com/comcast/react-data-grid/workflows/CI/badge.svg
+[ci-url]: https://github.com/comcast/react-data-grid/actions
 
 The DataGrid component is designed to handle large datasets efficiently while offering a rich set of features for customization and interactivity.
 
@@ -25,30 +25,30 @@ The DataGrid component is designed to handle large datasets efficiently while of
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
 - Strictly typed with TypeScript
-- [Keyboard accessibility](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Keyboard accessibility](https://comcast.github.io/react-data-grid/#/CommonFeatures)
 - Light and dark mode support out of the box.
-- [Frozen columns](https://adazzle.github.io/react-data-grid/#/CommonFeatures): Freeze columns to keep them visible during horizontal scrolling.
-- [Column resizing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
-- [Multi-column sorting](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
+- [Frozen columns](https://comcast.github.io/react-data-grid/#/CommonFeatures): Freeze columns to keep them visible during horizontal scrolling.
+- [Column resizing](https://comcast.github.io/react-data-grid/#/CommonFeatures)
+- [Multi-column sorting](https://comcast.github.io/react-data-grid/#/CommonFeatures)
   - Click on a sortable column header to toggle between its ascending/descending sort order
   - Ctrl+Click / Meta+Click to sort an additional column
-- [Column spanning](https://adazzle.github.io/react-data-grid/#/ColumnSpanning)
-- [Column grouping](https://adazzle.github.io/react-data-grid/#/ColumnGrouping)
-- [Row selection](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
-- [Row grouping](https://adazzle.github.io/react-data-grid/#/RowGrouping)
-- [Summary rows](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
-- [Dynamic row heights](https://adazzle.github.io/react-data-grid/#/VariableRowHeight)
-- [No rows fallback](https://adazzle.github.io/react-data-grid/#/NoRows)
-- [Cell formatting](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
-- [Cell editing](https://adazzle.github.io/react-data-grid/#/CommonFeatures)
-- [Cell copy / pasting](https://adazzle.github.io/react-data-grid/#/AllFeatures)
-- [Cell value dragging / filling](https://adazzle.github.io/react-data-grid/#/AllFeatures)
-- [Customizable Renderers](https://adazzle.github.io/react-data-grid/#/CustomizableRenderers)
+- [Column spanning](https://comcast.github.io/react-data-grid/#/ColumnSpanning)
+- [Column grouping](https://comcast.github.io/react-data-grid/#/ColumnGrouping)
+- [Row selection](https://comcast.github.io/react-data-grid/#/CommonFeatures)
+- [Row grouping](https://comcast.github.io/react-data-grid/#/RowGrouping)
+- [Summary rows](https://comcast.github.io/react-data-grid/#/CommonFeatures)
+- [Dynamic row heights](https://comcast.github.io/react-data-grid/#/VariableRowHeight)
+- [No rows fallback](https://comcast.github.io/react-data-grid/#/NoRows)
+- [Cell formatting](https://comcast.github.io/react-data-grid/#/CommonFeatures)
+- [Cell editing](https://comcast.github.io/react-data-grid/#/CommonFeatures)
+- [Cell copy / pasting](https://comcast.github.io/react-data-grid/#/AllFeatures)
+- [Cell value dragging / filling](https://comcast.github.io/react-data-grid/#/AllFeatures)
+- [Customizable Renderers](https://comcast.github.io/react-data-grid/#/CustomizableRenderers)
 - Right-to-left (RTL) support.
 
 ## Links
 
-- [Examples website](https://adazzle.github.io/react-data-grid/)
+- [Examples website](https://comcast.github.io/react-data-grid/)
   - [Source code](website)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
