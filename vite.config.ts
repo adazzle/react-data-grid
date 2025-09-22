@@ -129,6 +129,10 @@ export default defineConfig(({ command, isPreview }) => ({
               {
                 browser: 'chromium',
                 context: { viewport }
+              },
+              {
+                browser: 'firefox',
+                context: { viewport }
               }
             ],
             viewport,
