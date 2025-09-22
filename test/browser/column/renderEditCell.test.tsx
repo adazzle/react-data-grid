@@ -43,7 +43,7 @@ describe('Editor', () => {
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     // TODO: await userEvent.keyboard('123{enter}'); fails in FF
     await userEvent.keyboard('{enter}123{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('1123');
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1123$/);
   });
 
   it('should close editor and discard changes on escape', async () => {
