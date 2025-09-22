@@ -9,9 +9,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/comcast/react-data-grid.git"
+    "url": "git+https://github.com/Comcast/react-data-grid.git"
   },
-  "bugs": "https://github.com/comcast/react-data-grid/issues",
+  "bugs": "https://github.com/Comcast/react-data-grid/issues",
   "type": "module",
   "exports": {
     "./lib/styles.css": "./lib/styles.css",

@@ -13,8 +13,8 @@
 [type-badge]: https://img.shields.io/npm/types/react-data-grid
 [codecov-badge]: https://codecov.io/gh/comcast/react-data-grid/branch/main/graph/badge.svg?token=cvrRSWiz0Q
 [codecov-url]: https://app.codecov.io/gh/comcast/react-data-grid
-[ci-badge]: https://github.com/comcast/react-data-grid/workflows/CI/badge.svg
-[ci-url]: https://github.com/comcast/react-data-grid/actions
+[ci-badge]: https://github.com/Comcast/react-data-grid/workflows/CI/badge.svg
+[ci-url]: https://github.com/Comcast/react-data-grid/actions
 
 The DataGrid component is designed to handle large datasets efficiently while offering a rich set of features for customization and interactivity.
 
@@ -48,7 +48,7 @@ The DataGrid component is designed to handle large datasets efficiently while of
 
 ## Links
 
-- [Examples website](https://comcast.github.io/react-data-grid/)
+- [Examples website](https://Comcast.github.io/react-data-grid/)
   - [Source code](website)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
