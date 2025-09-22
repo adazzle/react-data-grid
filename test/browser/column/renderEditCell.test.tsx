@@ -95,11 +95,11 @@ describe('Editor', () => {
     page.render(<EditorTest gridRows={rows} />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     expect(getCellsAtRowIndex(0)).toHaveLength(2);
-    await scrollGrid({ scrollTop: 2000 });
+    await scrollGrid({ scrollTop: 2001 });
     expect(getCellsAtRowIndex(0)).toHaveLength(1);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getGrid().element().scrollTop).toBe(2000);
+    expect(getGrid().element().scrollTop).toBe(2001);
     // TODO: await userEvent.keyboard('123'); fails in FF
     await userEvent.keyboard('{enter}123');
     expect(getCellsAtRowIndex(0)).toHaveLength(2);

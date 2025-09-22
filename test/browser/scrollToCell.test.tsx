@@ -91,6 +91,6 @@ test('scrollToCell', async () => {
 
   function validateScrollPosition(scrollTop: number, scrollLeft: number) {
     expect(grid.scrollTop).toBe(scrollTop);
-    expect(grid.scrollLeft).toBe(scrollLeft);
+    expect(grid.scrollLeft).toSatisfy((value) => Math.abs(value - scrollLeft) <= 0.5); // allow a delta of 0.5px since the column width may vary slightly depending on the browser
   }
 });
