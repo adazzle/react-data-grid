@@ -22,7 +22,7 @@ describe('Editor', () => {
     await userEvent.keyboard('2');
     await userEvent.tab();
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(12);
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12$/);
   });
 
   it('should open and commit changes on enter', async () => {
