@@ -152,10 +152,17 @@ test('should auto resize column when resize handle is double clicked', async () 
   await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 200px' });
   const [, col2] = getHeaderCells();
   await autoResize(col2);
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '100px 327.703px' });
+  await testGridTemplateColumns('100px 327.703px', '100px 327.833px', '100px 400px');
   expect(onColumnResize).toHaveBeenCalledExactlyOnceWith(
     expect.objectContaining(columns[1]),
-    327.703125
+    // Due to differences in text rendering between browsers the measured width can vary
+    expect.toSatisfy(
+      (width) =>
+        // Chrome and Firefox on windows
+        (width >= 327.7 && width <= 327.9) ||
+        // Firefox on CI
+        width === 400
+    )
   );
 });
 
@@ -229,15 +236,23 @@ test('should remeasure flex columns when resizing a column', async () => {
     ],
     onColumnResize
   });
-  const grid = getGrid();
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '639.328px 639.328px 639.344px' });
+
+  await testGridTemplateColumns('639.328px 639.328px 639.344px', '639.333px 639.333px 639.333px');
   const [col1] = getHeaderCells();
   await autoResize(col1);
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  await testGridTemplateColumns(
+    '79.1406px 919.422px 919.438px',
+    '79.1667px 919.417px 919.417px',
+    '100.5px 908.75px 908.75px'
+  );
   expect(onColumnResize).toHaveBeenCalledOnce();
   // onColumnResize is not called if width is not changed
   await autoResize(col1);
-  await expect.element(grid).toHaveStyle({ gridTemplateColumns: '79.1406px 919.422px 919.438px' });
+  await testGridTemplateColumns(
+    '79.1406px 919.422px 919.438px',
+    '79.1667px 919.417px 919.417px',
+    '100.5px 908.75px 908.75px'
+  );
   expect(onColumnResize).toHaveBeenCalledOnce();
 });
 
@@ -330,3 +345,15 @@ test('should use columnWidths and onColumnWidthsChange props when provided', asy
   //   ])
   // );
 });
+
+async function testGridTemplateColumns(chrome: string, firefox: string, firefoxCI = firefox) {
+  const grid = getGrid();
+  if (navigator.userAgent.includes('Chrome')) {
+    await expect.element(grid).toHaveStyle({ gridTemplateColumns: chrome });
+  } else {
+    expect((grid.element() as HTMLDivElement).style.gridTemplateColumns).toBeOneOf([
+      firefox,
+      firefoxCI
+    ]);
+  }
+}
