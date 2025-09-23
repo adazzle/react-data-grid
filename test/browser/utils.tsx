@@ -40,6 +40,22 @@ export function getTreeGrid() {
   return page.getByRole('treegrid');
 }
 
+export function getColumnHeader(name: string) {
+  return page.getByRole('columnheader', { name, exact: true });
+}
+
+export function getRow(name: string) {
+  return page.getByRole('row', { name });
+}
+
+export function getCell(name: string) {
+  return page.getByRole('gridcell', { name, exact: true });
+}
+
+export function getSelectAllCheckbox() {
+  return page.getByRole('checkbox', { name: 'Select All' });
+}
+
 export function getRows() {
   return page.getByRole('row').elements().slice(1);
 }
