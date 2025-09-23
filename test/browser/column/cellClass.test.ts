@@ -1,6 +1,6 @@
 import type { Column } from '../../../src';
 import { cellClassname } from '../../../src/style/cell';
-import { getCell, getCells, setup } from '../utils';
+import { getCell, setup } from '../utils';
 
 interface Row {
   id: number;
@@ -61,7 +61,8 @@ test('cellClass returns undefined', async () => {
     }
   ];
   setup({ columns, rows });
-  const [cell1, cell2] = getCells();
+  const cell1 = getCell('0');
+  const cell2 = getCell('1');
   await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
   await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
 });
