@@ -40,7 +40,7 @@ export function getTreeGrid() {
   return page.getByRole('treegrid');
 }
 
-export function getColumnHeader(name: string) {
+export function getHeaderCell(name: string) {
   return page.getByRole('columnheader', { name, exact: true });
 }
 
