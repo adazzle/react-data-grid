@@ -1,6 +1,6 @@
 import type { Column } from '../../../src';
 import { cellClassname } from '../../../src/style/cell';
-import { getCell, setup } from '../utils';
+import { getCellsNew, setup } from '../utils';
 
 interface Row {
   id: number;
@@ -16,8 +16,7 @@ test('cellClass is undefined', async () => {
     }
   ];
   setup({ columns, rows });
-  const cell1 = getCell('0');
-  const cell2 = getCell('1');
+  const [cell1, cell2] = getCellsNew('0', '1');
   await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
   await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
 });
@@ -31,8 +30,7 @@ test('cellClass is a string', async () => {
     }
   ];
   setup({ columns, rows });
-  const cell1 = getCell('0');
-  const cell2 = getCell('1');
+  const [cell1, cell2] = getCellsNew('0', '1');
   await expect.element(cell1).toHaveClass(`${cellClassname} my-cell`, { exact: true });
   await expect.element(cell2).toHaveClass(`${cellClassname} my-cell`, { exact: true });
 });
@@ -46,8 +44,7 @@ test('cellClass returns a string', async () => {
     }
   ];
   setup({ columns, rows });
-  const cell1 = getCell('0');
-  const cell2 = getCell('1');
+  const [cell1, cell2] = getCellsNew('0', '1');
   await expect.element(cell1).toHaveClass(`${cellClassname} my-cell-0`, { exact: true });
   await expect.element(cell2).toHaveClass(`${cellClassname} my-cell-1`, { exact: true });
 });
@@ -61,8 +58,7 @@ test('cellClass returns undefined', async () => {
     }
   ];
   setup({ columns, rows });
-  const cell1 = getCell('0');
-  const cell2 = getCell('1');
+  const [cell1, cell2] = getCellsNew('0', '1');
   await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
   await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
 });

@@ -3,6 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../src';
 import type { Column, SortColumn } from '../../src/types';
+import { getHeaderCell, getHeaderCellsNew } from './utils';
 
 const columns: readonly Column<never>[] = [
   { key: 'colA', name: 'colA' },
@@ -40,7 +41,7 @@ function testSortColumns(expectedValue: readonly SortColumn[]) {
 
 test('should not sort if sortable is false', async () => {
   setup();
-  const headerCell = page.getByRole('columnheader', { name: 'colD' });
+  const headerCell = getHeaderCell('colD');
   await userEvent.click(headerCell);
   await expect.element(headerCell).not.toHaveAttribute('aria-sort');
   await testSortColumns([]);
@@ -48,7 +49,7 @@ test('should not sort if sortable is false', async () => {
 
 test('single column sort', async () => {
   setup();
-  const headerCell = page.getByRole('columnheader', { name: 'colA' });
+  const headerCell = getHeaderCell('colA');
   await userEvent.click(headerCell);
   await expect.element(headerCell).toHaveAttribute('aria-sort', 'ascending');
   // priority is not shown for single sort
@@ -64,9 +65,7 @@ test('single column sort', async () => {
 
 test('multi column sort', async () => {
   setup();
-  const headerCell1 = page.getByRole('columnheader', { name: 'colA' });
-  const headerCell2 = page.getByRole('columnheader', { name: 'colB' });
-  const headerCell3 = page.getByRole('columnheader', { name: 'colC' });
+  const [headerCell1, headerCell2, headerCell3] = getHeaderCellsNew('colA', 'colB', 'colC');
   await userEvent.click(headerCell1);
   await userEvent.keyboard('{Control>}');
   await userEvent.click(headerCell2);
@@ -108,8 +107,7 @@ test('multi column sort', async () => {
 
 test('multi column sort with metakey', async () => {
   setup();
-  const headerCell1 = page.getByRole('columnheader', { name: 'colA' });
-  const headerCell2 = page.getByRole('columnheader', { name: 'colB' });
+  const [headerCell1, headerCell2] = getHeaderCellsNew('colA', 'colB');
   await userEvent.click(headerCell1);
   await userEvent.keyboard('{Meta>}');
   await userEvent.click(headerCell2);
@@ -121,7 +119,7 @@ test('multi column sort with metakey', async () => {
 
 test('multi column sort with keyboard', async () => {
   setup();
-  const headerCell1 = page.getByRole('columnheader', { name: 'colA' });
+  const headerCell1 = getHeaderCell('colA');
   await userEvent.click(headerCell1);
   await userEvent.keyboard(' {arrowright}{Control>}{enter}');
   await testSortColumns([

@@ -41,15 +41,27 @@ export function getTreeGrid() {
 }
 
 export function getHeaderCell(name: string) {
-  return page.getByRole('columnheader', { name, exact: true });
+  return page.getByRole('columnheader', { name });
+}
+
+export function getHeaderCellsNew(...names: readonly string[]) {
+  return names.map(getHeaderCell);
 }
 
 export function getRow(name: string) {
   return page.getByRole('row', { name });
 }
 
+export function getRowsNew(...names: readonly string[]) {
+  return names.map(getRow);
+}
+
 export function getCell(name: string) {
   return page.getByRole('gridcell', { name, exact: true });
+}
+
+export function getCellsNew(...names: readonly string[]) {
+  return names.map(getCell);
 }
 
 export function getSelectAllCheckbox() {
