@@ -1,6 +1,6 @@
 import type { Column } from '../../../src';
 import { cellClassname } from '../../../src/style/cell';
-import { getCells, setup } from '../utils';
+import { getCell, getCells, setup } from '../utils';
 
 interface Row {
   id: number;
@@ -8,57 +8,48 @@ interface Row {
 
 const rows: readonly Row[] = [{ id: 0 }, { id: 1 }];
 
-test('cellClass is undefined', () => {
-  const columns: readonly Column<Row>[] = [
-    {
-      key: 'id',
-      name: 'ID'
-    }
-  ];
-  setup({ columns, rows });
-  const [cell1, cell2] = getCells();
-  expect(cell1).toHaveClass(cellClassname, { exact: true });
-  expect(cell2).toHaveClass(cellClassname, { exact: true });
-});
-
-test('cellClass is a string', () => {
-  const columns: readonly Column<Row>[] = [
+function getColumns(cellClass?: Column<Row>['cellClass']): readonly Column<Row>[] {
+  return [
     {
       key: 'id',
       name: 'ID',
-      cellClass: 'my-cell'
+      renderCell: (p) => p.row.id,
+      cellClass
     }
   ];
+}
+
+test('cellClass is undefined', async () => {
+  const columns = getColumns();
   setup({ columns, rows });
-  const [cell1, cell2] = getCells();
-  expect(cell1).toHaveClass(`${cellClassname} my-cell`, { exact: true });
-  expect(cell2).toHaveClass(`${cellClassname} my-cell`, { exact: true });
+  const cell1 = getCell('0');
+  const cell2 = getCell('1');
+  await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
+  await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
 });
 
-test('cellClass returns a string', () => {
-  const columns: readonly Column<Row>[] = [
-    {
-      key: 'id',
-      name: 'ID',
-      cellClass: (row) => `my-cell-${row.id}`
-    }
-  ];
+test('cellClass is a string', async () => {
+  const columns = getColumns('my-cell');
   setup({ columns, rows });
-  const [cell1, cell2] = getCells();
-  expect(cell1).toHaveClass(`${cellClassname} my-cell-0`, { exact: true });
-  expect(cell2).toHaveClass(`${cellClassname} my-cell-1`, { exact: true });
+  const cell1 = getCell('0');
+  const cell2 = getCell('1');
+  await expect.element(cell1).toHaveClass(`${cellClassname} my-cell`, { exact: true });
+  await expect.element(cell2).toHaveClass(`${cellClassname} my-cell`, { exact: true });
 });
 
-test('cellClass returns undefined', () => {
-  const columns: readonly Column<Row>[] = [
-    {
-      key: 'id',
-      name: 'ID',
-      cellClass: () => undefined
-    }
-  ];
+test('cellClass returns a string', async () => {
+  const columns = getColumns((row) => `my-cell-${row.id}`);
+  setup({ columns, rows });
+  const cell1 = getCell('0');
+  const cell2 = getCell('1');
+  await expect.element(cell1).toHaveClass(`${cellClassname} my-cell-0`, { exact: true });
+  await expect.element(cell2).toHaveClass(`${cellClassname} my-cell-1`, { exact: true });
+});
+
+test('cellClass returns undefined', async () => {
+  const columns = getColumns(() => undefined);
   setup({ columns, rows });
   const [cell1, cell2] = getCells();
-  expect(cell1).toHaveClass(cellClassname, { exact: true });
-  expect(cell2).toHaveClass(cellClassname, { exact: true });
+  await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
+  await expect.element(cell2).toHaveClass(cellClassname, { exact: true });
 });
