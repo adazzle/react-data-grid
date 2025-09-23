@@ -6,7 +6,7 @@ interface Row {
   id: number;
 }
 
-const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID', renderCell: (p) => p.row.id }];
+const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
 const rows: readonly Row[] = [{ id: 0 }, { id: 1 }, { id: 2 }];
 
 test('rowClass is undefined', async () => {

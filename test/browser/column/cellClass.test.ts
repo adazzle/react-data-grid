@@ -8,19 +8,13 @@ interface Row {
 
 const rows: readonly Row[] = [{ id: 0 }, { id: 1 }];
 
-function getColumns(cellClass?: Column<Row>['cellClass']): readonly Column<Row>[] {
-  return [
+test('cellClass is undefined', async () => {
+  const columns: readonly Column<Row>[] = [
     {
       key: 'id',
-      name: 'ID',
-      renderCell: (p) => p.row.id,
-      cellClass
+      name: 'ID'
     }
   ];
-}
-
-test('cellClass is undefined', async () => {
-  const columns = getColumns();
   setup({ columns, rows });
   const cell1 = getCell('0');
   const cell2 = getCell('1');
@@ -29,7 +23,13 @@ test('cellClass is undefined', async () => {
 });
 
 test('cellClass is a string', async () => {
-  const columns = getColumns('my-cell');
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'ID',
+      cellClass: 'my-cell'
+    }
+  ];
   setup({ columns, rows });
   const cell1 = getCell('0');
   const cell2 = getCell('1');
@@ -38,7 +38,13 @@ test('cellClass is a string', async () => {
 });
 
 test('cellClass returns a string', async () => {
-  const columns = getColumns((row) => `my-cell-${row.id}`);
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'ID',
+      cellClass: (row) => `my-cell-${row.id}`
+    }
+  ];
   setup({ columns, rows });
   const cell1 = getCell('0');
   const cell2 = getCell('1');
@@ -47,7 +53,13 @@ test('cellClass returns a string', async () => {
 });
 
 test('cellClass returns undefined', async () => {
-  const columns = getColumns(() => undefined);
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'id',
+      name: 'ID',
+      cellClass: () => undefined
+    }
+  ];
   setup({ columns, rows });
   const [cell1, cell2] = getCells();
   await expect.element(cell1).toHaveClass(cellClassname, { exact: true });
