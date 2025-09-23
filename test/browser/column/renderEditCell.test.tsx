@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { page, userEvent } from '@vitest/browser/context';
+import { commands, page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../../src';
 import type { Column, DataGridProps } from '../../../src';
-import { getCellsAtRowIndex, getGrid, getSelectedCell, scrollGrid } from '../utils';
+import { getCell, getCellsAtRowIndex, getGrid, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -258,20 +258,19 @@ describe('Editor', () => {
     it('should not steal focus back to the cell if the editor is not in the viewport and another cell is clicked', async () => {
       const rows: Row[] = [];
       for (let i = 0; i < 99; i++) {
-        rows.push({ col1: i, col2: `${i}` });
+        rows.push({ col1: i, col2: `name${i}` });
       }
 
       page.render(<EditorTest gridRows={rows} />);
 
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCell('name0'));
       await userEvent.keyboard('abc');
 
-      await scrollGrid({ scrollTop: 1500 });
-      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
-      await userEvent.click(getCellsAtRowIndex(40)[1]);
-      await expect.element(getSelectedCell()).toHaveTextContent(/^40$/);
-      await scrollGrid({ scrollTop: 0 });
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
+      await commands.scrollGrid({ scrollTop: 1500 });
+      await expect.element(getCell('name43')).toBeVisible();
+      await userEvent.click(getCell('name43'));
+      await commands.scrollGrid({ scrollTop: 0 });
+      await expect.element(getCell('name43')).toBeVisible();
     });
 
     it('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {

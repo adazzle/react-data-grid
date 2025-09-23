@@ -1,7 +1,8 @@
 declare module '@vitest/browser/context' {
   interface BrowserCommands {
-    resizeColumn: (resizeBy: number | readonly number[]) => Promise<void>;
     dragFill: (from: string, to: string) => Promise<void>;
+    resizeColumn: (resizeBy: number | readonly number[]) => Promise<void>;
+    scrollGrid: (position: { scrollLeft?: number; scrollTop?: number }) => Promise<void>;
   }
 }
 
