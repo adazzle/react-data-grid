@@ -270,7 +270,7 @@ describe('Editor', () => {
       await expect.element(getCell('name43')).toBeVisible();
       await userEvent.click(getCell('name43'));
       await commands.scrollGrid({ scrollTop: 0 });
-      await expect.element(getCell('name43')).toBeVisible();
+      await expect.element(getCell('name0abc')).toBeVisible();
     });
 
     it('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {
