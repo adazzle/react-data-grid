@@ -267,8 +267,11 @@ describe('Editor', () => {
       await userEvent.keyboard('abc');
 
       await commands.scrollGrid({ scrollTop: 1500 });
-      await expect.element(getCell('name43')).toBeVisible();
-      await userEvent.click(getCell('name43'));
+      const cell43 = getCell('name43');
+      await userEvent.click(cell43);
+      await expect.element(cell43).toBeVisible();
+      await expect.element(cell43).toHaveFocus();
+      await expect.element(cell43).toHaveAttribute('aria-selected', 'true');
       await commands.scrollGrid({ scrollTop: 0 });
       await expect.element(getCell('name0abc')).toBeVisible();
     });
