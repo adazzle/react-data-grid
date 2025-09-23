@@ -58,6 +58,7 @@ test('scrollToCell', async () => {
   page.render(<Grid />);
   await validateCellVisibility('0×0', true);
   await validateCellVisibility('40×30', false);
+  await validateCellVisibility('0×51', true);
 
   // should scroll to a cell when a valid position is specified
   await testScroll({ idx: 40, rowIdx: 30 });
@@ -95,6 +96,10 @@ test('scrollToCell', async () => {
   // should not scroll if position is out of bound
   await testScroll({ idx: 60, rowIdx: 60 });
   await validateCellVisibility('40×30', true);
+
+  // should not scroll vertically when scrolling to summary row
+  await testScroll({ idx: 49, rowIdx: 51 });
+  await validateCellVisibility('49×30', true);
 });
 
 function validateCellVisibility(name: string, isVisible: boolean) {
