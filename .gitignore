@@ -7,3 +7,5 @@ test/coverage
 dist
 .npmrc
 **.orig
+.pre-commit-config.yaml
+trufflehog/
