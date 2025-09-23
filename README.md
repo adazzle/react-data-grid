@@ -11,8 +11,8 @@
 [size-badge]: https://img.shields.io/bundlephobia/minzip/react-data-grid
 [size-url]: https://bundlephobia.com/package/react-data-grid
 [type-badge]: https://img.shields.io/npm/types/react-data-grid
-[codecov-badge]: https://codecov.io/gh/comcast/react-data-grid/branch/main/graph/badge.svg?token=cvrRSWiz0Q
-[codecov-url]: https://app.codecov.io/gh/comcast/react-data-grid
+[codecov-badge]: https://codecov.io/gh/Comcast/react-data-grid/branch/main/graph/badge.svg?token=cvrRSWiz0Q
+[codecov-url]: https://app.codecov.io/gh/Comcast/react-data-grid
 [ci-badge]: https://github.com/Comcast/react-data-grid/workflows/CI/badge.svg
 [ci-url]: https://github.com/Comcast/react-data-grid/actions
 
