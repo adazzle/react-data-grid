@@ -48,7 +48,7 @@ The DataGrid component is designed to handle large datasets efficiently while of
 
 ## Links
 
-- [Examples website](https://Comcast.github.io/react-data-grid/)
+- [Examples website](https://comcast.github.io/react-data-grid/)
   - [Source code](website)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
