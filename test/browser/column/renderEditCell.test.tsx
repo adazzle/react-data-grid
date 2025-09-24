@@ -4,7 +4,7 @@ import { commands, page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../../src';
 import type { Column, DataGridProps } from '../../../src';
-import { getCell, getCellsAtRowIndex, getGrid, scrollGrid } from '../utils';
+import { getCell, getCellsAtRowIndex, getGrid, getSelectedCell, scrollGrid } from '../utils';
 
 interface Row {
   col1: number;
@@ -267,11 +267,8 @@ describe('Editor', () => {
       await userEvent.keyboard('abc');
 
       await commands.scrollGrid({ scrollTop: 1500 });
-      const cell43 = getCell('name43');
-      await userEvent.click(cell43);
-      await expect.element(cell43).toBeVisible();
-      await expect.element(cell43).toHaveFocus();
-      await expect.element(cell43).toHaveAttribute('aria-selected', 'true');
+      await userEvent.click(getCell('name43'));
+      await expect.element(getSelectedCell()).toHaveTextContent(/^name43$/);
       await commands.scrollGrid({ scrollTop: 0 });
       await expect.element(getCell('name0abc')).toBeVisible();
     });
