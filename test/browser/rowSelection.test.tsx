@@ -52,10 +52,10 @@ function testSelection(rowIdx: number, isSelected: boolean) {
   expect(getRows()[rowIdx]).toHaveAttribute('aria-selected', isSelected ? 'true' : 'false');
 }
 
-async function toggleSelection(rowIdx: number, shift = false) {
+async function toggleSelection(rowIdx: number, shift = false, force = false) {
   const element = page.getByRole('row').all()[rowIdx + 1].getByRole('checkbox', { name: 'Select' });
   if (shift) await userEvent.keyboard('{Shift>}');
-  await userEvent.click(element, { force: true });
+  await userEvent.click(element, { force });
   if (shift) await userEvent.keyboard('{/Shift}');
 }
 
@@ -126,7 +126,7 @@ test('should not select row when isRowSelectionDisabled returns true', async () 
   );
   await toggleSelection(0);
   testSelection(0, true);
-  await toggleSelection(1);
+  await toggleSelection(1, false, true); // force click even if disabled
   testSelection(1, false);
   await toggleSelection(2);
   testSelection(2, true);

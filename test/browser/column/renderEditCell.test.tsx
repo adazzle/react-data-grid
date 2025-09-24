@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { page, userEvent } from '@vitest/browser/context';
+import { commands, page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../../src';
 import type { Column, DataGridProps } from '../../../src';
@@ -266,11 +266,11 @@ describe('Editor', () => {
       await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
       await userEvent.keyboard('abc');
 
-      await scrollGrid({ scrollTop: 1500 });
-      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
-      await userEvent.click(getCellsAtRowIndex(40)[1]);
-      await expect.element(getSelectedCell()).toHaveTextContent(/^40$/);
-      await scrollGrid({ scrollTop: 0 });
+      await commands.scrollGrid({ scrollTop: 1500 });
+      expect(getCellsAtRowIndex(43)[1]).toHaveTextContent(/^43$/);
+      await userEvent.click(getCellsAtRowIndex(43)[1]);
+      await expect.element(getSelectedCell()).toHaveTextContent(/^43$/);
+      await commands.scrollGrid({ scrollTop: 0 });
       expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
     });
 
