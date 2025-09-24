@@ -23,7 +23,7 @@ export function useGridDimensions() {
 
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      const { clientHeight, offsetHeight } = gridRef.current!;
+      const { clientHeight, offsetHeight } = element;
       dimensionsRef.current = [size.inlineSize, size.blockSize, offsetHeight - clientHeight];
       callback();
     });
