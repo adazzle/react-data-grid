@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 
 type Dimensions = [inlineSize: number, blockSize: number, horizontalScrollbarHeight: number];
 
@@ -8,42 +8,37 @@ function getServerSnapshot() {
   return defaultDimensions;
 }
 
-class GridDimensions {
-  #dimensions = defaultDimensions;
+export function useGridDimensions() {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const dimensionsRef = useRef(defaultDimensions);
 
-  subscribe(element: HTMLDivElement, callback: () => void) {
+  useLayoutEffect(() => {
+    const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
+    const { width, height } = gridRef.current!.getBoundingClientRect();
+    const initialHorizontalScrollbarHeight = offsetHeight - clientHeight;
+    const initialWidth = width - offsetWidth + clientWidth;
+    const initialHeight = height - initialHorizontalScrollbarHeight;
+
+    dimensionsRef.current = [initialWidth, initialHeight, initialHorizontalScrollbarHeight];
+  }, []);
+
+  const subscribe = useCallback((callback: () => void) => {
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      const { clientHeight, offsetHeight } = element;
-      this.#dimensions = [size.inlineSize, size.blockSize, offsetHeight - clientHeight];
+      const { clientHeight, offsetHeight } = gridRef.current!;
+      dimensionsRef.current = [size.inlineSize, size.blockSize, offsetHeight - clientHeight];
       callback();
     });
-    resizeObserver.observe(element);
+    resizeObserver.observe(gridRef.current!);
 
     return () => {
       resizeObserver.disconnect();
     };
-  }
-
-  getSnapshot() {
-    return this.#dimensions;
-  }
-}
-
-export function useGridDimensions() {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [gridDimensions] = useState(() => new GridDimensions());
-
-  const subscribe = useCallback(
-    (callback: () => void) => {
-      return gridDimensions.subscribe(gridRef.current!, callback);
-    },
-    [gridDimensions]
-  );
+  }, []);
 
   const getSnapShot = useCallback(() => {
-    return gridDimensions.getSnapshot();
-  }, [gridDimensions]);
+    return dimensionsRef.current;
+  }, []);
 
   const [inlineSize, blockSize, horizontalScrollbarHeight] = useSyncExternalStore(
     subscribe,
