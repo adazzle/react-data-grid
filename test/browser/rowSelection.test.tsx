@@ -12,11 +12,8 @@ interface Row {
 const columns: readonly Column<Row>[] = [
   SelectColumn,
   {
-    key: 'name',
-    name: 'Name',
-    renderCell(props) {
-      return props.row.id;
-    }
+    key: 'id',
+    name: 'ID'
   }
 ];
 
