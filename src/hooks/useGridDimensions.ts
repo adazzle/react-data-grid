@@ -1,46 +1,55 @@
-import { useLayoutEffect, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
+import { useCallback, useRef, useState, useSyncExternalStore } from 'react';
 
-export function useGridDimensions() {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [inlineSize, setInlineSize] = useState(1);
-  const [blockSize, setBlockSize] = useState(1);
-  const [horizontalScrollbarHeight, setHorizontalScrollbarHeight] = useState(0);
+type Dimensions = [inlineSize: number, blockSize: number, horizontalScrollbarHeight: number];
 
-  useLayoutEffect(() => {
-    const { ResizeObserver } = window;
+const defaultDimensions: Dimensions = [1, 1, 0];
 
-    // don't break in Node.js (SSR), jsdom, and browsers that don't support ResizeObserver
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (ResizeObserver == null) return;
+function getServerSnapshot() {
+  return defaultDimensions;
+}
 
-    const { clientWidth, clientHeight, offsetWidth, offsetHeight } = gridRef.current!;
-    const { width, height } = gridRef.current!.getBoundingClientRect();
-    const initialHorizontalScrollbarHeight = offsetHeight - clientHeight;
-    const initialWidth = width - offsetWidth + clientWidth;
-    const initialHeight = height - initialHorizontalScrollbarHeight;
+class GridDimensions {
+  #dimensions = defaultDimensions;
 
-    setInlineSize(initialWidth);
-    setBlockSize(initialHeight);
-    setHorizontalScrollbarHeight(initialHorizontalScrollbarHeight);
-
+  subscribe(element: HTMLDivElement, callback: () => void) {
     const resizeObserver = new ResizeObserver((entries) => {
       const size = entries[0].contentBoxSize[0];
-      const { clientHeight, offsetHeight } = gridRef.current!;
-
-      // we use flushSync here to avoid flashing scrollbars
-      flushSync(() => {
-        setInlineSize(size.inlineSize);
-        setBlockSize(size.blockSize);
-        setHorizontalScrollbarHeight(offsetHeight - clientHeight);
-      });
+      const { clientHeight, offsetHeight } = element;
+      this.#dimensions = [size.inlineSize, size.blockSize, offsetHeight - clientHeight];
+      callback();
     });
-    resizeObserver.observe(gridRef.current!);
+    resizeObserver.observe(element);
 
     return () => {
       resizeObserver.disconnect();
     };
-  }, []);
+  }
+
+  getSnapshot() {
+    return this.#dimensions;
+  }
+}
+
+export function useGridDimensions() {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [gridDimensions] = useState(() => new GridDimensions());
+
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      return gridDimensions.subscribe(gridRef.current!, callback);
+    },
+    [gridDimensions]
+  );
+
+  const getSnapShot = useCallback(() => {
+    return gridDimensions.getSnapshot();
+  }, [gridDimensions]);
+
+  const [inlineSize, blockSize, horizontalScrollbarHeight] = useSyncExternalStore(
+    subscribe,
+    getSnapShot,
+    getServerSnapshot
+  );
 
   return [gridRef, inlineSize, blockSize, horizontalScrollbarHeight] as const;
 }
