@@ -204,7 +204,7 @@ export function useCalculatedColumns<R, SR>({
   }, [getColumnWidth, columns, lastFrozenColumnIndex]);
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {    
-    if (!enableVirtualization.columns) {
+    if (enableVirtualization.columns === false) {
       return [0, columns.length - 1];
     }
     // get the viewport's left side and right side positions for non-frozen columns

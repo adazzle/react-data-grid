@@ -1,5 +1,5 @@
 {
-  "name": "react-data-grid",
+  "name": "@qualityappltd/react-data-grid",
   "version": "7.0.0-beta.57",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
@@ -9,9 +9,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Comcast/react-data-grid.git"
+    "url": "git+https://github.com/QualityAppLtd/react-data-grid.git"
   },
-  "bugs": "https://github.com/Comcast/react-data-grid/issues",
+  "bugs": "https://github.com/QualityAppLtd/react-data-grid/issues",
   "type": "module",
   "exports": {
     "./lib/styles.css": "./lib/styles.css",
@@ -44,9 +44,8 @@
     "eslint:fix": "node --run eslint -- --fix",
     "prettier:check": "prettier --check .",
     "prettier:format": "prettier --write .",
-    "typecheck": "tsc --build",
-    "prepublishOnly": "npm install && node --run build",
-    "postpublish": "git push --follow-tags origin HEAD"
+    "typecheck": "tsc --build"
+
   },
   "dependencies": {
     "clsx": "^2.0.0"
