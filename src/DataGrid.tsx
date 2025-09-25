@@ -39,7 +39,6 @@ import {
   sign
 } from './utils';
 import {
-  isVirtualizationOptions,
   type CalculatedColumn,
   type CellClipboardEvent,
   type CellCopyArgs,
@@ -62,7 +61,8 @@ import {
   type SelectHeaderRowEvent,
   type SelectRowEvent,
   type SortColumn,
-  type VirtualizationOptions
+  type VirtualizationOptions,  
+  isVirtualizationOptions
 } from './types';
 import { defaultRenderCell } from './Cell';
 import { renderCheckbox as defaultRenderCheckbox } from './cellRenderers';
@@ -328,7 +328,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       return rawEnableVirtualization;
     }
     if(typeof rawEnableVirtualization === 'boolean') {
-      if(rawEnableVirtualization == false) {
+      if(!rawEnableVirtualization) {
          return {rows: false, columns: false, rowsOverscanThreshold: 4};
       }
     }
