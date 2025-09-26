@@ -40,6 +40,34 @@ export function getTreeGrid() {
   return page.getByRole('treegrid');
 }
 
+export function getHeaderCell(name: string, exact = true) {
+  return page.getByRole('columnheader', { name, exact });
+}
+
+export function getHeaderCellsNew(...names: readonly string[]) {
+  return names.map((name) => getHeaderCell(name));
+}
+
+export function getRow(name: string) {
+  return page.getByRole('row', { name });
+}
+
+export function getRowsNew(...names: readonly string[]) {
+  return names.map(getRow);
+}
+
+export function getCell(name: string) {
+  return page.getByRole('gridcell', { name, exact: true });
+}
+
+export function getCellsNew(...names: readonly string[]) {
+  return names.map(getCell);
+}
+
+export function getSelectAllCheckbox() {
+  return page.getByRole('checkbox', { name: 'Select All' });
+}
+
 export function getRows() {
   return page.getByRole('row').elements().slice(1);
 }
