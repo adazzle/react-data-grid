@@ -45,7 +45,7 @@ export function getHeaderCell(name: string, exact = true) {
 }
 
 export function getHeaderCellsNew(...names: readonly string[]) {
-  return names.map(name => getHeaderCell(name));
+  return names.map((name) => getHeaderCell(name));
 }
 
 export function getRow(name: string) {
