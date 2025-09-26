@@ -65,7 +65,9 @@ test('single column sort', async () => {
 
 test('multi column sort', async () => {
   setup();
-  const [headerCell1, headerCell2, headerCell3] = getHeaderCellsNew('colA', 'colB', 'colC');
+  const headerCell1 = getHeaderCell('colA', false);
+  const headerCell2 = getHeaderCell('colB', false);
+  const headerCell3 = getHeaderCell('colC', false);
   await userEvent.click(headerCell1);
   await userEvent.keyboard('{Control>}');
   await userEvent.click(headerCell2);

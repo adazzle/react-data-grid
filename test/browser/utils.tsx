@@ -40,12 +40,12 @@ export function getTreeGrid() {
   return page.getByRole('treegrid');
 }
 
-export function getHeaderCell(name: string) {
-  return page.getByRole('columnheader', { name });
+export function getHeaderCell(name: string, exact = true) {
+  return page.getByRole('columnheader', { name, exact });
 }
 
 export function getHeaderCellsNew(...names: readonly string[]) {
-  return names.map(getHeaderCell);
+  return names.map(name => getHeaderCell(name));
 }
 
 export function getRow(name: string) {
