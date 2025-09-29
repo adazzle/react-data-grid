@@ -16,6 +16,9 @@
       "!website/routeTree.gen.ts"
     ]
   },
+  "formatter": {
+    "enabled": false
+  },
   "json": {
     "parser": {
       "allowComments": true,
