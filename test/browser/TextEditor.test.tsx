@@ -3,7 +3,6 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid, textEditor } from '../../src';
 import type { Column } from '../../src';
-import { getCells } from './utils';
 
 interface Row {
   readonly name: string;
@@ -29,27 +28,27 @@ function Test() {
 
 test('TextEditor', async () => {
   page.render(<Test />);
-
-  await userEvent.dblClick(getCells()[0]);
-  let input = page.getByRole('textbox').element() as HTMLInputElement;
-  expect(input).toHaveClass('rdg-text-editor');
+  const cell = page.getByRole('gridcell');
+  await expect.element(cell).toHaveTextContent(/^Tacitus Kilgore$/);
+  await userEvent.dblClick(cell);
+  const input = page.getByRole('textbox');
+  await expect.element(input).toHaveClass('rdg-text-editor');
   // input value is row[column.key]
-  expect(input).toHaveValue(initialRows[0].name);
+  await expect.element(input).toHaveValue(initialRows[0].name);
   // input is focused
-  expect(input).toHaveFocus();
+  await expect.element(input).toHaveFocus();
   // input value is fully selected
-  expect(input).toHaveSelection(initialRows[0].name);
+  await expect.element(input).toHaveSelection(initialRows[0].name);
 
   // pressing escape closes the editor without committing
   await userEvent.keyboard('Test{escape}');
-  expect(input).not.toBeInTheDocument();
-  await expect.element(getCells()[0]).toHaveTextContent(/^Tacitus Kilgore$/);
+  await expect.element(input).not.toBeInTheDocument();
+  await expect.element(cell).toHaveTextContent(/^Tacitus Kilgore$/);
 
   // blurring the input closes and commits the editor
-  await userEvent.dblClick(getCells()[0]);
-  input = page.getByRole('textbox').element() as HTMLInputElement;
+  await userEvent.dblClick(cell);
   await userEvent.fill(input, 'Jim Milton');
   await userEvent.tab();
-  expect(input).not.toBeInTheDocument();
-  await expect.element(getCells()[0]).toHaveTextContent(/^Jim Milton$/);
+  await expect.element(input).not.toBeInTheDocument();
+  await expect.element(cell).toHaveTextContent(/^Jim Milton$/);
 });

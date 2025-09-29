@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["package.json", "rolldown.config.ts", "vite.config.ts"]
 }

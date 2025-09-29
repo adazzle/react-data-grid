@@ -42,6 +42,24 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
   await page.mouse.up();
 };
 
+const scrollGrid: BrowserCommand<[{ scrollLeft?: number; scrollTop?: number }]> = async (
+  context,
+  { scrollLeft, scrollTop }
+) => {
+  const frame = await context.frame();
+  await frame.getByRole('grid').evaluate(
+    (grid: HTMLDivElement, { scrollLeft, scrollTop }) => {
+      if (scrollLeft !== undefined) {
+        grid.scrollLeft = scrollLeft;
+      }
+      if (scrollTop !== undefined) {
+        grid.scrollTop = scrollTop;
+      }
+    },
+    { scrollLeft, scrollTop }
+  );
+};
+
 const viewport = { width: 1920, height: 1080 } as const;
 
 export default defineConfig(({ command, isPreview }) => ({
@@ -109,7 +127,7 @@ export default defineConfig(({ command, isPreview }) => ({
                 context: { viewport }
               }
             ],
-            commands: { resizeColumn, dragFill },
+            commands: { resizeColumn, dragFill, scrollGrid },
             viewport,
             headless: true,
             screenshotFailures: !isCI
