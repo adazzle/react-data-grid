@@ -50,6 +50,11 @@
       outline: var(--rdg-selection-width) solid var(--rdg-selection-color);
       outline-offset: calc(var(--rdg-selection-width) * -1);
     }
+
+    &:has(.cell-warning) {
+      /* Your styles here */
+      background-color: rgba(255, 210, 48, 0.5);
+    }
   }
 }
 
@@ -149,7 +154,7 @@
 
 .c6ra8a37-0-0-beta-56 {
   @layer rdg.Cell {
-    background-color: #ccccff;
+    background-color: #ccccff !important;
   }
 }
 
