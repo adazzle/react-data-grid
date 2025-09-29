@@ -49,7 +49,7 @@ export function getHeaderCellsNew(...names: readonly string[]) {
 }
 
 export function getRow(name: string) {
-  return page.getByRole('row', { name });
+  return page.getByRole('row', { name, exact: true });
 }
 
 export function getRowsNew(...names: readonly string[]) {

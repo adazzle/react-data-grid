@@ -3,7 +3,7 @@ import { page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import { getCell, getRow, getSelectAllCheckbox } from './utils';
+import { getCell, getSelectAllCheckbox } from './utils';
 
 interface Row {
   id: number;
@@ -48,14 +48,18 @@ function setup(initialRows = defaultRows) {
   page.render(<RowSelectionTest initialRows={initialRows} />);
 }
 
+function getRowByText(rowIdx: number) {
+  return page.getByRole('row').filter({ has: getCell(String(rowIdx + 1)) });
+}
+
 function testSelection(rowIdx: number, isSelected: boolean) {
   return expect
-    .element(getRow(String(rowIdx + 1)))
+    .element(getRowByText(rowIdx))
     .toHaveAttribute('aria-selected', isSelected ? 'true' : 'false');
 }
 
 async function toggleSelection(rowIdx: number, shift = false, force = false) {
-  const checkbox = getRow(String(rowIdx + 1)).getByRole('checkbox', { name: 'Select' });
+  const checkbox = getRowByText(rowIdx).getByRole('checkbox', { name: 'Select' });
   if (shift) await userEvent.keyboard('{Shift>}');
   await userEvent.click(checkbox, { force });
   if (shift) await userEvent.keyboard('{/Shift}');
@@ -77,7 +81,7 @@ test('toggle selection when checkbox is clicked', async () => {
 test('toggle selection using keyboard', async () => {
   setup();
   await testSelection(0, false);
-  await userEvent.click(getRow('1').getByRole('checkbox', { name: 'Select' }));
+  await userEvent.click(getRowByText(0).getByRole('checkbox', { name: 'Select' }));
   await testSelection(0, true);
   await userEvent.keyboard(' ');
   await testSelection(0, false);
