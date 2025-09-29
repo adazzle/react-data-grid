@@ -387,6 +387,10 @@
       }
     },
     {
+      "assist": { "actions": { "source": { "organizeImports": "on" } } },
+      "includes": ["**/*.js"]
+    },
+    {
       "assist": {
         "actions": {
           "source": { "useSortedKeys": "on" }
