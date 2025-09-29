@@ -26,6 +26,11 @@ export const cell = css`
       outline: var(--rdg-selection-width) solid var(--rdg-selection-color);
       outline-offset: calc(var(--rdg-selection-width) * -1);
     }
+
+    &:has(.cell-warning) {
+      /* Your styles here */
+      background-color: rgba(255, 210, 48, 0.5);
+    }
   }
 `;
 
