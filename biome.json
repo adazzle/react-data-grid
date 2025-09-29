@@ -1,11 +1,6 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "assist": { "actions": { "source": { "organizeImports": "off" } } },
-  "css": {
-    "formatter": {
-      "quoteStyle": "single"
-    }
-  },
   "files": {
     "includes": [
       "**",
@@ -20,17 +15,6 @@
       "!node_modules/**/*",
       "!website/routeTree.gen.ts"
     ]
-  },
-  "formatter": {
-    "includes": ["**", "!**/*.ts", "!**/*.tsx", "!package.json"],
-    "indentStyle": "space",
-    "lineWidth": 100
-  },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "single",
-      "trailingCommas": "none"
-    }
   },
   "json": {
     "parser": {
@@ -385,10 +369,6 @@
           }
         }
       }
-    },
-    {
-      "assist": { "actions": { "source": { "organizeImports": "on" } } },
-      "includes": ["**/*.js"]
     },
     {
       "assist": {

@@ -1,15 +1,15 @@
-import markdown from '@eslint/markdown';
 import reactX from '@eslint-react/eslint-plugin';
+import markdown from '@eslint/markdown';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
-import { defineConfig, globalIgnores } from 'eslint/config';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
 import reactCompiler from 'eslint-plugin-react-compiler';
 import reactHooks from 'eslint-plugin-react-hooks';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
   globalIgnores(['.cache', '.nitro', '.output', '.tanstack', 'coverage', 'dist', 'lib']),
