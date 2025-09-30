@@ -12,7 +12,10 @@ const columns: readonly Column<Row, Row>[] = [
   SelectColumn,
   {
     key: 'name',
-    name: 'Name'
+    name: 'Name',
+    renderSummaryCell(props) {
+      return props.row.name;
+    }
   }
 ];
 
