@@ -8,7 +8,7 @@ interface Row {
   name: string;
 }
 
-const columns: readonly Column<Row>[] = [
+const columns: readonly Column<Row, Row>[] = [
   SelectColumn,
   {
     key: 'name',
@@ -22,12 +22,30 @@ const rows: readonly Row[] = [
   { id: 3, name: 'Row 3' }
 ];
 
+const topSummaryRows: readonly Row[] = [
+  { id: 4, name: 'Top Summary Row 1' },
+  { id: 5, name: 'Top Summary Row 2' }
+];
+
+const bottomSummaryRows: readonly Row[] = [
+  { id: 4, name: 'Top Summary Row 1' },
+  { id: 5, name: 'Top Summary Row 2' }
+];
+
 function rowKeyGetter(row: Row) {
   return row.id;
 }
 
-test('toggle selection when checkbox is clicked', async () => {
-  page.render(<DataGrid rowKeyGetter={rowKeyGetter} columns={columns} rows={rows} />);
+test('basic grid', async () => {
+  page.render(
+    <DataGrid
+      rowKeyGetter={rowKeyGetter}
+      columns={columns}
+      rows={rows}
+      topSummaryRows={topSummaryRows}
+      bottomSummaryRows={bottomSummaryRows}
+    />
+  );
 
   await expect(getGrid()).toMatchScreenshot('basic-grid');
 });
