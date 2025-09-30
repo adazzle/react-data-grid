@@ -1134,8 +1134,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     if (
       selectedRange.endRowIdx - selectedRange.startRowIdx > 0 ||
       selectedRange.endColumnIdx - selectedRange.startColumnIdx > 0
-    )
+    ) {
+      setShouldFocusCell(true);
+      setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
       return;
+    }
 
     const { idx, row } = selectedPosition;
     const column = columns[idx];
@@ -1143,11 +1146,12 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     const closeOnExternalRowChange = column.editorOptions?.closeOnExternalRowChange ?? true;
 
     const closeEditor = (shouldFocusCell: boolean) => {
-      setShouldFocusCell(shouldFocusCell);
+      setShouldFocusCell(true);
       setSelectedPosition(({ idx, rowIdx }) => ({ idx, rowIdx, mode: 'SELECT' }));
     };
 
     const onRowChange = (row: R, commitChanges: boolean, shouldFocusCell: boolean) => {
+      setShouldFocusCell(true);
       if (commitChanges) {
         // Prevents two issues when editor is closed by clicking on a different cell
         //
