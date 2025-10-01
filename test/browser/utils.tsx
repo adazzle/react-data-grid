@@ -49,7 +49,7 @@ export function getHeaderCellsNew(...names: readonly string[]) {
 }
 
 export function getRow(name: string) {
-  return page.getByRole('row', { name });
+  return page.getByRole('row', { name, exact: true });
 }
 
 export function getRowsNew(...names: readonly string[]) {
@@ -93,10 +93,12 @@ export function getSelectedCell() {
     .first();
 }
 
-export function validateCellPosition(columnIdx: number, rowIdx: number) {
-  const cell = getSelectedCell().element();
-  expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
-  expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
+export async function validateCellPosition(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCell();
+  await expect.element(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
+  await expect
+    .element(page.getByRole('row').filter({ has: cell }))
+    .toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
 export async function scrollGrid({
