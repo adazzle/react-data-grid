@@ -1,4 +1,4 @@
-import { page, userEvent } from '@vitest/browser/context';
+import { page, userEvent } from 'vitest/browser';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';

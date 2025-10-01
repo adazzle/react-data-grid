@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { commands, page, userEvent } from '@vitest/browser/context';
+import { commands, page, userEvent } from 'vitest/browser';
 
 import { DataGrid, type Column, type ColumnWidth, type ColumnWidths } from '../../../src';
 import { getGrid, getHeaderCells, setup } from '../utils';

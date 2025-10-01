@@ -1,4 +1,4 @@
-import { page } from '@vitest/browser/context';
+import { page } from 'vitest/browser';
 
 import { DataGrid, SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
