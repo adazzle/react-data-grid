@@ -1,6 +1,6 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
-import { playwright } from '@vitest/browser/providers/playwright';
+import { playwright } from '@vitest/browser-playwright';
 import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
