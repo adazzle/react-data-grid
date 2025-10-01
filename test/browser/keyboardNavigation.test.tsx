@@ -1,15 +1,8 @@
-import { page, userEvent } from '@vitest/browser/context';
+import { commands, page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
-import {
-  getCellsAtRowIndex,
-  getSelectedCell,
-  scrollGrid,
-  setup,
-  tabIntoGrid,
-  validateCellPosition
-} from './utils';
+import { getSelectedCell, setup, tabIntoGrid, validateCellPosition } from './utils';
 
 type Row = undefined;
 
@@ -249,6 +242,10 @@ test('navigation when header and summary rows have focusable elements', async ()
 
 test('navigation when selected cell not in the viewport', async () => {
   const columns: Column<Row, Row>[] = [SelectColumn];
+  const selectedRowCells = page
+    .getByRole('row')
+    .filter({ has: getSelectedCell() })
+    .getByRole('gridcell');
   for (let i = 0; i < 99; i++) {
     columns.push({ key: `col${i}`, name: `col${i}`, frozen: i < 5 });
   }
@@ -258,15 +255,15 @@ test('navigation when selected cell not in the viewport', async () => {
 
   await userEvent.keyboard('{Control>}{end}{/Control}{arrowup}{arrowup}');
   await validateCellPosition(99, 100);
-  expect(getCellsAtRowIndex(100)).not.toHaveLength(1);
-
-  await scrollGrid({ scrollTop: 0 });
-  expect(getCellsAtRowIndex(99)).toHaveLength(1);
+  // TODO: replace with `toHaveLength` when migrating to v4
+  await expect.poll(() => selectedRowCells.elements().length).not.toBe(1);
+  await commands.scrollGrid({ scrollTop: 0 });
+  await expect.poll(() => selectedRowCells.elements().length).toBe(1);
   await userEvent.keyboard('{arrowup}');
   await validateCellPosition(99, 99);
-  expect(getCellsAtRowIndex(99)).not.toHaveLength(1);
+  await expect.poll(() => selectedRowCells.elements().length).not.toBe(1);
 
-  await scrollGrid({ scrollLeft: 0 });
+  await commands.scrollGrid({ scrollLeft: 0 });
   await userEvent.keyboard('{arrowdown}');
   await validateCellPosition(99, 100);
 
@@ -274,7 +271,7 @@ test('navigation when selected cell not in the viewport', async () => {
     '{home}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}{arrowright}'
   );
   await validateCellPosition(7, 100);
-  await scrollGrid({ scrollLeft: 2000 });
+  await commands.scrollGrid({ scrollLeft: 2000 });
   await userEvent.keyboard('{arrowleft}');
   await validateCellPosition(6, 100);
 });
