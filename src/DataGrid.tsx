@@ -665,8 +665,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     if (event.shiftKey) {
       switch (event.key) {
         case 'ArrowUp':
-          if (selectedRange.endRowIdx > 0) {
-            setSelectedRange({ ...selectedRange, endRowIdx: selectedRange.endRowIdx - 1 });
+          if (selectedRange.startRowIdx > 0) {
+            setSelectedRange({ ...selectedRange, startRowIdx: selectedRange.startRowIdx - 1 });
           }
           break;
         case 'ArrowDown':
@@ -680,8 +680,11 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           }
           break;
         case 'ArrowLeft':
-          if (selectedRange.endColumnIdx > 0) {
-            setSelectedRange({ ...selectedRange, endColumnIdx: selectedRange.endColumnIdx - 1 });
+          if (selectedRange.startColumnIdx > 0) {
+            setSelectedRange({
+              ...selectedRange,
+              startColumnIdx: selectedRange.startColumnIdx - 1
+            });
           }
           break;
         default:
