@@ -13,7 +13,7 @@ import {
   getSelectAllCheckbox,
   getSelectedCell,
   getTreeGrid,
-  testLength,
+  testCount,
   testRowCount
 } from './utils';
 
@@ -140,7 +140,7 @@ function setup(groupBy: string[], groupIdGetter?: (groupKey: string, parentId?: 
 
 async function testHeaderCellsContent(expected: readonly string[]) {
   const headerCells = page.getByRole('columnheader');
-  await testLength(headerCells, expected.length);
+  await testCount(headerCells, expected.length);
   const content = headerCells.elements().map((cell) => cell.textContent);
   expect(content).toStrictEqual(expected);
 }
@@ -275,13 +275,13 @@ test('should select rows in a group', async () => {
   await userEvent.click(groupCell2);
 
   const selectedRows = page.getByRole('row', { selected: true });
-  await testLength(selectedRows, 0);
+  await testCount(selectedRows, 0);
 
   // select parent row
   await userEvent.click(
     getRowByCellOrCellName(groupCell1).getByRole('checkbox', { name: 'Select Group' })
   );
-  await testLength(selectedRows, 4);
+  await testCount(selectedRows, 4);
   await expect.element(selectedRows.nth(0)).toHaveAttribute('aria-rowindex', '6');
   await expect.element(selectedRows.nth(1)).toHaveAttribute('aria-rowindex', '7');
   await expect.element(selectedRows.nth(2)).toHaveAttribute('aria-rowindex', '9');
@@ -289,7 +289,7 @@ test('should select rows in a group', async () => {
 
   // unselecting child should unselect the parent row
   await userEvent.click(selectedRows.nth(3).getByRole('checkbox', { name: 'Select' }));
-  await testLength(selectedRows, 1);
+  await testCount(selectedRows, 1);
   await expect.element(selectedRows.nth(0)).toHaveAttribute('aria-rowindex', '7');
 
   // select child group
@@ -297,23 +297,23 @@ test('should select rows in a group', async () => {
     name: 'Select Group'
   });
   await userEvent.click(checkbox);
-  await testLength(selectedRows, 4);
+  await testCount(selectedRows, 4);
 
   // unselect child group
   await userEvent.click(checkbox);
-  await testLength(selectedRows, 1);
+  await testCount(selectedRows, 1);
 
   await userEvent.click(getCell('2020'));
   await userEvent.click(getCell('2022'));
 
   await userEvent.click(headerCheckbox);
-  await testLength(selectedRows, 0);
+  await testCount(selectedRows, 0);
 
   await userEvent.click(headerCheckbox);
-  await testLength(selectedRows, 8);
+  await testCount(selectedRows, 8);
 
   await userEvent.click(headerCheckbox);
-  await testLength(selectedRows, 0);
+  await testCount(selectedRows, 0);
 });
 
 test('cell navigation in a treegrid', async () => {

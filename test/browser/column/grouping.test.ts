@@ -6,7 +6,7 @@ import {
   getSelectedCell,
   setup,
   tabIntoGrid,
-  testLength,
+  testCount,
   validateCellPosition
 } from '../utils';
 
@@ -102,7 +102,7 @@ test('grouping', async () => {
   await expect.element(grid).toHaveAttribute('aria-rowcount', '5');
 
   const rows = page.getByRole('row');
-  await testLength(rows, 5);
+  await testCount(rows, 5);
 
   await expect.element(rows.nth(0)).toHaveAttribute('aria-rowindex', '1');
   await expect.element(rows.nth(1)).toHaveAttribute('aria-rowindex', '2');
@@ -110,14 +110,14 @@ test('grouping', async () => {
   await expect.element(rows.nth(3)).toHaveAttribute('aria-rowindex', '4');
   await expect.element(rows.nth(4)).toHaveAttribute('aria-rowindex', '5');
 
-  await testLength(rows.nth(0).getByRole('columnheader'), 2);
-  await testLength(rows.nth(1).getByRole('columnheader'), 2);
-  await testLength(rows.nth(2).getByRole('columnheader'), 4);
-  await testLength(rows.nth(3).getByRole('columnheader'), 12);
-  await testLength(rows.nth(4).getByRole('columnheader'), 0);
+  await testCount(rows.nth(0).getByRole('columnheader'), 2);
+  await testCount(rows.nth(1).getByRole('columnheader'), 2);
+  await testCount(rows.nth(2).getByRole('columnheader'), 4);
+  await testCount(rows.nth(3).getByRole('columnheader'), 12);
+  await testCount(rows.nth(4).getByRole('columnheader'), 0);
 
   const headerCells = page.getByRole('columnheader');
-  await testLength(headerCells, 20);
+  await testCount(headerCells, 20);
 
   const headerCellDetails = headerCells.elements().map((cell) => {
     return {

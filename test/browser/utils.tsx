@@ -128,10 +128,10 @@ export async function tabIntoGrid() {
   await userEvent.tab();
 }
 
-export function testLength(locator: Locator, expectedLength: number) {
-  return expect.poll(() => locator.elements()).toHaveLength(expectedLength);
+export function testCount(locator: Locator, expectedCount: number) {
+  return expect.poll(() => locator.elements()).toHaveLength(expectedCount);
 }
 
 export function testRowCount(expectedLength: number) {
-  return testLength(getRowsNew(), expectedLength);
+  return testCount(getRowsNew(), expectedLength);
 }

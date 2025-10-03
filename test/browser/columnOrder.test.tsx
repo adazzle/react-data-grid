@@ -2,7 +2,7 @@ import { page } from '@vitest/browser/context';
 
 import { DataGrid, SelectColumn, TreeDataGrid } from '../../src';
 import type { Column } from '../../src';
-import { testLength } from './utils';
+import { testCount } from './utils';
 
 const frozen1: Column<unknown> = {
   key: 'f1',
@@ -47,7 +47,7 @@ test('column order', async () => {
     }
 
     const headerCells = page.getByRole('columnheader');
-    await testLength(headerCells, expected.length);
+    await testCount(headerCells, expected.length);
     expect(headerCells.elements().map((c) => c.textContent)).toStrictEqual(expected);
     unmount();
   }
