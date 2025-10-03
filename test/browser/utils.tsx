@@ -48,7 +48,7 @@ export function getHeaderCellsNew(...names: readonly string[]) {
   return names.map((name) => getHeaderCell(name));
 }
 
-export function getRowByCell(cell: string | Locator) {
+export function getRowByCellOrCellName(cell: string | Locator) {
   return page.getByRole('row').filter({ has: typeof cell === 'string' ? getCell(cell) : cell });
 }
 

@@ -1,7 +1,14 @@
 import { page, userEvent } from '@vitest/browser/context';
 
 import type { ColumnOrColumnGroup } from '../../../src';
-import { getSelectedCell, setup, tabIntoGrid, testLength, validateCellPosition } from '../utils';
+import {
+  getGrid,
+  getSelectedCell,
+  setup,
+  tabIntoGrid,
+  testLength,
+  validateCellPosition
+} from '../utils';
 
 const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
   { key: 'col1', name: 'col 1' },
@@ -90,7 +97,7 @@ const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
 test('grouping', async () => {
   setup({ columns, rows: [{}] });
 
-  const grid = page.getByRole('grid');
+  const grid = getGrid();
   await expect.element(grid).toHaveAttribute('aria-colcount', '12');
   await expect.element(grid).toHaveAttribute('aria-rowcount', '5');
 

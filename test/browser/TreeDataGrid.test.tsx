@@ -8,7 +8,7 @@ import { rowSelected } from '../../src/style/row';
 import {
   getCell,
   getCellsAtRowIndex,
-  getRowByCell,
+  getRowByCellOrCellName,
   getRows,
   getSelectAllCheckbox,
   getSelectedCell,
@@ -222,7 +222,7 @@ test('should toggle group using keyboard', async () => {
   await testRowCount(8);
   // clicking on the group cell selects the row
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
-  await expect.element(getRowByCell('2021')).toHaveClass(rowSelectedClassname);
+  await expect.element(getRowByCellOrCellName('2021')).toHaveClass(rowSelectedClassname);
   await userEvent.keyboard('{arrowright}{arrowright}{enter}');
   await testRowCount(6);
   await userEvent.keyboard('{enter}');
@@ -232,7 +232,7 @@ test('should toggle group using keyboard', async () => {
 test('should set aria-attributes', async () => {
   setup(['year', 'country']);
 
-  const groupRow1 = getRowByCell('2020');
+  const groupRow1 = getRowByCellOrCellName('2020');
   await expect.element(groupRow1).toHaveAttribute('aria-level', '1');
   await expect.element(groupRow1).toHaveAttribute('aria-setsize', '3');
   await expect.element(groupRow1).toHaveAttribute('aria-posinset', '1');
@@ -240,7 +240,7 @@ test('should set aria-attributes', async () => {
   await expect.element(groupRow1).toHaveAttribute('aria-expanded', 'false');
 
   const groupCell2 = getCell('2021');
-  const groupRow2 = getRowByCell(groupCell2);
+  const groupRow2 = getRowByCellOrCellName(groupCell2);
   await expect.element(groupRow2).toHaveAttribute('aria-level', '1');
   await expect.element(groupRow2).toHaveAttribute('aria-setsize', '3');
   await expect.element(groupRow2).toHaveAttribute('aria-posinset', '2');
@@ -251,7 +251,7 @@ test('should set aria-attributes', async () => {
   await expect.element(groupRow2).toHaveAttribute('aria-expanded', 'true');
 
   const groupCell3 = getCell('Canada');
-  const groupRow3 = getRowByCell(groupCell3);
+  const groupRow3 = getRowByCellOrCellName(groupCell3);
   await expect.element(groupRow3).toHaveAttribute('aria-level', '2');
   await expect.element(groupRow3).toHaveAttribute('aria-setsize', '2');
   await expect.element(groupRow3).toHaveAttribute('aria-posinset', '2');
@@ -278,7 +278,9 @@ test('should select rows in a group', async () => {
   await testLength(selectedRows, 0);
 
   // select parent row
-  await userEvent.click(getRowByCell(groupCell1).getByRole('checkbox', { name: 'Select Group' }));
+  await userEvent.click(
+    getRowByCellOrCellName(groupCell1).getByRole('checkbox', { name: 'Select Group' })
+  );
   await testLength(selectedRows, 4);
   await expect.element(selectedRows.nth(0)).toHaveAttribute('aria-rowindex', '6');
   await expect.element(selectedRows.nth(1)).toHaveAttribute('aria-rowindex', '7');
@@ -291,7 +293,7 @@ test('should select rows in a group', async () => {
   await expect.element(selectedRows.nth(0)).toHaveAttribute('aria-rowindex', '7');
 
   // select child group
-  const checkbox = getRowByCell(groupCell2).getByRole('checkbox', {
+  const checkbox = getRowByCellOrCellName(groupCell2).getByRole('checkbox', {
     name: 'Select Group'
   });
   await userEvent.click(checkbox);
@@ -444,6 +446,10 @@ test('update row using cell renderer', async () => {
 
 test('custom renderGroupCell', async () => {
   setup(['country']);
-  await expect.element(getRowByCell('USA').getByRole('gridcell').nth(4)).toHaveTextContent('1');
-  await expect.element(getRowByCell('Canada').getByRole('gridcell').nth(4)).toHaveTextContent('3');
+  await expect
+    .element(getRowByCellOrCellName('USA').getByRole('gridcell').nth(4))
+    .toHaveTextContent('1');
+  await expect
+    .element(getRowByCellOrCellName('Canada').getByRole('gridcell').nth(4))
+    .toHaveTextContent('3');
 });
