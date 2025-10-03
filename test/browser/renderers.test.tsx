@@ -17,7 +17,7 @@ import type {
   RenderSortStatusProps,
   SortColumn
 } from '../../src';
-import { getCell, getHeaderCell, getRowByCell, setup, testLength } from './utils';
+import { getCell, getHeaderCell, getRowByCell, getRowsNew, setup, testLength } from './utils';
 
 interface Row {
   id: number;
