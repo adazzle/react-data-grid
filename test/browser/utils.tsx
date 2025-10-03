@@ -68,6 +68,10 @@ export function getRows() {
   return page.getByRole('row').elements().slice(1);
 }
 
+export function getRowsNew() {
+  return page.getByRole('row');
+}
+
 export function getCellsAtRowIndex(rowIdx: number) {
   return Array.from(
     document.querySelectorAll<HTMLDivElement>(`[aria-rowindex="${rowIdx + 2}"] > .rdg-cell`)
@@ -129,5 +133,5 @@ export function testLength(locator: Locator, expectedLength: number) {
 }
 
 export function testVisibleRowCount(expectedLength: number) {
-  return testLength(page.getByRole('row'), expectedLength);
+  return testLength(getRowsNew(), expectedLength);
 }
