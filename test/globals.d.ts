@@ -6,7 +6,7 @@ declare module '@vitest/browser/context' {
   }
 
   interface LocatorSelectors {
-    getBySelector(selector: string): Locator;
+    getBySelector: (selector: string) => Locator;
   }
 }
 
