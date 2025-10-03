@@ -14,7 +14,7 @@ import {
   getSelectedCell,
   getTreeGrid,
   testLength,
-  testVisibleRowCount
+  testRowCount
 } from './utils';
 
 const rowSelectedClassname = 'rdg-row-selected';
@@ -149,27 +149,27 @@ test('should not group if groupBy is empty', async () => {
   setup([]);
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
   await testHeaderCellsContent(['', 'Sport', 'Country', 'Year', 'Id']);
-  await testVisibleRowCount(7);
+  await testRowCount(7);
 });
 
 test('should not group if column does not exist', async () => {
   setup(['abc']);
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '7');
-  await testVisibleRowCount(7);
+  await testRowCount(7);
 });
 
 test('should group by single column', async () => {
   setup(['country']);
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '9');
   await testHeaderCellsContent(['', 'Country', 'Sport', 'Year', 'Id']);
-  await testVisibleRowCount(5);
+  await testRowCount(5);
 });
 
 test('should group by multiple columns', async () => {
   setup(['country', 'year']);
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '13');
   await testHeaderCellsContent(['', 'Country', 'Year', 'Sport', 'Id']);
-  await testVisibleRowCount(5);
+  await testRowCount(5);
 });
 
 test('should use groupIdGetter when provided', async () => {
@@ -180,53 +180,53 @@ test('should use groupIdGetter when provided', async () => {
   expect(groupIdGetter).toHaveBeenCalled();
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '13');
   await testHeaderCellsContent(['', 'Country', 'Year', 'Sport', 'Id']);
-  await testVisibleRowCount(5);
+  await testRowCount(5);
   groupIdGetter.mockClear();
   await userEvent.click(getCell('USA'));
-  await testVisibleRowCount(7);
+  await testRowCount(7);
   expect(groupIdGetter).toHaveBeenCalled();
   await userEvent.click(getCell('Canada'));
-  await testVisibleRowCount(9);
+  await testRowCount(9);
   await userEvent.click(getCell('2020'));
-  await testVisibleRowCount(10);
+  await testRowCount(10);
 });
 
 test('should ignore duplicate groupBy columns', async () => {
   setup(['year', 'year', 'year']);
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '10');
-  await testVisibleRowCount(6);
+  await testRowCount(6);
 });
 
 test('should use groupBy order while grouping', async () => {
   setup(['year', 'country']);
   await expect.element(getTreeGrid()).toHaveAttribute('aria-rowcount', '14');
   await testHeaderCellsContent(['', 'Year', 'Country', 'Sport', 'Id']);
-  await testVisibleRowCount(6);
+  await testRowCount(6);
 });
 
 test('should toggle group when group cell is clicked', async () => {
   setup(['year']);
-  await testVisibleRowCount(6);
+  await testRowCount(6);
   const groupCell = getCell('2021');
   await userEvent.click(groupCell);
-  await testVisibleRowCount(8);
+  await testRowCount(8);
   await userEvent.click(groupCell);
-  await testVisibleRowCount(6);
+  await testRowCount(6);
 });
 
 test('should toggle group using keyboard', async () => {
   setup(['year']);
-  await testVisibleRowCount(6);
+  await testRowCount(6);
   const groupCell = getCell('2021');
   await userEvent.click(groupCell);
-  await testVisibleRowCount(8);
+  await testRowCount(8);
   // clicking on the group cell selects the row
   await expect.element(getSelectedCell()).not.toBeInTheDocument();
   await expect.element(getRowByCell('2021')).toHaveClass(rowSelectedClassname);
   await userEvent.keyboard('{arrowright}{arrowright}{enter}');
-  await testVisibleRowCount(6);
+  await testRowCount(6);
   await userEvent.keyboard('{enter}');
-  await testVisibleRowCount(8);
+  await testRowCount(8);
 });
 
 test('should set aria-attributes', async () => {
@@ -316,7 +316,7 @@ test('should select rows in a group', async () => {
 
 test('cell navigation in a treegrid', async () => {
   setup(['country', 'year']);
-  await testVisibleRowCount(5);
+  await testRowCount(5);
   const focusSink = page.getBySelector(`.${focusSinkClassname}`);
 
   // expand group
@@ -370,15 +370,15 @@ test('cell navigation in a treegrid', async () => {
 
   await userEvent.keyboard('{arrowleft}{arrowup}');
 
-  await testVisibleRowCount(8);
+  await testRowCount(8);
 
   // left arrow should collapse the group
   await userEvent.keyboard('{arrowleft}');
-  await testVisibleRowCount(7);
+  await testRowCount(7);
 
   // right arrow should expand the group
   await userEvent.keyboard('{arrowright}');
-  await testVisibleRowCount(8);
+  await testRowCount(8);
 
   // left arrow on a collapsed group should select the parent group
   await expect.element(getRows()[1]).not.toHaveClass(rowSelectedClassname);
@@ -394,7 +394,7 @@ test('cell navigation in a treegrid', async () => {
   // collpase parent group
   await userEvent.keyboard('{arrowdown}{arrowdown}{arrowleft}');
   await expect.element(getCell('2021')).not.toBeInTheDocument();
-  await testVisibleRowCount(5);
+  await testRowCount(5);
 });
 
 test('copy/paste when grouping is enabled', async () => {

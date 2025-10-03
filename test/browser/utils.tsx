@@ -132,6 +132,6 @@ export function testLength(locator: Locator, expectedLength: number) {
   return expect.poll(() => locator.elements()).toHaveLength(expectedLength);
 }
 
-export function testVisibleRowCount(expectedLength: number) {
+export function testRowCount(expectedLength: number) {
   return testLength(getRowsNew(), expectedLength);
 }
