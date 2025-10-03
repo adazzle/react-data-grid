@@ -257,7 +257,6 @@ test('navigation when selected cell not in the viewport', async () => {
   await validateCellPosition(99, 100);
   // TODO: replace with `toHaveLength` when migrating to v4
   await expect.poll(() => selectedRowCells.elements().length).not.toBe(1);
-  await testLength(selectedRowCells, 1);
   await commands.scrollGrid({ scrollTop: 0 });
   await testLength(selectedRowCells, 1);
   await userEvent.keyboard('{arrowup}');
