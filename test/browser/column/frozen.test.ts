@@ -1,4 +1,4 @@
-import { page } from '@vitest/browser/context';
+import { page } from 'vitest/browser';
 
 import type { Column } from '../../../src';
 import { cellClassname, cellFrozenClassname } from '../../../src/style/cell';

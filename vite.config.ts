@@ -1,5 +1,6 @@
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
+import { playwright } from '@vitest/browser-playwright';
 import wyw from '@wyw-in-js/vite';
 import { defineConfig } from 'vite';
 import type { BrowserCommand } from 'vitest/node';
@@ -115,7 +116,7 @@ export default defineConfig(({ command, isPreview }) => ({
             // TODO: remove when FF tests are stable
             fileParallelism: false,
             enabled: true,
-            provider: 'playwright',
+            provider: playwright(),
             instances: [
               {
                 browser: 'chromium',
@@ -133,6 +134,42 @@ export default defineConfig(({ command, isPreview }) => ({
           },
           setupFiles: ['test/setupBrowser.ts']
         }
+      },
+      {
+        extends: true,
+        test: {
+          name: 'visual',
+          include: ['visual/*.test.*'],
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            instances: [
+              {
+                browser: 'chromium',
+                context: { viewport }
+              },
+              {
+                browser: 'firefox',
+                context: { viewport }
+              }
+            ],
+            viewport,
+            headless: true,
+            screenshotFailures: false
+          },
+          setupFiles: ['test/setupBrowser.ts']
+        },
+        toMatchScreenshot: {
+          comparatorName: 'pixelmatch',
+          comparatorOptions: {
+            // TODO: finalize these values
+            // 0-1, how different can colors be?
+            threshold: 0.2,
+            // 1% of pixels can differ
+            allowedMismatchedPixelRatio: 0.01
+          }
+        },
+        setupFiles: ['test/setupBrowser.ts']
       },
       {
         extends: true,

@@ -1,4 +1,4 @@
-import { page, userEvent } from '@vitest/browser/context';
+import { page, userEvent } from 'vitest/browser';
 
 import type { ColumnOrColumnGroup } from '../../../src';
 import { getSelectedCell, setup, tabIntoGrid, validateCellPosition } from '../utils';

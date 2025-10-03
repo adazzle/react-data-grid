@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { page, userEvent } from '@vitest/browser/context';
+import { page, userEvent } from 'vitest/browser';
 
 import {
   Cell,

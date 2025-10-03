@@ -1,4 +1,4 @@
-import { commands, page, userEvent } from '@vitest/browser/context';
+import { commands, page, userEvent } from 'vitest/browser';
 
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
