@@ -1,4 +1,4 @@
-import { page, userEvent } from '@vitest/browser/context';
+import { page, userEvent, type Locator } from '@vitest/browser/context';
 import { css } from '@linaria/core';
 
 import { DataGrid } from '../../src';
@@ -126,4 +126,8 @@ export async function scrollGrid({
 export async function tabIntoGrid() {
   await userEvent.click(page.getByRole('button', { name: 'Before' }));
   await userEvent.tab();
+}
+
+export function testLength(locator: Locator, expectedLength: number) {
+  return expect.poll(() => locator.elements()).toHaveLength(expectedLength);
 }

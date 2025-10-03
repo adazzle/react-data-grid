@@ -1,7 +1,7 @@
 import { page, userEvent } from '@vitest/browser/context';
 
 import type { ColumnOrColumnGroup } from '../../../src';
-import { getSelectedCell, setup, tabIntoGrid, validateCellPosition } from '../utils';
+import { getSelectedCell, setup, tabIntoGrid, testLength, validateCellPosition } from '../utils';
 
 const columns: readonly ColumnOrColumnGroup<NonNullable<unknown>>[] = [
   { key: 'col1', name: 'col 1' },
@@ -94,27 +94,25 @@ test('grouping', async () => {
   await expect.element(grid).toHaveAttribute('aria-colcount', '12');
   await expect.element(grid).toHaveAttribute('aria-rowcount', '5');
 
-  const rows = page.getByRole('row').all();
-  expect(rows).toHaveLength(5);
+  const rows = page.getByRole('row');
+  await testLength(rows, 5);
 
-  await expect.element(rows[0]).toHaveAttribute('aria-rowindex', '1');
-  await expect.element(rows[1]).toHaveAttribute('aria-rowindex', '2');
-  await expect.element(rows[2]).toHaveAttribute('aria-rowindex', '3');
-  await expect.element(rows[3]).toHaveAttribute('aria-rowindex', '4');
-  await expect.element(rows[4]).toHaveAttribute('aria-rowindex', '5');
+  await expect.element(rows.nth(0)).toHaveAttribute('aria-rowindex', '1');
+  await expect.element(rows.nth(1)).toHaveAttribute('aria-rowindex', '2');
+  await expect.element(rows.nth(2)).toHaveAttribute('aria-rowindex', '3');
+  await expect.element(rows.nth(3)).toHaveAttribute('aria-rowindex', '4');
+  await expect.element(rows.nth(4)).toHaveAttribute('aria-rowindex', '5');
 
-  expect(rows[0].getByRole('columnheader').all()).toHaveLength(2);
-  expect(rows[1].getByRole('columnheader').all()).toHaveLength(2);
-  expect(rows[2].getByRole('columnheader').all()).toHaveLength(4);
-  expect(rows[3].getByRole('columnheader').all()).toHaveLength(12);
-  expect(rows[4].getByRole('columnheader').all()).toHaveLength(0);
+  await testLength(rows.nth(0).getByRole('columnheader'), 2);
+  await testLength(rows.nth(1).getByRole('columnheader'), 2);
+  await testLength(rows.nth(2).getByRole('columnheader'), 4);
+  await testLength(rows.nth(3).getByRole('columnheader'), 12);
+  await testLength(rows.nth(4).getByRole('columnheader'), 0);
 
-  const headerCells = page.getByRole('columnheader').all();
-  expect(headerCells).toHaveLength(20);
+  const headerCells = page.getByRole('columnheader');
+  await testLength(headerCells, 20);
 
-  const headerCellDetails = headerCells.map((cellLocator) => {
-    const cell = cellLocator.element();
-
+  const headerCellDetails = headerCells.elements().map((cell) => {
     return {
       text: cell.textContent,
       colIndex: cell.getAttribute('aria-colindex'),
