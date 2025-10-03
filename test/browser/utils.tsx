@@ -48,12 +48,8 @@ export function getHeaderCellsNew(...names: readonly string[]) {
   return names.map((name) => getHeaderCell(name));
 }
 
-export function getRow(name: string) {
-  return page.getByRole('row', { name, exact: true });
-}
-
-export function getRowsNew(...names: readonly string[]) {
-  return names.map(getRow);
+export function getRowByCellName(name: string) {
+  return page.getByRole('row').filter({ has: getCell(name) });
 }
 
 export function getCell(name: string) {
@@ -70,6 +66,10 @@ export function getSelectAllCheckbox() {
 
 export function getRows() {
   return page.getByRole('row').elements().slice(1);
+}
+
+export function getRowsNew() {
+  return page.getByRole('row');
 }
 
 export function getCellsAtRowIndex(rowIdx: number) {
