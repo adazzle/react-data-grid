@@ -48,8 +48,8 @@ export function getHeaderCellsNew(...names: readonly string[]) {
   return names.map((name) => getHeaderCell(name));
 }
 
-export function getRowByCellName(name: string) {
-  return page.getByRole('row').filter({ has: getCell(name) });
+export function getRowByCell(cell: string | Locator) {
+  return page.getByRole('row').filter({ has: typeof cell === 'string' ? getCell(cell) : cell });
 }
 
 export function getCell(name: string) {
@@ -66,10 +66,6 @@ export function getSelectAllCheckbox() {
 
 export function getRows() {
   return page.getByRole('row').elements().slice(1);
-}
-
-export function getRowsNew() {
-  return page.getByRole('row');
 }
 
 export function getCellsAtRowIndex(rowIdx: number) {
@@ -130,4 +126,8 @@ export async function tabIntoGrid() {
 
 export function testLength(locator: Locator, expectedLength: number) {
   return expect.poll(() => locator.elements()).toHaveLength(expectedLength);
+}
+
+export function testVisibleRowCount(expectedLength: number) {
+  return testLength(page.getByRole('row'), expectedLength);
 }
