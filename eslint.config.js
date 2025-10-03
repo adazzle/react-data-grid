@@ -5,7 +5,6 @@ import tsParser from '@typescript-eslint/parser';
 import vitest from '@vitest/eslint-plugin';
 import jestDom from 'eslint-plugin-jest-dom';
 import react from 'eslint-plugin-react';
-import reactCompiler from 'eslint-plugin-react-compiler';
 import reactHooks from 'eslint-plugin-react-hooks';
 import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
@@ -26,7 +25,6 @@ export default defineConfig([
 
     plugins: {
       react,
-      'react-compiler': reactCompiler,
       'react-hooks': reactHooks,
       'react-x': reactX,
       sonarjs,
@@ -383,14 +381,25 @@ export default defineConfig([
       'react/style-prop-object': 0,
       'react/void-dom-elements-no-children': 1,
 
-      // React Compiler
-      // https://react.dev/learn/react-compiler#installing-eslint-plugin-react-compiler
-      'react-compiler/react-compiler': 1,
-
       // React Hooks
       // https://www.npmjs.com/package/eslint-plugin-react-hooks
       'react-hooks/rules-of-hooks': 1,
       'react-hooks/exhaustive-deps': 1,
+      'react-hooks/component-hook-factories': 1,
+      'react-hooks/config': 1,
+      'react-hooks/error-boundaries': 1,
+      'react-hooks/gating': 1,
+      'react-hooks/globals': 1,
+      'react-hooks/immutability': 0,
+      'react-hooks/incompatible-library': 1,
+      'react-hooks/preserve-manual-memoization': 1,
+      'react-hooks/purity': 1,
+      'react-hooks/refs': 1,
+      'react-hooks/set-state-in-effect': 1,
+      'react-hooks/set-state-in-render': 1,
+      'react-hooks/static-components': 1,
+      'react-hooks/unsupported-syntax': 1,
+      'react-hooks/use-memo': 1,
 
       // React Hooks Extra
       // https://eslint-react.xyz/

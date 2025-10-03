@@ -20,7 +20,7 @@ The DataGrid component is designed to handle large datasets efficiently while of
 
 ## Features
 
-- [React 19.0+](package.json) support
+- [React 19.2+](package.json) support
 - Evergreen browsers and server-side rendering support
 - Tree-shaking support and only [one npm dependency](package.json) to keep your bundles slim
 - Great performance thanks to virtualization: columns and rows outside the viewport are not rendered
