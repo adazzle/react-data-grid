@@ -48,9 +48,6 @@
     "prepublishOnly": "npm install && node --run build",
     "postpublish": "git push --follow-tags origin HEAD"
   },
-  "dependencies": {
-    "clsx": "^2.0.0"
-  },
   "devDependencies": {
     "@babel/preset-typescript": "^7.27.1",
     "@biomejs/biome": "2.2.5",
@@ -72,7 +69,8 @@
     "@vitest/eslint-plugin": "^1.3.4",
     "@wyw-in-js/rollup": "^0.7.0",
     "@wyw-in-js/vite": "^0.7.0",
-    "eslint": "9.36.0",
+    "clsx": "^2.1.1",
+    "eslint": "^9.36.0",
     "eslint-plugin-jest-dom": "^5.5.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^6.1.0",
