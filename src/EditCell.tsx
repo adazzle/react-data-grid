@@ -159,8 +159,6 @@ export default function EditCell<R, SR>({
     if (event.key === 'Escape') {
       // Discard changes
       onClose();
-    } else if (event.key === 'Enter') {
-      onClose(true);
     } else if (onEditorNavigation(event)) {
       navigate(event);
     }
