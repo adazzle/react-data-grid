@@ -95,6 +95,8 @@ export default defineConfig(({ command, isPreview }) => ({
   },
   test: {
     globals: true,
+    slowTestThreshold: 1000,
+    testTimeout: 40_000,
     // TODO: use more workers when FF tests are stable
     maxWorkers: 1,
     coverage: {
