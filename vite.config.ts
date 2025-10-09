@@ -63,6 +63,7 @@ const viewport = { width: 1920, height: 1080 } as const;
 
 export default defineConfig(({ command, isPreview, mode }) => {
   const env = loadEnv(mode, process.cwd());
+  const unoptimized = env.VITE_UNOPTIMIZED === 'true';
 
   return {
     base: '/react-data-grid/',
@@ -87,7 +88,7 @@ export default defineConfig(({ command, isPreview, mode }) => {
       react({
         exclude: ['./.cache/**/*'],
         babel: {
-          plugins: env.VITE_UNOPTIMIZED ? undefined : [['babel-plugin-react-compiler']]
+          plugins: unoptimized ? undefined : [['babel-plugin-react-compiler']]
         }
       }),
       wyw({
@@ -103,7 +104,7 @@ export default defineConfig(({ command, isPreview, mode }) => {
       globals: true,
       coverage: {
         provider: 'istanbul',
-        enabled: isCI,
+        enabled: isCI && !unoptimized,
         include: ['src/**/*.{ts,tsx}'],
         reporter: ['json']
       },
