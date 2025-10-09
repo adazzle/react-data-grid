@@ -1,4 +1,5 @@
 import { isAbsolute } from 'node:path';
+import react from '@vitejs/plugin-react';
 import wyw from '@wyw-in-js/rollup';
 import { defineConfig } from 'rolldown';
 import { dts } from 'rolldown-plugin-dts';
@@ -15,6 +16,18 @@ export default defineConfig({
   platform: 'browser',
   external: (id) => !id.startsWith('.') && !isAbsolute(id),
   plugins: [
+    react({
+      babel: {
+        plugins: [
+          [
+            'babel-plugin-react-compiler',
+            {
+              panicThreshold: 'all_errors'
+            }
+          ]
+        ]
+      }
+    }),
     dts({
       tsconfig: './tsconfig.lib.json'
     }),
