@@ -40,6 +40,34 @@ export function getTreeGrid() {
   return page.getByRole('treegrid');
 }
 
+export function getHeaderCell(name: string, exact = true) {
+  return page.getByRole('columnheader', { name, exact });
+}
+
+export function getHeaderCellsNew(...names: readonly string[]) {
+  return names.map((name) => getHeaderCell(name));
+}
+
+export function getRow(name: string) {
+  return page.getByRole('row', { name, exact: true });
+}
+
+export function getRowsNew(...names: readonly string[]) {
+  return names.map(getRow);
+}
+
+export function getCell(name: string) {
+  return page.getByRole('gridcell', { name, exact: true });
+}
+
+export function getCellsNew(...names: readonly string[]) {
+  return names.map(getCell);
+}
+
+export function getSelectAllCheckbox() {
+  return page.getByRole('checkbox', { name: 'Select All' });
+}
+
 export function getRows() {
   return page.getByRole('row').elements().slice(1);
 }
@@ -65,10 +93,12 @@ export function getSelectedCell() {
     .first();
 }
 
-export function validateCellPosition(columnIdx: number, rowIdx: number) {
-  const cell = getSelectedCell().element();
-  expect(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
-  expect(cell.parentNode).toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
+export async function validateCellPosition(columnIdx: number, rowIdx: number) {
+  const cell = getSelectedCell();
+  await expect.element(cell).toHaveAttribute('aria-colindex', `${columnIdx + 1}`);
+  await expect
+    .element(page.getByRole('row').filter({ has: cell }))
+    .toHaveAttribute('aria-rowindex', `${rowIdx + 1}`);
 }
 
 export async function scrollGrid({

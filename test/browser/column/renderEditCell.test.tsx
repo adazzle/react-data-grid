@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { page, userEvent } from '@vitest/browser/context';
+import { commands, page, userEvent } from '@vitest/browser/context';
 
 import { DataGrid } from '../../../src';
 import type { Column, DataGridProps } from '../../../src';
-import { getCellsAtRowIndex, getGrid, getSelectedCell, scrollGrid } from '../utils';
+import { getCell, getCellsAtRowIndex, getGrid, getSelectedCell } from '../utils';
 
 interface Row {
   col1: number;
@@ -22,7 +22,7 @@ describe('Editor', () => {
     await userEvent.keyboard('2');
     await userEvent.tab();
     await expect.element(editor).not.toBeInTheDocument();
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(12);
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^12$/);
   });
 
   it('should open and commit changes on enter', async () => {
@@ -43,7 +43,7 @@ describe('Editor', () => {
     await userEvent.click(getCellsAtRowIndex(0)[0]);
     // TODO: await userEvent.keyboard('123{enter}'); fails in FF
     await userEvent.keyboard('{enter}123{enter}');
-    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent('1123');
+    expect(getCellsAtRowIndex(0)[0]).toHaveTextContent(/^1123$/);
   });
 
   it('should close editor and discard changes on escape', async () => {
@@ -94,15 +94,19 @@ describe('Editor', () => {
 
     page.render(<EditorTest gridRows={rows} />);
     await userEvent.click(getCellsAtRowIndex(0)[0]);
-    expect(getCellsAtRowIndex(0)).toHaveLength(2);
-    await scrollGrid({ scrollTop: 2000 });
-    expect(getCellsAtRowIndex(0)).toHaveLength(1);
+    const selectedRowCells = page
+      .getByRole('row')
+      .filter({ has: getSelectedCell() })
+      .getByRole('gridcell');
+    await expect.poll(() => selectedRowCells.elements().length).toBe(2);
+    await commands.scrollGrid({ scrollTop: 2000 });
+    await expect.poll(() => selectedRowCells.elements().length).toBe(1);
     const editor = page.getByRole('spinbutton', { name: 'col1-editor' });
     await expect.element(editor).not.toBeInTheDocument();
     expect(getGrid().element().scrollTop).toBe(2000);
     // TODO: await userEvent.keyboard('123'); fails in FF
     await userEvent.keyboard('{enter}123');
-    expect(getCellsAtRowIndex(0)).toHaveLength(2);
+    await expect.poll(() => selectedRowCells.elements().length).toBe(2);
     await expect.element(editor).toHaveValue(123);
     expect(getGrid().element().scrollTop).toBe(0);
   });
@@ -198,7 +202,7 @@ describe('Editor', () => {
       await userEvent.click(getCellsAtRowIndex(0)[1]);
       // TODO: await userEvent.keyboard('yz{enter}'); fails in FF
       await userEvent.keyboard('{enter}yz{enter}');
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent('a1yz');
+      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^a1yz$/);
       await userEvent.keyboard('x');
       await expect
         .element(page.getByRole('textbox', { name: 'col2-editor' }))
@@ -258,20 +262,19 @@ describe('Editor', () => {
     it('should not steal focus back to the cell if the editor is not in the viewport and another cell is clicked', async () => {
       const rows: Row[] = [];
       for (let i = 0; i < 99; i++) {
-        rows.push({ col1: i, col2: `${i}` });
+        rows.push({ col1: i, col2: `name${i}` });
       }
 
       page.render(<EditorTest gridRows={rows} />);
 
-      await userEvent.dblClick(getCellsAtRowIndex(0)[1]);
+      await userEvent.dblClick(getCell('name0'));
       await userEvent.keyboard('abc');
 
-      await scrollGrid({ scrollTop: 1500 });
-      expect(getCellsAtRowIndex(40)[1]).toHaveTextContent(/^40$/);
-      await userEvent.click(getCellsAtRowIndex(40)[1]);
-      await expect.element(getSelectedCell()).toHaveTextContent(/^40$/);
-      await scrollGrid({ scrollTop: 0 });
-      expect(getCellsAtRowIndex(0)[1]).toHaveTextContent(/^0abc$/);
+      await commands.scrollGrid({ scrollTop: 1500 });
+      await userEvent.click(getCell('name43'));
+      await expect.element(getSelectedCell()).toHaveTextContent(/^name43$/);
+      await commands.scrollGrid({ scrollTop: 0 });
+      await expect.element(getCell('name0abc')).toBeVisible();
     });
 
     it('should not steal focus back to the cell after being closed by clicking outside the grid', async () => {

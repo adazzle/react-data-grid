@@ -41,6 +41,24 @@ const dragFill: BrowserCommand<[from: string, to: string]> = async (context, fro
   await page.mouse.up();
 };
 
+const scrollGrid: BrowserCommand<[{ scrollLeft?: number; scrollTop?: number }]> = async (
+  context,
+  { scrollLeft, scrollTop }
+) => {
+  const frame = await context.frame();
+  await frame.getByRole('grid').evaluate(
+    (grid: HTMLDivElement, { scrollLeft, scrollTop }) => {
+      if (scrollLeft !== undefined) {
+        grid.scrollLeft = scrollLeft;
+      }
+      if (scrollTop !== undefined) {
+        grid.scrollTop = scrollTop;
+      }
+    },
+    { scrollLeft, scrollTop }
+  );
+};
+
 const viewport = { width: 1920, height: 1080 } as const;
 
 export default defineConfig(({ command, isPreview }) => ({
@@ -96,6 +114,8 @@ export default defineConfig(({ command, isPreview }) => ({
           name: 'browser',
           include: ['test/browser/**/*.test.*'],
           browser: {
+            // TODO: remove when FF tests are stable
+            fileParallelism: false,
             enabled: true,
             provider: 'playwright',
             instances: [
@@ -112,10 +132,10 @@ export default defineConfig(({ command, isPreview }) => ({
                 context: { viewport }
               }
             ],
-            commands: { resizeColumn, dragFill },
+            commands: { resizeColumn, dragFill, scrollGrid },
             viewport,
             headless: true,
-            screenshotFailures: process.env.CI !== 'true'
+            screenshotFailures: !isCI
           },
           setupFiles: ['test/setupBrowser.ts']
         }
