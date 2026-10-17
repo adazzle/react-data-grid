@@ -53,7 +53,7 @@ The project uses [Vite+](https://viteplus.dev/guide/), whose global `vp` CLI wra
 
 ## Validation
 
-Run `vp run ci` before submitting changes. It runs the same checks as CI, and skips any whose inputs haven't changed since they last passed.
+Run `vp run ci` before submitting changes. It runs the same checks as CI, and skips any whose inputs haven't changed since they last passed. Its tests import `react-data-grid` from the packed `lib/`, while `vp test` aliases it to `src/`.
 
 While iterating, run individual checks instead. The static checks take seconds, so run them before tests:
 

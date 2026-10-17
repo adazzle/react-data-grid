@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { DataGrid, type Column, type DataGridProps } from 'react-data-grid';
 import { page, server, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid } from '../../../src';
-import type { Column, DataGridProps } from '../../../src';
 import { getCellsAtRowIndex, getRowWithCell, safeTab, scrollGrid, testCount } from '../utils';
 
 const grid = page.getGrid();

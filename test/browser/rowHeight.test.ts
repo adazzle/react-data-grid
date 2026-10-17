@@ -1,6 +1,6 @@
+import type { Column, DataGridProps } from 'react-data-grid';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import type { Column, DataGridProps } from '../../src';
 import { safeTab, setup, testRowCount } from './utils';
 
 const grid = page.getGrid();

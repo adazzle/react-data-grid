@@ -1,6 +1,6 @@
+import type { Column } from 'react-data-grid';
 import { page, type Locator } from 'vite-plus/test/browser';
 
-import type { Column } from '../../src';
 import { getCellsAtRowIndex, scrollGrid, setup } from './utils';
 
 const headerCells = page.getHeaderCell();

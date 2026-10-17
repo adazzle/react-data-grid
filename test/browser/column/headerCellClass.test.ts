@@ -1,6 +1,6 @@
+import type { Column, ColumnGroup } from 'react-data-grid';
 import { page } from 'vite-plus/test/browser';
 
-import type { Column, ColumnGroup } from '../../../src';
 import { cellClassname } from '../../../src/style/cell';
 import { setup } from '../utils';
 

@@ -1,6 +1,5 @@
+import { DataGrid, SelectColumn, type Column } from 'react-data-grid';
 import { page } from 'vite-plus/test/browser';
-
-import { DataGrid, SelectColumn, type Column } from '../../src';
 
 const grid = page.getGrid();
 

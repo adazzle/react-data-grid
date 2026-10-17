@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import {
+  DataGrid,
+  renderHeaderCell as defaultRenderHeaderCell,
+  type Column
+} from 'react-data-grid';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid } from '../../../src';
-import type { Column } from '../../../src';
-import defaultRenderHeaderCell from '../../../src/renderHeaderCell';
 import { getCellsAtRowIndex, safeTab, setup } from '../utils';
 
 const cells = page.getCell();

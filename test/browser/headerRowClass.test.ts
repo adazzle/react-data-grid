@@ -1,6 +1,6 @@
+import type { Column } from 'react-data-grid';
 import { page } from 'vite-plus/test/browser';
 
-import type { Column } from '../../src';
 import { headerRowClassname } from '../../src/HeaderRow';
 import { setup } from './utils';
 

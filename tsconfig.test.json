@@ -2,6 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
+    "paths": {
+      "react-data-grid": ["./src/index.ts"]
+    },
     "skipLibCheck": true,
     "types": ["vite-plus/test/globals"]
   },

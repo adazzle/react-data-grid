@@ -1,8 +1,7 @@
 import { useState } from 'react';
+import { renderTextEditor, SelectColumn, TreeDataGrid, type Column } from 'react-data-grid';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import type { Column } from '../../src';
-import { renderTextEditor, SelectColumn, TreeDataGrid } from '../../src';
 import { rowActiveClassname } from '../../src/style/row';
 import { getCellsAtRowIndex, getRowWithCell, testCount, testRowCount } from './utils';
 

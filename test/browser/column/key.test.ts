@@ -1,4 +1,5 @@
-import type { Column } from '../../../src';
+import type { Column } from 'react-data-grid';
+
 import { setup } from '../utils';
 
 test('key is escaped in query selectors', async () => {

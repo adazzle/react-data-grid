@@ -1,7 +1,5 @@
 import { renderToString } from 'react-dom/server';
-
-import { DataGrid } from '../../src';
-import type { Column } from '../../src';
+import { DataGrid, type Column } from 'react-data-grid';
 
 interface Row {
   id: number;

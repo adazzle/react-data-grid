@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { DataGrid, type Column, type ColumnWidth, type ColumnWidths } from 'react-data-grid';
 import { commands, page, server, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid, type Column, type ColumnWidth, type ColumnWidths } from '../../../src';
 import { setup } from '../utils';
 
 const grid = page.getGrid();

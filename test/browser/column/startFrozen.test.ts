@@ -1,6 +1,6 @@
+import type { Column } from 'react-data-grid';
 import { page } from 'vite-plus/test/browser';
 
-import type { Column } from '../../../src';
 import { cellClassname, cellFrozenStartClassname } from '../../../src/style/cell';
 import { setup } from '../utils';
 

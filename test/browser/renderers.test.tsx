@@ -1,22 +1,20 @@
 import { useState } from 'react';
-import { page, userEvent } from 'vite-plus/test/browser';
-
 import {
   Cell,
   DataGrid,
   DataGridRenderersContext,
   Row as DefaultRow,
   renderSortIcon,
-  SelectColumn
-} from '../../src';
-import type {
-  CellRendererProps,
-  Column,
-  DataGridProps,
-  RenderRowProps,
-  RenderSortStatusProps,
-  SortColumn
-} from '../../src';
+  SelectColumn,
+  type CellRendererProps,
+  type Column,
+  type DataGridProps,
+  type RenderRowProps,
+  type RenderSortStatusProps,
+  type SortColumn
+} from 'react-data-grid';
+import { page, userEvent } from 'vite-plus/test/browser';
+
 import { getRowWithCell, setup, testCount, testRowCount } from './utils';
 
 interface Row {

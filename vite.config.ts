@@ -11,6 +11,12 @@ const isCI = process.env.CI === 'true';
 const isCIWorkflow = process.env.GITHUB_WORKFLOW === 'CI';
 const isTest = process.env.VITEST === 'true';
 const isAgent = process.env.AI_AGENT !== undefined;
+// set by `vp run ci` to test the packed `lib/` instead of `src/`
+const isTestingLib = process.env.TEST_LIB === 'true';
+
+// We add the package version as prefix to avoid style conflicts
+// between multiple versions of RDG on the same page
+const classPrefix = `rdg-${pkg.version.replaceAll('.', '-')}-`;
 
 // TODO: remove when `userEvent.pointer` is supported
 async function resizeColumn(
@@ -92,8 +98,9 @@ export default defineConfig({
         command: 'vp test',
         dependsOn: ['install-browsers'],
         cache: {
-          // `CI` enables visual tests, `GITHUB_WORKFLOW` enables coverage
-          env: ['CI', 'GITHUB_WORKFLOW'],
+          // `CI` enables visual tests, `GITHUB_WORKFLOW` enables coverage,
+          // `TEST_LIB` tests `lib/` instead of `src/`
+          env: ['CI', 'GITHUB_WORKFLOW', 'TEST_LIB'],
           input: [{ auto: true }, '!coverage/**', '!node_modules/.cache/vite/**']
         }
       },
@@ -107,7 +114,7 @@ export default defineConfig({
           'vp pack',
           'vp build',
           'git diff --exit-code website/routeTree.gen.ts',
-          'vp run test'
+          'TEST_LIB=true vp run test'
         ],
         cache: {
           // `vp pack` cleans `lib/` before writing to it
@@ -155,7 +162,8 @@ export default defineConfig({
   },
 
   plugins: lazyPlugins(() => [
-    ecij(),
+    // same prefix as `lib/`, so tests importing classnames from `src/` can test `lib/`
+    ecij({ classPrefix }),
     !isTest &&
       import('@tanstack/router-plugin/vite').then(({ tanstackRouter }) =>
         tanstackRouter({
@@ -202,11 +210,7 @@ export default defineConfig({
       tsconfig: './tsconfig.src.json'
     },
     plugins: [
-      ecij({
-        // We add the package version as prefix to avoid style conflicts
-        // between multiple versions of RDG on the same page
-        classPrefix: `rdg-${pkg.version.replaceAll('.', '-')}-`
-      }),
+      ecij({ classPrefix }),
       react({
         compiler: true,
         exclude: [/node_modules/, /\.d\.ts$/]
@@ -219,6 +223,7 @@ export default defineConfig({
     globals: true,
     injectCjsGlobals: false,
     printConsoleTrace: true,
+    alias: isTestingLib ? {} : { 'react-data-grid': import.meta.resolve('./src/index.ts') },
     env: {
       // @ts-expect-error
       CI: isCI
@@ -289,9 +294,14 @@ export default defineConfig({
       {
         test: {
           name: 'browser',
-          include: ['browser/**/*.test.*', ...(isCI ? ['visual/*.test.*'] : [])],
+          include: ['browser/**/*.test.*', isCI && 'visual/*.test.*'].filter((v) => v !== false),
           browser: { enabled: true },
-          setupFiles: ['test/browser/styles.css', 'test/setupBrowser.ts', 'test/failOnConsole.ts']
+          setupFiles: [
+            isTestingLib && 'react-data-grid/lib/styles.css',
+            'test/browser/styles.css',
+            'test/setupBrowser.ts',
+            'test/failOnConsole.ts'
+          ].filter((v) => v !== false)
         }
       },
       {

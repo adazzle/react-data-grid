@@ -1,8 +1,6 @@
 import { useState } from 'react';
+import { DataGrid, SelectColumn, type Column } from 'react-data-grid';
 import { page, userEvent } from 'vite-plus/test/browser';
-
-import { DataGrid, SelectColumn } from '../../src';
-import type { Column } from '../../src';
 
 const rows = page.getRow();
 const headerCheckbox = page.getSelectAllCheckbox();

@@ -1,8 +1,7 @@
 import { useState } from 'react';
+import { DataGrid, renderTextEditor, type Column } from 'react-data-grid';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid, renderTextEditor } from '../../src';
-import type { Column } from '../../src';
 import { safeTab } from './utils';
 
 interface Row {

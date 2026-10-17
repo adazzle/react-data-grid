@@ -1,8 +1,7 @@
 import { useState } from 'react';
+import { DataGrid, type Column, type FillEvent } from 'react-data-grid';
 import { commands, page, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid } from '../../src';
-import type { Column, FillEvent } from '../../src';
 import { getCellsAtRowIndex } from './utils';
 
 const dragHandle = page.getDragHandle();

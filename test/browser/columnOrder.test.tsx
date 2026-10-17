@@ -1,7 +1,6 @@
+import { DataGrid, SelectColumn, TreeDataGrid, type Column } from 'react-data-grid';
 import { page } from 'vite-plus/test/browser';
 
-import { DataGrid, SelectColumn, TreeDataGrid } from '../../src';
-import type { Column } from '../../src';
 import { testCount } from './utils';
 
 const headerCells = page.getHeaderCell();

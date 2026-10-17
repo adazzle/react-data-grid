@@ -1,6 +1,6 @@
+import type { ColumnOrColumnGroup } from 'react-data-grid';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import type { ColumnOrColumnGroup } from '../../../src';
 import { safeTab, setup, testCount, validateCellPosition } from '../utils';
 
 const grid = page.getGrid();

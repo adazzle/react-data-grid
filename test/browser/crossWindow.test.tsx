@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { DataGrid, type Column, type RenderEditCellProps } from 'react-data-grid';
 import { page, userEvent } from 'vite-plus/test/browser';
-
-import { DataGrid, type Column, type RenderEditCellProps } from '../../src';
 
 // The grid can be portaled into another window, like an iframe or a popup window.
 // Its DOM nodes then belong to that other window, while its JS still runs in this window.

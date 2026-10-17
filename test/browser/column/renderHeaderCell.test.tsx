@@ -1,6 +1,6 @@
+import type { Column } from 'react-data-grid';
 import { page } from 'vite-plus/test/browser';
 
-import type { Column } from '../../../src';
 import { setup } from '../utils';
 
 const headerCells = page.getHeaderCell();

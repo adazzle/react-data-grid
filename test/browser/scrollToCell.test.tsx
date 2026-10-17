@@ -1,7 +1,7 @@
 import { createRef } from 'react';
+import type { Column, DataGridHandle } from 'react-data-grid';
 import { page } from 'vite-plus/test/browser';
 
-import type { Column, DataGridHandle } from '../../src';
 import { setup } from './utils';
 
 const rows: readonly number[] = Array.from({ length: 50 }, (_, i) => i);
