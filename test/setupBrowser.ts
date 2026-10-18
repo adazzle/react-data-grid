@@ -79,9 +79,12 @@ locators.extend({
 });
 
 beforeEach(async () => {
-  // 1. reset cursor position to avoid hover issues
-  // 2. force focus to be on the page
-  await userEvent.click(document.body, { position: { x: 0, y: 0 } });
+  do {
+    // 1. reset cursor position to avoid hover issues
+    // 2. force focus to be on the page
+    await userEvent.click(document.body, { position: { x: 0, y: 0 } });
+    // Firefox needs two clicks sometimes
+  } while (!document.hasFocus());
 });
 
 afterEach(() => {
